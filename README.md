@@ -93,8 +93,8 @@ The ZX Spectrum sample uses **SjASMPlus - Z80 Assembly Cross-Compiler (v1.07 RC7
 The latest version can be downloaded at: https://sourceforge.net/projects/sjasmplus/
 
 ---
-Developed by 0x8BitDev Copyright © 2017-2019
+Developed by 0x8BitDev Copyright Â© 2017-2019
 
 Released under the MIT license. See LICENSE.txt
 
-mail: 0x8bitdev@gmail.com
+mail: 0x8bitdev[at]gmail.com
