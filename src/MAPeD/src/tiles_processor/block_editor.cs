@@ -1,0 +1,674 @@
+﻿/*
+ * Created by SharpDevelop.
+ * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * Date: 04.05.2017
+ * Time: 13:12
+ */
+using System;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Collections.Generic;
+
+namespace MAPeD
+{
+	/// <summary>
+	/// Description of block_editor.
+	/// </summary>
+	/// 
+	
+	public delegate void PixelChanged();
+	public delegate void BlockQuadSelected();
+	
+	public class block_editor : drawable_base
+	{
+		public event EventHandler PixelChanged;
+		public event EventHandler DataChanged;
+		public event EventHandler NeedGFXUpdate;
+		public event EventHandler BlockQuadSelected;
+		
+		public enum EMode
+		{
+			bem_CHR_select,
+			bem_draw,
+		}
+		
+		private EMode m_edit_mode	= EMode.bem_CHR_select;
+		
+		public EMode edit_mode
+		{
+			get { return m_edit_mode; }
+			set 
+			{
+				string mode = "";
+				
+				m_edit_mode = value;
+
+				switch( m_edit_mode )
+				{
+					case EMode.bem_CHR_select:	{ mode = "Select CHRs"; } break;
+					case EMode.bem_draw:		{ mode = "Draw"; } break;
+				}
+				
+				MainForm.set_status_msg( "Block Editor mode: " + mode );
+				
+				update();
+			}
+		}
+		
+		private tiles_data	m_data	= null;
+
+		private int m_sel_quad_ind	= -1;
+		private int m_sel_block_id	= -1;
+		
+		private bool m_drawing_state	= false;
+
+		private static readonly byte[] clr_ind_remap_arr = new byte[]
+		{
+			0,1,2,3,
+			0,3,1,2,
+			0,2,3,1,
+			0,1,3,2,
+			0,3,2,1,
+			0,2,1,3,
+		};
+
+		private static readonly byte[] clr_ind_remap_transp_arr = new byte[]
+		{
+			0,1,2,3,
+			1,2,3,0,
+			2,3,0,1,
+			3,0,1,2,
+		};
+		
+		private static int clr_ind_remap_arr_pos = 0;
+		
+		private  List< int > m_CHR_ids = null;		
+		
+		private bool m_palette_per_CHR_mode	= false;
+		
+		public bool palette_per_CHR_mode
+		{
+			get { return m_palette_per_CHR_mode; }
+			set { m_palette_per_CHR_mode = value; }
+		}
+		
+		public block_editor( PictureBox _pbox ) : base( _pbox )
+		{
+			m_pix_box.MouseDown 	+= new MouseEventHandler( this.BlockEditor_MouseDown );
+			m_pix_box.MouseUp 		+= new MouseEventHandler( this.BlockEditor_MouseUp );
+			m_pix_box.MouseMove		+= new MouseEventHandler( this.BlockEditor_MouseMove );
+			
+			m_pix_box.MouseClick	+= new MouseEventHandler( this.BlockEditor_MouseClick );
+			
+			m_CHR_ids = new List< int >( 4 );
+			
+			update();
+		}
+		
+		private void BlockEditor_MouseDown(object sender, MouseEventArgs e)
+		{
+			if( e.Button == MouseButtons.Left && edit_mode == EMode.bem_draw )
+			{
+				m_drawing_state = true;
+				
+				sel_quad_and_draw( e.X, e.Y, true );
+			}
+		}
+		
+		private void BlockEditor_MouseUp(object sender, MouseEventArgs e)
+		{
+			if( e.Button == MouseButtons.Left )
+			{
+				m_drawing_state = false;
+			}
+		}
+
+		private void BlockEditor_MouseMove(object sender, MouseEventArgs e)
+		{
+			if( m_drawing_state )
+			{
+				sel_quad_and_draw( e.X, e.Y, true );
+			}
+		}
+		
+		private void BlockEditor_MouseClick(object sender, MouseEventArgs e)
+		{
+			sel_quad_and_draw( e.X, e.Y, false );
+		}
+
+		private void sel_quad_and_draw( int _x, int _y, bool _need_draw )
+		{
+			int last_sel_quad_ind = m_sel_quad_ind;
+			
+			m_sel_quad_ind = ( _x >> 7 ) + ( ( _y >> 7 ) << 1 );
+			
+			if( palette_per_CHR_mode )
+			{
+				if( last_sel_quad_ind != m_sel_quad_ind )
+				{
+					set_active_palette();
+				}
+			}
+
+			dispatch_event_quad_selected();
+			
+			if( _need_draw && m_data != null && palette_group.Instance.active_palette != -1 )
+			{
+				int x = _x >> 4;
+				int y = _y >> 4;
+				
+				int local_x = ( m_sel_quad_ind == 1 || m_sel_quad_ind == 3 ) ? ( x - 8 ):x;
+				int local_y = ( m_sel_quad_ind == 2 || m_sel_quad_ind == 3 ) ? ( y - 8 ):y;
+				
+				if( local_x >= 0 && local_y >= 0 && local_x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT && local_y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT )
+				{
+					int chr_id	= tiles_data.get_block_CHR_id( m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ] );
+					
+					int chr_x = chr_id % 16;
+					int chr_y = chr_id >> 4;
+					
+					palette_group plt = palette_group.Instance;
+					
+					m_data.CHR_bank[ ( ( chr_x << 3 ) + local_x ) + ( ( ( chr_y * utils.CONST_CHR_BANK_SIDE ) << 3 ) + local_y * utils.CONST_CHR_BANK_SIDE ) ] = (byte)plt.get_palettes_arr()[ plt.active_palette ].color_slot;
+					
+					dispath_event_pixel_changed();
+					dispatch_event_data_changed();
+					dispatch_event_need_gfx_update();
+				}
+			}
+			
+			update();
+			
+			update_status_bar();
+		}
+		
+		private void set_active_palette()
+		{
+			if( m_sel_quad_ind >= 0 && m_sel_block_id >= 0 )
+			{
+				palette_group.Instance.active_palette = tiles_data.get_block_flags_palette( m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ] );
+			}
+			else
+			{
+				palette_group.Instance.active_palette = -1;
+			}
+		}
+				
+		public void subscribe_event( CHR_bank_viewer _chr_bank )
+		{
+			_chr_bank.DataChanged += new EventHandler( update_data );
+			_chr_bank.CHRSelected += new EventHandler( CHR_selected );
+		}
+
+		public void subscribe_event( tiles_processor _tiles_proc )
+		{
+			_tiles_proc.GFXUpdate += new EventHandler( update_gfx );
+		}
+		
+		private void update_gfx( object sender, EventArgs e )
+		{
+			if( m_sel_quad_ind >= 0 )
+			{
+				// CHR indices may be changed, so we try to update them
+				dispatch_event_quad_selected();
+			}
+			
+			update();
+		}
+		
+		public void subscribe_event( data_sets_manager _data_mngr )
+		{
+			_data_mngr.SetTilesData += new EventHandler( new_data_set );
+		}
+		
+		public void subscribe_event( tile_editor _tile_editor )
+		{
+			_tile_editor.UpdateSelectedBlock += new EventHandler( update_block );
+		}
+		
+		private void update_block( object sender, EventArgs e )
+		{
+			EventArg2Params args = ( e as EventArg2Params );
+			
+			int 		block_id 	= Convert.ToInt32( args.param1 );
+			tiles_data 	data 		= args.param2 as tiles_data;
+			
+			set_selected_block( block_id, data );
+		}
+		
+		private void new_data_set( object sender, EventArgs e )
+		{
+			tiles_data data = null;
+			
+			set_selected_block( 0, data );
+		}
+		
+		private void update_data( object sender, EventArgs e )
+		{
+			if( m_sel_block_id >= 0 && palette_group.Instance.active_palette >= 0 )
+			{
+				int chr_data_ind;
+				
+				if( palette_per_CHR_mode )
+				{
+					// palette per CHR8x8
+					chr_data_ind = ( m_sel_block_id << 2 ) + m_sel_quad_ind;
+					
+					m_data.blocks[ chr_data_ind ] = tiles_data.set_block_flags_palette( palette_group.Instance.active_palette, m_data.blocks[ chr_data_ind ] );
+				}
+				else
+				{
+					for( int i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+					{
+						chr_data_ind = ( m_sel_block_id << 2 ) + i;
+						
+						m_data.blocks[ chr_data_ind ] = tiles_data.set_block_flags_palette( palette_group.Instance.active_palette, m_data.blocks[ chr_data_ind ] );
+					}
+				}
+
+				dispatch_event_data_changed();
+				dispatch_event_need_gfx_update();
+			}
+			
+			update();
+		}
+		
+		private void CHR_selected( object sender, EventArgs e )
+		{
+			if( edit_mode == EMode.bem_CHR_select && m_sel_block_id >= 0 )
+			{
+				int selected_CHR = ( sender as CHR_bank_viewer ).get_selected_CHR_ind();
+
+				int chr_data_ind = ( m_sel_block_id << 2 ) + m_sel_quad_ind;
+				
+				m_data.blocks[ chr_data_ind ] = tiles_data.set_block_CHR_id( selected_CHR, m_data.blocks[ chr_data_ind ] );
+
+				dispatch_event_data_changed();
+				dispatch_event_need_gfx_update();
+				
+				dispatch_event_quad_selected();
+				
+				update();
+				
+				update_status_bar();
+			}
+		}
+		
+		public int get_selected_quad_CHR_id()
+		{
+			if( m_sel_quad_ind >= 0 && m_sel_block_id >= 0 )
+			{
+				return tiles_data.get_block_CHR_id( m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ] );
+			}
+			
+			return -1;
+		}
+
+		private void update_changes()
+		{
+			dispath_event_pixel_changed();
+			dispatch_event_need_gfx_update();
+			dispatch_event_data_changed();
+			
+			update();
+		}
+		
+		private void update()
+		{
+			clear_background( CONST_BACKGROUND_COLOR );
+			
+			if( m_sel_block_id >= 0 )
+			{
+				// draw images...
+				{
+					utils.update_block_gfx( m_sel_block_id, m_data, m_gfx, m_pix_box.Width >> 1, m_pix_box.Height >> 1 );
+				}			
+			
+				// draw grid
+				{
+					m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_GRID;
+					
+					int n_lines 	= m_pix_box.Width >> 4;
+					int pos;
+					
+					for( int i = 0; i < n_lines; i++ )
+					{
+						pos = i << 4;
+						
+						m_gfx.DrawLine( m_pen, pos, 0, pos, m_pix_box.Width );
+						m_gfx.DrawLine( m_pen, 0, pos, m_pix_box.Height, pos );
+					}
+					
+					m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_CHR_BORDER;
+					
+					pos = 8 << 4;
+					m_gfx.DrawLine( m_pen, pos, 0, pos, m_pix_box.Width );
+					m_gfx.DrawLine( m_pen, 0, pos, m_pix_box.Height, pos );			
+				}
+				
+				draw_border( Color.Black );
+				
+				if( m_edit_mode == EMode.bem_CHR_select && m_sel_quad_ind >= 0 )
+				{
+					int x = ( ( m_sel_quad_ind % 2 ) << 7 );
+					int y = ( ( m_sel_quad_ind >> 1 ) << 7 );
+					
+					int quad_width = m_pix_box.Width >> 1;
+					
+					m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_OUTER_BORDER;
+					m_gfx.DrawRectangle( m_pen, x+2, y+2, quad_width - 3, quad_width - 3 );
+					
+					m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_INNER_BORDER;
+					m_gfx.DrawRectangle( m_pen, x+1, y+1, quad_width - 1, quad_width - 1 );
+				}
+				
+				disable( false );
+			}
+			else
+			{
+				disable( true );
+			}
+			
+			invalidate();
+		}
+		
+		public void set_selected_block( int _block_id, tiles_data _data )
+		{
+			if( _data != null )
+			{
+				m_sel_block_id = _block_id;
+				
+				m_data	= _data;
+				
+				m_sel_quad_ind	= 0;
+				
+				dispatch_event_data_changed();
+				
+				update_status_bar();				
+			}
+			else
+			{
+				m_sel_block_id = -1;
+
+				m_data	= null;				
+			}
+
+			set_active_palette();
+			
+			dispatch_event_quad_selected();
+			
+			update();
+		}
+		
+		public int get_selected_block_id()
+		{
+			return m_sel_block_id;
+		}
+		
+		public int get_selected_block_CHRs()
+		{
+			if( m_sel_block_id >= 0 && m_data != null )
+			{
+				int block_data_offs = m_sel_block_id << 2;
+				
+				return 	tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs ] ) |
+						( tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs + 1 ] ) << 8 ) |
+	                 	( tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs + 2 ] ) << 16 ) |
+	                 	( tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs + 3 ] ) << 24 );
+			}
+			
+			return 0;
+		}
+			
+		public ushort[] get_blocks_arr()
+		{
+			return m_data.blocks;
+		}
+		
+		public void set_CHR_flag_vflip()
+		{
+			set_flip_flag( utils.CONST_CHR_ATTR_FLAG_VFLIP, m_sel_block_id, m_sel_quad_ind );
+		}
+
+		public void set_CHR_flag_hflip()
+		{
+			set_flip_flag( utils.CONST_CHR_ATTR_FLAG_HFLIP, m_sel_block_id, m_sel_quad_ind );
+		}
+		
+		public void set_flip_flag( byte _flip_flag, int _block_id, int _quad_id )
+		{
+			if( _block_id >= 0 )
+			{
+				int chr_data_ind 	= ( _block_id << 2 ) + _quad_id;
+				ushort chr_data 	= m_data.blocks[ chr_data_ind ];
+				
+				m_data.blocks[ chr_data_ind ] = tiles_data.set_block_flags_flip( (byte)( tiles_data.get_block_flags_flip( chr_data ) ^ _flip_flag ), chr_data );
+			
+				update();
+			}
+		}
+
+		public void set_block_flags_obj_id( int _id, bool _per_block )
+		{
+			if( m_sel_block_id >= 0 )
+			{
+				int chr_data_ind;
+				
+				if( _per_block )
+				{
+					for( int i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+					{
+						chr_data_ind = ( m_sel_block_id << 2 ) + i;
+					
+						m_data.blocks[ chr_data_ind ] = tiles_data.set_block_flags_obj_id( _id, m_data.blocks[ chr_data_ind ] );
+					}
+				}
+				else
+				{
+					chr_data_ind = ( m_sel_block_id << 2 ) + m_sel_quad_ind;
+				
+					m_data.blocks[ chr_data_ind ] = tiles_data.set_block_flags_obj_id( _id, m_data.blocks[ chr_data_ind ] );
+				}
+			}
+		}
+		
+		public int get_block_flags_obj_id()
+		{
+			if( m_data != null )
+			{
+				return tiles_data.get_block_flags_obj_id( m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ] );
+			}
+			
+			return 0;
+		}
+
+		private void dispath_event_pixel_changed()
+		{
+			if( PixelChanged != null )
+			{
+				PixelChanged( this, null );
+			}
+		}
+		
+		private void dispatch_event_data_changed()
+		{
+			if( DataChanged != null )
+			{
+				DataChanged( this, null );
+			}
+		}
+		
+		private void dispatch_event_need_gfx_update()
+		{
+			if( NeedGFXUpdate != null )
+			{
+				NeedGFXUpdate( this, null );
+			}
+		}
+
+		private void dispatch_event_quad_selected()		
+		{
+			if( BlockQuadSelected != null )
+			{
+				BlockQuadSelected( this, null );
+			}
+		}
+		
+		private void update_status_bar()
+		{
+			if( m_data != null && m_sel_quad_ind >= 0 && m_sel_block_id >= 0 )
+			{
+				MainForm.set_status_msg( String.Format( "Block Editor: CHR: #{0:X2} \\ Block: #{1:X2}", m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ]&0xff, m_sel_block_id ) );
+			}
+		}
+
+		public void transform( utils.ETransformType _type )
+		{
+			if( m_sel_block_id >= 0 )
+			{
+				switch( _type )
+				{
+					case utils.ETransformType.tt_vflip: 	
+						{ 
+							int[] vflip_remap = { 2, 3, 0, 1 };
+							
+							block_transform( _type, vflip_remap );
+						} 	
+						break;
+						
+					case utils.ETransformType.tt_hflip: 	
+						{ 
+							int[] hflip_remap = { 1, 0, 3, 2 };
+							
+							block_transform( _type, hflip_remap ); 
+						} 	
+						break;
+						
+					case utils.ETransformType.tt_rotate:	
+						{ 
+							int[] rotate_remap = { 2, 0, 3, 1 };
+							
+							block_transform( _type, rotate_remap ); 
+						}	
+						break;
+				}
+			}
+		}
+		
+		private void block_transform( utils.ETransformType _type, int[] _remap_arr )
+		{
+			int i;
+			
+#if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
+			for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+			{
+				switch( _type )
+				{
+					case utils.ETransformType.tt_vflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_VFLIP, m_sel_block_id, i );	} 	break;
+					case utils.ETransformType.tt_hflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_HFLIP, m_sel_block_id, i );	} 	break;
+				}
+			}
+#endif
+			
+			ushort[] blocks_data = { 0, 0, 0, 0 };
+			
+			for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+			{
+				blocks_data[ i ] = m_data.blocks[ ( m_sel_block_id << 2 ) + i ];
+			}
+			
+#if DEF_FLIP_BLOCKS_SPR_BY_FLAGS			
+			bool flip_by_flags = true;
+#else
+			bool flip_by_flags = false;
+#endif //DEF_FLIP_BLOCKS_SPR_BY_FLAGS
+
+			if( flip_by_flags == false || _type == utils.ETransformType.tt_rotate )
+			{
+				for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+				{
+					switch( _type )
+					{
+						case utils.ETransformType.tt_vflip: 	{ tiles_data.vflip( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 		break;
+						case utils.ETransformType.tt_hflip: 	{ tiles_data.hflip( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 		break;
+						case utils.ETransformType.tt_rotate: 	{ tiles_data.rotate_cw( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 	break;
+					}
+				}
+				
+				for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+				{
+					blocks_data[ i ] = m_data.blocks[ ( m_sel_block_id << 2 ) + i ];
+				}
+			}
+
+			for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+			{
+				m_data.blocks[ ( m_sel_block_id << 2 ) + i ] = blocks_data[ _remap_arr[ i ] ];
+			}
+			
+			update_changes();			
+		}
+		
+		public void shift_colors( bool _shift_transp )
+		{
+			if( m_data != null )
+			{
+				m_CHR_ids.Clear();
+					
+				if( edit_mode == EMode.bem_CHR_select )
+				{
+					m_CHR_ids.Add( tiles_data.get_block_CHR_id( m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ] ) );
+				}
+				else
+				{
+					int CHR_id;
+					
+					for( int quad_n = 0; quad_n < utils.CONST_BLOCK_SIZE; quad_n++ )
+					{
+						CHR_id = tiles_data.get_block_CHR_id( m_data.blocks[ ( m_sel_block_id << 2 ) + quad_n ] );
+						
+						if( !m_CHR_ids.Contains( CHR_id ) )
+						{
+							m_CHR_ids.Add( CHR_id );
+						}
+					}
+				}
+				
+				int CHR_n;
+				int pix_n;
+				int size = m_CHR_ids.Count;
+				
+				byte clr_ind;
+	
+				++clr_ind_remap_arr_pos;
+				clr_ind_remap_arr_pos %= _shift_transp ? ( clr_ind_remap_transp_arr.Length >> 2 ):( clr_ind_remap_arr.Length >> 2 );
+				
+				byte[] remap_arr = _shift_transp ? clr_ind_remap_transp_arr:clr_ind_remap_arr;
+				
+				int start_clr_ind = clr_ind_remap_arr_pos << 2;
+				
+				for( CHR_n = 0; CHR_n < size; CHR_n++ )
+				{
+					m_data.from_CHR_bank_to_spr8x8( m_CHR_ids[ CHR_n ], utils.tmp_spr8x8_buff, 0 );
+					
+					for( pix_n = 0; pix_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; pix_n++ )
+					{
+						clr_ind = utils.tmp_spr8x8_buff[ pix_n ];
+						
+						clr_ind = remap_arr[ start_clr_ind + clr_ind ];
+							
+						utils.tmp_spr8x8_buff[ pix_n ] = clr_ind;
+					}
+					
+					m_data.from_spr8x8_to_CHR_bank( m_CHR_ids[ CHR_n ], utils.tmp_spr8x8_buff );
+				}
+				
+				dispath_event_pixel_changed();
+				dispatch_event_data_changed();
+				dispatch_event_need_gfx_update();
+				
+				update();
+			}
+		}
+	}
+}

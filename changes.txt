@@ -1,0 +1,8 @@
+MAPeD(NES):
+~~~~~~~~~~~
+01.05.2019 v0.50b - Initial release
+
+
+SPReD(NES):
+~~~~~~~~~~~
+01.05.2019 v0.50b - Initial release
