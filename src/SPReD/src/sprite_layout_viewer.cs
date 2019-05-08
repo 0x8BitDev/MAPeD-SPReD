@@ -171,6 +171,8 @@ namespace SPReD
 			update();
 			
 			m_mode_str_blink_timer.Start();
+			
+			update_cursor();
 		}
 		
 		private void mode_str_blink_cb( object _sender, System.Timers.ElapsedEventArgs _e )
@@ -305,13 +307,9 @@ namespace SPReD
 			{
 				m_mouse_in_area_bounds = true;
 				m_pix_box.Focus();
-				
-				m_pix_box.Cursor = ( m_mode == EMode.m_build ) ? Cursors.Hand:Cursors.Arrow;
 			}
-			else
-			{
-				m_pix_box.Cursor = Cursors.Arrow;
-			}
+			
+			update_cursor();
 		}
 
 		private void Layout_MouseLeave(object sender, EventArgs e)
@@ -984,6 +982,18 @@ namespace SPReD
 			m_mode8x16 = _on;
 			
 			init( m_spr_data, false );
+		}
+		
+		private void update_cursor()
+		{
+			if( m_spr_data != null )
+			{
+				m_pix_box.Cursor = ( m_mode == EMode.m_build ) ? Cursors.Hand:Cursors.Arrow;
+			}
+			else
+			{
+				m_pix_box.Cursor = Cursors.Arrow;
+			}
 		}
 	}
 }
