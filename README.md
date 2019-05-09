@@ -83,6 +83,8 @@ https://github.com/0x8BitDev/MAPeD-SPReD
 Compiled executables, example projects files and compiled NES/ZX samples you can get in the latest release: 
 https://github.com/0x8BitDev/MAPeD-SPReD/releases
 
+The latest development build can be found **[here](https://drive.google.com/open?id=1Jopms8ENPrjTktrt_V36TQC2FZT2agId)**.
+
 The tools were developed using **SharpDevelop 4.4.2.** 
 You can download it at: http://www.icsharpcode.net/OpenSource/SD/Download/Default.aspx
 
