@@ -1377,12 +1377,12 @@ namespace SPReD
 				fs = new FileStream( filename, FileMode.Create, FileAccess.Write );
 				{
 					bw = new BinaryWriter( fs );
-					bw.Write( utils.CONST_PROJECT_FILE_MAGIC );					
+					bw.Write( utils.CONST_PROJECT_FILE_MAGIC );
 					bw.Write( utils.CONST_PROJECT_FILE_VER );
 
 					m_sprites_proc.save_CHR_storage_and_palette( bw );
 					
-					uint flags = ( uint )( ( CBoxMode8x16.Checked ? 1:0 ) | ( CBoxGridLayout.Checked ? 2:0 ) | ( CBoxAxisLayout.Checked ? 4:0 ) );
+					uint flags = ( uint )( ( CBoxMode8x16.Checked ? 1:0 ) | ( CBoxGridLayout.Checked ? 2:0 ) | ( CBoxAxisLayout.Checked ? 4:0 ) ) | utils.CONST_PROJECT_FILE_PALETTE_FLAG;
 					bw.Write( flags );
 					
 					int n_sprites = SpriteList.Items.Count;
@@ -1392,6 +1392,8 @@ namespace SPReD
 					{
 						( SpriteList.Items[ i ] as sprite_data ).save( bw );
 					}
+					
+					palette_group.Instance.save_main_palette( bw );
 					
 					// save description
 					bw.Write( m_description_form.edit_text );
@@ -1451,6 +1453,11 @@ namespace SPReD
 							for( int i = 0; i < n_sprites; i++ )
 							{
 								SpriteList.Items.Add( m_sprites_proc.load_sprite( br ) );
+							}
+							
+							if( ( flags&utils.CONST_PROJECT_FILE_PALETTE_FLAG ) == utils.CONST_PROJECT_FILE_PALETTE_FLAG )
+							{
+								palette_group.Instance.load_main_palette( br );
 							}
 							
 							// Load description

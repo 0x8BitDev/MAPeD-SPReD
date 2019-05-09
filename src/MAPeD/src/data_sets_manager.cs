@@ -654,6 +654,13 @@ namespace MAPeD
 				entity_instance.save_instances_counter( _bw );
 			}
 			
+			// PALETTE
+			{
+				_bw.Write( utils.CONST_IO_DATA_PALETTE );
+				
+				palette_group.Instance.save_main_palette( _bw );
+			}
+			
 			_bw.Write( utils.CONST_IO_DATA_END );
 		}
 		
@@ -723,7 +730,12 @@ namespace MAPeD
 					}
 					
 					entity_instance.load_instances_counter( _br );
-				}				
+				}
+				else				
+				if( data_id == utils.CONST_IO_DATA_PALETTE )
+				{
+					palette_group.Instance.load_main_palette( _br );
+				}
 			}
 			while( data_id != utils.CONST_IO_DATA_END );
 		}

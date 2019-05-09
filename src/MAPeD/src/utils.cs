@@ -63,6 +63,7 @@ namespace MAPeD
 		public const byte 	CONST_IO_DATA_TILES_AND_SCREENS	= 0x01;
 		public const byte 	CONST_IO_DATA_LAYOUT			= 0x02;
 		public const byte 	CONST_IO_DATA_ENTITIES			= 0x04;
+		public const byte	CONST_IO_DATA_PALETTE			= 0x08;
 		public const byte	CONST_IO_DATA_END				= 0xff;
 		
 		public const int CONST_SCREEN_NUM_SIDE_TILES	= 8;

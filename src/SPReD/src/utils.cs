@@ -38,8 +38,9 @@ namespace SPReD
 		public static string CONST_APP_VER	= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev ":"" ) + CONST_BUILD_CFG;
 		public const string CONST_APP_NAME	= "SPReD(" + CONST_PLATFORM + ")";		
 		
-		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
-		public const byte CONST_PROJECT_FILE_VER	= 1;
+		public const uint CONST_PROJECT_FILE_MAGIC			= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
+		public const byte CONST_PROJECT_FILE_VER			= 1;
+		public const int  CONST_PROJECT_FILE_PALETTE_FLAG	= 8;
 		
 		public const int CONST_CHR8x8_SIDE_PIXELS_CNT			= 8;
 		public const int CONST_CHR8x16_SIDE_PIXELS_CNT			= CONST_CHR8x8_SIDE_PIXELS_CNT << 1;

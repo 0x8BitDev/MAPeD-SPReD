@@ -201,6 +201,20 @@ namespace SPReD
 				m_plt_arr[ i ].load( _br );
 			}
 		}
+
+		public void save_main_palette( BinaryWriter _bw )
+		{
+			int clr;
+			
+			for( int i = 0; i < utils.CONST_PALETTE_MAIN_NUM_COLORS; i++ )
+			{
+				clr = m_main_palette[ i ];
+				
+				_bw.Write( ( byte )( ( clr&0x00ff0000 ) >> 16 ) );
+				_bw.Write( ( byte )( ( clr&0x0000ff00 ) >> 8 ) );
+				_bw.Write( ( byte )( clr&0x000000ff ) );
+			}
+		}
 		
 		public void load_main_palette( BinaryReader _br )
 		{
