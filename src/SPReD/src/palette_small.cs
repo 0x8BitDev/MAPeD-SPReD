@@ -95,13 +95,13 @@ namespace SPReD
 			update();
 		}
 		
-		private void update()
+		public void update()
 		{
 			int clr;
 			
 			for( int i = 0; i < utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
 			{
-				clr = palette_group.main_palette[ m_clr_inds[ i ] ];
+				clr = palette_group.Instance.main_palette[ m_clr_inds[ i ] ];
 				
 				m_gfx.FillRectangle( new SolidBrush( Color.FromArgb( (clr&0xff0000)>>16, (clr&0xff00)>>8, clr&0xff ) ), ( i * 20 ), 0, 20, 20 );
 			}

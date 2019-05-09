@@ -14,12 +14,11 @@ namespace SPReD
 	/// <summary>
 	/// Description of utils.
 	/// </summary>
-	public class utils
+	public static class utils
 	{
-		public utils()
-		{
-		}
-	
+		private const bool CONST_DEV_BUILD_FLAG	= true;
+		private const bool CONST_BETA_FLAG		= true; 
+		
 #if	DEF_NES
 		public const string	CONST_PLATFORM	= "NES";
 #else
@@ -32,13 +31,11 @@ namespace SPReD
 		public const string	CONST_BUILD_CFG	= "";
 #endif
 
-		public const bool CONST_BETA_FLAG	= true; 
-			
 		private static Version ver			= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-		public static string build_str		= "(Build: " + ver.Build + ")";
+		public static string build_str		= "Build: " + ver.Build;
 		public static DateTime build_date 	= new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
 
-		public static string CONST_APP_VER	= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + CONST_BUILD_CFG;
+		public static string CONST_APP_VER	= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev ":"" ) + CONST_BUILD_CFG;
 		public const string CONST_APP_NAME	= "SPReD(" + CONST_PLATFORM + ")";		
 		
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
@@ -51,7 +48,7 @@ namespace SPReD
 		
 		public const int CONST_NUM_SMALL_PALETTES 			= 4;
 		public const int CONST_PALETTE_SMALL_NUM_COLORS		= 4;
-		public const int CONST_PALETTE_COMMON_NUM_COLORS	= 64;
+		public const int CONST_PALETTE_MAIN_NUM_COLORS		= 64;
 		
 		public const int CONST_CHR_BANK_MAX_SPRITES_CNT		= 256;
 		
@@ -154,7 +151,7 @@ namespace SPReD
 					
 					if( apply_palette )
 					{
-						clr = palette_group.main_palette[ clr_inds[ pix_ind ] ];
+						clr = palette_group.Instance.main_palette[ clr_inds[ pix_ind ] ];
 						
 						if( ( pix_ind != 0 && _alpha == true ) || _alpha == false )
 						{

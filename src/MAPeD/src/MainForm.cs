@@ -597,7 +597,8 @@ namespace MAPeD
 		{
 			System.String filename = ( ( System.Windows.Forms.FileDialog )sender ).FileName;
 		
-			FileStream fs = null;
+			FileStream		fs = null;
+			BinaryReader 	br = null;
 			
 			Bitmap bmp = null;
 			
@@ -605,7 +606,7 @@ namespace MAPeD
 			{
 				fs = new FileStream( filename, FileMode.Open, FileAccess.Read );
 				{
-					BinaryReader br = new BinaryReader( fs );
+					br = new BinaryReader( fs );
 					
 					switch( Path.GetExtension( filename ) )
 					{
@@ -700,25 +701,47 @@ namespace MAPeD
 								update_graphics( true );
 							}
 							break;
+							
+						case ".pal":
+							{
+								if( br.BaseStream.Length == 192 )
+								{
+									palette_group.Instance.load_main_palette( br );
+									
+									update_graphics( true );
+									update_screens( false );
+									
+									clear_active_tile_img();
+								}
+								else
+								{
+									throw new Exception( "The imported palette must be 192 bytes length!" );
+								}
+							}
+							break;
 					}
 				}
-				fs.Close();
 			}
 			catch( System.Exception _err )
 			{
-				if( fs != null )
-				{
-					fs.Close();
-				}
-				
 				if( bmp != null )
 				{
 					bmp.Dispose();
 				}
 
-				set_status_msg( "No data merged" );
+				set_status_msg( "No data imported" );
 				
 				message_box( _err.Message, "Data Import Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			
+			if( br != null )
+			{
+				br.Close();
+			}
+			
+			if( fs != null )
+			{
+				br.Close();
 			}
 		}
 

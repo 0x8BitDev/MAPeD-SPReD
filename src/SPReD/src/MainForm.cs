@@ -260,74 +260,98 @@ namespace SPReD
 				
 				string ext = Path.GetExtension( filenames[ 0 ] );
 				
-				for( i = 0; i < size; i++ )
+				switch( ext )
 				{
-					filename = filenames[ i ];
-
-					spr_name = System.IO.Path.GetFileNameWithoutExtension( filename );
-					
-					switch( ext )
-					{
-						case ".bmp":
-						case ".png":
-							{
-								if(!check_duplicate( spr_name ) )
-								{
-									if( ext == ".png" )
-									{
-										SpriteList.Items.Add( m_sprites_proc.load_sprite_png( filename, spr_name ) );
-									}
-									else
-									{	// otherwise - .bmp
-										SpriteList.Items.Add( m_sprites_proc.load_sprite_bmp( filename, spr_name ) );
-									}
-								}
-								else
-								{
-									throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
-								}
-							}
-							break;
+					case ".pal":
+						{
+							fs = new FileStream( filenames[ 0 ], FileMode.Open, FileAccess.Read );
 							
-						case ".chr":
-						case ".bin":
+							br = new BinaryReader( fs );
+							
+							if( br.BaseStream.Length == 192 )
 							{
-								fs = new FileStream( filename, FileMode.Open, FileAccess.Read );
+								palette_group.Instance.load_main_palette( br );
+							}
+							else
+							{
+								throw new Exception( "The imported palette must be 192 bytes length!" );
+							}
+						}
+						break;
+			
+					default:
+						{
+							for( i = 0; i < size; i++ )
+							{
+								filename = filenames[ i ];
+			
+								spr_name = System.IO.Path.GetFileNameWithoutExtension( filename );
 								
-								br = new BinaryReader( fs );
-								
-								if( br.BaseStream.Length > 4096 )
+								switch( ext )
 								{
-									j = 0;
-									
-									while( br.BaseStream.Position < br.BaseStream.Length - 1 )
-									{
-										if(!check_duplicate( spr_name + "_" + j ) )
+									case ".bmp":
+									case ".png":
 										{
-											SpriteList.Items.Add( m_sprites_proc.import_CHR_bank( br, spr_name + "_" + j ) );
+											if(!check_duplicate( spr_name ) )
+											{
+												if( ext == ".png" )
+												{
+													SpriteList.Items.Add( m_sprites_proc.load_sprite_png( filename, spr_name ) );
+												}
+												else
+												{	// otherwise - .bmp
+													SpriteList.Items.Add( m_sprites_proc.load_sprite_bmp( filename, spr_name ) );
+												}
+											}
+											else
+											{
+												throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
+											}
+										}
+										break;
+										
+									case ".chr":
+									case ".bin":
+										{
+											fs = new FileStream( filename, FileMode.Open, FileAccess.Read );
 											
-											++j;
+											br = new BinaryReader( fs );
+											
+											if( br.BaseStream.Length > 4096 )
+											{
+												j = 0;
+												
+												while( br.BaseStream.Position < br.BaseStream.Length - 1 )
+												{
+													if(!check_duplicate( spr_name + "_" + j ) )
+													{
+														SpriteList.Items.Add( m_sprites_proc.import_CHR_bank( br, spr_name + "_" + j ) );
+														
+														++j;
+													}
+													else
+													{
+														throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
+													}
+												}
+											}
+											else
+											{
+												if(!check_duplicate( spr_name ) )
+												{
+													SpriteList.Items.Add( m_sprites_proc.import_CHR_bank( br, spr_name ) );
+												}
+												else
+												{
+													throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
+												}
+											}
 										}
-										else
-										{
-											throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
-										}
-									}
-								}
-								else
-								{
-									if(!check_duplicate( spr_name ) )
-									{
-										SpriteList.Items.Add( m_sprites_proc.import_CHR_bank( br, spr_name ) );
-									}
-									else
-									{
-										throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
-									}
+										break;
 								}
 							}
-							break;
-					}
+						}
+						break;
 				}
 			}
 			catch( System.Exception _err )

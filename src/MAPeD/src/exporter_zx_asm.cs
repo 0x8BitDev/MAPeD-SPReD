@@ -384,10 +384,10 @@ namespace MAPeD
 	
 						           	palette = tiles.palettes[ tiles_data.get_block_flags_palette( block_data ) ];
 	
-						           	bright0 = get_brightness( palette_group.main_palette[ palette[ 0 ] ] );
-									bright1 = get_brightness( palette_group.main_palette[ palette[ 1 ] ] );
-									bright2 = get_brightness( palette_group.main_palette[ palette[ 2 ] ] );
-									bright3 = get_brightness( palette_group.main_palette[ palette[ 3 ] ] );
+						           	bright0 = get_brightness( palette_group.Instance.main_palette[ palette[ 0 ] ] );
+									bright1 = get_brightness( palette_group.Instance.main_palette[ palette[ 1 ] ] );
+									bright2 = get_brightness( palette_group.Instance.main_palette[ palette[ 2 ] ] );
+									bright3 = get_brightness( palette_group.Instance.main_palette[ palette[ 3 ] ] );
 									
 									bright_arr[0] = bright0;
 									bright_arr[1] = bright1;
@@ -641,7 +641,7 @@ namespace MAPeD
 
 			for( int nes_color_n = 0; nes_color_n < 64; nes_color_n++ )
 			{
-				nes_color = palette_group.main_palette[ nes_color_n ];
+				nes_color = palette_group.Instance.main_palette[ nes_color_n ];
 				
 				nes_r = ( double )( ( nes_color >> 16 ) & 0xff );
 				nes_g = ( double )( ( nes_color >> 8 ) & 0xff );

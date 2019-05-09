@@ -596,7 +596,7 @@ namespace SPReD
 				rect.Height += utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
 			}
 			
-			Color opacity_color = Color.FromArgb( ( 0xff << 24 ) | palette_group.main_palette[ _plt_arr[ 0 ].get_color_inds()[ 0 ] ] );
+			Color opacity_color = Color.FromArgb( ( 0xff << 24 ) | palette_group.Instance.main_palette[ _plt_arr[ 0 ].get_color_inds()[ 0 ] ] );
 			
 			draw_img = new Bitmap( rect.Width, rect.Height, PixelFormat.Format32bppArgb );
 			gfx = Graphics.FromImage( draw_img );

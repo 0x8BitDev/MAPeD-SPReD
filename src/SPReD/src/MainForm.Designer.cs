@@ -69,6 +69,10 @@ namespace SPReD
 			this.verticalFlippingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.horizontalFlippingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.CHRDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CHRSplitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CHRPackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CHROptimizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.layoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buildModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.drawModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,10 +105,11 @@ namespace SPReD
 			this.Import_openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.PaletteMain = new System.Windows.Forms.PictureBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.BtnCHRSplit = new System.Windows.Forms.Button();
+			this.CBoxCHRPackingType = new System.Windows.Forms.ComboBox();
 			this.BtnCHROptimization = new System.Windows.Forms.Button();
 			this.BtnCHRPack = new System.Windows.Forms.Button();
-			this.CBoxCHRPackingType = new System.Windows.Forms.ComboBox();
 			this.BtnMoveItemDown = new System.Windows.Forms.Button();
 			this.BtnMoveItemUp = new System.Windows.Forms.Button();
 			this.BtnSelectAll = new System.Windows.Forms.Button();
@@ -172,16 +177,12 @@ namespace SPReD
 			this.PasteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.separatorToolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.FillWithColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.CHRDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CHRSplitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CHRPackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CHROptimizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SpriteLayout)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.CHRBank)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.PaletteMain)).BeginInit();
 			this.groupBox1.SuspendLayout();
+			this.groupBox6.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.OffsetY)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.OffsetX)).BeginInit();
 			this.groupBox7.SuspendLayout();
@@ -196,7 +197,6 @@ namespace SPReD
 			((System.ComponentModel.ISupportInitialize)(this.Palette0)).BeginInit();
 			this.SpriteListContextMenu.SuspendLayout();
 			this.ContextMenuCHRBank.SuspendLayout();
-			this.groupBox6.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// SpriteList
@@ -455,6 +455,40 @@ namespace SPReD
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
 			this.toolStripSeparator8.Size = new System.Drawing.Size(191, 6);
 			// 
+			// CHRDataToolStripMenuItem
+			// 
+			this.CHRDataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.CHRSplitToolStripMenuItem,
+									this.CHRPackToolStripMenuItem,
+									this.CHROptimizationToolStripMenuItem});
+			this.CHRDataToolStripMenuItem.Name = "CHRDataToolStripMenuItem";
+			this.CHRDataToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+			this.CHRDataToolStripMenuItem.Text = "CHR Da&ta";
+			// 
+			// CHRSplitToolStripMenuItem
+			// 
+			this.CHRSplitToolStripMenuItem.Name = "CHRSplitToolStripMenuItem";
+			this.CHRSplitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.S)));
+			this.CHRSplitToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.CHRSplitToolStripMenuItem.Text = "&Splitting";
+			this.CHRSplitToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRSplit_Event);
+			// 
+			// CHRPackToolStripMenuItem
+			// 
+			this.CHRPackToolStripMenuItem.Name = "CHRPackToolStripMenuItem";
+			this.CHRPackToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.P)));
+			this.CHRPackToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.CHRPackToolStripMenuItem.Text = "&Packing";
+			this.CHRPackToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRPack_Event);
+			// 
+			// CHROptimizationToolStripMenuItem
+			// 
+			this.CHROptimizationToolStripMenuItem.Name = "CHROptimizationToolStripMenuItem";
+			this.CHROptimizationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.O)));
+			this.CHROptimizationToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.CHROptimizationToolStripMenuItem.Text = "&Optimization";
+			this.CHROptimizationToolStripMenuItem.Click += new System.EventHandler(this.BtnCHROpt_Event);
+			// 
 			// layoutToolStripMenuItem
 			// 
 			this.layoutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -699,7 +733,8 @@ namespace SPReD
 			// Import_openFileDialog
 			// 
 			this.Import_openFileDialog.DefaultExt = "*";
-			this.Import_openFileDialog.Filter = "4 colors image (*.png,*.bmp)|*.png;*.bmp|CHR Bank (*.chr,*.bin)|*.chr;*.bin";
+			this.Import_openFileDialog.Filter = "4 colors image (*.png,*.bmp)|*.png;*.bmp|CHR Bank (*.chr,*.bin)|*.chr;*.bin|Palet" +
+			"te (192 bytes) (*.pal)|*.pal";
 			this.Import_openFileDialog.Multiselect = true;
 			this.Import_openFileDialog.Title = "Data Import";
 			this.Import_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.Import_OK);
@@ -734,6 +769,19 @@ namespace SPReD
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Sprite List:";
 			// 
+			// groupBox6
+			// 
+			this.groupBox6.Controls.Add(this.BtnCHRSplit);
+			this.groupBox6.Controls.Add(this.CBoxCHRPackingType);
+			this.groupBox6.Controls.Add(this.BtnCHROptimization);
+			this.groupBox6.Controls.Add(this.BtnCHRPack);
+			this.groupBox6.Location = new System.Drawing.Point(11, 405);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(169, 76);
+			this.groupBox6.TabIndex = 5;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = "CHR Data";
+			// 
 			// BtnCHRSplit
 			// 
 			this.BtnCHRSplit.Location = new System.Drawing.Point(10, 19);
@@ -743,6 +791,23 @@ namespace SPReD
 			this.BtnCHRSplit.Text = "Splitting";
 			this.BtnCHRSplit.UseVisualStyleBackColor = true;
 			this.BtnCHRSplit.Click += new System.EventHandler(this.BtnCHRSplit_Event);
+			// 
+			// CBoxCHRPackingType
+			// 
+			this.CBoxCHRPackingType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.CBoxCHRPackingType.FormattingEnabled = true;
+			this.CBoxCHRPackingType.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+			this.CBoxCHRPackingType.ItemHeight = 13;
+			this.CBoxCHRPackingType.Items.AddRange(new object[] {
+									"*****",
+									"1KB",
+									"2KB",
+									"4KB"});
+			this.CBoxCHRPackingType.Location = new System.Drawing.Point(87, 49);
+			this.CBoxCHRPackingType.Name = "CBoxCHRPackingType";
+			this.CBoxCHRPackingType.Size = new System.Drawing.Size(72, 21);
+			this.CBoxCHRPackingType.TabIndex = 15;
+			this.CBoxCHRPackingType.SelectedIndexChanged += new System.EventHandler(this.CBoxCHRPackingType_ChangedEvent);
 			// 
 			// BtnCHROptimization
 			// 
@@ -763,23 +828,6 @@ namespace SPReD
 			this.BtnCHRPack.Text = "Packing";
 			this.BtnCHRPack.UseVisualStyleBackColor = true;
 			this.BtnCHRPack.Click += new System.EventHandler(this.BtnCHRPack_Event);
-			// 
-			// CBoxCHRPackingType
-			// 
-			this.CBoxCHRPackingType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.CBoxCHRPackingType.FormattingEnabled = true;
-			this.CBoxCHRPackingType.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-			this.CBoxCHRPackingType.ItemHeight = 13;
-			this.CBoxCHRPackingType.Items.AddRange(new object[] {
-									"*****",
-									"1KB",
-									"2KB",
-									"4KB"});
-			this.CBoxCHRPackingType.Location = new System.Drawing.Point(87, 49);
-			this.CBoxCHRPackingType.Name = "CBoxCHRPackingType";
-			this.CBoxCHRPackingType.Size = new System.Drawing.Size(72, 21);
-			this.CBoxCHRPackingType.TabIndex = 15;
-			this.CBoxCHRPackingType.SelectedIndexChanged += new System.EventHandler(this.CBoxCHRPackingType_ChangedEvent);
 			// 
 			// BtnMoveItemDown
 			// 
@@ -1439,53 +1487,6 @@ namespace SPReD
 			this.FillWithColorToolStripMenuItem.Text = "Fill With Color";
 			this.FillWithColorToolStripMenuItem.Click += new System.EventHandler(this.FillWithColorToolStripMenuItemClick_Event);
 			// 
-			// groupBox6
-			// 
-			this.groupBox6.Controls.Add(this.BtnCHRSplit);
-			this.groupBox6.Controls.Add(this.CBoxCHRPackingType);
-			this.groupBox6.Controls.Add(this.BtnCHROptimization);
-			this.groupBox6.Controls.Add(this.BtnCHRPack);
-			this.groupBox6.Location = new System.Drawing.Point(11, 405);
-			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(169, 76);
-			this.groupBox6.TabIndex = 5;
-			this.groupBox6.TabStop = false;
-			this.groupBox6.Text = "CHR Data";
-			// 
-			// CHRDataToolStripMenuItem
-			// 
-			this.CHRDataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.CHRSplitToolStripMenuItem,
-									this.CHRPackToolStripMenuItem,
-									this.CHROptimizationToolStripMenuItem});
-			this.CHRDataToolStripMenuItem.Name = "CHRDataToolStripMenuItem";
-			this.CHRDataToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-			this.CHRDataToolStripMenuItem.Text = "CHR Da&ta";
-			// 
-			// CHRSplitToolStripMenuItem
-			// 
-			this.CHRSplitToolStripMenuItem.Name = "CHRSplitToolStripMenuItem";
-			this.CHRSplitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.S)));
-			this.CHRSplitToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-			this.CHRSplitToolStripMenuItem.Text = "&Splitting";
-			this.CHRSplitToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRSplit_Event);
-			// 
-			// CHRPackToolStripMenuItem
-			// 
-			this.CHRPackToolStripMenuItem.Name = "CHRPackToolStripMenuItem";
-			this.CHRPackToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.P)));
-			this.CHRPackToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-			this.CHRPackToolStripMenuItem.Text = "&Packing";
-			this.CHRPackToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRPack_Event);
-			// 
-			// CHROptimizationToolStripMenuItem
-			// 
-			this.CHROptimizationToolStripMenuItem.Name = "CHROptimizationToolStripMenuItem";
-			this.CHROptimizationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.O)));
-			this.CHROptimizationToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-			this.CHROptimizationToolStripMenuItem.Text = "&Optimization";
-			this.CHROptimizationToolStripMenuItem.Click += new System.EventHandler(this.BtnCHROpt_Event);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1512,6 +1513,7 @@ namespace SPReD
 			((System.ComponentModel.ISupportInitialize)(this.CHRBank)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.PaletteMain)).EndInit();
 			this.groupBox1.ResumeLayout(false);
+			this.groupBox6.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.OffsetY)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.OffsetX)).EndInit();
 			this.groupBox7.ResumeLayout(false);
@@ -1526,7 +1528,6 @@ namespace SPReD
 			((System.ComponentModel.ISupportInitialize)(this.Palette0)).EndInit();
 			this.SpriteListContextMenu.ResumeLayout(false);
 			this.ContextMenuCHRBank.ResumeLayout(false);
-			this.groupBox6.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}

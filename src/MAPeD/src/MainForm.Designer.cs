@@ -180,8 +180,8 @@ namespace MAPeD
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.BtnBlockReserveCHRs = new System.Windows.Forms.Button();
 			this.CBoxBlockObjId = new System.Windows.Forms.ComboBox();
+			this.BtnBlockReserveCHRs = new System.Windows.Forms.Button();
 			this.BtnBlockRotate = new System.Windows.Forms.Button();
 			this.LabelObjId = new System.Windows.Forms.Label();
 			this.BtnEditModeDraw = new System.Windows.Forms.Button();
@@ -1622,16 +1622,6 @@ namespace MAPeD
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Block Editor:";
 			// 
-			// BtnBlockReserveCHRs
-			// 
-			this.BtnBlockReserveCHRs.Location = new System.Drawing.Point(10, 334);
-			this.BtnBlockReserveCHRs.Name = "BtnBlockReserveCHRs";
-			this.BtnBlockReserveCHRs.Size = new System.Drawing.Size(93, 22);
-			this.BtnBlockReserveCHRs.TabIndex = 17;
-			this.BtnBlockReserveCHRs.Text = "Reserve CHRs";
-			this.BtnBlockReserveCHRs.UseVisualStyleBackColor = true;
-			this.BtnBlockReserveCHRs.Click += new System.EventHandler(this.BtnBlockReserveCHRsClick_Event);
-			// 
 			// CBoxBlockObjId
 			// 
 			this.CBoxBlockObjId.BackColor = System.Drawing.SystemColors.Menu;
@@ -1659,6 +1649,16 @@ namespace MAPeD
 			this.CBoxBlockObjId.Size = new System.Drawing.Size(39, 21);
 			this.CBoxBlockObjId.TabIndex = 21;
 			this.CBoxBlockObjId.SelectionChangeCommitted += new System.EventHandler(this.CBoxBlockObjIdChanged_Event);
+			// 
+			// BtnBlockReserveCHRs
+			// 
+			this.BtnBlockReserveCHRs.Location = new System.Drawing.Point(10, 334);
+			this.BtnBlockReserveCHRs.Name = "BtnBlockReserveCHRs";
+			this.BtnBlockReserveCHRs.Size = new System.Drawing.Size(93, 22);
+			this.BtnBlockReserveCHRs.TabIndex = 17;
+			this.BtnBlockReserveCHRs.Text = "Reserve CHRs";
+			this.BtnBlockReserveCHRs.UseVisualStyleBackColor = true;
+			this.BtnBlockReserveCHRs.Click += new System.EventHandler(this.BtnBlockReserveCHRsClick_Event);
 			// 
 			// BtnBlockRotate
 			// 
@@ -3065,7 +3065,7 @@ namespace MAPeD
 			// 
 			this.Import_openFileDialog.DefaultExt = "sprednes";
 			this.Import_openFileDialog.Filter = "SPReD(NES) (*.sprednes)|*.sprednes|CHR Bank (*.chr,*.bin)|*.chr;*.bin|Tiles (4bpp" +
-			") (*.bmp)|*.bmp";
+			") (*.bmp)|*.bmp|Palette (192 bytes) (*.pal)|*.pal";
 			this.Import_openFileDialog.Title = "Import Data Into Active CHR Bank";
 			this.Import_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.DataImportOk_Event);
 			// 
