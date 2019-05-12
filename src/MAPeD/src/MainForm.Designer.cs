@@ -1342,7 +1342,7 @@ namespace MAPeD
 			// 
 			// CBoxCHRBanks
 			// 
-			this.CBoxCHRBanks.BackColor = System.Drawing.SystemColors.Menu;
+			this.CBoxCHRBanks.BackColor = System.Drawing.SystemColors.Window;
 			this.CBoxCHRBanks.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.CBoxCHRBanks.FormattingEnabled = true;
 			this.CBoxCHRBanks.Location = new System.Drawing.Point(164, 309);
@@ -1624,7 +1624,7 @@ namespace MAPeD
 			// 
 			// CBoxBlockObjId
 			// 
-			this.CBoxBlockObjId.BackColor = System.Drawing.SystemColors.Menu;
+			this.CBoxBlockObjId.BackColor = System.Drawing.SystemColors.Window;
 			this.CBoxBlockObjId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.CBoxBlockObjId.FormattingEnabled = true;
 			this.CBoxBlockObjId.Items.AddRange(new object[] {
@@ -2041,7 +2041,7 @@ namespace MAPeD
 			// 
 			// label9
 			// 
-			this.label9.Location = new System.Drawing.Point(161, 9);
+			this.label9.Location = new System.Drawing.Point(158, 9);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(62, 18);
 			this.label9.TabIndex = 3;
@@ -3113,8 +3113,7 @@ namespace MAPeD
 			// 
 			// MainForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(1032, 693);
 			this.Controls.Add(this.StatusBar);
 			this.Controls.Add(this.tabControlEditorLayout);

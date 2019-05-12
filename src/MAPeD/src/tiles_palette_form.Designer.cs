@@ -87,7 +87,7 @@ namespace MAPeD
 			// 
 			this.PanelPaletteTiles.AutoScroll = true;
 			this.PanelPaletteTiles.BackColor = System.Drawing.SystemColors.Info;
-			this.PanelPaletteTiles.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.PanelPaletteTiles.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.PanelPaletteTiles.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.PanelPaletteTiles.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
 			this.PanelPaletteTiles.Location = new System.Drawing.Point(0, 32);
