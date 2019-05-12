@@ -1,6 +1,6 @@
 /bin/*
 /data/*
-/src/SPReD/SPReD(NES)/obj/*
-/src/MAPeD/MAPeD(NES)/obj/*
+/src/SPReD/SPReD-NES/obj/*
+/src/MAPeD/MAPeD-NES/obj/*
 /samples/samples.sublime-project
 /samples/samples.sublime-workspace
