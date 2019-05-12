@@ -51,7 +51,6 @@ namespace MAPeD
 			// 
 			// richTextBox
 			// 
-			this.richTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.richTextBox.Location = new System.Drawing.Point(5, 7);
 			this.richTextBox.MaxLength = 2048;
 			this.richTextBox.Name = "richTextBox";

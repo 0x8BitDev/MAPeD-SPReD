@@ -51,7 +51,6 @@ namespace SPReD
 			// 
 			// richTextBox
 			// 
-			this.richTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.richTextBox.Location = new System.Drawing.Point(5, 7);
 			this.richTextBox.MaxLength = 1024;
 			this.richTextBox.Name = "richTextBox";
