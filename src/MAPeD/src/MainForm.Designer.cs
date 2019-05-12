@@ -3050,21 +3050,21 @@ namespace MAPeD
 			// Project_saveFileDialog
 			// 
 			this.Project_saveFileDialog.DefaultExt = "mapednes";
-			this.Project_saveFileDialog.Filter = "MAPeD(NES) (*.mapednes)|*.mapednes";
+			this.Project_saveFileDialog.Filter = "MAPeD-NES (*.mapednes)|*.mapednes";
 			this.Project_saveFileDialog.Title = "Save Project";
 			this.Project_saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectSaveOk_Event);
 			// 
 			// Project_openFileDialog
 			// 
 			this.Project_openFileDialog.DefaultExt = "mapednes";
-			this.Project_openFileDialog.Filter = "MAPeD(NES) (*.mapednes)|*.mapednes";
+			this.Project_openFileDialog.Filter = "MAPeD-NES (*.mapednes)|*.mapednes";
 			this.Project_openFileDialog.Title = "Load Project";
 			this.Project_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectLoadOk_Event);
 			// 
 			// Import_openFileDialog
 			// 
 			this.Import_openFileDialog.DefaultExt = "sprednes";
-			this.Import_openFileDialog.Filter = "SPReD(NES) (*.sprednes)|*.sprednes|CHR Bank (*.chr,*.bin)|*.chr;*.bin|Tiles (4bpp" +
+			this.Import_openFileDialog.Filter = "SPReD-NES (*.sprednes)|*.sprednes|CHR Bank (*.chr,*.bin)|*.chr;*.bin|Tiles (4bpp" +
 			") (*.bmp)|*.bmp|Palette (192 bytes) (*.pal)|*.pal";
 			this.Import_openFileDialog.Title = "Import Data Into Active CHR Bank";
 			this.Import_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.DataImportOk_Event);
@@ -3124,7 +3124,7 @@ namespace MAPeD
 			this.MainMenuStrip = this.MenuStrip;
 			this.MaximizeBox = false;
 			this.Name = "MainForm";
-			this.Text = "MAPeD(NES)";
+			this.Text = "MAPeD-NES";
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown_Event);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyUp_Event);
 			this.ContextMenuEntitiesTreeGoup.ResumeLayout(false);

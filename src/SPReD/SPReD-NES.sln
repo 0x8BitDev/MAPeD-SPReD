@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 # SharpDevelop 4.4
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPReD(NES)", "SPReD(NES)\SPReD(NES).csproj", "{31750B81-9BA5-4ABC-9C56-11B58D3782F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPReD-NES", "SPReD-NES\SPReD-NES.csproj", "{31750B81-9BA5-4ABC-9C56-11B58D3782F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

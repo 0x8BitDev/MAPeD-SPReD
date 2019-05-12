@@ -1,0 +1,11 @@
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\bin\SPReD-NES.exe.config
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\bin\SPReD-NES.exe
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\SPReD\SPReD-NES\obj\Release\SPReD-NES.csprojResolveAssemblyReference.cache
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\SPReD\SPReD-NES\obj\Release\SPReD.copy_sprite_new_name_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\SPReD\SPReD-NES\obj\Release\SPReD.create_sprite_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\SPReD\SPReD-NES\obj\Release\SPReD.description_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\SPReD\SPReD-NES\obj\Release\SPReD.image_export_options_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\SPReD\SPReD-NES\obj\Release\SPReD.MainForm.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\SPReD\SPReD-NES\obj\Release\SPReD.rename_sprite_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\SPReD\SPReD-NES\obj\Release\SPReD-NES.csproj.GenerateResource.Cache
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\SPReD\SPReD-NES\obj\Release\SPReD-NES.exe

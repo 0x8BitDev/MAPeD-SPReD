@@ -1368,14 +1368,14 @@ namespace SPReD
 			// Project_saveFileDialog
 			// 
 			this.Project_saveFileDialog.DefaultExt = "sprednes";
-			this.Project_saveFileDialog.Filter = "SPReD(NES) (*.sprednes)|*.sprednes";
+			this.Project_saveFileDialog.Filter = "SPReD-NES (*.sprednes)|*.sprednes";
 			this.Project_saveFileDialog.Title = "Save Project";
 			this.Project_saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectSave_OK);
 			// 
 			// Project_openFileDialog
 			// 
 			this.Project_openFileDialog.DefaultExt = "sprednes";
-			this.Project_openFileDialog.Filter = "SPReD(NES) (*.sprednes)|*.sprednes";
+			this.Project_openFileDialog.Filter = "SPReD-NES (*.sprednes)|*.sprednes";
 			this.Project_openFileDialog.Title = "Load Project";
 			this.Project_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectLoad_OK);
 			// 
@@ -1503,7 +1503,7 @@ namespace SPReD
 			this.MainMenuStrip = this.MenuStrip;
 			this.MaximizeBox = false;
 			this.Name = "MainForm";
-			this.Text = "SPReD(NES)";
+			this.Text = "SPReD-NES";
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyUp_Event);
 			this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.PreviewKeyDown_Event);
 			this.MenuStrip.ResumeLayout(false);
