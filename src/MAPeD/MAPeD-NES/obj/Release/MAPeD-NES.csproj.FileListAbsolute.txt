@@ -1,0 +1,16 @@
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\bin\MAPeD-NES.exe.config
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\bin\MAPeD-NES.exe
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD-NES.csprojResolveAssemblyReference.cache
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD.description_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD.exporter_nes_asm.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD.exporter_zx_sjasm.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD.export_active_tile_block_set_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD.import_tiles_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD.MainForm.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD.object_name_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD.optimization_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD.screen_mark_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD.tab_page_container.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD.tiles_palette_form.resources
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD-NES.csproj.GenerateResource.Cache
+B:\my_projects\crossdev\GITHUB\MAPeD-SPReD\src\MAPeD\MAPeD-NES\obj\Release\MAPeD-NES.exe

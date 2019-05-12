@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>WinExe</OutputType>
     <RootNamespace>SPReD</RootNamespace>
-    <AssemblyName>SPReD%28NES%29</AssemblyName>
+    <AssemblyName>SPReD-NES</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -153,15 +153,15 @@
     <Compile Include="..\src\utils.cs">
       <Link>utils.cs</Link>
     </Compile>
-    <Compile Include="SPReD%28NES%29.Designer.cs">
-      <DependentUpon>SPReD%28NES%29.settings</DependentUpon>
+    <Compile Include="SPReD-NES.Designer.cs">
+      <DependentUpon>SPReD-NES.settings</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="SPReD%28NES%29.settings">
+    <None Include="SPReD-NES.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>SPReD%28NES%29.Designer.cs</LastGenOutput>
     </None>

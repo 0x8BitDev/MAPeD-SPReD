@@ -20,7 +20,10 @@ namespace MAPeD
 		[STAThread]
 		private static void Main(string[] args)
 		{
-			FileAssociations.EnsureAssociationsSet();
+			if( utils.is_win() )
+			{
+				FileAssociations.EnsureAssociationsSet();
+			}
 			
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);

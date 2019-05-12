@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>WinExe</OutputType>
     <RootNamespace>MAPeD</RootNamespace>
-    <AssemblyName>MAPeD%28NES%29</AssemblyName>
+    <AssemblyName>MAPeD-NES</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -201,14 +201,14 @@
     <Compile Include="..\src\utils.cs">
       <Link>utils.cs</Link>
     </Compile>
-    <Compile Include="MAPeD%28NES%29.Designer.cs">
-      <DependentUpon>MAPeD%28NES%29.settings</DependentUpon>
+    <Compile Include="MAPeD-NES.Designer.cs">
+      <DependentUpon>MAPeD-NES.settings</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="MAPeD%28NES%29.settings" />
+    <None Include="MAPeD-NES.settings" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\src\description_form.resx">

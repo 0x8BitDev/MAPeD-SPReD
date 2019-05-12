@@ -8,6 +8,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace SPReD
 {
@@ -26,17 +27,30 @@ namespace SPReD
 #endif
 
 #if	DEBUG
-		public const string	CONST_BUILD_CFG	= "[DEBUG]";
+		public const string	CONST_BUILD_CFG	= " [DEBUG]";
 #else
 		public const string	CONST_BUILD_CFG	= "";
 #endif
+
+		// OS detection code implemented by jarik ( 100% managed code ) https://stackoverflow.com/a/38795621
+		public static bool is_win()
+		{
+			string windir = Environment.GetEnvironmentVariable("windir");
+			
+			if (!string.IsNullOrEmpty(windir) && windir.Contains(@"\") && Directory.Exists(windir))
+			{
+			    return true;
+			}
+			
+			return false;
+		}
 
 		private static Version ver			= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 		public static string build_str		= "Build: " + ver.Build;
 		public static DateTime build_date 	= new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
 
-		public static string CONST_APP_VER	= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev ":"" ) + CONST_BUILD_CFG;
-		public const string CONST_APP_NAME	= "SPReD(" + CONST_PLATFORM + ")";		
+		public static string CONST_APP_VER	= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev":"" ) + CONST_BUILD_CFG;
+		public const string CONST_APP_NAME	= "SPReD-" + CONST_PLATFORM;
 		
 		public const uint CONST_PROJECT_FILE_MAGIC			= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
 		public const byte CONST_PROJECT_FILE_VER			= 1;
