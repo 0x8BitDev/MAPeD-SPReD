@@ -42,13 +42,13 @@ INES_4SCR	= 0
 
 .segment "CODE"
 
-	.include "..\..\common\common.asm"
-	.include "..\..\common\mmc3.asm"
-	.include "..\..\common\ppu.asm"
-	.include "..\..\common\init.asm"
-	.include "..\..\common\jpad.asm"
+	.include "../../common/common.asm"
+	.include "../../common/mmc3.asm"
+	.include "../../common/ppu.asm"
+	.include "../../common/init.asm"
+	.include "../../common/jpad.asm"
 	
-	.include "..\..\common\rle.asm"
+	.include "../../common/rle.asm"
 	.include "tilemap_render_MODE_multidir_scroll.asm"
 
 RESET:
@@ -193,6 +193,6 @@ IRQ:
 ; *** CHR BANKS ***
 
 	; банки: 0, 1, 2, 3, 4, 5, 6, 7
-	.incbin "data\tilemap_Lev0_CHR.bin"
+	.incbin "data/tilemap_Lev0_CHR.bin"
 
 ; *** END OF CHR BANKS ***

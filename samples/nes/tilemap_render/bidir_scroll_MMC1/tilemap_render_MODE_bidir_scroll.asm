@@ -49,7 +49,7 @@ mirroring_horizontal	= mmc1_mirroring_horizontal
 	.ENDIF	; TR_DYNAMIC_MIRRORING
 
 
-.include "..\..\common\tilemap_render_UTILS.asm"
+.include "../../common/tilemap_render_UTILS.asm"
 
 
 SUPPORTED_MAP_FLAGS	= MAP_FLAG_DIR_COLUMNS | MAP_FLAG_MODE_BIDIR_SCROLL | MAP_FLAG_ATTRS_PER_BLOCK

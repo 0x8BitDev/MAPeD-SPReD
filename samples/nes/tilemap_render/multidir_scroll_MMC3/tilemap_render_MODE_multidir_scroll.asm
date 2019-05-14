@@ -43,7 +43,7 @@
 ;	MAP_FLAG_ATTRS_PER_BLOCK
 ;
 
-.include "..\..\common\tilemap_render_UTILS.asm"
+.include "../../common/tilemap_render_UTILS.asm"
 
 
 SUPPORTED_MAP_FLAGS	= MAP_FLAG_DIR_COLUMNS | MAP_FLAG_MODE_MULTIDIR_SCROLL | MAP_FLAG_ATTRS_PER_BLOCK

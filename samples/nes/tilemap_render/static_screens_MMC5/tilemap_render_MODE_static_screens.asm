@@ -30,9 +30,9 @@
 ;	MAP_FLAG_ATTRS_PER_CHR
 ;
 
-CHR_bankswitching = mmc5_CHR_bankswitching	; switch CHR bank \ A - bank index
+CHR_bankswitching = mmc5_CHR_bankswitching	; switch CHR bank / A - bank index
 
-.include "..\..\common\tilemap_render_UTILS.asm"
+.include "../../common/tilemap_render_UTILS.asm"
 
 
 SUPPORTED_MAP_FLAGS = MAP_FLAG_MODE_STATIC_SCREENS

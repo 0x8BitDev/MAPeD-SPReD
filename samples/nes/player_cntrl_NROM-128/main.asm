@@ -29,13 +29,13 @@ INES_4SCR	= 0 ; 1 = Hard-wired four screen mode
 
 .segment "CODE"
 
-	.include "..\..\common\common.asm"
-	.include "..\..\common\mmc1.asm"
-	.include "..\..\common\init.asm"
-	.include "..\..\common\ppu.asm"
-	.include "..\..\common\jpad.asm"
-	.include "..\..\common\anm.asm"
-	.include "..\..\common\character_cntrl.asm"
+	.include "../../common/common.asm"
+	.include "../../common/mmc1.asm"
+	.include "../../common/init.asm"
+	.include "../../common/ppu.asm"
+	.include "../../common/jpad.asm"
+	.include "../../common/anm.asm"
+	.include "../../common/character_cntrl.asm"
 
 RESET:
 
@@ -138,5 +138,5 @@ IRQ:
 ; *** CHR BANKS ***
 	; banks: 0, 1, 2, 3, 4, 5, 6, 7
 	; 1 KB
-	.incbin "data\dog_gfx_chr0.bin"
+	.incbin "data/dog_gfx_chr0.bin"
 ; *** END OF CHR BANKS ***

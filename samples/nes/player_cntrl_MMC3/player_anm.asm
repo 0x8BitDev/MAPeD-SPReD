@@ -66,7 +66,7 @@ player_duck_left:
 	.byte $03
 	.word frames_player_duck_left
 
-	.include "data\marco_gfx.asm"
+	.include "data/marco_gfx.asm"
 
 frames_player_idle_right	= marco_idle01_RIGHT_frame
 frames_player_duck_right	= marco_duck01_RIGHT_frame
