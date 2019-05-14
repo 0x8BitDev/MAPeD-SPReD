@@ -46,7 +46,7 @@ player_jump_left:
 	.byte $00
 	.word frames_player_jump_left
 
-	.include "data\dog_gfx.asm"
+	.include "data/dog_gfx.asm"
 
 frames_player_idle_right	= dog01_IDLE01_RIGHT_frame
 frames_player_duck_right	= dog01_IDLE01_RIGHT_frame

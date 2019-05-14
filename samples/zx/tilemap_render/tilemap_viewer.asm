@@ -160,4 +160,4 @@ main
 im_prc		ei
 		reti
 
-		savesna "..\bin\tilemap_viewer.sna", main
+		savesna "../bin/tilemap_viewer.sna", main

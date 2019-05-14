@@ -1,3 +1,9 @@
+:################################################
+:#
+:# Copyright 2018-2019 0x8BitDev ( MIT license )
+:#
+:################################################
+
 @set OutFile=tilemap_render_multidir_scroll_MMC3
 @set OutDir=..\..\bin\
 @set IncDir1=..\..\common\
@@ -16,7 +22,7 @@ ld65 -o %OutDir%%OutFile%.nes -C MMC3.cfg %OutDir%%OutFile%.o
 
 @del %OutDir%%OutFile%.o
 
-@cd ..\..\bin\
+@cd %OutDir%
 %OutFile%.nes
 @goto exit
 

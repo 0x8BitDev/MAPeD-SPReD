@@ -25,18 +25,18 @@ INES_4SCR	= 0 ; 1 = Hard-wired four screen mode
 
 .segment "DATA"
 
-	.include "data\tilemap.asm"
+	.include "data/tilemap.asm"
 
 .segment "CODE"
 
-	.include "..\..\common\common.asm"
-	.include "..\..\common\mmc1.asm"
-	.include "..\..\common\init.asm"
-	.include "..\..\common\ppu.asm"
-	.include "..\..\common\jpad.asm"
-	.include "..\..\common\anm.asm"
+	.include "../../common/common.asm"
+	.include "../../common/mmc1.asm"
+	.include "../../common/init.asm"
+	.include "../../common/ppu.asm"
+	.include "../../common/jpad.asm"
+	.include "../../common/anm.asm"
 
-	.include "..\..\common\rle.asm"
+	.include "../../common/rle.asm"
 	.include "tilemap_render_MODE_bidir_scroll.asm"
 
 
@@ -156,10 +156,10 @@ IRQ:
 
 .segment "CHR1"
 	; 4 KB
-	.incbin "data\tilemap_chr0.bin"
+	.incbin "data/tilemap_chr0.bin"
 
 .segment "CHR2"
 	; 4 KB
-	.incbin "data\tilemap_chr1.bin"
+	.incbin "data/tilemap_chr1.bin"
 	
 ; *** END OF CHR BANKS ***

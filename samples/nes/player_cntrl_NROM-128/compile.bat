@@ -1,3 +1,9 @@
+:################################################
+:#
+:# Copyright 2018-2019 0x8BitDev ( MIT license )
+:#
+:################################################
+
 @set OutFile=player_cntrl_NROM-128
 @set OutDir=..\bin\
 @set IncDir1=..\common\
@@ -16,7 +22,7 @@ ld65 -o %OutDir%%OutFile%.nes -C NROM-128.cfg %OutDir%%OutFile%.o
 
 @del %OutDir%%OutFile%.o
 
-@cd ..\bin\
+@cd %OutDir%
 %OutFile%.nes
 @goto exit
 
