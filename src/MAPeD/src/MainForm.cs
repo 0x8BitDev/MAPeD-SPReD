@@ -1911,8 +1911,6 @@ namespace MAPeD
 
 		private void update_tile_image( object sender, EventArgs e )
 		{
-			screen_editor scr_ed = sender as screen_editor;
-			
 			NewTileEventArg event_args = e as NewTileEventArg;
 			
 			int tile_ind 	= event_args.tile_ind;
@@ -2079,8 +2077,6 @@ namespace MAPeD
 
 		void delete_layout_row_column( Func< layout_data, bool > _condition, Func< layout_data, bool > _act, string _caption_msg )
 		{
-			entity_instance ent_inst = m_layout_editor.get_selected_entity_instance();
-			
 			layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
 			
 			if( data != null && _condition( data ) && message_box( "Are you sure?", _caption_msg, MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
