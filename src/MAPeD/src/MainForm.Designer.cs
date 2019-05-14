@@ -1419,9 +1419,9 @@ namespace MAPeD
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(126, 313);
+			this.label5.Location = new System.Drawing.Point(123, 313);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(43, 16);
+			this.label5.Size = new System.Drawing.Size(40, 16);
 			this.label5.TabIndex = 15;
 			this.label5.Text = "Banks:";
 			// 
@@ -1673,9 +1673,9 @@ namespace MAPeD
 			// 
 			// LabelObjId
 			// 
-			this.LabelObjId.Location = new System.Drawing.Point(160, 337);
+			this.LabelObjId.Location = new System.Drawing.Point(159, 337);
 			this.LabelObjId.Name = "LabelObjId";
-			this.LabelObjId.Size = new System.Drawing.Size(67, 16);
+			this.LabelObjId.Size = new System.Drawing.Size(64, 16);
 			this.LabelObjId.TabIndex = 22;
 			this.LabelObjId.Text = "Property Id:";
 			// 
@@ -1736,7 +1736,7 @@ namespace MAPeD
 			// 
 			// label10
 			// 
-			this.label10.Location = new System.Drawing.Point(119, 286);
+			this.label10.Location = new System.Drawing.Point(116, 286);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(43, 20);
 			this.label10.TabIndex = 22;
@@ -2254,7 +2254,7 @@ namespace MAPeD
 			this.CheckBoxPickupTargetEntity.Appearance = System.Windows.Forms.Appearance.Button;
 			this.CheckBoxPickupTargetEntity.Location = new System.Drawing.Point(203, 87);
 			this.CheckBoxPickupTargetEntity.Name = "CheckBoxPickupTargetEntity";
-			this.CheckBoxPickupTargetEntity.Size = new System.Drawing.Size(99, 24);
+			this.CheckBoxPickupTargetEntity.Size = new System.Drawing.Size(99, 29);
 			this.CheckBoxPickupTargetEntity.TabIndex = 116;
 			this.CheckBoxPickupTargetEntity.Text = "Target UID:";
 			this.CheckBoxPickupTargetEntity.UseVisualStyleBackColor = true;
@@ -2287,7 +2287,7 @@ namespace MAPeD
 			this.PBoxColor.BackColor = System.Drawing.Color.Black;
 			this.PBoxColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.PBoxColor.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.PBoxColor.Location = new System.Drawing.Point(203, 215);
+			this.PBoxColor.Location = new System.Drawing.Point(203, 218);
 			this.PBoxColor.Name = "PBoxColor";
 			this.PBoxColor.Size = new System.Drawing.Size(23, 23);
 			this.PBoxColor.TabIndex = 6;
@@ -2308,7 +2308,7 @@ namespace MAPeD
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(75, 14);
 			this.label11.TabIndex = 5;
-			this.label11.Text = "Instance prop:";
+			this.label11.Text = "Inst. prop.:";
 			// 
 			// label8
 			// 
@@ -2322,7 +2322,7 @@ namespace MAPeD
 			// 
 			this.groupBox11.Controls.Add(this.NumericUpDownEntityHeight);
 			this.groupBox11.Controls.Add(this.NumericUpDownEntityWidth);
-			this.groupBox11.Location = new System.Drawing.Point(203, 116);
+			this.groupBox11.Location = new System.Drawing.Point(203, 119);
 			this.groupBox11.Name = "groupBox11";
 			this.groupBox11.Size = new System.Drawing.Size(99, 45);
 			this.groupBox11.TabIndex = 117;
@@ -2379,7 +2379,7 @@ namespace MAPeD
 			// 
 			this.groupBox12.Controls.Add(this.NumericUpDownEntityPivotY);
 			this.groupBox12.Controls.Add(this.NumericUpDownEntityPivotX);
-			this.groupBox12.Location = new System.Drawing.Point(203, 164);
+			this.groupBox12.Location = new System.Drawing.Point(203, 167);
 			this.groupBox12.Name = "groupBox12";
 			this.groupBox12.Size = new System.Drawing.Size(99, 45);
 			this.groupBox12.TabIndex = 120;
@@ -2424,7 +2424,7 @@ namespace MAPeD
 			// 
 			// BtnEntityLoadBitmap
 			// 
-			this.BtnEntityLoadBitmap.Location = new System.Drawing.Point(228, 215);
+			this.BtnEntityLoadBitmap.Location = new System.Drawing.Point(228, 218);
 			this.BtnEntityLoadBitmap.Name = "BtnEntityLoadBitmap";
 			this.BtnEntityLoadBitmap.Size = new System.Drawing.Size(75, 23);
 			this.BtnEntityLoadBitmap.TabIndex = 123;
@@ -3064,8 +3064,8 @@ namespace MAPeD
 			// Import_openFileDialog
 			// 
 			this.Import_openFileDialog.DefaultExt = "sprednes";
-			this.Import_openFileDialog.Filter = "SPReD-NES (*.sprednes)|*.sprednes|CHR Bank (*.chr,*.bin)|*.chr;*.bin|Tiles (4bpp" +
-			") (*.bmp)|*.bmp|Palette (192 bytes) (*.pal)|*.pal";
+			this.Import_openFileDialog.Filter = "SPReD-NES (*.sprednes)|*.sprednes|CHR Bank (*.chr,*.bin)|*.chr;*.bin|Tiles (4bpp)" +
+			" (*.bmp)|*.bmp|Palette (192 bytes) (*.pal)|*.pal";
 			this.Import_openFileDialog.Title = "Import Data Into Active CHR Bank";
 			this.Import_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.DataImportOk_Event);
 			// 

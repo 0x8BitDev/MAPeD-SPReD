@@ -246,12 +246,12 @@ namespace MAPeD
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += "Matrix\nThe data of each level are stored as a matrix ( width x height ) of labels of screen descriptions.";
+				RichTextBoxExportDesc.Text += "Matrix\nEach level data are stored as matrix ( width x height ) of labels of screen descriptions.";
 			}
 			
 			if( CheckBoxExportMarks.Checked )
 			{
-				RichTextBoxExportDesc.Text += "\nEXPORT MARKS\nEach mark is stored a user defined mask of valid adjacent screens and a screen property.";
+				RichTextBoxExportDesc.Text += "\nEXPORT MARKS\nEach mark stores a user defined mask of valid adjacent screens and a screen property.";
 			}
 			else
 			{

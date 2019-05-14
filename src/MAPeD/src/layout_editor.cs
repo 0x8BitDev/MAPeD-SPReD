@@ -531,13 +531,13 @@ namespace MAPeD
 		{
 			if( _ent_data != null && m_sel_screen_slot_id >= 0 )
 			{
-				int ent_pivot_x	= ( int )( _ent_data.pivot_x * m_scale );
-				int ent_pivot_y = ( int )( _ent_data.pivot_y * m_scale );
-				
 #if DEF_SNAPPING_BY_PIVOT
 				int ent_pos_x = m_mouse_x;
 				int ent_pos_y = m_mouse_y;
 #else
+				int ent_pivot_x	= ( int )( _ent_data.pivot_x * m_scale );
+				int ent_pivot_y = ( int )( _ent_data.pivot_y * m_scale );
+
 				int ent_pos_x = m_mouse_x - ent_pivot_x;
 				int ent_pos_y = m_mouse_y - ent_pivot_y;
 #endif				
@@ -1463,7 +1463,7 @@ namespace MAPeD
 			}
 			else
 			{
-				m_label.Text = "Dim: ??? x ???";
+				m_label.Text = "Dim: ? x ?";
 			}
 		}
 		
