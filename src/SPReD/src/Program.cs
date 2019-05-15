@@ -34,7 +34,7 @@ namespace SPReD
 			}
 			catch( System.Exception _err )
 			{
-				MainForm.message_box( _err.Message, "Unknown Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( _err.Message, "Unhandled Exception", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		

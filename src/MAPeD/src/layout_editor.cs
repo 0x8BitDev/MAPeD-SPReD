@@ -409,6 +409,8 @@ namespace MAPeD
 
 		private bool pickup_entity( int _cursor_pos_x, int _cursor_pos_y, int _scr_pos_x, int _scr_pos_y )
 		{
+			entity_instance ent_inst;
+			
 			bool res = false;  
 			
 			screen_data scr_data = m_layout.get_data( _scr_pos_x, _scr_pos_y );
@@ -417,25 +419,27 @@ namespace MAPeD
 			
 			if( valid_pos == true )
 			{
-				scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) 
+				for( int ent_n = 0; ent_n < scr_data.m_ents.Count; ent_n++ )				
                 {
-                	if( _cursor_pos_x >= _ent_inst.x && _cursor_pos_x <= _ent_inst.x + _ent_inst.base_entity.width )
+					ent_inst = scr_data.m_ents[ ent_n ];
+					
+                	if( _cursor_pos_x >= ent_inst.x && _cursor_pos_x <= ent_inst.x + ent_inst.base_entity.width )
                 	{
-                    	if( _cursor_pos_y >= _ent_inst.y && _cursor_pos_y <= _ent_inst.y + _ent_inst.base_entity.height )
+                    	if( _cursor_pos_y >= ent_inst.y && _cursor_pos_y <= ent_inst.y + ent_inst.base_entity.height )
                     	{
                     		res = true;
                     		
                     		if( mode == EMode.em_EditInstances )
                     		{
-                        		scr_data.m_ents.Remove( _ent_inst );
+                        		scr_data.m_ents.Remove( ent_inst );
                         		
-                        		m_ent_inst = _ent_inst;                        		
+                        		m_ent_inst = ent_inst;                        		
 #if DEF_SNAPPING_BY_PIVOT
-                        		m_ent_inst_capture_offs_x	= _cursor_pos_x - ( _ent_inst.x + _ent_inst.base_entity.pivot_x );
-                                m_ent_inst_capture_offs_y	= _cursor_pos_y - ( _ent_inst.y + _ent_inst.base_entity.pivot_y );
+                        		m_ent_inst_capture_offs_x	= _cursor_pos_x - ( ent_inst.x + ent_inst.base_entity.pivot_x );
+                                m_ent_inst_capture_offs_y	= _cursor_pos_y - ( ent_inst.y + ent_inst.base_entity.pivot_y );
 #else
-                        		m_ent_inst_capture_offs_x	= _cursor_pos_x - _ent_inst.x;
-                        		m_ent_inst_capture_offs_y	= _cursor_pos_y - _ent_inst.y;
+                        		m_ent_inst_capture_offs_x	= _cursor_pos_x - ent_inst.x;
+                        		m_ent_inst_capture_offs_y	= _cursor_pos_y - ent_inst.y;
 #endif                  		
                         		m_ent_inst_screen_slot_id = m_sel_screen_slot_id;
                         		
@@ -446,15 +450,15 @@ namespace MAPeD
 
                     		if( EntityInstanceSelected != null )
                     		{
-                    			EntityInstanceSelected( this, new EventArg2Params( _ent_inst, null ) );
+                    			EntityInstanceSelected( this, new EventArg2Params( ent_inst, null ) );
                     		}
                     		
                     		update();
                     		
-                    		return;
+                    		break;
                     	}
                 	}
-                });
+				}
 			}
 			
 			return res;

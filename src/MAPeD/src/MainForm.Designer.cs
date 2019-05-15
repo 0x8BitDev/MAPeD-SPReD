@@ -239,8 +239,8 @@ namespace MAPeD
 			this.PBoxEntityPreview = new System.Windows.Forms.PictureBox();
 			this.NumericUpDownEntityUID = new System.Windows.Forms.NumericUpDown();
 			this.PBoxColor = new System.Windows.Forms.PictureBox();
-			this.label12 = new System.Windows.Forms.Label();
-			this.label11 = new System.Windows.Forms.Label();
+			this.LabelEntityProperty = new System.Windows.Forms.Label();
+			this.LabelEntityInstanceProperty = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.groupBox11 = new System.Windows.Forms.GroupBox();
 			this.NumericUpDownEntityHeight = new System.Windows.Forms.NumericUpDown();
@@ -2232,8 +2232,8 @@ namespace MAPeD
 			this.groupBoxEntityEditor.Controls.Add(this.PBoxEntityPreview);
 			this.groupBoxEntityEditor.Controls.Add(this.NumericUpDownEntityUID);
 			this.groupBoxEntityEditor.Controls.Add(this.PBoxColor);
-			this.groupBoxEntityEditor.Controls.Add(this.label12);
-			this.groupBoxEntityEditor.Controls.Add(this.label11);
+			this.groupBoxEntityEditor.Controls.Add(this.LabelEntityProperty);
+			this.groupBoxEntityEditor.Controls.Add(this.LabelEntityInstanceProperty);
 			this.groupBoxEntityEditor.Controls.Add(this.label8);
 			this.groupBoxEntityEditor.Controls.Add(this.groupBox11);
 			this.groupBoxEntityEditor.Controls.Add(this.groupBox12);
@@ -2294,21 +2294,21 @@ namespace MAPeD
 			this.PBoxColor.TabStop = false;
 			this.PBoxColor.Click += new System.EventHandler(this.PBoxColorClick);
 			// 
-			// label12
+			// LabelEntityProperty
 			// 
-			this.label12.Location = new System.Drawing.Point(8, 41);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(75, 14);
-			this.label12.TabIndex = 5;
-			this.label12.Text = "Properties:";
+			this.LabelEntityProperty.Location = new System.Drawing.Point(8, 41);
+			this.LabelEntityProperty.Name = "LabelEntityProperty";
+			this.LabelEntityProperty.Size = new System.Drawing.Size(75, 14);
+			this.LabelEntityProperty.TabIndex = 5;
+			this.LabelEntityProperty.Text = "Properties:";
 			// 
-			// label11
+			// LabelEntityInstanceProperty
 			// 
-			this.label11.Location = new System.Drawing.Point(7, 63);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(75, 14);
-			this.label11.TabIndex = 5;
-			this.label11.Text = "Inst. prop.:";
+			this.LabelEntityInstanceProperty.Location = new System.Drawing.Point(7, 63);
+			this.LabelEntityInstanceProperty.Name = "LabelEntityInstanceProperty";
+			this.LabelEntityInstanceProperty.Size = new System.Drawing.Size(75, 14);
+			this.LabelEntityInstanceProperty.TabIndex = 5;
+			this.LabelEntityInstanceProperty.Text = "Inst. prop.:";
 			// 
 			// label8
 			// 
@@ -3294,7 +3294,7 @@ namespace MAPeD
 		private System.Windows.Forms.Button BtnEntitiesEditInstancesMode;
 		private System.Windows.Forms.CheckBox CBoxEntityPreviewScaleX2;
 		private System.Windows.Forms.TextBox TextBoxEntityProperties;
-		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.Label LabelEntityProperty;
 		private System.Windows.Forms.OpenFileDialog EntityLoadBitmap_openFileDialog;
 		private System.Windows.Forms.ToolStripMenuItem rotateToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem flipHOrizontalToolStripMenuItem;
@@ -3309,7 +3309,7 @@ namespace MAPeD
 		private System.Windows.Forms.GroupBox groupBoxEntitiesTreeView;
 		private System.Windows.Forms.Label LabelEntityName;
 		private System.Windows.Forms.TextBox TextBoxEntityInstanceProp;
-		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Label LabelEntityInstanceProperty;
 		private System.Windows.Forms.ColorDialog colorDialogEntity;
 		private System.Windows.Forms.NumericUpDown NumericUpDownEntityWidth;
 		private System.Windows.Forms.NumericUpDown NumericUpDownEntityHeight;

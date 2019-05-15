@@ -259,7 +259,20 @@ namespace MAPeD
 			{
 				List< entity_data > ents = m_entities_data[ _grp_name ] as List< entity_data >;
 				
-				ents.ForEach( delegate( entity_data _ent ) { if( _ent.name == _ent_name ) { delete_entity_instances( _ent.name ); ents.Remove( _ent ); return; } } );
+				entity_data ent;
+				
+				for( int ent_n = 0; ent_n < ents.Count; ent_n++ )				
+                {
+					ent = ents[ ent_n ];
+					
+	             	if( ent.name == _ent_name ) 
+	             	{ 
+	             		delete_entity_instances( ent.name ); 
+	             		ents.Remove( ent );
+	             		
+	             		break; 
+	             	} 
+				}
 			}
 			
 			return res;
