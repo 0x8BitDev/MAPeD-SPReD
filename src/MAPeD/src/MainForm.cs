@@ -209,6 +209,8 @@ namespace MAPeD
 																new SToolTipData( BtnLayoutMoveDown, "Move selected layout down" ),
 																new SToolTipData( CBoxBlockObjId, "Assign property to selected block or CHR" ),
 																new SToolTipData( LabelObjId, "Assign property to selected block or CHR" ),
+																new SToolTipData( LabelEntityProperty, "Entity properties are inherited by all instances" ),
+																new SToolTipData( LabelEntityInstanceProperty, "Instance properties are unique to all instances" ),
 															};
 				SToolTipData data;
 				

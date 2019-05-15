@@ -34,7 +34,7 @@ namespace MAPeD
 			}
 			catch( System.Exception _err )
 			{
-				MainForm.message_box( _err.Message, "Unknown Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( _err.Message, "Unhandled exception", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
