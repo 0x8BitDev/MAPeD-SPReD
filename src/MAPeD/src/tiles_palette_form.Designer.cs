@@ -34,6 +34,7 @@ namespace MAPeD
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(tiles_palette_form));
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.BtnBlocks = new System.Windows.Forms.Button();
 			this.BtnTiles = new System.Windows.Forms.Button();
@@ -75,7 +76,7 @@ namespace MAPeD
 			// 
 			// BtnClose
 			// 
-			this.BtnClose.Location = new System.Drawing.Point(454, 5);
+			this.BtnClose.Location = new System.Drawing.Point(456, 5);
 			this.BtnClose.Name = "BtnClose";
 			this.BtnClose.Size = new System.Drawing.Size(75, 23);
 			this.BtnClose.TabIndex = 2;
@@ -92,7 +93,7 @@ namespace MAPeD
 			this.PanelPaletteTiles.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
 			this.PanelPaletteTiles.Location = new System.Drawing.Point(0, 32);
 			this.PanelPaletteTiles.Name = "PanelPaletteTiles";
-			this.PanelPaletteTiles.Size = new System.Drawing.Size(531, 513);
+			this.PanelPaletteTiles.Size = new System.Drawing.Size(533, 513);
 			this.PanelPaletteTiles.TabIndex = 3;
 			// 
 			// PanelPaletteBlocks
@@ -108,19 +109,20 @@ namespace MAPeD
 			// 
 			// tiles_palette_form
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(531, 546);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.ClientSize = new System.Drawing.Size(533, 546);
 			this.ControlBox = false;
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.PanelPaletteTiles);
 			this.Controls.Add(this.PanelPaletteBlocks);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "tiles_palette_form";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Palette";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Closing_event);
 			this.Load += new System.EventHandler(this.BtnCloseClick_event);
 			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);
