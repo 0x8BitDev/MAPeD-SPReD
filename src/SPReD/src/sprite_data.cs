@@ -644,12 +644,12 @@ namespace SPReD
 			
 			if( _fmt == ImageFormat.Bmp )
 			{
-				draw_img.Save( _path + "\\" + name + ".bmp", ImageFormat.Bmp );
+				draw_img.Save( _path + Path.DirectorySeparatorChar + name + ".bmp", ImageFormat.Bmp );
 			}
 			else
 			if( _fmt == ImageFormat.Png )
 			{
-				draw_img.Save( _path + "\\" + name + ".png", ImageFormat.Png );
+				draw_img.Save( _path + Path.DirectorySeparatorChar + name + ".png", ImageFormat.Png );
 			}
 			else
 			{

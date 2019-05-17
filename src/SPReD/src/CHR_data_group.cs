@@ -555,14 +555,14 @@ namespace SPReD
 				// move data pointer to the end of the file
 				// as a sign of the end of the reading,
 				// so as not to try to create a sprite when
-				// the data in the file is less than one CHR
+				// data in the file is less than one CHR
 				_br.BaseStream.Position = _br.BaseStream.Length;
 			}
 		}
 		
 		public void export( string _path, string _filename )
 		{
-			BinaryWriter bw = new BinaryWriter( File.Open( _path + "\\" + _filename + "_" + get_filename(), FileMode.Create ) );
+			BinaryWriter bw = new BinaryWriter( File.Open( _path + Path.DirectorySeparatorChar + _filename + "_" + get_filename(), FileMode.Create ) );
 			
 			CHR8x8_data chr_data;
 			
