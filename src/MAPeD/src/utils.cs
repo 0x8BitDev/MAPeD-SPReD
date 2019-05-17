@@ -32,7 +32,7 @@ namespace MAPeD
 	/// </summary>
 	public static class utils
 	{
-		private const bool CONST_DEV_BUILD_FLAG	= true;
+		private const bool CONST_DEV_BUILD_FLAG	= false;
 		private const bool CONST_BETA_FLAG		= true; 
 		
 #if	DEF_NES
@@ -48,7 +48,9 @@ namespace MAPeD
 #endif
 
 		// OS detection code implemented by jarik ( 100% managed code ) https://stackoverflow.com/a/38795621
-		public static bool is_win()
+		public static bool is_win = check_win();
+		
+		private static bool check_win()
 		{
 			string windir = Environment.GetEnvironmentVariable("windir");
 			
@@ -424,13 +426,13 @@ namespace MAPeD
 		
 		public static uint set_byte_to_uint( uint _uint, int _ind, byte _val )
 		{
-			int byte_ind_shift = ( int )( ( 4 - _ind - 1 ) << 3 );
+			int byte_ind_shift	= ( int )( ( 4 - _ind - 1 ) << 3 );
 			int byte_mask		= ( int )( 0xff << byte_ind_shift );
 			
 			return ( ( uint )_val << ( byte_ind_shift ) ) | ( uint )( ~( _uint & ( byte_mask ) ) & _uint );
 		}
 		
-		public static void fill_buttons( FlowLayoutPanel _panel, ImageList _il, EventHandler _e, ContextMenuStrip _cm, int _padding = 0 )
+		public static void fill_buttons( FlowLayoutPanel _panel, ImageList _il, EventHandler _e, ContextMenuStrip _cm, int _margin = 0 )
 		{
 			_panel.Controls.Clear();
 			_panel.SuspendLayout();
@@ -442,13 +444,15 @@ namespace MAPeD
 		    {
 		        btn = new Button();
 		        
-		        btn.FlatStyle 	= FlatStyle.Flat;
+	        	btn.FlatStyle 	= FlatStyle.Flat;
+	        	btn.FlatAppearance.BorderColor = Color.White;
+	        	
 		        btn.Size 		= _il.ImageSize;
 		        btn.ImageList 	= _il;
 		        btn.ImageIndex 	= i;
 		        btn.Click 		+= _e;
-		        btn.Margin 		= new Padding( _padding );
-		        btn.Padding 	= new Padding( 0 );
+		        btn.Margin 		= new Padding( _margin );
+		        btn.Padding 	= new Padding( 1 );
 		        btn.TabStop 	= false;
 		        
 		        btn.ContextMenuStrip = _cm;

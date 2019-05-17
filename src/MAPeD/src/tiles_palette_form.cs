@@ -135,5 +135,10 @@ namespace MAPeD
 			PanelPaletteTiles.Enabled	= _on;
 			PanelPaletteBlocks.Enabled	= _on;
 		}
+		
+		void Closing_event(object sender, FormClosingEventArgs e)
+		{
+			e.Cancel = true;
+		}
 	}
 }
