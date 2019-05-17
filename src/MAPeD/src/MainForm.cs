@@ -172,10 +172,11 @@ namespace MAPeD
 			m_tiles_processor.NeedGFXUpdate 	+= new EventHandler( enable_update_gfx_btn_Event );
 			m_screen_editor.NeedScreensUpdate	+= new EventHandler( enable_update_screens_btn_Event );
 			
-			TabTiles.Tag 	= new Point( TabTiles.Width,	TabTiles.Height	);
-			TabScreenEditor.Tag = new Point( TabTiles.Width,	TabTiles.Height	);
-			TabLayout.Tag 	= new Point( TabLayout.Width,	TabLayout.Height	);
-			
+			TabTiles.Tag 		= new Point( TabTiles.Width,	TabTiles.Height		);
+			TabScreenEditor.Tag = new Point( TabTiles.Width,	TabTiles.Height		);
+			TabLayout.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
+			TabEditor.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
+
 			FormClosing += new System.Windows.Forms.FormClosingEventHandler( OnFormClosing );
 
 			// setup tooltips

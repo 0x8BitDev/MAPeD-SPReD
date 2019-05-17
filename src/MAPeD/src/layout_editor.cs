@@ -1003,37 +1003,44 @@ namespace MAPeD
 		                 	if( _scr_data.adj_scr_mask > 0 )
 		                 	{
 		                 		update_mark( Color.FromArgb( 0x7f00ff00 ), delegate(){}, true );
-		                 		
-         		            	if( ( _scr_data.adj_scr_mask & 0x01 ) != 0 )
-         		            	{
-         		            		// L
-         		            		m_scr_mark_gfx.DrawString( char.ConvertFromUtf32( 8678 ).ToString(), utils.fnt64_Arial, Brushes.White, -11, 21 );
-         		            	}
-         		            	if( ( _scr_data.adj_scr_mask & 0x02 ) != 0 )
-         		            	{
-         		            		// U
-         		            		m_scr_mark_gfx.DrawString( char.ConvertFromUtf32( 8679 ).ToString(), utils.fnt64_Arial, Brushes.White, 23, -15 );
-         		            	}
-         		            	if( ( _scr_data.adj_scr_mask & 0x04 ) != 0 )
-         		            	{
-         		            		// R
-         		            		m_scr_mark_gfx.DrawString( char.ConvertFromUtf32( 8680 ).ToString(), utils.fnt64_Arial, Brushes.White, 61, 21 );
-         		            	}
-         		            	if( ( _scr_data.adj_scr_mask & 0x08 ) != 0 )
-         		            	{
-         		            		// D
-         		            		m_scr_mark_gfx.DrawString( char.ConvertFromUtf32( 8681 ).ToString(), utils.fnt64_Arial, Brushes.White, 23, 55 );
-         		            	}
          		            	
-         		            	// o
-         		            	m_pen.Width = 4;
          		            	m_pen.Color = utils.CONST_COLOR_PIXBOX_DEFAULT;
          		            	{
-         		            		int img_center = utils.CONST_SCREEN_MARK_IMAGE_SIZE >> 1;
+         		            		int img_center 	= utils.CONST_SCREEN_MARK_IMAGE_SIZE >> 1;
+         		            		int radius		= 12;
+         		            		int arrow_len	= 45;
          		            		
-         		            		m_scr_mark_gfx.DrawEllipse( m_pen, img_center - 12, img_center - 12, 24, 24 );
+	         		            	// o
+	         		            	m_pen.Width = 4;
+         		            		m_scr_mark_gfx.DrawEllipse( m_pen, img_center - radius, img_center - radius, radius << 1, radius << 1 );
+         		            		
+         		            		m_pen.Width = 15;
+         		            		m_pen.EndCap = LineCap.ArrowAnchor;
+         		            		
+	         		            	if( ( _scr_data.adj_scr_mask & 0x01 ) != 0 )
+	         		            	{
+	         		            		// L
+	         		            		m_scr_mark_gfx.DrawLine( m_pen, img_center - radius, img_center,  img_center - arrow_len - radius, img_center );
+	         		            	}
+	         		            	if( ( _scr_data.adj_scr_mask & 0x02 ) != 0 )
+	         		            	{
+	         		            		// U
+	         		            		m_scr_mark_gfx.DrawLine( m_pen, img_center, img_center - radius,  img_center, img_center - arrow_len - radius );
+	         		            	}
+	         		            	if( ( _scr_data.adj_scr_mask & 0x04 ) != 0 )
+	         		            	{
+	         		            		// R
+	         		            		m_scr_mark_gfx.DrawLine( m_pen, img_center + radius, img_center,  img_center + arrow_len + radius, img_center );
+	         		            	}
+	         		            	if( ( _scr_data.adj_scr_mask & 0x08 ) != 0 )
+	         		            	{
+	         		            		// D
+										m_scr_mark_gfx.DrawLine( m_pen, img_center, img_center + radius,  img_center, img_center + arrow_len + radius );
+	         		            	}
+	         		            	
+         		            		m_pen.EndCap	= LineCap.NoAnchor;
+	         		            	m_pen.Width		= 1;
          		            	}
-         		            	m_pen.Width = 1;
          		            	
 		                 		draw_mark( m_scr_mark_img, _x + scr_half_width, _y, scr_half_width, scr_half_height );
 		                 	}
