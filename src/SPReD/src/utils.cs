@@ -17,7 +17,7 @@ namespace SPReD
 	/// </summary>
 	public static class utils
 	{
-		private const bool CONST_DEV_BUILD_FLAG	= true;
+		private const bool CONST_DEV_BUILD_FLAG	= false;
 		private const bool CONST_BETA_FLAG		= true; 
 		
 #if	DEF_NES
