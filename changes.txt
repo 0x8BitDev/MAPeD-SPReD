@@ -1,8 +1,34 @@
 MAPeD(NES):
 ~~~~~~~~~~~
+17.05.2019 v0.54b
+
+16.05.2019 - fixed issue with tab pages and tiles palette on Linux
+15.05.2019 - target framework changed from 4.0 to 4.5.1
+14.05.2019 - minor GUI changes to improve look on Linux
+14.05.2019 - makefiles added to compile samples on Linux
+12.05.2019 - Linux supported
+12.05.2019 - solution renamed to avoid errors on Linux
+12.05.2019 - unmanaged Win code enables on Win only
+12.05.2019 - fixed GUI issues on Linux
+09.05.2019 - load\save palette with project file
+09.05.2019 - custom palette import added
+
 01.05.2019 v0.50b - Initial release
 
 
 SPReD(NES):
 ~~~~~~~~~~~
+17.05.2019 v0.54b
+
+16.05.2019 - CHR banks export fixed on Linux
+15.05.2019 - target framework changed from 4.0 to 4.5.1
+14.05.2019 - makefiles added to compile samples on Linux
+12.05.2019 - Linux supported
+12.05.2019 - solution renamed to avoid errors on Linux
+12.05.2019 - unmanaged Win code enables on Win only
+12.05.2019 - fixed GUI issues on Linux
+09.05.2019 - load\save palette with project file
+09.05.2019 - custom palette import added
+08.05.2019 - cursor switching fixed ( Layout: build/draw )
+
 01.05.2019 v0.50b - Initial release
