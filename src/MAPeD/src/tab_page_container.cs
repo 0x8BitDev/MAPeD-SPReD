@@ -35,11 +35,27 @@ namespace MAPeD
 			{
 				m_tab_cntrl = _tab_cntrl;
 				m_tab_page	= _tab_cntrl.SelectedTab;
+
+				// mono's "feature"
+//				if( !utils.is_win )
+				{
+					if( _tab_cntrl.TabPages.Count > 1 )
+					{
+						_tab_cntrl.SelectTab( _tab_cntrl.SelectedIndex ^ 1 );
+						_tab_cntrl.Update();
+					}
+				}
 				
-				_tab_cntrl.TabPages.Remove( _tab_cntrl.SelectedTab );
-				
+				_tab_cntrl.TabPages.Remove( m_tab_page );
+			
 				m_inner_tab_cntrl = new System.Windows.Forms.TabControl();
 				m_inner_tab_cntrl.TabPages.Add( m_tab_page );
+
+				// mono's "feature"
+//				if( !utils.is_win )
+				{
+					m_tab_page.Show();
+				}
 				
 				this.Controls.Add( m_inner_tab_cntrl );
 				
@@ -54,17 +70,17 @@ namespace MAPeD
 				m_inner_tab_cntrl.Width		= this.Width	= m_tab_page.Width;
 				m_inner_tab_cntrl.Height	= this.Height	= m_tab_page.Height;
 				
-				this.Width	= m_inner_tab_cntrl.Width	+= 12;
-				this.Height	= m_inner_tab_cntrl.Height	+= 48;
+				this.Width	= m_inner_tab_cntrl.Width	+= 20;
+				this.Height	= m_inner_tab_cntrl.Height	+= 60;
 			}
 		}
 		
-		void Close_event(object sender, FormClosedEventArgs e)
+		void Closed_event(object sender, FormClosedEventArgs e)
 		{
 			if( m_tab_page != null && m_tab_cntrl != null )
 			{
-				m_inner_tab_cntrl.TabPages.Remove( m_tab_page );
 				this.Controls.Remove( m_inner_tab_cntrl );
+				m_inner_tab_cntrl.TabPages.Remove( m_tab_page );
 				
 				m_tab_cntrl.TabPages.Add( m_tab_page );
 				
