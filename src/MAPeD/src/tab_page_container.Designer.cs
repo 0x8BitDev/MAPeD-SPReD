@@ -34,21 +34,22 @@ namespace MAPeD
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(tab_page_container));
 			this.SuspendLayout();
 			// 
 			// tab_page_container
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(284, 262);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "tab_page_container";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "TabPage Container";
-			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Close_event);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Closed_event);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.key_down_event);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.key_up_event);
 			this.ResumeLayout(false);
