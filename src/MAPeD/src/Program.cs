@@ -20,7 +20,7 @@ namespace MAPeD
 		[STAThread]
 		private static void Main(string[] args)
 		{
-			if( utils.is_win() )
+			if( utils.is_win )
 			{
 				FileAssociations.EnsureAssociationsSet();
 			}
@@ -34,7 +34,7 @@ namespace MAPeD
 			}
 			catch( System.Exception _err )
 			{
-				MainForm.message_box( _err.Message, "Unhandled exception", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( _err.Message, "Unhandled Exception", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
