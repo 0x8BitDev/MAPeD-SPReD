@@ -596,7 +596,7 @@ namespace MAPeD
 					label = "chr" + bank_n;
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 					{
-						banks_size_arr[ bank_n + 1 ] += banks_size_arr[ bank_n ] + ( int )( data_size = export_CHR( bw, tiles ) );
+						banks_size_arr[ bank_n + 1 ] += banks_size_arr[ bank_n ] + ( int )( data_size = tiles.export_CHR( bw ) );
 					}
 					bw.Close();
 					
@@ -1241,7 +1241,7 @@ namespace MAPeD
 			
 			if( CheckBoxRLE.Checked )
 			{
-				rle_data_size = RLE( _data, ref rle_data_arr );
+				rle_data_size = utils.RLE( _data, ref rle_data_arr );
 				
 				if( rle_data_size < 0 )
 				{
@@ -1575,7 +1575,7 @@ namespace MAPeD
 				label = CONST_FILENAME_LEVEL_PREFIX + level_n + "_CHR";
 				bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 				{
-					export_CHR( bw, tiles );
+					tiles.export_CHR( bw );
 				}
 				data_size = bw.BaseStream.Length;
 				bw.Close();
@@ -1832,164 +1832,6 @@ namespace MAPeD
 			{
 				_str += String.Format( "${0:X2}", _plt[ j ] ) + ( !( _end && j == 3 ) ? ", ":"" );
 			}
-		}
-		
-		long export_CHR( BinaryWriter _bw, tiles_data _data, bool _need_padding = false )
-		{
-			int i;
-			int x;
-			int y;
-			int val;
-			
-			long padding;
-			long data_size;
-			
-			byte data;
-			
-			byte[] img_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
-			
-			int num_CHR_sprites = _data.get_first_free_spr8x8_id();
-			
-			num_CHR_sprites = num_CHR_sprites < 0 ? utils.CONST_CHR_BANK_MAX_SPRITES_CNT:num_CHR_sprites;
-			
-			for( i = 0; i < num_CHR_sprites; i++ )
-			{
-				_data.from_CHR_bank_to_spr8x8( i, img_buff, 0 );
-				
-				// the first 8 bytes out of 16 ones
-				for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
-				{
-					data = 0;
-					
-					for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
-					{
-						val = img_buff[ ( y << 3 ) + ( 7 - x ) ];
-						
-						data |= ( byte )( ( val & 0x01 ) << x );
-					}
-					
-					_bw.Write( data );
-				}
-				
-				// the second 8 bytes of CHR
-				for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
-				{
-					data = 0;
-					
-					for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
-					{
-						val = img_buff[ ( y << 3 ) + ( 7 - x ) ];
-						
-						data |= ( byte )( ( val >> 1 ) << x );
-					}
-					
-					_bw.Write( data );
-				}
-			}
-			
-			// save padding data to 1/2/4 KB
-			if( _need_padding )
-			{
-				padding 	= 0;
-				data_size 	= _bw.BaseStream.Length;
-				
-				if( data_size < 1024 )
-				{
-					padding = 1024 - data_size; 
-				}
-				else
-				if( data_size < 2048 )
-				{
-					padding = 2048 - data_size;
-				}
-				else
-				if( data_size < 4096 )
-				{
-					padding = 4096 - data_size;
-				}
-				
-				if( padding != 0 )
-				{
-					data = 0;
-					
-					while( padding-- != 0 )
-					{
-						_bw.Write( data );
-					}
-				}
-			}
-			
-			return _bw.BaseStream.Length;
-		}
-		
-		// RLE routine from NESst tool by Shiru
-		int RLE( byte[] _arr, ref byte[] _rle_arr )
-		{
-			_rle_arr = new byte[ _arr.Length ];
-			
-			int[] stat = new int[ 256 ];
-			int i,tag,sym,sym_prev,len,ptr;
-			
-			int size = _arr.Length;
-			
-			Array.Clear( stat, 0, 256 );
-			
-			for(i=0;i<size;++i) ++stat[_arr[i]];
-		
-			tag=-1;
-		
-			for(i=0;i<256;++i)
-			{
-				if( stat[i] == 0 )
-				{
-					tag=i;
-					break;
-				}
-			}
-			
-			if(tag<0) return -1;
-		
-			ptr=0;
-			len=1;
-			sym_prev=-1;
-		
-			_rle_arr[ptr++]=(byte)tag;
-			
-			for(i=0;i<size;++i)
-			{
-				sym=_arr[i];
-		
-				if(sym_prev!=sym||len>=255||i==size-1)
-				{
-					if(len>1)
-					{
-						if(len==2)
-						{
-							_rle_arr[ptr++]=(byte)sym_prev;
-						}
-						else
-						{
-							_rle_arr[ptr++]=(byte)tag;
-							_rle_arr[ptr++]=(byte)(len-1);
-						}
-					}
-		
-					_rle_arr[ptr++]=(byte)sym;
-		
-					sym_prev=sym;
-		
-					len=1;
-				}
-				else
-				{
-					++len;
-				}
-			}
-		
-			_rle_arr[ptr++]=(byte)tag;	//end of file marked with zero length rle
-			_rle_arr[ptr++]=0;
-			
-			return ptr;			
 		}
 		
 		private uint rearrange_tile( uint _val )

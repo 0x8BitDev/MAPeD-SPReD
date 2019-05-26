@@ -69,10 +69,10 @@ namespace MAPeD
 
 		private struct SToolTipData
 		{
-			public System.Windows.Forms.Control m_cntrl;
+			public Control m_cntrl;
 			public string m_desc;
 			
-			public SToolTipData( System.Windows.Forms.Control _cntrl, string _desc )
+			public SToolTipData( Control _cntrl, string _desc )
 			{
 				m_cntrl	= _cntrl;
 				m_desc 	= _desc;
@@ -161,8 +161,8 @@ namespace MAPeD
 				m_pbox_active_tile_gfx.PixelOffsetMode 		= PixelOffsetMode.HighQuality;
 
 				m_pen = new Pen( Color.White );
-				m_pen.EndCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;
-				m_pen.StartCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;			
+				m_pen.EndCap 	= LineCap.NoAnchor;
+				m_pen.StartCap 	= LineCap.NoAnchor;			
 				
 				clear_active_tile_img();
 			}
@@ -177,7 +177,7 @@ namespace MAPeD
 			TabLayout.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
 			TabEditor.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
 
-			FormClosing += new System.Windows.Forms.FormClosingEventHandler( OnFormClosing );
+			FormClosing += new FormClosingEventHandler( OnFormClosing );
 
 			// setup tooltips
 			{
@@ -219,7 +219,7 @@ namespace MAPeD
 				{
 					data = tooltips[ i ];
 					
-					( new System.Windows.Forms.ToolTip(components) ).SetToolTip( data.m_cntrl, data.m_desc );
+					( new ToolTip(components) ).SetToolTip( data.m_cntrl, data.m_desc );
 				}			
 			}
 			
@@ -240,7 +240,7 @@ namespace MAPeD
 		{
 			e.Cancel = true;
 			
-		    if( message_box( "All unsaved progress will be lost !\nAre you sure?", "Exit App", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+		    if( message_box( "All unsaved progress will be lost!\nAre you sure?", "Exit App", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 		    {
 				reset();
 				
@@ -261,9 +261,9 @@ namespace MAPeD
 			}
 		}
 		
-		public static DialogResult message_box( string _msg, string _title, MessageBoxButtons _buttons, System.Windows.Forms.MessageBoxIcon _icon = System.Windows.Forms.MessageBoxIcon.Warning )
+		public static DialogResult message_box( string _msg, string _caption, MessageBoxButtons _buttons, MessageBoxIcon _icon = MessageBoxIcon.Warning )
 		{
-			return MessageBox.Show( _msg, _title, _buttons, _icon );
+			return MessageBox.Show( _msg, _caption, _buttons, _icon );
 		}
 
 		void DescriptionToolStripMenuItemClick_Event(object sender, EventArgs e)
@@ -399,14 +399,14 @@ namespace MAPeD
 			}
 		}
 		
-		void ExitToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void ExitToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			Close();
 		}
 		
-		void CloseToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void CloseToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( message_box( "Are you sure?", "Close Project", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+			if( message_box( "Are you sure?", "Close Project", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				reset();
 				
@@ -418,20 +418,20 @@ namespace MAPeD
 			}
 		}
 
-		void CBoxTileViewTypeChanged_Event(object sender, System.EventArgs e)
+		void CBoxTileViewTypeChanged_Event(object sender, EventArgs e)
 		{
 			update_graphics( false );
 			
 			clear_active_tile_img();
 		}
 
-		void LoadToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void LoadToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			m_project_loaded = false;
 			
 			if( m_data_manager.tiles_data_cnt > 0 )
 			{
-				if( message_box( "Are you sure you want to close the current project?", "Load Project", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to close the current project?", "Load Project", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
 					Project_openFileDialog.ShowDialog();
 				}
@@ -453,20 +453,21 @@ namespace MAPeD
 		void ProjectLoadOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			// LOAD PROJECT...
-			project_load( ( ( System.Windows.Forms.FileDialog )sender ).FileName );
+			project_load( ( ( FileDialog )sender ).FileName );
 		}
 
 		void project_load( string _filename )
 		{
 			reset();
 			
-			FileStream fs = null;
+			FileStream 		fs = null;
+			BinaryReader 	br = null;
 			
 			try
 			{
 				fs = new FileStream( _filename, FileMode.Open, FileAccess.Read );
 				{
-					BinaryReader br = new BinaryReader( fs );
+					br = new BinaryReader( fs );
 					if( br.ReadUInt32() == utils.CONST_PROJECT_FILE_MAGIC )
 					{
 						byte ver = br.ReadByte();
@@ -511,7 +512,6 @@ namespace MAPeD
 					update_graphics( false );
 					enable_update_screens_btn( true );
 				}
-				fs.Close();
 				
 				set_title_name( Path.GetFileNameWithoutExtension( _filename ) );
 				
@@ -519,24 +519,29 @@ namespace MAPeD
 				
 				m_project_loaded = true;
 			}
-			catch( System.Exception _err )
+			catch( Exception _err )
 			{
 				reset();
 				
-				if( fs != null )
-				{
-					fs.Close();
-				}
-				
-				message_box( _err.Message, "Load Project Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Load Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+
+			if( br != null )
+			{
+				br.Close();
+			}
+			
+			if( fs != null )
+			{
+				fs.Close();
 			}
 		}
 		
-		void SaveToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void SaveToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			if( m_data_manager.tiles_data_cnt == 0 )			
 			{
-				message_box( "There are no data to save!", "Save Project Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There are no data to save!", "Save Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			else
 			{
@@ -547,15 +552,16 @@ namespace MAPeD
 		void ProjectSaveOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			// SAVE PROJECT...
-			System.String filename = ( ( System.Windows.Forms.FileDialog )sender ).FileName;
+			String filename = ( ( FileDialog )sender ).FileName;
 		
-			FileStream fs = null;
+			FileStream 		fs = null;
+			BinaryWriter 	bw = null;
 			
 			try
 			{
 				fs = new FileStream( filename, FileMode.Create, FileAccess.Write );
 				{
-					BinaryWriter bw = new BinaryWriter( fs );
+					bw = new BinaryWriter( fs );
 					bw.Write( utils.CONST_PROJECT_FILE_MAGIC );
 					bw.Write( utils.CONST_PROJECT_FILE_VER );
 
@@ -567,24 +573,28 @@ namespace MAPeD
 					// save description
 					bw.Write( m_description_form.edit_text );
 				}
-				fs.Close();
 				
 				set_title_name( Path.GetFileNameWithoutExtension( filename ) );
 				
 				set_status_msg( "Project saved" );
 			}
-			catch( System.Exception _err )
+			catch( Exception _err )
 			{
-				if( fs != null )
-				{
-					fs.Close();
-				}
-				
-				message_box( _err.Message, "Save Project Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Save Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			
+			if( bw != null )
+			{
+				bw.Close();
+			}
+			
+			if( fs != null )
+			{
+				fs.Close();
 			}
 		}
 		
-		void ImportToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void ImportToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			if( CBoxCHRBanks.SelectedIndex >= 0 )
 			{
@@ -592,13 +602,13 @@ namespace MAPeD
 			}
 			else
 			{
-				message_box( "There is no active CHR bank!", "Data Import Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There is no active CHR bank!", "Data Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 
 		void DataImportOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			System.String filename = ( ( System.Windows.Forms.FileDialog )sender ).FileName;
+			String filename = ( ( FileDialog )sender ).FileName;
 		
 			FileStream		fs = null;
 			BinaryReader 	br = null;
@@ -679,7 +689,7 @@ namespace MAPeD
 								}
 								else
 								{
-									throw new System.Exception( "Invalid file!" );
+									throw new Exception( "Invalid file!" );
 								}
 			
 								update_graphics( true );
@@ -725,7 +735,7 @@ namespace MAPeD
 					}
 				}
 			}
-			catch( System.Exception _err )
+			catch( Exception _err )
 			{
 				if( bmp != null )
 				{
@@ -734,7 +744,7 @@ namespace MAPeD
 
 				set_status_msg( "No data imported" );
 				
-				message_box( _err.Message, "Data Import Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Data Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
 			if( br != null )
@@ -756,7 +766,7 @@ namespace MAPeD
 			}
 			else
 			{
-				message_box( "There are no data to export!", "Export Project Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There are no data to export!", "Export Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 
@@ -808,7 +818,7 @@ namespace MAPeD
 		void ProjectExportOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			// EXPORT PROJECT...
-			string filename = ( ( System.Windows.Forms.FileDialog )sender ).FileName;
+			string filename = ( ( FileDialog )sender ).FileName;
 
 			try
 			{
@@ -911,15 +921,20 @@ namespace MAPeD
 						break;
 				}
 			}
-			catch( System.Exception _err )
+			catch( Exception _err )
 			{
-				message_box( _err.Message, "Export Project Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Export Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
-		
-		void AboutToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+
+		void ExportScriptEditorToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			message_box( "Game Maps Editor (" + utils.CONST_PLATFORM + ") \n\n" + utils.CONST_APP_VER + " " + utils.build_str + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information );
+			( new py_editor( m_data_manager ) ).Show();
+		}
+		
+		void AboutToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			message_box( "Game Maps Editor (" + utils.CONST_PLATFORM + ") \n\n" + utils.CONST_APP_VER + " " + utils.build_str + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 
 		public void KeyUp_Event(object sender, KeyEventArgs e)
@@ -931,7 +946,7 @@ namespace MAPeD
 		{
 		}
 		
-		void TabCntrlDblClick_Event(object sender, System.EventArgs e)
+		void TabCntrlDblClick_Event(object sender, EventArgs e)
 		{
 			TabControl tab_cntrl = sender as TabControl;
 			
@@ -957,7 +972,7 @@ namespace MAPeD
 			BtnUpdateGFX.UseVisualStyleBackColor = !_on;
 		}
 		
-		void CHRBankChanged_Event(object sender, System.EventArgs e)
+		void CHRBankChanged_Event(object sender, EventArgs e)
 		{
 			ComboBox chr_bank_cbox = sender as ComboBox;
 			
@@ -980,7 +995,7 @@ namespace MAPeD
 			update_screens_by_bank_id( true );
 		}
 
-		void BtnUpdateGFXClick_Event(object sender, System.EventArgs e)
+		void BtnUpdateGFXClick_Event(object sender, EventArgs e)
 		{
 			update_graphics( false );
 			
@@ -1014,7 +1029,7 @@ namespace MAPeD
 //			enable_update_screens_btn( false );			
 		}
 		
-		void BtnCopyCHRBankClick_Event(object sender, System.EventArgs e)
+		void BtnCopyCHRBankClick_Event(object sender, EventArgs e)
 		{
 			if( m_data_manager.tiles_data_copy() == true )
 			{
@@ -1034,7 +1049,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnAddCHRBankClick_Event(object sender, System.EventArgs e)
+		void BtnAddCHRBankClick_Event(object sender, EventArgs e)
 		{
 			m_data_manager.tiles_data_create();
 			
@@ -1050,9 +1065,9 @@ namespace MAPeD
 			set_status_msg( "CHR bank added" );
 		}
 		
-		void BtnDeleteCHRBankClick_Event(object sender, System.EventArgs e)
+		void BtnDeleteCHRBankClick_Event(object sender, EventArgs e)
 		{
-			if( CBoxCHRBanks.Items.Count > 0 && message_box( "Are you sure?", "Remove CHR Bank", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+			if( CBoxCHRBanks.Items.Count > 0 && message_box( "Are you sure?", "Remove CHR Bank", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				ListViewScreens.BeginUpdate();
 				{
@@ -1118,7 +1133,7 @@ namespace MAPeD
 			}
 		}
 		
-		void PanelBlocksClick_Event(object sender, System.EventArgs e)
+		void PanelBlocksClick_Event(object sender, EventArgs e)
 		{
 			select_block( get_sender_index( sender ), true, true );
 		}
@@ -1146,7 +1161,7 @@ namespace MAPeD
 			PanelBlocks.Controls[ _btn_ind ].Select();		
 		}
 
-		void PanelTilesClick_Event(object sender, System.EventArgs e)
+		void PanelTilesClick_Event(object sender, EventArgs e)
 		{
 			select_tile( get_sender_index( sender ) );
 		}
@@ -1192,7 +1207,7 @@ namespace MAPeD
 			}
 		}
 		
-		void CBoxBlockObjIdChanged_Event(object sender, System.EventArgs e)
+		void CBoxBlockObjIdChanged_Event(object sender, EventArgs e)
 		{
 			m_tiles_processor.set_block_flags_obj_id( CBoxBlockObjId.SelectedIndex, PropertyPerBlockToolStripMenuItem.Checked );
 			
@@ -1202,37 +1217,37 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnBlockVFlipClick_Event(object sender, System.EventArgs e)
+		void BtnBlockVFlipClick_Event(object sender, EventArgs e)
 		{
 			m_tiles_processor.transform_block( utils.ETransformType.tt_vflip );
 		}
 		
-		void BtnBlockHFlipClick_Event(object sender, System.EventArgs e)
+		void BtnBlockHFlipClick_Event(object sender, EventArgs e)
 		{
 			m_tiles_processor.transform_block( utils.ETransformType.tt_hflip );
 		}
 		
-		void BtnBlockRotateClick_Event(object sender, System.EventArgs e)
+		void BtnBlockRotateClick_Event(object sender, EventArgs e)
 		{
 			m_tiles_processor.transform_block( utils.ETransformType.tt_rotate );
 		}
 		
-		void BtnCHRVFlipClick_Event(object sender, System.EventArgs e)
+		void BtnCHRVFlipClick_Event(object sender, EventArgs e)
 		{
 			m_tiles_processor.transform_selected_CHR( utils.ETransformType.tt_vflip );
 		}
 		
-		void BtnCHRHFlipClick_Event(object sender, System.EventArgs e)
+		void BtnCHRHFlipClick_Event(object sender, EventArgs e)
 		{
 			m_tiles_processor.transform_selected_CHR( utils.ETransformType.tt_hflip );
 		}
 		
-		void BtnCHRRotateClick_Event(object sender, System.EventArgs e)
+		void BtnCHRRotateClick_Event(object sender, EventArgs e)
 		{
 			m_tiles_processor.transform_selected_CHR( utils.ETransformType.tt_rotate );
 		}
 
-		void SelectCHRToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void SelectCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			block_editor_draw_mode( false );
 		}
@@ -1264,7 +1279,7 @@ namespace MAPeD
 			select_block( m_tiles_processor.get_selected_block(), true, false );
 		}
 		
-		void DrawToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void DrawToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			block_editor_draw_mode( true );
 		}
@@ -1283,12 +1298,12 @@ namespace MAPeD
 			m_tiles_processor.set_block_editor_mode( _on ?  block_editor.EMode.bem_draw:block_editor.EMode.bem_CHR_select );
 		}
 		
-		void TilesLockEditorToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void TilesLockEditorToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			TilesLockEditorToolStripMenuItem.Checked = CheckBoxTileEditorLock.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
-		void CheckBoxTileEditorLockedChecked_Event(object sender, System.EventArgs e)
+		void CheckBoxTileEditorLockedChecked_Event(object sender, EventArgs e)
 		{
 			bool checked_state = ( sender as CheckBox ).Checked;
 			
@@ -1299,7 +1314,7 @@ namespace MAPeD
 			BtnTileReserveBlocks.Enabled = !checked_state;
 		}
 
-		void CopyCHRToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void CopyCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			if( m_tiles_processor.CHR_bank_copy_spr() )
 			{
@@ -1307,14 +1322,14 @@ namespace MAPeD
 			}
 		}
 		
-		void PasteCHRToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void PasteCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			m_tiles_processor.CHR_bank_paste_spr();
 			
 			enable_copy_paste_action( false, ECopyPasteType.cpt_CHR_bank );
 		}
 		
-		void FillWithColorCHRToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void FillWithColorCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			if( m_tiles_processor.CHR_bank_fill_with_color_spr() == false )
 			{
@@ -1351,7 +1366,7 @@ namespace MAPeD
 		
 		void DeleteCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( message_box( "Are you sure?", "Delete CHR", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( message_box( "Are you sure?", "Delete CHR", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				if( m_data_manager.tiles_data_pos >= 0 )
 				{
@@ -1417,7 +1432,7 @@ namespace MAPeD
 			return -1;
 		}
 		
-		void CopyBlockToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void CopyBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			if( ( m_block_copy_item_ind = get_context_menu_sender_index( sender ) ) > 0 )
 			{
@@ -1425,12 +1440,12 @@ namespace MAPeD
 			}
 		}
 		
-		void PasteBlockCloneToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void PasteBlockCloneToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			paste_block( true, get_context_menu_sender_index( sender ) );
 		}
 		
-		void PasteBlockRefsToolStripMenuItemClickEvent(object sender, System.EventArgs e)
+		void PasteBlockRefsToolStripMenuItemClickEvent(object sender, EventArgs e)
 		{
 			paste_block( false, get_context_menu_sender_index( sender ) );
 		}
@@ -1491,7 +1506,7 @@ namespace MAPeD
 
 		void ClearCHRsBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( message_box( "Are you sure?\n\nWARNING: ALL the block's CHRs will be cleared!", "Clear Selected Block CHRs", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( message_box( "Are you sure?\n\nWARNING: ALL the block's CHRs will be cleared!", "Clear Selected Block CHRs", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				clear_block( true, get_context_menu_sender_index( sender ) );
 			}
@@ -1499,7 +1514,7 @@ namespace MAPeD
 		
 		void ClearRefsBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( message_box( "Are you sure?\n\nWARNING: ALL the block's CHR indices will be set to zero!", "Clear Selected Block Refs", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( message_box( "Are you sure?\n\nWARNING: ALL the block's CHR indices will be set to zero!", "Clear Selected Block Refs", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				clear_block( false, get_context_menu_sender_index( sender ) );
 			}
@@ -1576,7 +1591,7 @@ namespace MAPeD
 		
 		void DeleteBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( message_box( "Are you sure?", "Delete Block", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( message_box( "Are you sure?", "Delete Block", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				if( m_data_manager.tiles_data_pos >= 0 )
 				{
@@ -1602,7 +1617,7 @@ namespace MAPeD
 			}
 		}
 		
-		void CopyTileToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void CopyTileToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			if( ( m_tile_copy_item_ind = get_context_menu_sender_index( sender ) ) > 0 )
 			{
@@ -1610,7 +1625,7 @@ namespace MAPeD
 			}
 		}
 		
-		void PasteTileToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void PasteTileToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			int sel_ind = get_context_menu_sender_index( sender );
 			
@@ -1632,9 +1647,9 @@ namespace MAPeD
 			}
 		}
 		
-		void ClearTileToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void ClearTileToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( message_box( "Are you sure?\n\nWARNING: ALL the tile's blocks references will be cleared!", "Clear Selected Tile Refs", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( message_box( "Are you sure?\n\nWARNING: ALL the tile's blocks references will be cleared!", "Clear Selected Tile Refs", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				int sel_ind = get_context_menu_sender_index( sender );
 				
@@ -1654,9 +1669,9 @@ namespace MAPeD
 			}
 		}
 		
-		void ClearAllTileToolStripMenuItemClick_Event(object sender, System.EventArgs e)
+		void ClearAllTileToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( message_box( "Are you sure?\n\nWARNING: ALL the blocks references for all the tiles will be set to zero!", "Clear Tiles", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( message_box( "Are you sure?\n\nWARNING: ALL the blocks references for all the tiles will be set to zero!", "Clear Tiles", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 				
@@ -1696,7 +1711,7 @@ namespace MAPeD
 		
 		void DeleteTileToolStripMenuItem3Click_Event(object sender, EventArgs e)
 		{
-			if( message_box( "Are you sure?", "Delete Tile", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( message_box( "Are you sure?", "Delete Tile", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				if( m_data_manager.tiles_data_pos >= 0 )
 				{
@@ -1724,7 +1739,7 @@ namespace MAPeD
 		{
 			if( m_data_manager.tiles_data_cnt == 0 )			
 			{
-				message_box( "There are no data!", "Data Optimization", System.Windows.Forms.MessageBoxButtons.OK );
+				message_box( "There are no data!", "Data Optimization", MessageBoxButtons.OK );
 			}
 			else
 			{
@@ -1786,7 +1801,7 @@ namespace MAPeD
 			}
 		}
 
-		void BtnCreateScreenClick_Event(object sender, System.EventArgs e)
+		void BtnCreateScreenClick_Event(object sender, EventArgs e)
 		{
 			if( m_data_manager.screen_data_create() == true )
 			{
@@ -1801,7 +1816,7 @@ namespace MAPeD
 			}
 		}
 
-		void BtnCopyScreenClick_Event(object sender, System.EventArgs e)
+		void BtnCopyScreenClick_Event(object sender, EventArgs e)
 		{
 			if( m_data_manager.screen_data_copy() == true )
 			{
@@ -1816,9 +1831,9 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnDeleteScreenClick_Event(object sender, System.EventArgs e)
+		void BtnDeleteScreenClick_Event(object sender, EventArgs e)
 		{
-			if( ListBoxScreens.SelectedIndex >= 0 && ListBoxScreens.Items.Count > 0 && message_box( "Are you sure?", "Delete Screen", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+			if( ListBoxScreens.SelectedIndex >= 0 && ListBoxScreens.Items.Count > 0 && message_box( "Are you sure?", "Delete Screen", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				m_data_manager.screen_data_delete();
 
@@ -1853,7 +1868,7 @@ namespace MAPeD
 			}
 		}
 		
-		void ListBoxScreensClick_Event(object sender, System.EventArgs e)
+		void ListBoxScreensClick_Event(object sender, EventArgs e)
 		{
 			m_data_manager.scr_data_pos = ( sender as ListBox ).SelectedIndex;
 		}
@@ -1863,7 +1878,7 @@ namespace MAPeD
 			ScreenEditShowGridToolStripMenuItem.Checked = CheckBoxScreenShowGrid.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
-		void CheckBoxScreenShowGridChecked_Event(object sender, System.EventArgs e)
+		void CheckBoxScreenShowGridChecked_Event(object sender, EventArgs e)
 		{
 			m_screen_editor.draw_grid_flag = ScreenEditShowGridToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
 		}
@@ -2082,7 +2097,7 @@ namespace MAPeD
 		{
 			layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
 			
-			if( data != null && _condition( data ) && message_box( "Are you sure?", _caption_msg, MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( data != null && _condition( data ) && message_box( "Are you sure?", _caption_msg, MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				if( _act( data ) )
 				{
@@ -2212,7 +2227,7 @@ namespace MAPeD
 
 		void BtnDeleteLayoutClick_Event(object sender, EventArgs e)
 		{
-			if( ListBoxLayouts.SelectedIndex >= 0 && ListBoxLayouts.Items.Count > 0 && message_box( "Are you sure?", "Remove Layout", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+			if( ListBoxLayouts.SelectedIndex >= 0 && ListBoxLayouts.Items.Count > 0 && message_box( "Are you sure?", "Remove Layout", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				m_data_manager.layout_data_delete();
 
@@ -2228,7 +2243,7 @@ namespace MAPeD
 		
 		void BtnCopyLayoutClick_Event(object sender, EventArgs e)
 		{
-			if( ListBoxLayouts.SelectedIndex >= 0 && ListBoxLayouts.Items.Count > 0 && message_box( "Are you sure?", "Copy Layout", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+			if( ListBoxLayouts.SelectedIndex >= 0 && ListBoxLayouts.Items.Count > 0 && message_box( "Are you sure?", "Copy Layout", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				m_data_manager.layout_data_copy();
 
@@ -2476,7 +2491,7 @@ namespace MAPeD
 			}
 		}
 
-		void TreeViewEntitiesSelect_Event(object sender, System.Windows.Forms.TreeViewEventArgs e)
+		void TreeViewEntitiesSelect_Event(object sender, TreeViewEventArgs e)
 		{
 			if( tabControlScreensEntities.SelectedTab == TabEntities )
 			{
@@ -2960,7 +2975,7 @@ namespace MAPeD
 		
 		void EntityLoadBitmap_openFileDialogFileOk(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			System.String filename = ( ( System.Windows.Forms.FileDialog )sender ).FileName;
+			String filename = ( ( FileDialog )sender ).FileName;
 			
 			try
 			{
@@ -2999,7 +3014,7 @@ namespace MAPeD
 
 				fill_entity_data( ent );
 			}
-			catch( System.Exception _err )
+			catch( Exception _err )
 			{
 				message_box( _err.Message, "Load Entity Image Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}

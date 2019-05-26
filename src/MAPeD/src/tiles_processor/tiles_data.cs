@@ -33,7 +33,7 @@ namespace MAPeD
 		private byte[] m_palette2	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 7+16 ), (byte)( 7+32 ), (byte)( 7+48 ) };
 		private byte[] m_palette3	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 11+16 ), (byte)( 11+32 ), (byte)( 11+48 ) };
 		
-		private ushort[] m_blocks	= new ushort[ utils.CONST_BLOCKS_USHORT_SIZE ];	// 15-8 -> obj_id(4)|plt(2)|hv_flip(2); 7-0 -> CHR ind
+		private ushort[] m_blocks	= new ushort[ utils.CONST_BLOCKS_USHORT_SIZE ];	// [ 15-8 -> property_id(4) palette ind(2) hv_flip(2) | CHR ind(8) <-- 7-0 ]
 		private uint[] m_tiles		= new uint[ utils.CONST_TILES_UINT_SIZE ];
 		
 		private List< byte[] >	m_scr_data	= null;
@@ -660,6 +660,94 @@ namespace MAPeD
 			}
 		}
 
+		public long export_CHR( BinaryWriter _bw, bool _need_padding = false )
+		{
+			int i;
+			int x;
+			int y;
+			int val;
+			
+			long padding;
+			long data_size;
+			
+			byte data;
+			
+			byte[] img_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
+			
+			int num_CHR_sprites = get_first_free_spr8x8_id();
+			
+			num_CHR_sprites = num_CHR_sprites < 0 ? utils.CONST_CHR_BANK_MAX_SPRITES_CNT:num_CHR_sprites;
+			
+			for( i = 0; i < num_CHR_sprites; i++ )
+			{
+				from_CHR_bank_to_spr8x8( i, img_buff, 0 );
+				
+				// the first 8 bytes out of 16 ones
+				for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
+				{
+					data = 0;
+					
+					for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+					{
+						val = img_buff[ ( y << 3 ) + ( 7 - x ) ];
+						
+						data |= ( byte )( ( val & 0x01 ) << x );
+					}
+					
+					_bw.Write( data );
+				}
+				
+				// the second 8 bytes of CHR
+				for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
+				{
+					data = 0;
+					
+					for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+					{
+						val = img_buff[ ( y << 3 ) + ( 7 - x ) ];
+						
+						data |= ( byte )( ( val >> 1 ) << x );
+					}
+					
+					_bw.Write( data );
+				}
+			}
+			
+			// save padding data to 1/2/4 KB
+			if( _need_padding )
+			{
+				padding 	= 0;
+				data_size 	= _bw.BaseStream.Length;
+				
+				if( data_size < 1024 )
+				{
+					padding = 1024 - data_size; 
+				}
+				else
+				if( data_size < 2048 )
+				{
+					padding = 2048 - data_size;
+				}
+				else
+				if( data_size < 4096 )
+				{
+					padding = 4096 - data_size;
+				}
+				
+				if( padding != 0 )
+				{
+					data = 0;
+					
+					while( padding-- != 0 )
+					{
+						_bw.Write( data );
+					}
+				}
+			}
+			
+			return _bw.BaseStream.Length;
+		}
+		
 		public void save( BinaryWriter _bw )
 		{
 			int i;

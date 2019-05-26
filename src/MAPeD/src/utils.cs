@@ -32,7 +32,7 @@ namespace MAPeD
 	/// </summary>
 	public static class utils
 	{
-		private const bool CONST_DEV_BUILD_FLAG	= false;
+		private const bool CONST_DEV_BUILD_FLAG	= true;
 		private const bool CONST_BETA_FLAG		= true; 
 		
 #if	DEF_NES
@@ -48,18 +48,40 @@ namespace MAPeD
 #endif
 
 		// OS detection code implemented by jarik ( 100% managed code ) https://stackoverflow.com/a/38795621
-		public static bool is_win = check_win();
+		public static bool is_win	= false;
+		public static bool is_linux = false;
+		public static bool is_macos = false;
 		
-		private static bool check_win()
+		public static void check_os()
 		{
 			string windir = Environment.GetEnvironmentVariable("windir");
 			
 			if (!string.IsNullOrEmpty(windir) && windir.Contains(@"\") && Directory.Exists(windir))
 			{
-			    return true;
+				is_win = true;
 			}
-			
-			return false;
+			else if (File.Exists(@"/proc/sys/kernel/ostype"))
+			{
+			    string osType = File.ReadAllText(@"/proc/sys/kernel/ostype");
+			    if (osType.StartsWith("Linux", StringComparison.OrdinalIgnoreCase))
+			    {
+			        // Note: Android gets here too
+			        is_linux = true;
+			    }
+			    else
+			    {
+			        throw new Exception( "Unsupported platform has detected!" );
+			    }
+			}
+			else if (File.Exists(@"/System/Library/CoreServices/SystemVersion.plist"))
+			{
+			    // Note: iOS gets here too
+			    is_macos = true;
+			}
+		    else
+		    {
+		        throw new Exception( "Unsupported platform has detected!" );
+		    }
 		}
 
 		private static Version ver			= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -553,6 +575,76 @@ namespace MAPeD
 			}
 
 			Array.Copy( tmp_arr, _arr, _arr.Length );
+		}
+		
+		// RLE routine from NESst tool by Shiru
+		public static int RLE( byte[] _arr, ref byte[] _rle_arr )
+		{
+			_rle_arr = new byte[ _arr.Length ];
+			
+			int[] stat = new int[ 256 ];
+			int i,tag,sym,sym_prev,len,ptr;
+			
+			int size = _arr.Length;
+			
+			Array.Clear( stat, 0, 256 );
+			
+			for(i=0;i<size;++i) ++stat[_arr[i]];
+		
+			tag=-1;
+		
+			for(i=0;i<256;++i)
+			{
+				if( stat[i] == 0 )
+				{
+					tag=i;
+					break;
+				}
+			}
+			
+			if(tag<0) return -1;
+		
+			ptr=0;
+			len=1;
+			sym_prev=-1;
+		
+			_rle_arr[ptr++]=(byte)tag;
+			
+			for(i=0;i<size;++i)
+			{
+				sym=_arr[i];
+		
+				if(sym_prev!=sym||len>=255||i==size-1)
+				{
+					if(len>1)
+					{
+						if(len==2)
+						{
+							_rle_arr[ptr++]=(byte)sym_prev;
+						}
+						else
+						{
+							_rle_arr[ptr++]=(byte)tag;
+							_rle_arr[ptr++]=(byte)(len-1);
+						}
+					}
+		
+					_rle_arr[ptr++]=(byte)sym;
+		
+					sym_prev=sym;
+		
+					len=1;
+				}
+				else
+				{
+					++len;
+				}
+			}
+		
+			_rle_arr[ptr++]=(byte)tag;	//end of file marked with zero length rle
+			_rle_arr[ptr++]=0;
+			
+			return ptr;			
 		}
 	}
 }

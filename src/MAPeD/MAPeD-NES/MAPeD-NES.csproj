@@ -51,6 +51,12 @@
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IronPython">
+      <HintPath>..\lib\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting">
+      <HintPath>..\lib\Microsoft.Scripting.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -154,6 +160,23 @@
     <Compile Include="..\src\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
+    <Compile Include="..\src\py_scripting\py_api.cs">
+      <Link>py_scripting\py_api.cs</Link>
+    </Compile>
+    <Compile Include="..\src\py_scripting\py_api_doc.cs">
+      <Link>py_scripting\py_api_doc.cs</Link>
+    </Compile>
+    <Compile Include="..\src\py_scripting\py_api_doc.Designer.cs">
+      <Link>py_scripting\py_api_doc.Designer.cs</Link>
+      <DependentUpon>py_api_doc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\py_scripting\py_editor.cs">
+      <Link>py_scripting\py_editor.cs</Link>
+    </Compile>
+    <Compile Include="..\src\py_scripting\py_editor.Designer.cs">
+      <Link>py_scripting\py_editor.Designer.cs</Link>
+      <DependentUpon>py_editor.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\screen_editor.cs">
       <Link>screen_editor.cs</Link>
     </Compile>
@@ -244,6 +267,14 @@
       <Link>optimization_form.resx</Link>
       <DependentUpon>optimization_form.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\src\py_scripting\py_api_doc.resx">
+      <Link>py_scripting\py_api_doc.resx</Link>
+      <DependentUpon>py_api_doc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\py_scripting\py_editor.resx">
+      <Link>py_scripting\py_editor.resx</Link>
+      <DependentUpon>py_editor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\src\screen_mark_form.resx">
       <Link>screen_mark_form.resx</Link>
       <DependentUpon>screen_mark_form.cs</DependentUpon>
@@ -258,6 +289,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="py_scripting" />
     <Folder Include="tiles_processor" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: $8bIT
+ * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
  * Date: 01.05.2017
  * Time: 15:24
  */
@@ -51,6 +51,7 @@ namespace MAPeD
 			this.separatorToolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportScriptEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.descriptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -453,6 +454,7 @@ namespace MAPeD
 									this.separatorToolStripMenuItem1,
 									this.importToolStripMenuItem,
 									this.exportToolStripMenuItem,
+									this.exportScriptEditorToolStripMenuItem,
 									this.toolStripSeparator1,
 									this.descriptionToolStripMenuItem,
 									this.toolStripSeparator3,
@@ -465,7 +467,7 @@ namespace MAPeD
 			// 
 			this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
 			this.loadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
-			this.loadToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.loadToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.loadToolStripMenuItem.Text = "&Load";
 			this.loadToolStripMenuItem.Click += new System.EventHandler(this.LoadToolStripMenuItemClick_Event);
 			// 
@@ -473,7 +475,7 @@ namespace MAPeD
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.saveToolStripMenuItem.Text = "&Save";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItemClick_Event);
 			// 
@@ -481,20 +483,20 @@ namespace MAPeD
 			// 
 			this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
 			this.closeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-			this.closeToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.closeToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.closeToolStripMenuItem.Text = "&Close";
 			this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItemClick_Event);
 			// 
 			// separatorToolStripMenuItem1
 			// 
 			this.separatorToolStripMenuItem1.Name = "separatorToolStripMenuItem1";
-			this.separatorToolStripMenuItem1.Size = new System.Drawing.Size(145, 6);
+			this.separatorToolStripMenuItem1.Size = new System.Drawing.Size(208, 6);
 			// 
 			// importToolStripMenuItem
 			// 
 			this.importToolStripMenuItem.Name = "importToolStripMenuItem";
 			this.importToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-			this.importToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.importToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.importToolStripMenuItem.Text = "&Import";
 			this.importToolStripMenuItem.Click += new System.EventHandler(this.ImportToolStripMenuItemClick_Event);
 			// 
@@ -502,32 +504,40 @@ namespace MAPeD
 			// 
 			this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
 			this.exportToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-			this.exportToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.exportToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.exportToolStripMenuItem.Text = "&Export";
 			this.exportToolStripMenuItem.Click += new System.EventHandler(this.ExportToolStripMenuItemClick_Event);
+			// 
+			// exportScriptEditorToolStripMenuItem
+			// 
+			this.exportScriptEditorToolStripMenuItem.Name = "exportScriptEditorToolStripMenuItem";
+			this.exportScriptEditorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
+			this.exportScriptEditorToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+			this.exportScriptEditorToolStripMenuItem.Text = "Expo&rt Script Editor";
+			this.exportScriptEditorToolStripMenuItem.Click += new System.EventHandler(this.ExportScriptEditorToolStripMenuItemClick);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(145, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(208, 6);
 			// 
 			// descriptionToolStripMenuItem
 			// 
 			this.descriptionToolStripMenuItem.Name = "descriptionToolStripMenuItem";
-			this.descriptionToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.descriptionToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.descriptionToolStripMenuItem.Text = "&Description";
 			this.descriptionToolStripMenuItem.Click += new System.EventHandler(this.DescriptionToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(145, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(208, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItemClick_Event);
 			// 
@@ -1391,7 +1401,7 @@ namespace MAPeD
 			this.BtnCopyCHRBank.Name = "BtnCopyCHRBank";
 			this.BtnCopyCHRBank.Size = new System.Drawing.Size(48, 23);
 			this.BtnCopyCHRBank.TabIndex = 9;
-			this.BtnCopyCHRBank.Text = "Copy Bank";
+			this.BtnCopyCHRBank.Text = "Copy";
 			this.BtnCopyCHRBank.UseVisualStyleBackColor = true;
 			this.BtnCopyCHRBank.Click += new System.EventHandler(this.BtnCopyCHRBankClick_Event);
 			// 
@@ -3193,6 +3203,7 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem exportScriptEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editInstancesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
 		private System.Windows.Forms.ToolStripMenuItem reserveCHRsToolStripMenuItem;

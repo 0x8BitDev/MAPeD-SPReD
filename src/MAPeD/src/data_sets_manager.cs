@@ -183,7 +183,7 @@ namespace MAPeD
 			group_add( "POWER-UPS" );
 		}
 		
-		private entity_data get_entity_by_name( string _name )
+		public entity_data get_entity_by_name( string _name )
 		{
 			entity_data ent = null;
 			
