@@ -1,0 +1,1294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1251">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.2  (Win32)">
+	<META NAME="CREATED" CONTENT="20190523;18115340">
+	<META NAME="CHANGED" CONTENT="20190525;17240368">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { size: 21cm 180cm }
+		p { margin:0; }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="ru-RU" BGCOLOR="#dddddd" DIR="LTR">
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" STYLE="margin-left: 1.19cm; margin-bottom: 0cm; font-style: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>MAPeD
+Data Export Python API v1.0</B></FONT></FONT></P>
+<HR>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<A HREF="#Graphics Banks Data|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Graphics
+Banks Data</B></SPAN></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#mpd_num_banks|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_num_banks</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#mpd_get_active_bank|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_active_bank</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_get_tiles|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_tiles</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_get_blocks|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_blocks</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_get_CHR_data|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_CHR_data</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_export_CHR_data|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_export_CHR_data</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_get_palette|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_palette</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_num_screens|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_num_screens</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_get_screen_data|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_screen_data</B></SPAN></FONT></FONT></A></P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<A HREF="#Layouts Data|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Layouts
+Data</B></SPAN></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#mpd_num_layouts|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_num_layouts</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_layout_width|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_layout_width</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_layout_height|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_layout_height</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_layout_start_screen_cell|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_layout_start_screen_cell</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_layout_screen_ind|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_layout_screen_ind</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_layout_screen_marks|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_layout_screen_marks</B></SPAN></FONT></FONT></A></P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<A HREF="#Entity Instances|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Entity
+Instances</B></SPAN></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#Entity instance class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_py_inst_entity</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_layout_screen_num_entities|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_layout_screen_num_entities</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_layout_get_inst_entity|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_layout_get_inst_entity</B></SPAN></FONT></FONT></A></P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<A HREF="#Base Entities|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Base
+Entities</B></SPAN></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#Base entity class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_py_base_entity</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_group_names_of_entities|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_group_names_of_entities</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_group_num_entities|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_group_num_entities</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_group_get_entity_by_ind|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_group_get_entity_by_ind</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_get_base_entity_by_name|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_base_entity_by_name</B></SPAN></FONT></FONT></A></P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<A HREF="#Miscellaneous|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Miscellaneous</B></SPAN></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#mpd_RLE|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_RLE</B></SPAN></FONT></FONT></A></P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<HR>
+<DIV ID="Graphics Banks Data" DIR="LTR"><A NAME="Graphics Banks Data|region"></A>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%; page-break-before: auto; page-break-after: auto">
+	<BR>
+	</P>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+	<FONT SIZE=5><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Graphics
+	</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><B>Bank</B></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>s</B></SPAN></FONT>
+	<FONT FACE="Arial, sans-serif"><B>Data</B></FONT></FONT></P>
+</DIV>
+<P STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" STYLE="text-indent: 1.24cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Each graphics bank
+contains: <FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="ru-RU">CHR
+b</SPAN></FONT><FONT SIZE=2 STYLE="font-size: 11pt">ank</FONT><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="ru-RU">,
+</SPAN></FONT><FONT SIZE=2 STYLE="font-size: 11pt">2x2 tiles (</FONT><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="ru-RU">blocks</SPAN></FONT><FONT SIZE=2 STYLE="font-size: 11pt">)</FONT>
+<FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="ru-RU">(256), </SPAN></FONT><FONT SIZE=2 STYLE="font-size: 11pt">4x4
+</FONT><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="ru-RU">tiles
+(256), palette</SPAN></FONT><FONT SIZE=2 STYLE="font-size: 11pt">s</FONT>
+<FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="ru-RU">and screens
+</SPAN></FONT><FONT SIZE=2 STYLE="font-size: 11pt">data.</FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_num_banks" DIR="LTR"><A NAME="mpd_num_banks|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+	<B>mpd_num_banks</B>()</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Get
+a number of graphics banks in a project.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the number of graphics
+banks in a project</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_get_active_bank" DIR="LTR"><A NAME="mpd_get_active_bank|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+	<B>mpd_get_active_bank</B>()</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Get
+an active graphics bank index.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the index of an active
+bank</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<DIV ID="mpd_get_tiles" DIR="LTR"><A NAME="mpd_get_tiles|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[UInt32]</SPAN>
+	<B>mpd_get_tiles</B>( <SPAN LANG="en-US">Int32</SPAN> _bank_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get 4x4 tiles array of an
+active bank.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the 4x4 tiles array or
+<B>null</B> in case of incorrect bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">E</SPAN><SPAN LANG="ru-RU">ach
+tile value (UInt32) consists of block</SPAN>s <SPAN LANG="ru-RU">indices
+ordered left to right, up to down from low to high byte </SPAN>( 4
+bytes )</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_get_blocks" DIR="LTR"><A NAME="mpd_get_blocks|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[UInt16]</SPAN>
+	<B>mpd_get_blocks</B>( <SPAN LANG="en-US">Int32</SPAN> _bank_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get blocks ( 2x2 tiles )
+array of an active bank.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">the
+blocks data array </SPAN></SPAN><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">or
+</SPAN></SPAN></FONT><FONT SIZE=3><SPAN LANG="en-US"><B>null</B></SPAN></FONT>
+<FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">in
+case of incorrect bank index</SPAN></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">E</SPAN></SPAN><SPAN STYLE="font-weight: normal">ach
+block's value (UInt16) has the following bits description: [ 15-8 -&gt;
+property_id(4) palette ind(2) not used(2) | CHR ind(8) &lt;-- 7-0 ].
+</SPAN>Thereby, four UInt16 values form one block <SPAN LANG="en-US">(
+</SPAN>2x2 tile <SPAN LANG="en-US">)</SPAN>.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_get_CHR_data" DIR="LTR"><A NAME="mpd_get_CHR_data|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[Byte]</SPAN>
+	<B>mpd_get_CHR_data</B>( <SPAN LANG="en-US">Int32</SPAN> _bank_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">Get
+raw CHR data. </SPAN><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="ru-RU">CHR
+data is stored as image 128x128 (8bit).</SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the array of bytes ( 16K
+) or <B>null</B> in case of incorrect bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_export_CHR_data" DIR="LTR"><A NAME="mpd_export_CHR_data|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">L</SPAN>ong
+	<B>mpd_export_CHR_data</B>( <SPAN LANG="en-US">Int32</SPAN>
+	_bank_ind, <SPAN LANG="en-US">String</SPAN> _filename, <SPAN LANG="en-US">Bool</SPAN>
+	_need_padding )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Convert CHR bank to NES
+format and save it to a file.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_filename &ndash;
+exported data filename</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_need_padding &ndash;
+save padding data to 1/2/4 KB or not</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the size of saved file in
+bytes</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_get_palette" DIR="LTR"><A NAME="mpd_get_palette|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[Byte]</SPAN>
+	<B>mpd_get_palette</B>( <SPAN LANG="en-US">Int32</SPAN> _bank_ind,
+	<SPAN LANG="en-US">Int32</SPAN> _plt_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a 4 colors pallete by input index.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_plt_ind &ndash; palette
+index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the 4 bytes array of
+color indices or <B>null</B> in case of incorrect bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<DIV ID="mpd_num_screens" DIR="LTR"><A NAME="mpd_num_screens|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Int32</SPAN></SPAN></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>mpd_num_screens</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">(
+	</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Int32</SPAN></SPAN></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">_bank_ind
+	)</SPAN></FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a number of screens in a graphics
+bank.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the number of screens
+created in a graphics bank or <B>-1</B> in case of incorrect bank
+index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_get_screen_data" DIR="LTR"><A NAME="mpd_get_screen_data|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[Byte]</SPAN>
+	<B>mpd_get_screen_data</B>( <SPAN LANG="en-US">Int32</SPAN>
+	_bank_ind, <SPAN LANG="en-US">Int32</SPAN> _scr_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get an array of 4x4 tiles indices
+which form screen data.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_scr_ind &ndash; screen
+index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the bytes array of 4x4
+tiles indices of a particular screen or <B>null</B> in case of
+incorrect bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<HR>
+<DIV ID="Layouts Data" DIR="LTR"><A NAME="Layouts Data|region"></A>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+	<BR>
+	</P>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><B>Layouts Data</B></FONT></FONT></P>
+</DIV>
+<P STYLE="margin-bottom: 0cm; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<BR>
+</P>
+<P STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">Each layout is a matrix of cells. Each
+cell can contains a screen index and marks ( adjacent screens mask +
+screen property value 0...15 ).</FONT></P>
+<P STYLE="margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_num_layouts" DIR="LTR"><A NAME="mpd_num_layouts|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Int32</SPAN>
+	<B>mpd_num_layouts</B>()</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a number of layouts available in a
+project.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the number of layouts</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_layout_width" DIR="LTR"><A NAME="mpd_layout_width|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Int32</SPAN>
+	<B>mpd_layout_width</B>( <SPAN LANG="en-US">Int32</SPAN> _layout_ind
+	)</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a layout width.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_layout_ind &ndash;
+layout index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the input layout width or
+<B>-1</B> in case of incorrect layout index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_layout_height" DIR="LTR"><A NAME="mpd_layout_height|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Int32</SPAN>
+	<B>mpd_layout_height</B>( <SPAN LANG="en-US">Int32</SPAN>
+	_layout_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a layout height.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_layout_ind &ndash;
+layout index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the input layout height
+or <B>-1</B> in case of incorrect layout index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_layout_start_screen_cell" DIR="LTR"><A NAME="mpd_layout_start_screen_cell|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Int32</SPAN>
+	<B>mpd_layout_start_screen_</B><SPAN LANG="en-US"><B>cell</B></SPAN>(
+	<SPAN LANG="en-US">Int32</SPAN> _layout_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a cell index which contains a
+start screen index.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_layout_ind &ndash;
+layout index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the cell index which
+contains a start screen index or <B>-1</B> in case of incorrect
+layout index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>To get a start screen
+index you can do the following steps:</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cc9966; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.12cm; margin-bottom: 0cm; background: #cc9966; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Microsoft Sans Serif, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent">layout_width
+= mpd_layout_width( layout_n )</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.12cm; margin-bottom: 0cm; background: #cc9966; line-height: 100%">
+<FONT FACE="Microsoft Sans Serif, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent">layout_height
+= mpd_layout_height( layout_n )</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.12cm; margin-bottom: 0cm; background: #cc9966; line-height: 100%">
+<FONT FACE="Microsoft Sans Serif, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent">start_screen_cell
+= mpd_layout_start_screen_cell( layout_n )</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.12cm; margin-bottom: 0cm; background: #cc9966; line-height: 100%">
+<FONT FACE="Microsoft Sans Serif, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent"><SPAN LANG="en-US">start_screen_ind
+= </SPAN>mpd_layout_screen_ind( layout_n, start_screen_cell %
+layout_width, start_screen_cell / layout_width ) )</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.12cm; margin-bottom: 0cm; background: #cc9966; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_layout_screen_ind" DIR="LTR"><A NAME="mpd_layout_screen_ind|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">SByte</SPAN>
+	<B>mpd_layout_screen_ind</B>( <SPAN LANG="en-US">Int32</SPAN>
+	_layout_ind, <SPAN LANG="en-US">Int32</SPAN> _scr_pos_x, <SPAN LANG="en-US">Int32</SPAN>
+	_scr_pos_y )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a screen index by cell coordinates
+( zero-based values ).</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_layout_ind &ndash;
+layout index</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_scr_pos_x &ndash; cell
+index by X axis</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_scr_pos_y &ndash; cell
+index by Y axis</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the screen index in a
+common screens array of all screens of all graphics banks ( in the
+editor you can set the 'All Banks' checkbox ( Layout tab &rarr;
+Screens tab ) to see that common screens array ) or <B>-1</B> in case
+of incorrect layout index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_layout_screen_marks" DIR="LTR"><A NAME="mpd_layout_screen_marks|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">UInt16</SPAN>
+	<B>mpd_layout_screen_marks</B>( <SPAN LANG="en-US">Int32</SPAN>
+	_layout_ind, <SPAN LANG="en-US">Int32</SPAN> _scr_pos_x,
+	<SPAN LANG="en-US">Int32</SPAN>_scr_pos_y )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get screen marks assigned to a screen
+with particular coordinates ( zero-based values ).</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_layout_ind &ndash;
+layout index</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_scr_pos_x &ndash; cell
+index by X axis</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_scr_pos_y &ndash; cell
+index by Y axis</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the screen marks value:
+7-4 - bit mask of user defined adjacent screens (
+Down(7)-Right(6)-Up(5)-Left(4) ); 3-0 - screen property</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>or <B>0xFFFF</B> in case
+of incorrect layout index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<HR>
+<DIV ID="Entity Instances" DIR="LTR"><A NAME="Entity Instances|region"></A>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+	<BR>
+	</P>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+	<FONT SIZE=5><FONT FACE="Arial, sans-serif"><B>Entity Instances</B></FONT></FONT></P>
+</DIV>
+<P STYLE="margin-bottom: 0cm; line-height: 100%; page-break-before: auto; page-break-after: avoid">
+<BR>
+</P>
+<P STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<DIV ID="Entity instance class" DIR="LTR"><A NAME="Entity instance class|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Entity
+	instances inherit all data of <A HREF="#Base Entities|region">base
+	entities</A> and they are stored in screen data.</SPAN></SPAN></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Entity instance class:</B></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public class
+<B>mpd_py_inst_entity</B></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>{</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// <SPAN LANG="en-US">autogenerated
+unique id</SPAN></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+<B>uid</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// <SPAN LANG="en-US">unique
+id of a target entity</SPAN></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+<B>target_uid</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><I>// <SPAN LANG="en-US">instance
+coordinates</SPAN></I></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+<B>x</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+<B>y</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// <SPAN LANG="en-US">base
+entity id</SPAN></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+<B>base_ent_uid</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><I>// <SPAN LANG="en-US">instance
+properties</SPAN></I></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">S</SPAN>tring
+<B>properties</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>}</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<DIV ID="mpd_layout_screen_num_entities" DIR="LTR"><A NAME="mpd_layout_screen_num_entities|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+	<SPAN LANG="en-US"><B>mpd_</B></SPAN><B>layout_screen_num_entities</B>(
+	<SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+	_layout_ind, <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+	_scr_pos_x, <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32
+	</SPAN>_scr_pos_y )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a number of entities in a screen
+with particular coordinates.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_layout_ind &ndash;
+layout index</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_scr_pos_x &ndash; cell
+index by X axis</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_scr_pos_y &ndash; cell
+index by Y axis</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the number of entities or
+<B>-1</B> in case of incorrect layout index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_layout_get_inst_entity" DIR="LTR"><A NAME="mpd_layout_get_inst_entity|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3>mpd_py_inst_entity
+	<SPAN LANG="en-US"><B>mpd_</B></SPAN><B>layout_get_inst_entity</B>(
+	<SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+	_layout_ind, <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+	_scr_pos_x, <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32
+	</SPAN>_scr_pos_y, <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+	_ent_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get an instance entity data.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_layout_ind &ndash;
+layout index</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_scr_pos_x &ndash; cell
+index by X axis</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_scr_pos_y &ndash; cell
+index by Y axis</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_ent_ind &ndash; entity
+index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the <B>mpd_py_inst_entity</B>
+object or <B>null</B> in case of incorrect layout index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<HR>
+<DIV ID="Base Entities" DIR="LTR"><A NAME="Base Entities|region"></A>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%; page-break-before: auto; page-break-after: auto">
+	<BR>
+	</P>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><B>Base Entities</B></FONT></FONT></P>
+</DIV>
+<DIV ID="Base entity class" DIR="LTR"><A NAME="Base entity class|region"></A>
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm; background: transparent; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+	<BR>
+	</P>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Base entity class:</B></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>class <B>mpd_py_base_entity</B></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>{</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// <SPAN LANG="en-US">user
+defined unique id</SPAN></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">B</SPAN>yte
+<B>uid</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// <SPAN LANG="en-US">entity
+dimensions</SPAN></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">B</SPAN>yte
+<B>width</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">B</SPAN>yte
+<B>height</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// <SPAN LANG="en-US">origin
+offset</SPAN></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">SB</SPAN>yte
+<B>pivot_x</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">SB</SPAN>yte
+<B>pivot_y</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// <SPAN LANG="en-US">string
+name</SPAN></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">S</SPAN>tring
+<B>name</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// <SPAN LANG="en-US">base
+properties inherit by all instances</SPAN></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">S</SPAN>tring
+<B>properties</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// <SPAN LANG="en-US">instance
+property by default (can be overridden by each instance)</SPAN></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">S</SPAN>tring
+<B>inst_properties</B>;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>}</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_group_names_of_entities" DIR="LTR"><A NAME="mpd_group_names_of_entities|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Array[S</SPAN></SPAN></FONT><FONT SIZE=3><SPAN STYLE="font-weight: normal">tring]
+	</SPAN></FONT><FONT SIZE=3><SPAN LANG="en-US"><B>mpd_</B></SPAN></FONT><FONT SIZE=3><B>group_names_of_entities</B></FONT><FONT SIZE=3><SPAN STYLE="font-weight: normal">()</SPAN></FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get an array of group names of base
+entities available in a project.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the array of group names</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_group_num_entities" DIR="LTR"><A NAME="mpd_group_num_entities|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+	<B>mpd_group_num_entities</B>( <SPAN LANG="en-US">S</SPAN>tring
+	_group_name )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a number of base entities in a
+particular group.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_group_name &ndash; name
+of group</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the number of entities or
+<B>-1</B> in case of incorrect group name</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_group_get_entity_by_ind" DIR="LTR"><A NAME="mpd_group_get_entity_by_ind|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3>mpd_py_base_entity
+	<B>mpd_group_get_entity_by_ind</B>( <SPAN LANG="en-US">S</SPAN>tring
+	_group_name, <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+	_ent_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a base entity data by group name
+and index.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_group_name &ndash; name
+of group</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_ent_ind &ndash; entity
+index in a group</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the <B>mpd_py_base_entity</B>
+object or <B>null</B> in case of incorrect group name</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_get_base_entity_by_name" DIR="LTR"><A NAME="mpd_get_base_entity_by_name|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3>mpd_py_base_entity
+	<B>mpd_get_base_entity_by_name</B>( <SPAN LANG="en-US">S</SPAN>tring
+	_entity_name )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a base entity by name. You can use
+this function if you know a base entity name exactly.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_entity_name &ndash; name
+of entity</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the <B>mpd_py_base_entity</B>
+object or <B>null</B> in case of incorrect group name</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<HR>
+<DIV ID="Miscellaneous" DIR="LTR"><A NAME="Miscellaneous|region"></A>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%; page-break-before: auto; page-break-after: avoid">
+	<BR>
+	</P>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><B>Miscellaneous</B></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="margin-left: 1.3cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-left: 1.3cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_RLE" DIR="LTR"><A NAME="mpd_RLE|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[B</SPAN>yte]
+	<B>mpd_RLE</B>( <SPAN LANG="en-US">Array[B</SPAN>yte] _arr )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">RLE encoding of input bytes array.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_arr &ndash; input data
+array</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the encoded bytes array
+or <B>null</B> if input data can't be encoded</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<HR>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<P LANG="en-US" STYLE="margin-left: 1.24cm; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Copyright
+(c) 2019 0x8BitDev</FONT></FONT></P>
+</BODY>
+</HTML>
