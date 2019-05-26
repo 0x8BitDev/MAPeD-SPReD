@@ -51,6 +51,7 @@ namespace SPReD
 			// 
 			// richTextBox
 			// 
+			this.richTextBox.AcceptsTab = true;
 			this.richTextBox.Location = new System.Drawing.Point(5, 7);
 			this.richTextBox.MaxLength = 1024;
 			this.richTextBox.Name = "richTextBox";
