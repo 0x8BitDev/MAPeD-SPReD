@@ -5,8 +5,8 @@ Here you can find NES development tools:
 
 # MAPeD-NES - Game maps editor
 **The main features are:**
-- tiles drawing\composing tools
-- building a game map using 2x2 or\and 4x4 tiles
+- tiles drawing/composing tools
+- building a game map using 2x2 or/and 4x4 tiles
 - data optimization tool
 - several game maps in one project
 - detachable UI
@@ -14,16 +14,17 @@ Here you can find NES development tools:
 - tile properties editing ( can be used as collisions data etc )
 - palette per 1x1 tile support ( MMC5 )
 - import tiles from images
-- export to **CA65\NESasm** with wide variety of options:
-	- 2x2\4x4 tiles
-	- column\row data order
+- export to **CA65/NESasm** with wide variety of options:
+	- 2x2/4x4 tiles
+	- column/row data order
 	- RLE compression
-	- modes: multidirectional \ bidirectional scrolling, static screens switching
-	- attributes per 1x1\2x2 tile
-	- tiles properties per 1x1\2x2 tile
+	- modes: multidirectional / bidirectional scrolling, static screens switching
+	- attributes per 1x1/2x2 tile
+	- tiles properties per 1x1/2x2 tile
 	- level topology options
 	- entities
 	- etc...
+- **Python** supported for writing custom data export scripts
 - export to **SjASMPlus** ( ZX Spectrum assembler )
 - etc...
 
@@ -35,15 +36,15 @@ Here you can find NES development tools:
 - group operations on sprites
 - sprites data packing ( 1/2/4 KB ) and optimization
 - 8x16 mode support
-- images import\export
-- export to **CA65\NESasm**
+- images import/export
+- export to **CA65/NESasm**
 - etc...
 
 
 # Compiling
 The solution files you can find here:
- `.\src\MAPeD\MAPeD-NES.sln`
- `.\src\SPReD\SPReD-NES.sln`
+ `./src/MAPeD/MAPeD-NES.sln`
+ `./src/SPReD/SPReD-NES.sln`
 
 **Note:** **.Net 4.5.1** profile is required to build the tools.
 
@@ -84,18 +85,21 @@ As mentioned before, you need to install Mono on your computer. To run the tools
 ## MAPeD-NES
 **NES assembly sources of tilemap renderers:**
 
- `.\samples\nes\tilemap_render\bidir_scroll_MMC1\`	- bidirectional scroller with dynamic mirroring and CHR bank switching
- `.\samples\nes\tilemap_render\multidir_scroll_MMC3\`	- multidirectional scroller
- `.\samples\nes\tilemap_render\static_screens_MMC5\`	- static screens switching with MMC5 extended attributes support
+ `./samples/nes/tilemap_render/bidir_scroll_MMC1/`	- bidirectional scroller with dynamic mirroring and CHR bank switching
+ `./samples/nes/tilemap_render/multidir_scroll_MMC3/`	- multidirectional scroller
+ `./samples/nes/tilemap_render/static_screens_MMC5/`	- static screens switching with MMC5 extended attributes support
 
 **ZX Spectrum sample sources ( can be compiled on Windows only ):**
- `.\samples\zx\tilemap_render\`
+ `./samples/zx/tilemap_render/`
+
+**Python sample script which uses data export API:**
+`./scripts/project_stats.py`
 
 ## SPReD-NES
 **NES assembly sources of simple character controllers:**
 
-`.\samples\nes\player_cntrl_NROM-128`	- character controller: idle, running and jumping; 8x8\8x16 mode
-`.\samples\nes\player_cntrl_MMC3`	- the same as above, but using big sprites with MMC3 1KB CHR bank switching 
+`./samples/nes/player_cntrl_NROM-128`	- character controller: idle, running and jumping; 8x8/8x16 mode
+`./samples/nes/player_cntrl_MMC3`	- the same as above, but using big sprites with MMC3 1KB CHR bank switching 
 ( +shooting and ducking animations )
 
 ---
@@ -117,14 +121,18 @@ To compile them on Linux you can run 'makefile' which also contains in all sampl
 
 ---
 **Warning:** The sample codes coming with the tools were made just for testing of exported data. 
-You can use\modify them for free at your own risk without any warranties.
+You can use/modify them for free at your own risk without any warranties.
 
 ---
 
 
 # Third-party libraries
 
-The SPReD(NES) uses the third-party library `.\src\SPReD\lib\Pngcs.dll` to read PNG images.
+The MAPeD-NES uses IronPython ( `./src/MAPeD/lib/IronPython.dll` and `./src/MAPeD/lib/Microsoft.Scripting.dll` ) for custom data export scripts. Copyright (c) .NET Foundation and Contributors ( Apache License, Version 2.0 )
+
+https://ironpython.net
+
+The SPReD-NES uses the third-party library `./src/SPReD/lib/Pngcs.dll` to read PNG images.
 Developed by Hernan J Gonzalez Copyright 2012 ( Apache License, Version 2.0 )
 
 https://github.com/leonbloy/pngcs
