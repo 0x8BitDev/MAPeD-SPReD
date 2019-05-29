@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using Microsoft.Scripting.Hosting;
 
-namespace MAPeD
+namespace MAPeD.py_scripting
 {
 	/// <summary>
 	/// Description of py_api.

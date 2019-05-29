@@ -13,7 +13,7 @@ using IronPython.Hosting;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 
-namespace MAPeD
+namespace MAPeD.py_scripting
 {
 	/// <summary>
 	/// Description of py_editor.
@@ -24,7 +24,7 @@ namespace MAPeD
 	{
 		delegate void VoidFunc( string _msg, string _caption );
 		
-		private const string CONST_EDITOR_NAME	= "SPSeD";
+		private const string CONST_EDITOR_NAME	= "SPSeD v0.10";
 
 		private string	m_script_filename	= null;
 		
@@ -64,6 +64,9 @@ namespace MAPeD
 			m_brush_white 	= new SolidBrush( Color.White );
 			m_brush_gray 	= new SolidBrush( Color.LightGray );
 			m_brush_black 	= new SolidBrush( Color.Black );
+
+			update_undo_redo();
+			update_cut_copy_paste_delete();
 		}
 		
 		void destroy()
@@ -339,11 +342,18 @@ namespace MAPeD
 			update_status_msg( "..." );
 			
 			set_title( m_script_filename, true );
+			
+			update_undo_redo();
 		}
 		
 		void ScriptTextBoxSizeChanged(object sender, EventArgs e)
 		{
 			update_line_numbers();
+		}
+		
+		void ScriptTextBoxSelectionChanged(object sender, EventArgs e)
+		{
+			update_cut_copy_paste_delete();
 		}
 		
 		void update_line_numbers()
@@ -462,6 +472,70 @@ namespace MAPeD
 				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "open", doc_path );
 			}
 		}
+		
+		#region context menu: cut copy paste delete
+		void ContextMenuStripOpening(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			update_cut_copy_paste_delete();
+		}
+		
+		void update_cut_copy_paste_delete()
+		{
+			deleteToolStripButton.Enabled		=
+			deleteToolStripMenuItem.Enabled 	= 
+			deleteToolStripMenuItem1.Enabled	=
+			copyToolStripButton.Enabled			= 
+			copyToolStripMenuItem.Enabled 		= 
+			copyToolStripMenuItem1.Enabled		= 				
+			cutToolStripButton.Enabled			= 
+			cutToolStripMenuItem.Enabled 		=
+			cutToolStripMenuItem1.Enabled		= ScriptTextBox.SelectedText.Length > 0 ? true:false; 
+			
+			pasteToolStripButton.Enabled 	= 
+			pasteToolStripMenuItem.Enabled 	= 
+			pasteToolStripMenuItem1.Enabled = Clipboard.ContainsText();
+		}
+
+		void update_undo_redo()
+		{
+			undoToolStripButton.Enabled = undoToolStripMenuItem.Enabled = ScriptTextBox.CanUndo;
+			redoToolStripButton.Enabled = redoToolStripMenuItem.Enabled = ScriptTextBox.CanRedo;
+		}
+		
+		void UndoToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			ScriptTextBox.Undo();
+			
+			update_undo_redo();
+		}
+		
+		void RedoToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			ScriptTextBox.Redo();
+			
+			update_undo_redo();
+		}
+		
+		void CutToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			ScriptTextBox.Cut();
+		}
+		
+		void CopyToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			ScriptTextBox.Copy();
+		}
+		
+		void PasteToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			ScriptTextBox.Paste();
+		}
+		
+		void DeleteToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			ScriptTextBox.SelectedText = "";
+		}
+		#endregion
 	}
 	
 	class py_output : TextWriter

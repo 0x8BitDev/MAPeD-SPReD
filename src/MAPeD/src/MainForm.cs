@@ -425,6 +425,7 @@ namespace MAPeD
 			clear_active_tile_img();
 		}
 
+#region load save import export
 		void LoadToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			m_project_loaded = false;
@@ -929,7 +930,7 @@ namespace MAPeD
 
 		void ExportScriptEditorToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			( new py_editor( m_data_manager ) ).Show();
+			( new py_scripting.py_editor( m_data_manager ) ).Show();
 		}
 		
 		void AboutToolStripMenuItemClick_Event(object sender, EventArgs e)
@@ -963,8 +964,9 @@ namespace MAPeD
 			}
 		}
 		*/
-// TILES EDITOR *************************************************************************************//
-
+#endregion		
+// TILES EDITOR **************************************************************************************//
+#region tiles editor
 		private void enable_update_gfx_btn( bool _on )
 		{
 			BtnUpdateGFX.Enabled = _on;
@@ -1786,9 +1788,9 @@ namespace MAPeD
 				enable_update_gfx_btn( true );
 			}
 		}
-		
+#endregion		
 // SCREEN EDITOR *************************************************************************************//
-
+#region screen editor
 		private void update_screens_list_box()
 		{
 			ListBoxScreens.Items.Clear();
@@ -1956,9 +1958,9 @@ namespace MAPeD
 				enable_update_screens_btn( true );
 			}
 		}
-		
+#endregion		
 // LAYOUT EDITOR *************************************************************************************//		
-
+#region layout editor
 		private void insert_screen_into_layouts( int _scr_local_ind )
 		{
 			int scr_global_ind = m_data_manager.get_screen_ind( m_data_manager.tiles_data_pos, _scr_local_ind );
@@ -2469,9 +2471,9 @@ namespace MAPeD
 		{
 			m_layout_editor.show_coords = LayoutShowCoordsToolStripMenuItem.Checked = ( sender as CheckBox ).Checked; 
 		}
-		
+#endregion		
 // ENTITY EDITOR *************************************************************************************//
-
+#region entity editor
 		void TreeViewEntitiesLabelEdit_Event(object sender, NodeLabelEditEventArgs e)
 		{
 			if( e.Label != null )
@@ -2812,9 +2814,9 @@ namespace MAPeD
 		{
 			m_layout_editor.entity_snapping = ( sender as CheckBox ).Checked;
 		}
-
-// 	ENTITY PROPERTIES EDITOR *************************************************************************************//
-
+#endregion
+// 	ENTITY PROPERTIES EDITOR *************************************************************************//
+#region entity properties editor
 		void fill_entity_data( entity_data _ent, string _inst_prop = "", string _inst_name = "", int _targ_uid = -1 )
 		{
 			groupBoxEntityEditor.Enabled = ( _ent != null ) ? true:false;
@@ -3216,8 +3218,8 @@ namespace MAPeD
 				}
 			}			
 		}
-		
-// 	PALETTE *************************************************************************************//
+#endregion		
+// 	PALETTE ******************************************************************************************//
 
 		void CheckBoxPalettePerCHRChecked_Event(object sender, EventArgs e)
 		{

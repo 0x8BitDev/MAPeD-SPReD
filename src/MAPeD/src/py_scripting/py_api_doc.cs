@@ -8,7 +8,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MAPeD
+namespace MAPeD.py_scripting
 {
 	/// <summary>
 	/// Description of py_api_doc.

@@ -4,7 +4,7 @@
  * Date: 24.05.2019
  * Time: 18:57
  */
-namespace MAPeD
+namespace MAPeD.py_scripting
 {
 	partial class py_api_doc
 	{
