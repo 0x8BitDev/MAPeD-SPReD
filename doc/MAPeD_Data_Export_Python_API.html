@@ -5,7 +5,7 @@
 	<TITLE></TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.2  (Win32)">
 	<META NAME="CREATED" CONTENT="20190523;18115340">
-	<META NAME="CHANGED" CONTENT="20190525;17240368">
+	<META NAME="CHANGED" CONTENT="20190530;19070186">
 	<STYLE TYPE="text/css">
 	<!--
 		@page { size: 21cm 180cm }
@@ -19,7 +19,7 @@
 </P>
 <P LANG="en-US" STYLE="margin-left: 1.19cm; margin-bottom: 0cm; font-style: normal; line-height: 100%; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>MAPeD
-Data Export Python API v1.0</B></FONT></FONT></P>
+Data Export Python API v1.1</B></FONT></FONT></P>
 <HR>
 <P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
 <BR>
@@ -98,6 +98,8 @@ Entities</B></SPAN></FONT></A></P>
 <A HREF="#Miscellaneous|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Miscellaneous</B></SPAN></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
 <A HREF="#mpd_RLE|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_RLE</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_msg_box|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_msg_box</B></SPAN></FONT></FONT></A></P>
 <P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
 <BR>
 </P>
@@ -107,9 +109,8 @@ Entities</B></SPAN></FONT></A></P>
 	<BR>
 	</P>
 	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
-	<FONT SIZE=5><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Graphics
-	</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><B>Bank</B></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>s</B></SPAN></FONT>
-	<FONT FACE="Arial, sans-serif"><B>Data</B></FONT></FONT></P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><SPAN LANG="en-US"><B>Graphics
+	</B></SPAN><B>Bank</B><SPAN LANG="en-US"><B>s</B></SPAN> <B>Data</B></FONT></FONT></P>
 </DIV>
 <P STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
 </P>
@@ -426,11 +427,10 @@ color indices or <B>null</B> in case of incorrect bank index</FONT></FONT></P>
 	<BR>
 	</P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Int32</SPAN></SPAN></FONT></FONT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>mpd_num_screens</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">(
-	</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Int32</SPAN></SPAN></FONT></FONT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">_bank_ind
-	)</SPAN></FONT></FONT></P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Int32</SPAN></SPAN></FONT>
+	<FONT SIZE=3><B>mpd_num_screens</B></FONT><FONT SIZE=3><SPAN STYLE="font-weight: normal">(
+	</SPAN></FONT><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Int32</SPAN></SPAN></FONT>
+	<FONT SIZE=3><SPAN STYLE="font-weight: normal">_bank_ind )</SPAN></FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
@@ -684,16 +684,16 @@ index you can do the following steps:</FONT></FONT></P>
 <BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 2.12cm; margin-bottom: 0cm; background: #cc9966; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
-<FONT FACE="Microsoft Sans Serif, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent">layout_width
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent">layout_width
 = mpd_layout_width( layout_n )</SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.12cm; margin-bottom: 0cm; background: #cc9966; line-height: 100%">
-<FONT FACE="Microsoft Sans Serif, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent">layout_height
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent">layout_height
 = mpd_layout_height( layout_n )</SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.12cm; margin-bottom: 0cm; background: #cc9966; line-height: 100%">
-<FONT FACE="Microsoft Sans Serif, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent">start_screen_cell
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent">start_screen_cell
 = mpd_layout_start_screen_cell( layout_n )</SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.12cm; margin-bottom: 0cm; background: #cc9966; line-height: 100%">
-<FONT FACE="Microsoft Sans Serif, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent"><SPAN LANG="en-US">start_screen_ind
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="background: transparent"><SPAN LANG="en-US">start_screen_ind
 = </SPAN>mpd_layout_screen_ind( layout_n, start_screen_cell %
 layout_width, start_screen_cell / layout_width ) )</SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.12cm; margin-bottom: 0cm; background: #cc9966; line-height: 100%">
@@ -812,7 +812,7 @@ of incorrect layout index</FONT></FONT></P>
 	<BR>
 	</P>
 	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
-	<FONT SIZE=5><FONT FACE="Arial, sans-serif"><B>Entity Instances</B></FONT></FONT></P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><B>Entity Instances</B></FONT></FONT></P>
 </DIV>
 <P STYLE="margin-bottom: 0cm; line-height: 100%; page-break-before: auto; page-break-after: avoid">
 <BR>
@@ -831,8 +831,17 @@ of incorrect layout index</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Entity instance class:</B></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -1006,12 +1015,15 @@ object or <B>null</B> in case of incorrect layout index</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="margin-bottom: 0cm; background: transparent; line-height: 100%">
 	<BR>
 	</P>
-	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
-	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Base entity class:</B></FONT></FONT></P>
 </DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -1281,6 +1293,38 @@ array</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>the encoded bytes array
 or <B>null</B> if input data can't be encoded</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_msg_box" DIR="LTR"><A NAME="mpd_msg_box|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<FONT FACE="Arial, sans-serif">void <B>mpd_msg_box</B><SPAN STYLE="font-weight: normal">(
+	String _msg, String _caption )</SPAN></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Show message box.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_msg &ndash; message text</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_caption &ndash; caption
+text</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
