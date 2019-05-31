@@ -24,7 +24,7 @@ Here you can find NES development tools:
 	- level topology options
 	- entities
 	- etc...
-- **Python** supported for writing custom data export scripts
+- Built-in **Python** script editor for writing custom data export scripts
 - export to **SjASMPlus** ( ZX Spectrum assembler )
 - etc...
 
