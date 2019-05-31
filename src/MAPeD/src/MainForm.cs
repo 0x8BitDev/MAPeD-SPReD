@@ -38,6 +38,8 @@ namespace MAPeD
 		private import_tiles_form	m_import_tiles_form		= null;
 		private screen_mark_form	m_screen_mark_form		= null;
 		private description_form	m_description_form		= null;
+		
+		private py_editor			m_py_editor	= null;
 
 		private bool m_project_loaded	= false;
 		
@@ -240,9 +242,23 @@ namespace MAPeD
 		{
 			e.Cancel = true;
 			
+			if( py_editor.is_active() )
+			{
+				m_py_editor.Close();
+				
+				if( py_editor.is_active() )
+				{
+					return;
+				}
+				
+				m_py_editor = null;
+			}
+			
 		    if( message_box( "All unsaved progress will be lost!\nAre you sure?", "Exit App", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 		    {
 				reset();
+
+				m_py_editor = null;
 				
 		    	e.Cancel = false;
 		    }
@@ -930,7 +946,13 @@ namespace MAPeD
 
 		void ExportScriptEditorToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			( new py_scripting.py_editor( m_data_manager ) ).Show();
+			if( !py_editor.is_active() )
+			{
+				m_py_editor = new py_editor( m_data_manager );
+				m_py_editor.Show();
+			}
+			
+			py_editor.set_focus();
 		}
 		
 		void AboutToolStripMenuItemClick_Event(object sender, EventArgs e)

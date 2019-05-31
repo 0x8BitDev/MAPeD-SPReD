@@ -37,7 +37,6 @@ namespace MAPeD
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.ContextMenuEntitiesTreeGoup = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.deleteGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -3129,7 +3128,7 @@ namespace MAPeD
 			this.Controls.Add(this.tabControlEditorLayout);
 			this.Controls.Add(this.MenuStrip);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::MAPeD.Properties.Resources.MAPeD;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.MenuStrip;
 			this.MaximizeBox = false;

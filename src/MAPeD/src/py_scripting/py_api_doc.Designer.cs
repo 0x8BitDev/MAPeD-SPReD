@@ -4,7 +4,7 @@
  * Date: 24.05.2019
  * Time: 18:57
  */
-namespace MAPeD.py_scripting
+namespace MAPeD
 {
 	partial class py_api_doc
 	{
@@ -34,19 +34,20 @@ namespace MAPeD.py_scripting
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(py_api_doc));
 			this.HTMLBrowser = new System.Windows.Forms.WebBrowser();
 			this.SuspendLayout();
 			// 
 			// HTMLBrowser
 			// 
 			this.HTMLBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.HTMLBrowser.IsWebBrowserContextMenuEnabled = false;
 			this.HTMLBrowser.Location = new System.Drawing.Point(0, 0);
 			this.HTMLBrowser.MinimumSize = new System.Drawing.Size(20, 20);
 			this.HTMLBrowser.Name = "HTMLBrowser";
 			this.HTMLBrowser.Size = new System.Drawing.Size(960, 500);
 			this.HTMLBrowser.TabIndex = 0;
-			this.HTMLBrowser.DocumentText = System.Text.Encoding.Default.GetString( ( byte[] )resources.GetObject( "MAPeD_Data_Export_Python_API" ) );
+			this.HTMLBrowser.WebBrowserShortcutsEnabled = false;
+			this.HTMLBrowser.DocumentText = System.Text.Encoding.Default.GetString( global::MAPeD.Properties.Resources.MAPeD_Data_Export_Python_API );
 			// 
 			// py_api_doc
 			// 
@@ -54,7 +55,7 @@ namespace MAPeD.py_scripting
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(960, 500);
 			this.Controls.Add(this.HTMLBrowser);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::MAPeD.Properties.Resources.MAPeD;
 			this.Name = "py_api_doc";
 			this.Text = "MAPeD API Doc";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnFormClosed);

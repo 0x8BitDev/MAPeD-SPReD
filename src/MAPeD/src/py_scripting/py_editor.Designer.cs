@@ -4,7 +4,7 @@
  * Date: 20.05.2019
  * Time: 16:19
  */
-namespace MAPeD.py_scripting
+namespace MAPeD
 {
 	partial class py_editor
 	{
@@ -35,12 +35,9 @@ namespace MAPeD.py_scripting
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(py_editor));
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.LineNumberScriptFieldSplitContainer = new System.Windows.Forms.SplitContainer();
-			this.LineNumberPixBox = new System.Windows.Forms.PictureBox();
-			this.ScriptTextBox = new System.Windows.Forms.RichTextBox();
-			this.StandartContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.DocPagesContainer = new System.Windows.Forms.TabControl();
+			this.StandardContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,6 +54,7 @@ namespace MAPeD.py_scripting
 			this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,18 +65,19 @@ namespace MAPeD.py_scripting
 			this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.pasteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.executeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.scriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.InBrowserDocToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.InAppDocToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.StandardToolStrip = new System.Windows.Forms.ToolStrip();
 			this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.loadToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.reloadToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.SaveAllToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -93,15 +92,10 @@ namespace MAPeD.py_scripting
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.LineNumberScriptFieldSplitContainer)).BeginInit();
-			this.LineNumberScriptFieldSplitContainer.Panel1.SuspendLayout();
-			this.LineNumberScriptFieldSplitContainer.Panel2.SuspendLayout();
-			this.LineNumberScriptFieldSplitContainer.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.LineNumberPixBox)).BeginInit();
-			this.StandartContextMenuStrip.SuspendLayout();
+			this.StandardContextMenuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
 			this.menuStrip.SuspendLayout();
-			this.toolStrip1.SuspendLayout();
+			this.StandardToolStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
@@ -113,7 +107,7 @@ namespace MAPeD.py_scripting
 			// 
 			// splitContainer1.Panel1
 			// 
-			this.splitContainer1.Panel1.Controls.Add(this.LineNumberScriptFieldSplitContainer);
+			this.splitContainer1.Panel1.Controls.Add(this.DocPagesContainer);
 			// 
 			// splitContainer1.Panel2
 			// 
@@ -124,76 +118,36 @@ namespace MAPeD.py_scripting
 			this.splitContainer1.TabIndex = 0;
 			this.splitContainer1.TabStop = false;
 			// 
-			// LineNumberScriptFieldSplitContainer
+			// DocPagesContainer
 			// 
-			this.LineNumberScriptFieldSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.LineNumberScriptFieldSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-			this.LineNumberScriptFieldSplitContainer.IsSplitterFixed = true;
-			this.LineNumberScriptFieldSplitContainer.Location = new System.Drawing.Point(0, 0);
-			this.LineNumberScriptFieldSplitContainer.Name = "LineNumberScriptFieldSplitContainer";
+			this.DocPagesContainer.ContextMenuStrip = this.StandardContextMenuStrip;
+			this.DocPagesContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.DocPagesContainer.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+			this.DocPagesContainer.Location = new System.Drawing.Point(0, 0);
+			this.DocPagesContainer.Name = "DocPagesContainer";
+			this.DocPagesContainer.Padding = new System.Drawing.Point(12, 4);
+			this.DocPagesContainer.SelectedIndex = 0;
+			this.DocPagesContainer.Size = new System.Drawing.Size(500, 440);
+			this.DocPagesContainer.TabIndex = 4;
+			this.DocPagesContainer.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.DocPagesContainerDrawItem);
+			this.DocPagesContainer.SelectedIndexChanged += new System.EventHandler(this.DocPagesContainerSelectedIndexChanged);
+			this.DocPagesContainer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DocPagesContainerMouseUp);
 			// 
-			// LineNumberScriptFieldSplitContainer.Panel1
+			// StandardContextMenuStrip
 			// 
-			this.LineNumberScriptFieldSplitContainer.Panel1.Controls.Add(this.LineNumberPixBox);
-			this.LineNumberScriptFieldSplitContainer.Panel1MinSize = 20;
-			// 
-			// LineNumberScriptFieldSplitContainer.Panel2
-			// 
-			this.LineNumberScriptFieldSplitContainer.Panel2.Controls.Add(this.ScriptTextBox);
-			this.LineNumberScriptFieldSplitContainer.Panel2MinSize = 150;
-			this.LineNumberScriptFieldSplitContainer.Size = new System.Drawing.Size(500, 440);
-			this.LineNumberScriptFieldSplitContainer.SplitterDistance = 25;
-			this.LineNumberScriptFieldSplitContainer.SplitterWidth = 1;
-			this.LineNumberScriptFieldSplitContainer.TabIndex = 3;
-			this.LineNumberScriptFieldSplitContainer.TabStop = false;
-			// 
-			// LineNumberPixBox
-			// 
-			this.LineNumberPixBox.BackColor = System.Drawing.Color.White;
-			this.LineNumberPixBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.LineNumberPixBox.Location = new System.Drawing.Point(0, 0);
-			this.LineNumberPixBox.Name = "LineNumberPixBox";
-			this.LineNumberPixBox.Size = new System.Drawing.Size(25, 440);
-			this.LineNumberPixBox.TabIndex = 0;
-			this.LineNumberPixBox.TabStop = false;
-			// 
-			// ScriptTextBox
-			// 
-			this.ScriptTextBox.AcceptsTab = true;
-			this.ScriptTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.ScriptTextBox.ContextMenuStrip = this.StandartContextMenuStrip;
-			this.ScriptTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.ScriptTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.ScriptTextBox.Location = new System.Drawing.Point(0, 0);
-			this.ScriptTextBox.MaxLength = 65535;
-			this.ScriptTextBox.Name = "ScriptTextBox";
-			this.ScriptTextBox.Size = new System.Drawing.Size(474, 440);
-			this.ScriptTextBox.TabIndex = 2;
-			this.ScriptTextBox.Text = "";
-			this.ScriptTextBox.WordWrap = false;
-			this.ScriptTextBox.SelectionChanged += new System.EventHandler(this.ScriptTextBoxSelectionChanged);
-			this.ScriptTextBox.VScroll += new System.EventHandler(this.ScriptTextBoxVScroll);
-			this.ScriptTextBox.SizeChanged += new System.EventHandler(this.ScriptTextBoxSizeChanged);
-			this.ScriptTextBox.TextChanged += new System.EventHandler(this.ScriptTextBoxTextChanged);
-			this.ScriptTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ScriptTextBoxKeyUp);
-			this.ScriptTextBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ScriptTextBoxMouseDown);
-			this.ScriptTextBox.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.ScriptTextBoxPreviewKeyDown);
-			// 
-			// StandartContextMenuStrip
-			// 
-			this.StandartContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.StandardContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.cutToolStripMenuItem,
 									this.copyToolStripMenuItem,
 									this.pasteToolStripMenuItem,
 									this.toolStripSeparator2,
 									this.deleteToolStripMenuItem});
-			this.StandartContextMenuStrip.Name = "ContextMenuStrip";
-			this.StandartContextMenuStrip.Size = new System.Drawing.Size(145, 98);
-			this.StandartContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenuStripOpening);
+			this.StandardContextMenuStrip.Name = "ContextMenuStrip";
+			this.StandardContextMenuStrip.Size = new System.Drawing.Size(145, 98);
+			this.StandardContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenuStripOpening);
 			// 
 			// cutToolStripMenuItem
 			// 
-			this.cutToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("cutToolStripMenuItem.Image")));
+			this.cutToolStripMenuItem.Image = global::MAPeD.Properties.Resources.cut;
 			this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
 			this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
 			this.cutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
@@ -202,7 +156,7 @@ namespace MAPeD.py_scripting
 			// 
 			// copyToolStripMenuItem
 			// 
-			this.copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripMenuItem.Image")));
+			this.copyToolStripMenuItem.Image = global::MAPeD.Properties.Resources.copy;
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.copyToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
@@ -211,7 +165,7 @@ namespace MAPeD.py_scripting
 			// 
 			// pasteToolStripMenuItem
 			// 
-			this.pasteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripMenuItem.Image")));
+			this.pasteToolStripMenuItem.Image = global::MAPeD.Properties.Resources.paste;
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
 			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
@@ -225,7 +179,7 @@ namespace MAPeD.py_scripting
 			// 
 			// deleteToolStripMenuItem
 			// 
-			this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
+			this.deleteToolStripMenuItem.Image = global::MAPeD.Properties.Resources.delete;
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
 			this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
@@ -275,7 +229,7 @@ namespace MAPeD.py_scripting
 			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.fileToolStripMenuItem,
 									this.editToolStripMenuItem,
-									this.executeToolStripMenuItem,
+									this.scriptToolStripMenuItem,
 									this.helpToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
@@ -291,6 +245,7 @@ namespace MAPeD.py_scripting
 									this.reloadToolStripMenuItem,
 									this.saveToolStripMenuItem,
 									this.saveAsToolStripMenuItem,
+									this.saveAllToolStripMenuItem,
 									this.toolStripSeparator1,
 									this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -299,58 +254,68 @@ namespace MAPeD.py_scripting
 			// 
 			// newToolStripMenuItem
 			// 
-			this.newToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripMenuItem.Image")));
+			this.newToolStripMenuItem.Image = global::MAPeD.Properties.Resources._new;
 			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
 			this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-			this.newToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+			this.newToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
 			this.newToolStripMenuItem.Text = "&New";
 			this.newToolStripMenuItem.Click += new System.EventHandler(this.NewToolStripMenuItemClick);
 			// 
 			// openToolStripMenuItem
 			// 
-			this.openToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripMenuItem.Image")));
+			this.openToolStripMenuItem.Image = global::MAPeD.Properties.Resources.open;
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
 			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
 			this.openToolStripMenuItem.Text = "&Load";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.LoadToolStripMenuItemClick);
 			// 
 			// reloadToolStripMenuItem
 			// 
-			this.reloadToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("reloadToolStripMenuItem.Image")));
+			this.reloadToolStripMenuItem.Image = global::MAPeD.Properties.Resources.reload;
 			this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
 			this.reloadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-			this.reloadToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+			this.reloadToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
 			this.reloadToolStripMenuItem.Text = "&Reload";
 			this.reloadToolStripMenuItem.Click += new System.EventHandler(this.ReloadToolStripMenuItemClick);
 			// 
 			// saveToolStripMenuItem
 			// 
-			this.saveToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripMenuItem.Image")));
+			this.saveToolStripMenuItem.Image = global::MAPeD.Properties.Resources.save;
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
 			this.saveToolStripMenuItem.Text = "&Save";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItemClick);
 			// 
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
 			this.saveAsToolStripMenuItem.Text = "Save As...";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItemClick);
+			// 
+			// saveAllToolStripMenuItem
+			// 
+			this.saveAllToolStripMenuItem.Image = global::MAPeD.Properties.Resources.save_all;
+			this.saveAllToolStripMenuItem.Name = "saveAllToolStripMenuItem";
+			this.saveAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+									| System.Windows.Forms.Keys.S)));
+			this.saveAllToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+			this.saveAllToolStripMenuItem.Text = "Save A&ll";
+			this.saveAllToolStripMenuItem.Click += new System.EventHandler(this.SaveAllToolStripMenuItemClick);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(148, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(184, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
-			this.exitToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("exitToolStripMenuItem.Image")));
+			this.exitToolStripMenuItem.Image = global::MAPeD.Properties.Resources.delete;
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItemClick);
 			// 
@@ -370,7 +335,7 @@ namespace MAPeD.py_scripting
 			// 
 			// undoToolStripMenuItem
 			// 
-			this.undoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("undoToolStripMenuItem.Image")));
+			this.undoToolStripMenuItem.Image = global::MAPeD.Properties.Resources.undo;
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
 			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
 			this.undoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
@@ -379,7 +344,7 @@ namespace MAPeD.py_scripting
 			// 
 			// redoToolStripMenuItem
 			// 
-			this.redoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("redoToolStripMenuItem.Image")));
+			this.redoToolStripMenuItem.Image = global::MAPeD.Properties.Resources.redo;
 			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
 			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
 			this.redoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
@@ -393,7 +358,7 @@ namespace MAPeD.py_scripting
 			// 
 			// cutToolStripMenuItem1
 			// 
-			this.cutToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("cutToolStripMenuItem1.Image")));
+			this.cutToolStripMenuItem1.Image = global::MAPeD.Properties.Resources.cut;
 			this.cutToolStripMenuItem1.Name = "cutToolStripMenuItem1";
 			this.cutToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
 			this.cutToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
@@ -402,7 +367,7 @@ namespace MAPeD.py_scripting
 			// 
 			// copyToolStripMenuItem1
 			// 
-			this.copyToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripMenuItem1.Image")));
+			this.copyToolStripMenuItem1.Image = global::MAPeD.Properties.Resources.copy;
 			this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
 			this.copyToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
@@ -411,7 +376,7 @@ namespace MAPeD.py_scripting
 			// 
 			// pasteToolStripMenuItem1
 			// 
-			this.pasteToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripMenuItem1.Image")));
+			this.pasteToolStripMenuItem1.Image = global::MAPeD.Properties.Resources.paste;
 			this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
 			this.pasteToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
 			this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
@@ -420,27 +385,27 @@ namespace MAPeD.py_scripting
 			// 
 			// deleteToolStripMenuItem1
 			// 
-			this.deleteToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem1.Image")));
+			this.deleteToolStripMenuItem1.Image = global::MAPeD.Properties.Resources.delete;
 			this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
 			this.deleteToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
 			this.deleteToolStripMenuItem1.Text = "&Delete";
 			this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.DeleteToolStripMenuItemClick);
 			// 
-			// executeToolStripMenuItem
+			// scriptToolStripMenuItem
 			// 
-			this.executeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.scriptToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.runToolStripMenuItem});
-			this.executeToolStripMenuItem.Name = "executeToolStripMenuItem";
-			this.executeToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
-			this.executeToolStripMenuItem.Text = "&Execute";
+			this.scriptToolStripMenuItem.Name = "scriptToolStripMenuItem";
+			this.scriptToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
+			this.scriptToolStripMenuItem.Text = "&Script";
 			// 
 			// runToolStripMenuItem
 			// 
-			this.runToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("runToolStripMenuItem.Image")));
+			this.runToolStripMenuItem.Image = global::MAPeD.Properties.Resources.run;
 			this.runToolStripMenuItem.Name = "runToolStripMenuItem";
 			this.runToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-			this.runToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+			this.runToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.runToolStripMenuItem.Text = "&Run";
 			this.runToolStripMenuItem.Click += new System.EventHandler(this.RunToolStripMenuItemClick);
 			// 
@@ -455,7 +420,7 @@ namespace MAPeD.py_scripting
 			// 
 			// InBrowserDocToolStripMenuItem
 			// 
-			this.InBrowserDocToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("InBrowserDocToolStripMenuItem.Image")));
+			this.InBrowserDocToolStripMenuItem.Image = global::MAPeD.Properties.Resources.open_in_browser;
 			this.InBrowserDocToolStripMenuItem.Name = "InBrowserDocToolStripMenuItem";
 			this.InBrowserDocToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
 			this.InBrowserDocToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
@@ -464,7 +429,7 @@ namespace MAPeD.py_scripting
 			// 
 			// InAppDocToolStripMenuItem
 			// 
-			this.InAppDocToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("InAppDocToolStripMenuItem.Image")));
+			this.InAppDocToolStripMenuItem.Image = global::MAPeD.Properties.Resources.help;
 			this.InAppDocToolStripMenuItem.Name = "InAppDocToolStripMenuItem";
 			this.InAppDocToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F1)));
 			this.InAppDocToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
@@ -485,13 +450,14 @@ namespace MAPeD.py_scripting
 			this.saveFileDialog.Title = "Save Script";
 			this.saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.SaveOk_Event);
 			// 
-			// toolStrip1
+			// StandardToolStrip
 			// 
-			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.StandardToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.newToolStripButton,
 									this.loadToolStripButton,
 									this.reloadToolStripButton,
 									this.saveToolStripButton,
+									this.SaveAllToolStripButton,
 									this.toolStripSeparator,
 									this.cutToolStripButton,
 									this.copyToolStripButton,
@@ -502,16 +468,16 @@ namespace MAPeD.py_scripting
 									this.redoToolStripButton,
 									this.toolStripSeparator4,
 									this.runToolStripButton});
-			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
-			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(500, 25);
-			this.toolStrip1.TabIndex = 1;
-			this.toolStrip1.Text = "toolStrip1";
+			this.StandardToolStrip.Location = new System.Drawing.Point(0, 24);
+			this.StandardToolStrip.Name = "StandardToolStrip";
+			this.StandardToolStrip.Size = new System.Drawing.Size(500, 25);
+			this.StandardToolStrip.TabIndex = 1;
+			this.StandardToolStrip.Text = "toolStrip1";
 			// 
 			// newToolStripButton
 			// 
 			this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.newToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripButton.Image")));
+			this.newToolStripButton.Image = global::MAPeD.Properties.Resources._new;
 			this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.newToolStripButton.Name = "newToolStripButton";
 			this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -521,7 +487,7 @@ namespace MAPeD.py_scripting
 			// loadToolStripButton
 			// 
 			this.loadToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.loadToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("loadToolStripButton.Image")));
+			this.loadToolStripButton.Image = global::MAPeD.Properties.Resources.open;
 			this.loadToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.loadToolStripButton.Name = "loadToolStripButton";
 			this.loadToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -531,22 +497,34 @@ namespace MAPeD.py_scripting
 			// reloadToolStripButton
 			// 
 			this.reloadToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.reloadToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("reloadToolStripButton.Image")));
+			this.reloadToolStripButton.Image = global::MAPeD.Properties.Resources.reload;
 			this.reloadToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.reloadToolStripButton.Name = "reloadToolStripButton";
 			this.reloadToolStripButton.Size = new System.Drawing.Size(23, 22);
 			this.reloadToolStripButton.Text = "&Reload";
+			this.reloadToolStripButton.ToolTipText = "Reload script";
 			this.reloadToolStripButton.Click += new System.EventHandler(this.ReloadToolStripMenuItemClick);
 			// 
 			// saveToolStripButton
 			// 
 			this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.saveToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripButton.Image")));
+			this.saveToolStripButton.Image = global::MAPeD.Properties.Resources.save;
 			this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.saveToolStripButton.Name = "saveToolStripButton";
 			this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
 			this.saveToolStripButton.Text = "&Save";
 			this.saveToolStripButton.Click += new System.EventHandler(this.SaveToolStripMenuItemClick);
+			// 
+			// SaveAllToolStripButton
+			// 
+			this.SaveAllToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.SaveAllToolStripButton.Image = global::MAPeD.Properties.Resources.save_all;
+			this.SaveAllToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.SaveAllToolStripButton.Name = "SaveAllToolStripButton";
+			this.SaveAllToolStripButton.Size = new System.Drawing.Size(23, 22);
+			this.SaveAllToolStripButton.Text = "Save A&ll";
+			this.SaveAllToolStripButton.ToolTipText = "Save all";
+			this.SaveAllToolStripButton.Click += new System.EventHandler(this.SaveAllToolStripMenuItemClick);
 			// 
 			// toolStripSeparator
 			// 
@@ -556,7 +534,7 @@ namespace MAPeD.py_scripting
 			// cutToolStripButton
 			// 
 			this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.cutToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("cutToolStripButton.Image")));
+			this.cutToolStripButton.Image = global::MAPeD.Properties.Resources.cut;
 			this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.cutToolStripButton.Name = "cutToolStripButton";
 			this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -566,7 +544,7 @@ namespace MAPeD.py_scripting
 			// copyToolStripButton
 			// 
 			this.copyToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.copyToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripButton.Image")));
+			this.copyToolStripButton.Image = global::MAPeD.Properties.Resources.copy;
 			this.copyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.copyToolStripButton.Name = "copyToolStripButton";
 			this.copyToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -576,7 +554,7 @@ namespace MAPeD.py_scripting
 			// pasteToolStripButton
 			// 
 			this.pasteToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.pasteToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripButton.Image")));
+			this.pasteToolStripButton.Image = global::MAPeD.Properties.Resources.paste;
 			this.pasteToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.pasteToolStripButton.Name = "pasteToolStripButton";
 			this.pasteToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -586,7 +564,7 @@ namespace MAPeD.py_scripting
 			// deleteToolStripButton
 			// 
 			this.deleteToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.deleteToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripButton.Image")));
+			this.deleteToolStripButton.Image = global::MAPeD.Properties.Resources.delete;
 			this.deleteToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.deleteToolStripButton.Name = "deleteToolStripButton";
 			this.deleteToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -601,7 +579,7 @@ namespace MAPeD.py_scripting
 			// undoToolStripButton
 			// 
 			this.undoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.undoToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("undoToolStripButton.Image")));
+			this.undoToolStripButton.Image = global::MAPeD.Properties.Resources.undo;
 			this.undoToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.undoToolStripButton.Name = "undoToolStripButton";
 			this.undoToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -611,7 +589,7 @@ namespace MAPeD.py_scripting
 			// redoToolStripButton
 			// 
 			this.redoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.redoToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("redoToolStripButton.Image")));
+			this.redoToolStripButton.Image = global::MAPeD.Properties.Resources.redo;
 			this.redoToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.redoToolStripButton.Name = "redoToolStripButton";
 			this.redoToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -626,7 +604,7 @@ namespace MAPeD.py_scripting
 			// runToolStripButton
 			// 
 			this.runToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.runToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("runToolStripButton.Image")));
+			this.runToolStripButton.Image = global::MAPeD.Properties.Resources.run;
 			this.runToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.runToolStripButton.Name = "runToolStripButton";
 			this.runToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -639,33 +617,37 @@ namespace MAPeD.py_scripting
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(500, 584);
 			this.Controls.Add(this.splitContainer1);
-			this.Controls.Add(this.toolStrip1);
+			this.Controls.Add(this.StandardToolStrip);
 			this.Controls.Add(this.menuStrip);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::MAPeD.Properties.Resources.MAPeD;
 			this.MainMenuStrip = this.menuStrip;
 			this.Name = "py_editor";
 			this.Text = "SPSeD";
-			this.Shown += new System.EventHandler(this.Py_editorShown);
+			this.Shown += new System.EventHandler(this.py_editorShown);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			this.splitContainer1.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
-			this.LineNumberScriptFieldSplitContainer.Panel1.ResumeLayout(false);
-			this.LineNumberScriptFieldSplitContainer.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.LineNumberScriptFieldSplitContainer)).EndInit();
-			this.LineNumberScriptFieldSplitContainer.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.LineNumberPixBox)).EndInit();
-			this.StandartContextMenuStrip.ResumeLayout(false);
+			this.StandardContextMenuStrip.ResumeLayout(false);
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
-			this.toolStrip1.ResumeLayout(false);
-			this.toolStrip1.PerformLayout();
+			this.StandardToolStrip.ResumeLayout(false);
+			this.StandardToolStrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
+		private System.Windows.Forms.ContextMenuStrip StandardContextMenuStrip;
+		private System.Windows.Forms.ToolStripMenuItem saveAllToolStripMenuItem;
+		private System.Windows.Forms.ToolStripButton SaveAllToolStripButton;
+		private System.Windows.Forms.TabControl DocPagesContainer;
 		private System.Windows.Forms.ToolStripButton deleteToolStripButton;
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem1;
@@ -688,13 +670,7 @@ namespace MAPeD.py_scripting
 		private System.Windows.Forms.ToolStripButton saveToolStripButton;
 		private System.Windows.Forms.ToolStripButton loadToolStripButton;
 		private System.Windows.Forms.ToolStripButton newToolStripButton;
-		private System.Windows.Forms.ToolStrip toolStrip1;
-		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
-		private System.Windows.Forms.ContextMenuStrip StandartContextMenuStrip;
+		private System.Windows.Forms.ToolStrip StandardToolStrip;
 		private System.Windows.Forms.ToolStripMenuItem InBrowserDocToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
 		private System.Windows.Forms.SaveFileDialog saveFileDialog;
@@ -702,16 +678,13 @@ namespace MAPeD.py_scripting
 		private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-		private System.Windows.Forms.PictureBox LineNumberPixBox;
-		private System.Windows.Forms.SplitContainer LineNumberScriptFieldSplitContainer;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripLnCol;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.RichTextBox OutputTextBox;
 		private System.Windows.Forms.ToolStripMenuItem InAppDocToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem executeToolStripMenuItem;
-		private System.Windows.Forms.RichTextBox ScriptTextBox;
+		private System.Windows.Forms.ToolStripMenuItem scriptToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;

@@ -1,5 +1,6 @@
 MAPeD-NES:
 ~~~~~~~~~~~
+31.05.2019 - Python script editor: added ability to edit any number of scripts
 26.05.2019 - Python script editor for writing custom data export scripts, API doc and sample script are added
 
 17.05.2019 v0.54b

@@ -8,7 +8,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MAPeD.py_scripting
+namespace MAPeD
 {
 	/// <summary>
 	/// Description of py_api_doc.
@@ -27,7 +27,7 @@ namespace MAPeD.py_scripting
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
-			//this.HTMLBrowser.DocumentText = System.Text.Encoding.Default.GetString( ( byte[] )resources.GetObject( "MAPeD_Data_Export_Python_API" ) );
+			//this.HTMLBrowser.DocumentText = System.Text.Encoding.Default.GetString( global::MAPeD.Properties.Resources.MAPeD_Data_Export_Python_API; );
 			
 			if( m_instance == null )
 			{
@@ -41,14 +41,8 @@ namespace MAPeD.py_scripting
 			}
 			catch( Exception /*_err*/ )
 			{
-				if( utils.is_win )
-				{
-					this.Text = "Ooops!.. Something went wrong... Please, try to select 'In-Browser Doc' option or press F1";
-				}
-				else
-				{
-					this.Text = "Ooops!.. It seems like you need to install 'libgluezilla' to view the in-app document or try to select 'In-Browser Doc' option or press F1";
-				}
+				this.Controls.Remove( HTMLBrowser );
+				this.Text = "Ooops!.. It seems like you need to install 'libgluezilla' to view the in-app document or try to select 'In-Browser Doc' option or press F1";
 			}
 		}
 

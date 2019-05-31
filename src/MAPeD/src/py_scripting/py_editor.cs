@@ -7,13 +7,12 @@
 using System;
 using System.IO;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
 using IronPython.Hosting;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 
-namespace MAPeD.py_scripting
+namespace MAPeD
 {
 	/// <summary>
 	/// Description of py_editor.
@@ -24,22 +23,16 @@ namespace MAPeD.py_scripting
 	{
 		delegate void VoidFunc( string _msg, string _caption );
 		
-		private const string CONST_EDITOR_NAME	= "SPSeD v0.10";
+		private const string CONST_EDITOR_NAME		= "SPSeD v0.12";
+		private const string CONST_NO_SCRIPT_MSG	= "no active_script!";
 
-		private string	m_script_filename	= null;
-		
-		private int m_line_height	 = 0;
-		
-		private Graphics 	m_gfx 			= null;
-		private Brush 		m_brush_white 	= null; 
-		private Brush 		m_brush_gray 	= null;
-		private Brush 		m_brush_black 	= null;
-		private Point 		m_tmp_pos 		= new Point( 0, 0 );
-		
 		private ScriptEngine	m_py_engine	= null;
 		private ScriptScope		m_py_scope	= null;
 		
-		private py_api			m_py_api	= null;
+		private py_api			m_py_api		= null;
+		private py_api_doc		m_py_api_doc	= null;
+
+		private static py_editor m_instance = null;
 		
 		public py_editor( data_sets_manager _data_mngr )
 		{
@@ -51,57 +44,91 @@ namespace MAPeD.py_scripting
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			if( m_instance == null )
+			{
+				m_instance = this;
+			}
+			
+			this.Text = CONST_EDITOR_NAME;
+				
 			py_init();
 			
 			m_py_api = new py_api( m_py_scope, _data_mngr );
 			
 			FormClosing += new System.Windows.Forms.FormClosingEventHandler( OnFormClosing );
 			
-			OutputTextBox.Text = "Simple Python script editor.\nPowered by IronPython " + m_py_engine.LanguageVersion.ToString();
+			OutputTextBox.Text = "Simple Python script editor ( IronPython " + m_py_engine.LanguageVersion.ToString() + " )";
 			
-			set_title( m_script_filename );
+			py_editor_doc_page.static_data_init();
 			
-			m_brush_white 	= new SolidBrush( Color.White );
-			m_brush_gray 	= new SolidBrush( Color.LightGray );
-			m_brush_black 	= new SolidBrush( Color.Black );
+			NewToolStripMenuItemClick( null, null );
+			
+			update_status_msg( "ok!.." );
+		}
+		
+		public static bool is_active()
+		{
+			return m_instance != null ? true:false;
+		}
 
-			update_undo_redo();
-			update_cut_copy_paste_delete();
+		public static void set_focus()
+		{
+			if( m_instance != null )
+			{
+				m_instance.Focus();
+			}
 		}
 		
 		void destroy()
 		{
-			m_gfx.Dispose();
-			m_gfx = null;
+			foreach( TabPage page in DocPagesContainer.TabPages )
+			{
+				delete_page( page, true );
+			}
 			
-			m_brush_white.Dispose();
-			m_brush_white = null;
-			
-			m_brush_gray.Dispose();
-			m_brush_gray = null;
-			
-			m_brush_black.Dispose();
-			m_brush_black = null;
-			
-			LineNumberPixBox.Image.Dispose();
-			LineNumberPixBox.Image = null;
-			
-			m_script_filename = null;
+			py_editor_doc_page.static_data_deinit();
 			
 			m_py_engine = null;
 			m_py_scope 	= null;
 			
 			m_py_api = null;
+			
+			if( m_instance == this )
+			{
+				m_instance = null;
+			}
 		}
 		
-		void set_title( string _filename, bool _script_changed_mark = false )
+		void update_tab_page_text( TabPage _tab_page, bool _force_update )
 		{
-			this.Text = CONST_EDITOR_NAME + " - " + ( _filename != null ? Path.GetFileName( _filename ):"UNTITLED" ) + ( _script_changed_mark ? "*":"" );
+			bool has_data_changed_mark = _tab_page.Text.IndexOf( "*" ) >= 0 ? true:false;
+			
+			py_editor_doc_page doc_page = _tab_page.Controls[ 0 ] as py_editor_doc_page;
+			
+			if( doc_page.get_data_changed_flag() != has_data_changed_mark || _force_update == true )
+			{
+				_tab_page.Text = get_doc_page_filename( doc_page ) + ( doc_page.get_data_changed_flag() ? "*":"" );
+			}
+		}
+		
+		string get_doc_page_filename( py_editor_doc_page _doc_page )
+		{
+			return _doc_page.script_filename != null ? Path.GetFileName( _doc_page.script_filename ):"UNTITLED";
 		}
 		
 		public DialogResult message_box( string _msg, string _caption, MessageBoxButtons _buttons, System.Windows.Forms.MessageBoxIcon _icon = System.Windows.Forms.MessageBoxIcon.Warning )
 		{
 			return MessageBox.Show( this, _msg, _caption, _buttons, _icon );
+		}
+		
+		py_editor_doc_page get_active_script()
+		{
+			if( DocPagesContainer.SelectedTab != null )
+			{
+				return DocPagesContainer.SelectedTab.Controls[ 0 ] as py_editor_doc_page; 
+			}
+			
+			return null;
 		}
 		
 		void py_msg_box( string _msg, string _caption )
@@ -118,78 +145,131 @@ namespace MAPeD.py_scripting
 			m_py_engine.Runtime.IO.SetOutput( new MemoryStream(), new py_output( OutputTextBox ) );
 			
 			// init scope
-			VoidFunc msg_box = new VoidFunc( py_msg_box );
-			m_py_scope.SetVariable( "msg_box", msg_box );
+			m_py_scope.SetVariable( py_api.CONST_PREFIX + "msg_box", new VoidFunc( py_msg_box ) );
 		}
 
-		void Py_editorShown(object sender, EventArgs e)
+		void delete_page( TabPage _tab_page, bool _force_delete )
 		{
-			// calc line height
-			{
-				ScriptTextBox.Text = "x\nx";	
-				m_line_height = ScriptTextBox.GetPositionFromCharIndex( 2 ).Y - ScriptTextBox.GetPositionFromCharIndex( 0 ).Y;
-				ScriptTextBox.Text = "";
-			}
+			py_editor_doc_page doc_page = _tab_page.Controls[ 0 ] as py_editor_doc_page;
 			
-			ScriptTextBox.Focus();
-			update_status_msg( "ok!.." );
-			
-			update_line_number_pixbox_width();
-		}
-
-		void NewToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			if( ScriptTextBox.Text.Length != 0 )
+			if( _force_delete == false && doc_page.get_data_changed_flag() )
 			{
-				if( message_box( "Start a new script?", "New Script", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+				if( message_box( "All unsaved data will be lost!\nDo you want to save the script?", _tab_page.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
 				{
-					ScriptTextBox.Text = "";
-					OutputTextBox.Text = "";
-					
-					m_script_filename = null;
-					set_title( m_script_filename );
-					
-					ScriptTextBox.Focus();
-					
-					update_line_number_pixbox_width();
-					
-					update_status_msg( "new script" );
+					if( doc_page.script_filename == null )
+					{
+						saveFileDialog.ShowDialog();
+					}
+					else
+					{
+						save_script( _tab_page );
+					}
 				}
 			}
+			
+			DocPagesContainer.TabPages.Remove( _tab_page );
+				
+			doc_page.TextChangedEvent 		-= text_changed;
+			doc_page.SelectionChangedEvent 	-= selection_changed;
+			doc_page.UpdateLnColMsgEvent	-= update_ln_col_status_msg;
+			
+			doc_page.destroy();
+			
+			update_status_msg( "script deleted" );
+		}
+		
+		void NewToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			py_editor_doc_page doc_page = new py_editor_doc_page( StandardContextMenuStrip );
+			
+			TabPage new_page = new TabPage();
+			new_page.Controls.Add( doc_page );
+			
+			doc_page.Dock = DockStyle.Fill;
+			
+			DocPagesContainer.SuspendLayout();
+			{
+				DocPagesContainer.TabPages.Add( new_page );
+				DocPagesContainer.SelectTab( new_page );
+				
+				//new_page.UseVisualStyleBackColor = true;
+			}
+			DocPagesContainer.ResumeLayout();
+
+			doc_page.script_filename = null;
+			
+			doc_page.script_text_box.Text = "";
+			doc_page.script_text_box.Focus();
+			
+			doc_page.TextChangedEvent 		+= new EventHandler( text_changed );
+			doc_page.SelectionChangedEvent 	+= new EventHandler( selection_changed );
+			doc_page.UpdateLnColMsgEvent	+= new EventHandler( update_ln_col_status_msg );
+			
+			update_tab_page_text( new_page, true );
+			
+			update_undo_redo();
+			update_cut_copy_paste_delete();
+			
+			update_status_msg( "new script" );
 		}
 		
 		void LoadToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			openFileDialog.ShowDialog();
+			if( DocPagesContainer.TabPages.Count > 0 )
+			{
+				openFileDialog.ShowDialog();
+			}
+			else
+			{
+				update_status_msg( CONST_NO_SCRIPT_MSG );
+			}
 		}
 
 		void ReloadToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			if( m_script_filename != null )
+			py_editor_doc_page doc_page = get_active_script();
+			
+			if( doc_page != null )
 			{
-				load_script( m_script_filename );
+				if( doc_page.script_filename != null )
+				{
+					load_script( doc_page );
+				}
+				else
+				{
+					update_status_msg( "no file to reload!" );
+				}
 			}
 			else
 			{
-				update_status_msg( "can't reload, no file!" );
+				update_status_msg( CONST_NO_SCRIPT_MSG );
 			}
 		}
 
 		void LoadOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			m_script_filename = ( ( FileDialog )sender ).FileName;
-
-			load_script( m_script_filename );
+			py_editor_doc_page doc_page = get_active_script();
+			
+			if( doc_page != null )
+			{
+				doc_page.script_filename = ( ( FileDialog )sender ).FileName;
+	
+				load_script( doc_page );
+			}
+			else
+			{
+				update_status_msg( CONST_NO_SCRIPT_MSG );
+			}
 		}
 
-		void load_script( string _filename )
+		void load_script( py_editor_doc_page _doc_page )
 		{
 			try
 			{
-				ScriptTextBox.Text = File.ReadAllText( _filename );
-				OutputTextBox.Text = "";
+				_doc_page.script_text_box.Text = File.ReadAllText( _doc_page.script_filename );
 				
-				set_title( _filename );
+				_doc_page.reset_data_changed_flag();
+				update_tab_page_text( DocPagesContainer.SelectedTab, true );
 				
 				update_status_msg( "loaded" );
 			}
@@ -199,15 +279,39 @@ namespace MAPeD.py_scripting
 			}
 		}
 		
+		void SaveAllToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			py_editor_doc_page doc_page = null;
+			
+			foreach( TabPage page in DocPagesContainer.TabPages )
+			{
+				doc_page = page.Controls[ 0 ] as py_editor_doc_page;
+				
+				if( doc_page.get_data_changed_flag() == true && doc_page.script_filename != null )
+				{
+					save_script( page );
+				}
+			}
+		}
+		
 		void SaveToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			if( m_script_filename == null )
+			py_editor_doc_page doc_page = get_active_script();
+			
+			if( doc_page != null )
 			{
-				saveFileDialog.ShowDialog();
+				if( doc_page.script_filename == null )
+				{
+					saveFileDialog.ShowDialog();
+				}
+				else
+				{
+					save_script( DocPagesContainer.SelectedTab );
+				}
 			}
 			else
 			{
-				save_script( m_script_filename );
+				update_status_msg( CONST_NO_SCRIPT_MSG );
 			}
 		}
 
@@ -218,18 +322,23 @@ namespace MAPeD.py_scripting
 
 		void SaveOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			save_script( ( ( FileDialog )sender ).FileName );
+			save_script( DocPagesContainer.SelectedTab, ( ( FileDialog )sender ).FileName );
 		}
 
-		void save_script( string _filename )
+		void save_script( TabPage _tab_page, string _filename = null )
 		{
 			try
 			{
-				File.WriteAllText( _filename, ScriptTextBox.Text );
+				py_editor_doc_page doc_page = _tab_page.Controls[ 0 ] as py_editor_doc_page;
 
-				m_script_filename = _filename;
+				string filename = ( _filename != null ) ? _filename:doc_page.script_filename;
 				
-				set_title( _filename );
+				File.WriteAllText( filename, doc_page.script_text_box.Text );
+
+				doc_page.script_filename = filename;
+				
+				doc_page.reset_data_changed_flag();
+				update_tab_page_text( _tab_page, true );
 				
 				update_status_msg( "saved" );
 			}
@@ -241,38 +350,43 @@ namespace MAPeD.py_scripting
 		
 		void RunToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			// save current script
-			if( m_script_filename != null )
-			{
-				save_script( m_script_filename );
-			}
+			py_editor_doc_page doc_page = get_active_script();
 			
-			try
+			if( doc_page != null )
 			{
-				OutputTextBox.Text = "";
-				ScriptTextBox.Focus();
+				SaveAllToolStripMenuItemClick( null, null );
 				
-				ScriptSource src = m_py_engine.CreateScriptSourceFromString( ScriptTextBox.Text, SourceCodeKind.File );
-				
-				object res = src.Execute( m_py_scope );
-
-				OutputTextBox.Text += "\nScript execution success!";
-				
-				if( res != null )
+				try
 				{
-					OutputTextBox.Text += res.ToString();
+					OutputTextBox.Text = "";
+					doc_page.script_text_box.Focus();
+					
+					ScriptSource src = m_py_engine.CreateScriptSourceFromString( doc_page.script_text_box.Text, get_doc_page_filename( doc_page ), SourceCodeKind.File );
+					
+					object res = src.Execute( m_py_scope );
+	
+					if( res != null )
+					{
+						OutputTextBox.Text += res.ToString();
+					}
+					
+					OutputTextBox.Text += "\nScript execution success!";
 				}
-			}
-			catch( Exception _err )
-			{
-				OutputTextBox.Text += "Script execution failed!\n\n";
-				update_status_msg( "error" );
+				catch( Exception _err )
+				{
+					OutputTextBox.Text += "Script execution failed!\n\n";
+					update_status_msg( "error" );
+					
+					OutputTextBox.Text += m_py_engine.GetService<ExceptionOperations>().FormatException( _err );
+				   	return;
+				}			
 				
-				OutputTextBox.Text += m_py_engine.GetService<ExceptionOperations>().FormatException( _err );
-			   	return;
-			}			
-			
-			update_status_msg( "ok!.." );
+				update_status_msg( "ok!.." );
+			}
+			else
+			{
+				update_status_msg( CONST_NO_SCRIPT_MSG );
+			}
 		}
 		
 		void ExitToolStripMenuItemClick(object sender, EventArgs e)
@@ -282,7 +396,7 @@ namespace MAPeD.py_scripting
 		
 		private void OnFormClosing(object sender, FormClosingEventArgs e)
 		{
-			if( ScriptTextBox.Text.Length == 0 )
+			if( DocPagesContainer.TabPages.Count == 0 )
 			{
 				e.Cancel = false;
 			}
@@ -299,30 +413,30 @@ namespace MAPeD.py_scripting
 			if( !e.Cancel )
 			{
 				destroy();
+				
+				if( py_api_doc.is_active() )
+				{
+					m_py_api_doc.Close();
+					m_py_api_doc = null;
+				}
 			}
 		}
 		
-		void ScriptTextBoxMouseDown(object sender, MouseEventArgs e)
+		void update_ln_col_status_msg(object sender, EventArgs e)
 		{
-			update_ln_col_status_msg();
-		}
-
-		void ScriptTextBoxKeyUp(object sender, KeyEventArgs e)
-		{
-			update_ln_col_status_msg();
-		}
-
-		void ScriptTextBoxPreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-		{
-			update_ln_col_status_msg();
-		}
-		
-		void update_ln_col_status_msg()
-		{
-			int column 	= ScriptTextBox.SelectionStart - ScriptTextBox.GetFirstCharIndexOfCurrentLine() + 1;
-			int row 	= ScriptTextBox.GetLineFromCharIndex( ScriptTextBox.GetFirstCharIndexOfCurrentLine() ) + 1;
+			py_editor_doc_page doc_page =  get_active_script();//sender as py_editor_doc_page;
 			
-			toolStripLnCol.Text = "ln " + row.ToString() + "   col " + column.ToString();
+			if( doc_page != null )
+			{
+				int column 	= doc_page.script_text_box.SelectionStart - doc_page.script_text_box.GetFirstCharIndexOfCurrentLine() + 1;
+				int row 	= doc_page.script_text_box.GetLineFromCharIndex( doc_page.script_text_box.GetFirstCharIndexOfCurrentLine() ) + 1;
+				
+				toolStripLnCol.Text = "ln " + row.ToString() + "   col " + column.ToString();
+			}
+			else
+			{
+				toolStripLnCol.Text = "";
+			}
 		}
 		
 		void update_status_msg( string _msg )
@@ -330,124 +444,15 @@ namespace MAPeD.py_scripting
 			toolStripStatus.Text = _msg;
 		}
 		
-		void ScriptTextBoxVScroll(object sender, EventArgs e)
-		{
-			update_line_numbers();
-		}
-		
-		void ScriptTextBoxTextChanged(object sender, EventArgs e)
-		{
-			update_line_numbers();
-			
-			update_status_msg( "..." );
-			
-			set_title( m_script_filename, true );
-			
-			update_undo_redo();
-		}
-		
-		void ScriptTextBoxSizeChanged(object sender, EventArgs e)
-		{
-			update_line_numbers();
-		}
-		
-		void ScriptTextBoxSelectionChanged(object sender, EventArgs e)
-		{
-			update_cut_copy_paste_delete();
-		}
-		
-		void update_line_numbers()
-		{
-			Bitmap pbox_bmp = null;
-			
-			if( LineNumberPixBox.Image == null || ( LineNumberPixBox.Width != LineNumberPixBox.Image.Width || LineNumberPixBox.Height != LineNumberPixBox.Image.Height ) )
-			{
-				if( LineNumberPixBox.Image != null )
-				{
-					LineNumberPixBox.Image.Dispose();
-				}
-				
-				pbox_bmp = new Bitmap( LineNumberPixBox.Width, LineNumberPixBox.Height, PixelFormat.Format32bppArgb );
-				LineNumberPixBox.Image = pbox_bmp;
-				
-				m_gfx = Graphics.FromImage( pbox_bmp );
-			}
-			
-			m_gfx.Clear( Color.White );
-
-			if( ScriptTextBox.Lines.Length > 0 && m_line_height > 0 )
-			{
-				update_line_number_pixbox_width();
-				
-				int pix_offset = ( ScriptTextBox.GetPositionFromCharIndex( 0 ).Y % m_line_height );
-	
-				m_tmp_pos.X = m_tmp_pos.Y = 0;
-			    int first_ind	= ScriptTextBox.GetCharIndexFromPosition( m_tmp_pos );
-			    int first_line	= ScriptTextBox.GetLineFromCharIndex( first_ind );			
-	    
-				m_tmp_pos.X = ClientRectangle.Width;
-				m_tmp_pos.Y = ClientRectangle.Height;
-				int last_ind	= ScriptTextBox.GetCharIndexFromPosition( m_tmp_pos );
-				int last_line	= ScriptTextBox.GetLineFromCharIndex( last_ind );
-				
-				int y_step 		= 0;
-				int line_offset = 0;
-	    
-				for( int i = 0; i <= last_line - first_line; i++ )
-				{
-					line_offset = first_line + i;
-					y_step 		= pix_offset + ( i * m_line_height );
-					
-					m_gfx.FillRectangle( ( ( line_offset & 0x01 ) == 0x01 ) ? m_brush_white:m_brush_gray, 0, y_step, LineNumberScriptFieldSplitContainer.SplitterDistance, m_line_height );
-					m_gfx.DrawString( ( line_offset + 1 ).ToString(), ScriptTextBox.Font, m_brush_black, 0, y_step );
-				}
-			}
-			
-			LineNumberPixBox.Invalidate();
-		}
-		
-		void update_line_number_pixbox_width()    
-        {    
-			int width = ( int )( m_gfx.MeasureString( "0", ScriptTextBox.Font ).Width ) + 1;
-			int mul = 0;
-            
-            int lines = ScriptTextBox.Lines.Length;    
-    
-            if( lines <= 99 )
-            {    
-            	mul = 2;
-            }    
-            else 
-            if( lines <= 999 )
-            {    
-                mul = 3;    
-            }    
-            else    
-            {    
-                mul = 4;    
-            }    
-    
-            width = width * mul;
-            
-            LineNumberScriptFieldSplitContainer.IsSplitterFixed = false;
-            {
-            	LineNumberPixBox.Width 									= width;
-	            LineNumberScriptFieldSplitContainer.Panel1MinSize 		= width;
-	            LineNumberScriptFieldSplitContainer.SplitterDistance 	= width;
-            }
-            LineNumberScriptFieldSplitContainer.IsSplitterFixed = true;
-        }		
-		
 		void InAppDocToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			if( !py_api_doc.is_active() )
 			{
-				( new py_api_doc() ).Show();
+				m_py_api_doc = new py_api_doc();
+				m_py_api_doc.Show();
 			}
-			else
-			{
-				py_api_doc.set_focus();
-			}
+			
+			py_api_doc.set_focus();
 		}
 		
 		void InBrowserDocToolStripMenuItemClick(object sender, EventArgs e)
@@ -473,6 +478,20 @@ namespace MAPeD.py_scripting
 			}
 		}
 		
+		void text_changed( object sender, EventArgs e )
+		{
+			update_status_msg( "..." );
+			
+			update_tab_page_text( DocPagesContainer.SelectedTab, false );
+		
+			update_undo_redo();
+		}
+		
+		void selection_changed( object sender, EventArgs e )
+		{
+			update_cut_copy_paste_delete();
+		}
+		
 		#region context menu: cut copy paste delete
 		void ContextMenuStripOpening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -481,15 +500,20 @@ namespace MAPeD.py_scripting
 		
 		void update_cut_copy_paste_delete()
 		{
-			deleteToolStripButton.Enabled		=
-			deleteToolStripMenuItem.Enabled 	= 
-			deleteToolStripMenuItem1.Enabled	=
-			copyToolStripButton.Enabled			= 
-			copyToolStripMenuItem.Enabled 		= 
-			copyToolStripMenuItem1.Enabled		= 				
-			cutToolStripButton.Enabled			= 
-			cutToolStripMenuItem.Enabled 		=
-			cutToolStripMenuItem1.Enabled		= ScriptTextBox.SelectedText.Length > 0 ? true:false; 
+			py_editor_doc_page doc_page = get_active_script();
+			
+			if( doc_page != null )
+			{
+				deleteToolStripButton.Enabled		=
+				deleteToolStripMenuItem.Enabled 	= 
+				deleteToolStripMenuItem1.Enabled	=
+				copyToolStripButton.Enabled			= 
+				copyToolStripMenuItem.Enabled 		= 
+				copyToolStripMenuItem1.Enabled		= 				
+				cutToolStripButton.Enabled			= 
+				cutToolStripMenuItem.Enabled 		=
+				cutToolStripMenuItem1.Enabled		= doc_page.script_text_box.SelectedText.Length > 0 ? true:false;
+			}
 			
 			pasteToolStripButton.Enabled 	= 
 			pasteToolStripMenuItem.Enabled 	= 
@@ -498,44 +522,172 @@ namespace MAPeD.py_scripting
 
 		void update_undo_redo()
 		{
-			undoToolStripButton.Enabled = undoToolStripMenuItem.Enabled = ScriptTextBox.CanUndo;
-			redoToolStripButton.Enabled = redoToolStripMenuItem.Enabled = ScriptTextBox.CanRedo;
+			py_editor_doc_page doc_page = get_active_script();
+			
+			if( doc_page != null )
+			{
+				undoToolStripButton.Enabled = undoToolStripMenuItem.Enabled = doc_page.script_text_box.CanUndo;
+				redoToolStripButton.Enabled = redoToolStripMenuItem.Enabled = doc_page.script_text_box.CanRedo;
+			}
 		}
 		
 		void UndoToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			ScriptTextBox.Undo();
+			py_editor_doc_page doc_page = get_active_script();
 			
-			update_undo_redo();
+			if( doc_page != null )
+			{
+				doc_page.script_text_box.Undo();
+				
+				update_undo_redo();
+			}
+			else
+			{
+				update_status_msg( CONST_NO_SCRIPT_MSG );
+			}
 		}
 		
 		void RedoToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			ScriptTextBox.Redo();
+			py_editor_doc_page doc_page = get_active_script();
 			
-			update_undo_redo();
+			if( doc_page != null )
+			{
+				doc_page.script_text_box.Redo();
+				
+				update_undo_redo();
+			}
+			else
+			{
+				update_status_msg( CONST_NO_SCRIPT_MSG );
+			}
 		}
 		
 		void CutToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			ScriptTextBox.Cut();
+			py_editor_doc_page doc_page = get_active_script();
+			
+			if( doc_page != null )
+			{
+				doc_page.script_text_box.Cut();
+			}
+			else
+			{
+				update_status_msg( CONST_NO_SCRIPT_MSG );
+			}
 		}
 		
 		void CopyToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			ScriptTextBox.Copy();
+			py_editor_doc_page doc_page = get_active_script();
+			
+			if( doc_page != null )
+			{
+				doc_page.script_text_box.Copy();
+			}
+			else
+			{
+				update_status_msg( CONST_NO_SCRIPT_MSG );
+			}
 		}
 		
 		void PasteToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			ScriptTextBox.Paste();
+			py_editor_doc_page doc_page = get_active_script();
+			
+			if( doc_page != null )
+			{
+				doc_page.script_text_box.Paste();
+			}
+			else
+			{
+				update_status_msg( CONST_NO_SCRIPT_MSG );
+			}
 		}
 		
 		void DeleteToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			ScriptTextBox.SelectedText = "";
+			py_editor_doc_page doc_page = get_active_script();
+			
+			if( doc_page != null )
+			{
+				doc_page.script_text_box.SelectedText = "";
+			}
+			else
+			{
+				update_status_msg( CONST_NO_SCRIPT_MSG );
+			}
 		}
 		#endregion
+		
+		void py_editorShown(object sender, EventArgs e)
+		{
+			py_editor_doc_page doc_page = get_active_script();
+			
+			if( doc_page != null )
+			{
+				doc_page.first_init();
+				doc_page.script_text_box.Focus();
+			}
+			
+			if( Type.GetType( "Mono.Runtime") != null )
+			{
+				message_box( "It's not recommended to use the editor for script editing under Mono due to buggy implementation of RichTextBox. You can load your script into the editor and to any other editor where you can edit it. Then in this editor you can press Ctrl+R (reload script) and F5 (run script).", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+			}
+		}
+		
+		void DocPagesContainerSelectedIndexChanged(object sender, EventArgs e)
+		{
+			update_cut_copy_paste_delete();
+			update_undo_redo();
+			
+			update_ln_col_status_msg( sender, e );
+			
+			py_editor_doc_page doc_page = get_active_script();
+			
+			if( doc_page != null )
+			{
+				doc_page.script_text_box.Focus();
+			}
+		}
+		
+		void DocPagesContainerDrawItem(object sender, DrawItemEventArgs e)
+		{
+			// draw close_tab image ( red cross )
+            TabPage tab_page = DocPagesContainer.TabPages[ e.Index ];
+            
+            Rectangle tab_rect = DocPagesContainer.GetTabRect( e.Index );
+            tab_rect.Inflate( -2, -2 );
+            
+            Bitmap close_img = Properties.Resources.close_tab;
+            
+            e.Graphics.DrawImage( close_img, ( tab_rect.Right - close_img.Width ), tab_rect.Top + ( tab_rect.Height - close_img.Height) >> 1 );
+            TextRenderer.DrawText( e.Graphics, tab_page.Text, tab_page.Font, tab_rect, tab_page.ForeColor, TextFormatFlags.Left );
+		}
+		
+		void DocPagesContainerMouseUp(object sender, MouseEventArgs e)
+		{
+			Rectangle 	tab_rect;
+			Rectangle 	img_rect;
+			Bitmap		close_img;
+			
+            for( int i = 0; i < DocPagesContainer.TabPages.Count; i++)
+            {
+                tab_rect = DocPagesContainer.GetTabRect( i );
+                
+                tab_rect.Inflate( -2, -2 );
+                
+                close_img = Properties.Resources.close_tab;
+                
+                img_rect = new Rectangle( ( tab_rect.Right - close_img.Width ), tab_rect.Top + ( tab_rect.Height - close_img.Height ) >> 1, close_img.Width, close_img.Height );
+                
+                if( img_rect.Contains( e.Location ) )
+                {
+                	delete_page( DocPagesContainer.TabPages[ i ], false );
+                    break;
+                }
+            }
+		}
 	}
 	
 	class py_output : TextWriter

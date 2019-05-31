@@ -177,6 +177,13 @@
       <Link>py_scripting\py_editor.Designer.cs</Link>
       <DependentUpon>py_editor.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\py_scripting\py_editor_doc_page.cs">
+      <Link>py_scripting\py_editor_doc_page.cs</Link>
+    </Compile>
+    <Compile Include="..\src\py_scripting\py_editor_doc_page.Designer.cs">
+      <Link>py_scripting\py_editor_doc_page.Designer.cs</Link>
+      <DependentUpon>py_editor_doc_page.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\screen_editor.cs">
       <Link>screen_editor.cs</Link>
     </Compile>
@@ -229,6 +236,10 @@
       <DependentUpon>MAPeD-NES.settings</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -275,6 +286,10 @@
       <Link>py_scripting\py_editor.resx</Link>
       <DependentUpon>py_editor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\src\py_scripting\py_editor_doc_page.resx">
+      <Link>py_scripting\py_editor_doc_page.resx</Link>
+      <DependentUpon>py_editor_doc_page.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\src\screen_mark_form.resx">
       <Link>screen_mark_form.resx</Link>
       <DependentUpon>screen_mark_form.cs</DependentUpon>
@@ -286,6 +301,10 @@
     <EmbeddedResource Include="..\src\tiles_palette_form.resx">
       <Link>tiles_palette_form.resx</Link>
       <DependentUpon>tiles_palette_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

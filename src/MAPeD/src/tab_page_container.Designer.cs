@@ -34,7 +34,6 @@ namespace MAPeD
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(tab_page_container));
 			this.SuspendLayout();
 			// 
 			// tab_page_container
@@ -42,7 +41,7 @@ namespace MAPeD
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(284, 262);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::MAPeD.Properties.Resources.MAPeD;
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;

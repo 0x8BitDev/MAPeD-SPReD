@@ -34,7 +34,6 @@ namespace MAPeD
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(tiles_palette_form));
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.BtnBlocks = new System.Windows.Forms.Button();
 			this.BtnTiles = new System.Windows.Forms.Button();
@@ -116,7 +115,7 @@ namespace MAPeD
 			this.Controls.Add(this.PanelPaletteTiles);
 			this.Controls.Add(this.PanelPaletteBlocks);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::MAPeD.Properties.Resources.MAPeD;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "tiles_palette_form";

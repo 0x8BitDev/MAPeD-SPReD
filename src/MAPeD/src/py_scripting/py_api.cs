@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using Microsoft.Scripting.Hosting;
 
-namespace MAPeD.py_scripting
+namespace MAPeD
 {
 	/// <summary>
 	/// Description of py_api.
@@ -17,7 +17,7 @@ namespace MAPeD.py_scripting
 	{
 		private data_sets_manager	m_data_mngr = null;
 		
-		private const string CONST_PREFIX	= "mpd_"; 
+		public const string CONST_PREFIX	= "mpd_"; 
 		
 		public py_api( ScriptScope	_py_scope, data_sets_manager _data_mngr )
 		{
