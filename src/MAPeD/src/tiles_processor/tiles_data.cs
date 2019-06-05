@@ -660,7 +660,7 @@ namespace MAPeD
 			}
 		}
 
-		public long export_CHR( BinaryWriter _bw, bool _need_padding = false )
+		public long export_CHR( BinaryWriter _bw, bool _save_padding = false )
 		{
 			int i;
 			int x;
@@ -714,7 +714,7 @@ namespace MAPeD
 			}
 			
 			// save padding data to 1/2/4 KB
-			if( _need_padding )
+			if( _save_padding )
 			{
 				padding 	= 0;
 				data_size 	= _bw.BaseStream.Length;
