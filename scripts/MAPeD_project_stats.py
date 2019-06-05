@@ -1,10 +1,10 @@
-###########################################################################################
+#################################################################################################
 #
 # Copyright 2019 0x8BitDev ( MIT license )
 #
-# This is an example of using of API functions which are available for custom data export
+# This is an example of using of MAPeD API functions which are available for custom data export
 #
-###########################################################################################
+#################################################################################################
 
 def dump_inst_entity( _ent ):
 	print '\t\tuid: ' + str( _ent.uid )
