@@ -115,7 +115,7 @@ namespace MAPeD
 			this.Controls.Add(this.PanelPaletteTiles);
 			this.Controls.Add(this.PanelPaletteBlocks);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = global::MAPeD.Properties.Resources.MAPeD;
+			this.Icon = global::MAPeD.Properties.Resources.MAPeD_icon;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "tiles_palette_form";

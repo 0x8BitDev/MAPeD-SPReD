@@ -41,7 +41,7 @@ namespace MAPeD
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(284, 262);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Icon = global::MAPeD.Properties.Resources.MAPeD;
+			this.Icon = global::MAPeD.Properties.Resources.MAPeD_icon;
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;

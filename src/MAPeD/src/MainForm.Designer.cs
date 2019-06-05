@@ -3128,7 +3128,7 @@ namespace MAPeD
 			this.Controls.Add(this.tabControlEditorLayout);
 			this.Controls.Add(this.MenuStrip);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = global::MAPeD.Properties.Resources.MAPeD;
+			this.Icon = global::MAPeD.Properties.Resources.MAPeD_icon;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.MenuStrip;
 			this.MaximizeBox = false;

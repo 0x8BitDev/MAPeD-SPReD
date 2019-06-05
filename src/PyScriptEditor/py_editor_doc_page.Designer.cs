@@ -4,7 +4,7 @@
  * Date: 29.05.2019
  * Time: 18:27
  */
-namespace MAPeD
+namespace PyScriptEditor
 {
 	partial class py_editor_doc_page
 	{

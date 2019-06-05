@@ -437,7 +437,7 @@ namespace SPReD
 						// save non-zero tile 
 						if( pix_acc != 0 ||!_alpha )
 						{
-							chr_attr.CHR_id = m_CHR_arr.Count; 
+							chr_attr.CHR_ind = m_CHR_arr.Count; 
 							_spr_params.m_CHR_attr.Add( chr_attr );
 							
 							m_CHR_arr.Add( chr_data );
@@ -560,9 +560,9 @@ namespace SPReD
 			}
 		}
 		
-		public void export( string _path, string _filename )
+		public long export( string _filename, bool _save_padding )
 		{
-			BinaryWriter bw = new BinaryWriter( File.Open( _path + Path.DirectorySeparatorChar + _filename + "_" + get_filename(), FileMode.Create ) );
+			BinaryWriter bw = new BinaryWriter( File.Open( _filename, FileMode.Create ) );
 			
 			CHR8x8_data chr_data;
 			
@@ -611,21 +611,27 @@ namespace SPReD
 			}
 			
 			// save padding data to 1/2/4 KB
-			int CHR_data_bytes_size = get_size_bytes();
-			
-			int padding = utils.get_padding( CHR_data_bytes_size );
-			
-			if( padding != 0 )
+			if( _save_padding == true )
 			{
-				data = 0;
+				int CHR_data_bytes_size = get_size_bytes();
 				
-				while( padding-- != 0 )
+				int padding = utils.get_padding( CHR_data_bytes_size );
+				
+				if( padding != 0 )
 				{
-					bw.Write( data );
+					data = 0;
+					
+					while( padding-- != 0 )
+					{
+						bw.Write( data );
+					}
 				}
 			}
 			
+			long data_size = bw.BaseStream.Length;
 			bw.Close();
+			
+			return data_size;
 		}
 		
 		public void save( BinaryWriter _bw )

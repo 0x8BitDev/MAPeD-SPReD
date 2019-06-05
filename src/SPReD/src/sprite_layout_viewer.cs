@@ -509,7 +509,7 @@ namespace SPReD
 				{
 					// draw a frame of the selected CHR
 					CHR_data_attr 	chr_attr = m_spr_data.get_CHR_attr()[ m_selected_CHR ];
-					CHR8x8_data 	chr_data = m_spr_data.get_CHR_data().get_data()[ chr_attr.CHR_id ];
+					CHR8x8_data 	chr_data = m_spr_data.get_CHR_data().get_data()[ chr_attr.CHR_ind ];
 					
 					float chr_scr_pos_x = transform_to_scr_pos( chr_attr.x + m_offset_x + m_spr_data.offset_x, m_scr_half_width );
 					float chr_scr_pos_y = transform_to_scr_pos( chr_attr.y + m_offset_y + m_spr_data.offset_y, m_scr_half_height );
@@ -522,7 +522,7 @@ namespace SPReD
 					m_pen.Color = Color.White;
 					m_gfx.DrawRectangle( m_pen, chr_scr_pos_x-1, chr_scr_pos_y-1, m_CHR_size + 2, CHR_height + 2 );
 					
-					m_label.Text = "Pos: " + chr_attr.x + ";" + chr_attr.y + " / Palette: " + ( chr_attr.palette_ind + 1 ) + " / Id: " + chr_attr.CHR_id;
+					m_label.Text = "Pos: " + chr_attr.x + ";" + chr_attr.y + " / Palette: " + ( chr_attr.palette_ind + 1 ) + " / Id: " + chr_attr.CHR_ind;
 				}
 				else
 				{
@@ -774,11 +774,11 @@ namespace SPReD
 		
 		private Bitmap create_bitmap( CHR_data_attr _chr_attr )
 		{
-			CHR8x8_data chr_data = m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_id ];
+			CHR8x8_data chr_data = m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind ];
 			
 			if( m_mode8x16 )
 			{
-				return utils.create_bitmap8x16( chr_data, ( _chr_attr.CHR_id + 1 ) >= m_spr_data.get_CHR_data().get_data().Count ? null:m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_id + 1 ], _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
+				return utils.create_bitmap8x16( chr_data, ( _chr_attr.CHR_ind + 1 ) >= m_spr_data.get_CHR_data().get_data().Count ? null:m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind + 1 ], _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
 			}
 			
 			return utils.create_bitmap8x8( chr_data, _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
@@ -786,11 +786,11 @@ namespace SPReD
 		
 		private void update_bitmap( CHR_data_attr _chr_attr, Bitmap _bmp )
 		{
-			CHR8x8_data chr_data = m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_id ];
+			CHR8x8_data chr_data = m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind ];
 			
 			if( m_mode8x16 )
 			{
-				utils.update_bitmap8x16( chr_data, ( _chr_attr.CHR_id + 1 ) >= m_spr_data.get_CHR_data().get_data().Count ? null:m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_id + 1 ], _bmp, _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
+				utils.update_bitmap8x16( chr_data, ( _chr_attr.CHR_ind + 1 ) >= m_spr_data.get_CHR_data().get_data().Count ? null:m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind + 1 ], _bmp, _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
 			}
 			else
 			{
@@ -909,7 +909,7 @@ namespace SPReD
 		           	y_pos -= m_spr_data.offset_y;
 		    		
 		    		CHR_data_attr chr_attr = new CHR_data_attr( x_pos, y_pos );
-		    		chr_attr.CHR_id = chr_ind;
+		    		chr_attr.CHR_ind = chr_ind;
 		    		
 		    		chr_attr.palette_ind = m_palette_group.active_palette; 
 					
@@ -924,11 +924,11 @@ namespace SPReD
 	    	}
 	    }
 
-	    public int get_selected_CHR_id()
+	    public int get_selected_CHR_ind()
 	    {
 	    	if( m_selected_CHR >= 0 )
 	    	{
-	    		return m_spr_data.get_CHR_attr()[ m_selected_CHR ].CHR_id;
+	    		return m_spr_data.get_CHR_attr()[ m_selected_CHR ].CHR_ind;
 	    	}
 	    	
 	    	return -1;

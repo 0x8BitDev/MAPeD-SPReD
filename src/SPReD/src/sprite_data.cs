@@ -303,11 +303,11 @@ namespace SPReD
 			{
 				chr_attr = m_CHR_attr[ i ];
 				
-				remap_color_inds( get_CHR_data().get_data()[ chr_attr.CHR_id ], start_clr_ind, remap_arr );
+				remap_color_inds( get_CHR_data().get_data()[ chr_attr.CHR_ind ], start_clr_ind, remap_arr );
 				
-				if( _mode8x16 && ( chr_attr.CHR_id + 1 < get_CHR_data().get_data().Count ) )
+				if( _mode8x16 && ( chr_attr.CHR_ind + 1 < get_CHR_data().get_data().Count ) )
 				{
-					remap_color_inds( get_CHR_data().get_data()[ chr_attr.CHR_id + 1 ], start_clr_ind, remap_arr );
+					remap_color_inds( get_CHR_data().get_data()[ chr_attr.CHR_ind + 1 ], start_clr_ind, remap_arr );
 				}
 			}
 		}
@@ -332,7 +332,7 @@ namespace SPReD
 			// all attributes must refer to existing CHRs
 			for( int i = 0; i < get_CHR_attr().Count; i++ )
 			{
-				if( get_CHR_attr()[ i ].CHR_id >= get_CHR_data().get_data().Count )
+				if( get_CHR_attr()[ i ].CHR_ind >= get_CHR_data().get_data().Count )
 				{
 					get_CHR_attr().RemoveAt( i );
 					--i;
@@ -361,7 +361,7 @@ namespace SPReD
 			
 			for( i = 0; i < size; i++ )
 			{
-				_spr.get_CHR_attr()[ i ].CHR_id += last_CHR_cnt; 
+				_spr.get_CHR_attr()[ i ].CHR_ind += last_CHR_cnt; 
 			}
 			
 			_spr.set_CHR_data( this.get_CHR_data() );
@@ -394,17 +394,17 @@ namespace SPReD
 			{
 				attr = m_CHR_attr[ i ];
 				
-				new_chr_data.get_data().Add( m_CHR_data.get_data()[ attr.CHR_id ].copy() );
+				new_chr_data.get_data().Add( m_CHR_data.get_data()[ attr.CHR_ind ].copy() );
 				
-				if( _mode8x16 && attr.CHR_id + 1 < m_CHR_data.get_data().Count )
+				if( _mode8x16 && attr.CHR_ind + 1 < m_CHR_data.get_data().Count )
 				{
-					new_chr_data.get_data().Add( m_CHR_data.get_data()[ attr.CHR_id + 1 ].copy() );
+					new_chr_data.get_data().Add( m_CHR_data.get_data()[ attr.CHR_ind + 1 ].copy() );
 					
-					attr.CHR_id = i << 1;
+					attr.CHR_ind = i << 1;
 				}
 				else
 				{
-					attr.CHR_id = i;
+					attr.CHR_ind = i;
 				}
 			}
 			
@@ -436,7 +436,7 @@ namespace SPReD
 				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) == CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) ? 0x40:0;
 				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) == CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) ? 0x80:0;
 				
-				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", ( sbyte )( offset_y + chr_attr.y ), ( sbyte )( chr_attr.CHR_id ), ( sbyte )( attr ), ( sbyte )( offset_x + chr_attr.x ) ) );
+				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", ( sbyte )( offset_y + chr_attr.y ), ( sbyte )( chr_attr.CHR_ind ), ( sbyte )( attr ), ( sbyte )( offset_x + chr_attr.x ) ) );
 				
 			}
 			
@@ -514,14 +514,14 @@ namespace SPReD
 				{
 					for( j = 0; j < attr_size; j++ )
 					{
-						if( get_CHR_attr()[ j ].CHR_id == i )
+						if( get_CHR_attr()[ j ].CHR_ind == i )
 						{
 							break;
 						}
 						
 						if( _mode8x16 )
 						{
-							if( get_CHR_attr()[ j ].CHR_id + 1 == i )
+							if( get_CHR_attr()[ j ].CHR_ind + 1 == i )
 							{
 								break;
 							}
@@ -544,12 +544,12 @@ namespace SPReD
 						// decrease by 1 all CHR indices in attributes data, that more than i
 						for( j = 0; j < attr_size; j++ )
 						{
-							if( m_CHR_attr[ j ].CHR_id > i )
+							if( m_CHR_attr[ j ].CHR_ind > i )
 							{
-								--m_CHR_attr[ j ].CHR_id;
+								--m_CHR_attr[ j ].CHR_ind;
 							}
 							else
-							if( m_CHR_attr[ j ].CHR_id == i )
+							if( m_CHR_attr[ j ].CHR_ind == i )
 							{
 								m_CHR_attr.RemoveAt( j );
 								
@@ -607,11 +607,11 @@ namespace SPReD
 			for( int i = 0; i < size; i++ )
 			{
 				chr_attr = get_CHR_attr()[ i ];
-				chr_data = get_CHR_data().get_data()[ chr_attr.CHR_id ];
+				chr_data = get_CHR_data().get_data()[ chr_attr.CHR_ind ];
 				
 				if( _mode8x16 )
 				{
-					bmp = utils.create_bitmap8x16( chr_data, ( chr_attr.CHR_id + 1 ) >= get_CHR_data().get_data().Count ? null:get_CHR_data().get_data()[ chr_attr.CHR_id + 1 ], chr_attr.flip_flag, false, chr_attr.palette_ind, _plt_arr );
+					bmp = utils.create_bitmap8x16( chr_data, ( chr_attr.CHR_ind + 1 ) >= get_CHR_data().get_data().Count ? null:get_CHR_data().get_data()[ chr_attr.CHR_ind + 1 ], chr_attr.flip_flag, false, chr_attr.palette_ind, _plt_arr );
 				}
 				else
 				{

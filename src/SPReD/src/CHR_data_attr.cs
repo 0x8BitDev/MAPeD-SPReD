@@ -17,7 +17,7 @@ namespace SPReD
 		private int		m_x 			= 0;
 		private int		m_y 			= 0;
 		private int		m_palette_ind 	= -1;
-		private int		m_CHR_id		= -1;
+		private int		m_CHR_ind		= -1;
 		private int		m_flip_flag		= 0;
 		
 		public int flip_flag
@@ -29,10 +29,10 @@ namespace SPReD
 		public const int CONST_CHR_ATTR_FLAG_HFLIP	= 0x01;
 		public const int CONST_CHR_ATTR_FLAG_VFLIP	= 0x02;
 		
-		public int CHR_id
+		public int CHR_ind
 		{
-			get { return m_CHR_id; }
-			set { m_CHR_id = value; }
+			get { return m_CHR_ind; }
+			set { m_CHR_ind = value; }
 		}
 		
 		public int x
@@ -65,7 +65,7 @@ namespace SPReD
 			
 			attr.m_flip_flag 	= flip_flag;
 			attr.palette_ind 	= palette_ind;
-			attr.CHR_id			= CHR_id;
+			attr.CHR_ind		= CHR_ind;
 			
 			return attr;
 		}
@@ -85,7 +85,7 @@ namespace SPReD
 			_bw.Write( m_x 				);
 			_bw.Write( m_y 				);
 			_bw.Write( m_palette_ind 	);
-			_bw.Write( m_CHR_id			);
+			_bw.Write( m_CHR_ind		);
 			_bw.Write( m_flip_flag		);
 		}
 		
@@ -94,7 +94,7 @@ namespace SPReD
 			m_x 			= _br.ReadInt32();
 			m_y 			= _br.ReadInt32();
 			m_palette_ind 	= _br.ReadInt32();
-			m_CHR_id		= _br.ReadInt32();
+			m_CHR_ind		= _br.ReadInt32();
 			m_flip_flag		= _br.ReadInt32();
 		}
 	}

@@ -4,7 +4,7 @@
  * Date: 24.05.2019
  * Time: 18:57
  */
-namespace MAPeD
+namespace PyScriptEditor
 {
 	partial class py_api_doc
 	{
@@ -47,7 +47,6 @@ namespace MAPeD
 			this.HTMLBrowser.Size = new System.Drawing.Size(960, 500);
 			this.HTMLBrowser.TabIndex = 0;
 			this.HTMLBrowser.WebBrowserShortcutsEnabled = false;
-			this.HTMLBrowser.DocumentText = System.Text.Encoding.Default.GetString( global::MAPeD.Properties.Resources.MAPeD_Data_Export_Python_API );
 			// 
 			// py_api_doc
 			// 
@@ -55,9 +54,7 @@ namespace MAPeD
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(960, 500);
 			this.Controls.Add(this.HTMLBrowser);
-			this.Icon = global::MAPeD.Properties.Resources.MAPeD;
 			this.Name = "py_api_doc";
-			this.Text = "MAPeD API Doc";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnFormClosed);
 			this.ResumeLayout(false);
 		}

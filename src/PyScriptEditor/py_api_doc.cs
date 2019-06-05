@@ -8,7 +8,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MAPeD
+namespace PyScriptEditor
 {
 	/// <summary>
 	/// Description of py_api_doc.
@@ -17,7 +17,7 @@ namespace MAPeD
 	{
 		private static py_api_doc m_instance = null;
 		
-		public py_api_doc()
+		public py_api_doc( string _api_doc_str, Icon _icon, string _title )
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -27,12 +27,14 @@ namespace MAPeD
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
-			//this.HTMLBrowser.DocumentText = System.Text.Encoding.Default.GetString( global::MAPeD.Properties.Resources.MAPeD_Data_Export_Python_API; );
 			
 			if( m_instance == null )
 			{
 				m_instance = this;
 			}
+
+			this.Icon = _icon;
+			this.Text = _title;
 			
 			try
 			{
@@ -43,7 +45,11 @@ namespace MAPeD
 			{
 				this.Controls.Remove( HTMLBrowser );
 				this.Text = "Ooops!.. It seems like you need to install 'libgluezilla' to view the in-app document or try to select 'In-Browser Doc' option or press F1";
+				
+				return;
 			}
+			
+			this.HTMLBrowser.DocumentText = _api_doc_str;
 		}
 
 		public static bool is_active()
@@ -61,6 +67,11 @@ namespace MAPeD
 		
 		void OnFormClosed(object sender, FormClosedEventArgs e)
 		{
+			if( this.HTMLBrowser != null )
+			{
+				this.HTMLBrowser.DocumentText = null;
+			}
+			
 			if( m_instance == this )
 			{
 				m_instance = null;

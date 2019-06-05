@@ -4,7 +4,7 @@
  * Date: 20.05.2019
  * Time: 16:19
  */
-namespace MAPeD
+namespace PyScriptEditor
 {
 	partial class py_editor
 	{
@@ -88,6 +88,8 @@ namespace MAPeD
 			this.redoToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.runToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+			this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -147,7 +149,7 @@ namespace MAPeD
 			// 
 			// cutToolStripMenuItem
 			// 
-			this.cutToolStripMenuItem.Image = global::MAPeD.Properties.Resources.cut;
+			this.cutToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.cut;
 			this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
 			this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
 			this.cutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
@@ -156,7 +158,7 @@ namespace MAPeD
 			// 
 			// copyToolStripMenuItem
 			// 
-			this.copyToolStripMenuItem.Image = global::MAPeD.Properties.Resources.copy;
+			this.copyToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.copy;
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.copyToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
@@ -165,7 +167,7 @@ namespace MAPeD
 			// 
 			// pasteToolStripMenuItem
 			// 
-			this.pasteToolStripMenuItem.Image = global::MAPeD.Properties.Resources.paste;
+			this.pasteToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.paste;
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
 			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
@@ -179,7 +181,7 @@ namespace MAPeD
 			// 
 			// deleteToolStripMenuItem
 			// 
-			this.deleteToolStripMenuItem.Image = global::MAPeD.Properties.Resources.delete;
+			this.deleteToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.delete;
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
 			this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
@@ -254,7 +256,7 @@ namespace MAPeD
 			// 
 			// newToolStripMenuItem
 			// 
-			this.newToolStripMenuItem.Image = global::MAPeD.Properties.Resources._new;
+			this.newToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources._new;
 			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
 			this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.newToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
@@ -263,7 +265,7 @@ namespace MAPeD
 			// 
 			// openToolStripMenuItem
 			// 
-			this.openToolStripMenuItem.Image = global::MAPeD.Properties.Resources.open;
+			this.openToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.open;
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
 			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
 			this.openToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
@@ -272,7 +274,7 @@ namespace MAPeD
 			// 
 			// reloadToolStripMenuItem
 			// 
-			this.reloadToolStripMenuItem.Image = global::MAPeD.Properties.Resources.reload;
+			this.reloadToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.reload;
 			this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
 			this.reloadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
 			this.reloadToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
@@ -281,7 +283,7 @@ namespace MAPeD
 			// 
 			// saveToolStripMenuItem
 			// 
-			this.saveToolStripMenuItem.Image = global::MAPeD.Properties.Resources.save;
+			this.saveToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.save;
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.saveToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
@@ -297,7 +299,7 @@ namespace MAPeD
 			// 
 			// saveAllToolStripMenuItem
 			// 
-			this.saveAllToolStripMenuItem.Image = global::MAPeD.Properties.Resources.save_all;
+			this.saveAllToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.save_all;
 			this.saveAllToolStripMenuItem.Name = "saveAllToolStripMenuItem";
 			this.saveAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
 									| System.Windows.Forms.Keys.S)));
@@ -312,7 +314,7 @@ namespace MAPeD
 			// 
 			// exitToolStripMenuItem
 			// 
-			this.exitToolStripMenuItem.Image = global::MAPeD.Properties.Resources.delete;
+			this.exitToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.delete;
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
 			this.exitToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
@@ -335,60 +337,60 @@ namespace MAPeD
 			// 
 			// undoToolStripMenuItem
 			// 
-			this.undoToolStripMenuItem.Image = global::MAPeD.Properties.Resources.undo;
+			this.undoToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.undo;
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
 			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.undoToolStripMenuItem.Text = "&Undo";
 			this.undoToolStripMenuItem.Click += new System.EventHandler(this.UndoToolStripMenuItemClick);
 			// 
 			// redoToolStripMenuItem
 			// 
-			this.redoToolStripMenuItem.Image = global::MAPeD.Properties.Resources.redo;
+			this.redoToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.redo;
 			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
 			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.redoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.redoToolStripMenuItem.Text = "&Redo";
 			this.redoToolStripMenuItem.Click += new System.EventHandler(this.RedoToolStripMenuItemClick);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(141, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
 			// 
 			// cutToolStripMenuItem1
 			// 
-			this.cutToolStripMenuItem1.Image = global::MAPeD.Properties.Resources.cut;
+			this.cutToolStripMenuItem1.Image = global::PyScriptEditor.Properties.Resources.cut;
 			this.cutToolStripMenuItem1.Name = "cutToolStripMenuItem1";
 			this.cutToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-			this.cutToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
+			this.cutToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.cutToolStripMenuItem1.Text = "Cu&t";
 			this.cutToolStripMenuItem1.Click += new System.EventHandler(this.CutToolStripMenuItemClick);
 			// 
 			// copyToolStripMenuItem1
 			// 
-			this.copyToolStripMenuItem1.Image = global::MAPeD.Properties.Resources.copy;
+			this.copyToolStripMenuItem1.Image = global::PyScriptEditor.Properties.Resources.copy;
 			this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
 			this.copyToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
+			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.copyToolStripMenuItem1.Text = "&Copy";
 			this.copyToolStripMenuItem1.Click += new System.EventHandler(this.CopyToolStripMenuItemClick);
 			// 
 			// pasteToolStripMenuItem1
 			// 
-			this.pasteToolStripMenuItem1.Image = global::MAPeD.Properties.Resources.paste;
+			this.pasteToolStripMenuItem1.Image = global::PyScriptEditor.Properties.Resources.paste;
 			this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
 			this.pasteToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
+			this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.pasteToolStripMenuItem1.Text = "&Paste";
 			this.pasteToolStripMenuItem1.Click += new System.EventHandler(this.PasteToolStripMenuItemClick);
 			// 
 			// deleteToolStripMenuItem1
 			// 
-			this.deleteToolStripMenuItem1.Image = global::MAPeD.Properties.Resources.delete;
+			this.deleteToolStripMenuItem1.Image = global::PyScriptEditor.Properties.Resources.delete;
 			this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
 			this.deleteToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
+			this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.deleteToolStripMenuItem1.Text = "&Delete";
 			this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.DeleteToolStripMenuItemClick);
 			// 
@@ -402,7 +404,7 @@ namespace MAPeD
 			// 
 			// runToolStripMenuItem
 			// 
-			this.runToolStripMenuItem.Image = global::MAPeD.Properties.Resources.run;
+			this.runToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.run;
 			this.runToolStripMenuItem.Name = "runToolStripMenuItem";
 			this.runToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
 			this.runToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
@@ -413,14 +415,16 @@ namespace MAPeD
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.InBrowserDocToolStripMenuItem,
-									this.InAppDocToolStripMenuItem});
+									this.InAppDocToolStripMenuItem,
+									this.toolStripSeparator6,
+									this.AboutToolStripMenuItem});
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
 			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.helpToolStripMenuItem.Text = "&Help";
 			// 
 			// InBrowserDocToolStripMenuItem
 			// 
-			this.InBrowserDocToolStripMenuItem.Image = global::MAPeD.Properties.Resources.open_in_browser;
+			this.InBrowserDocToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.open_in_browser;
 			this.InBrowserDocToolStripMenuItem.Name = "InBrowserDocToolStripMenuItem";
 			this.InBrowserDocToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
 			this.InBrowserDocToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
@@ -429,7 +433,7 @@ namespace MAPeD
 			// 
 			// InAppDocToolStripMenuItem
 			// 
-			this.InAppDocToolStripMenuItem.Image = global::MAPeD.Properties.Resources.help;
+			this.InAppDocToolStripMenuItem.Image = global::PyScriptEditor.Properties.Resources.help;
 			this.InAppDocToolStripMenuItem.Name = "InAppDocToolStripMenuItem";
 			this.InAppDocToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F1)));
 			this.InAppDocToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
@@ -477,17 +481,17 @@ namespace MAPeD
 			// newToolStripButton
 			// 
 			this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.newToolStripButton.Image = global::MAPeD.Properties.Resources._new;
+			this.newToolStripButton.Image = global::PyScriptEditor.Properties.Resources._new;
 			this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.newToolStripButton.Name = "newToolStripButton";
 			this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.newToolStripButton.Text = "&New";
+			this.newToolStripButton.Text = "&New script";
 			this.newToolStripButton.Click += new System.EventHandler(this.NewToolStripMenuItemClick);
 			// 
 			// loadToolStripButton
 			// 
 			this.loadToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.loadToolStripButton.Image = global::MAPeD.Properties.Resources.open;
+			this.loadToolStripButton.Image = global::PyScriptEditor.Properties.Resources.open;
 			this.loadToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.loadToolStripButton.Name = "loadToolStripButton";
 			this.loadToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -497,7 +501,7 @@ namespace MAPeD
 			// reloadToolStripButton
 			// 
 			this.reloadToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.reloadToolStripButton.Image = global::MAPeD.Properties.Resources.reload;
+			this.reloadToolStripButton.Image = global::PyScriptEditor.Properties.Resources.reload;
 			this.reloadToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.reloadToolStripButton.Name = "reloadToolStripButton";
 			this.reloadToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -508,7 +512,7 @@ namespace MAPeD
 			// saveToolStripButton
 			// 
 			this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.saveToolStripButton.Image = global::MAPeD.Properties.Resources.save;
+			this.saveToolStripButton.Image = global::PyScriptEditor.Properties.Resources.save;
 			this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.saveToolStripButton.Name = "saveToolStripButton";
 			this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -518,7 +522,7 @@ namespace MAPeD
 			// SaveAllToolStripButton
 			// 
 			this.SaveAllToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.SaveAllToolStripButton.Image = global::MAPeD.Properties.Resources.save_all;
+			this.SaveAllToolStripButton.Image = global::PyScriptEditor.Properties.Resources.save_all;
 			this.SaveAllToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SaveAllToolStripButton.Name = "SaveAllToolStripButton";
 			this.SaveAllToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -534,7 +538,7 @@ namespace MAPeD
 			// cutToolStripButton
 			// 
 			this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.cutToolStripButton.Image = global::MAPeD.Properties.Resources.cut;
+			this.cutToolStripButton.Image = global::PyScriptEditor.Properties.Resources.cut;
 			this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.cutToolStripButton.Name = "cutToolStripButton";
 			this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -544,7 +548,7 @@ namespace MAPeD
 			// copyToolStripButton
 			// 
 			this.copyToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.copyToolStripButton.Image = global::MAPeD.Properties.Resources.copy;
+			this.copyToolStripButton.Image = global::PyScriptEditor.Properties.Resources.copy;
 			this.copyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.copyToolStripButton.Name = "copyToolStripButton";
 			this.copyToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -554,7 +558,7 @@ namespace MAPeD
 			// pasteToolStripButton
 			// 
 			this.pasteToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.pasteToolStripButton.Image = global::MAPeD.Properties.Resources.paste;
+			this.pasteToolStripButton.Image = global::PyScriptEditor.Properties.Resources.paste;
 			this.pasteToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.pasteToolStripButton.Name = "pasteToolStripButton";
 			this.pasteToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -564,7 +568,7 @@ namespace MAPeD
 			// deleteToolStripButton
 			// 
 			this.deleteToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.deleteToolStripButton.Image = global::MAPeD.Properties.Resources.delete;
+			this.deleteToolStripButton.Image = global::PyScriptEditor.Properties.Resources.delete;
 			this.deleteToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.deleteToolStripButton.Name = "deleteToolStripButton";
 			this.deleteToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -579,7 +583,7 @@ namespace MAPeD
 			// undoToolStripButton
 			// 
 			this.undoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.undoToolStripButton.Image = global::MAPeD.Properties.Resources.undo;
+			this.undoToolStripButton.Image = global::PyScriptEditor.Properties.Resources.undo;
 			this.undoToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.undoToolStripButton.Name = "undoToolStripButton";
 			this.undoToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -589,7 +593,7 @@ namespace MAPeD
 			// redoToolStripButton
 			// 
 			this.redoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.redoToolStripButton.Image = global::MAPeD.Properties.Resources.redo;
+			this.redoToolStripButton.Image = global::PyScriptEditor.Properties.Resources.redo;
 			this.redoToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.redoToolStripButton.Name = "redoToolStripButton";
 			this.redoToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -604,12 +608,24 @@ namespace MAPeD
 			// runToolStripButton
 			// 
 			this.runToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.runToolStripButton.Image = global::MAPeD.Properties.Resources.run;
+			this.runToolStripButton.Image = global::PyScriptEditor.Properties.Resources.run;
 			this.runToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.runToolStripButton.Name = "runToolStripButton";
 			this.runToolStripButton.Size = new System.Drawing.Size(23, 22);
 			this.runToolStripButton.Text = "Run script";
 			this.runToolStripButton.Click += new System.EventHandler(this.RunToolStripMenuItemClick);
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(183, 6);
+			// 
+			// AboutToolStripMenuItem
+			// 
+			this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+			this.AboutToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.AboutToolStripMenuItem.Text = "About";
+			this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItemClick);
 			// 
 			// py_editor
 			// 
@@ -619,7 +635,6 @@ namespace MAPeD
 			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.StandardToolStrip);
 			this.Controls.Add(this.menuStrip);
-			this.Icon = global::MAPeD.Properties.Resources.MAPeD;
 			this.MainMenuStrip = this.menuStrip;
 			this.Name = "py_editor";
 			this.Text = "SPSeD";
@@ -639,6 +654,8 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem AboutToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;

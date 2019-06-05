@@ -24,6 +24,8 @@ namespace SPReD
 		private copy_sprite_new_name_form 	m_new_sprite_name_form 		= new copy_sprite_new_name_form();
 		private image_export_options_form 	m_img_export_options_form	= new image_export_options_form();
 		private description_form			m_description_form			= new description_form();
+
+		private PyScriptEditor.py_editor	m_py_editor	= null;
 		
 		private bool m_project_loaded	= false;
 		
@@ -129,11 +131,25 @@ namespace SPReD
 		private void OnFormClosing(object sender, FormClosingEventArgs e)
 		{
 			e.Cancel = true;
+
+			if( PyScriptEditor.py_editor.is_active() )
+			{
+				m_py_editor.Close();
+				
+				if( PyScriptEditor.py_editor.is_active() )
+				{
+					return;
+				}
+				
+				m_py_editor = null;
+			}
 			
 		    if( message_box( "All unsaved progress will be lost!\nAre you sure?", "Exit App", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 		    {
 				reset();
 				m_sprites_proc = null;
+
+				m_py_editor = null;
 				
 		    	e.Cancel = false;
 		    }
@@ -170,6 +186,38 @@ namespace SPReD
 			CBoxMode8x16.Checked = false;
 		}
 		
+		void ExitToolStripMenuItemClick(object sender, System.EventArgs e)
+		{
+			Close();
+		}
+		
+		void MenuHelpAboutClick(object sender, System.EventArgs e)
+		{
+			message_box( "Sprites Editor (" + utils.CONST_PLATFORM + ")\n\n" + utils.CONST_APP_VER + " " + utils.build_str + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information );
+		}
+		
+		void CloseToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			if( SpriteList.Items.Count > 0 )
+			{
+				if( message_box( "Are you sure you want to close the current project?", "Close Project", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				{
+					reset();
+					
+					set_title_name( null );
+					
+					m_description_form.edit_text = "";
+				}
+			}
+		}
+		
+		void DescriptionToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			m_description_form.ShowDialog();
+		}
+		
+//		SPRITES PROCESSING		*****************************************************************************//
+#region	Sprites processing
 		private bool check_duplicate( String _spr_name )
 		{
 			int size = SpriteList.Items.Count;
@@ -196,310 +244,6 @@ namespace SPReD
 				
 				m_sprites_proc.update_sprite( spr, _new_sprite, _show_mode );
 			}
-		}
-		
-		void LoadToolStripMenuItemClick(object sender, System.EventArgs e)
-		{
-			m_project_loaded = false;
-			
-			if( SpriteList.Items.Count > 0 )
-			{
-				if( message_box( "Are you sure you want to close the current project?", "Load Project", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
-				{
-					Project_openFileDialog.ShowDialog();
-				}
-			}
-			else
-			{
-				Project_openFileDialog.ShowDialog();
-			}
-			
-			if( m_project_loaded )
-			{
-				if( m_description_form.auto_show() && m_description_form.edit_text.Length > 0 )
-				{
-					m_description_form.ShowDialog( this );
-				}
-			}
-		}
-
-		void SaveToolStripMenuItemClick(object sender, System.EventArgs e)
-		{
-			if( SpriteList.Items.Count == 0 )			
-			{
-				message_box( "There are no data to save!", "Save Project Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
-			}
-			else
-			{
-				Project_saveFileDialog.ShowDialog();
-			}
-		}
-		
-		void ImportToolStripMenuItemClick(object sender, System.EventArgs e)
-		{
-			Import_openFileDialog.ShowDialog();
-		}
-
-		void Import_OK(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			System.String[] filenames = ( ( System.Windows.Forms.FileDialog )sender ).FileNames;
-			
-			FileStream 		fs = null;
-			BinaryReader 	br = null;
-			
-			try
-			{
-				SpriteList.BeginUpdate();
-				
-				int i;
-				int j;
-				int size = filenames.Length;
-	
-				string spr_name;
-				string filename;
-				
-				string ext = Path.GetExtension( filenames[ 0 ] );
-				
-				switch( ext )
-				{
-					case ".pal":
-						{
-							fs = new FileStream( filenames[ 0 ], FileMode.Open, FileAccess.Read );
-							
-							br = new BinaryReader( fs );
-							
-							if( br.BaseStream.Length == 192 )
-							{
-								palette_group.Instance.load_main_palette( br );
-							}
-							else
-							{
-								throw new Exception( "The imported palette must be 192 bytes length!" );
-							}
-						}
-						break;
-			
-					default:
-						{
-							for( i = 0; i < size; i++ )
-							{
-								filename = filenames[ i ];
-			
-								spr_name = System.IO.Path.GetFileNameWithoutExtension( filename );
-								
-								switch( ext )
-								{
-									case ".bmp":
-									case ".png":
-										{
-											if(!check_duplicate( spr_name ) )
-											{
-												if( ext == ".png" )
-												{
-													SpriteList.Items.Add( m_sprites_proc.load_sprite_png( filename, spr_name ) );
-												}
-												else
-												{	// otherwise - .bmp
-													SpriteList.Items.Add( m_sprites_proc.load_sprite_bmp( filename, spr_name ) );
-												}
-											}
-											else
-											{
-												throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
-											}
-										}
-										break;
-										
-									case ".chr":
-									case ".bin":
-										{
-											fs = new FileStream( filename, FileMode.Open, FileAccess.Read );
-											
-											br = new BinaryReader( fs );
-											
-											if( br.BaseStream.Length > 4096 )
-											{
-												j = 0;
-												
-												while( br.BaseStream.Position < br.BaseStream.Length - 1 )
-												{
-													if(!check_duplicate( spr_name + "_" + j ) )
-													{
-														SpriteList.Items.Add( m_sprites_proc.import_CHR_bank( br, spr_name + "_" + j ) );
-														
-														++j;
-													}
-													else
-													{
-														throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
-													}
-												}
-											}
-											else
-											{
-												if(!check_duplicate( spr_name ) )
-												{
-													SpriteList.Items.Add( m_sprites_proc.import_CHR_bank( br, spr_name ) );
-												}
-												else
-												{
-													throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
-												}
-											}
-										}
-										break;
-								}
-							}
-						}
-						break;
-				}
-			}
-			catch( System.Exception _err )
-			{
-				message_box( _err.Message, "Data Import Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
-			}
-			
-			if( br != null )
-			{
-				br.Close();
-			}
-			
-			if( fs != null )
-			{
-				br.Close();
-			}
-			
-			SpriteList.EndUpdate();
-		}
-		
-		void ExportImagesToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			if( SpriteList.Items.Count == 0 )			
-			{
-				message_box( "There are no data to export!", "Images Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
-			}
-			else
-			{
-				if( ExportImages_folderBrowserDialog.ShowDialog() == DialogResult.OK && m_img_export_options_form.ShowDialog() == DialogResult.OK )
-				{
-					try
-					{
-						sprite_data spr;
-						
-						int size = SpriteList.Items.Count;
-						
-						for( int i = 0; i < size; i++ )
-						{
-							spr = SpriteList.Items[ i ] as sprite_data;
-								
-							spr.save_image( ExportImages_folderBrowserDialog.SelectedPath, m_img_export_options_form.alpha_channel, m_sprites_proc.get_palette_group().get_palettes_arr(), m_img_export_options_form.format, CBoxMode8x16.Checked );
-						}
-					}
-					catch( Exception _err )
-					{
-						message_box( _err.Message, "Images Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
-					}
-				}
-			}
-		}
-		
-		void ExportASMToolStripMenuItemClick(object sender, System.EventArgs e)
-		{
-			if( SpriteList.Items.Count == 0 )			
-			{
-				message_box( "There are no data to export!", "NESASM Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
-			}
-			else
-			{
-				ExportASM_saveFileDialog.ShowDialog();
-			}
-		}
-		
-		void ExportASM_OK(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			System.String filename = ( ( System.Windows.Forms.FileDialog )sender ).FileName;
-		
-			data_export( filename, SpriteList.Items.Count, delegate( int _ind ) { return SpriteList.Items[ _ind ] as sprite_data; } );
-		}
-		
-		private void data_export( string _filename, int _spr_cnt, Func< int, sprite_data > _get_spr )
-		{
-			StreamWriter sw = null;
-			
-			try
-			{
-				sprite_data spr;
-				
-				string path		= System.IO.Path.GetDirectoryName( _filename );
-				string filename	= System.IO.Path.GetFileNameWithoutExtension( _filename );
-				
-				sw = File.CreateText( _filename );
-				{
-					sw.WriteLine( ";#######################################################\n;" );
-					sw.WriteLine( "; Generated by " + utils.CONST_APP_NAME + " Copyright 2017-" + DateTime.Now.Year + " 0x8BitDev\n;" );
-					sw.WriteLine( ";#######################################################\n" );
-
-					sw.WriteLine( "SPR_MODE_8X16 = " + ( CBoxMode8x16.Checked ? "1":"0" ) + "\n\n" );
-					
-					// 'incbin's of CHRs 
-					m_sprites_proc.rearrange_CHR_data_ids();
-					m_sprites_proc.export_CHR( sw, filename, true );
-					
-					sw.WriteLine( "\n" );
-					
-					m_sprites_proc.export_palette( sw );
-					
-					// save common sprites data
-					{
-						// sprites array
-						sw.WriteLine( "\nn_frames:\n\t." + ( _spr_cnt > 255 ? "word ":"byte " ) + String.Format( "${0:X2}\nframes_data:", _spr_cnt ) );
-						
-						bool enable_comments = true;
-						
-						for( int i = 0; i < _spr_cnt; i++ )
-						{
-							spr = _get_spr( i );
-							
-							sw.WriteLine( spr.name + "_frame:" );
-							sw.WriteLine( "\t.word " + spr.name );
-							sw.WriteLine( "\t.byte " + spr.name + "_end - " + spr.name + ( enable_comments ? "\t; data size":"" ) );
-							
-							sw.WriteLine( "\t.byte " + spr.get_CHR_data().id + ( enable_comments ? "\t\t; CHR bank index (" + spr.get_CHR_data().name + ")":"" ) );
-							
-							spr.get_CHR_data().export( path, filename );
-							
-							enable_comments = false;
-						}
-					}
-					
-					sw.WriteLine( "\n" );
-					
-					// save the sprites data
-					for( int i = 0; i < _spr_cnt; i++ )
-					{
-						_get_spr( i ).export( sw );
-					}
-				}
-			}
-			catch( Exception _err )
-			{
-				message_box( _err.Message, "Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
-			}
-
-			if( sw != null )
-			{
-				sw.Close();
-			}
-		}
-		
-		void ExitToolStripMenuItemClick(object sender, System.EventArgs e)
-		{
-			Close();
-		}
-		
-		void MenuHelpAboutClick(object sender, System.EventArgs e)
-		{
-			message_box( "Sprites Editor (" + utils.CONST_PLATFORM + ")\n\n" + utils.CONST_APP_VER + " " + utils.build_str + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information );
 		}
 		
 		void BtnRename_Event(object sender, EventArgs e)
@@ -741,125 +485,6 @@ namespace SPReD
 			}
 		}
 		
-		private void CHR_bank_optimization( int _CHR_bank_id )
-		{
-			CHR_data_group CHR_bank = m_sprites_proc.get_CHR_bank( _CHR_bank_id );
-			
-			if( CHR_bank == null )
-			{
-				// the bank had one sprite and the bank has been removed
-				return;
-			}
-			
-			int CHR_n;
-			int CHR_cnt = CHR_bank.get_data().Count;
-			
-			int spr_n;
-			int spr_cnt = SpriteList.Items.Count;
-
-			int attr_n;
-			int attr_cnt;
-			
-			sprite_data 	spr;
-			CHR_data_attr 	attr;
-			
-			bool CHR_used;
-			
-			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )
-			{
-				CHR_used = false;
-				
-				// go through all sprites wich used _CHR_bank_id
-				// and check unused attributes
-				for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
-				{
-					spr = SpriteList.Items[ spr_n ] as sprite_data;
-					
-					if( spr.get_CHR_data().id == _CHR_bank_id )
-					{
-						attr_cnt = spr.get_CHR_attr().Count;
-						
-						for( attr_n = 0; attr_n < attr_cnt; attr_n++ )
-						{
-							if( spr.get_CHR_attr()[ attr_n ].CHR_id == CHR_n )
-							{
-								CHR_used = true;
-								
-								break;
-							}
-							
-							if( CBoxMode8x16.Checked )
-							{
-								if( spr.get_CHR_attr()[ attr_n ].CHR_id + 1 == CHR_n )
-								{
-									CHR_used = true;
-									
-									break;
-								}
-							}
-						}
-						
-						if( CHR_used == true )
-						{
-							break;
-						}
-					}
-				}
-				
-				if( CHR_used == false )
-				{
-					// clear unused CHR
-					CHR_bank.get_data()[ CHR_n ].clear();
-				}
-			}
-
-			// delete empty CHRs and fix indices of all sprites that referring to them  
-			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )
-			{
-				if( CHR_bank.get_data()[ CHR_n ].is_empty() )
-				{
-					// go through all sprites wich used _CHR_bank_id
-					// and check unused attributes
-					for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
-					{
-						spr = SpriteList.Items[ spr_n ] as sprite_data;
-						
-						if( spr.get_CHR_data().id == _CHR_bank_id )
-						{
-							attr_cnt = spr.get_CHR_attr().Count;
-							
-							for( attr_n = 0; attr_n < attr_cnt; attr_n++ )
-							{
-								attr = spr.get_CHR_attr()[ attr_n ];
-								
-								if( attr.CHR_id == CHR_n )
-								{
-									// удаляем пустой атрибут
-									spr.get_CHR_attr().RemoveAt( attr_n );
-									
-									--attr_n;
-									--attr_cnt;
-								}
-								else
-								if( attr.CHR_id > CHR_n )
-								{
-									--attr.CHR_id;
-								}
-							}
-							
-							spr.update_dimensions();
-						}
-					}
-					
-					// delete empty CHR
-					CHR_bank.get_data().RemoveAt( CHR_n );
-					
-					--CHR_cnt;
-					--CHR_n;
-				}
-			}
-		}
-		
 		void BtnApplyDefaultPalette_Event(object sender, System.EventArgs e)
 		{
 			int size = SpriteList.SelectedIndices.Count;
@@ -1008,6 +633,41 @@ namespace SPReD
 			}
 		}
 		
+		void BtnCreate_Event(object sender, EventArgs e)
+		{
+			m_create_sprite_form.Text = "Create Sprite [ mode: " + ( CBoxMode8x16.Checked ? "8x16":"8x8" ) + " ]";
+			
+			if( m_create_sprite_form.ShowDialog() == DialogResult.Cancel )
+			{
+				return;
+			}
+			
+			if( CBoxMode8x16.Checked && ( m_create_sprite_form.sprite_height&0x01 ) == 1 )
+			{
+				MainForm.message_box( "The sprite height must be an even number!", "8x16 Mode Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				return;
+			}
+			
+			if( m_create_sprite_form.edit_str == "" )
+			{
+				MainForm.message_box( "The sprite name is empty!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				return;
+			}
+			
+			string new_sprite_name = m_create_sprite_form.edit_str;
+			
+			if(!check_duplicate( new_sprite_name ) )
+			{
+				SpriteList.Items.Add( m_sprites_proc.create_sprite( new_sprite_name, m_create_sprite_form.sprite_width, m_create_sprite_form.sprite_height, CBoxMode8x16.Checked ) );
+			}
+			else
+			{
+				message_box( new_sprite_name + " - A sprite with the same name is already exists! Ignored!", "Create Sprite Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+			}
+		}
+#endregion
+//		LAYOUT		*****************************************************************************************//		
+#region	Layout		
 		void CBoxAxisLayoutCheckedChanged_Event(object sender, EventArgs e)
 		{
 			m_sprites_proc.set_sprite_layout_viewer_flags( CBoxAxisLayout.Checked, CBoxGridLayout.Checked );
@@ -1121,7 +781,9 @@ namespace SPReD
 			
 			m_sprites_proc.layout_set_mode( sprite_layout_viewer.EMode.m_draw );
 		}
-		
+#endregion		
+//		CHR DATA PACKING, SPLITTING, OPTIMIZATION		*****************************************************//
+#region CHR data packing, splitting, optimization	
 		void BtnCHRSplit_Event(object sender, EventArgs e)
 		{
 			if( SpriteList.Items.Count > 0 )
@@ -1215,7 +877,7 @@ namespace SPReD
 											
 											for( m = 0; m < size; m++ )
 											{
-												spr_3.get_CHR_attr()[ m ].CHR_id += spr_1_last_CHR_cnt; 
+												spr_3.get_CHR_attr()[ m ].CHR_ind += spr_1_last_CHR_cnt; 
 											}
 										}
 										
@@ -1263,46 +925,134 @@ namespace SPReD
 			}
 		}
 		
+		private void CHR_bank_optimization( int _CHR_bank_id )
+		{
+			CHR_data_group CHR_bank = m_sprites_proc.get_CHR_bank( _CHR_bank_id );
+			
+			if( CHR_bank == null )
+			{
+				// the bank had one sprite and the bank has been removed
+				return;
+			}
+			
+			int CHR_n;
+			int CHR_cnt = CHR_bank.get_data().Count;
+			
+			int spr_n;
+			int spr_cnt = SpriteList.Items.Count;
+
+			int attr_n;
+			int attr_cnt;
+			
+			sprite_data 	spr;
+			CHR_data_attr 	attr;
+			
+			bool CHR_used;
+			
+			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )
+			{
+				CHR_used = false;
+				
+				// go through all sprites wich used _CHR_bank_id
+				// and check unused attributes
+				for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
+				{
+					spr = SpriteList.Items[ spr_n ] as sprite_data;
+					
+					if( spr.get_CHR_data().id == _CHR_bank_id )
+					{
+						attr_cnt = spr.get_CHR_attr().Count;
+						
+						for( attr_n = 0; attr_n < attr_cnt; attr_n++ )
+						{
+							if( spr.get_CHR_attr()[ attr_n ].CHR_ind == CHR_n )
+							{
+								CHR_used = true;
+								
+								break;
+							}
+							
+							if( CBoxMode8x16.Checked )
+							{
+								if( spr.get_CHR_attr()[ attr_n ].CHR_ind + 1 == CHR_n )
+								{
+									CHR_used = true;
+									
+									break;
+								}
+							}
+						}
+						
+						if( CHR_used == true )
+						{
+							break;
+						}
+					}
+				}
+				
+				if( CHR_used == false )
+				{
+					// clear unused CHR
+					CHR_bank.get_data()[ CHR_n ].clear();
+				}
+			}
+
+			// delete empty CHRs and fix indices of all sprites that referring to them  
+			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )
+			{
+				if( CHR_bank.get_data()[ CHR_n ].is_empty() )
+				{
+					// go through all sprites wich used _CHR_bank_id
+					// and check unused attributes
+					for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
+					{
+						spr = SpriteList.Items[ spr_n ] as sprite_data;
+						
+						if( spr.get_CHR_data().id == _CHR_bank_id )
+						{
+							attr_cnt = spr.get_CHR_attr().Count;
+							
+							for( attr_n = 0; attr_n < attr_cnt; attr_n++ )
+							{
+								attr = spr.get_CHR_attr()[ attr_n ];
+								
+								if( attr.CHR_ind == CHR_n )
+								{
+									// удаляем пустой атрибут
+									spr.get_CHR_attr().RemoveAt( attr_n );
+									
+									--attr_n;
+									--attr_cnt;
+								}
+								else
+								if( attr.CHR_ind > CHR_n )
+								{
+									--attr.CHR_ind;
+								}
+							}
+							
+							spr.update_dimensions();
+						}
+					}
+					
+					// delete empty CHR
+					CHR_bank.get_data().RemoveAt( CHR_n );
+					
+					--CHR_cnt;
+					--CHR_n;
+				}
+			}
+		}
+		
 		void CBoxCHRPackingType_ChangedEvent(object sender, EventArgs e)
 		{
 			System.Windows.Forms.ComboBox cbox = sender as System.Windows.Forms.ComboBox;
 			
 			CHRPackToolStripMenuItem.Enabled = BtnCHRPack.Enabled = ( cbox.SelectedIndex != 0 ) ? true:false;
 		}
-		
-		void BtnCreate_Event(object sender, EventArgs e)
-		{
-			m_create_sprite_form.Text = "Create Sprite [ mode: " + ( CBoxMode8x16.Checked ? "8x16":"8x8" ) + " ]";
-			
-			if( m_create_sprite_form.ShowDialog() == DialogResult.Cancel )
-			{
-				return;
-			}
-			
-			if( CBoxMode8x16.Checked && ( m_create_sprite_form.sprite_height&0x01 ) == 1 )
-			{
-				MainForm.message_box( "The sprite height must be an even number!", "8x16 Mode Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
-				return;
-			}
-			
-			if( m_create_sprite_form.edit_str == "" )
-			{
-				MainForm.message_box( "The sprite name is empty!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
-				return;
-			}
-			
-			string new_sprite_name = m_create_sprite_form.edit_str;
-			
-			if(!check_duplicate( new_sprite_name ) )
-			{
-				SpriteList.Items.Add( m_sprites_proc.create_sprite( new_sprite_name, m_create_sprite_form.sprite_width, m_create_sprite_form.sprite_height, CBoxMode8x16.Checked ) );
-			}
-			else
-			{
-				message_box( new_sprite_name + " - A sprite with the same name is already exists! Ignored!", "Create Sprite Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
-			}
-		}
-		
+#endregion		
+//		CHR TOOLS	*****************************************************************************************//
+#region CHR tools		
 		void BtnAddCHRClick_Event(object sender, EventArgs e)
 		{
 			if( SpriteList.SelectedIndices.Count == 1 )
@@ -1364,6 +1114,74 @@ namespace SPReD
 			m_sprites_proc.chr_transform( CHR8x8_data.ETransform.t_rotate );
 		}
 		
+		void FillWithColorToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			if( m_sprites_proc.CHR_fill_with_color() == false )
+			{
+				message_box( "Please, select an active palette and a CHR!", "Fill With Color", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+		}
+		
+		void CopyCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			if( m_sprites_proc.CHR_copy() == false )
+			{
+				message_box( "Please, select a CHR!", "Copy CHR", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			else
+			{
+				PasteCHRToolStripMenuItem.Enabled = true;
+			}
+		}
+		
+		void PasteCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			if( m_sprites_proc.CHR_paste() == false )
+			{
+				message_box( "Please, select a CHR to paste!", "Paste CHR", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+		}
+#endregion		
+//		PROJECT: LOAD, SAVE, IMPORT, EXPORT		*************************************************************//
+#region project: load, save export, import
+		void LoadToolStripMenuItemClick(object sender, System.EventArgs e)
+		{
+			m_project_loaded = false;
+			
+			if( SpriteList.Items.Count > 0 )
+			{
+				if( message_box( "Are you sure you want to close the current project?", "Load Project", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				{
+					Project_openFileDialog.ShowDialog();
+				}
+			}
+			else
+			{
+				Project_openFileDialog.ShowDialog();
+			}
+			
+			if( m_project_loaded )
+			{
+				if( m_description_form.auto_show() && m_description_form.edit_text.Length > 0 )
+				{
+					m_description_form.ShowDialog( this );
+				}
+			}
+		}
+
+		void SaveToolStripMenuItemClick(object sender, System.EventArgs e)
+		{
+			if( SpriteList.Items.Count == 0 )			
+			{
+				message_box( "There are no data to save!", "Save Project Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			else
+			{
+				Project_saveFileDialog.ShowDialog();
+			}
+		}
+		
+
 		void ProjectSave_OK(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			// SAVE PROJECT...
@@ -1503,22 +1321,275 @@ namespace SPReD
 				fs.Close();
 			}
 		}
-		
-		void CloseToolStripMenuItemClick(object sender, EventArgs e)
+
+		void ImportToolStripMenuItemClick(object sender, System.EventArgs e)
 		{
-			if( SpriteList.Items.Count > 0 )
+			Import_openFileDialog.ShowDialog();
+		}
+
+		void Import_OK(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			System.String[] filenames = ( ( System.Windows.Forms.FileDialog )sender ).FileNames;
+			
+			FileStream 		fs = null;
+			BinaryReader 	br = null;
+			
+			try
 			{
-				if( message_box( "Are you sure you want to close the current project?", "Close Project", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				SpriteList.BeginUpdate();
+				
+				int i;
+				int j;
+				int size = filenames.Length;
+	
+				string spr_name;
+				string filename;
+				
+				string ext = Path.GetExtension( filenames[ 0 ] );
+				
+				switch( ext )
 				{
-					reset();
-					
-					set_title_name( null );
-					
-					m_description_form.edit_text = "";
+					case ".pal":
+						{
+							fs = new FileStream( filenames[ 0 ], FileMode.Open, FileAccess.Read );
+							
+							br = new BinaryReader( fs );
+							
+							if( br.BaseStream.Length == 192 )
+							{
+								palette_group.Instance.load_main_palette( br );
+							}
+							else
+							{
+								throw new Exception( "The imported palette must be 192 bytes length!" );
+							}
+						}
+						break;
+			
+					default:
+						{
+							for( i = 0; i < size; i++ )
+							{
+								filename = filenames[ i ];
+			
+								spr_name = System.IO.Path.GetFileNameWithoutExtension( filename );
+								
+								switch( ext )
+								{
+									case ".bmp":
+									case ".png":
+										{
+											if(!check_duplicate( spr_name ) )
+											{
+												if( ext == ".png" )
+												{
+													SpriteList.Items.Add( m_sprites_proc.load_sprite_png( filename, spr_name ) );
+												}
+												else
+												{	// otherwise - .bmp
+													SpriteList.Items.Add( m_sprites_proc.load_sprite_bmp( filename, spr_name ) );
+												}
+											}
+											else
+											{
+												throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
+											}
+										}
+										break;
+										
+									case ".chr":
+									case ".bin":
+										{
+											fs = new FileStream( filename, FileMode.Open, FileAccess.Read );
+											
+											br = new BinaryReader( fs );
+											
+											if( br.BaseStream.Length > 4096 )
+											{
+												j = 0;
+												
+												while( br.BaseStream.Position < br.BaseStream.Length - 1 )
+												{
+													if(!check_duplicate( spr_name + "_" + j ) )
+													{
+														SpriteList.Items.Add( m_sprites_proc.import_CHR_bank( br, spr_name + "_" + j ) );
+														
+														++j;
+													}
+													else
+													{
+														throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
+													}
+												}
+											}
+											else
+											{
+												if(!check_duplicate( spr_name ) )
+												{
+													SpriteList.Items.Add( m_sprites_proc.import_CHR_bank( br, spr_name ) );
+												}
+												else
+												{
+													throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
+												}
+											}
+										}
+										break;
+								}
+							}
+						}
+						break;
+				}
+			}
+			catch( System.Exception _err )
+			{
+				message_box( _err.Message, "Data Import Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			
+			if( br != null )
+			{
+				br.Close();
+			}
+			
+			if( fs != null )
+			{
+				br.Close();
+			}
+			
+			SpriteList.EndUpdate();
+		}
+		
+		void ExportImagesToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			if( SpriteList.Items.Count == 0 )			
+			{
+				message_box( "There are no data to export!", "Images Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			else
+			{
+				if( ExportImages_folderBrowserDialog.ShowDialog() == DialogResult.OK && m_img_export_options_form.ShowDialog() == DialogResult.OK )
+				{
+					try
+					{
+						sprite_data spr;
+						
+						int size = SpriteList.Items.Count;
+						
+						for( int i = 0; i < size; i++ )
+						{
+							spr = SpriteList.Items[ i ] as sprite_data;
+								
+							spr.save_image( ExportImages_folderBrowserDialog.SelectedPath, m_img_export_options_form.alpha_channel, m_sprites_proc.get_palette_group().get_palettes_arr(), m_img_export_options_form.format, CBoxMode8x16.Checked );
+						}
+					}
+					catch( Exception _err )
+					{
+						message_box( _err.Message, "Images Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+					}
 				}
 			}
 		}
 		
+		void ExportASMToolStripMenuItemClick(object sender, System.EventArgs e)
+		{
+			if( SpriteList.Items.Count == 0 )			
+			{
+				message_box( "There are no data to export!", "NESASM Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			else
+			{
+				ExportASM_saveFileDialog.ShowDialog();
+			}
+		}
+		
+		void ExportASM_OK(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			System.String filename = ( ( System.Windows.Forms.FileDialog )sender ).FileName;
+		
+			data_export( filename, SpriteList.Items.Count, delegate( int _ind ) { return SpriteList.Items[ _ind ] as sprite_data; } );
+		}
+		
+		private void data_export( string _filename, int _spr_cnt, Func< int, sprite_data > _get_spr )
+		{
+			StreamWriter sw = null;
+			
+			try
+			{
+				sprite_data spr;
+				
+				string path		= System.IO.Path.GetDirectoryName( _filename );
+				string filename	= System.IO.Path.GetFileNameWithoutExtension( _filename );
+				
+				sw = File.CreateText( _filename );
+				{
+					sw.WriteLine( ";#######################################################\n;" );
+					sw.WriteLine( "; Generated by " + utils.CONST_APP_NAME + " Copyright 2017-" + DateTime.Now.Year + " 0x8BitDev\n;" );
+					sw.WriteLine( ";#######################################################\n" );
+
+					sw.WriteLine( "SPR_MODE_8X16 = " + ( CBoxMode8x16.Checked ? "1":"0" ) + "\n\n" );
+					
+					// 'incbin's of CHRs 
+					m_sprites_proc.rearrange_CHR_data_ids();
+					m_sprites_proc.export_CHR( sw, filename, true );
+					
+					sw.WriteLine( "\n" );
+					
+					m_sprites_proc.export_palette( sw );
+					
+					// save common sprites data
+					{
+						// sprites array
+						sw.WriteLine( "\nn_frames:\n\t." + ( _spr_cnt > 255 ? "word ":"byte " ) + String.Format( "${0:X2}\nframes_data:", _spr_cnt ) );
+						
+						bool enable_comments = true;
+						
+						for( int i = 0; i < _spr_cnt; i++ )
+						{
+							spr = _get_spr( i );
+							
+							sw.WriteLine( spr.name + "_frame:" );
+							sw.WriteLine( "\t.word " + spr.name );
+							sw.WriteLine( "\t.byte " + spr.name + "_end - " + spr.name + ( enable_comments ? "\t; data size":"" ) );
+							
+							sw.WriteLine( "\t.byte " + spr.get_CHR_data().id + ( enable_comments ? "\t\t; CHR bank index (" + spr.get_CHR_data().name + ")":"" ) );
+							
+							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + filename + "_" + spr.get_CHR_data().get_filename(), true );
+							
+							enable_comments = false;
+						}
+					}
+					
+					sw.WriteLine( "\n" );
+					
+					// save the sprites data
+					for( int i = 0; i < _spr_cnt; i++ )
+					{
+						_get_spr( i ).export( sw );
+					}
+				}
+			}
+			catch( Exception _err )
+			{
+				message_box( _err.Message, "Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+
+			if( sw != null )
+			{
+				sw.Close();
+			}
+		}
+		
+		void ExportScriptEditorToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			if( !PyScriptEditor.py_editor.is_active() )
+			{
+				m_py_editor = new PyScriptEditor.py_editor( global::SPReD.Properties.Resources.SPReD_icon, new py_api( CBoxMode8x16, SpriteList ), "SPReD API Doc", System.Text.Encoding.Default.GetString( global::SPReD.Properties.Resources.SPReD_Data_Export_Python_API ), "SPReD_Data_Export_Python_API.html" );
+				m_py_editor.Show();
+			}
+			
+			PyScriptEditor.py_editor.set_focus();
+		}
+#endregion
 		void KeyUp_Event(object sender, KeyEventArgs e)
 		{
 			m_sprites_proc.key_event( sender, e );
@@ -1527,39 +1598,6 @@ namespace SPReD
 		void PreviewKeyDown_Event(object sender, PreviewKeyDownEventArgs e)
 		{
 			//...
-		}
-		
-		void FillWithColorToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			if( m_sprites_proc.CHR_fill_with_color() == false )
-			{
-				message_box( "Please, select an active palette and a CHR!", "Fill With Color", MessageBoxButtons.OK, MessageBoxIcon.Error );
-			}
-		}
-		
-		void CopyCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			if( m_sprites_proc.CHR_copy() == false )
-			{
-				message_box( "Please, select a CHR!", "Copy CHR", MessageBoxButtons.OK, MessageBoxIcon.Error );
-			}
-			else
-			{
-				PasteCHRToolStripMenuItem.Enabled = true;
-			}
-		}
-		
-		void PasteCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			if( m_sprites_proc.CHR_paste() == false )
-			{
-				message_box( "Please, select a CHR to paste!", "Paste CHR", MessageBoxButtons.OK, MessageBoxIcon.Error );
-			}
-		}
-		
-		void DescriptionToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			m_description_form.ShowDialog();
 		}
 	}
 }

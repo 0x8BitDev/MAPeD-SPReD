@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MAPeD.Properties {
+namespace SPReD.Properties {
 	using System;
 	
 	
@@ -39,7 +39,7 @@ namespace MAPeD.Properties {
 		internal static global::System.Resources.ResourceManager ResourceManager {
 			get {
 				if (object.ReferenceEquals(resourceMan, null)) {
-					global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MAPeD.Properties.Resources", typeof(Resources).Assembly);
+					global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SPReD.Properties.Resources", typeof(Resources).Assembly);
 					resourceMan = temp;
 				}
 				return resourceMan;
@@ -63,9 +63,9 @@ namespace MAPeD.Properties {
 		/// <summary>
 		///   Looks up a localized resource of type System.Byte[].
 		/// </summary>
-		internal static byte[] MAPeD_Data_Export_Python_API {
+		internal static byte[] SPReD_Data_Export_Python_API {
 			get {
-				object obj = ResourceManager.GetObject("MAPeD_Data_Export_Python_API", resourceCulture);
+				object obj = ResourceManager.GetObject("SPReD_Data_Export_Python_API", resourceCulture);
 				return ((byte[])(obj));
 			}
 		}
@@ -73,9 +73,9 @@ namespace MAPeD.Properties {
 		/// <summary>
 		///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
 		/// </summary>
-		internal static System.Drawing.Icon MAPeD_icon {
+		internal static System.Drawing.Icon SPReD_icon {
 			get {
-				object obj = ResourceManager.GetObject("MAPeD_icon", resourceCulture);
+				object obj = ResourceManager.GetObject("SPReD_icon", resourceCulture);
 				return ((System.Drawing.Icon)(obj));
 			}
 		}

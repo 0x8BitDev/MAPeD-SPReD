@@ -13,16 +13,24 @@ namespace MAPeD
 	/// <summary>
 	/// Description of py_api.
 	/// </summary>
-	public class py_api
+	public class py_api : global::PyScriptEditor.py_api_i
 	{
 		private data_sets_manager	m_data_mngr = null;
 		
 		public const string CONST_PREFIX	= "mpd_"; 
 		
-		public py_api( ScriptScope	_py_scope, data_sets_manager _data_mngr )
+		public py_api( data_sets_manager _data_mngr ) : base()
 		{
-			m_data_mngr = _data_mngr;
+			m_data_mngr = _data_mngr;			
+		}
 
+		public string get_prefix()
+		{
+			return CONST_PREFIX;
+		}
+		
+		public void init( ScriptScope _py_scope )
+		{
 			// Bank Data
 			
 			// int num_banks( void )
@@ -40,7 +48,7 @@ namespace MAPeD
 			// byte[] get_CHR_data( int _bank_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "get_CHR_data", new Func< int, byte[] >( get_CHR_data ) );
 			
-			// long export_CHR_data( int _bank_ind, string _filename, bool _need_padding )
+			// long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, bool, long >( export_CHR_data ) );
 			
 			// byte[] get_palette( int _bank_ind, int _plt_ind )
@@ -74,14 +82,14 @@ namespace MAPeD
 			
 			// Entity Instances
 			
-			_py_scope.SetVariable( CONST_PREFIX + "base_entity", typeof( py_base_entity ) );
-			_py_scope.SetVariable( CONST_PREFIX + "inst_entity", typeof( py_inst_entity ) );
+			_py_scope.SetVariable( CONST_PREFIX + "base_entity", typeof( mpd_base_entity ) );
+			_py_scope.SetVariable( CONST_PREFIX + "inst_entity", typeof( mpd_inst_entity ) );
 
 			// int layout_screen_num_entities( int _layout_ind, int _scr_pos_x, int_scr_pos_y )
 			_py_scope.SetVariable( CONST_PREFIX + "layout_screen_num_entities", new Func< int, int, int, int >( layout_screen_num_entities ) );
 			
 			// inst_entity layout_get_inst_entity( int _layout_ind, int _scr_pos_x, int_scr_pos_y, int _ent_ind )
-			_py_scope.SetVariable( CONST_PREFIX + "layout_get_inst_entity", new Func< int, int, int, int, py_inst_entity >( layout_get_inst_entity ) );
+			_py_scope.SetVariable( CONST_PREFIX + "layout_get_inst_entity", new Func< int, int, int, int, mpd_inst_entity >( layout_get_inst_entity ) );
 			
 			// Base Entities
 			
@@ -92,15 +100,20 @@ namespace MAPeD
 			_py_scope.SetVariable( CONST_PREFIX + "group_num_entities", new Func< string, int >( group_num_entities ) );
 			
 			// base_entity group_get_entity_by_ind( string _group_name, int _ent_ind )
-			_py_scope.SetVariable( CONST_PREFIX + "group_get_entity_by_ind", new Func< string, int, py_base_entity >( group_get_entity_by_ind ) );
+			_py_scope.SetVariable( CONST_PREFIX + "group_get_entity_by_ind", new Func< string, int, mpd_base_entity >( group_get_entity_by_ind ) );
 			
 			// base_entity get_base_entity_by_name( string _entity_name )
-			_py_scope.SetVariable( CONST_PREFIX + "get_base_entity_by_name", new Func< string, py_base_entity >( get_base_entity_by_name ) );
+			_py_scope.SetVariable( CONST_PREFIX + "get_base_entity_by_name", new Func< string, mpd_base_entity >( get_base_entity_by_name ) );
 			
 			// Miscellaneous
 			
 			// byte[] RLE( byte[] _arr )
 			_py_scope.SetVariable( CONST_PREFIX + "RLE", new Func< byte[], byte[] >( RLE ) );
+		}
+
+		public void deinit()
+		{
+			m_data_mngr = null;
 		}
 		
 		public int num_banks()
@@ -208,7 +221,7 @@ namespace MAPeD
 			return -1;
 		}
 
-		public py_inst_entity layout_get_inst_entity( int _layout_ind, int _scr_pos_x, int _scr_pos_y, int _ent_ind )		
+		public mpd_inst_entity layout_get_inst_entity( int _layout_ind, int _scr_pos_x, int _scr_pos_y, int _ent_ind )		
 		{
 			screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
 			
@@ -216,7 +229,7 @@ namespace MAPeD
 			{
 				entity_instance ent = data.m_ents[ _ent_ind ];
 				
-				py_inst_entity inst_ent = new py_inst_entity();
+				mpd_inst_entity inst_ent = new mpd_inst_entity();
 				
 				inst_ent.uid 			= ent.uid;
 				inst_ent.base_ent_uid 	= ent.base_entity.uid;
@@ -250,34 +263,34 @@ namespace MAPeD
 			return -1;
 		}
 		
-		public py_base_entity group_get_entity_by_ind( string _group_name, int _ent_ind )
+		public mpd_base_entity group_get_entity_by_ind( string _group_name, int _ent_ind )
 		{
 			if( m_data_mngr.entities_data.ContainsKey( _group_name ) )
 			{
 				if( _ent_ind >= 0 && _ent_ind < m_data_mngr.entities_data[ _group_name ].Count )
 				{
-					return fill_py_base_entity( m_data_mngr.entities_data[ _group_name ][ _ent_ind ] );
+					return fill_mpd_base_entity( m_data_mngr.entities_data[ _group_name ][ _ent_ind ] );
 				}
 			}
 			
 			return null;
 		}
 		
-		public py_base_entity get_base_entity_by_name( string _name )
+		public mpd_base_entity get_base_entity_by_name( string _name )
 		{
 			entity_data ent = m_data_mngr.get_entity_by_name( _name );
 			
 			if( ent != null )
 			{
-				return fill_py_base_entity( ent );
+				return fill_mpd_base_entity( ent );
 			}
 			
 			return null;
 		}
 
-		private py_base_entity fill_py_base_entity( entity_data _ent )
+		private mpd_base_entity fill_mpd_base_entity( entity_data _ent )
 		{
-			py_base_entity base_ent = new py_base_entity();
+			mpd_base_entity base_ent = new mpd_base_entity();
 			
 			base_ent.uid 				= _ent.uid;
 			base_ent.width				= _ent.width;
@@ -327,26 +340,30 @@ namespace MAPeD
 			return null;
 		}
 		
-		public long export_CHR_data( int _bank_ind, string _filename, bool _need_padding )
+		public long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
 		{
-			long data_size = 0;
+			long data_size = -1;
 			
 			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
 			
-			if( data != null )
+			try
 			{
-				try
+				if( data != null )
 				{
 					BinaryWriter bw = new BinaryWriter( File.Open( _filename, FileMode.Create ) );
 					
-					data_size = data.export_CHR( bw, _need_padding );
+					data_size = data.export_CHR( bw, _save_padding );
 					
 					bw.Close();
 				}
-				catch( Exception _err )
+				else
 				{
-					throw new Exception( CONST_PREFIX + "export_CHR_data error! Can't save CHR data!\n" + _err.Message );
+					throw new Exception( "Invalid bank index ( " + _bank_ind + " )! Use " + CONST_PREFIX + "num_banks() to get a valid range!" );
 				}
+			}
+			catch( Exception _err )
+			{
+				throw new Exception( CONST_PREFIX + "export_CHR_data error! Can't save CHR data!\n" + _err.Message );
 			}
 			
 			return data_size;
@@ -398,7 +415,7 @@ namespace MAPeD
 		}
 	}
 
-	public class py_base_entity
+	public class mpd_base_entity
 	{
 		public byte uid	= 0;
 		
@@ -413,7 +430,7 @@ namespace MAPeD
 		public string inst_properties	= "";
 	}
 	
-	public class py_inst_entity
+	public class mpd_inst_entity
 	{
 		public int uid			= -1;
 		public int target_uid	= -1;

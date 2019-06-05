@@ -211,7 +211,7 @@ namespace SPReD
 			
 			for( int i = 0; i < size; i++ )
 			{
-				CHR_id = _spr.get_CHR_attr()[ i ].CHR_id;
+				CHR_id = _spr.get_CHR_attr()[ i ].CHR_ind;
 				
 				chr_data.get_data().Add( data[ CHR_id ].copy() );
 				
@@ -237,7 +237,7 @@ namespace SPReD
 			for( int i = 0; i < size; i++ )
 			{
 				attr = _spr.get_CHR_attr()[ i ].copy();
-				attr.CHR_id = _mode8x16 ? ( i << 1 ):i;
+				attr.CHR_ind = _mode8x16 ? ( i << 1 ):i;
 				
 				chr_attrs.Add( attr );
 			}
@@ -318,7 +318,7 @@ namespace SPReD
 					for( x = 0; x < _width; x++ )
 					{
 						attr = new CHR_data_attr( x << utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS, y << utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS );
-						attr.CHR_id 		= ( x << 1 ) + ( y * _width );
+						attr.CHR_ind 		= ( x << 1 ) + ( y * _width );
 						attr.palette_ind 	= palette_group.Instance.active_palette;
 						attr.palette_ind 	= attr.palette_ind < 0 ? 0:attr.palette_ind;
 						
@@ -336,7 +336,7 @@ namespace SPReD
 					for( x = 0; x < _width; x++ )
 					{
 						attr = new CHR_data_attr( x << utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS, y << utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS );
-						attr.CHR_id 		= x + ( y * _width );
+						attr.CHR_ind 		= x + ( y * _width );
 						attr.palette_ind 	= palette_group.Instance.active_palette;
 						attr.palette_ind 	= attr.palette_ind < 0 ? 0:attr.palette_ind;
 						
@@ -377,7 +377,7 @@ namespace SPReD
 				
 				for( int i = 0; i < size; i++ )
 				{
-					if( attr_list[ i ].CHR_id == last_chr )
+					if( attr_list[ i ].CHR_ind == last_chr )
 					{
 						attr_list.RemoveAt( i );
 						

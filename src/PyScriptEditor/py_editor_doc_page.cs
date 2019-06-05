@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-namespace MAPeD
+namespace PyScriptEditor
 {
 	/// <summary>
 	/// Description of py_editor_doc_page.
@@ -25,14 +25,14 @@ namespace MAPeD
 		
 		private bool	m_data_changed		= false;
 		
-		private static int m_line_height	 = -1;
+		private static int m_line_height	= -1;
 		
-		private Graphics m_gfx 		= null;
+		private Graphics m_gfx 	= null;
 		
-		private static Brush 		m_brush_white 	= null; 
-		private static Brush 		m_brush_gray 	= null;
-		private static Brush 		m_brush_black 	= null;
-		private static Point 		m_tmp_pos 		= new Point( 0, 0 );
+		private static Brush 	m_brush_white 		= null; 
+		private static Brush 	m_brush_gray 		= null;
+		private static Brush 	m_brush_dark_gray 	= null;
+		private static Point 	m_tmp_pos 			= new Point( 0, 0 );
 		
 		public RichTextBox script_text_box
 		{
@@ -98,11 +98,11 @@ namespace MAPeD
 		
 		public static void static_data_init()
 		{
-			if( m_brush_white == null && m_brush_gray == null && m_brush_black == null )
+			if( m_brush_white == null && m_brush_gray == null && m_brush_dark_gray == null )
 			{
-				m_brush_white 	= new SolidBrush( Color.White );
-				m_brush_gray 	= new SolidBrush( Color.FromArgb( unchecked( ( int )0xffe8e8e8 ) ) );
-				m_brush_black 	= new SolidBrush( Color.Black );
+				m_brush_white 		= new SolidBrush( Color.White );
+				m_brush_gray 		= new SolidBrush( Color.FromArgb( unchecked( ( int )0xffe8e8e8 ) ) );
+				m_brush_dark_gray 	= new SolidBrush( Color.FromArgb( unchecked( ( int )0xff707070 ) ) );
 			}
 		}
 		
@@ -120,10 +120,10 @@ namespace MAPeD
 				m_brush_gray = null;
 			}
 			
-			if( m_brush_black != null )
+			if( m_brush_dark_gray != null )
 			{
-				m_brush_black.Dispose();
-				m_brush_black = null;
+				m_brush_dark_gray.Dispose();
+				m_brush_dark_gray = null;
 			}
 		}
 		
@@ -223,7 +223,7 @@ namespace MAPeD
 					y_step 		= pix_offset + ( i * m_line_height );
 					
 					m_gfx.FillRectangle( ( ( line_offset & 0x01 ) == 0x01 ) ? m_brush_white:m_brush_gray, 0, y_step, LineNumberScriptFieldSplitContainer.SplitterDistance, m_line_height );
-					m_gfx.DrawString( ( line_offset + 1 ).ToString(), ScriptTextBox.Font, m_brush_black, 0, y_step );
+					m_gfx.DrawString( ( line_offset + 1 ).ToString(), ScriptTextBox.Font, m_brush_dark_gray, 0, y_step );
 				}
 			}
 			

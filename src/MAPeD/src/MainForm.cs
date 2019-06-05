@@ -39,7 +39,7 @@ namespace MAPeD
 		private screen_mark_form	m_screen_mark_form		= null;
 		private description_form	m_description_form		= null;
 		
-		private py_editor			m_py_editor	= null;
+		private PyScriptEditor.py_editor	m_py_editor	= null;
 
 		private bool m_project_loaded	= false;
 		
@@ -242,11 +242,11 @@ namespace MAPeD
 		{
 			e.Cancel = true;
 			
-			if( py_editor.is_active() )
+			if( PyScriptEditor.py_editor.is_active() )
 			{
 				m_py_editor.Close();
 				
-				if( py_editor.is_active() )
+				if( PyScriptEditor.py_editor.is_active() )
 				{
 					return;
 				}
@@ -946,13 +946,13 @@ namespace MAPeD
 
 		void ExportScriptEditorToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			if( !py_editor.is_active() )
+			if( !PyScriptEditor.py_editor.is_active() )
 			{
-				m_py_editor = new py_editor( m_data_manager );
+				m_py_editor = new PyScriptEditor.py_editor( global::MAPeD.Properties.Resources.MAPeD_icon, new py_api( m_data_manager ), "MAPeD API Doc", System.Text.Encoding.Default.GetString( global::MAPeD.Properties.Resources.MAPeD_Data_Export_Python_API ), "MAPeD_Data_Export_Python_API.html" );
 				m_py_editor.Show();
 			}
 			
-			py_editor.set_focus();
+			PyScriptEditor.py_editor.set_focus();
 		}
 		
 		void AboutToolStripMenuItemClick_Event(object sender, EventArgs e)

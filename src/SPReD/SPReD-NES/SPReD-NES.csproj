@@ -51,8 +51,23 @@
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IronPython">
+      <HintPath>..\..\lib\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules">
+      <HintPath>..\..\lib\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic">
+      <HintPath>..\..\lib\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting">
+      <HintPath>..\..\lib\Microsoft.Scripting.dll</HintPath>
+    </Reference>
     <Reference Include="Pngcs">
       <HintPath>..\lib\Pngcs.dll</HintPath>
+    </Reference>
+    <Reference Include="PyScriptEditor">
+      <HintPath>..\..\lib\PyScriptEditor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -135,6 +150,9 @@
     <Compile Include="..\src\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
+    <Compile Include="..\src\py_scripting\py_api.cs">
+      <Link>py_scripting\py_api.cs</Link>
+    </Compile>
     <Compile Include="..\src\rename_sprite_form.cs">
       <Link>rename_sprite_form.cs</Link>
     </Compile>
@@ -153,6 +171,10 @@
     </Compile>
     <Compile Include="..\src\utils.cs">
       <Link>utils.cs</Link>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="SPReD-NES.Designer.cs">
       <DependentUpon>SPReD-NES.settings</DependentUpon>
@@ -192,6 +214,13 @@
       <Link>rename_sprite_form.resx</Link>
       <DependentUpon>rename_sprite_form.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="py_scripting" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

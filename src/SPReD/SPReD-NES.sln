@@ -4,6 +4,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # SharpDevelop 4.4
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPReD-NES", "SPReD-NES\SPReD-NES.csproj", "{31750B81-9BA5-4ABC-9C56-11B58D3782F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PyScriptEditor", "..\PyScriptEditor\PyScriptEditor.csproj", "{75944F5C-5318-4000-BAE8-B9F102318454}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,5 +16,9 @@ Global
 		{31750B81-9BA5-4ABC-9C56-11B58D3782F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{31750B81-9BA5-4ABC-9C56-11B58D3782F3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{31750B81-9BA5-4ABC-9C56-11B58D3782F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75944F5C-5318-4000-BAE8-B9F102318454}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75944F5C-5318-4000-BAE8-B9F102318454}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75944F5C-5318-4000-BAE8-B9F102318454}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75944F5C-5318-4000-BAE8-B9F102318454}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 EndGlobal

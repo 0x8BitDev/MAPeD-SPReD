@@ -259,7 +259,7 @@ namespace SPReD
 		{
 			sprite_layout_viewer spr_layout = sender as sprite_layout_viewer;
 			
-			m_selected_ind = spr_layout.get_selected_CHR_id();
+			m_selected_ind = spr_layout.get_selected_CHR_ind();
 			
 			if( m_selected_ind >= 0 )
 			{

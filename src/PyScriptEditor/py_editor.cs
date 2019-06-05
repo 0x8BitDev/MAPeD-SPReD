@@ -12,7 +12,7 @@ using IronPython.Hosting;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 
-namespace MAPeD
+namespace PyScriptEditor
 {
 	/// <summary>
 	/// Description of py_editor.
@@ -23,18 +23,28 @@ namespace MAPeD
 	{
 		delegate void VoidFunc( string _msg, string _caption );
 		
-		private const string CONST_EDITOR_NAME		= "SPSeD v0.12";
+		private const string CONST_EDITOR_NAME		= "SPSeD";
 		private const string CONST_NO_SCRIPT_MSG	= "no active_script!";
 
 		private ScriptEngine	m_py_engine	= null;
 		private ScriptScope		m_py_scope	= null;
 		
-		private py_api			m_py_api		= null;
+		private py_api_i		m_py_api		= null;
 		private py_api_doc		m_py_api_doc	= null;
 
-		private static py_editor m_instance = null;
+		private static	py_editor m_instance = null;
 		
-		public py_editor( data_sets_manager _data_mngr )
+		private string	m_api_doc_str			= null;
+		private string	m_api_doc_html_filename	= null;
+		private string	m_api_doc_title			= null;
+		
+		private const int CONST_OS_WIN		= 0x01;
+		private const int CONST_OS_LINUX	= 0x02;
+		private const int CONST_OS_MACOS	= 0x04;
+		
+		private static int m_os_flag	= 0x00;
+		
+		public py_editor( Icon _icon, py_api_i _api, string _api_doc_title, string _api_doc_str, string _api_doc_html_filename )
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -49,11 +59,19 @@ namespace MAPeD
 				m_instance = this;
 			}
 			
-			this.Text = CONST_EDITOR_NAME;
-				
-			py_init();
+			check_os();
 			
-			m_py_api = new py_api( m_py_scope, _data_mngr );
+			this.Icon = _icon;
+			
+			m_api_doc_title			= _api_doc_title;
+			m_api_doc_str			= _api_doc_str;
+			m_api_doc_html_filename	= _api_doc_html_filename;
+			
+			this.Text = CONST_EDITOR_NAME + " " + get_app_version();
+				
+			m_py_api = _api;
+
+			py_init();
 			
 			FormClosing += new System.Windows.Forms.FormClosingEventHandler( OnFormClosing );
 			
@@ -91,7 +109,12 @@ namespace MAPeD
 			m_py_engine = null;
 			m_py_scope 	= null;
 			
+			m_py_api.deinit();
 			m_py_api = null;
+			
+			m_api_doc_title			= null;
+			m_api_doc_str			= null;
+			m_api_doc_html_filename	= null;
 			
 			if( m_instance == this )
 			{
@@ -140,12 +163,21 @@ namespace MAPeD
 		{
 			m_py_engine	= Python.CreateEngine();
 			m_py_scope	= m_py_engine.CreateScope();
+
+			// search for modules in the application directory
+			{
+				System.Collections.Generic.List< string > search_paths = new System.Collections.Generic.List< string >();
+				search_paths.Add( AppDomain.CurrentDomain.BaseDirectory );
+				m_py_engine.SetSearchPaths( search_paths );
+			}
+			
+			m_py_api.init( m_py_scope );
 			
 			// redirect Python output
-			m_py_engine.Runtime.IO.SetOutput( new MemoryStream(), new py_output( OutputTextBox ) );
+			m_py_engine.Runtime.IO.SetOutput( new MemoryStream(), new py_output( OutputTextBox, ( m_os_flag & CONST_OS_WIN ) != 0 ) );
 			
 			// init scope
-			m_py_scope.SetVariable( py_api.CONST_PREFIX + "msg_box", new VoidFunc( py_msg_box ) );
+			m_py_scope.SetVariable( m_py_api.get_prefix() + "msg_box", new VoidFunc( py_msg_box ) );
 		}
 
 		void delete_page( TabPage _tab_page, bool _force_delete )
@@ -358,6 +390,8 @@ namespace MAPeD
 				
 				try
 				{
+					update_status_msg( "script is running..." );
+					
 					OutputTextBox.Text = "";
 					doc_page.script_text_box.Focus();
 					
@@ -448,7 +482,7 @@ namespace MAPeD
 		{
 			if( !py_api_doc.is_active() )
 			{
-				m_py_api_doc = new py_api_doc();
+				m_py_api_doc = new py_api_doc( m_api_doc_str, this.Icon, m_api_doc_title );
 				m_py_api_doc.Show();
 			}
 			
@@ -457,25 +491,40 @@ namespace MAPeD
 		
 		void InBrowserDocToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			string doc_path = Application.StartupPath.Substring( 0, Application.StartupPath.LastIndexOf( Path.DirectorySeparatorChar ) ) + Path.DirectorySeparatorChar + "doc" + Path.DirectorySeparatorChar + "MAPeD_Data_Export_Python_API.html";
+			string doc_path = Application.StartupPath.Substring( 0, Application.StartupPath.LastIndexOf( Path.DirectorySeparatorChar ) ) + Path.DirectorySeparatorChar + "doc" + Path.DirectorySeparatorChar + m_api_doc_html_filename;
 			
 			//message_box( doc_path, "path", MessageBoxButtons.OK, MessageBoxIcon.Information );//!!!
 			
-			if( utils.is_win )
+			if( ( m_os_flag & CONST_OS_WIN ) != 0 )
 			{
 				System.Diagnostics.Process process = System.Diagnostics.Process.Start( doc_path );
 			}
 			else
-			if( utils.is_linux )
+			if( ( m_os_flag & CONST_OS_LINUX ) != 0 )
 			{
 				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "xdg-open", doc_path );
 			}
 			else
-			if( utils.is_macos )
+			if( ( m_os_flag & CONST_OS_MACOS ) != 0 )
 			{
 				// need to test it...
 				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "open", doc_path );
 			}
+		}
+		
+		void AboutToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			Version ver			= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+			string build_str	= "Build: " + ver.Build;
+			DateTime build_date = new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
+	
+			message_box( "Simple Python script editor" + "\n\n" + get_app_version() + " Build: " + ver.Build + "\nBuild date: " + build_date + "\n\nDeveloped by 0x8BitDev \u00A9 " + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
+		}
+		
+		string get_app_version()
+		{
+			Version ver	= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+			return "v" + ver.Major + "." + ver.Minor + "b";
 		}
 		
 		void text_changed( object sender, EventArgs e )
@@ -688,22 +737,59 @@ namespace MAPeD
                 }
             }
 		}
+		
+		// OS detection code implemented by jarik ( 100% managed code ) https://stackoverflow.com/a/38795621
+		private void check_os()
+		{
+			m_os_flag = 0;
+			
+			string windir = Environment.GetEnvironmentVariable("windir");
+			
+			if (!string.IsNullOrEmpty(windir) && windir.Contains(@"\") && Directory.Exists(windir))
+			{
+				m_os_flag = CONST_OS_WIN;
+			}
+			else if (File.Exists(@"/proc/sys/kernel/ostype"))
+			{
+			    string osType = File.ReadAllText(@"/proc/sys/kernel/ostype");
+			    if (osType.StartsWith("Linux", StringComparison.OrdinalIgnoreCase))
+			    {
+			        // Note: Android gets here too
+			        m_os_flag = CONST_OS_LINUX;
+			    }
+			    else
+			    {
+			        throw new Exception( "Unsupported platform has detected!" );
+			    }
+			}
+			else if (File.Exists(@"/System/Library/CoreServices/SystemVersion.plist"))
+			{
+			    // Note: iOS gets here too
+			    m_os_flag = CONST_OS_MACOS;
+			}
+		    else
+		    {
+		        throw new Exception( CONST_EDITOR_NAME + ": Unsupported platform has detected!" );
+		    }
+		}
 	}
 	
 	class py_output : TextWriter
 	{
-		private RichTextBox m_txt_box = null;
+		private RichTextBox m_txt_box	= null;
+		private bool 		m_is_win	= false;
 		
-		public py_output( RichTextBox _txt_box )
+		public py_output( RichTextBox _txt_box, bool _is_win )
 		{
-			m_txt_box = _txt_box;
+			m_txt_box	= _txt_box;
+			m_is_win	= _is_win;
 		}
 		
 		public override void Write( char _val )
 		{
 			base.Write( _val );
 			
-			if( utils.is_win && _val == '\r' )
+			if( m_is_win && _val == '\r' )
 			{
 				return;
 			}
