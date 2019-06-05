@@ -24,7 +24,7 @@ Here you can find NES development tools:
 	- level topology options
 	- entities
 	- etc...
-- Built-in **Python** script editor for writing custom data export scripts
+- built-in **Python** script editor for writing custom data export scripts
 - export to **SjASMPlus** ( ZX Spectrum assembler )
 - etc...
 
@@ -38,7 +38,24 @@ Here you can find NES development tools:
 - 8x16 mode support
 - images import/export
 - export to **CA65/NESasm**
+- built-in **Python** script editor for writing custom data export scripts
 - etc...
+
+
+# Python script editor
+If you need to export specific data which are not supported by the tools, you can write your own script using simple built-in Python script editor ( **SPSeD** ). Press **Alt+X** ( **ALT**ernative e**X**port ) to open the editor.
+
+Data export APIs were designed to work with a current application data state. So you can retrieve data, but you can't modify it. Application data will always remain unaltered.
+
+Press **Shift+F1** (in-app doc) or **F1** (in-browser doc) to open an API documentation. Or you can find it here:
+`./doc/MAPeD_Data_Export_Python_API.html`
+`./doc/SPReD_Data_Export_Python_API.html`
+
+Sample scripts of using the APIs:
+`./scripts/MAPeD_project_stats.py`
+`./scripts/SPReD_project_stats.py`
+
+**Warning:** It's not recommended to use the editor for script editing under **Mono** due to buggy implementation of RichTextBox. You can load your script into the editor and to any other editor where you can edit it. Then you can press **Ctrl+R** (reload script) and **F5** (run script).
 
 
 # Compiling
@@ -69,7 +86,7 @@ The Linux versions were tested using **MonoDevelop 7.8.2 (build 2)**. The latest
 3) Menu: `Build -> Build All`.
 4) `./bin` will contains output executable file.
 
-**Warning:** It's not necessary to rebuild the tools on Linux if you don't want to make any changes in sources. You can use the same executables files on Windows and Linux.
+**Warning:** It's not necessary to rebuild the tools on Linux if you don't want to make any changes in sources. You can use the same executables files on Windows and Linux ( with Mono ).
 
 
 # Releases
@@ -128,11 +145,11 @@ You can use/modify them for free at your own risk without any warranties.
 
 # Third-party libraries
 
-The MAPeD-NES uses IronPython ( `./src/MAPeD/lib/IronPython.dll` and `./src/MAPeD/lib/Microsoft.Scripting.dll` ) for custom data export scripts. Copyright (c) .NET Foundation and Contributors ( Apache License, Version 2.0 )
+The MAPeD/SPReD use IronPython for custom data export scripts. Copyright (c) .NET Foundation and Contributors ( Apache License, Version 2.0 )
 
 https://ironpython.net
 
-The SPReD-NES uses the third-party library `./src/SPReD/lib/Pngcs.dll` to read PNG images.
+The SPReD uses the third-party library `./src/SPReD/lib/Pngcs.dll` to read PNG images.
 Developed by Hernan J Gonzalez Copyright 2012 ( Apache License, Version 2.0 )
 
 https://github.com/leonbloy/pngcs
