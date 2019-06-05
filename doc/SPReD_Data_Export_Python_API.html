@@ -1,0 +1,536 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1251">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.2  (Win32)">
+	<META NAME="CREATED" CONTENT="20190523;18115340">
+	<META NAME="CHANGED" CONTENT="20190604;18144922">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { size: 21cm 180cm }
+		p { margin:0; }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="ru-RU" BGCOLOR="#dddddd" DIR="LTR">
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" STYLE="margin-left: 1.19cm; margin-bottom: 0cm; font-style: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>SPReD
+Data Export Python API v1.0</B></FONT></FONT></P>
+<HR>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<A HREF="#Main Functions|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Main
+Functions</B></SPAN></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#spd_8x16_mode_enabled|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>spd_8x16_mode_enabled</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#spd_get_palette|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>spd_get_palette</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#spd_num_sprites|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>spd_num_sprites</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#spd_get_sprite_data|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>spd_get_sprite_data</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#spd_export_CHR_data|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>spd_export_CHR_data</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-left: 1.19cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#Sprite Data Structures|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Sprite
+Data Structures</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#Sprite data class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>spd_sprite_data</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#Sprite attribute class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>spd_sprite_attr</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#Sprite CHR data class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>spd_CHR_bank</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#CHR data class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>spd_CHR_data</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<BR>
+</P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<A HREF="#Miscellaneous|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Miscellaneous</B></SPAN></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<A HREF="#mpd_msg_box|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>spd_msg_box</B></SPAN></FONT></FONT></A></P>
+<P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<HR>
+<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%; page-break-before: auto; page-break-after: avoid">
+<BR>
+</P>
+<DIV ID="Main Functions" DIR="LTR"><A NAME="Main Functions|region"></A>
+	<P LANG="en-US" STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><B>Main Functions</B></FONT></FONT></P>
+</DIV>
+<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<DIV ID="spd_8x16_mode_enabled" DIR="LTR"><A NAME="spd_8x16_mode_enabled|region"></A>
+	<P LANG="en-US" STYLE="text-indent: 1.24cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Bool
+	<B>spd_8x16_mode_enabled</B>()</FONT></FONT></P>
+</DIV>
+<P STYLE="margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">Check if the 8x16 mode is enabled.</FONT></P>
+<P STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><B>Returns:</B></FONT></P>
+<P LANG="en-US" STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif">True &ndash; enabled; False &ndash;
+disabled</FONT></P>
+<P STYLE="margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<DIV ID="spd_get_palette" DIR="LTR"><A NAME="spd_get_palette|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[Int32]
+	</SPAN><SPAN LANG="en-US"><B>spd_get_palette</B></SPAN><SPAN LANG="en-US">(
+	Int32</SPAN> _plt_ind )</FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Get a 4 colors pallete by input index.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_plt_ind &ndash; palette
+index (0-3)</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the array of color
+indices or <B>null</B> in case of incorrect palette index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P STYLE="margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<DIV ID="spd_num_sprites" DIR="LTR"><A NAME="spd_num_sprites|region"></A>
+	<P LANG="en-US" STYLE="text-indent: 1.24cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Int32 <B>spd_num_sprites</B>()</FONT></FONT></P>
+</DIV>
+<P STYLE="text-indent: 1.24cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Get
+a number of sprites in a project.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the number of sprites in
+a project</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<DIV ID="spd_get_sprite_data" DIR="LTR"><A NAME="spd_get_sprite_data|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<A HREF="#Sprite data class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">spd_sprite_data</SPAN></SPAN></FONT></FONT></A><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">
+	</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>s</B></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>pd_</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>get_sprite</B></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>_data</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">(
+	</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Int32</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">
+	_</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">spr</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">_ind
+	)</SPAN></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get sprite data by index.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_spr_ind &ndash; sprite
+index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">the
+<A HREF="#Sprite data class|region">spd_sprite_data</A> object or
+</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>null</B></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+in case of an error</SPAN></SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<DIV ID="spd_export_CHR_data" DIR="LTR"><A NAME="spd_export_CHR_data|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">L</SPAN>ong
+	<SPAN LANG="en-US"><B>s</B></SPAN><B>pd_export_CHR_data</B>( <SPAN LANG="en-US">Int32</SPAN>
+	_<SPAN LANG="en-US">spr</SPAN>_ind, <SPAN LANG="en-US">String</SPAN>
+	_filename, <SPAN LANG="en-US">Bool</SPAN> _save_padding )</FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Convert CHR bank to NES
+format and save it to a file.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_spr_ind &ndash; sprite
+index</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_filename &ndash;
+exported data filename</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_save_padding &ndash;
+save padding data to 1/2/4 KB or not</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the size of saved file in
+bytes or <B>-1</B> in case of an error</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<HR>
+<P ALIGN=LEFT STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<DIV ID="Sprite Data Structures" DIR="LTR"><A NAME="Sprite Data Structures|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><B>Sprite Data
+	Structures</B></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="margin-left: 1.3cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-left: 1.3cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<DIV ID="Sprite data class" DIR="LTR"><A NAME="Sprite data class|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Sprite data class:</B></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">class <B>spd_sprite_data</B></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">{</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// string name</I></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public String <B>name</B>;</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// offset from origin</I></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public Int32 <B>offset_x</B>;</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public Int32 <B>offset_y</B>;</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// sprite dimensions in pixels</I> </FONT>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public Int32 <B>width</B>;</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public Int32 <B>height</B>;</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// attributes array ( can be None )</I>
+</FONT>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">public
+<A HREF="#Sprite attribute class|region">spd_sprite_attr</A>[] </SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>attrs</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">;</SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// 1x1 tiles array ( can be None )</I></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">public <A HREF="#Sprite CHR data class|region">spd_CHR_bank</A>
+</SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>CHR_bank</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">;</SPAN></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">}</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<DIV ID="Sprite attribute class" DIR="LTR"><A NAME="Sprite attribute class|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><B>Sprite attribute class:</B></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">class <B>spd_sprite_attr</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">{</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// <SPAN LANG="en-US">CHR
+coordinates</SPAN></I></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32
+</SPAN><B>x</B>;</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32
+</SPAN><B>y</B>;</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// <SPAN LANG="en-US">palette index
+0-3</SPAN> </I></FONT>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32
+</SPAN><B>palette_ind</B>;</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// <SPAN LANG="en-US">CHR index</SPAN></I></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32
+</SPAN><B>CHR_ind</B>;</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// <SPAN LANG="en-US">horizontal
+flip</SPAN> = 0x01</I></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><I><SPAN LANG="en-US">// vertical flip</SPAN>
+= 0x02</I></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32
+</SPAN><B>flip_flag</B>; </FONT>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">}</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<DIV ID="Sprite CHR data class" DIR="LTR"><A NAME="Sprite CHR data class|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><B>CHR bank class:</B></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">class <B>spd_CHR_</B><SPAN LANG="en-US"><B>bank</B></SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">{</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// <SPAN LANG="en-US">unique id</SPAN></I></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+<B>id</B>;</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// <SPAN LANG="en-US">number of
+sprites that share a CHR bank</SPAN></I></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
+<B>link_cnt</B>;</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// <SPAN LANG="en-US">array of 1x1
+tiles</SPAN> </I></FONT>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public </FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><A HREF="#CHR data class|region">spd_CHR_data</A>[</SPAN></FONT><FONT FACE="Arial, sans-serif">]
+</FONT><FONT FACE="Arial, sans-serif"><B>CHR_data</B></FONT><FONT FACE="Arial, sans-serif">;</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">}</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<DIV ID="CHR data class" DIR="LTR"><A NAME="CHR data class|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><B>CHR data class:</B></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">class <B>spd_CHR_data</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">{</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.01cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><I>// <SPAN LANG="en-US">8x8 bytes
+array</SPAN></I></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.98cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif">public <SPAN LANG="en-US">B</SPAN>yte<SPAN LANG="en-US">[</SPAN>]
+<B>data</B>;</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">}</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<HR>
+<DIV ID="Miscellaneous" DIR="LTR"><A NAME="Miscellaneous|region"></A>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%; page-break-before: auto; page-break-after: avoid">
+	<BR>
+	</P>
+	<P STYLE="margin-left: 1.27cm; margin-bottom: 0cm; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><B>Miscellaneous</B></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="margin-left: 1.3cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-left: 1.3cm; margin-bottom: 0cm; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_msg_box" DIR="LTR"><A NAME="mpd_msg_box|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<FONT FACE="Arial, sans-serif">void <B>spd_msg_box</B><SPAN STYLE="font-weight: normal">(
+	String _msg, String _caption )</SPAN></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif">Show message box.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_msg &ndash; message text</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_caption &ndash; caption
+text</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<HR>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<P LANG="en-US" STYLE="margin-left: 1.24cm; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Copyright
+(c) 2019 0x8BitDev</FONT></FONT></P>
+</BODY>
+</HTML>

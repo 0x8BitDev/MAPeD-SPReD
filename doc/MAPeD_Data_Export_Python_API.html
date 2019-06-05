@@ -5,7 +5,7 @@
 	<TITLE></TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.2  (Win32)">
 	<META NAME="CREATED" CONTENT="20190523;18115340">
-	<META NAME="CHANGED" CONTENT="20190530;19070186">
+	<META NAME="CHANGED" CONTENT="20190603;11033368">
 	<STYLE TYPE="text/css">
 	<!--
 		@page { size: 21cm 180cm }
@@ -70,7 +70,7 @@ Data</B></SPAN></FONT></A></P>
 <A HREF="#Entity Instances|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Entity
 Instances</B></SPAN></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
-<A HREF="#Entity instance class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_py_inst_entity</B></SPAN></FONT></FONT></A></P>
+<A HREF="#Entity instance class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_inst_entity</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
 <A HREF="#mpd_layout_screen_num_entities|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_layout_screen_num_entities</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
@@ -82,7 +82,7 @@ Instances</B></SPAN></FONT></A></P>
 <A HREF="#Base Entities|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Base
 Entities</B></SPAN></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
-<A HREF="#Base entity class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_py_base_entity</B></SPAN></FONT></FONT></A></P>
+<A HREF="#Base entity class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_base_entity</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
 <A HREF="#mpd_group_names_of_entities|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_group_names_of_entities</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.06cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
@@ -342,7 +342,7 @@ graphics bank index</FONT></FONT></P>
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">L</SPAN>ong
 	<B>mpd_export_CHR_data</B>( <SPAN LANG="en-US">Int32</SPAN>
 	_bank_ind, <SPAN LANG="en-US">String</SPAN> _filename, <SPAN LANG="en-US">Bool</SPAN>
-	_need_padding )</FONT></FONT></P>
+	_save_padding )</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
@@ -365,7 +365,7 @@ graphics bank index</FONT></FONT></P>
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>_filename &ndash;
 exported data filename</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_need_padding &ndash;
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_save_padding &ndash;
 save padding data to 1/2/4 KB or not</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
@@ -374,7 +374,7 @@ save padding data to 1/2/4 KB or not</FONT></FONT></P>
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>the size of saved file in
-bytes</FONT></FONT></P>
+bytes or <B>-1</B> in case of an error</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -408,7 +408,7 @@ bytes</FONT></FONT></P>
 graphics bank index</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>_plt_ind &ndash; palette
-index</FONT></FONT></P>
+index (0-3)</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -846,8 +846,7 @@ of incorrect layout index</FONT></FONT></P>
 <BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>public class
-<B>mpd_py_inst_entity</B></FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>class <B>mpd_inst_entity</B></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>{</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
@@ -892,6 +891,9 @@ entity id</SPAN></I></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><I>// <SPAN LANG="en-US">instance
 properties</SPAN></I></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><I><SPAN LANG="en-US">// space
+separated decimal values</SPAN></I></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">S</SPAN>tring
 <B>properties</B>;</FONT></FONT></P>
@@ -955,14 +957,15 @@ index by Y axis</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
-	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3>mpd_py_inst_entity
-	<SPAN LANG="en-US"><B>mpd_</B></SPAN><B>layout_get_inst_entity</B>(
-	<SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
-	_layout_ind, <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
-	_scr_pos_x, <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32
-	</SPAN>_scr_pos_y, <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
-	_ent_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal"><A HREF="#Entity instance class|region">mpd_inst_entity</A>
+	</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>mpd_</B></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>layout_get_inst_entity</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">(
+	</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">I</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">nt</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">32</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">
+	_layout_ind, </SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">I</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">nt</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">32</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">
+	_scr_pos_x, </SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">I</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">nt</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">32
+	</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">_scr_pos_y,
+	</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">I</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">nt</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">32</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">
+	_ent_ind )</SPAN></FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
@@ -994,9 +997,11 @@ index</FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the <B>mpd_py_inst_entity</B>
-object or <B>null</B> in case of incorrect layout index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">the
+</SPAN></SPAN></FONT></FONT><A HREF="#Entity instance class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>mpd_inst_entity</B></SPAN></FONT></FONT></A><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+object or </SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>null</B></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+in case of incorrect layout index</SPAN></SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -1028,7 +1033,7 @@ object or <B>null</B> in case of incorrect layout index</FONT></FONT></P>
 <BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>class <B>mpd_py_base_entity</B></FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>class <B>mpd_base_entity</B></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>{</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
@@ -1077,6 +1082,9 @@ name</SPAN></I></FONT></FONT></P>
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// <SPAN LANG="en-US">base
 properties inherit by all instances</SPAN></I></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I><SPAN LANG="en-US">//
+space separated decimal values</SPAN></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">S</SPAN>tring
 <B>properties</B>;</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
@@ -1084,7 +1092,10 @@ properties inherit by all instances</SPAN></I></FONT></FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><I>// <SPAN LANG="en-US">instance
-property by default (can be overridden by each instance)</SPAN></I></FONT></FONT></P>
+properties by default (can be overridden by each instance)</SPAN></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><I><SPAN LANG="en-US">//
+space separated decimal values</SPAN></I></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.41cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>public <SPAN LANG="en-US">S</SPAN>tring
 <B>inst_properties</B>;</FONT></FONT></P>
@@ -1170,11 +1181,12 @@ of group</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
-	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3>mpd_py_base_entity
-	<B>mpd_group_get_entity_by_ind</B>( <SPAN LANG="en-US">S</SPAN>tring
-	_group_name, <SPAN LANG="en-US">I</SPAN>nt<SPAN LANG="en-US">32</SPAN>
-	_ent_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal"><A HREF="#Base entity class|region">mpd_base_entity</A>
+	</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>mpd_group_get_entity_by_ind</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">(
+	</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">S</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">tring
+	_group_name, </SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">I</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">nt</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">32</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">
+	_ent_ind )</SPAN></FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
@@ -1201,9 +1213,11 @@ index in a group</FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the <B>mpd_py_base_entity</B>
-object or <B>null</B> in case of incorrect group name</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">the
+</SPAN></SPAN></FONT></FONT><A HREF="#Base entity class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>mpd_base_entity</B></SPAN></FONT></FONT></A><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+object or </SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>null</B></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+in case of incorrect group name</SPAN></SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -1214,10 +1228,11 @@ object or <B>null</B> in case of incorrect group name</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
-	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3>mpd_py_base_entity
-	<B>mpd_get_base_entity_by_name</B>( <SPAN LANG="en-US">S</SPAN>tring
-	_entity_name )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal"><A HREF="#Base entity class|region">mpd_base_entity</A>
+	</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>mpd_get_base_entity_by_name</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">(
+	</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">S</SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">tring
+	_entity_name )</SPAN></FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
@@ -1241,9 +1256,11 @@ of entity</FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the <B>mpd_py_base_entity</B>
-object or <B>null</B> in case of incorrect group name</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">the
+</SPAN></SPAN></FONT></FONT><A HREF="#Base entity class|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>mpd_base_entity</B></SPAN></FONT></FONT></A><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+object or </SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>null</B></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+in case of incorrect group name</SPAN></SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
