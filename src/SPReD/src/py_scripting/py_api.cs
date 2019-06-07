@@ -73,7 +73,11 @@ namespace SPReD
 		{
 			if( _plt_ind >= 0 && _plt_ind < utils.CONST_NUM_SMALL_PALETTES )
 			{
-				return palette_group.Instance.get_palettes_arr()[ _plt_ind ].get_color_inds();
+				int[] arr_copy = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
+				
+				palette_group.Instance.get_palettes_arr()[ _plt_ind ].get_color_inds().CopyTo( arr_copy, 0 );
+				
+				return arr_copy;
 			}
 			
 			return null;

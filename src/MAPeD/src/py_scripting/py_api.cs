@@ -373,15 +373,23 @@ namespace MAPeD
 		{
 			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
 			
-			if( data != null )
+			if( data != null && _plt_ind >= 0 && _plt_ind < utils.CONST_NUM_SMALL_PALETTES )
 			{
+				byte[] plt = null; 
+				
 				switch( _plt_ind )
 				{
-					case 0: { return data.palette0; }
-					case 1: { return data.palette1; }
-					case 2: { return data.palette2; }
-					case 3: { return data.palette3; }
+					case 0: { plt = data.palette0; } break;
+					case 1: { plt = data.palette1; } break;
+					case 2: { plt = data.palette2; } break;
+					case 3: { plt = data.palette3; } break;
 				}
+				
+				byte[] plt_copy = new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
+				
+				plt.CopyTo( plt_copy, 0 );
+				
+				return plt_copy;
 			}
 				
 			return null;
