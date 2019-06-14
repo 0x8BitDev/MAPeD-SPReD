@@ -257,6 +257,8 @@ marco_shoot04_LEFT_frame:
 	.byte 4
 
 
+	; #1: Y pos, #2: CHR index, #3: Attributes, #4: X pos
+
 marco_idle01_RIGHT:
 	.byte $DA, $00, $00, $F5
 	.byte $DA, $01, $00, $FD

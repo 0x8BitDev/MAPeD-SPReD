@@ -51,6 +51,8 @@ dog01_JUMP_LEFT_frame:
 	.byte 0
 
 
+	; #1: Y pos, #2: CHR index, #3: Attributes, #4: X pos
+
 dog01_IDLE01_RIGHT:
 	.byte $E1, $00, $00, $F4
 	.byte $E1, $02, $00, $FC
