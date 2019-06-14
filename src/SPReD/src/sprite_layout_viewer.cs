@@ -160,6 +160,8 @@ namespace SPReD
 				
 				m_mode_str_blink_timer.Stop();
 			}
+			
+			m_update_busy = false;
 		}
 		
 		private void update_mode_str( string _msg = null )
@@ -460,9 +462,9 @@ namespace SPReD
 					if( m_palette_group.active_palette != chr_attr.palette_ind )
 					{
 						int color_slot = ( m_palette_group.active_palette >= 0 ) ? m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot:-1;
-						
+#if DEF_NES						
 						m_palette_group.active_palette = chr_attr.palette_ind;
-						
+#endif						
 						if( m_palette_group.active_palette >= 0 )
 						{
 							// set the same color slot that was in the last palette
@@ -479,11 +481,12 @@ namespace SPReD
 					break;
 				}
 			}
-			
+			/* reset palette when clicked outside of CHRs
 			if( m_mode == EMode.m_build && m_selected_CHR < 0 )
 			{
 				m_palette_group.active_palette = -1;
 			}
+			*/
 		}
 		
 		private void update()
@@ -522,7 +525,11 @@ namespace SPReD
 					m_pen.Color = Color.White;
 					m_gfx.DrawRectangle( m_pen, chr_scr_pos_x-1, chr_scr_pos_y-1, m_CHR_size + 2, CHR_height + 2 );
 					
+#if DEF_NES					
 					m_label.Text = "Pos: " + chr_attr.x + ";" + chr_attr.y + " / Palette: " + ( chr_attr.palette_ind + 1 ) + " / Id: " + chr_attr.CHR_ind;
+#elif DEF_SMS
+					m_label.Text = "Pos: " + chr_attr.x + ";" + chr_attr.y + " / Id: " + chr_attr.CHR_ind;
+#endif
 				}
 				else
 				{

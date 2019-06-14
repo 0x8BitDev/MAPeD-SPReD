@@ -38,7 +38,11 @@ namespace SPReD
 	        EnsureAssociationsSet(
 	            new FileAssociation
 	            {
+#if DEF_NES	            	
 	                Extension = ".sprednes",
+#elif DEF_SMS	                
+					Extension = ".spredsms",
+#endif
 	                ProgId = utils.CONST_PLATFORM + "_SpriteEditor",
 	                FileTypeDescription = utils.CONST_PLATFORM + " Sprite Editor File",
 	                ExecutableFilePath = filePath

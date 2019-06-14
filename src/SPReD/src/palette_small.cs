@@ -88,7 +88,11 @@ namespace SPReD
 		{
 			m_id = _id;
 			
+#if DEF_NES			
 			m_clr_inds = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 16, _init_clr_offset+16, _init_clr_offset+32, _init_clr_offset+48 };
+#elif DEF_SMS
+			m_clr_inds = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ( _id == 0 ) ? 42:_id*16 + _id, _id*16 + _id + 3, _id*16 + _id + 7, _id*16 + _id + 11 };
+#endif
 				
 			m_pix_box.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Layout_MouseClick);
 			

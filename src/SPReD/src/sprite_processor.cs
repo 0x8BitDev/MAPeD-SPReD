@@ -63,49 +63,72 @@ namespace SPReD
 			CHR_data_group.reset_ids_cnt();
 		}
 		
-		public sprite_data load_sprite_png( string _filename, string _name )
+		public sprite_data load_sprite_png( string _filename, string _name, bool _apply_palette )
 		{
 			PngReader png_reader = FileHelper.CreatePngReader( _filename );
 			
-            if(!png_reader.ImgInfo.Indexed )
-            {
-            	png_reader.End();
-            	throw new Exception( _filename + "\n\nNot indexed image!" );
-            }
-            
-            if( png_reader.IsInterlaced() )
-            {
-            	png_reader.End();
-            	throw new Exception( _filename + "\n\nOnly non interlaced .PNG images are supported!" );
-            }
-
-            if( png_reader.GetMetadata().GetPLTE().MinBitDepth() != 2 )
-            {
-            	png_reader.End();
-            	throw new Exception( _filename + "\n\nThe image must have a 4 colors palette!" );
-            }
-
-            sprite_params spr_params = m_CHR_data_storage.create( png_reader );
-            
-            sprite_data spr = new sprite_data( _name );
-            spr.setup( spr_params );
-            
-            png_reader.End();
-            
-            return spr;
+			if(!png_reader.ImgInfo.Indexed )
+			{
+				png_reader.End();
+				throw new Exception( _filename + "\n\nNot indexed image!" );
+			}
+			
+			if( png_reader.IsInterlaced() )
+			{
+				png_reader.End();
+				throw new Exception( _filename + "\n\nOnly non interlaced .PNG images are supported!" );
+			}
+			
+#if DEF_NES
+			if( png_reader.GetMetadata().GetPLTE().MinBitDepth() != 2 )
+			{
+				png_reader.End();
+				throw new Exception( _filename + "\n\nThe image must have a 4 colors palette!" );
+			}
+#elif DEF_SMS
+			if( png_reader.GetMetadata().GetPLTE().MinBitDepth() != 4 )
+			{
+				png_reader.End();
+				throw new Exception( _filename + "\n\nThe image must have a 4 bpp color depth!" );
+			}
+			
+			if( png_reader.GetMetadata().GetPLTE().GetNentries() > 16 )
+			{
+				png_reader.End();
+				throw new Exception( _filename + "\n\nThe image must have a 16 colors palette!" );
+			}
+#endif
+			sprite_params spr_params = m_CHR_data_storage.create( png_reader, _apply_palette );
+			
+			sprite_data spr = new sprite_data( _name );
+			spr.setup( spr_params );
+			
+			png_reader.End();
+			
+			return spr;
 		}
 		
-		public sprite_data load_sprite_bmp( string _filename, string _name )
+		public sprite_data load_sprite_bmp( string _filename, string _name, bool _apply_palette )
 		{	
 			Bitmap bmp = new Bitmap( _filename );
 			
-            if( bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
-            	throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe image must have 4 bpp color depth \\ 4 colors palette!" );
-            
-            if( ( bmp.Width & 0x07 ) != 0 || ( bmp.Height & 0x07 ) != 0 )
-            	throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
+			if( bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
+			{
+				bmp.Dispose();
+#if DEF_NES			
+				throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe image must have 4 bpp color depth \\ 4 colors palette (not RLE encoded)!" );
+#elif DEF_SMS
+				throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe image must have 4 bpp color depth \\ 16 colors palette (not RLE encoded)!" );
+#endif
+			}
 			
-            sprite_params spr_params = m_CHR_data_storage.create( bmp );
+			if( ( bmp.Width & 0x07 ) != 0 || ( bmp.Height & 0x07 ) != 0 )
+			{
+				bmp.Dispose();
+				throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
+			}
+			
+			sprite_params spr_params = m_CHR_data_storage.create( bmp, _apply_palette );
 			
 			sprite_data spr = new sprite_data( _name );
 			spr.setup( spr_params );
@@ -245,9 +268,9 @@ namespace SPReD
 			return chr_attrs;
 		}
 		
-		public void export_CHR( StreamWriter _sw, string _filename, bool _commented )
+		public void export_CHR( StreamWriter _sw, string _filename, bool _commented, bool _need_padding )
 		{
-			m_CHR_data_storage.export( _sw, _filename, _commented );
+			m_CHR_data_storage.export( _sw, _filename, _commented, _need_padding );
 		}
 		
 		public void rearrange_CHR_data_ids()
@@ -352,6 +375,76 @@ namespace SPReD
 			return spr; 
 		}
 		
+		public void convert_colors( int[] _plt_main, int[] _plt_small, ListBox _sprite_list, bool _8x16_mode )
+		{
+			for( int i = 0; i < _plt_small.Length; i++ )
+			{
+				palette_group.Instance.get_palettes_arr()[ i / utils.CONST_NUM_SMALL_PALETTES ].get_color_inds()[ i % utils.CONST_NUM_SMALL_PALETTES ] = utils.find_nearest_color_ind( _plt_main[ _plt_small[ i ] ] );
+			}
+			
+			for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+			{
+				palette_group.Instance.get_palettes_arr()[ i ].update();
+			}
+
+			// convert 4 colors palette indices to 16 colors palette
+			sprite_data 	spr 	= null;
+			CHR_data_attr 	attr	= null;
+			CHR8x8_data		CHR8x8	= null;
+			
+			HashSet< CHR8x8_data >	CHR_set = new HashSet<CHR8x8_data>();
+													
+			for( int spr_n = 0; spr_n < _sprite_list.Items.Count; spr_n++ )
+			{
+				spr = _sprite_list.Items[ spr_n ] as sprite_data;
+				
+				for( int attr_n = 0; attr_n < spr.get_CHR_attr().Count; attr_n++ )
+				{
+					attr = spr.get_CHR_attr()[ attr_n ];					
+#if DEF_NES					
+					if( attr.palette_ind >= 0 )
+#elif DEF_SMS
+					attr.reset_flip_flag();
+					
+					if( attr.palette_ind > 0 )
+#endif						
+					{
+						CHR8x8 = spr.get_CHR_data().get_data()[ attr.CHR_ind ];
+						
+						if( !CHR_set.Contains( CHR8x8 ) )
+						{
+							for( int val_n = 0; val_n < utils.CONST_CHR8x8_TOTAL_PIXELS_CNT; val_n++ )
+							{
+#if DEF_NES					
+								CHR8x8.get_data()[ val_n ] = ( byte )( CHR8x8.get_data()[ val_n ] & 0x03 );
+#elif DEF_SMS
+								CHR8x8.get_data()[ val_n ] = ( byte )( CHR8x8.get_data()[ val_n ] + ( attr.palette_ind * 4 ) );
+#endif
+							}
+							
+							CHR_set.Add( CHR8x8 );
+#if DEF_SMS
+							if( _8x16_mode && attr.CHR_ind + 1 < spr.get_CHR_data().get_data().Count )
+							{
+								CHR8x8 = spr.get_CHR_data().get_data()[ attr.CHR_ind + 1 ];
+								
+								for( int val_n = 0; val_n < utils.CONST_CHR8x8_TOTAL_PIXELS_CNT; val_n++ )
+								{
+									CHR8x8.get_data()[ val_n ] = ( byte )( CHR8x8.get_data()[ val_n ] + ( attr.palette_ind * 4 ) );
+								}
+							}
+#endif							
+						}
+					}
+					
+					attr.palette_ind = 0;	// to remove "ghost" data on SMS and init a zero palette on NES
+				}
+			}
+			
+			CHR_set.Clear();
+			CHR_set = null;
+		}
+		
 		public void add_last_CHR( sprite_data _spr )
 		{
 			List< CHR8x8_data > chr_list = _spr.get_CHR_data().get_data();
@@ -437,10 +530,14 @@ namespace SPReD
 			m_palette_grp.save( _bw );
 		}
 		
-		public void load_CHR_storage_and_palette( BinaryReader _br )
+		public void load_CHR_storage_and_palette( BinaryReader _br, bool _ignore_palette )
 		{
 			m_CHR_data_storage.load( _br );
-			m_palette_grp.load( _br );
+			
+			if( !_ignore_palette )
+			{
+				m_palette_grp.load( _br );
+			}
 		}
 
 		public sprite_data load_sprite( BinaryReader _br )

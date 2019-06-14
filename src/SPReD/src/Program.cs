@@ -20,23 +20,25 @@ namespace SPReD
 		[STAThread]
 		private static void Main(string[] args)
 		{
-			if( utils.is_win() )
-			{
-				FileAssociations.EnsureAssociationsSet();
-			}
-			
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			
 			try
 			{
+#if !DEF_NES && !DEF_SMS 
+				throw new Exception( "Invalid platform!" );
+#endif
+				if( utils.is_win() )
+				{
+					FileAssociations.EnsureAssociationsSet();
+				}
+				
+				Application.EnableVisualStyles();
+				Application.SetCompatibleTextRenderingDefault(false);
+			
 				Application.Run(new MainForm( args ));
 			}
 			catch( System.Exception _err )
 			{
-				MainForm.message_box( _err.Message, "Unhandled Exception", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( _err.Message, "Unexpected Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
-		
 	}
 }

@@ -181,7 +181,14 @@ namespace SPReD
 		
 		public void load( BinaryReader _br )
 		{
+#if DEF_NES
+			for( int i = 0; i < utils.CONST_CHR8x8_TOTAL_PIXELS_CNT; i++ )
+			{
+				this.m_data[ i ] = ( byte )( _br.ReadByte() & 0x03 );
+			}
+#elif DEF_SMS			
 			_br.Read( this.m_data, 0, utils.CONST_CHR8x8_TOTAL_PIXELS_CNT );
+#endif
 		}
 	}
 }

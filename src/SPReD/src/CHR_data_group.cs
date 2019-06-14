@@ -52,6 +52,9 @@ namespace SPReD
 			pt_1KB,
 			pt_2KB,
 			pt_4KB,
+#if DEF_SMS
+			pt_8KB,
+#endif
 		};
 		
 		private List< CHR8x8_data > m_CHR_arr	= null;
@@ -94,7 +97,7 @@ namespace SPReD
 		
 		public int get_size_bytes()
 		{
-			return m_CHR_arr.Count << 4;
+			return m_CHR_arr.Count * utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES;
 		}
 		
 		public string get_filename()
@@ -121,8 +124,24 @@ namespace SPReD
 		{
 			return --m_link_cnt;
 		}
+		
+#if DEF_SMS
+		public bool swap_CHRs( int _ind1, int _ind2 )
+		{
+			if( _ind1 >= 0 && _ind1 < get_data().Count && _ind2 >= 0 && _ind2 < get_data().Count )
+			{
+				CHR8x8_data data = get_data()[ _ind1 ];
+				get_data()[ _ind1 ] = get_data()[ _ind2 ];
+				get_data()[ _ind2 ] = data;
+				
+				return true;
+			}
+			
+			return false;
+		}
+#endif
 
-		public sprite_params setup( Bitmap _bmp )
+		public sprite_params setup( Bitmap _bmp, bool _apply_palette )
 		{
 			sprite_params spr_params 	= new sprite_params( this );
 			spr_params.m_CHR_data		= this;
@@ -146,81 +165,47 @@ namespace SPReD
 
 			Color[] plte = _bmp.Palette.Entries;
 			
+#if DEF_NES
+			int index_clamp_val = 0x03;
+#elif DEF_SMS
+			int index_clamp_val = int.MaxValue;
+#endif
+			
 			// detect valid borders of an image
 			{
 				BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, img_width, img_height ), ImageLockMode.ReadOnly, _bmp.PixelFormat );
 				
 				if( bmp_data != null )
 				{
-					IntPtr data_ptr = bmp_data.Scan0;
-
-					if( plte.Length == 5 )
+					if( _apply_palette )// && plte.Length <= 16 ) <-- there are 256 colors palette on Linux here... why?!..
 					{
-						int size;
-						
-						min_x = img_width + 1;
-						max_x = -1;
-			
-						min_y = img_height + 1;
-						max_y = -1;
-						
-						bool transp_line = false;
-						
-						for( i = 0; i < img_height; i++ )
+						// find nearest colors
+#if DEF_NES							
+						for( i = 0; i < utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
 						{
-							pixels_line = new byte[ img_width ];
-
-							for( j = 0; j < img_width; j++ )
-							{
-								index_byte = Marshal.ReadByte( data_ptr, ( j >> 1 ) + ( i * bmp_data.Stride ) );
-								
-								pixels_line[ j ] = ( byte )( ( ( ( j & 0x01 ) == 0x01 ) ? ( index_byte & 0x0f ):( ( index_byte & 0xf0 ) >> 4 ) ) & 0x03 );
-							}
-							
-							lines_arr.Add( pixels_line );
-							
-							size = img_width;
-							
-							transp_line = true; 
-							
-							for( j = 0; j < size; j++ )
-							{
-								// if pixel is transparent
-								if( plte[ pixels_line[ j ] ] != plte[ 3 ] )
-								{
-									if( min_x > j )
-									{
-										min_x = j;
-									}
-									
-									if( max_x < j )
-									{
-										max_x = j;
-									}
-									
-									transp_line = false;
-								}
-							}
-							
-							// if line is transparent
-							if(!transp_line )
-							{
-								if( min_y > i )
-								{
-									min_y = i;
-								}
-								
-								if( max_y < i )
-								{
-									max_y = i;
-								}
-							}
+							palette_group.Instance.get_palettes_arr()[ 0 ].get_color_inds()[ i ] = utils.find_nearest_color_ind( plte[ i % 4 ].ToArgb() );
+						}						
+						
+						palette_group.Instance.get_palettes_arr()[ 0 ].update();							
+						palette_group.Instance.active_palette = 0;
+#elif DEF_SMS
+						for( i = 0; i < utils.CONST_PALETTE_SMALL_NUM_COLORS*utils.CONST_NUM_SMALL_PALETTES; i++ )
+						{
+							palette_group.Instance.get_palettes_arr()[ i / utils.CONST_NUM_SMALL_PALETTES ].get_color_inds()[ i % utils.CONST_NUM_SMALL_PALETTES ] = utils.find_nearest_color_ind( plte[ i % 16 ].ToArgb() );
 						}
+
+						for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+						{
+							palette_group.Instance.get_palettes_arr()[ i ].update();
+						}
+#endif
 					}
 					
-					// fill the lines_arr if sprite has no transparency
-					if( lines_arr.Count == 0 )
+					// fill the lines_arr
+					// (indexed BMP has no transparency in fact)
 					{
+						IntPtr data_ptr = bmp_data.Scan0;
+						
 						for( i = 0; i < img_height; i++ )
 						{
 							pixels_line = new byte[ img_width ];
@@ -229,7 +214,7 @@ namespace SPReD
 							{
 								index_byte = Marshal.ReadByte( data_ptr, ( j >> 1 ) + ( i * bmp_data.Stride ) );
 								
-								pixels_line[ j ] = ( byte )( ( ( ( j & 0x01 ) == 0x01 ) ? ( index_byte & 0x0f ):( ( index_byte & 0xf0 ) >> 4 ) ) & 0x03 );
+								pixels_line[ j ] = ( byte )( ( ( ( j & 0x01 ) == 0x01 ) ? ( index_byte & 0x0f ):( ( index_byte & 0xf0 ) >> 4 ) ) & index_clamp_val );
 							}
 							
 							lines_arr.Add( pixels_line );
@@ -240,10 +225,10 @@ namespace SPReD
 				}
 			}
 			
-			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, ( plte.Length == 5 ) );
+			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, false, -1, -1 );
 		}
 		
-		public sprite_params setup( PngReader _png_reader )
+		public sprite_params setup( PngReader _png_reader, bool _apply_palette )
 		{
 			sprite_params spr_params 	= new sprite_params( this );
 			
@@ -267,9 +252,13 @@ namespace SPReD
 			int max_y = img_height - 1;
 			
 			byte[] pixels_line  = null;
-			
+
+			PngChunkPLTE plte 	= _png_reader.GetMetadata().GetPLTE();
 			PngChunkTRNS trns 	= _png_reader.GetMetadata().GetTRNS();
 			ImageLine line 		= null;
+			
+			int alpha_ind	= -1;
+			int num_colors	= plte.GetNentries();
 			
 			// detect useful borders of an image
 			{
@@ -279,15 +268,13 @@ namespace SPReD
 					
 					int[] plte_alpha = trns.GetPalletteAlpha();
 					
-					int alpha = plte_alpha[ 3 ] << 24 | plte_alpha[ 2 ] << 16 | plte_alpha[ 1 ] << 8 | plte_alpha[ 0 ];
+					alpha_ind = plte_alpha.Length - 1;
 					
 					min_x = img_width + 1;
 					max_x = -1;
 		
 					min_y = img_height + 1;
 					max_y = -1;
-					
-					PngChunkPLTE plte 	= _png_reader.GetMetadata().GetPLTE();
 					
 					bool transp_line = false;
 					
@@ -306,8 +293,8 @@ namespace SPReD
 						
 						for( j = 0; j < size; j++ )
 						{
-							// if pixel is transparent 
-							if( plte.GetEntry( pixels_line[ j ] ) != alpha )
+							// if pixel is not transparent 
+							if( plte_alpha[ pixels_line[ j ] ] > 0 )
 							{
 								if( min_x > j )
 								{
@@ -323,8 +310,8 @@ namespace SPReD
 							}
 						}
 						
-						// if line is transparent
-						if(!transp_line )
+						// if line is not transparent
+						if( !transp_line )
 						{
 							if( min_y > i )
 							{
@@ -337,6 +324,30 @@ namespace SPReD
 							}
 						}
 					}
+				}
+
+				// find nearest colors
+				if( _apply_palette )
+				{
+#if DEF_NES							
+					for( i = 0; i < utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+					{
+						palette_group.Instance.get_palettes_arr()[ 0 ].get_color_inds()[ i ] = utils.find_nearest_color_ind( plte.GetEntry( ( trns != null ) ? ( i + alpha_ind ) % num_colors:i ) );
+					}						
+					
+					palette_group.Instance.get_palettes_arr()[ 0 ].update();
+					palette_group.Instance.active_palette = 0;
+#elif DEF_SMS
+					for( i = 0; i < plte.GetNentries(); i++ )
+					{
+						palette_group.Instance.get_palettes_arr()[ i / utils.CONST_NUM_SMALL_PALETTES ].get_color_inds()[ i % utils.CONST_NUM_SMALL_PALETTES ] = utils.find_nearest_color_ind( plte.GetEntry( ( trns != null ) ? ( i + alpha_ind ) % num_colors:i ) );
+					}
+					
+					for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+					{
+						palette_group.Instance.get_palettes_arr()[ i ].update();
+					}
+#endif
 				}
 				
 				// fill the lines_arr if sprite has no transparency
@@ -354,10 +365,10 @@ namespace SPReD
 				}
 			}
 
-			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, ( trns != null ) );
+			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, ( trns != null ), alpha_ind, num_colors );
 		}		
 		
-		private sprite_params cut_CHRs( sprite_params _spr_params, int _min_x, int _max_x, int _min_y, int _max_y, List< byte[] > _lines_arr, bool _alpha )
+		private sprite_params cut_CHRs( sprite_params _spr_params, int _min_x, int _max_x, int _min_y, int _max_y, List< byte[] > _lines_arr, bool _alpha, int _alpha_ind, int _num_colors )
 		{
 			// cut sprite by tiles 8x8
 			{
@@ -413,18 +424,19 @@ namespace SPReD
 							
 							// copy line
 							num_row_pixs = 0;
+							
 							do
 							{
-								pix_ind = ( chr_pos_x + num_row_pixs <= _max_x ) ? ( pixels_line != null ? pixels_line[ chr_pos_x + num_row_pixs ]:( _alpha ? (byte)3:(byte)0 ) ):( _alpha ? (byte)3:(byte)0 );
-									
-								// if pixel has transparency
-								// increment an index, so that the first one will be transparency index ( it last by default in 4bpp PNG\BMP, the third one )
+								pix_ind = ( chr_pos_x + num_row_pixs <= _max_x ) ? ( pixels_line != null ? pixels_line[ chr_pos_x + num_row_pixs ]:( _alpha ? (byte)_alpha_ind:(byte)0 ) ):( _alpha ? (byte)_alpha_ind:(byte)0 );
+
+								// increment the index if pixel has transparency,
+								// so that the first one will be transparency index ( it last by default in 4bpp PNG\BMP )
 								if( _alpha )
 								{
 									++pix_ind;
-									pix_ind %= (byte)4;
+									pix_ind %= (byte)_num_colors;
 								}
-							
+
 								pix_acc += pix_ind;
 								
 								pixels_row[ num_row_pixs ] = pix_ind;
@@ -435,13 +447,23 @@ namespace SPReD
 						}
 						
 						// save non-zero tile 
-						if( pix_acc != 0 ||!_alpha )
+						if( pix_acc != 0 || !_alpha )
 						{
 							chr_attr.CHR_ind = m_CHR_arr.Count; 
 							_spr_params.m_CHR_attr.Add( chr_attr );
 							
 							m_CHR_arr.Add( chr_data );
+							
+							if( m_CHR_arr.Count >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+							{
+								break;
+							}
 						}
+					}
+					
+					if( m_CHR_arr.Count >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+					{
+						break;
 					}
 				}
 			}
@@ -487,7 +509,13 @@ namespace SPReD
 						max_size = 4096;
 					}
 					break;
-					
+#if DEF_SMS
+				case CHR_data_group.ECHRPackingType.pt_8KB:
+					{
+						max_size = 8192;
+					}
+					break;
+#endif					
 				default:
 					{
 						return false;
@@ -567,6 +595,7 @@ namespace SPReD
 			CHR8x8_data chr_data;
 			
 			int i;
+			int j;
 			int x;
 			int y;
 			
@@ -578,39 +607,44 @@ namespace SPReD
 			for( i = 0; i < size; i++ )
 			{
 				chr_data = m_CHR_arr[ i ];
-				
-				// the first 8 bytes out of 16 ones
+#if DEF_NES
+				for( j = 0; j < 2; j++ )
+				{
+					for( y = 0; y < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; y++ )
+					{
+						data = 0;
+						
+						for( x = 0; x < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; x++ )
+						{
+							val = chr_data.get_data()[ ( y << 3 ) + ( 7 - x ) ];
+							
+							data |= ( byte )( ( ( val >> j ) & 0x01 ) << x );
+						}
+						
+						bw.Write( data );
+					}
+				}
+#elif DEF_SMS				
 				for( y = 0; y < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; y++ )
 				{
-					data = 0;
-					
-					for( x = 0; x < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; x++ )
+					for( j = 0; j < 4; j++ )
 					{
-						val = chr_data.get_data()[ ( y << 3 ) + ( 7 - x ) ];
+						data = 0;
 						
-						data |= ( byte )( ( val & 0x01 ) << x );
-					}
-					
-					bw.Write( data );
-				}
-				
-				// the second 8 bytes of CHR
-				for( y = 0; y < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; y++ )
-				{
-					data = 0;
-					
-					for( x = 0; x < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; x++ )
-					{
-						val = chr_data.get_data()[ ( y << 3 ) + ( 7 - x ) ];
+						for( x = 0; x < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; x++ )
+						{
+							val = chr_data.get_data()[ ( y << 3 ) + ( 7 - x ) ];
+							
+							data |= ( byte )( ( ( val >> j ) & 0x01 ) << x );
+						}
 						
-						data |= ( byte )( ( val >> 1 ) << x );
+						bw.Write( data );
 					}
-					
-					bw.Write( data );
 				}
+#endif				
 			}
-			
-			// save padding data to 1/2/4 KB
+#if DEF_NES			
+			// save padding data aligned to 1/2/4 KB
 			if( _save_padding == true )
 			{
 				int CHR_data_bytes_size = get_size_bytes();
@@ -627,7 +661,7 @@ namespace SPReD
 					}
 				}
 			}
-			
+#endif			
 			long data_size = bw.BaseStream.Length;
 			bw.Close();
 			

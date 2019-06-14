@@ -16,9 +16,9 @@ namespace SPReD
 	{
 		private int		m_x 			= 0;
 		private int		m_y 			= 0;
-		private int		m_palette_ind 	= -1;
+		private int		m_palette_ind 	= -1;	// ignored on SMS
 		private int		m_CHR_ind		= -1;
-		private int		m_flip_flag		= 0;
+		private int		m_flip_flag		= 0;	// ignored on SMS
 		
 		public int flip_flag
 		{
@@ -78,6 +78,11 @@ namespace SPReD
 		public void vflip()
 		{
 			m_flip_flag ^= CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP;
+		}
+		
+		public void reset_flip_flag()
+		{
+			m_flip_flag = 0;
 		}
 
 		public void save( BinaryWriter _bw )

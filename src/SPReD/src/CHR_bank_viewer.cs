@@ -117,7 +117,7 @@ namespace SPReD
 			{
 				if( m_data_list != null )
 				{
-					m_label.Text = "Tiles: " + _data_list.Count + " / Bytes: " + _data_list.Count * 16 + " [BANK: " + _bank_id + "(" + _link_cnt + ") of " + _total_banks + "]";
+					m_label.Text = "Tiles: " + _data_list.Count + " / Bytes: " + _data_list.Count * utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES + " [BANK: " + _bank_id + "(" + _link_cnt + ") of " + _total_banks + "]";
 					
 					return;
 				}
@@ -280,16 +280,21 @@ namespace SPReD
 			{
 				if( m_palette_group.active_palette != -1 )
 				{
+#if DEF_NES
+					byte color_slot = ( byte )m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot;
+#elif DEF_SMS
+					byte color_slot = ( byte )( m_palette_group.active_palette * utils.CONST_NUM_SMALL_PALETTES + m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot );
+#endif						
 					if( m_mode8x16 && ( spr_viewer.changed_pix_y > utils.CONST_CHR8x8_SIDE_PIXELS_CNT - 1 ) )
 					{
 						if( ( m_selected_ind + 1 ) < m_data_list.Count )
 						{
-							m_data_list[ m_selected_ind + 1 ].get_data()[ spr_viewer.changed_pix_x + ( spr_viewer.changed_pix_y - utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) * utils.CONST_CHR8x8_SIDE_PIXELS_CNT ] = ( byte )m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot;
+							m_data_list[ m_selected_ind + 1 ].get_data()[ spr_viewer.changed_pix_x + ( spr_viewer.changed_pix_y - utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) * utils.CONST_CHR8x8_SIDE_PIXELS_CNT ] = color_slot;
 						}
 					}
 					else
 					{
-						m_data_list[ m_selected_ind ].get_data()[ spr_viewer.changed_pix_x + spr_viewer.changed_pix_y * utils.CONST_CHR8x8_SIDE_PIXELS_CNT ] = ( byte )m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot;
+						m_data_list[ m_selected_ind ].get_data()[ spr_viewer.changed_pix_x + spr_viewer.changed_pix_y * utils.CONST_CHR8x8_SIDE_PIXELS_CNT ] = color_slot;
 					}
 	
 					update();

@@ -24,6 +24,10 @@ namespace SPReD
 		private copy_sprite_new_name_form 	m_new_sprite_name_form 		= new copy_sprite_new_name_form();
 		private image_export_options_form 	m_img_export_options_form	= new image_export_options_form();
 		private description_form			m_description_form			= new description_form();
+		
+#if DEF_SMS
+		private SMS_sprite_flipping_form	m_SMS_sprite_flip_form		= null;
+#endif
 
 		private PyScriptEditor.py_editor	m_py_editor	= null;
 		
@@ -121,6 +125,33 @@ namespace SPReD
 			{
 				project_load( _args[0] );
 			}
+	
+#if DEF_NES
+			this.Project_openFileDialog.DefaultExt = "spredsms";
+			this.Project_openFileDialog.Filter = this.Project_openFileDialog.Filter + "|SPReD-SMS (*.spredsms)|*.spredsms";
+#elif DEF_SMS
+			this.Project_saveFileDialog.DefaultExt = "spredsms";
+			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "NES", "SMS" );
+			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "nes", "sms" );
+
+			this.Project_openFileDialog.DefaultExt = "spredsms";
+			this.Project_openFileDialog.Filter = "SPReD-SMS (*.spredsms)|*.spredsms|" + this.Project_openFileDialog.Filter;
+
+			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "4 colors", "16 colors" );
+			
+			this.ExportASMToolStripMenuItem.Text = "&WLA-DX asm";
+			this.ExportASM_saveFileDialog.Filter = "WLA-DX (*.asm)|*.asm";
+						
+			BtnApplyDefaultPalette.Enabled = applyPaletteToolStripMenuItem.Enabled = false;
+			BtnShiftColors.Enabled = shiftColorsToolStripMenuItem.Enabled = CBoxShiftTransp.Enabled = false;
+			
+			CHRFlippingGroupBox.Enabled = false;
+			
+			m_SMS_sprite_flip_form = new SMS_sprite_flipping_form( SpriteList, m_sprites_proc );
+			
+			CBoxCHRPackingType.Items.Add( "8KB" );
+#endif
+			palette_group.Instance.active_palette = 0;
 		}
 		
 		public static System.Windows.Forms.DialogResult message_box( string _msg, string _title, System.Windows.Forms.MessageBoxButtons _buttons, System.Windows.Forms.MessageBoxIcon _icon = System.Windows.Forms.MessageBoxIcon.Warning )
@@ -166,7 +197,7 @@ namespace SPReD
 			
 			sprite_data spr;
 			
-			// delete the sprites...
+			// delete sprites...
 			for( int i = 0; i < size; i++ )
 			{
 				spr = SpriteList.Items[ i ] as sprite_data;
@@ -659,11 +690,23 @@ namespace SPReD
 			if(!check_duplicate( new_sprite_name ) )
 			{
 				SpriteList.Items.Add( m_sprites_proc.create_sprite( new_sprite_name, m_create_sprite_form.sprite_width, m_create_sprite_form.sprite_height, CBoxMode8x16.Checked ) );
+				
+				select_last_sprite( true );
 			}
 			else
 			{
 				message_box( new_sprite_name + " - A sprite with the same name is already exists! Ignored!", "Create Sprite Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
 			}
+		}
+
+		void select_last_sprite( bool _show_mode )
+		{
+			SpriteList.ClearSelected();
+			SpriteList.SetSelected( SpriteList.Items.Count - 1, true );
+			
+			m_sprites_proc.layout_sprite_centering();
+			
+			update_selected_sprite( true, _show_mode );
 		}
 #endregion
 //		LAYOUT		*****************************************************************************************//		
@@ -707,14 +750,23 @@ namespace SPReD
 		
 		void BtnSpriteVFlip_Event(object sender, EventArgs e)
 		{
-			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_vert( ( sprite_data.EFlipType )( CBoxFlipType.SelectedIndex ) ); } );
+#if DEF_NES			
+			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_vert( ( sprite_data.EFlipType )( CBoxFlipType.SelectedIndex ), CBoxMode8x16.Checked ); } );
+#elif DEF_SMS
+			flip_sprites( "Vertical Flipping", true );
+#endif
 		}
 		
 		void BtnSpriteHFlip_Event(object sender, EventArgs e)
 		{
+#if DEF_NES			
 			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_horiz( ( sprite_data.EFlipType )( CBoxFlipType.SelectedIndex ) ); } );
+#elif DEF_SMS
+			flip_sprites( "Horizontal Flipping", false );
+#endif
 		}
-		
+
+#if DEF_NES		
 		private void flip_sprites( Action< sprite_data > _act )
 		{
 			if( SpriteList.SelectedIndices.Count > 0 )
@@ -732,7 +784,32 @@ namespace SPReD
 				update_selected_sprite( false, false );
 			}
 		}
-		
+#elif DEF_SMS
+		private void flip_sprites( string _title, bool _vert_flip )
+		{
+			if( SpriteList.SelectedItems.Count > 0 )
+			{
+				m_SMS_sprite_flip_form.ShowDialog( _title, _vert_flip, CBoxMode8x16.Checked, ( sprite_data.EFlipType )CBoxFlipType.SelectedIndex );
+
+				if( m_SMS_sprite_flip_form.copy_CHR_data )
+				{
+					for( int i = 0; i < SpriteList.SelectedIndices.Count; i++ )
+					{
+						CHR_bank_optimization( ( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data ).get_CHR_data().id );
+					}
+					
+					m_sprites_proc.rearrange_CHR_data_ids();
+				}
+				
+				// update data in the layout viewport
+				update_selected_sprite( false, false );
+			}
+			else
+			{
+				message_box( "Please, select sprite(s)!", "Sprite(s) Flipping Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+		}
+#endif
 		void BtnShiftColors_Event(object sender, EventArgs e)
 		{
 			if( SpriteList.SelectedIndex >= 0 )
@@ -915,6 +992,8 @@ namespace SPReD
 					{
 						CHR_bank_optimization( ( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data ).get_CHR_data().id );
 					}
+					
+					m_sprites_proc.rearrange_CHR_data_ids();
 				
 					update_selected_sprite( false, false );
 				}
@@ -953,7 +1032,7 @@ namespace SPReD
 			{
 				CHR_used = false;
 				
-				// go through all sprites wich used _CHR_bank_id
+				// go through all sprites wich use _CHR_bank_id
 				// and check unused attributes
 				for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
 				{
@@ -1259,7 +1338,26 @@ namespace SPReD
 						
 						if( ver == utils.CONST_PROJECT_FILE_VER )
 						{
-							m_sprites_proc.load_CHR_storage_and_palette( br );
+							int[] plt_small = new int[ 16 ];
+							int[] plt_main	= new int[ palette_group.Instance.main_palette.Length ];
+#if DEF_NES								
+							bool ignore_palette = ( Path.GetExtension( _filename ) == ".spredsms" ) ? true:false;
+#elif DEF_SMS
+							bool ignore_palette = ( Path.GetExtension( _filename ) == ".sprednes" ) ? true:false;
+#endif								
+							m_sprites_proc.load_CHR_storage_and_palette( br, ignore_palette );
+							
+							if( ignore_palette )
+							{
+								// load "ignored" pallete into temporary buffer
+								int data_pos = 0;
+							
+								do
+								{
+									plt_small[ data_pos ] = br.ReadInt32();
+								}
+								while( ++data_pos != plt_small.Length );
+							}
 							
 							uint flags = br.ReadUInt32();
 							CBoxMode8x16.Checked 	= ( ( flags&0x01 ) == 0x01 ? true:false );
@@ -1275,11 +1373,40 @@ namespace SPReD
 							
 							if( ( flags&utils.CONST_PROJECT_FILE_PALETTE_FLAG ) == utils.CONST_PROJECT_FILE_PALETTE_FLAG )
 							{
-								palette_group.Instance.load_main_palette( br );
+								if( ignore_palette )
+								{
+									if( message_box( "Convert colors?", "Load Project", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+									{
+										// load main palette from the project file
+										int data_pos = 0;
+									
+										do
+										{
+											plt_main[ data_pos ] = br.ReadByte() << 16 | br.ReadByte() << 8 | br.ReadByte();
+										}
+										while( ++data_pos != plt_main.Length );
+										
+										m_sprites_proc.convert_colors( plt_main, plt_small, SpriteList, CBoxMode8x16.Checked );
+									}
+									else
+									{
+										br.ReadBytes( 192 );
+									}
+								}
+								else
+								{
+									palette_group.Instance.load_main_palette( br );
+								}
 							}
 							
 							// Load description
 							m_description_form.edit_text = br.ReadString();
+#if DEF_SMS
+							if( ignore_palette )
+							{
+								message_box( "In order to fix flipped NES sprites issue you can select the broken sprites and flip them again by pressing the \"VFlip\"\\\"HFlip\" button in the \"Sprite List\" area. Perform flipping with unchecked \"Transform positions\" checkbox.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+							}
+#endif
 						}
 						else
 						{
@@ -1291,16 +1418,16 @@ namespace SPReD
 						throw new Exception( "Invalid file!" );
 					}
 				}
-				
-				set_title_name( Path.GetFileNameWithoutExtension( _filename ) );
-				
+
 				// select a first sprite
 				if( SpriteList.Items.Count > 0 )
 				{
-					SpriteList.SelectedIndex = 0;
+					SpriteList.SetSelected( 0, true );
 					
 					m_sprites_proc.layout_sprite_centering();
 				}
+				
+				set_title_name( Path.GetFileNameWithoutExtension( _filename ) );
 				
 				m_project_loaded = true;
 			}
@@ -1347,6 +1474,17 @@ namespace SPReD
 				
 				string ext = Path.GetExtension( filenames[ 0 ] );
 				
+				sprite_data spr = null;
+				bool apply_palette = false;
+				
+				if( ext == ".bmp" || ext == ".png" )
+				{
+					if( message_box( "Apply the nearest colors to the imported sprite(s)?\nThis will modify palette!", "Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+					{
+						apply_palette = true;
+					}
+				}
+				
 				switch( ext )
 				{
 					case ".pal":
@@ -1383,12 +1521,19 @@ namespace SPReD
 											{
 												if( ext == ".png" )
 												{
-													SpriteList.Items.Add( m_sprites_proc.load_sprite_png( filename, spr_name ) );
+													spr = m_sprites_proc.load_sprite_png( filename, spr_name, apply_palette );
 												}
 												else
 												{	// otherwise - .bmp
-													SpriteList.Items.Add( m_sprites_proc.load_sprite_bmp( filename, spr_name ) );
+													spr = m_sprites_proc.load_sprite_bmp( filename, spr_name, apply_palette );
+												}												
+#if DEF_NES
+												if( apply_palette )
+												{
+													m_sprites_proc.apply_active_palette( spr );
 												}
+#endif												
+												SpriteList.Items.Add( spr );
 											}
 											else
 											{
@@ -1436,6 +1581,11 @@ namespace SPReD
 										}
 										break;
 								}
+							}
+							
+							if( ext == ".bmp" || ext == ".png" )
+							{
+								select_last_sprite( false );
 							}
 						}
 						break;
@@ -1494,7 +1644,7 @@ namespace SPReD
 		{
 			if( SpriteList.Items.Count == 0 )			
 			{
-				message_box( "There are no data to export!", "NESASM Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There are no data to export!", utils.CONST_PLATFORM + "ASM Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			else
 			{
@@ -1515,6 +1665,13 @@ namespace SPReD
 			
 			try
 			{
+				bool save_padding_data = false;
+#if DEF_NES				
+				if( message_box( "Save padding data aligned to 1/2/4 KB?", "Export CHR Bank(s)", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+				{
+					save_padding_data = true;
+				}
+#endif				
 				sprite_data spr;
 				
 				string path		= System.IO.Path.GetDirectoryName( _filename );
@@ -1526,11 +1683,15 @@ namespace SPReD
 					sw.WriteLine( "; Generated by " + utils.CONST_APP_NAME + " Copyright 2017-" + DateTime.Now.Year + " 0x8BitDev\n;" );
 					sw.WriteLine( ";#######################################################\n" );
 
+#if DEF_NES					
 					sw.WriteLine( "SPR_MODE_8X16 = " + ( CBoxMode8x16.Checked ? "1":"0" ) + "\n\n" );
+#elif DEF_SMS
+					sw.WriteLine( ".define\tSPR_MODE_8X16\t" + ( CBoxMode8x16.Checked ? "1":"0" ) + "\n\n" );
+#endif
 					
 					// 'incbin's of CHRs 
 					m_sprites_proc.rearrange_CHR_data_ids();
-					m_sprites_proc.export_CHR( sw, filename, true );
+					m_sprites_proc.export_CHR( sw, filename, true, save_padding_data );
 					
 					sw.WriteLine( "\n" );
 					
@@ -1553,7 +1714,7 @@ namespace SPReD
 							
 							sw.WriteLine( "\t.byte " + spr.get_CHR_data().id + ( enable_comments ? "\t\t; CHR bank index (" + spr.get_CHR_data().name + ")":"" ) );
 							
-							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + filename + "_" + spr.get_CHR_data().get_filename(), true );
+							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + filename + "_" + spr.get_CHR_data().get_filename(), save_padding_data );
 							
 							enable_comments = false;
 						}
@@ -1561,6 +1722,11 @@ namespace SPReD
 					
 					sw.WriteLine( "\n" );
 					
+#if DEF_NES
+					sw.WriteLine( "\t; #1: Y pos, #2: CHR index, #3: Attributes, #4: X pos\n" );
+#elif DEF_SMS
+					sw.WriteLine( "\t; #1: Y pos, #2: X pos, #3: CHR index\n" );
+#endif					
 					// save the sprites data
 					for( int i = 0; i < _spr_cnt; i++ )
 					{

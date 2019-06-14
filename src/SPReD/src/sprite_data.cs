@@ -193,95 +193,144 @@ namespace SPReD
 			m_CHR_data.link();
 		}
 		
-		public void flip_vert( EFlipType _ft )
+#if DEF_NES		
+		public void flip_vert( EFlipType _ft, bool _8x16_mode )
+#elif DEF_SMS
+		public void flip_vert( EFlipType _ft, bool _transform_pos, bool _8x16_mode )
+#endif			
 		{
 			m_CHR_attr.ForEach( delegate( CHR_data_attr _attr ) 
 			{
+#if DEF_NES		
 				_attr.vflip();			                   	
-
-				switch( _ft )
+#elif DEF_SMS
+				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR8x8_data.ETransform.t_vflip );
+				
+				if( _8x16_mode && _attr.CHR_ind + 1 < m_CHR_data.get_data().Count )
 				{
-					case sprite_data.EFlipType.ft_LOCAL:
-						{
-							int center = m_size_y >> 1;
-							_attr.y = center - ( _attr.y - center ) - utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
-						}
-						break;
-						
-					case sprite_data.EFlipType.ft_GLOABL_AXES:
-						{
-							_attr.y = ( -_attr.y - utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) - m_offset_y;
-						}
-						break;
+					m_CHR_data.get_data()[ _attr.CHR_ind + 1 ].transform( CHR8x8_data.ETransform.t_vflip );
+					
+					m_CHR_data.swap_CHRs( _attr.CHR_ind, _attr.CHR_ind + 1 );
+				}
+
+				if( _transform_pos )
+#endif			
+				{
+					switch( _ft )
+					{
+						case sprite_data.EFlipType.ft_LOCAL:
+							{
+								int center = m_size_y >> 1;
+								_attr.y = center - ( _attr.y - center ) - utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+							}
+							break;
+							
+						case sprite_data.EFlipType.ft_GLOABL_AXES:
+							{
+								_attr.y = ( -_attr.y - utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) - m_offset_y;
+								
+							 	if( _8x16_mode )
+							 	{
+							 		_attr.y -= utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+							 	}
+							}
+							break;
+					}
 				}
 			} );
-			
-			if( _ft == sprite_data.EFlipType.ft_GLOABL_AXES )
+
+#if DEF_SMS
+			if( _transform_pos )
+#endif
 			{
-				// find a minimal X value
-				int min_y = int.MaxValue;
-				
-				m_CHR_attr.ForEach( delegate( CHR_data_attr _attr )
+				if( _ft == sprite_data.EFlipType.ft_GLOABL_AXES )
 				{
-					if( min_y > _attr.y )
+					// find a minimal Y value
+					int min_y = int.MaxValue;
+					
+					m_CHR_attr.ForEach( delegate( CHR_data_attr _attr )
 					{
-						min_y = _attr.y;
-					}
-				} );
-				
-				// attr.y -= min_y
-				m_CHR_attr.ForEach( delegate( CHR_data_attr _attr )
-				{
-				 	_attr.y -= min_y;
-				} );
-				
-				m_offset_y = min_y;
+						if( min_y > _attr.y )
+						{
+							min_y = _attr.y;
+						}
+					} );
+					
+					// attr.y -= min_y
+					m_CHR_attr.ForEach( delegate( CHR_data_attr _attr )
+					{
+					 	_attr.y -= min_y;
+					} );
+					
+					m_offset_y = min_y;
+				}
 			}
 		}
 		
+#if DEF_NES		
 		public void flip_horiz( EFlipType _ft )
+#elif DEF_SMS
+		public void flip_horiz( EFlipType _ft, bool _transform_pos, bool _8x16_mode )
+#endif			
 		{
 			m_CHR_attr.ForEach( delegate( CHR_data_attr _attr ) 
 			{
+#if DEF_NES		
                	_attr.hflip();
+#elif DEF_SMS
+				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR8x8_data.ETransform.t_hflip );
 
-				switch( _ft )
+				if( _8x16_mode && _attr.CHR_ind + 1 < m_CHR_data.get_data().Count )
 				{
-					case sprite_data.EFlipType.ft_LOCAL:
-						{
-							int center = m_size_x >> 1;
-							_attr.x = center - ( _attr.x - center ) - utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
-						}
-						break;
-						
-					case sprite_data.EFlipType.ft_GLOABL_AXES:
-						{
-							_attr.x = ( -_attr.x - utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) - m_offset_x;
-						}
-						break;
+					m_CHR_data.get_data()[ _attr.CHR_ind + 1 ].transform( CHR8x8_data.ETransform.t_hflip );
+				}
+				
+				if( _transform_pos )
+#endif			
+				{
+					switch( _ft )
+					{
+						case sprite_data.EFlipType.ft_LOCAL:
+							{
+								int center = m_size_x >> 1;
+								_attr.x = center - ( _attr.x - center ) - utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+							}
+							break;
+							
+						case sprite_data.EFlipType.ft_GLOABL_AXES:
+							{
+								_attr.x = ( -_attr.x - utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) - m_offset_x;
+							}
+							break;
+					}
 				}
 			} );
 			
-			if( _ft == sprite_data.EFlipType.ft_GLOABL_AXES )
+#if DEF_SMS
+			if( _transform_pos )
+#endif
 			{
-				// find a minimal X value
-				int min_x = int.MaxValue;
-				
-				m_CHR_attr.ForEach( delegate( CHR_data_attr _attr )
+				if( _ft == sprite_data.EFlipType.ft_GLOABL_AXES )
 				{
-					if( min_x > _attr.x )
+					// find a minimal X value
+					int min_x = int.MaxValue;
+					
+					m_CHR_attr.ForEach( delegate( CHR_data_attr _attr )
 					{
-						min_x = _attr.x;
-					}
-				} );
-				
-				// attr.x -= min_X
-				m_CHR_attr.ForEach( delegate( CHR_data_attr _attr )
-				{
-				 	_attr.x -= min_x;
-				} );
-				
-				m_offset_x = min_x;
+						if( min_x > _attr.x )
+						{
+							min_x = _attr.x;
+						}
+					} );
+					
+					// attr.x -= min_X
+					m_CHR_attr.ForEach( delegate( CHR_data_attr _attr )
+					{
+					 	_attr.x -= min_x;
+					} );
+					
+					m_offset_x = min_x;
+				}
 			}
 		}
 		
@@ -417,8 +466,6 @@ namespace SPReD
 		{
 			int size = this.m_CHR_attr.Count;
 			
-			int attr;
-			
 			CHR_data_attr chr_attr;
 			
 			_sw.WriteLine( name + ":" );
@@ -426,18 +473,20 @@ namespace SPReD
 			for( int i = 0; i < size; i++ )
 			{
 				chr_attr = m_CHR_attr[ i ];
-					
+#if DEF_NES				
 				if( chr_attr.palette_ind < 0 )
 				{
 					throw new Exception( "The sprite: " + name + " has uncolored part(s)!" );
 				}
-				
-				attr  = chr_attr.palette_ind; 
+		
+				int attr  = chr_attr.palette_ind; 
 				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) == CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) ? 0x40:0;
 				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) == CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) ? 0x80:0;
 				
-				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", ( sbyte )( offset_y + chr_attr.y ), ( sbyte )( chr_attr.CHR_ind ), ( sbyte )( attr ), ( sbyte )( offset_x + chr_attr.x ) ) );
-				
+				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( byte )( offset_y + chr_attr.y ) ), unchecked( ( byte )( chr_attr.CHR_ind ) ), unchecked( ( byte )( attr ) ), unchecked( ( byte )( offset_x + chr_attr.x ) ) ) );
+#elif DEF_SMS	
+				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}", unchecked( ( byte )( offset_y + chr_attr.y ) ), unchecked( ( byte )( offset_x + chr_attr.x ) ), unchecked( ( byte )( chr_attr.CHR_ind ) ) ) );
+#endif				
 			}
 			
 			_sw.WriteLine( name + "_end:\n" );
@@ -663,6 +712,8 @@ namespace SPReD
 		
 		public void save( BinaryWriter _bw )
 		{
+			update_dimensions();
+			
 			_bw.Write( name );
 			
 			_bw.Write( m_offset_x		);

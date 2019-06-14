@@ -45,13 +45,13 @@ namespace SPReD
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ExportNESASMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ExportASMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ExportImagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportScriptEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
 			this.descriptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.exportScriptEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuStrip = new System.Windows.Forms.MenuStrip();
 			this.spriteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -135,7 +135,7 @@ namespace SPReD
 			this.GroupBoxModeName = new System.Windows.Forms.GroupBox();
 			this.BtnLayoutModeBuild = new System.Windows.Forms.Button();
 			this.BtnLayoutModeDraw = new System.Windows.Forms.Button();
-			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.CHRFlippingGroupBox = new System.Windows.Forms.GroupBox();
 			this.BtnVFlip = new System.Windows.Forms.Button();
 			this.BtnHFlip = new System.Windows.Forms.Button();
 			this.BtnDeleteCHR = new System.Windows.Forms.Button();
@@ -188,7 +188,7 @@ namespace SPReD
 			this.groupBox7.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.GroupBoxModeName.SuspendLayout();
-			this.groupBox5.SuspendLayout();
+			this.CHRFlippingGroupBox.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Palette3)).BeginInit();
@@ -269,18 +269,18 @@ namespace SPReD
 			// exportToolStripMenuItem
 			// 
 			this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.ExportNESASMToolStripMenuItem,
+									this.ExportASMToolStripMenuItem,
 									this.ExportImagesToolStripMenuItem});
 			this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
 			this.exportToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.exportToolStripMenuItem.Text = "&Export";
 			// 
-			// ExportNESASMToolStripMenuItem
+			// ExportASMToolStripMenuItem
 			// 
-			this.ExportNESASMToolStripMenuItem.Name = "ExportNESASMToolStripMenuItem";
-			this.ExportNESASMToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
-			this.ExportNESASMToolStripMenuItem.Text = "C&A65\\NESasm";
-			this.ExportNESASMToolStripMenuItem.Click += new System.EventHandler(this.ExportASMToolStripMenuItemClick);
+			this.ExportASMToolStripMenuItem.Name = "ExportASMToolStripMenuItem";
+			this.ExportASMToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+			this.ExportASMToolStripMenuItem.Text = "C&A65\\NESasm";
+			this.ExportASMToolStripMenuItem.Click += new System.EventHandler(this.ExportASMToolStripMenuItemClick);
 			// 
 			// ExportImagesToolStripMenuItem
 			// 
@@ -288,6 +288,14 @@ namespace SPReD
 			this.ExportImagesToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
 			this.ExportImagesToolStripMenuItem.Text = "&Images";
 			this.ExportImagesToolStripMenuItem.Click += new System.EventHandler(this.ExportImagesToolStripMenuItemClick);
+			// 
+			// exportScriptEditorToolStripMenuItem
+			// 
+			this.exportScriptEditorToolStripMenuItem.Name = "exportScriptEditorToolStripMenuItem";
+			this.exportScriptEditorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
+			this.exportScriptEditorToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+			this.exportScriptEditorToolStripMenuItem.Text = "Expo&rt Script Editor";
+			this.exportScriptEditorToolStripMenuItem.Click += new System.EventHandler(this.ExportScriptEditorToolStripMenuItemClick);
 			// 
 			// toolStripSeparator17
 			// 
@@ -313,14 +321,6 @@ namespace SPReD
 			this.exitToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItemClick);
-			// 
-			// exportScriptEditorToolStripMenuItem
-			// 
-			this.exportScriptEditorToolStripMenuItem.Name = "exportScriptEditorToolStripMenuItem";
-			this.exportScriptEditorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
-			this.exportScriptEditorToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-			this.exportScriptEditorToolStripMenuItem.Text = "Expo&rt Script Editor";
-			this.exportScriptEditorToolStripMenuItem.Click += new System.EventHandler(this.ExportScriptEditorToolStripMenuItemClick);
 			// 
 			// MenuStrip
 			// 
@@ -1012,7 +1012,7 @@ namespace SPReD
 			this.groupBox2.Controls.Add(this.CBoxMode8x16);
 			this.groupBox2.Controls.Add(this.CBoxSnapLayout);
 			this.groupBox2.Controls.Add(this.GroupBoxModeName);
-			this.groupBox2.Controls.Add(this.groupBox5);
+			this.groupBox2.Controls.Add(this.CHRFlippingGroupBox);
 			this.groupBox2.Controls.Add(this.BtnDeleteCHR);
 			this.groupBox2.Controls.Add(this.BtnShiftColors);
 			this.groupBox2.Controls.Add(this.CBoxGridLayout);
@@ -1120,16 +1120,16 @@ namespace SPReD
 			this.BtnLayoutModeDraw.UseVisualStyleBackColor = true;
 			this.BtnLayoutModeDraw.Click += new System.EventHandler(this.BtnModeDraw_Event);
 			// 
-			// groupBox5
+			// CHRFlippingGroupBox
 			// 
-			this.groupBox5.Controls.Add(this.BtnVFlip);
-			this.groupBox5.Controls.Add(this.BtnHFlip);
-			this.groupBox5.Location = new System.Drawing.Point(10, 430);
-			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(124, 51);
-			this.groupBox5.TabIndex = 19;
-			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = "CHR Flipping";
+			this.CHRFlippingGroupBox.Controls.Add(this.BtnVFlip);
+			this.CHRFlippingGroupBox.Controls.Add(this.BtnHFlip);
+			this.CHRFlippingGroupBox.Location = new System.Drawing.Point(10, 430);
+			this.CHRFlippingGroupBox.Name = "CHRFlippingGroupBox";
+			this.CHRFlippingGroupBox.Size = new System.Drawing.Size(124, 51);
+			this.CHRFlippingGroupBox.TabIndex = 19;
+			this.CHRFlippingGroupBox.TabStop = false;
+			this.CHRFlippingGroupBox.Text = "CHR Flipping";
 			// 
 			// BtnVFlip
 			// 
@@ -1512,7 +1512,7 @@ namespace SPReD
 			this.MainMenuStrip = this.MenuStrip;
 			this.MaximizeBox = false;
 			this.Name = "MainForm";
-			this.Text = "SPReD-NES";
+			this.Text = "SPReD";
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyUp_Event);
 			this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.PreviewKeyDown_Event);
 			this.MenuStrip.ResumeLayout(false);
@@ -1527,7 +1527,7 @@ namespace SPReD
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.GroupBoxModeName.ResumeLayout(false);
-			this.groupBox5.ResumeLayout(false);
+			this.CHRFlippingGroupBox.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.Palette3)).EndInit();
@@ -1627,7 +1627,7 @@ namespace SPReD
 		private System.Windows.Forms.Button BtnAddCHR;
 		private System.Windows.Forms.Button BtnDeleteLastCHR;
 		private System.Windows.Forms.ComboBox CBoxFlipType;
-		private System.Windows.Forms.GroupBox groupBox5;
+		private System.Windows.Forms.GroupBox CHRFlippingGroupBox;
 		private System.Windows.Forms.Button BtnCHRSplit;
 		private System.Windows.Forms.ComboBox CBoxCHRPackingType;
 		private System.Windows.Forms.Button BtnCHRPack;
@@ -1673,7 +1673,7 @@ namespace SPReD
 		private System.Windows.Forms.PictureBox CHRBank;
 		private System.Windows.Forms.PictureBox SpriteLayout;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ExportNESASMToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ExportASMToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;

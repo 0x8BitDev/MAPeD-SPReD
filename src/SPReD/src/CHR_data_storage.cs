@@ -41,22 +41,22 @@ namespace SPReD
 			return new sprite_params( chr_data );
 		}
 		
-		public sprite_params create( PngReader _png_reader )
+		public sprite_params create( PngReader _png_reader, bool _apply_palette )
 		{
 			CHR_data_group chr_data = new CHR_data_group();
 			
 			add( chr_data );
 			
-			return chr_data.setup( _png_reader );
+			return chr_data.setup( _png_reader, _apply_palette );
 		}
 
-		public sprite_params create( Bitmap _bmp )
+		public sprite_params create( Bitmap _bmp, bool _apply_palette )
 		{
 			CHR_data_group chr_data = new CHR_data_group();
 			
 			add( chr_data );
 			
-			return chr_data.setup( _bmp );
+			return chr_data.setup( _bmp, _apply_palette );
 		}
 		
 		public void add( CHR_data_group _chr_data )
@@ -104,7 +104,7 @@ namespace SPReD
 			return null;
 		}
 		
-		public void export( StreamWriter _sw, string _filename, bool _commented )
+		public void export( StreamWriter _sw, string _filename, bool _commented, bool _need_padding )
 		{
 			int CHR_data_size;
 			
@@ -114,7 +114,7 @@ namespace SPReD
 			{
 				CHR_data_size = m_data[ i ].get_size_bytes();
 				
-				_sw.WriteLine( ( _commented ? ";":"" ) + m_data[ i ].name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ) + " bytes" );
+				_sw.WriteLine( ( _commented ? ";":"" ) + m_data[ i ].name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );
 			}
 		}
 		
