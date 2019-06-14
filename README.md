@@ -1,6 +1,6 @@
 Hi retro game developers! 
 
-Here you can find NES development tools:
+Here you can find **NES/SMS** development tools:
 
 
 # MAPeD-NES - Game maps editor
@@ -29,7 +29,7 @@ Here you can find NES development tools:
 - etc...
 
 
-# SPReD-NES - Sprites editor
+# SPReD-NES/SMS - Sprites editor
 **Some features are:**
 
 - handy drawing mode
@@ -37,10 +37,12 @@ Here you can find NES development tools:
 - sprites data packing ( 1/2/4 KB ) and optimization
 - 8x16 mode support
 - images import/export
-- export to **CA65/NESasm**
+- export to **NES: CA65/NESasm** / **SMS: WLA-DX**
 - built-in **Python** script editor for writing custom data export scripts
+- **NES <-> SMS** data conversion*
 - etc...
 
+\* You can load a **NES** project into **SMS** editor and vice versa.
 
 # Python script editor
 If you need to export specific data which are not supported by the tools, you can write your own script using simple built-in Python script editor ( **SPSeD** ). Press **Alt+X** ( **ALT**ernative e**X**port ) to open the editor.
@@ -62,6 +64,7 @@ Sample scripts of using the APIs:
 The solution files you can find here:
  `./src/MAPeD/MAPeD-NES.sln`
  `./src/SPReD/SPReD-NES.sln`
+ `./src/SPReD/SPReD-SMS.sln`
 
 **Note:** **.Net 4.5.1** profile is required to build the tools.
 
@@ -95,7 +98,7 @@ The Linux versions were tested using **MonoDevelop 7.8.2 (build 2)**. The latest
 https://www.microsoft.com/en-us/download/details.aspx?id=40779
 
 ## Linux
-As mentioned before, you need to install Mono on your computer. To run the tools you may need to configure your environment to allow it to automatically run .exe files through Mono, or manually run the tools in terminal: `mono MAPeD-NES.exe`, `mono SPReD-NES.exe`.
+As mentioned before, you need to install Mono on your computer. To run the tools you may need to configure your environment to allow it to automatically run .exe files through Mono, or manually run the tools in terminal: `mono MAPeD-NES.exe`, `mono SPReD-NES.exe`, `mono SPReD-SMS.exe`.
 
 
 # Samples
@@ -109,8 +112,6 @@ As mentioned before, you need to install Mono on your computer. To run the tools
 **ZX Spectrum sample sources ( can be compiled on Windows only ):**
  `./samples/zx/tilemap_render/`
 
-**Python sample script which uses data export API:**
-`./scripts/project_stats.py`
 
 ## SPReD-NES
 **NES assembly sources of simple character controllers:**
@@ -118,6 +119,10 @@ As mentioned before, you need to install Mono on your computer. To run the tools
 `./samples/nes/player_cntrl_NROM-128`	- character controller: idle, running and jumping; 8x8/8x16 mode
 `./samples/nes/player_cntrl_MMC3`	- the same as above, but using big sprites with MMC3 1KB CHR bank switching 
 ( +shooting and ducking animations )
+
+## SPReD-SMS
+**Coming soon...**
+
 
 ---
 The NES samples were created using **CA65 assembler (v2.17 - GIT 7445550)**. 
@@ -128,9 +133,9 @@ Github page: https://github.com/cc65/cc65 Or you can download the latest CC65 sn
 The ZX Spectrum sample uses **SjASMPlus - Z80 Assembly Cross-Compiler (v1.07 RC7)**. 
 The latest version can be downloaded at: https://sourceforge.net/projects/sjasmplus/
 
-To compile the NES samples on Windows you can run 'compile.bat' which contains in all samples directories.
+To compile the NES samples on Windows you can run **'compile.bat'** which contains in all samples directories.
 
-To compile them on Linux you can run 'makefile' which also contains in all samples directories.
+To compile them on Linux you can run **'makefile'** which also contains in all samples directories.
 
 - `make` to compile binaries to the `./samples/nes/bin` directory;
 - `make run` to run compiled sample with **FCEUX** emulator;

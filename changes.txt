@@ -20,8 +20,9 @@ MAPeD-NES:
 01.05.2019 v0.50b - Initial release
 
 
-SPReD-NES:
-~~~~~~~~~~~
+SPReD-NES/SMS:
+~~~~~~~~~~~~~~~
+14.06.2019 - SPReD-SMS added
 05.06.2019 - Python script editor, API doc and sample script are added
 
 17.05.2019 v0.54b
