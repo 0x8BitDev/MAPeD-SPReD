@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <ProjectGuid>{31750B81-9BA5-4ABC-9C56-11B58D3782F3}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SPReD</RootNamespace>
+    <AssemblyName>SPReD-SMS</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <NoWin32Manifest>False</NoWin32Manifest>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>False</SignAssembly>
+    <DelaySign>False</DelaySign>
+    <RunCodeAnalysis>False</RunCodeAnalysis>
+    <SourceAnalysisOverrideSettingsFile>C:\Users\sutr\AppData\Roaming\ICSharpCode/SharpDevelop4\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <ApplicationIcon>..\src\icon\SPReD.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <BaseAddress>4194304</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>..\..\..\bin\</OutputPath>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE;DEF_SMS</DefineConstants>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <StartAction>Project</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>..\..\..\bin\</OutputPath>
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE;DEF_SMS</DefineConstants>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="IronPython">
+      <HintPath>..\..\lib\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules">
+      <HintPath>..\..\lib\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic">
+      <HintPath>..\..\lib\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting">
+      <HintPath>..\..\lib\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Pngcs">
+      <HintPath>..\lib\Pngcs.dll</HintPath>
+    </Reference>
+    <Reference Include="PyScriptEditor">
+      <HintPath>..\..\lib\PyScriptEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\src\CHR8x8_data.cs">
+      <Link>CHR8x8_data.cs</Link>
+    </Compile>
+    <Compile Include="..\src\CHR_bank_viewer.cs">
+      <Link>CHR_bank_viewer.cs</Link>
+    </Compile>
+    <Compile Include="..\src\CHR_data_attr.cs">
+      <Link>CHR_data_attr.cs</Link>
+    </Compile>
+    <Compile Include="..\src\CHR_data_group.cs">
+      <Link>CHR_data_group.cs</Link>
+    </Compile>
+    <Compile Include="..\src\CHR_data_storage.cs">
+      <Link>CHR_data_storage.cs</Link>
+    </Compile>
+    <Compile Include="..\src\copy_sprite_new_name_form.cs">
+      <Link>copy_sprite_new_name_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\copy_sprite_new_name_form.Designer.cs">
+      <Link>copy_sprite_new_name_form.Designer.cs</Link>
+      <DependentUpon>copy_sprite_new_name_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\create_sprite_form.cs">
+      <Link>create_sprite_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\create_sprite_form.Designer.cs">
+      <Link>create_sprite_form.Designer.cs</Link>
+      <DependentUpon>create_sprite_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\description_form.cs">
+      <Link>description_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\description_form.Designer.cs">
+      <Link>description_form.Designer.cs</Link>
+      <DependentUpon>description_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\drawable_base.cs">
+      <Link>drawable_base.cs</Link>
+    </Compile>
+    <Compile Include="..\src\file_associations.cs">
+      <Link>file_associations.cs</Link>
+    </Compile>
+    <Compile Include="..\src\image_export_options_form.cs">
+      <Link>image_export_options_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\image_export_options_form.Designer.cs">
+      <Link>image_export_options_form.Designer.cs</Link>
+      <DependentUpon>image_export_options_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.cs">
+      <Link>MainForm.cs</Link>
+    </Compile>
+    <Compile Include="..\src\MainForm.Designer.cs">
+      <Link>MainForm.Designer.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\palette_group.cs">
+      <Link>palette_group.cs</Link>
+    </Compile>
+    <Compile Include="..\src\palette_small.cs">
+      <Link>palette_small.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Program.cs">
+      <Link>Program.cs</Link>
+    </Compile>
+    <Compile Include="..\src\py_scripting\py_api.cs">
+      <Link>py_scripting\py_api.cs</Link>
+    </Compile>
+    <Compile Include="..\src\rename_sprite_form.cs">
+      <Link>rename_sprite_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\rename_sprite_form.Designer.cs">
+      <Link>rename_sprite_form.Designer.cs</Link>
+      <DependentUpon>rename_sprite_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\SMS_sprite_flipping_form.cs">
+      <Link>SMS_sprite_flipping_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\SMS_sprite_flipping_form.Designer.cs">
+      <Link>SMS_sprite_flipping_form.Designer.cs</Link>
+      <DependentUpon>SMS_sprite_flipping_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\sprite_data.cs">
+      <Link>sprite_data.cs</Link>
+    </Compile>
+    <Compile Include="..\src\sprite_layout_viewer.cs">
+      <Link>sprite_layout_viewer.cs</Link>
+    </Compile>
+    <Compile Include="..\src\sprite_processor.cs">
+      <Link>sprite_processor.cs</Link>
+    </Compile>
+    <Compile Include="..\src\utils.cs">
+      <Link>utils.cs</Link>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="SPReD-SMS.Designer.cs">
+      <DependentUpon>SPReD-SMS.settings</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="SPReD-SMS.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>SPReD%28SMS%29.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\src\copy_sprite_new_name_form.resx">
+      <Link>copy_sprite_new_name_form.resx</Link>
+      <DependentUpon>copy_sprite_new_name_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\create_sprite_form.resx">
+      <Link>create_sprite_form.resx</Link>
+      <DependentUpon>create_sprite_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\description_form.resx">
+      <Link>description_form.resx</Link>
+      <DependentUpon>description_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\image_export_options_form.resx">
+      <Link>image_export_options_form.resx</Link>
+      <DependentUpon>image_export_options_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\MainForm.resx">
+      <Link>MainForm.resx</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\rename_sprite_form.resx">
+      <Link>rename_sprite_form.resx</Link>
+      <DependentUpon>rename_sprite_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\SMS_sprite_flipping_form.resx">
+      <DependentUpon>SMS_sprite_flipping_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="py_scripting" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
