@@ -526,14 +526,14 @@ namespace SPReD
 					m_gfx.DrawRectangle( m_pen, chr_scr_pos_x-1, chr_scr_pos_y-1, m_CHR_size + 2, CHR_height + 2 );
 					
 #if DEF_NES					
-					m_label.Text = "Pos: " + chr_attr.x + ";" + chr_attr.y + " / Palette: " + ( chr_attr.palette_ind + 1 ) + " / Id: " + chr_attr.CHR_ind;
+					m_label.Text = "Pos: " + chr_attr.x + ";" + chr_attr.y + " / Palette: " + ( chr_attr.palette_ind + 1 ) + " / Id: " + chr_attr.CHR_ind + " / Tiles: " + m_spr_data.get_CHR_attr().Count;
 #elif DEF_SMS
-					m_label.Text = "Pos: " + chr_attr.x + ";" + chr_attr.y + " / Id: " + chr_attr.CHR_ind;
+					m_label.Text = "Pos: " + chr_attr.x + ";" + chr_attr.y + " / Id: " + chr_attr.CHR_ind + " / Tiles: " + m_spr_data.get_CHR_attr().Count;
 #endif
 				}
 				else
 				{
-					m_label.Text = " Size: " + m_spr_data.size_x + "x" + ( m_spr_data.size_y + ( m_mode8x16 ? utils.CONST_CHR8x8_SIDE_PIXELS_CNT:0 ) ) + " / Offset: " + m_spr_data.offset_x + "x" + m_spr_data.offset_y;
+					m_label.Text = " Size: " + m_spr_data.size_x + "x" + ( m_spr_data.size_y + ( m_mode8x16 ? utils.CONST_CHR8x8_SIDE_PIXELS_CNT:0 ) ) + " / Offset: " + m_spr_data.offset_x + "x" + m_spr_data.offset_y + " / Tiles: " + m_spr_data.get_CHR_attr().Count;
 				}
 				
 				calc_CHR_size_and_draw_grid( m_show_grid );
