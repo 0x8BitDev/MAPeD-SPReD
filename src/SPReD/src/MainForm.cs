@@ -1399,6 +1399,11 @@ namespace SPReD
 								}
 							}
 							
+							// update selected ( active ) color in the main palette
+							{
+								palette_group.Instance.get_palettes_arr()[ palette_group.Instance.active_palette ].color_slot = palette_group.Instance.get_palettes_arr()[ palette_group.Instance.active_palette ].color_slot;
+							}
+							
 							// Load description
 							m_description_form.edit_text = br.ReadString();
 #if DEF_SMS
