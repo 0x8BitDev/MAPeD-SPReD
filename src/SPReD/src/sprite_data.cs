@@ -468,6 +468,11 @@ namespace SPReD
 			
 			CHR_data_attr chr_attr;
 			
+			if( size > utils.CONST_SPRITE_MAX_NUM_ATTRS )
+			{
+				throw new Exception( "The sprite - " + name + " - has more than " + utils.CONST_SPRITE_MAX_NUM_ATTRS.ToString() + " tiles that exceed the hardware limit!\n Please, fix it to avoid the sprite drawing error in your project!" );
+			}
+			
 			_sw.WriteLine( name + ":" );
 			
 			for( int i = 0; i < size; i++ )

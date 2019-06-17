@@ -77,6 +77,8 @@ namespace SPReD
 		
 		public const int CONST_LAYOUT_WORKSPACE_HALF_SIDE	= 256;
 		
+		public const int CONST_SPRITE_MAX_NUM_ATTRS			= 64;	// the max number of attributes in a sprite
+		
 		public static SolidBrush 	brush		 	= new SolidBrush( Color.White );
 		public static Font 			fnt10_Arial		= new Font( "Arial", 10, FontStyle.Bold );
 
