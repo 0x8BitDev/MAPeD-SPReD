@@ -351,8 +351,11 @@ namespace SPReD
 			{
 				if( m_selected_ind >= 0 && get_data() != null )
 				{
+#if DEF_NES					
 					byte color_ind = ( byte )plt.get_palettes_arr()[ plt.active_palette ].color_slot;
-					
+#elif DEF_SMS
+					byte color_ind = ( byte )( plt.active_palette * utils.CONST_NUM_SMALL_PALETTES + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
+#endif					
 					get_data()[ m_selected_ind ].fill( color_ind );
 					
 					if( m_mode8x16 && m_selected_ind + 1 < get_data().Count )
