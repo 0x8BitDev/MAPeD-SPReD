@@ -225,10 +225,10 @@ namespace SPReD
 				}
 			}
 			
-			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, false, -1, -1 );
+			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, false, -1, -1, false );
 		}
 		
-		public sprite_params setup( PngReader _png_reader, bool _apply_palette )
+		public sprite_params setup( PngReader _png_reader, bool _apply_palette, bool _crop_image )
 		{
 			sprite_params spr_params 	= new sprite_params( this );
 			
@@ -270,11 +270,14 @@ namespace SPReD
 					
 					alpha_ind = plte_alpha.Length - 1;
 					
-					min_x = img_width + 1;
-					max_x = -1;
-		
-					min_y = img_height + 1;
-					max_y = -1;
+					if( _crop_image )
+					{
+						min_x = img_width + 1;
+						max_x = -1;
+			
+						min_y = img_height + 1;
+						max_y = -1;
+					}
 					
 					bool transp_line = false;
 					
@@ -294,7 +297,7 @@ namespace SPReD
 						for( j = 0; j < size; j++ )
 						{
 							// if pixel is not transparent 
-							if( plte_alpha[ pixels_line[ j ] ] > 0 )
+							if( _crop_image && plte_alpha[ pixels_line[ j ] ] > 0 )
 							{
 								if( min_x > j )
 								{
@@ -311,7 +314,7 @@ namespace SPReD
 						}
 						
 						// if line is not transparent
-						if( !transp_line )
+						if( _crop_image && !transp_line )
 						{
 							if( min_y > i )
 							{
@@ -365,10 +368,10 @@ namespace SPReD
 				}
 			}
 
-			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, ( trns != null ), alpha_ind, num_colors );
+			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, ( trns != null ), alpha_ind, num_colors, _crop_image );
 		}		
 		
-		private sprite_params cut_CHRs( sprite_params _spr_params, int _min_x, int _max_x, int _min_y, int _max_y, List< byte[] > _lines_arr, bool _alpha, int _alpha_ind, int _num_colors )
+		private sprite_params cut_CHRs( sprite_params _spr_params, int _min_x, int _max_x, int _min_y, int _max_y, List< byte[] > _lines_arr, bool _alpha, int _alpha_ind, int _num_colors, bool _crop_image )
 		{
 			// cut sprite by tiles 8x8
 			{
@@ -447,7 +450,7 @@ namespace SPReD
 						}
 						
 						// save non-zero tile 
-						if( pix_acc != 0 || !_alpha )
+						if( !_crop_image || ( pix_acc != 0 || !_alpha ) )
 						{
 							chr_attr.CHR_ind = m_CHR_arr.Count; 
 							_spr_params.m_CHR_attr.Add( chr_attr );

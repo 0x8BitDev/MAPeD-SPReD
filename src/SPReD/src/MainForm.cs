@@ -1480,13 +1480,20 @@ namespace SPReD
 				string ext = Path.GetExtension( filenames[ 0 ] );
 				
 				sprite_data spr = null;
-				bool apply_palette = false;
+				
+				bool apply_palette 	= false;
+				bool crop_images 	= false;
 				
 				if( ext == ".bmp" || ext == ".png" )
 				{
-					if( message_box( "Apply the nearest colors to the imported sprite(s)?\nThis will modify palette!", "Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+					if( message_box( "Apply the nearest colors to the imported sprite(s)?\n\nNote: This will modify palette!", "Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
 						apply_palette = true;
+					}
+					
+					if( message_box( "Crop the imported sprites to their minimum size by alpha channel?\n\nNote: BMP files has no alpha channel!", "Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+					{
+						crop_images = true;
 					}
 				}
 				
@@ -1514,6 +1521,8 @@ namespace SPReD
 							for( i = 0; i < size; i++ )
 							{
 								filename = filenames[ i ];
+								
+								ext = Path.GetExtension( filename );								
 			
 								spr_name = System.IO.Path.GetFileNameWithoutExtension( filename );
 								
@@ -1526,7 +1535,7 @@ namespace SPReD
 											{
 												if( ext == ".png" )
 												{
-													spr = m_sprites_proc.load_sprite_png( filename, spr_name, apply_palette );
+													spr = m_sprites_proc.load_sprite_png( filename, spr_name, apply_palette, crop_images );
 												}
 												else
 												{	// otherwise - .bmp

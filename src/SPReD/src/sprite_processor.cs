@@ -63,7 +63,7 @@ namespace SPReD
 			CHR_data_group.reset_ids_cnt();
 		}
 		
-		public sprite_data load_sprite_png( string _filename, string _name, bool _apply_palette )
+		public sprite_data load_sprite_png( string _filename, string _name, bool _apply_palette, bool _crop_image )
 		{
 			PngReader png_reader = FileHelper.CreatePngReader( _filename );
 			
@@ -98,7 +98,7 @@ namespace SPReD
 				throw new Exception( _filename + "\n\nThe image must have a 16 colors palette!" );
 			}
 #endif
-			sprite_params spr_params = m_CHR_data_storage.create( png_reader, _apply_palette );
+			sprite_params spr_params = m_CHR_data_storage.create( png_reader, _apply_palette, _crop_image );
 			
 			sprite_data spr = new sprite_data( _name );
 			spr.setup( spr_params );
