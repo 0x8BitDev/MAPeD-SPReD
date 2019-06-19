@@ -337,7 +337,7 @@ namespace SPReD
 				}
 				else
 				{
-					message_box( new_sprite_name + " - A sprite with the same name is already exists! Ignored!", _wnd_caption, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+					message_box( new_sprite_name + " - A sprite with the same name already exists! Ignored!", _wnd_caption, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
 				}
 			}
 			else
@@ -462,7 +462,7 @@ namespace SPReD
 				}
 				else
 				{
-					message_box( new_name + " - A sprite with the same name is already exists! Ignored!", "Copy Sprite", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+					message_box( new_name + " - A sprite with the same name already exists! Ignored!", "Copy Sprite", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
 				}
 			}
 			
@@ -695,7 +695,7 @@ namespace SPReD
 			}
 			else
 			{
-				message_box( new_sprite_name + " - A sprite with the same name is already exists! Ignored!", "Create Sprite Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( new_sprite_name + " - A sprite with the same name already exists! Ignored!", "Create Sprite Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
 			}
 		}
 
@@ -1491,7 +1491,7 @@ namespace SPReD
 						apply_palette = true;
 					}
 					
-					if( message_box( "Crop the imported sprites to their minimum size by alpha channel?\n\nNote: BMP files has no alpha channel!", "Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+					if( message_box( "Crop the imported sprites to their minimum size by alpha channel?\n\nNote: BMP files have no alpha channel!", "Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
 						crop_images = true;
 					}
@@ -1511,7 +1511,7 @@ namespace SPReD
 							}
 							else
 							{
-								throw new Exception( "The imported palette must be 192 bytes length!" );
+								throw new Exception( "The imported palette must be 192 bytes long!" );
 							}
 						}
 						break;
