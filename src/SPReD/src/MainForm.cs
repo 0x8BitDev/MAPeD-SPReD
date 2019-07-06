@@ -97,7 +97,7 @@ namespace SPReD
 															new SToolTipData( BtnHFlip, "Horizontal flipping of selected CHR" ),
 															new SToolTipData( BtnSpriteVFlip, "Vertical flipping of all selected sprites" ),
 															new SToolTipData( BtnSpriteHFlip, "Horizontal flipping of all selected sprites" ),
-															new SToolTipData( CBoxAxisLayout, "Show X/Y axes" ),
+															new SToolTipData( CBoxAxesLayout, "Show X/Y axes" ),
 															new SToolTipData( CBoxGridLayout, "Show grid" ),
 															new SToolTipData( CBoxSnapLayout, "Snap CHRs to 8x8 grid" ),
 															new SToolTipData( CBoxMode8x16, "8x16 sprite mode" ),
@@ -121,11 +121,6 @@ namespace SPReD
 			
 			set_title_name( null );
 			
-			if( _args.Length > 0 )
-			{
-				project_load( _args[0] );
-			}
-	
 #if DEF_NES
 			this.Project_openFileDialog.DefaultExt = "spredsms";
 			this.Project_openFileDialog.Filter = this.Project_openFileDialog.Filter + "|SPReD-SMS (*.spredsms)|*.spredsms";
@@ -152,6 +147,11 @@ namespace SPReD
 			CBoxCHRPackingType.Items.Add( "8KB" );
 #endif
 			palette_group.Instance.active_palette = 0;
+			
+			if( _args.Length > 0 )
+			{
+				project_load( _args[0] );
+			}
 		}
 		
 		public static System.Windows.Forms.DialogResult message_box( string _msg, string _title, System.Windows.Forms.MessageBoxButtons _buttons, System.Windows.Forms.MessageBoxIcon _icon = System.Windows.Forms.MessageBoxIcon.Warning )
@@ -225,6 +225,29 @@ namespace SPReD
 		void MenuHelpAboutClick(object sender, System.EventArgs e)
 		{
 			message_box( "Sprites Editor (" + utils.CONST_PLATFORM + ")\n\n" + utils.CONST_APP_VER + " " + utils.build_str + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information );
+		}
+		
+		void MenuHelpQuickGuideClick(object sender, EventArgs e)
+		{
+			string doc_path = Application.StartupPath.Substring( 0, Application.StartupPath.LastIndexOf( Path.DirectorySeparatorChar ) ) + Path.DirectorySeparatorChar + "doc" + Path.DirectorySeparatorChar + "SPReD" + Path.DirectorySeparatorChar + "Quick_Guide.html";
+			
+			//message_box( doc_path, "path", MessageBoxButtons.OK, MessageBoxIcon.Information );//!!!
+			
+			if( utils.is_win )
+			{
+				System.Diagnostics.Process process = System.Diagnostics.Process.Start( doc_path );
+			}
+			else
+			if( utils.is_linux )
+			{
+				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "xdg-open", doc_path );
+			}
+			else
+			if( utils.is_macos )
+			{
+				// need to test it...
+				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "open", doc_path );
+			}
 		}
 		
 		void CloseToolStripMenuItemClick(object sender, EventArgs e)
@@ -491,7 +514,7 @@ namespace SPReD
 						
 						m_sprites_proc.remove( spr );
 						
-						CHR_bank_optimization( spr_CHR_id );
+						m_sprites_proc.CHR_bank_optimization( spr_CHR_id, SpriteList.Items, CBoxMode8x16.Checked );
 					}
 					while( SpriteList.SelectedIndices.Count != 0 );
 					
@@ -713,12 +736,12 @@ namespace SPReD
 #region	Layout		
 		void CBoxAxisLayoutCheckedChanged_Event(object sender, EventArgs e)
 		{
-			m_sprites_proc.set_sprite_layout_viewer_flags( CBoxAxisLayout.Checked, CBoxGridLayout.Checked );
+			m_sprites_proc.set_sprite_layout_viewer_flags( CBoxAxesLayout.Checked, CBoxGridLayout.Checked );
 		}
 		
 		void CBoxGridLayoutCheckedChanged_Event(object sender, EventArgs e)
 		{
-			m_sprites_proc.set_sprite_layout_viewer_flags( CBoxAxisLayout.Checked, CBoxGridLayout.Checked );
+			m_sprites_proc.set_sprite_layout_viewer_flags( CBoxAxesLayout.Checked, CBoxGridLayout.Checked );
 		}
 		
 		void CBoxSnapLayoutCheckedChanged_Event(object sender, EventArgs e)
@@ -795,7 +818,7 @@ namespace SPReD
 				{
 					for( int i = 0; i < SpriteList.SelectedIndices.Count; i++ )
 					{
-						CHR_bank_optimization( ( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data ).get_CHR_data().id );
+						m_sprites_proc.CHR_bank_optimization( ( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data ).get_CHR_data().id, SpriteList.Items, CBoxMode8x16.Checked );
 					}
 					
 					m_sprites_proc.rearrange_CHR_data_ids();
@@ -990,7 +1013,7 @@ namespace SPReD
 				{
 					for( int i = 0; i < SpriteList.SelectedIndices.Count; i++ )
 					{
-						CHR_bank_optimization( ( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data ).get_CHR_data().id );
+						m_sprites_proc.CHR_bank_optimization( ( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data ).get_CHR_data().id, SpriteList.Items, CBoxMode8x16.Checked );
 					}
 					
 					m_sprites_proc.rearrange_CHR_data_ids();
@@ -1001,125 +1024,6 @@ namespace SPReD
 			else
 			{
 				message_box( "Please, select sprite(s)!", "CHR Data Optimization", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );				
-			}
-		}
-		
-		private void CHR_bank_optimization( int _CHR_bank_id )
-		{
-			CHR_data_group CHR_bank = m_sprites_proc.get_CHR_bank( _CHR_bank_id );
-			
-			if( CHR_bank == null )
-			{
-				// the bank had one sprite and the bank has been removed
-				return;
-			}
-			
-			int CHR_n;
-			int CHR_cnt = CHR_bank.get_data().Count;
-			
-			int spr_n;
-			int spr_cnt = SpriteList.Items.Count;
-
-			int attr_n;
-			int attr_cnt;
-			
-			sprite_data 	spr;
-			CHR_data_attr 	attr;
-			
-			bool CHR_used;
-			
-			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )
-			{
-				CHR_used = false;
-				
-				// go through all sprites wich use _CHR_bank_id
-				// and check unused attributes
-				for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
-				{
-					spr = SpriteList.Items[ spr_n ] as sprite_data;
-					
-					if( spr.get_CHR_data().id == _CHR_bank_id )
-					{
-						attr_cnt = spr.get_CHR_attr().Count;
-						
-						for( attr_n = 0; attr_n < attr_cnt; attr_n++ )
-						{
-							if( spr.get_CHR_attr()[ attr_n ].CHR_ind == CHR_n )
-							{
-								CHR_used = true;
-								
-								break;
-							}
-							
-							if( CBoxMode8x16.Checked )
-							{
-								if( spr.get_CHR_attr()[ attr_n ].CHR_ind + 1 == CHR_n )
-								{
-									CHR_used = true;
-									
-									break;
-								}
-							}
-						}
-						
-						if( CHR_used == true )
-						{
-							break;
-						}
-					}
-				}
-				
-				if( CHR_used == false )
-				{
-					// clear unused CHR
-					CHR_bank.get_data()[ CHR_n ].clear();
-				}
-			}
-
-			// delete empty CHRs and fix indices of all sprites that referring to them  
-			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )
-			{
-				if( CHR_bank.get_data()[ CHR_n ].is_empty() )
-				{
-					// go through all sprites wich used _CHR_bank_id
-					// and check unused attributes
-					for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
-					{
-						spr = SpriteList.Items[ spr_n ] as sprite_data;
-						
-						if( spr.get_CHR_data().id == _CHR_bank_id )
-						{
-							attr_cnt = spr.get_CHR_attr().Count;
-							
-							for( attr_n = 0; attr_n < attr_cnt; attr_n++ )
-							{
-								attr = spr.get_CHR_attr()[ attr_n ];
-								
-								if( attr.CHR_ind == CHR_n )
-								{
-									// удаляем пустой атрибут
-									spr.get_CHR_attr().RemoveAt( attr_n );
-									
-									--attr_n;
-									--attr_cnt;
-								}
-								else
-								if( attr.CHR_ind > CHR_n )
-								{
-									--attr.CHR_ind;
-								}
-							}
-							
-							spr.update_dimensions();
-						}
-					}
-					
-					// delete empty CHR
-					CHR_bank.get_data().RemoveAt( CHR_n );
-					
-					--CHR_cnt;
-					--CHR_n;
-				}
 			}
 		}
 		
@@ -1279,7 +1183,7 @@ namespace SPReD
 
 					m_sprites_proc.save_CHR_storage_and_palette( bw );
 					
-					uint flags = ( uint )( ( CBoxMode8x16.Checked ? 1:0 ) | ( CBoxGridLayout.Checked ? 2:0 ) | ( CBoxAxisLayout.Checked ? 4:0 ) ) | utils.CONST_PROJECT_FILE_PALETTE_FLAG;
+					uint flags = ( uint )( ( CBoxMode8x16.Checked ? 1:0 ) | ( CBoxGridLayout.Checked ? 2:0 ) | ( CBoxAxesLayout.Checked ? 4:0 ) ) | utils.CONST_PROJECT_FILE_PALETTE_FLAG;
 					bw.Write( flags );
 					
 					int n_sprites = SpriteList.Items.Count;
@@ -1362,7 +1266,7 @@ namespace SPReD
 							uint flags = br.ReadUInt32();
 							CBoxMode8x16.Checked 	= ( ( flags&0x01 ) == 0x01 ? true:false );
 							CBoxGridLayout.Checked	= ( ( flags&0x02 ) == 0x02 ? true:false );
-							CBoxAxisLayout.Checked	= ( ( flags&0x04 ) == 0x04 ? true:false );
+							CBoxAxesLayout.Checked	= ( ( flags&0x04 ) == 0x04 ? true:false );
 							
 							int n_sprites = br.ReadInt32();
 							
@@ -1709,12 +1613,12 @@ namespace SPReD
 					
 					sw.WriteLine( "\n" );
 					
-					m_sprites_proc.export_palette( sw );
+					m_sprites_proc.export_palette( sw, filename );
 					
 					// save common sprites data
 					{
 						// sprites array
-						sw.WriteLine( "\nn_frames:\n\t." + ( _spr_cnt > 255 ? "word ":"byte " ) + String.Format( "${0:X2}\nframes_data:", _spr_cnt ) );
+						sw.WriteLine( "\n" + filename + "_num_frames:\n\t." + ( _spr_cnt > 255 ? "word ":"byte " ) + String.Format( "${0:X2}\n" + filename + "_frames_data:", _spr_cnt ) );
 						
 						bool enable_comments = true;
 						

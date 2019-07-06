@@ -99,6 +99,8 @@ namespace SPReD
 			this.flipHorizontalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.quickGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SpriteLayout = new System.Windows.Forms.PictureBox();
 			this.CHRBank = new System.Windows.Forms.PictureBox();
@@ -129,7 +131,7 @@ namespace SPReD
 			this.BtnZoomOut = new System.Windows.Forms.Button();
 			this.BtnZoomIn = new System.Windows.Forms.Button();
 			this.BtnCentering = new System.Windows.Forms.Button();
-			this.CBoxAxisLayout = new System.Windows.Forms.CheckBox();
+			this.CBoxAxesLayout = new System.Windows.Forms.CheckBox();
 			this.CBoxMode8x16 = new System.Windows.Forms.CheckBox();
 			this.CBoxSnapLayout = new System.Windows.Forms.CheckBox();
 			this.GroupBoxModeName = new System.Windows.Forms.GroupBox();
@@ -393,7 +395,7 @@ namespace SPReD
 			// 
 			this.addPrefixPostfixToolStripMenuItem.Name = "addPrefixPostfixToolStripMenuItem";
 			this.addPrefixPostfixToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-			this.addPrefixPostfixToolStripMenuItem.Text = "Add Pre&fix\\Postfix";
+			this.addPrefixPostfixToolStripMenuItem.Text = "Add Pre&fix/Postfix";
 			this.addPrefixPostfixToolStripMenuItem.Click += new System.EventHandler(this.BtnAddPrefixPostfix_Event);
 			// 
 			// toolStripSeparator6
@@ -708,15 +710,30 @@ namespace SPReD
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.quickGuideToolStripMenuItem,
+									this.toolStripSeparator2,
 									this.aboutToolStripMenuItem});
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-			this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
-			this.helpToolStripMenuItem.Text = "&Info";
+			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+			this.helpToolStripMenuItem.Text = "&Help";
+			// 
+			// quickGuideToolStripMenuItem
+			// 
+			this.quickGuideToolStripMenuItem.Name = "quickGuideToolStripMenuItem";
+			this.quickGuideToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+			this.quickGuideToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+			this.quickGuideToolStripMenuItem.Text = "&Quick Guide";
+			this.quickGuideToolStripMenuItem.Click += new System.EventHandler(this.MenuHelpQuickGuideClick);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(155, 6);
 			// 
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
 			this.aboutToolStripMenuItem.Text = "&About";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.MenuHelpAboutClick);
 			// 
@@ -776,7 +793,7 @@ namespace SPReD
 			this.groupBox1.Size = new System.Drawing.Size(190, 491);
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Sprite List:";
+			this.groupBox1.Text = "Sprite Tools:";
 			// 
 			// groupBox6
 			// 
@@ -1008,7 +1025,7 @@ namespace SPReD
 			this.groupBox2.Controls.Add(this.BtnZoomOut);
 			this.groupBox2.Controls.Add(this.BtnZoomIn);
 			this.groupBox2.Controls.Add(this.BtnCentering);
-			this.groupBox2.Controls.Add(this.CBoxAxisLayout);
+			this.groupBox2.Controls.Add(this.CBoxAxesLayout);
 			this.groupBox2.Controls.Add(this.CBoxMode8x16);
 			this.groupBox2.Controls.Add(this.CBoxSnapLayout);
 			this.groupBox2.Controls.Add(this.GroupBoxModeName);
@@ -1055,17 +1072,17 @@ namespace SPReD
 			this.BtnCentering.UseVisualStyleBackColor = true;
 			this.BtnCentering.Click += new System.EventHandler(this.BtnCenteringClick_Event);
 			// 
-			// CBoxAxisLayout
+			// CBoxAxesLayout
 			// 
-			this.CBoxAxisLayout.Checked = true;
-			this.CBoxAxisLayout.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CBoxAxisLayout.Location = new System.Drawing.Point(221, 411);
-			this.CBoxAxisLayout.Name = "CBoxAxisLayout";
-			this.CBoxAxisLayout.Size = new System.Drawing.Size(48, 17);
-			this.CBoxAxisLayout.TabIndex = 28;
-			this.CBoxAxisLayout.Text = "Axis";
-			this.CBoxAxisLayout.UseVisualStyleBackColor = true;
-			this.CBoxAxisLayout.CheckedChanged += new System.EventHandler(this.CBoxAxisLayoutCheckedChanged_Event);
+			this.CBoxAxesLayout.Checked = true;
+			this.CBoxAxesLayout.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.CBoxAxesLayout.Location = new System.Drawing.Point(221, 411);
+			this.CBoxAxesLayout.Name = "CBoxAxesLayout";
+			this.CBoxAxesLayout.Size = new System.Drawing.Size(50, 17);
+			this.CBoxAxesLayout.TabIndex = 28;
+			this.CBoxAxesLayout.Text = "Axes";
+			this.CBoxAxesLayout.UseVisualStyleBackColor = true;
+			this.CBoxAxesLayout.CheckedChanged += new System.EventHandler(this.CBoxAxisLayoutCheckedChanged_Event);
 			// 
 			// CBoxMode8x16
 			// 
@@ -1432,7 +1449,7 @@ namespace SPReD
 			// 
 			this.addPrefixPostfixToolStripMenuItem1.Name = "addPrefixPostfixToolStripMenuItem1";
 			this.addPrefixPostfixToolStripMenuItem1.Size = new System.Drawing.Size(168, 22);
-			this.addPrefixPostfixToolStripMenuItem1.Text = "Add Prefix\\Postfix";
+			this.addPrefixPostfixToolStripMenuItem1.Text = "Add Prefix/Postfix";
 			this.addPrefixPostfixToolStripMenuItem1.Click += new System.EventHandler(this.BtnAddPrefixPostfix_Event);
 			// 
 			// toolStripSeparator4
@@ -1539,6 +1556,8 @@ namespace SPReD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem quickGuideToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exportScriptEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CHRDataToolStripMenuItem;
 		private System.Windows.Forms.GroupBox groupBox6;
@@ -1638,7 +1657,7 @@ namespace SPReD
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem ExportImagesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-		private System.Windows.Forms.CheckBox CBoxAxisLayout;
+		private System.Windows.Forms.CheckBox CBoxAxesLayout;
 		private System.Windows.Forms.CheckBox CBoxGridLayout;
 		private System.Windows.Forms.Label SpriteLayoutLabel;
 		private System.Windows.Forms.Button BtnMoveItemDown;

@@ -180,9 +180,9 @@ namespace SPReD
 			return m_sel_clr_ind;
 		}
 		
-		public void export( StreamWriter _sw )
+		public void export( StreamWriter _sw, string _prefix )
 		{
-			_sw.WriteLine( "sprite_palette:" );
+			_sw.WriteLine( _prefix + "_palette:" );
 			
 			string plt_asm_data = "\t.byte ";
 			

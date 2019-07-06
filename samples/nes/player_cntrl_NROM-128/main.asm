@@ -54,7 +54,7 @@ RESET:
 ; load palette
 ; WARNING: palette can be loaded during VBlank only!
 
-	load_data_ptr sprite_palette, data_addr
+	load_data_ptr dog_gfx_palette, data_addr
 	lda #$10	; 16 indices for sprites
 	sta data_size
 	; PPU address

@@ -217,9 +217,9 @@ namespace SPReD
 			}
 		}
 		
-		public void export_palette( StreamWriter _sw )
+		public void export_palette( StreamWriter _sw, string _prefix )
 		{
-			m_palette_grp.export( _sw );
+			m_palette_grp.export( _sw, _prefix );
 		}
 		
 		public CHR_data_group extract_and_create_CHR_data_group( sprite_data _spr, bool _mode8x16 )
@@ -311,6 +311,125 @@ namespace SPReD
 			return false;
 		}
 
+		public void CHR_bank_optimization( int _CHR_bank_id, ListBox.ObjectCollection _sprites, bool _8x16_mode )
+		{
+			CHR_data_group CHR_bank = get_CHR_bank( _CHR_bank_id );
+			
+			if( CHR_bank == null )
+			{
+				// the bank had one sprite and the bank has been removed
+				return;
+			}
+			
+			int CHR_n;
+			int CHR_cnt = CHR_bank.get_data().Count;
+			
+			int spr_n;
+			int spr_cnt = _sprites.Count;
+
+			int attr_n;
+			int attr_cnt;
+			
+			sprite_data 	spr;
+			CHR_data_attr 	attr;
+			
+			bool CHR_used;
+			
+			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )
+			{
+				CHR_used = false;
+				
+				// go through all sprites wich use _CHR_bank_id
+				// and check unused attributes
+				for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
+				{
+					spr = _sprites[ spr_n ] as sprite_data;
+					
+					if( spr.get_CHR_data().id == _CHR_bank_id )
+					{
+						attr_cnt = spr.get_CHR_attr().Count;
+						
+						for( attr_n = 0; attr_n < attr_cnt; attr_n++ )
+						{
+							if( spr.get_CHR_attr()[ attr_n ].CHR_ind == CHR_n )
+							{
+								CHR_used = true;
+								
+								break;
+							}
+							
+							if( _8x16_mode )
+							{
+								if( spr.get_CHR_attr()[ attr_n ].CHR_ind + 1 == CHR_n )
+								{
+									CHR_used = true;
+									
+									break;
+								}
+							}
+						}
+						
+						if( CHR_used == true )
+						{
+							break;
+						}
+					}
+				}
+				
+				if( CHR_used == false )
+				{
+					// clear unused CHR
+					CHR_bank.get_data()[ CHR_n ].clear();
+				}
+			}
+
+			// delete empty CHRs and fix indices of all sprites that referring to them  
+			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )
+			{
+				if( CHR_bank.get_data()[ CHR_n ].is_empty() )
+				{
+					// go through all sprites wich used _CHR_bank_id
+					// and check unused attributes
+					for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
+					{
+						spr = _sprites[ spr_n ] as sprite_data;
+						
+						if( spr.get_CHR_data().id == _CHR_bank_id )
+						{
+							attr_cnt = spr.get_CHR_attr().Count;
+							
+							for( attr_n = 0; attr_n < attr_cnt; attr_n++ )
+							{
+								attr = spr.get_CHR_attr()[ attr_n ];
+								
+								if( attr.CHR_ind == CHR_n )
+								{
+									// удаляем пустой атрибут
+									spr.get_CHR_attr().RemoveAt( attr_n );
+									
+									--attr_n;
+									--attr_cnt;
+								}
+								else
+								if( attr.CHR_ind > CHR_n )
+								{
+									--attr.CHR_ind;
+								}
+							}
+							
+							spr.update_dimensions();
+						}
+					}
+					
+					// delete empty CHR
+					CHR_bank.get_data().RemoveAt( CHR_n );
+					
+					--CHR_cnt;
+					--CHR_n;
+				}
+			}
+		}
+		
 		public void relink_CHR_data( sprite_data _spr, CHR_data_group _chr_data, int _old_chr_id )
 		{
 			CHR_data_group spr_chr_data = _spr.get_CHR_data();

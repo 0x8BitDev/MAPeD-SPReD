@@ -759,7 +759,7 @@ namespace PyScriptEditor
 			    }
 			    else
 			    {
-			        throw new Exception( "Unsupported platform has detected!" );
+			        throw new Exception( "Unsupported platform detected!" );
 			    }
 			}
 			else if (File.Exists(@"/System/Library/CoreServices/SystemVersion.plist"))
@@ -769,7 +769,7 @@ namespace PyScriptEditor
 			}
 		    else
 		    {
-		        throw new Exception( CONST_EDITOR_NAME + ": Unsupported platform has detected!" );
+		        throw new Exception( CONST_EDITOR_NAME + ": Unsupported platform detected!" );
 		    }
 		}
 	}

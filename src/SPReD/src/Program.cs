@@ -25,7 +25,7 @@ namespace SPReD
 #if !DEF_NES && !DEF_SMS 
 				throw new Exception( "Invalid platform!" );
 #endif
-				if( utils.is_win() )
+				if( utils.is_win )
 				{
 					FileAssociations.EnsureAssociationsSet();
 				}
@@ -37,7 +37,7 @@ namespace SPReD
 			}
 			catch( System.Exception _err )
 			{
-				MainForm.message_box( _err.Message, "Unexpected Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( _err.Message + ( _err.InnerException != null ? "\n\n" + _err.InnerException.Message:"" ), "Unexpected Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 	}

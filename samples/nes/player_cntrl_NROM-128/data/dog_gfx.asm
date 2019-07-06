@@ -10,13 +10,13 @@ SPR_MODE_8X16 = 1
 ;chr0:	.incbin "dog_gfx_chr0.bin"	; 512 of 1024 bytes
 
 
-sprite_palette:
+dog_gfx_palette:
 	.byte $21, $38, $16, $0D, $21, $14, $24, $34, $21, $38, $11, $1D, $21, $1A, $2A, $3A
 
 
-n_frames:
+dog_gfx_num_frames:
 	.byte $08
-frames_data:
+dog_gfx_frames_data:
 dog01_IDLE01_RIGHT_frame:
 	.word dog01_IDLE01_RIGHT
 	.byte dog01_IDLE01_RIGHT_end - dog01_IDLE01_RIGHT	; data size

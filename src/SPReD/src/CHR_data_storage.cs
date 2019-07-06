@@ -110,12 +110,23 @@ namespace SPReD
 			
 			int size = m_data.Count;
 			
+#if DEF_SMS
+			string CHR_data_arr = ";" + _filename + "_CHR_arr:\t";
+#endif
+
 			for( int i = 0; i < size; i++ )
 			{
 				CHR_data_size = m_data[ i ].get_size_bytes();
 				
-				_sw.WriteLine( ( _commented ? ";":"" ) + m_data[ i ].name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );
+				_sw.WriteLine( ( _commented ? ";":"" ) + m_data[ i ].name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );				
+#if DEF_SMS
+				CHR_data_arr += "\n;\t.word " + ( _need_padding ? ( CHR_data_size + utils.get_padding( CHR_data_size ) ):CHR_data_size ) + ", " + m_data[ i ].name;
+#endif				
 			}
+			
+#if DEF_SMS
+			_sw.WriteLine( CHR_data_arr );
+#endif			
 		}
 		
 		public void rearrange_CHR_data_ids()

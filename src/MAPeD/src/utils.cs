@@ -70,7 +70,7 @@ namespace MAPeD
 			    }
 			    else
 			    {
-			        throw new Exception( "Unsupported platform has detected!" );
+			        throw new Exception( "Unsupported platform detected!" );
 			    }
 			}
 			else if (File.Exists(@"/System/Library/CoreServices/SystemVersion.plist"))
@@ -80,7 +80,7 @@ namespace MAPeD
 			}
 		    else
 		    {
-		        throw new Exception( "Unsupported platform has detected!" );
+		        throw new Exception( "Unsupported platform detected!" );
 		    }
 		}
 

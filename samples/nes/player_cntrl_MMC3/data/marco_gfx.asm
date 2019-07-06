@@ -16,13 +16,13 @@ SPR_MODE_8X16 = 0
 ;chr6:	.incbin "marco_gfx_chr6.bin"	; 1024 of 1024 bytes
 
 
-sprite_palette:
+marco_gfx_palette:
 	.byte $21, $1D, $17, $38, $21, $14, $24, $34, $21, $0D, $08, $18, $21, $0D, $18, $28
 
 
-n_frames:
+marco_gfx_num_frames:
 	.byte $3A
-frames_data:
+marco_gfx_frames_data:
 marco_idle01_RIGHT_frame:
 	.word marco_idle01_RIGHT
 	.byte marco_idle01_RIGHT_end - marco_idle01_RIGHT	; data size

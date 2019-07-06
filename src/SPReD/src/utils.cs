@@ -34,17 +34,41 @@ namespace SPReD
 		public const string	CONST_BUILD_CFG	= "";
 #endif
 
+		public static readonly bool is_win 	 = false;
+		public static readonly bool is_linux = false;
+		public static readonly bool is_macos = false;
+
 		// OS detection code implemented by jarik ( 100% managed code ) https://stackoverflow.com/a/38795621
-		public static bool is_win()
+		static utils()
 		{
 			string windir = Environment.GetEnvironmentVariable("windir");
 			
 			if (!string.IsNullOrEmpty(windir) && windir.Contains(@"\") && Directory.Exists(windir))
 			{
-			    return true;
+				is_win = true;
 			}
-			
-			return false;
+			else if (File.Exists(@"/proc/sys/kernel/ostype"))
+			{
+			    string osType = File.ReadAllText(@"/proc/sys/kernel/ostype");
+			    if (osType.StartsWith("Linux", StringComparison.OrdinalIgnoreCase))
+			    {
+			        // Note: Android gets here too
+			        is_linux = true;
+			    }
+			    else
+			    {
+			        throw new Exception( "Unsupported platform detected!" );
+			    }
+			}
+			else if (File.Exists(@"/System/Library/CoreServices/SystemVersion.plist"))
+			{
+			    // Note: iOS gets here too
+			    is_macos = true;
+			}
+		    else
+		    {
+		        throw new Exception( "Unsupported platform detected!" );
+		    }
 		}
 
 		private static Version ver			= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
