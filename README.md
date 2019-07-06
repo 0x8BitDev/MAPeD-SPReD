@@ -44,6 +44,8 @@ Here you can find **NES/SMS** development tools:
 
 \* You can load a **NES** project into **SMS** editor and vice versa.
 
+**Quick Guide:** `./doc/SPReD/Quick_Guide.html`
+
 # Python script editor
 If you need to export specific data which are not supported by the tools, you can write your own script using simple built-in Python script editor ( **SPSeD** ). Press **Alt+X** ( **ALT**ernative e**X**port ) to open the editor.
 
