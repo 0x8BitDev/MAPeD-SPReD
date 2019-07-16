@@ -188,7 +188,7 @@ namespace MAPeD
 			
 			if( RBtnTilesDirColumns.Checked )
 			{
-				RichTextBoxExportDesc.Text += "Columns\nAll tiles\\blocks\\attributes data are stored in a column order except of a PPU-ready data ( static screens mode ).";
+				RichTextBoxExportDesc.Text += "Columns\nAll tiles\\blocks\\attributes data are stored in a column order except of PPU-ready data ( static screens mode ).";
 			}
 			else
 			{
@@ -199,7 +199,7 @@ namespace MAPeD
 			
 			if( RBtnAttrsPerBlock.Checked )
 			{
-				RichTextBoxExportDesc.Text += "BLOCK. This is a standart case.";
+				RichTextBoxExportDesc.Text += "BLOCK. This is a usual case.";
 			}
 			else
 			{
@@ -251,7 +251,7 @@ namespace MAPeD
 			
 			if( CheckBoxExportMarks.Checked )
 			{
-				RichTextBoxExportDesc.Text += "\nEXPORT MARKS\nEach mark stores a user defined mask of valid adjacent screens and a screen property.";
+				RichTextBoxExportDesc.Text += "\nEXPORT MARKS\nEach mark stores a user defined mask of valid adjacent screens and a screen property value.";
 			}
 			else
 			{

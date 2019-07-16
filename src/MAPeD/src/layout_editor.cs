@@ -1307,7 +1307,7 @@ namespace MAPeD
 				disable( true );
 				
 				utils.brush.Color = utils.CONST_COLOR_STRING_DEFAULT;
-				m_gfx.DrawString( "[ Drag the viewport using a LEFT mouse button and scale it using a mouse wheel ]", utils.fnt10_Arial, utils.brush, 0, 0 );
+				m_gfx.DrawString( "[ Pan the viewport using a LEFT mouse button and scale it using a mouse wheel ]", utils.fnt10_Arial, utils.brush, 0, 0 );
 			}
 			
 			invalidate();

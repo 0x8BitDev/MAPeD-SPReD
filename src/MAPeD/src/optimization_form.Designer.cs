@@ -90,7 +90,7 @@ namespace MAPeD
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(157, 23);
 			this.label2.TabIndex = 3;
-			this.label2.Text = "Select the data to optimize on:";
+			this.label2.Text = "Select the data for optimization:";
 			// 
 			// BtnCancel
 			// 
@@ -127,7 +127,7 @@ namespace MAPeD
 			this.CheckBoxGlobalOptimization.Name = "CheckBoxGlobalOptimization";
 			this.CheckBoxGlobalOptimization.Size = new System.Drawing.Size(256, 34);
 			this.CheckBoxGlobalOptimization.TabIndex = 3;
-			this.CheckBoxGlobalOptimization.Text = "Optimize all the data banks (otherwise the active bank data will be optimized)";
+			this.CheckBoxGlobalOptimization.Text = "Optimize all the data banks (otherwise the active data bank will be optimized)";
 			this.CheckBoxGlobalOptimization.UseVisualStyleBackColor = true;
 			// 
 			// optimization_form

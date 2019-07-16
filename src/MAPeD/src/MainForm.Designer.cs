@@ -108,7 +108,7 @@ namespace MAPeD
 			this.copyToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
-			this.openPaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openTilesBlocksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
 			this.ScreenEditModeSingleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScreenEditModeLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -128,9 +128,11 @@ namespace MAPeD
 			this.LayoutDeleteAllEntityInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LayoutDeleteAllScreenMarksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.quickGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator27 = new System.Windows.Forms.ToolStripSeparator();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.tabControlEditorLayout = new System.Windows.Forms.TabControl();
-			this.TabEditor = new System.Windows.Forms.TabPage();
+			this.tabControlMainLayout = new System.Windows.Forms.TabControl();
+			this.TabMain = new System.Windows.Forms.TabPage();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.BtnOptimization = new System.Windows.Forms.Button();
@@ -197,7 +199,7 @@ namespace MAPeD
 			this.CheckBoxTileEditorLock = new System.Windows.Forms.CheckBox();
 			this.PBoxTilePreview = new System.Windows.Forms.PictureBox();
 			this.TabScreenEditor = new System.Windows.Forms.TabPage();
-			this.BtnPalette = new System.Windows.Forms.Button();
+			this.BtnTilesBlocks = new System.Windows.Forms.Button();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
 			this.RBtnScreenEditModeLayout = new System.Windows.Forms.RadioButton();
 			this.RBtnScreenEditModeSingle = new System.Windows.Forms.RadioButton();
@@ -331,8 +333,8 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.ContextMenuEntitiesTreeGoup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
-			this.tabControlEditorLayout.SuspendLayout();
-			this.TabEditor.SuspendLayout();
+			this.tabControlMainLayout.SuspendLayout();
+			this.TabMain.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -918,7 +920,7 @@ namespace MAPeD
 									this.copyToolStripMenuItem3,
 									this.deleteToolStripMenuItem1,
 									this.toolStripSeparator16,
-									this.openPaletteToolStripMenuItem,
+									this.openTilesBlocksToolStripMenuItem,
 									this.toolStripSeparator17,
 									this.ScreenEditModeSingleToolStripMenuItem,
 									this.ScreenEditModeLayoutToolStripMenuItem,
@@ -931,66 +933,66 @@ namespace MAPeD
 			// createToolStripMenuItem
 			// 
 			this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-			this.createToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.createToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.createToolStripMenuItem.Text = "&C&reate";
 			this.createToolStripMenuItem.Click += new System.EventHandler(this.BtnCreateScreenClick_Event);
 			// 
 			// copyToolStripMenuItem3
 			// 
 			this.copyToolStripMenuItem3.Name = "copyToolStripMenuItem3";
-			this.copyToolStripMenuItem3.Size = new System.Drawing.Size(144, 22);
+			this.copyToolStripMenuItem3.Size = new System.Drawing.Size(169, 22);
 			this.copyToolStripMenuItem3.Text = "&Copy";
 			this.copyToolStripMenuItem3.Click += new System.EventHandler(this.BtnCopyScreenClick_Event);
 			// 
 			// deleteToolStripMenuItem1
 			// 
 			this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
-			this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
+			this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
 			this.deleteToolStripMenuItem1.Text = "&Delete";
 			this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.BtnDeleteScreenClick_Event);
 			// 
 			// toolStripSeparator16
 			// 
 			this.toolStripSeparator16.Name = "toolStripSeparator16";
-			this.toolStripSeparator16.Size = new System.Drawing.Size(141, 6);
+			this.toolStripSeparator16.Size = new System.Drawing.Size(166, 6);
 			// 
-			// openPaletteToolStripMenuItem
+			// openTilesBlocksToolStripMenuItem
 			// 
-			this.openPaletteToolStripMenuItem.Name = "openPaletteToolStripMenuItem";
-			this.openPaletteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
-			this.openPaletteToolStripMenuItem.Text = "&Open Palette";
-			this.openPaletteToolStripMenuItem.Click += new System.EventHandler(this.BtnPaletteClick_Event);
+			this.openTilesBlocksToolStripMenuItem.Name = "openTilesBlocksToolStripMenuItem";
+			this.openTilesBlocksToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.openTilesBlocksToolStripMenuItem.Text = "&Open Tiles/Blocks";
+			this.openTilesBlocksToolStripMenuItem.Click += new System.EventHandler(this.BtnTilesBlocksClick_Event);
 			// 
 			// toolStripSeparator17
 			// 
 			this.toolStripSeparator17.Name = "toolStripSeparator17";
-			this.toolStripSeparator17.Size = new System.Drawing.Size(141, 6);
+			this.toolStripSeparator17.Size = new System.Drawing.Size(166, 6);
 			// 
 			// ScreenEditModeSingleToolStripMenuItem
 			// 
 			this.ScreenEditModeSingleToolStripMenuItem.Name = "ScreenEditModeSingleToolStripMenuItem";
-			this.ScreenEditModeSingleToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.ScreenEditModeSingleToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.ScreenEditModeSingleToolStripMenuItem.Text = "Mode &Single";
 			this.ScreenEditModeSingleToolStripMenuItem.Click += new System.EventHandler(this.ScreenEditModeSingleToolStripMenuItemClick_Event);
 			// 
 			// ScreenEditModeLayoutToolStripMenuItem
 			// 
 			this.ScreenEditModeLayoutToolStripMenuItem.Name = "ScreenEditModeLayoutToolStripMenuItem";
-			this.ScreenEditModeLayoutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.ScreenEditModeLayoutToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.ScreenEditModeLayoutToolStripMenuItem.Text = "Mode &Layout";
 			this.ScreenEditModeLayoutToolStripMenuItem.Click += new System.EventHandler(this.ScreenEditModeLayoutToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator18
 			// 
 			this.toolStripSeparator18.Name = "toolStripSeparator18";
-			this.toolStripSeparator18.Size = new System.Drawing.Size(141, 6);
+			this.toolStripSeparator18.Size = new System.Drawing.Size(166, 6);
 			// 
 			// ScreenEditShowGridToolStripMenuItem
 			// 
 			this.ScreenEditShowGridToolStripMenuItem.Checked = true;
 			this.ScreenEditShowGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.ScreenEditShowGridToolStripMenuItem.Name = "ScreenEditShowGridToolStripMenuItem";
-			this.ScreenEditShowGridToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.ScreenEditShowGridToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.ScreenEditShowGridToolStripMenuItem.Text = "&Show Grid";
 			this.ScreenEditShowGridToolStripMenuItem.Click += new System.EventHandler(this.ScreenEditShowGridToolStripMenuItemClick_Event);
 			// 
@@ -1096,39 +1098,54 @@ namespace MAPeD
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.quickGuideToolStripMenuItem,
+									this.toolStripSeparator27,
 									this.aboutToolStripMenuItem});
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-			this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
-			this.helpToolStripMenuItem.Text = "&Info";
+			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+			this.helpToolStripMenuItem.Text = "&Help";
+			// 
+			// quickGuideToolStripMenuItem
+			// 
+			this.quickGuideToolStripMenuItem.Name = "quickGuideToolStripMenuItem";
+			this.quickGuideToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+			this.quickGuideToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.quickGuideToolStripMenuItem.Text = "Quck Guide";
+			this.quickGuideToolStripMenuItem.Click += new System.EventHandler(this.MenuHelpQuickGuideClick_Event);
+			// 
+			// toolStripSeparator27
+			// 
+			this.toolStripSeparator27.Name = "toolStripSeparator27";
+			this.toolStripSeparator27.Size = new System.Drawing.Size(152, 6);
 			// 
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.aboutToolStripMenuItem.Text = "&About";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItemClick_Event);
 			// 
-			// tabControlEditorLayout
+			// tabControlMainLayout
 			// 
-			this.tabControlEditorLayout.Controls.Add(this.TabEditor);
-			this.tabControlEditorLayout.Controls.Add(this.TabLayout);
-			this.tabControlEditorLayout.Location = new System.Drawing.Point(0, 27);
-			this.tabControlEditorLayout.Name = "tabControlEditorLayout";
-			this.tabControlEditorLayout.SelectedIndex = 0;
-			this.tabControlEditorLayout.Size = new System.Drawing.Size(1034, 641);
-			this.tabControlEditorLayout.TabIndex = 60;
-			this.tabControlEditorLayout.DoubleClick += new System.EventHandler(this.TabCntrlDblClick_Event);
+			this.tabControlMainLayout.Controls.Add(this.TabMain);
+			this.tabControlMainLayout.Controls.Add(this.TabLayout);
+			this.tabControlMainLayout.Location = new System.Drawing.Point(0, 27);
+			this.tabControlMainLayout.Name = "tabControlMainLayout";
+			this.tabControlMainLayout.SelectedIndex = 0;
+			this.tabControlMainLayout.Size = new System.Drawing.Size(1034, 641);
+			this.tabControlMainLayout.TabIndex = 60;
+			this.tabControlMainLayout.DoubleClick += new System.EventHandler(this.TabCntrlDblClick_Event);
 			// 
-			// TabEditor
+			// TabMain
 			// 
-			this.TabEditor.Controls.Add(this.splitContainer1);
-			this.TabEditor.Location = new System.Drawing.Point(4, 22);
-			this.TabEditor.Name = "TabEditor";
-			this.TabEditor.Padding = new System.Windows.Forms.Padding(3);
-			this.TabEditor.Size = new System.Drawing.Size(1026, 615);
-			this.TabEditor.TabIndex = 0;
-			this.TabEditor.Text = "Editor";
-			this.TabEditor.UseVisualStyleBackColor = true;
+			this.TabMain.Controls.Add(this.splitContainer1);
+			this.TabMain.Location = new System.Drawing.Point(4, 22);
+			this.TabMain.Name = "TabMain";
+			this.TabMain.Padding = new System.Windows.Forms.Padding(3);
+			this.TabMain.Size = new System.Drawing.Size(1026, 615);
+			this.TabMain.TabIndex = 0;
+			this.TabMain.Text = "Main";
+			this.TabMain.UseVisualStyleBackColor = true;
 			// 
 			// splitContainer1
 			// 
@@ -1817,7 +1834,7 @@ namespace MAPeD
 			// 
 			this.TabScreenEditor.AutoScroll = true;
 			this.TabScreenEditor.BackColor = System.Drawing.Color.Silver;
-			this.TabScreenEditor.Controls.Add(this.BtnPalette);
+			this.TabScreenEditor.Controls.Add(this.BtnTilesBlocks);
 			this.TabScreenEditor.Controls.Add(this.groupBox8);
 			this.TabScreenEditor.Controls.Add(this.LabelActiveTile);
 			this.TabScreenEditor.Controls.Add(this.groupBox6);
@@ -1834,15 +1851,15 @@ namespace MAPeD
 			this.TabScreenEditor.TabIndex = 1;
 			this.TabScreenEditor.Text = "Screens";
 			// 
-			// BtnPalette
+			// BtnTilesBlocks
 			// 
-			this.BtnPalette.Location = new System.Drawing.Point(674, 73);
-			this.BtnPalette.Name = "BtnPalette";
-			this.BtnPalette.Size = new System.Drawing.Size(79, 23);
-			this.BtnPalette.TabIndex = 50;
-			this.BtnPalette.Text = "PALETTE";
-			this.BtnPalette.UseVisualStyleBackColor = true;
-			this.BtnPalette.Click += new System.EventHandler(this.BtnPaletteClick_Event);
+			this.BtnTilesBlocks.Location = new System.Drawing.Point(673, 73);
+			this.BtnTilesBlocks.Name = "BtnTilesBlocks";
+			this.BtnTilesBlocks.Size = new System.Drawing.Size(80, 23);
+			this.BtnTilesBlocks.TabIndex = 50;
+			this.BtnTilesBlocks.Text = "Tiles/Blocks";
+			this.BtnTilesBlocks.UseVisualStyleBackColor = true;
+			this.BtnTilesBlocks.Click += new System.EventHandler(this.BtnTilesBlocksClick_Event);
 			// 
 			// groupBox8
 			// 
@@ -3125,7 +3142,7 @@ namespace MAPeD
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(1032, 693);
 			this.Controls.Add(this.StatusBar);
-			this.Controls.Add(this.tabControlEditorLayout);
+			this.Controls.Add(this.tabControlMainLayout);
 			this.Controls.Add(this.MenuStrip);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = global::MAPeD.Properties.Resources.MAPeD_icon;
@@ -3139,8 +3156,8 @@ namespace MAPeD
 			this.ContextMenuEntitiesTreeGoup.ResumeLayout(false);
 			this.MenuStrip.ResumeLayout(false);
 			this.MenuStrip.PerformLayout();
-			this.tabControlEditorLayout.ResumeLayout(false);
-			this.TabEditor.ResumeLayout(false);
+			this.tabControlMainLayout.ResumeLayout(false);
+			this.TabMain.ResumeLayout(false);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -3202,6 +3219,8 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator27;
+		private System.Windows.Forms.ToolStripMenuItem quickGuideToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exportScriptEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editInstancesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
@@ -3286,7 +3305,7 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripMenuItem ScreenEditShowGridToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator18;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;
-		private System.Windows.Forms.ToolStripMenuItem openPaletteToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem openTilesBlocksToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem3;
@@ -3370,7 +3389,7 @@ namespace MAPeD
 		private System.Windows.Forms.TabPage TabScreenList;
 		private System.Windows.Forms.TabControl tabControlScreensEntities;
 		private System.Windows.Forms.Button BtnOptimization;
-		private System.Windows.Forms.Button BtnPalette;
+		private System.Windows.Forms.Button BtnTilesBlocks;
 		private System.Windows.Forms.CheckBox CheckBoxScreensAutoUpdate;
 		private System.Windows.Forms.Button BtnEditModeSelectCHR;
 		private System.Windows.Forms.Button BtnEditModeDraw;
@@ -3483,8 +3502,8 @@ namespace MAPeD
 		private System.Windows.Forms.TabControl tabControlTilesScreens;
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.TabPage TabTiles;
-		private System.Windows.Forms.TabPage TabEditor;
-		private System.Windows.Forms.TabControl tabControlEditorLayout;
+		private System.Windows.Forms.TabPage TabMain;
+		private System.Windows.Forms.TabControl tabControlMainLayout;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;

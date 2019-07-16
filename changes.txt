@@ -1,5 +1,6 @@
 MAPeD-NES:
 ~~~~~~~~~~~
+16.07.2019 - Quick guide added
 05.06.2019 - Python script editor added as separate project for both MAPeD/SPReD
 31.05.2019 - Python script editor: added the possibility to edit any number of scripts
 26.05.2019 - Python script editor for writing custom data export scripts, API doc and sample script are added

@@ -177,14 +177,14 @@ namespace MAPeD
 			TabTiles.Tag 		= new Point( TabTiles.Width,	TabTiles.Height		);
 			TabScreenEditor.Tag = new Point( TabTiles.Width,	TabTiles.Height		);
 			TabLayout.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
-			TabEditor.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
+			TabMain.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
 
 			FormClosing += new FormClosingEventHandler( OnFormClosing );
 
 			// setup tooltips
 			{
 				SToolTipData[] tooltips = new SToolTipData[]{ 	new SToolTipData( tabControlTilesScreens, "Double Click to detach the tab page" ),
-																new SToolTipData( tabControlEditorLayout, "Double Click to detach the tab page" ),
+																new SToolTipData( tabControlMainLayout, "Double Click to detach the tab page" ),
 																new SToolTipData( CheckBoxScreensAutoUpdate, "Automatically updates the screen list when \"Update GFX\" button is pressed" ),
 																new SToolTipData( CheckBoxLayoutEditorAllBanks, "Show screens of all CHR banks" ),
 																new SToolTipData( CheckBoxPickupTargetEntity, "Pickup target entity" ),
@@ -194,7 +194,7 @@ namespace MAPeD
 																new SToolTipData( BtnUpdateGFX, "Update tiles\\blocks and screens ( if auto update is enabled )" ),
 																new SToolTipData( BtnOptimization, "Delete unused screens\\tiles\\blocks\\CHRs" ),
 																new SToolTipData( CheckBoxTileEditorLock, "Enable\\disable tile editing" ),
-																new SToolTipData( BtnPalette, "Arrays of tiles and blocks to build screens" ),
+																new SToolTipData( BtnTilesBlocks, "Arrays of tiles and blocks to build screens" ),
 																new SToolTipData( Palette0, "Shift+1 / Ctrl+1,2,3,4 to select a color" ),
 																new SToolTipData( Palette1, "Shift+2 / Ctrl+1,2,3,4 to select a color" ),
 																new SToolTipData( Palette2, "Shift+3 / Ctrl+1,2,3,4 to select a color" ),
@@ -214,6 +214,7 @@ namespace MAPeD
 																new SToolTipData( LabelObjId, "Assign property to selected block or CHR" ),
 																new SToolTipData( LabelEntityProperty, "Entity properties are inherited by all instances" ),
 																new SToolTipData( LabelEntityInstanceProperty, "Instance properties are unique to all instances" ),
+																new SToolTipData( CheckBoxEntitySnapping, "Snap an entity to 8x8 grid" ),
 															};
 				SToolTipData data;
 				
@@ -399,9 +400,9 @@ namespace MAPeD
 			
 			m_tiles_palette_form.reset();
 			
-			if( tabControlEditorLayout.Contains( TabEditor ) )
+			if( tabControlMainLayout.Contains( TabMain ) )
 			{
-				tabControlEditorLayout.SelectTab( TabEditor );
+				tabControlMainLayout.SelectTab( TabMain );
 			}
 			
 			if( tabControlScreensEntities.Contains( TabScreenList ) )
@@ -960,6 +961,29 @@ namespace MAPeD
 			message_box( "Game Maps Editor (" + utils.CONST_PLATFORM + ") \n\n" + utils.CONST_APP_VER + " " + utils.build_str + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 
+		void MenuHelpQuickGuideClick_Event(object sender, EventArgs e)
+		{
+			string doc_path = Application.StartupPath.Substring( 0, Application.StartupPath.LastIndexOf( Path.DirectorySeparatorChar ) ) + Path.DirectorySeparatorChar + "doc" + Path.DirectorySeparatorChar + "MAPeD" + Path.DirectorySeparatorChar + "Quick_Guide.html";
+			
+			//message_box( doc_path, "path", MessageBoxButtons.OK, MessageBoxIcon.Information );//!!!
+			
+			if( utils.is_win )
+			{
+				System.Diagnostics.Process process = System.Diagnostics.Process.Start( doc_path );
+			}
+			else
+			if( utils.is_linux )
+			{
+				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "xdg-open", doc_path );
+			}
+			else
+			if( utils.is_macos )
+			{
+				// need to test it...
+				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "open", doc_path );
+			}
+		}
+		
 		public void KeyUp_Event(object sender, KeyEventArgs e)
 		{
 			m_tiles_processor.key_event( sender, e );
@@ -1907,16 +1931,16 @@ namespace MAPeD
 			m_screen_editor.draw_grid_flag = ScreenEditShowGridToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
 		}
 		
-		void BtnPaletteClick_Event(object sender, EventArgs e)
+		void BtnTilesBlocksClick_Event(object sender, EventArgs e)
 		{
 			m_tiles_palette_form.Visible = true;
 			
-			BtnPalette.Enabled = false;
+			BtnTilesBlocks.Enabled = false;
 		}
 		
 		void MainForm_PaletteClosed(object sender, EventArgs e)
 		{
-			BtnPalette.Enabled = true;
+			BtnTilesBlocks.Enabled = true;
 		}
 		
 		void MainForm_TileSelected(object sender, EventArgs e)
@@ -2234,6 +2258,14 @@ namespace MAPeD
 			
 				set_status_msg( "Layout Editor: screen - " + lv.SelectedItems[ 0 ].Text );
 			}
+			else
+			{
+				m_layout_editor.set_active_screen( layout_data.CONST_EMPTY_CELL_ID );
+			
+				set_status_msg( "" );
+			}
+			
+			m_layout_editor.update();
 		}
 		
 		void BtnCreateLayoutClick_Event(object sender, EventArgs e)

@@ -563,7 +563,7 @@ namespace SPReD
 				disable( true );
 				
 				utils.brush.Color = Color.White;
-				m_gfx.DrawString( "BUILD Mode:\n\n1) Drag the viewport using a LEFT\nmouse button and scale it using\na mouse wheel\n\n2) Select a CHR and drag and drop it\nusing a RIGHT mouse button\n\nDRAW Mode:\n\n1) Scale the viewport using a mouse\nwheel", utils.fnt10_Arial, utils.brush, 0, 0 );
+				m_gfx.DrawString( "BUILD Mode:\n\n1) Pan the viewport using a LEFT\nmouse button and scale it using\na mouse wheel\n\n2) Select a CHR and drag and drop it\nusing a RIGHT mouse button\n\nDRAW Mode:\n\n1) Scale the viewport using a mouse\nwheel", utils.fnt10_Arial, utils.brush, 0, 0 );
 			}
 			
 			invalidate();
