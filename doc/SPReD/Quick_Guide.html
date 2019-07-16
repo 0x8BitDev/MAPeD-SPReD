@@ -5,7 +5,7 @@
 	<TITLE></TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.2  (Win32)">
 	<META NAME="CREATED" CONTENT="20190702;10061053">
-	<META NAME="CHANGED" CONTENT="20190706;19483591">
+	<META NAME="CHANGED" CONTENT="20190716;9492645">
 	<STYLE TYPE="text/css">
 	<!--
 		p { margin:0; }
@@ -47,10 +47,9 @@
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <HR>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
 <DIV ID="General Information" DIR="LTR"><A NAME="General Information|region"></A>
-	<P ALIGN=CENTER STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
-	<BR>
-	</P>
 	<P LANG="en-US" ALIGN=LEFT STYLE="margin-left: 1cm; margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><U><B>General
 	Information</B></U></FONT></FONT></P>
@@ -103,13 +102,12 @@ into <B>SMS</B> editor and vice versa.</FONT></P>
 </P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
-<P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="sprite_tools.png" NAME="Графический объект1" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=203 HEIGHT=502 BORDER=0><FONT FACE="Arial, sans-serif">At
+<P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/sprite_tools.png" NAME="Графический объект1" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=203 HEIGHT=502 BORDER=0><FONT FACE="Arial, sans-serif">At
 the left side of the main window you can see the &ldquo;Sprite Tools&rdquo;
-block. Main sprites manipulations are done here. All sprites you
-create will appear in the upper list box. A right mouse button click
-on the list box opens the context menu you can see at the picture.
-Click Menu &rarr; Sprites to see all available hotkeys for this
-section.</FONT></P>
+box. Main sprites manipulations are done here. All sprites you create
+will appear in the upper list box. A right mouse button click on the
+list box opens the context menu you can see at the picture. Click
+Menu &rarr; Sprites to see all available hotkeys for this section.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Create:</B></FONT></P>
@@ -155,7 +153,7 @@ shares the same CHR bank as the original sprite. It helps to minimize
 CHR data. For example, when you make mirrored </SPAN><B>NES</B>
 <SPAN STYLE="font-weight: normal">sprites, you can create mirrored
 sprites as referenced copies. So all the mirrored sprites will share
-the same CHR data.</SPAN></FONT></P>
+the same CHR data with the original ones.</SPAN></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">Select sprites, click the &ldquo;Create
 Copy&rdquo; / &rdquo;Create Ref&rdquo; item in the context menu or in
@@ -183,7 +181,7 @@ or &ldquo;GLOBAL AXIS&rdquo; mode and press the &ldquo;VFlip&rdquo; /
 &ldquo;HFlip&rdquo; button.</FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>SMS:</B>
 <SPAN STYLE="font-weight: normal">The SMS hardware doesn't support
-sprites flipping. So when you will load flipped NES sprites into SMS
+flipped sprites. So when you will load flipped NES sprites into SMS
 tool you will see some glitches. To fix that you can flip them again
 by pressing the &ldquo;VFlip&rdquo; / &ldquo;HFlip&rdquo; button with
 unchecked &ldquo;Transform positions&rdquo; option.</SPAN></FONT></P>
@@ -191,7 +189,7 @@ unchecked &ldquo;Transform positions&rdquo; option.</SPAN></FONT></P>
 an offset</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">There are two ways to apply an offset
-to your sprite(s) position. You can set a new offset value or apply
+to your sprite(s) position: you can set a new offset value or apply
 an offset to an existing value. Select sprites, input an offset
 value, press the &ldquo;Offset&rdquo; button and follow the
 instruction.</FONT></P>
@@ -206,7 +204,7 @@ can select appropriate sprites and press the &ldquo;Optimization&rdquo;
 button.</FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Packing</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN STYLE="font-weight: normal">In
-some cases you may need to pack all your sprites data in blocks of
+some cases you may need to pack all your sprites data into a set of
 1/2/4 or 8 KB ( </SPAN><B>SMS</B> <SPAN STYLE="font-weight: normal">).
 Select sprites, select data block size and press the &ldquo;Packing&rdquo;
 button. This operation performs an optimization. So all unused/empty
@@ -214,7 +212,7 @@ CHRs will be lost.</SPAN></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Splitting</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">This is a backward operation for the
-Packing. All sprites will have their own CHR banks even Ref ones!</FONT></P>
+Packing one. All sprites will have their own CHR banks even Ref ones!</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -228,7 +226,7 @@ Packing. All sprites will have their own CHR banks even Ref ones!</FONT></P>
 <P ALIGN=CENTER STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<IMG SRC="layout.png" NAME="Графический объект2" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=287 HEIGHT=500 BORDER=0><FONT FACE="Arial, sans-serif">The
+<IMG SRC="res/layout.png" NAME="Графический объект2" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=287 HEIGHT=500 BORDER=0><FONT FACE="Arial, sans-serif">The
 middle part of the main window contains the layout viewport and all
 operations related to sprite's CHRs modifications. Click Menu &rarr;
 Layout to see all available hotkeys for this section.</FONT></P>
@@ -254,10 +252,12 @@ the &ldquo;Build mode&rdquo; you can </SPAN><SPAN LANG="en-US"><B>add</B></SPAN>
 <SPAN LANG="en-US">a sprite's CHRs and </SPAN><SPAN LANG="en-US"><B>shift
 colors</B></SPAN> <SPAN LANG="en-US">of whole sprite ( </SPAN><SPAN LANG="en-US"><B>NES
 </B></SPAN><SPAN LANG="en-US">).</SPAN></FONT></P>
-<P STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">To
-</SPAN><SPAN LANG="en-US"><B>add</B></SPAN> <SPAN LANG="en-US">a CHR
-manualy to your sprite you can select the CHR in the CHR bank and
-drag and drop it to the layout window using a RIGHT mouse button.</SPAN></FONT></P>
+<P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">To
+</SPAN></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>add</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN STYLE="font-weight: normal">
+</SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">a
+CHR manually to your sprite you can select the CHR in the <A HREF="#CHR Bank|region">CHR
+bank</A> and drag and drop it to the layout window using a RIGHT
+mouse button.</SPAN></SPAN></FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">To
 </SPAN><SPAN LANG="en-US"><B>delete</B></SPAN> <SPAN LANG="en-US">a
 CHR you must click it and press the &ldquo;Delete&rdquo; button.</SPAN></FONT></P>
@@ -284,7 +284,7 @@ Transp&rdquo; flag.</SPAN></SPAN></FONT></P>
 draw mode:</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">In the &ldquo;Draw mode&rdquo; you can
-draw your sprite image. Just choose a color and draw! )</FONT></P>
+draw your sprite image. Just select a color and draw! )</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES:</B></SPAN></FONT>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Also
 you can change a CHR <A HREF="#Palette|region">palette</A>. When you
@@ -338,7 +338,7 @@ buttons to zoom in / out an active sprite.</FONT></P>
 <P ALIGN=CENTER STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<IMG SRC="CHR_bank.png" NAME="Графический объект3" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=287 HEIGHT=501 BORDER=0><FONT FACE="Arial, sans-serif">At
+<IMG SRC="res/CHR_bank.png" NAME="Графический объект3" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=287 HEIGHT=501 BORDER=0><FONT FACE="Arial, sans-serif">At
 the right side of the main window you can see the CHR bank which
 contains graphics linked to an active sprite and the palettes. Click
 Menu &rarr; CHR to see all available hotkeys for this section.</FONT></P>
@@ -414,7 +414,7 @@ bank and the total number of banks is <B>1</B>.</FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">There are 4 user defined palettes ( 1,
-2, 3, 4 ). <B>Press Shift+1, 2, 3, 4</B> to switch between palettes
+2, 3, 4 ). Press <B>Shift+1, 2, 3, 4</B> to switch between palettes
 and press <B>Ctrl+1, 2, 3, 4</B> to switch between colors inside an
 active palette.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -429,8 +429,9 @@ before, the leftmost color of each palette is a transparency color.</SPAN></SPAN
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMS:</B></SPAN>
 <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">The leftmost
 color of the first palette is reserved for transparency color ( black
-on SMS ). Keep in mind this when you make an optimization of
-empty/transparent CHRs.</SPAN></SPAN></FONT></P>
+on </SPAN></SPAN><SPAN LANG="en-US"><B>SMS</B></SPAN> <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">).
+Keep in mind this when you make an optimization of empty/transparent
+CHRs.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -450,11 +451,11 @@ or save a project file.</FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES</B></SPAN>
-<SPAN LANG="en-US">project file has </SPAN><SPAN LANG="en-US"><B>.sprednes</B></SPAN>
+<SPAN LANG="en-US">project file has a </SPAN><SPAN LANG="en-US"><B>.sprednes</B></SPAN>
 <SPAN LANG="en-US">extension.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMS</B></SPAN>
-<SPAN LANG="en-US">project file has </SPAN><SPAN LANG="en-US"><B>.spredsms</B></SPAN>
+<SPAN LANG="en-US">project file has a </SPAN><SPAN LANG="en-US"><B>.spredsms</B></SPAN>
 <SPAN LANG="en-US">extension.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
