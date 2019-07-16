@@ -28,6 +28,7 @@ Here you can find **NES/SMS** development tools:
 - export to **SjASMPlus** ( ZX Spectrum assembler )
 - etc...
 
+**Quick Guide:** `./doc/MAPeD/Quick_Guide.html`
 
 # SPReD-NES/SMS - Sprites editor
 **Some features are:**
