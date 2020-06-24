@@ -11,7 +11,7 @@ def dump_CHR_bank( _CHR_bank ):
 		print '\n\t\t\tCHR_bank:'
 		# link_cnt - is a number of sprites which share the same CHR data
 		print '\t\t\tid: ' + str( _CHR_bank.id ) + ' link_count: ' + str( _CHR_bank.link_cnt )
-# dump CHR arrays ( 8x8 tiles )
+#def dump_CHR_arrays( _CHR_bank ):
 #		if _CHR_bank.CHR_data != None:
 #			for chr_n in xrange( _CHR_bank.CHR_data.Count ):
 #				print '\t\t\t\tArray size: ' + str( _CHR_bank.CHR_data[ chr_n ].data.Count ) + ' -> ' + str( _CHR_bank.CHR_data[ chr_n ].data )
@@ -31,6 +31,7 @@ def dump_sprite_data( _spr ):
 	print '\t\theight: ' + str( _spr.height )
 	dump_sprite_attrs( _spr.attrs )
 	dump_CHR_bank( _spr.CHR_bank )
+#	dump_CHR_arrays( _spr.CHR_bank )
 
 print 'The current project stats:\n'
 
