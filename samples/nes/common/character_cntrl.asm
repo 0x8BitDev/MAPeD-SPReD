@@ -20,6 +20,7 @@ _player_jump_max_height:
 ; 0-dir(1-right/0-left)
 ; 1-jump up
 ; 2-jump down
+
 _player_flags:		.res 1
 
 _player_anm:		.res .sizeof( runtime_anm_data )
@@ -79,6 +80,7 @@ PLAYER_FLAG_DIR_LEFT	= 0
 ;	X - X coord
 ;	Y - Y coord
 ;	A - player direction PLAYER_DIR_RIGHT/PLAYER_DIR_LEFT
+
 player_init:
 	sta _player_flags
 
@@ -95,9 +97,11 @@ player_init:
 	jmp _set_state_idle		; set the STATE_IDLE with animation
 					; depending on a player direction
 
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; *** character controller update ***
+; OUT: 	
+;	inner_vars::tmp_anm_addr - current animation frame address
+
 player_update:
-	jsr jpad1_read_state		; var cntrl_state = get_cntrl_state();
 
 ; DUCK
 	lda _state
@@ -354,12 +358,6 @@ _jump_down:
 
 _update_player_anm:
 
-	ppu_check_flag ppu_dma_flag_free
-	beq _post_anm_update		; if equal to zero -> NMI works
-
-	;-----------------------------
-	jsr clear_sprite_mem_256b_0x0200
-
 	ldx #<_player_anm
 	ldy #>_player_anm
 
@@ -368,14 +366,13 @@ _update_player_anm:
 	lda _player_pos_y
 	sta anm_pos_y
 
-	jsr anm_update_frame
-	;-----------------------------
-
-_post_anm_update:
+	jsr anm_update
+	; inner_vars::tmp_anm_addr - current animation frame address
 
 	rts
 
 ;*** set new animation if player isn't jumping ***
+
 _player_anm_init:
 	
 	lda #<_PLAYER_FLAG_JUMP_MASK
@@ -388,6 +385,7 @@ _player_ignore_anm:
 	rts
 
 ;*** set the STATE_IDLE ***
+
 _set_state_idle:
 
 	lda _state

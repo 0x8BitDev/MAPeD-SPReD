@@ -4,7 +4,7 @@
 ;
 ;###############################################
 ;
-; Animation frames switching code
+; Animation functions
 ; LIMITATION: max 32 frames in animation
 ; 
 
@@ -50,6 +50,7 @@ tmp_anm_addr: 		.res 2
 ;	X - LOW byte of anm data
 ;	Y - HIGH byte of anm data
 ;	data_addr - address at which animation will be initialized
+
 anm_init:
 	stx inner_vars::tmp_anm_addr
 	sty inner_vars::tmp_anm_addr + 1
@@ -90,51 +91,15 @@ anm_init:
 
 	rts
 
-; *** update animation frame and prepare to render ***
-; IN:
-;	X - LOW byte of anm addr
-;	Y - HIGH byte of anm addr
-;	anm_pos_x - X coord
-;	anm_pos_y - Y coord
-anm_update_frame:
-	jsr _anm_get_updated_frame_addr
-	; inner_vars::tmp_anm_addr - current animation frame address
-
-	; preparing sprite data for transfer to PPU
-	ldy #frame_data::gfx_ptr
-	lda (<inner_vars::tmp_anm_addr), y
-	sta data_addr
-	ldy #frame_data::gfx_ptr + 1
-	lda (<inner_vars::tmp_anm_addr), y
-	sta data_addr + 1
-	ldy #frame_data::data_size
-	lda (<inner_vars::tmp_anm_addr), y
-	sta data_size
-
-	ldy #frame_data::chr_id
-	lda (<inner_vars::tmp_anm_addr), y	; CHR bank index
-	sta ppu_sprite_CHR_bank
-
-	lda anm_pos_x
-	tax
-	lda anm_pos_y
-	tay
-
-	jsr ppu_load_sprite_0x0200
-
-	; set data ready flag
-	ppu_set_dma_state ppu_dma_flag_data_ready
-
-	rts
-
-; *** load address of a current frame to the inner_vars::tmp_anm_addr ***
+; *** update animation frame and load address of a current frame into the inner_vars::tmp_anm_addr ***
 ; IN:
 ;	X - LOW byte of anm addr
 ;	Y - HIGH byte of anm addr
 ; OUT:
 ;	inner_vars::tmp_anm_addr - current animation frame address
-_anm_get_updated_frame_addr:
-	jsr _anm_get_frame_ind
+
+anm_update:
+	jsr _anm_get_updated_frame_ind
 
 	; A - current anm frame
 	; A *= 4 ( .sizeof( frame_data ) )
@@ -157,13 +122,14 @@ _anm_get_updated_frame_addr:
 
 	rts
 
-; *** get index of a current frame ***
+; *** get index of a current updated frame ***
 ; IN:
 ;	X - LOW byte of anm addr
 ;	Y - HIGH byte of anm addr
 ; OUT:
 ;	A - current frame index
-_anm_get_frame_ind:
+
+_anm_get_updated_frame_ind:
 	; save animation address
 	stx inner_vars::tmp_anm_addr
 	sty inner_vars::tmp_anm_addr + 1

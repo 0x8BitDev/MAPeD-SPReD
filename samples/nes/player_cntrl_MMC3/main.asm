@@ -146,8 +146,43 @@ RESET:
 	ppu_set_dma_state ppu_dma_flag_free
 
 forever:
+	jsr jpad1_read_state
 
 	jsr player_update
+
+	ppu_check_flag ppu_dma_flag_free
+	beq _skip_data_preparation		; if equal to zero -> NMI works
+
+	; push an animation frame to the characters "pool"
+
+	jsr clear_sprite_mem_256b_0x0200
+
+	; preparing sprite data for transfer to PPU
+	ldy #frame_data::gfx_ptr
+	lda (<inner_vars::tmp_anm_addr), y
+	sta data_addr
+	ldy #frame_data::gfx_ptr + 1
+	lda (<inner_vars::tmp_anm_addr), y
+	sta data_addr + 1
+	ldy #frame_data::data_size
+	lda (<inner_vars::tmp_anm_addr), y
+	sta data_size
+
+	ldy #frame_data::chr_id
+	lda (<inner_vars::tmp_anm_addr), y	; CHR bank index
+	sta ppu_sprite_CHR_bank
+
+	lda anm_pos_x
+	tax
+	lda anm_pos_y
+	tay
+
+	jsr ppu_load_sprite_0x0200
+
+	; set data ready flag
+	ppu_set_dma_state ppu_dma_flag_data_ready
+
+_skip_data_preparation:
 
 	lda #$01
 	SKIP_FRAMES
@@ -160,8 +195,6 @@ NMI:
 	; check DMA ready flag
 	ppu_check_flag ppu_dma_flag_data_ready
 	beq nmi_exit
-
-	ppu_set_dma_state ppu_dma_flag_busy
 
 	jsr ppu_DMA_transf_256b_0x0200
 
