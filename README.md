@@ -78,7 +78,7 @@ You can download it at: http://www.icsharpcode.net/OpenSource/SD/Download/Defaul
 1) Run SharpDevelop.
 2) Open solution file.
 3) Menu: `Build -> Build Solution`.
-4) `./bin` will contains output executable file.
+4) `./bin` will contain output executable file.
 
 ## Linux
 The tools were tested on **Ubuntu 16.4.6** and **Debian 9.9.0** with **Mono v5.20.1.19**.
@@ -90,9 +90,9 @@ The Linux versions were tested using **MonoDevelop 7.8.2 (build 2)**. The latest
 1) Run MonoDevelop.
 2) Open solution file.
 3) Menu: `Build -> Build All`.
-4) `./bin` will contains output executable file.
+4) `./bin` will contain output executable file.
 
-**Warning:** It's not necessary to rebuild the tools on Linux if you don't want to make any changes in sources. You can use the same executables files on Windows and Linux ( with Mono ).
+**Note:** It's not necessary to rebuild the tools on Linux if you don't want to make any changes in sources. You can use the same executables files on Windows and Linux ( with Mono ).
 
 
 # Releases
@@ -106,26 +106,29 @@ As mentioned before, you need to install Mono on your computer. To run the tools
 
 # Samples
 ## MAPeD-NES
-**NES assembly sources of tilemap renderers:**
+**NES:**
 
- `./samples/nes/tilemap_render/bidir_scroll_MMC1/`	- bidirectional scroller with dynamic mirroring and CHR bank switching
- `./samples/nes/tilemap_render/multidir_scroll_MMC3/`	- multidirectional scroller
- `./samples/nes/tilemap_render/static_screens_MMC5/`	- static screens switching with MMC5 extended attributes support
+ - `./samples/nes/tilemap_render/bidir_scroll_MMC1/`	- bidirectional scroller with dynamic mirroring and CHR bank switching 
+ - `./samples/nes/tilemap_render/multidir_scroll_MMC3/`	- multidirectional scroller 
+ - `./samples/nes/tilemap_render/static_screens_MMC5/`	- static screens switching with MMC5 extended attributes support
 
-**ZX Spectrum sample sources ( can be compiled on Windows only ):**
- `./samples/zx/tilemap_render/`
+**ZX Spectrum:**
+
+ - `./samples/zx/tilemap_render/` - tilemap renderer with wide variety of settings
 
 
 ## SPReD-NES
-**NES assembly sources of simple character controllers:**
 
-`./samples/nes/player_cntrl_NROM-128`	- character controller: idle, running and jumping; 8x8/8x16 mode
-`./samples/nes/player_cntrl_MMC3`	- the same as above, but using big sprites with MMC3 1KB CHR bank switching 
+- `./samples/nes/player_cntrl_NROM-128`	- character controller: idle, running and jumping; 8x8/8x16 mode
+- `./samples/nes/player_cntrl_MMC3`	- the same as previous, but using big sprites with MMC3 1KB CHR bank switching 
 ( +shooting and ducking animations )
 
 ## SPReD-SMS
-**Coming soon...**
 
+- `./samples/sms/show_sprite`		- simple show sprite program
+- `./samples/sms/player_cntrl_dog`	- character controller: idle, running and jumping; 8x16 mode
+- `./samples/sms/player_cntrl_marco`	- the same as previous, but using big sprites 
+( +shooting and ducking animations )
 
 ---
 The NES samples were created using **CA65 assembler (v2.17 - GIT 7445550)**. 
@@ -133,15 +136,18 @@ Github page: https://github.com/cc65/cc65 Or you can download the latest CC65 sn
 
 **CC65** installing instruction: http://wiki.nesdev.com/w/index.php/Installing_CC65
 
+The SMS samples were created using **WLA-DX assembler v9.10**.
+Github page: https://github.com/vhelin/wla-dx
+
 The ZX Spectrum sample uses **SjASMPlus - Z80 Assembly Cross-Compiler (v1.07 RC7)**. 
 The latest version can be downloaded at: https://sourceforge.net/projects/sjasmplus/
 
-To compile the NES samples on Windows you can run **'compile.bat'** which contains in all samples directories.
+To compile the **NES/SMS/ZX** samples on Windows you can run **'compile.bat'** which contains in all samples directories.
 
 To compile them on Linux you can run **'makefile'** which also contains in all samples directories.
 
 - `make` to compile binaries to the `./samples/nes/bin` directory;
-- `make run` to run compiled sample with **FCEUX** emulator;
+- `make run` to run compiled sample with **FCEUX**/**Mednafen** emulators;
 - `make clean` to remove compiled binaries form the `./samples/nes/bin` directory;
 
 ---
@@ -153,11 +159,11 @@ You can use/modify them for free at your own risk without any warranties.
 
 # Third-party libraries
 
-The MAPeD/SPReD use IronPython for custom data export scripts. Copyright (c) .NET Foundation and Contributors ( Apache License, Version 2.0 )
+**MAPeD/SPReD:** IronPython for custom data export scripts. Copyright (c) .NET Foundation and Contributors ( Apache License, Version 2.0 )
 
 https://ironpython.net
 
-The SPReD uses the third-party library `./src/SPReD/lib/Pngcs.dll` to read PNG images.
+**SPReD:** PNGCS to read PNG images.
 Developed by Hernan J Gonzalez Copyright 2012 ( Apache License, Version 2.0 )
 
 https://github.com/leonbloy/pngcs
@@ -166,13 +172,13 @@ https://github.com/leonbloy/pngcs
 The tools sources: 
 https://github.com/0x8BitDev/MAPeD-SPReD
 
-Compiled executables, example projects files and compiled NES/ZX samples you can get in the latest release: 
+Compiled executables, example projects files and compiled **NES/SMS/ZX** samples you can get in the latest release: 
 https://github.com/0x8BitDev/MAPeD-SPReD/releases
 
 The latest development build can be found **[here](https://drive.google.com/open?id=1Jopms8ENPrjTktrt_V36TQC2FZT2agId)**.
 
 ---
-Developed by 0x8BitDev Copyright © 2017-2019
+Developed by 0x8BitDev Copyright © 2017-2020
 
 Released under the MIT license. See LICENSE.txt
 
