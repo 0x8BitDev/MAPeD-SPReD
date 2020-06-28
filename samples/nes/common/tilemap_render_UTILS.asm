@@ -179,6 +179,7 @@ TR_MASK_ADJ_SCR_DOWN	= %10000000
 ;	_tmp_val - low: scr data offset, high: dir mask
 ; OUT: 	carry flag = 1 -> X/Y - new screen ptr
 ;	carry flag = 0 -> nothing happened
+
 check_adjacent_screen:
 
 	; get adjacent screens mask
@@ -660,10 +661,11 @@ _draw_block_a:
 
 	.ENDIF	; TR_DATA_TILES4X4
 
-draw_screen_attrs:
 	; IN: X - a number of tiles in width
 	; data_addr	- PPU attrs address
 	; _tmp_val	- tiles address
+
+draw_screen_attrs:
 
 @drw_attrs_scr_loop:
 	push_x

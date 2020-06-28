@@ -7,7 +7,7 @@
 ; *** ANIMATIONS DATA ***
 
 player_run_right:
-	.byte 4				; number of ticks to change the frame
+	.byte 4				; number of ticks to change a frame
 	.byte $09			; number of frames
 	.byte $02			; loop frame
 	.word frames_player_run_right	; frame data pointer

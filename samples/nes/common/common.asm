@@ -624,6 +624,7 @@ mem_copy_data:
 	rts
 
 ; RED SCREEN ) for debugging purposes...
+
 red_screen:
 	ldx #$00
 	ldy #$3f

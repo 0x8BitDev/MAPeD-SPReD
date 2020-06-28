@@ -4,7 +4,7 @@
 ;
 ;###############################################
 ;
-; Joypad reading code
+; Joypad functions
 ;
 
 ; the button constants
