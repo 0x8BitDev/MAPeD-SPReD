@@ -65,9 +65,8 @@
 
 ; DMA flags
 ppu_dma_flag_data_ready	= 1
-ppu_dma_flag_busy	= 2
-ppu_dma_flag_free	= 4
-ppu_dma_flags_mask	= ppu_dma_flag_data_ready | ppu_dma_flag_busy | ppu_dma_flag_free
+ppu_dma_flag_free	= 2
+ppu_dma_flags_mask	= ppu_dma_flag_data_ready | ppu_dma_flag_free
 ppu_dma_flags_mask_inv	= ~ppu_dma_flags_mask
 
 .segment "ZP"
@@ -157,8 +156,10 @@ render_off:
 	rts
 
 ppu_DMA_transf_256b_0x0200:
+
 ; transfer prepared sprites data which we stored at $0200 to PPU
 ; WARNING: this way you can transfer 256 bytes only!
+
 	lda #$00
 	sta $2003	; save the low byte of the addr
 	lda #$02
@@ -183,6 +184,7 @@ ppu_load_palettes:
 	rts
 
 ; *** clear 256 bytes at 0x0200 ***
+
 clear_sprite_mem_256b_0x0200:
 	ldx #$00
 	lda #$ff
