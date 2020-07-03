@@ -92,7 +92,7 @@ main:
 	; sprite colors are always taken from the second group of 16 colors
 
 	VDP_WRITE_CLR_CMD $0010
-	VDP_WRITE_DATA_ARRAY sprite_palette 16
+	VDP_WRITE_DATA_ARRAY image_palette 16
 
 	; load CHRs data	
 
@@ -104,7 +104,7 @@ main:
 
 	; load sprite data
 
-	ld hl, frames_data
+	ld hl, image_frames_data
 	ld e, (hl)
 	inc hl
 	ld d, (hl)		; DE - sprite data addr
