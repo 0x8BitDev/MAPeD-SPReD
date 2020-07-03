@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 14.03.2017
  * Time: 16:35
  */
@@ -69,14 +69,15 @@ namespace SPReD
 		
 		public bool is_empty()
 		{
-			int sum = 0;
-			
 			for( int i = 0; i < utils.CONST_CHR8x8_TOTAL_PIXELS_CNT; i++ )
 			{
-				sum += m_data[ i ];
+				if( m_data[ i ] > 0 )
+				{
+					return false;
+				}
 			}
 			
-			return ( sum == 0 ) ? true:false;
+			return true;
 		}
 
 		public void fill( byte _val )
@@ -189,6 +190,19 @@ namespace SPReD
 #elif DEF_SMS			
 			_br.Read( this.m_data, 0, utils.CONST_CHR8x8_TOTAL_PIXELS_CNT );
 #endif
+		}
+		
+		public bool equals( CHR8x8_data _obj )
+		{
+			for( int i = 0; i < utils.CONST_CHR8x8_TOTAL_PIXELS_CNT; i++ )
+			{
+				if( get_data()[ i ] != _obj.get_data()[ i ] )
+				{
+					return false;
+				}
+			}
+			
+			return true;
 		}
 	}
 }
