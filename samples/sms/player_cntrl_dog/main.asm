@@ -30,7 +30,7 @@
 ;
 ;************************************************************************
 
-.sdsctag 0.1, "Character controller (Marco)", "SPReD-SMS Sample: Simple character controller", "0x8BitDev"
+.sdsctag 0.1, "Character controller (Bobik Zdoh)", "SPReD-SMS Sample: Simple character controller", "0x8BitDev"
                                                                  
 ;************************************************************************
 ;
