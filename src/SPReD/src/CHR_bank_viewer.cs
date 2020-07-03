@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 15.03.2017
  * Time: 16:45
  */
@@ -22,7 +22,7 @@ namespace SPReD
 	
 	public class CHR_bank_viewer : drawable_base
 	{
-		public event EventHandler SelectCHR;
+		public event EventHandler SetSelectedCHR;
 		public event EventHandler UpdatePixel;
 		
 		private palette_group	m_palette_group	= null;
@@ -94,6 +94,8 @@ namespace SPReD
 				{
 					m_selected_ind &= unchecked ( ( int )0xfffffffe );
 				}
+				
+				dispatch_event_set_selected_CHR();
 				
 				update();
 			}
@@ -173,11 +175,6 @@ namespace SPReD
 					}
 				}
 				
-				if( SelectCHR != null )
-				{
-					SelectCHR( this, null );
-				}
-				
 				res = true;
 			}
 			
@@ -254,6 +251,15 @@ namespace SPReD
 			_sprite_layout_viewer.SetSelectedCHR 	+= new EventHandler( select_CHR );
 			_sprite_layout_viewer.UpdatePixel 		+= new EventHandler( update_pixel );
 		}
+
+		private void dispatch_event_set_selected_CHR()
+		{
+			// highlight this CHR in the layout window
+			if( SetSelectedCHR != null )
+			{
+				SetSelectedCHR( this, null );
+			}
+		}
 		
 		private void select_CHR(object sender, EventArgs e)
 		{
@@ -261,10 +267,7 @@ namespace SPReD
 			
 			m_selected_ind = spr_layout.get_selected_CHR_ind();
 			
-			if( m_selected_ind >= 0 )
-			{
-				update();
-			}
+			update();
 		}
 		
 		private void update_color(object sender, EventArgs e)
@@ -339,6 +342,13 @@ namespace SPReD
 		public void set_mode8x16( bool _on )
 		{
 			m_mode8x16 = _on;
+			
+			if( m_selected_ind >= 0 )
+			{
+				m_selected_ind &= int.MaxValue - 1;
+			}
+			
+			dispatch_event_set_selected_CHR();
 			
 			update();
 		}
@@ -465,7 +475,7 @@ namespace SPReD
 					}
 					else
 					{
-						m_selected_ind -= 1;
+						m_selected_ind -= m_mode8x16 ? 2:1;
 					}
 					
 					pressed = true;
@@ -479,7 +489,7 @@ namespace SPReD
 					}
 					else
 					{
-						m_selected_ind += 1;
+						m_selected_ind += m_mode8x16 ? 2:1;
 					}
 					
 					pressed = true;
@@ -491,11 +501,18 @@ namespace SPReD
 					{
 						m_selected_ind = 0;
 					}
+
+					if( m_mode8x16 )
+					{
+						m_selected_ind &= int.MaxValue - 1;
+					}
 					
 					if( m_selected_ind >= m_data_list.Count )
 					{
-						m_selected_ind = m_data_list.Count - 1;
+						m_selected_ind = m_data_list.Count - ( m_mode8x16 ? 2:1 );
 					}
+
+					dispatch_event_set_selected_CHR();
 					
 					update();
 				}

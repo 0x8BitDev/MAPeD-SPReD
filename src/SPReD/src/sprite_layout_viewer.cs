@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 16.03.2017
  * Time: 12:32
  */
@@ -31,7 +31,7 @@ namespace SPReD
 			set
 			{
 				m_mode = value;
-				update_mode_str();
+				update_status_label();
 			}
 		}
 		
@@ -44,7 +44,8 @@ namespace SPReD
 		
 		private palette_group	m_palette_group	= null;
 		
-		private Label m_label = null;
+		private Label 		m_label 	= null;
+		private GroupBox	m_grp_box 	= null;
 		
 		private sprite_data 			m_spr_data	= null;
 		private List< Bitmap > 			m_bmp_list	= null;
@@ -93,8 +94,6 @@ namespace SPReD
 		
 		private string m_mode_str	= null;
 
-		private System.Timers.Timer m_mode_str_blink_timer	= null;
-		
 		private bool m_update_busy	= false;
 			
 		public enum EMode
@@ -104,9 +103,10 @@ namespace SPReD
 			m_draw,
 		}
 		
-		public sprite_layout_viewer( PictureBox _spr_layout, Label _label ): base( _spr_layout )
+		public sprite_layout_viewer( PictureBox _spr_layout, Label _label, GroupBox _spr_layout_grp_box ): base( _spr_layout )
 		{
-			m_label = _label;
+			m_label 	= _label;
+			m_grp_box	= _spr_layout_grp_box;
 			
 			m_bmp_list = new List< Bitmap >( 100 );
 			
@@ -125,10 +125,6 @@ namespace SPReD
 			m_pix_box.DragEnter += new DragEventHandler(this.Layout_DragEnter);
 			m_pix_box.DragDrop	+= new DragEventHandler(this.Layout_DragDrop);
 
-			m_mode_str_blink_timer = new System.Timers.Timer();
-			m_mode_str_blink_timer.Interval = 750;
-			m_mode_str_blink_timer.Elapsed += new System.Timers.ElapsedEventHandler( mode_str_blink_cb );
-			
 			reset();
 			update();
 		}
@@ -142,6 +138,7 @@ namespace SPReD
 			m_changed_pixel_y = -1;
 			
 			m_scale = 2;
+			update_status_label();
 			
 			m_selected_CHR = -1;
 			
@@ -154,36 +151,7 @@ namespace SPReD
 			
 			m_label.Text = "...";
 			
-			if( m_mode_str != null )
-			{
-				m_mode_str = null;
-				
-				m_mode_str_blink_timer.Stop();
-			}
-			
 			m_update_busy = false;
-		}
-		
-		private void update_mode_str( string _msg = null )
-		{
-			m_mode_str_blink_timer.Stop();
-			
-			m_mode_str = ( _msg == null ) ? ( ( m_mode == EMode.m_build ) ? CONST_MODE_STR_BUILD:CONST_MODE_STR_EDIT ):_msg;
-			
-			update();
-			
-			m_mode_str_blink_timer.Start();
-			
-			update_cursor();
-		}
-		
-		private void mode_str_blink_cb( object _sender, System.Timers.ElapsedEventArgs _e )
-		{
-			m_mode_str_blink_timer.Stop();
-			
-			m_mode_str = null;
-			
-			update();
 		}
 		
 		private void Layout_MouseDown(object sender, MouseEventArgs e)
@@ -214,6 +182,8 @@ namespace SPReD
 						else
 						{
 							m_selected_CHR = -1;
+							
+							dispatch_event_set_selected_CHR();
 							
 							update();
 						}
@@ -373,13 +343,18 @@ namespace SPReD
 			m_scale = m_scale < 1.0f ? 1.0f:m_scale;
 			m_scale = m_scale > 10.0f ? 10.0f:m_scale;
 			
-			update_mode_str( "x" + m_scale );
+			update_status_label();
 			
 			// fix offset_x/y
 			clamp_offsets();
 			
 			calc_CHR_size_and_draw_grid( false );
 			update();
+		}
+		
+		private void update_status_label()
+		{
+			m_grp_box.Text = "Layout: [ " + ( ( m_mode == EMode.m_build ) ? CONST_MODE_STR_BUILD:CONST_MODE_STR_EDIT ) + " / x" + m_scale.ToString( "0.0" ) + " ]";
 		}
 
 		private void clamp_offsets()
@@ -472,15 +447,12 @@ namespace SPReD
 						}
 					}
 					
-					// highlight this CHR in the bank
-					if( SetSelectedCHR != null )
-					{
-						SetSelectedCHR( this, null );
-					}
-					
 					break;
 				}
 			}
+			
+			dispatch_event_set_selected_CHR();
+			
 			/* reset palette when clicked outside of CHRs
 			if( m_mode == EMode.m_build && m_selected_CHR < 0 )
 			{
@@ -737,11 +709,11 @@ namespace SPReD
 			}
 		}
 		
-		public void init( sprite_data _spr_data, bool _show_mode )
+		public void init( sprite_data _spr_data )
 		{
 			m_spr_data = _spr_data;
 			
-			// reset the last selection and acrtive palette
+			// reset the last selection and active palette
 			m_selected_CHR = -1;
 			
 			if( m_bmp_list.Count != 0 )
@@ -764,14 +736,7 @@ namespace SPReD
 			// calculate a CHR size for the first sprite rendering
 			calc_CHR_size_and_draw_grid( false );
 			
-			if( _show_mode == true )
-			{
-				update_mode_str();
-			}
-			else
-			{
-				update();
-			}
+			update();
 		}
 
 		private float get_CHR_height()
@@ -821,9 +786,19 @@ namespace SPReD
 		
 		public void subscribe_event( CHR_bank_viewer _chr_bank )
 		{
+			_chr_bank.SetSelectedCHR += new EventHandler( update_CHR );
 			_chr_bank.UpdatePixel += new EventHandler( update_color );
 		}
 
+		private void dispatch_event_set_selected_CHR()
+		{
+			// update selected CHR in the bank
+			if( SetSelectedCHR != null )
+			{
+				SetSelectedCHR( this, null );
+			}
+		}
+	
 		private void update_palette(object sender, EventArgs e)
 		{
 			if( m_selected_CHR >= 0 )
@@ -836,6 +811,34 @@ namespace SPReD
 				
 				update();
 			}
+		}
+
+		private void update_CHR(object sender, EventArgs e)
+		{
+			int sel_CHR_ind = ( sender as CHR_bank_viewer ).get_selected_CHR_ind();
+			
+			if( sel_CHR_ind < 0 )
+			{
+				m_selected_CHR = sel_CHR_ind;
+			}
+			else
+			{
+				int size = m_spr_data.get_CHR_attr().Count;
+				
+				m_selected_CHR = -1;
+				
+				for( int i = 0; i < size; i++ )
+				{
+					if( m_spr_data.get_CHR_attr()[ i ].CHR_ind == sel_CHR_ind )
+					{
+						m_selected_CHR = i;
+						
+						break;
+					}
+				}
+			}
+			
+			update();
 		}
 		
 		private void update_color(object sender, EventArgs e)
@@ -926,6 +929,8 @@ namespace SPReD
 		    		
 		    		m_spr_data.update_dimensions();
 					
+		    		m_selected_CHR = m_spr_data.get_CHR_attr().Count - 1;
+		    		
 		    		update();
 		    	}
 	    	}
@@ -988,7 +993,7 @@ namespace SPReD
 		{
 			m_mode8x16 = _on;
 			
-			init( m_spr_data, false );
+			init( m_spr_data );
 		}
 		
 		private void update_cursor()

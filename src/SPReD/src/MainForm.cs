@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 13.03.2017
  * Time: 11:24
  */
@@ -56,7 +56,8 @@ namespace SPReD
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			m_sprites_proc = new sprite_processor(	SpriteLayout,
-													SpriteLayoutLabel,			                                       	
+													SpriteLayoutLabel,
+													LayoutGroupBox,												
 			                                       	CHRBank,
 			                                       	CHRBankLabel,
 			                                       	PaletteMain,
@@ -73,9 +74,9 @@ namespace SPReD
 			
 			SToolTipData[] tooltips = new SToolTipData[]{ 	new SToolTipData( BtnMoveItemUp, "Move selected item up" ),
 															new SToolTipData( BtnMoveItemDown, "Move selected item down" ),
-															new SToolTipData( BtnCHROptimization, "Remove unused/empty CHRs" ),
+															new SToolTipData( BtnCHROptimization, "Remove unused/empty/duplicate CHRs in all CHR banks" ),
 															new SToolTipData( BtnCHRPack, "Merge selected sprites data into common CHR bank(s)" ),
-															new SToolTipData( BtnCHRSplit, "Extract selected sprites data into separate CHR banks" ),
+															new SToolTipData( BtnCHRSplit, "Extract all sprites data into separate CHR banks" ),
 															new SToolTipData( BtnOffset, "Apply offset to all selected sprites" ),
 															new SToolTipData( Palette0, "Shift+1 / Ctrl+1,2,3,4 to select a color" ),
 															new SToolTipData( Palette1, "Shift+2 / Ctrl+1,2,3,4 to select a color" ),
@@ -254,7 +255,7 @@ namespace SPReD
 		{
 			if( SpriteList.Items.Count > 0 )
 			{
-				if( message_box( "Are you sure you want to close the current project?", "Close Project", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure?", "Close Project", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
 					reset();
 					
@@ -268,6 +269,11 @@ namespace SPReD
 		void DescriptionToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			m_description_form.ShowDialog();
+		}
+		
+		void StatisticsToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			m_sprites_proc.show_statistics( SpriteList.Items );
 		}
 		
 //		SPRITES PROCESSING		*****************************************************************************//
@@ -287,7 +293,7 @@ namespace SPReD
 			return false;			
 		}
 		
-		private void update_selected_sprite( bool _new_sprite = false, bool _show_mode = true )
+		private void update_selected_sprite( bool _new_sprite = false )
 		{
 			if( SpriteList.SelectedIndex >= 0 )
 			{
@@ -296,7 +302,7 @@ namespace SPReD
 				OffsetX.Value = spr.offset_x;
 				OffsetY.Value = spr.offset_y;
 				
-				m_sprites_proc.update_sprite( spr, _new_sprite, _show_mode );
+				m_sprites_proc.update_sprite( spr, _new_sprite );
 			}
 		}
 		
@@ -344,7 +350,7 @@ namespace SPReD
 						
 						m_sprites_proc.rearrange_CHR_data_ids();
 						
-						m_sprites_proc.update_sprite( spr, false, false );
+						m_sprites_proc.update_sprite( spr, false );
 					}
 					else
 					{
@@ -491,7 +497,7 @@ namespace SPReD
 			
 			m_sprites_proc.rearrange_CHR_data_ids();
 			
-			m_sprites_proc.update_sprite( SpriteList.Items[ SpriteList.SelectedIndices[ 0 ] ] as sprite_data, false, false );
+			m_sprites_proc.update_sprite( SpriteList.Items[ SpriteList.SelectedIndices[ 0 ] ] as sprite_data, false );
 		}
 		
 		void BtnDelete_Event(object sender, System.EventArgs e)
@@ -514,7 +520,11 @@ namespace SPReD
 						
 						m_sprites_proc.remove( spr );
 						
-						m_sprites_proc.CHR_bank_optimization( spr_CHR_id, SpriteList.Items, CBoxMode8x16.Checked );
+						m_sprites_proc.CHR_bank_optimization_begin();
+						{
+							m_sprites_proc.CHR_bank_optimization( spr_CHR_id, SpriteList.Items, CBoxMode8x16.Checked );
+						}
+						m_sprites_proc.CHR_bank_optimization_end( false );
 					}
 					while( SpriteList.SelectedIndices.Count != 0 );
 					
@@ -558,7 +568,7 @@ namespace SPReD
 					}
 				}
 				
-				update_selected_sprite( false, false );
+				update_selected_sprite( false );
 			}
 		}
 		
@@ -600,7 +610,7 @@ namespace SPReD
 					}
 				}
 				
-				update_selected_sprite( false, false );
+				update_selected_sprite( false );
 			}
 		}
 		
@@ -680,7 +690,7 @@ namespace SPReD
 			else
 			{
 				sprite_data spr = null;
-				m_sprites_proc.update_sprite( spr, true, false );
+				m_sprites_proc.update_sprite( spr, true );
 				
 				OffsetX.Value = 0;
 				OffsetY.Value = 0;
@@ -714,7 +724,7 @@ namespace SPReD
 			{
 				SpriteList.Items.Add( m_sprites_proc.create_sprite( new_sprite_name, m_create_sprite_form.sprite_width, m_create_sprite_form.sprite_height, CBoxMode8x16.Checked ) );
 				
-				select_last_sprite( true );
+				select_last_sprite();
 			}
 			else
 			{
@@ -722,14 +732,14 @@ namespace SPReD
 			}
 		}
 
-		void select_last_sprite( bool _show_mode )
+		void select_last_sprite()
 		{
 			SpriteList.ClearSelected();
 			SpriteList.SetSelected( SpriteList.Items.Count - 1, true );
 			
 			m_sprites_proc.layout_sprite_centering();
 			
-			update_selected_sprite( true, _show_mode );
+			update_selected_sprite( true );
 		}
 #endregion
 //		LAYOUT		*****************************************************************************************//		
@@ -804,7 +814,7 @@ namespace SPReD
 				}
 				
 				// update data in the layout viewport
-				update_selected_sprite( false, false );
+				update_selected_sprite( false );
 			}
 		}
 #elif DEF_SMS
@@ -816,16 +826,20 @@ namespace SPReD
 
 				if( m_SMS_sprite_flip_form.copy_CHR_data )
 				{
+					m_sprites_proc.CHR_bank_optimization_begin();
+					
 					for( int i = 0; i < SpriteList.SelectedIndices.Count; i++ )
 					{
 						m_sprites_proc.CHR_bank_optimization( ( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data ).get_CHR_data().id, SpriteList.Items, CBoxMode8x16.Checked );
 					}
 					
 					m_sprites_proc.rearrange_CHR_data_ids();
+					
+					m_sprites_proc.CHR_bank_optimization_end( false );
 				}
 				
 				// update data in the layout viewport
-				update_selected_sprite( false, false );
+				update_selected_sprite( false );
 			}
 			else
 			{
@@ -840,7 +854,7 @@ namespace SPReD
 				sprite_data spr = SpriteList.Items[ SpriteList.SelectedIndex ] as sprite_data;
 				
 				spr.shift_colors( CBoxShiftTransp.Checked, CBoxMode8x16.Checked );
-				m_sprites_proc.update_sprite( spr, false, false );
+				m_sprites_proc.update_sprite( spr, false );
 			}
 		}
 
@@ -901,12 +915,12 @@ namespace SPReD
 					m_sprites_proc.rearrange_CHR_data_ids();
 					
 					// update data in the layout viewport
-					update_selected_sprite( false, false );
+					update_selected_sprite( false );
 				}
 			}
 			else
 			{
-				message_box( "Please, select sprite(s)!", "CHR Data Splitting", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "No data!", "CHR Data Splitting", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
 			}
 		}
 		
@@ -921,7 +935,7 @@ namespace SPReD
 			
 			if( SpriteList.SelectedIndices.Count > 0 )
 			{
-				if( message_box( "Are you sure you want to pack the selected sprites?\n\nWARNING: Irreversible operation for Ref sprites!\nALL unused/empty CHRs will be lost!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to pack the selected sprites?\n\nWARNING: Irreversible operation for Ref sprites!\nALL unused/empty/duplicate CHRs will be lost!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
 					int i;
 					int j;
@@ -943,19 +957,17 @@ namespace SPReD
 					
 					System.Windows.Forms.ListBox.SelectedIndexCollection tmp_inds_list = SpriteList.SelectedIndices;
 					
+					m_sprites_proc.CHR_bank_optimization_begin();
+					
 					for( i = 0; i < tmp_inds_list.Count; i++ )
 					{
 						spr_1 = SpriteList.Items[ tmp_inds_list[ i ] ] as sprite_data;
 						chr_1 = spr_1.get_CHR_data();
 						
-						spr_1.optimize( false, CBoxMode8x16.Checked );
-						
 						for( j = i+1; j < tmp_inds_list.Count; j++ )
 						{
 							spr_2 = SpriteList.Items[ tmp_inds_list[ j ] ] as sprite_data;
 							chr_2 = spr_2.get_CHR_data();
-
-							spr_2.optimize( false, CBoxMode8x16.Checked );
 
 							spr_1_last_CHR_cnt = spr_1.get_CHR_data().get_data().Count;
 							
@@ -988,6 +1000,8 @@ namespace SPReD
 									tmp_inds_list.Remove( tmp_inds_list[ j ] );
 								
 									--j;
+									
+									m_sprites_proc.CHR_bank_optimization( spr_1.get_CHR_data().id, SpriteList.Items, CBoxMode8x16.Checked );
 								}
 							}
 						}
@@ -996,34 +1010,47 @@ namespace SPReD
 					m_sprites_proc.rearrange_CHR_data_ids();
 					
 					// update data in the layout viewport
-					update_selected_sprite( false, false );
+					update_selected_sprite( false );
+					
+					m_sprites_proc.CHR_bank_optimization_end( true, "Packing Statistics" );
 				}
 			}
 			else
 			{
-				message_box( "Please, select sprites!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				if( SpriteList.Items.Count > 0 )
+				{
+					message_box( "Please, select sprites!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				}
+				else
+				{
+					message_box( "No data!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				}
 			}
 		}
 
 		void BtnCHROpt_Event(object sender, EventArgs e)
 		{
-			if( SpriteList.SelectedIndices.Count > 0 )
+			if( SpriteList.Items.Count > 0 )
 			{
-				if( message_box( "Are you sure you want to optimize the selected sprite(s)?", "CHR Data Optimization", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to optimize all sprites data?\n\nWARNING: All unused/empty/duplicate CHRs will be lost!", "CHR Data Optimization", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
-					for( int i = 0; i < SpriteList.SelectedIndices.Count; i++ )
+					m_sprites_proc.CHR_bank_optimization_begin();
+					
+					for( int i = 0; i < m_sprites_proc.get_CHR_banks().Count; i++ )
 					{
-						m_sprites_proc.CHR_bank_optimization( ( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data ).get_CHR_data().id, SpriteList.Items, CBoxMode8x16.Checked );
+						m_sprites_proc.CHR_bank_optimization( m_sprites_proc.get_CHR_banks()[ i ].id, SpriteList.Items, CBoxMode8x16.Checked );
 					}
 					
 					m_sprites_proc.rearrange_CHR_data_ids();
 				
-					update_selected_sprite( false, false );
+					update_selected_sprite( false );
+					
+					m_sprites_proc.CHR_bank_optimization_end( true );
 				}
 			}
 			else
 			{
-				message_box( "Please, select sprite(s)!", "CHR Data Optimization", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );				
+				message_box( "No data!", "CHR Data Optimization", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
 			}
 		}
 		
@@ -1147,7 +1174,7 @@ namespace SPReD
 			{
 				if( m_description_form.auto_show() && m_description_form.edit_text.Length > 0 )
 				{
-					m_description_form.ShowDialog( this );
+					m_description_form.ShowDialog();
 				}
 			}
 		}
@@ -1390,7 +1417,7 @@ namespace SPReD
 				
 				if( ext == ".bmp" || ext == ".png" )
 				{
-					if( message_box( "Apply the nearest colors to the imported sprite(s)?\n\nNote: This will modify palette!", "Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+					if( message_box( "Apply the nearest colors to the imported sprite(s)?\n\nNote: This will modify the palette!", "Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
 						apply_palette = true;
 					}
@@ -1463,11 +1490,16 @@ namespace SPReD
 									case ".chr":
 									case ".bin":
 										{
+#if DEF_NES || DEF_SMS
 											fs = new FileStream( filename, FileMode.Open, FileAccess.Read );
 											
 											br = new BinaryReader( fs );
-											
+					
+#if DEF_NES											
 											if( br.BaseStream.Length > 4096 )
+#elif DEF_SMS
+											if( br.BaseStream.Length > 8192 )
+#endif	// DEF_NES												
 											{
 												j = 0;
 												
@@ -1496,6 +1528,9 @@ namespace SPReD
 													throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
 												}
 											}
+#else
+											message_box( "Raw tiles data loading is not implemented for this platform!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error );
+#endif	// DEF_NES
 										}
 										break;
 								}
@@ -1503,7 +1538,9 @@ namespace SPReD
 							
 							if( ext == ".bmp" || ext == ".png" )
 							{
-								select_last_sprite( false );
+								select_last_sprite();
+								
+								palette_group.Instance.update_selected_color();
 							}
 						}
 						break;

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 13.03.2017
  * Time: 11:24
  */
@@ -50,6 +50,7 @@ namespace SPReD
 			this.exportScriptEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
 			this.descriptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.statisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuStrip = new System.Windows.Forms.MenuStrip();
@@ -127,7 +128,7 @@ namespace SPReD
 			this.label6 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.LayoutGroupBox = new System.Windows.Forms.GroupBox();
 			this.BtnZoomOut = new System.Windows.Forms.Button();
 			this.BtnZoomIn = new System.Windows.Forms.Button();
 			this.BtnCentering = new System.Windows.Forms.Button();
@@ -188,7 +189,7 @@ namespace SPReD
 			((System.ComponentModel.ISupportInitialize)(this.OffsetY)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.OffsetX)).BeginInit();
 			this.groupBox7.SuspendLayout();
-			this.groupBox2.SuspendLayout();
+			this.LayoutGroupBox.SuspendLayout();
 			this.GroupBoxModeName.SuspendLayout();
 			this.CHRFlippingGroupBox.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -225,6 +226,7 @@ namespace SPReD
 									this.exportScriptEditorToolStripMenuItem,
 									this.toolStripSeparator17,
 									this.descriptionToolStripMenuItem,
+									this.statisticsToolStripMenuItem,
 									this.toolStripSeparator1,
 									this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -310,6 +312,13 @@ namespace SPReD
 			this.descriptionToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.descriptionToolStripMenuItem.Text = "&Description";
 			this.descriptionToolStripMenuItem.Click += new System.EventHandler(this.DescriptionToolStripMenuItemClick_Event);
+			// 
+			// statisticsToolStripMenuItem
+			// 
+			this.statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
+			this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+			this.statisticsToolStripMenuItem.Text = "S&tatistics";
+			this.statisticsToolStripMenuItem.Click += new System.EventHandler(this.StatisticsToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator1
 			// 
@@ -1019,28 +1028,28 @@ namespace SPReD
 			this.label5.TabIndex = 8;
 			this.label5.Text = "X:";
 			// 
-			// groupBox2
+			// LayoutGroupBox
 			// 
-			this.groupBox2.Controls.Add(this.SpriteLayout);
-			this.groupBox2.Controls.Add(this.BtnZoomOut);
-			this.groupBox2.Controls.Add(this.BtnZoomIn);
-			this.groupBox2.Controls.Add(this.BtnCentering);
-			this.groupBox2.Controls.Add(this.CBoxAxesLayout);
-			this.groupBox2.Controls.Add(this.CBoxMode8x16);
-			this.groupBox2.Controls.Add(this.CBoxSnapLayout);
-			this.groupBox2.Controls.Add(this.GroupBoxModeName);
-			this.groupBox2.Controls.Add(this.CHRFlippingGroupBox);
-			this.groupBox2.Controls.Add(this.BtnDeleteCHR);
-			this.groupBox2.Controls.Add(this.BtnShiftColors);
-			this.groupBox2.Controls.Add(this.CBoxGridLayout);
-			this.groupBox2.Controls.Add(this.CBoxShiftTransp);
-			this.groupBox2.Controls.Add(this.SpriteLayoutLabel);
-			this.groupBox2.Location = new System.Drawing.Point(206, 28);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(276, 491);
-			this.groupBox2.TabIndex = 8;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Layout:";
+			this.LayoutGroupBox.Controls.Add(this.SpriteLayout);
+			this.LayoutGroupBox.Controls.Add(this.BtnZoomOut);
+			this.LayoutGroupBox.Controls.Add(this.BtnZoomIn);
+			this.LayoutGroupBox.Controls.Add(this.BtnCentering);
+			this.LayoutGroupBox.Controls.Add(this.CBoxAxesLayout);
+			this.LayoutGroupBox.Controls.Add(this.CBoxMode8x16);
+			this.LayoutGroupBox.Controls.Add(this.CBoxSnapLayout);
+			this.LayoutGroupBox.Controls.Add(this.GroupBoxModeName);
+			this.LayoutGroupBox.Controls.Add(this.CHRFlippingGroupBox);
+			this.LayoutGroupBox.Controls.Add(this.BtnDeleteCHR);
+			this.LayoutGroupBox.Controls.Add(this.BtnShiftColors);
+			this.LayoutGroupBox.Controls.Add(this.CBoxGridLayout);
+			this.LayoutGroupBox.Controls.Add(this.CBoxShiftTransp);
+			this.LayoutGroupBox.Controls.Add(this.SpriteLayoutLabel);
+			this.LayoutGroupBox.Location = new System.Drawing.Point(206, 28);
+			this.LayoutGroupBox.Name = "LayoutGroupBox";
+			this.LayoutGroupBox.Size = new System.Drawing.Size(276, 491);
+			this.LayoutGroupBox.TabIndex = 8;
+			this.LayoutGroupBox.TabStop = false;
+			this.LayoutGroupBox.Text = "Layout:";
 			// 
 			// BtnZoomOut
 			// 
@@ -1520,7 +1529,7 @@ namespace SPReD
 			this.ClientSize = new System.Drawing.Size(772, 528);
 			this.Controls.Add(this.MenuStrip);
 			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.groupBox2);
+			this.Controls.Add(this.LayoutGroupBox);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox4);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -1542,7 +1551,7 @@ namespace SPReD
 			((System.ComponentModel.ISupportInitialize)(this.OffsetY)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.OffsetX)).EndInit();
 			this.groupBox7.ResumeLayout(false);
-			this.groupBox2.ResumeLayout(false);
+			this.LayoutGroupBox.ResumeLayout(false);
 			this.GroupBoxModeName.ResumeLayout(false);
 			this.CHRFlippingGroupBox.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
@@ -1556,6 +1565,7 @@ namespace SPReD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem statisticsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem quickGuideToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exportScriptEditorToolStripMenuItem;
@@ -1684,7 +1694,7 @@ namespace SPReD
 		private System.Windows.Forms.PictureBox Palette3;
 		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.GroupBox LayoutGroupBox;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.PictureBox PaletteMain;
 		

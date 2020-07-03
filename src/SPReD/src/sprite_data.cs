@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 14.03.2017
  * Time: 11:35
  */
@@ -549,86 +549,6 @@ namespace SPReD
 			
 			m_size_x = 0;
 			m_size_y = 0;
-		}
-		
-		public void optimize( bool _show_msg, bool _mode8x16 )
-		{
-			CHR8x8_data chr_data;
-			
-			if( m_CHR_data.get_link_cnt() == 1 )
-			{
-				int i;
-				int j;
-				
-				int chr_size 	= m_CHR_data.get_data().Count;
-				int attr_size	= m_CHR_attr.Count;
-
-				// find and reset all unused CHRs
-				for( i = 0; i < chr_size; i++ )
-				{
-					for( j = 0; j < attr_size; j++ )
-					{
-						if( get_CHR_attr()[ j ].CHR_ind == i )
-						{
-							break;
-						}
-						
-						if( _mode8x16 )
-						{
-							if( get_CHR_attr()[ j ].CHR_ind + 1 == i )
-							{
-								break;
-							}
-						}
-					}
-					
-					if( j == attr_size )
-					{
-						m_CHR_data.get_data()[ i ].clear();
-					}
-				}
-				
-				// delete empty CHRs
-				for( i = 0; i < chr_size; i++ )
-				{
-					chr_data = m_CHR_data.get_data()[ i ];
-					
-					if( chr_data.is_empty() == true )
-					{
-						// decrease by 1 all CHR indices in attributes data, that more than i
-						for( j = 0; j < attr_size; j++ )
-						{
-							if( m_CHR_attr[ j ].CHR_ind > i )
-							{
-								--m_CHR_attr[ j ].CHR_ind;
-							}
-							else
-							if( m_CHR_attr[ j ].CHR_ind == i )
-							{
-								m_CHR_attr.RemoveAt( j );
-								
-								--attr_size;
-								--j;
-							}
-						}
-						
-						// remove empty CHR
-						m_CHR_data.get_data().RemoveAt( i );
-						
-						--chr_size;
-						--i;
-					}
-				}
-				
-				update_dimensions();
-			}
-			else
-			{
-				if( _show_msg == true )
-				{
-					MainForm.message_box( "Can't optimize a shared CHR bank!\nThe sprite: " + name + " / CHR id: " + m_CHR_data.id, "WARNING!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
-				}
-			}
 		}
 		
 		public void save_image( string _path, bool _save_alpha, palette_small[] _plt_arr, ImageFormat _fmt, bool _mode8x16 )

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 13.03.2017
  * Time: 16:51
  */
@@ -25,8 +25,14 @@ namespace SPReD
 		private CHR_data_storage		m_CHR_data_storage		= null;
 		private palette_group			m_palette_grp			= null;
 		
+		int m_opt_stats_empty_CHRs 		= 0;
+		int m_opt_stats_unused_CHRs 	= 0;
+		int m_opt_stats_duplicate_CHRs 	= 0;
+		int m_opt_stats_total_CHRs		= 0;
+		
 		public sprite_processor( PictureBox 	_spr_layout, 
 		                          Label			_spr_layout_label,
+		                          GroupBox		_spr_layout_grp_box,
 		                          PictureBox 	_chr_bank,
 		                          Label			_chr_bank_label,
 								  PictureBox 	_plt_main,
@@ -35,7 +41,7 @@ namespace SPReD
 								  PictureBox 	_plt2,
 								  PictureBox 	_plt3 )
 		{
-			m_sprite_layout_viewer	= new sprite_layout_viewer( _spr_layout, _spr_layout_label );
+			m_sprite_layout_viewer	= new sprite_layout_viewer( _spr_layout, _spr_layout_label, _spr_layout_grp_box );
 			m_CHR_bank_viewer 		= new CHR_bank_viewer( _chr_bank, _chr_bank_label );
 			m_CHR_data_storage		= new CHR_data_storage();
 			m_palette_grp			= new palette_group( _plt_main, _plt0, _plt1, _plt2, _plt3 );
@@ -52,7 +58,7 @@ namespace SPReD
 				m_sprite_layout_viewer.reset();
 				
 				sprite_data spr = null;
-				m_sprite_layout_viewer.init( spr, false );
+				m_sprite_layout_viewer.init( spr );
 			}
 			{
 				m_CHR_bank_viewer.reset();
@@ -136,13 +142,13 @@ namespace SPReD
 			return spr;
 		}
 		
-		public void update_sprite( sprite_data _spr, bool _new_sprite = false, bool _show_mode = true )
+		public void update_sprite( sprite_data _spr, bool _new_sprite = false )
 		{
 			CHR_data_group chr_data = ( _spr != null ) ? _spr.get_CHR_data():null;
 			
 			List< CHR8x8_data > sprite_chr_data = ( chr_data != null ) ? chr_data.get_data():null;
 			
-			m_sprite_layout_viewer.init( _spr, _show_mode );
+			m_sprite_layout_viewer.init( _spr );
 			
 			if( _new_sprite )
 			{
@@ -311,6 +317,14 @@ namespace SPReD
 			return false;
 		}
 
+		public void CHR_bank_optimization_begin()
+		{
+			m_opt_stats_empty_CHRs 		= 0;
+			m_opt_stats_unused_CHRs 	= 0;
+			m_opt_stats_duplicate_CHRs 	= 0;
+			m_opt_stats_total_CHRs		= 0;
+		}
+		
 		public void CHR_bank_optimization( int _CHR_bank_id, ListBox.ObjectCollection _sprites, bool _8x16_mode )
 		{
 			CHR_data_group CHR_bank = get_CHR_bank( _CHR_bank_id );
@@ -335,12 +349,73 @@ namespace SPReD
 			
 			bool CHR_used;
 			
+			int nCHR_n;
+			CHR8x8_data CHR_a = null;
+			CHR8x8_data CHR_b = null;
+			
+			// remove not empty duplicates
+			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )
+			{
+				CHR_a = CHR_bank.get_data()[ CHR_n ];
+				
+				if( ( _8x16_mode == true && ( ( CHR_n & 0x01 ) == 0x01 ) ) || CHR_a.is_empty() )
+				{
+					continue;
+				}
+				
+				for( nCHR_n = CHR_n + 1; nCHR_n < CHR_cnt; nCHR_n++ )
+				{
+					CHR_b = CHR_bank.get_data()[ nCHR_n ];
+					
+					if( ( _8x16_mode == false && CHR_a.equals( CHR_b ) ) || ( _8x16_mode == true && CHR_a.equals( CHR_b ) && CHR_bank.get_data()[ CHR_n + 1 ].equals( CHR_bank.get_data()[ nCHR_n + 1 ] ) ) )
+					{
+						// go through all sprites wich use _CHR_bank_id
+						// and check duplicate CHRs
+						for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
+						{
+							spr = _sprites[ spr_n ] as sprite_data;
+							
+							if( spr.get_CHR_data().id == _CHR_bank_id )
+							{
+								attr_cnt = spr.get_CHR_attr().Count;
+								
+								for( attr_n = 0; attr_n < attr_cnt; attr_n++ )
+								{
+									attr = spr.get_CHR_attr()[ attr_n ];
+									
+									if( attr.CHR_ind == nCHR_n )
+									{
+										attr.CHR_ind = CHR_n;
+										
+										// count not empty CHR only
+										if( !CHR_b.is_empty() )
+										{
+											// mark used CHR as empty
+											CHR_b.clear();
+											
+											++m_opt_stats_duplicate_CHRs;
+											--m_opt_stats_unused_CHRs;
+											
+											if( _8x16_mode )
+											{
+												++m_opt_stats_duplicate_CHRs;
+												--m_opt_stats_unused_CHRs;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
 			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )
 			{
 				CHR_used = false;
 				
 				// go through all sprites wich use _CHR_bank_id
-				// and check unused attributes
+				// and check for unused attributes
 				for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
 				{
 					spr = _sprites[ spr_n ] as sprite_data;
@@ -351,7 +426,9 @@ namespace SPReD
 						
 						for( attr_n = 0; attr_n < attr_cnt; attr_n++ )
 						{
-							if( spr.get_CHR_attr()[ attr_n ].CHR_ind == CHR_n )
+							attr = spr.get_CHR_attr()[ attr_n ];
+							
+							if( attr.CHR_ind == CHR_n )
 							{
 								CHR_used = true;
 								
@@ -360,7 +437,7 @@ namespace SPReD
 							
 							if( _8x16_mode )
 							{
-								if( spr.get_CHR_attr()[ attr_n ].CHR_ind + 1 == CHR_n )
+								if( attr.CHR_ind + 1 == CHR_n )
 								{
 									CHR_used = true;
 									
@@ -380,6 +457,9 @@ namespace SPReD
 				{
 					// clear unused CHR
 					CHR_bank.get_data()[ CHR_n ].clear();
+					
+					++m_opt_stats_unused_CHRs;
+					--m_opt_stats_empty_CHRs;
 				}
 			}
 
@@ -388,7 +468,7 @@ namespace SPReD
 			{
 				if( CHR_bank.get_data()[ CHR_n ].is_empty() )
 				{
-					// go through all sprites wich used _CHR_bank_id
+					// go through all sprites wich use _CHR_bank_id
 					// and check unused attributes
 					for( spr_n = 0; spr_n < spr_cnt; spr_n++ )
 					{
@@ -426,7 +506,19 @@ namespace SPReD
 					
 					--CHR_cnt;
 					--CHR_n;
+					
+					++m_opt_stats_empty_CHRs;
 				}
+			}
+		}
+		
+		public void CHR_bank_optimization_end( bool _show_msg, string _wnd_title_msg = "Optimization Statistics" )
+		{
+			if( _show_msg )
+			{
+				m_opt_stats_total_CHRs = m_opt_stats_empty_CHRs + m_opt_stats_unused_CHRs + m_opt_stats_duplicate_CHRs;
+			
+				MainForm.message_box( String.Format( "Deleted tiles:\n\nEmpty:\t{0}\nUnused:\t{1}\nDuplicate:\t{2}\n----------------------\nTotal:\t{3} / {4} Bytes", m_opt_stats_empty_CHRs, m_opt_stats_unused_CHRs, m_opt_stats_duplicate_CHRs, ( m_opt_stats_total_CHRs > 0 ? -m_opt_stats_total_CHRs:m_opt_stats_total_CHRs ), m_opt_stats_total_CHRs * utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES ), _wnd_title_msg, MessageBoxButtons.OK, MessageBoxIcon.Information );
 			}
 		}
 		
@@ -616,8 +708,8 @@ namespace SPReD
 		
 		public void set_mode8x16( bool _on )
 		{
-			m_CHR_bank_viewer.set_mode8x16( _on );
 			m_sprite_layout_viewer.set_mode8x16( _on );
+			m_CHR_bank_viewer.set_mode8x16( _on );
 		}
 		
 		public void chr_transform( CHR8x8_data.ETransform _type )
@@ -628,6 +720,11 @@ namespace SPReD
 		public CHR_data_group get_CHR_bank( int _CHR_bank_id )
 		{
 			return m_CHR_data_storage.get_bank_by_id( _CHR_bank_id );
+		}
+		
+		public List< CHR_data_group > get_CHR_banks()
+		{
+			return m_CHR_data_storage.get_banks();
 		}
 
 		public sprite_data import_CHR_bank( BinaryReader _br, string _name )
@@ -708,6 +805,30 @@ namespace SPReD
 		public bool CHR_paste()
 		{
 			return m_CHR_bank_viewer.CHR_paste();
+		}
+
+		public void show_statistics( ListBox.ObjectCollection _sprites )
+		{
+			int num_sprites 	= _sprites.Count;
+			int num_ref_sprites = 0;
+			int num_CHR_banks 	= m_CHR_data_storage.get_banks_cnt();
+			int num_tiles 		= m_CHR_data_storage.get_num_tiles();
+			int tiles_bytes 	= num_tiles * utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES;
+			
+			int i;
+			sprite_data spr;
+			
+			for( i = 0; i < num_sprites; i++ )
+			{
+				spr = _sprites[ i ] as sprite_data;
+				
+				if( spr.get_CHR_data().get_link_cnt() > 1 )
+				{
+					++num_ref_sprites;
+				}
+			}
+			
+			MainForm.message_box( String.Format( "Sprites:\t\t{0}\nRef Sprites:\t{1}\nCHR Banks:\t{2}\nTiles:\t\t{3} / {4} Bytes", num_sprites, num_ref_sprites, num_CHR_banks, num_tiles, tiles_bytes ), "Statistics", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 	}
 }
