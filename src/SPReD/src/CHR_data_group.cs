@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 21.03.2017
  * Time: 11:07
  */
@@ -530,20 +530,26 @@ namespace SPReD
 		
 		public void import( BinaryReader _br )
 		{
-			byte[] pix_arr = new byte[ 8 ];
-			byte[] tmp_arr = new byte[ 16 ];
+			byte[] pix_arr = new byte[ utils.CONST_CHR8x8_SIDE_PIXELS_CNT ];
+			byte[] tmp_arr = new byte[ utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES ];
 			
 			int i;
 			int j;
 			
-			byte low_byte;
-			byte high_byte;
+			byte byte_0;
+			byte byte_1;
+#if DEF_SMS
+			byte byte_2;
+			byte byte_3;
+			
+			int ind_offset;
+#endif
 			
 			int shift_7_cnt;
 			
 			CHR8x8_data chr_data;
 			
-			if( _br.BaseStream.Length < 16 )
+			if( _br.BaseStream.Length < utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES )
 			{
 				_br.BaseStream.Position = _br.BaseStream.Length;
 				
@@ -554,23 +560,34 @@ namespace SPReD
 			{
 				chr_data = new CHR8x8_data();
 				
-				tmp_arr = _br.ReadBytes( 16 );
+				tmp_arr = _br.ReadBytes( utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES );
 				
 				for( i = 0; i < 8; i++ )
 				{
-					low_byte 	= tmp_arr[ i ];
-					high_byte 	= tmp_arr[ i + 8 ];
+#if DEF_NES
+					byte_0	= tmp_arr[ i ];
+					byte_1	= tmp_arr[ i + 8 ];
+#elif DEF_SMS
+					ind_offset = i << 2;
 					
-					for( j = 0; j < 8; j++ )
+					byte_0	= tmp_arr[ ind_offset ];
+					byte_1 	= tmp_arr[ ind_offset + 1 ];
+					byte_2	= tmp_arr[ ind_offset + 2 ];
+					byte_3 	= tmp_arr[ ind_offset + 3 ];
+#endif
+					for( j = 0; j < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; j++ )
 					{
 						shift_7_cnt = 7 - j;
-						
-						pix_arr[ j ] = ( byte )( ( ( low_byte  & ( 1 << shift_7_cnt ) ) >> shift_7_cnt ) | ( ( ( high_byte << 1 ) & ( 1 << ( 8 - j ) ) ) >> shift_7_cnt ) );
+#if DEF_NES						
+						pix_arr[ j ] = ( byte )( ( ( byte_0 & ( 1 << shift_7_cnt ) ) >> shift_7_cnt ) | ( ( ( byte_1 << 1 ) & ( 1 << ( 8 - j ) ) ) >> shift_7_cnt ) );
+#elif DEF_SMS						
+						pix_arr[ j ] = ( byte )( ( ( byte_0 >> shift_7_cnt & 0x01 ) ) | ( ( ( byte_1 >> shift_7_cnt & 0x01 ) ) << 1 ) | ( ( ( byte_2 >> shift_7_cnt & 0x01 ) ) << 2 ) | ( ( ( byte_3 >> shift_7_cnt & 0x01 ) ) << 3 ) );
+#endif						
 					}
 					
 					chr_data.push_line( pix_arr );
 				}
-				
+
 				m_CHR_arr.Add( chr_data );
 				
 				if( m_CHR_arr.Count == utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
@@ -578,7 +595,7 @@ namespace SPReD
 					break;
 				}
 			}
-			while( _br.BaseStream.Position + 16 <= _br.BaseStream.Length );
+			while( _br.BaseStream.Position + utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES <= _br.BaseStream.Length );
 			
 			if( m_CHR_arr.Count < utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
 			{
