@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2019-2020 ( MIT license. See LICENSE.txt )
  * Date: 20.05.2019
  * Time: 16:19
  */
@@ -518,7 +518,7 @@ namespace PyScriptEditor
 			string build_str	= "Build: " + ver.Build;
 			DateTime build_date = new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
 	
-			message_box( "Simple Python script editor" + "\n\n" + get_app_version() + " Build: " + ver.Build + "\nBuild date: " + build_date + "\n\nDeveloped by 0x8BitDev \u00A9 " + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
+			message_box( "Simple Python script editor" + "\n\n" + get_app_version() + " Build: " + ver.Build + "\nBuild date: " + build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2019-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 		
 		string get_app_version()
