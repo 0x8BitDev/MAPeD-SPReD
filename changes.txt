@@ -1,5 +1,7 @@
 MAPeD-NES:
 ~~~~~~~~~~~
+03.07.2020 v0.57b
+
 16.07.2019 - Quick guide added
 05.06.2019 - Python script editor added as separate project for both MAPeD/SPReD
 31.05.2019 - Python script editor: added the possibility to edit any number of scripts
@@ -7,22 +9,32 @@ MAPeD-NES:
 
 17.05.2019 v0.54b
 
-16.05.2019 - fixed issue with tab pages and tiles palette on Linux
-15.05.2019 - target framework changed from 4.0 to 4.5.1
-14.05.2019 - minor GUI changes to improve look on Linux
-14.05.2019 - makefiles added to compile samples on Linux
+16.05.2019 - Fixed issue with tab pages and tiles palette on Linux
+15.05.2019 - Target framework changed from 4.0 to 4.5.1
+14.05.2019 - Minor GUI changes to improve look on Linux
+14.05.2019 - Makefiles added to compile samples on Linux
 12.05.2019 - Linux supported
-12.05.2019 - solution renamed to avoid errors on Linux
-12.05.2019 - unmanaged Win code enables on Win only
-12.05.2019 - fixed GUI issues on Linux
-09.05.2019 - load\save palette with project file
-09.05.2019 - custom palette import added
+12.05.2019 - Solution renamed to avoid errors on Linux
+12.05.2019 - Unmanaged Win code enables on Win only
+12.05.2019 - Fixed GUI issues on Linux
+09.05.2019 - Load\save palette with project file
+09.05.2019 - Custom palette import added
 
 01.05.2019 v0.50b - Initial release
 
 
 SPReD-NES/SMS:
 ~~~~~~~~~~~~~~~
+
+03.07.2020 v0.57b
+
+02.07.2020 - Added iterative optimization during the packing operation
+01.07.2020 - Now optimization performs for all sprites, and not for selected ones
+01.07.2020 - Layout window OSD info moved to the layout group box
+30.06.2020 - Removing of duplicate CHRs during optimization process added
+30.06.2020 - SMS raw tiles data loading added
+29.06.2020 - Project statistics added
+28.06.2020 - SMS samples added
 06.07.2019 - Quick guide added
 14.06.2019 - SPReD-SMS added
 05.06.2019 - Python script editor, API doc and sample script are added
@@ -30,14 +42,14 @@ SPReD-NES/SMS:
 17.05.2019 v0.54b
 
 16.05.2019 - CHR banks export fixed on Linux
-15.05.2019 - target framework changed from 4.0 to 4.5.1
-14.05.2019 - makefiles added to compile samples on Linux
+15.05.2019 - Target framework changed from 4.0 to 4.5.1
+14.05.2019 - Makefiles added to compile samples on Linux
 12.05.2019 - Linux supported
-12.05.2019 - solution renamed to avoid errors on Linux
-12.05.2019 - unmanaged Win code enables on Win only
-12.05.2019 - fixed GUI issues on Linux
-09.05.2019 - load\save palette with project file
-09.05.2019 - custom palette import added
-08.05.2019 - cursor switching fixed ( Layout: build/draw )
+12.05.2019 - Solution renamed to avoid errors on Linux
+12.05.2019 - Unmanaged Win code enables on Win only
+12.05.2019 - Fixed GUI issues on Linux
+09.05.2019 - Load\save palette with project file
+09.05.2019 - Custom palette import added
+08.05.2019 - Cursor switching fixed ( Layout: build/draw )
 
 01.05.2019 v0.50b - Initial release
