@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 16.03.2017
  * Time: 16:35
  */
@@ -147,11 +147,11 @@ namespace MAPeD
 		public const int CONST_MAX_BLOCKS_CNT				= 256;
 		public const int CONST_MAX_TILES_CNT				= 256;
 		
-		// the Dendy hardware doesn't support flipping of a background on per CHR's basis
-		// so I left it just in case for using in other versions of the application for other consoles
+		// the NES hardware doesn't support flipping of a background on per CHR's basis
+		// so I left it just in case for using in other versions of the application for other platforms (SMS)
 		public const byte CONST_CHR_ATTR_FLAG_HFLIP			= 0x01;
 		public const byte CONST_CHR_ATTR_FLAG_VFLIP			= 0x02;
-		// UNDEFINED: DEF_FLIP_BLOCKS_SPR_BY_FLAGS		
+		// UNDEFINED: DEF_FLIP_BLOCKS_SPR_BY_FLAGS
 		
 		public static SolidBrush 	brush		 	= new SolidBrush( CONST_COLOR_BRUSH_DEFAULT );
 		public static readonly Font fnt8_Arial		= new Font( "Arial", 8, 	FontStyle.Bold );
