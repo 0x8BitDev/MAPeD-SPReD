@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 14:57
  */
@@ -168,6 +168,25 @@ namespace SPReD
 			m_sel_clr_ind = (byte)plt.get_color_inds()[ plt.color_slot ];
 			
 			update();
+		}
+		
+		public void update_selected_color()
+		{
+			palette_small plt;
+			
+			for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+			{
+				plt = m_plt_arr[ i ];
+				
+				if( plt.active == true )
+				{
+					m_sel_clr_ind = plt.get_selected_slot_color_id();
+						
+					update();
+					
+					break;
+				}
+			}
 		}
 		
 		public palette_small[] get_palettes_arr()
