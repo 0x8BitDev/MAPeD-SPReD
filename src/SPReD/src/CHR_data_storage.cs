@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 21.03.2017
  * Time: 11:00
  */
@@ -87,6 +87,25 @@ namespace SPReD
 		public int get_banks_cnt()
 		{
 			return m_data.Count;
+		}
+		
+		public List< CHR_data_group > get_banks()
+		{
+			return m_data;
+		}
+		
+		public int get_num_tiles()
+		{
+			int num_tiles = 0;
+			
+			int size = m_data.Count;
+			
+			for( int i = 0; i < size; i++ )
+			{
+				num_tiles += m_data[ i ].get_data().Count;
+			}
+			
+			return num_tiles;
 		}
 		
 		public CHR_data_group get_bank_by_id( int _id )
