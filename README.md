@@ -30,17 +30,19 @@ Here you can find **NES/SMS** development tools:
 
 **Quick Guide:** `./doc/MAPeD/Quick_Guide.html`
 
+**MAPeD-SMS - Coming soon...**
+
 # SPReD-NES/SMS - Sprites editor
 **Some features are:**
 
 - handy drawing mode
 - group operations on sprites
-- sprites data packing ( 1/2/4 KB ) and optimization
+- sprites data packing ( 1/2/4/8 KB ) and optimization
 - 8x16 mode support
 - images import/export
 - export to **NES: CA65/NESasm** / **SMS: WLA-DX**
 - built-in **Python** script editor for writing custom data export scripts
-- **NES <-> SMS** data conversion*
+- **NES <=> SMS** data conversion*
 - etc...
 
 \* You can load a **NES** project into **SMS** editor and vice versa.
@@ -48,32 +50,32 @@ Here you can find **NES/SMS** development tools:
 **Quick Guide:** `./doc/SPReD/Quick_Guide.html`
 
 # Python script editor
-If you need to export specific data which are not supported by the tools, you can write your own script using simple built-in Python script editor ( **SPSeD** ). Press **Alt+X** ( **ALT**ernative e**X**port ) to open the editor.
+If you need to export specific data which are not supported by the tools, you can write your own script using a simple built-in Python script editor ( **SPSeD** ). Press **Alt+X** ( **ALT**ernative e**X**port ) to open the editor.
 
-Data export APIs were designed to work with a current application data state. So you can retrieve data, but you can't modify it. Application data will always remain unaltered.
+Data export APIs were designed to work with a current application data state. So you can retrieve data, but you can't modify it. Application data will always remain unchanged.
 
-Press **Shift+F1** (in-app doc) or **F1** (in-browser doc) to open an API documentation. Or you can find it here:
-`./doc/MAPeD_Data_Export_Python_API.html`
-`./doc/SPReD_Data_Export_Python_API.html`
+Press **Shift+F1** (in-app doc) or **F1** (in-browser doc) to open the API documentation. Or you can find it here:
+- `./doc/MAPeD_Data_Export_Python_API.html`
+- `./doc/SPReD_Data_Export_Python_API.html`
 
 Sample scripts of using the APIs:
-`./scripts/MAPeD_project_stats.py`
-`./scripts/SPReD_project_stats.py`
+- `./scripts/MAPeD_project_stats.py`
+- `./scripts/SPReD_project_stats.py`
 
-**Warning:** It's not recommended to use the editor for script editing under **Mono** due to buggy implementation of RichTextBox. You can load your script into the editor and to any other editor where you can edit it. Then you can press **Ctrl+R** (reload script) and **F5** (run script).
+**Note:** It's not recommended to use the buit-in editor for script editing under **Mono** due to buggy implementation of RichTextBox. You can load your script into the editor and into any other editor where you can edit it. Then press **Ctrl+R** (reload script) and **F5** (run script).
 
 
 # Compiling
 The solution files you can find here:
- `./src/MAPeD/MAPeD-NES.sln`
- `./src/SPReD/SPReD-NES.sln`
- `./src/SPReD/SPReD-SMS.sln`
+- `./src/MAPeD/MAPeD-NES.sln`
+- `./src/SPReD/SPReD-NES.sln`
+- `./src/SPReD/SPReD-SMS.sln`
 
 **Note:** **.Net 4.5.1** profile is required to build the tools.
 
 ## Windows
 The tools were developed using **SharpDevelop 4.4.2.** 
-You can download it at: http://www.icsharpcode.net/OpenSource/SD/Download/Default.aspx
+You can download it at: https://drive.google.com/file/d/1kX_h38VViI9akc1vdt1Um6YGolYPMNGm/view
 
 1) Run SharpDevelop.
 2) Open solution file.
@@ -131,24 +133,26 @@ As mentioned before, you need to install Mono on your computer. To run the tools
 ( +shooting and ducking animations )
 
 ---
-The NES samples were created using **CA65 assembler (v2.17 - GIT 7445550)**. 
-Github page: https://github.com/cc65/cc65 Or you can download the latest CC65 snapshots at: https://sourceforge.net/projects/cc65/files/cc65-snapshot-win32.zip
+**Used tools:**
 
-**CC65** installing instruction: http://wiki.nesdev.com/w/index.php/Installing_CC65
+**NES: CA65 assembler (v2.17 - GIT 7445550)**
+- Github: https://github.com/cc65/cc65
+- The latest snapshots: https://sourceforge.net/projects/cc65/files/cc65-snapshot-win32.zip
+- Installing instruction: http://wiki.nesdev.com/w/index.php/Installing_CC65
 
-The SMS samples were created using **WLA-DX assembler v9.10**.
-Github page: https://github.com/vhelin/wla-dx
+**SMS: WLA-DX assembler v9.10**
+- Github: https://github.com/vhelin/wla-dx
 
-The ZX Spectrum sample uses **SjASMPlus - Z80 Assembly Cross-Compiler (v1.07 RC7)**. 
-The latest version can be downloaded at: https://sourceforge.net/projects/sjasmplus/
+**ZX Spectrum: SjASMPlus - Z80 Assembly Cross-Compiler (v1.07 RC7)**
+- The latest version: https://sourceforge.net/projects/sjasmplus/
 
 To compile the **NES/SMS/ZX** samples on Windows you can run **'compile.bat'** which contains in all samples directories.
 
-To compile them on Linux you can run **'makefile'** which also contains in all samples directories.
+To compile them on Linux you can run **'makefile'** which also contains in all samples directories ( except of ZX sample ).
 
-- `make` to compile binaries to the `./samples/nes/bin` directory;
+- `make` to compile binaries to the `./samples/<platform>/bin` directory;
 - `make run` to run compiled sample with **FCEUX**/**Mednafen** emulators;
-- `make clean` to remove compiled binaries form the `./samples/nes/bin` directory;
+- `make clean` to remove compiled binaries;
 
 ---
 **Warning:** The sample codes coming with the tools were made just for testing of exported data. 
@@ -172,7 +176,7 @@ https://github.com/leonbloy/pngcs
 The tools sources: 
 https://github.com/0x8BitDev/MAPeD-SPReD
 
-Compiled executables, example projects files and compiled **NES/SMS/ZX** samples you can get in the latest release: 
+Compiled executables and compiled binaries of the **NES/SMS/ZX** samples you can get in the latest release:
 https://github.com/0x8BitDev/MAPeD-SPReD/releases
 
 The latest development build can be found **[here](https://drive.google.com/open?id=1Jopms8ENPrjTktrt_V36TQC2FZT2agId)**.
