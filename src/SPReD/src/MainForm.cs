@@ -506,6 +506,11 @@ namespace SPReD
 			{
 				if( message_box( "Are you sure you want to delete " + SpriteList.SelectedIndices.Count + " sprite(s)?", "Delete Selected Sprite(s)", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
+					if( !validate_CHR_banks_of_selected_sprites( "Delete Selected Sprite(s)" ) )
+					{
+						return;
+					}
+					
 					sprite_data spr;
 
 					int spr_CHR_id;
@@ -822,6 +827,11 @@ namespace SPReD
 		{
 			if( SpriteList.SelectedItems.Count > 0 )
 			{
+				if( !validate_CHR_banks_of_selected_sprites( _title ) )
+				{
+					return;
+				}
+				
 				m_SMS_sprite_flip_form.ShowDialog( _title, _vert_flip, CBoxMode8x16.Checked, ( sprite_data.EFlipType )CBoxFlipType.SelectedIndex );
 
 				if( m_SMS_sprite_flip_form.copy_CHR_data )
@@ -904,18 +914,21 @@ namespace SPReD
 			{
 				if( message_box( "Are you sure you want to split the CHR data?\n\nWARNING: ALL sprites, including Ref ones, will have unique CHR banks!", "CHR Data Splitting", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
-					int i;
-					int sprites_cnt = SpriteList.Items.Count;					
-					
-					for( i = 0; i < sprites_cnt; i++ )
+					if( m_sprites_proc.CHR_banks_validation( CBoxMode8x16.Checked, "CHR Data Splitting" ) )
 					{
-						m_sprites_proc.split_CHR( SpriteList.Items[ i ] as sprite_data, CBoxMode8x16.Checked );
+						int i;
+						int sprites_cnt = SpriteList.Items.Count;					
+						
+						for( i = 0; i < sprites_cnt; i++ )
+						{
+							m_sprites_proc.split_CHR( SpriteList.Items[ i ] as sprite_data, CBoxMode8x16.Checked );
+						}
+						
+						m_sprites_proc.rearrange_CHR_data_ids();
+						
+						// update data in the layout viewport
+						update_selected_sprite( false );
 					}
-					
-					m_sprites_proc.rearrange_CHR_data_ids();
-					
-					// update data in the layout viewport
-					update_selected_sprite( false );
 				}
 			}
 			else
@@ -937,6 +950,11 @@ namespace SPReD
 			{
 				if( message_box( "Are you sure you want to pack the selected sprites?\n\nWARNING: Irreversible operation for Ref sprites!\nALL unused/empty/duplicate CHRs will be lost!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
+					if( !validate_CHR_banks_of_selected_sprites( "CHR Data Packing" ) )
+					{
+						return;
+					}
+					
 					int i;
 					int j;
 					int k;
@@ -1034,18 +1052,21 @@ namespace SPReD
 			{
 				if( message_box( "Are you sure you want to optimize all sprites data?\n\nWARNING: All unused/empty/duplicate CHRs will be lost!", "CHR Data Optimization", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
-					m_sprites_proc.CHR_bank_optimization_begin();
-					
-					for( int i = 0; i < m_sprites_proc.get_CHR_banks().Count; i++ )
+					if( m_sprites_proc.CHR_banks_validation( CBoxMode8x16.Checked ) )
 					{
-						m_sprites_proc.CHR_bank_optimization( m_sprites_proc.get_CHR_banks()[ i ].id, SpriteList.Items, CBoxMode8x16.Checked );
+						m_sprites_proc.CHR_bank_optimization_begin();
+						
+						for( int i = 0; i < m_sprites_proc.get_CHR_banks().Count; i++ )
+						{
+							m_sprites_proc.CHR_bank_optimization( m_sprites_proc.get_CHR_banks()[ i ].id, SpriteList.Items, CBoxMode8x16.Checked );
+						}
+						
+						m_sprites_proc.rearrange_CHR_data_ids();
+					
+						update_selected_sprite( false );
+						
+						m_sprites_proc.CHR_bank_optimization_end( true );
 					}
-					
-					m_sprites_proc.rearrange_CHR_data_ids();
-				
-					update_selected_sprite( false );
-					
-					m_sprites_proc.CHR_bank_optimization_end( true );
 				}
 			}
 			else
@@ -1060,6 +1081,20 @@ namespace SPReD
 			
 			CHRPackToolStripMenuItem.Enabled = BtnCHRPack.Enabled = ( cbox.SelectedIndex != 0 ) ? true:false;
 		}
+		
+		private bool validate_CHR_banks_of_selected_sprites( string _wnd_title )
+		{
+			for( int i = 0; i < SpriteList.SelectedIndices.Count; i++ )
+			{
+				if( !m_sprites_proc.CHR_bank_validation( ( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data ).get_CHR_data().id, CBoxMode8x16.Checked, _wnd_title ) )
+				{
+					return false;
+				}
+			}
+			
+			return true;
+		}
+		
 #endregion		
 //		CHR TOOLS	*****************************************************************************************//
 #region CHR tools		
@@ -1340,7 +1375,7 @@ namespace SPReD
 #if DEF_SMS
 							if( ignore_palette )
 							{
-								message_box( "In order to fix flipped NES sprites issue you can select the broken sprites and flip them again by pressing the \"VFlip\"\\\"HFlip\" button in the \"Sprite List\" area. Perform flipping with unchecked \"Transform positions\" checkbox.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+								message_box( "In order to fix flipped NES sprites issue you can select the broken sprites and flip them again by pressing the \"VFlip\"\\\"HFlip\" button in the \"Sprite List\" area. Perform flipping with unchecked \"Transform positions\" option.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 							}
 #endif
 						}
