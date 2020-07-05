@@ -345,7 +345,7 @@ namespace SPReD
 			
 			if( m_selected_ind >= 0 )
 			{
-				m_selected_ind &= int.MaxValue - 1;
+				m_selected_ind &= ~0x01;
 			}
 			
 			dispatch_event_set_selected_CHR();
@@ -435,7 +435,7 @@ namespace SPReD
 		
 		public void key_event(object sender, KeyEventArgs e)
 		{
-			if( m_data_list != null )
+			if( m_data_list != null && m_selected_ind >= 0 )
 			{
 				bool pressed = false;
 				
@@ -502,14 +502,14 @@ namespace SPReD
 						m_selected_ind = 0;
 					}
 
-					if( m_mode8x16 )
-					{
-						m_selected_ind &= int.MaxValue - 1;
-					}
-					
 					if( m_selected_ind >= m_data_list.Count )
 					{
-						m_selected_ind = m_data_list.Count - ( m_mode8x16 ? 2:1 );
+						m_selected_ind = m_data_list.Count - 1;
+						
+						if( m_mode8x16 )
+						{
+							m_selected_ind &= ~0x01;
+						}
 					}
 
 					dispatch_event_set_selected_CHR();
