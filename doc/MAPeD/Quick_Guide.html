@@ -5,7 +5,7 @@
 	<TITLE></TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.2  (Win32)">
 	<META NAME="CREATED" CONTENT="20190708;11162720">
-	<META NAME="CHANGED" CONTENT="20190717;16061912">
+	<META NAME="CHANGED" CONTENT="20200702;20431384">
 	<STYLE TYPE="text/css">
 	<!--
 		p { margin:0; }
@@ -64,10 +64,12 @@
 		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#A Few Steps to Create a Game Level|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>A
 		Few Steps to Create a Game Level</B></SPAN></FONT></FONT></A></P>
 	</UL>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Load / Save|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Load
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Load Save|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Load
 	/ Save</B></SPAN></FONT></FONT></A></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Import|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Import</B></SPAN></FONT></FONT></A></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Export|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Export</B></SPAN></FONT></FONT></A></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
+	<A HREF="#Miscellaneous|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Miscellaneous</B></SPAN></FONT></FONT></A></P>
 </UL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
@@ -82,9 +84,11 @@
 </DIV>
 <P ALIGN=LEFT STYLE="margin-left: 1cm; margin-bottom: 0cm"><BR>
 </P>
+<P ALIGN=LEFT STYLE="margin-left: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>The <B>MAPeD</B> is a
-tool for building a game levels for <B>NES</B> games.</FONT></FONT></P>
+tool for building a game levels for <B>NES</B> games from scratch.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
@@ -141,8 +145,11 @@ tool for building a game levels for <B>NES</B> games.</FONT></FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">*
 <SPAN LANG="en-US">Double-click on the following tabs to detach them:
-Main, Layout, Tiles, Screens. Close detached tab container to return
-the tab to its place.</SPAN></FONT></P>
+</SPAN><SPAN LANG="en-US"><B>Main</B></SPAN><SPAN LANG="en-US">,
+</SPAN><SPAN LANG="en-US"><B>Layout</B></SPAN><SPAN LANG="en-US">,
+</SPAN><SPAN LANG="en-US"><B>Tiles</B></SPAN><SPAN LANG="en-US">,
+</SPAN><SPAN LANG="en-US"><B>Screens</B></SPAN><SPAN LANG="en-US">.
+Close detached tab container to return the tab to its place.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -162,12 +169,12 @@ Tab</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Click Menu &rarr; Tiles / Blocks to
-see all available hotkeys for this section.</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>Tiles /
+Blocks</B></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">CHR &ndash; 1x1 tile</FONT></P>
+<FONT FACE="Arial, sans-serif">CHR &ndash; 1x1 tile ( 8x8 pixels )</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">Block &ndash; 2x2 tile</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -198,21 +205,21 @@ you to draw graphics and build blocks from CHR data.</FONT></P>
 &ldquo;Select CHRs&rdquo; and &ldquo;Draw&rdquo;. </FONT>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">To switch between the modes you can
+<FONT FACE="Arial, sans-serif">To switch between them, you can
 press the &ldquo;Select&rdquo; or &ldquo;Draw&rdquo; button or click
 the &ldquo;Select CHRs&rdquo; or &ldquo;Draw&rdquo; item in the
 context menu.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">The
-&ldquo;Select CHRs&rdquo; mode allows to assign CHRs to a selected
-block from <A HREF="#CHR Bank|region">CHR bank</A>. To do that, you
-should select one of four CHR slots in the &ldquo;Block Editor&rdquo;
-field and click on a CHR in the <A HREF="#CHR Bank|region">CHR bank</A>.
-All assigned CHRs will be highlighted in the <A HREF="#CHR Bank|region">CHR
+&ldquo;Select CHRs&rdquo; mode allows you to assign CHRs to a
+selected block from <A HREF="#CHR Bank|region">CHR bank</A>. To do
+that, you should select one of four CHR slots in the &ldquo;Block
+Editor&rdquo; field and click on a CHR in the <A HREF="#CHR Bank|region">CHR
+bank</A>. All assigned CHRs will be highlighted in the <A HREF="#CHR Bank|region">CHR
 bank</A>.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">The &ldquo;Draw&rdquo; mode allows to
-draw pixels. When it's active, select a color and draw using a left
-mouse button.</FONT></P>
+<FONT FACE="Arial, sans-serif">The &ldquo;Draw&rdquo; mode allows you
+to draw pixels. When it's active, select a color and draw using a
+left mouse button.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -224,17 +231,17 @@ rotation. Press appropriate buttons to perform the actions.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>CHRs data reserving:</B></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">There are two ways to assign CHRs to a
-block. The first one, you can do that manually like described above.
-The second one, you can press the &ldquo;Reserve CHRs&rdquo; button
-for automatic CHRs assignment. The nearest empty CHRs will be
-assigned to a selected block.</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>CHRs data reservation:</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">There
+are two ways to assign CHRs to a selected block. The first one, you can do
+that manually like described above. The second one, you can press the
+&ldquo;Reserve CHRs&rdquo; button for automatic CHRs assignment. The
+first empty CHRs in the <A HREF="#CHR Bank|region">CHR bank</A> will
+be assigned to the selected block.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Block's property assignment:</B></FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Block property assignment:</B></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">You can assign an integer value from 0
 to 15 to each block or to block's CHRs. For example, it can be used
@@ -242,9 +249,10 @@ as collision data or for marking a static dangerous object that
 decreases health points etc.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">By default a property will be assigned
-to whole block. To assign a property per CHR, you can click the &ldquo;CHR&rdquo;
-item in the context menu ( the &ldquo;Property Id per&rdquo; section
-) or in the main menu &rarr; Blocks &rarr; Property Id per.</FONT></P>
+to a whole block. To assign the property per CHR, you can click the
+&ldquo;CHR&rdquo; item in the context menu ( the &ldquo;Property Id
+per&rdquo; section ) or in the <B>Main Menu</B> &rarr; <B>Blocks</B>
+&rarr; <B>Property Id per</B>.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -277,16 +285,16 @@ you to build tiles from blocks.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">Select a tile, uncheck the &ldquo;Locked&rdquo;
 flag, click on one of the four block positions and assign a block to
-it by clicking on block from the &ldquo;Blocks&rdquo; list. It's
+it by clicking on a block from the &ldquo;Blocks&rdquo; list. It's
 useful when you have drawn blocks.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Blocks data reserving:</B></FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Blocks data reservation:</B></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">The second way to assign blocks to a
 tile, you can press the &ldquo;Reserve Blocks&rdquo; button for
-automatic blocks assignment. The nearest 4 empty blocks will be
+automatic blocks assignment. The first 4 empty blocks will be
 assigned to your tile. It's useful when you are going to draw a tile.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -303,18 +311,18 @@ assigned to your tile. It's useful when you are going to draw a tile.</FONT></P>
 <FONT FACE="Arial, sans-serif"><B>Copy:</B> Copies a <SPAN STYLE="font-weight: normal">selected
 block.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Paste
-Clone:</B></SPAN></FONT><FONT FACE="Arial, sans-serif"> </FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Makes
-a full copy with CHRs duplication in a <A HREF="#CHR Bank|region">CHR
+Clone:</B></SPAN></FONT> <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Makes
+a full copy with CHRs duplication in the <A HREF="#CHR Bank|region">CHR
 bank</A>.</SPAN></SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>Paste Refs:</B> The resulting copy
-<SPAN STYLE="font-weight: normal">shares the same CHRs as the source
+<SPAN STYLE="font-weight: normal">shares the same CHRs as the original
 block.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Clear
-CHRs:</B></SPAN></FONT><FONT FACE="Arial, sans-serif"> </FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Clears
-block's CHRs in a <A HREF="#CHR Bank|region">CHR bank</A>.</SPAN></SPAN></FONT></P>
+CHRs:</B></SPAN></FONT> <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Clears
+block's CHRs in the <A HREF="#CHR Bank|region">CHR bank</A>.</SPAN></SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>Clear Refs:</B> <SPAN STYLE="font-weight: normal">Resets
 CHRs indices to zero.</SPAN></FONT></P>
@@ -322,10 +330,10 @@ CHRs indices to zero.</SPAN></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>Insert Left:</B> <SPAN STYLE="font-weight: normal">Inserts
-an empty block and shifts right the rest ones.</SPAN></FONT></P>
+an empty block at selected position and shifts the rest to the right.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>Delete:</B> <SPAN STYLE="font-weight: normal">Deletes
-a selected block and shifts left the rest ones.</SPAN></FONT></P>
+a selected block and shifts the rest to the left.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -353,19 +361,20 @@ copy to selected position.</SPAN></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <FONT FACE="Arial, sans-serif"><B>Clear Refs:</B> <SPAN STYLE="font-weight: normal">Resets
-block indices of a selected tile to zero.</SPAN></FONT></P>
+block's indices of a selected tile to zero.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <FONT FACE="Arial, sans-serif"><B>Clear All Refs:</B> <SPAN STYLE="font-weight: normal">Resets
-block indices of ALL tiles to zero.</SPAN></FONT></P>
+block's indices of </SPAN><B>ALL</B> <SPAN STYLE="font-weight: normal">tiles
+to zero.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <FONT FACE="Arial, sans-serif"><B>Insert Left:</B> <SPAN STYLE="font-weight: normal">Inserts
-an empty tile and shifts right the rest ones.</SPAN></FONT></P>
+an empty tile at selected position and shifts the rest to the right.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <FONT FACE="Arial, sans-serif"><B>Delete:</B> <SPAN STYLE="font-weight: normal">Deletes
-a selected tile and shifts left the rest ones.</SPAN></FONT></P>
+a selected tile and shifts the rest to the left.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <BR>
 </P>
@@ -378,18 +387,18 @@ a selected tile and shifts left the rest ones.</SPAN></FONT></P>
 <BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
-<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>View Type:</B></SPAN></FONT><FONT FACE="Arial, sans-serif">
-</FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">It
-allows to show the additional information: graphics ( by default ),
-property Id numbers/colors on both tiles and blocks or tile numbers.
-It also affects on graphics in the <A HREF="#Screen Editor|region">screen
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>View Type:</B></SPAN></FONT>
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">It
+allows you to show the additional information: graphics ( by default
+), property Id ( numbers/colors ) on both tiles and blocks or tile
+numbers. It also affects on graphics in the <A HREF="#Screen Editor|region">screen
 editor</A>.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <FONT FACE="Arial, sans-serif"><B>Optimization:</B> <SPAN STYLE="font-weight: normal">The
-operation allows to remove all unused CHRs, blocks, tiles and
+operation allows you to remove all unused CHRs, blocks, tiles and
 screens. You can select the data type(s) for optimization.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <BR>
@@ -407,7 +416,7 @@ Tab</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Menu &rarr; CHR Bank</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>CHR Bank</B></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -459,11 +468,11 @@ active color.</SPAN></FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Insert Left:</B>
-<SPAN STYLE="font-weight: normal">Inserts an empty CHR and shifts
-right the rest ones.</SPAN></FONT></FONT></P>
+<SPAN STYLE="font-weight: normal">Inserts an empty CHR and shifts the
+rest to the right.</SPAN></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Delete:</B> <SPAN STYLE="font-weight: normal">Deletes
-a selected CHR and shifts left the rest ones.</SPAN></FONT></FONT></P>
+a selected CHR and shifts the rest to the left.</SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -487,7 +496,7 @@ Tab</FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">There are 4 user defined palettes ( 1,
-2, 3, 4 ). Press <B>Shift+1, 2, 3, 4</B> to switch between palettes
+2, 3, 4 ). Press <B>Shift+1, 2, 3, 4</B> to switch between them
 and press <B>Ctrl+1, 2, 3, 4</B> to switch between colors inside an
 active palette.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -498,14 +507,14 @@ color in the main palette.</FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>NES:</B> T<SPAN STYLE="font-weight: normal">he
-leftmost color of each palette is a transparency color.</SPAN></FONT></P>
+leftmost color of each palette is a transparent color.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>NES:</B> <SPAN STYLE="font-weight: normal">Also
 you can enable MMC5 extended attributes mode. When enabled it allows
-to assign a palette per CHR. By default you can assign a palette per
-block only.</SPAN></FONT></P>
+you to assign a palette per CHR. By default you can assign a palette
+per block only.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -515,15 +524,15 @@ block only.</SPAN></FONT></P>
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>The
 	Steps to Quick Start</B></FONT></FONT></P>
 </DIV>
-<OL>
+<OL STYLE="overflow: hidden">
 	<LI VALUE=1><P STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">Press the &ldquo;Bank+&rdquo;
 	button to create a new <A HREF="#CHR Bank|region">CHR bank</A> data
 	to work with.</SPAN></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<FONT FACE="Arial, sans-serif">Make sure that the &ldquo;Select&rdquo;
-	button at the &ldquo;Block Editor&rdquo; box is pressed. So, now the
-	block construction mode is enabled.</FONT></P>
+	button at the &ldquo;Block Editor&rdquo; box is pressed. Thereby,
+	now the block construction mode is enabled.</FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">Click on any empty
 	block in the &ldquo;Blocks&rdquo; list ( the first one usually is
@@ -543,7 +552,7 @@ block only.</SPAN></FONT></P>
 	Editor&rdquo; field.</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<FONT FACE="Arial, sans-serif">To assign blocks to a tile, click on
-	any empty tile you want to work with.</FONT></P>
+	any empty tile you want to work with ( the first one usually is reserved for an empty space ).</FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">Uncheck the
 	&ldquo;Locked&rdquo; flag at the &ldquo;<A HREF="#Tile Editor|region">Tile
@@ -581,7 +590,8 @@ Tab</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Menu &rarr; Screens &rarr; Editor</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>Screens</B>
+&rarr; <B>Editor</B></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">The
@@ -594,8 +604,8 @@ amount of unnecessary tiles created during a screen building process.</SPAN></FO
 image of each created screen will appear in the <A HREF="#Screen List|region">&ldquo;Screens&rdquo;
 list</A> at the </SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Layout
 </B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Tab
-&rarr; </SPAN></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Screens</B></SPAN></FONT><FONT FACE="Arial, sans-serif">
-</FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Tab.</SPAN></SPAN></FONT></P>
+&rarr; </SPAN></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Screens</B></SPAN></FONT>
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Tab.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -605,21 +615,21 @@ main functions are:</FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">It shows a selected tile. Click on any
-place inside the red border of the screen area to place it on a
-screen.</FONT></P>
+place inside the red border of the screen area to place the tile on
+a game screen.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>Note:</B> <SPAN STYLE="font-weight: normal">To
 simplify the process of working with tiles and blocks you can press
 the &quot;Tiles/Blocks&quot; button to display them in a separate
-window.</SPAN></FONT></P>
+window. There you can easily select a tile or block to place it on a game screen.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>Screens Management:</B></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">You can create, copy and delete
+<FONT FACE="Arial, sans-serif">You can create, make a copy and delete
 screens. Press the appropriate buttons for that.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -638,7 +648,7 @@ completely located on one screen.</FONT></P>
 <FONT FACE="Arial, sans-serif">The second one is the &ldquo;Layout&rdquo;
 mode. In this mode you can see the adjacent screens and navigate to
 them by clicking on their visible parts. To enable the mode, you need
-to click on the &ldquo;Layout&rdquo; flag at the &ldquo;Edit Modes&rdquo;
+to click on the &ldquo;Layout&rdquo; flag at the &ldquo;Edit Mode:&rdquo;
 box. Then select an active layout and click on any of its screen.
 After that, the selected screen will appear in the screen editor
 window.</FONT></P>
@@ -661,7 +671,7 @@ window.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Menu &rarr; Layout</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>Layout</B></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -682,11 +692,11 @@ entities.</FONT></P>
 viewport where you can build your game levels and at the right side
 of the viewport you can see the options panel to manage a game
 levels.</FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Note:</B> When the &ldquo;Screens&rdquo;
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Note:</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">
+When the <A HREF="#Screen Editor|region">&ldquo;Screens&rdquo;</A>
 tab is active, you can work with screens and can't work with entities
-and vice versa, you can't work with screens when the &ldquo;Entities&rdquo;
-tab is active.</FONT></P>
+and vice versa, you can't work with screens when the <A HREF="#Entity Editor|region">&ldquo;Entities&rdquo;</A>
+tab is active.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">Pan the viewport by a LEFT mouse
 button and scale it by a mouse wheel.</FONT></P>
@@ -700,15 +710,16 @@ main functions are:</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>The options panel:</B></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">It allows you to create, copy, delete
-your game levels, move them up/down in the level list, work with
-screen cells in a level. Also it allows you to control a visibility
-of a level items. Click the appropriate buttons and flags for that.</FONT></P>
+<FONT FACE="Arial, sans-serif">It allows you to create, make a copy,
+delete your game levels, move them up/down in the level list, work
+with screen cells in a level. Also it allows you to control a
+visibility of a level items. Click the appropriate buttons and flags
+for that.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<DIV ID="Work with screen cells" DIR="LTR"><A NAME="Work with screen cells|region"></A>
+<DIV ID="Working with screen cells" DIR="LTR"><A NAME="Working with screen cells|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Work with screen
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Working with screen
 	cells:</B></FONT></FONT></P>
 </DIV>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -759,7 +770,7 @@ delete a column at the right side of a cells matrix.</FONT></FONT></P>
 menu options:</B></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Right-clicking in the
-viewport shows the context menu that you can see in the picture.</FONT></FONT></P>
+viewport shows the context menu that you can see at the picture.</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Click the &ldquo;Delete
 Screen&rdquo; item to delete a screen the cursor points to. You can
@@ -769,8 +780,8 @@ tab is active.</FONT></FONT></P>
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>To delete an entity, you
 must select it. Open the &ldquo;Entities&rdquo; tab to do that. Make
 sure that the &ldquo;Edit Instances&rdquo; mode is enabled ( if no,
-press the appropriate button to enable ). Then click on an entity you
-want to delete, and after that you can delete it via the context
+press the appropriate button to enable it ). Then click on an entity
+you want to delete, and after that you can delete it via the context
 menu.</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Each game level must has
@@ -778,7 +789,7 @@ a start screen. Click the &ldquo;Set Start Screen Mark&rdquo; item to
 mark a screen the cursor points to as a start one.</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Also you can assign a
-property to a screen. It's a numeric value from 0 to 15. Click the
+property to your screen. It's a numeric value from 0 to 15. Click the
 &ldquo;Set Screen Property&rdquo; item to assign it.</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>When creating a level of
@@ -796,9 +807,9 @@ current screen.</FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>You can delete all screen
-marks ( start screen / screen property / adjacent screen mask ) in an
-active level by clicking the main menu item &rarr; Layout &rarr;
-Delete All Screen Marks.</FONT></FONT></P>
+marks ( start screen / screen property / adjacent screen mask ) in
+active level by clicking the <B>Main Menu</B> &rarr; <B>Layout</B> &rarr;
+<B>Delete All Screen Marks</B> item.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/adjacent_screen_mask_example.png" NAME="Графический объект9" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=355 HEIGHT=170 BORDER=0><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -838,7 +849,8 @@ Delete All Screen Marks.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Menu &rarr; Screens</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Main Menu</B> &rarr;
+<B>Screens</B></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -854,8 +866,8 @@ a set of images of created screens. </FONT></FONT>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>The &ldquo;Update
 Screens&rdquo; button allows you to manually update all changes
-created during a tiles manipulation process. It becomes an active
-when some changes are done.</FONT></FONT></P>
+created during a tiles manipulation process. It becomes active when
+some changes are done.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -865,12 +877,12 @@ flag allows you to automatically update all changes when it's active.</FONT></FO
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Also
 you can see an active <A HREF="#CHR Bank|region">CHR bank</A> index (
-zero bank in the picture ).</SPAN></SPAN></FONT></FONT></P>
+zero bank at the picture ).</SPAN></SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>By default you can see
-only the current CHR bank's screens. Click the &ldquo;All Banks&rdquo;
+only current CHR bank's screens. Click the &ldquo;All Banks&rdquo;
 flag to see all screens of all available CHR banks.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -879,7 +891,7 @@ flag to see all screens of all available CHR banks.</FONT></FONT></P>
 description:</B> </FONT></FONT>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>In the picture you can
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>At the picture you can
 see the following name &ndash; &ldquo;B:0/S:0&rdquo; it means a zero
 bank (B) and a zero screen (S).</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -907,13 +919,14 @@ inside the screen list to reset the screen selection.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Menu &rarr; Entities</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Main Menu</B> &rarr;
+<B>Entities</B></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>The entity editor is
-designed for creating / editing entities, grouping by type and
-placement in a game level.</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>The entity editor was
+designed for creating / editing entities, grouping them by type and
+placing on a game level.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -928,16 +941,16 @@ base entity*:</B></FONT></P>
 <FONT FACE="Arial, sans-serif">You can add, delete, rename an
 entities group, as well as base entities within the group. There are
 three ways to do that: using the context menu inside the tree view,
-the buttons at the right side of the tree view or via the main menu &rarr;
-Entities.</FONT></P>
+the buttons at the right side of the tree view or via the <B>Main
+Menu</B> &rarr; <B>Entities</B>.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>An entity editing:</B> </FONT>
+<FONT FACE="Arial, sans-serif"><B>Entity editor:</B> </FONT>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">Clicking on an entity in the tree view
-leads to show its parameters in the entity editor ( the &ldquo;Active
+<FONT FACE="Arial, sans-serif">Clicking on any entity in the tree
+view leads to show its parameters in the entity editor ( the &ldquo;Active
 Entity&rdquo; box ). </FONT>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -958,8 +971,8 @@ bottom:</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif">A target entity UID ( each entity can
 	refer to any other one by its UID ); press the &ldquo;Target UID&rdquo;
-	button and click on any instance of an entity in the layout viewport
-	to assign it as the target one;</FONT></P>
+	button and click on any entity instance in the layout viewport to
+	assign it as the target one;</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif">Width/Height of an entity;</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
@@ -972,31 +985,31 @@ bottom:</FONT></P>
 	image ( press the &ldquo;Bitmap&rdquo; button to load an image );</FONT></P>
 </UL>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Work with a game level:</B></FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Working with a game level:</B></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">When the &ldquo;Edit Entities&rdquo;
-mode is active, you can place a current editable entity in a game
+mode is active, you can place a current editable entity on a game
 level ( you can see the current edit mode at the left top corner of
 the layout viewport ). Just click on any screen cell with a screen
-image inside to put the entity in a game level.</FONT></P>
+image inside to put the entity on a game level.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">If you want to edit an entity instance
 you need to switch to the &ldquo;Edit Instances&rdquo; mode by
 pressing the &ldquo;Edit Instances --&gt;&rdquo; button. After that
-you can select your entity in the layout viewport. Move it using a left mouse button and
-edit its parameters in the entity editor.</FONT></P>
+you can select your entity in the layout viewport. Move it using a
+LEFT mouse button and edit its parameters in the entity editor.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>You can delete all entity
-instances in an active level by clicking the main menu item &rarr;
-Layout &rarr; Delete All Entity Instances.</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>You can delete all
+entity's instances in active level by clicking the <B>Main Menu</B> &rarr;
+<B>Layout</B> &rarr; <B>Delete All Entity Instances</B> item.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">* Base entity is an entity created in
-the tree view control, an entity instance is a base entity placed
-in a game level.</FONT></P>
+the tree view control. An entity instance is a base entity placed on
+a game level.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">** Properties are space separated
 decimal values.</FONT></P>
@@ -1016,20 +1029,20 @@ decimal values.</FONT></P>
 	viewport</A>. After that you will see a screen cell inside the
 	viewport.</SPAN></SPAN></FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Now
-	you can <A HREF="#Work with screen cells|region">create a screen
+	you can <A HREF="#Working with screen cells|region">create a screen
 	cells matrix</A> of your level.</SPAN></SPAN></FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">After
 	that you can fill out the matrix with screens from the <A HREF="#Screen List|region">screen
 	list</A>.</SPAN></SPAN></FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Then you can place
-	entities and marks.</FONT></FONT></P>
+	entities and screen marks.</FONT></FONT></P>
 </OL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<DIV ID="Load / Save" DIR="LTR"><A NAME="Load / Save|region"></A>
+<DIV ID="Load Save" DIR="LTR"><A NAME="Load Save|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><U><B>Load / Save</B></U></FONT></FONT></P>
 </DIV>
@@ -1038,8 +1051,8 @@ decimal values.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">Click Menu &rarr; Load / Save to load
-or save a project file.</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr;
+<B>File</B> &rarr; <B>Load / Save</B></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -1059,8 +1072,8 @@ or save a project file.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">Click Menu &rarr; Import to import
-data into your project.</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr;
+<B>File</B> &rarr; <B>Import</B></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -1096,8 +1109,8 @@ of 16 for blocks data and a multiple of 32 for tiles data.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">Click Menu &rarr; Export to export
-data from your project.</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr;
+<B>File</B> &rarr; <B>Export</B></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -1109,7 +1122,8 @@ for export:</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES:</B>
 	CA65/NESasm ( .asm )</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">ZX
-	Asm ( .zxa ) - SjASMPlus data for multidirectional scroller</FONT></P>
+	Asm ( .zxa ) - SjASMPlus data; can be used for multidirectional
+	scroller</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Active
 	tile/block set ( .bmp )</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Active
@@ -1117,22 +1131,57 @@ for export:</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Text
 	( .json ) - whole project data</FONT></P>
 </UL>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Note:</B></SPAN>
-<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">If you need your
-custom data format, you can write a Python script to export all you
-need. Press </SPAN></SPAN><SPAN LANG="en-US"><B>Alt+X</B></SPAN> <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">to
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<DIV ID="Miscellaneous" DIR="LTR"><A NAME="Miscellaneous|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="margin-left: 1cm; margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><U><B>Miscellaneous</B></U></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>File</B> &rarr;
+<B>Export Script Editor (Alt + X)</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">If
+you need your own data format, you can write an export script using
+Python. Press </SPAN></SPAN><SPAN LANG="en-US"><B>Alt+X</B></SPAN> <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">to
 open a simple Python script editor. </SPAN></SPAN></FONT>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">The Python API you can find here
 <B>'./doc/MAPeD_Data_Export_Python_API.html'</B>.</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">The sample script of using the API:
+<B>`./scripts/MAPeD_project_stats.py`</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">The data export API was designed to
+work with a current application data state. So you can retrieve data,
+but you can't modify it. Application data will always remain
+unchanged.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>File</B> &rarr;
+<B>Description</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">The project description window. You
+can write a short description of your project. Optionally the window
+can be opened automatically after loading a project.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <HR>
 <P LANG="en-US" ALIGN=LEFT STYLE="margin-left: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none; page-break-before: auto; page-break-after: auto">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Copyright (c) 2019
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Copyright (c) 2019-2020
 0x8BitDev</FONT></FONT></P>
 </BODY>
 </HTML>

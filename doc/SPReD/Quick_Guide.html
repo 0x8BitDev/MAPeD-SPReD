@@ -5,7 +5,7 @@
 	<TITLE></TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.2  (Win32)">
 	<META NAME="CREATED" CONTENT="20190702;10061053">
-	<META NAME="CHANGED" CONTENT="20190716;9492645">
+	<META NAME="CHANGED" CONTENT="20200702;16543922">
 	<STYLE TYPE="text/css">
 	<!--
 		p { margin:0; }
@@ -37,12 +37,14 @@
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<A HREF="#Palette|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Palette</B></SPAN></FONT></FONT></A></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
-	<A HREF="#Load / Save|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Load
+	<A HREF="#Load Save|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Load
 	/ Save</B></SPAN></FONT></FONT></A></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<A HREF="#Import|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Import</B></SPAN></FONT></FONT></A></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<A HREF="#Export|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Export</B></SPAN></FONT></FONT></A></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
+	<A HREF="#Miscellaneous|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Miscellaneous</B></SPAN></FONT></FONT></A></P>
 </UL>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -60,8 +62,8 @@
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">The <B>SPReD</B> is a tool for
-converting prepared sprite images to the <B>NES</B> <SPAN STYLE="font-weight: normal">/
-</SPAN><B>SMS</B> compatible format.</FONT></P>
+converting prepared sprite images into a <B>NES</B> <SPAN STYLE="font-weight: normal">/
+</SPAN><B>SMS</B> compatible format. Drawing mode is also available.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -82,13 +84,17 @@ converting prepared sprite images to the <B>NES</B> <SPAN STYLE="font-weight: no
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">built-in
 	<B>Python</B> script editor for writing custom data export scripts</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES</B>
-	&lt;-&gt; <B>SMS</B> data conversion*</FONT></P>
+	&harr; <B>SMS</B> data conversion*</FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">* You can load a <B>NES</B> project
 into <B>SMS</B> editor and vice versa.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">CHR - 1x1 tile ( 8x8 pixels ).</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -104,65 +110,71 @@ into <B>SMS</B> editor and vice versa.</FONT></P>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/sprite_tools.png" NAME="Графический объект1" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=203 HEIGHT=502 BORDER=0><FONT FACE="Arial, sans-serif">At
 the left side of the main window you can see the &ldquo;Sprite Tools&rdquo;
-box. Main sprites manipulations are done here. All sprites you create
+box. Main sprite manipulations are done here. All sprites you create
 will appear in the upper list box. A right mouse button click on the
-list box opens the context menu you can see at the picture. Click
-Menu &rarr; Sprites to see all available hotkeys for this section.</FONT></P>
+list box opens the context menu you can see at the picture. </FONT>
+</P>
+<P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Click
+on the <B>Main Menu</B> &rarr; <B>Sprites</B> to see all available
+hotkeys for this section.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Create:</B></FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">There
 are two ways to create a sprite. The first one, you can <A HREF="#Import|region">import</A>
 an image as a sprite. The second one, you can click the 'Create New'
-item in the context menu or in the </SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">main
-menu &rarr; Sprite &rarr; Create New. But before you should select
-what sprite mode you will use ( check/uncheck the &ldquo;8x16&rdquo;
-flag in the &ldquo;Layout&rdquo; section ).</SPAN></SPAN></FONT></P>
+item in the context menu or in the </SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Main
+Menu</B></SPAN></FONT> &rarr; <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Sprite</B></SPAN></FONT>
+&rarr; <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Create
+New</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">.
+But before you should select what sprite mode you will use (
+check/uncheck the &ldquo;8x16&rdquo; flag in the <A HREF="#Layout|region">&ldquo;Layout&rdquo;</A>
+section ).</SPAN></SPAN></FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Delete:</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">Select sprites and click the &ldquo;Delete&rdquo;
-item in the context menu or in the main menu &rarr; Sprite &rarr;
-Delete.</FONT></P>
+item in the context menu or in the <B>Main Menu</B> &rarr; <B>Sprite</B>
+&rarr; <B>Delete</B>.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Rename:</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">Select a sprite you want to rename and
 click the &ldquo;Rename&rdquo; item in the context menu or in the
-main menu &rarr; Sprite &rarr; Rename.</FONT></P>
+<B>Main Menu</B> &rarr; <B>Sprite</B> &rarr; <B>Rename</B>.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Add
-prefix/postfix:</B></FONT></P>
+Prefix/Postfix:</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">For example, when you make mirrored
-sprites you will need to name it correctly. So you may need to add
+sprites you will need to name them correctly. So you may need to add
 some prefix/postfix to their names ( _LEFT, _RIGHT etc ). Select
 sprites, click the &ldquo;Add Prefix/Postfix&rdquo; item in the
-context menu or in the main menu &rarr; Sprites &rarr; Add
-Prefix/Postfix.</FONT></P>
+context menu or in the <B>Main Menu</B> &rarr; <B>Sprites</B> &rarr;
+<B>Add Prefix/Postfix</B>.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Copy:</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN STYLE="font-weight: normal">There
 are two options to make a sprite copy: full copy ( Create Copy ) and
-reference copy ( Create Ref ). The &ldquo;reference copy&rdquo;
+referenced copy ( Create Ref ). The &ldquo;referenced copy&rdquo;
 shares the same CHR bank as the original sprite. It helps to minimize
 CHR data. For example, when you make mirrored </SPAN><B>NES</B>
-<SPAN STYLE="font-weight: normal">sprites, you can create mirrored
-sprites as referenced copies. So all the mirrored sprites will share
-the same CHR data with the original ones.</SPAN></FONT></P>
+<SPAN STYLE="font-weight: normal">sprites, you can create them as
+referenced copies. So all the mirrored sprites will share the same
+CHR data with the original ones.</SPAN></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">Select sprites, click the &ldquo;Create
 Copy&rdquo; / &rdquo;Create Ref&rdquo; item in the context menu or in
-the main menu &rarr; Sprites &rarr; &ldquo;Create Copy&rdquo; /
-&rdquo;Create Ref&rdquo; and follow the instruction.</FONT></P>
+the <B>Main Menu</B> &rarr; <B>Sprites</B> &rarr; &ldquo;<B>Create
+Copy&rdquo; / &rdquo;Create Ref&rdquo;</B>.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Apply
-a palette:</B></FONT></P>
+Palette:</B></FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES:</B></SPAN></FONT>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">You
 can apply a <A HREF="#Palette|region">palette</A> to a group of
@@ -180,39 +192,39 @@ local or global axes. Select sprites, select the &ldquo;LOCAL AXIS&rdquo;
 or &ldquo;GLOBAL AXIS&rdquo; mode and press the &ldquo;VFlip&rdquo; /
 &ldquo;HFlip&rdquo; button.</FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>SMS:</B>
-<SPAN STYLE="font-weight: normal">The SMS hardware doesn't support
-flipped sprites. So when you will load flipped NES sprites into SMS
-tool you will see some glitches. To fix that you can flip them again
-by pressing the &ldquo;VFlip&rdquo; / &ldquo;HFlip&rdquo; button with
+<SPAN STYLE="font-weight: normal">The </SPAN><B>SMS</B> <SPAN STYLE="font-weight: normal">hardware
+doesn't support flipped sprites. So when you will load flipped </SPAN><B>NES</B>
+<SPAN STYLE="font-weight: normal">sprites into </SPAN><B>SMS</B> <SPAN STYLE="font-weight: normal">tool
+you will see some glitches. To fix that you can flip them again by
+pressing the &ldquo;VFlip&rdquo; / &ldquo;HFlip&rdquo; button with
 unchecked &ldquo;Transform positions&rdquo; option.</SPAN></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Apply
-an offset</B></FONT></P>
+Offset</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">There are two ways to apply an offset
-to your sprite(s) position: you can set a new offset value or apply
-an offset to an existing value. Select sprites, input an offset
-value, press the &ldquo;Offset&rdquo; button and follow the
-instruction.</FONT></P>
+to your sprite(s) position: you can set a new offset value or add an
+offset to an existing value. Select sprites, input an offset value,
+press the &ldquo;Offset&rdquo; button and follow instruction.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>CHR
 data manipulations:</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Optimization</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">To remove all unused/empty CHRs you
-can select appropriate sprites and press the &ldquo;Optimization&rdquo;
-button.</FONT></P>
+<FONT FACE="Arial, sans-serif">Press the &ldquo;Optimization&rdquo;
+button to remove all unused/empty/duplicate CHRs in all CHR banks.</FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Packing</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN STYLE="font-weight: normal">In
 some cases you may need to pack all your sprites data into a set of
 1/2/4 or 8 KB ( </SPAN><B>SMS</B> <SPAN STYLE="font-weight: normal">).
 Select sprites, select data block size and press the &ldquo;Packing&rdquo;
-button. This operation performs an optimization. So all unused/empty
-CHRs will be lost.</SPAN></FONT></P>
+button. This operation performs iterative optimization after adding a
+data of each sprite to a CHR bank. Thus, it deletes all
+unused/empty/duplicate CHRs.</SPAN></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Splitting</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">This is a backward operation for the
-Packing one. All sprites will have their own CHR banks even Ref ones!</FONT></P>
+&ldquo;Packing&rdquo; one. All sprites will have their own CHR banks even Ref ones.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -228,11 +240,11 @@ Packing one. All sprites will have their own CHR banks even Ref ones!</FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <IMG SRC="res/layout.png" NAME="Графический объект2" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=287 HEIGHT=500 BORDER=0><FONT FACE="Arial, sans-serif">The
 middle part of the main window contains the layout viewport and all
-operations related to sprite's CHRs modifications. Click Menu &rarr;
-Layout to see all available hotkeys for this section.</FONT></P>
+operations related to sprite's CHRs modifications. Use a LEFT mouse
+button to pan the viewport and a mouse wheel to scale it.</FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">Use a LEFT mouse button to pan the
-viewport and a mouse wheel to scale it.</FONT></P>
+<FONT FACE="Arial, sans-serif">Click on the <B>Main Menu</B> &rarr;
+<B>Layout</B> to see all available hotkeys for this section.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Build/Draw
@@ -253,8 +265,8 @@ the &ldquo;Build mode&rdquo; you can </SPAN><SPAN LANG="en-US"><B>add</B></SPAN>
 colors</B></SPAN> <SPAN LANG="en-US">of whole sprite ( </SPAN><SPAN LANG="en-US"><B>NES
 </B></SPAN><SPAN LANG="en-US">).</SPAN></FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">To
-</SPAN></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>add</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN STYLE="font-weight: normal">
-</SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">a
+</SPAN></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>add</B></SPAN></FONT>
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">a
 CHR manually to your sprite you can select the CHR in the <A HREF="#CHR Bank|region">CHR
 bank</A> and drag and drop it to the layout window using a RIGHT
 mouse button.</SPAN></SPAN></FONT></P>
@@ -284,7 +296,7 @@ Transp&rdquo; flag.</SPAN></SPAN></FONT></P>
 draw mode:</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">In the &ldquo;Draw mode&rdquo; you can
-draw your sprite image. Just select a color and draw! )</FONT></P>
+draw your sprite image. Just select a color and draw! :)</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES:</B></SPAN></FONT>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Also
 you can change a CHR <A HREF="#Palette|region">palette</A>. When you
@@ -319,12 +331,15 @@ buttons to zoom in / out an active sprite.</FONT></P>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Snap</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">Snap to 8x8 grid.</FONT></P>
+<FONT FACE="Arial, sans-serif">Snap a sprite's CHRs to a 8x8 grid.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>8x16</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">Enable/disable the 8x16 mode.</FONT></P>
+<P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><B>Warning:</B> It's not recommended to mix the 8x8 and 8x16 mode sprites in one project. 
+This may cause errors!</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -340,8 +355,11 @@ buttons to zoom in / out an active sprite.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <IMG SRC="res/CHR_bank.png" NAME="Графический объект3" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=287 HEIGHT=501 BORDER=0><FONT FACE="Arial, sans-serif">At
 the right side of the main window you can see the CHR bank which
-contains graphics linked to an active sprite and the palettes. Click
-Menu &rarr; CHR to see all available hotkeys for this section.</FONT></P>
+contains graphics linked to an active sprite and the palettes. </FONT>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">Click on the <B>Main Menu</B> &rarr;
+<B>CHR</B> to see all available hotkeys for this section.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -359,7 +377,8 @@ remove the last CHR.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">Also you can copy/paste a selected CHR
 by clicking the &ldquo;Copy&rdquo; / &ldquo;Paste&rdquo; item in the
-context menu or in the main menu &rarr; CHR &rarr; Copy / Paste.</FONT></P>
+context menu or in the <B>Main Menu</B> &rarr; <B>CHR</B> &rarr; <B>Copy
+/ Paste</B>.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -367,27 +386,28 @@ context menu or in the main menu &rarr; CHR &rarr; Copy / Paste.</FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">Select a CHR and an active color and
 click the &ldquo;Fill With Color&rdquo; item in the context menu or
-in the main menu &rarr; CHR &rarr; Fill With Color.</FONT></P>
+in the <B>Main Menu</B> &rarr; <B>CHR</B> &rarr; <B>Fill With Color</B>.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES:</B></SPAN>
 <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">The leftmost
-color of each palette is a transparency color. So if you fill out a
+color of each palette is a transparent color. So if you fill out a
 CHR with a color from the leftmost color slot of any of 4 palettes,
 then drag and drop it to an active sprite and make optimization, that
 CHR will be deleted as empty.</SPAN></SPAN></FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMS:</B></SPAN></FONT>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">The
-leftmost color slot of the first palette is reserved for transparency
-color ( black on SMS ). For example, when you <A HREF="#Import|region">import</A>
+leftmost color slot of the first palette is reserved for a
+transparent color. For example, when you <A HREF="#Import|region">import</A>
 an image with alpha channel, the alpha channel color will be assigned
 to the leftmost color slot of the first palette. So keep this in mind
 when you work with colors.</SPAN></SPAN></FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Rotate
-and flipping</B></FONT></P>
+and flip</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">Press the appropriate buttons to flip
-or rotate ( clockwise ) a selected CHR. It also affects on sprite.</FONT></P>
+or rotate ( clockwise ) a selected CHR. It automatically affects on a
+sprite.</FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Additional
@@ -395,7 +415,7 @@ info</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">At the bottom of the CHR bank you can
 see the additional information: the number of tiles in the bank, the
-number of bytes in the bank ( platform dependent ), the bank index,
+number of bytes in the bank ( platform dependent value ), the bank index,
 the number of sprites linked to the bank and the total number of
 banks in a project. For example, &ldquo;BANK: 1(8) of 1&rdquo; means:
 the current bank index is <B>1</B>, <B>8</B> sprites linked to this
@@ -414,7 +434,7 @@ bank and the total number of banks is <B>1</B>.</FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">There are 4 user defined palettes ( 1,
-2, 3, 4 ). Press <B>Shift+1, 2, 3, 4</B> to switch between palettes
+2, 3, 4 ). Press <B>Shift+1, 2, 3, 4</B> to switch between them
 and press <B>Ctrl+1, 2, 3, 4</B> to switch between colors inside an
 active palette.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -425,18 +445,15 @@ color on the main palette.</FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES:</B></SPAN>
 <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">As mentioned
-before, the leftmost color of each palette is a transparency color.</SPAN></SPAN></FONT></P>
+before, the leftmost color of each palette is a transparent color.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMS:</B></SPAN>
 <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">The leftmost
-color of the first palette is reserved for transparency color ( black
-on </SPAN></SPAN><SPAN LANG="en-US"><B>SMS</B></SPAN> <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">).
-Keep in mind this when you make an optimization of empty/transparent
-CHRs.</SPAN></SPAN></FONT></P>
+color of the first palette is reserved for a transparent color.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<DIV ID="Load / Save" DIR="LTR"><A NAME="Load / Save|region"></A>
+<DIV ID="Load Save" DIR="LTR"><A NAME="Load Save|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="margin-left: 1cm; margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><U><B>Load / Save</B></U></FONT></FONT></P>
 </DIV>
@@ -445,8 +462,8 @@ CHRs.</SPAN></SPAN></FONT></P>
 <P ALIGN=CENTER STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">Click Menu &rarr; Load / Save to load
-or save a project file.</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr;
+<B>File</B> &rarr; <B>Load / Save</B></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -476,6 +493,11 @@ or save a project file.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr;
+<B>File</B> &rarr; <B>Import</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">There are four data formats available
 for import:</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -494,10 +516,8 @@ for import:</FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Note:</B></SPAN>
 <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">BMP images have
-no alpha-channel.</SPAN></SPAN></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">The size of imported images must be a
-multiple of eight.</FONT></P>
+no alpha-channel. The size of imported images must be a
+multiple of eight.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -508,6 +528,11 @@ multiple of eight.</FONT></P>
 </DIV>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr;
+<B>File</B> &rarr; <B>Export</B></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -524,19 +549,63 @@ for export:</FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Note:</B></SPAN>
-<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">If you need your
-custom data format, you can write a Python script to export all you
-need. Press </SPAN></SPAN><SPAN LANG="en-US"><B>Alt+X</B></SPAN> <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">to
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<DIV ID="Miscellaneous" DIR="LTR"><A NAME="Miscellaneous|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="margin-left: 1cm; margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><U><B>Miscellaneous</B></U></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>File</B> &rarr;
+<B>Export Script Editor (Alt + X)</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">If
+you need your own data format, you can write an export script using
+Python. Press </SPAN></SPAN><SPAN LANG="en-US"><B>Alt+X</B></SPAN> <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">to
 open a simple Python script editor. </SPAN></SPAN></FONT>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">The Python API you can find here
 <B>'./doc/SPReD_Data_Export_Python_API.html'</B>.</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">The sample script of using the API:
+<B>`./scripts/SPReD_project_stats.py`</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">The data export API was designed to
+work with a current application data state. So you can retrieve data,
+but you can't modify it. Application data will always remain
+unchanged.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>File</B> &rarr;
+<B>Description</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">The project description window. You
+can write a short description of your project. Optionally the window
+can be opened automatically after loading a project.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>File</B> &rarr;
+<B>Statistics</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">A brief statistics of your project.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <HR>
 <P LANG="en-US" ALIGN=LEFT STYLE="margin-left: 1cm; margin-bottom: 0cm; font-weight: normal; page-break-before: auto; page-break-after: auto">
-<FONT FACE="Arial, sans-serif">Copyright (c) 2019 0x8BitDev</FONT></P>
+<FONT FACE="Arial, sans-serif">Copyright (c) 2019-2020 0x8BitDev</FONT></P>
 </BODY>
 </HTML>
