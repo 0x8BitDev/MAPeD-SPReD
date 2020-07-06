@@ -506,7 +506,7 @@ namespace SPReD
 			{
 				if( message_box( "Are you sure you want to delete " + SpriteList.SelectedIndices.Count + " sprite(s)?", "Delete Selected Sprite(s)", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
-					if( !validate_CHR_banks_of_selected_sprites( "Delete Selected Sprite(s)" ) )
+					if( !check_selected_sprites_data( "Delete Selected Sprite(s)" ) )
 					{
 						return;
 					}
@@ -706,6 +706,11 @@ namespace SPReD
 		{
 			m_create_sprite_form.Text = "Create Sprite [ mode: " + ( CBoxMode8x16.Checked ? "8x16":"8x8" ) + " ]";
 			
+			if( !check_all_sprites_data( m_create_sprite_form.Text ) )
+			{
+				return;
+			}
+			
 			if( m_create_sprite_form.ShowDialog() == DialogResult.Cancel )
 			{
 				return;
@@ -827,7 +832,7 @@ namespace SPReD
 		{
 			if( SpriteList.SelectedItems.Count > 0 )
 			{
-				if( !validate_CHR_banks_of_selected_sprites( _title ) )
+				if( !check_selected_sprites_data( _title ) )
 				{
 					return;
 				}
@@ -914,7 +919,7 @@ namespace SPReD
 			{
 				if( message_box( "Are you sure you want to split the CHR data?\n\nWARNING: ALL sprites, including Ref ones, will have unique CHR banks!", "CHR Data Splitting", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
-					if( m_sprites_proc.CHR_banks_validation( CBoxMode8x16.Checked, "CHR Data Splitting" ) )
+					if( check_all_sprites_data( "CHR Data Splitting" ) )
 					{
 						int i;
 						int sprites_cnt = SpriteList.Items.Count;					
@@ -950,7 +955,7 @@ namespace SPReD
 			{
 				if( message_box( "Are you sure you want to pack the selected sprites?\n\nWARNING: Irreversible operation for Ref sprites!\nALL unused/empty/duplicate CHRs will be lost!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
-					if( !validate_CHR_banks_of_selected_sprites( "CHR Data Packing" ) )
+					if( !check_selected_sprites_data( "CHR Data Packing" ) )
 					{
 						return;
 					}
@@ -1052,7 +1057,7 @@ namespace SPReD
 			{
 				if( message_box( "Are you sure you want to optimize all sprites data?\n\nWARNING: All unused/empty/duplicate CHRs will be lost!", "CHR Data Optimization", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
-					if( m_sprites_proc.CHR_banks_validation( CBoxMode8x16.Checked ) )
+					if( check_all_sprites_data( "CHR Data Optimization" ) )
 					{
 						m_sprites_proc.CHR_bank_optimization_begin();
 						
@@ -1082,11 +1087,32 @@ namespace SPReD
 			CHRPackToolStripMenuItem.Enabled = BtnCHRPack.Enabled = ( cbox.SelectedIndex != 0 ) ? true:false;
 		}
 		
-		private bool validate_CHR_banks_of_selected_sprites( string _wnd_title )
+		private bool check_all_sprites_data( string _wnd_title )
 		{
+			sprite_data	spr;
+			
+			for( int i = 0; i < SpriteList.Items.Count; i++ )
+			{
+				spr = SpriteList.Items[ i ] as sprite_data;
+
+				if( !spr.check( CBoxMode8x16.Checked, _wnd_title ) )
+				{
+					return false;
+				}
+			}
+			
+			return true;
+		}
+
+		private bool check_selected_sprites_data( string _wnd_title )
+		{
+			sprite_data	spr;
+			
 			for( int i = 0; i < SpriteList.SelectedIndices.Count; i++ )
 			{
-				if( !m_sprites_proc.CHR_bank_validation( ( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data ).get_CHR_data().id, CBoxMode8x16.Checked, _wnd_title ) )
+				spr = SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data;
+
+				if( !spr.check( CBoxMode8x16.Checked, _wnd_title ) )
 				{
 					return false;
 				}

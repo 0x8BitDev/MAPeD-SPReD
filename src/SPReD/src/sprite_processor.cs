@@ -317,33 +317,6 @@ namespace SPReD
 			return false;
 		}
 
-		// fast CHR banks data validation
-		public bool CHR_banks_validation( bool _8x16_mode, string _wnd_title = "CHR Bank Optimization" )
-		{
-			for( int i = 0; i < get_CHR_banks().Count; i++ )
-			{
-				if( !CHR_bank_validation( i, _8x16_mode, _wnd_title  ) )
-				{
-					return false;
-				}
-			}
-			
-			return true;
-		}
-
-		// fast CHR bank data validation
-		public bool CHR_bank_validation( int _CHR_bank_id,  bool _8x16_mode, string _wnd_title = "CHR Bank Optimization" )
-		{
-			if( _8x16_mode && ( get_CHR_banks()[ _CHR_bank_id ].get_data().Count & 0x01 ) == 0x01 )
-			{
-				MainForm.message_box( "The CHR bank [" + ( get_CHR_banks()[ _CHR_bank_id ].id + 1 ) +  "] data isn't compatible with the 8x16 mode!\n\nThe number of CHRs in a CHR bank for the 8x16 mode must be a multiple of two!\n\nPlease, check your project!\n\nOperation aborted!", _wnd_title + " [fast data validation]", MessageBoxButtons.OK, MessageBoxIcon.Error );
-				
-				return false;
-			}
-			
-			return true;
-		}
-		
 		public void CHR_bank_optimization_begin()
 		{
 			m_opt_stats_empty_CHRs 		= 0;
