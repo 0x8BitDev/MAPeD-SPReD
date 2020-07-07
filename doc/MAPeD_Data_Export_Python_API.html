@@ -206,8 +206,7 @@ bank</FONT></FONT></P>
 <BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get 4x4 tiles array of an
-active bank.</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get an array of 4x4 tiles in a graphics bank.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -229,7 +228,7 @@ graphics bank index</FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">E</SPAN><SPAN LANG="ru-RU">ach
-tile value (UInt32) consists of block</SPAN>s <SPAN LANG="ru-RU">indices
+tile value (UInt32) consists of block'</SPAN>s <SPAN LANG="ru-RU">indices
 ordered left to right, up to down from low to high byte </SPAN>( 4
 bytes )</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
@@ -253,8 +252,7 @@ bytes )</FONT></FONT></P>
 <BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get blocks ( 2x2 tiles )
-array of an active bank.</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get an array of blocks ( 2x2 tiles ) in a graphics bank.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -303,9 +301,9 @@ property_id(4) palette ind(2) not used(2) | CHR ind(8) &lt;-- 7-0 ].
 <BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">Get
-raw CHR data.</SPAN><SPAN STYLE="font-weight: normal"> </SPAN><SPAN LANG="ru-RU">CHR
-data is stored as image 128x128 (8bit).</SPAN></FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">Get a 
+raw CHR data.</SPAN><SPAN STYLE="font-weight: normal"> </SPAN><SPAN LANG="ru-RU">The CHR
+data is stored as 128x128 (8bit) image.</SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -345,8 +343,8 @@ graphics bank index</FONT></FONT></P>
 <BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Convert CHR bank to NES
-format and save it to a file.</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Convert a CHR bank into a NES
+compatible format and save it to a file.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -367,7 +365,7 @@ save padding data aligned to 1/2/4 KB or not</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the size of saved file in
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the size of a saved file in
 bytes or <B>-1</B> in case of an error</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
@@ -392,7 +390,7 @@ bytes or <B>-1</B> in case of an error</FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get a 4 colors pallete by
-input index.</FONT></FONT></P>
+index.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -665,8 +663,7 @@ layout index</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the cell index which
-contains a start screen index or <B>-1</B> in case of incorrect
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the cell index or <B>-1</B> in case of incorrect
 layout index</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
@@ -744,7 +741,7 @@ index by Y axis</FONT></FONT></P>
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>the screen index in a
 common screens array of all screens of all graphics banks ( in the
 editor you can set the 'All Banks' checkbox ( Layout tab &rarr;
-Screens tab ) to see that common screens array ) or <B>-1</B> in case
+Screens tab ) to see the common screens array ) or <B>-1</B> in case
 of incorrect layout index</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
@@ -971,8 +968,7 @@ index by Y axis</FONT></FONT></P>
 <BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get an instance entity
-data.</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get an entity instance data.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -1162,7 +1158,7 @@ entities in a particular group.</FONT></FONT></P>
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>_group_name &ndash; name
-of group</FONT></FONT></P>
+of a group</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -1197,7 +1193,7 @@ of group</FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get a base entity data by
-group name and index.</FONT></FONT></P>
+a group name and index.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -1205,7 +1201,7 @@ group name and index.</FONT></FONT></P>
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>_group_name &ndash; name
-of group</FONT></FONT></P>
+of a group</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>_ent_ind &ndash; entity
 index in a group</FONT></FONT></P>
@@ -1245,8 +1241,7 @@ case of incorrect group name</SPAN></SPAN></FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get a base entity by
-name. You can use this function if you know a base entity name
-exactly.</FONT></FONT></P>
+name.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -1254,7 +1249,7 @@ exactly.</FONT></FONT></P>
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>_entity_name &ndash; name
-of entity</FONT></FONT></P>
+of an entity</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -1266,7 +1261,7 @@ of entity</FONT></FONT></P>
 </FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">object
 or </SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>null</B></SPAN></FONT></FONT><FONT SIZE=3>
 </FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">in
-case of incorrect group name</SPAN></SPAN></FONT></FONT></P>
+case of incorrect name</SPAN></SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -1357,7 +1352,7 @@ text</FONT></FONT></P>
 </P>
 <P LANG="en-US" STYLE="margin-left: 1.24cm; margin-bottom: 0cm; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Copyright
-(c) 2019 0x8BitDev</FONT></FONT></P>
+(c) 2019-2020 0x8BitDev</FONT></FONT></P>
 <P STYLE="margin-left: 1.24cm; margin-bottom: 0cm; line-height: 100%">
 <BR>
 </P>
