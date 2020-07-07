@@ -420,9 +420,10 @@ namespace SPReD
 			
 			if( !_8x16_mode && even_chr_ids && attr_cnt >= 4 )
 			{
-				MainForm.message_box( "It seems like the sprite '" + name + "' was created using the 8x16 mode!\n\nYou can't mix the 8x8 and 8x16 mode sprites in one project!\nPlease, check your sprites!\n\nOperation aborted!", _wnd_title + " [data validation]", MessageBoxButtons.OK, MessageBoxIcon.Error );
-				
-				return false;
+				if( MainForm.message_box( "It seems like the sprite '" + name + "' was created using the 8x16 mode!\n\nYou can't mix the 8x8 and 8x16 mode sprites in one project!\nPlease, check your sprites!\n\nAbort operation?", _wnd_title + " [data validation]", MessageBoxButtons.YesNo, MessageBoxIcon.Error ) == DialogResult.Yes )
+				{
+					return false;
+				}
 			}
 			
 			/*
