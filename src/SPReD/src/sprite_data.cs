@@ -394,15 +394,21 @@ namespace SPReD
 		
 		public bool check( bool _8x16_mode, string _wnd_title )
 		{
-			bool even_chr_ids = true;
+			bool even_chr_inds = true;
+			bool diff_chr_inds = false;
 			
 			int attr_cnt = get_CHR_attr().Count;
 			
+			int chr_ind = ( attr_cnt > 0 ) ? get_CHR_attr()[ 0 ].CHR_ind:-1;
+			int attr_CHR_ind = -1;
+			
 			for( int attr_n = 0; attr_n < attr_cnt; attr_n++ )
 			{
+				attr_CHR_ind = get_CHR_attr()[ attr_n ].CHR_ind;
+				
 				if( _8x16_mode )
 				{
-					if( ( get_CHR_attr()[ attr_n ].CHR_ind & 0x01 ) == 0x01 )
+					if( ( attr_CHR_ind & 0x01 ) == 0x01 )
 					{
 						MainForm.message_box( "The sprite '" + name + "' has invalid data for the 8x16 mode!\n\nYou can't mix the 8x8 and 8x16 mode sprites in one project!\nPlease, check your sprites!\n\nOperation aborted!", _wnd_title + " [data validation]", MessageBoxButtons.OK, MessageBoxIcon.Error );
 						
@@ -411,14 +417,21 @@ namespace SPReD
 				}
 				else
 				{
-					if( ( get_CHR_attr()[ attr_n ].CHR_ind & 0x01 ) == 0x01 )
+					if( ( attr_CHR_ind & 0x01 ) == 0x01 )
 					{
-						even_chr_ids = false;
+						even_chr_inds = false;
+					}
+					
+					if( chr_ind != attr_CHR_ind )
+					{
+						chr_ind = attr_CHR_ind;
+						
+						diff_chr_inds = true;
 					}
 				}
 			}
 			
-			if( !_8x16_mode && even_chr_ids && attr_cnt >= 4 )
+			if( !_8x16_mode && even_chr_inds && diff_chr_inds && attr_cnt >= 4 )
 			{
 				if( MainForm.message_box( "It seems like the sprite '" + name + "' was created using the 8x16 mode!\n\nYou can't mix the 8x8 and 8x16 mode sprites in one project!\nPlease, check your sprites!\n\nAbort operation?", _wnd_title + " [data validation]", MessageBoxButtons.YesNo, MessageBoxIcon.Error ) == DialogResult.Yes )
 				{
@@ -443,7 +456,7 @@ namespace SPReD
 			if( _spr.get_CHR_data().get_data().Count > _spr.get_CHR_attr().Count * ( _mode8x16 ? 2:1 ) )
 			{
 				// already packed!
-				MainForm.message_box( _spr.name + " - already packed!\n\nYou can pack unpacked sprites only!\n\nTry to split all the sprites data and repack it again!", "CHR Data Packing", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( "'" + _spr.name + "' - already packed!\n\nYou can pack unpacked sprites only!\n\nTry to split all the sprites data and repack it again!", "CHR Data Packing", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				
 				return false;
 			}
