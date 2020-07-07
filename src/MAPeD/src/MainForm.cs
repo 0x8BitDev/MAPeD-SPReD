@@ -559,7 +559,7 @@ namespace MAPeD
 		{
 			if( m_data_manager.tiles_data_cnt == 0 )			
 			{
-				message_box( "There are no data to save!", "Save Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There is no data to save!", "Save Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			else
 			{
@@ -784,7 +784,7 @@ namespace MAPeD
 			}
 			else
 			{
-				message_box( "There are no data to export!", "Export Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There is no data to export!", "Export Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 
@@ -812,7 +812,7 @@ namespace MAPeD
 			
 			if( num_active_tiles == 0 )
 			{
-				throw new Exception( "There are no data to export!" );
+				throw new Exception( "There is no data to export!" );
 			}
 			
 			// draw images into bitmap
@@ -1787,7 +1787,7 @@ namespace MAPeD
 		{
 			if( m_data_manager.tiles_data_cnt == 0 )			
 			{
-				message_box( "There are no data!", "Data Optimization", MessageBoxButtons.OK );
+				message_box( "There is no data!", "Data Optimization", MessageBoxButtons.OK );
 			}
 			else
 			{
