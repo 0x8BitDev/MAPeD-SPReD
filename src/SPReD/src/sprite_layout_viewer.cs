@@ -94,8 +94,6 @@ namespace SPReD
 		
 		private string m_mode_str	= null;
 
-		private bool m_update_busy	= false;
-			
 		public enum EMode
 		{
 			m_unknown = 0,
@@ -150,8 +148,6 @@ namespace SPReD
 			m_bmp_list.Clear();
 			
 			m_label.Text = "...";
-			
-			m_update_busy = false;
 		}
 		
 		private void Layout_MouseDown(object sender, MouseEventArgs e)
@@ -463,14 +459,6 @@ namespace SPReD
 		
 		private void update()
 		{
-			if( m_update_busy == true )
-			{
-				// if there was a call from the timer thread, then we exit to avoid an error
-				return;
-			}
-			
-			m_update_busy = true;
-			
 			clear_background( CONST_BACKGROUND_COLOR );
 			
 			// sprite data drawing
@@ -539,8 +527,6 @@ namespace SPReD
 			}
 			
 			invalidate();
-			
-			m_update_busy = false;
 		}
 
 		private void calc_CHR_size_and_draw_grid( bool _draw_grid )
@@ -699,14 +685,7 @@ namespace SPReD
 			offs_x = ( float )Math.Round( transform_to_scr_pos( ( chr_attr.x + m_offset_x + m_spr_data.offset_x ), m_scr_half_width ) - 0.5 );
 			offs_y = ( float )Math.Round( transform_to_scr_pos( ( chr_attr.y + m_offset_y + m_spr_data.offset_y ), m_scr_half_height ) - 0.5 );
 			
-			if( m_mode8x16 )
-			{
-				m_gfx.DrawImage( m_bmp_list[ _ind ], offs_x, offs_y, m_CHR_size, get_CHR_height() );
-			}
-			else
-			{
-				m_gfx.DrawImage( m_bmp_list[ _ind ], offs_x, offs_y, m_CHR_size, m_CHR_size );
-			}
+			m_gfx.DrawImage( m_bmp_list[ _ind ], offs_x, offs_y, m_CHR_size, m_mode8x16 ? get_CHR_height():m_CHR_size );
 		}
 		
 		public void init( sprite_data _spr_data )
