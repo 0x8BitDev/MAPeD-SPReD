@@ -84,9 +84,12 @@
 	push de
 	push hl
 
-	in a, (VDP_CMD_STATUS_REG)
+	; clear the interrupt request line from the VDP chip
 
-	call vblank_handler
+	in a, (VDP_CMD_STATUS_REG)
+	bit 7, a			; 7 bit means - VBLANK
+
+	call nz, vblank_handler
 
 	pop hl
 	pop de
