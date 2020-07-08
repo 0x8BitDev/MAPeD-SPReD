@@ -26,12 +26,13 @@ MAPeD-NES:
 SPReD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
-03.07.2020 v0.57b
+06.07.2020 v0.57b
 
-02.07.2020 - Added iterative optimization during the packing operation
+06.07.2020 - Added sprites data validation before: Packing, Optimization, Splitting, Flipping and Creating/Deleting of sprites
+02.07.2020 - Added iterative optimization during the sprites data packing operation
 01.07.2020 - Now optimization performs for all sprites, and not for selected ones
 01.07.2020 - Layout window OSD info moved to the layout group box
-30.06.2020 - Removing of duplicate CHRs during optimization process added
+30.06.2020 - Added removing of duplicate CHRs during the optimization process
 30.06.2020 - SMS raw tiles data loading added
 29.06.2020 - Project statistics added
 28.06.2020 - SMS samples added
