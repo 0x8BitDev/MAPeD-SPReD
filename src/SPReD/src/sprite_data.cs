@@ -18,10 +18,10 @@ namespace SPReD
 	/// </summary>
 	public class sprite_data
 	{
-		public enum EFlipType
+		public enum EAxesFlipType
 		{
-			ft_LOCAL = 0,
-			ft_GLOABL_AXES,
+			aft_LOCAL_AXES = 0,
+			aft_GLOABL_AXES,
 		};
 		
 		private static readonly byte[] clr_ind_remap_arr = new byte[]
@@ -195,9 +195,9 @@ namespace SPReD
 		}
 		
 #if DEF_NES		
-		public void flip_vert( EFlipType _ft, bool _8x16_mode )
+		public void flip_vert( EAxesFlipType _ft, bool _8x16_mode )
 #elif DEF_SMS
-		public void flip_vert( EFlipType _ft, bool _transform_pos, bool _8x16_mode )
+		public void flip_vert( EAxesFlipType _ft, bool _transform_pos, bool _8x16_mode )
 #endif			
 		{
 			m_CHR_attr.ForEach( delegate( CHR_data_attr _attr ) 
@@ -219,14 +219,14 @@ namespace SPReD
 				{
 					switch( _ft )
 					{
-						case sprite_data.EFlipType.ft_LOCAL:
+						case sprite_data.EAxesFlipType.aft_LOCAL_AXES:
 							{
 								int center = m_size_y >> 1;
 								_attr.y = center - ( _attr.y - center ) - utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
 							}
 							break;
 							
-						case sprite_data.EFlipType.ft_GLOABL_AXES:
+						case sprite_data.EAxesFlipType.aft_GLOABL_AXES:
 							{
 								_attr.y = ( -_attr.y - utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) - m_offset_y;
 								
@@ -244,7 +244,7 @@ namespace SPReD
 			if( _transform_pos )
 #endif
 			{
-				if( _ft == sprite_data.EFlipType.ft_GLOABL_AXES )
+				if( _ft == sprite_data.EAxesFlipType.aft_GLOABL_AXES )
 				{
 					// find a minimal Y value
 					int min_y = int.MaxValue;
@@ -269,9 +269,9 @@ namespace SPReD
 		}
 		
 #if DEF_NES		
-		public void flip_horiz( EFlipType _ft )
+		public void flip_horiz( EAxesFlipType _ft )
 #elif DEF_SMS
-		public void flip_horiz( EFlipType _ft, bool _transform_pos, bool _8x16_mode )
+		public void flip_horiz( EAxesFlipType _ft, bool _transform_pos, bool _8x16_mode )
 #endif			
 		{
 			m_CHR_attr.ForEach( delegate( CHR_data_attr _attr ) 
@@ -291,14 +291,14 @@ namespace SPReD
 				{
 					switch( _ft )
 					{
-						case sprite_data.EFlipType.ft_LOCAL:
+						case sprite_data.EAxesFlipType.aft_LOCAL_AXES:
 							{
 								int center = m_size_x >> 1;
 								_attr.x = center - ( _attr.x - center ) - utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
 							}
 							break;
 							
-						case sprite_data.EFlipType.ft_GLOABL_AXES:
+						case sprite_data.EAxesFlipType.aft_GLOABL_AXES:
 							{
 								_attr.x = ( -_attr.x - utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) - m_offset_x;
 							}
@@ -311,7 +311,7 @@ namespace SPReD
 			if( _transform_pos )
 #endif
 			{
-				if( _ft == sprite_data.EFlipType.ft_GLOABL_AXES )
+				if( _ft == sprite_data.EAxesFlipType.aft_GLOABL_AXES )
 				{
 					// find a minimal X value
 					int min_x = int.MaxValue;

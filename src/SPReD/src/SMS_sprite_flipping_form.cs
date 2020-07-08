@@ -21,7 +21,7 @@ namespace SPReD
 		private bool m_vert_flip	= false;
 		private bool m_8x16_mode	= false;
 		
-		private sprite_data.EFlipType m_flip_type	= sprite_data.EFlipType.ft_LOCAL; 
+		private sprite_data.EAxesFlipType m_flip_type	= sprite_data.EAxesFlipType.aft_LOCAL_AXES; 
 		
 		public bool copy_CHR_data
 		{
@@ -43,7 +43,7 @@ namespace SPReD
 			m_spr_proc = _spr_proc;
 		}
 		
-		public DialogResult ShowDialog( string _title, bool _vert_flip, bool _8x16_mode, sprite_data.EFlipType _ft )
+		public DialogResult ShowDialog( string _title, bool _vert_flip, bool _8x16_mode, sprite_data.EAxesFlipType _ft )
 		{
 			this.Text 	= _title;
 			m_vert_flip = _vert_flip;

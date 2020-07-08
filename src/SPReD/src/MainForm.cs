@@ -794,7 +794,7 @@ namespace SPReD
 		void BtnSpriteVFlip_Event(object sender, EventArgs e)
 		{
 #if DEF_NES			
-			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_vert( ( sprite_data.EFlipType )( CBoxFlipType.SelectedIndex ), CBoxMode8x16.Checked ); } );
+			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_vert( ( sprite_data.EAxesFlipType )( CBoxFlipType.SelectedIndex ), CBoxMode8x16.Checked ); } );
 #elif DEF_SMS
 			flip_sprites( "Vertical Flipping", true );
 #endif
@@ -803,7 +803,7 @@ namespace SPReD
 		void BtnSpriteHFlip_Event(object sender, EventArgs e)
 		{
 #if DEF_NES			
-			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_horiz( ( sprite_data.EFlipType )( CBoxFlipType.SelectedIndex ) ); } );
+			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_horiz( ( sprite_data.EAxesFlipType )( CBoxFlipType.SelectedIndex ) ); } );
 #elif DEF_SMS
 			flip_sprites( "Horizontal Flipping", false );
 #endif
@@ -837,7 +837,7 @@ namespace SPReD
 					return;
 				}
 				
-				m_SMS_sprite_flip_form.ShowDialog( _title, _vert_flip, CBoxMode8x16.Checked, ( sprite_data.EFlipType )CBoxFlipType.SelectedIndex );
+				m_SMS_sprite_flip_form.ShowDialog( _title, _vert_flip, CBoxMode8x16.Checked, ( sprite_data.EAxesFlipType )CBoxFlipType.SelectedIndex );
 
 				if( m_SMS_sprite_flip_form.copy_CHR_data )
 				{
