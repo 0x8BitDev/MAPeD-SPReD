@@ -84,8 +84,8 @@ namespace SPReD
 			this.CopyCHRDataCBox.Name = "CopyCHRDataCBox";
 			this.CopyCHRDataCBox.Size = new System.Drawing.Size(212, 47);
 			this.CopyCHRDataCBox.TabIndex = 1;
-			this.CopyCHRDataCBox.Text = "Copy CHR data ( it helps when several sprites share the same CHR data; all unused" +
-			"/empty CHRs will be lost! )";
+			this.CopyCHRDataCBox.Text = "Copy CHR data ( it helps when several sprites share the same CHR data; performs C" +
+			"HRs optimization! )";
 			this.CopyCHRDataCBox.TextAlign = System.Drawing.ContentAlignment.TopLeft;
 			this.CopyCHRDataCBox.UseVisualStyleBackColor = true;
 			// 
