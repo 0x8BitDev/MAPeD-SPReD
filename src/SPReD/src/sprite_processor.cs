@@ -84,6 +84,12 @@ namespace SPReD
 				png_reader.End();
 				throw new Exception( _filename + "\n\nOnly non interlaced .PNG images are supported!" );
 			}
+
+			if( ( png_reader.ImgInfo.Cols & 0x07 ) != 0 || ( png_reader.ImgInfo.Rows & 0x07 ) != 0 )
+			{
+				png_reader.End();
+				throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
+			}
 			
 #if DEF_NES
 			if( png_reader.GetMetadata().GetPLTE().MinBitDepth() != 2 )
@@ -92,16 +98,18 @@ namespace SPReD
 				throw new Exception( _filename + "\n\nThe image must have a 4 colors palette!" );
 			}
 #elif DEF_SMS
-			if( png_reader.GetMetadata().GetPLTE().MinBitDepth() != 4 )
+			int img_bit_depth = png_reader.GetMetadata().GetPLTE().MinBitDepth();
+
+			if( img_bit_depth != 4 && img_bit_depth != 2 )
 			{
 				png_reader.End();
-				throw new Exception( _filename + "\n\nThe image must have a 4 bpp color depth!" );
+				throw new Exception( _filename + "\n\nThe image must have a 4 or 2 bpp color depth!" );
 			}
 			
 			if( png_reader.GetMetadata().GetPLTE().GetNentries() > 16 )
 			{
 				png_reader.End();
-				throw new Exception( _filename + "\n\nThe image must have a 16 colors palette!" );
+				throw new Exception( _filename + "\n\nThe image must have a 16 or 4 colors palette!" );
 			}
 #endif
 			sprite_params spr_params = m_CHR_data_storage.create( png_reader, _apply_palette, _crop_image );
@@ -122,9 +130,9 @@ namespace SPReD
 			{
 				bmp.Dispose();
 #if DEF_NES			
-				throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe image must have 4 bpp color depth \\ 4 colors palette (not RLE encoded)!" );
+				throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe image must have a 4 bpp color depth \\ 4 colors palette (not RLE encoded)!" );
 #elif DEF_SMS
-				throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe image must have 4 bpp color depth \\ 16 colors palette (not RLE encoded)!" );
+				throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe image must have a 4 bpp color depth \\ 16 or 4 colors palette (not RLE encoded)!" );
 #endif
 			}
 			

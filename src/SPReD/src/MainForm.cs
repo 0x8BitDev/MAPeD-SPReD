@@ -133,7 +133,7 @@ namespace SPReD
 			this.Project_openFileDialog.DefaultExt = "spredsms";
 			this.Project_openFileDialog.Filter = "SPReD-SMS (*.spredsms)|*.spredsms|" + this.Project_openFileDialog.Filter;
 
-			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "4 colors", "16 colors" );
+			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "4 colors", "16/4 colors" );
 			
 			this.ExportASMToolStripMenuItem.Text = "&WLA-DX asm";
 			this.ExportASM_saveFileDialog.Filter = "WLA-DX (*.asm)|*.asm";
@@ -541,8 +541,7 @@ namespace SPReD
 					}
 					else
 					{
-						spr = null;
-						m_sprites_proc.update_sprite( spr );
+						m_sprites_proc.update_sprite( null );
 					}
 					
 					m_sprites_proc.rearrange_CHR_data_ids();

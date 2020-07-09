@@ -166,11 +166,15 @@ namespace SPReD
 			Color[] plte = _bmp.Palette.Entries;
 			
 #if DEF_NES
-			int index_clamp_val = 0x03;
-#elif DEF_SMS
-			int index_clamp_val = int.MaxValue;
-#endif
+			int index_clamp_val = 3;
 			
+			int clrs_cnt = utils.CONST_PALETTE_SMALL_NUM_COLORS;
+#elif DEF_SMS
+			int index_clamp_val = 15;
+			
+			int clrs_cnt = Math.Min( utils.CONST_PALETTE_SMALL_NUM_COLORS*utils.CONST_NUM_SMALL_PALETTES, plte.Length );
+#endif
+
 			// detect valid borders of an image
 			{
 				BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, img_width, img_height ), ImageLockMode.ReadOnly, _bmp.PixelFormat );
@@ -181,7 +185,7 @@ namespace SPReD
 					{
 						// find nearest colors
 #if DEF_NES							
-						for( i = 0; i < utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+						for( i = 0; i < clrs_cnt; i++ )
 						{
 							palette_group.Instance.get_palettes_arr()[ 0 ].get_color_inds()[ i ] = utils.find_nearest_color_ind( plte[ i % 4 ].ToArgb() );
 						}						
@@ -189,7 +193,7 @@ namespace SPReD
 						palette_group.Instance.get_palettes_arr()[ 0 ].update();							
 						palette_group.Instance.active_palette = 0;
 #elif DEF_SMS
-						for( i = 0; i < utils.CONST_PALETTE_SMALL_NUM_COLORS*utils.CONST_NUM_SMALL_PALETTES; i++ )
+						for( i = 0; i < clrs_cnt; i++ )
 						{
 							palette_group.Instance.get_palettes_arr()[ i / utils.CONST_NUM_SMALL_PALETTES ].get_color_inds()[ i % utils.CONST_NUM_SMALL_PALETTES ] = utils.find_nearest_color_ind( plte[ i % 16 ].ToArgb() );
 						}
@@ -332,15 +336,6 @@ namespace SPReD
 				// find nearest colors
 				if( _apply_palette )
 				{
-#if DEF_NES							
-					for( i = 0; i < utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
-					{
-						palette_group.Instance.get_palettes_arr()[ 0 ].get_color_inds()[ i ] = utils.find_nearest_color_ind( plte.GetEntry( ( trns != null ) ? ( i + alpha_ind ) % num_colors:i ) );
-					}						
-					
-					palette_group.Instance.get_palettes_arr()[ 0 ].update();
-					palette_group.Instance.active_palette = 0;
-#elif DEF_SMS
 					for( i = 0; i < plte.GetNentries(); i++ )
 					{
 						palette_group.Instance.get_palettes_arr()[ i / utils.CONST_NUM_SMALL_PALETTES ].get_color_inds()[ i % utils.CONST_NUM_SMALL_PALETTES ] = utils.find_nearest_color_ind( plte.GetEntry( ( trns != null ) ? ( i + alpha_ind ) % num_colors:i ) );
@@ -350,6 +345,8 @@ namespace SPReD
 					{
 						palette_group.Instance.get_palettes_arr()[ i ].update();
 					}
+#if DEF_NES							
+					palette_group.Instance.active_palette = 0;
 #endif
 				}
 				
