@@ -514,24 +514,37 @@ namespace SPReD
 					sprite_data spr;
 
 					int spr_CHR_id;
+					int i;
 					
-					do
+					List< sprite_data >	sprites = new List< sprite_data >( SpriteList.SelectedIndices.Count );
+					
+					for( i = 0; i < SpriteList.SelectedIndices.Count; i++ )
 					{
-						spr = SpriteList.Items[ SpriteList.SelectedIndices[ 0 ] ] as sprite_data;
+						sprites.Add( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data );				
+					}
+					
+					SpriteList.BeginUpdate();
+
+					m_sprites_proc.CHR_bank_optimization_begin();
+					
+					for( i = 0; i < sprites.Count; i++ )
+					{
+						spr = sprites[ i ];
 						
-						SpriteList.Items.RemoveAt( SpriteList.SelectedIndices[ 0 ] );
+						SpriteList.Items.Remove( spr );
 						
 						spr_CHR_id = spr.get_CHR_data().id;
 						
 						m_sprites_proc.remove( spr );
 						
-						m_sprites_proc.CHR_bank_optimization_begin();
-						{
-							m_sprites_proc.CHR_bank_optimization( spr_CHR_id, SpriteList.Items, CBoxMode8x16.Checked );
-						}
-						m_sprites_proc.CHR_bank_optimization_end( false );
+						m_sprites_proc.CHR_bank_optimization( spr_CHR_id, SpriteList.Items, CBoxMode8x16.Checked );
 					}
-					while( SpriteList.SelectedIndices.Count != 0 );
+					
+					m_sprites_proc.CHR_bank_optimization_end( false );
+					
+					SpriteList.EndUpdate();
+					
+					SpriteList.SelectedIndices.Clear();
 					
 					if( SpriteList.Items.Count == 0 )
 					{
