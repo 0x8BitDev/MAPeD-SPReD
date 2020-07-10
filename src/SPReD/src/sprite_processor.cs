@@ -90,6 +90,12 @@ namespace SPReD
 				png_reader.End();
 				throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
 			}
+	
+			if( ( ( png_reader.ImgInfo.Cols >> 3 ) * ( png_reader.ImgInfo.Rows >> 3 ) ) > utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+			{
+				png_reader.End();
+				throw new Exception( _filename + "\n\nThe imported image contains more than " + utils.CONST_CHR_BANK_MAX_SPRITES_CNT + " CHRs!" );
+			}
 			
 #if DEF_NES
 			if( png_reader.GetMetadata().GetPLTE().MinBitDepth() != 2 )
@@ -140,6 +146,12 @@ namespace SPReD
 			{
 				bmp.Dispose();
 				throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
+			}
+			
+			if( ( ( bmp.Width >> 3 ) * ( bmp.Height >> 3 ) ) > utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+			{
+				bmp.Dispose();
+				throw new Exception( _filename + "\n\nThe imported image contains more than " + utils.CONST_CHR_BANK_MAX_SPRITES_CNT + " CHRs!" );
 			}
 			
 			sprite_params spr_params = m_CHR_data_storage.create( bmp, _apply_palette );
