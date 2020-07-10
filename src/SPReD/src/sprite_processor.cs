@@ -159,6 +159,8 @@ namespace SPReD
 			sprite_data spr = new sprite_data( _name );
 			spr.setup( spr_params );
 			
+			bmp.Dispose();
+			
 			return spr;
 		}
 		
