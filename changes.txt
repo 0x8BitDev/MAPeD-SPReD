@@ -1,11 +1,11 @@
 MAPeD-NES:
 ~~~~~~~~~~~
-03.07.2020 v0.57b
+03.07.2020 v0.58b
 
 16.07.2019 - Quick guide added
 05.06.2019 - Python script editor added as separate project for both MAPeD/SPReD
 31.05.2019 - Python script editor: added the possibility to edit any number of scripts
-26.05.2019 - Python script editor for writing custom data export scripts, API doc and sample script are added
+26.05.2019 - Added a Python script editor for writing custom data export scripts, an API doc and a sample script
 
 17.05.2019 v0.54b
 
@@ -17,7 +17,7 @@ MAPeD-NES:
 12.05.2019 - Solution renamed to avoid errors on Linux
 12.05.2019 - Unmanaged Win code enables on Win only
 12.05.2019 - Fixed GUI issues on Linux
-09.05.2019 - Load\save palette with project file
+09.05.2019 - Loading\saving a palette with a project file
 09.05.2019 - Custom palette import added
 
 01.05.2019 v0.50b - Initial release
@@ -26,19 +26,22 @@ MAPeD-NES:
 SPReD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
-06.07.2020 v0.57b
+10.07.2020 v0.58b
 
+10.07.2020 - Added warning when imported image overflows a CHR bank
+09.07.2020 - Fixed removing of sprites on Linux
+09.07.2020 - Added importing of 2-bpp images in the SMS version
 06.07.2020 - Added sprites data validation before: Packing, Optimization, Splitting, Flipping and Creating/Deleting of sprites
-02.07.2020 - Added iterative optimization during the sprites data packing operation
-01.07.2020 - Now optimization performs for all sprites, and not for selected ones
-01.07.2020 - Layout window OSD info moved to the layout group box
+02.07.2020 - Added iterative optimization during the packing operation
+01.07.2020 - Now the optimization performs for all sprites, and not for selected ones
+01.07.2020 - The layout window OSD info moved to the layout group box
 30.06.2020 - Added removing of duplicate CHRs during the optimization process
-30.06.2020 - SMS raw tiles data loading added
-29.06.2020 - Project statistics added
+30.06.2020 - Added SMS raw tiles data loading
+29.06.2020 - Added a project statistics
 28.06.2020 - SMS samples added
 06.07.2019 - Quick guide added
 14.06.2019 - SPReD-SMS added
-05.06.2019 - Python script editor, API doc and sample script are added
+05.06.2019 - Added a Python script editor, an API doc and a sample script
 
 17.05.2019 v0.54b
 
