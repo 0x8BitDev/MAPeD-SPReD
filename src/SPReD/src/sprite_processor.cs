@@ -296,11 +296,17 @@ namespace SPReD
 			return chr_attrs;
 		}
 		
+#if DEF_NES
 		public void export_CHR( StreamWriter _sw, string _filename, bool _commented, bool _need_padding )
 		{
 			m_CHR_data_storage.export( _sw, _filename, _commented, _need_padding );
 		}
-		
+#elif DEF_SMS
+		public void export_CHR( StreamWriter _sw, string _filename, bool _commented, bool _need_padding, int _CHR_size )
+		{
+			m_CHR_data_storage.export( _sw, _filename, _commented, _need_padding, _CHR_size );
+		}
+#endif
 		public void rearrange_CHR_data_ids()
 		{
 			m_CHR_data_storage.rearrange_CHR_data_ids();

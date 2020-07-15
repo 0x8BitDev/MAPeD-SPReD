@@ -5,6 +5,8 @@
 ;#######################################################
 
 .define	SPR_MODE_8X16	1
+.define	CHR_BPP	4
+; CHRs offset: 0
 
 
 ;chr0:	.incbin "dog_gfx_chr0.bin"	; 384 bytes
@@ -27,7 +29,7 @@
 
 
 dog_gfx_palette:
-	.byte $39, $0B, $07, $00, $39, $23, $37, $3B, $3E, $38, $34, $10, $39, $08, $1D, $2E
+	.byte $39, $0B, $07, $00, $3E, $38, $34, $10, $22, $25, $29, $2D, $33, $36, $3A, $3E
 
 
 dog_gfx_num_frames:

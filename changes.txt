@@ -26,6 +26,8 @@ MAPeD-NES:
 SPReD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+15.07.2020 - SMS: added additional export options: 1/2/3/4 bpp and CHRs offset
+
 10.07.2020 v0.58b
 
 10.07.2020 - Added warning when imported image overflows a CHR bank

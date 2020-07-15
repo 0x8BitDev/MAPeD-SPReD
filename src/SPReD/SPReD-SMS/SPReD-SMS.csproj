@@ -183,6 +183,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="SMS_export_form.cs" />
+    <Compile Include="SMS_export_form.Designer.cs">
+      <DependentUpon>SMS_export_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="SPReD-SMS.Designer.cs">
       <DependentUpon>SPReD-SMS.settings</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -227,6 +231,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SMS_export_form.resx">
+      <DependentUpon>SMS_export_form.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -29,6 +29,8 @@ VDP_init_data_end:
 ; IN:	HL - data addr
 ;	BC - data size
 ;	DE - VRAM addr
+;
+; Note: the routine supports 1/2/3/4 bpp CHRs, it depends on CHR_BPP value
 
 VDP_load_tiles:
 
@@ -44,11 +46,20 @@ VDP_load_tiles:
 
 _load_tiles_loop:
 
-.repeat 4
+.repeat CHR_BPP
 	ld a, (hl)
 	out (VDP_CMD_DATA_REG), a
 	inc hl	
 .endr
+
+.if 4 - CHR_BPP > 0
+	xor a
+
+.repeat 4 - CHR_BPP
+	out (VDP_CMD_DATA_REG), a
+.endr
+
+.endif
 
 	dec bc
 

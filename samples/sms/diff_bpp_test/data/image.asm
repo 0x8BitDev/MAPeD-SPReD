@@ -15,21 +15,21 @@
 
 
 image_palette:
-	.byte $02, $10, $20, $2A, $24, $25, $2D, $2A, $0B, $2F, $1B, $15, $0A, $07, $3F, $10
+	.byte $00, $03, $07, $0B, $35, $1E, $18, $1C, $22, $23, $29, $2D, $33, $36, $17, $3E
 
 
 image_num_frames:
 	.byte $01
 image_frames_data:
-sonic8x8_frame:
-	.word sonic8x8
-	.byte sonic8x8_end - sonic8x8	; data size
+bpp_test_sprite_frame:
+	.word bpp_test_sprite
+	.byte bpp_test_sprite_end - bpp_test_sprite	; data size
 	.byte 0		; CHR bank index (chr0)
 
 
 	; #1: Y pos, #2: X pos, #3: CHR index
 
-sonic8x8:
+bpp_test_sprite:
 	.byte $00, $00, $00
 	.byte $00, $08, $01
 	.byte $00, $10, $02
@@ -94,5 +94,5 @@ sonic8x8:
 	.byte $38, $28, $3D
 	.byte $38, $30, $3E
 	.byte $38, $38, $3F
-sonic8x8_end:
+bpp_test_sprite_end:
 

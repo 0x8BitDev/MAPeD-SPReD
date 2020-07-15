@@ -149,14 +149,21 @@ exit:
 ;
 ;************************************************************************
 
+	.incdir "./"
+	.include "player_anm.asm"
+
+.if CHR_BPP != 3
+.if CHR_BPP != 4
+	.printt "*** This sample supports 3 or 4 bpp tiles only! *** "
+	.fail
+.endif
+.endif
+
 	.incdir "../common"
 	.include "jpad.asm"
 	.include "vdp.asm"
 	.include "anm.asm"
 	.include "spr.asm"
-
-	.incdir "./"
-	.include "player_anm.asm"
 
 	.incdir "../common"
 	.include "character_cntrl.asm"

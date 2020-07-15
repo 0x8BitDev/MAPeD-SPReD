@@ -522,8 +522,13 @@ namespace SPReD
 			
 			return true;
 		}
-		
+
+#if DEF_NES		
 		public void export( StreamWriter _sw )
+#elif DEF_SMS
+		public void export( StreamWriter _sw, int _CHRs_offset )
+#endif			
+			
 		{
 			int size = this.m_CHR_attr.Count;
 			
@@ -551,7 +556,12 @@ namespace SPReD
 				
 				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( byte )( offset_y + chr_attr.y ) ), unchecked( ( byte )( chr_attr.CHR_ind ) ), unchecked( ( byte )( attr ) ), unchecked( ( byte )( offset_x + chr_attr.x ) ) ) );
 #elif DEF_SMS	
-				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}", unchecked( ( byte )( offset_y + chr_attr.y ) ), unchecked( ( byte )( offset_x + chr_attr.x ) ), unchecked( ( byte )( chr_attr.CHR_ind ) ) ) );
+				if( chr_attr.CHR_ind + _CHRs_offset > utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1 )
+				{
+					throw new Exception( "CHRs indices overflow! Invalid CHRs offset value!" );
+				}
+
+				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}", unchecked( ( byte )( offset_y + chr_attr.y ) ), unchecked( ( byte )( offset_x + chr_attr.x ) ), unchecked( ( byte )( chr_attr.CHR_ind + _CHRs_offset ) ) ) );
 #endif				
 			}
 			

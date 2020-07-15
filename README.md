@@ -131,6 +131,7 @@ As mentioned before, you need to install Mono on your computer. To run the tools
 - `./samples/sms/player_cntrl_dog`	- character controller: idle, running and jumping; 8x16 mode
 - `./samples/sms/player_cntrl_marco`	- the same as previous, but using big sprites 
 ( +shooting and ducking animations )
+- `./samples/sms/diff_bpp_test`		- test program for testing the same image with different exported BPP values
 
 ---
 **Used tools:**

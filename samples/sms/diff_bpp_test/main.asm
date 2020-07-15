@@ -30,7 +30,7 @@
 ;
 ;************************************************************************
 
-.sdsctag 0.1, "Show sprite", "SPReD-SMS Sample: Show sprite", "0x8BitDev"
+.sdsctag 0.1, "BPP test", "SPReD-SMS Sample: bpp test", "0x8BitDev"
 
 ;************************************************************************
 ;
@@ -74,11 +74,6 @@
 
 	.incdir "data"
 	.include "image.asm"
-
-.if CHR_BPP != 4
-	.printt "*** This sample supports 4 bpp tiles only! *** "
-	.fail
-.endif
 
 	.incdir "../common"
 	.include "vdp.asm"

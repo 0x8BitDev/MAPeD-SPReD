@@ -123,7 +123,11 @@ namespace SPReD
 			return null;
 		}
 		
+#if DEF_NES		
 		public void export( StreamWriter _sw, string _filename, bool _commented, bool _need_padding )
+#elif DEF_SMS
+		public void export( StreamWriter _sw, string _filename, bool _commented, bool _need_padding, int _CHR_size )
+#endif			
 		{
 			int CHR_data_size;
 			
@@ -135,12 +139,15 @@ namespace SPReD
 
 			for( int i = 0; i < size; i++ )
 			{
+#if DEF_NES				
 				CHR_data_size = m_data[ i ].get_size_bytes();
-				
+#elif DEF_SMS
+				CHR_data_size = m_data[ i ].get_data().Count * _CHR_size;
+#endif				
 				_sw.WriteLine( ( _commented ? ";":"" ) + m_data[ i ].name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );				
 #if DEF_SMS
 				CHR_data_arr += "\n;\t.word " + ( _need_padding ? ( CHR_data_size + utils.get_padding( CHR_data_size ) ):CHR_data_size ) + ", " + m_data[ i ].name;
-#endif				
+#endif
 			}
 			
 #if DEF_SMS

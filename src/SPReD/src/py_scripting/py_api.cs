@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 03.06.2019
  * Time: 15:55
  */
@@ -47,8 +47,11 @@ namespace SPReD
 			_py_scope.SetVariable( CONST_PREFIX + "get_sprite_data", new Func< int, spd_sprite_data >( get_sprite_data ) );
 
 			// Long export_CHR_data( Int32 _spr_ind, String _filename, Bool _save_padding )
+#if DEF_NES			
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, bool, long >( export_CHR_data ) );
-			
+#elif DEF_SMS
+			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, int, long >( export_CHR_data ) );
+#endif			
 			// some sprite related data structures
 			_py_scope.SetVariable( CONST_PREFIX + "sprite_data", 	typeof( spd_sprite_data ) );
 			_py_scope.SetVariable( CONST_PREFIX + "sprite_attr", 	typeof( spd_sprite_attr ) );
@@ -104,7 +107,11 @@ namespace SPReD
 			return py_data;
 		}
 		
+#if DEF_NES
 		public long export_CHR_data( int _spr_ind, string _filename, bool _save_padding )
+#elif DEF_SMS
+		public long export_CHR_data( int _spr_ind, string _filename, int _bpp )
+#endif			
 		{
 			long data_size = -1;
 
@@ -113,8 +120,16 @@ namespace SPReD
 				if( _spr_ind >= 0 && _spr_ind < m_spr_list.Items.Count )
 				{
 					sprite_data data = m_spr_list.Items[ _spr_ind ] as sprite_data;
-					
+#if DEF_NES					
 					data_size = data.get_CHR_data().export( _filename, _save_padding );
+#elif DEF_SMS
+					if( _bpp < 1 || _bpp > 4 )
+					{
+						throw new Exception( "Invalid CHRs bpp value! The valid range is 1-4." );
+					}
+					
+					data_size = data.get_CHR_data().export( _filename, false, _bpp );
+#endif
 				}
 				else
 				{

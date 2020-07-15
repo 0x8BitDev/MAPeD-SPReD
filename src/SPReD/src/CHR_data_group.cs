@@ -605,7 +605,11 @@ namespace SPReD
 			}
 		}
 		
+#if DEF_NES		
 		public long export( string _filename, bool _save_padding )
+#elif DEF_SMS
+		public long export( string _filename, bool _save_padding, int bpp )
+#endif			
 		{
 			BinaryWriter bw = new BinaryWriter( File.Open( _filename, FileMode.Create ) );
 			
@@ -618,7 +622,9 @@ namespace SPReD
 			
 			int val;
 			byte data;
-			
+#if DEF_SMS			
+			int max_clr_ind = ( 2 << ( bpp - 1 ) ) - 1;
+#endif			
 			int size = m_CHR_arr.Count;
 			
 			for( i = 0; i < size; i++ )
@@ -641,16 +647,18 @@ namespace SPReD
 						bw.Write( data );
 					}
 				}
-#elif DEF_SMS				
+#elif DEF_SMS
 				for( y = 0; y < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; y++ )
 				{
-					for( j = 0; j < 4; j++ )
+					for( j = 0; j < bpp; j++ )
 					{
 						data = 0;
 						
 						for( x = 0; x < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; x++ )
 						{
 							val = chr_data.get_data()[ ( y << 3 ) + ( 7 - x ) ];
+							
+							val = ( val > max_clr_ind ) ? 0:val;
 							
 							data |= ( byte )( ( ( val >> j ) & 0x01 ) << x );
 						}
@@ -660,7 +668,7 @@ namespace SPReD
 				}
 #endif				
 			}
-#if DEF_NES			
+			
 			// save padding data aligned to 1/2/4 KB
 			if( _save_padding == true )
 			{
@@ -678,7 +686,7 @@ namespace SPReD
 					}
 				}
 			}
-#endif			
+
 			long data_size = bw.BaseStream.Length;
 			bw.Close();
 			
