@@ -125,6 +125,34 @@
 ; at 150.
 
 
+; The Maskable Interrupt (INT)
+;
+; This interrupt is enabled with an "EI" instruction, and disabled with a "DI" instruction.
+; The Mk3 hardware supports the "mode 1" interrupt only. The boot ROM executes the "IM 1" 
+; instruction at power-on.
+;
+; In mode 1, activating the Z80A INT pin causes a Restart instruction to be executed at 
+; location $38 if interrupts are enabled.
+;
+; This interrupt can be activated by two events in the VDP chip: VBLANK, H-LINE
+;
+; The VDP_CMD_STATUS_REG ($BF) need to be read in interrupt response routine.
+;
+; Reading the I/O part at $BF does two things. First, it clears the interrupt request line 
+; from the VDP chip. Second, it provides VDP information as follows:
+;
+; bit 7 — 1: VBLANK Interrupt, 0: H-Line Interrupt [if enabled].
+;
+; bit 6 — 1: 9 sprites on a raster line.
+;
+; bit 5 — 1: Sprite Collision.
+;
+; bits 4-0 (no significance).
+;
+; The VDP VBLANK and H-Line interrupts are enabled with the VDPR0_HLINE and VDPR1_VBLANK flags
+; in VDP registers 0 and 1.
+;
+
 .macro	VDP_READ_RAM_CMD ; \1 - addr
 
 	ld de, VDP_CMD_READ_RAM | \1
