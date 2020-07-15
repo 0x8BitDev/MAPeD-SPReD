@@ -196,6 +196,7 @@ namespace MAPeD
 			// 
 			// ExpZXAsmColorConversionModes
 			// 
+			this.ExpZXAsmColorConversionModes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.ExpZXAsmColorConversionModes.FormattingEnabled = true;
 			this.ExpZXAsmColorConversionModes.Items.AddRange(new object[] {
 									"Mode 1",
