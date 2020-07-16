@@ -6,7 +6,7 @@
 
 .define	SPR_MODE_8X16	1
 .define	CHR_BPP	4
-; CHRs offset: 0
+.define	CHRS_OFFSET	0	; first CHR index in a CHR bank
 
 
 ;chr0:	.incbin "dog_gfx_chr0.bin"	; 384 bytes

@@ -266,7 +266,7 @@ loop:
 
 	ld (VDP_TILES_ROM_ADDR), de
 
-	ld hl, $0000		; VRAM addr
+	ld hl, $0000 + ( $20 * CHRS_OFFSET )	; VRAM addr
 
 	ld (VDP_TILES_VRAM_ADDR), hl
 
