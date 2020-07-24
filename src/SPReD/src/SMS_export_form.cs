@@ -40,13 +40,6 @@ namespace SPReD
 			CBoxCHRsBpp.SelectedIndex = 3;
 		}
 		
-		void BtnOkClick(object sender, EventArgs e)
-		{
-			Close();
-			
-			this.DialogResult = DialogResult.OK;
-		}
-		
 		void BtnTilesOffsetInfoClick(object sender, EventArgs e)
 		{
 			MainForm.message_box( "This value will be added to each CHR index in a sprite attributes.\nIn other words, it's a free space at the beginning of a CHR bank.", "CHRs Offset Description", MessageBoxButtons.OK, MessageBoxIcon.Information );

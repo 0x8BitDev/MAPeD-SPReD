@@ -45,13 +45,13 @@ namespace SPReD
 			// 
 			// BtnOk
 			// 
+			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.BtnOk.Location = new System.Drawing.Point(58, 82);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 1;
 			this.BtnOk.Text = "&Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
-			this.BtnOk.Click += new System.EventHandler(this.BtnOkClick);
 			// 
 			// label1
 			// 
