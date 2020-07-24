@@ -1363,6 +1363,9 @@ namespace SPReD
 									plt_small[ data_pos ] = br.ReadInt32();
 								}
 								while( ++data_pos != plt_small.Length );
+#if DEF_NES
+								plt_small[ 4 ] = plt_small[ 8 ] = plt_small[ 12 ] = plt_small[ 0 ];
+#endif
 							}
 							
 							uint flags = br.ReadUInt32();
@@ -1704,7 +1707,10 @@ namespace SPReD
 				}
 				
 #elif DEF_SMS
-				m_SMS_export_form.ShowDialog();
+				if( m_SMS_export_form.ShowDialog() == DialogResult.Cancel )
+				{
+					return;
+				}
 #endif				
 				sprite_data spr;
 				

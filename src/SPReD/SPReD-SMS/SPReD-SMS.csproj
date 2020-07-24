@@ -160,6 +160,13 @@
       <Link>rename_sprite_form.Designer.cs</Link>
       <DependentUpon>rename_sprite_form.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\SMS_export_form.cs">
+      <Link>SMS_export_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\SMS_export_form.Designer.cs">
+      <Link>SMS_export_form.Designer.cs</Link>
+      <DependentUpon>SMS_export_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\SMS_sprite_flipping_form.cs">
       <Link>SMS_sprite_flipping_form.cs</Link>
     </Compile>
@@ -182,10 +189,6 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="SMS_export_form.cs" />
-    <Compile Include="SMS_export_form.Designer.cs">
-      <DependentUpon>SMS_export_form.cs</DependentUpon>
     </Compile>
     <Compile Include="SPReD-SMS.Designer.cs">
       <DependentUpon>SPReD-SMS.settings</DependentUpon>
@@ -225,15 +228,16 @@
       <Link>rename_sprite_form.resx</Link>
       <DependentUpon>rename_sprite_form.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\src\SMS_export_form.resx">
+      <Link>SMS_export_form.resx</Link>
+      <DependentUpon>SMS_export_form.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\src\SMS_sprite_flipping_form.resx">
       <DependentUpon>SMS_sprite_flipping_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SMS_export_form.resx">
-      <DependentUpon>SMS_export_form.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

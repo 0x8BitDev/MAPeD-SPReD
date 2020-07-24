@@ -43,6 +43,8 @@ namespace SPReD
 		void BtnOkClick(object sender, EventArgs e)
 		{
 			Close();
+			
+			this.DialogResult = DialogResult.OK;
 		}
 		
 		void BtnTilesOffsetInfoClick(object sender, EventArgs e)
