@@ -328,7 +328,7 @@ namespace MAPeD
 			
 			m_screen_editor.set_active_tile( -1, null, screen_editor.EFillMode.efm_Unknown );
 			
-			LabelActiveTile.Text = "...";
+			GrpBoxActiveTile.Text = "...";
 		}
 		
 		private void enable_update_gfx_btn_Event( object sender, EventArgs e )
@@ -1291,7 +1291,7 @@ namespace MAPeD
 				
 				m_screen_editor.set_active_tile( _ind, img, screen_editor.EFillMode.efm_Tile );
 				
-				LabelActiveTile.Text = "Active Tile:";
+				GrpBoxActiveTile.Text = "Tile: " + String.Format( "${0:X2}", _ind );
 			}
 		}
 
@@ -1307,7 +1307,7 @@ namespace MAPeD
 				
 				m_screen_editor.set_active_tile( _ind, img, screen_editor.EFillMode.efm_Block );
 				
-				LabelActiveTile.Text = "Active Block:";
+				GrpBoxActiveTile.Text = "Block: " + String.Format( "${0:X2}", _ind );
 			}
 		}
 		
@@ -2060,6 +2060,12 @@ namespace MAPeD
 				enable_update_screens_btn( true );
 			}
 		}
+		
+		void BtnResetTileClick_Event(object sender, EventArgs e)
+		{
+			clear_active_tile_img();
+		}
+		
 #endregion		
 // LAYOUT EDITOR *************************************************************************************//		
 #region layout editor
