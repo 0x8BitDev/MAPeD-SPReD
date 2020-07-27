@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 03.05.2017
  * Time: 17:18
  */
@@ -20,20 +20,30 @@ namespace MAPeD
 	public class tiles_data
 	{
 		private static ushort CONST_BLOCK_MASK_FLIP		= (ushort)( 3 << 8 );
+#if DEF_NES		
 		private static ushort CONST_BLOCK_MASK_PALETTE	= (ushort)( 3 << 10 );
+#elif DEF_SMS
+		private static ushort CONST_BLOCK_MASK_CHR_BANK_PAGE = (ushort)( 3 << 10 );
+#endif
 		private static ushort CONST_BLOCK_MASK_OBJ_ID	= (ushort)( 15 << 12 );
 		
 		private static int m_id	= -1;
 		
 		private string m_name	= null;
 		
-		private byte[] m_CHR_bank	= new byte[ utils.CONST_CHR_BANK_SIZE ];
+		private byte[] m_CHR_bank	= new byte[ utils.CONST_CHR_BANK_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ];
+#if DEF_NES		
 		private byte[] m_palette0	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 1+16 ), (byte)( 1+32 ), (byte)( 1+48 ) };
 		private byte[] m_palette1	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 4+16 ), (byte)( 4+32 ), (byte)( 4+48 ) };
 		private byte[] m_palette2	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 7+16 ), (byte)( 7+32 ), (byte)( 7+48 ) };
 		private byte[] m_palette3	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 11+16 ), (byte)( 11+32 ), (byte)( 11+48 ) };
-		
-		private ushort[] m_blocks	= new ushort[ utils.CONST_BLOCKS_USHORT_SIZE ];	// [ 15-8 -> property_id(4) palette ind(2) hv_flip(2) | CHR ind(8) <-- 7-0 ]
+#elif DEF_SMS
+		private byte[] m_palette0	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)0), (byte)( 3 ),  (byte)( 7 ),  (byte)( 11 ) };
+		private byte[] m_palette1	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)17), (byte)( 20 ), (byte)( 24 ), (byte)( 28 ) };
+		private byte[] m_palette2	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)34), (byte)( 37 ), (byte)( 41 ), (byte)( 45 ) };
+		private byte[] m_palette3	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)51), (byte)( 54 ), (byte)( 58 ), (byte)( 62 ) };
+#endif
+		private ushort[] m_blocks	= new ushort[ utils.CONST_BLOCKS_USHORT_SIZE ];	// [ 15-8 -> property_id(4) [ NES:palette ind SMS:CHR bank page ](2) [ NES: not used SMS: hv_flip ](2) | CHR ind(8) <-- 7-0 ]
 		private uint[] m_tiles		= new uint[ utils.CONST_TILES_UINT_SIZE ];
 		
 		private List< byte[] >	m_scr_data	= null;
@@ -319,6 +329,7 @@ namespace MAPeD
 			return (ushort)var;
 		}
 		
+#if DEF_NES		
 		public static int get_block_flags_palette( ushort _block_chr_data )
 		{
 			return ( ( _block_chr_data & CONST_BLOCK_MASK_PALETTE ) >> 10 );
@@ -333,7 +344,23 @@ namespace MAPeD
 			
 			return (ushort)var;
 		}
+#elif DEF_SMS
+		private static int get_block_flags_CHR_bank_page( ushort _block_chr_data )
+		{
+			return ( ( _block_chr_data & CONST_BLOCK_MASK_CHR_BANK_PAGE ) >> 10 );
+		}
 
+		private static ushort set_block_flags_CHR_bank_page( int _CHR_bank_page, ushort _block_chr_data )
+		{
+			int var = _block_chr_data;
+			
+			var &= ~CONST_BLOCK_MASK_CHR_BANK_PAGE;
+			var |= ( ( _CHR_bank_page & 0x03 ) << 10 );
+			
+			return (ushort)var;
+		}
+		
+#endif
 		public static int get_block_flags_obj_id( ushort _block_chr_data )
 		{
 			return ( _block_chr_data & CONST_BLOCK_MASK_OBJ_ID ) >> 12;
@@ -351,12 +378,20 @@ namespace MAPeD
 		
 		public static int get_block_CHR_id( ushort _block_chr_data )
 		{
+#if DEF_NES
 			return _block_chr_data & 0x00ff;
+#elif DEF_SMS
+			return ( _block_chr_data & 0x00ff ) | ( get_block_flags_CHR_bank_page( _block_chr_data ) << 8 );
+#endif
 		}
 		
 		public static ushort set_block_CHR_id( int _CHR_id, ushort _block_chr_data )
 		{
+#if DEF_NES
 			return (ushort)( ( _block_chr_data & 0xff00 ) | _CHR_id );
+#elif DEF_SMS
+			return (ushort)( ( set_block_flags_CHR_bank_page( ( _CHR_id >> 8 ), _block_chr_data ) & 0xff00 ) | ( _block_chr_data & 0xff00 ) | ( _CHR_id & 0xff ) );
+#endif
 		}
 		
 		public static void vflip( byte[] _CHR_data, int _spr_ind )
@@ -777,21 +812,110 @@ namespace MAPeD
 			}
 		}
 		
-		public void load( BinaryReader _br )
+		public void load( BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode )
 		{
 			int i;
+			UInt16 val;
 			
-			m_CHR_bank 	= _br.ReadBytes( utils.CONST_CHR_BANK_SIZE );
+			bool nes_file = _file_ext == utils.CONST_NES_FILE_EXT ? true:false;
+			bool sms_file = _file_ext == utils.CONST_SMS_FILE_EXT ? true:false;
+
+#if DEF_SMS
+			int CHR_id;
+			int palette_ind;
+			
+			Dictionary< int, int >	dict_CHR_palette_ind = nes_file ? new Dictionary<int, int>( utils.CONST_BLOCKS_USHORT_SIZE ):null;
+#endif
+
+#if DEF_NES
+			if( sms_file )
+			{
+				for( i = 0; i < m_CHR_bank.Length; i++ )
+				{
+					m_CHR_bank[ i ] = ( byte )( _br.ReadByte() & 0x03 );
+				}
+				
+				// skip the rest data
+				_br.ReadBytes( ( utils.CONST_SMS_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_SIZE ) - m_CHR_bank.Length );
+			}
+#elif DEF_SMS			
+			if( nes_file )
+			{
+				for( i = 0; i < ( utils.CONST_NES_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_SIZE ); i++ )
+				{
+					m_CHR_bank[ i ] = _br.ReadByte();
+				}
+			}
+#endif			
+			else
+			{
+				m_CHR_bank 	= _br.ReadBytes( m_CHR_bank.Length );
+			}
+		
 			m_palette0	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
 			m_palette1	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
 			m_palette2	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
 			m_palette3	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
 
+#if DEF_NES
+			if( sms_file )
+			{
+				m_palette1[ 0 ] = m_palette2[ 0 ] = m_palette3[ 0 ] = m_palette0[ 0 ];
+			}
+#endif
 			for( i = 0; i < utils.CONST_BLOCKS_USHORT_SIZE; i++ )
 			{
-				m_blocks[ i ] = _br.ReadUInt16();
+				val = _br.ReadUInt16();
+#if DEF_NES
+				if( sms_file )
+				{
+					// NES: palette instead of CHR bank page on SMS
+					if( get_block_flags_palette( val ) > 0 )
+					{
+						val = set_block_flags_palette( 0, val );	// TODO: test it with a CHR_id > 255 !!!!!!!!!!!!!
+						val = set_block_CHR_id( 0, val );
+					}
+				}
+#elif DEF_SMS
+				if( nes_file )
+				{
+					// NES: palette
+					palette_ind = get_block_flags_CHR_bank_page( val );
+					val = set_block_flags_CHR_bank_page( 0, val );
+					
+					CHR_id = get_block_CHR_id( val );
+					
+					if( !dict_CHR_palette_ind.ContainsKey( CHR_id ) )
+					{
+						// SMS: CHR bank page instead of palette on SMS
+						dict_CHR_palette_ind.Add( CHR_id, palette_ind );
+					}					
+					
+					val = set_block_flags_CHR_bank_page( 0, val );
+				}
+#endif
+				m_blocks[ i ] = val;
 			}
-			
+#if DEF_SMS
+			if( nes_file && dict_CHR_palette_ind != null )
+			{
+				byte[] img_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
+				
+				foreach( var obj in dict_CHR_palette_ind ) 
+				{
+					from_CHR_bank_to_spr8x8( obj.Key, img_buff );
+					{
+						for( i = 0; i < img_buff.Length; i++ )
+						{
+							img_buff[ i ] += ( byte )( obj.Value * utils.CONST_PALETTE_SMALL_NUM_COLORS );
+						}
+					}
+					from_spr8x8_to_CHR_bank( obj.Key, img_buff );
+				}
+				
+				dict_CHR_palette_ind.Clear();
+			}
+#endif			
 			for( i = 0; i < utils.CONST_TILES_UINT_SIZE; i++ )
 			{
 				m_tiles[ i ] = _br.ReadUInt32();
@@ -802,10 +926,72 @@ namespace MAPeD
 			
 			byte[] scr_data;
 			
+			byte[] sms_scr = new byte[ utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES ];
+			
+			int nes_sms_scr_diff = ( utils.CONST_NES_SCREEN_NUM_WIDTH_TILES * utils.CONST_NES_SCREEN_NUM_HEIGHT_TILES ) - ( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
+			int nes_sms_scr_half_diff = nes_sms_scr_diff >> 1;
+			
 			for( i = 0; i < scr_cnt; i++ )
 			{
 				scr_data = scr_alloc_data();
-				scr_data = _br.ReadBytes( utils.CONST_SCREEN_TILES_CNT );
+#if DEF_NES
+				if( sms_file )
+#elif DEF_SMS			
+				if( nes_file )
+#endif			
+				{
+					switch( _scr_align_mode )
+					{
+						case data_conversion_options_form.EScreensAlignMode.sam_Top:
+							{
+#if DEF_NES
+								sms_scr = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
+								Array.Copy( sms_scr, 0, scr_data, 0, sms_scr.Length );								
+#elif DEF_SMS
+								scr_data = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
+								
+								// skip the rest
+								_br.ReadBytes( nes_sms_scr_diff );
+#endif
+							}
+							break;
+							
+						case data_conversion_options_form.EScreensAlignMode.sam_Center:
+							{
+#if DEF_NES
+								sms_scr = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
+								Array.Copy( sms_scr, 0, scr_data, ( nes_sms_scr_diff >> 1 ), sms_scr.Length );
+#elif DEF_SMS
+								// skip the first data
+								_br.ReadBytes( nes_sms_scr_half_diff );
+
+								scr_data = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
+								
+								// skip the rest
+								_br.ReadBytes( nes_sms_scr_half_diff );
+#endif							
+							}
+							break;
+							
+						case data_conversion_options_form.EScreensAlignMode.sam_Bottom:
+							{
+#if DEF_NES
+								sms_scr = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
+								Array.Copy( sms_scr, 0, scr_data, nes_sms_scr_diff, sms_scr.Length );
+#elif DEF_SMS
+								// skip the first data
+								_br.ReadBytes( nes_sms_scr_diff );
+
+								scr_data = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
+#endif							
+							}
+							break;
+					}
+				}
+				else
+				{
+					scr_data = _br.ReadBytes( utils.CONST_SCREEN_TILES_CNT );
+				}
 				
 				m_scr_data.Add( scr_data );
 			}

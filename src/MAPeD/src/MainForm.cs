@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 01.05.2017
  * Time: 15:24
  */
@@ -22,7 +22,10 @@ namespace MAPeD
 	public partial class MainForm : Form
 	{
 		private exporter_zx_sjasm	m_exp_zx_asm	= null;
+#if DEF_NES		
 		private exporter_nes_asm	m_exp_nes_asm	= null;
+#endif		
+		private data_conversion_options_form	m_data_conversion_options_form	= null;
 		
 		private Pen			m_pen						= null;
 		private Graphics 	m_pbox_active_tile_gfx		= null;
@@ -91,8 +94,11 @@ namespace MAPeD
 			m_data_manager 		= new data_sets_manager();
 			
 			m_exp_zx_asm		= new exporter_zx_sjasm( m_data_manager );
+#if DEF_NES			
 			m_exp_nes_asm		= new exporter_nes_asm( m_data_manager );
-			
+#endif			
+			m_data_conversion_options_form	= new data_conversion_options_form();
+
 			m_tiles_processor 	= new tiles_processor(	PBoxCHRBank,
 														PBoxBlockEditor,
 														PBoxTilePreview,
@@ -226,6 +232,23 @@ namespace MAPeD
 				}			
 			}
 			
+#if DEF_NES
+			this.Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
+			this.Project_openFileDialog.Filter = this.Project_openFileDialog.Filter + "|MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT;
+#elif DEF_SMS
+			this.Project_saveFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
+			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "NES", "SMS" );
+			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "nes", "sms" );
+
+			this.Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
+			this.Project_openFileDialog.Filter = "MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT + "|" + this.Project_openFileDialog.Filter;
+			
+			this.Project_exportFileDialog.Filter = this.Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "WLA-DX" );
+			
+			CheckBoxPalettePerCHR.Visible = false;
+			
+			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false; 
+#endif			
 			if( _args.Length > 0 )
 			{
 				project_load( _args[0] );
@@ -235,7 +258,7 @@ namespace MAPeD
 				set_title_name( null );
 				
 				reset();
-				set_status_msg( "Add a new CHR bank to begin. Press the \"Bank+\" button!" );
+				set_status_msg( "Add a new CHR bank to begin. Press the \"Bank+\" button! <F1> - Quick Guide" );
 			}
 		}
 
@@ -483,6 +506,19 @@ namespace MAPeD
 			
 			try
 			{
+				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
+#if DEF_NES
+				if( file_ext == utils.CONST_SMS_FILE_EXT )
+#elif DEF_SMS
+				if( file_ext == utils.CONST_NES_FILE_EXT )
+#endif
+				{
+					if( m_data_conversion_options_form.ShowDialog() == DialogResult.Cancel )
+					{
+						return;
+					}
+				}
+				
 				fs = new FileStream( _filename, FileMode.Open, FileAccess.Read );
 				{
 					br = new BinaryReader( fs );
@@ -492,11 +528,12 @@ namespace MAPeD
 						
 						if( ver == utils.CONST_PROJECT_FILE_VER )
 						{
-							m_data_manager.load( br );
+							m_data_manager.load( br, file_ext, m_data_conversion_options_form.screens_align_mode, m_data_conversion_options_form.convert_colors );
 							
 							uint flags = br.ReadUInt32();
+#if DEF_NES							
 							CheckBoxPalettePerCHR.Checked 	= ( ( flags&0x01 ) == 0x01 ? true:false );
-							
+#endif							
 							// Load description
 							m_description_form.edit_text = br.ReadString();
 						}
@@ -529,6 +566,9 @@ namespace MAPeD
 					m_layout_editor.update();
 					update_graphics( false );
 					enable_update_screens_btn( true );
+#if DEF_SMS
+					palette_group.Instance.active_palette = 0;
+#endif
 				}
 				
 				set_title_name( Path.GetFileNameWithoutExtension( _filename ) );
@@ -635,6 +675,9 @@ namespace MAPeD
 			
 			try
 			{
+#if DEF_SMS
+				throw new Exception( "NOT IMPLEMENTED YET!" );
+#endif
 				fs = new FileStream( filename, FileMode.Open, FileAccess.Read );
 				{
 					br = new BinaryReader( fs );
@@ -928,7 +971,12 @@ namespace MAPeD
 						
 					case ".asm":
 						{
+#if DEF_NES							
 							m_exp_nes_asm.ShowDialog( filename );
+#endif							
+#if DEF_SMS
+							throw new Exception( "NOT IMPLEMENTED YET!" );
+#endif
 						}
 						break;
 						
@@ -1027,6 +1075,8 @@ namespace MAPeD
 			m_data_manager.scr_data_pos 	= -1;
 			m_data_manager.tiles_data_pos 	= chr_bank_cbox.SelectedIndex;
 			
+			palette_group.Instance.active_palette = 0;
+			
 			update_graphics( false );
 			
 			enable_copy_paste_action( false, ECopyPasteType.cpt_All );
@@ -1086,6 +1136,8 @@ namespace MAPeD
 				CBoxCHRBanks.Items.Add( data );
 				CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_cnt - 1;
 				
+				palette_group.Instance.active_palette = 0;
+				
 				enable_copy_paste_action( false, ECopyPasteType.cpt_All );
 				
 				if( ScreensShowAllBanksToolStripMenuItem.Checked )
@@ -1105,6 +1157,8 @@ namespace MAPeD
 			
 			CBoxCHRBanks.Items.Add( data );
 			CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_cnt - 1;
+
+			palette_group.Instance.active_palette = 0;
 
 			enable_main_UI( true );
 			
@@ -1176,6 +1230,8 @@ namespace MAPeD
 				}
 				else
 				{
+					palette_group.Instance.active_palette = 0;
+					
 					set_status_msg( "CHR bank removed" );
 				}
 			}

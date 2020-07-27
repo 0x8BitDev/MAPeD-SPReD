@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 28.05.2017
  * Time: 15:12
  */
@@ -77,7 +77,7 @@ namespace MAPeD
 			});
 		}
 		
-		public void load( BinaryReader _br, Func< string, entity_data > _get_ent )
+		public void load( BinaryReader _br, Func< string, entity_data > _get_ent, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode )
 		{
 			m_marks	  = _br.ReadUInt16();
 			
@@ -90,7 +90,7 @@ namespace MAPeD
 			for( int ent_n = 0; ent_n < ents_cnt; ent_n++ )
 			{
 				ent_inst = new entity_instance();
-				ent_inst.load( _br, _get_ent );
+				ent_inst.load( _br, _get_ent, _file_ext, _scr_align_mode );
 				
 				m_ents.Add( ent_inst );
 			}
@@ -764,7 +764,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void load( BinaryReader _br, Func< string, entity_data > _get_ent )
+		public void load( BinaryReader _br, Func< string, entity_data > _get_ent, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode )
 		{
 			int i;
 			int j;
@@ -785,7 +785,7 @@ namespace MAPeD
 			{
 				for( j = 0; j < width; j++ )
 				{
-					m_layout[ i ][ j ].load( _br, _get_ent );
+					m_layout[ i ][ j ].load( _br, _get_ent, _file_ext, _scr_align_mode );
 				}
 			}
 		}		

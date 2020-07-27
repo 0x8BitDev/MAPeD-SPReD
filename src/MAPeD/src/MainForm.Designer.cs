@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 01.05.2017
  * Time: 15:24
  */
@@ -73,7 +73,7 @@ namespace MAPeD
 			this.verticalFlipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.horizontalFlipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotateToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparatorShiftTransp = new System.Windows.Forms.ToolStripSeparator();
 			this.shiftTransparencyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.shiftColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
@@ -595,7 +595,7 @@ namespace MAPeD
 									this.verticalFlipToolStripMenuItem,
 									this.horizontalFlipToolStripMenuItem,
 									this.rotateToolStripMenuItem1,
-									this.toolStripSeparator12,
+									this.toolStripSeparatorShiftTransp,
 									this.shiftTransparencyToolStripMenuItem,
 									this.shiftColorsToolStripMenuItem,
 									this.toolStripSeparator24,
@@ -689,10 +689,10 @@ namespace MAPeD
 			this.rotateToolStripMenuItem1.Text = "&Rotate";
 			this.rotateToolStripMenuItem1.Click += new System.EventHandler(this.BtnBlockRotateClick_Event);
 			// 
-			// toolStripSeparator12
+			// toolStripSeparatorShiftTransp
 			// 
-			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(175, 6);
+			this.toolStripSeparatorShiftTransp.Name = "toolStripSeparatorShiftTransp";
+			this.toolStripSeparatorShiftTransp.Size = new System.Drawing.Size(175, 6);
 			// 
 			// shiftTransparencyToolStripMenuItem
 			// 
@@ -1922,6 +1922,7 @@ namespace MAPeD
 			this.ListBoxScreens.Size = new System.Drawing.Size(63, 342);
 			this.ListBoxScreens.TabIndex = 45;
 			this.ListBoxScreens.Click += new System.EventHandler(this.ListBoxScreensClick_Event);
+			this.ListBoxScreens.SelectedIndexChanged += new System.EventHandler(this.ListBoxScreensClick_Event);
 			// 
 			// CheckBoxScreenShowGrid
 			// 
@@ -3318,7 +3319,7 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 		private System.Windows.Forms.ToolStripMenuItem BlockEditorModeDrawToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem BlockEditorModeSelectToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparatorShiftTransp;
 		private System.Windows.Forms.ToolStripMenuItem updateGFXToolStripMenuItem;
 		private System.Windows.Forms.Button BtnEntitiesEditInstancesMode;
 		private System.Windows.Forms.CheckBox CBoxEntityPreviewScaleX2;

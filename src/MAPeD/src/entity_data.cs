@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 12.12.2018
  * Time: 18:27
  */
@@ -128,7 +128,7 @@ namespace MAPeD
 			_bw.Write( extra_data_size );
 		}
 		
-		public void load( BinaryReader _br, Func< string, entity_data > _get_ent )
+		public void load( BinaryReader _br, Func< string, entity_data > _get_ent, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode )
 		{
 			string				base_ent_name;
 			
@@ -145,6 +145,41 @@ namespace MAPeD
 			y 			= _br.ReadInt32();
 			m_uid 		= _br.ReadInt32();
 			target_uid 	= _br.ReadInt32();
+		
+			bool nes_file = _file_ext == utils.CONST_NES_FILE_EXT ? true:false;
+			bool sms_file = _file_ext == utils.CONST_SMS_FILE_EXT ? true:false;
+#if DEF_NES
+			if( sms_file )
+#elif DEF_SMS			
+			if( nes_file )
+#endif			
+			{
+				switch( _scr_align_mode )
+				{
+					case data_conversion_options_form.EScreensAlignMode.sam_Center:
+						{
+#if DEF_NES
+							y += utils.CONST_SPR8x8_SIDE_PIXELS_CNT * 4;
+#elif DEF_SMS
+							y -= utils.CONST_SPR8x8_SIDE_PIXELS_CNT * 4;
+#endif							
+						}
+						break;
+						
+					case data_conversion_options_form.EScreensAlignMode.sam_Bottom:
+						{
+#if DEF_NES
+							y += utils.CONST_SPR8x8_SIDE_PIXELS_CNT * 8;
+#elif DEF_SMS
+							y -= utils.CONST_SPR8x8_SIDE_PIXELS_CNT * 8;
+#endif							
+						}
+						break;
+				}
+				
+				y = y < 0 ? 0:y;
+				y = y > utils.CONST_SCREEN_HEIGHT_PIXELS ? utils.CONST_SCREEN_HEIGHT_PIXELS:y;
+			}
 			
 			// extra data ( reserved for future purposes )
 			int extra_data_size = _br.ReadInt32();

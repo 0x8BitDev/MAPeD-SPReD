@@ -87,6 +87,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\src\data_conversion_options_form.cs">
+      <Link>data_conversion_options_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\data_conversion_options_form.Designer.cs">
+      <Link>data_conversion_options_form.Designer.cs</Link>
+      <DependentUpon>data_conversion_options_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\data_sets_manager.cs">
       <Link>data_sets_manager.cs</Link>
     </Compile>

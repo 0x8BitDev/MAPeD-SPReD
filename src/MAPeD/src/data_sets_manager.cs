@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 12:17
  */
@@ -68,7 +68,7 @@ namespace MAPeD
 		[DataMember]
 		private string data_desc = "CHR Data Size: " + utils.CONST_CHR_BANK_SIZE + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_USHORT_SIZE + " | Screen Data Size: " + utils.CONST_SCREEN_TILES_CNT;
 		[DataMember]
-		private string block_desc = "(bits): 15-12 -> Obj id | 10-11 -> Palette id | 8-9 -> Flip flags (01-HFlip | 02-VFlip) | 7-0 -> CHR id";
+		private string block_desc = "(bits): 15-12 -> Obj id | [10-11 NES: -> Palette id | SMS: -> CHR bank page] | [8-9 NES: not used | SMS: -> Flip flags (01-HFlip | 02-VFlip)] | 7-0 -> CHR id";
 		
 		[DataMember]		
 		private List< layout_data >	m_layouts_data	= null;
@@ -677,7 +677,7 @@ namespace MAPeD
 			_bw.Write( utils.CONST_IO_DATA_END );
 		}
 		
-		public void load( BinaryReader _br )
+		public void load( BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode, bool _convert_colors )
 		{
 			byte data_id = 0;
 			
@@ -692,7 +692,7 @@ namespace MAPeD
 					for( int i = 0; i < tiles_data_cnt; i++ )
 					{
 						tiles_data_create();
-						get_tiles_data( tiles_data_pos ).load( _br );
+						get_tiles_data( tiles_data_pos ).load( _br, _file_ext, _scr_align_mode );
 					}
 					
 					tiles_data_pos = _br.ReadInt32();
@@ -739,7 +739,7 @@ namespace MAPeD
 					for( int i = 0; i < layouts_data_cnt; i++ )
 					{
 						layout_data_create();
-						get_layout_data( layouts_data_pos ).load( _br, get_entity_by_name );
+						get_layout_data( layouts_data_pos ).load( _br, get_entity_by_name, _file_ext, _scr_align_mode );
 					}
 					
 					entity_instance.load_instances_counter( _br );
@@ -747,7 +747,51 @@ namespace MAPeD
 				else				
 				if( data_id == utils.CONST_IO_DATA_PALETTE )
 				{
-					palette_group.Instance.load_main_palette( _br );
+					int[] plt_main	= new int[ palette_group.Instance.main_palette.Length ];
+#if DEF_NES								
+					bool ignore_palette = ( _file_ext == utils.CONST_SMS_FILE_EXT ) ? true:false;
+#elif DEF_SMS
+					bool ignore_palette = ( _file_ext == utils.CONST_NES_FILE_EXT ) ? true:false;
+#endif				
+					if( ignore_palette )
+					{
+						if( _convert_colors )
+						{
+							// load main palette from the project file
+							int data_pos = 0;
+						
+							do
+							{
+								plt_main[ data_pos ] = _br.ReadByte() << 16 | _br.ReadByte() << 8 | _br.ReadByte();
+							}
+							while( ++data_pos != plt_main.Length );
+							
+							List< byte[] > palettes = null;
+							
+							for( int data_n = 0; data_n < tiles_data_cnt; data_n++ )
+							{
+								palettes = get_tiles_data( data_n ).palettes;
+								
+								for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+								{
+									palettes[ i >> 2 ][ i & 0x03 ] = ( byte )utils.find_nearest_color_ind( plt_main[ palettes[ i >> 2 ][ i & 0x03 ] ] );
+								}
+							}
+							
+							for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+							{
+								palette_group.Instance.get_palettes_arr()[ i ].update();
+							}
+						}
+						else
+						{
+							_br.ReadBytes( 192 );
+						}
+					}
+					else
+					{
+						palette_group.Instance.load_main_palette( _br );
+					}
 				}
 			}
 			while( data_id != utils.CONST_IO_DATA_END );
