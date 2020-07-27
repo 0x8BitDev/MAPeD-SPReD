@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 09.05.2017
  * Time: 17:34
  */
@@ -239,7 +239,7 @@ namespace MAPeD
 			
 			if( mode == EMode.em_Layout )
 			{
-				if( e.Y < utils.CONST_SCREEN_OFFSET )
+				if( e.Y < utils.CONST_SCREEN_OFFSET_Y )
 				{
 					if( RequestUpScreen != null )
 					{
@@ -248,9 +248,9 @@ namespace MAPeD
 				}
 				else
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-				if( e.Y > utils.CONST_SCREEN_OFFSET + ( utils.CONST_SCREEN_NUM_SIDE_TILES * utils.CONST_SCREEN_TILES_SIZE ) - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) )
+				if( e.Y > utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) )
 #else
-				if( e.Y > utils.CONST_SCREEN_OFFSET + ( utils.CONST_SCREEN_NUM_SIDE_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
+				if( e.Y > utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
 #endif //DEF_SCREEN_HEIGHT_7d5_TILES						
 				{
 					if( RequestDownScreen != null )
@@ -259,7 +259,7 @@ namespace MAPeD
 					}
 				}
 				else
-				if( e.X < utils.CONST_SCREEN_OFFSET )
+				if( e.X < utils.CONST_SCREEN_OFFSET_X )
 				{
 					if( RequestLeftScreen != null )
 					{
@@ -267,7 +267,7 @@ namespace MAPeD
 					}
 				}
 				else
-				if( e.X > utils.CONST_SCREEN_OFFSET + ( utils.CONST_SCREEN_NUM_SIDE_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
+				if( e.X > utils.CONST_SCREEN_OFFSET_X + ( utils.CONST_SCREEN_NUM_WIDTH_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
 				{
 					if( RequestRightScreen != null )
 					{
@@ -361,29 +361,31 @@ namespace MAPeD
 			_tile_x = -1;
 			_tile_y = -1;
 			
-			int offs_x = _x - utils.CONST_SCREEN_OFFSET;
-			int offs_y = _y - utils.CONST_SCREEN_OFFSET;
+			int offs_x = _x - utils.CONST_SCREEN_OFFSET_X;
+			int offs_y = _y - utils.CONST_SCREEN_OFFSET_Y;
 			
 			if( offs_x < 0 || offs_y < 0 )
 			{
 				return false;
 			}
 			
-			int tile_size 		= ( m_fill_mode == EFillMode.efm_Tile ) ? utils.CONST_SCREEN_TILES_SIZE:utils.CONST_SCREEN_BLOCKS_SIZE;
-			int scr_side_tiles 	= ( m_fill_mode == EFillMode.efm_Tile ) ? utils.CONST_SCREEN_NUM_SIDE_TILES:utils.CONST_SCREEN_NUM_SIDE_BLOCKS;
+			int tile_size 			= ( m_fill_mode == EFillMode.efm_Tile ) ? utils.CONST_SCREEN_TILES_SIZE:utils.CONST_SCREEN_BLOCKS_SIZE;
+			
+			int scr_width_tiles		= ( m_fill_mode == EFillMode.efm_Tile ) ? utils.CONST_SCREEN_NUM_WIDTH_TILES:utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
+			int scr_height_tiles 	= ( m_fill_mode == EFillMode.efm_Tile ) ? utils.CONST_SCREEN_NUM_HEIGHT_TILES:utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
 			
 			int x = offs_x / tile_size;
 			
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 			int y = ( m_fill_mode == EFillMode.efm_Tile ) ? ( offs_y / ( tile_size >> 1 ) ):( offs_y / tile_size );
 
-			bool out_of_bound = ( m_fill_mode == EFillMode.efm_Tile ) ? ( x >= scr_side_tiles || y >= ( scr_side_tiles << 1 ) - 1 ):( x >= scr_side_tiles || y >= ( scr_side_tiles - 1 ) );
+			bool out_of_bound = ( m_fill_mode == EFillMode.efm_Tile ) ? ( x >= scr_width_tiles || y >= ( scr_height_tiles << 1 ) - 1 ):( x >= scr_width_tiles || y >= ( scr_height_tiles - 1 ) );
 			
 			if( out_of_bound )
 #else
 			int y = offs_y / tile_size;
 				
-			if( x >= scr_side_tiles || y >= scr_side_tiles )
+			if( x >= scr_width_tiles || y >= scr_height_tiles )
 #endif //DEF_SCREEN_HEIGHT_7d5_TILES
 			{
 				return false;
@@ -433,7 +435,7 @@ namespace MAPeD
 				m_tile_x >>= 1;
 			}
 			
-			m_tiles_data.scr_data[ m_scr_ind ][ ( m_tile_y * utils.CONST_SCREEN_NUM_SIDE_TILES ) + m_tile_x ] = (byte)tile_id;
+			m_tiles_data.scr_data[ m_scr_ind ][ ( m_tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + m_tile_x ] = (byte)tile_id;
 			
 			if( NeedScreensUpdate != null )
 			{
@@ -504,7 +506,7 @@ namespace MAPeD
 		
 		private uint build_new_tile( int _tile_x, int _tile_y )
 		{
-			uint old_tile = m_tiles_data.tiles[ m_tiles_data.scr_data[ m_scr_ind ][ ( ( _tile_y >> 1 ) * utils.CONST_SCREEN_NUM_SIDE_TILES ) + ( _tile_x >> 1 ) ] ];
+			uint old_tile = m_tiles_data.tiles[ m_tiles_data.scr_data[ m_scr_ind ][ ( ( _tile_y >> 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( _tile_x >> 1 ) ] ];
 			
 			int block_ind = ( _tile_x & 0x01 ) + ( ( _tile_y & 0x01 ) << 1 );
 			
@@ -605,13 +607,16 @@ namespace MAPeD
 					const short zero_tile = unchecked( (short)0xffff );
 					
 					short	tile_data;
-					int 	tile_offset1 = utils.CONST_SCREEN_OFFSET - utils.CONST_SCREEN_TILES_SIZE;
-					int 	tile_offset2 = utils.CONST_SCREEN_OFFSET + ( utils.CONST_SCREEN_NUM_SIDE_TILES * utils.CONST_SCREEN_TILES_SIZE );
+					int 	tile_offset1_x = utils.CONST_SCREEN_OFFSET_X - utils.CONST_SCREEN_TILES_SIZE;
+					int 	tile_offset1_y = utils.CONST_SCREEN_OFFSET_Y - utils.CONST_SCREEN_TILES_SIZE;
+					
+					int 	tile_offset2_x = utils.CONST_SCREEN_OFFSET_X + ( utils.CONST_SCREEN_NUM_WIDTH_TILES * utils.CONST_SCREEN_TILES_SIZE );
+//					int 	tile_offset2_y = utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE );
 
 					// draw border tiles
 					// upper/lower line
 					{
-						for( i = 0; i < utils.CONST_SCREEN_NUM_SIDE_TILES + 2; i++ )
+						for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES + 2; i++ )
 						{
 							tile_data = m_layout_mode_border_tiles[ i ];
 							
@@ -621,17 +626,17 @@ namespace MAPeD
 								{
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 									m_gfx.DrawImage( m_tiles_imagelist.Images[ tile_data & 0x00ff ], 
-									                tile_offset1 + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
-									                tile_offset1 + ( utils.CONST_SCREEN_TILES_SIZE >> 1 ), utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE );
+									                tile_offset1_x + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
+									                tile_offset1_y + ( utils.CONST_SCREEN_TILES_SIZE >> 1 ), utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE );
 #else
 									m_gfx.DrawImage( m_tiles_imagelist.Images[ tile_data & 0x00ff ], 
-									                tile_offset1 + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
-									                tile_offset1, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE );
+									                tile_offset1_x + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
+									                tile_offset1_y, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE );
 #endif //DEF_SCREEN_HEIGHT_7d5_TILES
 								}
 							}
 							
-							tile_data = m_layout_mode_border_tiles[ i + 10 ];
+							tile_data = m_layout_mode_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_DOWN_LEFT ];
 							
 							if( tile_data != zero_tile )
 							{
@@ -639,14 +644,14 @@ namespace MAPeD
 								{
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 									m_gfx.DrawImage( m_tiles_imagelist.Images[ tile_data & 0x00ff ], 
-									                tile_offset1 + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
-									                tile_offset1 + ( ( utils.CONST_SCREEN_NUM_SIDE_TILES + 1 ) * utils.CONST_SCREEN_TILES_SIZE ) - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ),
+									                tile_offset1_x + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
+									                tile_offset1_y + ( ( utils.CONST_SCREEN_NUM_HEIGHT_TILES + 1 ) * utils.CONST_SCREEN_TILES_SIZE ) - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ),
 									                utils.CONST_SCREEN_TILES_SIZE, 
 									                utils.CONST_SCREEN_TILES_SIZE );
 #else
 									m_gfx.DrawImage( m_tiles_imagelist.Images[ tile_data & 0x00ff ], 
-									                tile_offset1 + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
-									                tile_offset1 + ( ( utils.CONST_SCREEN_NUM_SIDE_TILES + 1 ) * utils.CONST_SCREEN_TILES_SIZE ), 
+									                tile_offset1_x + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
+									                tile_offset1_y + ( ( utils.CONST_SCREEN_NUM_HEIGHT_TILES + 1 ) * utils.CONST_SCREEN_TILES_SIZE ), 
 									                utils.CONST_SCREEN_TILES_SIZE, 
 									                utils.CONST_SCREEN_TILES_SIZE );
 #endif //DEF_SCREEN_HEIGHT_7d5_TILES									                
@@ -657,9 +662,9 @@ namespace MAPeD
 					
 					// left/right
 					{
-						for( i = 0; i < utils.CONST_SCREEN_NUM_SIDE_TILES; i++ )
+						for( i = 0; i < utils.CONST_SCREEN_NUM_HEIGHT_TILES; i++ )
 						{
-							tile_data = m_layout_mode_border_tiles[ i + 20 ];
+							tile_data = m_layout_mode_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_LEFT ];
 							
 							if( tile_data != zero_tile )
 							{
@@ -668,23 +673,23 @@ namespace MAPeD
 #if DEF_SCREEN_HEIGHT_7d5_TILES									
 									rect.Height = ( i < 7 ) ? utils.CONST_SCREEN_TILES_SIZE:utils.CONST_SCREEN_TILES_SIZE >> 1;
 									
-									m_gfx.DrawImage( 	m_tiles_imagelist.Images[ tile_data & 0x00ff ],
-										                tile_offset1, 
-										                utils.CONST_SCREEN_OFFSET + ( i * utils.CONST_SCREEN_TILES_SIZE ),
-														rect,								                
-										                GraphicsUnit.Pixel );
+									m_gfx.DrawImage( m_tiles_imagelist.Images[ tile_data & 0x00ff ],
+													tile_offset1_x, 
+													utils.CONST_SCREEN_OFFSET_Y + ( i * utils.CONST_SCREEN_TILES_SIZE ),
+													rect,
+													GraphicsUnit.Pixel );
 									
 #else								
-									m_gfx.DrawImage( m_tiles_list.LargeImageList.Images[ tile_data & 0x00ff ], 
-									                tile_offset1, 
-									                utils.CONST_SCREEN_OFFSET + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
+									m_gfx.DrawImage( m_tiles_imagelist.Images[ tile_data & 0x00ff ], 
+									                tile_offset1_x, 
+									                utils.CONST_SCREEN_OFFSET_Y + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
 									                utils.CONST_SCREEN_TILES_SIZE, 
 									                utils.CONST_SCREEN_TILES_SIZE );
 #endif //DEF_SCREEN_HEIGHT_7d5_TILES									                
 								}
 							}
 							
-							tile_data = m_layout_mode_border_tiles[ i + 28 ];
+							tile_data = m_layout_mode_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_RIGHT ];
 							
 							if( tile_data != zero_tile )
 							{
@@ -694,14 +699,14 @@ namespace MAPeD
 									rect.Height = ( i < 7 ) ? utils.CONST_SCREEN_TILES_SIZE:utils.CONST_SCREEN_TILES_SIZE >> 1;
 
 									m_gfx.DrawImage( m_tiles_imagelist.Images[ tile_data & 0x00ff ], 
-									                tile_offset2,
-									                utils.CONST_SCREEN_OFFSET + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
+									                tile_offset2_x,
+									                utils.CONST_SCREEN_OFFSET_Y + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
 									                rect, 
 									                GraphicsUnit.Pixel );
 #else									
 									m_gfx.DrawImage( m_tiles_imagelist.Images[ tile_data & 0x00ff ], 
-									                tile_offset2,
-									                utils.CONST_SCREEN_OFFSET + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
+									                tile_offset2_x,
+									                utils.CONST_SCREEN_OFFSET_Y + ( i * utils.CONST_SCREEN_TILES_SIZE ), 
 									                utils.CONST_SCREEN_TILES_SIZE, 
 									                utils.CONST_SCREEN_TILES_SIZE );
 #endif //DEF_SCREEN_HEIGHT_7d5_TILES									                
@@ -718,17 +723,17 @@ namespace MAPeD
 					for( i = 0; i < utils.CONST_SCREEN_TILES_CNT; i++ )
 					{
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-						rect.Height = ( i / utils.CONST_SCREEN_NUM_SIDE_TILES == 7 ) ? utils.CONST_SCREEN_TILES_SIZE >> 1:utils.CONST_SCREEN_TILES_SIZE;
+						rect.Height = ( i / utils.CONST_SCREEN_NUM_WIDTH_TILES == 7 ) ? utils.CONST_SCREEN_TILES_SIZE >> 1:utils.CONST_SCREEN_TILES_SIZE;
 						
 						m_gfx.DrawImage( 	m_tiles_imagelist.Images[ tile_ids[ i ] ],
-                							utils.CONST_SCREEN_OFFSET + ( i % utils.CONST_SCREEN_NUM_SIDE_TILES ) * utils.CONST_SCREEN_TILES_SIZE, 
-                							utils.CONST_SCREEN_OFFSET + ( i / utils.CONST_SCREEN_NUM_SIDE_TILES ) * utils.CONST_SCREEN_TILES_SIZE,
+                							utils.CONST_SCREEN_OFFSET_X + ( i % utils.CONST_SCREEN_NUM_WIDTH_TILES ) * utils.CONST_SCREEN_TILES_SIZE, 
+                							utils.CONST_SCREEN_OFFSET_Y + ( i / utils.CONST_SCREEN_NUM_WIDTH_TILES ) * utils.CONST_SCREEN_TILES_SIZE,
                 							rect,
                 							GraphicsUnit.Pixel );
 #else
 						m_gfx.DrawImage( 	m_tiles_imagelist.Images[ tile_ids[ i ] ], 
-                							utils.CONST_SCREEN_OFFSET + ( i % utils.CONST_SCREEN_NUM_SIDE_TILES ) * utils.CONST_SCREEN_TILES_SIZE, 
-                							utils.CONST_SCREEN_OFFSET + ( i / utils.CONST_SCREEN_NUM_SIDE_TILES ) * utils.CONST_SCREEN_TILES_SIZE, 
+                							utils.CONST_SCREEN_OFFSET_X + ( i % utils.CONST_SCREEN_NUM_WIDTH_TILES ) * utils.CONST_SCREEN_TILES_SIZE, 
+                							utils.CONST_SCREEN_OFFSET_Y + ( i / utils.CONST_SCREEN_NUM_WIDTH_TILES ) * utils.CONST_SCREEN_TILES_SIZE, 
                 							utils.CONST_SCREEN_TILES_SIZE, 
                 							utils.CONST_SCREEN_TILES_SIZE );
 #endif	//DEF_SCREEN_HEIGHT_7d5_TILES						
@@ -741,8 +746,8 @@ namespace MAPeD
 						{
 							case EFillMode.efm_Tile:
 								{
-									m_tile_ghost_img_rect.X = utils.CONST_SCREEN_OFFSET + ( m_tile_x * utils.CONST_SCREEN_TILES_SIZE );
-									m_tile_ghost_img_rect.Y = utils.CONST_SCREEN_OFFSET + ( m_tile_y * utils.CONST_SCREEN_TILES_SIZE );
+									m_tile_ghost_img_rect.X = utils.CONST_SCREEN_OFFSET_X + ( m_tile_x * utils.CONST_SCREEN_TILES_SIZE );
+									m_tile_ghost_img_rect.Y = utils.CONST_SCREEN_OFFSET_Y + ( m_tile_y * utils.CONST_SCREEN_TILES_SIZE );
 									
 									m_gfx.DrawImage( m_tile_img, m_tile_ghost_img_rect, 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE, GraphicsUnit.Pixel, m_tile_img_attr );
 								}
@@ -750,8 +755,8 @@ namespace MAPeD
 
 							case EFillMode.efm_Block:
 								{
-									m_tile_ghost_img_rect.X = utils.CONST_SCREEN_OFFSET + ( m_tile_x * utils.CONST_SCREEN_BLOCKS_SIZE );
-									m_tile_ghost_img_rect.Y = utils.CONST_SCREEN_OFFSET + ( m_tile_y * utils.CONST_SCREEN_BLOCKS_SIZE );
+									m_tile_ghost_img_rect.X = utils.CONST_SCREEN_OFFSET_X + ( m_tile_x * utils.CONST_SCREEN_BLOCKS_SIZE );
+									m_tile_ghost_img_rect.Y = utils.CONST_SCREEN_OFFSET_Y + ( m_tile_y * utils.CONST_SCREEN_BLOCKS_SIZE );
 									
 									m_gfx.DrawImage( m_tile_img, m_tile_ghost_img_rect, 0, 0, utils.CONST_SCREEN_BLOCKS_SIZE, utils.CONST_SCREEN_BLOCKS_SIZE, GraphicsUnit.Pixel, m_tile_img_attr );
 								}
@@ -764,38 +769,42 @@ namespace MAPeD
 				{
 					m_pen.Color = ( m_fill_mode == EFillMode.efm_Block ) ? utils.CONST_COLOR_SCREEN_GRID_THICK_BLOCK_MODE:utils.CONST_COLOR_SCREEN_GRID_THICK_TILE_MODE;
 					
-					int offs;
+					int offs_x;
+					int offs_y;
 					
-					for( i = 0; i < utils.CONST_SCREEN_NUM_SIDE_TILES + 1; i++ )
+					for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES + 1; i++ )
 					{
-						offs = utils.CONST_SCREEN_OFFSET + ( i * utils.CONST_SCREEN_TILES_SIZE );
+						offs_x = utils.CONST_SCREEN_OFFSET_X + ( i * utils.CONST_SCREEN_TILES_SIZE );
+						offs_y = ( utils.CONST_SCREEN_OFFSET_Y + ( i * utils.CONST_SCREEN_TILES_SIZE ) ) % m_pix_box.Height;
 						
-						m_gfx.DrawLine( m_pen, offs, 0, offs, m_pix_box.Height );
+						m_gfx.DrawLine( m_pen, offs_x, 0, offs_x, m_pix_box.Height );
 						
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-						offs = ( i < 8 ) ? offs:offs - ( utils.CONST_SCREEN_TILES_SIZE >> 1 );
+						offs_y = ( i < 8 ) ? offs_y:offs_y - ( utils.CONST_SCREEN_TILES_SIZE >> 1 );
 #endif //DEF_SCREEN_HEIGHT_7d5_TILES
 
-						m_gfx.DrawLine( m_pen, 0, offs, m_pix_box.Width, offs );
+						m_gfx.DrawLine( m_pen, 0, offs_y, m_pix_box.Width, offs_y );
 					}
 					
 					// blocks grid
 					{
 						m_pen.Color = utils.CONST_COLOR_SCREEN_GRID_THIN;
 						
-						int start_offs = ( utils.CONST_SCREEN_OFFSET + ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
+						int start_offs_x = ( utils.CONST_SCREEN_OFFSET_X + ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
+						int start_offs_y = ( utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
 						
-						for( i = 0; i < utils.CONST_SCREEN_NUM_SIDE_TILES + 1; i++ )
+						for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES + 1; i++ )
 						{
-							offs = start_offs + ( i * utils.CONST_SCREEN_TILES_SIZE );
+							offs_x = start_offs_x + ( i * utils.CONST_SCREEN_TILES_SIZE );
+							offs_y = ( start_offs_y + ( i * utils.CONST_SCREEN_TILES_SIZE ) ) % m_pix_box.Height;
 							
-							m_gfx.DrawLine( m_pen, offs, 0, offs, m_pix_box.Height );
+							m_gfx.DrawLine( m_pen, offs_x, 0, offs_x, m_pix_box.Height );
 							
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-							offs = ( i < 7 ) ? offs:offs + ( utils.CONST_SCREEN_TILES_SIZE >> 1 );
+							offs_y = ( i < 7 ) ? offs_y:offs_y + ( utils.CONST_SCREEN_TILES_SIZE >> 1 );
 #endif //DEF_SCREEN_HEIGHT_7d5_TILES							
 							
-							m_gfx.DrawLine( m_pen, 0, offs, m_pix_box.Width, offs );
+							m_gfx.DrawLine( m_pen, 0, offs_y, m_pix_box.Width, offs_y );
 						}
 					}
 				}
@@ -805,12 +814,13 @@ namespace MAPeD
 					m_pen.Color = Color.Red;
 					m_pen.Width = 2.0f;
 					
-					int wh 	= utils.CONST_SCREEN_NUM_SIDE_TILES * utils.CONST_SCREEN_TILES_SIZE;
+					int width 	= utils.CONST_SCREEN_NUM_WIDTH_TILES * utils.CONST_SCREEN_TILES_SIZE;
+					int height	= utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE;
 					
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-					m_gfx.DrawRectangle( m_pen, utils.CONST_SCREEN_OFFSET, utils.CONST_SCREEN_OFFSET, wh, wh - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
+					m_gfx.DrawRectangle( m_pen, utils.CONST_SCREEN_OFFSET_X, utils.CONST_SCREEN_OFFSET_Y, width, height - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
 #else
-					m_gfx.DrawRectangle( m_pen, utils.CONST_SCREEN_OFFSET, utils.CONST_SCREEN_OFFSET, wh, wh );
+					m_gfx.DrawRectangle( m_pen, utils.CONST_SCREEN_OFFSET_X, utils.CONST_SCREEN_OFFSET_Y, width, height );
 #endif					
 					m_pen.Width = 1.0f;
 				}

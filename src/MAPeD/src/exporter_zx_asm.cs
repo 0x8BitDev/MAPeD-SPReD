@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 29.08.2018
  * Time: 15:20
  */
@@ -40,14 +40,14 @@ namespace MAPeD
 		private static readonly int[] zx_palette = new int[]{ 0x000000, 0x0022c7, 0xd62816, 0xd433c7, 0x00c525, 0x00c7c9, 0xccc82a, 0xcacaca,	// not bright
 															  0x000000, 0x002bfb, 0xff331c, 0xff40fc, 0x00f92f, 0x00fbfe, 0xfffc36, 0xffffff };	// bright
 		
-		public static int[] nes_zx_clrs_conv_tbl = new int[]{ 	 -1, -1, -1, -1, -1, -1, -1, -1,
-																 -1, -1, -1, -1, -1, -1, -1, -1,
-																 -1, -1, -1, -1, -1, -1, -1, -1,
-																 -1, -1, -1, -1, -1, -1, -1, -1,
-																 -1, -1, -1, -1, -1, -1, -1, -1,
-																 -1, -1, -1, -1, -1, -1, -1, -1,
-																 -1, -1, -1, -1, -1, -1, -1, -1,
-																 -1, -1, -1, -1, -1, -1, -1, -1 };
+		public static int[] zx_clrs_conv_tbl = new int[]{ 	 -1, -1, -1, -1, -1, -1, -1, -1,
+															 -1, -1, -1, -1, -1, -1, -1, -1,
+															 -1, -1, -1, -1, -1, -1, -1, -1,
+															 -1, -1, -1, -1, -1, -1, -1, -1,
+															 -1, -1, -1, -1, -1, -1, -1, -1,
+															 -1, -1, -1, -1, -1, -1, -1, -1,
+															 -1, -1, -1, -1, -1, -1, -1, -1,
+															 -1, -1, -1, -1, -1, -1, -1, -1 };
 		
 		public exporter_zx_sjasm( data_sets_manager _data_mngr )
 		{
@@ -129,6 +129,78 @@ namespace MAPeD
 				byte tile_id		= 0;
 				ushort tile_data	= 0;
 				ushort block_data	= 0;
+				
+				byte[] mc_clr08 = new byte[64]{ 1,1,1,1,1,1,1,1,
+												1,1,1,1,1,1,1,1,
+												1,1,1,1,1,1,1,1,
+												1,1,1,1,1,1,1,1,
+												1,1,1,1,1,1,1,1,
+												1,1,1,1,1,1,1,1,
+												1,1,1,1,1,1,1,1,
+												1,1,1,1,1,1,1,1 };
+												
+				byte[] mc_clr07 = new byte[64]{ 0,1,1,1,0,1,1,1,
+												1,1,1,1,1,1,1,1,
+												1,1,0,1,1,1,0,1,
+												1,1,1,1,1,1,1,1,
+												0,1,1,1,0,1,1,1,
+												1,1,1,1,1,1,1,1,
+												1,1,0,1,1,1,0,1,
+												1,1,1,1,1,1,1,1 };
+
+				byte[] mc_clr06 = new byte[64]{ 0,1,0,1,0,1,0,1,
+												1,1,1,1,1,1,1,1,
+												0,1,0,1,0,1,0,1,
+												1,1,1,1,1,1,1,1,
+												0,1,0,1,0,1,0,1,
+												1,1,1,1,1,1,1,1,
+												0,1,0,1,0,1,0,1,
+												1,1,1,1,1,1,1,1 };
+												
+				byte[] mc_clr05 = new byte[64]{ 0,1,0,1,0,1,0,1,
+												1,1,1,0,1,1,1,0,
+												0,1,0,1,0,1,0,1,
+												1,0,1,1,1,0,1,1,
+												0,1,0,1,0,1,0,1,
+												1,1,1,0,1,1,1,0,
+												0,1,0,1,0,1,0,1,
+												1,0,1,1,1,0,1,1 };
+
+				byte[] mc_clr04 = new byte[64]{ 0,1,0,1,0,1,0,1,
+												1,0,1,0,1,0,1,0,
+												0,1,0,1,0,1,0,1,
+												1,0,1,0,1,0,1,0,
+												0,1,0,1,0,1,0,1,
+												1,0,1,0,1,0,1,0,
+												0,1,0,1,0,1,0,1,
+												1,0,1,0,1,0,1,0 };
+
+				byte[] mc_clr03 = new byte[64]{ 0,1,0,1,0,1,0,1,
+												1,0,0,0,1,0,0,0,
+												0,1,0,1,0,1,0,1,
+												0,0,1,0,0,0,1,0,
+												0,1,0,1,0,1,0,1,
+												1,0,0,0,1,0,0,0,
+												0,1,0,1,0,1,0,1,
+												0,0,1,0,0,0,1,0 };
+												
+				byte[] mc_clr02 = new byte[64]{ 0,1,0,1,0,1,0,1,
+												0,0,0,0,0,0,0,0,
+												0,1,0,1,0,1,0,1,
+												0,0,0,0,0,0,0,0,
+												0,1,0,1,0,1,0,1,
+												0,0,0,0,0,0,0,0,
+												0,1,0,1,0,1,0,1,
+												0,0,0,0,0,0,0,0 };
+
+				byte[] mc_clr01 = new byte[64]{ 0,1,0,0,0,1,0,0,
+												0,0,0,0,0,0,0,0,
+												0,0,0,1,0,0,0,1,
+												0,0,0,0,0,0,0,0,
+												0,1,0,0,0,1,0,0,
+												0,0,0,0,0,0,0,0,
+												0,0,0,1,0,0,0,1,
+												0,0,0,0,0,0,0,0 };
 
 				byte[] mc_clr00 = new byte[64]{ 0,0,0,0,0,0,0,0,
 												0,0,0,0,0,0,0,0,
@@ -138,30 +210,14 @@ namespace MAPeD
 												0,0,0,0,0,0,0,0,
 												0,0,0,0,0,0,0,0,
 												0,0,0,0,0,0,0,0 };
-				byte[] mc_clr01 = new byte[64]{ 1,1,1,1,1,1,1,1,
-												1,1,1,1,1,1,1,1,
-												1,1,1,1,1,1,1,1,
-												1,1,1,1,1,1,1,1,
-												1,1,1,1,1,1,1,1,
-												1,1,1,1,1,1,1,1,
-												1,1,1,1,1,1,1,1,
-												1,1,1,1,1,1,1,1 };
-				byte[] mc_clr02 = ExpZXAsmGFXDithering.Checked ? new byte[64]{0,1,0,1,0,1,0,1,
-																				1,0,1,0,1,0,1,0,
-																				0,1,0,1,0,1,0,1,
-																				1,0,1,0,1,0,1,0,
-																				0,1,0,1,0,1,0,1,
-																				1,0,1,0,1,0,1,0,
-																				0,1,0,1,0,1,0,1,
-																				1,0,1,0,1,0,1,0 }:mc_clr00;
+												
+				byte[][] dither_ptrn_arr = new byte[9][]{ mc_clr00, mc_clr00, mc_clr01, mc_clr01, mc_clr01, mc_clr01, mc_clr02, mc_clr06, mc_clr08 };
+				double[] bright_dither_ptrn_arr = new double[9]{ 28.444, 56.888, 85.333, 113.777, 142.222, 170.666, 199.111, 227.555, 256.0 };
+
+				double bright_val;
+				
 				byte   pixel		= 0;
 				byte   pixel_ind	= 0;
-				double bright0 		= 0.0;
-				double bright1 		= 0.0;
-				double bright2 		= 0.0;
-				double bright3 		= 0.0;
-				byte[] palette 		= null;
-				List< byte[] > plt_remap = new List<byte[]>( 4 );
 				
 				int[] 		img_buff 		= new int[ 64*4 ];
 				int 		pix_val 		= 0;
@@ -169,22 +225,32 @@ namespace MAPeD
 				Bitmap 		tile_bmp		= null;
 				Bitmap 		level_bmp 		= null;
 				Graphics 	level_gfx		= null;
+#if DEF_NES				
+				byte[][] plt_remap	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ][];
+				byte[] clr_weights	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
+				byte[] palette 		= null;
+#elif DEF_SMS
+				HashSet< int > unique_clr_inds = new HashSet<int>();
+
+				byte[][] plt_remap = new byte[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ][];
+				byte[] clr_weights = new byte[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ];
+				int[] clr_inds_arr = new int[ 1 ];
 				
-				byte[] clr_weights = new byte[4];
-				
-				int nes_ink_color_index 	= 0;
-				int nes_paper_color_index 	= 0;
+				int plt_clr_ind;
+#endif				
+				int ink_color_index 	= 0;
+				int paper_color_index 	= 0;
 				int zx_ink_color_index 		= 0;
 				int zx_paper_color_index 	= 0;
 				bool zx_bright_flag			= false;
 				
 				int ink_index 		= -1;
-				double[] bright_arr = new double[ 4 ];
+				double[] bright_arr = new double[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 				
 				long level_data_size = 0;
 				
-				int scr_width_blocks 	= utils.CONST_SCREEN_NUM_SIDE_TILES << 1;
-				int scr_height_blocks 	= 0;
+				int scr_width_blocks 	= utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
+				int scr_height_blocks 	= utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
 				
 				screen_data scr_data;
 				
@@ -197,12 +263,10 @@ namespace MAPeD
 				sw.WriteLine( "scr_2x2tiles_w\tequ " + scr_width_blocks + "\t\t; number of screen tiles 2x2 in width" );
 				
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-				scr_height_blocks = ( utils.CONST_SCREEN_NUM_SIDE_TILES << 1 ) - 1;
+				scr_height_blocks -= 1;
 				
 				sw.WriteLine( "scr_2x2tiles_h\tequ " + scr_height_blocks + "\t\t; number of screen tiles 2x2 in height\n" );
 #else
-				scr_height_blocks = scr_width_blocks;
-				
 				sw.WriteLine( "scr_2x2tiles_h\tequ " + scr_height_blocks + "\t\t; number of screen tiles 2x2 in height\n" );
 #endif				
 
@@ -228,14 +292,14 @@ namespace MAPeD
 					}
 					
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-					n_Y_tiles = n_scr_Y * ( ( utils.CONST_SCREEN_NUM_SIDE_TILES * ( ExpZXAsmTiles2x2.Checked ? 2:1 ) ) - ( ExpZXAsmTiles2x2.Checked ? 1:0 ) );
+					n_Y_tiles = n_scr_Y * ( ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * ( ExpZXAsmTiles2x2.Checked ? 2:1 ) ) - ( ExpZXAsmTiles2x2.Checked ? 1:0 ) );
 #else
-					n_Y_tiles = n_scr_Y * utils.CONST_SCREEN_NUM_SIDE_TILES * ( ExpZXAsmTiles2x2.Checked ? 2:1 );
+					n_Y_tiles = n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES * ( ExpZXAsmTiles2x2.Checked ? 2:1 );
 #endif
 					// initialize a tile map of a game level
 					{
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-						map_data_size = n_scr_X * n_scr_Y * ( ( utils.CONST_SCREEN_TILES_CNT * ( ExpZXAsmTiles2x2.Checked ? 4:1 ) ) - ( ExpZXAsmTiles2x2.Checked ? ( utils.CONST_SCREEN_NUM_SIDE_TILES << 1 ):0 ) );
+						map_data_size = n_scr_X * n_scr_Y * ( ( utils.CONST_SCREEN_TILES_CNT * ( ExpZXAsmTiles2x2.Checked ? 4:1 ) ) - ( ExpZXAsmTiles2x2.Checked ? ( utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ):0 ) );
 #else
 						map_data_size = n_scr_X * n_scr_Y * utils.CONST_SCREEN_TILES_CNT * ( ExpZXAsmTiles2x2.Checked ? 4:1 );
 #endif						
@@ -272,8 +336,8 @@ namespace MAPeD
 								
 								for( int tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
 								{
-									tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_SIDE_TILES );
-									tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_SIDE_TILES );
+									tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES );
+									tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES );
 									
 									tile_id = tiles.scr_data[ scr_ind ][ tile_n ];
 									
@@ -311,7 +375,7 @@ namespace MAPeD
 											unique_tiles_arr.Add( tile_data );
 										}
 										
-										map_tiles_arr[ scr_n_X * ( n_Y_tiles * utils.CONST_SCREEN_NUM_SIDE_TILES ) + ( scr_n_Y * utils.CONST_SCREEN_NUM_SIDE_TILES ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_data;
+										map_tiles_arr[ scr_n_X * ( n_Y_tiles * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( scr_n_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_data;
 									}
 								}
 							}
@@ -350,8 +414,8 @@ namespace MAPeD
 						// tiles data processing
 						if( ExpZXAsmTiles2x2.Checked )
 						{
-							nes_ink_color_index 	= 0;
-							nes_paper_color_index 	= 0;
+							ink_color_index 	= 0;
+							paper_color_index 	= 0;
 							
 							for( int chr_n = 0; chr_n < 4; chr_n++ )
 							{
@@ -376,44 +440,133 @@ namespace MAPeD
 					           	// determine dark and bright colors in a palette
 					           	// and match them arrays for remapping
 					           	{
-									plt_remap.Clear();
-									plt_remap.Add( mc_clr00 );
-									plt_remap.Add( mc_clr00 );
-									plt_remap.Add( mc_clr00 );
-									plt_remap.Add( mc_clr00 );
-	
-						           	palette = tiles.palettes[ tiles_data.get_block_flags_palette( block_data ) ];
-	
-						           	bright0 = get_brightness( palette_group.Instance.main_palette[ palette[ 0 ] ] );
-									bright1 = get_brightness( palette_group.Instance.main_palette[ palette[ 1 ] ] );
-									bright2 = get_brightness( palette_group.Instance.main_palette[ palette[ 2 ] ] );
-									bright3 = get_brightness( palette_group.Instance.main_palette[ palette[ 3 ] ] );
+									int i;
+									int j;									
+#if DEF_NES
+									palette = tiles.palettes[ tiles_data.get_block_flags_palette( block_data ) ];
+
+									if( ExpZXAsmGFXDithering.Checked )
+									{
+										for( i = 0; i < utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+										{
+											bright_val = bright_arr[ i ] = get_brightness( palette_group.Instance.main_palette[ palette[ i ] ] );
+											
+											for( j = 0; j < dither_ptrn_arr.Length; j++ )
+											{
+												if( bright_val < bright_dither_ptrn_arr[ j ] )
+												{
+													plt_remap[ i ] = dither_ptrn_arr[ j ];
+													break;
+												}
+											}
+										}
+									}
+									else
+									{
+										for( i = 0; i < utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+										{
+											bright_arr[ i ] = get_brightness( palette_group.Instance.main_palette[ palette[ i ] ] );
+											
+											plt_remap[ i ] = mc_clr00;
+										}
+									}
+
+									ink_index = calc_dark_color_index( bright_arr, bright_arr.Length, -1 );
+									plt_remap[ ink_index ] = mc_clr08;
 									
-									bright_arr[0] = bright0;
-									bright_arr[1] = bright1;
-									bright_arr[2] = bright2;
-									bright_arr[3] = bright3;								
+									ink_color_index |= palette[ ink_index ] << ( chr_n << 3 );
+#elif DEF_SMS
+									if( ExpZXAsmGFXDithering.Checked )
+									{
+										for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+										{
+											bright_val = get_brightness( palette_group.Instance.main_palette[ tiles.palettes[ i >> 2 ][ i & 0x03 ] ] );
+											
+											for( j = 0; j < dither_ptrn_arr.Length; j++ )
+											{
+												if( bright_val < bright_dither_ptrn_arr[ j ] )
+												{
+													plt_remap[ i ] = dither_ptrn_arr[ j ];
+													break;
+												}
+											}
+										}
+									}
+									else
+									{
+										for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+										{
+											plt_remap[ i ] = mc_clr00;
+										}
+									}
+
+									unique_clr_inds.Clear();
 									
-									ink_index = calc_darker_color_index( bright_arr, 4, -1 );
-									plt_remap[ ink_index ] = mc_clr01;
+									for( i = 0; i < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; i++ )
+									{
+										unique_clr_inds.Add( tile_2x2_data_arr[ ( chr_n << 6 ) + i ] );
+									}
 									
-									nes_ink_color_index |= palette[ ink_index ] << ( 8 * chr_n );
+									Array.Resize( ref bright_arr, unique_clr_inds.Count );
+									Array.Resize( ref clr_inds_arr, unique_clr_inds.Count );
 									
-									plt_remap[ calc_darker_color_index( bright_arr, 4, ink_index ) ] = mc_clr02;
+									i = 0;
+									unique_clr_inds.ForEach( delegate( int _val ) 
+									{
+										bright_arr[ i ]	= get_brightness( palette_group.Instance.main_palette[ tiles.palettes[ _val >> 2 ][ _val & 0x03 ] ] );
+										clr_inds_arr[ i++ ]	= _val;
+									});
+									
+									if( bright_arr.Length == 1 )
+									{
+										bright_val	= bright_arr[ 0 ];
+										ink_index	= 0;
+										
+										plt_clr_ind = clr_inds_arr[ ink_index ];
+										// skip ink color for empty CHRs
+										//ink_color_index |= tiles.palettes[ plt_clr_ind >> 2 ][ plt_clr_ind & 0x03 ] << ( chr_n << 3 );
+										
+										if( ExpZXAsmGFXDithering.Checked )
+										{
+											for( j = 0; j < dither_ptrn_arr.Length; j++ )
+											{
+												if( bright_val < bright_dither_ptrn_arr[ j ] )
+												{
+													plt_remap[ plt_clr_ind ] = dither_ptrn_arr[ j ];
+													
+													break;
+												}
+											}
+										}
+										else
+										{
+											plt_remap[ plt_clr_ind ] = bright_val < bright_dither_ptrn_arr[ 0 ] ? mc_clr08:mc_clr00;
+										}
+									}
+									else
+									{
+										ink_index = calc_dark_color_index( bright_arr, bright_arr.Length, -1 );
+										
+										plt_clr_ind = clr_inds_arr[ ink_index ];
+										plt_remap[ plt_clr_ind ] = mc_clr08;										
+
+										ink_color_index |= tiles.palettes[ plt_clr_ind >> 2 ][ plt_clr_ind & 0x03 ] << ( chr_n << 3 );
+									}
+									
+#endif
 					           	}
 								
 					           	// determine a color with a most bright value
 					           	// and use it as a PAPER color
-								clr_weights[0] = 0;
-								clr_weights[1] = 0;
-								clr_weights[2] = 0;
-								clr_weights[3] = 0;
+								Array.Clear( clr_weights, 0, clr_weights.Length );
 								
 								for( int pix_n = 0; pix_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; pix_n++ )
 								{
 									pixel_ind 	= ( byte )( ( chr_n << 6 ) + pix_n );
 									pixel 		= tile_2x2_data_arr[ pixel_ind ];
-									
+#if DEF_SMS									
+									if( plt_clr_ind != pixel )	// ignore ink pixel
+#endif									
 									++clr_weights[ pixel ];
 									
 									tile_2x2_data_arr[ pixel_ind ] = ( byte )( plt_remap[ pixel ][ pix_n ] );
@@ -421,11 +574,11 @@ namespace MAPeD
 								
 								if( ExpZXAsmTypeColor.Checked )
 								{
-									// determine a color with the largest weight
+									// determine a color with a largest weight
 									byte max_weight    = 0;
 									int max_weight_ind = 0;
 									
-									for( int i = 0; i < 4; i++ )
+									for( int i = 0; i < clr_weights.Length; i++ )
 									{
 										if( i != ink_index && clr_weights[ i ] > max_weight )
 										{
@@ -433,12 +586,15 @@ namespace MAPeD
 											max_weight_ind = i;
 										}
 									}
-									
-									nes_paper_color_index |= palette[ max_weight_ind ] << ( 8 * chr_n );
+#if DEF_NES									
+									paper_color_index |= palette[ max_weight_ind ] << ( chr_n << 3 );
+#elif DEF_SMS
+									paper_color_index |= ( tiles.palettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ] ) << ( chr_n << 3 );
+#endif									
 								}
 							}
 							
-							// converting a tile into speccy format and write it to a file
+							// convert a tile into a speccy format and write it to a file
 							save_tiles_gfx( bw, tile_2x2_data_arr );
 							
 							// draw a tile into bitmap
@@ -448,8 +604,8 @@ namespace MAPeD
 							{
 								for( int chr_n = 0; chr_n < 4; chr_n++ )
 								{
-									zx_paper_color_index 	= nes_zx_clrs_conv_tbl[ ( nes_paper_color_index >> ( chr_n << 3 ) ) & 0xff ];
-									zx_ink_color_index 		= nes_zx_clrs_conv_tbl[ ( nes_ink_color_index >> ( chr_n << 3 ) ) & 0xff ];
+									zx_paper_color_index 	= zx_clrs_conv_tbl[ ( paper_color_index >> ( chr_n << 3 ) ) & 0xff ];
+									zx_ink_color_index 		= zx_clrs_conv_tbl[ ( ink_color_index >> ( chr_n << 3 ) ) & 0xff ];
 
 									zx_bright_flag = false;
 									
@@ -467,19 +623,19 @@ namespace MAPeD
 									
 									tile_colors_arr[ ( tile_n << 2 ) + chr_n ] |= (byte)( ( zx_bright_flag ? 64:0 ) | ( zx_paper_color_index << 3 ) | zx_ink_color_index );
 									
-									for( int pix_n = 0; pix_n < 64; pix_n++ )
+									for( int pix_n = 0; pix_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; pix_n++ )
 									{
 										pix_val = tile_2x2_data_arr[ ( chr_n << 6 ) + pix_n ] - 1;
 										
 										if( pix_val < 0 )
 										{
 											// paper
-											pix_val = 0xFF << 24 | zx_palette[ zx_paper_color_index ];
+											pix_val = 0xFF << 24 | zx_palette[ zx_paper_color_index + ( zx_bright_flag ? 8:0 ) ];
 										}
 										else
 										{
 											// ink
-											pix_val = 0xFF << 24 | zx_palette[ zx_ink_color_index ];
+											pix_val = 0xFF << 24 | zx_palette[ zx_ink_color_index + ( zx_bright_flag ? 8:0 ) ];
 										}
 										
 										img_buff[ ( (chr_n&0x01) == 0x01 ? 8:0 ) + ( (chr_n&0x02) == 0x02 ? 128:0 ) + ( ( pix_n >> 3 ) << 4 ) + ( pix_n % 8 ) ] = pix_val;
@@ -507,11 +663,7 @@ namespace MAPeD
 								{
 									if( map_tiles_arr[ map_tile_n ] == tile_n )
 									{
-#if DEF_SCREEN_HEIGHT_7d5_TILES
 										level_gfx.DrawImage( tile_bmp, ( map_tile_n / ( n_scr_Y * scr_height_blocks ) ) << 4, ( map_tile_n % ( n_scr_Y * scr_height_blocks ) ) << 4 );
-#else
-										level_gfx.DrawImage( tile_bmp, ( map_tile_n / ( n_scr_Y << 4 ) ) << 4, ( map_tile_n % ( n_scr_Y << 4 ) ) << 4 );
-#endif //DEF_SCREEN_HEIGHT_7d5_TILES
 									}
 								}
 							}
@@ -565,7 +717,7 @@ namespace MAPeD
 						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_wscr\tequ " + n_scr_X + "\t\t; number of map screens in width" );
 						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_hscr\tequ " + n_scr_Y + "\t\t; number of map screens in height" );
 						
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_wchr\tequ " + n_scr_X * ( utils.CONST_SCREEN_NUM_SIDE_TILES << 2 ) + "\t\t; number of map CHRs in width" );
+						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_wchr\tequ " + n_scr_X * ( utils.CONST_SCREEN_NUM_WIDTH_TILES << 2 ) + "\t\t; number of map CHRs in width" );
 						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_hchr\tequ " + n_scr_Y * ( scr_height_blocks << 1 ) + "\t\t; number of map CHRs in height" );
 
 						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_wtls\tequ " + n_scr_X * scr_width_blocks + "\t\t; number of map tiles in width" );
@@ -624,28 +776,28 @@ namespace MAPeD
 		
 		void calc_colors_conversion_table()
 		{
-			double nes_r = 	0.0;
-			double nes_g = 	0.0;
-			double nes_b = 	0.0;
+			double r = 0.0;
+			double g = 0.0;
+			double b = 0.0;
 
 			double zx_r = 	0.0;
 			double zx_g = 	0.0;
 			double zx_b = 	0.0;
 			
-			int nes_color = 0;
+			int color = 0;
 			int zx_color  = 0;
 			
 			double 	fi			= 0.0;
 			double 	fi_min 		= 0.0;
 			int 	best_color 	= -1;			
 
-			for( int nes_color_n = 0; nes_color_n < 64; nes_color_n++ )
+			for( int color_n = 0; color_n < 64; color_n++ )
 			{
-				nes_color = palette_group.Instance.main_palette[ nes_color_n ];
+				color = palette_group.Instance.main_palette[ color_n ];
 				
-				nes_r = ( double )( ( nes_color >> 16 ) & 0xff );
-				nes_g = ( double )( ( nes_color >> 8 ) & 0xff );
-				nes_b = ( double )( nes_color & 0xff );
+				r = ( double )( ( color >> 16 ) & 0xff );
+				g = ( double )( ( color >> 8 ) & 0xff );
+				b = ( double )( color & 0xff );
 				
 				fi_min 		= 1000000.0;
 				best_color 	= -1;
@@ -658,18 +810,17 @@ namespace MAPeD
 					zx_g = ( double )( ( zx_color >> 8 ) & 0xff );
 					zx_b = ( double )( zx_color & 0xff );
 
-
 					switch( ExpZXAsmColorConversionModes.SelectedIndex )
 					{
 						case 0:
 							{
-								fi = 30.0 * Math.Pow( nes_r - zx_r, 2.0 ) + 59.0 * Math.Pow( nes_g - zx_g, 2.0 ) + 11.0 * Math.Pow( nes_b - zx_b, 2.0 );
+								fi = 30.0 * Math.Pow( r - zx_r, 2.0 ) + 59.0 * Math.Pow( g - zx_g, 2.0 ) + 11.0 * Math.Pow( b - zx_b, 2.0 );
 							}
 							break;
 							
 						case 1:
 							{
-								fi = Math.Sqrt( Math.Pow( nes_r - zx_r, 2.0 ) + Math.Pow( nes_g - zx_g, 2.0 ) + Math.Pow( nes_b - zx_b, 2.0 ) );
+								fi = Math.Sqrt( Math.Pow( r - zx_r, 2.0 ) + Math.Pow( g - zx_g, 2.0 ) + Math.Pow( b - zx_b, 2.0 ) );
 							}
 							break;
 					}
@@ -681,13 +832,13 @@ namespace MAPeD
 					}
 				}
 				
-				nes_zx_clrs_conv_tbl[ nes_color_n ] = best_color;
+				zx_clrs_conv_tbl[ color_n ] = best_color;
 				
-//				palette_group.main_palette[ nes_color_n ] = zx_palette[ best_color ];//!!!
+				//palette_group.Instance.main_palette[ color_n ] = zx_palette[ best_color ];//!!!
 			}
 		}
 		
-		int calc_darker_color_index( double[] _bright_arr, int _arr_size, int _exclude_index )
+		int calc_dark_color_index( double[] _bright_arr, int _arr_size, int _exclude_index )
 		{
 			double 	t 	= Double.MaxValue;
 			int		res = -1;

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 24.05.2017
  * Time: 16:40
  */
@@ -33,7 +33,7 @@ namespace MAPeD
 		private bool 	m_dispatch_selection_mode		= false;
 		private int		m_dispatch_mode_sel_screen_slot_id	= -1;
 		private short[]	m_border_tiles	= null;
-		
+
 		private int 	m_offset_x 		= 0;
 		private int 	m_offset_y 		= 0;
 		private float 	m_scale 		= 1;
@@ -175,7 +175,7 @@ namespace MAPeD
 			
 			reset( true );
 			
-			m_border_tiles = new short[ 36 ];	// 4x8 ( up\right\down\left ) + 4 ( four corners )
+			m_border_tiles = new short[ utils.CONST_BORDER_TILES_CNT ];	// 4x8 ( up\right\down\left ) + 4 ( four corners )
 			
 			m_adjacent_scr_arr = new int[]{ -1, /*( -width - 1 )*/0, /*-width*/0, /*( -width + 1 )*/0, +1, /*( width + 1 )*/0, /*width*/0, /*( width - 1 )*/0, -1 };
 		}
@@ -1512,7 +1512,7 @@ namespace MAPeD
 				{
 					int i;
 					
-					for( i = 0; i < 36; i++ )
+					for( i = 0; i < utils.CONST_BORDER_TILES_CNT; i++ )
 					{
 						m_border_tiles[ i ] = unchecked( (short)0xffff );
 					}
@@ -1537,7 +1537,7 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								m_border_tiles[ 0 ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ utils.CONST_SCREEN_TILES_SIZE - 1 ] );
+								m_border_tiles[ utils.CONST_ADJ_SCR_TILE_IND_UP_LEFT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ utils.CONST_SCREEN_TILES_CNT - 1 ] );
 							}
 						}
 						
@@ -1548,11 +1548,11 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								tile_offset = utils.CONST_SCREEN_TILES_SIZE - utils.CONST_SCREEN_NUM_SIDE_TILES;
+								tile_offset = utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES;
 								
-								for( i = 0; i < utils.CONST_SCREEN_NUM_SIDE_TILES; i++ )
+								for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES; i++ )
 								{
-									m_border_tiles[ i + 1 ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ tile_offset + i ] );
+									m_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_UP ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ tile_offset + i ] );
 								}
 							}
 						}
@@ -1564,7 +1564,7 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								m_border_tiles[ 9 ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ utils.CONST_SCREEN_TILES_SIZE - utils.CONST_SCREEN_NUM_SIDE_TILES ] );
+								m_border_tiles[ utils.CONST_ADJ_SCR_TILE_IND_UP_RIGHT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES ] );
 							}
 						}
 					}
@@ -1578,7 +1578,7 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								m_border_tiles[ 10 ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ utils.CONST_SCREEN_NUM_SIDE_TILES - 1 ] );
+								m_border_tiles[ utils.CONST_ADJ_SCR_TILE_IND_DOWN_LEFT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ utils.CONST_SCREEN_NUM_WIDTH_TILES - 1 ] );
 							}
 						}
 						
@@ -1589,9 +1589,9 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								for( i = 0; i < utils.CONST_SCREEN_NUM_SIDE_TILES; i++ )
+								for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES; i++ )
 								{
-									m_border_tiles[ i + 11 ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ i ] );
+									m_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_DOWN ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ i ] );
 								}
 							}
 						}
@@ -1603,7 +1603,7 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								m_border_tiles[ 19 ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ 0 ] );
+								m_border_tiles[ utils.CONST_ADJ_SCR_TILE_IND_DOWN_RIGHT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ 0 ] );
 							}
 						}
 					}
@@ -1616,9 +1616,9 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								for( i = 0; i < utils.CONST_SCREEN_NUM_SIDE_TILES; i++ )
+								for( i = 0; i < utils.CONST_SCREEN_NUM_HEIGHT_TILES; i++ )
 								{
-									m_border_tiles[ i + 20 ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ ( i + 1 ) * utils.CONST_SCREEN_NUM_SIDE_TILES - 1 ] );
+									m_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_LEFT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ ( i + 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES - 1 ] );
 								}
 							}
 						}
@@ -1632,9 +1632,9 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								for( i = 0; i < utils.CONST_SCREEN_NUM_SIDE_TILES; i++ )
+								for( i = 0; i < utils.CONST_SCREEN_NUM_HEIGHT_TILES; i++ )
 								{
-									m_border_tiles[ i + 28 ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ i * utils.CONST_SCREEN_NUM_SIDE_TILES ] );
+									m_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_RIGHT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ i * utils.CONST_SCREEN_NUM_WIDTH_TILES ] );
 								}
 							}
 						}

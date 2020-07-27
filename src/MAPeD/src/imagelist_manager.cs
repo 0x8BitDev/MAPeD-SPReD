@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 16:20
  */
@@ -345,8 +345,8 @@ namespace MAPeD
 			{
 				tile_id = _data.scr_data[ _screen_n ][ tile_n ];
 				
-				tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_SIDE_TILES ) << 5;
-				tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_SIDE_TILES ) << 5;
+				tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 5;
+				tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 5;
 				
 				for( int block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 				{

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 13.09.2018
  * Time: 17:59
  */
@@ -26,7 +26,7 @@ namespace MAPeD
 			}
 			base.Dispose(disposing);
 		}
-		
+#if DEF_NES		
 		/// <summary>
 		/// This method is required for Windows Forms designer support.
 		/// Do not change the method contents inside the source code editor. The Forms designer might
@@ -465,7 +465,7 @@ namespace MAPeD
 			this.MinimizeBox = false;
 			this.Name = "exporter_nes_asm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "NES Asm Exporter";
+			this.Text = "CA65 / NES Asm Export Options";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
@@ -511,5 +511,6 @@ namespace MAPeD
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Button BtnOk;
 		private System.Windows.Forms.Button BtnCancel;
+#endif	//DEF_NES
 	}
 }
