@@ -276,10 +276,14 @@ case of incorrect bank index</SPAN></SPAN></FONT></FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">E</SPAN></SPAN><SPAN STYLE="font-weight: normal">ach
-block's value (UInt16) has the following bits description: [ 15-8 -&gt;
-property_id(4) palette ind(2) not used(2) | CHR ind(8) &lt;-- 7-0 ].
+block (UInt16) has the following bits description: [ 15-8 -&gt;
+property_id(4) [<b>NES</b>:palette ind | <b>SMS</b>:CHR bank page*](2) [<b>NES</b>:not used | <b>SMS</b>:flip flags (01-HFlip | 02-VFlip)](2) | CHR ind(8) &lt;-- 7-0 ].
 </SPAN>Thereby, four UInt16 values form one block <SPAN LANG="en-US">(
 </SPAN>2x2 tile <SPAN LANG="en-US">)</SPAN>.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>
+<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">* One CHR bank page consists of 16x16 CHRs.
+</SPAN></SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
