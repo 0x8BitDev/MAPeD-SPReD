@@ -228,6 +228,9 @@ left mouse button.</FONT></P>
 <FONT FACE="Arial, sans-serif">There are three types of
 transformations: vertical flipping, horizontal flipping and clockwise
 rotation. Press appropriate buttons to perform the actions.</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>SMS:</B> 1) You can flip selected CHR when the "Select CHRs" mode is active. 2) You can't rotate flipped CHRs.</FONT>
+</P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -652,6 +655,9 @@ to click on the &ldquo;Layout&rdquo; flag at the &ldquo;Edit Mode:&rdquo;
 box. Then select an active layout and click on any of its screen.
 After that, the selected screen will appear in the screen editor
 window.</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Note:</B> <SPAN STYLE="font-weight: normal">When the
+"Layout" mode is active, you'll see an active CHR bank screens only! The other ones will be blank.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -1079,8 +1085,6 @@ decimal values.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">There are four data formats available
 for import:</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
 <UL>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">.sprednes
 	CHR bank data</FONT></P>
@@ -1091,8 +1095,6 @@ for import:</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif">Palette ( 192 bytes ) ( .plt )</FONT></P>
 </UL>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">* Imported images must be a multiple
 of 16 for blocks data and a multiple of 32 for tiles data.</FONT></P>
@@ -1116,14 +1118,11 @@ of 16 for blocks data and a multiple of 32 for tiles data.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">There are five data formats available
 for export:</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
 <UL>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES:</B>
 	CA65/NESasm ( .asm )</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">ZX
-	Asm ( .zxa ) - SjASMPlus data; can be used for multidirectional
-	scroller</FONT></P>
+	Asm ( .zxa ) - SjASMPlus data *</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Active
 	tile/block set ( .bmp )</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Active
@@ -1131,6 +1130,14 @@ for export:</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Text
 	( .json ) - whole project data</FONT></P>
 </UL>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">* Level data is stored as a single matrix of tile indices in a column order. Can be used for multidirectional scroller. 
+Make your graphics more contrast to get the best result.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">See exported .asm / .zxa files to get more info.</FONT></P>
+
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
