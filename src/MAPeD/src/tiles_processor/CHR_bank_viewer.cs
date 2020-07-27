@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 13:11
  */
@@ -50,7 +50,7 @@ namespace MAPeD
 		{
 			m_sel_ind = ( e.X >> 4 ) + 16 * ( e.Y >> 4 );
 			
-//			update();	- will updat in 'CHRSelected -> block_quad_selected'
+//			update();	- will update in 'CHRSelected -> block_quad_selected'
 			
 			if( CHRSelected != null )
 			{
@@ -124,7 +124,7 @@ namespace MAPeD
 		{
 			clear_background( CONST_BACKGROUND_COLOR );
 			
-			if( m_data != null )
+			if( m_data != null && m_data.CHR_bank != null )
 			{
 				// draw image...
 				{
