@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 28.12.2018
  * Time: 16:46
  */
@@ -105,6 +105,7 @@ namespace MAPeD
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "export_active_tile_block_set_form";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Options";
 			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
