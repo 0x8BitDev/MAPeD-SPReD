@@ -1,6 +1,7 @@
 /src/SPReD/SPReD-NES/obj/*
 /src/SPReD/SPReD-SMS/obj/*
 /src/MAPeD/MAPeD-NES/obj/*
+/src/MAPeD/MAPeD-SMS/obj/*
 /src/PyScriptEditor/obj/*
 /samples/samples.sublime-project
 /samples/samples.sublime-workspace
