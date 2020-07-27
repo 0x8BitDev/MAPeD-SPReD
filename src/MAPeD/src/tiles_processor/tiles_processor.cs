@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 12:36
  */
@@ -58,6 +58,7 @@ namespace MAPeD
 			m_CHR_bank_viewer.NeedGFXUpdate	+= new EventHandler( need_gfx_update_event );
 			m_block_editor.NeedGFXUpdate 	+= new EventHandler( need_gfx_update_event );
 			m_tile_editor.NeedGFXUpdate		+= new EventHandler( need_gfx_update_event );
+			m_palette_grp.NeedGFXUpdate		+= new EventHandler( need_gfx_update_event );
 			
 			m_CHR_bank_viewer.subscribe_event( this );
 			m_block_editor.subscribe_event( this );
