@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 13:12
  */
@@ -141,7 +141,7 @@ namespace MAPeD
 			int last_sel_quad_ind = m_sel_quad_ind;
 			
 			m_sel_quad_ind = ( _x >> 7 ) + ( ( _y >> 7 ) << 1 );
-			
+
 			if( palette_per_CHR_mode )
 			{
 				if( last_sel_quad_ind != m_sel_quad_ind )
@@ -162,14 +162,32 @@ namespace MAPeD
 				
 				if( local_x >= 0 && local_y >= 0 && local_x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT && local_y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT )
 				{
-					int chr_id	= tiles_data.get_block_CHR_id( m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ] );
-					
+					ushort block_data = m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ];
+					                               
+					int chr_id	= tiles_data.get_block_CHR_id( block_data );
+#if DEF_SMS					
+					byte flip_flags = tiles_data.get_block_flags_flip( block_data );
+#endif					
 					int chr_x = chr_id % 16;
 					int chr_y = chr_id >> 4;
 					
-					palette_group plt = palette_group.Instance;
+					palette_group plt = palette_group.Instance;					
+#if DEF_NES					
+					byte clr_slot = (byte)plt.get_palettes_arr()[ plt.active_palette ].color_slot;
+#elif DEF_SMS
+					byte clr_slot = (byte)( ( plt.active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
 					
-					m_data.CHR_bank[ ( ( chr_x << 3 ) + local_x ) + ( ( ( chr_y * utils.CONST_CHR_BANK_SIDE ) << 3 ) + local_y * utils.CONST_CHR_BANK_SIDE ) ] = (byte)plt.get_palettes_arr()[ plt.active_palette ].color_slot;
+					if( ( flip_flags & utils.CONST_CHR_ATTR_FLAG_HFLIP ) == utils.CONST_CHR_ATTR_FLAG_HFLIP )
+					{
+						local_x = utils.CONST_SPR8x8_SIDE_PIXELS_CNT - local_x - 1;
+					}
+					
+					if( ( flip_flags & utils.CONST_CHR_ATTR_FLAG_VFLIP ) == utils.CONST_CHR_ATTR_FLAG_VFLIP )
+					{
+						local_y = utils.CONST_SPR8x8_SIDE_PIXELS_CNT - local_y - 1;
+					}					
+#endif					
+					m_data.CHR_bank[ ( ( chr_x << 3 ) + local_x ) + ( ( ( chr_y * utils.CONST_CHR_BANK_SIDE ) << 3 ) + local_y * utils.CONST_CHR_BANK_SIDE ) ] = clr_slot;
 					
 					dispath_event_pixel_changed();
 					dispatch_event_data_changed();
@@ -186,14 +204,16 @@ namespace MAPeD
 		{
 			if( m_sel_quad_ind >= 0 && m_sel_block_id >= 0 )
 			{
+#if DEF_NES
 				palette_group.Instance.active_palette = tiles_data.get_block_flags_palette( m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ] );
+#endif
 			}
 			else
 			{
 				palette_group.Instance.active_palette = -1;
 			}
 		}
-				
+
 		public void subscribe_event( CHR_bank_viewer _chr_bank )
 		{
 			_chr_bank.DataChanged += new EventHandler( update_data );
@@ -247,6 +267,7 @@ namespace MAPeD
 		{
 			if( m_sel_block_id >= 0 && palette_group.Instance.active_palette >= 0 )
 			{
+#if DEF_NES		
 				int chr_data_ind;
 				
 				if( palette_per_CHR_mode )
@@ -265,14 +286,14 @@ namespace MAPeD
 						m_data.blocks[ chr_data_ind ] = tiles_data.set_block_flags_palette( palette_group.Instance.active_palette, m_data.blocks[ chr_data_ind ] );
 					}
 				}
-
+#endif
 				dispatch_event_data_changed();
 				dispatch_event_need_gfx_update();
 			}
 			
 			update();
 		}
-		
+
 		private void CHR_selected( object sender, EventArgs e )
 		{
 			if( edit_mode == EMode.bem_CHR_select && m_sel_block_id >= 0 )
@@ -394,7 +415,7 @@ namespace MAPeD
 			}
 
 			set_active_palette();
-			
+
 			dispatch_event_quad_selected();
 			
 			update();
@@ -518,7 +539,7 @@ namespace MAPeD
 		{
 			if( m_data != null && m_sel_quad_ind >= 0 && m_sel_block_id >= 0 )
 			{
-				MainForm.set_status_msg( String.Format( "Block Editor: CHR: #{0:X2} \\ Block: #{1:X2}", m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ]&0xff, m_sel_block_id ) );
+				MainForm.set_status_msg( String.Format( "Block Editor: Block: #{0:X2} \\ CHR: #{1:X2}", m_sel_block_id, tiles_data.get_block_CHR_id( m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ] ) ) );
 			}
 		}
 
@@ -560,12 +581,23 @@ namespace MAPeD
 			int i;
 			
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
-			for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+			if( m_edit_mode	== EMode.bem_CHR_select )
 			{
 				switch( _type )
 				{
-					case utils.ETransformType.tt_vflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_VFLIP, m_sel_block_id, i );	} 	break;
-					case utils.ETransformType.tt_hflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_HFLIP, m_sel_block_id, i );	} 	break;
+					case utils.ETransformType.tt_vflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_VFLIP, m_sel_block_id, m_sel_quad_ind );	} 	return;
+					case utils.ETransformType.tt_hflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_HFLIP, m_sel_block_id, m_sel_quad_ind );	} 	return;
+				}
+			}
+			else
+			{
+				for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+				{
+					switch( _type )
+					{
+						case utils.ETransformType.tt_vflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_VFLIP, m_sel_block_id, i );	} 	break;
+						case utils.ETransformType.tt_hflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_HFLIP, m_sel_block_id, i );	} 	break;
+					}
 				}
 			}
 #endif
@@ -575,6 +607,14 @@ namespace MAPeD
 			for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
 			{
 				blocks_data[ i ] = m_data.blocks[ ( m_sel_block_id << 2 ) + i ];
+				
+#if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
+				if( _type == utils.ETransformType.tt_rotate && tiles_data.get_block_flags_flip( blocks_data[ i ] ) != 0 )
+				{
+					MainForm.message_box( "You can't rotate flipped CHRs!", "Block Transformation Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					return;
+				}
+#endif
 			}
 			
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS			
