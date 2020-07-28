@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 29.11.2018
  * Time: 16:49
  */
@@ -183,7 +183,7 @@ namespace MAPeD
 						continue;
 					}
 					
-					// delete the useless CHR
+					// delete useless CHR
 					{
 						size_offs = utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1;
 						

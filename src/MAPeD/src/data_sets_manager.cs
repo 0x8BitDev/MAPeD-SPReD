@@ -66,7 +66,7 @@ namespace MAPeD
 		public event ReturnBoolEvent DeleteGroup;
 
 		[DataMember]
-		private string data_desc = "CHR Data Size: " + utils.CONST_CHR_BANK_SIZE + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_USHORT_SIZE + " | Screen Data Size: " + utils.CONST_SCREEN_TILES_CNT;
+		private string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ) + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_USHORT_SIZE + " | Screen Data Size: " + utils.CONST_SCREEN_TILES_CNT;
 		[DataMember]
 		private string block_desc = "(bits): 15-12 -> Obj id | [10-11 NES: -> Palette id | SMS: -> CHR bank page] | [8-9 NES: not used | SMS: -> Flip flags (01-HFlip | 02-VFlip)] | 7-0 -> CHR id";
 		

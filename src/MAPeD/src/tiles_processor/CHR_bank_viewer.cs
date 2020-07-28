@@ -27,7 +27,7 @@ namespace MAPeD
 		private int m_copy_spr_ind = -1;
 		
 		private int 	m_sel_ind			= -1;
-		private int 	m_sel_block_CHRs	= 0;
+		private ulong 	m_sel_block_CHRs	= 0;
 		
 		private Color m_sel_clr	= utils.CONST_COLOR_CHR_BANK_SELECTED_DEFAULT;
 		
@@ -39,8 +39,14 @@ namespace MAPeD
 		
 		private tiles_data m_data	= null;
 		
-		public CHR_bank_viewer( PictureBox _PBoxCHRBank ) : base( _PBoxCHRBank )
+		private int m_active_page	= 0;
+		
+		private GroupBox m_CHR_bank_grp_box = null;
+		
+		public CHR_bank_viewer( PictureBox _PBoxCHRBank, GroupBox _grp_box ) : base( _PBoxCHRBank )
 		{
+			m_CHR_bank_grp_box = _grp_box;
+			
 			m_pix_box.MouseClick 	+= new MouseEventHandler( this.CHRBank_MouseClick );
 			
 			update();
@@ -48,7 +54,7 @@ namespace MAPeD
 		
 		private void CHRBank_MouseClick(object sender, MouseEventArgs e)
 		{
-			m_sel_ind = ( e.X >> 4 ) + 16 * ( e.Y >> 4 );
+			m_sel_ind = ( ( e.X >> 4 ) + 16 * ( e.Y >> 4 ) ) + ( utils.CONST_CHR_BANK_PAGE_SPRITES_CNT * m_active_page );
 			
 //			update();	- will update in 'CHRSelected -> block_quad_selected'
 			
@@ -116,7 +122,18 @@ namespace MAPeD
 			
 			m_sel_ind 			= -1;
 			m_sel_block_CHRs 	= 0;
-	
+#if DEF_SMS	
+			m_active_page = 0;
+			
+			if( m_data != null )
+			{
+				update_active_page_text();
+			}
+			else
+			{
+				m_CHR_bank_grp_box.Text = "CHR Bank:";
+			}
+#endif			
 			update();
 		}
 		
@@ -134,19 +151,25 @@ namespace MAPeD
 					
 					if( draw_colored == true )
 					{
-						bmp = utils.create_bitmap( m_data.CHR_bank, utils.CONST_CHR_BANK_SIDE, utils.CONST_CHR_BANK_SIDE, 0, false, palette_group.Instance.active_palette, palette_group.Instance.get_palettes_arr() );
+						bmp = utils.create_bitmap( m_data.CHR_bank, utils.CONST_CHR_BANK_PAGE_SIDE, utils.CONST_CHR_BANK_PAGE_SIDE, 0, false, palette_group.Instance.active_palette, palette_group.Instance.get_palettes_arr(), utils.CONST_CHR_BANK_PAGE_SIZE * m_active_page );
 					}
 					else
 					{
-						bmp = utils.create_bitmap( m_data.CHR_bank, utils.CONST_CHR_BANK_SIDE, utils.CONST_CHR_BANK_SIDE, 0, false, -1 );
+						bmp = utils.create_bitmap( m_data.CHR_bank, utils.CONST_CHR_BANK_PAGE_SIDE, utils.CONST_CHR_BANK_PAGE_SIDE, 0, false, -1, null, utils.CONST_CHR_BANK_PAGE_SIZE * m_active_page );
 					}
 					
 					m_gfx.DrawImage( bmp, 0, 0, m_pix_box.Width, m_pix_box.Height );
-					
+#if DEF_SMS
+					if( m_active_page == 1 )
+					{
+						utils.brush.Color = Color.FromArgb( 0x40ff0000 );
+						m_gfx.FillRectangle( utils.brush, 0, ( utils.CONST_CHR_BANK_PAGE_SIDE << 1 ) - ( 16 << 2 ), utils.CONST_CHR_BANK_PAGE_SIDE << 1, 16 << 2 );
+					}
+#endif
 					bmp.Dispose();
 				}
 				
-				// нарисовать сетку
+				// draw grid
 				{
 					m_pen.Color = utils.CONST_COLOR_CHR_BANK_GRID;
 					
@@ -166,10 +189,10 @@ namespace MAPeD
 				
 				if( m_sel_ind >= 0 )
 				{
-					draw_CHR_border( ( int )( m_sel_block_CHRs & 0x000000ff ),  			utils.CONST_COLOR_CHR_BANK_SELECTED_BLOCK_CHR_BORDER, utils.CONST_COLOR_CHR_BANK_SELECTED_OUTER_BORDER );
-					draw_CHR_border( ( int )( ( m_sel_block_CHRs & 0x0000ff00 ) >> 8 ),  	utils.CONST_COLOR_CHR_BANK_SELECTED_BLOCK_CHR_BORDER, utils.CONST_COLOR_CHR_BANK_SELECTED_OUTER_BORDER );
-					draw_CHR_border( ( int )( ( m_sel_block_CHRs & 0x00ff0000 ) >> 16 ),  	utils.CONST_COLOR_CHR_BANK_SELECTED_BLOCK_CHR_BORDER, utils.CONST_COLOR_CHR_BANK_SELECTED_OUTER_BORDER );
-					draw_CHR_border( ( int )( ( m_sel_block_CHRs & 0xff000000 ) >> 24 ),  	utils.CONST_COLOR_CHR_BANK_SELECTED_BLOCK_CHR_BORDER, utils.CONST_COLOR_CHR_BANK_SELECTED_OUTER_BORDER );
+					draw_CHR_border( ( int )( m_sel_block_CHRs & 0x0000ffff ),  			utils.CONST_COLOR_CHR_BANK_SELECTED_BLOCK_CHR_BORDER, utils.CONST_COLOR_CHR_BANK_SELECTED_OUTER_BORDER );
+					draw_CHR_border( ( int )( ( m_sel_block_CHRs >> 16 ) & 0x0000ffff ),  	utils.CONST_COLOR_CHR_BANK_SELECTED_BLOCK_CHR_BORDER, utils.CONST_COLOR_CHR_BANK_SELECTED_OUTER_BORDER );
+					draw_CHR_border( ( int )( ( m_sel_block_CHRs >> 32 ) & 0x0000ffff ),  	utils.CONST_COLOR_CHR_BANK_SELECTED_BLOCK_CHR_BORDER, utils.CONST_COLOR_CHR_BANK_SELECTED_OUTER_BORDER );
+					draw_CHR_border( ( int )( ( m_sel_block_CHRs >> 48 ) & 0x0000ffff ),  	utils.CONST_COLOR_CHR_BANK_SELECTED_BLOCK_CHR_BORDER, utils.CONST_COLOR_CHR_BANK_SELECTED_OUTER_BORDER );
 					
 					draw_CHR_border( m_sel_ind, m_sel_clr, utils.CONST_COLOR_CHR_BANK_SELECTED_OUTER_BORDER );
 				}
@@ -186,14 +209,19 @@ namespace MAPeD
 		
 		private void draw_CHR_border( int _ind, Color _color1, Color _color2 )
 		{
-			int x = ( ( _ind % 16 ) << 4 );
-			int y = ( ( _ind >> 4 ) << 4 );
-			
-			m_pen.Color = _color1;
-			m_gfx.DrawRectangle( m_pen, x+2, y+2, 13, 13 );
-			
-			m_pen.Color = _color2;
-			m_gfx.DrawRectangle( m_pen, x+1, y+1, 15, 15 );
+			if( ( _ind >> 8 ) == m_active_page )
+			{
+				_ind &= 0x0000ff;
+				
+				int x = ( ( _ind % 16 ) << 4 );
+				int y = ( ( _ind >> 4 ) << 4 );
+				
+				m_pen.Color = _color1;
+				m_gfx.DrawRectangle( m_pen, x+2, y+2, 13, 13 );
+				
+				m_pen.Color = _color2;
+				m_gfx.DrawRectangle( m_pen, x+1, y+1, 15, 15 );
+			}
 		}
 		
 		public void subscribe_event( palette_group _plt )
@@ -307,5 +335,35 @@ namespace MAPeD
 			
 			return false;
 		}
+#if DEF_SMS		
+		public void next_page()
+		{
+			if( m_active_page + 1 < utils.CONST_CHR_BANK_PAGES_CNT )
+			{
+				++m_active_page;
+				
+				update_active_page_text();
+				
+				update();
+			}
+		}
+		
+		public void prev_page()
+		{
+			if( m_active_page - 1 >= 0 )
+			{
+				--m_active_page;
+				
+				update_active_page_text();
+				
+				update();
+			}
+		}
+		
+		private void update_active_page_text()
+		{
+			m_CHR_bank_grp_box.Text = "CHR Bank: " + "[" + ( m_active_page + 1 ) + "/" + utils.CONST_CHR_BANK_PAGES_CNT + "]";
+		}
+#endif	
 	}
 }

@@ -31,7 +31,7 @@ namespace MAPeD
 		
 		private string m_name	= null;
 		
-		private byte[] m_CHR_bank	= new byte[ utils.CONST_CHR_BANK_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ];
+		private byte[] m_CHR_bank	= new byte[ utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ];
 #if DEF_NES		
 		private byte[] m_palette0	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 1+16 ), (byte)( 1+32 ), (byte)( 1+48 ) };
 		private byte[] m_palette1	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 4+16 ), (byte)( 4+32 ), (byte)( 4+48 ) };
@@ -197,7 +197,7 @@ namespace MAPeD
 		{
 			tiles_data data = new tiles_data();
 			
-			Array.Copy( m_CHR_bank, 0, data.CHR_bank,	0, utils.CONST_CHR_BANK_SIZE );
+			Array.Copy( m_CHR_bank, 0, data.CHR_bank,	0, m_CHR_bank.Length );
 			Array.Copy( m_palette0, 0, data.m_palette0, 0, utils.CONST_PALETTE_SMALL_NUM_COLORS );  
 			Array.Copy( m_palette1, 0, data.m_palette1, 0, utils.CONST_PALETTE_SMALL_NUM_COLORS );
 			Array.Copy( m_palette2, 0, data.m_palette2, 0, utils.CONST_PALETTE_SMALL_NUM_COLORS );
@@ -390,7 +390,7 @@ namespace MAPeD
 #if DEF_NES
 			return (ushort)( ( _block_chr_data & 0xff00 ) | _CHR_id );
 #elif DEF_SMS
-			return (ushort)( ( set_block_flags_CHR_bank_page( ( _CHR_id >> 8 ), _block_chr_data ) & 0xff00 ) | ( _block_chr_data & 0xff00 ) | ( _CHR_id & 0xff ) );
+			return (ushort)( ( set_block_flags_CHR_bank_page( ( _CHR_id >> 8 ), _block_chr_data ) & 0xff00 ) | ( _block_chr_data & ( CONST_BLOCK_MASK_FLIP|CONST_BLOCK_MASK_OBJ_ID ) ) | ( _CHR_id & 0xff ) );
 #endif
 		}
 		
@@ -405,14 +405,14 @@ namespace MAPeD
 			int chr_x = _spr_ind % 16;
 			int chr_y = _spr_ind >> 4;
 				
-			int offset_bytes = ( chr_x << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) + ( ( chr_y * utils.CONST_CHR_BANK_SIDE ) << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
+			int offset_bytes = ( chr_x << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) + ( ( chr_y * utils.CONST_CHR_BANK_PAGE_SIDE ) << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
 			
 			for( int x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
 			{
 				for( int y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT>>1; y++ )
 				{
-					offset_y1 = offset_bytes + x + ( y * utils.CONST_CHR_BANK_SIDE );
-					offset_y2 = offset_bytes + x + ( ( utils.CONST_SPR8x8_SIDE_PIXELS_CNT - 1 - y ) * utils.CONST_CHR_BANK_SIDE );
+					offset_y1 = offset_bytes + x + ( y * utils.CONST_CHR_BANK_PAGE_SIDE );
+					offset_y2 = offset_bytes + x + ( ( utils.CONST_SPR8x8_SIDE_PIXELS_CNT - 1 - y ) * utils.CONST_CHR_BANK_PAGE_SIDE );
 						
 					a = _CHR_data[ offset_y1 ];
 					b = _CHR_data[ offset_y2 ];
@@ -434,11 +434,11 @@ namespace MAPeD
 			int chr_x = _spr_ind % 16;
 			int chr_y = _spr_ind >> 4;
 				
-			int offset_bytes = ( chr_x << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) + ( ( chr_y * utils.CONST_CHR_BANK_SIDE ) << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
+			int offset_bytes = ( chr_x << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) + ( ( chr_y * utils.CONST_CHR_BANK_PAGE_SIDE ) << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
 			
 			for( int y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
 			{
-				offset_y = y * utils.CONST_CHR_BANK_SIDE;
+				offset_y = y * utils.CONST_CHR_BANK_PAGE_SIDE;
 				
 				for( int x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT>>1; x++ )
 				{
@@ -464,17 +464,17 @@ namespace MAPeD
 			int chr_x = _spr_ind % 16;
 			int chr_y = _spr_ind >> 4;
 			
-			int offset_bytes = ( chr_x << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) + ( ( chr_y * utils.CONST_CHR_BANK_SIDE ) << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
+			int offset_bytes = ( chr_x << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) + ( ( chr_y * utils.CONST_CHR_BANK_PAGE_SIDE ) << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
 			
 			for( i = 0; i < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; i++ ) 
 			{
-				im8 = offset_bytes + ( i * utils.CONST_CHR_BANK_SIDE );
+				im8 = offset_bytes + ( i * utils.CONST_CHR_BANK_PAGE_SIDE );
 				
 		        for( j = i; j < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; j++ ) 
 		        {
 		            if( i != j ) 
 		            {
-		            	jm8 = offset_bytes + ( j * utils.CONST_CHR_BANK_SIDE );
+		            	jm8 = offset_bytes + ( j * utils.CONST_CHR_BANK_PAGE_SIDE );
 		            	
 		                _CHR_data[ i + jm8 ] ^= _CHR_data[ j + im8 ];
 		                _CHR_data[ j + im8 ] ^= _CHR_data[ i + jm8 ];
@@ -488,33 +488,33 @@ namespace MAPeD
 		
 		public void from_CHR_bank_to_spr8x8( int _chr_id, byte[] _img_buff, int _img_buff_offset = 0 )
 		{
-			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
+			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_PAGE_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
 			
 			for( int i = 0; i < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; i++ )
 			{
-				Array.Copy( m_CHR_bank, chr_offset + i * utils.CONST_CHR_BANK_SIDE, _img_buff, ( i << 3 ) + _img_buff_offset, 8 );
+				Array.Copy( m_CHR_bank, chr_offset + i * utils.CONST_CHR_BANK_PAGE_SIDE, _img_buff, ( i << 3 ) + _img_buff_offset, 8 );
 			}
 		}
 		
 		public void from_spr8x8_to_CHR_bank( int _chr_id, byte[] _img_buff )
 		{
-			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
+			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_PAGE_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
 			
 			for( int i = 0; i < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; i++ )
 			{
-				Array.Copy( _img_buff, i << 3, m_CHR_bank, chr_offset + i * utils.CONST_CHR_BANK_SIDE, 8 );
+				Array.Copy( _img_buff, i << 3, m_CHR_bank, chr_offset + i * utils.CONST_CHR_BANK_PAGE_SIDE, 8 );
 			}
 		}
 		
 		public void fill_CHR_bank_spr8x8_by_color_ind( int _chr_id, int _clr_ind )
 		{
-			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
+			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_PAGE_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
 			
 			for( int i = 0; i < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; i++ )
 			{
 				for( int j = 0; j < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; j++ )
 				{
-					m_CHR_bank[ chr_offset + i * utils.CONST_CHR_BANK_SIDE + j ] = (byte)_clr_ind;
+					m_CHR_bank[ chr_offset + i * utils.CONST_CHR_BANK_PAGE_SIDE + j ] = (byte)_clr_ind;
 				}
 			}
 		}
@@ -523,13 +523,13 @@ namespace MAPeD
 		{
 			int sum = 0;
 			
-			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
+			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_PAGE_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
 			
 			for( int i = 0; i < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; i++ )
 			{
 				for( int j = 0; j < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; j++ )
 				{
-					sum += m_CHR_bank[ chr_offset + i * utils.CONST_CHR_BANK_SIDE + j ];
+					sum += m_CHR_bank[ chr_offset + i * utils.CONST_CHR_BANK_PAGE_SIDE + j ];
 				}
 			}
 			
@@ -836,12 +836,12 @@ namespace MAPeD
 				}
 				
 				// skip the rest data
-				_br.ReadBytes( ( utils.CONST_SMS_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_SIZE ) - m_CHR_bank.Length );
+				_br.ReadBytes( ( utils.CONST_SMS_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_PAGE_SIZE ) - m_CHR_bank.Length );
 			}
 #elif DEF_SMS			
 			if( nes_file )
 			{
-				for( i = 0; i < ( utils.CONST_NES_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_SIZE ); i++ )
+				for( i = 0; i < ( utils.CONST_NES_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_PAGE_SIZE ); i++ )
 				{
 					m_CHR_bank[ i ] = _br.ReadByte();
 				}

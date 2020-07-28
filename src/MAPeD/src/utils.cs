@@ -129,6 +129,8 @@ namespace MAPeD
 		public const int CONST_SCREEN_OFFSET_Y			= 32;
 		
 		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_NES_CHR_BANK_NUM_PAGES;
+		
+		public const int CONST_CHR_BANK_MAX_SPRITES_CNT	= 256 * CONST_NES_CHR_BANK_NUM_PAGES;
 #elif DEF_SMS
 		public const int CONST_SCREEN_NUM_WIDTH_TILES	= CONST_SMS_SCREEN_NUM_WIDTH_TILES;
 		public const int CONST_SCREEN_NUM_HEIGHT_TILES	= CONST_SMS_SCREEN_NUM_HEIGHT_TILES;
@@ -140,6 +142,8 @@ namespace MAPeD
 		public const int CONST_SCREEN_OFFSET_Y			= 96;
 		
 		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_SMS_CHR_BANK_NUM_PAGES;
+		
+		public const int CONST_CHR_BANK_MAX_SPRITES_CNT	= 256 * CONST_SMS_CHR_BANK_NUM_PAGES;		
 #endif
 
 		public const int CONST_SCREEN_TILES_SIZE		= 64;	// pixels
@@ -185,15 +189,13 @@ namespace MAPeD
 		
 		public const int CONST_BLOCKS_USHORT_SIZE			= 256 * CONST_BLOCK_SIZE;
 		public const int CONST_TILES_UINT_SIZE				= 256;
-		public const int CONST_CHR_BANK_SIDE				= 128;
-		public const int CONST_CHR_BANK_SIZE				= CONST_CHR_BANK_SIDE * CONST_CHR_BANK_SIDE;
-		public const int CONST_CHR_BANK_MAX_CNT				= 255;
-		public const int CONST_CHR_BANK_MAX_SPR8X8_CNT		= CONST_CHR_BANK_SIZE / CONST_SPR8x8_TOTAL_PIXELS_CNT;
+		public const int CONST_CHR_BANK_PAGE_SIDE			= 128;
+		public const int CONST_CHR_BANK_PAGE_SIZE			= CONST_CHR_BANK_PAGE_SIDE * CONST_CHR_BANK_PAGE_SIDE;
+		public const int CONST_CHR_BANK_PAGE_SPRITES_CNT	= 256;
+		public const int CONST_CHR_BANK_MAX_CNT				= 256;
 		
 		public const int CONST_BLOCK_SIZE					= 4;	// ushorts
 		public const int CONST_TILE_SIZE					= 4;	// bytes
-		
-		public const int CONST_CHR_BANK_MAX_SPRITES_CNT		= 256;
 		
 		public const int CONST_MAX_BLOCKS_CNT				= 256;
 		public const int CONST_MAX_TILES_CNT				= 256;
@@ -292,7 +294,7 @@ namespace MAPeD
 			}
 		}
 		
-		public static Bitmap create_bitmap( byte[] _arr, int _width, int _height, byte _flags, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null )
+		public static Bitmap create_bitmap( byte[] _arr, int _width, int _height, byte _flags, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null, int _arr_offset = 0 )
 		{
 			int img_size = _width * _height;
 			
@@ -316,7 +318,7 @@ namespace MAPeD
 			{
 				for( int p = 0; p < img_size; p++ )
 				{
-					pix_ind = _arr[ p ];
+					pix_ind = _arr[ p + _arr_offset ];
 #if DEF_NES				
 					if( apply_palette )
 #endif					

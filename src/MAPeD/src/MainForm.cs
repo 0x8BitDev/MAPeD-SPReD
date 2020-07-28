@@ -100,6 +100,7 @@ namespace MAPeD
 			m_data_conversion_options_form	= new data_conversion_options_form();
 
 			m_tiles_processor 	= new tiles_processor(	PBoxCHRBank,
+			                                         	GrpBoxCHRBank,
 														PBoxBlockEditor,
 														PBoxTilePreview,
 														PaletteMain,
@@ -196,7 +197,9 @@ namespace MAPeD
 																new SToolTipData( CheckBoxPickupTargetEntity, "Pickup target entity" ),
 																new SToolTipData( BtnCopyCHRBank, "Copy active CHR bank" ),
 																new SToolTipData( BtnAddCHRBank, "Add new CHR bank" ),
-																new SToolTipData( BtnDeleteCHRBank, "Delete active CHR Bank" ),
+																new SToolTipData( BtnDeleteCHRBank, "Delete active CHR Bank" ),																
+																new SToolTipData( BtnCHRBankPrevPage, "Previous CHR Bank's page" ),
+																new SToolTipData( BtnCHRBankNextPage, "Next CHR Bank's page" ),																
 																new SToolTipData( BtnUpdateGFX, "Update tiles\\blocks and screens ( if auto update is enabled )" ),
 																new SToolTipData( BtnOptimization, "Delete unused screens\\tiles\\blocks\\CHRs" ),
 																new SToolTipData( CheckBoxTileEditorLock, "Enable\\disable tile editing" ),
@@ -233,22 +236,32 @@ namespace MAPeD
 			}
 			
 #if DEF_NES
-			this.Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
-			this.Project_openFileDialog.Filter = this.Project_openFileDialog.Filter + "|MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT;
+			Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
+			Project_openFileDialog.Filter = Project_openFileDialog.Filter + "|MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT;
 #elif DEF_SMS
-			this.Project_saveFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
-			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "NES", "SMS" );
-			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "nes", "sms" );
+			Project_saveFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
+			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "SMS" );
+			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "sms" );
 
-			this.Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
-			this.Project_openFileDialog.Filter = "MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT + "|" + this.Project_openFileDialog.Filter;
+			Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
+			Project_openFileDialog.Filter = "MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT + "|" + Project_openFileDialog.Filter;
 			
-			this.Project_exportFileDialog.Filter = this.Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "WLA-DX" );
+			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "WLA-DX" );
+
+			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "NES", "SMS" );
+			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "nes", "sms" );
 			
 			CheckBoxPalettePerCHR.Visible = false;
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false; 
-#endif			
+#endif
+
+			if( utils.CONST_CHR_BANK_PAGES_CNT == 1 )
+			{
+				BtnCHRBankNextPage.Enabled = BtnCHRBankPrevPage.Enabled = false;
+				prevPageToolStripMenuItem.Enabled = nextPageToolStripMenuItem.Enabled = false;
+			}
+			
 			if( _args.Length > 0 )
 			{
 				project_load( _args[0] );
@@ -367,6 +380,12 @@ namespace MAPeD
 
 		private void enable_main_UI( bool _on )
 		{
+			if( utils.CONST_CHR_BANK_PAGES_CNT > 1 )
+			{
+				BtnCHRBankNextPage.Enabled = BtnCHRBankPrevPage.Enabled = _on;
+				prevPageToolStripMenuItem.Enabled = nextPageToolStripMenuItem.Enabled = _on;
+			}
+			
 			PanelBlocks.Enabled = _on;
 			PanelTiles.Enabled	= _on;
 			
@@ -1127,6 +1146,20 @@ namespace MAPeD
 //			enable_update_screens_btn( false );			
 		}
 		
+		void BtnCHRBankNextPageClick_Event(object sender, EventArgs e)
+		{
+#if DEF_SMS			
+			m_tiles_processor.CHR_bank_next_page();
+#endif			
+		}
+		
+		void BtnCHRBankPrevPageClick_Event(object sender, EventArgs e)
+		{
+#if DEF_SMS			
+			m_tiles_processor.CHR_bank_prev_page();
+#endif			
+		}
+		
 		void BtnCopyCHRBankClick_Event(object sender, EventArgs e)
 		{
 			if( m_data_manager.tiles_data_copy() == true )
@@ -1487,7 +1520,7 @@ namespace MAPeD
 						}
 						
 						Array.Clear( utils.tmp_spr8x8_buff, 0, utils.tmp_spr8x8_buff.Length );
-						data.from_spr8x8_to_CHR_bank( utils.CONST_CHR_BANK_MAX_SPR8X8_CNT - 1, utils.tmp_spr8x8_buff );
+						data.from_spr8x8_to_CHR_bank( utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1, utils.tmp_spr8x8_buff );
 						
 						data.dec_blocks_CHRs( sel_ind );
 						

@@ -82,6 +82,9 @@ namespace MAPeD
 			this.addBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+			this.prevPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.nextPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.cHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.flipVerticalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -152,7 +155,9 @@ namespace MAPeD
 			this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
 			this.PropIdPerBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PropIdPerCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.GrpBoxCHRBank = new System.Windows.Forms.GroupBox();
+			this.BtnCHRBankNextPage = new System.Windows.Forms.Button();
+			this.BtnCHRBankPrevPage = new System.Windows.Forms.Button();
 			this.CBoxCHRBanks = new System.Windows.Forms.ComboBox();
 			this.BtnDeleteCHRBank = new System.Windows.Forms.Button();
 			this.BtnCHRRotate = new System.Windows.Forms.Button();
@@ -348,7 +353,7 @@ namespace MAPeD
 			this.TabTiles.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBoxBlockEditor)).BeginInit();
 			this.ContextMenuBlockEditor.SuspendLayout();
-			this.groupBox3.SuspendLayout();
+			this.GrpBoxCHRBank.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBoxCHRBank)).BeginInit();
 			this.ContextMenuCHRBank.SuspendLayout();
 			this.groupBox4.SuspendLayout();
@@ -731,6 +736,9 @@ namespace MAPeD
 									this.addBankToolStripMenuItem,
 									this.deleteBankToolStripMenuItem,
 									this.copyBankToolStripMenuItem,
+									this.toolStripSeparator12,
+									this.prevPageToolStripMenuItem,
+									this.nextPageToolStripMenuItem,
 									this.toolStripSeparator8,
 									this.cHRToolStripMenuItem});
 			this.cHRBankToolStripMenuItem.Name = "cHRBankToolStripMenuItem";
@@ -740,28 +748,49 @@ namespace MAPeD
 			// addBankToolStripMenuItem
 			// 
 			this.addBankToolStripMenuItem.Name = "addBankToolStripMenuItem";
-			this.addBankToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.addBankToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.addBankToolStripMenuItem.Text = "&Add Bank";
 			this.addBankToolStripMenuItem.Click += new System.EventHandler(this.BtnAddCHRBankClick_Event);
 			// 
 			// deleteBankToolStripMenuItem
 			// 
 			this.deleteBankToolStripMenuItem.Name = "deleteBankToolStripMenuItem";
-			this.deleteBankToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.deleteBankToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.deleteBankToolStripMenuItem.Text = "&Delete Bank";
 			this.deleteBankToolStripMenuItem.Click += new System.EventHandler(this.BtnDeleteCHRBankClick_Event);
 			// 
 			// copyBankToolStripMenuItem
 			// 
 			this.copyBankToolStripMenuItem.Name = "copyBankToolStripMenuItem";
-			this.copyBankToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.copyBankToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.copyBankToolStripMenuItem.Text = "&Copy Bank";
 			this.copyBankToolStripMenuItem.Click += new System.EventHandler(this.BtnCopyCHRBankClick_Event);
+			// 
+			// toolStripSeparator12
+			// 
+			this.toolStripSeparator12.Name = "toolStripSeparator12";
+			this.toolStripSeparator12.Size = new System.Drawing.Size(186, 6);
+			// 
+			// prevPageToolStripMenuItem
+			// 
+			this.prevPageToolStripMenuItem.Name = "prevPageToolStripMenuItem";
+			this.prevPageToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Left)));
+			this.prevPageToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.prevPageToolStripMenuItem.Text = "&Prev Page";
+			this.prevPageToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRBankPrevPageClick_Event);
+			// 
+			// nextPageToolStripMenuItem
+			// 
+			this.nextPageToolStripMenuItem.Name = "nextPageToolStripMenuItem";
+			this.nextPageToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Right)));
+			this.nextPageToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.nextPageToolStripMenuItem.Text = "&Next Page";
+			this.nextPageToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRBankNextPageClick_Event);
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(133, 6);
+			this.toolStripSeparator8.Size = new System.Drawing.Size(186, 6);
 			// 
 			// cHRToolStripMenuItem
 			// 
@@ -770,7 +799,7 @@ namespace MAPeD
 									this.flipHOrizontalToolStripMenuItem,
 									this.rotateToolStripMenuItem});
 			this.cHRToolStripMenuItem.Name = "cHRToolStripMenuItem";
-			this.cHRToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.cHRToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.cHRToolStripMenuItem.Text = "C&HR";
 			// 
 			// flipVerticalToolStripMenuItem
@@ -1254,7 +1283,7 @@ namespace MAPeD
 			this.TabTiles.AutoScroll = true;
 			this.TabTiles.BackColor = System.Drawing.Color.Silver;
 			this.TabTiles.Controls.Add(this.PBoxBlockEditor);
-			this.TabTiles.Controls.Add(this.groupBox3);
+			this.TabTiles.Controls.Add(this.GrpBoxCHRBank);
 			this.TabTiles.Controls.Add(this.groupBox4);
 			this.TabTiles.Controls.Add(this.groupBox1);
 			this.TabTiles.Controls.Add(this.groupBox2);
@@ -1350,23 +1379,45 @@ namespace MAPeD
 			this.PropIdPerCHRToolStripMenuItem.Text = "CHR";
 			this.PropIdPerCHRToolStripMenuItem.Click += new System.EventHandler(this.PropertyPerCHRToolStripMenuItemClick_Event);
 			// 
-			// groupBox3
+			// GrpBoxCHRBank
 			// 
-			this.groupBox3.Controls.Add(this.CBoxCHRBanks);
-			this.groupBox3.Controls.Add(this.BtnDeleteCHRBank);
-			this.groupBox3.Controls.Add(this.BtnCHRRotate);
-			this.groupBox3.Controls.Add(this.BtnCHRHFlip);
-			this.groupBox3.Controls.Add(this.BtnCopyCHRBank);
-			this.groupBox3.Controls.Add(this.BtnAddCHRBank);
-			this.groupBox3.Controls.Add(this.BtnCHRVFlip);
-			this.groupBox3.Controls.Add(this.label5);
-			this.groupBox3.Controls.Add(this.PBoxCHRBank);
-			this.groupBox3.Location = new System.Drawing.Point(6, 6);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(276, 336);
-			this.groupBox3.TabIndex = 5;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "CHR Bank:";
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRBankNextPage);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRBankPrevPage);
+			this.GrpBoxCHRBank.Controls.Add(this.CBoxCHRBanks);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnDeleteCHRBank);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRRotate);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRHFlip);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCopyCHRBank);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnAddCHRBank);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRVFlip);
+			this.GrpBoxCHRBank.Controls.Add(this.label5);
+			this.GrpBoxCHRBank.Controls.Add(this.PBoxCHRBank);
+			this.GrpBoxCHRBank.Location = new System.Drawing.Point(6, 6);
+			this.GrpBoxCHRBank.Name = "GrpBoxCHRBank";
+			this.GrpBoxCHRBank.Size = new System.Drawing.Size(276, 336);
+			this.GrpBoxCHRBank.TabIndex = 5;
+			this.GrpBoxCHRBank.TabStop = false;
+			this.GrpBoxCHRBank.Text = "CHR Bank:";
+			// 
+			// BtnCHRBankNextPage
+			// 
+			this.BtnCHRBankNextPage.Location = new System.Drawing.Point(130, 283);
+			this.BtnCHRBankNextPage.Name = "BtnCHRBankNextPage";
+			this.BtnCHRBankNextPage.Size = new System.Drawing.Size(28, 23);
+			this.BtnCHRBankNextPage.TabIndex = 10;
+			this.BtnCHRBankNextPage.Text = ">>";
+			this.BtnCHRBankNextPage.UseVisualStyleBackColor = true;
+			this.BtnCHRBankNextPage.Click += new System.EventHandler(this.BtnCHRBankNextPageClick_Event);
+			// 
+			// BtnCHRBankPrevPage
+			// 
+			this.BtnCHRBankPrevPage.Location = new System.Drawing.Point(100, 283);
+			this.BtnCHRBankPrevPage.Name = "BtnCHRBankPrevPage";
+			this.BtnCHRBankPrevPage.Size = new System.Drawing.Size(28, 23);
+			this.BtnCHRBankPrevPage.TabIndex = 9;
+			this.BtnCHRBankPrevPage.Text = "<<";
+			this.BtnCHRBankPrevPage.UseVisualStyleBackColor = true;
+			this.BtnCHRBankPrevPage.Click += new System.EventHandler(this.BtnCHRBankPrevPageClick_Event);
 			// 
 			// CBoxCHRBanks
 			// 
@@ -1376,16 +1427,16 @@ namespace MAPeD
 			this.CBoxCHRBanks.Location = new System.Drawing.Point(164, 309);
 			this.CBoxCHRBanks.Name = "CBoxCHRBanks";
 			this.CBoxCHRBanks.Size = new System.Drawing.Size(47, 21);
-			this.CBoxCHRBanks.TabIndex = 11;
+			this.CBoxCHRBanks.TabIndex = 13;
 			this.CBoxCHRBanks.SelectedIndexChanged += new System.EventHandler(this.CHRBankChanged_Event);
 			// 
 			// BtnDeleteCHRBank
 			// 
 			this.BtnDeleteCHRBank.BackColor = System.Drawing.Color.Wheat;
-			this.BtnDeleteCHRBank.Location = new System.Drawing.Point(217, 308);
+			this.BtnDeleteCHRBank.Location = new System.Drawing.Point(217, 309);
 			this.BtnDeleteCHRBank.Name = "BtnDeleteCHRBank";
-			this.BtnDeleteCHRBank.Size = new System.Drawing.Size(48, 23);
-			this.BtnDeleteCHRBank.TabIndex = 12;
+			this.BtnDeleteCHRBank.Size = new System.Drawing.Size(48, 20);
+			this.BtnDeleteCHRBank.TabIndex = 14;
 			this.BtnDeleteCHRBank.Text = "Bank-";
 			this.BtnDeleteCHRBank.UseVisualStyleBackColor = false;
 			this.BtnDeleteCHRBank.Click += new System.EventHandler(this.BtnDeleteCHRBankClick_Event);
@@ -1415,10 +1466,10 @@ namespace MAPeD
 			// BtnCopyCHRBank
 			// 
 			this.BtnCopyCHRBank.BackColor = System.Drawing.Color.LemonChiffon;
-			this.BtnCopyCHRBank.Location = new System.Drawing.Point(164, 280);
+			this.BtnCopyCHRBank.Location = new System.Drawing.Point(164, 283);
 			this.BtnCopyCHRBank.Name = "BtnCopyCHRBank";
-			this.BtnCopyCHRBank.Size = new System.Drawing.Size(48, 23);
-			this.BtnCopyCHRBank.TabIndex = 9;
+			this.BtnCopyCHRBank.Size = new System.Drawing.Size(48, 20);
+			this.BtnCopyCHRBank.TabIndex = 11;
 			this.BtnCopyCHRBank.Text = "Copy";
 			this.BtnCopyCHRBank.UseVisualStyleBackColor = true;
 			this.BtnCopyCHRBank.Click += new System.EventHandler(this.BtnCopyCHRBankClick_Event);
@@ -1426,10 +1477,10 @@ namespace MAPeD
 			// BtnAddCHRBank
 			// 
 			this.BtnAddCHRBank.BackColor = System.Drawing.Color.Wheat;
-			this.BtnAddCHRBank.Location = new System.Drawing.Point(217, 280);
+			this.BtnAddCHRBank.Location = new System.Drawing.Point(217, 283);
 			this.BtnAddCHRBank.Name = "BtnAddCHRBank";
-			this.BtnAddCHRBank.Size = new System.Drawing.Size(48, 23);
-			this.BtnAddCHRBank.TabIndex = 10;
+			this.BtnAddCHRBank.Size = new System.Drawing.Size(48, 20);
+			this.BtnAddCHRBank.TabIndex = 12;
 			this.BtnAddCHRBank.Text = "Bank+";
 			this.BtnAddCHRBank.UseVisualStyleBackColor = false;
 			this.BtnAddCHRBank.Click += new System.EventHandler(this.BtnAddCHRBankClick_Event);
@@ -1450,7 +1501,7 @@ namespace MAPeD
 			this.label5.Location = new System.Drawing.Point(123, 313);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(40, 16);
-			this.label5.TabIndex = 15;
+			this.label5.TabIndex = 0;
 			this.label5.Text = "Banks:";
 			// 
 			// PBoxCHRBank
@@ -1536,7 +1587,7 @@ namespace MAPeD
 			this.groupBox4.Location = new System.Drawing.Point(6, 348);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(276, 181);
-			this.groupBox4.TabIndex = 22;
+			this.groupBox4.TabIndex = 24;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Palettes:";
 			// 
@@ -1545,7 +1596,7 @@ namespace MAPeD
 			this.CheckBoxPalettePerCHR.Location = new System.Drawing.Point(10, 158);
 			this.CheckBoxPalettePerCHR.Name = "CheckBoxPalettePerCHR";
 			this.CheckBoxPalettePerCHR.Size = new System.Drawing.Size(148, 19);
-			this.CheckBoxPalettePerCHR.TabIndex = 23;
+			this.CheckBoxPalettePerCHR.TabIndex = 25;
 			this.CheckBoxPalettePerCHR.Text = "Palette per CHR (MMC5)";
 			this.CheckBoxPalettePerCHR.UseVisualStyleBackColor = true;
 			this.CheckBoxPalettePerCHR.CheckedChanged += new System.EventHandler(this.CheckBoxPalettePerCHRChecked_Event);
@@ -1646,7 +1697,7 @@ namespace MAPeD
 			this.groupBox1.Location = new System.Drawing.Point(288, 6);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(276, 364);
-			this.groupBox1.TabIndex = 13;
+			this.groupBox1.TabIndex = 15;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Block Editor:";
 			// 
@@ -1675,7 +1726,7 @@ namespace MAPeD
 			this.CBoxBlockObjId.Location = new System.Drawing.Point(227, 333);
 			this.CBoxBlockObjId.Name = "CBoxBlockObjId";
 			this.CBoxBlockObjId.Size = new System.Drawing.Size(39, 21);
-			this.CBoxBlockObjId.TabIndex = 21;
+			this.CBoxBlockObjId.TabIndex = 23;
 			this.CBoxBlockObjId.SelectionChangeCommitted += new System.EventHandler(this.CBoxBlockObjIdChanged_Event);
 			// 
 			// BtnBlockReserveCHRs
@@ -1683,7 +1734,7 @@ namespace MAPeD
 			this.BtnBlockReserveCHRs.Location = new System.Drawing.Point(10, 334);
 			this.BtnBlockReserveCHRs.Name = "BtnBlockReserveCHRs";
 			this.BtnBlockReserveCHRs.Size = new System.Drawing.Size(93, 22);
-			this.BtnBlockReserveCHRs.TabIndex = 17;
+			this.BtnBlockReserveCHRs.TabIndex = 19;
 			this.BtnBlockReserveCHRs.Text = "Reserve CHRs";
 			this.BtnBlockReserveCHRs.UseVisualStyleBackColor = true;
 			this.BtnBlockReserveCHRs.Click += new System.EventHandler(this.BtnBlockReserveCHRsClick_Event);
@@ -1694,7 +1745,7 @@ namespace MAPeD
 			this.BtnBlockRotate.Location = new System.Drawing.Point(10, 309);
 			this.BtnBlockRotate.Name = "BtnBlockRotate";
 			this.BtnBlockRotate.Size = new System.Drawing.Size(93, 20);
-			this.BtnBlockRotate.TabIndex = 16;
+			this.BtnBlockRotate.TabIndex = 18;
 			this.BtnBlockRotate.Text = "Rotate";
 			this.BtnBlockRotate.UseVisualStyleBackColor = false;
 			this.BtnBlockRotate.Click += new System.EventHandler(this.BtnBlockRotateClick_Event);
@@ -1704,7 +1755,7 @@ namespace MAPeD
 			this.LabelObjId.Location = new System.Drawing.Point(159, 337);
 			this.LabelObjId.Name = "LabelObjId";
 			this.LabelObjId.Size = new System.Drawing.Size(64, 16);
-			this.LabelObjId.TabIndex = 22;
+			this.LabelObjId.TabIndex = 0;
 			this.LabelObjId.Text = "Property Id:";
 			// 
 			// BtnEditModeDraw
@@ -1713,7 +1764,7 @@ namespace MAPeD
 			this.BtnEditModeDraw.Location = new System.Drawing.Point(217, 283);
 			this.BtnEditModeDraw.Name = "BtnEditModeDraw";
 			this.BtnEditModeDraw.Size = new System.Drawing.Size(49, 20);
-			this.BtnEditModeDraw.TabIndex = 19;
+			this.BtnEditModeDraw.TabIndex = 21;
 			this.BtnEditModeDraw.Text = "Draw";
 			this.BtnEditModeDraw.UseVisualStyleBackColor = true;
 			this.BtnEditModeDraw.Click += new System.EventHandler(this.DrawToolStripMenuItemClick_Event);
@@ -1724,7 +1775,7 @@ namespace MAPeD
 			this.BtnUpdateGFX.Location = new System.Drawing.Point(158, 308);
 			this.BtnUpdateGFX.Name = "BtnUpdateGFX";
 			this.BtnUpdateGFX.Size = new System.Drawing.Size(108, 22);
-			this.BtnUpdateGFX.TabIndex = 20;
+			this.BtnUpdateGFX.TabIndex = 22;
 			this.BtnUpdateGFX.Text = "Update GFX";
 			this.BtnUpdateGFX.UseVisualStyleBackColor = true;
 			this.BtnUpdateGFX.Click += new System.EventHandler(this.BtnUpdateGFXClick_Event);
@@ -1735,7 +1786,7 @@ namespace MAPeD
 			this.BtnEditModeSelectCHR.Location = new System.Drawing.Point(158, 283);
 			this.BtnEditModeSelectCHR.Name = "BtnEditModeSelectCHR";
 			this.BtnEditModeSelectCHR.Size = new System.Drawing.Size(54, 20);
-			this.BtnEditModeSelectCHR.TabIndex = 18;
+			this.BtnEditModeSelectCHR.TabIndex = 20;
 			this.BtnEditModeSelectCHR.Text = "Select";
 			this.BtnEditModeSelectCHR.UseVisualStyleBackColor = true;
 			this.BtnEditModeSelectCHR.Click += new System.EventHandler(this.SelectCHRToolStripMenuItemClick_Event);
@@ -1746,7 +1797,7 @@ namespace MAPeD
 			this.BtnBlockHFlip.Location = new System.Drawing.Point(61, 283);
 			this.BtnBlockHFlip.Name = "BtnBlockHFlip";
 			this.BtnBlockHFlip.Size = new System.Drawing.Size(42, 20);
-			this.BtnBlockHFlip.TabIndex = 15;
+			this.BtnBlockHFlip.TabIndex = 17;
 			this.BtnBlockHFlip.Text = "HFlip";
 			this.BtnBlockHFlip.UseVisualStyleBackColor = false;
 			this.BtnBlockHFlip.Click += new System.EventHandler(this.BtnBlockHFlipClick_Event);
@@ -1757,7 +1808,7 @@ namespace MAPeD
 			this.BtnBlockVFlip.Location = new System.Drawing.Point(10, 283);
 			this.BtnBlockVFlip.Name = "BtnBlockVFlip";
 			this.BtnBlockVFlip.Size = new System.Drawing.Size(42, 20);
-			this.BtnBlockVFlip.TabIndex = 14;
+			this.BtnBlockVFlip.TabIndex = 16;
 			this.BtnBlockVFlip.Text = "VFlip";
 			this.BtnBlockVFlip.UseVisualStyleBackColor = false;
 			this.BtnBlockVFlip.Click += new System.EventHandler(this.BtnBlockVFlipClick_Event);
@@ -1767,7 +1818,7 @@ namespace MAPeD
 			this.label10.Location = new System.Drawing.Point(116, 286);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(43, 20);
-			this.label10.TabIndex = 22;
+			this.label10.TabIndex = 0;
 			this.label10.Text = "Modes:";
 			// 
 			// groupBox2
@@ -1776,7 +1827,7 @@ namespace MAPeD
 			this.groupBox2.Location = new System.Drawing.Point(570, 6);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(192, 573);
-			this.groupBox2.TabIndex = 27;
+			this.groupBox2.TabIndex = 29;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Blocks:";
 			// 
@@ -1789,7 +1840,7 @@ namespace MAPeD
 			this.PanelBlocks.Location = new System.Drawing.Point(6, 14);
 			this.PanelBlocks.Name = "PanelBlocks";
 			this.PanelBlocks.Size = new System.Drawing.Size(180, 553);
-			this.PanelBlocks.TabIndex = 28;
+			this.PanelBlocks.TabIndex = 30;
 			// 
 			// groupBox5
 			// 
@@ -1799,7 +1850,7 @@ namespace MAPeD
 			this.groupBox5.Location = new System.Drawing.Point(288, 376);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(276, 153);
-			this.groupBox5.TabIndex = 24;
+			this.groupBox5.TabIndex = 26;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Tile Editor:";
 			// 
@@ -1808,7 +1859,7 @@ namespace MAPeD
 			this.BtnTileReserveBlocks.Location = new System.Drawing.Point(145, 101);
 			this.BtnTileReserveBlocks.Name = "BtnTileReserveBlocks";
 			this.BtnTileReserveBlocks.Size = new System.Drawing.Size(122, 22);
-			this.BtnTileReserveBlocks.TabIndex = 25;
+			this.BtnTileReserveBlocks.TabIndex = 27;
 			this.BtnTileReserveBlocks.Text = "Reserve Blocks";
 			this.BtnTileReserveBlocks.UseVisualStyleBackColor = true;
 			this.BtnTileReserveBlocks.Click += new System.EventHandler(this.BtnTileReserveBlocksClick_Event);
@@ -1818,7 +1869,7 @@ namespace MAPeD
 			this.CheckBoxTileEditorLock.Location = new System.Drawing.Point(145, 129);
 			this.CheckBoxTileEditorLock.Name = "CheckBoxTileEditorLock";
 			this.CheckBoxTileEditorLock.Size = new System.Drawing.Size(63, 19);
-			this.CheckBoxTileEditorLock.TabIndex = 26;
+			this.CheckBoxTileEditorLock.TabIndex = 28;
 			this.CheckBoxTileEditorLock.Text = "Locked";
 			this.CheckBoxTileEditorLock.UseVisualStyleBackColor = true;
 			this.CheckBoxTileEditorLock.CheckedChanged += new System.EventHandler(this.CheckBoxTileEditorLockedChecked_Event);
@@ -3104,8 +3155,8 @@ namespace MAPeD
 			// Import_openFileDialog
 			// 
 			this.Import_openFileDialog.DefaultExt = "sprednes";
-			this.Import_openFileDialog.Filter = "SPReD-NES (*.sprednes)|*.sprednes|CHR Bank (*.chr,*.bin)|*.chr;*.bin|Tiles (4bpp)" +
-			" (*.bmp)|*.bmp|Palette (192 bytes) (*.pal)|*.pal";
+			this.Import_openFileDialog.Filter = "SPReD-NES (*.sprednes)|*.sprednes|NES CHR Bank (*.chr,*.bin)|*.chr;*.bin|Tiles (4" +
+			"bpp) (*.bmp)|*.bmp|Palette (192 bytes) (*.pal)|*.pal";
 			this.Import_openFileDialog.Title = "Import Data Into Active CHR Bank";
 			this.Import_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.DataImportOk_Event);
 			// 
@@ -3184,7 +3235,7 @@ namespace MAPeD
 			this.TabTiles.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PBoxBlockEditor)).EndInit();
 			this.ContextMenuBlockEditor.ResumeLayout(false);
-			this.groupBox3.ResumeLayout(false);
+			this.GrpBoxCHRBank.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PBoxCHRBank)).EndInit();
 			this.ContextMenuCHRBank.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
@@ -3234,6 +3285,11 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem nextPageToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem prevPageToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+		private System.Windows.Forms.Button BtnCHRBankPrevPage;
+		private System.Windows.Forms.Button BtnCHRBankNextPage;
 		private System.Windows.Forms.GroupBox GrpBoxActiveTile;
 		private System.Windows.Forms.Button BtnResetTile;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator27;
@@ -3502,7 +3558,7 @@ namespace MAPeD
 		private System.Windows.Forms.Button BtnDeleteCHRBank;
 		private System.Windows.Forms.ComboBox CBoxCHRBanks;
 		private System.Windows.Forms.PictureBox PBoxCHRBank;
-		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.GroupBox GrpBoxCHRBank;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;

@@ -29,6 +29,7 @@ namespace MAPeD
 		private palette_group 	m_palette_grp		= null;
 		
 		public tiles_processor( PictureBox 			_PBoxCHRBank,
+		                       GroupBox				_CHRBankGrpBox,
 		                       PictureBox 			_PBoxBlockEditor,
 		                       PictureBox 			_PBoxTilePreview,
 		                       PictureBox 			_plt_main,
@@ -39,7 +40,7 @@ namespace MAPeD
 		                       data_sets_manager 	_data_mngr )
 		{
 			m_palette_grp		= new palette_group( _plt_main, _plt0, _plt1, _plt2, _plt3 );
-			m_CHR_bank_viewer	= new CHR_bank_viewer( _PBoxCHRBank );
+			m_CHR_bank_viewer	= new CHR_bank_viewer( _PBoxCHRBank, _CHRBankGrpBox );
 			m_block_editor		= new block_editor( _PBoxBlockEditor );
 			m_tile_editor		= new tile_editor( _PBoxTilePreview );
 
@@ -338,7 +339,17 @@ namespace MAPeD
 		{
 			return m_CHR_bank_viewer.get_selected_CHR_ind();
 		}
-		
+#if DEF_SMS		
+		public void CHR_bank_next_page()
+		{
+			m_CHR_bank_viewer.next_page();
+		}
+
+		public void CHR_bank_prev_page()
+		{
+			m_CHR_bank_viewer.prev_page();
+		}
+#endif
 		public static void import_image_data( bool _import_tiles, bool _skip_zero_CHR_Block, Bitmap _bmp, tiles_data _data )
 		{
 			Color[] plte = _bmp.Palette.Entries;
@@ -416,7 +427,7 @@ namespace MAPeD
 
 										_data.from_spr8x8_to_CHR_bank( CHR_ind++, img_buff );
 
-										if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPR8X8_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+										if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
 										{
 											MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind + 1, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 											return;
@@ -452,7 +463,7 @@ namespace MAPeD
 
 								_data.from_spr8x8_to_CHR_bank( CHR_ind++, img_buff );
 
-								if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPR8X8_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+								if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
 								{
 									MainForm.set_status_msg( string.Format( "Merged: Blocks {0} \\ CHRs {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 									return;

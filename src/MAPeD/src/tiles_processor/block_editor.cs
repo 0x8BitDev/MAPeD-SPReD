@@ -187,7 +187,7 @@ namespace MAPeD
 						local_y = utils.CONST_SPR8x8_SIDE_PIXELS_CNT - local_y - 1;
 					}					
 #endif					
-					m_data.CHR_bank[ ( ( chr_x << 3 ) + local_x ) + ( ( ( chr_y * utils.CONST_CHR_BANK_SIDE ) << 3 ) + local_y * utils.CONST_CHR_BANK_SIDE ) ] = clr_slot;
+					m_data.CHR_bank[ ( ( chr_x << 3 ) + local_x ) + ( ( ( chr_y * utils.CONST_CHR_BANK_PAGE_SIDE ) << 3 ) + local_y * utils.CONST_CHR_BANK_PAGE_SIDE ) ] = clr_slot;
 					
 					dispath_event_pixel_changed();
 					dispatch_event_data_changed();
@@ -426,16 +426,16 @@ namespace MAPeD
 			return m_sel_block_id;
 		}
 		
-		public int get_selected_block_CHRs()
+		public ulong get_selected_block_CHRs()
 		{
 			if( m_sel_block_id >= 0 && m_data != null )
 			{
 				int block_data_offs = m_sel_block_id << 2;
-				
-				return 	tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs ] ) |
-						( tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs + 1 ] ) << 8 ) |
-	                 	( tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs + 2 ] ) << 16 ) |
-	                 	( tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs + 3 ] ) << 24 );
+
+				return 	(ulong)( 	(ulong)tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs ] ) ) |
+								( ( (ulong)tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs + 1 ] ) ) << 16 ) |
+								( ( (ulong)tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs + 2 ] ) ) << 32 ) |
+								( ( (ulong)tiles_data.get_block_CHR_id( m_data.blocks[ block_data_offs + 3 ] ) ) << 48 );
 			}
 			
 			return 0;
