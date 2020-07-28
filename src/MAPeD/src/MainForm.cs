@@ -694,9 +694,6 @@ namespace MAPeD
 			
 			try
 			{
-#if DEF_SMS
-				throw new Exception( "NOT IMPLEMENTED YET!" );
-#endif
 				fs = new FileStream( filename, FileMode.Open, FileAccess.Read );
 				{
 					br = new BinaryReader( fs );
@@ -705,6 +702,9 @@ namespace MAPeD
 					{
 						case ".bmp":
 							{
+#if DEF_SMS
+								throw new Exception( "NOT IMPLEMENTED!" );
+#endif								
 								bmp = new Bitmap( filename );
 								
 								if( bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
@@ -747,19 +747,23 @@ namespace MAPeD
 							}
 							break;
 							
+#if DEF_NES
 						case ".sprednes":
+#elif DEF_SMS
+						case ".spredsms":
+#endif
 							{
-								if( br.ReadUInt32() == utils.CONST_SPREDNES_FILE_MAGIC )
+								if( br.ReadUInt32() == utils.CONST_SPRED_FILE_MAGIC )
 								{
 									byte ver = br.ReadByte();
 									
-									if( ver == utils.CONST_SPREDNES_PROJECT_FILE_VER )
+									if( ver == utils.CONST_SPRED_PROJECT_FILE_VER )
 									{
 										int CHR_cnt = 0;
 										
-										if( ( CHR_cnt = m_data_manager.merge_CHR_sprednes( br ) ) != -1 )
+										if( ( CHR_cnt = m_data_manager.merge_CHR_spred( br ) ) != -1 )
 										{
-											set_status_msg( string.Format( "Merged: CHR banks: {0}", CHR_cnt ) );
+											set_status_msg( string.Format( "Merged: {0} CHR banks", CHR_cnt ) );
 										}
 									}
 									else
@@ -779,11 +783,14 @@ namespace MAPeD
 						case ".chr":
 						case ".bin":
 							{
+#if DEF_SMS
+								throw new Exception( "NOT IMPLEMENTED!" );
+#endif								
 								int added_CHRs = m_data_manager.merge_CHR_bin( br );
 								
 								if( added_CHRs > 0 )
 								{
-									set_status_msg( string.Format( "Merged: CHRs {0}", added_CHRs ) );
+									set_status_msg( string.Format( "Merged: {0} CHRs", added_CHRs ) );
 								}
 								else
 								if( added_CHRs < 0 )

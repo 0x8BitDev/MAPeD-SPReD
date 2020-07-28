@@ -810,11 +810,14 @@ namespace MAPeD
 			}			
 		}
 		
-		public int merge_CHR_sprednes( BinaryReader _br )
+		public int merge_CHR_spred( BinaryReader _br )
 		{
 			int CHR_cnt = _br.ReadInt32();
 			int spr8x8_cnt;
-			
+
+			bool res = true;
+			int copied_CHRs = 0;
+
 			tiles_data data = get_tiles_data( tiles_data_pos );
 			
 			int chr_id = 0;
@@ -838,18 +841,39 @@ namespace MAPeD
 				
 				if( chr_id + spr8x8_cnt > utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
 				{
-					MainForm.set_status_msg( String.Format( "{0} of {1} sprites merged!", i, CHR_cnt ) );
-					return -1;
+					MainForm.set_status_msg( String.Format( "Merged: {0} of {1} CHR banks", i, CHR_cnt ) );
+					
+					res = false;
+					
+					if( copied_CHRs == 0 )
+						return -1;
 				}
 				
 				for( int j = 0; j < spr8x8_cnt; j++ )
 				{
 					_br.Read( utils.tmp_spr8x8_buff, 0, utils.CONST_SPR8x8_TOTAL_PIXELS_CNT );
-					data.from_spr8x8_to_CHR_bank( chr_id++, utils.tmp_spr8x8_buff );
+					
+					if( res )
+					{
+						data.from_spr8x8_to_CHR_bank( chr_id++, utils.tmp_spr8x8_buff );
+						
+						++copied_CHRs;
+					}
+				}
+			}			
+			
+			if( copied_CHRs != 0 )
+			{
+				if( MainForm.message_box( "Import palette ?", "SPReD Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+				{
+					for( int plt_n = 0; plt_n < utils.CONST_PALETTE_SMALL_NUM_COLORS * utils.CONST_NUM_SMALL_PALETTES; plt_n++ )
+					{
+						data.palettes[ plt_n >> 2 ][ plt_n & 0x03 ] = (byte)_br.ReadInt32();
+					}
 				}
 			}
 			
-			return CHR_cnt;
+			return res ? CHR_cnt:-1;
 		}
 		
 		public int merge_CHR_bin( BinaryReader _br )

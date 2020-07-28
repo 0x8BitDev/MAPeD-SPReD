@@ -96,8 +96,8 @@ namespace MAPeD
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'M';
 		public const byte CONST_PROJECT_FILE_VER	= 1; 
 		
-		public const uint CONST_SPREDNES_FILE_MAGIC			= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
-		public const uint CONST_SPREDNES_PROJECT_FILE_VER	= 1;
+		public const uint CONST_SPRED_FILE_MAGIC		= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
+		public const uint CONST_SPRED_PROJECT_FILE_VER	= 1;
 		
 		public const byte 	CONST_IO_DATA_TILES_AND_SCREENS	= 0x01;
 		public const byte 	CONST_IO_DATA_LAYOUT			= 0x02;
