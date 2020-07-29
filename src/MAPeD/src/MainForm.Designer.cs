@@ -3155,8 +3155,8 @@ namespace MAPeD
 			// Import_openFileDialog
 			// 
 			this.Import_openFileDialog.DefaultExt = "sprednes";
-			this.Import_openFileDialog.Filter = "SPReD-NES CHR Bank (*.sprednes)|*.sprednes|NES CHR Bank (*.chr,*.bin)|*.chr;*.bin|Tiles (4" +
-			"bpp) (*.bmp)|*.bmp|Palette (192 bytes) (*.pal)|*.pal";
+			this.Import_openFileDialog.Filter = "SPReD-NES CHR Bank (*.sprednes)|*.sprednes|NES CHR Bank (*.chr,*.bin)|*.chr;*.bin|Tiles 2/4 " +
+			"bpp (*.bmp)|*.bmp|Palette (192 bytes) (*.pal)|*.pal";
 			this.Import_openFileDialog.Title = "Import Data Into Active CHR Bank";
 			this.Import_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.DataImportOk_Event);
 			// 

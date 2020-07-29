@@ -88,7 +88,7 @@
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>The <B>MAPeD</B> is a
-tool for building a game levels for <B>NES</B> games from scratch.</FONT></FONT></P>
+tool for building a game levels for <B>NES / SMS</B> games from scratch.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
@@ -108,12 +108,12 @@ tool for building a game levels for <B>NES</B> games from scratch.</FONT></FONT>
 	editor</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>tile
 	properties editing ( can be used as collisions data etc )</FONT></FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>palette
-	per 1x1 tile support ( <B>MMC5</B> )</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>import
 	tiles from images</FONT></FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>NES: </B>palette
+	per 1x1 tile support ( <B>MMC5</B> )</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>export
-	to <B>CA65/NESasm</B> with wide variety of options:</FONT></FONT></P>
+	to <B>NES: CA65/NESasm / SMS: WLA-DX</B> with wide variety of options:</FONT></FONT></P>
 </UL>
 <UL>
 	<UL>
@@ -126,7 +126,7 @@ tool for building a game levels for <B>NES</B> games from scratch.</FONT></FONT>
 		<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>modes:
 		multidirectional / bidirectional scrolling, static screens
 		switching</FONT></FONT></P>
-		<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>attributes
+		<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>NES: </B>attributes
 		per 1x1/2x2 tile</FONT></FONT></P>
 		<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>tiles
 		properties per 1x1/2x2 tile</FONT></FONT></P>
@@ -140,6 +140,8 @@ tool for building a game levels for <B>NES</B> games from scratch.</FONT></FONT>
 	<B>Python</B> script editor for writing custom data export scripts</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>export
 	to <B>SjASMPlus</B> ( ZX Spectrum assembler )</FONT></FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES</B>
+	&harr; <B>SMS</B> data conversion**</FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -150,6 +152,9 @@ tool for building a game levels for <B>NES</B> games from scratch.</FONT></FONT>
 </SPAN><SPAN LANG="en-US"><B>Tiles</B></SPAN><SPAN LANG="en-US">,
 </SPAN><SPAN LANG="en-US"><B>Screens</B></SPAN><SPAN LANG="en-US">.
 Close detached tab container to return the tab to its place.</SPAN></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">** You can load a <B>NES</B> project
+into <B>SMS</B> editor and vice versa.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -1077,6 +1082,12 @@ decimal values.</FONT></P>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES</B></SPAN>
 <SPAN LANG="en-US">project file has a </SPAN><SPAN LANG="en-US"><B>.mapednes</B></SPAN>
 <SPAN LANG="en-US">extension.</SPAN></FONT></P>
+
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMS</B></SPAN>
+<SPAN LANG="en-US">project file has a </SPAN><SPAN LANG="en-US"><B>.mapedsms</B></SPAN>
+<SPAN LANG="en-US">extension.</SPAN></FONT></P>
+
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -1103,7 +1114,7 @@ for import:</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">raw
 	<B>NES/SMS</B> CHR data ( .bin or .chr )</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">BMP
-	tiles data ( 4bpp ) *</FONT></P>
+	tiles data ( 2/4 bpp ) *</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif">Palette ( 192 bytes ) ( .plt )</FONT></P>
 </UL>
@@ -1132,24 +1143,23 @@ of 16 for blocks data and a multiple of 32 for tiles data.</FONT></P>
 for export:</FONT></P>
 <UL>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES:</B>
-	CA65/NESasm ( .asm )</FONT></P>
+	CA65/NESasm / <B>SMS: </B> WLA-DX ( .asm ) *</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">ZX
-	Asm ( .zxa ) - SjASMPlus data *</FONT></P>
+	Asm ( .zxa ) - SjASMPlus data **</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Active
 	tile/block set ( .bmp )</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Active
-	layout ( .png ) - just an image of an active layout without entities</FONT></P>
+	layout ( .png ) ***</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Text
 	( .json ) - whole project data</FONT></P>
 </UL>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">* Level data is stored as a single matrix of tile indices in a column order. Can be used for multidirectional scroller. 
-Make your graphics more contrast to get the best result.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
+<FONT FACE="Arial, sans-serif">* See exported .asm / .zxa files to get more info.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">See exported .asm / .zxa files to get more info.</FONT></P>
-
+<FONT FACE="Arial, sans-serif">** Level data is stored as a single matrix of tile indices in a column order. Can be used for multidirectional scroller. 
+Make your graphics more contrast to get the best result.</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">*** Just an image of an active layout without entities.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>

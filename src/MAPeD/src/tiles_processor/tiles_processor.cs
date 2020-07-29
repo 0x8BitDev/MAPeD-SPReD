@@ -352,8 +352,6 @@ namespace MAPeD
 #endif
 		public static void import_image_data( bool _import_tiles, bool _skip_zero_CHR_Block, Bitmap _bmp, tiles_data _data )
 		{
-			Color[] plte = _bmp.Palette.Entries;
-			
 			BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, _bmp.Width, _bmp.Height ), ImageLockMode.ReadOnly, _bmp.PixelFormat );
 			
 			if( bmp_data != null )
@@ -393,8 +391,6 @@ namespace MAPeD
 				int beg_CHR_ind 	= CHR_ind;
 				int beg_block_ind 	= block_ind;
 
-				byte[] img_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
-				
 				if( _import_tiles )
 				{
 					int block_offset_x;
@@ -421,15 +417,18 @@ namespace MAPeD
 									
 									for( int CHR_n = 0; CHR_n < 4; CHR_n++ )
 									{
-										extract_CHR( CHR_n, block_offset_x, block_offset_y, stride, img_buff, data_ptr );
+										extract_CHR( CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 										
 										_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( CHR_ind, 0 );
 
-										_data.from_spr8x8_to_CHR_bank( CHR_ind++, img_buff );
+										_data.from_spr8x8_to_CHR_bank( CHR_ind++, utils.tmp_spr8x8_buff );
 
-										if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+										if( CHR_ind > utils.CONST_CHR_BANK_MAX_SPRITES_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
 										{
 											MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind + 1, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+											
+											import_bmp_palette( _bmp, _data );
+											
 											return;
 										}
 									}
@@ -437,6 +436,9 @@ namespace MAPeD
 									if( tile_ind >= utils.CONST_MAX_BLOCKS_CNT )
 									{
 										MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind + 1, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+										
+										import_bmp_palette( _bmp, _data );
+										
 										return;
 									}
 									
@@ -457,15 +459,18 @@ namespace MAPeD
 						{
 							for( int CHR_n = 0; CHR_n < 4; CHR_n++ )
 							{
-								extract_CHR( CHR_n, block_x, block_y, stride, img_buff, data_ptr );
+								extract_CHR( CHR_n, block_x, block_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 								
 								_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( CHR_ind, 0 );
 
-								_data.from_spr8x8_to_CHR_bank( CHR_ind++, img_buff );
+								_data.from_spr8x8_to_CHR_bank( CHR_ind++, utils.tmp_spr8x8_buff );
 
 								if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
 								{
 									MainForm.set_status_msg( string.Format( "Merged: Blocks {0} \\ CHRs {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+									
+									import_bmp_palette( _bmp, _data );
+									
 									return;
 								}
 							}
@@ -477,6 +482,30 @@ namespace MAPeD
 				
 				_bmp.UnlockBits( bmp_data );
 			}
+			
+			import_bmp_palette( _bmp, _data );
+		}
+		
+		private static void import_bmp_palette( Bitmap _bmp, tiles_data _data )
+		{
+			if( MainForm.message_box( "Import colors?", "Image import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			{
+				Color[] plt = _bmp.Palette.Entries;
+				
+				List< byte[] > palettes = _data.palettes;
+				
+				int num_clrs = Math.Min( plt.Length, utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS );
+				
+				for( int i = 0; i < num_clrs; i++ )
+				{
+					palettes[ i >> 2 ][ i & 0x03 ] = ( byte )utils.find_nearest_color_ind( plt[ i ].ToArgb() );
+				}
+				
+				for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+				{
+					palette_group.Instance.get_palettes_arr()[ i ].update();
+				}
+			}
 		}
 
 		private static void extract_CHR( int _CHR_n, int _block_offset_x, int _block_offset_y, int _stride, byte[] _img_buff, System.IntPtr _data_ptr )
@@ -487,12 +516,9 @@ namespace MAPeD
 			byte index_byte;
 			
 			byte color_index;
-			
+#if DEF_NES_remapping			
 			SortedList< byte, byte > inds_remap_arr = new SortedList<byte, byte>();
-			
-			IList< byte > ind_keys;
-			int color_ind;
-			
+#endif			
 			CHR_offset_x = _block_offset_x + ( ( _CHR_n & 0x01 ) == 0x01 ? 8:0 );
 			CHR_offset_y = _block_offset_y + ( ( _CHR_n & 0x02 ) == 0x02 ? 8:0 );
 			
@@ -503,18 +529,23 @@ namespace MAPeD
 					index_byte = Marshal.ReadByte( _data_ptr, ( CHR_offset_y + CHR_y ) * _stride + ( ( CHR_offset_x + CHR_x ) >> 1 ) );
 
 					color_index = ( byte )( ( ( CHR_x & 0x01 ) == 0x01 ) ? ( index_byte & 0x0f ):( ( index_byte & 0xf0 ) >> 4 ) );
+#if DEF_NES
+					color_index &= 0x03;
+#endif					
 					
+#if DEF_NES_remapping
 					if( inds_remap_arr.ContainsKey( color_index ) == false )
 					{
 						inds_remap_arr.Add( color_index, 0 );
 					}
-					
-					_img_buff[ CHR_y * utils.CONST_SPR8x8_SIDE_PIXELS_CNT + CHR_x ] = color_index; 
+#endif					
+					_img_buff[ CHR_y * utils.CONST_SPR8x8_SIDE_PIXELS_CNT + CHR_x ] = color_index;
 				}
 			}
-
-			color_ind 	= 0;										
-			ind_keys 	= inds_remap_arr.Keys;
+#if DEF_NES_remapping
+			int color_ind 	= 0;										
+			
+			IList< byte > ind_keys 	= inds_remap_arr.Keys;
 			
 			for( byte key_n = 0; key_n < ind_keys.Count; key_n++ )
 			{
@@ -525,6 +556,7 @@ namespace MAPeD
 			{
 				_img_buff[ pix_n ] = inds_remap_arr[ _img_buff[ pix_n ] ];
 			}
+#endif			
 		}
 	}
 }

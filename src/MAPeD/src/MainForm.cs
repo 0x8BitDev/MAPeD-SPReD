@@ -703,9 +703,6 @@ namespace MAPeD
 					{
 						case ".bmp":
 							{
-#if DEF_SMS
-								throw new Exception( "NOT IMPLEMENTED!" );
-#endif								
 								bmp = new Bitmap( filename );
 								
 								if( bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
