@@ -119,6 +119,12 @@ namespace MAPeD
 		public const int CONST_SMS_SCREEN_NUM_HEIGHT_TILES	= 6;
 		
 #if DEF_NES		
+		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 16;
+#elif DEF_SMS
+		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
+#endif		
+		
+#if DEF_NES		
 		public const int CONST_SCREEN_NUM_WIDTH_TILES	= CONST_NES_SCREEN_NUM_WIDTH_TILES;
 		public const int CONST_SCREEN_NUM_HEIGHT_TILES	= CONST_NES_SCREEN_NUM_HEIGHT_TILES;
 		

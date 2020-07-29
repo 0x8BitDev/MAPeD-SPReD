@@ -250,6 +250,7 @@ namespace MAPeD
 
 			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "NES", "SMS" );
 			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "nes", "sms" );
+			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "SMS CHR Bank", "SMS CHR Bank 4bpp" );
 			
 			CheckBoxPalettePerCHR.Visible = false;
 			
@@ -783,9 +784,6 @@ namespace MAPeD
 						case ".chr":
 						case ".bin":
 							{
-#if DEF_SMS
-								throw new Exception( "NOT IMPLEMENTED!" );
-#endif								
 								int added_CHRs = m_data_manager.merge_CHR_bin( br );
 								
 								if( added_CHRs > 0 )

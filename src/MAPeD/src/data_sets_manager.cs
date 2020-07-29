@@ -884,12 +884,17 @@ namespace MAPeD
 			int i;
 			int j;
 			
-			byte low_byte;
-			byte high_byte;
+			byte byte_0;
+			byte byte_1;
+#if DEF_SMS
+			byte byte_2;
+			byte byte_3;
 			
+			int ind_offset;
+#endif
 			int shift_7_cnt;
 			
-			if( _br.BaseStream.Length < 16 )
+			if( _br.BaseStream.Length < utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES )
 			{
 				return -1;
 			}
@@ -902,18 +907,29 @@ namespace MAPeD
 			{
 				do
 				{
-					tmp_arr = _br.ReadBytes( 16 );
+					tmp_arr = _br.ReadBytes( utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES );
 					
 					for( i = 0; i < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; i++ )
 					{
-						low_byte 	= tmp_arr[ i ];
-						high_byte 	= tmp_arr[ i + utils.CONST_SPR8x8_SIDE_PIXELS_CNT ];
+#if DEF_NES
+						byte_0 	= tmp_arr[ i ];
+						byte_1	= tmp_arr[ i + utils.CONST_SPR8x8_SIDE_PIXELS_CNT ];
+#elif DEF_SMS
+						ind_offset = i << 2;
 						
+						byte_0	= tmp_arr[ ind_offset ];
+						byte_1 	= tmp_arr[ ind_offset + 1 ];
+						byte_2	= tmp_arr[ ind_offset + 2 ];
+						byte_3 	= tmp_arr[ ind_offset + 3 ];
+#endif
 						for( j = 0; j < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; j++ )
 						{
 							shift_7_cnt = 7 - j;
-							
-							utils.tmp_spr8x8_buff[ j + ( i << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) ] = ( byte )( ( ( low_byte  & ( 1 << shift_7_cnt ) ) >> shift_7_cnt ) | ( ( ( high_byte << 1 ) & ( 1 << ( 8 - j ) ) ) >> shift_7_cnt ) );
+#if DEF_NES							
+							utils.tmp_spr8x8_buff[ j + ( i << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) ] = ( byte )( ( ( byte_0 & ( 1 << shift_7_cnt ) ) >> shift_7_cnt ) | ( ( ( byte_1 << 1 ) & ( 1 << ( 8 - j ) ) ) >> shift_7_cnt ) );
+#elif DEF_SMS
+							utils.tmp_spr8x8_buff[ j + ( i << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) ] = ( byte )( ( ( byte_0 >> shift_7_cnt & 0x01 ) ) | ( ( ( byte_1 >> shift_7_cnt & 0x01 ) ) << 1 ) | ( ( ( byte_2 >> shift_7_cnt & 0x01 ) ) << 2 ) | ( ( ( byte_3 >> shift_7_cnt & 0x01 ) ) << 3 ) );
+#endif
 						}
 					}
 					
