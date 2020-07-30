@@ -12,7 +12,7 @@ using IronPython.Hosting;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 
-namespace PyScriptEditor
+namespace SPSeD
 {
 	/// <summary>
 	/// Description of py_editor.

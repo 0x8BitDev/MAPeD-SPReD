@@ -1,10 +1,10 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 29.05.2019
  * Time: 18:27
  */
-namespace PyScriptEditor
+namespace SPSeD
 {
 	partial class py_editor_doc_page
 	{

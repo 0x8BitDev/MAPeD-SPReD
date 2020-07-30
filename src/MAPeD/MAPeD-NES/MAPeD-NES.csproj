@@ -63,9 +63,8 @@
     <Reference Include="Microsoft.Scripting">
       <HintPath>..\..\lib\Microsoft.Scripting.dll</HintPath>
     </Reference>
-    <Reference Include="PyScriptEditor">
-      <HintPath>..\..\lib\PyScriptEditor.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+    <Reference Include="SPSeD">
+      <HintPath>..\..\lib\SPSeD.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

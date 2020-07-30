@@ -66,8 +66,8 @@
     <Reference Include="Pngcs">
       <HintPath>..\lib\Pngcs.dll</HintPath>
     </Reference>
-    <Reference Include="PyScriptEditor">
-      <HintPath>..\..\lib\PyScriptEditor.dll</HintPath>
+    <Reference Include="SPSeD">
+      <HintPath>..\..\lib\SPSeD.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

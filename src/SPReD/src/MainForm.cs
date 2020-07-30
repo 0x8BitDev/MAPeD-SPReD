@@ -30,7 +30,7 @@ namespace SPReD
 		private SMS_export_form				m_SMS_export_form			= null;
 #endif
 
-		private PyScriptEditor.py_editor	m_py_editor	= null;
+		private SPSeD.py_editor	m_py_editor	= null;
 		
 		private bool m_project_loaded	= false;
 		
@@ -166,11 +166,11 @@ namespace SPReD
 		{
 			e.Cancel = true;
 
-			if( PyScriptEditor.py_editor.is_active() )
+			if( SPSeD.py_editor.is_active() )
 			{
 				m_py_editor.Close();
 				
-				if( PyScriptEditor.py_editor.is_active() )
+				if( SPSeD.py_editor.is_active() )
 				{
 					return;
 				}
@@ -1805,13 +1805,13 @@ namespace SPReD
 		
 		void ExportScriptEditorToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			if( !PyScriptEditor.py_editor.is_active() )
+			if( !SPSeD.py_editor.is_active() )
 			{
-				m_py_editor = new PyScriptEditor.py_editor( global::SPReD.Properties.Resources.SPReD_icon, new py_api( CBoxMode8x16, SpriteList ), "SPReD API Doc", System.Text.Encoding.Default.GetString( global::SPReD.Properties.Resources.SPReD_Data_Export_Python_API ), "SPReD_Data_Export_Python_API.html" );
+				m_py_editor = new SPSeD.py_editor( global::SPReD.Properties.Resources.SPReD_icon, new py_api( CBoxMode8x16, SpriteList ), "SPReD API Doc", System.Text.Encoding.Default.GetString( global::SPReD.Properties.Resources.SPReD_Data_Export_Python_API ), "SPReD_Data_Export_Python_API.html" );
 				m_py_editor.Show();
 			}
 			
-			PyScriptEditor.py_editor.set_focus();
+			SPSeD.py_editor.set_focus();
 		}
 #endregion
 		void KeyUp_Event(object sender, KeyEventArgs e)

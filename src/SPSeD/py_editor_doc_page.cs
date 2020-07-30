@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 29.05.2019
  * Time: 18:27
  */
@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-namespace PyScriptEditor
+namespace SPSeD
 {
 	/// <summary>
 	/// Description of py_editor_doc_page.

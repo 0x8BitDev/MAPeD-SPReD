@@ -5,8 +5,8 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
-    <RootNamespace>PyScriptEditor</RootNamespace>
-    <AssemblyName>PyScriptEditor</AssemblyName>
+    <RootNamespace>SPSeD</RootNamespace>
+    <AssemblyName>SPSeD</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>

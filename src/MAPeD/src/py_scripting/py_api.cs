@@ -13,7 +13,7 @@ namespace MAPeD
 	/// <summary>
 	/// Description of py_api.
 	/// </summary>
-	public class py_api : global::PyScriptEditor.py_api_i
+	public class py_api : global::SPSeD.py_api_i
 	{
 		private data_sets_manager	m_data_mngr = null;
 		
