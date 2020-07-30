@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 29.08.2018
  * Time: 15:20
  */
@@ -50,11 +50,20 @@ namespace MAPeD
 			this.ExpZXAsmColorConversionModes = new System.Windows.Forms.ComboBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.GrpBoxEntCoords = new System.Windows.Forms.GroupBox();
+			this.ExpZXAsmEntMapCoords = new System.Windows.Forms.RadioButton();
+			this.ExpZXAsmEntScreenCoords = new System.Windows.Forms.RadioButton();
+			this.ExpZXAsmExportEntities = new System.Windows.Forms.CheckBox();
+			this.ExpZXAsmExportMarks = new System.Windows.Forms.CheckBox();
+			this.RichTextBoxExportDesc = new System.Windows.Forms.RichTextBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox5.SuspendLayout();
+			this.groupBox6.SuspendLayout();
+			this.GrpBoxEntCoords.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -108,7 +117,7 @@ namespace MAPeD
 			this.ExpZXAsmGFXDithering.Location = new System.Drawing.Point(61, 19);
 			this.ExpZXAsmGFXDithering.Name = "ExpZXAsmGFXDithering";
 			this.ExpZXAsmGFXDithering.Size = new System.Drawing.Size(83, 19);
-			this.ExpZXAsmGFXDithering.TabIndex = 7;
+			this.ExpZXAsmGFXDithering.TabIndex = 6;
 			this.ExpZXAsmGFXDithering.Text = "Dithering";
 			this.ExpZXAsmGFXDithering.UseVisualStyleBackColor = true;
 			// 
@@ -121,6 +130,7 @@ namespace MAPeD
 			this.ExpZXAsmTiles4x4.TabIndex = 5;
 			this.ExpZXAsmTiles4x4.Text = "4x4";
 			this.ExpZXAsmTiles4x4.UseVisualStyleBackColor = true;
+			this.ExpZXAsmTiles4x4.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
 			// ExpZXAsmTiles2x2
 			// 
@@ -132,14 +142,15 @@ namespace MAPeD
 			this.ExpZXAsmTiles2x2.TabStop = true;
 			this.ExpZXAsmTiles2x2.Text = "2x2";
 			this.ExpZXAsmTiles2x2.UseVisualStyleBackColor = true;
+			this.ExpZXAsmTiles2x2.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(117, 189);
+			this.BtnOk.Location = new System.Drawing.Point(363, 264);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 13;
+			this.BtnOk.TabIndex = 19;
 			this.BtnOk.Text = "Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			this.BtnOk.Click += new System.EventHandler(this.event_ok);
@@ -147,10 +158,10 @@ namespace MAPeD
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(198, 189);
+			this.BtnCancel.Location = new System.Drawing.Point(444, 264);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
-			this.BtnCancel.TabIndex = 14;
+			this.BtnCancel.TabIndex = 20;
 			this.BtnCancel.Text = "Cancel";
 			this.BtnCancel.UseVisualStyleBackColor = true;
 			this.BtnCancel.Click += new System.EventHandler(this.event_cancel);
@@ -162,7 +173,7 @@ namespace MAPeD
 			this.groupBox3.Location = new System.Drawing.Point(5, 106);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(106, 67);
-			this.groupBox3.TabIndex = 8;
+			this.groupBox3.TabIndex = 7;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Extra Output";
 			// 
@@ -171,7 +182,7 @@ namespace MAPeD
 			this.ExpZXAsmRenderTilesPNG.Location = new System.Drawing.Point(8, 40);
 			this.ExpZXAsmRenderTilesPNG.Name = "ExpZXAsmRenderTilesPNG";
 			this.ExpZXAsmRenderTilesPNG.Size = new System.Drawing.Size(86, 24);
-			this.ExpZXAsmRenderTilesPNG.TabIndex = 10;
+			this.ExpZXAsmRenderTilesPNG.TabIndex = 9;
 			this.ExpZXAsmRenderTilesPNG.Text = "Tiles .png";
 			this.ExpZXAsmRenderTilesPNG.UseVisualStyleBackColor = true;
 			// 
@@ -180,7 +191,7 @@ namespace MAPeD
 			this.ExpZXAsmRenderLevelPNG.Location = new System.Drawing.Point(8, 18);
 			this.ExpZXAsmRenderLevelPNG.Name = "ExpZXAsmRenderLevelPNG";
 			this.ExpZXAsmRenderLevelPNG.Size = new System.Drawing.Size(86, 24);
-			this.ExpZXAsmRenderLevelPNG.TabIndex = 9;
+			this.ExpZXAsmRenderLevelPNG.TabIndex = 8;
 			this.ExpZXAsmRenderLevelPNG.Text = "Level .png";
 			this.ExpZXAsmRenderLevelPNG.UseVisualStyleBackColor = true;
 			// 
@@ -190,7 +201,7 @@ namespace MAPeD
 			this.groupBox4.Location = new System.Drawing.Point(117, 106);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(158, 67);
-			this.groupBox4.TabIndex = 11;
+			this.groupBox4.TabIndex = 10;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Color Conversion Modes";
 			// 
@@ -204,7 +215,7 @@ namespace MAPeD
 			this.ExpZXAsmColorConversionModes.Location = new System.Drawing.Point(7, 18);
 			this.ExpZXAsmColorConversionModes.Name = "ExpZXAsmColorConversionModes";
 			this.ExpZXAsmColorConversionModes.Size = new System.Drawing.Size(141, 21);
-			this.ExpZXAsmColorConversionModes.TabIndex = 12;
+			this.ExpZXAsmColorConversionModes.TabIndex = 11;
 			// 
 			// groupBox5
 			// 
@@ -212,7 +223,7 @@ namespace MAPeD
 			this.groupBox5.Location = new System.Drawing.Point(5, 0);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(270, 30);
-			this.groupBox5.TabIndex = 15;
+			this.groupBox5.TabIndex = 0;
 			this.groupBox5.TabStop = false;
 			// 
 			// label1
@@ -223,13 +234,95 @@ namespace MAPeD
 			this.label1.TabIndex = 0;
 			this.label1.Text = "MODE: MULTIDIRECTIONAL SCROLLING";
 			// 
+			// groupBox6
+			// 
+			this.groupBox6.Controls.Add(this.GrpBoxEntCoords);
+			this.groupBox6.Controls.Add(this.ExpZXAsmExportEntities);
+			this.groupBox6.Controls.Add(this.ExpZXAsmExportMarks);
+			this.groupBox6.Location = new System.Drawing.Point(5, 179);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(270, 72);
+			this.groupBox6.TabIndex = 12;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = "Marks / Entities";
+			// 
+			// GrpBoxEntCoords
+			// 
+			this.GrpBoxEntCoords.Controls.Add(this.ExpZXAsmEntMapCoords);
+			this.GrpBoxEntCoords.Controls.Add(this.ExpZXAsmEntScreenCoords);
+			this.GrpBoxEntCoords.Location = new System.Drawing.Point(112, 14);
+			this.GrpBoxEntCoords.Name = "GrpBoxEntCoords";
+			this.GrpBoxEntCoords.Size = new System.Drawing.Size(148, 49);
+			this.GrpBoxEntCoords.TabIndex = 15;
+			this.GrpBoxEntCoords.TabStop = false;
+			this.GrpBoxEntCoords.Text = "Coordinates";
+			// 
+			// ExpZXAsmEntMapCoords
+			// 
+			this.ExpZXAsmEntMapCoords.Location = new System.Drawing.Point(85, 19);
+			this.ExpZXAsmEntMapCoords.Name = "ExpZXAsmEntMapCoords";
+			this.ExpZXAsmEntMapCoords.Size = new System.Drawing.Size(54, 19);
+			this.ExpZXAsmEntMapCoords.TabIndex = 17;
+			this.ExpZXAsmEntMapCoords.Text = "Map";
+			this.ExpZXAsmEntMapCoords.UseVisualStyleBackColor = true;
+			this.ExpZXAsmEntMapCoords.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			// 
+			// ExpZXAsmEntScreenCoords
+			// 
+			this.ExpZXAsmEntScreenCoords.Checked = true;
+			this.ExpZXAsmEntScreenCoords.Location = new System.Drawing.Point(19, 19);
+			this.ExpZXAsmEntScreenCoords.Name = "ExpZXAsmEntScreenCoords";
+			this.ExpZXAsmEntScreenCoords.Size = new System.Drawing.Size(65, 19);
+			this.ExpZXAsmEntScreenCoords.TabIndex = 16;
+			this.ExpZXAsmEntScreenCoords.TabStop = true;
+			this.ExpZXAsmEntScreenCoords.Text = "Screen";
+			this.ExpZXAsmEntScreenCoords.UseVisualStyleBackColor = true;
+			this.ExpZXAsmEntScreenCoords.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			// 
+			// ExpZXAsmExportEntities
+			// 
+			this.ExpZXAsmExportEntities.Checked = true;
+			this.ExpZXAsmExportEntities.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.ExpZXAsmExportEntities.Location = new System.Drawing.Point(7, 44);
+			this.ExpZXAsmExportEntities.Name = "ExpZXAsmExportEntities";
+			this.ExpZXAsmExportEntities.Size = new System.Drawing.Size(68, 19);
+			this.ExpZXAsmExportEntities.TabIndex = 14;
+			this.ExpZXAsmExportEntities.Text = "Entities";
+			this.ExpZXAsmExportEntities.UseVisualStyleBackColor = true;
+			this.ExpZXAsmExportEntities.CheckedChanged += new System.EventHandler(this.ExpEntitiesChanged_Event);
+			// 
+			// ExpZXAsmExportMarks
+			// 
+			this.ExpZXAsmExportMarks.Checked = true;
+			this.ExpZXAsmExportMarks.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.ExpZXAsmExportMarks.Location = new System.Drawing.Point(7, 19);
+			this.ExpZXAsmExportMarks.Name = "ExpZXAsmExportMarks";
+			this.ExpZXAsmExportMarks.Size = new System.Drawing.Size(68, 19);
+			this.ExpZXAsmExportMarks.TabIndex = 13;
+			this.ExpZXAsmExportMarks.Text = "Marks";
+			this.ExpZXAsmExportMarks.UseVisualStyleBackColor = true;
+			this.ExpZXAsmExportMarks.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			// 
+			// RichTextBoxExportDesc
+			// 
+			this.RichTextBoxExportDesc.Location = new System.Drawing.Point(281, 9);
+			this.RichTextBoxExportDesc.MaxLength = 2048;
+			this.RichTextBoxExportDesc.Name = "RichTextBoxExportDesc";
+			this.RichTextBoxExportDesc.ReadOnly = true;
+			this.RichTextBoxExportDesc.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+			this.RichTextBoxExportDesc.Size = new System.Drawing.Size(238, 242);
+			this.RichTextBoxExportDesc.TabIndex = 18;
+			this.RichTextBoxExportDesc.Text = "";
+			// 
 			// exporter_zx_sjasm
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
-			this.ClientSize = new System.Drawing.Size(281, 222);
+			this.ClientSize = new System.Drawing.Size(527, 299);
+			this.Controls.Add(this.RichTextBoxExportDesc);
+			this.Controls.Add(this.groupBox6);
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
@@ -248,8 +341,17 @@ namespace MAPeD
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
+			this.groupBox6.ResumeLayout(false);
+			this.GrpBoxEntCoords.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.RichTextBox RichTextBoxExportDesc;
+		private System.Windows.Forms.CheckBox ExpZXAsmExportEntities;
+		private System.Windows.Forms.RadioButton ExpZXAsmEntScreenCoords;
+		private System.Windows.Forms.RadioButton ExpZXAsmEntMapCoords;
+		private System.Windows.Forms.GroupBox GrpBoxEntCoords;
+		private System.Windows.Forms.CheckBox ExpZXAsmExportMarks;
+		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.ComboBox ExpZXAsmColorConversionModes;

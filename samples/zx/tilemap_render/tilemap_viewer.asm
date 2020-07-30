@@ -1,6 +1,6 @@
 ;###################################################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2020 0x8BitDev ( MIT license )
 ;
 ;###################################################################
 ;
@@ -12,6 +12,8 @@
 		include "MOD_tilemap2x2_clr_render_settings.asm"
 
 		include "data/tilemap.zxa"
+
+COLORED_MAP	equ MAP_DATA_MAGIC&MAP_FLAG_TYPE_COLORED
 
 		IF !COLORED_MAP
 		UNDEFINE DEF_COLOR

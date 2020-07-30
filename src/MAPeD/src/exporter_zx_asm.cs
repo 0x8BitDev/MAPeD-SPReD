@@ -62,11 +62,83 @@ namespace MAPeD
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			ExpZXAsmColorConversionModes.SelectedIndex = 0;
+			
+			update_desc();
 		}
 		
 		void event_cancel(object sender, EventArgs e)
 		{
 			this.Close();
+		}
+		
+		void ParamChanged_Event(object sender, EventArgs e)
+		{
+			update_desc();
+		}
+
+		void ExpEntitiesChanged_Event(object sender, EventArgs e)
+		{
+			GrpBoxEntCoords.Enabled = ExpZXAsmExportEntities.Checked ? true:false;
+			
+			update_desc();
+		}
+		
+		private void update_desc()
+		{
+			if( ExpZXAsmTiles2x2.Checked )
+			{
+				RichTextBoxExportDesc.Text = strings.CONST_STR_EXP_TILES_2X2;
+			}
+			else
+			{
+				RichTextBoxExportDesc.Text = strings.CONST_STR_EXP_TILES_4X4;
+			}
+			
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_DATA_ORDER;
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ZX_DATA_ORDER_COLS;
+
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP;
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP_PER_BLOCK;
+			
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE;
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE_MULTIDIR;
+			
+			if( ExpZXAsmExportMarks.Checked || ExpZXAsmExportEntities.Checked )
+			{
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_LAYOUT;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_LAYOUT_MATRIX;
+			}
+			
+			if( ExpZXAsmExportMarks.Checked )
+			{
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MARKS;
+			}
+			else
+			{
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NO_MARKS;
+			}
+			
+			if( ExpZXAsmExportEntities.Checked )
+			{
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENTITIES;
+				
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_COORDS;
+				
+				if( ExpZXAsmEntScreenCoords.Checked )
+				{
+					RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_COORDS_SCR;
+				}
+				else
+				{
+					RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_COORDS_MAP;
+				}				
+			}
+			else
+			{
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NO_ENTITIES;
+			}
+			
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_WARNING;
 		}
 		
 		public void ShowDialog( string _full_path )
@@ -258,9 +330,14 @@ namespace MAPeD
 				
 				utils.write_title( sw );
 				
-				sw.WriteLine( "COLORED_MAP\tequ " + ( ExpZXAsmTypeColor.Checked ? "1":"0" ) + "\n" );
+				save_export_options( sw );
 				
-				sw.WriteLine( "scr_2x2tiles_w\tequ " + scr_width_blocks + "\t\t; number of screen tiles 2x2 in width" );
+				if( ExpZXAsmExportEntities.Checked )
+				{
+					m_data_mngr.export_entity_asm( sw, "db", "#" );
+				}
+				
+				sw.WriteLine( "\nscr_2x2tiles_w\tequ " + scr_width_blocks + "\t\t; number of screen tiles 2x2 in width" );
 				
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 				scr_height_blocks -= 1;
@@ -712,7 +789,7 @@ namespace MAPeD
 					
 					// write the data to assembly file
 					{
-						sw.WriteLine( "; " + CONST_FILENAME_LEVEL_PREFIX + level_n + " data (" + level_data_size + " bytes)" );
+						sw.WriteLine( "; *** " + CONST_FILENAME_LEVEL_PREFIX + level_n + " data (incbins: " + level_data_size + " bytes) ***\n" );
 						
 						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_wscr\tequ " + n_scr_X + "\t\t; number of map screens in width" );
 						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_hscr\tequ " + n_scr_Y + "\t\t; number of map screens in height" );
@@ -753,6 +830,23 @@ namespace MAPeD
 					map_tiles_arr 	= null;
 					
 					unique_tiles_arr.Clear();				
+
+					// save layout and screens data
+					if( ExpZXAsmExportMarks.Checked || ExpZXAsmExportEntities.Checked )
+					{
+						int start_scr_ind = level_data.get_start_screen_ind();
+						
+						if( start_scr_ind < 0 )
+						{
+							MainForm.message_box( "The start screen wasn't assigned to layout: " + level_n + "\n\nWARNING: A first valid screen will be used as a start one.", "Start Screen Warning", MessageBoxButtons.OK );
+						}
+	
+						// matrix layout by default
+						{
+							sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_StartScr\t = " + ( start_scr_ind < 0 ? 0:start_scr_ind ) + "\n" );
+							level_data.export_asm( sw, CONST_FILENAME_LEVEL_PREFIX + level_n, "db", "dw", "#", true, ExpZXAsmExportMarks.Checked, ExpZXAsmExportEntities.Checked, ExpZXAsmEntScreenCoords.Checked );
+						}
+					}
 				}
 
 				unique_tiles_arr = null;
@@ -876,6 +970,36 @@ namespace MAPeD
 				
 				_bw.Write( word );
 			}
+		}
+		
+		private void save_export_options( StreamWriter _sw )
+		{
+			// options
+			{
+				_sw.WriteLine( "; export options:" );
+
+				_sw.WriteLine( ";\t- tiles " + ( ExpZXAsmTiles4x4.Checked ? "4x4":"2x2" ) + "/(columns)" );
+				
+				_sw.WriteLine( ";\t- properties per block" );
+				
+				_sw.WriteLine( ";\t- mode: multidirectional scrolling" );
+				
+				_sw.WriteLine( ";\t- layout: " + "matrix" + ( ExpZXAsmExportMarks.Checked ? " (marks)":" (no marks)" ) );
+				
+				_sw.WriteLine( ";\t- " + ( ExpZXAsmExportEntities.Checked ? "entities " + ( ExpZXAsmEntScreenCoords.Checked ? "(screen coordinates)":"(map coordinates)" ):"no entities" ) );
+				_sw.WriteLine( "\n" );
+			}
+			
+			_sw.WriteLine( "MAP_DATA_MAGIC = " + utils.hex( "$", ( ExpZXAsmExportEntities.Checked ? 1:0 ) |
+			                                              		 ( ExpZXAsmExportEntities.Checked ? ( ExpZXAsmEntScreenCoords.Checked ? 2:4 ):0 ) |
+			                                              		 ( ExpZXAsmExportMarks.Checked ? 8:0 ) |
+			                                              		 ( ExpZXAsmTypeColor.Checked ? 16:0 ) ) );
+			_sw.WriteLine( "\n; data flags:" );
+			_sw.WriteLine( "MAP_FLAG_ENTITIES                 = " + utils.hex( "$", 1 ) );
+			_sw.WriteLine( "MAP_FLAG_ENTITY_SCREEN_COORDS     = " + utils.hex( "$", 2 ) );
+			_sw.WriteLine( "MAP_FLAG_ENTITY_MAP_COORS         = " + utils.hex( "$", 4 ) );
+			_sw.WriteLine( "MAP_FLAG_MARKS                    = " + utils.hex( "$", 8 ) );
+			_sw.WriteLine( "MAP_FLAG_TYPE_COLORED             = " + utils.hex( "$", 16 ) );
 		}
 	}
 }
