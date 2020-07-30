@@ -695,64 +695,73 @@ namespace MAPeD
 			}
 		}
 
+#if DEF_NES		
 		public long export_CHR( BinaryWriter _bw, bool _save_padding = false )
+#elif DEF_SMS
+		public long export_CHR( BinaryWriter _bw, int _bpp )
+#endif			
 		{
 			int i;
+			int j;
 			int x;
 			int y;
 			int val;
 			
-			long padding;
-			long data_size;
-			
 			byte data;
-			
-			byte[] img_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
-			
+#if DEF_SMS			
+			int max_clr_ind = ( 2 << ( _bpp - 1 ) ) - 1;
+#endif			
 			int num_CHR_sprites = get_first_free_spr8x8_id();
 			
 			num_CHR_sprites = num_CHR_sprites < 0 ? utils.CONST_CHR_BANK_MAX_SPRITES_CNT:num_CHR_sprites;
 			
 			for( i = 0; i < num_CHR_sprites; i++ )
 			{
-				from_CHR_bank_to_spr8x8( i, img_buff, 0 );
-				
-				// the first 8 bytes out of 16 ones
+				from_CHR_bank_to_spr8x8( i, utils.tmp_spr8x8_buff, 0 );
+#if DEF_NES				
+				for( j = 0; j < 2; j++ )
+				{
+					for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
+					{
+						data = 0;
+						
+						for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+						{
+							val = utils.tmp_spr8x8_buff[ ( y << 3 ) + ( 7 - x ) ];
+							
+							data |= ( byte )( ( ( val >> j ) & 0x01 ) << x );
+						}
+						
+						_bw.Write( data );
+					}
+				}
+#elif DEF_SMS
 				for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
 				{
-					data = 0;
-					
-					for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+					for( j = 0; j < _bpp; j++ )
 					{
-						val = img_buff[ ( y << 3 ) + ( 7 - x ) ];
+						data = 0;
 						
-						data |= ( byte )( ( val & 0x01 ) << x );
-					}
-					
-					_bw.Write( data );
-				}
-				
-				// the second 8 bytes of CHR
-				for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
-				{
-					data = 0;
-					
-					for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
-					{
-						val = img_buff[ ( y << 3 ) + ( 7 - x ) ];
+						for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+						{
+							val = utils.tmp_spr8x8_buff[ ( y << 3 ) + ( 7 - x ) ];
+							
+							val = ( val > max_clr_ind ) ? 0:val;
+							
+							data |= ( byte )( ( ( val >> j ) & 0x01 ) << x );
+						}
 						
-						data |= ( byte )( ( val >> 1 ) << x );
+						_bw.Write( data );
 					}
-					
-					_bw.Write( data );
 				}
+#endif				
 			}
-			
+#if DEF_NES			
 			// save padding data to 1/2/4 KB
 			if( _save_padding )
 			{
-				padding 	= 0;
-				data_size 	= _bw.BaseStream.Length;
+				long padding 	= 0;
+				long data_size 	= _bw.BaseStream.Length;
 				
 				if( data_size < 1024 )
 				{
@@ -779,7 +788,7 @@ namespace MAPeD
 					}
 				}
 			}
-			
+#endif			
 			return _bw.BaseStream.Length;
 		}
 		

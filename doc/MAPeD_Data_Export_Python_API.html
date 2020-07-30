@@ -335,10 +335,15 @@ graphics bank index</FONT></FONT></P>
 	<BR>
 	</P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">L</SPAN>ong
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>NES: </B><SPAN LANG="en-US">Long</SPAN>
 	<B>mpd_export_CHR_data</B>( <SPAN LANG="en-US">Int32</SPAN>
 	_bank_ind, <SPAN LANG="en-US">String</SPAN> _filename, <SPAN LANG="en-US">Bool</SPAN>
 	_save_padding )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>SMS: </B><SPAN LANG="en-US">Long</SPAN>
+	<B>mpd_export_CHR_data</B>( <SPAN LANG="en-US">Int32</SPAN>
+	_bank_ind, <SPAN LANG="en-US">String</SPAN> _filename, <SPAN LANG="en-US">Int32</SPAN>
+	_bpp )</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
@@ -347,7 +352,7 @@ graphics bank index</FONT></FONT></P>
 <BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Convert a CHR bank into a NES
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Convert a CHR bank into a <B>NES/SMS</B>
 compatible format and save it to a file.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
@@ -363,6 +368,9 @@ exported data filename</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>_save_padding &ndash;
 save padding data aligned to 1/2/4 KB or not</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bpp &ndash;
+bits per pixel value ( the valid range is 1-4 )</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>

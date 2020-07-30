@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 22.05.2019
  * Time: 10:30
  */
@@ -49,8 +49,11 @@ namespace MAPeD
 			_py_scope.SetVariable( CONST_PREFIX + "get_CHR_data", new Func< int, byte[] >( get_CHR_data ) );
 			
 			// long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
+#if DEF_NES			
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, bool, long >( export_CHR_data ) );
-			
+#elif DEF_SMS
+			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, int, long >( export_CHR_data ) );
+#endif			
 			// byte[] get_palette( int _bank_ind, int _plt_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "get_palette", new Func< int, int, byte[] >( get_palette ) );
 
@@ -340,20 +343,33 @@ namespace MAPeD
 			return null;
 		}
 		
+#if DEF_NES
 		public long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
+#elif DEF_SMS
+		public long export_CHR_data( int _bank_ind, string _filename, int _bpp )
+#endif			
 		{
 			long data_size = -1;
 			
 			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
 			
+			BinaryWriter bw = null;
+			
 			try
 			{
 				if( data != null )
 				{
-					BinaryWriter bw = new BinaryWriter( File.Open( _filename, FileMode.Create ) );
-					
+					bw = new BinaryWriter( File.Open( _filename, FileMode.Create ) );
+#if DEF_NES					
 					data_size = data.export_CHR( bw, _save_padding );
+#elif DEF_SMS
+					if( _bpp < 1 || _bpp > 4 )
+					{
+						throw new Exception( "Invalid CHRs bpp value! The valid range is 1-4." );
+					}
 					
+					data_size = data.export_CHR( bw, _bpp );
+#endif					
 					bw.Close();
 				}
 				else
@@ -363,6 +379,11 @@ namespace MAPeD
 			}
 			catch( Exception _err )
 			{
+				if( bw != null )
+				{
+					bw.Close();
+				}
+				
 				throw new Exception( CONST_PREFIX + "export_CHR_data error! Can't save CHR data!\n" + _err.Message );
 			}
 			
