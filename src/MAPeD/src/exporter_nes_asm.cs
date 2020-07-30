@@ -173,113 +173,113 @@ namespace MAPeD
 		{
 			if( RBtnTiles2x2.Checked )
 			{
-				RichTextBoxExportDesc.Text = "TILES: 2x2";
+				RichTextBoxExportDesc.Text = strings.CONST_STR_EXP_TILES_2X2;
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text = "TILES: 4x4";
+				RichTextBoxExportDesc.Text = strings.CONST_STR_EXP_TILES_4X4;
 			}
 			
 			if( CheckBoxRLE.Checked )
 			{
-				RichTextBoxExportDesc.Text += " (RLE COMPRESSION)\nCompressed tiles data must be decompressed to any free RAM address.\nCompressed PPU-ready data can be decompressed directly at the appropriate PPU memory.";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NES_RLE_COMPRESSION;
 			}
 			
-			RichTextBoxExportDesc.Text += "\nDATA ORDER: ";
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_DATA_ORDER;
 			
 			if( RBtnTilesDirColumns.Checked )
 			{
-				RichTextBoxExportDesc.Text += "Columns\nAll tiles\\blocks\\attributes data are stored in a column order except of PPU-ready data ( static screens mode ).";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NES_DATA_ORDER_COLS;
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += "Rows\nAll tiles\\blocks\\attributes data are stored in a row order.";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NES_DATA_ORDER_ROWS;
 			}
 
-			RichTextBoxExportDesc.Text += "\n\nATTRIBUTES per ";
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NES_ATTRS;
 			
 			if( RBtnAttrsPerBlock.Checked )
 			{
-				RichTextBoxExportDesc.Text += "BLOCK. This is a usual case.";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NES_ATTRS_PER_BLOCK;
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += "CHR. MMC5 extended attributes mode. Also you can specify a base CHR bank index (4K) for tiles index expansion ( see MMC5 guide for details ).";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NES_ATTRS_PER_CHR;
 			}
 
-			RichTextBoxExportDesc.Text += "\n\nPROPERTIES Id per ";
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP;
 			
 			if( RBtnPropPerBlock.Checked )
 			{
-				RichTextBoxExportDesc.Text += "BLOCK ( 1 byte per block )\nThe top left CHR property of each block will be used.";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP_PER_BLOCK;
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += "CHR ( 4 bytes per block )";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP_PER_CHR;
 			}
 			
-			RichTextBoxExportDesc.Text += "\n\nMODE: ";
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE;
 			
 			if( RBtnModeMultidirScroll.Checked )
 			{
-				RichTextBoxExportDesc.Text += "Multidirectional scrolling\nAll screens data are stored in a common array of tiles. Suitable for map scrolling in any direction.";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE_MULTIDIR;
 			}
 			else
 			if( RBtnModeBidirScroll.Checked )
 			{
-				RichTextBoxExportDesc.Text += "Bidirectional scrolling\nAll screens data are stored sequentially as tiles in a common array. Suitable for [bi/uni]directional scrolling.";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE_BIDIR;
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are PPU-ready - 1024 bytes per screen ( 960 bytes of CHR data and 64 bytes of attributes ). Suitable for static screens switching.";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE_STAT_SCR;
 			}
 			
-			RichTextBoxExportDesc.Text += "\n\nLAYOUT: ";
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_LAYOUT;
 			
 			if( RBtnLayoutAdjacentScreens.Checked )
 			{
-				RichTextBoxExportDesc.Text += "Adjacent Screens\nEach screen description stores 4 labels of adjacent screens ( calculates automatically during the export process ).";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_LAYOUT_ADJ_SCR;
 			}
 			else
 			if( RBtnLayoutAdjacentScreenIndices.Checked )
 			{
-				RichTextBoxExportDesc.Text += "Adjacent Screen indices\nEach screen description stores 4 indices of adjacent screens ( calculates automatically during the export process ) in a screens array. It allows to save up to 25% of memory on adjacent screens data. The maximum number of screen cells ( NOT active screens! ) in a level layout: 255.";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_LAYOUT_ADJ_SCR_INDS;
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += "Matrix\nEach level data are stored as matrix ( width x height ) of labels of screen descriptions.";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_LAYOUT_MATRIX;
 			}
 			
 			if( CheckBoxExportMarks.Checked )
 			{
-				RichTextBoxExportDesc.Text += "\nEXPORT MARKS\nEach mark stores a user defined mask of valid adjacent screens and a screen property value.";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MARKS;
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += "\nNO MARKS";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NO_MARKS;
 			}
 			
 			if( CheckBoxExportEntities.Checked )
 			{
-				RichTextBoxExportDesc.Text += "\n\nEXPORT ENTITIES";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENTITIES;
 				
-				RichTextBoxExportDesc.Text += "\nENTITY COORDINATES: ";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_COORDS;
 				
 				if( RBtnEntityCoordScreen.Checked )
 				{
-					RichTextBoxExportDesc.Text += "Screen space\nThe upper left corner of each screen is used as the origin of the coordinate space for an entity belonging to the screen.";
+					RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_COORDS_SCR;
 				}
 				else
 				{
-					RichTextBoxExportDesc.Text += "Map space\nThe upper left corner of each level is used as the origin of the coordinate space for an entity.";
+					RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_COORDS_MAP;
 				}				
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += "\n\nNO ENTITIES";
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NO_ENTITIES;
 			}
 			
-			RichTextBoxExportDesc.Text += "\n\nWARNING: To reduce the amount of exported data, please make a global data optimization.";
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_WARNING;
 		}
 
 		void event_cancel(object sender, System.EventArgs e)
@@ -1339,9 +1339,9 @@ namespace MAPeD
 		{
 			int adj_scr_ind = get_adjacent_screen_index( _data, _scr_ind, _offset );
 			
-			if( adj_scr_ind > 254 )
+			if( adj_scr_ind > 255 )
 			{
-				throw new Exception( "Layout: " + _level_n + " error!\nThe maximum number of cells in a layout must be 255 ( zero based value ) for the \"Adjacent Screen Indices\" mode!" );
+				throw new Exception( "Layout: " + _level_n + " error!\nThe maximum number of cells in a layout must be 256 for the \"Adjacent Screen Indices\" mode!" );
 			}
 			
 			return utils.hex( "$", ( adj_scr_ind >= 0 ? adj_scr_ind:255 ) );

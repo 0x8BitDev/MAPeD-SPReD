@@ -190,6 +190,9 @@
       <Link>screen_mark_form.Designer.cs</Link>
       <DependentUpon>screen_mark_form.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\strings.cs">
+      <Link>strings.cs</Link>
+    </Compile>
     <Compile Include="..\src\tab_page_container.cs">
       <Link>tab_page_container.cs</Link>
     </Compile>
