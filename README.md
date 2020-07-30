@@ -3,7 +3,9 @@ Hi retro game developers!
 Here you can find **NES/SMS** development tools:
 
 
-# MAPeD-NES - Game maps editor
+# MAPeD-NES/SMS - Game maps editor
+The MAPeD is a tool for building a game levels for NES/SMS games from scratch.
+
 **The main features are:**
 - tiles drawing/composing tools
 - building a game map using 2x2 or/and 4x4 tiles
@@ -12,27 +14,33 @@ Here you can find **NES/SMS** development tools:
 - detachable UI
 - entities editor
 - tile properties editing ( can be used as collisions data etc )
-- palette per 1x1 tile support ( MMC5 )
+- **NES:** palette per 1x1 tile support ( MMC5 )
 - import tiles from images
-- export to **CA65/NESasm** with wide variety of options:
+- export to **NES: CA65/NESasm / SMS: WLA-DX** with wide variety of options:
 	- 2x2/4x4 tiles
 	- column/row data order
 	- RLE compression
 	- modes: multidirectional / bidirectional scrolling, static screens switching
-	- attributes per 1x1/2x2 tile
+	- **NES:** attributes per 1x1/2x2 tile
 	- tiles properties per 1x1/2x2 tile
 	- level topology options
 	- entities
 	- etc...
 - built-in **Python** script editor for writing custom data export scripts
 - export to **SjASMPlus** ( ZX Spectrum assembler )
+- **NES <=> SMS** data conversion*
 - etc...
+
+\* You can load a **NES** project into **SMS** editor and vice versa.
+
+**[MAPeD-SMS data export to WLA-DX is under development...]**
 
 **Quick Guide:** `./doc/MAPeD/Quick_Guide.html`
 
-**MAPeD-SMS - Coming soon...**
 
 # SPReD-NES/SMS - Sprites editor
+The SPReD is a tool for converting prepared sprite images into a NES/SMS compatible format. Drawing mode is also available.
+
 **Some features are:**
 
 - handy drawing mode
@@ -48,6 +56,7 @@ Here you can find **NES/SMS** development tools:
 \* You can load a **NES** project into **SMS** editor and vice versa.
 
 **Quick Guide:** `./doc/SPReD/Quick_Guide.html`
+
 
 # Python script editor
 If you need to export specific data which are not supported by the tools, you can write your own script using a simple built-in Python script editor ( **SPSeD** ). Press **Alt+X** ( **ALT**ernative e**X**port ) to open the editor.
@@ -114,10 +123,12 @@ As mentioned before, you need to install Mono on your computer. To run the tools
  - `./samples/nes/tilemap_render/multidir_scroll_MMC3/`	- multidirectional scroller 
  - `./samples/nes/tilemap_render/static_screens_MMC5/`	- static screens switching with MMC5 extended attributes support
 
-**ZX Spectrum:**
+## MAPeD-SMS
+**SMS: coming soon...**
+
+**ZX Spectrum (MAPeD-NES/SMS):**
 
  - `./samples/zx/tilemap_render/` - tilemap renderer with wide variety of settings
-
 
 ## SPReD-NES
 
