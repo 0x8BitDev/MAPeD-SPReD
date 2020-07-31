@@ -109,7 +109,7 @@ tool for building a game levels for <B>NES / SMS</B> games from scratch.</FONT><
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>tile
 	properties editing ( can be used as collisions data etc )</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>import
-	tiles from images</FONT></FONT></P>
+	tiles from images**</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>NES: </B>palette
 	per 1x1 tile support ( <B>MMC5</B> )</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>export
@@ -141,7 +141,7 @@ tool for building a game levels for <B>NES / SMS</B> games from scratch.</FONT><
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>export
 	to <B>SjASMPlus</B> ( ZX Spectrum assembler )</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES</B>
-	&harr; <B>SMS</B> data conversion**</FONT></P>
+	&harr; <B>SMS</B> data conversion***</FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -153,7 +153,10 @@ tool for building a game levels for <B>NES / SMS</B> games from scratch.</FONT><
 </SPAN><SPAN LANG="en-US"><B>Screens</B></SPAN><SPAN LANG="en-US">.
 Close detached tab container to return the tab to its place.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">** You can load a <B>NES</B> project
+<FONT FACE="Arial, sans-serif">** Smart import of images with checking of duplicate CHRs/blocks/tiles
+and flipped CHRs.</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">*** You can load a <B>NES</B> project
 into <B>SMS</B> editor and vice versa.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -1119,8 +1122,8 @@ for import:</FONT></P>
 	<FONT FACE="Arial, sans-serif">Palette ( 192 bytes ) ( .plt )</FONT></P>
 </UL>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">* Imported images must be a multiple
-of 16 for blocks data and a multiple of 32 for tiles data.</FONT></P>
+<FONT FACE="Arial, sans-serif">* Smart import of images with checking of duplicate CHRs/blocks/tiles and flipped (<B>SMS</B>) CHRs.
+Imported images must be a multiple of 16 for blocks data and a multiple of 32 for tiles data.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>

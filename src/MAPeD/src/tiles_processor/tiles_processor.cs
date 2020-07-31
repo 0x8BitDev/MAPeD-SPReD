@@ -388,6 +388,12 @@ namespace MAPeD
 				CHR_ind = ( CHR_ind == 0 && _skip_zero_CHR_Block == true ) ? 1:CHR_ind;
 				block_ind = ( block_ind == 0 && _skip_zero_CHR_Block == true ) ? 4:block_ind;
 				
+				byte[] CHR_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
+				
+				int dup_CHR_ind;
+				int dup_block_ind;
+				int dup_tile_ind;
+				
 				int beg_CHR_ind 	= CHR_ind;
 				int beg_block_ind 	= block_ind;
 
@@ -396,14 +402,16 @@ namespace MAPeD
 					int block_offset_x;
 					int block_offset_y;
 					
-					int block_num;
+					int block_num = 0;
+					
+					tile_ind = beg_tile_ind;
 					
 					// tiles/blocks/CHRs
 					for( int tile_y = 0; tile_y < _bmp.Height; tile_y += 32 )
 					{
 						for( int tile_x = 0; tile_x < _bmp.Width; tile_x += 32 )
 						{
-							tile_ind = beg_tile_ind + ( tile_x >> 5 ) + ( tile_y >> 5 ) * ( _bmp.Width >> 5 ); 
+//							tile_ind = beg_tile_ind + ( tile_x >> 5 ) + ( tile_y >> 5 ) * ( _bmp.Width >> 5 ); 
 								
 							for( int block_y = 0; block_y < 32; block_y += 16 )
 							{
@@ -413,42 +421,110 @@ namespace MAPeD
 								{
 									block_offset_x = tile_x + block_x;
 									
-									block_num = ( block_x >> 4 ) + ( ( block_y >> 4 ) << 1 );	// left to right 01 / up to down 23
+//									block_num = ( block_x >> 4 ) + ( ( block_y >> 4 ) << 1 );	// left to right 01 / up to down 23
 									
 									for( int CHR_n = 0; CHR_n < 4; CHR_n++ )
 									{
 										extract_CHR( CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 										
-										_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( CHR_ind, 0 );
-
-										_data.from_spr8x8_to_CHR_bank( CHR_ind++, utils.tmp_spr8x8_buff );
-
-										if( CHR_ind > utils.CONST_CHR_BANK_MAX_SPRITES_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+										if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, CHR_ind ) ) >= 0 )
 										{
-											MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind + 1, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+											_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, 0 );
+										}
+										else
+										{
+#if DEF_SMS
+											Array.Copy( utils.tmp_spr8x8_buff, CHR_buff, CHR_buff.Length );
 											
-											import_bmp_palette( _bmp, _data );
+											tiles_data.hflip( utils.tmp_spr8x8_buff );	// HFLIP
 											
-											return;
+											if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, CHR_ind ) ) >= 0 )
+											{
+												_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP, 0 ) );
+											}
+											else
+											{
+												tiles_data.hflip( utils.tmp_spr8x8_buff );
+												tiles_data.vflip( utils.tmp_spr8x8_buff );	// VFLIP
+												
+												if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, CHR_ind ) ) >= 0 )
+												{
+													_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
+												}
+												else
+												{
+													tiles_data.hflip( utils.tmp_spr8x8_buff );	// HFLIP + VFLIP
+													
+													if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, CHR_ind ) ) >= 0 )
+													{
+														_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP|utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
+													}
+													else
+													{
+														_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( CHR_ind, 0 );
+						
+														_data.from_spr8x8_to_CHR_bank( CHR_ind++, CHR_buff );
+													}
+												}
+											}
+#else
+											_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( CHR_ind, 0 );
+			
+											_data.from_spr8x8_to_CHR_bank( CHR_ind++, utils.tmp_spr8x8_buff );
+#endif									
+										}
+									}
+									
+									// check duplicate blocks
+									{
+										if( ( dup_block_ind = _data.contains_block( block_ind - 4 ) ) >= 0 )
+										{
+											_data.blocks[ --block_ind ] = 0;
+											_data.blocks[ --block_ind ] = 0;
+											_data.blocks[ --block_ind ] = 0;
+											_data.blocks[ --block_ind ] = 0;
 										}
 									}
 									
 									if( tile_ind >= utils.CONST_MAX_BLOCKS_CNT )
 									{
-										MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind + 1, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+										MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 										
 										import_bmp_palette( _bmp, _data );
 										
 										return;
 									}
 									
-									_data.set_tile_block( tile_ind, block_num, ( byte )( ( block_ind - 1 ) >> 2 ) );
+									_data.set_tile_block( tile_ind, block_num++, ( dup_block_ind >= 0 ? (byte)( dup_block_ind >> 2 ):( byte )( ( block_ind - 1 ) >> 2 ) ) );
+									
+									if( ( block_num & 0x03 ) == 0x00 )
+									{
+										if( ( dup_tile_ind = _data.contains_tile( tile_ind ) ) >= 0 )
+										{
+											_data.tiles[ tile_ind ] = 0;
+										}
+										else
+										{
+											++tile_ind;
+										}
+										
+										block_num = 0;
+									}
+									
+									if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+									{
+										MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+										
+										import_bmp_palette( _bmp, _data );
+										
+										return;
+									}
 								}
 							}
 						}
 					}
 					
-					MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind + 1, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+					MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 				}
 				else
 				{
@@ -461,9 +537,52 @@ namespace MAPeD
 							{
 								extract_CHR( CHR_n, block_x, block_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 								
-								_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( CHR_ind, 0 );
-
-								_data.from_spr8x8_to_CHR_bank( CHR_ind++, utils.tmp_spr8x8_buff );
+								if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, CHR_ind ) ) >= 0 )
+								{
+									_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, 0 );
+								}
+								else
+								{
+#if DEF_SMS
+									Array.Copy( utils.tmp_spr8x8_buff, CHR_buff, CHR_buff.Length );
+									
+									tiles_data.hflip( utils.tmp_spr8x8_buff );	// HFLIP
+									
+									if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, CHR_ind ) ) >= 0 )
+									{
+										_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP, 0 ) );
+									}
+									else
+									{
+										tiles_data.hflip( utils.tmp_spr8x8_buff );
+										tiles_data.vflip( utils.tmp_spr8x8_buff );	// VFLIP
+										
+										if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, CHR_ind ) ) >= 0 )
+										{
+											_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
+										}
+										else
+										{
+											tiles_data.hflip( utils.tmp_spr8x8_buff );	// HFLIP + VFLIP
+											
+											if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, CHR_ind ) ) >= 0 )
+											{
+												_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP|utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
+											}
+											else
+											{
+												_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( CHR_ind, 0 );
+				
+												_data.from_spr8x8_to_CHR_bank( CHR_ind++, CHR_buff );
+											}
+										}
+									}
+#else
+									_data.blocks[ block_ind++ ] = tiles_data.set_block_CHR_id( CHR_ind, 0 );
+	
+									_data.from_spr8x8_to_CHR_bank( CHR_ind++, utils.tmp_spr8x8_buff );
+#endif									
+								}
 
 								if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
 								{
@@ -472,6 +591,17 @@ namespace MAPeD
 									import_bmp_palette( _bmp, _data );
 									
 									return;
+								}
+							}
+							
+							// check duplicate blocks
+							{
+								if( ( dup_block_ind = _data.contains_block( block_ind - 4 ) ) >= 0 )
+								{
+									_data.blocks[ --block_ind ] = 0;
+									_data.blocks[ --block_ind ] = 0;
+									_data.blocks[ --block_ind ] = 0;
+									_data.blocks[ --block_ind ] = 0;
 								}
 							}
 						}
@@ -500,11 +630,17 @@ namespace MAPeD
 				{
 					palettes[ i >> 2 ][ i & 0x03 ] = ( byte )utils.find_nearest_color_ind( plt[ i ].ToArgb() );
 				}
-				
+#if DEF_NES
+				palettes[ 1 ][ 0 ] = palettes[ 2 ][ 0 ] = palettes[ 3 ][ 0 ] = palettes[ 0 ][ 0 ];
+#endif
 				for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
 				{
 					palette_group.Instance.get_palettes_arr()[ i ].update();
 				}
+				
+#if DEF_SMS
+				palette_group.Instance.active_palette = 0;
+#endif
 			}
 		}
 

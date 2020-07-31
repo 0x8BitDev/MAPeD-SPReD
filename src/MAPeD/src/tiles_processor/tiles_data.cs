@@ -486,6 +486,158 @@ namespace MAPeD
 			hflip( _CHR_data, _spr_ind );
 		}
 		
+		public static void hflip( byte[] _CHR8x8 )
+		{
+			byte a;
+			byte b;
+			
+			int offset_x;
+			int offset_y;
+			
+			for( int y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
+			{
+				offset_y = y << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS;
+				
+				for( int x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT>>1; x++ )
+				{
+					offset_x = x + offset_y;
+						
+					a = _CHR8x8[ offset_x ];
+					b = _CHR8x8[ offset_y + utils.CONST_SPR8x8_SIDE_PIXELS_CNT - 1 - x ];
+					
+					_CHR8x8[ offset_x ] = b;
+					_CHR8x8[ offset_y + utils.CONST_SPR8x8_SIDE_PIXELS_CNT - 1 - x ] = a;
+				}
+			}
+		}
+		
+		public static void vflip( byte[] _CHR8x8 )
+		{
+			byte a;
+			byte b;
+			
+			int offset_y1;
+			int offset_y2;
+			
+			for( int x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+			{
+				for( int y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT>>1; y++ )
+				{
+					offset_y1 = x + ( y << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
+					offset_y2 = x + ( ( utils.CONST_SPR8x8_SIDE_PIXELS_CNT - 1 - y ) << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
+						
+					a = _CHR8x8[ offset_y1 ];
+					b = _CHR8x8[ offset_y2 ];
+					
+					_CHR8x8[ offset_y1 ] = b;
+					_CHR8x8[ offset_y2 ] = a;
+				}
+			}
+		}
+		
+		public static void rot_cw( byte[] _CHR8x8 )
+		{
+			int i;
+			int j;
+			
+			int im8;
+			int jm8;
+					
+			for( i = 0; i < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; i++ ) 
+			{
+				im8 = i << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS;
+				
+		        for( j = i; j < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; j++ ) 
+		        {
+		            if( i != j ) 
+		            {
+		            	jm8 = j << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS;
+		            	
+		                _CHR8x8[ i + jm8 ] ^= _CHR8x8[ j + im8 ];
+		                _CHR8x8[ j + im8 ] ^= _CHR8x8[ i + jm8 ];
+		                _CHR8x8[ i + jm8 ] ^= _CHR8x8[ j + im8 ];
+		            }
+		        }
+		    }
+			
+			hflip( _CHR8x8 );
+		}
+		
+		public int contains_CHR( byte[] _CHR8x8, int _max_ind )
+		{
+			bool contains = true;
+			
+			int CHR_ind;
+			int i;
+			int j;
+			
+			int CHR_offset;
+			
+			int size = _max_ind < 0 ? ( m_CHR_bank.Length / utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ):Math.Min( _max_ind, m_CHR_bank.Length / utils.CONST_SPR8x8_TOTAL_PIXELS_CNT );
+			
+			for( CHR_ind = 0; CHR_ind < size; CHR_ind++ )
+			{
+				CHR_offset = ( ( CHR_ind >> 4 ) * ( utils.CONST_CHR_BANK_PAGE_SIDE << 3 ) ) + ( ( CHR_ind % 16 ) << 3 );
+
+				contains = true;
+								
+				for( i = 0; i < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; i++ )
+				{
+					for( j = 0; j < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; j++ )
+					{
+						if( m_CHR_bank[ j + CHR_offset + i * utils.CONST_CHR_BANK_PAGE_SIDE ] != _CHR8x8[ j + ( i << 3 ) ] )
+						{
+							contains = false;
+						}
+					}
+				}
+				
+				if( contains == true )
+				{
+					return CHR_ind;
+				}
+			}
+			
+			return -1;
+		}
+		
+		public int contains_block( int _block_ind )
+		{
+			int block_n;
+			
+			int size = _block_ind < 0 ? blocks.Length:_block_ind;
+			
+			for( block_n = 0; block_n < size; block_n += utils.CONST_BLOCK_SIZE )
+			{
+				if( blocks[ block_n ] == blocks[ _block_ind ] && 
+ 				    blocks[ block_n + 1 ] == blocks[ _block_ind + 1 ] && 
+ 				    blocks[ block_n + 2 ] == blocks[ _block_ind + 2 ] && 
+ 				    blocks[ block_n + 3 ] == blocks[ _block_ind + 3 ] )
+				{
+					return block_n;
+				}
+			}
+			
+			return -1;
+		}
+
+		public int contains_tile( int _tile_ind )
+		{
+			int tile_n;
+			
+			int size = _tile_ind < 0 ? tiles.Length:_tile_ind;
+			
+			for( tile_n = 0; tile_n < size; tile_n++ )
+			{
+				if( tiles[ tile_n ] == tiles[ _tile_ind ] )
+				{
+					return tile_n;
+				}
+			}
+			
+			return -1;
+		}
+		
 		public void from_CHR_bank_to_spr8x8( int _chr_id, byte[] _img_buff, int _img_buff_offset = 0 )
 		{
 			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_PAGE_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
