@@ -37,6 +37,8 @@ The MAPeD is a tool for building a game levels for NES/SMS games from scratch.
 
 **[MAPeD-SMS data export to WLA-DX is under development...]**
 
+**Example projects (.mapednes/.mapedsms):** `./data`
+
 **Quick Guide:** `./doc/MAPeD/Quick_Guide.html`
 
 
@@ -56,6 +58,8 @@ The SPReD is a tool for converting prepared sprite images into a NES/SMS compati
 - etc...
 
 \* You can load a **NES** project into **SMS** editor and vice versa.
+
+**Example projects (.sprednes/.spredsms):** `./data`
 
 **Quick Guide:** `./doc/SPReD/Quick_Guide.html`
 
