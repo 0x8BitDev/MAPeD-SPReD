@@ -689,7 +689,68 @@ namespace MAPeD
 			return m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, _global_scr_ind );
 		}
 		
-		layout_data import_layout( int _scr_width, int _scr_height )
+		void import_level_delete_screen( int _scr_local_ind )
+		{
+			m_data_manager.scr_data_pos = _scr_local_ind ;
+			m_data_manager.screen_data_delete();
+
+			m_data_manager.remove_screen_from_layouts( CBoxCHRBanks.SelectedIndex, _scr_local_ind  );
+			
+			if( m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, _scr_local_ind ) )
+			{
+				m_layout_editor.set_active_screen( -1 );
+			}
+		}
+
+		bool import_level_check_and_delete_empty_screens()
+		{
+			bool res = false;
+			
+			tiles_data data		= m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			layout_data layout	= m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
+			
+			int layout_width	= layout.get_width();
+			int layout_height	= layout.get_height();
+
+			int tile_n;
+			int cell_x;
+			int cell_y;
+			
+			int scr_local_ind		= 0;
+			int scr_first_tile_ind	= 0;
+			byte[] scr_data			= null;
+			
+			for( cell_y = 0; cell_y < layout_height; cell_y++ )
+			{
+				for( cell_x = 0; cell_x < layout_width; cell_x++ )
+				{
+					scr_local_ind = get_local_scr_ind( layout.get_data( cell_x, cell_y ).m_scr_ind );
+					
+					scr_data = data.scr_data[ scr_local_ind ];
+					
+					scr_first_tile_ind = scr_data[ 0 ];
+					
+					for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+					{
+						if( scr_first_tile_ind != scr_data[ tile_n ] )
+						{
+							break;
+						}
+					}
+					
+					if( tile_n == utils.CONST_SCREEN_TILES_CNT )
+					{
+						import_level_delete_screen( scr_local_ind );
+						
+						res = true;
+					}
+				}
+			}
+			
+			return res;
+		}
+		
+		layout_data import_level_create_layout( int _scr_width, int _scr_height )
 		{
 			if( m_data_manager.layout_data_create() == true )
 			{
@@ -806,10 +867,19 @@ namespace MAPeD
 													}
 												}
 	
-												tiles_processor.import_image_data( true, m_import_tiles_form.skip_zero_CHR_Block, m_import_tiles_form.import_game_level, import_game_level_as_is, bmp, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), import_layout, get_local_scr_ind );
+												tiles_processor.import_image_data( true, m_import_tiles_form.skip_zero_CHR_Block, m_import_tiles_form.import_game_level, import_game_level_as_is, bmp, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), import_level_create_layout, get_local_scr_ind );
 												
 												if( m_import_tiles_form.import_game_level )
 												{
+													if( m_import_tiles_form.delete_empty_screens )
+													{
+														if( import_level_check_and_delete_empty_screens() )
+														{
+															update_screens_labels_by_bank_id();
+															update_screens_list_box();
+														}
+													}
+													
 													update_screens( true, false );
 													
 													m_layout_editor.update_dimension_changes();
@@ -831,7 +901,7 @@ namespace MAPeD
 										{
 											if( ( bmp.Width > 0 && ( bmp.Width % 16 ) == 0 ) && ( bmp.Height > 0 && ( bmp.Height % 16 ) == 0 ) )
 											{
-												tiles_processor.import_image_data( false, m_import_tiles_form.skip_zero_CHR_Block, m_import_tiles_form.import_game_level, import_game_level_as_is, bmp, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), null, null );
+												tiles_processor.import_image_data( false, m_import_tiles_form.skip_zero_CHR_Block, false, false, bmp, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), null, null );
 											}
 											else
 											{

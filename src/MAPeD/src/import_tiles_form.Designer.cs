@@ -34,73 +34,85 @@ namespace MAPeD
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.checkBox1 = new System.Windows.Forms.CheckBox();
-			this.checkBoxTiles = new System.Windows.Forms.CheckBox();
-			this.checkBoxSkipZeroCHRBlock = new System.Windows.Forms.CheckBox();
+			this.CheckBox1 = new System.Windows.Forms.CheckBox();
+			this.CheckBoxTiles = new System.Windows.Forms.CheckBox();
+			this.CheckBoxSkipZeroCHRBlock = new System.Windows.Forms.CheckBox();
 			this.BtnOk = new System.Windows.Forms.Button();
 			this.BtnCancel = new System.Windows.Forms.Button();
-			this.checkBoxGameLevel = new System.Windows.Forms.CheckBox();
+			this.CheckBoxGameLevel = new System.Windows.Forms.CheckBox();
+			this.CheckBoxDeleteEmptyScreens = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
-			// checkBox1
+			// CheckBox1
 			// 
-			this.checkBox1.Checked = true;
-			this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBox1.Enabled = false;
-			this.checkBox1.Location = new System.Drawing.Point(34, 12);
-			this.checkBox1.Name = "checkBox1";
-			this.checkBox1.Size = new System.Drawing.Size(63, 19);
-			this.checkBox1.TabIndex = 0;
-			this.checkBox1.Text = "Blocks";
-			this.checkBox1.UseVisualStyleBackColor = true;
+			this.CheckBox1.Checked = true;
+			this.CheckBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.CheckBox1.Enabled = false;
+			this.CheckBox1.Location = new System.Drawing.Point(34, 12);
+			this.CheckBox1.Name = "CheckBox1";
+			this.CheckBox1.Size = new System.Drawing.Size(63, 19);
+			this.CheckBox1.TabIndex = 0;
+			this.CheckBox1.Text = "Blocks";
+			this.CheckBox1.UseVisualStyleBackColor = true;
 			// 
-			// checkBoxTiles
+			// CheckBoxTiles
 			// 
-			this.checkBoxTiles.Location = new System.Drawing.Point(34, 37);
-			this.checkBoxTiles.Name = "checkBoxTiles";
-			this.checkBoxTiles.Size = new System.Drawing.Size(63, 19);
-			this.checkBoxTiles.TabIndex = 1;
-			this.checkBoxTiles.Text = "Tiles";
-			this.checkBoxTiles.UseVisualStyleBackColor = true;
+			this.CheckBoxTiles.Location = new System.Drawing.Point(34, 37);
+			this.CheckBoxTiles.Name = "CheckBoxTiles";
+			this.CheckBoxTiles.Size = new System.Drawing.Size(63, 19);
+			this.CheckBoxTiles.TabIndex = 1;
+			this.CheckBoxTiles.Text = "Tiles";
+			this.CheckBoxTiles.UseVisualStyleBackColor = true;
 			// 
-			// checkBoxSkipZeroCHRBlock
+			// CheckBoxSkipZeroCHRBlock
 			// 
-			this.checkBoxSkipZeroCHRBlock.Location = new System.Drawing.Point(34, 97);
-			this.checkBoxSkipZeroCHRBlock.Name = "checkBoxSkipZeroCHRBlock";
-			this.checkBoxSkipZeroCHRBlock.Size = new System.Drawing.Size(131, 19);
-			this.checkBoxSkipZeroCHRBlock.TabIndex = 2;
-			this.checkBoxSkipZeroCHRBlock.Text = "Skip zero CHR\\Block";
-			this.checkBoxSkipZeroCHRBlock.UseVisualStyleBackColor = true;
+			this.CheckBoxSkipZeroCHRBlock.Location = new System.Drawing.Point(34, 120);
+			this.CheckBoxSkipZeroCHRBlock.Name = "CheckBoxSkipZeroCHRBlock";
+			this.CheckBoxSkipZeroCHRBlock.Size = new System.Drawing.Size(131, 19);
+			this.CheckBoxSkipZeroCHRBlock.TabIndex = 4;
+			this.CheckBoxSkipZeroCHRBlock.Text = "Skip zero CHR\\Block";
+			this.CheckBoxSkipZeroCHRBlock.UseVisualStyleBackColor = true;
 			// 
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(9, 131);
+			this.BtnOk.Location = new System.Drawing.Point(22, 154);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 3;
+			this.BtnOk.TabIndex = 5;
 			this.BtnOk.Text = "Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			// 
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(90, 131);
+			this.BtnCancel.Location = new System.Drawing.Point(103, 154);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
-			this.BtnCancel.TabIndex = 4;
+			this.BtnCancel.TabIndex = 6;
 			this.BtnCancel.Text = "Cancel";
 			this.BtnCancel.UseVisualStyleBackColor = true;
 			// 
-			// checkBoxGameLevel
+			// CheckBoxGameLevel
 			// 
-			this.checkBoxGameLevel.Location = new System.Drawing.Point(34, 62);
-			this.checkBoxGameLevel.Name = "checkBoxGameLevel";
-			this.checkBoxGameLevel.Size = new System.Drawing.Size(98, 19);
-			this.checkBoxGameLevel.TabIndex = 1;
-			this.checkBoxGameLevel.Text = "Game Level";
-			this.checkBoxGameLevel.UseVisualStyleBackColor = true;
-			this.checkBoxGameLevel.CheckedChanged += new System.EventHandler(this.CheckBoxGameLevelChanged_Event);
+			this.CheckBoxGameLevel.Location = new System.Drawing.Point(34, 62);
+			this.CheckBoxGameLevel.Name = "CheckBoxGameLevel";
+			this.CheckBoxGameLevel.Size = new System.Drawing.Size(98, 19);
+			this.CheckBoxGameLevel.TabIndex = 2;
+			this.CheckBoxGameLevel.Text = "Game level";
+			this.CheckBoxGameLevel.UseVisualStyleBackColor = true;
+			this.CheckBoxGameLevel.CheckedChanged += new System.EventHandler(this.CheckBoxGameLevelChanged_Event);
+			// 
+			// CheckBoxDeleteEmptyScreens
+			// 
+			this.CheckBoxDeleteEmptyScreens.Enabled = false;
+			this.CheckBoxDeleteEmptyScreens.Location = new System.Drawing.Point(34, 87);
+			this.CheckBoxDeleteEmptyScreens.Name = "CheckBoxDeleteEmptyScreens";
+			this.CheckBoxDeleteEmptyScreens.Size = new System.Drawing.Size(144, 19);
+			this.CheckBoxDeleteEmptyScreens.TabIndex = 3;
+			this.CheckBoxDeleteEmptyScreens.Text = "Delete empty screens";
+			this.CheckBoxDeleteEmptyScreens.UseVisualStyleBackColor = true;
+			this.CheckBoxDeleteEmptyScreens.CheckedChanged += new System.EventHandler(this.CheckBoxGameLevelChanged_Event);
 			// 
 			// import_tiles_form
 			// 
@@ -108,13 +120,14 @@ namespace MAPeD
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
-			this.ClientSize = new System.Drawing.Size(177, 165);
+			this.ClientSize = new System.Drawing.Size(202, 188);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
-			this.Controls.Add(this.checkBoxSkipZeroCHRBlock);
-			this.Controls.Add(this.checkBoxGameLevel);
-			this.Controls.Add(this.checkBoxTiles);
-			this.Controls.Add(this.checkBox1);
+			this.Controls.Add(this.CheckBoxSkipZeroCHRBlock);
+			this.Controls.Add(this.CheckBoxDeleteEmptyScreens);
+			this.Controls.Add(this.CheckBoxGameLevel);
+			this.Controls.Add(this.CheckBoxTiles);
+			this.Controls.Add(this.CheckBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -123,11 +136,12 @@ namespace MAPeD
 			this.Text = "Import Tiles Options";
 			this.ResumeLayout(false);
 		}
-		private System.Windows.Forms.CheckBox checkBoxGameLevel;
+		private System.Windows.Forms.CheckBox CheckBoxDeleteEmptyScreens;
+		private System.Windows.Forms.CheckBox CheckBoxGameLevel;
 		private System.Windows.Forms.Button BtnCancel;
 		private System.Windows.Forms.Button BtnOk;
-		private System.Windows.Forms.CheckBox checkBoxSkipZeroCHRBlock;
-		private System.Windows.Forms.CheckBox checkBoxTiles;
-		private System.Windows.Forms.CheckBox checkBox1;
+		private System.Windows.Forms.CheckBox CheckBoxSkipZeroCHRBlock;
+		private System.Windows.Forms.CheckBox CheckBoxTiles;
+		private System.Windows.Forms.CheckBox CheckBox1;
 	}
 }

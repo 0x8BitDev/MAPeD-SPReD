@@ -17,19 +17,25 @@ namespace MAPeD
 	{
 		public bool import_tiles
 		{
-			get { return checkBoxTiles.Checked; }
+			get { return CheckBoxTiles.Checked; }
 			set {}
 		}
 
 		public bool import_game_level
 		{
-			get { return checkBoxGameLevel.Checked; }
+			get { return CheckBoxGameLevel.Checked; }
+			set {}
+		}
+		
+		public bool delete_empty_screens
+		{
+			get { return CheckBoxDeleteEmptyScreens.Checked; }
 			set {}
 		}
 		
 		public bool skip_zero_CHR_Block
 		{
-			get { return checkBoxSkipZeroCHRBlock.Checked; }
+			get { return CheckBoxSkipZeroCHRBlock.Checked; }
 			set {}
 		}
 		
@@ -47,8 +53,9 @@ namespace MAPeD
 		
 		void CheckBoxGameLevelChanged_Event(object sender, EventArgs e)
 		{
-			checkBoxTiles.Checked = checkBoxGameLevel.Checked ? true:checkBoxTiles.Checked;
-			checkBoxTiles.Enabled = checkBoxGameLevel.Checked ? false:true;
+			CheckBoxTiles.Checked = CheckBoxGameLevel.Checked ? true:CheckBoxTiles.Checked;
+			CheckBoxDeleteEmptyScreens.Enabled = !( CheckBoxTiles.Enabled = CheckBoxGameLevel.Checked ? false:true );
+			CheckBoxDeleteEmptyScreens.Checked = CheckBoxDeleteEmptyScreens.Enabled ? CheckBoxDeleteEmptyScreens.Checked:false;
 		}
 	}
 }
