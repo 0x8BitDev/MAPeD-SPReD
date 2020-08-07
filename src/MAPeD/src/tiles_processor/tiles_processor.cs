@@ -384,14 +384,6 @@ namespace MAPeD
 				// convert to array index
 				block_ind <<= 2;
 				
-				int tile_ind = 0;
-				int beg_tile_ind	= _data.get_first_free_tile_id();
-				
-				if( beg_tile_ind < 0 )
-				{
-					throw new Exception( "There is no free space in the tiles list!" );
-				}
-				
 				CHR_ind = ( CHR_ind == 0 && _skip_zero_CHR_Block == true ) ? 1:CHR_ind;
 				block_ind = ( block_ind == 0 && _skip_zero_CHR_Block == true ) ? 4:block_ind;
 				
@@ -408,6 +400,14 @@ namespace MAPeD
 
 				if( _import_tiles )
 				{
+					int tile_ind = 0;
+					int beg_tile_ind	= _data.get_first_free_tile_id();
+					
+					if( beg_tile_ind < 0 )
+					{
+						throw new Exception( "There is no free space in the tiles list!" );
+					}
+					
 					int block_offset_x = 0;
 					int block_offset_y = 0;
 					
