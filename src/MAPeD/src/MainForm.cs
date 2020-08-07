@@ -684,6 +684,77 @@ namespace MAPeD
 			}
 		}
 
+		int get_local_scr_ind( int _global_scr_ind )
+		{
+			return m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, _global_scr_ind );
+		}
+		
+		layout_data import_layout( int _scr_width, int _scr_height )
+		{
+			if( m_data_manager.layout_data_create() == true )
+			{
+				ListBoxLayouts.Items.Add( m_data_manager.layouts_data_cnt - 1 );
+				m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;
+				
+				layout_data layout = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
+				
+				// create a level layout
+				{
+					for( int i = 0; i < _scr_width - 1; i++ )
+					{
+						layout.add_right();
+					}
+					
+					for( int i = 0; i < _scr_height - 1; i++ )
+					{
+						layout.add_down();
+					}
+				}
+				
+				// create screens and fill the layout
+				{
+					int scr_global_ind;
+					screen_data scr_data;
+					
+					for( int y = 0; y < _scr_height; y++ )
+					{
+						for( int x = 0; x < _scr_width; x++ )
+						{
+							if( m_data_manager.screen_data_create() == true )
+							{
+								scr_global_ind = insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 );
+
+								if( scr_global_ind >= 0 )
+								{
+									ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
+									m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
+								
+									scr_data = layout.get_data( x, y );
+									scr_data.m_scr_ind = (sbyte)scr_global_ind;
+									layout.set_data( scr_data, x, y );
+								}
+								else
+								{
+									m_data_manager.screen_data_delete();
+									
+									throw new Exception( "Can't create a screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
+								}
+							}
+							else
+							{
+								throw new Exception( "Can't create a screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
+							}
+						}
+					}
+					
+				}
+				
+				return layout;
+			}
+			
+			return null;
+		}
+		
 		void DataImportOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			String filename = ( ( FileDialog )sender ).FileName;
@@ -692,6 +763,8 @@ namespace MAPeD
 			BinaryReader 	br = null;
 			
 			Bitmap bmp = null;
+			
+			bool import_game_level_as_is = true;
 			
 			try
 			{
@@ -711,12 +784,46 @@ namespace MAPeD
 									{
 										if( m_import_tiles_form.import_tiles )
 										{
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+											if( ( !m_import_tiles_form.import_game_level && ( bmp.Width > 0 && ( bmp.Width % 32 ) == 0 ) && ( bmp.Height > 0 && ( bmp.Height % 32 ) == 0 ) ) ||
+												( m_import_tiles_form.import_game_level && ( bmp.Width > 0 && ( bmp.Width % 32 ) == 0 ) && ( bmp.Height > 0 && ( bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) == 0 ) ) )
+#else
 											if( ( bmp.Width > 0 && ( bmp.Width % 32 ) == 0 ) && ( bmp.Height > 0 && ( bmp.Height % 32 ) == 0 ) )
+#endif
 											{
-												tiles_processor.import_image_data( true, m_import_tiles_form.skip_zero_CHR_Block, bmp, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+												if( m_import_tiles_form.import_game_level )
+												{
+													if( ( bmp.Width > 0 && ( bmp.Width % utils.CONST_SCREEN_WIDTH_PIXELS ) != 0 ) || ( bmp.Height > 0 && ( bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) != 0 ) )
+													{
+														DialogResult dlg_res = message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nTrim the imported game level or leave it 'as is'?\n\n[Yes] to trim the game level to fully filled screens\n[No] to import the game level 'as is'", "Game Level Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
+														
+														if( dlg_res == DialogResult.Cancel )
+														{
+															throw new Exception( "Operation aborted!" );
+														}
+														
+														import_game_level_as_is = ( dlg_res == DialogResult.No ) ? true:false;
+													}
+												}
+	
+												tiles_processor.import_image_data( true, m_import_tiles_form.skip_zero_CHR_Block, m_import_tiles_form.import_game_level, import_game_level_as_is, bmp, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), import_layout, get_local_scr_ind );
+												
+												if( m_import_tiles_form.import_game_level )
+												{
+													update_screens( true, false );
+													
+													m_layout_editor.update_dimension_changes();
+												}
 											}
 											else
 											{
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+												if( m_import_tiles_form.import_game_level )
+												{
+													throw new Exception( "To import a game level, the imported image width must be a multiple of 32, the image height must be a multiple of 240!" );
+												}
+												else
+#endif
 												throw new Exception( "The imported image size must be a multiple of 32!" );
 											}
 										}
@@ -724,7 +831,7 @@ namespace MAPeD
 										{
 											if( ( bmp.Width > 0 && ( bmp.Width % 16 ) == 0 ) && ( bmp.Height > 0 && ( bmp.Height % 16 ) == 0 ) )
 											{
-												tiles_processor.import_image_data( false, m_import_tiles_form.skip_zero_CHR_Block, bmp, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+												tiles_processor.import_image_data( false, m_import_tiles_form.skip_zero_CHR_Block, m_import_tiles_form.import_game_level, import_game_level_as_is, bmp, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), null, null );
 											}
 											else
 											{
@@ -824,7 +931,7 @@ namespace MAPeD
 					bmp.Dispose();
 				}
 
-				set_status_msg( "No data imported" );
+				set_status_msg( "Data import error" );
 				
 				message_box( _err.Message, "Data Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
@@ -1944,14 +2051,23 @@ namespace MAPeD
 		{
 			if( m_data_manager.screen_data_create() == true )
 			{
-				ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
-				m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
-				
-				insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 );
-				
-				enable_update_screens_btn( true );
-				
-				set_status_msg( "Screen added" );
+				if( insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 ) >= 0 )
+				{
+					ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
+					m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
+					
+					enable_update_screens_btn( true );
+					
+					set_status_msg( "Screen added" );
+				}
+				else
+				{
+					m_data_manager.screen_data_delete();
+					
+					set_status_msg( "Screen creation operation aborted" );
+					
+					message_box( "Can't create a screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Screen Creation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				}
 			}
 		}
 
@@ -1959,14 +2075,23 @@ namespace MAPeD
 		{
 			if( m_data_manager.screen_data_copy() == true )
 			{
-				ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
-				m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
-				
-				insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 );
-				
-				enable_update_screens_btn( true );
-				
-				set_status_msg( "Screen copied" );
+				if( insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 ) >= 0 )
+				{
+					ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
+					m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
+					
+					enable_update_screens_btn( true );
+					
+					set_status_msg( "Screen copied" );
+				}
+				else
+				{
+					m_data_manager.screen_data_delete();
+					
+					set_status_msg( "Screen copy operation aborted" );
+					
+					message_box( "Can't copy the screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Screen Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				}
 			}
 		}
 		
@@ -2104,15 +2229,22 @@ namespace MAPeD
 #endregion		
 // LAYOUT EDITOR *************************************************************************************//		
 #region layout editor
-		private void insert_screen_into_layouts( int _scr_local_ind )
+		private int insert_screen_into_layouts( int _scr_local_ind )
 		{
-			int scr_global_ind = m_data_manager.get_screen_ind( m_data_manager.tiles_data_pos, _scr_local_ind );
+			int scr_global_ind = m_data_manager.get_global_screen_ind( m_data_manager.tiles_data_pos, _scr_local_ind );
 			
-			m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, _scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data() );			
+			if( scr_global_ind < utils.CONST_SCREEN_MAX_CNT )
+			{
+				m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, _scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data() );			
+				
+				palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+				
+				m_data_manager.insert_screen_into_layouts( scr_global_ind );
+				
+				return scr_global_ind;
+			}
 			
-			palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
-			
-			m_data_manager.insert_screen_into_layouts( scr_global_ind );
+			return -1;
 		}
 
 		private void update_layouts_list_box()
@@ -2160,14 +2292,17 @@ namespace MAPeD
 			update_screens( true );
 		}
 		
-		void update_screens( bool _disable_upd_scr_btn )
+		void update_screens( bool _disable_upd_scr_btn, bool _show_status_msg = true )
 		{
 			// update_screens - may change a current palette
 			update_screens_by_bank_id( _disable_upd_scr_btn );
 			
 			m_layout_editor.update();
 			
-			set_status_msg( "Screen list updated" );
+			if( _show_status_msg )
+			{
+				set_status_msg( "Screen list updated" );
+			}
 		}
 		
 		void BtnLayoutAddUpRowClick_Event(object sender, EventArgs e)

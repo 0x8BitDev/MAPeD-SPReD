@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 14.12.2018
  * Time: 19:38
  */
@@ -20,6 +20,12 @@ namespace MAPeD
 			get { return checkBoxTiles.Checked; }
 			set {}
 		}
+
+		public bool import_game_level
+		{
+			get { return checkBoxGameLevel.Checked; }
+			set {}
+		}
 		
 		public bool skip_zero_CHR_Block
 		{
@@ -37,6 +43,12 @@ namespace MAPeD
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+		}
+		
+		void CheckBoxGameLevelChanged_Event(object sender, EventArgs e)
+		{
+			checkBoxTiles.Checked = checkBoxGameLevel.Checked ? true:checkBoxTiles.Checked;
+			checkBoxTiles.Enabled = checkBoxGameLevel.Checked ? false:true;
 		}
 	}
 }

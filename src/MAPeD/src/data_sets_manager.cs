@@ -405,7 +405,7 @@ namespace MAPeD
 			
 			layout_data data;
 			
-			int scr_ind = get_screen_ind( _CHR_bank_ind, _scr_id );
+			int scr_global_ind = get_global_screen_ind( _CHR_bank_ind, _scr_id );
 			
 			int layouts_cnt = m_layouts_data.Count;
 			
@@ -422,12 +422,12 @@ namespace MAPeD
 					{
 						scr_data = data.get_data( j, i );
 						
-						if( scr_data.m_scr_ind == scr_ind )
+						if( scr_data.m_scr_ind == scr_global_ind )
 						{
 							data.delete_screen_by_data( scr_data, ( i * data.get_width() + j ) );
 						}
 						
-						if( scr_data.m_scr_ind > scr_ind )
+						if( scr_data.m_scr_ind > scr_global_ind )
 						{
 							--scr_data.m_scr_ind;
 						}
@@ -468,13 +468,25 @@ namespace MAPeD
 		}
 
 		// get a common screen index ( not just in a current bank )
-		public int get_screen_ind( int _CHR_bank_ind, int _scr_pos )
+		public int get_global_screen_ind( int _CHR_bank_ind, int _local_scr_ind )
 		{
-			int scr_ind = _scr_pos;
+			int scr_ind = _local_scr_ind;
 			
 			for( int i = 0; i < _CHR_bank_ind; i++ )
 			{
 				scr_ind += get_tiles_data()[ i ].scr_data.Count;
+			}
+			
+			return scr_ind;
+		}
+
+		public int get_local_screen_ind( int _CHR_bank_ind, int _global_scr_ind )
+		{
+			int scr_ind = _global_scr_ind;
+			
+			for( int i = 0; i < _CHR_bank_ind; i++ )
+			{
+				scr_ind -= get_tiles_data()[ i ].scr_data.Count;
 			}
 			
 			return scr_ind;

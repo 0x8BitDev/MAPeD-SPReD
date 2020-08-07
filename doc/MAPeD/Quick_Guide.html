@@ -103,13 +103,13 @@ tool for building a game levels for <B>NES / SMS</B> games from scratch.</FONT><
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>several
 	game maps in one project</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>detachable
-	UI*</FONT></FONT></P>
+	UI *</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>entities
 	editor</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>tile
 	properties editing ( can be used as collisions data etc )</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>import
-	tiles from images**</FONT></FONT></P>
+	of tiles and game levels from images **</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>NES: </B>palette
 	per 1x1 tile support ( <B>MMC5</B> )</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>export
@@ -141,7 +141,7 @@ tool for building a game levels for <B>NES / SMS</B> games from scratch.</FONT><
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>export
 	to <B>SjASMPlus</B> ( ZX Spectrum assembler )</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES</B>
-	&harr; <B>SMS</B> data conversion***</FONT></P>
+	&harr; <B>SMS</B> data conversion ***</FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -153,7 +153,7 @@ tool for building a game levels for <B>NES / SMS</B> games from scratch.</FONT><
 </SPAN><SPAN LANG="en-US"><B>Screens</B></SPAN><SPAN LANG="en-US">.
 Close detached tab container to return the tab to its place.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">** Smart import of images with checking of duplicate CHRs/blocks/tiles
+<FONT FACE="Arial, sans-serif">** Smart import of tiles and game levels from images with checking of duplicate CHRs/blocks/tiles
 and flipped CHRs.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">*** You can load a <B>NES</B> project
@@ -202,7 +202,7 @@ you to draw graphics and build blocks from CHR data.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">The main functions are:</FONT></P>
+<FONT FACE="Arial, sans-serif">The main operations are:</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -275,6 +275,26 @@ content to see the result by pressing the &ldquo;Update GFX&rdquo;
 button.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>NES: Color indices correction:</B></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>Blocks</B> &rarr;
+<B>Shift Colors / Shift Transparency</B></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">When you load an SMS project or import tiles/game levels
+from images you may found that some CHRs need to be fixed to apply a palette correctly.
+For example, a transparent color need to be replaced with another color. There are two
+ways to fix that. The first one, you can redraw the CHRs. The second one, you can shift
+the CHR's color indices to bring back the transparent color to its place. You can do
+that by pressing <B>Alt+F</B>. When the "Shift Transparency" flag is active, all 4 color
+indicies will be cyclic shifted. Otherwise, only 3 color indicies will be modified.
+A transparency color index will be ignored.</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">When the "Select CHRs" mode is active this operation 
+affects on a selected CHR only. When the "Draw" mode is active, you can modify CHRs
+indices of whole block.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <DIV ID="Tile Editor" DIR="LTR"><A NAME="Tile Editor|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Tile
@@ -288,7 +308,7 @@ you to build tiles from blocks.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">The main functions are:</FONT></P>
+<FONT FACE="Arial, sans-serif">The main operations are:</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -438,7 +458,7 @@ tiles ).</FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <IMG SRC="res/CHR_bank.png" NAME="Графический объект4" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=288 HEIGHT=349 BORDER=0><FONT FACE="Arial, sans-serif">The
-main functions are:</FONT></P>
+main operations are:</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -627,7 +647,7 @@ list</A> at the </SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <IMG SRC="res/screen_editor.png" NAME="Графический объект6" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=185 HEIGHT=336 BORDER=0><FONT FACE="Arial, sans-serif">The
-main functions are:</FONT></P>
+main operations are:</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -730,7 +750,7 @@ button and scale it by a mouse wheel.</FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <IMG SRC="res/layout_editor.png" NAME="Графический объект8" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=403 HEIGHT=507 BORDER=0><FONT FACE="Arial, sans-serif">The
-main functions are:</FONT></P>
+main operations are:</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -886,7 +906,7 @@ a set of images of created screens. </FONT></FONT>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>The main functions are:</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>The main operations are:</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -957,7 +977,7 @@ placing on a game level.</FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <IMG SRC="res/entity_editor.png" NAME="Графический объект10" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=324 HEIGHT=609 BORDER=0><FONT FACE="Arial, sans-serif">The
-main functions are:</FONT></P>
+main operations are:</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -1114,16 +1134,17 @@ for import:</FONT></P>
 <UL>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">.sprednes/.spredsms
 	CHR banks and a palette data</FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">raw
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Raw
 	<B>NES/SMS</B> CHR data ( .bin or .chr )</FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">BMP
-	tiles data ( 2/4 bpp ) *</FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Tiles/Game Level
+	data 2/4 bpp ( .bmp ) *</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif">Palette ( 192 bytes ) ( .plt )</FONT></P>
 </UL>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">* Smart import of images with checking of duplicate CHRs/blocks/tiles and flipped (<B>SMS</B>) CHRs.
-Imported images must be a multiple of 16 for blocks data and a multiple of 32 for tiles data.</FONT></P>
+<FONT FACE="Arial, sans-serif">* Smart import of tiles from images with checking of duplicate CHRs/blocks/tiles and flipped (<B>SMS</B>) CHRs.
+Imported images must be a multiple of 16 for blocks data and a multiple of 32 for tiles data. Also the same way you can import game levels from images.
+It's recommended that an imported image size must be a multiple of a game screen size.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>

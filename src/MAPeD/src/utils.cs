@@ -156,7 +156,7 @@ namespace MAPeD
 		public const int CONST_SCREEN_BLOCKS_SIZE		= 32;	// pixels
 		
 		public const int CONST_SCREEN_TILES_CNT			= CONST_SCREEN_NUM_WIDTH_TILES * CONST_SCREEN_NUM_HEIGHT_TILES;
-		public const int CONST_SCREEN_MAX_CNT			= 256;
+		public const int CONST_SCREEN_MAX_CNT			= 128;
 		
 		public const int CONST_SCREEN_WIDTH_PIXELS		= 32 * CONST_SCREEN_NUM_WIDTH_TILES;
 		

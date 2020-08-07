@@ -1,5 +1,14 @@
-MAPeD-NES:
-~~~~~~~~~~~
+MAPeD-NES/SMS:
+~~~~~~~~~~~~~~~
+
+05.08.2020 - Added import of game levels from images
+31.07.2020 - Added smart import of tiles from images with checking of duplicate CHRs/blocks/tiles and flipped (SMS) CHRs
+30.07.2020 - pyScriptEditor project renamed to SPSeD
+30.07.2020 - Added export of matrix layout/marks/entities to ZX exporter
+28.10.2020 - Added buttons to switch between CHR bank's pages
+27.07.2020 - Screen editor: added reset active tile button
+27.07.2020 - MAPeD-SMS added
+
 03.07.2020 v0.58b
 
 16.07.2019 - Quick guide added
@@ -26,6 +35,7 @@ MAPeD-NES:
 SPReD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+30.07.2020 - pyScriptEditor project renamed to SPSeD
 15.07.2020 - SMS: added additional export options: 1/2/3/4 bpp and CHRs offset
 
 10.07.2020 v0.58b

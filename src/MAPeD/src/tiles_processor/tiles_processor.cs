@@ -350,7 +350,14 @@ namespace MAPeD
 			m_CHR_bank_viewer.prev_page();
 		}
 #endif
-		public static void import_image_data( bool _import_tiles, bool _skip_zero_CHR_Block, Bitmap _bmp, tiles_data _data )
+		public static void import_image_data( 	bool							_import_tiles, 
+												bool							_skip_zero_CHR_Block, 
+												bool							_import_game_level, 
+												bool							_import_game_level_as_is, 
+												Bitmap							_bmp, 
+												tiles_data						_data, 
+												Func< int, int, layout_data > 	_create_layout,
+												Func< int, int > 				_get_local_scr_ind )
 		{
 			BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, _bmp.Width, _bmp.Height ), ImageLockMode.ReadOnly, _bmp.PixelFormat );
 			
@@ -371,7 +378,7 @@ namespace MAPeD
 				
 				if( block_ind < 0 )
 				{
-					throw new Exception( "There is no free space in the block list!" );
+					throw new Exception( "There is no free space in the blocks list!" );
 				}
 				
 				// convert to array index
@@ -382,7 +389,7 @@ namespace MAPeD
 				
 				if( beg_tile_ind < 0 )
 				{
-					throw new Exception( "There is no free space in the tile list!" );
+					throw new Exception( "There is no free space in the tiles list!" );
 				}
 				
 				CHR_ind = ( CHR_ind == 0 && _skip_zero_CHR_Block == true ) ? 1:CHR_ind;
@@ -396,35 +403,86 @@ namespace MAPeD
 				
 				int beg_CHR_ind 	= CHR_ind;
 				int beg_block_ind 	= block_ind;
+				
+				int scr_tile_ind;
 
 				if( _import_tiles )
 				{
-					int block_offset_x;
-					int block_offset_y;
+					int block_offset_x = 0;
+					int block_offset_y = 0;
 					
 					int block_num = 0;
 					
 					tile_ind = beg_tile_ind;
 					
-					// tiles/blocks/CHRs
-					for( int tile_y = 0; tile_y < _bmp.Height; tile_y += 32 )
+					int bmp_width	= ( _import_game_level && !_import_game_level_as_is ) ? ( ( _bmp.Width / utils.CONST_SCREEN_WIDTH_PIXELS ) * utils.CONST_SCREEN_WIDTH_PIXELS ):_bmp.Width;
+					int bmp_height	= ( _import_game_level && !_import_game_level_as_is ) ? ( ( _bmp.Height / utils.CONST_SCREEN_HEIGHT_PIXELS ) * utils.CONST_SCREEN_HEIGHT_PIXELS ):_bmp.Height;
+					
+					int scr_x_cnt = 0;
+					int scr_y_cnt = 0;
+
+					int scr_x;
+					int scr_y;
+					
+					layout_data level_layout = null;
+					
+					if( _import_game_level )
 					{
-						for( int tile_x = 0; tile_x < _bmp.Width; tile_x += 32 )
+						bmp_width	= ( bmp_width == 0 ) ? utils.CONST_SCREEN_WIDTH_PIXELS:bmp_width;
+						bmp_height	= ( bmp_height == 0 ) ? utils.CONST_SCREEN_HEIGHT_PIXELS:bmp_height;
+
+						scr_x_cnt = ( ( bmp_width % utils.CONST_SCREEN_WIDTH_PIXELS ) == 0 ) ? ( bmp_width / utils.CONST_SCREEN_WIDTH_PIXELS ):( bmp_width / utils.CONST_SCREEN_WIDTH_PIXELS ) + 1;
+						scr_y_cnt = ( ( bmp_height % utils.CONST_SCREEN_HEIGHT_PIXELS ) == 0 ) ? ( bmp_height / utils.CONST_SCREEN_HEIGHT_PIXELS ):( bmp_height / utils.CONST_SCREEN_HEIGHT_PIXELS ) + 1;
+						
+						level_layout = _create_layout( scr_x_cnt, scr_y_cnt );
+						
+						if( level_layout == null )
 						{
-//							tile_ind = beg_tile_ind + ( tile_x >> 5 ) + ( tile_y >> 5 ) * ( _bmp.Width >> 5 ); 
-								
+							throw new Exception( "Can't create a layout! The maximum allowed number of layouts - " + utils.CONST_LAYOUT_MAX_CNT );
+						}
+					}
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+					if( _import_game_level )
+					{
+						bmp_height += ( ( bmp_height / utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 1 ) << 5;
+					}
+#endif
+					// tiles/blocks/CHRs
+					for( int tile_y = 0; tile_y < bmp_height; tile_y += 32 )
+					{
+						for( int tile_x = 0; tile_x < bmp_width; tile_x += 32 )
+						{
 							for( int block_y = 0; block_y < 32; block_y += 16 )
 							{
 								block_offset_y = tile_y + block_y;
-								
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+								if( _import_game_level )
+								{
+									block_offset_y -= ( ( ( tile_y & 0xff00 ) >> 8 ) << 4 );
+								}
+#endif
 								for( int block_x = 0; block_x < 32; block_x += 16 )
 								{
 									block_offset_x = tile_x + block_x;
 									
-//									block_num = ( block_x >> 4 ) + ( ( block_y >> 4 ) << 1 );	// left to right 01 / up to down 23
-									
 									for( int CHR_n = 0; CHR_n < 4; CHR_n++ )
 									{
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+										if( _import_game_level )
+										{
+											// extract a CHR if it's not an invisible part of a tile ( the bottom blocks of the eigth tiles row ) 
+											if( !( ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) == 7 && block_y > 0 ) )
+											{
+												extract_CHR( CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
+											}
+											else
+											{
+												// clear an invisible part of a tile
+												Array.Clear( utils.tmp_spr8x8_buff, 0, utils.tmp_spr8x8_buff.Length );
+											}
+										}
+										else
+#endif											
 										extract_CHR( CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 										
 										if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, CHR_ind ) ) >= 0 )
@@ -473,6 +531,17 @@ namespace MAPeD
 											_data.from_spr8x8_to_CHR_bank( CHR_ind++, utils.tmp_spr8x8_buff );
 #endif									
 										}
+										
+										if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+										{
+											MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+											
+											MainForm.message_box( "The CHR Bank is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+											
+											import_bmp_palette( _bmp, _data );
+											
+											return;
+										}
 									}
 									
 									// check duplicate blocks
@@ -486,9 +555,11 @@ namespace MAPeD
 										}
 									}
 									
-									if( tile_ind >= utils.CONST_MAX_BLOCKS_CNT )
+									if( tile_ind >= utils.CONST_MAX_TILES_CNT )
 									{
-										MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+										MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+										
+										MainForm.message_box( "The tiles list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 										
 										import_bmp_palette( _bmp, _data );
 										
@@ -499,9 +570,13 @@ namespace MAPeD
 									
 									if( ( block_num & 0x03 ) == 0x00 )
 									{
+										scr_tile_ind = tile_ind;
+										
 										if( ( dup_tile_ind = _data.contains_tile( tile_ind ) ) >= 0 )
 										{
 											_data.tiles[ tile_ind ] = 0;
+											
+											scr_tile_ind = dup_tile_ind; 
 										}
 										else
 										{
@@ -509,11 +584,27 @@ namespace MAPeD
 										}
 										
 										block_num = 0;
+
+										if( _import_game_level )
+										{
+											scr_x = tile_x / utils.CONST_SCREEN_WIDTH_PIXELS;											
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+											scr_y = ( block_offset_y - block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
+
+											_data.scr_data[ _get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
+#else
+											scr_y = tile_y / utils.CONST_SCREEN_HEIGHT_PIXELS;
+											
+											_data.scr_data[ _get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( tile_y >> 5 ) % utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
+#endif
+										}
 									}
 									
-									if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+									if( ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
 									{
-										MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+										MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+										
+										MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 										
 										import_bmp_palette( _bmp, _data );
 										
@@ -524,7 +615,7 @@ namespace MAPeD
 						}
 					}
 					
-					MainForm.set_status_msg( string.Format( "Merged: Tiles {0} \\ Blocks {1} \\ CHRs {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+					MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 				}
 				else
 				{
@@ -586,7 +677,16 @@ namespace MAPeD
 
 								if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
 								{
-									MainForm.set_status_msg( string.Format( "Merged: Blocks {0} \\ CHRs {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+									MainForm.set_status_msg( string.Format( "Merged: Blocks: {0} \\ CHRs: {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+									
+									if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+									{
+										MainForm.message_box( "The CHR Bank is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+									}
+									else
+									{
+										MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+									}
 									
 									import_bmp_palette( _bmp, _data );
 									
@@ -607,7 +707,7 @@ namespace MAPeD
 						}
 					}
 					
-					MainForm.set_status_msg( string.Format( "Merged: Blocks {0} \\ CHRs {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+					MainForm.set_status_msg( string.Format( "Merged: Blocks: {0} \\ CHRs: {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 				}
 				
 				_bmp.UnlockBits( bmp_data );
