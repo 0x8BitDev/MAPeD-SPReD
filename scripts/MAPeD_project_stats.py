@@ -70,7 +70,7 @@ for layout_n in xrange( num_layouts ):
 	layout_width = mpd_layout_width( layout_n )
 	layout_height = mpd_layout_height( layout_n )
 	start_screen_cell = mpd_layout_start_screen_cell( layout_n )
-	print '\tLayout' + str( layout_n ) + ': width: ' + str( layout_width ) + ' / height: ' + str( layout_height ) + ' ; Start screen cell: ' + str( start_screen_cell ) + ' ; Start screen ind: ' + str( mpd_layout_screen_ind( layout_n, start_screen_cell % layout_width, start_screen_cell / layout_width  ) )
+	print '\tLayout' + str( layout_n ) + ': width: ' + str( layout_width ) + ' / height: ' + str( layout_height ) + ' ; Start screen cell: ' + str( start_screen_cell ) + ' ; Start screen ind: ' + ( str( mpd_layout_screen_ind( layout_n, start_screen_cell % layout_width, start_screen_cell / layout_width  ) ) if start_screen_cell >= 0 else str( start_screen_cell ) )
 
 # Dump layout data
 	for cell_y in xrange( layout_height ):
