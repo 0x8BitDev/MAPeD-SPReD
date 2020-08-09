@@ -40,7 +40,8 @@ for bank_n in xrange( num_banks ):
 # CHR bank
 # CHR data is stored as image 128x128 (8bit)
 # Use mpd_get_CHR_data( int _bank_n ) to get CHR's raw data
-# Use mpd_export_CHR_data( int _bank_n, string _filename, bool _need_padding ) to export NES-ready data
+# NES: Use mpd_export_CHR_data( int _bank_n, string _filename, bool _need_padding ) to export NES-ready data
+# SMS: Use mpd_export_CHR_data( int _bank_n, string _filename, int _bpp ) to export SMS-ready data
 	CHR_data = mpd_get_CHR_data( bank_n )
 	print '\n\t\tCHR data size: ' + str( CHR_data.Count ) + ' --> Array[Byte]' # + str( CHR_data )
 
