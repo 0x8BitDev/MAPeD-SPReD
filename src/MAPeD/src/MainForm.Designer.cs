@@ -269,6 +269,7 @@ namespace MAPeD
 			this.ListBoxLayouts = new System.Windows.Forms.ListBox();
 			this.BtnCopyLayout = new System.Windows.Forms.Button();
 			this.BtnDeleteLayout = new System.Windows.Forms.Button();
+			this.BtnCreateLayoutWxH = new System.Windows.Forms.Button();
 			this.BtnCreateLayout = new System.Windows.Forms.Button();
 			this.LayoutLabel = new System.Windows.Forms.Label();
 			this.BtnLayoutRemoveRightColumn = new System.Windows.Forms.Button();
@@ -2076,6 +2077,7 @@ namespace MAPeD
 			this.TabLayout.Controls.Add(this.groupBox7);
 			this.TabLayout.Controls.Add(this.BtnCopyLayout);
 			this.TabLayout.Controls.Add(this.BtnDeleteLayout);
+			this.TabLayout.Controls.Add(this.BtnCreateLayoutWxH);
 			this.TabLayout.Controls.Add(this.BtnCreateLayout);
 			this.TabLayout.Controls.Add(this.LayoutLabel);
 			this.TabLayout.Controls.Add(this.BtnLayoutRemoveRightColumn);
@@ -2598,7 +2600,7 @@ namespace MAPeD
 			this.groupBox7.Controls.Add(this.BtnLayoutMoveDown);
 			this.groupBox7.Controls.Add(this.BtnLayoutMoveUp);
 			this.groupBox7.Controls.Add(this.ListBoxLayouts);
-			this.groupBox7.Location = new System.Drawing.Point(941, 110);
+			this.groupBox7.Location = new System.Drawing.Point(941, 139);
 			this.groupBox7.Name = "groupBox7";
 			this.groupBox7.Size = new System.Drawing.Size(79, 242);
 			this.groupBox7.TabIndex = 68;
@@ -2638,7 +2640,7 @@ namespace MAPeD
 			// 
 			// BtnCopyLayout
 			// 
-			this.BtnCopyLayout.Location = new System.Drawing.Point(941, 52);
+			this.BtnCopyLayout.Location = new System.Drawing.Point(941, 81);
 			this.BtnCopyLayout.Name = "BtnCopyLayout";
 			this.BtnCopyLayout.Size = new System.Drawing.Size(79, 23);
 			this.BtnCopyLayout.TabIndex = 66;
@@ -2648,13 +2650,23 @@ namespace MAPeD
 			// 
 			// BtnDeleteLayout
 			// 
-			this.BtnDeleteLayout.Location = new System.Drawing.Point(941, 81);
+			this.BtnDeleteLayout.Location = new System.Drawing.Point(941, 110);
 			this.BtnDeleteLayout.Name = "BtnDeleteLayout";
 			this.BtnDeleteLayout.Size = new System.Drawing.Size(79, 23);
 			this.BtnDeleteLayout.TabIndex = 67;
 			this.BtnDeleteLayout.Text = "Delete";
 			this.BtnDeleteLayout.UseVisualStyleBackColor = true;
 			this.BtnDeleteLayout.Click += new System.EventHandler(this.BtnDeleteLayoutClick_Event);
+			// 
+			// BtnCreateLayoutWxH
+			// 
+			this.BtnCreateLayoutWxH.Location = new System.Drawing.Point(940, 52);
+			this.BtnCreateLayoutWxH.Name = "BtnCreateLayoutWxH";
+			this.BtnCreateLayoutWxH.Size = new System.Drawing.Size(79, 23);
+			this.BtnCreateLayoutWxH.TabIndex = 65;
+			this.BtnCreateLayoutWxH.Text = "Create WxH";
+			this.BtnCreateLayoutWxH.UseVisualStyleBackColor = true;
+			this.BtnCreateLayoutWxH.Click += new System.EventHandler(this.BtnCreateLayoutWxHClick_Event);
 			// 
 			// BtnCreateLayout
 			// 
@@ -2676,7 +2688,7 @@ namespace MAPeD
 			// 
 			// BtnLayoutRemoveRightColumn
 			// 
-			this.BtnLayoutRemoveRightColumn.Location = new System.Drawing.Point(980, 445);
+			this.BtnLayoutRemoveRightColumn.Location = new System.Drawing.Point(980, 474);
 			this.BtnLayoutRemoveRightColumn.Name = "BtnLayoutRemoveRightColumn";
 			this.BtnLayoutRemoveRightColumn.Size = new System.Drawing.Size(40, 23);
 			this.BtnLayoutRemoveRightColumn.TabIndex = 79;
@@ -2686,7 +2698,7 @@ namespace MAPeD
 			// 
 			// BtnLayoutAddRightColumn
 			// 
-			this.BtnLayoutAddRightColumn.Location = new System.Drawing.Point(941, 445);
+			this.BtnLayoutAddRightColumn.Location = new System.Drawing.Point(941, 474);
 			this.BtnLayoutAddRightColumn.Name = "BtnLayoutAddRightColumn";
 			this.BtnLayoutAddRightColumn.Size = new System.Drawing.Size(40, 23);
 			this.BtnLayoutAddRightColumn.TabIndex = 78;
@@ -2696,7 +2708,7 @@ namespace MAPeD
 			// 
 			// BtnLayoutRemoveLeftColumn
 			// 
-			this.BtnLayoutRemoveLeftColumn.Location = new System.Drawing.Point(980, 416);
+			this.BtnLayoutRemoveLeftColumn.Location = new System.Drawing.Point(980, 445);
 			this.BtnLayoutRemoveLeftColumn.Name = "BtnLayoutRemoveLeftColumn";
 			this.BtnLayoutRemoveLeftColumn.Size = new System.Drawing.Size(40, 23);
 			this.BtnLayoutRemoveLeftColumn.TabIndex = 77;
@@ -2706,7 +2718,7 @@ namespace MAPeD
 			// 
 			// BtnLayoutAddLeftColumn
 			// 
-			this.BtnLayoutAddLeftColumn.Location = new System.Drawing.Point(941, 416);
+			this.BtnLayoutAddLeftColumn.Location = new System.Drawing.Point(941, 445);
 			this.BtnLayoutAddLeftColumn.Name = "BtnLayoutAddLeftColumn";
 			this.BtnLayoutAddLeftColumn.Size = new System.Drawing.Size(40, 23);
 			this.BtnLayoutAddLeftColumn.TabIndex = 76;
@@ -2716,7 +2728,7 @@ namespace MAPeD
 			// 
 			// BtnLayoutRemoveDownRow
 			// 
-			this.BtnLayoutRemoveDownRow.Location = new System.Drawing.Point(980, 387);
+			this.BtnLayoutRemoveDownRow.Location = new System.Drawing.Point(980, 416);
 			this.BtnLayoutRemoveDownRow.Name = "BtnLayoutRemoveDownRow";
 			this.BtnLayoutRemoveDownRow.Size = new System.Drawing.Size(40, 23);
 			this.BtnLayoutRemoveDownRow.TabIndex = 75;
@@ -2726,7 +2738,7 @@ namespace MAPeD
 			// 
 			// BtnLayoutAddDownRow
 			// 
-			this.BtnLayoutAddDownRow.Location = new System.Drawing.Point(941, 387);
+			this.BtnLayoutAddDownRow.Location = new System.Drawing.Point(941, 416);
 			this.BtnLayoutAddDownRow.Name = "BtnLayoutAddDownRow";
 			this.BtnLayoutAddDownRow.Size = new System.Drawing.Size(40, 23);
 			this.BtnLayoutAddDownRow.TabIndex = 74;
@@ -2736,7 +2748,7 @@ namespace MAPeD
 			// 
 			// BtnLayoutRemoveUpRow
 			// 
-			this.BtnLayoutRemoveUpRow.Location = new System.Drawing.Point(980, 358);
+			this.BtnLayoutRemoveUpRow.Location = new System.Drawing.Point(980, 387);
 			this.BtnLayoutRemoveUpRow.Name = "BtnLayoutRemoveUpRow";
 			this.BtnLayoutRemoveUpRow.Size = new System.Drawing.Size(40, 23);
 			this.BtnLayoutRemoveUpRow.TabIndex = 73;
@@ -2746,7 +2758,7 @@ namespace MAPeD
 			// 
 			// BtnLayoutAddUpRow
 			// 
-			this.BtnLayoutAddUpRow.Location = new System.Drawing.Point(941, 358);
+			this.BtnLayoutAddUpRow.Location = new System.Drawing.Point(941, 387);
 			this.BtnLayoutAddUpRow.Name = "BtnLayoutAddUpRow";
 			this.BtnLayoutAddUpRow.Size = new System.Drawing.Size(40, 23);
 			this.BtnLayoutAddUpRow.TabIndex = 72;
@@ -3307,6 +3319,7 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Button BtnCreateLayoutWxH;
 		private System.Windows.Forms.ToolStripMenuItem deleteEmptyScreensToolStripMenuItem;
 		private System.Windows.Forms.Button BtnDeleteEmptyScreens;
 		private System.Windows.Forms.ToolStripMenuItem nextPageToolStripMenuItem;

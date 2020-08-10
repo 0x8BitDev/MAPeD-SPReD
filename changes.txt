@@ -1,6 +1,8 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+10.08.2020 - Layout editor: added creating of a layout (width x height) filled with empty screens
+10.08.2020 - Screen editor: added the "Clean Up" button to remove empty screens
 05.08.2020 - Added import of game levels from images
 31.07.2020 - Added smart import of tiles from images with checking of duplicate CHRs/blocks/tiles and flipped (SMS) CHRs
 30.07.2020 - pyScriptEditor project renamed to SPSeD

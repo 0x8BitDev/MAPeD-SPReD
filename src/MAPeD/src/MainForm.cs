@@ -41,6 +41,7 @@ namespace MAPeD
 		private import_tiles_form	m_import_tiles_form		= null;
 		private screen_mark_form	m_screen_mark_form		= null;
 		private description_form	m_description_form		= null;
+		private create_layout_form	m_create_layout_form	= null;
 		
 		private SPSeD.py_editor		m_py_editor	= null;
 
@@ -144,6 +145,8 @@ namespace MAPeD
 			m_screen_mark_form = new screen_mark_form();
 			
 			m_description_form = new description_form();
+			
+			m_create_layout_form = new create_layout_form();
 
 			CBoxBlockObjId.SelectedIndex = 0;
 			
@@ -217,7 +220,9 @@ namespace MAPeD
 																new SToolTipData( BtnTileReserveBlocks, "Make links to empty blocks" ),
 																new SToolTipData( RBtnScreenEditModeSingle, "Single screen edit mode" ),
 																new SToolTipData( RBtnScreenEditModeLayout, "Layout's screen editing with moving to adjacent screens" ),
-																new SToolTipData( BtnDeleteEmptyScreens, "Delete all one tile filled screens" ),
+																new SToolTipData( BtnDeleteEmptyScreens, "Delete all one tile filled screens" ),																
+																new SToolTipData( BtnCreateLayout, "Create an empty layout with one cell" ),
+																new SToolTipData( BtnCreateLayoutWxH, "Create a layout (width x height) filled with empty screens" ),																
 																new SToolTipData( BtnLayoutMoveUp, "Move selected layout up" ),
 																new SToolTipData( BtnLayoutMoveDown, "Move selected layout down" ),
 																new SToolTipData( CBoxBlockObjId, "Assign property to selected block or CHR" ),
@@ -2585,14 +2590,35 @@ namespace MAPeD
 				m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;
 				
 				reset_entity_instance_preview();
-					
+				
 				set_status_msg( "Layout added" );
 			}
 		}
 
+		void BtnCreateLayoutWxHClick_Event(object sender, EventArgs e)
+		{
+			try
+			{
+				if( m_data_manager.tiles_data_pos >= 0 && m_create_layout_form.ShowDialog() == DialogResult.OK )
+				{
+					create_layout_with_empty_screens( m_create_layout_form.layout_width, m_create_layout_form.layout_height );
+					
+					reset_entity_instance_preview();
+					
+					m_layout_editor.update_dimension_changes();
+						
+					set_status_msg( "Layout " + m_create_layout_form.layout_width + "x" + m_create_layout_form.layout_height + " added" );
+				}
+			}
+			catch( Exception _err )
+			{
+				message_box( _err.Message, "Layout Creation Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+		}
+		
 		void BtnDeleteLayoutClick_Event(object sender, EventArgs e)
 		{
-			if( ListBoxLayouts.SelectedIndex >= 0 && ListBoxLayouts.Items.Count > 0 && message_box( "Are you sure?", "Remove Layout", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( ListBoxLayouts.SelectedIndex >= 0 && ListBoxLayouts.Items.Count > 0 && message_box( "Are you sure?", "Delete Layout", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				m_data_manager.layout_data_delete();
 

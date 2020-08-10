@@ -86,6 +86,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\src\create_layout_form.cs">
+      <Link>create_layout_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\create_layout_form.Designer.cs">
+      <Link>create_layout_form.Designer.cs</Link>
+      <DependentUpon>create_layout_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\data_conversion_options_form.cs">
       <Link>data_conversion_options_form.cs</Link>
     </Compile>
@@ -244,6 +251,9 @@
     <None Include="MAPeD-NES.settings" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\src\create_layout_form.resx">
+      <DependentUpon>create_layout_form.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\src\description_form.resx">
       <Link>description_form.resx</Link>
       <DependentUpon>description_form.cs</DependentUpon>

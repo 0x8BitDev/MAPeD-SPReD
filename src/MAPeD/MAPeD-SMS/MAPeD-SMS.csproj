@@ -86,6 +86,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\src\create_layout_form.cs">
+      <Link>create_layout_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\create_layout_form.Designer.cs">
+      <Link>create_layout_form.Designer.cs</Link>
+      <DependentUpon>create_layout_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\data_conversion_options_form.cs">
       <Link>data_conversion_options_form.cs</Link>
     </Compile>
@@ -244,6 +251,10 @@
     <None Include="MAPeD-SMS.settings" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\src\create_layout_form.resx">
+      <Link>create_layout_form.resx</Link>
+      <DependentUpon>create_layout_form.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\src\data_conversion_options_form.resx">
       <DependentUpon>data_conversion_options_form.cs</DependentUpon>
     </EmbeddedResource>
