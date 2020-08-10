@@ -684,138 +684,6 @@ namespace MAPeD
 			}
 		}
 
-		int get_local_scr_ind( int _global_scr_ind )
-		{
-			return m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, _global_scr_ind );
-		}
-		
-		void import_level_delete_screen( int _scr_local_ind )
-		{
-			m_data_manager.scr_data_pos = _scr_local_ind ;
-			m_data_manager.screen_data_delete();
-
-			m_data_manager.remove_screen_from_layouts( CBoxCHRBanks.SelectedIndex, _scr_local_ind  );
-			
-			if( m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, _scr_local_ind ) )
-			{
-				m_layout_editor.set_active_screen( -1 );
-			}
-		}
-
-		bool import_level_check_and_delete_empty_screens()
-		{
-			bool res = false;
-			
-			tiles_data data		= m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
-			layout_data layout	= m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
-			
-			int layout_width	= layout.get_width();
-			int layout_height	= layout.get_height();
-
-			int tile_n;
-			int cell_x;
-			int cell_y;
-			
-			int scr_local_ind		= 0;
-			int scr_first_tile_ind	= 0;
-			byte[] scr_data			= null;
-			
-			for( cell_y = 0; cell_y < layout_height; cell_y++ )
-			{
-				for( cell_x = 0; cell_x < layout_width; cell_x++ )
-				{
-					scr_local_ind = get_local_scr_ind( layout.get_data( cell_x, cell_y ).m_scr_ind );
-					
-					scr_data = data.scr_data[ scr_local_ind ];
-					
-					scr_first_tile_ind = scr_data[ 0 ];
-					
-					for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
-					{
-						if( scr_first_tile_ind != scr_data[ tile_n ] )
-						{
-							break;
-						}
-					}
-					
-					if( tile_n == utils.CONST_SCREEN_TILES_CNT )
-					{
-						import_level_delete_screen( scr_local_ind );
-						
-						res = true;
-					}
-				}
-			}
-			
-			return res;
-		}
-		
-		layout_data import_level_create_layout( int _scr_width, int _scr_height )
-		{
-			if( m_data_manager.layout_data_create() == true )
-			{
-				ListBoxLayouts.Items.Add( m_data_manager.layouts_data_cnt - 1 );
-				m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;
-				
-				layout_data layout = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
-				
-				// create a level layout
-				{
-					for( int i = 0; i < _scr_width - 1; i++ )
-					{
-						layout.add_right();
-					}
-					
-					for( int i = 0; i < _scr_height - 1; i++ )
-					{
-						layout.add_down();
-					}
-				}
-				
-				// create screens and fill the layout
-				{
-					int scr_global_ind;
-					screen_data scr_data;
-					
-					for( int y = 0; y < _scr_height; y++ )
-					{
-						for( int x = 0; x < _scr_width; x++ )
-						{
-							if( m_data_manager.screen_data_create() == true )
-							{
-								scr_global_ind = insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 );
-
-								if( scr_global_ind >= 0 )
-								{
-									ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
-									m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
-								
-									scr_data = layout.get_data( x, y );
-									scr_data.m_scr_ind = (sbyte)scr_global_ind;
-									layout.set_data( scr_data, x, y );
-								}
-								else
-								{
-									m_data_manager.screen_data_delete();
-									
-									throw new Exception( "Can't create a screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
-								}
-							}
-							else
-							{
-								throw new Exception( "Can't create a screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
-							}
-						}
-					}
-					
-				}
-				
-				return layout;
-			}
-			
-			return null;
-		}
-		
 		void DataImportOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			String filename = ( ( FileDialog )sender ).FileName;
@@ -824,8 +692,6 @@ namespace MAPeD
 			BinaryReader 	br = null;
 			
 			Bitmap bmp = null;
-			
-			bool import_game_level_as_is = true;
 			
 			try
 			{
@@ -843,71 +709,25 @@ namespace MAPeD
 								{
 									if( m_import_tiles_form.ShowDialog() == DialogResult.OK )
 									{
-										if( m_import_tiles_form.import_tiles )
+										m_import_tiles_form.data_processing( bmp, m_data_manager, create_layout_with_empty_screens );
+										
+										if( m_import_tiles_form.import_game_level )
 										{
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-											if( ( !m_import_tiles_form.import_game_level && ( bmp.Width > 0 && ( bmp.Width % 32 ) == 0 ) && ( bmp.Height > 0 && ( bmp.Height % 32 ) == 0 ) ) ||
-												( m_import_tiles_form.import_game_level && ( bmp.Width > 0 && ( bmp.Width % 32 ) == 0 ) && ( bmp.Height > 0 && ( bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) == 0 ) ) )
-#else
-											if( ( bmp.Width > 0 && ( bmp.Width % 32 ) == 0 ) && ( bmp.Height > 0 && ( bmp.Height % 32 ) == 0 ) )
-#endif
+											if( m_import_tiles_form.delete_empty_screens )
 											{
-												if( m_import_tiles_form.import_game_level )
+												if( delete_empty_screens() )
 												{
-													if( ( bmp.Width > 0 && ( bmp.Width % utils.CONST_SCREEN_WIDTH_PIXELS ) != 0 ) || ( bmp.Height > 0 && ( bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) != 0 ) )
-													{
-														DialogResult dlg_res = message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nTrim the imported game level or leave it 'as is'?\n\n[Yes] to trim the game level to fully filled screens\n[No] to import the game level 'as is'", "Game Level Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
-														
-														if( dlg_res == DialogResult.Cancel )
-														{
-															throw new Exception( "Operation aborted!" );
-														}
-														
-														import_game_level_as_is = ( dlg_res == DialogResult.No ) ? true:false;
-													}
-												}
-	
-												tiles_processor.import_image_data( true, m_import_tiles_form.skip_zero_CHR_Block, m_import_tiles_form.import_game_level, import_game_level_as_is, bmp, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), import_level_create_layout, get_local_scr_ind );
-												
-												if( m_import_tiles_form.import_game_level )
-												{
-													if( m_import_tiles_form.delete_empty_screens )
-													{
-														if( import_level_check_and_delete_empty_screens() )
-														{
-															update_screens_labels_by_bank_id();
-															update_screens_list_box();
-														}
-													}
-													
-													update_screens( true, false );
-													
-													m_layout_editor.update_dimension_changes();
+													update_screens_labels_by_bank_id();
+													update_screens_list_box();
 												}
 											}
-											else
-											{
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-												if( m_import_tiles_form.import_game_level )
-												{
-													throw new Exception( "To import a game level, the imported image width must be a multiple of 32, the image height must be a multiple of 240!" );
-												}
-												else
-#endif
-												throw new Exception( "The imported image size must be a multiple of 32!" );
-											}
+											
+											update_screens( true, false );
+											
+											m_layout_editor.update_dimension_changes();
 										}
-										else
-										{
-											if( ( bmp.Width > 0 && ( bmp.Width % 16 ) == 0 ) && ( bmp.Height > 0 && ( bmp.Height % 16 ) == 0 ) )
-											{
-												tiles_processor.import_image_data( false, m_import_tiles_form.skip_zero_CHR_Block, false, false, bmp, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), null, null );
-											}
-											else
-											{
-												throw new Exception( "The imported image size must be a multiple of 16!" );
-											}
-										}
+										
+										update_graphics( true );
 									}
 								}
 								else
@@ -917,11 +737,8 @@ namespace MAPeD
 								
 								bmp.Dispose();
 								bmp = null;
-								
-								update_graphics( true );
 							}
-							break;
-							
+							break;							
 #if DEF_NES
 						case ".sprednes":
 #elif DEF_SMS
@@ -2105,6 +1922,67 @@ namespace MAPeD
 #endregion		
 // SCREEN EDITOR *************************************************************************************//
 #region screen editor
+		void delete_screen( int _scr_local_ind )
+		{
+			m_data_manager.scr_data_pos = _scr_local_ind ;
+			m_data_manager.screen_data_delete();
+
+			m_data_manager.remove_screen_from_layouts( CBoxCHRBanks.SelectedIndex, _scr_local_ind  );
+			
+			if( m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, _scr_local_ind ) )
+			{
+				m_layout_editor.set_active_screen( -1 );
+			}
+		}
+
+		bool delete_empty_screens()
+		{
+			bool res = false;
+			
+			tiles_data data		= m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			layout_data layout	= m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
+			
+			int layout_width	= layout.get_width();
+			int layout_height	= layout.get_height();
+
+			int tile_n;
+			int cell_x;
+			int cell_y;
+			
+			int scr_local_ind		= 0;
+			int scr_first_tile_ind	= 0;
+			byte[] scr_data			= null;
+			
+			for( cell_y = 0; cell_y < layout_height; cell_y++ )
+			{
+				for( cell_x = 0; cell_x < layout_width; cell_x++ )
+				{
+					scr_local_ind = m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, layout.get_data( cell_x, cell_y ).m_scr_ind );
+					
+					scr_data = data.scr_data[ scr_local_ind ];
+					
+					scr_first_tile_ind = scr_data[ 0 ];
+					
+					for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+					{
+						if( scr_first_tile_ind != scr_data[ tile_n ] )
+						{
+							break;
+						}
+					}
+					
+					if( tile_n == utils.CONST_SCREEN_TILES_CNT )
+					{
+						delete_screen( scr_local_ind );
+						
+						res = true;
+					}
+				}
+			}
+			
+			return res;
+		}
+
 		private void update_screens_list_box()
 		{
 			ListBoxScreens.Items.Clear();
@@ -2299,6 +2177,72 @@ namespace MAPeD
 #endregion		
 // LAYOUT EDITOR *************************************************************************************//		
 #region layout editor
+		layout_data create_layout_with_empty_screens( int _scr_width, int _scr_height )
+		{
+			if( m_data_manager.layout_data_create() == true )
+			{
+				ListBoxLayouts.Items.Add( m_data_manager.layouts_data_cnt - 1 );
+				m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;
+				
+				layout_data layout = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
+				
+				// create a level layout
+				{
+					for( int i = 0; i < _scr_width - 1; i++ )
+					{
+						layout.add_right();
+					}
+					
+					for( int i = 0; i < _scr_height - 1; i++ )
+					{
+						layout.add_down();
+					}
+				}
+				
+				// create screens and fill the layout
+				{
+					int scr_global_ind;
+					screen_data scr_data;
+					
+					for( int y = 0; y < _scr_height; y++ )
+					{
+						for( int x = 0; x < _scr_width; x++ )
+						{
+							if( m_data_manager.screen_data_create() == true )
+							{
+								scr_global_ind = insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 );
+
+								if( scr_global_ind >= 0 )
+								{
+									ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
+									m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
+								
+									scr_data = layout.get_data( x, y );
+									scr_data.m_scr_ind = (sbyte)scr_global_ind;
+									layout.set_data( scr_data, x, y );
+								}
+								else
+								{
+									m_data_manager.screen_data_delete();
+									
+									throw new Exception( "Can't create a screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
+								}
+							}
+							else
+							{
+								throw new Exception( "Can't create a screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
+							}
+						}
+					}
+					
+				}
+				
+				return layout;
+			}
+			
+			return null;
+		}
+
 		private int insert_screen_into_layouts( int _scr_local_ind )
 		{
 			int scr_global_ind = m_data_manager.get_global_screen_ind( m_data_manager.tiles_data_pos, _scr_local_ind );
