@@ -96,7 +96,7 @@ namespace MAPeD
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.addGroupToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteEntityGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.renameEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
@@ -107,9 +107,10 @@ namespace MAPeD
 			this.ScreensShowAllBanksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
 			this.editorToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.copyToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.createScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.copyScreenToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteEmptyScreensToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
 			this.openTilesBlocksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
@@ -215,6 +216,7 @@ namespace MAPeD
 			this.ListBoxScreens = new System.Windows.Forms.ListBox();
 			this.BtnCreateScreen = new System.Windows.Forms.Button();
 			this.BtnCopyScreen = new System.Windows.Forms.Button();
+			this.BtnDeleteEmptyScreens = new System.Windows.Forms.Button();
 			this.BtnDeleteScreen = new System.Windows.Forms.Button();
 			this.CheckBoxScreenShowGrid = new System.Windows.Forms.CheckBox();
 			this.PBoxScreen = new System.Windows.Forms.PictureBox();
@@ -861,7 +863,7 @@ namespace MAPeD
 			// 
 			this.addGroupToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.addToolStripMenuItem,
-									this.deleteToolStripMenuItem});
+									this.deleteEntityGroupToolStripMenuItem});
 			this.addGroupToolStripMenuItem1.Name = "addGroupToolStripMenuItem1";
 			this.addGroupToolStripMenuItem1.Size = new System.Drawing.Size(182, 22);
 			this.addGroupToolStripMenuItem1.Text = "&Group";
@@ -873,12 +875,12 @@ namespace MAPeD
 			this.addToolStripMenuItem.Text = "&Add";
 			this.addToolStripMenuItem.Click += new System.EventHandler(this.BtnEntityGroupAddClick_Event);
 			// 
-			// deleteToolStripMenuItem
+			// deleteEntityGroupToolStripMenuItem
 			// 
-			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-			this.deleteToolStripMenuItem.Text = "&Delete";
-			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.BtnEntityGroupDeleteClick_Event);
+			this.deleteEntityGroupToolStripMenuItem.Name = "deleteEntityGroupToolStripMenuItem";
+			this.deleteEntityGroupToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+			this.deleteEntityGroupToolStripMenuItem.Text = "&Delete";
+			this.deleteEntityGroupToolStripMenuItem.Click += new System.EventHandler(this.BtnEntityGroupDeleteClick_Event);
 			// 
 			// toolStripSeparator6
 			// 
@@ -947,9 +949,10 @@ namespace MAPeD
 			// editorToolStripMenuItem1
 			// 
 			this.editorToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.createToolStripMenuItem,
-									this.copyToolStripMenuItem3,
-									this.deleteToolStripMenuItem1,
+									this.createScreenToolStripMenuItem,
+									this.copyScreenToolStripMenuItem3,
+									this.deleteScreenToolStripMenuItem,
+									this.deleteEmptyScreensToolStripMenuItem,
 									this.toolStripSeparator16,
 									this.openTilesBlocksToolStripMenuItem,
 									this.toolStripSeparator17,
@@ -961,69 +964,76 @@ namespace MAPeD
 			this.editorToolStripMenuItem1.Size = new System.Drawing.Size(154, 22);
 			this.editorToolStripMenuItem1.Text = "E&ditor";
 			// 
-			// createToolStripMenuItem
+			// createScreenToolStripMenuItem
 			// 
-			this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-			this.createToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-			this.createToolStripMenuItem.Text = "&C&reate";
-			this.createToolStripMenuItem.Click += new System.EventHandler(this.BtnCreateScreenClick_Event);
+			this.createScreenToolStripMenuItem.Name = "createScreenToolStripMenuItem";
+			this.createScreenToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+			this.createScreenToolStripMenuItem.Text = "&C&reate";
+			this.createScreenToolStripMenuItem.Click += new System.EventHandler(this.BtnCreateScreenClick_Event);
 			// 
-			// copyToolStripMenuItem3
+			// copyScreenToolStripMenuItem3
 			// 
-			this.copyToolStripMenuItem3.Name = "copyToolStripMenuItem3";
-			this.copyToolStripMenuItem3.Size = new System.Drawing.Size(169, 22);
-			this.copyToolStripMenuItem3.Text = "&Copy";
-			this.copyToolStripMenuItem3.Click += new System.EventHandler(this.BtnCopyScreenClick_Event);
+			this.copyScreenToolStripMenuItem3.Name = "copyScreenToolStripMenuItem3";
+			this.copyScreenToolStripMenuItem3.Size = new System.Drawing.Size(187, 22);
+			this.copyScreenToolStripMenuItem3.Text = "&Copy";
+			this.copyScreenToolStripMenuItem3.Click += new System.EventHandler(this.BtnCopyScreenClick_Event);
 			// 
-			// deleteToolStripMenuItem1
+			// deleteScreenToolStripMenuItem
 			// 
-			this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
-			this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(169, 22);
-			this.deleteToolStripMenuItem1.Text = "&Delete";
-			this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.BtnDeleteScreenClick_Event);
+			this.deleteScreenToolStripMenuItem.Name = "deleteScreenToolStripMenuItem";
+			this.deleteScreenToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+			this.deleteScreenToolStripMenuItem.Text = "&Delete";
+			this.deleteScreenToolStripMenuItem.Click += new System.EventHandler(this.BtnDeleteScreenClick_Event);
+			// 
+			// deleteEmptyScreensToolStripMenuItem
+			// 
+			this.deleteEmptyScreensToolStripMenuItem.Name = "deleteEmptyScreensToolStripMenuItem";
+			this.deleteEmptyScreensToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+			this.deleteEmptyScreensToolStripMenuItem.Text = "D&elete Empty Screens";
+			this.deleteEmptyScreensToolStripMenuItem.Click += new System.EventHandler(this.BtnDeleteEmptyScreensClick_Event);
 			// 
 			// toolStripSeparator16
 			// 
 			this.toolStripSeparator16.Name = "toolStripSeparator16";
-			this.toolStripSeparator16.Size = new System.Drawing.Size(166, 6);
+			this.toolStripSeparator16.Size = new System.Drawing.Size(184, 6);
 			// 
 			// openTilesBlocksToolStripMenuItem
 			// 
 			this.openTilesBlocksToolStripMenuItem.Name = "openTilesBlocksToolStripMenuItem";
-			this.openTilesBlocksToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.openTilesBlocksToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
 			this.openTilesBlocksToolStripMenuItem.Text = "&Open Tiles/Blocks";
 			this.openTilesBlocksToolStripMenuItem.Click += new System.EventHandler(this.BtnTilesBlocksClick_Event);
 			// 
 			// toolStripSeparator17
 			// 
 			this.toolStripSeparator17.Name = "toolStripSeparator17";
-			this.toolStripSeparator17.Size = new System.Drawing.Size(166, 6);
+			this.toolStripSeparator17.Size = new System.Drawing.Size(184, 6);
 			// 
 			// ScreenEditModeSingleToolStripMenuItem
 			// 
 			this.ScreenEditModeSingleToolStripMenuItem.Name = "ScreenEditModeSingleToolStripMenuItem";
-			this.ScreenEditModeSingleToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.ScreenEditModeSingleToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
 			this.ScreenEditModeSingleToolStripMenuItem.Text = "Mode &Single";
 			this.ScreenEditModeSingleToolStripMenuItem.Click += new System.EventHandler(this.ScreenEditModeSingleToolStripMenuItemClick_Event);
 			// 
 			// ScreenEditModeLayoutToolStripMenuItem
 			// 
 			this.ScreenEditModeLayoutToolStripMenuItem.Name = "ScreenEditModeLayoutToolStripMenuItem";
-			this.ScreenEditModeLayoutToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.ScreenEditModeLayoutToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
 			this.ScreenEditModeLayoutToolStripMenuItem.Text = "Mode &Layout";
 			this.ScreenEditModeLayoutToolStripMenuItem.Click += new System.EventHandler(this.ScreenEditModeLayoutToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator18
 			// 
 			this.toolStripSeparator18.Name = "toolStripSeparator18";
-			this.toolStripSeparator18.Size = new System.Drawing.Size(166, 6);
+			this.toolStripSeparator18.Size = new System.Drawing.Size(184, 6);
 			// 
 			// ScreenEditShowGridToolStripMenuItem
 			// 
 			this.ScreenEditShowGridToolStripMenuItem.Checked = true;
 			this.ScreenEditShowGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.ScreenEditShowGridToolStripMenuItem.Name = "ScreenEditShowGridToolStripMenuItem";
-			this.ScreenEditShowGridToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.ScreenEditShowGridToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
 			this.ScreenEditShowGridToolStripMenuItem.Text = "&Show Grid";
 			this.ScreenEditShowGridToolStripMenuItem.Click += new System.EventHandler(this.ScreenEditShowGridToolStripMenuItemClick_Event);
 			// 
@@ -1978,10 +1988,11 @@ namespace MAPeD
 			this.groupBox6.Controls.Add(this.ListBoxScreens);
 			this.groupBox6.Controls.Add(this.BtnCreateScreen);
 			this.groupBox6.Controls.Add(this.BtnCopyScreen);
+			this.groupBox6.Controls.Add(this.BtnDeleteEmptyScreens);
 			this.groupBox6.Controls.Add(this.BtnDeleteScreen);
 			this.groupBox6.Location = new System.Drawing.Point(588, 135);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(81, 414);
+			this.groupBox6.Size = new System.Drawing.Size(81, 442);
 			this.groupBox6.TabIndex = 43;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Screens:";
@@ -2017,6 +2028,16 @@ namespace MAPeD
 			this.BtnCopyScreen.UseVisualStyleBackColor = true;
 			this.BtnCopyScreen.Click += new System.EventHandler(this.BtnCopyScreenClick_Event);
 			// 
+			// BtnDeleteEmptyScreens
+			// 
+			this.BtnDeleteEmptyScreens.Location = new System.Drawing.Point(8, 413);
+			this.BtnDeleteEmptyScreens.Name = "BtnDeleteEmptyScreens";
+			this.BtnDeleteEmptyScreens.Size = new System.Drawing.Size(64, 23);
+			this.BtnDeleteEmptyScreens.TabIndex = 48;
+			this.BtnDeleteEmptyScreens.Text = "Clean Up";
+			this.BtnDeleteEmptyScreens.UseVisualStyleBackColor = true;
+			this.BtnDeleteEmptyScreens.Click += new System.EventHandler(this.BtnDeleteEmptyScreensClick_Event);
+			// 
 			// BtnDeleteScreen
 			// 
 			this.BtnDeleteScreen.Location = new System.Drawing.Point(8, 384);
@@ -2031,10 +2052,10 @@ namespace MAPeD
 			// 
 			this.CheckBoxScreenShowGrid.Checked = true;
 			this.CheckBoxScreenShowGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CheckBoxScreenShowGrid.Location = new System.Drawing.Point(588, 555);
+			this.CheckBoxScreenShowGrid.Location = new System.Drawing.Point(682, 555);
 			this.CheckBoxScreenShowGrid.Name = "CheckBoxScreenShowGrid";
 			this.CheckBoxScreenShowGrid.Size = new System.Drawing.Size(78, 22);
-			this.CheckBoxScreenShowGrid.TabIndex = 48;
+			this.CheckBoxScreenShowGrid.TabIndex = 53;
 			this.CheckBoxScreenShowGrid.Text = "Show Grid";
 			this.CheckBoxScreenShowGrid.UseVisualStyleBackColor = true;
 			this.CheckBoxScreenShowGrid.CheckedChanged += new System.EventHandler(this.CheckBoxScreenShowGridChecked_Event);
@@ -3286,6 +3307,8 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem deleteEmptyScreensToolStripMenuItem;
+		private System.Windows.Forms.Button BtnDeleteEmptyScreens;
 		private System.Windows.Forms.ToolStripMenuItem nextPageToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem prevPageToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
@@ -3381,9 +3404,9 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;
 		private System.Windows.Forms.ToolStripMenuItem openTilesBlocksToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
-		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem3;
-		private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem deleteScreenToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem copyScreenToolStripMenuItem3;
+		private System.Windows.Forms.ToolStripMenuItem createScreenToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem TilesLockEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem optimizationToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem rotateToolStripMenuItem1;
@@ -3434,7 +3457,7 @@ namespace MAPeD
 		private System.Windows.Forms.Button BtnEntityDelete;
 		private System.Windows.Forms.Button BtnEntityAdd;
 		private System.Windows.Forms.GroupBox groupBox10;
-		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem deleteEntityGroupToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem cHRBankToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem layoutToolStripMenuItem;

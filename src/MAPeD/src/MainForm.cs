@@ -217,6 +217,7 @@ namespace MAPeD
 																new SToolTipData( BtnTileReserveBlocks, "Make links to empty blocks" ),
 																new SToolTipData( RBtnScreenEditModeSingle, "Single screen edit mode" ),
 																new SToolTipData( RBtnScreenEditModeLayout, "Layout's screen editing with moving to adjacent screens" ),
+																new SToolTipData( BtnDeleteEmptyScreens, "Delete all one tile filled screens" ),
 																new SToolTipData( BtnLayoutMoveUp, "Move selected layout up" ),
 																new SToolTipData( BtnLayoutMoveDown, "Move selected layout down" ),
 																new SToolTipData( CBoxBlockObjId, "Assign property to selected block or CHR" ),
@@ -715,10 +716,11 @@ namespace MAPeD
 										{
 											if( m_import_tiles_form.delete_empty_screens )
 											{
-												if( delete_empty_screens() )
+												if( delete_empty_screens() > 0 )
 												{
-													update_screens_labels_by_bank_id();
 													update_screens_list_box();
+													
+													ListBoxScreens.SelectedIndex = m_data_manager.scr_data_pos;
 												}
 											}
 											
@@ -1932,50 +1934,81 @@ namespace MAPeD
 			if( m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, _scr_local_ind ) )
 			{
 				m_layout_editor.set_active_screen( -1 );
+				
+				update_screens_labels_by_bank_id();
 			}
 		}
 
-		bool delete_empty_screens()
+		bool check_empty_screen( byte[] _scr_data )
 		{
-			bool res = false;
+			int tile_n;
 			
+			int scr_first_tile_ind = _scr_data[ 0 ];
+			
+			for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+			{
+				if( scr_first_tile_ind != _scr_data[ tile_n ] )
+				{
+					break;
+				}
+			}
+			
+			if( tile_n == utils.CONST_SCREEN_TILES_CNT )
+			{
+				return true;
+			}
+			
+			return false;
+		}
+		
+		int delete_empty_screens()
+		{
+			int res = 0;
+
 			tiles_data data		= m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 			layout_data layout	= m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
 			
-			int layout_width	= layout.get_width();
-			int layout_height	= layout.get_height();
-
-			int tile_n;
-			int cell_x;
-			int cell_y;
-			
-			int scr_local_ind		= 0;
-			int scr_first_tile_ind	= 0;
-			byte[] scr_data			= null;
-			
-			for( cell_y = 0; cell_y < layout_height; cell_y++ )
+			if( layout != null )
 			{
-				for( cell_x = 0; cell_x < layout_width; cell_x++ )
+				int layout_width	= layout.get_width();
+				int layout_height	= layout.get_height();
+
+				int scr_local_ind	= 0;
+				
+				int cell_x;
+				int cell_y;
+				
+				for( cell_y = 0; cell_y < layout_height; cell_y++ )
 				{
-					scr_local_ind = m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, layout.get_data( cell_x, cell_y ).m_scr_ind );
-					
-					scr_data = data.scr_data[ scr_local_ind ];
-					
-					scr_first_tile_ind = scr_data[ 0 ];
-					
-					for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+					for( cell_x = 0; cell_x < layout_width; cell_x++ )
 					{
-						if( scr_first_tile_ind != scr_data[ tile_n ] )
+						scr_local_ind = m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, layout.get_data( cell_x, cell_y ).m_scr_ind );
+						
+						if( scr_local_ind >= 0 )
 						{
-							break;
+							if( check_empty_screen( data.scr_data[ scr_local_ind ] ) )
+							{
+								delete_screen( scr_local_ind );
+								
+								++res;
+							}
 						}
 					}
-					
-					if( tile_n == utils.CONST_SCREEN_TILES_CNT )
+				}
+			}
+			else
+			{
+				int scr_n;
+				
+				for( scr_n = 0; scr_n < m_data_manager.scr_data_cnt; scr_n++ )
+				{
+					if( check_empty_screen( data.scr_data[ scr_n ] ) )
 					{
-						delete_screen( scr_local_ind );
+						delete_screen( scr_n );
+
+						--scr_n;
 						
-						res = true;
+						++res;
 					}
 				}
 			}
@@ -2077,6 +2110,36 @@ namespace MAPeD
 				enable_update_screens_btn( true );
 				
 				set_status_msg( "Screen deleted" );
+			}
+		}
+		
+		void BtnDeleteEmptyScreensClick_Event(object sender, EventArgs e)
+		{
+			if( ListBoxScreens.Items.Count > 0 && message_box( "Delete all one tile filled screens?", "Clean Up", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			{
+				int deleted_screens_cnt = 0;
+				
+				if( ( deleted_screens_cnt = delete_empty_screens() ) > 0 )
+				{
+					m_layout_editor.update_dimension_changes();
+					
+					update_screens_list_box();
+
+					if( m_data_manager.scr_data_cnt == 0 )
+					{
+						update_graphics( false );
+					}
+					
+					enable_update_screens_btn( true );
+
+					ListBoxScreens.SelectedIndex = m_data_manager.scr_data_pos;
+					
+					set_status_msg( "Clean up: " + deleted_screens_cnt + " screens deleted" );
+				}
+				else
+				{
+					set_status_msg( "Clean up: no empty screens found" );
+				}
 			}
 		}
 		
