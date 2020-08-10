@@ -752,8 +752,12 @@ namespace MAPeD
 			byte index_byte;
 			
 			byte color_index;
-#if DEF_NES_remapping			
+#if DEF_NES
+			bool need_remapping = true;
 			SortedList< byte, byte > inds_remap_arr = new SortedList<byte, byte>();
+#elif DEF_SMS
+			bool need_remapping = false;
+			SortedList< byte, byte > inds_remap_arr = null;
 #endif			
 			CHR_offset_x = _block_offset_x + ( ( _CHR_n & 0x01 ) == 0x01 ? 8:0 );
 			CHR_offset_y = _block_offset_y + ( ( _CHR_n & 0x02 ) == 0x02 ? 8:0 );
@@ -765,34 +769,35 @@ namespace MAPeD
 					index_byte = Marshal.ReadByte( _data_ptr, ( CHR_offset_y + CHR_y ) * _stride + ( ( CHR_offset_x + CHR_x ) >> 1 ) );
 
 					color_index = ( byte )( ( ( CHR_x & 0x01 ) == 0x01 ) ? ( index_byte & 0x0f ):( ( index_byte & 0xf0 ) >> 4 ) );
-#if DEF_NES
-					color_index &= 0x03;
-#endif					
-					
-#if DEF_NES_remapping
-					if( inds_remap_arr.ContainsKey( color_index ) == false )
+
+					if( need_remapping )
 					{
-						inds_remap_arr.Add( color_index, 0 );
+						if( inds_remap_arr.ContainsKey( color_index ) == false )
+						{
+							inds_remap_arr.Add( color_index, 0 );
+						}
 					}
-#endif					
+
 					_img_buff[ CHR_y * utils.CONST_SPR8x8_SIDE_PIXELS_CNT + CHR_x ] = color_index;
 				}
 			}
-#if DEF_NES_remapping
-			int color_ind 	= 0;										
 			
-			IList< byte > ind_keys 	= inds_remap_arr.Keys;
-			
-			for( byte key_n = 0; key_n < ind_keys.Count; key_n++ )
+			if( need_remapping )
 			{
-				inds_remap_arr[ ind_keys[ key_n ] ] = ( byte )( ( color_ind++ ) & 0x03 );
+				color_index = 0;
+				
+				IList< byte > ind_keys 	= inds_remap_arr.Keys;
+				
+				for( byte key_n = 0; key_n < ind_keys.Count; key_n++ )
+				{
+					inds_remap_arr[ ind_keys[ key_n ] ] = ( byte )( ( color_index++ ) & 0x03 );
+				}
+				
+				for( int pix_n = 0; pix_n < utils.CONST_SPR8x8_SIDE_PIXELS_CNT * utils.CONST_SPR8x8_SIDE_PIXELS_CNT; pix_n++ )
+				{
+					_img_buff[ pix_n ] = inds_remap_arr[ _img_buff[ pix_n ] ];
+				}
 			}
-			
-			for( int pix_n = 0; pix_n < utils.CONST_SPR8x8_SIDE_PIXELS_CNT * utils.CONST_SPR8x8_SIDE_PIXELS_CNT; pix_n++ )
-			{
-				_img_buff[ pix_n ] = inds_remap_arr[ _img_buff[ pix_n ] ];
-			}
-#endif			
 		}
 	}
 }
