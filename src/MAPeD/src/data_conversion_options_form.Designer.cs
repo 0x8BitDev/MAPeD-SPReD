@@ -40,6 +40,7 @@ namespace MAPeD
 			this.RBtnScrAlignTop = new System.Windows.Forms.RadioButton();
 			this.CBoxConvertColors = new System.Windows.Forms.CheckBox();
 			this.BtnOk = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -48,7 +49,7 @@ namespace MAPeD
 			this.groupBox1.Controls.Add(this.RBtnScrAlignBottom);
 			this.groupBox1.Controls.Add(this.RBtnScrAlignCenter);
 			this.groupBox1.Controls.Add(this.RBtnScrAlignTop);
-			this.groupBox1.Location = new System.Drawing.Point(24, 12);
+			this.groupBox1.Location = new System.Drawing.Point(42, 12);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(102, 100);
 			this.groupBox1.TabIndex = 0;
@@ -88,7 +89,7 @@ namespace MAPeD
 			// 
 			this.CBoxConvertColors.Checked = true;
 			this.CBoxConvertColors.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CBoxConvertColors.Location = new System.Drawing.Point(24, 118);
+			this.CBoxConvertColors.Location = new System.Drawing.Point(42, 118);
 			this.CBoxConvertColors.Name = "CBoxConvertColors";
 			this.CBoxConvertColors.Size = new System.Drawing.Size(104, 24);
 			this.CBoxConvertColors.TabIndex = 4;
@@ -98,19 +99,30 @@ namespace MAPeD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(36, 155);
+			this.BtnOk.Location = new System.Drawing.Point(16, 155);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 5;
 			this.BtnOk.Text = "&Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			// 
+			// button1
+			// 
+			this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.button1.Location = new System.Drawing.Point(97, 155);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(75, 23);
+			this.button1.TabIndex = 6;
+			this.button1.Text = "&Cancel";
+			this.button1.UseVisualStyleBackColor = true;
+			// 
 			// data_conversion_options_form
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(153, 190);
+			this.ClientSize = new System.Drawing.Size(188, 190);
+			this.Controls.Add(this.button1);
 			this.Controls.Add(this.BtnOk);
 			this.Controls.Add(this.CBoxConvertColors);
 			this.Controls.Add(this.groupBox1);
@@ -123,6 +135,7 @@ namespace MAPeD
 			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button BtnOk;
 		private System.Windows.Forms.CheckBox CBoxConvertColors;
 		private System.Windows.Forms.RadioButton RBtnScrAlignTop;
