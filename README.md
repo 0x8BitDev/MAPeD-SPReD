@@ -31,7 +31,7 @@ The MAPeD is a tool for building a game levels for NES/SMS games from scratch.
 - **NES <=> SMS** data conversion**
 - etc...
 
-\* Smart import of images with checking of duplicate CHRs/blocks/tiles and flipped CHRs.
+\* Smart import of images with checking of duplicate CHRs/blocks/tiles and flipped CHRs. Automatic palettes applying supported for both **NES** and **SMS** images.
 
 \** You can load a **NES** project into **SMS** editor and vice versa.
 
