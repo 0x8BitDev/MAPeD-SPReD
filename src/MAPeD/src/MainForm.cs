@@ -1943,11 +1943,51 @@ namespace MAPeD
 				update_screens_labels_by_bank_id();
 			}
 		}
-
+#if DEF_NES
+		bool check_empty_screen( uint[] _tiles, byte[] _scr_data )
+#elif DEF_SMS
 		bool check_empty_screen( byte[] _scr_data )
+#endif
 		{
 			int tile_n;
+#if DEF_NES
+			uint tile_ind;
 			
+			int scr_first_tile_ind	= _scr_data[ 0 ];
+			
+			for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES; tile_n++ )
+			{
+				if( scr_first_tile_ind != _scr_data[ tile_n ] )
+				{
+					break;
+				}
+			}
+			
+			if( tile_n != utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES )
+			{
+				return false;
+			}
+
+			// check the last upper half of the tiles line
+			int scr_block_ind	= utils.get_byte_from_uint( _tiles[ _scr_data[ 0 ] ], 0 );
+
+			for( tile_n = utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+			{
+				tile_ind = _tiles[ _scr_data[ tile_n ] ];
+				
+				if( ( scr_block_ind != utils.get_byte_from_uint( tile_ind, 0 ) ||
+				    ( scr_block_ind != utils.get_byte_from_uint( tile_ind, 1 ) ) ) )
+				{
+					break;
+				}
+			}
+			
+			if( tile_n == utils.CONST_SCREEN_TILES_CNT )
+			{
+				return true;
+			}
+			
+#elif DEF_SMS
 			int scr_first_tile_ind = _scr_data[ 0 ];
 			
 			for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
@@ -1962,7 +2002,7 @@ namespace MAPeD
 			{
 				return true;
 			}
-			
+#endif			
 			return false;
 		}
 		
@@ -1991,7 +2031,11 @@ namespace MAPeD
 						
 						if( scr_local_ind >= 0 )
 						{
+#if DEF_NES
+							if( check_empty_screen( data.tiles, data.scr_data[ scr_local_ind ] ) )
+#elif DEF_SMS							
 							if( check_empty_screen( data.scr_data[ scr_local_ind ] ) )
+#endif
 							{
 								delete_screen( scr_local_ind );
 								
@@ -2007,7 +2051,11 @@ namespace MAPeD
 				
 				for( scr_n = 0; scr_n < m_data_manager.scr_data_cnt; scr_n++ )
 				{
+#if DEF_NES
+					if( check_empty_screen( data.tiles, data.scr_data[ scr_n ] ) )
+#elif DEF_SMS
 					if( check_empty_screen( data.scr_data[ scr_n ] ) )
+#endif
 					{
 						delete_screen( scr_n );
 
