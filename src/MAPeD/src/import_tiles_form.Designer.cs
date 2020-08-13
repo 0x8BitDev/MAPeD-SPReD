@@ -42,6 +42,7 @@ namespace MAPeD
 			this.CheckBoxGameLevel = new System.Windows.Forms.CheckBox();
 			this.CheckBoxDeleteEmptyScreens = new System.Windows.Forms.CheckBox();
 			this.CheckBoxApplyPalettes = new System.Windows.Forms.CheckBox();
+			this.BtnApplyPaletteDesc = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// CheckBox1
@@ -125,6 +126,16 @@ namespace MAPeD
 			this.CheckBoxApplyPalettes.UseVisualStyleBackColor = true;
 			this.CheckBoxApplyPalettes.CheckedChanged += new System.EventHandler(this.CheckBoxApplyPalettesChanged_Event);
 			// 
+			// BtnApplyPaletteDesc
+			// 
+			this.BtnApplyPaletteDesc.Location = new System.Drawing.Point(158, 111);
+			this.BtnApplyPaletteDesc.Name = "BtnApplyPaletteDesc";
+			this.BtnApplyPaletteDesc.Size = new System.Drawing.Size(20, 20);
+			this.BtnApplyPaletteDesc.TabIndex = 7;
+			this.BtnApplyPaletteDesc.Text = "?";
+			this.BtnApplyPaletteDesc.UseVisualStyleBackColor = true;
+			this.BtnApplyPaletteDesc.Click += new System.EventHandler(this.BtnApplyPaletteDescClick_Event);
+			// 
 			// import_tiles_form
 			// 
 			this.AcceptButton = this.BtnOk;
@@ -132,6 +143,7 @@ namespace MAPeD
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
 			this.ClientSize = new System.Drawing.Size(202, 205);
+			this.Controls.Add(this.BtnApplyPaletteDesc);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
 			this.Controls.Add(this.CheckBoxSkipZeroCHRBlock);
@@ -148,6 +160,7 @@ namespace MAPeD
 			this.Text = "Import Tiles Options";
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button BtnApplyPaletteDesc;
 		private System.Windows.Forms.CheckBox CheckBoxApplyPalettes;
 		private System.Windows.Forms.CheckBox CheckBoxDeleteEmptyScreens;
 		private System.Windows.Forms.CheckBox CheckBoxGameLevel;

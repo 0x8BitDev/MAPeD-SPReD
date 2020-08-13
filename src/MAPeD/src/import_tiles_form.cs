@@ -55,7 +55,7 @@ namespace MAPeD
 #if DEF_NES
 			CheckBoxApplyPalettes.Checked = true;
 #elif DEF_SMS
-			CheckBoxApplyPalettes.Checked = CheckBoxApplyPalettes.Visible = false;
+			CheckBoxApplyPalettes.Checked = CheckBoxApplyPalettes.Visible = BtnApplyPaletteDesc.Visible = false;
 #endif
 		}
 		
@@ -806,9 +806,13 @@ namespace MAPeD
 			
 			if( more_than_4_color_in_palette || more_than_4_palettes )
 			{
-				MainForm.message_box( "The imported image isn't a native NES image!\nSome color information will be lost!", "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				MainForm.message_box( "The imported image doesn't meet requirements!\nSome color information will be lost!", "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 			}
 		}
-#endif
+#endif		
+		void BtnApplyPaletteDescClick_Event(object sender, EventArgs e)
+		{
+			MainForm.message_box( "For best results, an imported image must meet the following requirements:\n\n- one CHR bank data\n- no more than 13 colors", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
+		}
 	}
 }
