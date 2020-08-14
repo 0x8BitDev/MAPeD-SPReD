@@ -196,6 +196,13 @@
       <Link>screen_mark_form.Designer.cs</Link>
       <DependentUpon>screen_mark_form.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\statistics_form.cs">
+      <Link>statistics_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\statistics_form.Designer.cs">
+      <Link>statistics_form.Designer.cs</Link>
+      <DependentUpon>statistics_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\strings.cs">
       <Link>strings.cs</Link>
     </Compile>
@@ -289,6 +296,10 @@
     <EmbeddedResource Include="..\src\screen_mark_form.resx">
       <Link>screen_mark_form.resx</Link>
       <DependentUpon>screen_mark_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\statistics_form.resx">
+      <Link>statistics_form.resx</Link>
+      <DependentUpon>statistics_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\tab_page_container.resx">
       <Link>tab_page_container.resx</Link>

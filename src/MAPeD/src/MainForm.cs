@@ -41,6 +41,7 @@ namespace MAPeD
 		private import_tiles_form	m_import_tiles_form		= null;
 		private screen_mark_form	m_screen_mark_form		= null;
 		private description_form	m_description_form		= null;
+		private statistics_form		m_statistics_form		= null;
 		private create_layout_form	m_create_layout_form	= null;
 		
 		private SPSeD.py_editor		m_py_editor	= null;
@@ -145,6 +146,8 @@ namespace MAPeD
 			m_screen_mark_form = new screen_mark_form();
 			
 			m_description_form = new description_form();
+			
+			m_statistics_form = new statistics_form( m_data_manager );
 			
 			m_create_layout_form = new create_layout_form();
 
@@ -329,6 +332,11 @@ namespace MAPeD
 		void DescriptionToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			m_description_form.ShowDialog();
+		}
+		
+		void StatisticsToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			m_statistics_form.ShowStats();
 		}
 		
 		private void clear_active_tile_img()
@@ -1187,20 +1195,27 @@ namespace MAPeD
 		
 		void BtnAddCHRBankClick_Event(object sender, EventArgs e)
 		{
-			m_data_manager.tiles_data_create();
-			
-			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_cnt - 1 );
-			
-			CBoxCHRBanks.Items.Add( data );
-			CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_cnt - 1;
-
-			palette_group.Instance.active_palette = 0;
-
-			enable_main_UI( true );
-			
-			enable_copy_paste_action( false, ECopyPasteType.cpt_All );
-			
-			set_status_msg( "CHR bank added" );
+			if( m_data_manager.tiles_data_create() )
+			{
+				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_cnt - 1 );
+				
+				CBoxCHRBanks.Items.Add( data );
+				CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_cnt - 1;
+	
+				palette_group.Instance.active_palette = 0;
+	
+				enable_main_UI( true );
+				
+				enable_copy_paste_action( false, ECopyPasteType.cpt_All );
+				
+				set_status_msg( "Added CHR bank" );
+			}
+			else
+			{
+				set_status_msg( "Failed to create CHR bank" );
+				
+				message_box( "Can't create CHR bank!\nThe maximum allowed number of CHR banks - " + utils.CONST_CHR_BANK_MAX_CNT, "Failed to Create CHR Bank", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
 		}
 		
 		void BtnDeleteCHRBankClick_Event(object sender, EventArgs e)
@@ -1943,6 +1958,7 @@ namespace MAPeD
 				update_screens_labels_by_bank_id();
 			}
 		}
+
 #if DEF_NES
 		bool check_empty_screen( uint[] _tiles, byte[] _scr_data )
 #elif DEF_SMS
@@ -2002,7 +2018,7 @@ namespace MAPeD
 			{
 				return true;
 			}
-#endif			
+#endif
 			return false;
 		}
 		
@@ -2092,15 +2108,15 @@ namespace MAPeD
 					
 					enable_update_screens_btn( true );
 					
-					set_status_msg( "Screen added" );
+					set_status_msg( "Added screen" );
 				}
 				else
 				{
 					m_data_manager.screen_data_delete();
 					
-					set_status_msg( "Screen creation operation aborted" );
+					set_status_msg( "Failed to create screen" );
 					
-					message_box( "Can't create a screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Screen Creation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+					message_box( "Can't create screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Failed to Create Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 				}
 			}
 		}
@@ -2122,7 +2138,7 @@ namespace MAPeD
 				{
 					m_data_manager.screen_data_delete();
 					
-					set_status_msg( "Screen copy operation aborted" );
+					set_status_msg( "Failed to copy screen" );
 					
 					message_box( "Can't copy the screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Screen Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 				}
@@ -2341,12 +2357,12 @@ namespace MAPeD
 								{
 									m_data_manager.screen_data_delete();
 									
-									throw new Exception( "Can't create a screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
+									throw new Exception( "Can't create screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
 								}
 							}
 							else
 							{
-								throw new Exception( "Can't create a screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
+								throw new Exception( "Can't create screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
 							}
 						}
 					}
@@ -2632,14 +2648,23 @@ namespace MAPeD
 		
 		void BtnCreateLayoutClick_Event(object sender, EventArgs e)
 		{
-			if( m_data_manager.layout_data_create() == true )
+			if( m_data_manager.tiles_data_pos >= 0 )
 			{
-				ListBoxLayouts.Items.Add( m_data_manager.layouts_data_cnt - 1 );
-				m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;
-				
-				reset_entity_instance_preview();
-				
-				set_status_msg( "Layout added" );
+				if( m_data_manager.layout_data_create() == true )
+				{
+					ListBoxLayouts.Items.Add( m_data_manager.layouts_data_cnt - 1 );
+					m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;
+					
+					reset_entity_instance_preview();
+					
+					set_status_msg( "Added layout" );
+				}
+				else
+				{
+					set_status_msg( "Failed to create layout" );
+					
+					message_box( "Can't create layout!\nThe maximum allowed number of layouts - " + utils.CONST_LAYOUT_MAX_CNT, "Failed to Create Layout", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
 			}
 		}
 
@@ -2649,18 +2674,25 @@ namespace MAPeD
 			{
 				if( m_data_manager.tiles_data_pos >= 0 && m_create_layout_form.ShowDialog() == DialogResult.OK )
 				{
-					create_layout_with_empty_screens( m_create_layout_form.layout_width, m_create_layout_form.layout_height );
-					
-					reset_entity_instance_preview();
-					
-					m_layout_editor.update_dimension_changes();
+					if( create_layout_with_empty_screens( m_create_layout_form.layout_width, m_create_layout_form.layout_height ) != null )
+					{
+						reset_entity_instance_preview();
 						
-					set_status_msg( "Layout " + m_create_layout_form.layout_width + "x" + m_create_layout_form.layout_height + " added" );
+						m_layout_editor.update_dimension_changes();
+							
+						set_status_msg( "Added layout " + m_create_layout_form.layout_width + "x" + m_create_layout_form.layout_height );
+					}
+					else
+					{
+						throw new Exception( "Can't create layout!\nThe maximum allowed number of layouts - " + utils.CONST_LAYOUT_MAX_CNT );
+					}
 				}
 			}
 			catch( Exception _err )
 			{
-				message_box( _err.Message, "Layout Creation Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				set_status_msg( "Failed to create layout or screen" );
+				
+				message_box( _err.Message, "Failed to Create Layout or Screen", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
@@ -2684,15 +2716,22 @@ namespace MAPeD
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 && ListBoxLayouts.Items.Count > 0 && message_box( "Are you sure?", "Copy Layout", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
-				m_data_manager.layout_data_copy();
-
-				update_layouts_list_box();
-				
-				m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_pos;
-				
-				reset_entity_instance_preview();
-				
-				set_status_msg( "Layout copied" );
+				if( m_data_manager.layout_data_copy() == true )
+				{
+					update_layouts_list_box();
+					
+					m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_pos;
+					
+					reset_entity_instance_preview();
+					
+					set_status_msg( "Layout copied" );
+				}
+				else
+				{
+					set_status_msg( "Failed to copy layout" );
+					
+					message_box( "Can't copy layout!\nThe maximum allowed number of layouts - " + utils.CONST_LAYOUT_MAX_CNT, "Failed to Copy Layout", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
 			}
 		}
 
@@ -2955,7 +2994,7 @@ namespace MAPeD
 			{
 				m_data_manager.group_add( m_object_name_form.eidt_str );
 				
-				set_status_msg( "Group added" );
+				set_status_msg( "Added group" );
 			}
 		}
 		
@@ -3024,7 +3063,7 @@ namespace MAPeD
 			{
 				m_data_manager.entity_add( m_object_name_form.eidt_str, ( sel_node.Parent != null ? sel_node.Parent.Name:sel_node.Name ) );
 				
-				set_status_msg( "Entity added" );
+				set_status_msg( "Added entity" );
 				
 				layout_editor_set_mode( layout_editor.EMode.em_EditEntities );
 				

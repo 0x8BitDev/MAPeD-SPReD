@@ -216,7 +216,7 @@ namespace MAPeD
 						
 						if( level_layout == null )
 						{
-							throw new Exception( "Can't create a layout! The maximum allowed number of layouts - " + utils.CONST_LAYOUT_MAX_CNT );
+							throw new Exception( "Can't create layout!\nThe maximum allowed number of layouts - " + utils.CONST_LAYOUT_MAX_CNT );
 						}
 					}
 #if DEF_SCREEN_HEIGHT_7d5_TILES

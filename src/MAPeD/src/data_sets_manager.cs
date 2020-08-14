@@ -377,7 +377,7 @@ namespace MAPeD
 			}
 		}
 
-		public void layout_data_copy()
+		public bool layout_data_copy()
 		{
 			if( layouts_data_pos >= 0 )
 			{
@@ -385,8 +385,12 @@ namespace MAPeD
 				{
 					m_layouts_data.Add( m_layouts_data[ layouts_data_pos ].copy() );
 					m_layouts_data_pos = m_layouts_data.Count - 1;
+					
+					return true;
 				}
 			}
+			
+			return false;
 		}
 		
 		public void layout_swap( int _layout1, int _layout2 )
@@ -542,13 +546,17 @@ namespace MAPeD
 			return false;
 		}
 		
-		public void tiles_data_create()
+		public bool tiles_data_create()
 		{
-			if( m_tiles_data.Count < utils.CONST_CHR_BANK_MAX_CNT - 1 )
+			if( m_tiles_data.Count < utils.CONST_CHR_BANK_MAX_CNT )
 			{
 				m_tiles_data.Add( new tiles_data() );
 				++m_tiles_data_pos;
+				
+				return true;
 			}
+			
+			return false;
 		}
 		
 		public void tiles_data_destroy()

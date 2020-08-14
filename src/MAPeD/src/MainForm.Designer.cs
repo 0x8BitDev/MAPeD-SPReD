@@ -340,6 +340,7 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.statisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ContextMenuEntitiesTreeGoup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
@@ -468,6 +469,7 @@ namespace MAPeD
 									this.exportScriptEditorToolStripMenuItem,
 									this.toolStripSeparator1,
 									this.descriptionToolStripMenuItem,
+									this.statisticsToolStripMenuItem,
 									this.toolStripSeparator3,
 									this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -3236,6 +3238,13 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
 			// 
+			// statisticsToolStripMenuItem
+			// 
+			this.statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
+			this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+			this.statisticsToolStripMenuItem.Text = "S&tatistics";
+			this.statisticsToolStripMenuItem.Click += new System.EventHandler(this.StatisticsToolStripMenuItemClick_Event);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3319,6 +3328,7 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem statisticsToolStripMenuItem;
 		private System.Windows.Forms.Button BtnCreateLayoutWxH;
 		private System.Windows.Forms.ToolStripMenuItem deleteEmptyScreensToolStripMenuItem;
 		private System.Windows.Forms.Button BtnDeleteEmptyScreens;

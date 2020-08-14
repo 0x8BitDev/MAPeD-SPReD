@@ -198,7 +198,7 @@ namespace MAPeD
 		public const int CONST_CHR_BANK_PAGE_SIDE			= 128;
 		public const int CONST_CHR_BANK_PAGE_SIZE			= CONST_CHR_BANK_PAGE_SIDE * CONST_CHR_BANK_PAGE_SIDE;
 		public const int CONST_CHR_BANK_PAGE_SPRITES_CNT	= 256;
-		public const int CONST_CHR_BANK_MAX_CNT				= 256;
+		public const int CONST_CHR_BANK_MAX_CNT				= 128;
 		
 		public const int CONST_BLOCK_SIZE					= 4;	// ushorts
 		public const int CONST_TILE_SIZE					= 4;	// bytes
