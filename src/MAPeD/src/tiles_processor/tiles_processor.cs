@@ -207,6 +207,7 @@ namespace MAPeD
 				data.tiles[ sel_tile ] = 0;
 				
 				int ff_tile_ind = data.get_first_free_tile_id();
+				ff_tile_ind = ff_tile_ind < 0 ? utils.CONST_MAX_TILES_CNT:ff_tile_ind;
 				int tile_n;
 				int block_pos_n;
 				
@@ -214,22 +215,26 @@ namespace MAPeD
 				{
 					if( data.block_sum( block_n ) == 0 )
 					{
+						// check if 'zero' block is busy
 						for( tile_n = 1; tile_n < ff_tile_ind; tile_n++ )
 						{
 							for( block_pos_n = 0; block_pos_n < utils.CONST_TILE_SIZE; block_pos_n++ )
 							{
 								if( data.get_tile_block( tile_n, block_pos_n ) == block_n )
-								{
+								{	
+									// 'zero' block is busy
 									break;
 								}
 							}
 							
 							if( block_pos_n != utils.CONST_TILE_SIZE )
 							{
+								// 'zero' block is busy
 								break;
 							}
 						}
 						
+						// 'zero' block isn't in use OR tiles list is empty
 						if( tile_n == ff_tile_ind || ff_tile_ind == 0 )
 						{
 							data.set_tile_block( sel_tile, block_pos++, ( byte )block_n );
@@ -282,7 +287,9 @@ namespace MAPeD
 				}
 				
 				int ff_block_ind = data.get_first_free_block_id() << 2;
+				ff_block_ind = ff_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:ff_block_ind;
 				ff_block_ind = ff_block_ind < 4 ? 4:ff_block_ind;
+				
 				int block_n = 0;
 				
 				for( int CHR_n = 1; CHR_n < utils.CONST_CHR_BANK_MAX_SPRITES_CNT; CHR_n++ )

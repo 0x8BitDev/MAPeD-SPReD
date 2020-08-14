@@ -726,7 +726,7 @@ namespace MAPeD
 				{
 					chr_id = k + 1;
 					
-					if( chr_id >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1 )
+					if( chr_id > utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1 )
 					{
 						return -1;
 					}
@@ -748,7 +748,7 @@ namespace MAPeD
 				{
 					block_id = k + 1;
 					
-					if( block_id >= utils.CONST_MAX_BLOCKS_CNT - 1 )
+					if( block_id > utils.CONST_MAX_BLOCKS_CNT - 1 )
 					{
 						return -1;
 					}
@@ -770,7 +770,7 @@ namespace MAPeD
 				{
 					tile_id = k + 1;
 					
-					if( tile_id >= utils.CONST_MAX_TILES_CNT - 1 )
+					if( tile_id > utils.CONST_MAX_TILES_CNT - 1 )
 					{
 						return -1;
 					}
