@@ -1173,23 +1173,32 @@ namespace MAPeD
 		
 		void BtnCopyCHRBankClick_Event(object sender, EventArgs e)
 		{
-			if( m_data_manager.tiles_data_copy() == true )
+			if( m_data_manager.tiles_data_pos >= 0 )
 			{
-				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_cnt - 1 );
-				
-				CBoxCHRBanks.Items.Add( data );
-				CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_cnt - 1;
-				
-				palette_group.Instance.active_palette = 0;
-				
-				enable_copy_paste_action( false, ECopyPasteType.cpt_All );
-				
-				if( ScreensShowAllBanksToolStripMenuItem.Checked )
+				if( m_data_manager.tiles_data_copy() == true )
 				{
-					update_screens_by_bank_id( true );
+					tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_cnt - 1 );
+					
+					CBoxCHRBanks.Items.Add( data );
+					CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_cnt - 1;
+					
+					palette_group.Instance.active_palette = 0;
+					
+					enable_copy_paste_action( false, ECopyPasteType.cpt_All );
+					
+					if( ScreensShowAllBanksToolStripMenuItem.Checked )
+					{
+						update_screens_by_bank_id( true );
+					}
+					
+					set_status_msg( "CHR bank copied" );
 				}
-				
-				set_status_msg( "CHR bank copied" );
+				else
+				{
+					set_status_msg( "Failed to copy CHR bank" );
+					
+					message_box( "Can't copy CHR bank!\nThe maximum allowed number of CHR banks - " + utils.CONST_CHR_BANK_MAX_CNT, "Failed to Copy CHR Bank", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
 			}
 		}
 		
@@ -2140,7 +2149,7 @@ namespace MAPeD
 					
 					set_status_msg( "Failed to copy screen" );
 					
-					message_box( "Can't copy the screen! The maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Screen Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+					message_box( "Can't copy the screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Failed to Copy Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 				}
 			}
 		}

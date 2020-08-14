@@ -498,12 +498,7 @@ namespace MAPeD
 		
 		public bool screen_data_create()
 		{
-			if( tiles_data_pos == -1 )
-			{
-				return false;
-			}
-			
-			if( scr_data_pos < utils.CONST_SCREEN_MAX_CNT - 1 )
+			if( tiles_data_pos >= 0 )
 			{
 				get_tiles_data( tiles_data_pos ).create_screen();
 				++m_scr_data_pos;
@@ -536,7 +531,7 @@ namespace MAPeD
 		
 		public bool tiles_data_copy()
 		{
-			if( tiles_data_pos >= 0 && tiles_data_cnt > 0 )
+			if( tiles_data_pos >= 0 && m_tiles_data.Count < utils.CONST_CHR_BANK_MAX_CNT )
 			{
 				m_tiles_data.Add( get_tiles_data( tiles_data_pos ).copy() );
 				
