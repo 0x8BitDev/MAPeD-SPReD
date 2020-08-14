@@ -806,13 +806,13 @@ namespace MAPeD
 			
 			if( more_than_4_color_in_palette || more_than_4_palettes )
 			{
-				MainForm.message_box( "The imported image doesn't meet requirements!\nSome color information will be lost!", "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				MainForm.message_box( "The imported image doesn't meet the requirements!\nSome color information will be lost!", "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 			}
 		}
 #endif		
 		void BtnApplyPaletteDescClick_Event(object sender, EventArgs e)
 		{
-			MainForm.message_box( "For best results, an imported image must meet the following requirements:\n\n- one CHR bank data\n- no more than 13 colors", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
+			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- NES compatible graphics\n- tiles aligned\n- one CHR bank data\n- no more than 13 colors", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 	}
 }
