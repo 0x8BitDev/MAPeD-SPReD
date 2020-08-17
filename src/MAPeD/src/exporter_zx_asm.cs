@@ -138,6 +138,8 @@ namespace MAPeD
 				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NO_ENTITIES;
 			}
 			
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ZX_INK_FACTOR;
+			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_WARNING;
 		}
 		
@@ -283,8 +285,8 @@ namespace MAPeD
 												0,0,0,0,0,0,0,0,
 												0,0,0,0,0,0,0,0 };
 												
-				byte[][] dither_ptrn_arr = new byte[9][]{ mc_clr00, mc_clr00, mc_clr01, mc_clr01, mc_clr01, mc_clr01, mc_clr02, mc_clr06, mc_clr08 };
-				double[] bright_dither_ptrn_arr = new double[9]{ 28.444, 56.888, 85.333, 113.777, 142.222, 170.666, 199.111, 227.555, 256.0 };
+				byte[][] dither_ptrn_arr = new byte[4][]{ mc_clr04, mc_clr02, mc_clr01, mc_clr00 };
+				double[] bright_dither_ptrn_arr = new double[4]{ 0.25, 0.5, 0.75, 1.0 };
 
 				double bright_val;
 				
@@ -298,26 +300,24 @@ namespace MAPeD
 				Bitmap 		level_bmp 		= null;
 				Graphics 	level_gfx		= null;
 #if DEF_NES				
-				byte[][] plt_remap	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ][];
-				byte[] clr_weights	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 				byte[] palette 		= null;
-#elif DEF_SMS
-				HashSet< int > unique_clr_inds = new HashSet<int>();
-
-				byte[][] plt_remap = new byte[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ][];
-				byte[] clr_weights = new byte[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ];
-				int[] clr_inds_arr = new int[ 1 ];
-				
-				int plt_clr_ind;
 #endif				
+				byte[] ink_clr_weights		= new byte[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ];
+				byte[] paper_clr_weights	= new byte[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ];
+				
+				double dither_factor;
+				double ink_factor	= ( double )( ExpZXAsmInkFactor.Value ) / 10.0;
+				int max_weight_ind;
+				int pix_n;
+				int chr_n;
+				
+				bool no_ink;
+				
 				int ink_color_index 	= 0;
 				int paper_color_index 	= 0;
 				int zx_ink_color_index 		= 0;
 				int zx_paper_color_index 	= 0;
 				bool zx_bright_flag			= false;
-				
-				int ink_index 		= -1;
-				double[] bright_arr = new double[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 				
 				long level_data_size = 0;
 				
@@ -460,7 +460,7 @@ namespace MAPeD
 					}
 					
 					// check the number of unique tiles in the map
-					if( unique_tiles_arr.Count > 127 )
+					if( unique_tiles_arr.Count > 128 )
 					{
 						sw.Close();
 						throw new System.Exception( String.Format( "The level{0} has more than 128 tiles 2x2!", level_n ) );
@@ -494,7 +494,7 @@ namespace MAPeD
 							ink_color_index 	= 0;
 							paper_color_index 	= 0;
 							
-							for( int chr_n = 0; chr_n < 4; chr_n++ )
+							for( chr_n = 0; chr_n < 4; chr_n++ )
 							{
 								tiles 		= scr_tiles_data[ ( (tile_data&0xff00) >> 8 ) - 1 ];
 								block_data 	= tiles.blocks[ ( ( tile_data&0xff ) << 2 ) + chr_n ];
@@ -502,173 +502,93 @@ namespace MAPeD
 								tiles.from_CHR_bank_to_spr8x8( tiles_data.get_block_CHR_id( block_data ), tile_2x2_data_arr, chr_n << 6 );
 
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS								
-					           	if( tiles_data.get_block_flags_flip( block_data ) == utils.CONST_CHR_ATTR_FLAG_HFLIP )
+								if( ( tiles_data.get_block_flags_flip( block_data ) & utils.CONST_CHR_ATTR_FLAG_HFLIP ) != 0 )
 					           	{
-					           		tiles_data.hflip( tile_2x2_data_arr, chr_n );
+					      			tiles_data.hflip( tile_2x2_data_arr, chr_n << 6 );
 					           	}
-					           	else
-					           	if( tiles_data.get_block_flags_flip( block_data ) == utils.CONST_CHR_ATTR_FLAG_VFLIP )
+					           	
+								if( ( tiles_data.get_block_flags_flip( block_data ) & utils.CONST_CHR_ATTR_FLAG_VFLIP ) != 0 )
 					           	{
-					           		tiles_data.vflip( tile_2x2_data_arr, chr_n );
+					           		tiles_data.vflip( tile_2x2_data_arr, chr_n << 6 );
 					           	}
 #endif					           	
 					           	tile_props_arr[ ( tile_n << 2 ) + chr_n ] = (byte)tiles_data.get_block_flags_obj_id( block_data );
-					           
-					           	// determine dark and bright colors in a palette
-					           	// and match them arrays for remapping
-					           	{
-									int i;
-									int j;									
+					           	
+					           	// draw ZX tile and get ink&paper colors
+								Array.Clear( ink_clr_weights, 0, ink_clr_weights.Length );
+								Array.Clear( paper_clr_weights, 0, paper_clr_weights.Length );								
 #if DEF_NES
-									palette = tiles.palettes[ tiles_data.get_block_flags_palette( block_data ) ];
-
-									if( ExpZXAsmGFXDithering.Checked )
+								palette = tiles.palettes[ tiles_data.get_block_flags_palette( block_data ) ];
+#endif
+								no_ink = true;
+								
+								for( pix_n = 0; pix_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; pix_n++ )
+								{
+									pixel_ind 	= ( byte )( ( chr_n << 6 ) + pix_n );
+									pixel 		= tile_2x2_data_arr[ pixel_ind ];
+#if DEF_NES
+									bright_val = get_brightness( palette_group.Instance.main_palette[ palette[ pixel ] ] ) / 256.0;
+#elif DEF_SMS									
+									bright_val = get_brightness( palette_group.Instance.main_palette[ tiles.palettes[ pixel >> 2 ][ pixel & 0x03 ] ] ) / 256.0;
+#endif									
+									if( ink_factor <= bright_val )
 									{
-										for( i = 0; i < utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
-										{
-											bright_val = bright_arr[ i ] = get_brightness( palette_group.Instance.main_palette[ palette[ i ] ] );
-											
-											for( j = 0; j < dither_ptrn_arr.Length; j++ )
-											{
-												if( bright_val < bright_dither_ptrn_arr[ j ] )
-												{
-													plt_remap[ i ] = dither_ptrn_arr[ j ];
-													break;
-												}
-											}
-										}
-									}
-									else
-									{
-										for( i = 0; i < utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
-										{
-											bright_arr[ i ] = get_brightness( palette_group.Instance.main_palette[ palette[ i ] ] );
-											
-											plt_remap[ i ] = mc_clr00;
-										}
-									}
-
-									ink_index = calc_dark_color_index( bright_arr, bright_arr.Length, -1 );
-									plt_remap[ ink_index ] = mc_clr08;
-									
-									ink_color_index |= palette[ ink_index ] << ( chr_n << 3 );
-#elif DEF_SMS
-									if( ExpZXAsmGFXDithering.Checked )
-									{
-										for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
-										{
-											bright_val = get_brightness( palette_group.Instance.main_palette[ tiles.palettes[ i >> 2 ][ i & 0x03 ] ] );
-											
-											for( j = 0; j < dither_ptrn_arr.Length; j++ )
-											{
-												if( bright_val < bright_dither_ptrn_arr[ j ] )
-												{
-													plt_remap[ i ] = dither_ptrn_arr[ j ];
-													break;
-												}
-											}
-										}
-									}
-									else
-									{
-										for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
-										{
-											plt_remap[ i ] = mc_clr00;
-										}
-									}
-
-									unique_clr_inds.Clear();
-									
-									for( i = 0; i < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; i++ )
-									{
-										unique_clr_inds.Add( tile_2x2_data_arr[ ( chr_n << 6 ) + i ] );
-									}
-									
-									Array.Resize( ref bright_arr, unique_clr_inds.Count );
-									Array.Resize( ref clr_inds_arr, unique_clr_inds.Count );
-									
-									i = 0;
-									unique_clr_inds.ForEach( delegate( int _val ) 
-									{
-										bright_arr[ i ]	= get_brightness( palette_group.Instance.main_palette[ tiles.palettes[ _val >> 2 ][ _val & 0x03 ] ] );
-										clr_inds_arr[ i++ ]	= _val;
-									});
-									
-									if( bright_arr.Length == 1 )
-									{
-										bright_val	= bright_arr[ 0 ];
-										ink_index	= 0;
-										
-										plt_clr_ind = clr_inds_arr[ ink_index ];
-										// skip ink color for empty CHRs
-										//ink_color_index |= tiles.palettes[ plt_clr_ind >> 2 ][ plt_clr_ind & 0x03 ] << ( chr_n << 3 );
-										
+										// paper
 										if( ExpZXAsmGFXDithering.Checked )
 										{
-											for( j = 0; j < dither_ptrn_arr.Length; j++ )
+											dither_factor = ( bright_val - ink_factor ) / ( 1.0 - ink_factor );
+											
+											for( int j = 0; j < dither_ptrn_arr.Length; j++ )
 											{
-												if( bright_val < bright_dither_ptrn_arr[ j ] )
+												if( dither_factor < bright_dither_ptrn_arr[ j ] )
 												{
-													plt_remap[ plt_clr_ind ] = dither_ptrn_arr[ j ];
-													
+													tile_2x2_data_arr[ pixel_ind ] = ( byte )dither_ptrn_arr[ j ][ pix_n ];
 													break;
 												}
 											}
 										}
 										else
 										{
-											plt_remap[ plt_clr_ind ] = bright_val < bright_dither_ptrn_arr[ 0 ] ? mc_clr08:mc_clr00;
+											tile_2x2_data_arr[ pixel_ind ] = ( byte )0;
 										}
+										
+										++paper_clr_weights[ pixel ];
 									}
 									else
 									{
-										ink_index = calc_dark_color_index( bright_arr, bright_arr.Length, -1 );
+										// ink
+										tile_2x2_data_arr[ pixel_ind ] = ( byte )1;
 										
-										plt_clr_ind = clr_inds_arr[ ink_index ];
-										plt_remap[ plt_clr_ind ] = mc_clr08;										
-
-										ink_color_index |= tiles.palettes[ plt_clr_ind >> 2 ][ plt_clr_ind & 0x03 ] << ( chr_n << 3 );
+										++ink_clr_weights[ pixel ];
+										
+										no_ink = false;
 									}
-									
-#endif
-					           	}
-								
-					           	// determine a color with a most bright value
-					           	// and use it as a PAPER color
-								Array.Clear( clr_weights, 0, clr_weights.Length );
-								
-								for( int pix_n = 0; pix_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; pix_n++ )
-								{
-									pixel_ind 	= ( byte )( ( chr_n << 6 ) + pix_n );
-									pixel 		= tile_2x2_data_arr[ pixel_ind ];
-#if DEF_SMS									
-									if( plt_clr_ind != pixel )	// ignore ink pixel
-#endif									
-									++clr_weights[ pixel ];
-									
-									tile_2x2_data_arr[ pixel_ind ] = ( byte )( plt_remap[ pixel ][ pix_n ] );
 								}
 								
-								if( ExpZXAsmTypeColor.Checked )
-								{
-									// determine a color with a largest weight
-									byte max_weight    = 0;
-									int max_weight_ind = 0;
-									
-									for( int i = 0; i < clr_weights.Length; i++ )
-									{
-										if( i != ink_index && clr_weights[ i ] > max_weight )
-										{
-											max_weight = clr_weights[ i ];
-											max_weight_ind = i;
-										}
-									}
-#if DEF_NES									
-									paper_color_index |= palette[ max_weight_ind ] << ( chr_n << 3 );
+								max_weight_ind = utils.get_byte_arr_max_val_ind( paper_clr_weights );
+#if DEF_NES
+								paper_color_index |= palette[ max_weight_ind ] << ( chr_n << 3 );
 #elif DEF_SMS
-									paper_color_index |= ( tiles.palettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ] ) << ( chr_n << 3 );
-#endif									
+								paper_color_index |= tiles.palettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ] << ( chr_n << 3 );
+#endif								
+								// reset paper color to avoid equal colors on both ink and paper
+								ink_clr_weights[ max_weight_ind ] = 0;
+								
+								if( !no_ink )
+								{
+									max_weight_ind = utils.get_byte_arr_max_val_ind( ink_clr_weights );
+#if DEF_NES
+									ink_color_index |= palette[ max_weight_ind ] << ( chr_n << 3 );
+#elif DEF_SMS
+									ink_color_index |= tiles.palettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ] << ( chr_n << 3 );
+#endif								
 								}
+#if DEF_NES									
+								else
+								{
+									ink_color_index |= 13 << ( chr_n << 3 );
+								}
+#endif								
 							}
 							
 							// convert a tile into a speccy format and write it to a file
@@ -679,10 +599,23 @@ namespace MAPeD
 
 							if( ExpZXAsmTypeColor.Checked )
 							{
-								for( int chr_n = 0; chr_n < 4; chr_n++ )
+								for( chr_n = 0; chr_n < 4; chr_n++ )
 								{
 									zx_paper_color_index 	= zx_clrs_conv_tbl[ ( paper_color_index >> ( chr_n << 3 ) ) & 0xff ];
 									zx_ink_color_index 		= zx_clrs_conv_tbl[ ( ink_color_index >> ( chr_n << 3 ) ) & 0xff ];
+									
+									if( ( zx_paper_color_index & 0x07 ) == ( zx_ink_color_index & 0x07 ) )
+									{
+										if( ( zx_paper_color_index & 0x07 ) == 0 )
+										{
+											zx_paper_color_index = 1;
+										}
+										else
+										{
+											// reset ink color to avoid equal colors on both ink and paper
+											zx_ink_color_index = 0;
+										}
+									}
 
 									zx_bright_flag = false;
 									
@@ -700,11 +633,11 @@ namespace MAPeD
 									
 									tile_colors_arr[ ( tile_n << 2 ) + chr_n ] |= (byte)( ( zx_bright_flag ? 64:0 ) | ( zx_paper_color_index << 3 ) | zx_ink_color_index );
 									
-									for( int pix_n = 0; pix_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; pix_n++ )
+									for( pix_n = 0; pix_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; pix_n++ )
 									{
-										pix_val = tile_2x2_data_arr[ ( chr_n << 6 ) + pix_n ] - 1;
+										pix_val = tile_2x2_data_arr[ ( chr_n << 6 ) + pix_n ];
 										
-										if( pix_val < 0 )
+										if( pix_val == 0 )
 										{
 											// paper
 											pix_val = 0xFF << 24 | zx_palette[ zx_paper_color_index + ( zx_bright_flag ? 8:0 ) ];
@@ -721,9 +654,9 @@ namespace MAPeD
 							}
 							else
 							{
-								for( int chr_n = 0; chr_n < 4; chr_n++ )
+								for( chr_n = 0; chr_n < 4; chr_n++ )
 								{
-									for( int pix_n = 0; pix_n < 64; pix_n++ )
+									for( pix_n = 0; pix_n < 64; pix_n++ )
 									{
 										pix_val = tile_2x2_data_arr[ ( chr_n << 6 ) + pix_n ] - 1;
 									
@@ -744,9 +677,9 @@ namespace MAPeD
 									}
 								}
 							}
-							
+
 							tile_mem_handle.Free();
-							
+
 							if( ExpZXAsmRenderTilesPNG.Checked )
 							{
 								tile_bmp.Save( m_extra_path_filename + CONST_FILENAME_LEVEL_POSTFIX + level_n + "_Tile" + tile_n + ".png", ImageFormat.Png );
@@ -930,23 +863,6 @@ namespace MAPeD
 				
 				//palette_group.Instance.main_palette[ color_n ] = zx_palette[ best_color ];//!!!
 			}
-		}
-		
-		int calc_dark_color_index( double[] _bright_arr, int _arr_size, int _exclude_index )
-		{
-			double 	t 	= Double.MaxValue;
-			int		res = -1;
-			
-			for( int i = 0; i < _arr_size; i++ )
-			{
-				if( _bright_arr[ i ] < t && i != _exclude_index )
-				{
-					t = _bright_arr[ i ];
-					res = i;
-				}
-			}
-			
-			return res;
 		}
 		
 		private void save_tiles_gfx( BinaryWriter _bw, byte[] _tile_2x2_data_arr )

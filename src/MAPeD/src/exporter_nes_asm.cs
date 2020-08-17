@@ -547,7 +547,7 @@ namespace MAPeD
 							}
 						}
 						
-						max_scr_tile = utils.get_byte_arr_max_ind( exp_scr.m_scr_tiles );
+						max_scr_tile = utils.get_byte_arr_max_val( exp_scr.m_scr_tiles );
 						
 						if( max_tile_ind < max_scr_tile )
 						{
@@ -556,7 +556,7 @@ namespace MAPeD
 						
 						if( RBtnTiles2x2.Checked )
 						{
-							max_scr_block = utils.get_byte_arr_max_ind( exp_scr.m_scr_blocks );
+							max_scr_block = utils.get_byte_arr_max_val( exp_scr.m_scr_blocks );
 							
 							if( max_block_ind < max_scr_block )
 							{
@@ -639,7 +639,7 @@ namespace MAPeD
 					{
 						tiles = banks[ bank_n ];
 
-						blocks_props_size = ( 1 + utils.get_uint_arr_max_ind( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
+						blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
 						
 						for( block_n = 0; block_n < blocks_props_size; block_n++ )
 						{
@@ -660,7 +660,7 @@ namespace MAPeD
 						
 						data_offset_str += "\t.word " + data_offset + "\t; (chr" + bank_n + ")\n";
 
-						data_offset += ( 1 + utils.get_uint_arr_max_ind( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
+						data_offset += ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
 					}
 
 					if( RBtnModeBidirScroll.Checked )
@@ -1577,7 +1577,7 @@ namespace MAPeD
 				
 				_sw.WriteLine( "; " + label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t\t; (" + data_size + ")" );
 
-				max_tile_ind = 1 + utils.get_byte_arr_max_ind( map_tiles_arr );	// one based index
+				max_tile_ind = 1 + utils.get_byte_arr_max_val( map_tiles_arr );	// one based index
 				
 				if( RBtnTiles4x4.Checked )
 				{
@@ -1662,7 +1662,7 @@ namespace MAPeD
 
 				// blocks and properties
 				{
-					blocks_props_size = ( 1 + utils.get_uint_arr_max_ind( tiles.tiles, max_tile_ind ) ) << 2;//max_tile_ind << 2 ) ) << 2;
+					blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_ind ) ) << 2;//max_tile_ind << 2 ) ) << 2;
 					
 					block_props_arr = new byte[ RBtnPropPerBlock.Checked ? ( blocks_props_size >> 2 ):blocks_props_size ];
 					Array.Clear( block_props_arr, 0, block_props_arr.Length );

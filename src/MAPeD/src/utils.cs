@@ -461,26 +461,45 @@ namespace MAPeD
 		}
 		// JSON formatter END
 		
-		public static int	get_byte_arr_max_ind( byte[] _arr, int _max = 0 )
+		public static int	get_byte_arr_max_val( byte[] _arr, int _max = 0 )
 		{
-			byte max_ind = 0;
+			byte max_val = 0;
 			
 			int size = ( _max == 0 ) ? _arr.Length:_max;
 			
 			for( int i = 0; i < size; i++ )
 			{
-				if( _arr[ i ] > max_ind )
+				if( _arr[ i ] > max_val )
 				{
-					max_ind = _arr[ i ];
+					max_val = _arr[ i ];
 				}
 			}
 			
-			return (int)max_ind;
+			return (int)max_val;
+		}
+
+		public static int	get_byte_arr_max_val_ind( byte[] _arr, int _max = 0 )
+		{
+			byte max_val = 0;
+			int max_ind = 0;
+			
+			int size = ( _max == 0 ) ? _arr.Length:_max;
+			
+			for( int i = 0; i < size; i++ )
+			{
+				if( _arr[ i ] > max_val )
+				{
+					max_val = _arr[ i ];
+					max_ind = i;
+				}
+			}
+			
+			return max_ind;
 		}
 		
-		public static int	get_uint_arr_max_ind( uint[] _arr, int _max = 0 )
+		public static int	get_uint_arr_max_val( uint[] _arr, int _max = 0 )
 		{
-			uint max_ind = 0;
+			uint max_val = 0;
 			
 			int size = ( _max == 0 ) ? _arr.Length:_max;
 			
@@ -495,14 +514,14 @@ namespace MAPeD
 				{
 					val = ( _arr[ i ] >> ( ( 4 - j - 1 ) << 3 ) ) & 0xff;
 					
-					if( val > max_ind )
+					if( val > max_val )
 					{
-						max_ind = val;
+						max_val = val;
 					}
 				}
 			}
 			
-			return (int)max_ind;
+			return (int)max_val;
 		}
 		
 		public static byte get_byte_from_uint( uint _uint, int _ind )

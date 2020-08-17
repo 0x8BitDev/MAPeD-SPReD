@@ -394,7 +394,7 @@ namespace MAPeD
 #endif
 		}
 		
-		public static void vflip( byte[] _CHR_data, int _spr_ind )
+		public static void CHR_bank_vflip( byte[] _CHR_data, int _spr_ind )
 		{
 			byte a;
 			byte b;
@@ -423,7 +423,7 @@ namespace MAPeD
 			}
 		}
 		
-		public static void hflip( byte[] _CHR_data, int _spr_ind )
+		public static void CHR_bank_hflip( byte[] _CHR_data, int _spr_ind )
 		{
 			byte a;
 			byte b;
@@ -453,7 +453,7 @@ namespace MAPeD
 			}
 		}
 		
-		public static void rotate_cw( byte[] _CHR_data, int _spr_ind )
+		public static void CHR_bank_rotate_cw( byte[] _CHR_data, int _spr_ind )
 		{
 			int i;
 			int j;
@@ -483,10 +483,10 @@ namespace MAPeD
 		        }
 		    }
 			
-			hflip( _CHR_data, _spr_ind );
+			CHR_bank_hflip( _CHR_data, _spr_ind );
 		}
 		
-		public static void hflip( byte[] _CHR8x8 )
+		public static void hflip( byte[] _CHR8x8, int _offset = 0 )
 		{
 			byte a;
 			byte b;
@@ -500,18 +500,18 @@ namespace MAPeD
 				
 				for( int x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT>>1; x++ )
 				{
-					offset_x = x + offset_y;
+					offset_x = _offset + x + offset_y;
 						
 					a = _CHR8x8[ offset_x ];
-					b = _CHR8x8[ offset_y + utils.CONST_SPR8x8_SIDE_PIXELS_CNT - 1 - x ];
+					b = _CHR8x8[ _offset + offset_y + utils.CONST_SPR8x8_SIDE_PIXELS_CNT - 1 - x ];
 					
 					_CHR8x8[ offset_x ] = b;
-					_CHR8x8[ offset_y + utils.CONST_SPR8x8_SIDE_PIXELS_CNT - 1 - x ] = a;
+					_CHR8x8[ _offset + offset_y + utils.CONST_SPR8x8_SIDE_PIXELS_CNT - 1 - x ] = a;
 				}
 			}
 		}
 		
-		public static void vflip( byte[] _CHR8x8 )
+		public static void vflip( byte[] _CHR8x8, int _offset = 0 )
 		{
 			byte a;
 			byte b;
@@ -523,8 +523,8 @@ namespace MAPeD
 			{
 				for( int y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT>>1; y++ )
 				{
-					offset_y1 = x + ( y << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
-					offset_y2 = x + ( ( utils.CONST_SPR8x8_SIDE_PIXELS_CNT - 1 - y ) << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
+					offset_y1 = _offset + x + ( y << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
+					offset_y2 = _offset + x + ( ( utils.CONST_SPR8x8_SIDE_PIXELS_CNT - 1 - y ) << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
 						
 					a = _CHR8x8[ offset_y1 ];
 					b = _CHR8x8[ offset_y2 ];
@@ -535,7 +535,7 @@ namespace MAPeD
 			}
 		}
 		
-		public static void rot_cw( byte[] _CHR8x8 )
+		public static void rot_cw( byte[] _CHR8x8, int _offset = 0 )
 		{
 			int i;
 			int j;
@@ -545,13 +545,13 @@ namespace MAPeD
 					
 			for( i = 0; i < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; i++ ) 
 			{
-				im8 = i << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS;
+				im8 = _offset + ( i << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
 				
 		        for( j = i; j < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; j++ ) 
 		        {
 		            if( i != j ) 
 		            {
-		            	jm8 = j << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS;
+		            	jm8 = _offset + ( j << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS );
 		            	
 		                _CHR8x8[ i + jm8 ] ^= _CHR8x8[ j + im8 ];
 		                _CHR8x8[ j + im8 ] ^= _CHR8x8[ i + jm8 ];
@@ -560,7 +560,7 @@ namespace MAPeD
 		        }
 		    }
 			
-			hflip( _CHR8x8 );
+			hflip( _CHR8x8, _offset );
 		}
 		
 		public int contains_CHR( byte[] _CHR8x8, int _max_ind )

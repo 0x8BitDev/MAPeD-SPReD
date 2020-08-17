@@ -629,9 +629,9 @@ namespace MAPeD
 				{
 					switch( _type )
 					{
-						case utils.ETransformType.tt_vflip: 	{ tiles_data.vflip( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 		break;
-						case utils.ETransformType.tt_hflip: 	{ tiles_data.hflip( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 		break;
-						case utils.ETransformType.tt_rotate: 	{ tiles_data.rotate_cw( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 	break;
+						case utils.ETransformType.tt_vflip: 	{ tiles_data.CHR_bank_vflip( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 		break;
+						case utils.ETransformType.tt_hflip: 	{ tiles_data.CHR_bank_hflip( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 		break;
+						case utils.ETransformType.tt_rotate: 	{ tiles_data.CHR_bank_rotate_cw( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 	break;
 					}
 				}
 				
