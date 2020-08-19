@@ -1598,7 +1598,7 @@ namespace MAPeD
 		
 		void CopyBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( ( m_block_copy_item_ind = get_context_menu_sender_index( sender ) ) > 0 )
+			if( ( m_block_copy_item_ind = get_context_menu_sender_index( sender ) ) >= 0 )
 			{
 				enable_copy_paste_action( true, ECopyPasteType.cpt_Blocks_list );
 			}
@@ -1783,7 +1783,7 @@ namespace MAPeD
 		
 		void CopyTileToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( ( m_tile_copy_item_ind = get_context_menu_sender_index( sender ) ) > 0 )
+			if( ( m_tile_copy_item_ind = get_context_menu_sender_index( sender ) ) >= 0 )
 			{
 				enable_copy_paste_action( true, ECopyPasteType.cpt_Tiles_list );
 			}
