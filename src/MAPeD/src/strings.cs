@@ -34,12 +34,12 @@ namespace MAPeD
 		public const string CONST_STR_EXP_TILES_2X2				= "TILES: 2x2";
 		public const string CONST_STR_EXP_TILES_4X4				= "TILES: 4x4";
 		
-		public const string CONST_STR_EXP_PROP					= "\n\nPROPERTIES Id per "; 
+		public const string CONST_STR_EXP_PROP					= "\n\nPROPERTY Id per "; 
 		public const string CONST_STR_EXP_PROP_PER_BLOCK		= "BLOCK ( 1 byte per block )\nThe top left CHR property of each block will be used.";
 		public const string CONST_STR_EXP_PROP_PER_CHR			= "CHR ( 4 bytes per block )";
 
-		public const string CONST_STR_EXP_SMS_MOVE_PROP_TO_SCR_MAP_ON	= "\nProperties 0-7 (3 bits) will be moved to a screen map data.";
-		public const string CONST_STR_EXP_SMS_MOVE_PROP_TO_SCR_MAP_OFF	= "\nAll properties will be stored in a separate file.";
+		public const string CONST_STR_EXP_SMS_MOVE_PROP_TO_SCR_MAP_ON	= "\nThe properties 0-7 (3 bits) will be moved to a screen map data.";
+		public const string CONST_STR_EXP_SMS_MOVE_PROP_TO_SCR_MAP_OFF	= "\nAll the properties will be stored in a separate file.";
 		
 		public const string CONST_STR_EXP_PROP_IN_FRONT_OF_SPRITES	= "\n'In front of sprites' property: Which property will be used as the 'In front of sprites' flag in a screen map data.";
 		

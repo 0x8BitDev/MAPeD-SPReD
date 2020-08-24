@@ -202,7 +202,7 @@ namespace MAPeD
 			this.groupBox7.Size = new System.Drawing.Size(152, 39);
 			this.groupBox7.TabIndex = 6;
 			this.groupBox7.TabStop = false;
-			this.groupBox7.Text = "Properties Id per";
+			this.groupBox7.Text = "Property Id per";
 			// 
 			// RBtnPropPerCHR
 			// 

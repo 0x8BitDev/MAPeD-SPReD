@@ -286,7 +286,7 @@ namespace MAPeD
 			this.groupBox7.Size = new System.Drawing.Size(290, 65);
 			this.groupBox7.TabIndex = 22;
 			this.groupBox7.TabStop = false;
-			this.groupBox7.Text = "Properties Id per";
+			this.groupBox7.Text = "Property Id per";
 			// 
 			// ComboBoxInFrontOfSpritesProp
 			// 
