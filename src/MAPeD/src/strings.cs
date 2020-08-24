@@ -19,13 +19,13 @@ namespace MAPeD
 		
 		public const string CONST_STR_EXP_DATA_ORDER			= "\nDATA ORDER: ";
 		
-		public const string CONST_STR_EXP_NES_DATA_ORDER_COLS	= "Columns\nAll tiles\\blocks\\attributes data are stored in a column order except of PPU-ready data ( static screens mode ).";
-		public const string CONST_STR_EXP_NES_DATA_ORDER_ROWS	= "Rows\nAll tiles\\blocks\\attributes data are stored in a row order.";
+		public const string CONST_STR_EXP_NES_DATA_ORDER_COLS	= "Columns\nAll the map\\screens data are stored in a column order except of PPU-ready data ( static screens mode ).";
+		public const string CONST_STR_EXP_NES_DATA_ORDER_ROWS	= "Rows\nAll the map\\screens data are stored in a row order.";
 
-		public const string CONST_STR_EXP_SMS_DATA_ORDER_COLS	= "Columns\nAll tiles\\blocks data are stored in a column order except of VDP-ready data ( static screens mode ).";
-		public const string CONST_STR_EXP_SMS_DATA_ORDER_ROWS	= "Rows\nAll tiles\\blocks data are stored in a row order.";
+		public const string CONST_STR_EXP_SMS_DATA_ORDER_COLS	= "Columns\nAll the map\\screens data are stored in a column order except of VDP-ready data ( static screens mode ).";
+		public const string CONST_STR_EXP_SMS_DATA_ORDER_ROWS	= "Rows\nAll the map\\screens data are stored in a row order.";
 		
-		public const string CONST_STR_EXP_ZX_DATA_ORDER_COLS	= "Columns\nAll tiles\\blocks data are stored in a column order.";
+		public const string CONST_STR_EXP_ZX_DATA_ORDER_COLS	= "Columns\nAll the map data are stored in a column order.";
 		
 		public const string CONST_STR_EXP_NES_ATTRS				= "\n\nATTRIBUTES per "; 
 		public const string CONST_STR_EXP_NES_ATTRS_PER_BLOCK	= "BLOCK. This is a usual case.";
