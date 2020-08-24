@@ -231,7 +231,7 @@ namespace MAPeD
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE_STAT_SCR;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NES_MODE_STAT_SCR;
 			}
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_LAYOUT;
@@ -300,11 +300,11 @@ namespace MAPeD
 		void event_ok(object sender, System.EventArgs e)
 		{
 			this.Close();
+
+			StreamWriter sw = null;
 			
 			try
 			{
-				StreamWriter 	sw = null;
-
 				sw = new StreamWriter( m_path_filename_ext );
 				
 				utils.write_title( sw );
@@ -392,6 +392,11 @@ namespace MAPeD
 			}
 			catch( System.Exception _err )
 			{
+				if( sw != null )
+				{
+					sw.Close();
+				}
+				
 				MainForm.message_box( _err.Message, "CA65 / NES Asm Data Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error ); 
 			}
 		}
@@ -756,7 +761,7 @@ namespace MAPeD
 							{
 								if( RBtnTilesDirRows.Checked )
 								{
-									utils.swap_columns_rows_order( tile_inds, utils.CONST_SCREEN_NUM_WIDTH_TILES, utils.CONST_SCREEN_NUM_HEIGHT_TILES );
+									utils.swap_columns_rows_order_byte( tile_inds, utils.CONST_SCREEN_NUM_WIDTH_TILES, utils.CONST_SCREEN_NUM_HEIGHT_TILES );
 								}						
 								
 								for( tile_n = 0; tile_n < tiles_cnt; tile_n++ )
@@ -982,7 +987,7 @@ namespace MAPeD
 									
 								if( RBtnTilesDirRows.Checked )
 								{
-									utils.swap_columns_rows_order( tile_attrs_arr, 4, 4 );
+									utils.swap_columns_rows_order_byte( tile_attrs_arr, 4, 4 );
 								}
 								
 								bw.Write( tile_attrs_arr );
@@ -1021,7 +1026,7 @@ namespace MAPeD
 							
 							if( RBtnTilesDirRows.Checked )
 							{
-								utils.swap_columns_rows_order( tile_inds, get_tiles_cnt_width( 1 ), get_tiles_cnt_height( 1 ) );
+								utils.swap_columns_rows_order_byte( tile_inds, get_tiles_cnt_width( 1 ), get_tiles_cnt_height( 1 ) );
 							}						
 							
 							bw.Write( tile_inds ); 
@@ -1035,7 +1040,7 @@ namespace MAPeD
 
 							if( RBtnTilesDirRows.Checked )
 							{
-								utils.swap_columns_rows_order( tile_inds, get_tiles_cnt_width( 1 ), get_tiles_cnt_height( 1 ) );
+								utils.swap_columns_rows_order_byte( tile_inds, get_tiles_cnt_width( 1 ), get_tiles_cnt_height( 1 ) );
 							}						
 							
 							bw.Write( tile_inds ); 
@@ -1331,7 +1336,7 @@ namespace MAPeD
 			
 			if( RBtnTilesDirRows.Checked || _force_swapping )
 			{
-				utils.swap_columns_rows_order( _attrs_chr, _scr_width_blocks_mul2, _scr_height_blocks_mul2 );
+				utils.swap_columns_rows_order_byte( _attrs_chr, _scr_width_blocks_mul2, _scr_height_blocks_mul2 );
 			}
 		}
 		
@@ -1617,7 +1622,7 @@ namespace MAPeD
 					
 					if( RBtnTilesDirRows.Checked )
 					{
-						utils.swap_columns_rows_order( map_tiles_arr, n_scr_X * utils.CONST_SCREEN_NUM_WIDTH_TILES, n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES );
+						utils.swap_columns_rows_order_byte( map_tiles_arr, n_scr_X * utils.CONST_SCREEN_NUM_WIDTH_TILES, n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES );
 					}
 					
 					if( compress_and_save( bw, map_tiles_arr ) == false )
@@ -1719,7 +1724,7 @@ namespace MAPeD
 				
 				if( RBtnTilesDirRows.Checked )
 				{
-					utils.swap_columns_rows_order( map_data_arr, get_tiles_cnt_width( n_scr_X ), get_tiles_cnt_height( n_scr_Y ) );
+					utils.swap_columns_rows_order_byte( map_data_arr, get_tiles_cnt_width( n_scr_X ), get_tiles_cnt_height( n_scr_Y ) );
 				}
 				
 				if( compress_and_save( bw, map_data_arr ) == false )
@@ -1836,7 +1841,7 @@ namespace MAPeD
            	byte v2 = ( byte )( ( _val >> 8 ) & 0xff );
           	byte v3 = ( byte )( _val & 0xff );
 			
-			return ( uint )( v3 << 24 | v2 << 16 | v1 << 8 | v0 );
+          	return unchecked( ( uint )( v3 << 24 | v2 << 16 | v1 << 8 | v0 ) );
 		}
 #endif	//DEF_NES
 	}

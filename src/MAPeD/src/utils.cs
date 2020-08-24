@@ -638,14 +638,36 @@ namespace MAPeD
 			}
 		}
 		
-		public static void swap_columns_rows_order( byte[] _arr, int _width, int _height )
+		public static void swap_columns_rows_order_byte( byte[] _arr, int _width, int _height )
 		{	
 			if( _arr.Length != _width * _height )
 			{
-				throw new Exception( "utils.swap_columns_rows( byte[] _arr, int _width, int _height )\n Invalid input arguments!" );
+				throw new Exception( "utils.swap_columns_rows_byte( byte[] _arr, int _width, int _height )\n Invalid input arguments!" );
 			}
 			
 			byte[] tmp_arr = new byte[ _arr.Length ];
+			
+			int ind = 0;
+			
+			for( int y = 0; y < _height; y++ )
+			{
+				for( int x = 0; x < _width; x++ )
+				{
+					tmp_arr[ ind++ ] = _arr[ x * _height + y ];
+				}
+			}
+
+			Array.Copy( tmp_arr, _arr, _arr.Length );
+		}
+
+		public static void swap_columns_rows_order_ushort( ushort[] _arr, int _width, int _height )
+		{	
+			if( _arr.Length != _width * _height )
+			{
+				throw new Exception( "utils.swap_columns_rows_ushort( ushort[] _arr, int _width, int _height )\n Invalid input arguments!" );
+			}
+			
+			ushort[] tmp_arr = new ushort[ _arr.Length ];
 			
 			int ind = 0;
 			
