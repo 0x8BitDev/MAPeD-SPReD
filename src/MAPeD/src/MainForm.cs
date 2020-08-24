@@ -22,8 +22,10 @@ namespace MAPeD
 	public partial class MainForm : Form
 	{
 		private exporter_zx_sjasm	m_exp_zx_asm	= null;
-#if DEF_NES		
+#if DEF_NES
 		private exporter_nes_asm	m_exp_nes_asm	= null;
+#elif DEF_SMS
+		private exporter_sms_asm	m_exp_sms_asm	= null;
 #endif		
 		private data_conversion_options_form	m_data_conversion_options_form	= null;
 		
@@ -98,7 +100,9 @@ namespace MAPeD
 			m_exp_zx_asm		= new exporter_zx_sjasm( m_data_manager );
 #if DEF_NES			
 			m_exp_nes_asm		= new exporter_nes_asm( m_data_manager );
-#endif			
+#elif DEF_SMS
+			m_exp_sms_asm		= new exporter_sms_asm( m_data_manager );
+#endif
 			m_data_conversion_options_form	= new data_conversion_options_form();
 
 			m_tiles_processor 	= new tiles_processor(	PBoxCHRBank,
@@ -1005,7 +1009,7 @@ namespace MAPeD
 							m_exp_nes_asm.ShowDialog( filename );
 #endif							
 #if DEF_SMS
-							throw new Exception( "NOT IMPLEMENTED YET!" );
+							m_exp_sms_asm.ShowDialog( filename );
 #endif
 						}
 						break;
@@ -2794,10 +2798,11 @@ namespace MAPeD
 		
 		void enable_screen_edit_controls( bool  _on )
 		{
-			BtnCreateScreen.Enabled 	= _on;
-			BtnCopyScreen.Enabled 		= _on;
-			BtnDeleteScreen.Enabled 	= _on;
-			ListBoxScreens.Enabled		= _on;
+			BtnCreateScreen.Enabled 		= _on;
+			BtnCopyScreen.Enabled 			= _on;
+			BtnDeleteScreen.Enabled 		= _on;
+			BtnDeleteEmptyScreens.Enabled	= _on;
+			ListBoxScreens.Enabled			= _on;
 			
 			ListBoxScreens.SelectedIndex = -1;
 		}

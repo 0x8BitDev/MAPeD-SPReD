@@ -119,12 +119,12 @@
     <Compile Include="..\src\entity_preview.cs">
       <Link>entity_preview.cs</Link>
     </Compile>
-    <Compile Include="..\src\exporter_nes_asm.cs">
-      <Link>exporter_nes_asm.cs</Link>
+    <Compile Include="..\src\exporter_sms_asm.cs">
+      <Link>exporter_sms_asm.cs</Link>
     </Compile>
-    <Compile Include="..\src\exporter_nes_asm.Designer.cs">
-      <Link>exporter_nes_asm.Designer.cs</Link>
-      <DependentUpon>exporter_nes_asm.cs</DependentUpon>
+    <Compile Include="..\src\exporter_sms_asm.Designer.cs">
+      <Link>exporter_sms_asm.Designer.cs</Link>
+      <DependentUpon>exporter_sms_asm.cs</DependentUpon>
     </Compile>
     <Compile Include="..\src\exporter_zx_asm.cs">
       <Link>exporter_zx_asm.cs</Link>
@@ -269,9 +269,8 @@
       <Link>description_form.resx</Link>
       <DependentUpon>description_form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\src\exporter_nes_asm.resx">
-      <Link>exporter_nes_asm.resx</Link>
-      <DependentUpon>exporter_nes_asm.cs</DependentUpon>
+    <EmbeddedResource Include="..\src\exporter_sms_asm.resx">
+      <DependentUpon>exporter_sms_asm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\exporter_zx_asm.resx">
       <Link>exporter_zx_asm.resx</Link>

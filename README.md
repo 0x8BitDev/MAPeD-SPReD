@@ -35,8 +35,6 @@ The MAPeD is a tool for building a game levels for NES/SMS games from scratch.
 
 \** You can load a **NES** project into **SMS** editor and vice versa.
 
-**[MAPeD-SMS data export to WLA-DX is under development...]**
-
 **Examples of tiles and levels images:** `./data/tiles-levels`
 
 **Example projects (.mapednes/.mapedsms):** `./data`

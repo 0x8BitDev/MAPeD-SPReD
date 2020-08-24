@@ -679,9 +679,13 @@ namespace MAPeD
 
 			// export layout
 			{
+#if DEF_NES				
 				_sw.WriteLine( _data_mark + "_WScrCnt\t=\t" + width + "\t; number of screens in width" );
 				_sw.WriteLine( _data_mark + "_HScrCnt\t=\t" + height + "\t; number of screens in height" );
-				
+#elif DEF_SMS
+				_sw.WriteLine( ".define " + _data_mark + "_WScrCnt\t" + width + "\t; number of screens in width" );
+				_sw.WriteLine( ".define " + _data_mark + "_HScrCnt\t" + height + "\t; number of screens in height" );
+#endif
 				_sw.WriteLine( "\n" + _data_mark + "_Layout:\t" );
 				
 				short scr_ind;
