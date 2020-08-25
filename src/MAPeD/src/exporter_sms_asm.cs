@@ -1278,9 +1278,7 @@ namespace MAPeD
 			byte[]	map_data_arr		= null;
 			byte[]	map_tiles_arr		= null;
 			byte[]	map_blocks_arr		= null;
-			byte[]	blocks_arr			= null;
 			byte[]	block_props_arr		= null;
-			byte[]	tile_attrs_arr		= null; 
 
 			List< tiles_data > scr_tiles_data = m_data_mngr.get_tiles_data();
 			
@@ -1300,7 +1298,6 @@ namespace MAPeD
 			int max_tile_ind 		= 0;
 			int max_block_ind 		= 0;
 			int blocks_props_size	= 0;
-			int attr				= 0;
 			byte tile_id			= 0;
 			byte block_id			= 0;
 			ushort block_data		= 0;
@@ -1603,9 +1600,7 @@ namespace MAPeD
 				map_data_arr 	= null;
 				map_tiles_arr 	= null;
 				map_blocks_arr	= null;
-				blocks_arr		= null;
 				block_props_arr	= null;
-				tile_attrs_arr	= null;
 			}
 		}
 		
