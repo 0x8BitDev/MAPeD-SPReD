@@ -53,6 +53,7 @@ namespace MAPeD
 			this.exportScriptEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.descriptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.statisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -340,7 +341,7 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.statisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.BtnSwapColors = new System.Windows.Forms.Button();
 			this.ContextMenuEntitiesTreeGoup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
@@ -540,6 +541,13 @@ namespace MAPeD
 			this.descriptionToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.descriptionToolStripMenuItem.Text = "&Description";
 			this.descriptionToolStripMenuItem.Click += new System.EventHandler(this.DescriptionToolStripMenuItemClick_Event);
+			// 
+			// statisticsToolStripMenuItem
+			// 
+			this.statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
+			this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+			this.statisticsToolStripMenuItem.Text = "S&tatistics";
+			this.statisticsToolStripMenuItem.Click += new System.EventHandler(this.StatisticsToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator3
 			// 
@@ -1587,6 +1595,7 @@ namespace MAPeD
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.BtnSwapColors);
 			this.groupBox4.Controls.Add(this.CheckBoxPalettePerCHR);
 			this.groupBox4.Controls.Add(this.Palette3);
 			this.groupBox4.Controls.Add(this.Palette2);
@@ -1863,7 +1872,7 @@ namespace MAPeD
 			this.groupBox5.Location = new System.Drawing.Point(288, 376);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(276, 153);
-			this.groupBox5.TabIndex = 26;
+			this.groupBox5.TabIndex = 27;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Tile Editor:";
 			// 
@@ -1872,7 +1881,7 @@ namespace MAPeD
 			this.BtnTileReserveBlocks.Location = new System.Drawing.Point(145, 101);
 			this.BtnTileReserveBlocks.Name = "BtnTileReserveBlocks";
 			this.BtnTileReserveBlocks.Size = new System.Drawing.Size(122, 22);
-			this.BtnTileReserveBlocks.TabIndex = 27;
+			this.BtnTileReserveBlocks.TabIndex = 28;
 			this.BtnTileReserveBlocks.Text = "Reserve Blocks";
 			this.BtnTileReserveBlocks.UseVisualStyleBackColor = true;
 			this.BtnTileReserveBlocks.Click += new System.EventHandler(this.BtnTileReserveBlocksClick_Event);
@@ -1882,7 +1891,7 @@ namespace MAPeD
 			this.CheckBoxTileEditorLock.Location = new System.Drawing.Point(145, 129);
 			this.CheckBoxTileEditorLock.Name = "CheckBoxTileEditorLock";
 			this.CheckBoxTileEditorLock.Size = new System.Drawing.Size(63, 19);
-			this.CheckBoxTileEditorLock.TabIndex = 28;
+			this.CheckBoxTileEditorLock.TabIndex = 29;
 			this.CheckBoxTileEditorLock.Text = "Locked";
 			this.CheckBoxTileEditorLock.UseVisualStyleBackColor = true;
 			this.CheckBoxTileEditorLock.CheckedChanged += new System.EventHandler(this.CheckBoxTileEditorLockedChecked_Event);
@@ -3238,12 +3247,15 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
 			// 
-			// statisticsToolStripMenuItem
+			// BtnSwapColors
 			// 
-			this.statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
-			this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-			this.statisticsToolStripMenuItem.Text = "S&tatistics";
-			this.statisticsToolStripMenuItem.Click += new System.EventHandler(this.StatisticsToolStripMenuItemClick_Event);
+			this.BtnSwapColors.Location = new System.Drawing.Point(169, 154);
+			this.BtnSwapColors.Name = "BtnSwapColors";
+			this.BtnSwapColors.Size = new System.Drawing.Size(96, 22);
+			this.BtnSwapColors.TabIndex = 26;
+			this.BtnSwapColors.Text = "Swap Colors";
+			this.BtnSwapColors.UseVisualStyleBackColor = true;
+			this.BtnSwapColors.Click += new System.EventHandler(this.BtnSwapColorsClick_Event);
 			// 
 			// MainForm
 			// 
@@ -3328,6 +3340,7 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Button BtnSwapColors;
 		private System.Windows.Forms.ToolStripMenuItem statisticsToolStripMenuItem;
 		private System.Windows.Forms.Button BtnCreateLayoutWxH;
 		private System.Windows.Forms.ToolStripMenuItem deleteEmptyScreensToolStripMenuItem;

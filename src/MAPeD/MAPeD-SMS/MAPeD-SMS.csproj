@@ -206,6 +206,13 @@
     <Compile Include="..\src\strings.cs">
       <Link>strings.cs</Link>
     </Compile>
+    <Compile Include="..\src\swap_colors_form.cs">
+      <Link>swap_colors_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\swap_colors_form.Designer.cs">
+      <Link>swap_colors_form.Designer.cs</Link>
+      <DependentUpon>swap_colors_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\tab_page_container.cs">
       <Link>tab_page_container.cs</Link>
     </Compile>
@@ -302,6 +309,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\statistics_form.resx">
       <DependentUpon>statistics_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\swap_colors_form.resx">
+      <DependentUpon>swap_colors_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\tab_page_container.resx">
       <Link>tab_page_container.resx</Link>

@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+25.08.2020 - SMS: added the "Swap Colors" button to swap user palette's colors without changing graphics
 14.08.2020 - Added a project statistics
 12.08.2020 - NES: added applying of palettes when importing tiles/levels from images
 10.08.2020 - Layout editor: added creating of a layout (width x height) filled with empty screens

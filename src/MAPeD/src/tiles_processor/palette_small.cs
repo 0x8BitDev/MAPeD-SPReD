@@ -93,7 +93,8 @@ namespace MAPeD
 				{
 					clr = palette_group.Instance.main_palette[ m_clr_inds[ i ] ];
 					
-					m_gfx.FillRectangle( new SolidBrush( Color.FromArgb( (clr&0xff0000)>>16, (clr&0xff00)>>8, clr&0xff ) ), ( i * 20 ), 0, 20, 20 );
+					utils.brush.Color = Color.FromArgb( (clr&0xff0000)>>16, (clr&0xff00)>>8, clr&0xff );
+					m_gfx.FillRectangle( utils.brush, ( i * 20 ), 0, 20, 20 );
 				}
 				
 				if( m_sel_clr_ind >= 0 )

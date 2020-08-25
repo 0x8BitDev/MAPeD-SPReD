@@ -25,7 +25,8 @@ namespace MAPeD
 #if DEF_NES
 		private exporter_nes_asm	m_exp_nes_asm	= null;
 #elif DEF_SMS
-		private exporter_sms_asm	m_exp_sms_asm	= null;
+		private exporter_sms_asm	m_exp_sms_asm		= null;
+		private swap_colors_form	m_swap_colors_form	= null;
 #endif		
 		private data_conversion_options_form	m_data_conversion_options_form	= null;
 		
@@ -102,6 +103,8 @@ namespace MAPeD
 			m_exp_nes_asm		= new exporter_nes_asm( m_data_manager );
 #elif DEF_SMS
 			m_exp_sms_asm		= new exporter_sms_asm( m_data_manager );
+			
+			m_swap_colors_form	= new swap_colors_form();
 #endif
 			m_data_conversion_options_form	= new data_conversion_options_form();
 
@@ -223,6 +226,7 @@ namespace MAPeD
 																new SToolTipData( CheckBoxShowTargets, "Show entity targets" ),
 																new SToolTipData( CheckBoxShowCoords, "Show coordinates of a selected entity" ),
 																new SToolTipData( CheckBoxPalettePerCHR, "MMC5 extended attributes mode" ),
+																new SToolTipData( BtnSwapColors, "Swap two selected colors without changing graphics" ),
 																new SToolTipData( BtnBlockReserveCHRs, "Make links to empty CHRs" ),
 																new SToolTipData( BtnTileReserveBlocks, "Make links to empty blocks" ),
 																new SToolTipData( RBtnScreenEditModeSingle, "Single screen edit mode" ),
@@ -251,6 +255,8 @@ namespace MAPeD
 #if DEF_NES
 			Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
 			Project_openFileDialog.Filter = Project_openFileDialog.Filter + "|MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT;
+			
+			BtnSwapColors.Enabled = false;
 #elif DEF_SMS
 			Project_saveFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "SMS" );
@@ -3714,6 +3720,19 @@ namespace MAPeD
 		void CheckBoxPalettePerCHRChecked_Event(object sender, EventArgs e)
 		{
 			m_tiles_processor.set_block_editor_palette_per_CHR_mode( ( sender as CheckBox ).Checked );
+		}
+		
+		void BtnSwapColorsClick_Event(object sender, EventArgs e)
+		{
+#if DEF_SMS			
+			if( m_data_manager.tiles_data_cnt > 0 )
+			{
+				if( m_swap_colors_form.ShowDialog( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) ) == DialogResult.OK )
+				{
+					BtnUpdateGFXClick_Event( null, null );
+				}
+			}
+#endif
 		}
 	}
 }

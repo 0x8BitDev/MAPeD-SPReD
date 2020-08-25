@@ -268,6 +268,9 @@ namespace MAPeD
 		// palette group
 		public static readonly Color	CONST_COLOR_PALETTE_SELECTED_OUTER_BORDER	= Color.Black; 
 		public static readonly Color	CONST_COLOR_PALETTE_SELECTED_INNER_BORDER	= Color.White;
+		public static readonly Color	CONST_COLOR_PALETTE_SWAP_COLOR_ACTIVE_BORDER	= Color.Red;
+		public static readonly Color	CONST_COLOR_PALETTE_SWAP_COLOR_INACTIVE_BORDER	= Color.Black;
+		public static readonly Color	CONST_COLOR_PALETTE_SWAP_COLOR_TEXT_DEFAULT		= Color.Black;
 		// tile editor
 		public static readonly Color	CONST_COLOR_TILE_EDITOR_TRANSLUCENT_QUAD		= Color.FromArgb( unchecked( (int)0x80000000 ) );
 		public static readonly Color	CONST_COLOR_TILE_EDITOR_GRID					= Color.FromArgb( 0x78808080 );
