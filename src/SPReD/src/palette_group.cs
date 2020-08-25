@@ -112,7 +112,8 @@ namespace SPReD
 			{
 				clr = main_palette[ i ];
 				
-				m_gfx.FillRectangle( new SolidBrush( Color.FromArgb( (clr&0xff0000)>>16, (clr&0xff00)>>8, clr&0xff ) ), ( i << 4 )%256, ( i>>4 ) << 4, 16, 16 );
+				utils.brush.Color = Color.FromArgb( (clr&0xff0000)>>16, (clr&0xff00)>>8, clr&0xff );
+				m_gfx.FillRectangle( utils.brush, ( i << 4 )%256, ( i>>4 ) << 4, 16, 16 );
 			}
 			
 			if( m_sel_clr_ind >= 0 )
