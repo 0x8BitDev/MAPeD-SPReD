@@ -48,7 +48,7 @@ namespace MAPeD
 		private int 	m_scr_half_height = 0;
 		
 		private int 	m_sel_screen_slot_id	= -1;
-		private sbyte	m_active_screen_index	= layout_data.CONST_EMPTY_CELL_ID;
+		private byte	m_active_screen_index	= layout_data.CONST_EMPTY_CELL_ID;
 		
 		private ImageAttributes m_scr_img_attr		= null;
 		private Rectangle		m_scr_img_rect;
@@ -776,7 +776,7 @@ namespace MAPeD
 				{
 					scr_data = m_layout.get_data( j, i );
 					
-					if( scr_data.m_scr_ind >= 0 )
+					if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 					{
 						scr_x = screen_pos_x_by_slot_id( j );
 
@@ -829,7 +829,7 @@ namespace MAPeD
 				{
 					scr_data = m_layout.get_data( j, i );
 					
-					if( scr_data.m_scr_ind >= 0 )
+					if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 					{
 						scr_x = screen_pos_x_by_slot_id( j );
 
@@ -1070,7 +1070,7 @@ namespace MAPeD
 				
 				if( mode == EMode.em_Screens )
 				{
-					if( m_active_screen_index >= 0 && m_sel_screen_slot_id >= 0 )
+					if( m_active_screen_index != layout_data.CONST_EMPTY_CELL_ID && m_sel_screen_slot_id >= 0 )
 					{
 						x = screen_pos_x_by_slot_id( get_sel_scr_pos_x() );
 						y = screen_pos_y_by_slot_id( get_sel_scr_pos_y() );						
@@ -1082,7 +1082,7 @@ namespace MAPeD
 						m_gfx.DrawRectangle( m_pen, x+1, y+1, scr_size_width - 1, scr_size_height - 1 );
 						
 						// draw ghost image
-						if( m_active_screen_index >= 0 && m_listview_screens.Items.Count > 0 )
+						if( m_active_screen_index != layout_data.CONST_EMPTY_CELL_ID && m_listview_screens.Items.Count > 0 )
 						{
 							m_scr_img_rect.X 		= x;
 							m_scr_img_rect.Y 		= y;
@@ -1140,7 +1140,7 @@ namespace MAPeD
 							ent_pos_x -= ent_pivot_x;
 							ent_pos_y -= ent_pivot_y;
 #endif							
-							if( check_entity_pos( ref ent_pos_x, ref ent_pos_y, m_ent_data ) && m_sel_screen_slot_id >= 0 && m_layout.get_data( get_sel_scr_pos_x(), get_sel_scr_pos_y() ).m_scr_ind >= 0 )
+							if( check_entity_pos( ref ent_pos_x, ref ent_pos_y, m_ent_data ) && m_sel_screen_slot_id >= 0 && m_layout.get_data( get_sel_scr_pos_x(), get_sel_scr_pos_y() ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 							{
 								m_gfx.DrawImage( m_ent_data.bitmap, ent_pos_x, ent_pos_y, ent_width, ent_height );
 								
@@ -1438,7 +1438,7 @@ namespace MAPeD
 		
 		public void set_active_screen( int _index )
 		{
-			 m_active_screen_index = unchecked( (sbyte)_index );
+			m_active_screen_index = unchecked( (byte)_index );
 		}
 
 		private void update_layout_data( object sender, EventArgs e )
@@ -1677,7 +1677,7 @@ namespace MAPeD
 			
 			if( _scr_ind >= 0 && _scr_ind < width * get_height() )
 			{
-				return ( m_layout.get_data( _scr_ind % width, _scr_ind / width ).m_scr_ind >= 0 ) ? true:false;
+				return ( m_layout.get_data( _scr_ind % width, _scr_ind / width ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID ) ? true:false;
 			}
 			
 			return false;

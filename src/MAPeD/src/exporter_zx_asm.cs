@@ -777,7 +777,7 @@ namespace MAPeD
 						// matrix layout by default
 						{
 							sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_StartScr\t = " + ( start_scr_ind < 0 ? 0:start_scr_ind ) + "\n" );
-							level_data.export_asm( sw, CONST_FILENAME_LEVEL_PREFIX + level_n, "db", "dw", "#", true, ExpZXAsmExportMarks.Checked, ExpZXAsmExportEntities.Checked, ExpZXAsmEntScreenCoords.Checked );
+							level_data.export_asm( sw, CONST_FILENAME_LEVEL_PREFIX + level_n, "\tDEFINE", "db", "dw", "#", true, ExpZXAsmExportMarks.Checked, ExpZXAsmExportEntities.Checked, ExpZXAsmEntScreenCoords.Checked );
 						}
 					}
 				}

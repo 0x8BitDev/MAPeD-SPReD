@@ -41,12 +41,12 @@ namespace MAPeD
 		}
 		
 		[DataMember]
-		public sbyte 					m_scr_ind;
+		public byte 					m_scr_ind;
 		
 		[DataMember]
 		public List< entity_instance > 	m_ents;
 		
-		public screen_data( sbyte _scr_ind )
+		public screen_data( byte _scr_ind )
 		{
 			m_scr_ind = _scr_ind;
 			m_ents = new List< entity_instance >();
@@ -81,7 +81,7 @@ namespace MAPeD
 		{
 			m_marks	  = _br.ReadUInt16();
 			
-			m_scr_ind = _br.ReadSByte();
+			m_scr_ind = _br.ReadByte();
 			
 			int ents_cnt = _br.ReadInt32();
 			
@@ -136,7 +136,7 @@ namespace MAPeD
 		[DataMember]
 		private List< List< screen_data > >	m_layout	= null;
 
-		public const sbyte	CONST_EMPTY_CELL_ID		= unchecked( (sbyte)-1 );
+		public const byte	CONST_EMPTY_CELL_ID		= 255;
 		
 		public layout_data()
 		{
@@ -667,7 +667,7 @@ namespace MAPeD
 			});
 		}
 		
-		public void export_asm( StreamWriter _sw, string _data_mark, string _db, string _dw, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr )
+		public void export_asm( StreamWriter _sw, string _data_mark, string _define, string _db, string _dw, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr )
 		{
 			int x;
 			int y;
@@ -679,16 +679,10 @@ namespace MAPeD
 
 			// export layout
 			{
-#if DEF_NES				
-				_sw.WriteLine( _data_mark + "_WScrCnt\t=\t" + width + "\t; number of screens in width" );
-				_sw.WriteLine( _data_mark + "_HScrCnt\t=\t" + height + "\t; number of screens in height" );
-#elif DEF_SMS
-				_sw.WriteLine( ".define " + _data_mark + "_WScrCnt\t" + width + "\t; number of screens in width" );
-				_sw.WriteLine( ".define " + _data_mark + "_HScrCnt\t" + height + "\t; number of screens in height" );
-#endif
+				_sw.WriteLine( _define + " " + _data_mark + "_WScrCnt\t" + width + "\t; number of screens in width" );
+				_sw.WriteLine( _define + " " + _data_mark + "_HScrCnt\t" + height + "\t; number of screens in height" );
+
 				_sw.WriteLine( "\n" + _data_mark + "_Layout:\t" );
-				
-				short scr_ind;
 				
 				for( y = 0; y < height; y++ )
 				{
@@ -696,9 +690,7 @@ namespace MAPeD
 					
 					for( x = 0; x < width; x++ )
 					{
-						scr_ind = ( short )get_data( x, y ).m_scr_ind;
-						
-						data_str += ( scr_ind >= 0 ? _data_mark + "Scr" + ( y * width + x ):"0" ) + ( x < ( width - 1 ) ? ", ":"" );
+						data_str += ( get_data( x, y ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID ? _data_mark + "Scr" + ( y * width + x ):"0" ) + ( x < ( width - 1 ) ? ", ":"" );
 					}
 					
 					_sw.WriteLine( data_str );

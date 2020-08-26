@@ -156,7 +156,7 @@ namespace MAPeD
 		public const int CONST_SCREEN_BLOCKS_SIZE		= 32;	// pixels
 		
 		public const int CONST_SCREEN_TILES_CNT			= CONST_SCREEN_NUM_WIDTH_TILES * CONST_SCREEN_NUM_HEIGHT_TILES;
-		public const int CONST_SCREEN_MAX_CNT			= 128;
+		public const int CONST_SCREEN_MAX_CNT			= 255;	// 1...255
 		
 		public const int CONST_SCREEN_WIDTH_PIXELS		= 32 * CONST_SCREEN_NUM_WIDTH_TILES;
 		
@@ -180,7 +180,7 @@ namespace MAPeD
 			
 		public const int CONST_SCREEN_MARK_IMAGE_SIZE	= CONST_SCREEN_WIDTH_PIXELS >> 1;
 
-		public const int CONST_LAYOUT_MAX_CNT			= 128;
+		public const int CONST_LAYOUT_MAX_CNT			= 256;
 
 		public const int CONST_SPR8x8_SIDE_PIXELS_CNT			= 8;
 		public const int CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS	= 3;	// 2->4->8 = 3bits
@@ -198,7 +198,7 @@ namespace MAPeD
 		public const int CONST_CHR_BANK_PAGE_SIDE			= 128;
 		public const int CONST_CHR_BANK_PAGE_SIZE			= CONST_CHR_BANK_PAGE_SIDE * CONST_CHR_BANK_PAGE_SIDE;
 		public const int CONST_CHR_BANK_PAGE_SPRITES_CNT	= 256;
-		public const int CONST_CHR_BANK_MAX_CNT				= 128;
+		public const int CONST_CHR_BANK_MAX_CNT				= 256;
 		
 		public const int CONST_BLOCK_SIZE					= 4;	// ushorts
 		public const int CONST_TILE_SIZE					= 4;	// bytes

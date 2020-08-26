@@ -504,9 +504,9 @@ namespace MAPeD
 				{
 					if( check_screen_layouts( scr_ind ) == true )
 					{
-						if( scr_ind_opt > 255 )
+						if( scr_ind_opt > utils.CONST_SCREEN_MAX_CNT - 1 )
 						{
-							throw new Exception( "The screen index is out of range!\nThe maximum number of screens allowed to export: 256" );
+							throw new Exception( "The screen index is out of range!\nThe maximum number of screens allowed to export: " + utils.CONST_SCREEN_MAX_CNT );
 						}
 						
 						valid_bank = true;
@@ -918,7 +918,7 @@ namespace MAPeD
 									
 									if( RBtnLayoutMatrix.Checked )
 									{
-										level_data.export_asm( _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".byte", ".word", "$", false, false, false, false );
+										level_data.export_asm( _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".define", ".byte", ".word", "$", false, false, false, false );
 									}
 								}
 								
@@ -1589,7 +1589,7 @@ namespace MAPeD
 
 				if( CheckBoxExportEntities.Checked )
 				{
-					level_data.export_asm( _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".byte", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+					level_data.export_asm( _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".define", ".byte", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
 				}
 				else
 				{

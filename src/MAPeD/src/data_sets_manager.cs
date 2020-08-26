@@ -426,14 +426,17 @@ namespace MAPeD
 					{
 						scr_data = data.get_data( j, i );
 						
-						if( scr_data.m_scr_ind == scr_global_ind )
+						if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 						{
-							data.delete_screen_by_data( scr_data, ( i * data.get_width() + j ) );
-						}
-						
-						if( scr_data.m_scr_ind > scr_global_ind )
-						{
-							--scr_data.m_scr_ind;
+							if( scr_data.m_scr_ind == scr_global_ind )
+							{
+								data.delete_screen_by_data( scr_data, ( i * data.get_width() + j ) );
+							}
+							else
+							if( scr_data.m_scr_ind > scr_global_ind )
+							{
+								--scr_data.m_scr_ind;
+							}
 						}
 					}
 				}
@@ -460,9 +463,10 @@ namespace MAPeD
 				{
 					for( int j = 0; j < width; j++ )
 					{
-						if( data.get_data( j, i ).m_scr_ind >= _scr_ind )
+						scr_data = data.get_data( j, i );
+						
+						if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID && scr_data.m_scr_ind >= _scr_ind )
 						{
-							scr_data = data.get_data( j, i );
 							++scr_data.m_scr_ind;
 							data.set_data( scr_data, j, i );
 						}

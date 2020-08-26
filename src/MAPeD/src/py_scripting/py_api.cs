@@ -78,7 +78,7 @@ namespace MAPeD
 			_py_scope.SetVariable( CONST_PREFIX + "layout_start_screen_cell", new Func< int, int >( layout_start_screen_cell ) );
 			
 			// sbyte layout_screen_ind( int _layout_ind, int _scr_pos_x, int _scr_pos_y ) [ in common screens array from all banks ]
-			_py_scope.SetVariable( CONST_PREFIX + "layout_screen_ind", new Func< int, int, int, sbyte >( layout_screen_ind ) );
+			_py_scope.SetVariable( CONST_PREFIX + "layout_screen_ind", new Func< int, int, int, int >( layout_screen_ind ) );
 			
 			// ushort layout_screen_marks( int _layout_ind, int _scr_pos_x, int_scr_pos_y )
 			_py_scope.SetVariable( CONST_PREFIX + "layout_screen_marks", new Func< int, int, int, ushort >( layout_screen_marks ) );
@@ -188,13 +188,13 @@ namespace MAPeD
 			return null;
 		}
 		
-		public sbyte layout_screen_ind( int _layout_ind, int _scr_pos_x, int _scr_pos_y )
+		public int layout_screen_ind( int _layout_ind, int _scr_pos_x, int _scr_pos_y )
 		{
 			screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
 			
 			if( data != null )
 			{
-				return data.m_scr_ind;
+				return ( int )data.m_scr_ind;
 			}
 			
 			return -1;

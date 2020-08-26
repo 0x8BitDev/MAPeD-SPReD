@@ -980,7 +980,7 @@ namespace MAPeD
 									{
 										scr_ind = layout.get_data( j, i ).m_scr_ind;
 										
-										if( scr_ind >= 0 )
+										if( scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 										{
 											gfx.DrawImage( ListViewScreens.LargeImageList.Images[ scr_ind ], j * utils.CONST_SCREEN_WIDTH_PIXELS, i * utils.CONST_SCREEN_HEIGHT_PIXELS, utils.CONST_SCREEN_WIDTH_PIXELS, utils.CONST_SCREEN_HEIGHT_PIXELS );
 										}
@@ -2369,7 +2369,7 @@ namespace MAPeD
 									m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
 								
 									scr_data = layout.get_data( x, y );
-									scr_data.m_scr_ind = (sbyte)scr_global_ind;
+									scr_data.m_scr_ind = (byte)scr_global_ind;
 									layout.set_data( scr_data, x, y );
 								}
 								else
