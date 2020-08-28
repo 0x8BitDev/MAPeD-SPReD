@@ -3475,30 +3475,38 @@ namespace MAPeD
 		{
 			String filename = ( ( FileDialog )sender ).FileName;
 			
+			Bitmap bmp			= null;
+			Bitmap unlocked_bmp	= null;
+			
 			try
 			{
-				Bitmap bmp = new Bitmap( filename );
+				bmp = new Bitmap( filename );
+				
+				// unlock the bmp
+				unlocked_bmp = new Bitmap( bmp, bmp.Width, bmp.Height );
+				bmp.Dispose();
+				bmp = null;
 				
 				entity_data ent = get_selected_entity();
 				
-				if( ent.width != bmp.Width || ent.height != bmp.Height )
+				if( ent.width != unlocked_bmp.Width || ent.height != unlocked_bmp.Height )
 				{
 					if( message_box( "Rescale the loaded image to the entity size?", "WARNING", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
 					{
-						Bitmap new_bmp = new Bitmap( bmp, new Size( ent.width, ent.height ) );
+						Bitmap rescaled_bmp = new Bitmap( unlocked_bmp, new Size( ent.width, ent.height ) );
 						
-						bmp.Dispose();
-						bmp = new_bmp;
+						unlocked_bmp.Dispose();
+						unlocked_bmp = rescaled_bmp;
 					}
 					else
 					{
-						if( bmp.Width > 255 || bmp.Height > 255 )
+						if( unlocked_bmp.Width > 255 || unlocked_bmp.Height > 255 )
 						{
 							throw new Exception( "Invalid image size! The width and height must be less than 256!" );
 						}
 						
-						ent.width 	= (byte)bmp.Width;
-						ent.height 	= (byte)bmp.Height;
+						ent.width 	= (byte)unlocked_bmp.Width;
+						ent.height 	= (byte)unlocked_bmp.Height;
 						ent.pivot_x = 0;
 						ent.pivot_y = 0;
 					}
@@ -3506,7 +3514,7 @@ namespace MAPeD
 				
 				if( ent != null )
 				{
-					ent.bitmap 		= bmp;
+					ent.bitmap 		= unlocked_bmp;
 					ent.image_flag 	= true;
 				}
 
@@ -3514,6 +3522,18 @@ namespace MAPeD
 			}
 			catch( Exception _err )
 			{
+				if( bmp != null )
+				{
+					bmp.Dispose();
+					bmp = null;
+				}
+
+				if( unlocked_bmp != null )
+				{
+					unlocked_bmp.Dispose();
+					unlocked_bmp = null;
+				}
+				
 				message_box( _err.Message, "Load Entity Image Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
