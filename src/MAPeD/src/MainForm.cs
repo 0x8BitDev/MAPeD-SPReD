@@ -160,6 +160,8 @@ namespace MAPeD
 
 			CBoxBlockObjId.SelectedIndex = 0;
 			
+			ComboBoxEntityZoom.SelectedIndex = 0;
+			
 			enable_update_gfx_btn( false );
 			enable_update_screens_btn( true );
 
@@ -3577,7 +3579,7 @@ namespace MAPeD
 		    }
 		}
 
-		void CheckBoxEntityPreviewScaleX2CheckedChanged(object sender, EventArgs e)
+		void ComboBoxEntityZoomChanged_Event(object sender, EventArgs e)
 		{
 			update_entity_preview();
 		}
@@ -3586,7 +3588,7 @@ namespace MAPeD
 		{
 			entity_instance ent_inst = m_layout_editor.get_selected_entity_instance();
 			
-			m_entity_preview.update( ( ent_inst != null && _force_disable == false ) ? ent_inst.base_entity:get_selected_entity(), CBoxEntityPreviewScaleX2.Checked ? 2:1 );
+			m_entity_preview.update( ( ent_inst != null && _force_disable == false ) ? ent_inst.base_entity:get_selected_entity(), ( int )Math.Pow( 2.0, ComboBoxEntityZoom.SelectedIndex ) );
 			
 			if( CheckBoxShowEntities.Checked )
 			{

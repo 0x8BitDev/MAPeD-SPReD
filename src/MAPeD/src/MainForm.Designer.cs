@@ -178,6 +178,7 @@ namespace MAPeD
 			this.insertLeftCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.BtnSwapColors = new System.Windows.Forms.Button();
 			this.CheckBoxPalettePerCHR = new System.Windows.Forms.CheckBox();
 			this.Palette3 = new System.Windows.Forms.PictureBox();
 			this.Palette2 = new System.Windows.Forms.PictureBox();
@@ -246,6 +247,8 @@ namespace MAPeD
 			this.BtnEntityGroupDelete = new System.Windows.Forms.Button();
 			this.CheckBoxEntitySnapping = new System.Windows.Forms.CheckBox();
 			this.groupBoxEntityEditor = new System.Windows.Forms.GroupBox();
+			this.ComboBoxEntityZoom = new System.Windows.Forms.ComboBox();
+			this.label7 = new System.Windows.Forms.Label();
 			this.CheckBoxPickupTargetEntity = new System.Windows.Forms.CheckBox();
 			this.PBoxEntityPreview = new System.Windows.Forms.PictureBox();
 			this.NumericUpDownEntityUID = new System.Windows.Forms.NumericUpDown();
@@ -263,7 +266,6 @@ namespace MAPeD
 			this.LabelEntityName = new System.Windows.Forms.Label();
 			this.TextBoxEntityProperties = new System.Windows.Forms.TextBox();
 			this.TextBoxEntityInstanceProp = new System.Windows.Forms.TextBox();
-			this.CBoxEntityPreviewScaleX2 = new System.Windows.Forms.CheckBox();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
 			this.BtnLayoutMoveDown = new System.Windows.Forms.Button();
 			this.BtnLayoutMoveUp = new System.Windows.Forms.Button();
@@ -341,7 +343,6 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.BtnSwapColors = new System.Windows.Forms.Button();
 			this.ContextMenuEntitiesTreeGoup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
@@ -1613,6 +1614,16 @@ namespace MAPeD
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Palettes:";
 			// 
+			// BtnSwapColors
+			// 
+			this.BtnSwapColors.Location = new System.Drawing.Point(169, 154);
+			this.BtnSwapColors.Name = "BtnSwapColors";
+			this.BtnSwapColors.Size = new System.Drawing.Size(96, 22);
+			this.BtnSwapColors.TabIndex = 26;
+			this.BtnSwapColors.Text = "Swap Colors";
+			this.BtnSwapColors.UseVisualStyleBackColor = true;
+			this.BtnSwapColors.Click += new System.EventHandler(this.BtnSwapColorsClick_Event);
+			// 
 			// CheckBoxPalettePerCHR
 			// 
 			this.CheckBoxPalettePerCHR.Location = new System.Drawing.Point(10, 158);
@@ -2353,6 +2364,8 @@ namespace MAPeD
 			// 
 			// groupBoxEntityEditor
 			// 
+			this.groupBoxEntityEditor.Controls.Add(this.ComboBoxEntityZoom);
+			this.groupBoxEntityEditor.Controls.Add(this.label7);
 			this.groupBoxEntityEditor.Controls.Add(this.CheckBoxPickupTargetEntity);
 			this.groupBoxEntityEditor.Controls.Add(this.PBoxEntityPreview);
 			this.groupBoxEntityEditor.Controls.Add(this.NumericUpDownEntityUID);
@@ -2366,13 +2379,36 @@ namespace MAPeD
 			this.groupBoxEntityEditor.Controls.Add(this.LabelEntityName);
 			this.groupBoxEntityEditor.Controls.Add(this.TextBoxEntityProperties);
 			this.groupBoxEntityEditor.Controls.Add(this.TextBoxEntityInstanceProp);
-			this.groupBoxEntityEditor.Controls.Add(this.CBoxEntityPreviewScaleX2);
 			this.groupBoxEntityEditor.Location = new System.Drawing.Point(5, 295);
 			this.groupBoxEntityEditor.Name = "groupBoxEntityEditor";
 			this.groupBoxEntityEditor.Size = new System.Drawing.Size(309, 283);
 			this.groupBoxEntityEditor.TabIndex = 111;
 			this.groupBoxEntityEditor.TabStop = false;
 			this.groupBoxEntityEditor.Text = "Active Entity";
+			// 
+			// ComboBoxEntityZoom
+			// 
+			this.ComboBoxEntityZoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.ComboBoxEntityZoom.FormattingEnabled = true;
+			this.ComboBoxEntityZoom.Items.AddRange(new object[] {
+									"x1",
+									"x2",
+									"x4",
+									"x8",
+									"x16"});
+			this.ComboBoxEntityZoom.Location = new System.Drawing.Point(249, 254);
+			this.ComboBoxEntityZoom.Name = "ComboBoxEntityZoom";
+			this.ComboBoxEntityZoom.Size = new System.Drawing.Size(44, 21);
+			this.ComboBoxEntityZoom.TabIndex = 125;
+			this.ComboBoxEntityZoom.SelectedIndexChanged += new System.EventHandler(this.ComboBoxEntityZoomChanged_Event);
+			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(203, 257);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(55, 20);
+			this.label7.TabIndex = 124;
+			this.label7.Text = "Zoom:";
 			// 
 			// CheckBoxPickupTargetEntity
 			// 
@@ -2596,16 +2632,6 @@ namespace MAPeD
 			this.TextBoxEntityInstanceProp.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBoxEntityPropertiesKeyPress_Event);
 			this.TextBoxEntityInstanceProp.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TextBoxEntityInstancePropTextKeyUp_Event);
 			// 
-			// CBoxEntityPreviewScaleX2
-			// 
-			this.CBoxEntityPreviewScaleX2.Location = new System.Drawing.Point(203, 263);
-			this.CBoxEntityPreviewScaleX2.Name = "CBoxEntityPreviewScaleX2";
-			this.CBoxEntityPreviewScaleX2.Size = new System.Drawing.Size(67, 17);
-			this.CBoxEntityPreviewScaleX2.TabIndex = 124;
-			this.CBoxEntityPreviewScaleX2.Text = "Zoom x2";
-			this.CBoxEntityPreviewScaleX2.UseVisualStyleBackColor = true;
-			this.CBoxEntityPreviewScaleX2.CheckedChanged += new System.EventHandler(this.CheckBoxEntityPreviewScaleX2CheckedChanged);
-			// 
 			// groupBox7
 			// 
 			this.groupBox7.Controls.Add(this.BtnLayoutMoveDown);
@@ -2614,7 +2640,7 @@ namespace MAPeD
 			this.groupBox7.Location = new System.Drawing.Point(941, 139);
 			this.groupBox7.Name = "groupBox7";
 			this.groupBox7.Size = new System.Drawing.Size(79, 242);
-			this.groupBox7.TabIndex = 68;
+			this.groupBox7.TabIndex = 69;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "Layouts:";
 			// 
@@ -2623,7 +2649,7 @@ namespace MAPeD
 			this.BtnLayoutMoveDown.Location = new System.Drawing.Point(6, 212);
 			this.BtnLayoutMoveDown.Name = "BtnLayoutMoveDown";
 			this.BtnLayoutMoveDown.Size = new System.Drawing.Size(67, 23);
-			this.BtnLayoutMoveDown.TabIndex = 71;
+			this.BtnLayoutMoveDown.TabIndex = 72;
 			this.BtnLayoutMoveDown.Text = "Move Dn";
 			this.BtnLayoutMoveDown.UseVisualStyleBackColor = true;
 			this.BtnLayoutMoveDown.Click += new System.EventHandler(this.BtnLayoutMoveDownClick_Event);
@@ -2633,7 +2659,7 @@ namespace MAPeD
 			this.BtnLayoutMoveUp.Location = new System.Drawing.Point(6, 185);
 			this.BtnLayoutMoveUp.Name = "BtnLayoutMoveUp";
 			this.BtnLayoutMoveUp.Size = new System.Drawing.Size(67, 23);
-			this.BtnLayoutMoveUp.TabIndex = 70;
+			this.BtnLayoutMoveUp.TabIndex = 71;
 			this.BtnLayoutMoveUp.Text = "Move Up";
 			this.BtnLayoutMoveUp.UseVisualStyleBackColor = true;
 			this.BtnLayoutMoveUp.Click += new System.EventHandler(this.BtnLayoutMoveUpClick_Event);
@@ -2645,7 +2671,7 @@ namespace MAPeD
 			this.ListBoxLayouts.Location = new System.Drawing.Point(6, 19);
 			this.ListBoxLayouts.Name = "ListBoxLayouts";
 			this.ListBoxLayouts.Size = new System.Drawing.Size(67, 160);
-			this.ListBoxLayouts.TabIndex = 69;
+			this.ListBoxLayouts.TabIndex = 70;
 			this.ListBoxLayouts.Click += new System.EventHandler(this.ListBoxLayoutsClick_Event);
 			this.ListBoxLayouts.SelectedIndexChanged += new System.EventHandler(this.ListBoxLayoutsClick_Event);
 			// 
@@ -2654,7 +2680,7 @@ namespace MAPeD
 			this.BtnCopyLayout.Location = new System.Drawing.Point(941, 81);
 			this.BtnCopyLayout.Name = "BtnCopyLayout";
 			this.BtnCopyLayout.Size = new System.Drawing.Size(79, 23);
-			this.BtnCopyLayout.TabIndex = 66;
+			this.BtnCopyLayout.TabIndex = 67;
 			this.BtnCopyLayout.Text = "Copy";
 			this.BtnCopyLayout.UseVisualStyleBackColor = true;
 			this.BtnCopyLayout.Click += new System.EventHandler(this.BtnCopyLayoutClick_Event);
@@ -2664,7 +2690,7 @@ namespace MAPeD
 			this.BtnDeleteLayout.Location = new System.Drawing.Point(941, 110);
 			this.BtnDeleteLayout.Name = "BtnDeleteLayout";
 			this.BtnDeleteLayout.Size = new System.Drawing.Size(79, 23);
-			this.BtnDeleteLayout.TabIndex = 67;
+			this.BtnDeleteLayout.TabIndex = 68;
 			this.BtnDeleteLayout.Text = "Delete";
 			this.BtnDeleteLayout.UseVisualStyleBackColor = true;
 			this.BtnDeleteLayout.Click += new System.EventHandler(this.BtnDeleteLayoutClick_Event);
@@ -2674,7 +2700,7 @@ namespace MAPeD
 			this.BtnCreateLayoutWxH.Location = new System.Drawing.Point(940, 52);
 			this.BtnCreateLayoutWxH.Name = "BtnCreateLayoutWxH";
 			this.BtnCreateLayoutWxH.Size = new System.Drawing.Size(79, 23);
-			this.BtnCreateLayoutWxH.TabIndex = 65;
+			this.BtnCreateLayoutWxH.TabIndex = 66;
 			this.BtnCreateLayoutWxH.Text = "Create WxH";
 			this.BtnCreateLayoutWxH.UseVisualStyleBackColor = true;
 			this.BtnCreateLayoutWxH.Click += new System.EventHandler(this.BtnCreateLayoutWxHClick_Event);
@@ -2702,7 +2728,7 @@ namespace MAPeD
 			this.BtnLayoutRemoveRightColumn.Location = new System.Drawing.Point(980, 474);
 			this.BtnLayoutRemoveRightColumn.Name = "BtnLayoutRemoveRightColumn";
 			this.BtnLayoutRemoveRightColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveRightColumn.TabIndex = 79;
+			this.BtnLayoutRemoveRightColumn.TabIndex = 80;
 			this.BtnLayoutRemoveRightColumn.Text = "-R";
 			this.BtnLayoutRemoveRightColumn.UseVisualStyleBackColor = true;
 			this.BtnLayoutRemoveRightColumn.Click += new System.EventHandler(this.BtnLayoutRemoveRightColumnClick_Event);
@@ -2712,7 +2738,7 @@ namespace MAPeD
 			this.BtnLayoutAddRightColumn.Location = new System.Drawing.Point(941, 474);
 			this.BtnLayoutAddRightColumn.Name = "BtnLayoutAddRightColumn";
 			this.BtnLayoutAddRightColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutAddRightColumn.TabIndex = 78;
+			this.BtnLayoutAddRightColumn.TabIndex = 79;
 			this.BtnLayoutAddRightColumn.Text = "+R";
 			this.BtnLayoutAddRightColumn.UseVisualStyleBackColor = true;
 			this.BtnLayoutAddRightColumn.Click += new System.EventHandler(this.BtnLayoutAddRightColumnClick_Event);
@@ -2722,7 +2748,7 @@ namespace MAPeD
 			this.BtnLayoutRemoveLeftColumn.Location = new System.Drawing.Point(980, 445);
 			this.BtnLayoutRemoveLeftColumn.Name = "BtnLayoutRemoveLeftColumn";
 			this.BtnLayoutRemoveLeftColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveLeftColumn.TabIndex = 77;
+			this.BtnLayoutRemoveLeftColumn.TabIndex = 78;
 			this.BtnLayoutRemoveLeftColumn.Text = "-L";
 			this.BtnLayoutRemoveLeftColumn.UseVisualStyleBackColor = true;
 			this.BtnLayoutRemoveLeftColumn.Click += new System.EventHandler(this.BtnLayoutRemoveLeftColumnClick_Event);
@@ -2732,7 +2758,7 @@ namespace MAPeD
 			this.BtnLayoutAddLeftColumn.Location = new System.Drawing.Point(941, 445);
 			this.BtnLayoutAddLeftColumn.Name = "BtnLayoutAddLeftColumn";
 			this.BtnLayoutAddLeftColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutAddLeftColumn.TabIndex = 76;
+			this.BtnLayoutAddLeftColumn.TabIndex = 77;
 			this.BtnLayoutAddLeftColumn.Text = "+L";
 			this.BtnLayoutAddLeftColumn.UseVisualStyleBackColor = true;
 			this.BtnLayoutAddLeftColumn.Click += new System.EventHandler(this.BtnLayoutAddLeftColumnClick_Event);
@@ -2742,7 +2768,7 @@ namespace MAPeD
 			this.BtnLayoutRemoveDownRow.Location = new System.Drawing.Point(980, 416);
 			this.BtnLayoutRemoveDownRow.Name = "BtnLayoutRemoveDownRow";
 			this.BtnLayoutRemoveDownRow.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveDownRow.TabIndex = 75;
+			this.BtnLayoutRemoveDownRow.TabIndex = 76;
 			this.BtnLayoutRemoveDownRow.Text = "-D";
 			this.BtnLayoutRemoveDownRow.UseVisualStyleBackColor = true;
 			this.BtnLayoutRemoveDownRow.Click += new System.EventHandler(this.BtnLayoutRemoveBottomRowClick_Event);
@@ -2752,7 +2778,7 @@ namespace MAPeD
 			this.BtnLayoutAddDownRow.Location = new System.Drawing.Point(941, 416);
 			this.BtnLayoutAddDownRow.Name = "BtnLayoutAddDownRow";
 			this.BtnLayoutAddDownRow.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutAddDownRow.TabIndex = 74;
+			this.BtnLayoutAddDownRow.TabIndex = 75;
 			this.BtnLayoutAddDownRow.Text = "+D";
 			this.BtnLayoutAddDownRow.UseVisualStyleBackColor = true;
 			this.BtnLayoutAddDownRow.Click += new System.EventHandler(this.BtnLayoutAddDownRowClick_Event);
@@ -2762,7 +2788,7 @@ namespace MAPeD
 			this.BtnLayoutRemoveUpRow.Location = new System.Drawing.Point(980, 387);
 			this.BtnLayoutRemoveUpRow.Name = "BtnLayoutRemoveUpRow";
 			this.BtnLayoutRemoveUpRow.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveUpRow.TabIndex = 73;
+			this.BtnLayoutRemoveUpRow.TabIndex = 74;
 			this.BtnLayoutRemoveUpRow.Text = "-U";
 			this.BtnLayoutRemoveUpRow.UseVisualStyleBackColor = true;
 			this.BtnLayoutRemoveUpRow.Click += new System.EventHandler(this.BtnLayoutRemoveTopRowClick_Event);
@@ -2772,7 +2798,7 @@ namespace MAPeD
 			this.BtnLayoutAddUpRow.Location = new System.Drawing.Point(941, 387);
 			this.BtnLayoutAddUpRow.Name = "BtnLayoutAddUpRow";
 			this.BtnLayoutAddUpRow.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutAddUpRow.TabIndex = 72;
+			this.BtnLayoutAddUpRow.TabIndex = 73;
 			this.BtnLayoutAddUpRow.Text = "+U";
 			this.BtnLayoutAddUpRow.UseVisualStyleBackColor = true;
 			this.BtnLayoutAddUpRow.Click += new System.EventHandler(this.BtnLayoutAddUpRowClick_Event);
@@ -2982,7 +3008,7 @@ namespace MAPeD
 			this.groupBox13.Location = new System.Drawing.Point(940, 508);
 			this.groupBox13.Name = "groupBox13";
 			this.groupBox13.Size = new System.Drawing.Size(80, 101);
-			this.groupBox13.TabIndex = 80;
+			this.groupBox13.TabIndex = 81;
 			this.groupBox13.TabStop = false;
 			this.groupBox13.Text = "Show";
 			// 
@@ -2991,7 +3017,7 @@ namespace MAPeD
 			this.CheckBoxShowCoords.Location = new System.Drawing.Point(11, 79);
 			this.CheckBoxShowCoords.Name = "CheckBoxShowCoords";
 			this.CheckBoxShowCoords.Size = new System.Drawing.Size(63, 17);
-			this.CheckBoxShowCoords.TabIndex = 84;
+			this.CheckBoxShowCoords.TabIndex = 85;
 			this.CheckBoxShowCoords.Text = "Coords";
 			this.CheckBoxShowCoords.UseVisualStyleBackColor = true;
 			this.CheckBoxShowCoords.CheckedChanged += new System.EventHandler(this.CheckBoxShowCoordsChecked_Event);
@@ -3001,7 +3027,7 @@ namespace MAPeD
 			this.CheckBoxShowTargets.Location = new System.Drawing.Point(11, 59);
 			this.CheckBoxShowTargets.Name = "CheckBoxShowTargets";
 			this.CheckBoxShowTargets.Size = new System.Drawing.Size(63, 17);
-			this.CheckBoxShowTargets.TabIndex = 83;
+			this.CheckBoxShowTargets.TabIndex = 84;
 			this.CheckBoxShowTargets.Text = "Targets";
 			this.CheckBoxShowTargets.UseVisualStyleBackColor = true;
 			this.CheckBoxShowTargets.CheckedChanged += new System.EventHandler(this.CheckBoxShowTargetsChecked_Event);
@@ -3011,7 +3037,7 @@ namespace MAPeD
 			this.CheckBoxShowMarks.Location = new System.Drawing.Point(11, 19);
 			this.CheckBoxShowMarks.Name = "CheckBoxShowMarks";
 			this.CheckBoxShowMarks.Size = new System.Drawing.Size(60, 17);
-			this.CheckBoxShowMarks.TabIndex = 81;
+			this.CheckBoxShowMarks.TabIndex = 82;
 			this.CheckBoxShowMarks.Text = "Marks";
 			this.CheckBoxShowMarks.UseVisualStyleBackColor = true;
 			this.CheckBoxShowMarks.CheckedChanged += new System.EventHandler(this.CheckBoxShowMarksChecked_Event);
@@ -3021,7 +3047,7 @@ namespace MAPeD
 			this.CheckBoxShowEntities.Location = new System.Drawing.Point(11, 39);
 			this.CheckBoxShowEntities.Name = "CheckBoxShowEntities";
 			this.CheckBoxShowEntities.Size = new System.Drawing.Size(60, 17);
-			this.CheckBoxShowEntities.TabIndex = 82;
+			this.CheckBoxShowEntities.TabIndex = 83;
 			this.CheckBoxShowEntities.Text = "Entities";
 			this.CheckBoxShowEntities.UseVisualStyleBackColor = true;
 			this.CheckBoxShowEntities.CheckedChanged += new System.EventHandler(this.CheckBoxShowEntitiesChecked_Event);
@@ -3247,16 +3273,6 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
 			// 
-			// BtnSwapColors
-			// 
-			this.BtnSwapColors.Location = new System.Drawing.Point(169, 154);
-			this.BtnSwapColors.Name = "BtnSwapColors";
-			this.BtnSwapColors.Size = new System.Drawing.Size(96, 22);
-			this.BtnSwapColors.TabIndex = 26;
-			this.BtnSwapColors.Text = "Swap Colors";
-			this.BtnSwapColors.UseVisualStyleBackColor = true;
-			this.BtnSwapColors.Click += new System.EventHandler(this.BtnSwapColorsClick_Event);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3340,6 +3356,8 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.ComboBox ComboBoxEntityZoom;
 		private System.Windows.Forms.Button BtnSwapColors;
 		private System.Windows.Forms.ToolStripMenuItem statisticsToolStripMenuItem;
 		private System.Windows.Forms.Button BtnCreateLayoutWxH;
@@ -3454,7 +3472,6 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparatorShiftTransp;
 		private System.Windows.Forms.ToolStripMenuItem updateGFXToolStripMenuItem;
 		private System.Windows.Forms.Button BtnEntitiesEditInstancesMode;
-		private System.Windows.Forms.CheckBox CBoxEntityPreviewScaleX2;
 		private System.Windows.Forms.TextBox TextBoxEntityProperties;
 		private System.Windows.Forms.Label LabelEntityProperty;
 		private System.Windows.Forms.OpenFileDialog EntityLoadBitmap_openFileDialog;

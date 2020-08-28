@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 21.12.2018
  * Time: 16:34
  */
@@ -80,7 +80,7 @@ namespace MAPeD
 					int pivot_x = ( int )Math.Round( transform_to_scr_pos( offset_x, _scale, m_scr_half_width ) );
 					int pivot_y = ( int )Math.Round( transform_to_scr_pos( offset_y, _scale, m_scr_half_height ) );
 					
-					m_pen.Width = ( float )_scale;
+					m_pen.Width = ( float )( _scale > 2 ? 2:_scale );
 					
 					m_pen.Color = utils.CONST_COLOR_ENTITY_PIVOT_CROSS;
 					m_gfx.DrawLine( m_pen, pivot_x, pivot_y - 8, pivot_x, pivot_y + 8 );
