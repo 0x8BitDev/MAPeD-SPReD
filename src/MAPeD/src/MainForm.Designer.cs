@@ -1260,10 +1260,12 @@ namespace MAPeD
 			this.CBoxTileViewType.Items.AddRange(new object[] {
 									"Graphics",
 									"Property Id",
-									"Number"});
+									"Number",
+									"Tiles Usage",
+									"Blocks Usage"});
 			this.CBoxTileViewType.Location = new System.Drawing.Point(60, 4);
 			this.CBoxTileViewType.Name = "CBoxTileViewType";
-			this.CBoxTileViewType.Size = new System.Drawing.Size(75, 21);
+			this.CBoxTileViewType.Size = new System.Drawing.Size(85, 21);
 			this.CBoxTileViewType.TabIndex = 1;
 			this.CBoxTileViewType.SelectedIndexChanged += new System.EventHandler(this.CBoxTileViewTypeChanged_Event);
 			// 

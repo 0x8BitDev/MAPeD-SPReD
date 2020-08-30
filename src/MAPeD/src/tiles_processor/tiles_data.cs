@@ -782,6 +782,48 @@ namespace MAPeD
 			return tile_id;
 		}
 		
+		public int get_tile_usage( byte _tile_ind )
+		{
+			int res = 0;
+			
+			int scr_n;
+			int tile_n;
+			
+			for( scr_n = 0; scr_n < scr_data.Count; scr_n++ )
+			{
+				for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+				{
+					if( scr_data[ scr_n ][ tile_n ] == _tile_ind )
+					{
+						++res;
+					}
+				}
+			}
+			
+			return res;
+		}
+
+		public int get_block_usage( byte _block_ind )
+		{
+			int res = 0;
+			
+			int tile_n;
+			int block_n;
+			
+			for( tile_n = 0; tile_n < utils.CONST_MAX_TILES_CNT; tile_n++ )
+			{
+				for( block_n = 0; block_n < utils.CONST_TILE_SIZE; block_n++ )
+				{
+					if( utils.get_byte_from_uint( m_tiles[ tile_n ], block_n ) == _block_ind )
+					{
+						++res;
+					}
+				}
+			}
+			
+			return res;
+		}
+		
 		private byte[] scr_alloc_data()
 		{
 			return new byte[ utils.CONST_SCREEN_TILES_CNT ];

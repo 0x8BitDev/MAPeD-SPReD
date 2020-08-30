@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+30.08.2020 - Added blocks/tiles usage info
 26.08.2020 - The maximum number of screens in a project has been increased to 255
 25.08.2020 - SMS: added the "Swap Colors" button to swap user palette's colors without changing graphics
 14.08.2020 - Added a project statistics

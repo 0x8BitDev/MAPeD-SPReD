@@ -27,8 +27,8 @@ namespace MAPeD
 		private ImageList	m_imagelist_blocks	= null;
 		private ImageList	m_imagelist_tiles	= null;
 		
-		private Rectangle	m_block_rect	= new Rectangle( 0, 0, utils.CONST_BLOCKS_IMG_SIZE, utils.CONST_BLOCKS_IMG_SIZE );
-		private Region 		m_tile_region	= new Region( new Rectangle( 0, 0, utils.CONST_TILES_IMG_SIZE, utils.CONST_TILES_IMG_SIZE ) );
+		private static Rectangle	m_block_rect	= new Rectangle( 0, 0, utils.CONST_BLOCKS_IMG_SIZE, utils.CONST_BLOCKS_IMG_SIZE );
+		private static Rectangle	m_tile_rect		= new Rectangle( 0, 0, utils.CONST_TILES_IMG_SIZE, utils.CONST_TILES_IMG_SIZE );
 		
 		private static int[]	m_clrs_arr = new int[ 16 ]{ 0x00ffffff, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x00ff4500, 0x00dc803c, 0x00406080, 0x00ffff00,	0x00ffa500, 0x0020b2aa, 0x0000ffff, 0x00808000,	0x00800080, 0x00c0c0c0,	0x007b68ee, 0xff1493 };
 		
@@ -178,14 +178,12 @@ namespace MAPeD
 			
 			if( _view_type == 2 ) // tile id
 			{
-				utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | 0x00ffffff );
-				gfx.FillRegion( utils.brush, m_tile_region );
-
-				utils.brush.Color = Color.FromArgb( unchecked( (int)0xff000000 ) );
-				gfx.DrawString( String.Format( "{0:X2}", _tile_ind ), utils.fnt12_Arial, utils.brush, 3, 2 );
-				
-				utils.brush.Color = Color.FromArgb( unchecked( (int)0xffffffff ) );
-				gfx.DrawString( String.Format( "{0:X2}", _tile_ind ), utils.fnt12_Arial, utils.brush, 1, 1 );
+				draw_tile_info( String.Format( "{0:X2}", _tile_ind ), gfx );
+			}
+			else
+			if( _view_type == 3 ) // usage
+			{
+				draw_tile_info( String.Format( "{0}", _tiles_data.get_tile_usage( ( byte )_tile_ind ) ), gfx );
 			}
 			
 			if( _img == null )
@@ -201,6 +199,18 @@ namespace MAPeD
 			}
 		}
 		
+		private void draw_tile_info( string _info, Graphics _gfx )
+		{
+			utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | 0x00ffffff );
+			_gfx.FillRectangle( utils.brush, m_tile_rect );
+
+			utils.brush.Color = Color.FromArgb( unchecked( (int)0xff000000 ) );
+			_gfx.DrawString( _info, utils.fnt12_Arial, utils.brush, 3, 2 );
+			
+			utils.brush.Color = Color.FromArgb( unchecked( (int)0xffffffff ) );
+			_gfx.DrawString( _info, utils.fnt12_Arial, utils.brush, 1, 1 );
+		}
+		
 		public void update_blocks( int _view_type, tiles_data _tiles_data, bool _prop_per_block )
 		{
 			Image 		img;
@@ -208,7 +218,7 @@ namespace MAPeD
 			
 			int 		obj_id;
 
-			m_block_rect.Width = m_block_rect.Height = ( _view_type == 1 && _prop_per_block ) ? utils.CONST_BLOCKS_IMG_SIZE:( utils.CONST_BLOCKS_IMG_SIZE >> 1 );
+			m_block_rect.Width = m_block_rect.Height = ( _view_type == 1 && !_prop_per_block ) ? ( utils.CONST_BLOCKS_IMG_SIZE >> 1 ):utils.CONST_BLOCKS_IMG_SIZE;
 			
 			for( int i = 0; i < utils.CONST_MAX_BLOCKS_CNT; i++ )
 			{
@@ -231,14 +241,7 @@ namespace MAPeD
 							
 							utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | m_clrs_arr[ obj_id ] );
 							
-							m_block_rect.X = m_block_rect.Y = 0;
-							gfx.FillRectangle( utils.brush, m_block_rect );
-							
-							utils.brush.Color = Color.FromArgb( unchecked( (int)0xff000000 ) );
-							gfx.DrawString( String.Format( "{0}", obj_id ), utils.fnt10_Arial, utils.brush, 2, 2 );
-							
-							utils.brush.Color = Color.FromArgb( unchecked( (int)0xffffffff ) );
-							gfx.DrawString( String.Format( "{0}", obj_id ), utils.fnt10_Arial, utils.brush, 1, 1 );
+							draw_block_info( String.Format( "{0}", obj_id ), gfx );
 						}
 						else
 						{
@@ -248,12 +251,19 @@ namespace MAPeD
 								
 								utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | m_clrs_arr[ obj_id ] );
 								
-								m_block_rect.X 		= ( ( chr_n&0x01 ) == 0x01 ) ? m_block_rect.Width:0;
-								m_block_rect.Y 		= ( ( chr_n&0x02 ) == 0x02 ) ? m_block_rect.Height:0;
+								m_block_rect.X 	= ( ( chr_n&0x01 ) == 0x01 ) ? m_block_rect.Width:0;
+								m_block_rect.Y 	= ( ( chr_n&0x02 ) == 0x02 ) ? m_block_rect.Height:0;
 								
 								gfx.FillRectangle( utils.brush, m_block_rect );
 							}
 						}
+					}
+					else
+					if( _view_type == 4 ) // usage
+					{
+						utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | 0x00ffffff );
+						
+						draw_block_info( String.Format( "{0}", _tiles_data.get_block_usage( ( byte )i ) ), gfx );
 					}
 				}
 				else
@@ -267,6 +277,18 @@ namespace MAPeD
 			}
 			
 			m_panel_blocks.Refresh();
+		}
+
+		private void draw_block_info( string _info, Graphics _gfx )
+		{
+			m_block_rect.X = m_block_rect.Y = 0;
+			_gfx.FillRectangle( utils.brush, m_block_rect );
+			
+			utils.brush.Color = Color.FromArgb( unchecked( (int)0xff000000 ) );
+			_gfx.DrawString( _info, utils.fnt10_Arial, utils.brush, 2, 2 );
+			
+			utils.brush.Color = Color.FromArgb( unchecked( (int)0xffffffff ) );
+			_gfx.DrawString( _info, utils.fnt10_Arial, utils.brush, 1, 1 );
 		}
 		
 		public void update_screens( List< tiles_data > _tiles_data, int _bank_id = -1 )

@@ -495,7 +495,7 @@ namespace MAPeD
 		
 		public int get_block_flags_obj_id()
 		{
-			if( m_data != null )
+			if( m_data != null && m_sel_block_id >= 0 )
 			{
 				return tiles_data.get_block_flags_obj_id( m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ] );
 			}
