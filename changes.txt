@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+31.08.2020 - Layout editor: added zoom mode x2
 30.08.2020 - Added blocks/tiles usage info
 26.08.2020 - The maximum number of screens in a project has been increased to 255
 25.08.2020 - SMS: added the "Swap Colors" button to swap user palette's colors without changing graphics
@@ -12,7 +13,7 @@ MAPeD-NES/SMS:
 31.07.2020 - Added smart import of tiles from images with checking of duplicate CHRs/blocks/tiles and flipped (SMS) CHRs
 30.07.2020 - pyScriptEditor project renamed to SPSeD
 30.07.2020 - Added export of matrix layout/marks/entities to ZX exporter
-28.10.2020 - Added buttons to switch between CHR bank's pages
+28.07.2020 - Added buttons to switch between CHR bank's pages
 27.07.2020 - Screen editor: added reset active tile button
 27.07.2020 - MAPeD-SMS added
 

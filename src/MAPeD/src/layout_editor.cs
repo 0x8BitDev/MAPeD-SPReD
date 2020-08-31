@@ -37,6 +37,7 @@ namespace MAPeD
 		private int 	m_offset_x 		= 0;
 		private int 	m_offset_y 		= 0;
 		private float 	m_scale 		= 1;
+		private float 	m_tmp_scale		= 1;
 
 		private int		m_mouse_x	 	= 0;
 		private int		m_mouse_y	 	= 0;
@@ -171,8 +172,6 @@ namespace MAPeD
 			
 			m_scr_img_rect = new Rectangle();
 
-			set_high_quality_render_mode( true );
-			
 			reset( true );
 			
 			m_border_tiles = new short[ utils.CONST_BORDER_TILES_CNT ];	// 4x8 ( up\right\down\left ) + 4 ( four corners )
@@ -193,9 +192,12 @@ namespace MAPeD
 			m_last_mouse_x	 = 0;
 			m_last_mouse_y	 = 0;
 		
+			m_tmp_scale = 1;
 			m_scale 	= 1;
 			m_offset_x	= 0;
 			m_offset_y	= 0;
+
+			set_high_quality_render_mode( true );
 			
 			m_dispatch_mode_sel_screen_slot_id = -1;
 			
@@ -673,10 +675,36 @@ namespace MAPeD
 		
 		private void Layout_MouseWheel(object sender, MouseEventArgs e)
 		{
-			m_scale += ( float )e.Delta / 2000;
+			m_tmp_scale += ( float )e.Delta / 2000;
 			
-			m_scale = m_scale < CONST_MIN_SCALE ? CONST_MIN_SCALE:m_scale;
-			m_scale = m_scale > 1 ? 1:m_scale;
+			m_tmp_scale = m_scale = m_tmp_scale < CONST_MIN_SCALE ? CONST_MIN_SCALE:m_tmp_scale;			
+			
+			if( m_scale > 1.1 )
+			{
+				m_scale = 2;
+				m_tmp_scale = 1.1f;
+				
+				enable_smoothing_mode( false );
+			}
+			else
+			{
+				enable_smoothing_mode( true );
+			}
+			
+			if( e.Delta < 0 )
+			{
+				if( m_scale < 1.1f && m_scale > 1 )
+				{
+					m_scale = 1;
+				}
+			}
+			
+			if( m_scale > 1 && m_scale < 2 )
+			{
+				m_tmp_scale = m_scale = 1;
+			}
+			
+			clamp_offsets();
 			
 			update();
 		}
@@ -726,28 +754,34 @@ namespace MAPeD
 		{
 			int width	= get_width() * utils.CONST_SCREEN_WIDTH_PIXELS;
 			int height	= get_height() * utils.CONST_SCREEN_HEIGHT_PIXELS;
+			
+			int width_scaled	= ( int )( m_scale * width );
+			int height_scaled	= ( int )( m_scale * height );
+			
+			int tx = m_scr_half_width - ( int )( m_scr_half_width / m_scale );
+			int ty = m_scr_half_height - ( int )( m_scr_half_height / m_scale );
 
-			if( width < m_pix_box.Width )
+			if( width_scaled < m_pix_box.Width )
 			{
 				m_offset_x = m_scr_half_width - ( width >> 1 );
 			}
 			else
 			{
-				m_offset_x = ( ( m_offset_x + width ) < m_pix_box.Width ) ? ( m_pix_box.Width - width ):m_offset_x;
-				m_offset_x = ( m_offset_x ) > 0 ? 0:m_offset_x;
+				m_offset_x = ( ( m_offset_x + width + tx ) < m_pix_box.Width ) ? ( m_pix_box.Width - width - tx ):m_offset_x;
+				m_offset_x = m_offset_x > tx ? tx:m_offset_x;
 			}
 			
-			if( height < m_pix_box.Height )
+			if( height_scaled < m_pix_box.Height )
 			{
 				m_offset_y = m_scr_half_height - ( height >> 1 );
 			}
 			else
 			{
-				m_offset_y = ( ( m_offset_y + height ) < m_pix_box.Height ) ? ( m_pix_box.Height - height ):m_offset_y;
-				m_offset_y = m_offset_y > 0 ? 0:m_offset_y;
+				m_offset_y = ( ( m_offset_y + height + ty ) < m_pix_box.Height ) ? ( m_pix_box.Height - height - ty ):m_offset_y;
+				m_offset_y = m_offset_y > ty ? ty:m_offset_y;
 			}
 		}
-		
+
 		private int transform_to_scr_pos( int _pos, int _half_scr )
 		{
 			return ( int )( ( _pos - _half_scr ) * m_scale + _half_scr );
@@ -1723,8 +1757,8 @@ namespace MAPeD
 		private void set_high_quality_render_mode( bool _on )
 		{
 			m_high_quality_render = _on;
-			
-			enable_smoothing_mode( _on );
+		
+			enable_smoothing_mode( ( m_scale != 2 ) ? _on:false );
 		}
 
 		private void update_mark( Color _color, Action _act, bool _clear = true )
