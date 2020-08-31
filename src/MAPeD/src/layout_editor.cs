@@ -257,9 +257,22 @@ namespace MAPeD
 				m_dispatch_mode_sel_screen_slot_id = _scr_ind;
 				
 				dispatch_event_screen_selected();
+
+				centering_sel_screen();
 				
 				update();
 			}
+		}
+		
+		private void centering_sel_screen()
+		{
+			int scr_x = utils.CONST_SCREEN_WIDTH_PIXELS * ( m_dispatch_mode_sel_screen_slot_id % get_width() );
+			int scr_y = utils.CONST_SCREEN_HEIGHT_PIXELS * ( m_dispatch_mode_sel_screen_slot_id / get_width() );
+
+			m_offset_x	= m_scr_half_width - ( scr_x + ( utils.CONST_SCREEN_WIDTH_PIXELS >> 1 ) );
+			m_offset_y	= m_scr_half_height - ( scr_y + ( utils.CONST_SCREEN_HEIGHT_PIXELS >> 1 ) );
+			
+			clamp_offsets();
 		}
 		
 		private void screen_editor_mode_changed( object sender, EventArgs e )
