@@ -157,7 +157,7 @@ namespace MAPeD
 			this.MinimizeBox = false;
 			this.Name = "import_tiles_form";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Import Tiles Options";
+			this.Text = "Image Import Options";
 			this.ResumeLayout(false);
 		}
 		private System.Windows.Forms.Button BtnApplyPaletteDesc;
