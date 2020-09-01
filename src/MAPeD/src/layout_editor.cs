@@ -417,7 +417,13 @@ namespace MAPeD
 					m_last_mouse_x	 = e.X;
 					m_last_mouse_y	 = e.Y;
 					
-					set_high_quality_render_mode( false );
+					int width_scaled	= ( int )( m_scale * get_width() * utils.CONST_SCREEN_WIDTH_PIXELS );
+					int height_scaled	= ( int )( m_scale * get_height() * utils.CONST_SCREEN_HEIGHT_PIXELS );
+					
+					if( width_scaled > m_pix_box.Width || height_scaled > m_pix_box.Height )
+					{
+						set_high_quality_render_mode( false );
+					}
 				}
 			}
 		}
