@@ -94,7 +94,7 @@ namespace MAPeD
 					{
 						if( ( _bmp.Width > 0 && ( _bmp.Width % utils.CONST_SCREEN_WIDTH_PIXELS ) != 0 ) || ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) != 0 ) )
 						{
-							DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nTrim the imported game level or leave it 'as is'?\n\n[Yes] to trim the game level to fully filled screens\n[No] to import the game level 'as is'", "Game Level Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
+							DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nCrop the imported game level or leave it 'as is'?\n\n[Yes] to crop the game level to fully filled screens\n[No] to import the game level 'as is'", "Game Level Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
 							
 							if( dlg_res == DialogResult.Cancel )
 							{
@@ -201,7 +201,9 @@ namespace MAPeD
 
 					int scr_x;
 					int scr_y;
-					
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+					bool half_tile = false;
+#endif
 					layout_data level_layout = null;
 					
 					if( import_game_level )
@@ -230,6 +232,9 @@ namespace MAPeD
 					{
 						for( int tile_x = 0; tile_x < bmp_width; tile_x += 32 )
 						{
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+							half_tile = false;
+#endif
 							for( int block_y = 0; block_y < 32; block_y += 16 )
 							{
 								block_offset_y = tile_y + block_y;
@@ -255,6 +260,9 @@ namespace MAPeD
 											}
 											else
 											{
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+												half_tile = true;
+#endif
 												// clear an invisible part of a tile
 												Array.Clear( utils.tmp_spr8x8_buff, 0, utils.tmp_spr8x8_buff.Length );
 											}
@@ -263,9 +271,7 @@ namespace MAPeD
 #endif											
 										extract_CHR( CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 										
-										check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, _data );
-										
-										if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+										if( !check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, _data ) )
 										{
 											MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 											
@@ -304,8 +310,11 @@ namespace MAPeD
 									if( ( block_num & 0x03 ) == 0x00 )
 									{
 										scr_tile_ind = tile_ind;
-										
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+										if( ( dup_tile_ind = _data.contains_tile( tile_ind, half_tile ) ) >= 0 )
+#else
 										if( ( dup_tile_ind = _data.contains_tile( tile_ind ) ) >= 0 )
+#endif											
 										{
 											_data.tiles[ tile_ind ] = 0;
 											
@@ -361,20 +370,22 @@ namespace MAPeD
 							{
 								extract_CHR( CHR_n, block_x, block_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 								
-								check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, _data );
-								
-								if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT || ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+								if( !check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, _data ) )
 								{
 									MainForm.set_status_msg( string.Format( "Merged: Blocks: {0} \\ CHRs: {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 									
-									if( CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
-									{
-										MainForm.message_box( "The CHR Bank is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-									}
-									else
-									{
-										MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-									}
+									MainForm.message_box( "The CHR Bank is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+									
+									import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
+									
+									return;
+								}
+								
+								if( ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+								{
+									MainForm.set_status_msg( string.Format( "Merged: Blocks: {0} \\ CHRs: {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+									
+									MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 									
 									import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
 									
@@ -404,7 +415,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void check_CHR_and_build_block( ref int _CHR_ind, ref int _block_ind, byte[] _CHR_buff, tiles_data _data )
+		private bool check_CHR_and_build_block( ref int _CHR_ind, ref int _block_ind, byte[] _CHR_buff, tiles_data _data )
 		{
 			int dup_CHR_ind;
 			
@@ -442,6 +453,11 @@ namespace MAPeD
 						}
 						else
 						{
+							if( _CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+							{			
+								return false;
+							}
+							
 							_data.blocks[ _block_ind++ ] = tiles_data.set_block_CHR_id( _CHR_ind, 0 );
 
 							_data.from_spr8x8_to_CHR_bank( _CHR_ind++, _CHR_buff );
@@ -449,11 +465,18 @@ namespace MAPeD
 					}
 				}
 #else
+				if( _CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+				{			
+					return false;
+				}
+
 				_data.blocks[ _block_ind++ ] = tiles_data.set_block_CHR_id( _CHR_ind, 0 );
 
 				_data.from_spr8x8_to_CHR_bank( _CHR_ind++, utils.tmp_spr8x8_buff );
 #endif									
 			}
+			
+			return true;
 		}
 		
 		private void import_bmp_palette( tiles_data _data, Bitmap _bmp, int _CHR_beg_ind, int _CHR_end_ind, int _block_beg_ind, int _block_end_ind )

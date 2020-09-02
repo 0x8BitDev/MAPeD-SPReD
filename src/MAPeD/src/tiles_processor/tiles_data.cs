@@ -620,8 +620,11 @@ namespace MAPeD
 			
 			return -1;
 		}
-
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+		public int contains_tile( int _tile_ind, bool half_tile )
+#else
 		public int contains_tile( int _tile_ind )
+#endif
 		{
 			int tile_n;
 			
@@ -629,6 +632,16 @@ namespace MAPeD
 			
 			for( tile_n = 0; tile_n < size; tile_n++ )
 			{
+#if DEF_SCREEN_HEIGHT_7d5_TILES				
+				if( half_tile )
+				{
+					if( ( tiles[ tile_n ] & 0xffff0000 ) == ( tiles[ _tile_ind ] & 0xffff0000 ) )
+					{
+						return tile_n;
+					}
+				}
+				else
+#endif
 				if( tiles[ tile_n ] == tiles[ _tile_ind ] )
 				{
 					return tile_n;
