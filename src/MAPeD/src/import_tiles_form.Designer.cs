@@ -41,7 +41,7 @@ namespace MAPeD
 			this.BtnCancel = new System.Windows.Forms.Button();
 			this.CheckBoxGameLevel = new System.Windows.Forms.CheckBox();
 			this.CheckBoxDeleteEmptyScreens = new System.Windows.Forms.CheckBox();
-			this.CheckBoxApplyPalettes = new System.Windows.Forms.CheckBox();
+			this.CheckBoxApplyPalette = new System.Windows.Forms.CheckBox();
 			this.BtnApplyPaletteDesc = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
@@ -116,15 +116,17 @@ namespace MAPeD
 			this.CheckBoxDeleteEmptyScreens.UseVisualStyleBackColor = true;
 			this.CheckBoxDeleteEmptyScreens.CheckedChanged += new System.EventHandler(this.CheckBoxGameLevelChanged_Event);
 			// 
-			// CheckBoxApplyPalettes
+			// CheckBoxApplyPalette
 			// 
-			this.CheckBoxApplyPalettes.Location = new System.Drawing.Point(34, 112);
-			this.CheckBoxApplyPalettes.Name = "CheckBoxApplyPalettes";
-			this.CheckBoxApplyPalettes.Size = new System.Drawing.Size(144, 19);
-			this.CheckBoxApplyPalettes.TabIndex = 3;
-			this.CheckBoxApplyPalettes.Text = "Apply palettes (2x2)";
-			this.CheckBoxApplyPalettes.UseVisualStyleBackColor = true;
-			this.CheckBoxApplyPalettes.CheckedChanged += new System.EventHandler(this.CheckBoxApplyPalettesChanged_Event);
+			this.CheckBoxApplyPalette.Checked = true;
+			this.CheckBoxApplyPalette.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.CheckBoxApplyPalette.Location = new System.Drawing.Point(34, 112);
+			this.CheckBoxApplyPalette.Name = "CheckBoxApplyPalette";
+			this.CheckBoxApplyPalette.Size = new System.Drawing.Size(144, 19);
+			this.CheckBoxApplyPalette.TabIndex = 3;
+			this.CheckBoxApplyPalette.Text = "Apply palette (2x2)";
+			this.CheckBoxApplyPalette.UseVisualStyleBackColor = true;
+			this.CheckBoxApplyPalette.CheckedChanged += new System.EventHandler(this.CheckBoxApplyPaletteChanged_Event);
 			// 
 			// BtnApplyPaletteDesc
 			// 
@@ -147,7 +149,7 @@ namespace MAPeD
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
 			this.Controls.Add(this.CheckBoxSkipZeroCHRBlock);
-			this.Controls.Add(this.CheckBoxApplyPalettes);
+			this.Controls.Add(this.CheckBoxApplyPalette);
 			this.Controls.Add(this.CheckBoxDeleteEmptyScreens);
 			this.Controls.Add(this.CheckBoxGameLevel);
 			this.Controls.Add(this.CheckBoxTiles);
@@ -161,7 +163,7 @@ namespace MAPeD
 			this.ResumeLayout(false);
 		}
 		private System.Windows.Forms.Button BtnApplyPaletteDesc;
-		private System.Windows.Forms.CheckBox CheckBoxApplyPalettes;
+		private System.Windows.Forms.CheckBox CheckBoxApplyPalette;
 		private System.Windows.Forms.CheckBox CheckBoxDeleteEmptyScreens;
 		private System.Windows.Forms.CheckBox CheckBoxGameLevel;
 		private System.Windows.Forms.Button BtnCancel;

@@ -52,10 +52,9 @@ namespace MAPeD
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
-#if DEF_NES
-			CheckBoxApplyPalettes.Checked = true;
-#elif DEF_SMS
-			CheckBoxApplyPalettes.Checked = CheckBoxApplyPalettes.Visible = BtnApplyPaletteDesc.Visible = false;
+#if DEF_SMS
+			BtnApplyPaletteDesc.Visible = false;
+			CheckBoxApplyPalette.Text = "Apply palette";
 #endif
 		}
 		
@@ -66,9 +65,9 @@ namespace MAPeD
 			CheckBoxDeleteEmptyScreens.Checked = CheckBoxDeleteEmptyScreens.Enabled ? CheckBoxDeleteEmptyScreens.Checked:false;
 		}
 
-		void CheckBoxApplyPalettesChanged_Event(object sender, EventArgs e)
+		void CheckBoxApplyPaletteChanged_Event(object sender, EventArgs e)
 		{
-			CheckBoxSkipZeroCHRBlock.Enabled = !CheckBoxApplyPalettes.Checked;
+			CheckBoxSkipZeroCHRBlock.Enabled = !CheckBoxApplyPalette.Checked;
 			CheckBoxSkipZeroCHRBlock.Checked = CheckBoxSkipZeroCHRBlock.Enabled ? CheckBoxSkipZeroCHRBlock.Checked:false;
 		}
 		
@@ -481,11 +480,7 @@ namespace MAPeD
 		
 		private void import_bmp_palette( tiles_data _data, Bitmap _bmp, int _CHR_beg_ind, int _CHR_end_ind, int _block_beg_ind, int _block_end_ind )
 		{
-#if DEF_NES			
-			if( CheckBoxApplyPalettes.Checked || MainForm.message_box( "Import colors?", "Image import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
-#elif DEF_SMS
-			if( MainForm.message_box( "Import colors?", "Image import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
-#endif				
+			if( CheckBoxApplyPalette.Checked )
 			{
 				Color[] plt = _bmp.Palette.Entries;
 				
@@ -498,10 +493,7 @@ namespace MAPeD
 					palettes[ i >> 2 ][ i & 0x03 ] = ( byte )utils.find_nearest_color_ind( plt[ i ].ToArgb() );
 				}
 #if DEF_NES
-				if( CheckBoxApplyPalettes.Checked )
-				{
-					apply_palettes( _data, _CHR_beg_ind, _CHR_end_ind, _block_beg_ind, _block_end_ind );
-				}
+				apply_palettes( _data, _CHR_beg_ind, _CHR_end_ind, _block_beg_ind, _block_end_ind );
 				
 				palettes[ 1 ][ 0 ] = palettes[ 2 ][ 0 ] = palettes[ 3 ][ 0 ] = palettes[ 0 ][ 0 ];
 #endif
@@ -524,7 +516,7 @@ namespace MAPeD
 			
 			byte color_index;
 #if DEF_NES
-			bool need_remapping = CheckBoxApplyPalettes.Checked ? false:true;
+			bool need_remapping = CheckBoxApplyPalette.Checked ? false:true;
 			SortedList< byte, byte > inds_remap_arr = new SortedList<byte, byte>();
 #elif DEF_SMS
 			bool need_remapping = false;
