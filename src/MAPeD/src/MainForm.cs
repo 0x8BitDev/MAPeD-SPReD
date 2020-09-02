@@ -2047,59 +2047,23 @@ namespace MAPeD
 		{
 			int res = 0;
 
-			tiles_data data		= m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
-			layout_data layout	= m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
+			tiles_data data	= m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+
+			int scr_n;
 			
-			if( layout != null )
+			for( scr_n = 0; scr_n < m_data_manager.scr_data_cnt; scr_n++ )
 			{
-				int layout_width	= layout.get_width();
-				int layout_height	= layout.get_height();
-
-				int scr_local_ind	= 0;
-				
-				int cell_x;
-				int cell_y;
-				
-				for( cell_y = 0; cell_y < layout_height; cell_y++ )
-				{
-					for( cell_x = 0; cell_x < layout_width; cell_x++ )
-					{
-						scr_local_ind = m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, layout.get_data( cell_x, cell_y ).m_scr_ind );
-						
-						if( scr_local_ind >= 0 )
-						{
 #if DEF_NES
-							if( check_empty_screen( data.tiles, data.scr_data[ scr_local_ind ] ) )
-#elif DEF_SMS							
-							if( check_empty_screen( data.scr_data[ scr_local_ind ] ) )
-#endif
-							{
-								delete_screen( scr_local_ind );
-								
-								++res;
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				int scr_n;
-				
-				for( scr_n = 0; scr_n < m_data_manager.scr_data_cnt; scr_n++ )
-				{
-#if DEF_NES
-					if( check_empty_screen( data.tiles, data.scr_data[ scr_n ] ) )
+				if( check_empty_screen( data.tiles, data.scr_data[ scr_n ] ) )
 #elif DEF_SMS
-					if( check_empty_screen( data.scr_data[ scr_n ] ) )
+				if( check_empty_screen( data.scr_data[ scr_n ] ) )
 #endif
-					{
-						delete_screen( scr_n );
+				{
+					delete_screen( scr_n );
 
-						--scr_n;
-						
-						++res;
-					}
+					--scr_n;
+					
+					++res;
 				}
 			}
 			
