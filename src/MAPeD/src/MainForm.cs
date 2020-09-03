@@ -158,10 +158,6 @@ namespace MAPeD
 			
 			m_create_layout_form = new create_layout_form();
 
-			CBoxBlockObjId.SelectedIndex = 0;
-			
-			ComboBoxEntityZoom.SelectedIndex = 0;
-			
 			enable_update_gfx_btn( false );
 			enable_update_screens_btn( true );
 
@@ -191,8 +187,6 @@ namespace MAPeD
 				clear_active_tile_img();
 			}
 
-			CBoxTileViewType.SelectedIndex = ( int )ETileViewType.tvt_Graphics;
-			
 			m_tiles_processor.NeedGFXUpdate 	+= new EventHandler( enable_update_gfx_btn_Event );
 			m_screen_editor.NeedScreensUpdate	+= new EventHandler( enable_update_screens_btn_Event );
 			
@@ -428,6 +422,8 @@ namespace MAPeD
 
 			entity_instance.reset_instances_counter();
 			
+			CBoxTileViewType.SelectedIndex = ( int )ETileViewType.tvt_Graphics;
+			
 			CheckBoxEntitySnapping.Checked 	= true;
 			CheckBoxShowMarks.Checked		= true;
 			CheckBoxShowEntities.Checked 	= true;
@@ -455,6 +451,8 @@ namespace MAPeD
 			
 			CBoxBlockObjId.SelectedIndex = 0;
 			CBoxBlockObjId.Tag = null;
+			
+			ComboBoxEntityZoom.SelectedIndex = 0;
 
 			m_layout_editor.reset( false );
 			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data() );

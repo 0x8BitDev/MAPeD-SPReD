@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 14.12.2018
  * Time: 19:38
  */
@@ -118,8 +118,6 @@ namespace MAPeD
 			// 
 			// CheckBoxApplyPalette
 			// 
-			this.CheckBoxApplyPalette.Checked = true;
-			this.CheckBoxApplyPalette.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.CheckBoxApplyPalette.Location = new System.Drawing.Point(34, 112);
 			this.CheckBoxApplyPalette.Name = "CheckBoxApplyPalette";
 			this.CheckBoxApplyPalette.Size = new System.Drawing.Size(144, 19);

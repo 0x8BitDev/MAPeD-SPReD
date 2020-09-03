@@ -56,6 +56,7 @@ namespace MAPeD
 			BtnApplyPaletteDesc.Visible = false;
 			CheckBoxApplyPalette.Text = "Apply palette";
 #endif
+			CheckBoxApplyPalette.Checked = true;
 		}
 		
 		void CheckBoxGameLevelChanged_Event(object sender, EventArgs e)
@@ -67,8 +68,10 @@ namespace MAPeD
 
 		void CheckBoxApplyPaletteChanged_Event(object sender, EventArgs e)
 		{
+#if DEF_NES			
 			CheckBoxSkipZeroCHRBlock.Enabled = !CheckBoxApplyPalette.Checked;
 			CheckBoxSkipZeroCHRBlock.Checked = CheckBoxSkipZeroCHRBlock.Enabled ? CheckBoxSkipZeroCHRBlock.Checked:false;
+#endif			
 		}
 		
 		private int get_local_scr_ind( int _global_scr_ind, data_sets_manager _data_manager )
