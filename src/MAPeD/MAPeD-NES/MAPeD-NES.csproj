@@ -116,9 +116,6 @@
     <Compile Include="..\src\entity_data.cs">
       <Link>entity_data.cs</Link>
     </Compile>
-    <Compile Include="..\src\entity_preview.cs">
-      <Link>entity_preview.cs</Link>
-    </Compile>
     <Compile Include="..\src\exporter_nes_asm.cs">
       <Link>exporter_nes_asm.cs</Link>
     </Compile>
@@ -145,6 +142,9 @@
     </Compile>
     <Compile Include="..\src\imagelist_manager.cs">
       <Link>imagelist_manager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\image_preview.cs">
+      <Link>image_preview.cs</Link>
     </Compile>
     <Compile Include="..\src\import_tiles_form.cs">
       <Link>import_tiles_form.cs</Link>
@@ -179,6 +179,16 @@
     <Compile Include="..\src\optimization_form.Designer.cs">
       <Link>optimization_form.Designer.cs</Link>
       <DependentUpon>optimization_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\presets_manager_form.cs">
+      <Link>presets_manager_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\presets_manager_form.Designer.cs">
+      <Link>presets_manager_form.Designer.cs</Link>
+      <DependentUpon>presets_manager_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\preset_data.cs">
+      <Link>preset_data.cs</Link>
     </Compile>
     <Compile Include="..\src\Program.cs">
       <Link>Program.cs</Link>
@@ -292,6 +302,10 @@
     <EmbeddedResource Include="..\src\optimization_form.resx">
       <Link>optimization_form.resx</Link>
       <DependentUpon>optimization_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\presets_manager_form.resx">
+      <Link>presets_manager_form.resx</Link>
+      <DependentUpon>presets_manager_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\screen_mark_form.resx">
       <Link>screen_mark_form.resx</Link>

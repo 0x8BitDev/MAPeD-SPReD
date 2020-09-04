@@ -37,7 +37,7 @@ namespace MAPeD
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.ContextMenuEntitiesTreeGoup = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.ContextMenuEntitiesTreeGroup = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.deleteGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -343,7 +343,8 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.ContextMenuEntitiesTreeGoup.SuspendLayout();
+			this.BtnPresets = new System.Windows.Forms.Button();
+			this.ContextMenuEntitiesTreeGroup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
 			this.TabMain.SuspendLayout();
@@ -406,15 +407,15 @@ namespace MAPeD
 			this.ContextMenuEntitiesTreeEntity.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// ContextMenuEntitiesTreeGoup
+			// ContextMenuEntitiesTreeGroup
 			// 
-			this.ContextMenuEntitiesTreeGoup.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.ContextMenuEntitiesTreeGroup.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.deleteGroupToolStripMenuItem,
 									this.renameGroupToolStripMenuItem,
 									this.toolStripSeparator2,
 									this.addEntityToolStripMenuItem});
-			this.ContextMenuEntitiesTreeGoup.Name = "ContextMenuStripEntitiesTreeGoup";
-			this.ContextMenuEntitiesTreeGoup.Size = new System.Drawing.Size(130, 76);
+			this.ContextMenuEntitiesTreeGroup.Name = "ContextMenuStripEntitiesTreeGoup";
+			this.ContextMenuEntitiesTreeGroup.Size = new System.Drawing.Size(130, 76);
 			// 
 			// deleteGroupToolStripMenuItem
 			// 
@@ -1922,6 +1923,7 @@ namespace MAPeD
 			// 
 			this.TabScreenEditor.AutoScroll = true;
 			this.TabScreenEditor.BackColor = System.Drawing.Color.Silver;
+			this.TabScreenEditor.Controls.Add(this.BtnPresets);
 			this.TabScreenEditor.Controls.Add(this.BtnTilesBlocks);
 			this.TabScreenEditor.Controls.Add(this.groupBox8);
 			this.TabScreenEditor.Controls.Add(this.GrpBoxActiveTile);
@@ -1937,7 +1939,7 @@ namespace MAPeD
 			// 
 			// BtnTilesBlocks
 			// 
-			this.BtnTilesBlocks.Location = new System.Drawing.Point(677, 78);
+			this.BtnTilesBlocks.Location = new System.Drawing.Point(678, 78);
 			this.BtnTilesBlocks.Name = "BtnTilesBlocks";
 			this.BtnTilesBlocks.Size = new System.Drawing.Size(80, 23);
 			this.BtnTilesBlocks.TabIndex = 52;
@@ -2080,7 +2082,7 @@ namespace MAPeD
 			this.CheckBoxScreenShowGrid.Location = new System.Drawing.Point(682, 555);
 			this.CheckBoxScreenShowGrid.Name = "CheckBoxScreenShowGrid";
 			this.CheckBoxScreenShowGrid.Size = new System.Drawing.Size(78, 22);
-			this.CheckBoxScreenShowGrid.TabIndex = 53;
+			this.CheckBoxScreenShowGrid.TabIndex = 54;
 			this.CheckBoxScreenShowGrid.Text = "Show Grid";
 			this.CheckBoxScreenShowGrid.UseVisualStyleBackColor = true;
 			this.CheckBoxScreenShowGrid.CheckedChanged += new System.EventHandler(this.CheckBoxScreenShowGridChecked_Event);
@@ -3275,6 +3277,16 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
 			// 
+			// BtnPresets
+			// 
+			this.BtnPresets.Location = new System.Drawing.Point(678, 106);
+			this.BtnPresets.Name = "BtnPresets";
+			this.BtnPresets.Size = new System.Drawing.Size(80, 23);
+			this.BtnPresets.TabIndex = 53;
+			this.BtnPresets.Text = "Presets";
+			this.BtnPresets.UseVisualStyleBackColor = true;
+			this.BtnPresets.Click += new System.EventHandler(this.BtnPresetsClick_Event);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3291,7 +3303,7 @@ namespace MAPeD
 			this.Text = "MAPeD-NES";
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown_Event);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyUp_Event);
-			this.ContextMenuEntitiesTreeGoup.ResumeLayout(false);
+			this.ContextMenuEntitiesTreeGroup.ResumeLayout(false);
 			this.MenuStrip.ResumeLayout(false);
 			this.MenuStrip.PerformLayout();
 			this.tabControlMainLayout.ResumeLayout(false);
@@ -3358,6 +3370,7 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Button BtnPresets;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.ComboBox ComboBoxEntityZoom;
 		private System.Windows.Forms.Button BtnSwapColors;
@@ -3529,7 +3542,7 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem renameGroupToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteGroupToolStripMenuItem;
-		private System.Windows.Forms.ContextMenuStrip ContextMenuEntitiesTreeGoup;
+		private System.Windows.Forms.ContextMenuStrip ContextMenuEntitiesTreeGroup;
 		private System.Windows.Forms.ToolStripMenuItem removeGroupToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addGroupToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip ContextMenuEntitiesTree;

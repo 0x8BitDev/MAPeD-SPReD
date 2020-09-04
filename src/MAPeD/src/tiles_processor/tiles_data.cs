@@ -47,7 +47,16 @@ namespace MAPeD
 		private uint[] m_tiles		= new uint[ utils.CONST_TILES_UINT_SIZE ];
 		
 		private List< byte[] >	m_scr_data	= null;
+		
+		private Dictionary< string, List< preset_data > >	m_presets_data	= null;	// key = group name / value = List< preset_data >
 
+		[DataMember]
+		public Dictionary< string, List< preset_data > > presets_data
+		{
+			get { return m_presets_data; }
+			set {}
+		}
+		
 		[DataMember]
 		public string name
 		{
@@ -134,6 +143,8 @@ namespace MAPeD
 			name = m_id.ToString();
 			
 			m_scr_data = new List< byte[] >( 100 );
+			
+			m_presets_data	= new Dictionary< string, List< preset_data > >( 10 );
 		}
 		
 		public void destroy()

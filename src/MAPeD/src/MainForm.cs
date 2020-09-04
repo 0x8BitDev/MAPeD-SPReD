@@ -38,14 +38,15 @@ namespace MAPeD
 		private screen_editor		m_screen_editor		= null;
 		private layout_editor		m_layout_editor		= null;
 		
-		private tiles_palette_form	m_tiles_palette_form	= null;
-		private optimization_form	m_optimization_form		= null;
-		private object_name_form	m_object_name_form		= null;
-		private import_tiles_form	m_import_tiles_form		= null;
-		private screen_mark_form	m_screen_mark_form		= null;
-		private description_form	m_description_form		= null;
-		private statistics_form		m_statistics_form		= null;
-		private create_layout_form	m_create_layout_form	= null;
+		private tiles_palette_form		m_tiles_palette_form	= null;
+		private presets_manager_form	m_presets_manager_form	= null;
+		private optimization_form		m_optimization_form		= null;
+		private object_name_form		m_object_name_form		= null;
+		private import_tiles_form		m_import_tiles_form		= null;
+		private screen_mark_form		m_screen_mark_form		= null;
+		private description_form		m_description_form		= null;
+		private statistics_form			m_statistics_form		= null;
+		private create_layout_form		m_create_layout_form	= null;
 		
 		private SPSeD.py_editor		m_py_editor	= null;
 
@@ -53,7 +54,7 @@ namespace MAPeD
 		
 		private export_active_tile_block_set_form	m_export_active_tile_block_set_form	= null;
 		
-		private entity_preview		m_entity_preview	= null;
+		private image_preview		m_entity_preview	= null;
 		
 		private int	m_block_copy_item_ind	= -1;
 		private int	m_tile_copy_item_ind	= -1;
@@ -137,7 +138,7 @@ namespace MAPeD
 			m_data_manager.AddGroup		+= TreeViewEntities_add_group;
 			m_data_manager.DeleteGroup 	+= TreeViewEntities_delete_group;
 			
-			m_entity_preview = new entity_preview( PBoxEntityPreview );
+			m_entity_preview = new image_preview( PBoxEntityPreview );
 			
 			m_screen_editor.subscribe_event( m_layout_editor );
 			m_screen_editor.UpdateTileImage += new EventHandler( update_tile_image );
@@ -162,10 +163,13 @@ namespace MAPeD
 			enable_update_screens_btn( true );
 
 			m_tiles_palette_form = new tiles_palette_form( m_imagelist_manager.get_tiles_image_list(), ContextMenuTilesList, m_imagelist_manager.get_blocks_image_list(), ContextMenuBlocksList );
-			m_tiles_palette_form.PaletteClosed 		+= new EventHandler( MainForm_PaletteClosed );
+			m_tiles_palette_form.TilesBlocksClosed 	+= new EventHandler( MainForm_TilesBlocksClosed );
 			m_tiles_palette_form.TileSelected 		+= new EventHandler( MainForm_TileSelected );
 			m_tiles_palette_form.BlockSelected 		+= new EventHandler( MainForm_BlockSelected );
 			m_tiles_palette_form.ResetActiveTile 	+= new EventHandler( MainForm_ResetActiveTile );
+			
+			m_presets_manager_form = new presets_manager_form( m_imagelist_manager.get_tiles_image_list() );
+			m_presets_manager_form.PresetsManagerClosed 	+= new EventHandler( MainForm_PresetsManagerClosed );
 			
 			m_optimization_form = new optimization_form( m_data_manager );
 			m_optimization_form.UpdateGraphics += new EventHandler( MainForm_UpdateGraphicsAfterOptimization );
@@ -411,6 +415,7 @@ namespace MAPeD
 			PanelTiles.Enabled	= _on;
 			
 			m_tiles_palette_form.enable( _on );
+			m_presets_manager_form.enable( _on );
 			
 			tabControlScreensEntities.Enabled = _on;
 		}
@@ -466,6 +471,7 @@ namespace MAPeD
 			RBtnScreenEditModeSingle.Checked = true;
 			
 			m_tiles_palette_form.reset();
+			m_presets_manager_form.reset();
 			
 			if( tabControlMainLayout.Contains( TabMain ) )
 			{
@@ -1131,6 +1137,8 @@ namespace MAPeD
 			}
 			
 			update_screens_by_bank_id( true );
+			
+			m_presets_manager_form.set_data( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
 		}
 
 		void BtnUpdateGFXClick_Event(object sender, EventArgs e)
@@ -1162,6 +1170,7 @@ namespace MAPeD
 			}
 			
 			m_tiles_palette_form.update();
+			m_presets_manager_form.update();
 			
 			enable_update_gfx_btn( false );
 //			enable_update_screens_btn( false );			
@@ -2210,6 +2219,19 @@ namespace MAPeD
 			m_screen_editor.draw_grid_flag = ScreenEditShowGridToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
 		}
 		
+		void BtnPresetsClick_Event(object sender, EventArgs e)
+		{
+			m_presets_manager_form.Visible = true;
+			m_presets_manager_form.update();
+			
+			BtnPresets.Enabled = false;
+		}
+
+		void MainForm_PresetsManagerClosed(object sender, EventArgs e)
+		{
+			BtnPresets.Enabled = true;
+		}
+		
 		void BtnTilesBlocksClick_Event(object sender, EventArgs e)
 		{
 			m_tiles_palette_form.Visible = true;
@@ -2217,7 +2239,7 @@ namespace MAPeD
 			BtnTilesBlocks.Enabled = false;
 		}
 		
-		void MainForm_PaletteClosed(object sender, EventArgs e)
+		void MainForm_TilesBlocksClosed(object sender, EventArgs e)
 		{
 			BtnTilesBlocks.Enabled = true;
 		}
@@ -2972,11 +2994,11 @@ namespace MAPeD
 		{
 			m_object_name_form.Text = "Add Group";
 			
-			m_object_name_form.eidt_str = "GROUP";
+			m_object_name_form.edit_str = "GROUP";
 			
 			if( m_object_name_form.ShowDialog() == DialogResult.OK )
 			{
-				m_data_manager.group_add( m_object_name_form.eidt_str );
+				m_data_manager.group_add( m_object_name_form.edit_str );
 				
 				set_status_msg( "Added group" );
 			}
@@ -3041,11 +3063,11 @@ namespace MAPeD
 				return;
 			}
 			
-			m_object_name_form.eidt_str = "entity";
+			m_object_name_form.edit_str = "entity";
 			
 			if( m_object_name_form.ShowDialog() == DialogResult.OK )
 			{
-				m_data_manager.entity_add( m_object_name_form.eidt_str, ( sel_node.Parent != null ? sel_node.Parent.Name:sel_node.Name ) );
+				m_data_manager.entity_add( m_object_name_form.edit_str, ( sel_node.Parent != null ? sel_node.Parent.Name:sel_node.Name ) );
 				
 				set_status_msg( "Added entity" );
 				
@@ -3138,7 +3160,7 @@ namespace MAPeD
 			
 			TreeNode node = new TreeNode( name );
 			node.Name = name;
-			node.ContextMenuStrip = ContextMenuEntitiesTreeGoup;
+			node.ContextMenuStrip = ContextMenuEntitiesTreeGroup;
 				
 			TreeViewEntities.BeginUpdate();
 			{
@@ -3331,7 +3353,7 @@ namespace MAPeD
 		{
 			entity_data ent = get_selected_entity();
 			
-			if( ent != null && ( ent.image_flag == false || ( ent.image_flag == true && message_box( "Delete the entity image and use a color box instead?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes ) ) )
+			if( ent != null && ( ent.image_flag == false || ( ent.image_flag == true && message_box( "Delete the entity image and use the color box instead?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes ) ) )
 			{
 				if( colorDialogEntity.ShowDialog() == DialogResult.OK )
 				{
@@ -3550,7 +3572,16 @@ namespace MAPeD
 		{
 			entity_instance ent_inst = m_layout_editor.get_selected_entity_instance();
 			
-			m_entity_preview.update( ( ent_inst != null && _force_disable == false ) ? ent_inst.base_entity:get_selected_entity(), ( int )Math.Pow( 2.0, ComboBoxEntityZoom.SelectedIndex ) );
+			entity_data ent = ( ent_inst != null && _force_disable == false ) ? ent_inst.base_entity:get_selected_entity();
+			
+			if( ent != null )
+			{
+				m_entity_preview.update( ent.bitmap, ent.width, ent.height, ent.pivot_x, ent.pivot_y, ( int )Math.Pow( 2.0, ComboBoxEntityZoom.SelectedIndex ), true );
+			}
+			else
+			{
+				m_entity_preview.update( null, -1, -1, -1, -1, -1, false );
+			}
 			
 			if( CheckBoxShowEntities.Checked )
 			{

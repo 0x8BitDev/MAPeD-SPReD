@@ -226,8 +226,6 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_DEFAULT_ENTITY					= Color.Gold;
 		public static readonly Color	CONST_COLOR_DEFAULT_ENTITY_INACTIVE			= Color.Black;
 		public static readonly Color	CONST_COLOR_NULL							= Color.Empty;
-		public static readonly Color	CONST_COLOR_ENTITY_PIVOT_CROSS				= Color.OrangeRed;
-		public static readonly Color	CONST_COLOR_ENTITY_PIVOT_RECT 				= Color.LimeGreen;
 		public static readonly Color	CONST_COLOR_ENTITY_PIXBOX_INACTIVE			= Color.Black;
 		// layout
 		public static readonly Color	CONST_COLOR_SIMPLE_SCREEN_CROSS				= Color.Red;
@@ -282,7 +280,8 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_BRUSH_DEFAULT						= Color.White;
 		public static readonly Color	CONST_COLOR_PIXBOX_INACTIVE_CROSS				= Color.Red;		
 		public static readonly Color	CONST_COLOR_PIXBOX_DEFAULT						= Color.White;
-		
+		public static readonly Color	CONST_COLOR_IMG_PREVIEW_PIVOT_CROSS				= Color.OrangeRed;
+		public static readonly Color	CONST_COLOR_IMG_PREVIEW_PIVOT_RECT 				= Color.LimeGreen;		
 		public enum ETransformType
 		{
 			tt_vflip,

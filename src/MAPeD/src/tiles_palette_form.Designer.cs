@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 26.11.2018
  * Time: 17:38
  */
@@ -45,17 +45,18 @@ namespace MAPeD
 			// 
 			// panel1
 			// 
+			this.panel1.BackColor = System.Drawing.Color.Silver;
 			this.panel1.Controls.Add(this.BtnBlocks);
 			this.panel1.Controls.Add(this.BtnTiles);
 			this.panel1.Controls.Add(this.BtnClose);
-			this.panel1.Location = new System.Drawing.Point(-1, -1);
+			this.panel1.Location = new System.Drawing.Point(1, 516);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(531, 33);
 			this.panel1.TabIndex = 0;
 			// 
 			// BtnBlocks
 			// 
-			this.BtnBlocks.Location = new System.Drawing.Point(84, 5);
+			this.BtnBlocks.Location = new System.Drawing.Point(84, 3);
 			this.BtnBlocks.Name = "BtnBlocks";
 			this.BtnBlocks.Size = new System.Drawing.Size(75, 23);
 			this.BtnBlocks.TabIndex = 1;
@@ -65,7 +66,7 @@ namespace MAPeD
 			// 
 			// BtnTiles
 			// 
-			this.BtnTiles.Location = new System.Drawing.Point(3, 5);
+			this.BtnTiles.Location = new System.Drawing.Point(3, 3);
 			this.BtnTiles.Name = "BtnTiles";
 			this.BtnTiles.Size = new System.Drawing.Size(75, 23);
 			this.BtnTiles.TabIndex = 0;
@@ -75,7 +76,8 @@ namespace MAPeD
 			// 
 			// BtnClose
 			// 
-			this.BtnClose.Location = new System.Drawing.Point(456, 5);
+			this.BtnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.BtnClose.Location = new System.Drawing.Point(453, 3);
 			this.BtnClose.Name = "BtnClose";
 			this.BtnClose.Size = new System.Drawing.Size(75, 23);
 			this.BtnClose.TabIndex = 2;
@@ -90,7 +92,7 @@ namespace MAPeD
 			this.PanelPaletteTiles.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.PanelPaletteTiles.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.PanelPaletteTiles.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-			this.PanelPaletteTiles.Location = new System.Drawing.Point(0, 32);
+			this.PanelPaletteTiles.Location = new System.Drawing.Point(1, 1);
 			this.PanelPaletteTiles.Name = "PanelPaletteTiles";
 			this.PanelPaletteTiles.Size = new System.Drawing.Size(533, 513);
 			this.PanelPaletteTiles.TabIndex = 3;
@@ -101,7 +103,7 @@ namespace MAPeD
 			this.PanelPaletteBlocks.BackColor = System.Drawing.SystemColors.Info;
 			this.PanelPaletteBlocks.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.PanelPaletteBlocks.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-			this.PanelPaletteBlocks.Location = new System.Drawing.Point(0, 32);
+			this.PanelPaletteBlocks.Location = new System.Drawing.Point(1, 1);
 			this.PanelPaletteBlocks.Name = "PanelPaletteBlocks";
 			this.PanelPaletteBlocks.Size = new System.Drawing.Size(531, 513);
 			this.PanelPaletteBlocks.TabIndex = 3;
@@ -110,12 +112,12 @@ namespace MAPeD
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(533, 546);
-			this.ControlBox = false;
-			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.PanelPaletteTiles);
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.PanelPaletteBlocks);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = global::MAPeD.Properties.Resources.MAPeD_icon;
+			this.IsMdiContainer = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "tiles_palette_form";

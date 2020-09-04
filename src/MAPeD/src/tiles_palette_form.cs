@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
  * Date: 26.11.2018
  * Time: 17:38
  */
@@ -15,14 +15,14 @@ namespace MAPeD
 	/// </summary>
 	/// 
 	
-	public delegate void PaletteClosed();
+	public delegate void TilesBlocksClosed();
 	public delegate void TileSelected();
 	public delegate void BlockSelected();
 	public delegate void ResetActiveTile();
 	
 	public partial class tiles_palette_form : Form
 	{
-		public event EventHandler PaletteClosed;
+		public event EventHandler TilesBlocksClosed;
 		public event EventHandler TileSelected;
 		public event EventHandler BlockSelected;
 		public event EventHandler ResetActiveTile;
@@ -76,16 +76,6 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnCloseClick_event(object sender, EventArgs e)
-		{
-			Visible = false;
-			
-			if( PaletteClosed != null )
-			{
-				PaletteClosed( this, null );
-			}
-		}
-		
 		void BtnTilesClick_event(object sender, EventArgs e)
 		{
 			enable_tiles_panel( true );
@@ -135,10 +125,27 @@ namespace MAPeD
 			PanelPaletteTiles.Enabled	= _on;
 			PanelPaletteBlocks.Enabled	= _on;
 		}
+
+		void BtnCloseClick_event(object sender, EventArgs e)
+		{
+			hide_wnd();
+		}
 		
 		void Closing_event(object sender, FormClosingEventArgs e)
 		{
 			e.Cancel = true;
+
+			hide_wnd();
+		}
+		
+		private void hide_wnd()
+		{
+			Visible = false;
+			
+			if( TilesBlocksClosed != null )
+			{
+				TilesBlocksClosed( this, null );
+			}
 		}
 	}
 }
