@@ -307,7 +307,7 @@ namespace SPSeD
 			}
 			catch( System.Exception _err )
 			{
-				message_box( _err.Message, "Load Script Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Script Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
@@ -376,7 +376,7 @@ namespace SPSeD
 			}
 			catch( System.Exception _err )
 			{
-				message_box( _err.Message, "Save Script Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Script Saving Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		

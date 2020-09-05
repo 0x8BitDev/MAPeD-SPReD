@@ -281,7 +281,8 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_PIXBOX_INACTIVE_CROSS				= Color.Red;		
 		public static readonly Color	CONST_COLOR_PIXBOX_DEFAULT						= Color.White;
 		public static readonly Color	CONST_COLOR_IMG_PREVIEW_PIVOT_CROSS				= Color.OrangeRed;
-		public static readonly Color	CONST_COLOR_IMG_PREVIEW_PIVOT_RECT 				= Color.LimeGreen;		
+		public static readonly Color	CONST_COLOR_IMG_PREVIEW_PIVOT_RECT 				= Color.LimeGreen;
+		
 		public enum ETransformType
 		{
 			tt_vflip,

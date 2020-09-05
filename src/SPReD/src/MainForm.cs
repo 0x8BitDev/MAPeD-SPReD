@@ -752,7 +752,7 @@ namespace SPReD
 			}
 			else
 			{
-				message_box( new_sprite_name + " - A sprite with the same name already exists! Ignored!", "Create Sprite Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( new_sprite_name + " - A sprite with the same name already exists! Ignored!", "Sprite Creating Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
 			}
 		}
 
@@ -1258,7 +1258,7 @@ namespace SPReD
 		{
 			if( SpriteList.Items.Count == 0 )			
 			{
-				message_box( "There is no data to save!", "Save Project Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There is no data to save!", "Project Saving Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			else
 			{
@@ -1306,7 +1306,7 @@ namespace SPReD
 			}
 			catch( Exception _err )
 			{
-				message_box( _err.Message, "Save Project Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Project Saving Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
 			if( bw != null )
@@ -1449,7 +1449,7 @@ namespace SPReD
 			{
 				reset();
 				
-				message_box( _err.Message, "Load Project Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Project Loading Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
 			if( br != null )
@@ -1794,7 +1794,7 @@ namespace SPReD
 			}
 			catch( Exception _err )
 			{
-				message_box( _err.Message, "Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Data Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 
 			if( sw != null )

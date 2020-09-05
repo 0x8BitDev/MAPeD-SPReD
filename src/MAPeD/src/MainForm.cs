@@ -631,7 +631,7 @@ namespace MAPeD
 			{
 				reset();
 				
-				message_box( _err.Message, "Load Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Project Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 
 			if( br != null )
@@ -649,7 +649,7 @@ namespace MAPeD
 		{
 			if( m_data_manager.tiles_data_cnt == 0 )			
 			{
-				message_box( "There is no data to save!", "Save Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There is no data to save!", "Project Saving Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			else
 			{
@@ -688,7 +688,7 @@ namespace MAPeD
 			}
 			catch( Exception _err )
 			{
-				message_box( _err.Message, "Save Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Project Saving Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
 			if( bw != null )
@@ -873,7 +873,7 @@ namespace MAPeD
 			}
 			else
 			{
-				message_box( "There is no data to export!", "Export Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There is no data to export!", "Project Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 
@@ -1035,7 +1035,7 @@ namespace MAPeD
 			}
 			catch( Exception _err )
 			{
-				message_box( _err.Message, "Export Project Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Project Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 
@@ -2608,7 +2608,7 @@ namespace MAPeD
 		{
 			if( m_layout_editor.set_start_screen_mark() == false )
 			{
-				message_box( "Please, select a valid screen!", "Set Start Screen Mark Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "Please, select a valid screen!", "Start Screen Mark Setting Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
@@ -2618,7 +2618,7 @@ namespace MAPeD
 			{
 				if( m_layout_editor.set_screen_mark( m_screen_mark_form.mark ) == false )
 				{
-					message_box( "Please, select a valid screen!", "Set Screen Property Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "Please, select a valid screen!", "Screen Property Setting Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 		}
@@ -2627,7 +2627,7 @@ namespace MAPeD
 		{
 			if( m_layout_editor.set_adjacent_screen_mask( ( sender as ToolStripMenuItem ).Text ) == false )
 			{
-				message_box( "Please, select a valid screen!", "Set Adjacent Screen Mask Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "Please, select a valid screen!", "Adjacent Screen Mask Setting Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
@@ -3020,18 +3020,18 @@ namespace MAPeD
 				}
 				else
 				{
-					message_box( "Please, select a group!", "Delete Group Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "Please, select a group!", "Group Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 			else
 			{
 				if( TreeViewEntities.Nodes.Count > 0 )
 				{
-					message_box( "Please, select a group!", "Delete Group Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "Please, select a group!", "Group Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 				else
 				{
-					message_box( "No data!", "Delete Group Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "No data!", "Group Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 		}
@@ -3046,7 +3046,7 @@ namespace MAPeD
 			}
 			else
 			{
-				message_box( "Please, select a group!", "Rename Group Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "Please, select a group!", "Group Renaming Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
@@ -3058,7 +3058,7 @@ namespace MAPeD
 			
 			if( sel_node == null )
 			{
-				message_box( "Please, select a group!", "Add Entity Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "Please, select a group!", "Entity Adding Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				
 				return;
 			}
@@ -3093,18 +3093,18 @@ namespace MAPeD
 				}
 				else
 				{
-					message_box( "Please, select an entity!", "Delete Entity Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "Please, select an entity!", "Entity Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 			else
 			{
 				if( TreeViewEntities.Nodes.Count > 0 )
 				{
-					message_box( "Please, select an entity!", "Delete Entity Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "Please, select an entity!", "Entity Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 				else
 				{
-					message_box( "No data!", "Delete Entity Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "No data!", "Entity Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 		}
@@ -3119,7 +3119,7 @@ namespace MAPeD
 			}
 			else
 			{
-				message_box( "Please, select an item!", "Rename Item Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "Please, select an item!", "Item Renaming Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 
@@ -3153,7 +3153,7 @@ namespace MAPeD
 			
 			if( nodes_arr.Length > 0 )
 			{
-				message_box( "An item with the same name (" + name +  ") is already exist!", "Add Group Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "An item with the same name (" + name +  ") is already exist!", "Group Adding Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				
 				return false;
 			}
@@ -3227,7 +3227,7 @@ namespace MAPeD
 			
 			if( nodes_arr.Length > 0 )
 			{
-				message_box( "An item with the same name (" + ent_name +  ") is already exist!", "Add Entity Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "An item with the same name (" + ent_name +  ") is already exist!", "Entity Adding Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				
 				return false;
 			}
@@ -3268,7 +3268,7 @@ namespace MAPeD
 			{
 				if( nodes_arr[ 0 ].Parent == null )
 				{
-					message_box( "Please, select an entity!", "Delete Entity Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "Please, select an entity!", "Entity Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 					
 					return false;
 				}
@@ -3287,7 +3287,7 @@ namespace MAPeD
 				return false;
 			}
 			
-			message_box( "Can't find entity (" + ent_name +  ")!", "Delete Entity Error", MessageBoxButtons.OK, MessageBoxIcon.Error );			
+			message_box( "Can't find entity (" + ent_name +  ")!", "Entity Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );			
 			
 			return false;
 		}
@@ -3520,7 +3520,7 @@ namespace MAPeD
 					unlocked_bmp = null;
 				}
 				
-				message_box( _err.Message, "Load Entity Image Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Entity Image Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 

@@ -202,7 +202,7 @@ namespace MAPeD
 			}
 			else
 			{
-				MainForm.message_box( "Please, select both Color A and Color B!", "Swapping Colors Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( "Please, select both Color A and Color B!", "Colors Swapping Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 	}
