@@ -19,13 +19,17 @@ namespace MAPeD
 	[DataContract]
 	public class tiles_data
 	{
-		private static ushort CONST_BLOCK_MASK_FLIP		= (ushort)( 3 << 8 );
-#if DEF_NES		
-		private static ushort CONST_BLOCK_MASK_PALETTE	= (ushort)( 3 << 10 );
+		private static ushort CONST_MASK_FLIP			= 0x03;
+		private static ushort CONST_BLOCK_MASK_FLIP		= (ushort)( CONST_MASK_FLIP << 8 );
+#if DEF_NES
+		private static ushort CONST_MASK_PALETTE		= 0x03;
+		private static ushort CONST_BLOCK_MASK_PALETTE	= (ushort)( CONST_MASK_PALETTE << 10 );
 #elif DEF_SMS
-		private static ushort CONST_BLOCK_MASK_CHR_BANK_PAGE = (ushort)( 3 << 10 );
+		private static ushort CONST_MASK_CHR_BANK_PAGE			= 0x03; 
+		private static ushort CONST_BLOCK_MASK_CHR_BANK_PAGE 	= (ushort)( CONST_MASK_CHR_BANK_PAGE << 10 );
 #endif
-		private static ushort CONST_BLOCK_MASK_OBJ_ID	= (ushort)( 15 << 12 );
+		private static ushort CONST_MASK_OBJ_ID			= 0x0f; 
+		private static ushort CONST_BLOCK_MASK_OBJ_ID	= (ushort)( CONST_MASK_OBJ_ID << 12 );
 		
 		private static int m_id	= -1;
 		
@@ -335,7 +339,7 @@ namespace MAPeD
 			int var = _block_chr_data;
 			
 			var &= ~CONST_BLOCK_MASK_FLIP;
-			var |= ( _flip_flag << 8 );
+			var |= ( ( _flip_flag & CONST_MASK_FLIP ) << 8 );
 			
 			return (ushort)var;
 		}
@@ -351,7 +355,7 @@ namespace MAPeD
 			int var = _block_chr_data;
 			
 			var &= ~CONST_BLOCK_MASK_PALETTE;
-			var |= ( _plt_ind << 10 );
+			var |= ( ( _plt_ind & CONST_MASK_PALETTE ) << 10 );
 			
 			return (ushort)var;
 		}
@@ -366,7 +370,7 @@ namespace MAPeD
 			int var = _block_chr_data;
 			
 			var &= ~CONST_BLOCK_MASK_CHR_BANK_PAGE;
-			var |= ( ( _CHR_bank_page & 0x03 ) << 10 );
+			var |= ( ( _CHR_bank_page & CONST_MASK_CHR_BANK_PAGE ) << 10 );
 			
 			return (ushort)var;
 		}
@@ -382,7 +386,7 @@ namespace MAPeD
 			int var = _block_chr_data;
 			
 			var &= ~CONST_BLOCK_MASK_OBJ_ID;
-			var |= ( _obj_id << 12 );
+			var |= ( ( _obj_id & CONST_MASK_OBJ_ID ) << 12 );
 			
 			return (ushort)var;
 		}

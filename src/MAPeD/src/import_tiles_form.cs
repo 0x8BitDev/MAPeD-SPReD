@@ -713,9 +713,7 @@ namespace MAPeD
 				}
 			}
 			
-			more_than_4_palettes = palettes.Count > 4 ? true:false;
-			
-			// get transparent color index
+			// get a transparent color index
 			{
 				// calc color weights
 				for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
@@ -734,6 +732,29 @@ namespace MAPeD
 					}
 				}
 			}
+
+			// remove palettes without a transparent color
+			for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
+			{
+				if( !palettes[ plt_n ].Contains( ( byte )transp_clr_ind ) )
+				{
+					for( block_n = 0; block_n < n_blocks; block_n++ )
+					{
+						if( block_plt_inds[ block_n ] >= plt_n )
+						{
+							if( block_plt_inds[ block_n ] != 0 )
+							{
+								--block_plt_inds[ block_n ];
+							}
+						}
+					}
+					
+					palettes.RemoveAt( plt_n );
+					--plt_n;
+				}
+			}
+
+			more_than_4_palettes = palettes.Count > utils.CONST_NUM_SMALL_PALETTES ? true:false;
 			
 			// remove transparent color inds
 			for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
@@ -795,7 +816,7 @@ namespace MAPeD
 			// apply final palettes
 			Array.Clear( clr_inds, 0, clr_inds.Length );
 			
-			int palettes_cnt = Math.Min( palettes.Count, 4 );
+			int palettes_cnt = Math.Min( palettes.Count, utils.CONST_NUM_SMALL_PALETTES );
 			
 			for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
 			{
