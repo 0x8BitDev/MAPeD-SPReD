@@ -460,7 +460,7 @@ namespace MAPeD
 			ComboBoxEntityZoom.SelectedIndex = 0;
 
 			m_layout_editor.reset( false );
-			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data() );
+			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data() );
 			
 			enable_copy_paste_action( false, ECopyPasteType.cpt_All );
 			
@@ -605,6 +605,8 @@ namespace MAPeD
 						{
 							CBoxCHRBanks.Items.Add( m_data_manager.get_tiles_data( i ) );
 						}
+
+						m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data() );
 						
 						CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_pos;
 						
@@ -615,7 +617,6 @@ namespace MAPeD
 					
 					m_layout_editor.update();
 					update_graphics( false );
-					enable_update_screens_btn( true );
 #if DEF_SMS
 					palette_group.Instance.active_palette = 0;
 #endif
@@ -1118,6 +1119,9 @@ namespace MAPeD
 		{
 			ComboBox chr_bank_cbox = sender as ComboBox;
 			
+			// force update of screens if needed
+			update_screens_if_needed();
+			
 			m_data_manager.scr_data_pos 	= -1;
 			m_data_manager.tiles_data_pos 	= chr_bank_cbox.SelectedIndex;
 			
@@ -1136,7 +1140,7 @@ namespace MAPeD
 				ListBoxScreens.SelectedIndex = -1;
 			}
 			
-			update_screens_by_bank_id( true );
+			update_screens_by_bank_id( true, false );
 			
 			m_presets_manager_form.set_data( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
 		}
@@ -1196,6 +1200,13 @@ namespace MAPeD
 			{
 				if( m_data_manager.tiles_data_copy() == true )
 				{
+					update_screens_if_needed();
+					
+					// copy screens of a current CHR bank 
+					// to the end of the screen images list
+					// before CHR bank switching
+					m_imagelist_manager.copy_screens_to_the_end( m_data_manager.get_tiles_data(), m_data_manager.tiles_data_pos );
+					
 					tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_cnt - 1 );
 					
 					CBoxCHRBanks.Items.Add( data );
@@ -1207,7 +1218,7 @@ namespace MAPeD
 					
 					if( ScreensShowAllBanksToolStripMenuItem.Checked )
 					{
-						update_screens_by_bank_id( true );
+						update_screens_by_bank_id( true, false );
 					}
 					
 					set_status_msg( "CHR bank copied" );
@@ -1932,7 +1943,8 @@ namespace MAPeD
 					
 					if( m_optimization_form.need_update_screen_list )
 					{
-						m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
+						// update screens images, just for testing purposes
+						m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), true, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 						
 						m_layout_editor.set_active_screen( -1 );
 					}
@@ -2434,8 +2446,25 @@ namespace MAPeD
 			if( CheckBoxScreensAutoUpdate.Checked == false )
 			{
 				BtnUpdateScreens.Enabled = _on;
-				BtnUpdateScreens.UseVisualStyleBackColor = _on ? false:true;
+				BtnUpdateScreens.UseVisualStyleBackColor = !_on;
 			}
+		}
+		
+		private bool need_update_screens()
+		{
+			return BtnUpdateScreens.Enabled;
+		}
+
+		private bool update_screens_if_needed()
+		{
+			if( need_update_screens() )
+			{
+				m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), true, m_data_manager.tiles_data_pos );
+				
+				return true;
+			}
+			
+			return false;
 		}
 
 		void BtnUpdateScreensClick_Event(object sender, EventArgs e)
@@ -2446,7 +2475,7 @@ namespace MAPeD
 		void update_screens( bool _disable_upd_scr_btn, bool _show_status_msg = true )
 		{
 			// update_screens - may change a current palette
-			update_screens_by_bank_id( _disable_upd_scr_btn );
+			update_screens_by_bank_id( _disable_upd_scr_btn, true );
 			
 			m_layout_editor.update();
 			
@@ -2881,14 +2910,14 @@ namespace MAPeD
 		{
 			ScreensShowAllBanksToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
 			
-			update_screens_by_bank_id( true );
+			update_screens_by_bank_id( true, need_update_screens() ? true:false );
 			
 			m_layout_editor.update();
 		}
 		
-		void update_screens_by_bank_id( bool _disable_upd_scr_btn )
+		void update_screens_by_bank_id( bool _disable_upd_scr_btn, bool _update_images )
 		{
-			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
+			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), _update_images, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 			
 			// renew a palette
 			palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );

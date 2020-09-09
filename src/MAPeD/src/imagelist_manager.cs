@@ -290,8 +290,47 @@ namespace MAPeD
 			utils.brush.Color = Color.FromArgb( unchecked( (int)0xffffffff ) );
 			_gfx.DrawString( _info, utils.fnt10_Arial, utils.brush, 1, 1 );
 		}
+
+		public bool copy_screens_to_the_end( List< tiles_data > _tiles_data, int _bank_id )
+		{
+			if( _bank_id >= 0 )
+			{
+				m_listview_screens.BeginUpdate();
+				
+				tiles_data 		data;
+	
+				int screens_cnt;
+				int screens_ind = 0;
+				int banks_cnt 	= _tiles_data.Count;
+				
+				for( int bank_n = 0; bank_n < banks_cnt; bank_n++ )
+				{
+					data = _tiles_data[ bank_n ];
+	
+					screens_cnt = data.scr_data.Count;
+	
+					if( _bank_id == bank_n )
+					{
+						for( int screen_n = 0; screen_n < screens_cnt; screen_n++ )
+						{
+							m_listview_screens.LargeImageList.Images.Add( ( Image )m_listview_screens.LargeImageList.Images[ screens_ind + screen_n ].Clone() );
+						}
+						
+						break;
+					}
+					
+					screens_ind += screens_cnt;
+				}
+				
+				m_listview_screens.EndUpdate();
+				
+				return true;
+			}
+			
+			return false;
+		}
 		
-		public void update_screens( List< tiles_data > _tiles_data, int _bank_id = -1 )
+		public void update_all_screens( List< tiles_data > _tiles_data )
 		{
 			m_listview_screens.BeginUpdate();
 			
@@ -329,20 +368,65 @@ namespace MAPeD
 					
 				 	lst 				= new ListViewItem();
 				 	lst.Name = lst.Text = utils.get_screen_id_str( bank_n, screen_n );
-	                lst.ImageIndex		= img_ind;
-	                
-	                ++img_ind;
-	                
-	                if( _bank_id == -1 || bank_n == _bank_id )
-	                {
-	                	m_listview_screens.Items.Add( lst );
-	                }
+					lst.ImageIndex		= img_ind;
+ 
+					++img_ind;
+ 
+					m_listview_screens.Items.Add( lst );
 				}
 			}
 			
 			m_listview_screens.EndUpdate();
 		}
 
+		public void update_screens( List< tiles_data > _tiles_data, bool _update_images, int _bank_id = -1 )
+		{
+			m_listview_screens.BeginUpdate();
+			
+			m_listview_screens.Items.Clear();
+			
+			tiles_data 		data;
+			ListViewItem	lst;
+
+			int img_ind;
+			int screens_cnt;
+			int screens_ind = 0;
+			int banks_cnt 	= _tiles_data.Count;
+			
+			for( int bank_n = 0; bank_n < banks_cnt; bank_n++ )
+			{
+				data = _tiles_data[ bank_n ];
+
+				screens_cnt = data.scr_data.Count;
+
+				if( ( _bank_id >= 0 && _bank_id == bank_n ) || _bank_id < 0 )
+				{
+					palette_group.Instance.set_palette( data );
+					
+					for( int screen_n = 0; screen_n < screens_cnt; screen_n++ )
+					{
+						img_ind = screens_ind + screen_n;
+						
+						if( _update_images )
+						{
+							m_listview_screens.LargeImageList.Images[ img_ind ].Dispose();
+							m_listview_screens.LargeImageList.Images[ img_ind ] = create_screen_image( screen_n, data );
+						}
+						
+					 	lst 				= new ListViewItem();
+					 	lst.Name = lst.Text = utils.get_screen_id_str( bank_n, screen_n );
+						lst.ImageIndex		= img_ind;
+
+						m_listview_screens.Items.Add( lst );
+					}
+				}
+				
+				screens_ind += screens_cnt;
+			}
+			
+			m_listview_screens.EndUpdate();
+		}
+		
 		private Bitmap create_screen_image( int _screen_n, tiles_data _data )
 		{
 			int tile_id;
