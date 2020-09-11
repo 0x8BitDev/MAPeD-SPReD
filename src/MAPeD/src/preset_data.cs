@@ -66,5 +66,19 @@ namespace MAPeD
 			m_name		= null;
 			m_data		= null;
 		}
+		
+		public preset_data copy()
+		{
+			byte[] arr = null;
+			
+			if( data != null )
+			{
+				arr = new byte[ data.Length ];
+				
+				Array.Copy( data, arr, data.Length );
+			}
+			
+			return new preset_data( name, width, height, arr );
+		}
 	}
 }

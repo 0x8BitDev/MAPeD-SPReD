@@ -171,6 +171,9 @@ namespace MAPeD
 			m_presets_manager_form = new presets_manager_form( m_imagelist_manager.get_tiles_image_list() );
 			m_presets_manager_form.PresetsManagerClosed 	+= new EventHandler( MainForm_PresetsManagerClosed );
 			
+			m_presets_manager_form.subscribe_event( m_screen_editor );
+			m_screen_editor.subscribe_event( m_presets_manager_form );
+			
 			m_optimization_form = new optimization_form( m_data_manager );
 			m_optimization_form.UpdateGraphics += new EventHandler( MainForm_UpdateGraphicsAfterOptimization );
 			
@@ -3025,7 +3028,7 @@ namespace MAPeD
 			
 			m_object_name_form.edit_str = "GROUP";
 			
-			if( m_object_name_form.ShowDialog() == DialogResult.OK )
+			if( m_object_name_form.ShowWindow() == DialogResult.OK )
 			{
 				m_data_manager.group_add( m_object_name_form.edit_str );
 				
@@ -3094,7 +3097,7 @@ namespace MAPeD
 			
 			m_object_name_form.edit_str = "entity";
 			
-			if( m_object_name_form.ShowDialog() == DialogResult.OK )
+			if( m_object_name_form.ShowWindow() == DialogResult.OK )
 			{
 				m_data_manager.entity_add( m_object_name_form.edit_str, ( sel_node.Parent != null ? sel_node.Parent.Name:sel_node.Name ) );
 				

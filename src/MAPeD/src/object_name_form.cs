@@ -32,5 +32,13 @@ namespace MAPeD
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 		}
+		
+		public DialogResult ShowWindow()
+		{
+			ActiveControl = textBox; 
+			textBox.SelectAll();
+			
+			return ShowDialog();
+		}
 	}
 }

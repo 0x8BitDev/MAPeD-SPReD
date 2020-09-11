@@ -86,7 +86,7 @@ namespace MAPeD
 		private Bitmap		m_scr_mark_img			= null;
 		private Graphics	m_scr_mark_gfx			= null;
 		
-		private const float CONST_MIN_SCALE			= 0.2f;
+		private const float CONST_MIN_SCALE			= 0.1f;
 		
 		private bool	m_ent_snapping				= true;
 		

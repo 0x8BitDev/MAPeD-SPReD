@@ -48,6 +48,7 @@ namespace MAPeD
 	public delegate void RequestLeftScreen();
 	public delegate void RequestRightScreen();	
 	public delegate void UpdateTileImage();
+	public delegate void CreatePresetEnd();
 	
 	public class screen_editor : drawable_base
 	{
@@ -58,6 +59,7 @@ namespace MAPeD
 		public event EventHandler RequestLeftScreen;
 		public event EventHandler RequestRightScreen;
 		public event EventHandler UpdateTileImage;
+		public event EventHandler CreatePresetEnd;
 		
 		public enum EMode
 		{
@@ -95,6 +97,20 @@ namespace MAPeD
 		};
 		
 		private EFillMode	m_fill_mode	= EFillMode.efm_Unknown;
+		
+		private Point		m_sel_rect_beg	= new Point();
+		private Point		m_sel_rect_end	= new Point();
+		
+		private Bitmap		m_sel_area_tile	= null;
+		
+		public enum EState
+		{
+			es_Build,
+			es_CreatePreset,
+			es_PutPreset,
+		};
+		
+		private EState	m_state	= EState.es_Build; 
 
 		private int 		m_curr_CHR_bank_id	= -1;
 		
@@ -151,6 +167,9 @@ namespace MAPeD
 			
 			m_block_tiles = new List< int >( utils.CONST_TILES_UINT_SIZE );
 			
+			m_sel_area_tile = new Bitmap( utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE, PixelFormat.Format24bppRgb );
+			Graphics.FromImage( m_sel_area_tile ).Clear( utils.CONST_COLOR_SCREEN_SELECTION_TILE );
+			
 			update();
 		}
 
@@ -179,6 +198,62 @@ namespace MAPeD
 				
 				update();
 			}
+		}
+
+		public void subscribe_event( presets_manager_form _preset_mngr )
+		{
+			_preset_mngr.CreatePresetBegin 	+= new EventHandler( create_preset_begin );
+			_preset_mngr.CreatePresetCancel	+= new EventHandler( create_preset_cancel );
+		}
+		
+		private void create_preset_begin( object sender, EventArgs e )
+		{
+			m_state = EState.es_CreatePreset;
+			
+			m_pix_box.Cursor = Cursors.Cross;
+			
+			m_pbox_captured = false;
+			
+			update();
+		}
+
+		private void create_preset_cancel( object sender, EventArgs e )
+		{
+			m_state = EState.es_Build;
+			
+			m_pix_box.Cursor = Cursors.Arrow;
+			
+			m_pbox_captured = false;
+			
+			update();
+		}
+
+		private void calc_preset_params( ref int _tile_pos_x, 
+		                                 ref int _tile_pos_y, 
+		                                 ref int _tiles_width, 
+		                                 ref int _tiles_height, 
+		                                 ref int _min_x, 
+		                                 ref int _min_y, 
+		                                 ref int _dx, 
+		                                 ref int _dy )
+		{
+			_min_x = Math.Max( utils.CONST_SCREEN_OFFSET_X, Math.Min( m_sel_rect_beg.X, m_sel_rect_end.X ) );
+			_min_y = Math.Max( utils.CONST_SCREEN_OFFSET_Y, Math.Min( m_sel_rect_beg.Y, m_sel_rect_end.Y ) );
+
+			int max_x = Math.Min( utils.CONST_SCREEN_OFFSET_X + ( utils.CONST_SCREEN_WIDTH_PIXELS << 1 ), Math.Max( m_sel_rect_beg.X, m_sel_rect_end.X ) );
+			int max_y = Math.Min( utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_HEIGHT_PIXELS << 1 ), Math.Max( m_sel_rect_beg.Y, m_sel_rect_end.Y ) );
+
+			_dx = max_x - _min_x;
+			_dy = max_y - _min_y;
+			
+			_tile_pos_x = ( ( _min_x - utils.CONST_SCREEN_OFFSET_X ) / utils.CONST_SCREEN_TILES_SIZE );
+			_tile_pos_y = ( ( _min_y - utils.CONST_SCREEN_OFFSET_Y ) / utils.CONST_SCREEN_TILES_SIZE );
+			
+			_tiles_width	= ( ( max_x - utils.CONST_SCREEN_OFFSET_X ) / utils.CONST_SCREEN_TILES_SIZE ) - _tile_pos_x + 1;
+			_tiles_height	= ( ( max_y - utils.CONST_SCREEN_OFFSET_Y ) / utils.CONST_SCREEN_TILES_SIZE ) - _tile_pos_y + 1;
+			
+			_tiles_width	= Math.Min( utils.CONST_SCREEN_NUM_WIDTH_TILES - _tile_pos_x, _tiles_width );
+			_tiles_height	= Math.Min( utils.CONST_SCREEN_NUM_HEIGHT_TILES - _tile_pos_y, _tiles_height );
 		}
 		
 		public void subscribe_event( data_sets_manager _data_mngr )
@@ -210,23 +285,10 @@ namespace MAPeD
 		
 		private void ScreenEditor_MouseLeave(object sender, System.EventArgs e)
 		{
-			if( m_tile_img != null && m_tile_x >= 0 && m_tile_y >= 0 )
+			if( m_state == EState.es_Build )
 			{
-				m_tile_x = -1;
-			m_tile_y = -1;
-				
-				update();
-			}
-		}
-		
-		private void ScreenEditor_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
-		{
-			if( ( m_tiles_data != null && m_scr_ind >= 0 && m_active_tile_id >= 0 ) && e.Button == MouseButtons.Left )
-			{
-				m_pbox_captured = true;
-
-				if( put_tile( e.X, e.Y ) )
-				{				
+				if( m_tile_img != null && m_tile_x >= 0 && m_tile_y >= 0 )
+				{
 					m_tile_x = -1;
 					m_tile_y = -1;
 					
@@ -235,45 +297,127 @@ namespace MAPeD
 			}
 		}
 		
+		private void ScreenEditor_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+		{
+			if( m_state == EState.es_Build )
+			{
+				if( ( m_tiles_data != null && m_scr_ind >= 0 && m_active_tile_id >= 0 ) && e.Button == MouseButtons.Left )
+				{
+					m_pbox_captured = true;
+	
+					if( put_tile( e.X, e.Y ) )
+					{				
+						m_tile_x = -1;
+						m_tile_y = -1;
+						
+						update();
+					}
+				}
+			}
+			else
+			if( m_state == EState.es_CreatePreset )
+			{
+				if( m_scr_ind >= 0 )
+				{
+					if( m_pbox_captured != true )
+					{
+						m_pbox_captured = true;
+						
+						m_sel_rect_end.X = m_sel_rect_beg.X = e.X;
+						m_sel_rect_end.Y = m_sel_rect_beg.Y = e.Y;
+					}
+				}
+				else
+				{
+					MainForm.message_box( "Please, select a screen!", "Tiles Selection Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
+			}
+		}
+		
 		private void ScreenEditor_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
-			m_pbox_captured = false;
-			
-			if( mode == EMode.em_Layout )
+			if( m_state == EState.es_Build )
 			{
-				if( e.Y < utils.CONST_SCREEN_OFFSET_Y )
+				m_pbox_captured = false;
+				
+				if( mode == EMode.em_Layout )
 				{
-					if( RequestUpScreen != null )
+					if( e.Y < utils.CONST_SCREEN_OFFSET_Y )
 					{
-						RequestUpScreen( this, null );
+						if( RequestUpScreen != null )
+						{
+							RequestUpScreen( this, null );
+						}
 					}
-				}
-				else
+					else
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-				if( e.Y > utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) )
+					if( e.Y > utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) )
 #else
-				if( e.Y > utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
+					if( e.Y > utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
 #endif //DEF_SCREEN_HEIGHT_7d5_TILES						
-				{
-					if( RequestDownScreen != null )
 					{
-						RequestDownScreen( this, null );
+						if( RequestDownScreen != null )
+						{
+							RequestDownScreen( this, null );
+						}
+					}
+					else
+					if( e.X < utils.CONST_SCREEN_OFFSET_X )
+					{
+						if( RequestLeftScreen != null )
+						{
+							RequestLeftScreen( this, null );
+						}
+					}
+					else
+					if( e.X > utils.CONST_SCREEN_OFFSET_X + ( utils.CONST_SCREEN_NUM_WIDTH_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
+					{
+						if( RequestRightScreen != null )
+						{
+							RequestRightScreen( this, null );
+						}
 					}
 				}
-				else
-				if( e.X < utils.CONST_SCREEN_OFFSET_X )
+			}
+			else
+			if( m_state == EState.es_CreatePreset )
+			{
+				if( m_pbox_captured == true )
 				{
-					if( RequestLeftScreen != null )
+					if( CreatePresetEnd != null )
 					{
-						RequestLeftScreen( this, null );
-					}
-				}
-				else
-				if( e.X > utils.CONST_SCREEN_OFFSET_X + ( utils.CONST_SCREEN_NUM_WIDTH_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
-				{
-					if( RequestRightScreen != null )
-					{
-						RequestRightScreen( this, null );
+						int tile_pos_x		= 0;
+						int tile_pos_y		= 0;
+						int tiles_width		= 0;
+						int tiles_height	= 0;
+						
+						int min_x	= 0;
+						int min_y	= 0;
+						int dx		= 0;
+						int dy		= 0;
+						
+						calc_preset_params( ref tile_pos_x, ref tile_pos_y, ref tiles_width, ref tiles_height, ref min_x, ref min_y, ref dx, ref dy );
+						
+						// extract tiles
+						int tile_x;
+						int tile_y;
+						
+						int pos = -1;
+						
+						byte[] data = new byte[ tiles_width * tiles_height ];
+						
+						for( tile_y = 0; tile_y < tiles_height; tile_y++ )
+						{
+							for( tile_x = 0; tile_x < tiles_width; tile_x++ )
+							{
+								data[ ++pos ] = m_tiles_data.scr_data[ m_scr_ind ][ ( ( tile_pos_y + tile_y ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + tile_pos_x + tile_x ];
+							}
+						}
+						
+						// send PRESET's data
+						CreatePresetEnd( this, new PresetEventArg( ( byte )tiles_width, ( byte )tiles_height, data ) );
+						
+						create_preset_cancel( null, null );
 					}
 				}
 			}
@@ -281,48 +425,61 @@ namespace MAPeD
 		
 		private void ScreenEditor_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
-			if( m_pbox_captured )
+			if( m_state == EState.es_Build )
 			{
-				if( put_tile( e.X, e.Y ) )
+				if( m_pbox_captured )
 				{
-					m_tile_x = -1;
-					m_tile_y = -1;
-					
-					update();
-				}
-			}
-			else
-			{
-				int new_tile_x = 0;
-				int new_tile_y = 0;
-				
-				if( get_tile_xy( e.X, e.Y, out new_tile_x, out new_tile_y ) == true )
-				{
-					m_pix_box.Cursor = Cursors.Arrow;
+					if( put_tile( e.X, e.Y ) )
+					{
+						m_tile_x = -1;
+						m_tile_y = -1;
+						
+						update();
+					}
 				}
 				else
 				{
-					m_pix_box.Cursor = ( mode == EMode.em_Layout ) ? Cursors.Hand:Cursors.Arrow;
-				}
-
-				if( m_tile_img != null )
-				{
-					if( new_tile_x != m_tile_x || new_tile_y != m_tile_y && ( new_tile_x >= 0 && new_tile_y >= 0 ) )
-					{
-						m_tile_x = new_tile_x;
-						m_tile_y = new_tile_y;
+					int new_tile_x = 0;
+					int new_tile_y = 0;
 					
-						update();
+					if( get_tile_xy( e.X, e.Y, out new_tile_x, out new_tile_y ) == true )
+					{
+						m_pix_box.Cursor = Cursors.Arrow;
+					}
+					else
+					{
+						m_pix_box.Cursor = ( mode == EMode.em_Layout ) ? Cursors.Hand:Cursors.Arrow;
+					}
+	
+					if( m_tile_img != null )
+					{
+						if( new_tile_x != m_tile_x || new_tile_y != m_tile_y && ( new_tile_x >= 0 && new_tile_y >= 0 ) )
+						{
+							m_tile_x = new_tile_x;
+							m_tile_y = new_tile_y;
 						
-						if( m_tile_x >= 0 && m_tile_y >= 0 )
-						{
-							MainForm.set_status_msg( String.Format( "Screen Editor: " + get_fill_mode_str() + ": #{0:X2} \\ Pos: {1};{2}", m_active_tile_id, m_tile_x, m_tile_y ) );
-						}
-						else
-						{
-							MainForm.set_status_msg( String.Format( "Screen Editor: " + get_fill_mode_str() + ": #{0:X2}", m_active_tile_id ) );
+							update();
+							
+							if( m_tile_x >= 0 && m_tile_y >= 0 )
+							{
+								MainForm.set_status_msg( String.Format( "Screen Editor: " + get_fill_mode_str() + ": #{0:X2} \\ Pos: {1};{2}", m_active_tile_id, m_tile_x, m_tile_y ) );
+							}
+							else
+							{
+								MainForm.set_status_msg( String.Format( "Screen Editor: " + get_fill_mode_str() + ": #{0:X2}", m_active_tile_id ) );
+							}
 						}
 					}
+				}
+			}
+			else
+			if( m_state == EState.es_CreatePreset )
+			{
+				if( m_pbox_captured == true )
+				{
+					m_sel_rect_end = e.Location;
+					
+					update();
 				}
 			}
 		}
@@ -790,28 +947,71 @@ namespace MAPeD
 #endif	//DEF_SCREEN_HEIGHT_7d5_TILES						
 					}
 					
-					// draw a ghost image
-					if( m_tile_img != null && m_tile_x >= 0 && m_tile_y >= 0 )
+					if( m_state == EState.es_Build )
 					{
-						switch( m_fill_mode )
+						// draw a ghost image
+						if( m_tile_img != null && m_tile_x >= 0 && m_tile_y >= 0 )
 						{
-							case EFillMode.efm_Tile:
-								{
-									m_tile_ghost_img_rect.X 		= utils.CONST_SCREEN_OFFSET_X + ( m_tile_x * utils.CONST_SCREEN_TILES_SIZE );
-									m_tile_ghost_img_rect.Y 		= utils.CONST_SCREEN_OFFSET_Y + ( m_tile_y * utils.CONST_SCREEN_TILES_SIZE );
-									
-									m_gfx.DrawImage( m_tile_img, m_tile_ghost_img_rect, 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE, GraphicsUnit.Pixel, m_tile_img_attr );
-								}
-								break;
+							switch( m_fill_mode )
+							{
+								case EFillMode.efm_Tile:
+									{
+										m_tile_ghost_img_rect.X 		= utils.CONST_SCREEN_OFFSET_X + ( m_tile_x * utils.CONST_SCREEN_TILES_SIZE );
+										m_tile_ghost_img_rect.Y 		= utils.CONST_SCREEN_OFFSET_Y + ( m_tile_y * utils.CONST_SCREEN_TILES_SIZE );
+										
+										m_gfx.DrawImage( m_tile_img, m_tile_ghost_img_rect, 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE, GraphicsUnit.Pixel, m_tile_img_attr );
+									}
+									break;
+	
+								case EFillMode.efm_Block:
+									{
+										m_tile_ghost_img_rect.X			= utils.CONST_SCREEN_OFFSET_X + ( m_tile_x * utils.CONST_SCREEN_BLOCKS_SIZE );
+										m_tile_ghost_img_rect.Y			= utils.CONST_SCREEN_OFFSET_Y + ( m_tile_y * utils.CONST_SCREEN_BLOCKS_SIZE );
+										
+										m_gfx.DrawImage( m_tile_img, m_tile_ghost_img_rect, 0, 0, utils.CONST_SCREEN_BLOCKS_SIZE, utils.CONST_SCREEN_BLOCKS_SIZE, GraphicsUnit.Pixel, m_tile_img_attr );
+									}
+									break;
+							}
+						}
+					}
+					else
+					if( m_state == EState.es_CreatePreset )
+					{
+						// draw selection rectangle
+						if( m_pbox_captured == true )
+						{
+							m_pen.Color		= utils.CONST_COLOR_SCREEN_SELECTION_RECTANGLE;
+							m_pen.Width		= 1.0f;
+							m_pen.DashStyle	= System.Drawing.Drawing2D.DashStyle.Dot;
 
-							case EFillMode.efm_Block:
+							int tile_pos_x		= 0;
+							int tile_pos_y		= 0;
+							int tiles_width		= 0;
+							int tiles_height	= 0;
+							
+							int min_x	= 0;
+							int min_y	= 0;
+							int dx		= 0;
+							int dy		= 0;
+							
+							calc_preset_params( ref tile_pos_x, ref tile_pos_y, ref tiles_width, ref tiles_height, ref min_x, ref min_y, ref dx, ref dy );
+							
+							for( int tile_y = 0; tile_y < tiles_height; tile_y++ )
+							{
+								for( int tile_x = 0; tile_x < tiles_width; tile_x++ )
 								{
-									m_tile_ghost_img_rect.X			= utils.CONST_SCREEN_OFFSET_X + ( m_tile_x * utils.CONST_SCREEN_BLOCKS_SIZE );
-									m_tile_ghost_img_rect.Y			= utils.CONST_SCREEN_OFFSET_Y + ( m_tile_y * utils.CONST_SCREEN_BLOCKS_SIZE );
-									
-									m_gfx.DrawImage( m_tile_img, m_tile_ghost_img_rect, 0, 0, utils.CONST_SCREEN_BLOCKS_SIZE, utils.CONST_SCREEN_BLOCKS_SIZE, GraphicsUnit.Pixel, m_tile_img_attr );
+									m_tile_ghost_img_rect.X = ( utils.CONST_SCREEN_OFFSET_X + tile_pos_x * utils.CONST_SCREEN_TILES_SIZE ) + ( tile_x * utils.CONST_SCREEN_TILES_SIZE );
+									m_tile_ghost_img_rect.Y = ( utils.CONST_SCREEN_OFFSET_Y + tile_pos_y * utils.CONST_SCREEN_TILES_SIZE ) + ( tile_y * utils.CONST_SCREEN_TILES_SIZE );
+#if DEF_SCREEN_HEIGHT_7d5_TILES									
+									m_tile_ghost_img_rect.Height = ( ( tile_pos_y + tile_y ) == 7 ) ? utils.CONST_SCREEN_TILES_SIZE >> 1:utils.CONST_SCREEN_TILES_SIZE;
+#endif									
+									m_gfx.DrawImage( m_sel_area_tile, m_tile_ghost_img_rect, 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE, GraphicsUnit.Pixel, m_tile_img_attr );
 								}
-								break;
+							}
+							
+							m_gfx.DrawRectangle( m_pen, min_x, min_y, dx, dy );
+							
+							m_pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
 						}
 					}
 				}

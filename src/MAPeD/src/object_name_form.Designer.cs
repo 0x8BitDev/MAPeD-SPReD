@@ -46,6 +46,7 @@ namespace MAPeD
 			this.textBox.Name = "textBox";
 			this.textBox.Size = new System.Drawing.Size(182, 20);
 			this.textBox.TabIndex = 0;
+			this.textBox.TabStop = false;
 			this.textBox.Text = "UNKNOWN";
 			// 
 			// label1

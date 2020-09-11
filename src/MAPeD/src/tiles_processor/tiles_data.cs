@@ -149,6 +149,7 @@ namespace MAPeD
 			m_scr_data = new List< byte[] >( 100 );
 			
 			m_presets_data	= new Dictionary< string, List< preset_data > >( 10 );
+			m_presets_data.Add( "MAIN", new List< preset_data >() );
 		}
 		
 		public void destroy()
@@ -232,6 +233,24 @@ namespace MAPeD
 					Array.Copy( m_scr_data[ i ], 0, screen_data, 0, utils.CONST_SCREEN_TILES_CNT );
 					
 					data.m_scr_data.Add( screen_data );
+				}
+			}
+			
+			// copy presets
+			if( presets_data != null )
+			{
+				data.presets_data = new Dictionary< string, List< preset_data > >( presets_data.Count, presets_data.Comparer );
+				
+				foreach( KeyValuePair< string, List< preset_data > > entry in presets_data )
+				{
+					List< preset_data > list_data = new List< preset_data >( entry.Value.Count );
+					
+					foreach( preset_data preset in entry.Value )
+					{
+						list_data.Add( preset.copy() );
+					}
+					
+					data.presets_data.Add( entry.Key, list_data );
 				}
 			}
 			

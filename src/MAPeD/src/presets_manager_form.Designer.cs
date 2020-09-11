@@ -190,6 +190,7 @@ namespace MAPeD
 			// CheckBoxAddPreset
 			// 
 			this.CheckBoxAddPreset.Appearance = System.Windows.Forms.Appearance.Button;
+			this.CheckBoxAddPreset.AutoCheck = false;
 			this.CheckBoxAddPreset.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.CheckBoxAddPreset.Location = new System.Drawing.Point(17, 20);
 			this.CheckBoxAddPreset.Name = "CheckBoxAddPreset";
@@ -198,7 +199,7 @@ namespace MAPeD
 			this.CheckBoxAddPreset.Text = "Add";
 			this.CheckBoxAddPreset.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.CheckBoxAddPreset.UseVisualStyleBackColor = true;
-			this.CheckBoxAddPreset.CheckedChanged += new System.EventHandler(this.CheckBoxAddPresetChanged_Event);
+			this.CheckBoxAddPreset.Click += new System.EventHandler(this.CheckBoxAddPresetClick_Event);
 			// 
 			// BtnPresetDelete
 			// 
