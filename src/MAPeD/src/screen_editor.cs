@@ -321,10 +321,13 @@ namespace MAPeD
 				{
 					if( m_pbox_captured != true )
 					{
-						m_pbox_captured = true;
-						
-						m_sel_rect_end.X = m_sel_rect_beg.X = e.X;
-						m_sel_rect_end.Y = m_sel_rect_beg.Y = e.Y;
+						if( inside_screen( e.X, e.Y ) == true )
+						{
+							m_pbox_captured = true;
+							
+							m_sel_rect_end.X = m_sel_rect_beg.X = e.X;
+							m_sel_rect_end.Y = m_sel_rect_beg.Y = e.Y;
+						}
 					}
 				}
 				else
@@ -339,47 +342,8 @@ namespace MAPeD
 			if( m_state == EState.es_Build )
 			{
 				m_pbox_captured = false;
-				
-				if( mode == EMode.em_Layout )
-				{
-					if( e.Y < utils.CONST_SCREEN_OFFSET_Y )
-					{
-						if( RequestUpScreen != null )
-						{
-							RequestUpScreen( this, null );
-						}
-					}
-					else
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-					if( e.Y > utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) )
-#else
-					if( e.Y > utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
-#endif //DEF_SCREEN_HEIGHT_7d5_TILES						
-					{
-						if( RequestDownScreen != null )
-						{
-							RequestDownScreen( this, null );
-						}
-					}
-					else
-					if( e.X < utils.CONST_SCREEN_OFFSET_X )
-					{
-						if( RequestLeftScreen != null )
-						{
-							RequestLeftScreen( this, null );
-						}
-					}
-					else
-					if( e.X > utils.CONST_SCREEN_OFFSET_X + ( utils.CONST_SCREEN_NUM_WIDTH_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
-					{
-						if( RequestRightScreen != null )
-						{
-							RequestRightScreen( this, null );
-						}
-					}
-				}
 			}
-			else
+			
 			if( m_state == EState.es_CreatePreset )
 			{
 				if( m_pbox_captured == true )
@@ -418,6 +382,47 @@ namespace MAPeD
 						CreatePresetEnd( this, new PresetEventArg( ( byte )tiles_width, ( byte )tiles_height, data ) );
 						
 						create_preset_cancel( null, null );
+						
+						return;
+					}
+				}
+			}
+			
+			if( mode == EMode.em_Layout )
+			{
+				if( e.Y < utils.CONST_SCREEN_OFFSET_Y )
+				{
+					if( RequestUpScreen != null )
+					{
+						RequestUpScreen( this, null );
+					}
+				}
+				else
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+				if( e.Y > utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) )
+#else
+				if( e.Y > utils.CONST_SCREEN_OFFSET_Y + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
+#endif //DEF_SCREEN_HEIGHT_7d5_TILES						
+				{
+					if( RequestDownScreen != null )
+					{
+						RequestDownScreen( this, null );
+					}
+				}
+				else
+				if( e.X < utils.CONST_SCREEN_OFFSET_X )
+				{
+					if( RequestLeftScreen != null )
+					{
+						RequestLeftScreen( this, null );
+					}
+				}
+				else
+				if( e.X > utils.CONST_SCREEN_OFFSET_X + ( utils.CONST_SCREEN_NUM_WIDTH_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
+				{
+					if( RequestRightScreen != null )
+					{
+						RequestRightScreen( this, null );
 					}
 				}
 			}
@@ -481,6 +486,15 @@ namespace MAPeD
 					
 					update();
 				}
+				
+				if( inside_screen( e.X, e.Y ) == true )
+				{
+					m_pix_box.Cursor = Cursors.Cross;
+				}
+				else
+				{
+					m_pix_box.Cursor = ( mode == EMode.em_Layout ) ? Cursors.Hand:Cursors.Cross;
+				}
 			}
 		}
 
@@ -513,6 +527,14 @@ namespace MAPeD
 		private string get_fill_mode_str()
 		{
 			return ( m_fill_mode == EFillMode.efm_Tile ) ? "Tile":( ( m_fill_mode == EFillMode.efm_Block ) ? "Block":"???" );
+		}
+		
+		private bool inside_screen( int _x, int _y )
+		{
+			int tile_x = 0;
+			int tile_y = 0;
+			
+			return get_tile_xy( _x, _y, out tile_x, out tile_y );
 		}
 		
 		private bool get_tile_xy( int _x, int _y, out int _tile_x, out int _tile_y )

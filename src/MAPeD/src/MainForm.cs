@@ -446,6 +446,9 @@ namespace MAPeD
 			
 			TilesLockEditorToolStripMenuItem.Checked = CheckBoxTileEditorLock.Checked = true;
 
+			m_tiles_palette_form.reset();
+			m_presets_manager_form.reset();
+			
 			update_graphics( false );
 			
 			enable_update_gfx_btn( false );
@@ -472,9 +475,6 @@ namespace MAPeD
 			PropertyPerBlockToolStripMenuItemClick_Event( null, null );
 			
 			RBtnScreenEditModeSingle.Checked = true;
-			
-			m_tiles_palette_form.reset();
-			m_presets_manager_form.reset();
 			
 			if( tabControlMainLayout.Contains( TabMain ) )
 			{

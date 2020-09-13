@@ -87,15 +87,18 @@ namespace MAPeD
 			
 			m_object_name_form = new object_name_form();
 			
-			m_preset_image = new Bitmap( utils.CONST_SCREEN_WIDTH_PIXELS, utils.CONST_SCREEN_HEIGHT_PIXELS, PixelFormat.Format32bppArgb );
-			m_gfx = Graphics.FromImage( m_preset_image );
+			// create graphics for drawing presets
+			{
+				int scr_tile_size = utils.CONST_SCREEN_TILES_SIZE >> 1;
+				
+				m_preset_image = new Bitmap( scr_tile_size * utils.CONST_SCREEN_NUM_WIDTH_TILES, scr_tile_size * utils.CONST_SCREEN_NUM_HEIGHT_TILES, PixelFormat.Format32bppArgb );
+				m_gfx = Graphics.FromImage( m_preset_image );
+			}
 		}
 		
 		public void reset()
 		{
-			m_data = null;
-			
-			update();			
+			set_data( null );
 		}
 		
 		public void enable( bool _on )
@@ -204,11 +207,16 @@ namespace MAPeD
 			}
 			TreeViewPresets.EndUpdate();
 			
-			foreach( var key in m_data.presets_data.Keys )
-			{ 
-				group_add( key, false );
+			if( m_data != null )
+			{
+				foreach( var key in m_data.presets_data.Keys )
+				{ 
+					group_add( key, false );
+					
+					( m_data.presets_data[ key ] as List< preset_data > ).ForEach( delegate( preset_data _preset ) { preset_add( _preset.name, key, _preset.width, _preset.height, _preset.data, false ); } );
+				}
 				
-				( m_data.presets_data[ key ] as List< preset_data > ).ForEach( delegate( preset_data _preset ) { preset_add( _preset.name, key, _preset.width, _preset.height, _preset.data, false ); } );
+				TreeViewPresets.SelectedNode = TreeViewPresets.TopNode; 
 			}
 		}
 
@@ -222,20 +230,25 @@ namespace MAPeD
 			enable( true );
 			
 			CheckBoxAddPreset.Checked = false;
-
-			m_object_name_form.Text = "Add Preset";
 			
-			m_object_name_form.edit_str = "PRESET";
-			
-			if( m_object_name_form.ShowWindow() == DialogResult.OK )
+			if( sender != this )
 			{
-				PresetEventArg preset_event = e as PresetEventArg;
+				m_object_name_form.Text = "Add Preset";
 				
-				preset_add( m_object_name_form.edit_str, TreeViewPresets.SelectedNode.Name, preset_event.width, preset_event.height, preset_event.data, true );
+				m_object_name_form.edit_str = "PRESET";
 				
-				MainForm.set_status_msg( "Added tiles preset <" + m_object_name_form.edit_str + ">" );
-				
-				update();
+				if( m_object_name_form.ShowWindow() == DialogResult.OK )
+				{
+					PresetEventArg preset_event = e as PresetEventArg;
+					
+					preset_add( m_object_name_form.edit_str, TreeViewPresets.SelectedNode.Name, preset_event.width, preset_event.height, preset_event.data, true );
+					
+					MainForm.set_status_msg( "Added tiles preset <" + m_object_name_form.edit_str + ">" );
+					
+					update();
+					
+					Focus();
+				}
 			}
 		}
 		
@@ -267,7 +280,7 @@ namespace MAPeD
 					CreatePresetCancel( this, null );
 				}
 				
-				create_preset_end( null, null );
+				create_preset_end( this, null );
 			}
 		}
 		
@@ -342,7 +355,7 @@ namespace MAPeD
 					CreatePresetCancel( this, null );
 				}
 				
-				create_preset_end( null, null );
+				create_preset_end( this, null );
 			}
 			
 			enable( !CheckBoxAddPreset.Checked );
