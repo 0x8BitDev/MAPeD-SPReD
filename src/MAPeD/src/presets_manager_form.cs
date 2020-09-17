@@ -71,6 +71,8 @@ namespace MAPeD
 		private Bitmap		m_preset_image	= null;
 		private Graphics	m_gfx			= null;
 		
+		private int			m_scale_pow		= 0;
+		
 		public presets_manager_form( ImageList _tiles_image_list )
 		{
 			//
@@ -85,6 +87,10 @@ namespace MAPeD
 			
 			m_preset_preview = new image_preview( PixBoxPreview );
 			
+			PixBoxPreview.MouseWheel += new MouseEventHandler( PresetMngr_MouseWheel );
+			PixBoxPreview.MouseEnter += new EventHandler( PresetMngr_MouseEnter );
+			PixBoxPreview.MouseLeave += new EventHandler( PresetMngr_MouseLeave );
+			
 			m_object_name_form = new object_name_form();
 			
 			// create graphics for drawing presets
@@ -98,6 +104,8 @@ namespace MAPeD
 		
 		public void reset()
 		{
+			m_scale_pow = 0;
+			
 			set_data( null );
 		}
 		
@@ -114,6 +122,35 @@ namespace MAPeD
 			BtnRename.Enabled		= _on;
 		}
 		
+		private void PresetMngr_MouseWheel(object sender, MouseEventArgs e)
+		{
+			if( TreeViewPresets.Enabled )
+			{
+				m_scale_pow += Math.Sign( e.Delta );
+				
+				m_scale_pow = m_scale_pow < 0 ? 0:m_scale_pow;
+				m_scale_pow = m_scale_pow > 3 ? 3:m_scale_pow;
+				
+				update();
+			}
+		}
+		
+		private void PresetMngr_MouseEnter(object sender, EventArgs e)
+		{
+			if( TreeViewPresets.Enabled )
+			{
+				m_preset_preview.set_focus();
+			}
+		}
+
+		private void PresetMngr_MouseLeave(object sender, EventArgs e)
+		{
+			if( TreeViewPresets.Enabled )
+			{
+				TreeViewPresets.Focus();
+			}
+		}
+		
 		public void update()
 		{
 			if( TreeViewPresets.SelectedNode == null )
@@ -121,7 +158,7 @@ namespace MAPeD
 				// redraw a current selected preset
 				m_preset_preview.update( null, -1, -1, -1, -1, -1, false, false );
 				
-				m_preset_preview.draw_string( "Presets are frequently used patterns of tiles.\nHere you can create and manage them.\n\n- Press the 'Add' preset button to add a new one.\n\n- Select a preset in the tree view to put it on\na game screen.", 0, 0 );
+				m_preset_preview.draw_string( "Presets are frequently used patterns of tiles.\nHere you can create and manage them.\n\n- Press the 'Add' preset button to add a new one.\n\n- Select a preset in the tree view to put it on\na game screen.\n\n- Scale a selected preset using a mouse wheel.", 0, 0 );
 			}
 			else
 			{
@@ -146,7 +183,7 @@ namespace MAPeD
 					{
 						// draw a preset
 						preset_data preset = update_preset_image( node.Name );
-						m_preset_preview.update( m_preset_image, m_preset_image.Width, m_preset_image.Height, 0, 0, 1, false, false );
+						m_preset_preview.update( m_preset_image, m_preset_image.Width, m_preset_image.Height, 0, 0, ( int )Math.Pow( 2.0, ( double )m_scale_pow ), false, false );
 						
 						m_preset_preview.draw_string( "Put the <" + node.Name + "> on a game screen.", 0, 0 );
 					}

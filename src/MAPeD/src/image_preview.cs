@@ -119,5 +119,10 @@ namespace MAPeD
 			utils.brush.Color = utils.CONST_COLOR_STRING_DEFAULT;
 			m_gfx.DrawString( _text, utils.fnt8_Arial, utils.brush, _x, _y );
 		}
+		
+		public void set_focus()
+		{
+			m_pix_box.Focus();
+		}
 	}
 }
