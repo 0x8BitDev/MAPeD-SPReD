@@ -1523,7 +1523,7 @@ namespace MAPeD
 		{
 			m_tiles_processor.CHR_bank_paste_spr();
 			
-			enable_copy_paste_action( false, ECopyPasteType.cpt_CHR_bank );
+//!!!		enable_copy_paste_action( false, ECopyPasteType.cpt_CHR_bank );
 		}
 		
 		void FillWithColorCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
@@ -1684,7 +1684,7 @@ namespace MAPeD
 					data.blocks[ ( _sel_ind << 2 ) + i ] = block_val;
 				}
 
-				enable_copy_paste_action( false, ECopyPasteType.cpt_Blocks_list );
+//!!!			enable_copy_paste_action( false, ECopyPasteType.cpt_Blocks_list );
 				
 				if( _paste_clone )
 				{
@@ -1835,7 +1835,7 @@ namespace MAPeD
 					data.set_tile_block( sel_ind, i, data.get_tile_block( m_tile_copy_item_ind, i ) );
 				}
 
-				enable_copy_paste_action( false, ECopyPasteType.cpt_Tiles_list );
+//!!!			enable_copy_paste_action( false, ECopyPasteType.cpt_Tiles_list );
 
 				set_status_msg( String.Format( "Tile List: tile #{0:X2} is copied to #{1:X2}", m_tile_copy_item_ind, sel_ind ) );
 				
