@@ -1922,6 +1922,7 @@ namespace MAPeD
 						Array.Copy( data.tiles, sel_ind + 1, data.tiles, sel_ind, data.tiles.Length - sel_ind - 1 );
 						
 						data.dec_screen_tiles( ( byte )sel_ind );
+						data.dec_patterns_tiles( ( byte )sel_ind );
 						data.clear_tile( data.tiles.Length - 1 );
 						
 						clear_active_tile_img();

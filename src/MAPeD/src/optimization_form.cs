@@ -369,7 +369,8 @@ namespace MAPeD
 					// the last tile is an empty space
 					_data.tiles[ utils.CONST_TILES_UINT_SIZE - 1 ] = 0;
 					
-					shift_screen_tiles( tile_n, _data );
+					_data.dec_screen_tiles( ( byte )tile_n );
+					_data.dec_patterns_tiles( ( byte )tile_n );
 					
 					--tile_n;
 					--size;
@@ -402,29 +403,6 @@ namespace MAPeD
 			}
 
 			return false;			
-		}
-		
-		void shift_screen_tiles( int _tile_id, tiles_data _data )
-		{
-			List< byte[] > 	scr_list = _data.scr_data;
-			byte[] 			scr_data = null;
-			
-			byte			scr_tile_id;
-			
-			for( int scr_n = 0; scr_n < scr_list.Count; scr_n++ )
-			{
-				scr_data = scr_list[ scr_n ];
-				
-				for( int scr_tile_n = 0; scr_tile_n < scr_data.Length; scr_tile_n++ )
-				{
-					scr_tile_id = scr_data[ scr_tile_n ];
-					
-					if( scr_tile_id >= _tile_id )
-					{
-						scr_data[ scr_tile_n ] = ( byte )( scr_tile_id - 1 );
-					}
-				}
-			}
 		}
 		
 		int Screens_optimization( tiles_data _data, bool _check )

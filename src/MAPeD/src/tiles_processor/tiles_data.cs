@@ -179,6 +179,30 @@ namespace MAPeD
 			return pattern;
 		}
 		
+		public void dec_patterns_tiles( byte _tile_id )
+		{
+			byte tile_id;
+			
+			foreach( string key in patterns_data.Keys )
+			{ 
+				( patterns_data[ key ] as List< pattern_data > ).ForEach( delegate( pattern_data _pattern )
+				{ 
+					if( _pattern.data != null )
+					{
+						for( int tile_ind = 0; tile_ind < _pattern.data.Length; tile_ind++ )
+						{
+							tile_id = _pattern.data[ tile_ind ];
+							
+							if( tile_id >= _tile_id && tile_id > 0 )
+							{
+								_pattern.data[ tile_ind ] = ( byte )( tile_id - 1 );
+							}
+						}
+					}
+				});
+			}
+		}
+		
 		public void clear_tiles()
 		{
 			Array.Clear( m_tiles, 0, utils.CONST_TILES_UINT_SIZE );
