@@ -20,46 +20,38 @@ namespace MAPeD
 
 	public class PatternEventArg : EventArgs
 	{
-		private byte m_width	= 0;
-		private byte m_height	= 0;
+		private pattern_data m_data = null;
 		
-		private byte[] m_data	= null;
-		
-		public byte width
+		public pattern_data data
 		{
-			get { return m_width; }
+			get
+			{
+				pattern_data data = m_data;
+				m_data = null;
+				
+				return data;
+			}
+			
 			set {}
 		}
 		
-		public byte height
+		public PatternEventArg( pattern_data _data )
 		{
-			get { return m_height; }
-			set {}
-		}
-		
-		public byte[] data
-		{
-			get { return m_data; }
-			set {}
-		}
-		
-		public PatternEventArg( byte _width, byte _height, byte[] _data )
-		{
-			m_width		= _width;
-			m_height	= _height;
-			m_data		= _data;
+			m_data = _data;
 		}
 	}
 	
 	public delegate void PatternsManagerClosed();
 	public delegate void CreatePatternBegin();
-	public delegate void CreatePatternCancel();
+	public delegate void ScreenEditorSwitchToBuildMode();
+	public delegate void EnablePlacePatternMode();
 	
 	public partial class patterns_manager_form : Form
 	{
 		public event EventHandler PatternsManagerClosed;
 		public event EventHandler CreatePatternBegin;		
-		public event EventHandler CreatePatternCancel;
+		public event EventHandler ScreenEditorSwitchToBuildMode;
+		public event EventHandler EnablePlacePatternMode;
 		
 		private tiles_data	m_data				= null;
 		
@@ -153,54 +145,52 @@ namespace MAPeD
 		
 		public void update()
 		{
-			if( TreeViewPatterns.SelectedNode == null )
+			if( this.Visible )
 			{
-				// redraw a current selected pattern
-				m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
-				
-				m_pattern_preview.draw_string( "Patterns are frequently used combination of tiles.\nHere you can create and manage them.\n\n- Press the 'Add' pattern button to add a new one.\n\n- Select a pattern in the tree view to put it on\na game screen.\n\n- Scale a selected pattern using a mouse wheel.", 0, 0 );
-			}
-			else
-			{
-				if( CheckBoxAddPattern.Checked )
+				if( TreeViewPatterns.SelectedNode == null )
 				{
 					// redraw a current selected pattern
 					m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
 					
-					m_pattern_preview.draw_string( "Select a rectangle area in the screen editor\nto create a pattern.", 0, 0 );
+					m_pattern_preview.draw_string( "Patterns are frequently used combination of tiles.\nHere you can create and manage them.\n\n- Press the 'Add' pattern button to add a new one.\n\n- Select a pattern in the tree view to put it on\na game screen.\n\n- Scale a selected pattern using a mouse wheel.", 0, 0 );
 				}
 				else
 				{
-					TreeNode node = TreeViewPatterns.SelectedNode;
-					
-					if( node == null || node.Parent == null )
+					if( CheckBoxAddPattern.Checked )
 					{
+						// redraw a current selected pattern
 						m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
-					
-						m_pattern_preview.draw_string( "Select a pattern.", 0, 0 );
+						
+						m_pattern_preview.draw_string( "Select a rectangle area in the screen editor\nto create a pattern.", 0, 0 );
 					}
 					else
 					{
-						// draw a pattern
-						update_pattern_image( node.Name );
-						m_pattern_preview.update( m_pattern_image, m_pattern_image.Width, m_pattern_image.Height, 0, 0, ( int )Math.Pow( 2.0, ( double )m_scale_pow ), false, false );
+						TreeNode node = TreeViewPatterns.SelectedNode;
 						
-						m_pattern_preview.draw_string( "Put the <" + node.Name + "> on a game screen.", 0, 0 );
+						if( node == null || node.Parent == null )
+						{
+							m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
+						
+							m_pattern_preview.draw_string( "Select a pattern.", 0, 0 );
+						}
+						else
+						{
+							// draw a pattern
+							update_pattern_image( node.Name );
+							m_pattern_preview.update( m_pattern_image, m_pattern_image.Width, m_pattern_image.Height, 0, 0, ( int )Math.Pow( 2.0, ( double )m_scale_pow ), false, false );
+							
+							m_pattern_preview.draw_string( "Put the <" + node.Name + "> on a game screen.", 0, 0 );
+						}
 					}
 				}
+				
+				m_pattern_preview.invalidate();
 			}
-			
-			m_pattern_preview.invalidate();
 		}
 		
 		private pattern_data update_pattern_image( string _name )
 		{
-			pattern_data pattern = null;
-			
-			foreach( var key in m_data.patterns_data.Keys )
-			{ 
-				( m_data.patterns_data[ key ] as List< pattern_data > ).ForEach( delegate( pattern_data _pattern ) { if( _pattern.name == _name ) { pattern = _pattern; } } );
-			}
+			pattern_data pattern = m_data.get_pattern_by_name( _name );
 			
 			if( pattern != null )
 			{
@@ -250,7 +240,7 @@ namespace MAPeD
 				{ 
 					group_add( key, false );
 					
-					( m_data.patterns_data[ key ] as List< pattern_data > ).ForEach( delegate( pattern_data _pattern ) { pattern_add( _pattern.name, key, _pattern.width, _pattern.height, _pattern.data, false ); } );
+					( m_data.patterns_data[ key ] as List< pattern_data > ).ForEach( delegate( pattern_data _pattern ) { pattern_add( key, _pattern, false ); } );
 				}
 				
 				TreeViewPatterns.SelectedNode = TreeViewPatterns.TopNode; 
@@ -278,7 +268,10 @@ namespace MAPeD
 				{
 					PatternEventArg pattern_event = e as PatternEventArg;
 					
-					pattern_add( m_object_name_form.edit_str, TreeViewPatterns.SelectedNode.Name, pattern_event.width, pattern_event.height, pattern_event.data, true );
+					pattern_data data = pattern_event.data;
+					data.name = m_object_name_form.edit_str;
+					
+					pattern_add( TreeViewPatterns.SelectedNode.Name, data, true );
 					
 					MainForm.set_status_msg( "Added tiles pattern <" + m_object_name_form.edit_str + ">" );
 					
@@ -305,19 +298,19 @@ namespace MAPeD
 		{
 			Visible = false;
 			
-			if( PatternsManagerClosed != null )
+			if( ScreenEditorSwitchToBuildMode != null )
 			{
-				PatternsManagerClosed( this, null );
+				ScreenEditorSwitchToBuildMode( this, null );
 			}
 			
 			if( CheckBoxAddPattern.Checked )
 			{
-				if( CreatePatternCancel != null )
-				{
-					CreatePatternCancel( this, null );
-				}
-				
 				create_pattern_end( this, null );
+			}
+			
+			if( PatternsManagerClosed != null )
+			{
+				PatternsManagerClosed( this, null );
 			}
 		}
 		
@@ -387,9 +380,9 @@ namespace MAPeD
 			}
 			else
 			{
-				if( CreatePatternCancel != null )
+				if( ScreenEditorSwitchToBuildMode != null )
 				{
-					CreatePatternCancel( this, null );
+					ScreenEditorSwitchToBuildMode( this, null );
 				}
 				
 				create_pattern_end( this, null );
@@ -472,6 +465,21 @@ namespace MAPeD
 		
 		void TreeViewNodeSelect_Event(object sender, TreeViewEventArgs e)
 		{
+			if( TreeViewPatterns.SelectedNode.Parent == null )
+			{
+				if( ScreenEditorSwitchToBuildMode != null )
+				{
+					ScreenEditorSwitchToBuildMode( this, null );
+				}
+			}
+			else
+			{
+				if( EnablePlacePatternMode != null )
+				{
+					EnablePlacePatternMode( this, new PatternEventArg( m_data.get_pattern_by_name( TreeViewPatterns.SelectedNode.Name ) ) );
+				}
+			}
+			
 			update();
 		}
 		
@@ -489,13 +497,13 @@ namespace MAPeD
 			return false;
 		}
 		
-		public bool pattern_add( string _pattern_name, string _grp_name, byte _width, byte _height, byte[] _data, bool _add_to_data_bank )
+		public bool pattern_add( string _grp_name, pattern_data _pattern, bool _add_to_data_bank )
 		{
-			TreeNode[] nodes_arr = TreeViewPatterns.Nodes.Find( _pattern_name, true );
+			TreeNode[] nodes_arr = TreeViewPatterns.Nodes.Find( _pattern.name, true );
 
 			if( nodes_arr.Length > 0 )
 			{
-				MainForm.message_box( "A pattern with the same name (" + _pattern_name +  ") is already exist!", "Pattern Adding Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( "A pattern with the same name (" + _pattern.name +  ") is already exist!", "Pattern Adding Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				
 				return false;
 			}
@@ -510,12 +518,12 @@ namespace MAPeD
 					
 					if( patterns != null )
 					{
-						patterns.Add( new pattern_data( _pattern_name, _width, _height, _data ) );
+						patterns.Add( _pattern );
 					}
 				}
 				
-				TreeNode node = new TreeNode( _pattern_name );
-				node.Name = _pattern_name;
+				TreeNode node = new TreeNode( _pattern.name );
+				node.Name = _pattern.name;
 				node.ContextMenuStrip = ContextMenuStripPatternItem;
 				
 				TreeViewPatterns.BeginUpdate();

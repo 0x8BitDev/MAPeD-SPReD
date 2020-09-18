@@ -167,6 +167,18 @@ namespace MAPeD
 			m_scr_data.Clear();
 		}			
 		
+		public pattern_data get_pattern_by_name( string _name )
+		{
+			pattern_data pattern = null;
+			
+			foreach( string key in patterns_data.Keys )
+			{ 
+				( patterns_data[ key ] as List< pattern_data > ).ForEach( delegate( pattern_data _pattern ) { if( _pattern.name == _name ) { pattern = _pattern; } } );
+			}
+			
+			return pattern;
+		}
+		
 		public void clear_tiles()
 		{
 			Array.Clear( m_tiles, 0, utils.CONST_TILES_UINT_SIZE );

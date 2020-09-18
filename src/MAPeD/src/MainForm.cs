@@ -220,6 +220,7 @@ namespace MAPeD
 																new SToolTipData( BtnOptimization, "Delete unused screens\\tiles\\blocks\\CHRs" ),
 																new SToolTipData( CheckBoxTileEditorLock, "Enable\\disable tile editing" ),
 																new SToolTipData( BtnTilesBlocks, "Arrays of tiles and blocks to build screens" ),
+																new SToolTipData( BtnPatterns, "Tiles patterns manager" ),
 																new SToolTipData( Palette0, "Shift+1 / Ctrl+1,2,3,4 to select a color" ),
 																new SToolTipData( Palette1, "Shift+2 / Ctrl+1,2,3,4 to select a color" ),
 																new SToolTipData( Palette2, "Shift+3 / Ctrl+1,2,3,4 to select a color" ),

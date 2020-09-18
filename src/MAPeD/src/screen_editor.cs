@@ -107,10 +107,12 @@ namespace MAPeD
 		{
 			es_Build,
 			es_CreatePattern,
-			es_PutPattern,
+			es_PlacePattern,
 		};
 		
-		private EState	m_state	= EState.es_Build; 
+		private EState	m_state	= EState.es_Build;
+
+		private pattern_data	m_active_pattern	= null;		
 
 		private int 		m_curr_CHR_bank_id	= -1;
 		
@@ -202,8 +204,32 @@ namespace MAPeD
 
 		public void subscribe_event( patterns_manager_form _patterns_mngr )
 		{
-			_patterns_mngr.CreatePatternBegin 	+= new EventHandler( create_pattern_begin );
-			_patterns_mngr.CreatePatternCancel	+= new EventHandler( create_pattern_cancel );
+			_patterns_mngr.CreatePatternBegin				+= new EventHandler( create_pattern_begin );
+			_patterns_mngr.ScreenEditorSwitchToBuildMode	+= new EventHandler( switch_to_build_mode );
+			_patterns_mngr.EnablePlacePatternMode			+= new EventHandler( enable_place_pattern_mode );
+		}
+		
+		private void enable_place_pattern_mode( object sender, EventArgs e )
+		{
+			PatternEventArg args = e as PatternEventArg;
+			
+			m_active_pattern = args.data;
+			
+			if( m_active_pattern == null )
+			{
+				MainForm.message_box( "Invalid pattern data!", "Screen Editor", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				
+				return;
+			}
+			
+			m_state = EState.es_PlacePattern;
+			
+			m_tile_x = -1;
+			m_tile_y = -1;
+			
+			m_fill_mode = EFillMode.efm_Tile;
+			
+			update();			
 		}
 		
 		private void create_pattern_begin( object sender, EventArgs e )
@@ -217,13 +243,15 @@ namespace MAPeD
 			update();
 		}
 
-		private void create_pattern_cancel( object sender, EventArgs e )
+		private void switch_to_build_mode( object sender, EventArgs e )
 		{
 			m_state = EState.es_Build;
 			
 			m_pix_box.Cursor = Cursors.Arrow;
 			
 			m_pbox_captured = false;
+			
+			m_active_pattern = null;
 			
 			update();
 		}
@@ -379,11 +407,39 @@ namespace MAPeD
 						}
 						
 						// send PATTERNS's data
-						CreatePatternEnd( this, new PatternEventArg( ( byte )tiles_width, ( byte )tiles_height, data ) );
-						
-						create_pattern_cancel( null, null );
+						CreatePatternEnd( this, new PatternEventArg( new pattern_data( null, ( byte )tiles_width, ( byte )tiles_height, data ) ) );
 						
 						return;
+					}
+				}
+			}
+			else
+			if( m_state == EState.es_PlacePattern )
+			{
+				if( m_tile_x >= 0 && m_tile_y >= 0 )
+				{
+					if( m_scr_ind >= 0 )
+					{
+						for( int tile_y = 0; tile_y < m_active_pattern.height; tile_y++ )
+						{
+							for( int tile_x = 0; tile_x < m_active_pattern.width; tile_x++ )
+							{
+								m_tiles_data.scr_data[ m_scr_ind ][ ( ( m_tile_y + tile_y ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + m_tile_x + tile_x ] = m_active_pattern.data[ tile_y * m_active_pattern.width + tile_x ];
+							}
+						}
+						
+						update();
+						
+						if( NeedScreensUpdate != null )
+						{
+							NeedScreensUpdate( this, null );
+						}
+						
+						MainForm.set_status_msg( "The pattern <" + m_active_pattern.name + "> added at pos: " + m_tile_x + "; " + m_tile_y );
+					}
+					else
+					{
+						MainForm.message_box( "Please, select a screen!", "Pattern Placing Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 					}
 				}
 			}
@@ -495,6 +551,27 @@ namespace MAPeD
 				{
 					m_pix_box.Cursor = ( mode == EMode.em_Layout ) ? Cursors.Hand:Cursors.Cross;
 				}
+			}
+			if( m_state == EState.es_PlacePattern )
+			{
+				if( get_tile_xy( e.X, e.Y, out m_tile_x, out m_tile_y ) == false )
+				{
+					m_tile_x = -1;
+					m_tile_y = -1;
+				}
+				else
+				{
+					int half_width	= m_active_pattern.width >> 1;
+					int half_height	= m_active_pattern.height >> 1;
+					
+					m_tile_x = m_tile_x - half_width < 0 ? 0:m_tile_x - half_width;
+					m_tile_x = m_tile_x + m_active_pattern.width > utils.CONST_SCREEN_NUM_WIDTH_TILES - 1 ? utils.CONST_SCREEN_NUM_WIDTH_TILES - m_active_pattern.width:m_tile_x;
+					
+					m_tile_y = m_tile_y - half_height < 0 ? 0:m_tile_y - half_height;
+					m_tile_y = m_tile_y + m_active_pattern.height > utils.CONST_SCREEN_NUM_HEIGHT_TILES - 1 ? utils.CONST_SCREEN_NUM_HEIGHT_TILES - m_active_pattern.height:m_tile_y;
+				}
+				
+				update();
 			}
 		}
 
@@ -1034,6 +1111,42 @@ namespace MAPeD
 							m_gfx.DrawRectangle( m_pen, min_x, min_y, dx, dy );
 							
 							m_pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+						}
+					}
+					else
+					if( m_state == EState.es_PlacePattern )
+					{
+						if( m_tile_x >= 0 && m_tile_y >= 0 )
+						{
+							for( int tile_y = 0; tile_y < m_active_pattern.height; tile_y++ )
+							{
+								for( int tile_x = 0; tile_x < m_active_pattern.width; tile_x++ )
+								{
+									m_tile_ghost_img_rect.X = ( utils.CONST_SCREEN_OFFSET_X + m_tile_x * utils.CONST_SCREEN_TILES_SIZE ) + ( tile_x * utils.CONST_SCREEN_TILES_SIZE );
+									m_tile_ghost_img_rect.Y = ( utils.CONST_SCREEN_OFFSET_Y + m_tile_y * utils.CONST_SCREEN_TILES_SIZE ) + ( tile_y * utils.CONST_SCREEN_TILES_SIZE );
+#if DEF_SCREEN_HEIGHT_7d5_TILES									
+									m_tile_ghost_img_rect.Height = ( ( m_tile_y + tile_y ) == 7 ) ? utils.CONST_SCREEN_TILES_SIZE >> 1:utils.CONST_SCREEN_TILES_SIZE;
+
+									m_gfx.DrawImage( m_tiles_imagelist.Images[ m_active_pattern.data[ tile_y * m_active_pattern.width + tile_x ] ], 
+                									 m_tile_ghost_img_rect, 
+                									 0, 
+                									 0, 
+                									 utils.CONST_SCREEN_TILES_SIZE, 
+                									 m_tile_ghost_img_rect.Height, 
+                									 GraphicsUnit.Pixel, 
+                									 m_tile_img_attr );
+#else
+									m_gfx.DrawImage( m_tiles_imagelist.Images[ m_active_pattern.data[ tile_y * m_active_pattern.width + tile_x ] ], 
+                									 m_tile_ghost_img_rect, 
+                									 0, 
+                									 0, 
+                									 utils.CONST_SCREEN_TILES_SIZE, 
+                									 utils.CONST_SCREEN_TILES_SIZE, 
+                									 GraphicsUnit.Pixel, 
+                									 m_tile_img_attr );
+#endif									
+								}
+							}
 						}
 					}
 				}

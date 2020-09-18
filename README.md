@@ -9,6 +9,7 @@ The MAPeD is a tool for building a game levels for NES/SMS games from scratch.
 **The main features are:**
 - tiles drawing/composing tools
 - building a game map using 2x2 or/and 4x4 tiles
+- tiles patterns manager
 - data optimization tool
 - several game maps in one project
 - detachable UI

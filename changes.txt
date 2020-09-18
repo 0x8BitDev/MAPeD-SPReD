@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+18.09.2020 - Added tiles patterns manager
 31.08.2020 - Layout editor: added zoom mode x2
 30.08.2020 - Added blocks/tiles usage info
 26.08.2020 - The maximum number of screens in a project has been increased to 255
