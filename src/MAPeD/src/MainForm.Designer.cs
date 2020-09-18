@@ -343,7 +343,7 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.BtnPresets = new System.Windows.Forms.Button();
+			this.BtnPatterns = new System.Windows.Forms.Button();
 			this.ContextMenuEntitiesTreeGroup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
@@ -1923,7 +1923,7 @@ namespace MAPeD
 			// 
 			this.TabScreenEditor.AutoScroll = true;
 			this.TabScreenEditor.BackColor = System.Drawing.Color.Silver;
-			this.TabScreenEditor.Controls.Add(this.BtnPresets);
+			this.TabScreenEditor.Controls.Add(this.BtnPatterns);
 			this.TabScreenEditor.Controls.Add(this.BtnTilesBlocks);
 			this.TabScreenEditor.Controls.Add(this.groupBox8);
 			this.TabScreenEditor.Controls.Add(this.GrpBoxActiveTile);
@@ -3277,15 +3277,15 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
 			// 
-			// BtnPresets
+			// BtnPatterns
 			// 
-			this.BtnPresets.Location = new System.Drawing.Point(678, 106);
-			this.BtnPresets.Name = "BtnPresets";
-			this.BtnPresets.Size = new System.Drawing.Size(80, 23);
-			this.BtnPresets.TabIndex = 53;
-			this.BtnPresets.Text = "Presets";
-			this.BtnPresets.UseVisualStyleBackColor = true;
-			this.BtnPresets.Click += new System.EventHandler(this.BtnPresetsClick_Event);
+			this.BtnPatterns.Location = new System.Drawing.Point(678, 106);
+			this.BtnPatterns.Name = "BtnPatterns";
+			this.BtnPatterns.Size = new System.Drawing.Size(80, 23);
+			this.BtnPatterns.TabIndex = 53;
+			this.BtnPatterns.Text = "Patterns";
+			this.BtnPatterns.UseVisualStyleBackColor = true;
+			this.BtnPatterns.Click += new System.EventHandler(this.BtnPatternsClick_Event);
 			// 
 			// MainForm
 			// 
@@ -3370,7 +3370,7 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
-		private System.Windows.Forms.Button BtnPresets;
+		private System.Windows.Forms.Button BtnPatterns;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.ComboBox ComboBoxEntityZoom;
 		private System.Windows.Forms.Button BtnSwapColors;

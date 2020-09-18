@@ -39,7 +39,7 @@ namespace MAPeD
 		private layout_editor		m_layout_editor		= null;
 		
 		private tiles_palette_form		m_tiles_palette_form	= null;
-		private presets_manager_form	m_presets_manager_form	= null;
+		private patterns_manager_form	m_patterns_manager_form	= null;
 		private optimization_form		m_optimization_form		= null;
 		private object_name_form		m_object_name_form		= null;
 		private import_tiles_form		m_import_tiles_form		= null;
@@ -168,11 +168,11 @@ namespace MAPeD
 			m_tiles_palette_form.BlockSelected 		+= new EventHandler( MainForm_BlockSelected );
 			m_tiles_palette_form.ResetActiveTile 	+= new EventHandler( MainForm_ResetActiveTile );
 			
-			m_presets_manager_form = new presets_manager_form( m_imagelist_manager.get_tiles_image_list() );
-			m_presets_manager_form.PresetsManagerClosed 	+= new EventHandler( MainForm_PresetsManagerClosed );
+			m_patterns_manager_form = new patterns_manager_form( m_imagelist_manager.get_tiles_image_list() );
+			m_patterns_manager_form.PatternsManagerClosed 	+= new EventHandler( MainForm_PatternsManagerClosed );
 			
-			m_presets_manager_form.subscribe_event( m_screen_editor );
-			m_screen_editor.subscribe_event( m_presets_manager_form );
+			m_patterns_manager_form.subscribe_event( m_screen_editor );
+			m_screen_editor.subscribe_event( m_patterns_manager_form );
 			
 			m_optimization_form = new optimization_form( m_data_manager );
 			m_optimization_form.UpdateGraphics += new EventHandler( MainForm_UpdateGraphicsAfterOptimization );
@@ -418,7 +418,7 @@ namespace MAPeD
 			PanelTiles.Enabled	= _on;
 			
 			m_tiles_palette_form.enable( _on );
-			m_presets_manager_form.enable( _on );
+			m_patterns_manager_form.enable( _on );
 			
 			tabControlScreensEntities.Enabled = _on;
 		}
@@ -447,7 +447,7 @@ namespace MAPeD
 			TilesLockEditorToolStripMenuItem.Checked = CheckBoxTileEditorLock.Checked = true;
 
 			m_tiles_palette_form.reset();
-			m_presets_manager_form.reset();
+			m_patterns_manager_form.reset();
 			
 			update_graphics( false );
 			
@@ -1145,7 +1145,7 @@ namespace MAPeD
 			
 			update_screens_by_bank_id( true, false );
 			
-			m_presets_manager_form.set_data( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+			m_patterns_manager_form.set_data( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
 		}
 
 		void BtnUpdateGFXClick_Event(object sender, EventArgs e)
@@ -1177,7 +1177,7 @@ namespace MAPeD
 			}
 			
 			m_tiles_palette_form.update();
-			m_presets_manager_form.update();
+			m_patterns_manager_form.update();
 			
 			enable_update_gfx_btn( false );
 //			enable_update_screens_btn( false );			
@@ -2234,17 +2234,17 @@ namespace MAPeD
 			m_screen_editor.draw_grid_flag = ScreenEditShowGridToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
 		}
 		
-		void BtnPresetsClick_Event(object sender, EventArgs e)
+		void BtnPatternsClick_Event(object sender, EventArgs e)
 		{
-			m_presets_manager_form.Visible = true;
-			m_presets_manager_form.update();
+			m_patterns_manager_form.Visible = true;
+			m_patterns_manager_form.update();
 			
-			BtnPresets.Enabled = false;
+			BtnPatterns.Enabled = false;
 		}
 
-		void MainForm_PresetsManagerClosed(object sender, EventArgs e)
+		void MainForm_PatternsManagerClosed(object sender, EventArgs e)
 		{
-			BtnPresets.Enabled = true;
+			BtnPatterns.Enabled = true;
 		}
 		
 		void BtnTilesBlocksClick_Event(object sender, EventArgs e)

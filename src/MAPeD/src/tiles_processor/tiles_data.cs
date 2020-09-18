@@ -52,12 +52,12 @@ namespace MAPeD
 		
 		private List< byte[] >	m_scr_data	= null;
 		
-		private Dictionary< string, List< preset_data > >	m_presets_data	= null;	// key = group name / value = List< preset_data >
+		private Dictionary< string, List< pattern_data > >	m_patterns_data	= null;	// key = group name / value = List< pattern_data >
 
 		[DataMember]
-		public Dictionary< string, List< preset_data > > presets_data
+		public Dictionary< string, List< pattern_data > > patterns_data
 		{
-			get { return m_presets_data; }
+			get { return m_patterns_data; }
 			set {}
 		}
 		
@@ -148,8 +148,8 @@ namespace MAPeD
 			
 			m_scr_data = new List< byte[] >( 100 );
 			
-			m_presets_data	= new Dictionary< string, List< preset_data > >( 10 );
-			m_presets_data.Add( "MAIN", new List< preset_data >() );
+			m_patterns_data	= new Dictionary< string, List< pattern_data > >( 10 );
+			m_patterns_data.Add( "MAIN", new List< pattern_data >() );
 		}
 		
 		public void destroy()
@@ -236,21 +236,21 @@ namespace MAPeD
 				}
 			}
 			
-			// copy presets
-			if( presets_data != null )
+			// copy patters
+			if( patterns_data != null )
 			{
-				data.presets_data = new Dictionary< string, List< preset_data > >( presets_data.Count, presets_data.Comparer );
+				data.patterns_data = new Dictionary< string, List< pattern_data > >( patterns_data.Count, patterns_data.Comparer );
 				
-				foreach( KeyValuePair< string, List< preset_data > > entry in presets_data )
+				foreach( KeyValuePair< string, List< pattern_data > > entry in patterns_data )
 				{
-					List< preset_data > list_data = new List< preset_data >( entry.Value.Count );
+					List< pattern_data > list_data = new List< pattern_data >( entry.Value.Count );
 					
-					foreach( preset_data preset in entry.Value )
+					foreach( pattern_data pattern in entry.Value )
 					{
-						list_data.Add( preset.copy() );
+						list_data.Add( pattern.copy() );
 					}
 					
-					data.presets_data.Add( entry.Key, list_data );
+					data.patterns_data.Add( entry.Key, list_data );
 				}
 			}
 			

@@ -48,7 +48,7 @@ namespace MAPeD
 	public delegate void RequestLeftScreen();
 	public delegate void RequestRightScreen();	
 	public delegate void UpdateTileImage();
-	public delegate void CreatePresetEnd();
+	public delegate void CreatePatternEnd();
 	
 	public class screen_editor : drawable_base
 	{
@@ -59,7 +59,7 @@ namespace MAPeD
 		public event EventHandler RequestLeftScreen;
 		public event EventHandler RequestRightScreen;
 		public event EventHandler UpdateTileImage;
-		public event EventHandler CreatePresetEnd;
+		public event EventHandler CreatePatternEnd;
 		
 		public enum EMode
 		{
@@ -106,8 +106,8 @@ namespace MAPeD
 		public enum EState
 		{
 			es_Build,
-			es_CreatePreset,
-			es_PutPreset,
+			es_CreatePattern,
+			es_PutPattern,
 		};
 		
 		private EState	m_state	= EState.es_Build; 
@@ -200,15 +200,15 @@ namespace MAPeD
 			}
 		}
 
-		public void subscribe_event( presets_manager_form _preset_mngr )
+		public void subscribe_event( patterns_manager_form _patterns_mngr )
 		{
-			_preset_mngr.CreatePresetBegin 	+= new EventHandler( create_preset_begin );
-			_preset_mngr.CreatePresetCancel	+= new EventHandler( create_preset_cancel );
+			_patterns_mngr.CreatePatternBegin 	+= new EventHandler( create_pattern_begin );
+			_patterns_mngr.CreatePatternCancel	+= new EventHandler( create_pattern_cancel );
 		}
 		
-		private void create_preset_begin( object sender, EventArgs e )
+		private void create_pattern_begin( object sender, EventArgs e )
 		{
-			m_state = EState.es_CreatePreset;
+			m_state = EState.es_CreatePattern;
 			
 			m_pix_box.Cursor = Cursors.Cross;
 			
@@ -217,7 +217,7 @@ namespace MAPeD
 			update();
 		}
 
-		private void create_preset_cancel( object sender, EventArgs e )
+		private void create_pattern_cancel( object sender, EventArgs e )
 		{
 			m_state = EState.es_Build;
 			
@@ -228,14 +228,14 @@ namespace MAPeD
 			update();
 		}
 
-		private void calc_preset_params( ref int _tile_pos_x, 
-		                                 ref int _tile_pos_y, 
-		                                 ref int _tiles_width, 
-		                                 ref int _tiles_height, 
-		                                 ref int _min_x, 
-		                                 ref int _min_y, 
-		                                 ref int _dx, 
-		                                 ref int _dy )
+		private void calc_pattern_params(	ref int _tile_pos_x, 
+											ref int _tile_pos_y, 
+											ref int _tiles_width, 
+											ref int _tiles_height, 
+											ref int _min_x, 
+											ref int _min_y, 
+											ref int _dx, 
+											ref int _dy )
 		{
 			_min_x = Math.Max( utils.CONST_SCREEN_OFFSET_X, Math.Min( m_sel_rect_beg.X, m_sel_rect_end.X ) );
 			_min_y = Math.Max( utils.CONST_SCREEN_OFFSET_Y, Math.Min( m_sel_rect_beg.Y, m_sel_rect_end.Y ) );
@@ -315,7 +315,7 @@ namespace MAPeD
 				}
 			}
 			else
-			if( m_state == EState.es_CreatePreset )
+			if( m_state == EState.es_CreatePattern )
 			{
 				if( m_scr_ind >= 0 )
 				{
@@ -344,11 +344,11 @@ namespace MAPeD
 				m_pbox_captured = false;
 			}
 			
-			if( m_state == EState.es_CreatePreset )
+			if( m_state == EState.es_CreatePattern )
 			{
 				if( m_pbox_captured == true )
 				{
-					if( CreatePresetEnd != null )
+					if( CreatePatternEnd != null )
 					{
 						int tile_pos_x		= 0;
 						int tile_pos_y		= 0;
@@ -360,7 +360,7 @@ namespace MAPeD
 						int dx		= 0;
 						int dy		= 0;
 						
-						calc_preset_params( ref tile_pos_x, ref tile_pos_y, ref tiles_width, ref tiles_height, ref min_x, ref min_y, ref dx, ref dy );
+						calc_pattern_params( ref tile_pos_x, ref tile_pos_y, ref tiles_width, ref tiles_height, ref min_x, ref min_y, ref dx, ref dy );
 						
 						// extract tiles
 						int tile_x;
@@ -378,10 +378,10 @@ namespace MAPeD
 							}
 						}
 						
-						// send PRESET's data
-						CreatePresetEnd( this, new PresetEventArg( ( byte )tiles_width, ( byte )tiles_height, data ) );
+						// send PATTERNS's data
+						CreatePatternEnd( this, new PatternEventArg( ( byte )tiles_width, ( byte )tiles_height, data ) );
 						
-						create_preset_cancel( null, null );
+						create_pattern_cancel( null, null );
 						
 						return;
 					}
@@ -478,7 +478,7 @@ namespace MAPeD
 				}
 			}
 			else
-			if( m_state == EState.es_CreatePreset )
+			if( m_state == EState.es_CreatePattern )
 			{
 				if( m_pbox_captured == true )
 				{
@@ -997,7 +997,7 @@ namespace MAPeD
 						}
 					}
 					else
-					if( m_state == EState.es_CreatePreset )
+					if( m_state == EState.es_CreatePattern )
 					{
 						// draw selection rectangle
 						if( m_pbox_captured == true )
@@ -1016,7 +1016,7 @@ namespace MAPeD
 							int dx		= 0;
 							int dy		= 0;
 							
-							calc_preset_params( ref tile_pos_x, ref tile_pos_y, ref tiles_width, ref tiles_height, ref min_x, ref min_y, ref dx, ref dy );
+							calc_pattern_params( ref tile_pos_x, ref tile_pos_y, ref tiles_width, ref tiles_height, ref min_x, ref min_y, ref dx, ref dy );
 							
 							for( int tile_y = 0; tile_y < tiles_height; tile_y++ )
 							{

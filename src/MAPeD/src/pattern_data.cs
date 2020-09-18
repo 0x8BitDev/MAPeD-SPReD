@@ -11,12 +11,12 @@ using System.Runtime.Serialization.Json;
 namespace MAPeD
 {
 	/// <summary>
-	/// Description of preset_data.
+	/// Description of pattern_data.
 	/// </summary>
 	///
 	
 	[DataContract]
-	public class preset_data
+	public class pattern_data
 	{
 		private string	m_name = null;
 		
@@ -53,7 +53,7 @@ namespace MAPeD
 			set {}
 		}
 		
-		public preset_data( string _name, byte _width, byte _height, byte[] _data )
+		public pattern_data( string _name, byte _width, byte _height, byte[] _data )
 		{
 			m_name		= _name;
 			m_width		= _width;
@@ -67,7 +67,7 @@ namespace MAPeD
 			m_data		= null;
 		}
 		
-		public preset_data copy()
+		public pattern_data copy()
 		{
 			byte[] arr = null;
 			
@@ -78,7 +78,7 @@ namespace MAPeD
 				Array.Copy( data, arr, data.Length );
 			}
 			
-			return new preset_data( name, width, height, arr );
+			return new pattern_data( name, width, height, arr );
 		}
 	}
 }

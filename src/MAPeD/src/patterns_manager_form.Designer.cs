@@ -6,7 +6,7 @@
  */
 namespace MAPeD
 {
-	partial class presets_manager_form
+	partial class patterns_manager_form
 	{
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.
@@ -38,7 +38,7 @@ namespace MAPeD
 			this.BtnClose = new System.Windows.Forms.Button();
 			this.PixBoxPreview = new System.Windows.Forms.PictureBox();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.TreeViewPresets = new System.Windows.Forms.TreeView();
+			this.TreeViewPatterns = new System.Windows.Forms.TreeView();
 			this.ContextMenuStripTreeViewGroup = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.addGroupToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.BtnRename = new System.Windows.Forms.Button();
@@ -46,13 +46,13 @@ namespace MAPeD
 			this.BtnGroupDelete = new System.Windows.Forms.Button();
 			this.BtnGroupAdd = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.CheckBoxAddPreset = new System.Windows.Forms.CheckBox();
-			this.BtnPresetDelete = new System.Windows.Forms.Button();
+			this.CheckBoxAddPattern = new System.Windows.Forms.CheckBox();
+			this.BtnPatternDelete = new System.Windows.Forms.Button();
 			this.ContextMenuStripGroupItem = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.addGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.ContextMenuStripPresetItem = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.ContextMenuStripPatternItem = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.PixBoxPreview)).BeginInit();
@@ -64,7 +64,7 @@ namespace MAPeD
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.ContextMenuStripGroupItem.SuspendLayout();
-			this.ContextMenuStripPresetItem.SuspendLayout();
+			this.ContextMenuStripPatternItem.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// BtnClose
@@ -96,7 +96,7 @@ namespace MAPeD
 			// 
 			// splitContainer1.Panel1
 			// 
-			this.splitContainer1.Panel1.Controls.Add(this.TreeViewPresets);
+			this.splitContainer1.Panel1.Controls.Add(this.TreeViewPatterns);
 			// 
 			// splitContainer1.Panel2
 			// 
@@ -108,18 +108,18 @@ namespace MAPeD
 			this.splitContainer1.SplitterDistance = 197;
 			this.splitContainer1.TabIndex = 2;
 			// 
-			// TreeViewPresets
+			// TreeViewPatterns
 			// 
-			this.TreeViewPresets.BackColor = System.Drawing.Color.LightGray;
-			this.TreeViewPresets.ContextMenuStrip = this.ContextMenuStripTreeViewGroup;
-			this.TreeViewPresets.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.TreeViewPresets.LabelEdit = true;
-			this.TreeViewPresets.Location = new System.Drawing.Point(0, 0);
-			this.TreeViewPresets.Name = "TreeViewPresets";
-			this.TreeViewPresets.Size = new System.Drawing.Size(195, 306);
-			this.TreeViewPresets.TabIndex = 0;
-			this.TreeViewPresets.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeViewNodeRename_Event);
-			this.TreeViewPresets.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewNodeSelect_Event);
+			this.TreeViewPatterns.BackColor = System.Drawing.Color.LightGray;
+			this.TreeViewPatterns.ContextMenuStrip = this.ContextMenuStripTreeViewGroup;
+			this.TreeViewPatterns.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.TreeViewPatterns.LabelEdit = true;
+			this.TreeViewPatterns.Location = new System.Drawing.Point(0, 0);
+			this.TreeViewPatterns.Name = "TreeViewPatterns";
+			this.TreeViewPatterns.Size = new System.Drawing.Size(195, 306);
+			this.TreeViewPatterns.TabIndex = 0;
+			this.TreeViewPatterns.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeViewNodeRename_Event);
+			this.TreeViewPatterns.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewNodeSelect_Event);
 			// 
 			// ContextMenuStripTreeViewGroup
 			// 
@@ -178,38 +178,38 @@ namespace MAPeD
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.CheckBoxAddPreset);
-			this.groupBox2.Controls.Add(this.BtnPresetDelete);
+			this.groupBox2.Controls.Add(this.CheckBoxAddPattern);
+			this.groupBox2.Controls.Add(this.BtnPatternDelete);
 			this.groupBox2.Location = new System.Drawing.Point(4, 93);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(108, 84);
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Preset";
+			this.groupBox2.Text = "Pattern";
 			// 
-			// CheckBoxAddPreset
+			// CheckBoxAddPattern
 			// 
-			this.CheckBoxAddPreset.Appearance = System.Windows.Forms.Appearance.Button;
-			this.CheckBoxAddPreset.AutoCheck = false;
-			this.CheckBoxAddPreset.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.CheckBoxAddPreset.Location = new System.Drawing.Point(17, 20);
-			this.CheckBoxAddPreset.Name = "CheckBoxAddPreset";
-			this.CheckBoxAddPreset.Size = new System.Drawing.Size(75, 23);
-			this.CheckBoxAddPreset.TabIndex = 5;
-			this.CheckBoxAddPreset.Text = "Add";
-			this.CheckBoxAddPreset.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.CheckBoxAddPreset.UseVisualStyleBackColor = true;
-			this.CheckBoxAddPreset.Click += new System.EventHandler(this.CheckBoxAddPresetClick_Event);
+			this.CheckBoxAddPattern.Appearance = System.Windows.Forms.Appearance.Button;
+			this.CheckBoxAddPattern.AutoCheck = false;
+			this.CheckBoxAddPattern.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.CheckBoxAddPattern.Location = new System.Drawing.Point(17, 20);
+			this.CheckBoxAddPattern.Name = "CheckBoxAddPattern";
+			this.CheckBoxAddPattern.Size = new System.Drawing.Size(75, 23);
+			this.CheckBoxAddPattern.TabIndex = 5;
+			this.CheckBoxAddPattern.Text = "Add";
+			this.CheckBoxAddPattern.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.CheckBoxAddPattern.UseVisualStyleBackColor = true;
+			this.CheckBoxAddPattern.Click += new System.EventHandler(this.CheckBoxAddPatternClick_Event);
 			// 
-			// BtnPresetDelete
+			// BtnPatternDelete
 			// 
-			this.BtnPresetDelete.Location = new System.Drawing.Point(17, 49);
-			this.BtnPresetDelete.Name = "BtnPresetDelete";
-			this.BtnPresetDelete.Size = new System.Drawing.Size(75, 23);
-			this.BtnPresetDelete.TabIndex = 6;
-			this.BtnPresetDelete.Text = "Delete";
-			this.BtnPresetDelete.UseVisualStyleBackColor = true;
-			this.BtnPresetDelete.Click += new System.EventHandler(this.BtnPresetDeleteClick_Event);
+			this.BtnPatternDelete.Location = new System.Drawing.Point(17, 49);
+			this.BtnPatternDelete.Name = "BtnPatternDelete";
+			this.BtnPatternDelete.Size = new System.Drawing.Size(75, 23);
+			this.BtnPatternDelete.TabIndex = 6;
+			this.BtnPatternDelete.Text = "Delete";
+			this.BtnPatternDelete.UseVisualStyleBackColor = true;
+			this.BtnPatternDelete.Click += new System.EventHandler(this.BtnPatternDeleteClick_Event);
 			// 
 			// ContextMenuStripGroupItem
 			// 
@@ -217,7 +217,7 @@ namespace MAPeD
 									this.addGroupToolStripMenuItem,
 									this.deleteGroupToolStripMenuItem,
 									this.renameToolStripMenuItem1});
-			this.ContextMenuStripGroupItem.Name = "ContextMenuStripPresetsGroup";
+			this.ContextMenuStripGroupItem.Name = "ContextMenuStripPatternsGroup";
 			this.ContextMenuStripGroupItem.Size = new System.Drawing.Size(144, 70);
 			// 
 			// addGroupToolStripMenuItem
@@ -241,13 +241,13 @@ namespace MAPeD
 			this.renameToolStripMenuItem1.Text = "Rename";
 			this.renameToolStripMenuItem1.Click += new System.EventHandler(this.BtnRenameClick_Event);
 			// 
-			// ContextMenuStripPresetItem
+			// ContextMenuStripPatternItem
 			// 
-			this.ContextMenuStripPresetItem.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.ContextMenuStripPatternItem.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.deleteToolStripMenuItem,
 									this.renameToolStripMenuItem});
-			this.ContextMenuStripPresetItem.Name = "ContextMenuStripPresetItem";
-			this.ContextMenuStripPresetItem.Size = new System.Drawing.Size(118, 48);
+			this.ContextMenuStripPatternItem.Name = "ContextMenuStripPatternItem";
+			this.ContextMenuStripPatternItem.Size = new System.Drawing.Size(118, 48);
 			// 
 			// deleteToolStripMenuItem
 			// 
@@ -263,7 +263,7 @@ namespace MAPeD
 			this.renameToolStripMenuItem.Text = "Rename";
 			this.renameToolStripMenuItem.Click += new System.EventHandler(this.BtnRenameClick_Event);
 			// 
-			// presets_manager_form
+			// patterns_manager_form
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.BackColor = System.Drawing.Color.Silver;
@@ -274,9 +274,9 @@ namespace MAPeD
 			this.Icon = global::MAPeD.Properties.Resources.MAPeD_icon;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "presets_manager_form";
+			this.Name = "patterns_manager_form";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Presets Manager";
+			this.Text = "Patterns Manager";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Closing_event);
 			this.Load += new System.EventHandler(this.BtnCloseClick_event);
 			((System.ComponentModel.ISupportInitialize)(this.PixBoxPreview)).EndInit();
@@ -288,7 +288,7 @@ namespace MAPeD
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.ContextMenuStripGroupItem.ResumeLayout(false);
-			this.ContextMenuStripPresetItem.ResumeLayout(false);
+			this.ContextMenuStripPatternItem.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
 		private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem1;
@@ -296,18 +296,18 @@ namespace MAPeD
 		private System.Windows.Forms.ContextMenuStrip ContextMenuStripTreeViewGroup;
 		private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-		private System.Windows.Forms.ContextMenuStrip ContextMenuStripPresetItem;
+		private System.Windows.Forms.ContextMenuStrip ContextMenuStripPatternItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteGroupToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addGroupToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip ContextMenuStripGroupItem;
-		private System.Windows.Forms.CheckBox CheckBoxAddPreset;
+		private System.Windows.Forms.CheckBox CheckBoxAddPattern;
 		private System.Windows.Forms.Button BtnRename;
 		private System.Windows.Forms.Button BtnGroupAdd;
 		private System.Windows.Forms.Button BtnGroupDelete;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Button BtnPresetDelete;
+		private System.Windows.Forms.Button BtnPatternDelete;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.TreeView TreeViewPresets;
+		private System.Windows.Forms.TreeView TreeViewPatterns;
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.PictureBox PixBoxPreview;
 		private System.Windows.Forms.Button BtnClose;

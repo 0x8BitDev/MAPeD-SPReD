@@ -180,15 +180,15 @@
       <Link>optimization_form.Designer.cs</Link>
       <DependentUpon>optimization_form.cs</DependentUpon>
     </Compile>
-    <Compile Include="..\src\presets_manager_form.cs">
-      <Link>presets_manager_form.cs</Link>
+    <Compile Include="..\src\patterns_manager_form.cs">
+      <Link>patterns_manager_form.cs</Link>
     </Compile>
-    <Compile Include="..\src\presets_manager_form.Designer.cs">
-      <Link>presets_manager_form.Designer.cs</Link>
-      <DependentUpon>presets_manager_form.cs</DependentUpon>
+    <Compile Include="..\src\patterns_manager_form.Designer.cs">
+      <Link>patterns_manager_form.Designer.cs</Link>
+      <DependentUpon>patterns_manager_form.cs</DependentUpon>
     </Compile>
-    <Compile Include="..\src\preset_data.cs">
-      <Link>preset_data.cs</Link>
+    <Compile Include="..\src\pattern_data.cs">
+      <Link>pattern_data.cs</Link>
     </Compile>
     <Compile Include="..\src\Program.cs">
       <Link>Program.cs</Link>
@@ -303,9 +303,9 @@
       <Link>optimization_form.resx</Link>
       <DependentUpon>optimization_form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\src\presets_manager_form.resx">
-      <Link>presets_manager_form.resx</Link>
-      <DependentUpon>presets_manager_form.cs</DependentUpon>
+    <EmbeddedResource Include="..\src\patterns_manager_form.resx">
+      <Link>patterns_manager_form.resx</Link>
+      <DependentUpon>patterns_manager_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\screen_mark_form.resx">
       <Link>screen_mark_form.resx</Link>
