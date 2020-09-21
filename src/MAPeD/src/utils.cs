@@ -193,8 +193,6 @@ namespace MAPeD
 		public const int CONST_PALETTE_SMALL_NUM_COLORS		= 4;
 		public const int CONST_PALETTE_MAIN_NUM_COLORS		= 64;
 		
-		public const int CONST_BLOCKS_USHORT_SIZE			= 256 * CONST_BLOCK_SIZE;
-		public const int CONST_TILES_UINT_SIZE				= 256;
 		public const int CONST_CHR_BANK_PAGE_SIDE			= 128;
 		public const int CONST_CHR_BANK_PAGE_SIZE			= CONST_CHR_BANK_PAGE_SIDE * CONST_CHR_BANK_PAGE_SIDE;
 		public const int CONST_CHR_BANK_PAGE_SPRITES_CNT	= 256;
@@ -205,6 +203,9 @@ namespace MAPeD
 		
 		public const int CONST_MAX_BLOCKS_CNT				= 256;
 		public const int CONST_MAX_TILES_CNT				= 256;
+
+		public const int CONST_BLOCKS_USHORT_SIZE			= CONST_MAX_BLOCKS_CNT * CONST_BLOCK_SIZE;
+		public const int CONST_TILES_UINT_SIZE				= CONST_MAX_TILES_CNT;
 		
 		// the NES hardware doesn't support flipping of a background on per CHR's basis
 		// so I left it just in case for using in other versions of the application for other platforms (SMS)

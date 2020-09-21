@@ -691,28 +691,28 @@ namespace MAPeD
 			return -1;
 		}
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-		public int contains_tile( int _tile_ind, bool half_tile )
+		public int contains_tile( int _max_tile_ind, uint _tile_data, bool half_tile )
 #else
-		public int contains_tile( int _tile_ind )
+		public int contains_tile( int _max_tile_ind, uint _tile_data )
 #endif
 		{
 			int tile_n;
 			
-			int size = _tile_ind < 0 ? tiles.Length:_tile_ind;
+			int size = ( _max_tile_ind < 0 || _max_tile_ind > tiles.Length ) ? tiles.Length:_max_tile_ind;
 			
 			for( tile_n = 0; tile_n < size; tile_n++ )
 			{
 #if DEF_SCREEN_HEIGHT_7d5_TILES				
 				if( half_tile )
 				{
-					if( ( tiles[ tile_n ] & 0xffff0000 ) == ( tiles[ _tile_ind ] & 0xffff0000 ) )
+					if( ( tiles[ tile_n ] & 0xffff0000 ) == ( _tile_data & 0xffff0000 ) )
 					{
 						return tile_n;
 					}
 				}
 				else
 #endif
-				if( tiles[ tile_n ] == tiles[ _tile_ind ] )
+				if( tiles[ tile_n ] == _tile_data )
 				{
 					return tile_n;
 				}
