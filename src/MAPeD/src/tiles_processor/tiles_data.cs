@@ -1069,6 +1069,49 @@ namespace MAPeD
 			return _bw.BaseStream.Length;
 		}
 		
+		public void save_tiles_patterns( BinaryWriter _bw )
+		{
+			_bw.Write( m_patterns_data.Keys.Count );
+			
+			foreach( string key in m_patterns_data.Keys ) 
+			{ 
+				_bw.Write( key );
+				
+				List< pattern_data > pattrn_list = m_patterns_data[ key ] as List< pattern_data >;
+				
+				_bw.Write( pattrn_list.Count );
+				
+				pattrn_list.ForEach( delegate( pattern_data _pattern ) { _pattern.save( _bw ); } ); 
+			}
+		}
+
+		public void load_tiles_patterns( BinaryReader _br )
+		{
+			List< pattern_data > pattrn_list;
+			
+			int patterns_cnt;
+			int grps_cnt = _br.ReadInt32();
+			
+			string grp_name;
+			
+			m_patterns_data.Clear();
+			
+			for( int grp_n = 0; grp_n < grps_cnt; grp_n++ )
+			{
+				grp_name = _br.ReadString();
+
+				pattrn_list = new List< pattern_data >();
+				m_patterns_data.Add( grp_name, pattrn_list );
+				
+				patterns_cnt = _br.ReadInt32();
+				
+				for( int pattrn_n = 0; pattrn_n < patterns_cnt; pattrn_n++ )
+				{
+					pattrn_list.Add( pattern_data.load( _br ) );
+				}
+			}
+		}
+		
 		public void save( BinaryWriter _bw )
 		{
 			int i;

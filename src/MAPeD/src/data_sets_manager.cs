@@ -693,6 +693,18 @@ namespace MAPeD
 				palette_group.Instance.save_main_palette( _bw );
 			}
 			
+			// TILES PATTERNS
+			{
+				_bw.Write( utils.CONST_IO_DATA_TILES_PATTERNS );
+
+				_bw.Write( m_tiles_data.Count );
+				
+				for( int i = 0; i < m_tiles_data.Count; i++ )
+				{
+					m_tiles_data[ i ].save_tiles_patterns( _bw );
+				}
+			}
+			
 			_bw.Write( utils.CONST_IO_DATA_END );
 		}
 		
@@ -810,6 +822,16 @@ namespace MAPeD
 					else
 					{
 						palette_group.Instance.load_main_palette( _br );
+					}
+				}
+				else
+				if( data_id == utils.CONST_IO_DATA_TILES_PATTERNS )
+				{
+					int tiles_data_cnt = _br.ReadInt32();
+					
+					for( int i = 0; i < tiles_data_cnt; i++ )
+					{
+						m_tiles_data[ i ].load_tiles_patterns( _br );
 					}
 				}
 			}

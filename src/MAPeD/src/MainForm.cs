@@ -2238,7 +2238,7 @@ namespace MAPeD
 		
 		void BtnPatternsClick_Event(object sender, EventArgs e)
 		{
-			m_patterns_manager_form.Visible = true;
+			m_patterns_manager_form.visible( true );
 			m_patterns_manager_form.update();
 			
 			BtnPatterns.Enabled = false;

@@ -117,7 +117,7 @@ namespace MAPeD
 			this.TreeViewPatterns.Location = new System.Drawing.Point(0, 0);
 			this.TreeViewPatterns.Name = "TreeViewPatterns";
 			this.TreeViewPatterns.Size = new System.Drawing.Size(195, 306);
-			this.TreeViewPatterns.TabIndex = 0;
+			this.TreeViewPatterns.TabIndex = 7;
 			this.TreeViewPatterns.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeViewNodeRename_Event);
 			this.TreeViewPatterns.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewNodeSelect_Event);
 			// 
@@ -140,7 +140,7 @@ namespace MAPeD
 			this.BtnRename.Location = new System.Drawing.Point(21, 183);
 			this.BtnRename.Name = "BtnRename";
 			this.BtnRename.Size = new System.Drawing.Size(75, 23);
-			this.BtnRename.TabIndex = 7;
+			this.BtnRename.TabIndex = 3;
 			this.BtnRename.Text = "Rename";
 			this.BtnRename.UseVisualStyleBackColor = true;
 			this.BtnRename.Click += new System.EventHandler(this.BtnRenameClick_Event);
@@ -152,7 +152,7 @@ namespace MAPeD
 			this.groupBox1.Location = new System.Drawing.Point(4, 3);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(108, 84);
-			this.groupBox1.TabIndex = 1;
+			this.groupBox1.TabIndex = 4;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Group";
 			// 
@@ -161,7 +161,7 @@ namespace MAPeD
 			this.BtnGroupDelete.Location = new System.Drawing.Point(17, 49);
 			this.BtnGroupDelete.Name = "BtnGroupDelete";
 			this.BtnGroupDelete.Size = new System.Drawing.Size(75, 23);
-			this.BtnGroupDelete.TabIndex = 3;
+			this.BtnGroupDelete.TabIndex = 6;
 			this.BtnGroupDelete.Text = "Delete";
 			this.BtnGroupDelete.UseVisualStyleBackColor = true;
 			this.BtnGroupDelete.Click += new System.EventHandler(this.BtnGroupDeleteClick_Event);
@@ -171,7 +171,7 @@ namespace MAPeD
 			this.BtnGroupAdd.Location = new System.Drawing.Point(17, 20);
 			this.BtnGroupAdd.Name = "BtnGroupAdd";
 			this.BtnGroupAdd.Size = new System.Drawing.Size(75, 23);
-			this.BtnGroupAdd.TabIndex = 2;
+			this.BtnGroupAdd.TabIndex = 5;
 			this.BtnGroupAdd.Text = "Add";
 			this.BtnGroupAdd.UseVisualStyleBackColor = true;
 			this.BtnGroupAdd.Click += new System.EventHandler(this.BtnGroupAddClick_Event);
@@ -183,7 +183,7 @@ namespace MAPeD
 			this.groupBox2.Location = new System.Drawing.Point(4, 93);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(108, 84);
-			this.groupBox2.TabIndex = 4;
+			this.groupBox2.TabIndex = 0;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Pattern";
 			// 
@@ -195,7 +195,7 @@ namespace MAPeD
 			this.CheckBoxAddPattern.Location = new System.Drawing.Point(17, 20);
 			this.CheckBoxAddPattern.Name = "CheckBoxAddPattern";
 			this.CheckBoxAddPattern.Size = new System.Drawing.Size(75, 23);
-			this.CheckBoxAddPattern.TabIndex = 5;
+			this.CheckBoxAddPattern.TabIndex = 1;
 			this.CheckBoxAddPattern.Text = "Add";
 			this.CheckBoxAddPattern.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.CheckBoxAddPattern.UseVisualStyleBackColor = true;
@@ -206,7 +206,7 @@ namespace MAPeD
 			this.BtnPatternDelete.Location = new System.Drawing.Point(17, 49);
 			this.BtnPatternDelete.Name = "BtnPatternDelete";
 			this.BtnPatternDelete.Size = new System.Drawing.Size(75, 23);
-			this.BtnPatternDelete.TabIndex = 6;
+			this.BtnPatternDelete.TabIndex = 2;
 			this.BtnPatternDelete.Text = "Delete";
 			this.BtnPatternDelete.UseVisualStyleBackColor = true;
 			this.BtnPatternDelete.Click += new System.EventHandler(this.BtnPatternDeleteClick_Event);

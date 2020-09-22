@@ -7,6 +7,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using System.IO;
 
 namespace MAPeD
 {
@@ -79,6 +80,24 @@ namespace MAPeD
 			}
 			
 			return new pattern_data( name, width, height, arr );
+		}
+		
+		public void save( BinaryWriter _bw )
+		{
+			_bw.Write( m_name );
+			_bw.Write( m_width );
+			_bw.Write( m_height );
+			
+			_bw.Write( m_data, 0, m_width * m_height );
+		}
+		
+		public static pattern_data load( BinaryReader _br )
+		{
+			string name		= _br.ReadString();
+			byte width		= _br.ReadByte();
+			byte height		= _br.ReadByte();
+
+			return new pattern_data( name, width, height, _br.ReadBytes( width * height ) );
 		}
 	}
 }

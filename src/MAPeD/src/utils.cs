@@ -103,6 +103,7 @@ namespace MAPeD
 		public const byte 	CONST_IO_DATA_LAYOUT			= 0x02;
 		public const byte 	CONST_IO_DATA_ENTITIES			= 0x04;
 		public const byte	CONST_IO_DATA_PALETTE			= 0x08;
+		public const byte	CONST_IO_DATA_TILES_PATTERNS	= 0x10;
 		public const byte	CONST_IO_DATA_END				= 0xff;
 
 		public const string CONST_SMS_FILE_EXT			= "mapedsms";

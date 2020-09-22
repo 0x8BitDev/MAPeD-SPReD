@@ -243,7 +243,7 @@ namespace MAPeD
 					( m_data.patterns_data[ key ] as List< pattern_data > ).ForEach( delegate( pattern_data _pattern ) { pattern_add( key, _pattern, false ); } );
 				}
 				
-				TreeViewPatterns.SelectedNode = TreeViewPatterns.TopNode; 
+				TreeViewPatterns.SelectedNode = null; 
 			}
 		}
 
@@ -680,6 +680,18 @@ namespace MAPeD
 			}
 			
 			return false;
+		}
+		
+		public void visible( bool _on )
+		{
+			this.Visible = _on;
+			
+			if( _on )
+			{
+				TreeViewPatterns.SelectedNode = null;
+				
+				update();
+			}
 		}
 	}
 }
