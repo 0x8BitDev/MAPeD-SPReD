@@ -39,7 +39,7 @@ namespace MAPeD
 			this.CheckBoxSkipZeroCHRBlock = new System.Windows.Forms.CheckBox();
 			this.BtnOk = new System.Windows.Forms.Button();
 			this.BtnCancel = new System.Windows.Forms.Button();
-			this.CheckBoxGameLevel = new System.Windows.Forms.CheckBox();
+			this.CheckBoxGameMap = new System.Windows.Forms.CheckBox();
 			this.CheckBoxDeleteEmptyScreens = new System.Windows.Forms.CheckBox();
 			this.CheckBoxApplyPalette = new System.Windows.Forms.CheckBox();
 			this.BtnApplyPaletteDesc = new System.Windows.Forms.Button();
@@ -95,15 +95,15 @@ namespace MAPeD
 			this.BtnCancel.Text = "Cancel";
 			this.BtnCancel.UseVisualStyleBackColor = true;
 			// 
-			// CheckBoxGameLevel
+			// CheckBoxGameMap
 			// 
-			this.CheckBoxGameLevel.Location = new System.Drawing.Point(34, 62);
-			this.CheckBoxGameLevel.Name = "CheckBoxGameLevel";
-			this.CheckBoxGameLevel.Size = new System.Drawing.Size(98, 19);
-			this.CheckBoxGameLevel.TabIndex = 2;
-			this.CheckBoxGameLevel.Text = "Game level";
-			this.CheckBoxGameLevel.UseVisualStyleBackColor = true;
-			this.CheckBoxGameLevel.CheckedChanged += new System.EventHandler(this.CheckBoxGameLevelChanged_Event);
+			this.CheckBoxGameMap.Location = new System.Drawing.Point(34, 62);
+			this.CheckBoxGameMap.Name = "CheckBoxGameMap";
+			this.CheckBoxGameMap.Size = new System.Drawing.Size(98, 19);
+			this.CheckBoxGameMap.TabIndex = 2;
+			this.CheckBoxGameMap.Text = "Game map";
+			this.CheckBoxGameMap.UseVisualStyleBackColor = true;
+			this.CheckBoxGameMap.CheckedChanged += new System.EventHandler(this.CheckBoxGameMapChanged_Event);
 			// 
 			// CheckBoxDeleteEmptyScreens
 			// 
@@ -114,7 +114,7 @@ namespace MAPeD
 			this.CheckBoxDeleteEmptyScreens.TabIndex = 3;
 			this.CheckBoxDeleteEmptyScreens.Text = "Delete empty screens";
 			this.CheckBoxDeleteEmptyScreens.UseVisualStyleBackColor = true;
-			this.CheckBoxDeleteEmptyScreens.CheckedChanged += new System.EventHandler(this.CheckBoxGameLevelChanged_Event);
+			this.CheckBoxDeleteEmptyScreens.CheckedChanged += new System.EventHandler(this.CheckBoxGameMapChanged_Event);
 			// 
 			// CheckBoxApplyPalette
 			// 
@@ -149,7 +149,7 @@ namespace MAPeD
 			this.Controls.Add(this.CheckBoxSkipZeroCHRBlock);
 			this.Controls.Add(this.CheckBoxApplyPalette);
 			this.Controls.Add(this.CheckBoxDeleteEmptyScreens);
-			this.Controls.Add(this.CheckBoxGameLevel);
+			this.Controls.Add(this.CheckBoxGameMap);
 			this.Controls.Add(this.CheckBoxTiles);
 			this.Controls.Add(this.CheckBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -163,7 +163,7 @@ namespace MAPeD
 		private System.Windows.Forms.Button BtnApplyPaletteDesc;
 		private System.Windows.Forms.CheckBox CheckBoxApplyPalette;
 		private System.Windows.Forms.CheckBox CheckBoxDeleteEmptyScreens;
-		private System.Windows.Forms.CheckBox CheckBoxGameLevel;
+		private System.Windows.Forms.CheckBox CheckBoxGameMap;
 		private System.Windows.Forms.Button BtnCancel;
 		private System.Windows.Forms.Button BtnOk;
 		private System.Windows.Forms.CheckBox CheckBoxSkipZeroCHRBlock;

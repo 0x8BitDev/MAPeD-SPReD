@@ -24,9 +24,9 @@ namespace MAPeD
 			set {}
 		}
 
-		public bool import_game_level
+		public bool import_game_map
 		{
-			get { return CheckBoxGameLevel.Checked; }
+			get { return CheckBoxGameMap.Checked; }
 			set {}
 		}
 		
@@ -59,10 +59,10 @@ namespace MAPeD
 			CheckBoxApplyPalette.Checked = true;
 		}
 		
-		void CheckBoxGameLevelChanged_Event(object sender, EventArgs e)
+		void CheckBoxGameMapChanged_Event(object sender, EventArgs e)
 		{
-			CheckBoxTiles.Checked = CheckBoxGameLevel.Checked ? true:CheckBoxTiles.Checked;
-			CheckBoxDeleteEmptyScreens.Enabled = !( CheckBoxTiles.Enabled = CheckBoxGameLevel.Checked ? false:true );
+			CheckBoxTiles.Checked = CheckBoxGameMap.Checked ? true:CheckBoxTiles.Checked;
+			CheckBoxDeleteEmptyScreens.Enabled = !( CheckBoxTiles.Enabled = CheckBoxGameMap.Checked ? false:true );
 			CheckBoxDeleteEmptyScreens.Checked = CheckBoxDeleteEmptyScreens.Enabled ? CheckBoxDeleteEmptyScreens.Checked:false;
 		}
 
@@ -81,40 +81,40 @@ namespace MAPeD
 		
 		public void data_processing( Bitmap _bmp, data_sets_manager _data_manager, Func< int, int, layout_data > _create_layout )
 		{
-			bool import_game_level_as_is = true;
+			bool import_game_map_as_is = true;
 
 			if( import_tiles )
 			{
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-				if( ( !import_game_level && ( _bmp.Width > 0 && ( _bmp.Width % 32 ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % 32 ) == 0 ) ) ||
-					( import_game_level && ( _bmp.Width > 0 && ( _bmp.Width % 32 ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) == 0 ) ) )
+				if( ( !import_game_map && ( _bmp.Width > 0 && ( _bmp.Width % 32 ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % 32 ) == 0 ) ) ||
+					( import_game_map && ( _bmp.Width > 0 && ( _bmp.Width % 32 ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) == 0 ) ) )
 #else
 				if( ( _bmp.Width > 0 && ( _bmp.Width % 32 ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % 32 ) == 0 ) )
 #endif
 				{
-					if( import_game_level )
+					if( import_game_map )
 					{
 						if( ( _bmp.Width > 0 && ( _bmp.Width % utils.CONST_SCREEN_WIDTH_PIXELS ) != 0 ) || ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) != 0 ) )
 						{
-							DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nCrop the imported game level or leave it 'as is'?\n\n[Yes] to crop the game level to fully filled screens\n[No] to import the game level 'as is'", "Game Level Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
+							DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nCrop the imported game map or leave it 'as is'?\n\n[Yes] to crop the game map to fully filled screens\n[No] to import the game map 'as is'", "Game map Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
 							
 							if( dlg_res == DialogResult.Cancel )
 							{
 								throw new Exception( "Operation aborted!" );
 							}
 							
-							import_game_level_as_is = ( dlg_res == DialogResult.No ) ? true:false;
+							import_game_map_as_is = ( dlg_res == DialogResult.No ) ? true:false;
 						}
 					}
 
-					import_image_data( import_game_level_as_is, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), _data_manager, _create_layout );
+					import_image_data( import_game_map_as_is, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), _data_manager, _create_layout );
 				}
 				else
 				{
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-					if( import_game_level )
+					if( import_game_map )
 					{
-						throw new Exception( "To import a game level, the imported image width must be a multiple of 32, the image height must be a multiple of 240!" );
+						throw new Exception( "To import a game map, the imported image width must be a multiple of 32, the image height must be a multiple of 240!" );
 					}
 					else
 #endif
@@ -134,7 +134,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void import_image_data( 	bool 							_import_game_level_as_is,
+		public void import_image_data( 	bool 							_import_game_map_as_is,
 										Bitmap							_bmp,		                              
 		                              	tiles_data 						_data, 
 		                              	data_sets_manager 				_data_manager, 
@@ -197,8 +197,8 @@ namespace MAPeD
 					
 					tile_ind = beg_tile_ind;
 					
-					int bmp_width	= ( import_game_level && !_import_game_level_as_is ) ? ( ( _bmp.Width / utils.CONST_SCREEN_WIDTH_PIXELS ) * utils.CONST_SCREEN_WIDTH_PIXELS ):_bmp.Width;
-					int bmp_height	= ( import_game_level && !_import_game_level_as_is ) ? ( ( _bmp.Height / utils.CONST_SCREEN_HEIGHT_PIXELS ) * utils.CONST_SCREEN_HEIGHT_PIXELS ):_bmp.Height;
+					int bmp_width	= ( import_game_map && !_import_game_map_as_is ) ? ( ( _bmp.Width / utils.CONST_SCREEN_WIDTH_PIXELS ) * utils.CONST_SCREEN_WIDTH_PIXELS ):_bmp.Width;
+					int bmp_height	= ( import_game_map && !_import_game_map_as_is ) ? ( ( _bmp.Height / utils.CONST_SCREEN_HEIGHT_PIXELS ) * utils.CONST_SCREEN_HEIGHT_PIXELS ):_bmp.Height;
 					
 					int scr_x_cnt = 0;
 					int scr_y_cnt = 0;
@@ -210,7 +210,7 @@ namespace MAPeD
 #endif
 					layout_data level_layout = null;
 					
-					if( import_game_level )
+					if( import_game_map )
 					{
 						bmp_width	= ( bmp_width == 0 ) ? utils.CONST_SCREEN_WIDTH_PIXELS:bmp_width;
 						bmp_height	= ( bmp_height == 0 ) ? utils.CONST_SCREEN_HEIGHT_PIXELS:bmp_height;
@@ -226,7 +226,7 @@ namespace MAPeD
 						}
 					}
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-					if( import_game_level )
+					if( import_game_map )
 					{
 						bmp_height += ( ( bmp_height / utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 1 ) << 5;
 					}
@@ -243,7 +243,7 @@ namespace MAPeD
 							{
 								block_offset_y = tile_y + block_y;
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-								if( import_game_level )
+								if( import_game_map )
 								{
 									block_offset_y -= ( ( ( tile_y & 0xff00 ) >> 8 ) << 4 );
 								}
@@ -255,7 +255,7 @@ namespace MAPeD
 									for( int CHR_n = 0; CHR_n < 4; CHR_n++ )
 									{
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-										if( import_game_level )
+										if( import_game_map )
 										{
 											// extract a CHR if it's not an invisible part of a tile ( the bottom blocks of the eigth tiles row ) 
 											if( !( ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) == 7 && block_y > 0 ) )
@@ -329,7 +329,7 @@ namespace MAPeD
 										
 										block_num = 0;
 
-										if( import_game_level )
+										if( import_game_map )
 										{
 											scr_x = tile_x / utils.CONST_SCREEN_WIDTH_PIXELS;											
 #if DEF_SCREEN_HEIGHT_7d5_TILES

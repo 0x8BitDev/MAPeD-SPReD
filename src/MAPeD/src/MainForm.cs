@@ -746,7 +746,7 @@ namespace MAPeD
 									{
 										m_import_tiles_form.data_processing( bmp, m_data_manager, create_layout_with_empty_screens );
 										
-										if( m_import_tiles_form.import_game_level )
+										if( m_import_tiles_form.import_game_map )
 										{
 											if( m_import_tiles_form.delete_empty_screens )
 											{

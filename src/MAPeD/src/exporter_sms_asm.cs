@@ -576,7 +576,7 @@ namespace MAPeD
 
 			// global data writing
 			{
-				_sw.WriteLine( "; *** GLOBAL DATA ***\n" );
+				_sw.WriteLine( "\n; *** GLOBAL DATA ***\n" );
 				
 				// CHR
 				for( bank_n = 0; bank_n < banks.Count; bank_n++ )
@@ -1405,7 +1405,7 @@ namespace MAPeD
 				}
 
 				// write collected data
-				_sw.WriteLine( "; *** " + CONST_FILENAME_LEVEL_PREFIX + level_n + " ***\n" );
+				_sw.WriteLine( "\n; *** " + CONST_FILENAME_LEVEL_PREFIX + level_n + " ***\n" );
 				
 				tiles = scr_tiles_data[ chk_bank_ind ]; 
 				
