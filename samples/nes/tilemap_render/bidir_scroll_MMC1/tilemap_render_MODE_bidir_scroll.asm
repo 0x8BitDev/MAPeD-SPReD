@@ -1,6 +1,6 @@
 ;############################################################################################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2020 0x8BitDev ( MIT license )
 ;
 ;############################################################################################################
 ; DESC: Bidirectional tilemap scroller with dynamic mirroring ( fullscreen PAL without attribute\tile
@@ -60,6 +60,14 @@ SUPPORTED_MAP_FLAGS	= MAP_FLAG_DIR_COLUMNS | MAP_FLAG_MODE_BIDIR_SCROLL | MAP_FL
 
 	.IF ( MAP_DATA_MAGIC & MAP_FLAG_RLE ) = MAP_FLAG_RLE
 	.fatal "RLE COMPRESSION DOESN'T SUPPORTED !"
+	.ENDIF
+
+	.IF ( MAP_DATA_MAGIC & MAP_FLAG_MARKS ) = MAP_FLAG_MARKS
+	.fatal "THE SAMPLE DOESN'T SUPPORT THE SCREEN MARKS !"
+	.ENDIF
+
+	.IF ( MAP_DATA_MAGIC & MAP_FLAG_LAYOUT_MATRIX ) = MAP_FLAG_LAYOUT_MATRIX
+	.fatal "THE SAMPLE DOESN'T SUPPORT THE MATRIX LAYOUT !"
 	.ENDIF
 
 	.scope TR_sts
