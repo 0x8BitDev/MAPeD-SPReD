@@ -112,6 +112,7 @@ namespace MAPeD
 			groupBoxEntityCoordinates.Enabled = enabled;
 			
 			CheckBoxExportMarks.Enabled = ( enabled == false && RBtnModeMultidirScroll.Checked ) ? false:true;
+			CheckBoxExportMarks.Checked = CheckBoxExportMarks.Enabled ? CheckBoxExportMarks.Checked:false;
 			
 			update_desc();
 		}
@@ -122,6 +123,7 @@ namespace MAPeD
 			RBtnLayoutMatrix.Checked 	= true;
 			
 			CheckBoxExportMarks.Enabled = ( CheckBoxExportEntities.Checked == false && RBtnModeMultidirScroll.Checked ) ? false:true;
+			CheckBoxExportMarks.Checked = CheckBoxExportMarks.Enabled ? CheckBoxExportMarks.Checked:false;
 			
 			CheckBoxRLE.Enabled = true;
 			
@@ -307,8 +309,6 @@ namespace MAPeD
 				
 				utils.write_title( sw );
 
-				bool export_layout = RBtnModeMultidirScroll.Checked == false || ( RBtnModeMultidirScroll.Checked && CheckBoxExportEntities.Checked );
-				
 				// options
 				{
 					sw.WriteLine( "; export options:" );
@@ -332,10 +332,8 @@ namespace MAPeD
 						sw.WriteLine( ";\t- mode: static screens" );
 					}
 					
-					if( export_layout )
-					{
-						sw.WriteLine( ";\t- layout: " + ( RBtnLayoutAdjacentScreens.Checked ? "adjacent screens":RBtnLayoutAdjacentScreenIndices.Checked ? "adjacent screen indices":"matrix" ) + ( CheckBoxExportMarks.Checked ? " (marks)":" (no marks)" ) );
-					}
+					sw.WriteLine( ";\t- layout: " + ( RBtnLayoutAdjacentScreens.Checked ? "adjacent screens":RBtnLayoutAdjacentScreenIndices.Checked ? "adjacent screen indices":"matrix" ) + ( CheckBoxExportMarks.Checked ? " (marks)":" (no marks)" ) );
+					
 					sw.WriteLine( ";\t- " + ( CheckBoxExportEntities.Checked ? "entities " + ( RBtnEntityCoordScreen.Checked ? "(screen coordinates)":"(map coordinates)" ):"no entities" ) );
 					sw.WriteLine( ";\t- " + ( ComboBoxColorsGroup.SelectedIndex == 0 ? "first color group":"second color group" ) );
 					sw.WriteLine( "\n" );
@@ -347,8 +345,8 @@ namespace MAPeD
 				                                              		( RBtnModeMultidirScroll.Checked ? 32:RBtnModeBidirScroll.Checked ? 64:128 ) | 
 				                                              		( CheckBoxExportEntities.Checked ? 256:0 ) |
 				                                              		( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordScreen.Checked ? 512:1024 ):0 ) |
-				                                              		( export_layout ? ( RBtnLayoutAdjacentScreens.Checked ? 2048:RBtnLayoutAdjacentScreenIndices.Checked ? 4096:8192 ) |
-				                                              		( CheckBoxExportMarks.Checked ? 16384:0 ):0 ) |
+				                                              		( RBtnLayoutAdjacentScreens.Checked ? 2048:RBtnLayoutAdjacentScreenIndices.Checked ? 4096:8192 ) |
+				                                              		( CheckBoxExportMarks.Checked ? 16384:0 ) |
  				                                              		( RBtnPropPerBlock.Checked ? 32768:65536 ) |
  				                                              		( CheckBoxMovePropsToScrMap.Checked ? 131072:0 ) |
 																	( ComboBoxColorsGroup.SelectedIndex == 0 ? 262144:524288 ) ) );
@@ -375,7 +373,7 @@ namespace MAPeD
 				sw.WriteLine( ".define MAP_FLAG_COLORS_GROUP_SECOND      " + utils.hex( "$", 524288 ) );
 				
 				sw.WriteLine( "\n.define\tCHR_BPP\t" + get_CHRs_bpp() );
-				sw.WriteLine( ".define\tCHRS_OFFSET\t" + ( int )NumericUpDownCHRsOffset.Value + "\t; first CHR index in a CHR bank" );
+				sw.WriteLine( ".define\tCHRS_OFFSET\t" + ( int )NumericUpDownCHRsOffset.Value + "\t; first CHR index in CHR bank" );
 				
 				if( CheckBoxExportEntities.Checked )
 				{
