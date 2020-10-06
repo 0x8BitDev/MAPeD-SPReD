@@ -590,13 +590,29 @@ namespace MAPeD
 			// delete "broken" block data
 			if( ( _block_end_ind & 0x03 ) != 0 )
 			{
+				int blocks_CHR_n;
+				int blocks_CHR_cnt = _block_end_ind - ( _block_end_ind & 0x03 );
+				
 				Array.Clear( utils.tmp_spr8x8_buff, 0, utils.tmp_spr8x8_buff.Length );
 				
-				for( block_n = _block_end_ind; block_n > _block_end_ind - ( _block_end_ind & 0x03 ); block_n-- )
+				for( block_n = _block_end_ind; block_n > blocks_CHR_cnt; block_n-- )
 				{
-					_data.from_spr8x8_to_CHR_bank( tiles_data.get_block_CHR_id( _data.blocks[ block_n - 1 ] ), utils.tmp_spr8x8_buff );
+					CHR_ind = tiles_data.get_block_CHR_id( _data.blocks[ block_n - 1 ] );
 					
-					_data.blocks[ block_n - 1 ] = 0; 
+					for( blocks_CHR_n = _block_beg_ind; blocks_CHR_n < blocks_CHR_cnt; blocks_CHR_n++ )
+					{
+						if( tiles_data.get_block_CHR_id( _data.blocks[ blocks_CHR_n ] ) == CHR_ind )
+						{
+							break;
+						}
+					}
+					
+					if( blocks_CHR_n == blocks_CHR_cnt )
+					{
+						_data.from_spr8x8_to_CHR_bank( CHR_ind, utils.tmp_spr8x8_buff );
+						
+						_data.blocks[ block_n - 1 ] = 0;
+					}
 				}
 				
 				_block_end_ind = _block_end_ind & ~0x03; 
@@ -851,7 +867,7 @@ namespace MAPeD
 #endif		
 		void BtnApplyPaletteDescClick_Event(object sender, EventArgs e)
 		{
-			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- NES compatible graphics\n- tiles aligned\n- one CHR bank data\n- no more than 13 colors", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
+			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- NES compatible graphics\n- no more than 13 colors\n- one CHR bank data\n- static palette\n- tiles aligned", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 	}
 }
