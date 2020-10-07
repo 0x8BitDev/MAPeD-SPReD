@@ -861,7 +861,9 @@ namespace MAPeD
 			
 			if( more_than_4_color_in_palette || more_than_4_palettes )
 			{
-				MainForm.message_box( "The imported image doesn't meet the requirements!\nSome color information will be lost!", "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				string reason_str = ( more_than_4_palettes ? "\n- more than 4 palettes":"" ) + ( more_than_4_color_in_palette ? "\n- more than 4 colors in a palette":"" );
+				
+				MainForm.message_box( "The imported image doesn't meet the requirements!\nSome color information will be lost!\n\nREASON: " + reason_str, "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 			}
 		}
 #endif		
