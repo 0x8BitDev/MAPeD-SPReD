@@ -5,8 +5,8 @@
 ;#######################################################
 
 .define	SPR_MODE_8X16	0
-.define	CHR_BPP	4
-.define	CHRS_OFFSET	0	; first CHR index in a CHR bank
+.define	SPR_CHR_BPP	4
+.define	SPR_CHRS_OFFSET	0	; first CHR index in a CHR bank
 
 
 ;chr0:	.incbin "marco_gfx_chr0.bin"	; 544 bytes

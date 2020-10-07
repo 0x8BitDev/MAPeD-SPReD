@@ -152,6 +152,8 @@ exit:
 	.incdir "./"
 	.include "player_anm.asm"
 
+.define CHR_BPP	SPR_CHR_BPP
+
 .if CHR_BPP != 4
 	.printt "*** This sample supports 4 bpp tiles only! *** "
 	.fail
@@ -266,7 +268,7 @@ loop:
 
 	ld (VDP_TILES_ROM_ADDR), de
 
-	ld hl, $0000 + ( $20 * CHRS_OFFSET )	; VRAM addr
+	ld hl, $0000 + ( $20 * SPR_CHRS_OFFSET )	; VRAM addr
 
 	ld (VDP_TILES_VRAM_ADDR), hl
 

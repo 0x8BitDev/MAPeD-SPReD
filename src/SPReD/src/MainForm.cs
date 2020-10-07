@@ -1727,8 +1727,8 @@ namespace SPReD
 					sw.WriteLine( "SPR_MODE_8X16 = " + ( CBoxMode8x16.Checked ? "1":"0" ) + "\n" );
 #elif DEF_SMS
 					sw.WriteLine( ".define\tSPR_MODE_8X16\t" + ( CBoxMode8x16.Checked ? "1":"0" ) );
-					sw.WriteLine( ".define\tCHR_BPP\t" + m_SMS_export_form.bpp );
-					sw.WriteLine( ".define\tCHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t; first CHR index in a CHR bank\n\n" );
+					sw.WriteLine( ".define\tSPR_CHR_BPP\t" + m_SMS_export_form.bpp );
+					sw.WriteLine( ".define\tSPR_CHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t; first CHR index in a CHR bank\n\n" );
 #endif
 					
 					// CHR incbins 

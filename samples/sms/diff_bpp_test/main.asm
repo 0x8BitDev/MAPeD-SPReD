@@ -75,6 +75,8 @@
 	.incdir "data"
 	.include "image.asm"
 
+.define CHR_BPP	SPR_CHR_BPP
+
 	.incdir "../common"
 	.include "vdp.asm"
 	.include "spr.asm"
@@ -98,7 +100,7 @@ main:
 
 	ld hl, CHR_data
 	ld bc, CHR_data_size
-	ld de, $0000 + ( $20 * CHRS_OFFSET )	; VRAM addr (the first CHR bank)
+	ld de, $0000 + ( $20 * SPR_CHRS_OFFSET )	; VRAM addr (the first CHR bank)
 
 	call VDP_load_tiles
 

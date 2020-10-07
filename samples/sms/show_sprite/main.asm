@@ -75,6 +75,8 @@
 	.incdir "data"
 	.include "image.asm"
 
+.define CHR_BPP	SPR_CHR_BPP
+
 .if CHR_BPP != 4
 	.printt "*** This sample supports 4 bpp tiles only! *** "
 	.fail
@@ -103,7 +105,7 @@ main:
 
 	ld hl, CHR_data
 	ld bc, CHR_data_size
-	ld de, $0000 + ( $20 * CHRS_OFFSET )	; VRAM addr (the first CHR bank)
+	ld de, $0000 + ( $20 * SPR_CHRS_OFFSET )	; VRAM addr (the first CHR bank)
 
 	call VDP_load_tiles
 
