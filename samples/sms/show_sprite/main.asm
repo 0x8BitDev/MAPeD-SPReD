@@ -78,7 +78,7 @@
 .define CHR_BPP	SPR_CHR_BPP
 
 .if CHR_BPP != 4
-	.printt "*** This sample supports 4 bpp tiles only! *** "
+	.printt "*** ERROR: This sample supports 4 bpp tiles only! ***\n"
 	.fail
 .endif
 

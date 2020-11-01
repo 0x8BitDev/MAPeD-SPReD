@@ -45,6 +45,13 @@
 .define	VDP_CMD_WRITE_REG	%1000000000000000
 .define	VDP_CMD_WRITE_CLR	%1100000000000000
 
+; high word data
+
+.define	VDP_CMD_READ_RAM_HW	%00000000
+.define	VDP_CMD_WRITE_RAM_HW	%01000000
+.define	VDP_CMD_WRITE_REG_HW	%10000000
+.define	VDP_CMD_WRITE_CLR_HW	%11000000
+
 ; REG0 and REG1 set the VDP display and interrupt mode.
 ;
 ; REG0
@@ -171,6 +178,16 @@
 	out (VDP_CMD_STATUS_REG), a
 .endm
 
+.macro	VDP_WRITE_RAM_CMD_DE ; de - addr
+
+	ld a, e
+	out (VDP_CMD_STATUS_REG), a
+
+	ld a, >VDP_CMD_WRITE_RAM
+	or d
+	out (VDP_CMD_STATUS_REG), a
+.endm
+
 .macro	VDP_WRITE_REG_CMD ; \1 - reg index, \2 - reg value
 
 	ld de, VDP_CMD_WRITE_REG | ( \1 << 8 ) | \2
@@ -205,16 +222,8 @@
 	out (VDP_CMD_DATA_REG), a	
 .endm
 
-.macro	VDP_ADD_VRAM_ADDR_AND_SEND_CMD_WRITE_RAM
+.macro DBG_VDP_SET_BORDER_COLOR		; \1 - color index from the second colors bank
 
-	ld a, >VDP_CMD_WRITE_RAM
-	or d
-	ld d, a
+	VDP_WRITE_REG_CMD 7 %11110000+\1
 
-	ld a, <VDP_CMD_WRITE_RAM
-	or e
-	out (VDP_CMD_STATUS_REG), a
-
-	ld a, d
-	out (VDP_CMD_STATUS_REG), a
 .endm

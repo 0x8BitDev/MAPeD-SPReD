@@ -34,7 +34,7 @@ VDP_init_data_end:
 
 VDP_load_tiles:
 
-	VDP_ADD_VRAM_ADDR_AND_SEND_CMD_WRITE_RAM
+	VDP_WRITE_RAM_CMD_DE
 
 	; some improvements
 	; to speed up the process
@@ -100,7 +100,7 @@ VDP_load_sprites:
 
 	; send command
 
-	VDP_ADD_VRAM_ADDR_AND_SEND_CMD_WRITE_RAM
+	VDP_WRITE_RAM_CMD_DE
 
 	; transfer data
 	
@@ -108,5 +108,29 @@ VDP_load_sprites:
 
 	ld c, VDP_CMD_DATA_REG
 	otir
+
+	ret
+
+; *** update scroll regs ***
+; IN: 	B - X
+;	C - Y
+
+VDP_update_scroll:
+
+	; update horizontal scroll reg
+
+	ld a, b
+	out (VDP_CMD_STATUS_REG), a
+
+	ld a, VDP_CMD_WRITE_REG_HW | 8
+	out (VDP_CMD_STATUS_REG), a
+
+	; update vertical scroll reg
+
+	ld a, c
+	out (VDP_CMD_STATUS_REG), a
+
+	ld a, VDP_CMD_WRITE_REG_HW | 9
+	out (VDP_CMD_STATUS_REG), a
 
 	ret

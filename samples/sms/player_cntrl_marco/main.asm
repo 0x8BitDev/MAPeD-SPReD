@@ -155,7 +155,7 @@ exit:
 .define CHR_BPP	SPR_CHR_BPP
 
 .if CHR_BPP != 4
-	.printt "*** This sample supports 4 bpp tiles only! *** "
+	.printt "*** ERROR: This sample supports 4 bpp tiles only! ***\n"
 	.fail
 .endif
 
@@ -296,7 +296,7 @@ set_background_color:
 	ld de, $3800		; VRAM address
 	ld bc, 32*24		; data size
 
-	VDP_ADD_VRAM_ADDR_AND_SEND_CMD_WRITE_RAM
+	VDP_WRITE_RAM_CMD_DE
 
 _load_scr_attrs_loop:
 
