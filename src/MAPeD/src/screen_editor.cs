@@ -7,6 +7,7 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
 
@@ -135,9 +136,16 @@ namespace MAPeD
 		private Rectangle		m_border_tile_img_rect;
 		
 		private ImageList		m_tiles_imagelist		= null;
+		private ImageList		m_blocks_imagelist		= null;
 		
 		private List< int >		m_block_tiles			= null;
 		private int				m_last_empty_tile_ind	= -1;
+
+		private PictureBox		m_pbox_active_tile		= null;
+		private GroupBox		m_grp_box_active_tile	= null;		
+		
+		private Pen			m_pbox_active_tile_pen		= null;
+		private Graphics 	m_pbox_active_tile_gfx		= null;
 		
 		public bool draw_grid_flag
 		{
@@ -145,9 +153,10 @@ namespace MAPeD
 			set { m_draw_grid = value; update(); }
 		}
 		
-		public screen_editor( PictureBox _pbox, ImageList _tiles_imagelist ) : base( _pbox )
+		public screen_editor( PictureBox _pbox, ImageList _tiles_imagelist, ImageList _blocks_imagelist, PictureBox _active_tile_pbox, GroupBox _active_tile_grp_box ) : base( _pbox )
 		{
-			m_tiles_imagelist = _tiles_imagelist;
+			m_tiles_imagelist	= _tiles_imagelist;
+			m_blocks_imagelist	= _blocks_imagelist;
 			
 			_pbox.MouseDown += new MouseEventHandler( ScreenEditor_MouseDown );
 			_pbox.MouseUp 	+= new MouseEventHandler( ScreenEditor_MouseUp );
@@ -171,6 +180,27 @@ namespace MAPeD
 			
 			m_sel_area_tile = new Bitmap( utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE, PixelFormat.Format24bppRgb );
 			Graphics.FromImage( m_sel_area_tile ).Clear( utils.CONST_COLOR_SCREEN_SELECTION_TILE );
+			
+			// active tile data
+			{
+				m_pbox_active_tile		= _active_tile_pbox;
+				m_grp_box_active_tile	= _active_tile_grp_box;
+				
+				// prepare 'Active Tile' for drawing
+				Bitmap bmp = new Bitmap( m_pbox_active_tile.Width, m_pbox_active_tile.Height );
+				m_pbox_active_tile.Image = bmp;
+				
+				m_pbox_active_tile_gfx = Graphics.FromImage( bmp );
+				
+				m_pbox_active_tile_gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
+				m_pbox_active_tile_gfx.PixelOffsetMode 		= PixelOffsetMode.HighQuality;
+
+				m_pbox_active_tile_pen = new Pen( Color.White );
+				m_pbox_active_tile_pen.EndCap 	= LineCap.NoAnchor;
+				m_pbox_active_tile_pen.StartCap	= LineCap.NoAnchor;			
+				
+				clear_active_tile_img();
+			}
 			
 			update();
 		}
@@ -221,6 +251,11 @@ namespace MAPeD
 				
 				return;
 			}
+
+			m_tile_ghost_img_rect.Width = utils.CONST_SCREEN_TILES_SIZE;
+			m_tile_ghost_img_rect.Height = utils.CONST_SCREEN_TILES_SIZE;
+			
+			clear_active_tile_img();
 			
 			m_state = EState.es_PlacePattern;
 			
@@ -229,17 +264,22 @@ namespace MAPeD
 			
 			m_fill_mode = EFillMode.efm_Tile;
 			
-			update();			
+			update();
 		}
 		
 		private void create_pattern_begin( object sender, EventArgs e )
 		{
+			m_tile_ghost_img_rect.Width = utils.CONST_SCREEN_TILES_SIZE;
+			m_tile_ghost_img_rect.Height = utils.CONST_SCREEN_TILES_SIZE;
+			
+			clear_active_tile_img();
+			
 			m_state = EState.es_CreatePattern;
 			
 			m_pix_box.Cursor = Cursors.Cross;
 			
 			m_pbox_captured = false;
-			
+		
 			update();
 		}
 
@@ -252,7 +292,7 @@ namespace MAPeD
 			m_pbox_captured = false;
 			
 			m_active_pattern = null;
-			
+
 			update();
 		}
 
@@ -771,47 +811,85 @@ namespace MAPeD
 			return utils.set_byte_to_uint( old_tile, block_ind, ( byte )m_active_tile_id );
 		}
 		
-		public void set_active_tile( int _tile_ind, Image _img, EFillMode _fill_mode )
+		public void set_active_tile( int _tile_ind, EFillMode _fill_mode )
 		{
-			if( m_tiles_data != null )
+			if( m_state == EState.es_Build )
 			{
-				bool need_update = m_fill_mode != _fill_mode;
-				
-				m_fill_mode = _fill_mode;
-				
-				m_block_tiles.Clear();
-				
-				switch( _fill_mode )
+				if( m_tiles_data != null )
 				{
-					case EFillMode.efm_Tile:
-						{
-							m_tile_ghost_img_rect.Width = utils.CONST_SCREEN_TILES_SIZE;
-							m_tile_ghost_img_rect.Height = utils.CONST_SCREEN_TILES_SIZE;
-						}
-						break;
-						
-					case EFillMode.efm_Block:
-						{
-							m_tile_ghost_img_rect.Width = utils.CONST_SCREEN_BLOCKS_SIZE;
-							m_tile_ghost_img_rect.Height = utils.CONST_SCREEN_BLOCKS_SIZE;
+					bool need_update = m_fill_mode != _fill_mode;
+					
+					m_fill_mode = _fill_mode;
+					
+					m_block_tiles.Clear();
+
+					Image img = null;
+					
+					switch( _fill_mode )
+					{
+						case EFillMode.efm_Tile:
+							{
+								img = m_tiles_imagelist.Images[ _tile_ind ];
+								
+								m_tile_ghost_img_rect.Width = utils.CONST_SCREEN_TILES_SIZE;
+								m_tile_ghost_img_rect.Height = utils.CONST_SCREEN_TILES_SIZE;
+								
+								m_pbox_active_tile_gfx.DrawImage( img, 0, 0, img.Width, img.Height );
+								m_pbox_active_tile.Invalidate();
+								
+								m_grp_box_active_tile.Text = "Tile: " + String.Format( "${0:X2}", _tile_ind );
+							}
+							break;
 							
-							calc_common_blocks( ( byte )_tile_ind );
+						case EFillMode.efm_Block:
+							{
+								img = m_blocks_imagelist.Images[ _tile_ind ];
+								
+								m_tile_ghost_img_rect.Width = utils.CONST_SCREEN_BLOCKS_SIZE;
+								m_tile_ghost_img_rect.Height = utils.CONST_SCREEN_BLOCKS_SIZE;
+								
+								calc_common_blocks( ( byte )_tile_ind );
+								
+								m_pbox_active_tile_gfx.DrawImage( img, 0, 0, m_pbox_active_tile.Width, m_pbox_active_tile.Height );
+								m_pbox_active_tile.Invalidate();
+								
+								m_grp_box_active_tile.Text = "Block: " + String.Format( "${0:X2}", _tile_ind );
+							}
+							break;
+					}
+
+					m_active_tile_id 	= _tile_ind;
+					m_tile_img			= img;
+					
+					if( m_tile_img == null )
+					{
+						m_tile_x = -1;
+						m_tile_y = -1;
+					}
+		
+					// draw image into 'Active Tile'
+					if( img == null )
+					{
+						m_pbox_active_tile_gfx.Clear( utils.CONST_COLOR_ACTIVE_TILE_BACKGROUND );
+						
+						// red cross
+						{
+							// draw the red cross as a sign of inactive state
+							m_pbox_active_tile_pen.Color = utils.CONST_COLOR_PIXBOX_INACTIVE_CROSS;
+							
+							m_pbox_active_tile_gfx.DrawLine( m_pbox_active_tile_pen, 0, 0, utils.CONST_TILES_IMG_SIZE, utils.CONST_TILES_IMG_SIZE );
+							m_pbox_active_tile_gfx.DrawLine( m_pbox_active_tile_pen, utils.CONST_TILES_IMG_SIZE, 0, 0, utils.CONST_TILES_IMG_SIZE );
 						}
-						break;
-				}
-				
-				m_active_tile_id 	= _tile_ind;
-				m_tile_img			= _img;
-				
-				if( m_tile_img == null )
-				{
-					m_tile_x = -1;
-					m_tile_y = -1;
-				}
-				
-				if( need_update )
-				{
-					update();
+						
+						m_pbox_active_tile.Invalidate();
+						
+						m_grp_box_active_tile.Text = "...";
+					}
+					
+					if( need_update )
+					{
+						update();
+					}
 				}
 			}
 		}
@@ -1116,7 +1194,7 @@ namespace MAPeD
 					else
 					if( m_state == EState.es_PlacePattern )
 					{
-						if( m_tile_x >= 0 && m_tile_y >= 0 )
+						if( m_tile_x >= 0 && m_tile_y >= 0 && ( m_active_pattern != null && m_active_pattern.data != null ) )
 						{
 							for( int tile_y = 0; tile_y < m_active_pattern.height; tile_y++ )
 							{
@@ -1225,6 +1303,11 @@ namespace MAPeD
 			}
 			
 			invalidate();
+		}
+		
+		public void clear_active_tile_img()
+		{
+			set_active_tile( -1, screen_editor.EFillMode.efm_Unknown );
 		}
 	}
 }

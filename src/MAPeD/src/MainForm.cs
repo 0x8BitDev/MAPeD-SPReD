@@ -30,9 +30,6 @@ namespace MAPeD
 #endif		
 		private data_conversion_options_form	m_data_conversion_options_form	= null;
 		
-		private Pen			m_pen						= null;
-		private Graphics 	m_pbox_active_tile_gfx		= null;
-		
 		private data_sets_manager	m_data_manager		= null;
 		private tiles_processor		m_tiles_processor	= null;		
 		private screen_editor		m_screen_editor		= null;
@@ -124,7 +121,7 @@ namespace MAPeD
 
 			m_imagelist_manager	= new imagelist_manager( PanelTiles, PanelTilesClick_Event, ContextMenuTilesList, PanelBlocks, PanelBlocksClick_Event, ContextMenuBlocksList, ListViewScreens );
 			
-			m_screen_editor = new screen_editor( PBoxScreen, m_imagelist_manager.get_tiles_image_list() );
+			m_screen_editor = new screen_editor( PBoxScreen, m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list(), PBoxActiveTile, GrpBoxActiveTile );
 			m_screen_editor.subscribe_event( m_data_manager );
 			
 			m_layout_editor = new layout_editor( PBoxLayout, LayoutLabel, m_data_manager.get_tiles_data(), ListViewScreens );
@@ -177,23 +174,6 @@ namespace MAPeD
 			m_optimization_form = new optimization_form( m_data_manager );
 			m_optimization_form.UpdateGraphics += new EventHandler( MainForm_UpdateGraphicsAfterOptimization );
 			
-			// prepare 'Active Tile' for drawing
-			{
-				Bitmap bmp = new Bitmap( PBoxActiveTile.Width, PBoxActiveTile.Height );
-				PBoxActiveTile.Image = bmp;
-				
-				m_pbox_active_tile_gfx = Graphics.FromImage( bmp );
-				
-				m_pbox_active_tile_gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
-				m_pbox_active_tile_gfx.PixelOffsetMode 		= PixelOffsetMode.HighQuality;
-
-				m_pen = new Pen( Color.White );
-				m_pen.EndCap 	= LineCap.NoAnchor;
-				m_pen.StartCap 	= LineCap.NoAnchor;			
-				
-				clear_active_tile_img();
-			}
-
 			m_tiles_processor.NeedGFXUpdate 	+= new EventHandler( enable_update_gfx_btn_Event );
 			m_screen_editor.NeedScreensUpdate	+= new EventHandler( enable_update_screens_btn_Event );
 			
@@ -353,26 +333,6 @@ namespace MAPeD
 			m_statistics_form.ShowStats();
 		}
 		
-		private void clear_active_tile_img()
-		{
-			m_pbox_active_tile_gfx.Clear( utils.CONST_COLOR_ACTIVE_TILE_BACKGROUND );
-			
-			// red cross
-			{
-				// draw the red cross as a sign of inactive state
-				m_pen.Color = utils.CONST_COLOR_PIXBOX_INACTIVE_CROSS;
-				
-				m_pbox_active_tile_gfx.DrawLine( m_pen, 0, 0, utils.CONST_TILES_IMG_SIZE, utils.CONST_TILES_IMG_SIZE );
-				m_pbox_active_tile_gfx.DrawLine( m_pen, utils.CONST_TILES_IMG_SIZE, 0, 0, utils.CONST_TILES_IMG_SIZE );
-			}
-			
-			PBoxActiveTile.Invalidate();
-			
-			m_screen_editor.set_active_tile( -1, null, screen_editor.EFillMode.efm_Unknown );
-			
-			GrpBoxActiveTile.Text = "...";
-		}
-		
 		private void enable_update_gfx_btn_Event( object sender, EventArgs e )
 		{
 			enable_update_gfx_btn( true );
@@ -455,7 +415,7 @@ namespace MAPeD
 			enable_update_gfx_btn( false );
 			enable_update_screens_btn( false );
 
-			clear_active_tile_img();
+			m_screen_editor.clear_active_tile_img();
 			
 			CBoxCHRBanks.Items.Clear();
 			ListBoxScreens.Items.Clear();
@@ -516,7 +476,7 @@ namespace MAPeD
 		{
 			update_graphics( false );
 			
-			clear_active_tile_img();
+			m_screen_editor.clear_active_tile_img();
 		}
 
 #region load save import export
@@ -836,7 +796,7 @@ namespace MAPeD
 									update_graphics( true );
 									update_screens( false );
 									
-									clear_active_tile_img();
+									m_screen_editor.clear_active_tile_img();
 								}
 								else
 								{
@@ -1137,7 +1097,7 @@ namespace MAPeD
 			
 			// reset the screen editor controls
 			{
-				clear_active_tile_img();
+				m_screen_editor.clear_active_tile_img();
 				
 				update_screens_list_box();
 				
@@ -1153,7 +1113,7 @@ namespace MAPeD
 		{
 			update_graphics( false );
 			
-			clear_active_tile_img();
+			m_screen_editor.clear_active_tile_img();
 			
 			set_status_msg( "GFX updated" );
 		}
@@ -1377,15 +1337,7 @@ namespace MAPeD
 		{
 			if( _ind >= 0 && m_data_manager.tiles_data_pos >= 0 )
 			{
-				// draw image into 'Active Tile'
-				Image img = m_imagelist_manager.get_tiles_image_list().Images[ _ind ];
-				
-				m_pbox_active_tile_gfx.DrawImage( img, 0, 0, img.Width, img.Height );
-				PBoxActiveTile.Invalidate();
-				
-				m_screen_editor.set_active_tile( _ind, img, screen_editor.EFillMode.efm_Tile );
-				
-				GrpBoxActiveTile.Text = "Tile: " + String.Format( "${0:X2}", _ind );
+				m_screen_editor.set_active_tile( _ind, screen_editor.EFillMode.efm_Tile );
 			}
 		}
 
@@ -1393,15 +1345,7 @@ namespace MAPeD
 		{
 			if( _ind >= 0 && m_data_manager.tiles_data_pos >= 0 )
 			{
-				// draw image into 'Active Tile'
-				Image img = m_imagelist_manager.get_blocks_image_list().Images[ _ind ];
-				
-				m_pbox_active_tile_gfx.DrawImage( img, 0, 0, PBoxActiveTile.Width, PBoxActiveTile.Height );
-				PBoxActiveTile.Invalidate();
-				
-				m_screen_editor.set_active_tile( _ind, img, screen_editor.EFillMode.efm_Block );
-				
-				GrpBoxActiveTile.Text = "Block: " + String.Format( "${0:X2}", _ind );
+				m_screen_editor.set_active_tile( _ind, screen_editor.EFillMode.efm_Block );
 			}
 		}
 		
@@ -1753,7 +1697,7 @@ namespace MAPeD
 					set_status_msg( String.Format( "Block List: block #{0:X2} references are cleared", _sel_ind ) );
 				}
 				
-				clear_active_tile_img();
+				m_screen_editor.clear_active_tile_img();
 				
 				enable_update_gfx_btn( true );
 				enable_update_screens_btn( true );
@@ -1779,7 +1723,7 @@ namespace MAPeD
 					data.clear_block( sel_ind );
 					data.inc_tiles_blocks( ( byte )sel_ind );
 					
-					clear_active_tile_img();
+					m_screen_editor.clear_active_tile_img();
 					
 					enable_update_screens_btn( true );
 					update_graphics( true );
@@ -1806,7 +1750,7 @@ namespace MAPeD
 						data.dec_tiles_blocks( ( byte )sel_ind );
 						data.clear_block( data.tiles.Length - 1 );
 						
-						clear_active_tile_img();
+						m_screen_editor.clear_active_tile_img();
 						
 						enable_update_screens_btn( true );
 						update_graphics( true );
@@ -1857,7 +1801,7 @@ namespace MAPeD
 
 					data.clear_tile( sel_ind );
 					
-					clear_active_tile_img();
+					m_screen_editor.clear_active_tile_img();
 	
 					set_status_msg( String.Format( "Tile List: tile #{0:X2} references are cleared", sel_ind ) );
 					
@@ -1875,7 +1819,7 @@ namespace MAPeD
 				
 				data.clear_tiles();
 				
-				clear_active_tile_img();
+				m_screen_editor.clear_active_tile_img();
 				
 				set_status_msg( String.Format( "Tile List: all the tile references are cleared" ) );
 				
@@ -1899,7 +1843,7 @@ namespace MAPeD
 					data.clear_tile( sel_ind );
 					data.inc_screen_tiles( ( byte )sel_ind );
 					
-					clear_active_tile_img();
+					m_screen_editor.clear_active_tile_img();
 					
 					enable_update_screens_btn( true );
 					update_graphics( true );
@@ -1925,7 +1869,7 @@ namespace MAPeD
 						data.dec_patterns_tiles( ( byte )sel_ind );
 						data.clear_tile( data.tiles.Length - 1 );
 						
-						clear_active_tile_img();
+						m_screen_editor.clear_active_tile_img();
 						
 						enable_update_screens_btn( true );
 						update_graphics( true );
@@ -2290,7 +2234,7 @@ namespace MAPeD
 		
 		void MainForm_ResetActiveTile(object sender, EventArgs e)
 		{
-			clear_active_tile_img();
+			m_screen_editor.clear_active_tile_img();
 		}
 
 		private void update_tile_image( object sender, EventArgs e )
@@ -2325,7 +2269,7 @@ namespace MAPeD
 		
 		void BtnResetTileClick_Event(object sender, EventArgs e)
 		{
-			clear_active_tile_img();
+			m_screen_editor.clear_active_tile_img();
 		}
 		
 #endregion		
