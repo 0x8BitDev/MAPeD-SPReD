@@ -372,8 +372,14 @@ namespace MAPeD
 				sw.WriteLine( ".define MAP_FLAG_COLORS_GROUP_FIRST       " + utils.hex( "$", 262144 ) );
 				sw.WriteLine( ".define MAP_FLAG_COLORS_GROUP_SECOND      " + utils.hex( "$", 524288 ) );
 				
-				sw.WriteLine( "\n.define\tCHR_BPP\t" + get_CHRs_bpp() );
-				sw.WriteLine( ".define\tCHRS_OFFSET\t" + ( int )NumericUpDownCHRsOffset.Value + "\t; first CHR index in CHR bank" );
+				sw.WriteLine( "\n.define\tMAP_CHR_BPP\t" + get_CHRs_bpp() );
+				sw.WriteLine( ".define\tMAP_CHRS_OFFSET\t" + ( int )NumericUpDownCHRsOffset.Value + "\t; first CHR index in CHR bank" );
+
+				sw.WriteLine( "\n.define ScrTilesWidth\t" + get_tiles_cnt_width( 1 ) + "\t; number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in width" );
+				sw.WriteLine( ".define ScrTilesHeight\t" + get_tiles_cnt_height( 1 ) + "\t; number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in height" );
+
+				sw.WriteLine( "\n.define ScrPixelsWidth\t" + get_tiles_cnt_width( 1 ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; screen width in pixels" );
+				sw.WriteLine( ".define ScrPixelsHeight\t" + get_tiles_cnt_height( 1 ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; screen height in pixels" );
 				
 				if( CheckBoxExportEntities.Checked )
 				{
@@ -1163,7 +1169,7 @@ namespace MAPeD
 			
 			// add flipping
 			{
-				res |= ( ushort )( tiles_data.get_block_flags_flip( _block_data ) << 10 );
+				res |= ( ushort )( tiles_data.get_block_flags_flip( _block_data ) << 9 );
 			}
 			
 			// add colors bank
@@ -1395,7 +1401,7 @@ namespace MAPeD
 								}
 								else
 								{
-									map_tiles_arr[ scr_n_X * ( n_Y_tiles * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( scr_n_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_id;
+									map_tiles_arr[ scr_n_X * ( n_Y_tiles * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( scr_n_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_id;
 								}
 							}
 						}
@@ -1413,7 +1419,7 @@ namespace MAPeD
 				{
 					tiles.export_CHR( bw, get_CHRs_bpp() );
 				}
-				data_size = bw.BaseStream.Length;
+				long CHR_data_size = data_size = bw.BaseStream.Length;
 				bw.Close();
 				
 				_sw.WriteLine( label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t\t; (" + data_size + ")" );
@@ -1438,15 +1444,8 @@ namespace MAPeD
 				
 				// tiles 2x2
 				{
-					if( RBtnTiles2x2.Checked )
-					{
-						max_block_ind = 1 + utils.get_byte_arr_max_val( map_blocks_arr );	// one based index	
-					}
-					else
-					{
-						max_block_ind = tiles.get_first_free_block_id();
-						max_block_ind = max_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:max_block_ind;
-					}
+					max_block_ind = tiles.get_first_free_block_id() << 2;	// 4 ushorts per block
+					max_block_ind = max_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:max_block_ind;
 					
 					label = CONST_FILENAME_LEVEL_PREFIX + level_n + "_Attrs";
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
@@ -1461,7 +1460,7 @@ namespace MAPeD
 					data_size = bw.BaseStream.Length;
 					bw.Close();
 					
-					_sw.WriteLine( label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t; " + "(" + data_size + ") blocks screen attributes array ( 2 bytes per attribute )" );
+					_sw.WriteLine( label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t; " + "(" + data_size + ") attributes array per block ( 2 bytes per attribute; 8 bytes per block )" );
 				}
 				
 				// blocks and properties
@@ -1552,7 +1551,7 @@ namespace MAPeD
 					data_size = bw.BaseStream.Length;
 					bw.Close();
 					
-					_sw.WriteLine( label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") lookup table for fast calculation of tile addresses " + ( RBtnTilesDirColumns.Checked ? "columns by X coordinate":"rows by Y coordinate" ) + " ( 16 bit offset per " + ( RBtnTilesDirColumns.Checked ? "column":"row" ) + " of tiles )\n" );
+					_sw.WriteLine( label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") lookup table for fast calculation of tile addresses; " + ( RBtnTilesDirColumns.Checked ? "columns by X coordinate":"rows by Y coordinate" ) + " ( 16 bit offset per " + ( RBtnTilesDirColumns.Checked ? "column":"row" ) + " of tiles )\n" );
 				}
 				
 				palette_str = CONST_FILENAME_LEVEL_PREFIX + level_n + "_Palette:\t.byte ";					
@@ -1573,10 +1572,15 @@ namespace MAPeD
 					start_scr_ind = 0;
 				}
 				
+				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_CHR_data_size\t" + CHR_data_size );
+				
 				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_StartScr\t" + start_scr_ind + "\t; start screen" );
 
 				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_WTilesCnt\t" + get_tiles_cnt_width( n_scr_X ) + "\t; number of level tiles in width" );
 				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_HTilesCnt\t" + get_tiles_cnt_height( n_scr_Y ) + "\t; number of level tiles in height" );
+				
+				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_WPixelsCnt\t" + get_tiles_cnt_width( n_scr_X ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; map width in pixels" );
+				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_HPixelsCnt\t" + get_tiles_cnt_height( n_scr_Y ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; map height in pixels" );
 					
 				if( RBtnTiles4x4.Checked )
 				{
@@ -1604,12 +1608,12 @@ namespace MAPeD
 		
 		int get_tiles_cnt_width( int _scr_cnt_x )
 		{
-			return RBtnTiles2x2.Checked ? _scr_cnt_x * ( utils.CONST_SCREEN_WIDTH_PIXELS >> 4 ):_scr_cnt_x * utils.CONST_SCREEN_NUM_WIDTH_TILES;
+			return RBtnTiles2x2.Checked ? _scr_cnt_x * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS:_scr_cnt_x * utils.CONST_SCREEN_NUM_WIDTH_TILES;
 		}
 
 		int get_tiles_cnt_height( int _scr_cnt_y )
 		{
-			return RBtnTiles2x2.Checked ? _scr_cnt_y * ( utils.CONST_SCREEN_HEIGHT_PIXELS >> 4 ):_scr_cnt_y * utils.CONST_SCREEN_NUM_HEIGHT_TILES;
+			return RBtnTiles2x2.Checked ? _scr_cnt_y * utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS:_scr_cnt_y * utils.CONST_SCREEN_NUM_HEIGHT_TILES;
 		}
 		
 		void fill_palette_str( byte[] _plt, ref string _str, bool _end )
