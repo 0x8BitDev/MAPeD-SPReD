@@ -222,6 +222,14 @@
 	out (VDP_CMD_DATA_REG), a	
 .endm
 
+.macro VDP_SCR_ATTR_TO_DATA_REG_HL
+.repeat 2
+	ld a, (hl)
+	out (VDP_CMD_DATA_REG), a
+	inc hl
+.endr
+.endm
+
 .macro DBG_VDP_SET_BORDER_COLOR		; \1 - color index from the second colors bank
 
 	VDP_WRITE_REG_CMD 7 %11110000+\1

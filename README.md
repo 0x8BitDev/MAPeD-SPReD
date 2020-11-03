@@ -131,7 +131,9 @@ As mentioned before, you need to install Mono on your computer. To run the tools
  - `./samples/nes/tilemap_render/static_screens_MMC5/`	- static screens switching with MMC5 extended attributes support
 
 ## MAPeD-SMS
-**SMS: coming soon...**
+**SMS:**
+
+ - `./samples/sms/tilemap_render/multidir_scroll/`	- multidirectional scroller 
 
 **ZX Spectrum (MAPeD-NES/SMS):**
 
