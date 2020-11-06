@@ -546,8 +546,10 @@ namespace MAPeD
 							
 							uint flags = br.ReadUInt32();
 #if DEF_NES							
-							CheckBoxPalettePerCHR.Checked 	= ( ( flags&0x01 ) == 0x01 ? true:false );
-#endif							
+							CheckBoxPalettePerCHR.Checked 	= ( ( flags&utils.CONST_IO_DATA_FLAG_MMC5 ) == utils.CONST_IO_DATA_FLAG_MMC5 ? true:false );
+#endif
+							property_id_per_block( ( ( flags&utils.CONST_IO_DATA_FLAG_PROP_PER_CHR ) == utils.CONST_IO_DATA_FLAG_PROP_PER_CHR ? false:true ) );
+
 							// Load description
 							m_description_form.edit_text = br.ReadString();
 						}
@@ -639,8 +641,10 @@ namespace MAPeD
 					bw.Write( utils.CONST_PROJECT_FILE_VER );
 
 					m_data_manager.save( bw );
-					
-					uint flags = ( uint )( CheckBoxPalettePerCHR.Checked ? 1:0 );
+
+					uint flags = ( uint )( CheckBoxPalettePerCHR.Checked ? utils.CONST_IO_DATA_FLAG_MMC5:0 );
+					flags |= ( uint )( PropIdPerCHRToolStripMenuItem.Checked ? utils.CONST_IO_DATA_FLAG_PROP_PER_CHR:0 );
+
 					bw.Write( flags );
 					
 					// save description

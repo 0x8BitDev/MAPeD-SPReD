@@ -106,6 +106,9 @@ namespace MAPeD
 		public const byte	CONST_IO_DATA_TILES_PATTERNS	= 0x10;
 		public const byte	CONST_IO_DATA_END				= 0xff;
 
+		public const uint	CONST_IO_DATA_FLAG_MMC5			= 0x01;
+		public const uint	CONST_IO_DATA_FLAG_PROP_PER_CHR	= 0x02;
+		
 		public const string CONST_SMS_FILE_EXT			= "mapedsms";
 		public const string CONST_NES_FILE_EXT			= "mapednes";
 		
