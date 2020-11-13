@@ -17,19 +17,14 @@ TR_TILES4x4:
 TR_BLOCK_ATTRS:
 	dw
 
+TR_TILES_OFFSETS:
+	dw
+
+;.ifdef	TR_MULTIDIR_SCROLL
 TR_TILES_MAP:
 	dw
 
 TR_MAP_LUT:
-	dw
-
-TR_START_SCR:
-	db
-
-TR_MAP_TILES_WIDTH:		; ScrTilesWidth for bidir mode
-	dw
-
-TR_MAP_TILES_HEIGHT:		; ScrTilesHeight for bidir mode
 	dw
 
 TR_MAP_SCR_WIDTH:
@@ -37,9 +32,38 @@ TR_MAP_SCR_WIDTH:
 
 TR_MAP_SCR_HEIGHT:
 	db	
+;.endif
+
+TR_MAP_TILES_WIDTH:		; ScrTilesWidth for bidir mode
+	dw
+
+TR_MAP_TILES_HEIGHT:		; ScrTilesHeight for bidir mode
+	dw
+
+TR_START_SCR:
+	dw
+
+;.ifdef	TR_BIDIR_SCROLL
+TR_CHR_ARR:
+	dw
+
+TR_CHR_SIZE_ARR:
+	dw
+
+TR_SCR_TILES_ARR:
+	dw
+
+TR_PALETTES_ARR:
+	dw
+;.endif
+
+;.ifdef	TR_ADJACENT_SCR_INDS
+TR_SCR_LABELS_ARR:
+	dw
+;.endif
 
 ; inner vars
-
+;.ifdef	TR_MULTIDIR_SCROLL
 tr_map_pix_cropped_width:	; map width in pixels minus screen width in pixels
 	dw
 
@@ -50,6 +74,20 @@ tr_pos_x:
 	dw
 tr_pos_y:
 	dw
+;.endif
+
+;.ifdef	TR_BIDIR_SCROLL
+tr_curr_scr:
+	dw
+tr_horiz_dir_pos:
+	dw
+tr_vert_dir_pos:
+	dw
+tr_CHR_id:
+	db
+tr_tiles_offset:
+	dw
+;.endif
 
 tr_scroll_x:
 	db

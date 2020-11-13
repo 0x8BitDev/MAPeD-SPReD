@@ -134,6 +134,8 @@ As mentioned before, you need to install Mono on your computer. To run the tools
 **SMS:**
 
  - `./samples/sms/tilemap_render/multidir_scroll/`	- multidirectional scroller 
+ - `./samples/sms/tilemap_render/bidir_scroll/`		- bidirectional scroller 
+ - `./samples/sms/tilemap_render/bidir_scroll_ADJ_SCR_MASKS/`	- bidirectional scroller with complex topology of a map
 
 **ZX Spectrum (MAPeD-NES/SMS):**
 

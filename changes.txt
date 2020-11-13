@@ -1,6 +1,8 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+13.11.2020 - SMS: added bidirectional scroller samples
+03.11.2020 - SMS: added multidirectional scroller sample
 18.09.2020 - Added tiles patterns manager
 31.08.2020 - Layout editor: added zoom mode x2
 30.08.2020 - Added blocks/tiles usage info
