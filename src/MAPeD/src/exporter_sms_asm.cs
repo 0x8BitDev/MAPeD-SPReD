@@ -582,6 +582,9 @@ namespace MAPeD
 			{
 				_sw.WriteLine( "\n; *** GLOBAL DATA ***\n" );
 				
+				string chr_arr	= null;
+				string chr_size	= null;
+				
 				// CHR
 				for( bank_n = 0; bank_n < banks.Count; bank_n++ )
 				{
@@ -596,7 +599,13 @@ namespace MAPeD
 					bw.Close();
 					
 					_sw.WriteLine( label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t\t; (" + data_size + ")" );
+					
+					chr_arr	 += "\t.word " + label + "\n";
+					chr_size += "\t.word " + data_size + "\t\t;(" + label + ")\n";
 				}
+				
+				_sw.WriteLine( "\n" + m_filename + "_CHRs:\n" + chr_arr );
+				_sw.WriteLine( m_filename + "_CHRs_size:\n" + chr_size );
 				
 				// static screens ( VDP-READY DATA ):
 				// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -618,8 +627,6 @@ namespace MAPeD
 				
 				// blocks&props
 				{
-					_sw.WriteLine( "" );
-					
 					if( !CheckBoxMovePropsToScrMap.Checked )
 					{
 						label_props = "_Props";
@@ -670,7 +677,7 @@ namespace MAPeD
 				}
 				
 				// tiles
-				if( RBtnTiles4x4.Checked )
+//				if( RBtnTiles4x4.Checked )
 				{
 					if( RBtnModeBidirScroll.Checked || !CheckBoxMovePropsToScrMap.Checked )
 					{
@@ -693,7 +700,7 @@ namespace MAPeD
 								bw.Write( rearrange_tile( tiles.tiles[ i ] ) );
 							}
 							
-							data_offset_str += "\t.word " + data_offset + "\t; (chr" + bank_n + ")\n";
+							data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
 							
 							data_offset += max_tile_inds[ bank_n ] << 2;
 						}
@@ -701,7 +708,10 @@ namespace MAPeD
 						data_size = bw.BaseStream.Length;
 						bw.Close();
 						
-						_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") 4x4 tiles array of all exported data banks ( 4 bytes per tile )\n" );
+						if( RBtnTiles4x4.Checked )
+						{
+							_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") 4x4 tiles array of all exported data banks ( 4 bytes per tile )\n" );
+						}
 						
 						_sw.WriteLine( m_filename + "_TilesOffs:" );
 	
@@ -800,7 +810,7 @@ namespace MAPeD
 					data_size = bw.BaseStream.Length;
 					bw.Close();
 					
-					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") 2x2 tiles attributes array of all exported data banks ( 2 bytes per attribute ), data offset = tiles offset / 2" );
+					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") 2x2 tiles attributes array of all exported data banks ( 2 bytes per attribute ), data offset = tiles offset * 4" );
 				}
 				
 				// map
@@ -913,11 +923,11 @@ namespace MAPeD
 									
 									if( RBtnLayoutMatrix.Checked )
 									{
-										_sw.WriteLine( level_prefix_str + "_StartScr\t = " + ( start_scr_ind < 0 ? common_scr_ind:start_scr_ind ) + "\n" );
+										_sw.WriteLine( ".define " + level_prefix_str + "_StartScr\t" + ( start_scr_ind < 0 ? common_scr_ind:start_scr_ind ) + "\n" );
 									}
 									else
 									{
-										_sw.WriteLine( level_prefix_str + "_StartScr:\t.word " + ( start_scr_ind < 0 ? level_prefix_str + "Scr" + common_scr_ind:level_prefix_str + "Scr" + start_scr_ind ) + "\n" );
+										_sw.WriteLine( ".define " + level_prefix_str + "_StartScr\t" + ( start_scr_ind < 0 ? level_prefix_str + "Scr" + common_scr_ind:level_prefix_str + "Scr" + start_scr_ind ) + "\n" );
 									}
 									
 									if( RBtnLayoutMatrix.Checked )
