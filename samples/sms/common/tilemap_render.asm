@@ -26,6 +26,10 @@
 
 .if	( MAP_DATA_MAGIC & MAP_FLAG_MODE_MULTIDIR_SCROLL ) == MAP_FLAG_MODE_MULTIDIR_SCROLL
 .define	TR_MULTIDIR_SCROLL
+.else
+.if	( MAP_DATA_MAGIC & MAP_FLAG_MODE_BIDIR_SCROLL ) == MAP_FLAG_MODE_BIDIR_SCROLL
+.define	TR_BIDIR_SCROLL
+.endif
 .endif
 
 .if	( MAP_DATA_MAGIC & MAP_FLAG_TILES4X4 ) == MAP_FLAG_TILES4X4
@@ -38,6 +42,18 @@
 
 .if	( MAP_DATA_MAGIC & MAP_FLAG_DIR_COLUMNS ) == MAP_FLAG_DIR_COLUMNS
 .define	TR_DATA_COLUMN_ORDER
+.endif
+
+.if	( MAP_DATA_MAGIC & MAP_FLAG_MARKS ) == MAP_FLAG_MARKS
+.define	TR_DATA_MARKS
+.endif
+
+.if	( MAP_DATA_MAGIC & MAP_FLAG_LAYOUT_ADJACENT_SCREENS ) == MAP_FLAG_LAYOUT_ADJACENT_SCREENS
+.define	TR_ADJACENT_SCR
+.endif
+
+.if	( MAP_DATA_MAGIC & MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS ) == MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS
+.define	TR_ADJACENT_SCR_INDS
 .endif
 
 ; *** constants ***
@@ -54,8 +70,17 @@
 
 .ifdef	TR_MULTIDIR_SCROLL
 .define	TR_COLUMN_DATA_HEADER	TR_BUFF_STEP_64 | 25
+.define	TR_ROW_DATA_HEADER	32
 .else
 .define	TR_COLUMN_DATA_HEADER	TR_BUFF_STEP_64 | 24
+.define	TR_ROW_DATA_HEADER	31
+
+; adjacent screen masks
+.define TR_MASK_ADJ_SCR_LEFT	%00010000
+.define TR_MASK_ADJ_SCR_UP	%00100000
+.define TR_MASK_ADJ_SCR_RIGHT	%01000000
+.define TR_MASK_ADJ_SCR_DOWN	%10000000
+
 .endif
 
 ; *** tiles column/row drawing routines tables ***
@@ -74,9 +99,78 @@ _tr_tiles_row_routine_tbl:
 
 ; *** useful macroses ***
 
+.ifdef	TR_BIDIR_SCROLL
+
+; *** get screen tiles addr ***
+; IN:	HL - screen data addr
+; OUT:	HL - tiles addr
+
+.macro	GET_SCREEN_TILES_ADDR
+
+	inc hl
+
+.ifdef	TR_DATA_MARKS
+	inc hl
+.endif
+	call _tr_get_tiles_addr
+.endm
+
+; *** get adjacent screen data addr ***
+; OUT: 	HL - new screen data addr
+
+.macro	GET_ADJACENT_SCREEN	; \1 - adjacent screen mask direction value, \2 - adjacent screen label offset,  \3 - adjacent screen index offset
+
+	inc hl
+
+.ifdef	TR_DATA_MARKS
+
+	ld a, (hl)
+	and \1
+	ret z
+
+	inc hl
+.endif
+
+.ifdef	TR_ADJACENT_SCR
+
+	ld de, \2
+	add hl, de
+
+	ld e, (hl)
+	inc hl
+	ld d, (hl)
+
+	ex de, hl
+.endif
+
+.ifdef	TR_ADJACENT_SCR_INDS
+
+	ld de, \3
+	add hl, de
+
+	ld a, (hl)
+	cp $ff
+	ret z
+
+	MUL_POW2_A 1
+	ld e, a
+	ld d, 0
+	ld hl, (TR_SCR_LABELS_ARR)
+	add hl, de
+
+	ld e, (hl)
+	inc hl
+	ld d, (hl)
+
+	ex de, hl
+.endif
+.endm
+
+.endif	;TR_BIDIR_SCROLL
+
 .macro TR_PUT_12ATTR_TO_VRAM	; a - attribute index
 	exx
-	ld hl, ( TR_BLOCK_ATTRS )
+	ld hl, (TR_BLOCK_ATTRS)
 
 	ld c, a
 	ld b, 0
@@ -84,6 +178,12 @@ _tr_tiles_row_routine_tbl:
 	MUL_POW2_BC 3
 
 	add hl, bc
+
+.ifdef	TR_BIDIR_SCROLL
+	ld bc, (tr_tiles_offset)
+	MUL_POW2_BC 2
+	add hl, bc
+.endif
 
 	VDP_SCR_ATTR_TO_DATA_REG_HL
 	VDP_SCR_ATTR_TO_DATA_REG_HL
@@ -123,27 +223,27 @@ _tr_tiles_row_routine_tbl:
 .endm
 
 .macro TR_SET_DRAW_FLAG_UP
-	ld a, ( tr_flags )
+	ld a, (tr_flags)
 	or TR_UPD_FLAG_DRAW_UP
-	ld ( tr_flags ), a
+	ld (tr_flags), a
 .endm
 
 .macro TR_SET_DRAW_FLAG_DOWN
-	ld a, ( tr_flags )
+	ld a, (tr_flags)
 	or TR_UPD_FLAG_DRAW_DOWN
-	ld ( tr_flags ), a
+	ld (tr_flags), a
 .endm
 
 .macro TR_SET_DRAW_FLAG_LEFT
-	ld a, ( tr_flags )
+	ld a, (tr_flags)
 	or TR_UPD_FLAG_DRAW_LEFT
-	ld ( tr_flags ), a
+	ld (tr_flags), a
 .endm
 
 .macro TR_SET_DRAW_FLAG_RIGHT
-	ld a, ( tr_flags )
+	ld a, (tr_flags)
 	or TR_UPD_FLAG_DRAW_RIGHT
-	ld ( tr_flags ), a
+	ld (tr_flags), a
 .endm
 
 .macro	TR_FILL_TILE_COLROW	; \1 - first block offset, \2 - second block offset, \3 - first CHR offset, \4 - second CHR offset
@@ -160,6 +260,11 @@ _tr_tiles_row_routine_tbl:
 
 	ld hl, (TR_TILES4x4)
 	add hl, de
+
+.ifdef	TR_BIDIR_SCROLL
+	ld de, (tr_tiles_offset)
+	add hl, de
+.endif	
 
 .repeat \1
 	inc hl
@@ -196,6 +301,12 @@ _tr_fill_block_CHR\@:
 
 	ld hl, (TR_BLOCK_ATTRS)
 	add hl, de
+
+.ifdef	TR_BIDIR_SCROLL
+	ld de, (tr_tiles_offset)
+	MUL_POW2_DE 2
+	add hl, de
+.endif
 
 .repeat \3
 	inc hl
@@ -268,19 +379,35 @@ _tr_fill_block_CHR_cont3\@:
 tr_init:
 
 	xor a
-	ld ( tr_scroll_x ), a
-	ld ( tr_scroll_y ), a
-	ld ( tr_flags ), a
+	ld (tr_scroll_x), a
+	ld (tr_scroll_y), a
+	ld (tr_flags), a
 
+.ifdef	TR_MULTIDIR_SCROLL
 	ld hl, Lev0_WPixelsCnt - ScrPixelsWidth
-	ld ( tr_map_pix_cropped_width ), hl
+	ld (tr_map_pix_cropped_width), hl
 
 	ld hl, Lev0_HPixelsCnt - ScrPixelsHeight
-	ld ( tr_map_pix_cropped_height ), hl
+	ld (tr_map_pix_cropped_height), hl
+.endif	;TR_MULTIDIR_SCROLL
 
 	call buff_reset
 
-	ld a, ( TR_START_SCR )
+.ifdef	TR_MULTIDIR_SCROLL
+	ld a, (TR_START_SCR)
+.else
+.ifdef	TR_BIDIR_SCROLL
+
+	ld hl, 0
+	ld (tr_horiz_dir_pos), hl
+	ld (tr_vert_dir_pos), hl
+
+	ld hl, (TR_START_SCR)
+	ld (tr_curr_scr), hl
+
+	call _tr_upload_palette_tiles
+.endif	;TR_MULTIDIR_SCROLL
+.endif	;TR_BIDIR_SCROLL
 
 	call _tr_get_tiles_addr		; hl - tiles addr
 
@@ -322,8 +449,13 @@ _drw_tiles_col:
 	push de
 
 .ifdef	TR_DATA_TILES4X4
-	ld hl, ( TR_TILES4x4 )
+	ld hl, (TR_TILES4x4)
 	add hl, bc
+
+.ifdef	TR_BIDIR_SCROLL
+	ld bc, (tr_tiles_offset)
+	add hl, bc
+.endif	
 
 	TR_PUT_BLOCK_TO_VRAM 4
 	inc hl
@@ -361,7 +493,7 @@ _drw_tiles_col:
 
 	; move to the next tiles column
 
-	ld de, ( TR_MAP_TILES_HEIGHT )
+	ld de, (TR_MAP_TILES_HEIGHT)
 	add hl, de
 	ld de, -ScrTilesHeight
 	add hl, de
@@ -374,9 +506,9 @@ _drw_tiles_col:
 
 	ex de, hl
 .ifdef	TR_DATA_TILES4X4	
-	ld de, -( $600 - $08 )
+	ld de, -($600 - $08)
 .else
-	ld de, -( $600 - $04 )
+	ld de, -($600 - $04)
 .endif
 	add hl, de
 
@@ -419,6 +551,8 @@ _tr_put_block:
 
 	ret
 
+.ifdef	TR_MULTIDIR_SCROLL
+
 ; *** get tiles addr by input screen number ***
 ;
 ; IN: A - screen number
@@ -432,7 +566,7 @@ _tr_get_tiles_addr:
 
 	ld c, a
 
-	ld a, ( TR_MAP_SCR_WIDTH )
+	ld a, (TR_MAP_SCR_WIDTH)
 	ld d, a
 
 	call c_div_d
@@ -458,11 +592,11 @@ _tr_get_tiles_addr:
 	MUL_POW2_HL 4
 .endif	
 
-	ld ( tr_pos_x ), hl
+	ld (tr_pos_x), hl
 
 	MUL_POW2_BC 1
 
-	ld hl, ( TR_MAP_LUT )
+	ld hl, (TR_MAP_LUT)
 
 	add hl, bc
 
@@ -494,7 +628,7 @@ _tr_get_tiles_addr:
 	MUL_POW2_HL 4
 .endif
 
-	ld ( tr_pos_y ), hl
+	ld (tr_pos_y), hl
 
 	ex de, hl			; hl = y_offset
 
@@ -504,18 +638,151 @@ _tr_get_tiles_addr:
 
 	add hl, de			; hl = x_offset + y_offset
 
-	ld de, ( TR_TILES_MAP )
+	ld de, (TR_TILES_MAP)
 	add hl, de			; hl - tiles_addr
 
 	ret
+.else
+.ifdef	TR_BIDIR_SCROLL
+
+; *** upload palette and tiles to VDP ***
+; IN: HL - screen data addr
+
+_tr_upload_palette_tiles:
+
+	ld a, (hl)			; e - CHR data index
+	ld (tr_CHR_id), a
+
+	ld c, a
+	ld b, 0
+
+	push hl
+	push bc
+
+	; load palette into the first colors group
+
+	VDP_WRITE_CLR_CMD $0000
+
+	ld a, c
+
+	add a, a
+	add a, a
+	add a, a
+	add a, a			; a x= 16
+
+	ld e, a
+	ld d, 0
+
+	ld hl, (TR_PALETTES_ARR)
+	add hl, de
+
+	ld b, 16
+
+	ld c, VDP_CMD_DATA_REG
+	otir
+
+	; load tiles
+
+	pop bc
+	push bc
+
+	MUL_POW2_C 1
+
+	ld hl, (TR_CHR_ARR)
+	add hl, bc
+
+	ld e, (hl)
+	inc hl
+	ld d, (hl)			; de - CHRs addr
+
+	push de
+
+	ld hl, (TR_CHR_SIZE_ARR)
+	add hl, bc
+
+	ld c, (hl)
+	inc hl
+	ld b, (hl)			; de - CHR data size
+
+	pop hl
+
+	ld de, $0000 + ($20 * MAP_CHRS_OFFSET)	; VRAM addr (the first CHR bank)
+
+	call VDP_load_tiles
+
+	pop bc
+
+	; calc tiles offset
+
+	MUL_POW2_BC 1
+
+	ld hl, (TR_TILES_OFFSETS)
+	add hl, bc
+
+	ld e, (hl)
+	inc hl
+	ld d, (hl)
+
+	ld (tr_tiles_offset), de
+
+	pop hl
+
+	inc hl
+
+.ifdef	TR_DATA_MARKS
+	inc hl
+.endif
+	ret
+
+;
+; IN: HL - screen index addr
+;
+; OUT: HL - tiles addr
+;
+
+_tr_get_tiles_addr:
+
+	ld c, (hl)			; c - screen index
+	ld b, 0
+
+	ld l, c
+	ld h, b
+
+.ifdef	TR_DATA_TILES4X4
+
+	; de = bc x 48
+
+	MUL_POW2_BC 5			; x32
+	MUL_POW2_HL 4			; x16
+
+	add hl, bc
+	ex de, hl
+
+.else
+	; de = bc x 192
+
+	MUL_POW2_BC 7			; x128
+	MUL_POW2_HL 6			; x64
+
+	add hl, bc
+	ex de, hl
+
+.endif
+	ld hl, (TR_SCR_TILES_ARR)
+	add hl, de
+
+	ret
+
+.endif	;TR_BIDIR_SCROLL
+.endif	;TR_MULTIDIR_SCROLL
 
 tr_jpad_update:	
 
 	; disable scrolling on VBLANK and reset drawing flags
 
-	ld a, ( tr_flags )
+	ld a, (tr_flags)
 	and ~( TR_UPD_FLAG_DRAW_MASK | TR_UPD_FLAG_SCROLL )
-	ld ( tr_flags ), a
+	ld (tr_flags), a
 
 	JPAD_LOAD_STATE
 
@@ -531,22 +798,22 @@ tr_jpad_update:
 	JPAD1_CHECK_UP
 	call nz, tr_move_up
 
-	ld a, ( tr_flags )
+	ld a, (tr_flags)
 	and TR_UPD_FLAG_DRAW_MASK
 	jp z, _jpad_upd_exit
 
 	and TR_UPD_FLAG_DRAW_RIGHT
 	call nz, _tr_draw_right_tiles_column
 
-	ld a, ( tr_flags )
+	ld a, (tr_flags)
 	and TR_UPD_FLAG_DRAW_LEFT
 	call nz, _tr_draw_left_tiles_column
 
-	ld a, ( tr_flags )
+	ld a, (tr_flags)
 	and TR_UPD_FLAG_DRAW_DOWN
 	call nz, _tr_draw_down_tiles_row
 
-	ld a, ( tr_flags )
+	ld a, (tr_flags)
 	and TR_UPD_FLAG_DRAW_UP
 	call nz, _tr_draw_up_tiles_row
 
@@ -554,27 +821,28 @@ _jpad_upd_exit:
 
 	; enable scrolling
 
-	ld a, ( tr_flags )
+	ld a, (tr_flags)
 	or TR_UPD_FLAG_SCROLL
-	ld ( tr_flags ), a
+	ld (tr_flags), a
 
 	ret
 
+.ifdef	TR_MULTIDIR_SCROLL
+
 tr_move_right:
 
-	ld hl, ( tr_pos_x )
+	ld hl, (tr_pos_x)
 
 	ld de, TR_MOVE_STEP
 	add hl, de
-
-	and a
 
 	ld a, e
 
 	ld e, l
 	ld d, h					; 'push' hl
 
-	ld bc, ( tr_map_pix_cropped_width )
+	ld bc, (tr_map_pix_cropped_width)
+	and a
 	sbc hl, bc
 
 	jr c, _move_right_cont1
@@ -582,47 +850,21 @@ tr_move_right:
 	ld a, TR_MOVE_STEP
 	sub a, l
 
-	ld de, ( tr_map_pix_cropped_width )
+	ld de, (tr_map_pix_cropped_width)
 
 _move_right_cont1:
 
-	ld b, 0
-
 	ex de, hl
 
-	ld ( tr_pos_x ), hl
+	ld (tr_pos_x), hl
 
 	ld e, a
 
-	ld a, ( tr_scroll_x )
-	ld c, a
-
-	and a					; reset carry flag
-
-	and %00000111
-	jp nz, _move_right_cont2
-
-	inc b					; need draw tiles column
-
-_move_right_cont2:
-
-	ld a, c
-	sub a, e
-	ld ( tr_scroll_x ), a
-
-	ret z
-
-	ld a, b
-	and a
-
-	ret z
-
-	TR_SET_DRAW_FLAG_RIGHT
-	ret
+	jp _tr_upd_scroll_right
 
 tr_move_left:
 
-	ld hl, ( tr_pos_x )
+	ld hl, (tr_pos_x)
 
 	ld de, TR_MOVE_STEP
 	and a
@@ -638,14 +880,357 @@ tr_move_left:
 
 _move_left_cont1:
 
+	ld (tr_pos_x), hl
+
+	jp _tr_upd_scroll_left
+
+tr_move_down:
+
+	ld hl, (tr_pos_y)
+
+	ld de, TR_MOVE_STEP
+	add hl, de
+
+	ld a, e
+
+	ld e, l
+	ld d, h					; 'push' hl
+
+	ld bc, (tr_map_pix_cropped_height)
+	and a
+	sbc hl, bc
+
+	jr c, _move_down_cont1
+
+	ld a, TR_MOVE_STEP
+	sub a, l
+
+	ld de, (tr_map_pix_cropped_height)
+
+_move_down_cont1:
+
+	ex de, hl
+
+	ld (tr_pos_y), hl
+
+	and a
+	ret z					; zero step - exit
+
+	ld e, a
+
+	jp _tr_upd_scroll_down
+
+tr_move_up:
+
+	ld hl, (tr_pos_y)
+
+	ld de, TR_MOVE_STEP
+	and a
+	sbc hl, de
+
+	jr nc, _move_up_cont1
+
+	add hl, de				; get fixed step value
+
+	ld e, l
+
+	ld hl, 0
+
+_move_up_cont1:
+
+	ld (tr_pos_y), hl
+
+	jp _tr_upd_scroll_up
+
+.else
+.ifdef	TR_BIDIR_SCROLL
+
+tr_move_right:
+
+	ld hl, (tr_vert_dir_pos)
+	ld a, l
+	or h
+	ret nz
+
+	ld hl, (tr_horiz_dir_pos)
+
+	ld a, l
+	or h
+	jp nz, _move_right_cont0
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_RIGHT 5 3
+
+	ld a, h
+	or l
+	ret z
+
+	ld hl, (tr_horiz_dir_pos)
+
+_move_right_cont0:
+
+	; if HL == 256
+
+	ld a, l
+	or a
+	jp nz, _move_right_cont1
+
+	ld a, h
+	cp $01
+	jp nz, _move_right_cont1
+
+	; HL == 256
+
+	ld hl, 0
+	ld (tr_horiz_dir_pos), hl
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_RIGHT 5 3
+
+	ld a, h
+	or l
+	ret z
+
+	ld (tr_curr_scr), hl
+
+	jp tr_move_right
+
+_move_right_cont1:
+
+	ld hl, (tr_horiz_dir_pos)
+	ld de, TR_MOVE_STEP
+	add hl, de
+	ld (tr_horiz_dir_pos), hl
+
+	jp _tr_upd_scroll_right
+
+tr_move_left:
+
+	ld hl, (tr_vert_dir_pos)
+	ld a, l
+	or h
+	ret nz
+
+	ld hl, (tr_horiz_dir_pos)
+
+	ld a, l
+	or h
+	jp nz, _move_left_cont0
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_LEFT 1 1
+
+	ld a, h
+	or l
+	ret z
+
+	ld hl, (tr_horiz_dir_pos)
+
+_move_left_cont0:
+
+	; if HL == -256
+
+	ld a, l
+	or a
+	jp nz, _move_left_cont1
+
+	ld a, h
+	cp $ff
+	jp nz, _move_left_cont1
+
+	; HL == -256
+
+	ld hl, 0
+	ld (tr_horiz_dir_pos), hl
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_LEFT 1 1
+
+	ld a, h
+	or l
+	ret z
+
+	ld (tr_curr_scr), hl
+
+	jp tr_move_left
+
+_move_left_cont1:
+
+	ld hl, (tr_horiz_dir_pos)
+	ld de, TR_MOVE_STEP
+	and a
+	sbc hl, de
+	ld (tr_horiz_dir_pos), hl
+
+	jp _tr_upd_scroll_left
+
+tr_move_down:
+
+	ld hl, (tr_horiz_dir_pos)
+	ld a, l
+	or h
+	ret nz
+
+	ld hl, (tr_vert_dir_pos)
+
+	ld a, l
+	or h
+	jp nz, _move_down_cont0
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_DOWN 7 4
+
+	ld a, h
+	or l
+	ret z
+
+	ld hl, (tr_vert_dir_pos)
+
+_move_down_cont0:
+
+	; if HL == 192
+
+	ld a, l
+	cp $c0
+	jp nz, _move_down_cont1
+
+	ld a, h
+	or a
+	jp nz, _move_down_cont1
+
+	; HL == 192
+
+	ld hl, 0
+	ld (tr_vert_dir_pos), hl
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_DOWN 7 4
+
+	ld a, h
+	or l
+	ret z
+
+	ld (tr_curr_scr), hl
+
+	jp tr_move_down
+
+_move_down_cont1:
+
+	ld hl, (tr_vert_dir_pos)
+	ld de, TR_MOVE_STEP
+	add hl, de
+	ld (tr_vert_dir_pos), hl
+
+	jp _tr_upd_scroll_down
+
+tr_move_up:
+
+	ld hl, (tr_horiz_dir_pos)
+	ld a, l
+	or h
+	ret nz
+
+	ld hl, (tr_vert_dir_pos)
+
+	ld a, l
+	or h
+	jp nz, _move_up_cont0
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_UP 3 2
+
+	ld a, h
+	or l
+	ret z
+
+	ld hl, (tr_vert_dir_pos)
+
+_move_up_cont0:
+
+	; if HL == -192
+
+	ld a, l
+	cp $40
+	jp nz, _move_up_cont1
+
+	ld a, h
+	cp $ff
+	jp nz, _move_up_cont1
+
+	; HL == -192
+
+	ld hl, 0
+	ld (tr_vert_dir_pos), hl
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_UP 3 2
+
+	ld a, h
+	or l
+	ret z
+
+	ld (tr_curr_scr), hl
+
+	jp tr_move_up
+
+_move_up_cont1:
+
+	ld hl, (tr_vert_dir_pos)
+	ld de, TR_MOVE_STEP
+	and a
+	sbc hl, de
+	ld (tr_vert_dir_pos), hl
+
+	jp _tr_upd_scroll_up
+
+.endif	;TR_BIDIR_SCROLL
+.endif	;TR_MULTIDIR_SCROLL
+
+; *** update scroll values routines ***
+; IN:	E - move step
+
+_tr_upd_scroll_right:
+
+	ld a, (tr_scroll_x)
+	ld c, a
 	ld b, 0
 
-	ld ( tr_pos_x ), hl
+	and %00000111
+	jp nz, _move_right_cont2
 
-	ld a, ( tr_scroll_x )
+	inc b					; need draw tiles column
+
+_move_right_cont2:
+
+	ld a, c
+	sub a, e
+	ld (tr_scroll_x), a
+
+	ret z
+
+	ld a, b
+	and a
+
+	ret z
+
+	TR_SET_DRAW_FLAG_RIGHT
+	ret
+
+; IN:	E - move step
+
+_tr_upd_scroll_left:
+
+	ld a, (tr_scroll_x)
 	ld c, a
-
-	and a					; reset carry flag
+	ld b, 0
 
 	and %00000111
 	jp nz, _move_left_cont2
@@ -656,7 +1241,7 @@ _move_left_cont2:
 
 	ld a, c
 	add a, e
-	ld ( tr_scroll_x ), a
+	ld (tr_scroll_x), a
 
 	ret z
 
@@ -668,47 +1253,13 @@ _move_left_cont2:
 	TR_SET_DRAW_FLAG_LEFT
 	ret
 
-tr_move_down:
+; IN:	E - move step
 
-	ld hl, ( tr_pos_y )
+_tr_upd_scroll_down:
 
-	ld de, TR_MOVE_STEP
-	add hl, de
-
-	and a
-
-	ld a, e
-
-	ld e, l
-	ld d, h					; 'push' hl
-
-	ld bc, ( tr_map_pix_cropped_height )
-	sbc hl, bc
-
-	jr c, _move_down_cont1
-
-	ld a, TR_MOVE_STEP
-	sub a, l
-
-	ld de, ( tr_map_pix_cropped_height )
-
-_move_down_cont1:
-
-	ld b, 0
-
-	ex de, hl
-
-	ld ( tr_pos_y ), hl
-
-	and a
-	ret z					; zero step - exit
-
-	ld e, a
-
-	ld a, ( tr_scroll_y )
+	ld a, (tr_scroll_y)
 	ld c, a
-
-	and a					; reset carry flag
+	ld b, 0
 
 	and %00000111
 	jp nz, _move_down_cont2
@@ -726,7 +1277,9 @@ _move_down_cont2:
 
 _move_down_cont3:
 
-	ld ( tr_scroll_y ), a
+	ld (tr_scroll_y), a
+
+	ret z
 
 	ld a, b
 	and a
@@ -736,32 +1289,13 @@ _move_down_cont3:
 	TR_SET_DRAW_FLAG_DOWN
 	ret
 
-tr_move_up:
+; IN:	E - move step
 
-	ld hl, ( tr_pos_y )
+_tr_upd_scroll_up:
 
-	ld de, TR_MOVE_STEP
-	and a
-	sbc hl, de
-
-	jr nc, _move_up_cont1
-
-	add hl, de				; get fixed step value
-
-	ld e, l
-
-	ld hl, 0
-
-_move_up_cont1:
-
-	ld b, 0
-
-	ld ( tr_pos_y ), hl
-
-	ld a, ( tr_scroll_y )
+	ld a, (tr_scroll_y)
 	ld c, a
-
-	and a					; reset carry flag
+	ld b, 0
 
 	and %00000111
 	jp nz, _move_up_cont2
@@ -779,7 +1313,7 @@ _move_up_cont2:
 
 _move_up_cont3:
 
-	ld ( tr_scroll_y ), a
+	ld (tr_scroll_y), a
 
 	ret z
 
@@ -790,12 +1324,72 @@ _move_up_cont3:
 
 	TR_SET_DRAW_FLAG_UP
 	ret
-
+	
 _tr_draw_right_tiles_column:
 
 	; calc tiles data addr
 
-	ld de, ( tr_pos_x )
+.ifdef	TR_BIDIR_SCROLL
+
+	ld a, (tr_horiz_dir_pos)
+	ld c, a
+	ld b, 0
+
+	push bc
+
+.ifdef	TR_DATA_TILES4X4
+	DIV_POW2_C 4			; de /= 16
+.else
+	DIV_POW2_C 3			; de /= 8
+.endif
+	res 0, c
+
+	; c *= ScrTilesHeight [6-4x4;12-2x2]
+
+	ld a, c
+
+.ifdef	TR_DATA_TILES4X4
+	; x3
+	MUL_POW2_C 1
+.else
+	; x6
+	MUL_POW2_C 2
+	MUL_POW2_A 1
+.endif
+	add a, c
+
+	ld e, a
+	ld d, 0
+
+	push de
+
+	ld hl, (tr_horiz_dir_pos)
+
+	; if HL < 0
+
+	ld a, h
+	bit 7, h
+
+	ld hl, (tr_curr_scr)
+
+	jp nz, _tr_draw_right_tiles_column_cont1
+
+	; HL >= 0
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_RIGHT 5 3
+
+_tr_draw_right_tiles_column_cont1:
+
+	GET_SCREEN_TILES_ADDR		; hl - curr screen tiles addr
+
+	pop de
+
+	pop bc
+
+	add hl, de			; hl - tiles data addr
+
+.else	;TR_BIDIR_SCROLL
+	ld de, (tr_pos_x)
 	ld c, e
 
 .ifdef	TR_DATA_TILES4X4
@@ -805,7 +1399,7 @@ _tr_draw_right_tiles_column:
 .endif
 	res 0, e
 
-	ld hl, ( TR_MAP_LUT )
+	ld hl, (TR_MAP_LUT)
 	add hl, de
 
 	; get the right screen tiles ( +8 4x4 tiles )
@@ -817,10 +1411,10 @@ _tr_draw_right_tiles_column:
 	inc hl
 	ld d, (hl)
 
-	ld hl, ( TR_TILES_MAP )
+	ld hl, (TR_TILES_MAP)
 	add hl, de			; hl - tiles_addr
 
-	ld de, ( tr_pos_y )
+	ld de, (tr_pos_y)
 	ld b, e
 
 .ifdef	TR_DATA_TILES4X4
@@ -829,6 +1423,7 @@ _tr_draw_right_tiles_column:
 	DIV_POW2_DE 4
 .endif
 	add hl, de			; hl - tiles data addr
+.endif	;TR_BIDIR_SCROLL
 
 	push hl
 
@@ -854,7 +1449,71 @@ _tr_draw_left_tiles_column:
 
 	; calc tiles data addr
 
-	ld de, ( tr_pos_x )
+.ifdef	TR_BIDIR_SCROLL
+
+	ld a, (tr_horiz_dir_pos)
+	add a, 8			; left blank column offset
+	ld c, a
+	ld b, 0
+
+	push bc
+
+.ifdef	TR_DATA_TILES4X4
+	DIV_POW2_C 4			; de /= 16
+.else
+	DIV_POW2_C 3			; de /= 8
+.endif
+	res 0, c
+
+	; c *= ScrTilesHeight [6-4x4;12-2x2]
+
+	ld a, c
+
+.ifdef	TR_DATA_TILES4X4
+	; x3
+	MUL_POW2_C 1
+.else
+	; x6
+	MUL_POW2_C 2
+	MUL_POW2_A 1
+.endif
+	add a, c
+
+	ld e, a
+	ld d, 0
+
+	push de
+
+	ld hl, (tr_horiz_dir_pos)
+
+	ld de, 8
+	add hl, de			; left blank column offset
+
+	; if HL > 0
+
+	ld a, h
+	bit 7, h
+
+	ld hl, (tr_curr_scr)
+
+	jp z, _tr_draw_left_tiles_column_cont1
+
+	; HL < 0
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_LEFT 1 1
+
+_tr_draw_left_tiles_column_cont1:
+
+	GET_SCREEN_TILES_ADDR		; hl - curr screen tiles addr
+
+	pop de
+
+	pop bc
+
+	add hl, de			; hl - tiles data addr
+
+.else	;TR_BIDIR_SCROLL
+	ld de, (tr_pos_x)
 
 	; shift camera pos
 
@@ -871,17 +1530,17 @@ _tr_draw_left_tiles_column:
 .endif
 	res 0, e
 
-	ld hl, ( TR_MAP_LUT )
+	ld hl, (TR_MAP_LUT)
 	add hl, de
 
 	ld e, (hl)
 	inc hl
 	ld d, (hl)
 
-	ld hl, ( TR_TILES_MAP )
+	ld hl, (TR_TILES_MAP)
 	add hl, de			; hl - tiles_addr
 
-	ld de, ( tr_pos_y )
+	ld de, (tr_pos_y)
 	ld b, e
 
 .ifdef	TR_DATA_TILES4X4
@@ -890,6 +1549,7 @@ _tr_draw_left_tiles_column:
 	DIV_POW2_DE 4
 .endif
 	add hl, de			; hl - tiles data addr
+.endif	;TR_BIDIR_SCROLL
 
 	push hl
 
@@ -917,7 +1577,62 @@ _tr_draw_down_tiles_row:
 
 	; calc tiles data addr
 
-	ld de, ( tr_pos_x )
+.ifdef	TR_BIDIR_SCROLL
+
+	ld de, (tr_vert_dir_pos)
+	ld a, d
+	bit 7, d
+	ld a, e
+	jp  z, _tr_draw_down_raw_cont0	; +
+
+	neg
+	ld c, a
+	ld a, $c0
+	sub c
+
+_tr_draw_down_raw_cont0:
+
+	ld c, 8				; left blank column offset
+	ld b, a
+
+	push bc
+
+.ifdef	TR_DATA_TILES4X4
+	DIV_POW2_B 5			; de /= 32
+.else
+	DIV_POW2_B 4			; de /= 16
+.endif
+
+	ld l, b
+	ld h, 0
+
+	push hl
+
+	; if DE < 0
+
+	ld a, d
+	bit 7, d
+
+	ld hl, (tr_curr_scr)
+
+	jp nz, _tr_draw_down_tiles_column_cont1
+
+	; DE >= 0
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_DOWN 7 4
+
+_tr_draw_down_tiles_column_cont1:
+
+	GET_SCREEN_TILES_ADDR		; hl - curr screen tiles addr
+
+	pop de
+
+	pop bc
+
+	add hl, de			; hl - tiles data addr
+
+.else	;TR_BIDIR_SCROLL
+	ld de, (tr_pos_x)
 
 	; shift camera pos
 
@@ -935,14 +1650,14 @@ _tr_draw_down_tiles_row:
 
 	res 0, e
 
-	ld hl, ( TR_MAP_LUT )
+	ld hl, (TR_MAP_LUT)
 	add hl, de
 
 	ld e, (hl)
 	inc hl
 	ld d, (hl)
 
-	ld hl, ( TR_TILES_MAP )
+	ld hl, (TR_TILES_MAP)
 	add hl, de			; hl - tiles_addr
 
 	; get the bottom screen tiles ( +6 4x4 tiles )
@@ -950,7 +1665,7 @@ _tr_draw_down_tiles_row:
 	ld de, ScrTilesHeight
 	add hl, de
 
-	ld de, ( tr_pos_y )
+	ld de, (tr_pos_y)
 	ld b, e
 
 .ifdef	TR_DATA_TILES4X4
@@ -958,8 +1673,8 @@ _tr_draw_down_tiles_row:
 .else
 	DIV_POW2_DE 4
 .endif
-
 	add hl, de			; hl - tiles data addr
+.endif	;TR_BIDIR_SCROLL
 
 	push hl
 
@@ -977,7 +1692,62 @@ _tr_draw_up_tiles_row:
 
 	; calc tiles data addr
 
-	ld de, ( tr_pos_x )
+.ifdef	TR_BIDIR_SCROLL
+
+	ld de, (tr_vert_dir_pos)
+	ld a, d
+	bit 7, d
+	ld a, e
+	jp  z, _tr_draw_up_raw_cont0	; +
+
+	neg
+	ld c, a
+	ld a, $c0
+	sub c
+
+_tr_draw_up_raw_cont0:
+
+	ld c, 8				; left blank column offset
+	ld b, a
+
+	push bc
+
+.ifdef	TR_DATA_TILES4X4
+	DIV_POW2_B 5			; de /= 32
+.else
+	DIV_POW2_B 4			; de /= 16
+.endif
+
+	ld l, b
+	ld h, 0
+
+	push hl
+
+	; if DE > 0
+
+	ld a, d
+	bit 7, d
+
+	ld hl, (tr_curr_scr)
+
+	jp z, _tr_draw_up_tiles_column_cont1
+
+	; DE < 0
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_UP 3 2
+
+_tr_draw_up_tiles_column_cont1:
+
+	GET_SCREEN_TILES_ADDR		; hl - curr screen tiles addr
+
+	pop de
+
+	pop bc
+
+	add hl, de			; hl - tiles data addr
+
+.else	;TR_BIDIR_SCROLL
+	ld de, (tr_pos_x)
 
 	; shift camera pos
 
@@ -995,17 +1765,17 @@ _tr_draw_up_tiles_row:
 
 	res 0, e
 
-	ld hl, ( TR_MAP_LUT )
+	ld hl, (TR_MAP_LUT)
 	add hl, de
 
 	ld e, (hl)
 	inc hl
 	ld d, (hl)
 
-	ld hl, ( TR_TILES_MAP )
+	ld hl, (TR_TILES_MAP)
 	add hl, de			; hl - tiles_addr
 
-	ld de, ( tr_pos_y )
+	ld de, (tr_pos_y)
 	ld b, e
 
 .ifdef	TR_DATA_TILES4X4
@@ -1013,8 +1783,8 @@ _tr_draw_up_tiles_row:
 .else
 	DIV_POW2_DE 4
 .endif
-
 	add hl, de			; hl - tiles data addr
+.endif	;TR_BIDIR_SCROLL
 
 	push hl
 
@@ -1028,7 +1798,7 @@ _tr_fill_row_data:
 
 	; push header to the data buffer
 
-	ld a, 32
+	ld a, TR_ROW_DATA_HEADER
 	ex de, hl
 
 	call buff_push_hdr
@@ -1070,7 +1840,7 @@ _tr_fill_row_data:
 
 	call buff_push_hdr
 
-	ld hl, ( tr_pos_y )
+	ld hl, (tr_pos_y)
 	ld b, l
 	ld c, 0
 
@@ -1088,7 +1858,7 @@ _tr_fill_row_data:
 
 _tr_get_VRAM_addr:
 
-	ld a, ( tr_scroll_x )
+	ld a, (tr_scroll_x)
 
 	neg
 	add a, 8
@@ -1098,7 +1868,7 @@ _tr_get_VRAM_addr:
 	ld e, a
 	ld d, 0
 
-	ld a, ( tr_scroll_y )
+	ld a, (tr_scroll_y)
 
 	and %11111000
 
@@ -1290,7 +2060,7 @@ _tr_push_row_loop:
 
 _tr_push_row_cont:
 
-	ld de, ( TR_MAP_TILES_HEIGHT )
+	ld de, (TR_MAP_TILES_HEIGHT)
 	add hl, de
 
 	ld a, c
@@ -1329,14 +2099,14 @@ _tr_tile_data_row1:
 
 update_scroll:
 
-	ld a, ( tr_flags )
+	ld a, (tr_flags)
 	and TR_UPD_FLAG_SCROLL
 	ret z
 
-	ld a, ( tr_scroll_x )
+	ld a, (tr_scroll_x)
 	ld b, a
 
-	ld a, ( tr_scroll_y )
+	ld a, (tr_scroll_y)
 	ld c, a
 
 	jp VDP_update_scroll

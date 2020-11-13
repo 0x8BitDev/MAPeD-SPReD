@@ -84,6 +84,54 @@
 .endr
 .endm
 
+.macro DIV_POW2_E	; \1 - num bits to shift
+.repeat \1
+	srl e
+.endr
+.endm
+
+.macro MUL_POW2_E	; \1 - num bits to shift
+.repeat \1
+	sla e
+.endr
+.endm
+
+.macro DIV_POW2_D	; \1 - num bits to shift
+.repeat \1
+	srl d
+.endr
+.endm
+
+.macro MUL_POW2_D	; \1 - num bits to shift
+.repeat \1
+	sla d
+.endr
+.endm
+
+.macro DIV_POW2_L	; \1 - num bits to shift
+.repeat \1
+	srl l
+.endr
+.endm
+
+.macro MUL_POW2_L	; \1 - num bits to shift
+.repeat \1
+	sla l
+.endr
+.endm
+
+.macro DIV_POW2_H	; \1 - num bits to shift
+.repeat \1
+	srl h
+.endr
+.endm
+
+.macro MUL_POW2_H	; \1 - num bits to shift
+.repeat \1
+	sla h
+.endr
+.endm
+
 ; http://z80-heaven.wikidot.com/math#toc14
 ; *** C div D ***
 ;

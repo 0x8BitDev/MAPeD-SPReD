@@ -185,7 +185,7 @@ exit:
 
 	.include "common.asm"
 
-	.include "tilemap_render_UTILS.asm"
+	.include "tilemap_render.asm"
 
 ;************************************************************************
 ;
@@ -248,10 +248,10 @@ init_game_level:
 
 .ifdef	TR_DATA_TILES4X4
 	ld hl, Lev0_Tiles
-	ld ( TR_TILES4x4 ), hl
+	ld (TR_TILES4x4), hl
 .endif
 	ld hl, Lev0_Attrs
-	ld ( TR_BLOCK_ATTRS ), hl
+	ld (TR_BLOCK_ATTRS), hl
 
 .ifdef	TR_DATA_RLE
 	ld de, Lev0_Map
@@ -263,10 +263,10 @@ init_game_level:
 .else
 	ld hl, Lev0_Map
 .endif
-	ld ( TR_TILES_MAP ), hl
+	ld (TR_TILES_MAP), hl
 
 	ld hl, Lev0_MapTbl
-	ld ( TR_MAP_LUT ), hl
+	ld (TR_MAP_LUT), hl
 
 	ld a, Lev0_StartScr
 	ld (TR_START_SCR), a

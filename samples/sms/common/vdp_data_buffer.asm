@@ -56,10 +56,10 @@ _cont\@:
 buff_reset:
 
 	xor a
-	ld ( tr_buff ), a
+	ld (tr_buff), a
 
 	ld hl, tr_buff
-	ld ( tr_buff_addr ), hl
+	ld (tr_buff_addr), hl
 
 	ret
 
@@ -69,7 +69,7 @@ buff_reset:
 
 buff_push_hdr:
 
-	ld hl, ( tr_buff_addr )
+	ld hl, (tr_buff_addr)
 
 	ld (hl), a
 	inc hl
@@ -79,7 +79,7 @@ buff_push_hdr:
 	ld (hl), d
 	inc hl
 
-	ld ( tr_buff_addr ), hl
+	ld (tr_buff_addr), hl
 
 	ret
 
@@ -88,14 +88,14 @@ buff_push_hdr:
 
 buff_push_data:
 
-	ld hl, ( tr_buff_addr )
+	ld hl, (tr_buff_addr)
 
 	ld (hl), e
 	inc hl
 	ld (hl), d
 	inc hl
 
-	ld ( tr_buff_addr ), hl
+	ld (tr_buff_addr), hl
 
 	ret
 
@@ -103,7 +103,7 @@ buff_push_data:
 
 buff_end:
 
-	ld hl, ( tr_buff_addr )
+	ld hl, (tr_buff_addr)
 
 	ld a, TR_BUFF_END
 	ld (hl), a
