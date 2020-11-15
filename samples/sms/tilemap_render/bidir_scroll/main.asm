@@ -39,14 +39,6 @@
 
 ;************************************************************************
 ;
-;	ROM description
-;
-;************************************************************************
-
-.sdsctag 0.1, "Bidirectional scroller demo", "MAPeD-SMS Sample: Bidirectional scroller", "0x8BitDev"
-
-;************************************************************************
-;
 ;	Some useful includes
 ;
 ;************************************************************************
@@ -190,6 +182,17 @@ exit:
 	.include "common.asm"
 
 	.include "tilemap_render.asm"
+
+;************************************************************************
+;
+;	ROM description
+;
+;************************************************************************
+.ifdef	TR_BIDIR_SCROLL
+.sdsctag 0.1, "Bidirectional scroller demo", "MAPeD-SMS Sample: Bidirectional scroller", "0x8BitDev"
+.else
+.sdsctag 0.1, "Bidirectional static screens switching demo", "MAPeD-SMS Sample: Bidirectional static screens switching demo", "0x8BitDev"
+.endif
 
 ;************************************************************************
 ;

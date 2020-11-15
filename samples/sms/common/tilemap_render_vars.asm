@@ -89,6 +89,11 @@ tr_tiles_offset:
 	dw
 ;.endif
 
+;.ifdef	TR_BIDIR_STAT_SCR
+tr_jpad_state:
+	dw
+;.endif
+
 tr_scroll_x:
 	db
 tr_scroll_y:

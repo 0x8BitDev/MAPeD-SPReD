@@ -18,6 +18,9 @@
 ;	update_scroll
 ;
 
+; disable bidirectional scrolling and use static screens switching
+;.define	TR_BIDIR_STAT_SCR
+
 
 .if MAP_DATA_MAGIC&MAP_FLAG_DIR_ROWS == MAP_FLAG_DIR_ROWS
 	.printt "*** ERROR: The sample doesn't support row ordered data! ***\n"
@@ -26,9 +29,12 @@
 
 .if	( MAP_DATA_MAGIC & MAP_FLAG_MODE_MULTIDIR_SCROLL ) == MAP_FLAG_MODE_MULTIDIR_SCROLL
 .define	TR_MULTIDIR_SCROLL
+.define	TR_SCROLL
 .else
 .if	( MAP_DATA_MAGIC & MAP_FLAG_MODE_BIDIR_SCROLL ) == MAP_FLAG_MODE_BIDIR_SCROLL
 .define	TR_BIDIR_SCROLL
+.define	TR_BIDIR		; for both cases: bidir scroll and bidir stat scr
+.define	TR_SCROLL
 .endif
 .endif
 
@@ -54,6 +60,11 @@
 
 .if	( MAP_DATA_MAGIC & MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS ) == MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS
 .define	TR_ADJACENT_SCR_INDS
+.endif
+
+.ifdef	TR_BIDIR_STAT_SCR
+.undef	TR_BIDIR_SCROLL
+.undef	TR_SCROLL
 .endif
 
 ; *** constants ***
@@ -83,6 +94,8 @@
 
 .endif
 
+.ifdef	TR_SCROLL
+
 ; *** tiles column/row drawing routines tables ***
 
 _tr_tiles_col_routine_tbl:
@@ -96,6 +109,8 @@ _tr_tiles_row_routine_tbl:
 .ifdef	TR_DATA_TILES4X4
 	.dw _tr_tile_data_row2, _tr_tile_data_row3
 .endif
+
+.endif	;TR_SCROLL
 
 ; *** useful macroses ***
 
@@ -113,6 +128,19 @@ _tr_tiles_row_routine_tbl:
 	inc hl
 .endif
 	call _tr_get_tiles_addr
+.endm
+
+.endif	;TR_BIDIR_SCROLL
+
+
+.ifdef	TR_BIDIR
+
+.macro	SCREEN_ON
+	VDP_WRITE_REG_CMD 1 VDPR1_FIXED|VDPR1_VBLANK|VDPR1_DISPLAY_ON
+.endm
+
+.macro	SCREEN_OFF
+	VDP_WRITE_REG_CMD 1 VDPR1_FIXED|VDPR1_VBLANK
 .endm
 
 ; *** get adjacent screen data addr ***
@@ -166,7 +194,7 @@ _tr_tiles_row_routine_tbl:
 .endif
 .endm
 
-.endif	;TR_BIDIR_SCROLL
+.endif	;TR_BIDIR
 
 .macro TR_PUT_12ATTR_TO_VRAM	; a - attribute index
 	exx
@@ -396,18 +424,26 @@ tr_init:
 .ifdef	TR_MULTIDIR_SCROLL
 	ld a, (TR_START_SCR)
 .else
-.ifdef	TR_BIDIR_SCROLL
 
+.ifdef	TR_BIDIR_STAT_SCR
+	ld hl, $ffff
+	ld (tr_jpad_state), hl
+.endif	;TR_BIDIR_STAT_SCR
+
+	ld a, $ff
+	ld (tr_CHR_id), a
+
+.ifdef	TR_BIDIR_SCROLL
 	ld hl, 0
 	ld (tr_horiz_dir_pos), hl
 	ld (tr_vert_dir_pos), hl
+.endif	;TR_BIDIR_SCROLL
 
 	ld hl, (TR_START_SCR)
 	ld (tr_curr_scr), hl
 
 	call _tr_upload_palette_tiles
 .endif	;TR_MULTIDIR_SCROLL
-.endif	;TR_BIDIR_SCROLL
 
 	call _tr_get_tiles_addr		; hl - tiles addr
 
@@ -643,14 +679,22 @@ _tr_get_tiles_addr:
 
 	ret
 .else
-.ifdef	TR_BIDIR_SCROLL
 
 ; *** upload palette and tiles to VDP ***
 ; IN: HL - screen data addr
 
 _tr_upload_palette_tiles:
 
-	ld a, (hl)			; e - CHR data index
+	SCREEN_OFF
+
+	ld a, (tr_CHR_id)
+	ld c, a
+
+	ld a, (hl)			; a - CHR data index
+	cp c
+
+	jp z, _tr_upload_palette_tiles_exit
+
 	ld (tr_CHR_id), a
 
 	ld c, a
@@ -665,10 +709,7 @@ _tr_upload_palette_tiles:
 
 	ld a, c
 
-	add a, a
-	add a, a
-	add a, a
-	add a, a			; a x= 16
+	MUL_POW2_A 4			; a x= 16
 
 	ld e, a
 	ld d, 0
@@ -727,11 +768,16 @@ _tr_upload_palette_tiles:
 
 	pop hl
 
+_tr_upload_palette_tiles_exit:
+
 	inc hl
 
 .ifdef	TR_DATA_MARKS
 	inc hl
 .endif
+
+	SCREEN_ON
+
 	ret
 
 ;
@@ -773,8 +819,98 @@ _tr_get_tiles_addr:
 
 	ret
 
-.endif	;TR_BIDIR_SCROLL
 .endif	;TR_MULTIDIR_SCROLL
+
+.ifdef	TR_BIDIR_STAT_SCR
+
+tr_jpad_update:	
+
+	JPAD_LOAD_STATE
+
+	; if JPAD_STATE == tr_jpad_state then exit
+
+	ld hl, (tr_jpad_state)
+	ld de, (JPAD_STATE)
+
+	ld a, l
+	cp e
+	jp nz, tr_jpad_update_cont
+
+	ld a, h
+	cp d
+	ret z
+
+tr_jpad_update_cont:
+
+	JPAD1_CHECK_RIGHT
+	call nz, tr_move_right
+
+	JPAD1_CHECK_LEFT
+	call nz, tr_move_left
+
+	JPAD1_CHECK_DOWN
+	call nz, tr_move_down
+
+	JPAD1_CHECK_UP
+	call nz, tr_move_up
+
+	; save jpad state
+
+	ld hl, (JPAD_STATE)
+	ld (tr_jpad_state), hl
+
+	ret
+
+tr_move_right:
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_RIGHT 5 3
+
+	jp _tr_update_screen
+	
+tr_move_left:
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_LEFT 1 1
+
+	jp _tr_update_screen
+
+tr_move_down:
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_DOWN 7 4
+
+	jp _tr_update_screen
+	
+tr_move_up:
+
+	ld hl, (tr_curr_scr)
+
+	GET_ADJACENT_SCREEN TR_MASK_ADJ_SCR_UP 3 2
+
+; IN:	HL - screen data addr
+
+_tr_update_screen:
+
+	ld a, h
+	or l
+	ret z
+
+	ld (tr_curr_scr), hl
+
+	call _tr_upload_palette_tiles
+	call _tr_get_tiles_addr		; hl - tiles addr
+
+	ld de, TR_VRAM_SCR_ATTR_ADDR
+
+	jp _tr_draw_screen
+
+.endif	;TR_BIDIR_STAT_SCR	
+
+.ifdef	TR_SCROLL
 
 tr_jpad_update:	
 
@@ -2096,6 +2232,7 @@ _tr_tile_data_row1:
 
 	TR_FILL_TILE_COLROW 0 0 4 0
 .endif
+.endif	;TR_SCROLL
 
 update_scroll:
 

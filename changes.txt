@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+15.11.2020 - SMS: added bidirectional static screens switching samples
 13.11.2020 - SMS: added bidirectional scroller samples
 03.11.2020 - SMS: added multidirectional scroller sample
 18.09.2020 - Added tiles patterns manager

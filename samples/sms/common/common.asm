@@ -56,7 +56,7 @@
 
 .macro MUL_POW2_A	; \1 - num bits to shift
 .repeat \1
-	sla a
+	add a, a
 .endr
 .endm
 
