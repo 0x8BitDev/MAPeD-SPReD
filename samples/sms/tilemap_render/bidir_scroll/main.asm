@@ -142,7 +142,7 @@ vblank_handler:
 
 exit:
 
-	call update_scroll
+	call tr_update_scroll
 
 	ret
 
@@ -168,7 +168,12 @@ exit:
 .endif
 
 .if MAP_DATA_MAGIC&MAP_FLAG_MARKS == MAP_FLAG_MARKS
-	.printt "*** ERROR: This sample doesn't support screen marks data! Please, re export with 'Marks: OFF'. ***\n"
+	.printt "*** ERROR: This sample doesn't support screen marks data! Please, re export it with 'Marks: OFF'. ***\n"
+	.fail
+.endif
+
+.if MAP_DATA_MAGIC&MAP_FLAG_LAYOUT_MATRIX == MAP_FLAG_LAYOUT_MATRIX
+	.printt "*** ERROR: This sample doesn't support a matrix layout! Please, re export it with 'Adjacent screens' or 'Adjacent screen inds'. ***\n"
 	.fail
 .endif
 
@@ -207,15 +212,14 @@ main:
 
 	; init REG0
 
+.ifdef	TR_BIDIR_STAT_SCR
+	VDP_WRITE_REG_CMD 0 VDPR0_FIXED
+.else
 	VDP_WRITE_REG_CMD 0 VDPR0_FIXED|VDPR0_BLANK_LEFT_COLUMN
-
+.endif
 	; send show image command to VDP
 
 	VDP_WRITE_REG_CMD 1 VDPR1_FIXED|VDPR1_DISPLAY_ON|VDPR1_VBLANK
-
-	; sprite tiles use the first 8Kb of VRAM
-
-	VDP_WRITE_REG_CMD 6 VDPR6_SPR_TILES_FIRST_8K
 
 	ei
 loop:   

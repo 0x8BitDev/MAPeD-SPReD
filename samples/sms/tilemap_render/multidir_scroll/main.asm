@@ -148,7 +148,7 @@ vblank_handler:
 
 exit:
 
-	call update_scroll
+	call tr_update_scroll
 
 	ret
 
