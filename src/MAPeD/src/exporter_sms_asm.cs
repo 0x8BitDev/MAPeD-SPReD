@@ -50,8 +50,7 @@ namespace MAPeD
 			public int			m_tiles_offset;
 			public int			m_blocks_offset;			
 			
-			public int			m_VDP_scr_offset;			// FIXME: what's this ?!
-			public int			m_scr_attrs_offset;
+			public int			m_VDP_scr_offset;
 			
 			public static int	_tiles_offset;
 			public static int	_blocks_offset;
@@ -71,8 +70,7 @@ namespace MAPeD
 				_tiles_offset 	+= _scr_tiles_size;
 				_blocks_offset 	+= _scr_blocks_size;
 				
-				m_VDP_scr_offset		= 0;
-				m_scr_attrs_offset	= 0;
+				m_VDP_scr_offset = 0;
 			}
 			
 			public void destroy()
@@ -155,7 +153,7 @@ namespace MAPeD
 
 		void CheckBoxMovePropsToScrMapChanged_Event(object sender, EventArgs e)
 		{
-			RBtnPropPerBlock.Enabled = RBtnPropPerCHR.Enabled = !CheckBoxMovePropsToScrMap.Checked;
+			RBtnTiles4x4.Enabled = RBtnTiles2x2.Enabled = RBtnPropPerBlock.Enabled = RBtnPropPerCHR.Enabled = !CheckBoxMovePropsToScrMap.Checked;
 			
 			RBtnPropPerCHR.Checked = CheckBoxMovePropsToScrMap.Checked ? true:RBtnPropPerCHR.Checked;
 			
@@ -948,12 +946,7 @@ namespace MAPeD
 								
 								if( RBtnModeStaticScreen.Checked )
 								{
-									_sw.WriteLine( "\n\t.word " + exp_scr.m_VDP_scr_offset + ( enable_comments ? "\t; " + m_filename + "_VDPScr" + ( !CheckBoxRLE.Checked ? "\\" + m_filename + "_AttrsScr":"" ) + " offset":"" ) );
-									
-									if( CheckBoxRLE.Checked )
-									{
-										_sw.WriteLine( "\t.word " + exp_scr.m_scr_attrs_offset + ( enable_comments ? "\t; " + m_filename + "_AttrsScr offset":"" ) );										
-									}
+									_sw.WriteLine( "\n\t.word " + exp_scr.m_VDP_scr_offset + ( enable_comments ? "\t; " + m_filename + "_VDPScr offset":"" ) );
 								}
 								
 								_sw.WriteLine( "\n\t.byte " + exp_scr.m_scr_ind + ( enable_comments ? "\t; screen index":"" ) );
@@ -1080,7 +1073,7 @@ namespace MAPeD
 			{
 				_bw.Write( data_copy );
 				
-				_data_offset += _data.Length;
+				_data_offset += _data.Length * sizeof( ushort );
 			}
 			
 			return true;
