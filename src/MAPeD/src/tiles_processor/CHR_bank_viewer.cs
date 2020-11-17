@@ -66,6 +66,8 @@ namespace MAPeD
 			if( m_data != null )
 			{
 				MainForm.set_status_msg( String.Format( "CHR Bank: Sprite #{0:X2}", m_sel_ind ) );
+				
+				update();
 			}
 		}
 
