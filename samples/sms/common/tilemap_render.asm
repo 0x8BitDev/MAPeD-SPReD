@@ -1,11 +1,22 @@
 ;########################################################################
 ;
-; Some helpful tilemap renderers code
+; Tilemap renderer routines
 ;
 ; Copyright 2020 0x8BitDev ( MIT license )
 ;
 ;########################################################################
 
+; Supported options:
+;
+;	- Tiles 4x4 / 2x2
+;	- Data order: Columns
+;	- Layout:
+;		- Multidirectional scroll (RLE: ANY)
+;		- Bidirectional scroll (Marks: ANY)
+;		- Static screens (Marks: ANY)
+;	- Entities: Not supported
+;	- Property Id: Not supported
+;
 
 ; Public routines:
 ;
@@ -15,7 +26,7 @@
 ;	tr_move_left
 ;	tr_move_up
 ;	tr_move_down
-;	update_scroll
+;	tr_update_scroll
 ;
 
 ; disable bidirectional scrolling and use static screens switching
@@ -60,6 +71,12 @@
 
 .if	( MAP_DATA_MAGIC & MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS ) == MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS
 .define	TR_ADJACENT_SCR_INDS
+.endif
+
+.if	( MAP_DATA_MAGIC & MAP_FLAG_MODE_STATIC_SCREENS ) == MAP_FLAG_MODE_STATIC_SCREENS
+.define	TR_STAT_SCR_VDP
+.define	TR_BIDIR_STAT_SCR
+.define	TR_BIDIR
 .endif
 
 .ifdef	TR_BIDIR_STAT_SCR
@@ -135,12 +152,14 @@ _tr_tiles_row_routine_tbl:
 
 .ifdef	TR_BIDIR
 
-.macro	SCREEN_ON
-	VDP_WRITE_REG_CMD 1 VDPR1_FIXED|VDPR1_VBLANK|VDPR1_DISPLAY_ON
+.macro	SCREEN_OFF
+	halt
+	VDP_WRITE_REG_CMD 1 VDPR1_FIXED|VDPR1_VBLANK
 .endm
 
-.macro	SCREEN_OFF
-	VDP_WRITE_REG_CMD 1 VDPR1_FIXED|VDPR1_VBLANK
+.macro	SCREEN_ON
+	halt
+	VDP_WRITE_REG_CMD 1 VDPR1_FIXED|VDPR1_DISPLAY_ON|VDPR1_VBLANK
 .endm
 
 ; *** get adjacent screen data addr ***
@@ -156,6 +175,11 @@ _tr_tiles_row_routine_tbl:
 	and \1
 	ret z
 
+	inc hl
+.endif
+
+.ifdef	TR_STAT_SCR_VDP
+	inc hl
 	inc hl
 .endif
 
@@ -442,14 +466,22 @@ tr_init:
 	ld hl, (TR_START_SCR)
 	ld (tr_curr_scr), hl
 
+.ifndef	TR_STAT_SCR_VDP
 	call _tr_upload_palette_tiles
+.else
+	jp _tr_upload_palette_tiles
+.endif	;!TR_STAT_SCR_VDP
 .endif	;TR_MULTIDIR_SCROLL
+
+.ifndef	TR_STAT_SCR_VDP
 
 	call _tr_get_tiles_addr		; hl - tiles addr
 
 	ld de, TR_VRAM_SCR_ATTR_ADDR
 
 	jp _tr_draw_screen
+
+.endif	;!TR_STAT_SCR_VDP
 
 ; *** fill the screen area by tiles data stored in HL ***
 ;
@@ -685,8 +717,6 @@ _tr_get_tiles_addr:
 
 _tr_upload_palette_tiles:
 
-	SCREEN_OFF
-
 	ld a, (tr_CHR_id)
 	ld c, a
 
@@ -725,7 +755,10 @@ _tr_upload_palette_tiles:
 	; load tiles
 
 	pop bc
+
+.ifndef	TR_STAT_SCR_VDP
 	push bc
+.endif	;!TR_STAT_SCR_VDP
 
 	MUL_POW2_C 1
 
@@ -751,6 +784,8 @@ _tr_upload_palette_tiles:
 
 	call VDP_load_tiles
 
+.ifndef	TR_STAT_SCR_VDP
+
 	pop bc
 
 	; calc tiles offset
@@ -765,6 +800,7 @@ _tr_upload_palette_tiles:
 	ld d, (hl)
 
 	ld (tr_tiles_offset), de
+.endif	;!TR_STAT_SCR_VDP
 
 	pop hl
 
@@ -776,7 +812,34 @@ _tr_upload_palette_tiles_exit:
 	inc hl
 .endif
 
-	SCREEN_ON
+.ifdef	TR_STAT_SCR_VDP
+
+	ld e, (hl)
+	inc hl
+	ld d, (hl)
+
+	ld hl, (TR_SCR_TILES_ARR)
+	add hl, de
+
+	VDP_WRITE_RAM_CMD TR_VRAM_SCR_ATTR_ADDR
+
+	ld bc, ScrGfxDataSize >> 3
+
+_tr_VDP_attr_load_loop:
+
+.repeat	8
+	ld a, (hl)
+	out (VDP_CMD_DATA_REG), a	
+	inc hl
+.endr
+	dec bc
+
+	ld a, b
+	or c
+
+	jp nz, _tr_VDP_attr_load_loop
+
+.endif	;TR_STAT_SCR_VDP
 
 	ret
 
@@ -901,12 +964,23 @@ _tr_update_screen:
 
 	ld (tr_curr_scr), hl
 
+	SCREEN_OFF
+
 	call _tr_upload_palette_tiles
+
+.ifndef	TR_STAT_SCR_VDP
+
 	call _tr_get_tiles_addr		; hl - tiles addr
 
 	ld de, TR_VRAM_SCR_ATTR_ADDR
 
-	jp _tr_draw_screen
+	call _tr_draw_screen
+
+.endif	;!TR_STAT_SCR_VDP
+
+	SCREEN_ON
+
+	ret
 
 .endif	;TR_BIDIR_STAT_SCR	
 
@@ -2234,7 +2308,7 @@ _tr_tile_data_row1:
 .endif
 .endif	;TR_SCROLL
 
-update_scroll:
+tr_update_scroll:
 
 	ld a, (tr_flags)
 	and TR_UPD_FLAG_SCROLL

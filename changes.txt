@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+16.11.2020 - SMS: added static screens switching sample (VDP-ready screens data)
 15.11.2020 - SMS: added bidirectional static screens switching samples
 13.11.2020 - SMS: added bidirectional scroller samples
 03.11.2020 - SMS: added multidirectional scroller sample

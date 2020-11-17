@@ -50,7 +50,7 @@ TR_CHR_ARR:
 TR_CHR_SIZE_ARR:
 	dw
 
-TR_SCR_TILES_ARR:
+TR_SCR_TILES_ARR:		; bidir scroll & stat scr (VDP-ready data)
 	dw
 
 TR_PALETTES_ARR:
