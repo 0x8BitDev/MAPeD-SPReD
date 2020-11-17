@@ -138,7 +138,7 @@ As mentioned before, you need to install Mono on your computer. To run the tools
  - `./samples/sms/tilemap_render/bidir_scroll_ADJ_SCR_MASKS/`	- bidirectional scroller with complex topology of a map
  - `./samples/sms/tilemap_render/bidir_stat_scr/`		- the same as above, but with static screens switching
  - `./samples/sms/tilemap_render/bidir_stat_scr_ADJ_SCR_MASKS/`	- the same as above, but with static screens switching
- - `./samples/sms/tilemap_render/static_screens/`	- static screens switching using VDP-ready screens data
+ - `./samples/sms/tilemap_render/stat_scr_VDP_data/`	- static screens switching using VDP-ready screens data
 
 **ZX Spectrum (MAPeD-NES/SMS):**
 
