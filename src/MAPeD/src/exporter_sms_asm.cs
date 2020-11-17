@@ -136,7 +136,7 @@ namespace MAPeD
 			CheckBoxExportMarks.Enabled = true;
 			
 			CheckBoxRLE.Checked = CheckBoxRLE.Enabled = false;
-
+			
 			update_desc();
 		}
 
@@ -153,7 +153,7 @@ namespace MAPeD
 
 		void CheckBoxMovePropsToScrMapChanged_Event(object sender, EventArgs e)
 		{
-			RBtnTiles4x4.Enabled = RBtnTiles2x2.Enabled = RBtnPropPerBlock.Enabled = RBtnPropPerCHR.Enabled = !CheckBoxMovePropsToScrMap.Checked;
+			RBtnPropPerBlock.Enabled = RBtnPropPerCHR.Enabled = !CheckBoxMovePropsToScrMap.Checked;
 			
 			RBtnPropPerCHR.Checked = CheckBoxMovePropsToScrMap.Checked ? true:RBtnPropPerCHR.Checked;
 			
