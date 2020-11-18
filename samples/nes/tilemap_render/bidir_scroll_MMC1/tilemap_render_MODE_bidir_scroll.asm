@@ -11,7 +11,7 @@
 ;############################################################################################################
 ; LIMITATIONS:
 ;
-;	- The mirroring can be change dynamically at each even screen from the start one.
+;	- The mirroring can be changed dynamically at each even screen from the start one.
 ;
 ;############################################################################################################
 
