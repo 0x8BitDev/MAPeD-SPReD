@@ -466,11 +466,7 @@ tr_init:
 	ld hl, (TR_START_SCR)
 	ld (tr_curr_scr), hl
 
-.ifndef	TR_STAT_SCR_VDP
 	call _tr_upload_palette_tiles
-.else
-	jp _tr_upload_palette_tiles
-.endif	;!TR_STAT_SCR_VDP
 .endif	;TR_MULTIDIR_SCROLL
 
 .ifndef	TR_STAT_SCR_VDP
@@ -479,19 +475,52 @@ tr_init:
 
 	ld de, TR_VRAM_SCR_ATTR_ADDR
 
-	jp _tr_draw_screen
-
 .endif	;!TR_STAT_SCR_VDP
+
+	jp _tr_draw_screen
 
 ; *** fill the screen area by tiles data stored in HL ***
 ;
+;.ifdef	TR_STAT_SCR_VDP
+; IN:	HL - VDP screen data offset
+;.else
 ; IN: 	HL - tiles addr
 ;	DE - VRAM addr
+;.endif	TR_STAT_SCR_VDP
 ;
 ; OUT: filled screen area
 ;
 
 _tr_draw_screen:
+
+.ifdef	TR_STAT_SCR_VDP
+
+	ld e, (hl)
+	inc hl
+	ld d, (hl)
+
+	ld hl, (TR_SCR_TILES_ARR)
+	add hl, de
+
+	VDP_WRITE_RAM_CMD TR_VRAM_SCR_ATTR_ADDR
+
+	ld bc, ScrGfxDataSize >> 3
+
+_tr_VDP_attr_load_loop:
+
+.repeat	8
+	ld a, (hl)
+	out (VDP_CMD_DATA_REG), a	
+	inc hl
+.endr
+	dec bc
+
+	ld a, b
+	or c
+
+	jp nz, _tr_VDP_attr_load_loop
+
+.else	;TR_STAT_SCR_VDP
 
 	ld b, ScrTilesWidth
 
@@ -586,6 +615,8 @@ _drw_tiles_col:
 
 	dec b
 	jp nz, _drw_tiles_row
+
+.endif	;TR_STAT_SCR_VDP
 
 	ret
 
@@ -811,36 +842,6 @@ _tr_upload_palette_tiles_exit:
 .ifdef	TR_DATA_MARKS
 	inc hl
 .endif
-
-.ifdef	TR_STAT_SCR_VDP
-
-	ld e, (hl)
-	inc hl
-	ld d, (hl)
-
-	ld hl, (TR_SCR_TILES_ARR)
-	add hl, de
-
-	VDP_WRITE_RAM_CMD TR_VRAM_SCR_ATTR_ADDR
-
-	ld bc, ScrGfxDataSize >> 3
-
-_tr_VDP_attr_load_loop:
-
-.repeat	8
-	ld a, (hl)
-	out (VDP_CMD_DATA_REG), a	
-	inc hl
-.endr
-	dec bc
-
-	ld a, b
-	or c
-
-	jp nz, _tr_VDP_attr_load_loop
-
-.endif	;TR_STAT_SCR_VDP
-
 	ret
 
 ;
@@ -974,9 +975,9 @@ _tr_update_screen:
 
 	ld de, TR_VRAM_SCR_ATTR_ADDR
 
-	call _tr_draw_screen
-
 .endif	;!TR_STAT_SCR_VDP
+
+	call _tr_draw_screen
 
 	SCREEN_ON
 
