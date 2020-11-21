@@ -1,7 +1,7 @@
 ﻿/*
  * Created by SharpDevelop.
  * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
- * Date: 17.03.2019
+ * Date: 17.03.2020
  * Time: 15:20
  */
 using System;
@@ -38,7 +38,11 @@ namespace MAPeD
 	        EnsureAssociationsSet(
 	            new FileAssociation
 	            {
+#if DEF_NES		
 	                Extension = ".mapednes",
+#elif DEF_SMS
+	                Extension = ".mapedsms",
+#endif		
 	                ProgId = utils.CONST_PLATFORM + "_GameMapsEditor",
 	                FileTypeDescription = utils.CONST_PLATFORM + " Game Maps Editor File",
 	                ExecutableFilePath = filePath
