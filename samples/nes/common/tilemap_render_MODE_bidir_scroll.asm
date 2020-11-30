@@ -8,6 +8,8 @@
 ;	map with transition screen(s). It can be used with 4x4/2x2 tiles. The column data order is required.
 ;	Uses attributes per block (2x2 tile).
 ;
+; P.S.: An example of a real NES game that used dynamic mirroring is "Little Samson" © 1992 Taito / Takeru
+;
 ;############################################################################################################
 ; LIMITATIONS:
 ;
@@ -38,7 +40,7 @@
 ;	MAP_FLAG_ATTRS_PER_BLOCK
 ;
 
-.define TR_DYNAMIC_MIRRORING	1
+.define TR_MIRRORING_VERTICAL	!TR_DYNAMIC_MIRRORING
 
 ; routines aliases
 CHR_bankswitching = mmc1_chr_bank1_write	; switch CHR bank \ A - bank index
@@ -46,7 +48,7 @@ CHR_bankswitching = mmc1_chr_bank1_write	; switch CHR bank \ A - bank index
 	.IF TR_DYNAMIC_MIRRORING
 mirroring_vertical 	= mmc1_mirroring_vertical
 mirroring_horizontal	= mmc1_mirroring_horizontal
-	.ENDIF	; TR_DYNAMIC_MIRRORING
+	.ENDIF	;TR_DYNAMIC_MIRRORING
 
 
 .include "../../common/tilemap_render_UTILS.asm"
@@ -80,7 +82,7 @@ TR_SCROLL_STEP	= 2 ; 1 / 2 / 4
 ; INIT DATA: BEG --------
 tr_blocks_props_offs:
 		.res 2	; tilemap_BlocksPropsOffs
-tr_blocks:	.res 2	; tilemap_Blocks					
+tr_blocks:	.res 2	; tilemap_Blocks
 tr_palettes:	.res 2	; tilemap_Plts
 
 tr_tiles_scr:	.res 2	; tilemap_TileScr - 64 bytes per screen
@@ -91,7 +93,7 @@ tr_tiles:	.res 2	; tilemap_Tiles
 tr_attrs:	.res 2	; tilemap_Attrs
 	.ELSE
 tr_attrs_scr:	.res 2	; tilemap_AttrsScr
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 ; INIT DATA: END --------
 
 	.scope inner_vars
@@ -122,7 +124,7 @@ _tr_blocks:	.res 2
 	.IF ::TR_DATA_TILES4X4
 _tr_tiles:	.res 2
 _tr_attrs:	.res 2
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 
 _tr_last_chr_id:
 		.res 1
@@ -131,6 +133,17 @@ _drw_rowcol_inds_offset:
 		.res 1	; offsets in the _drw_rowcol_inds_tbl array
 
 _loop_cntr:	.res 1
+
+
+	.IF TR_MIRRORING_VERTICAL
+
+_tr_forced_upd_flags:	.res 1
+
+TR_UPD_FLAG_FORCED_ATTRS	= %00100000	; forced drawing of attributes
+TR_UPD_FLAG_FORCED_TOP		= %01000000	; forced drawing of top line
+TR_UPD_FLAG_FORCED_BOTTOM	= %10000000	; forced drawing of bottom line
+
+	.ENDIF	;TR_MIRRORING_VERTICAL
 
 	.endscope
 
@@ -151,9 +164,27 @@ _tiles_col_offset:	.byte 0*SCR_HTILES_CNT, 1*SCR_HTILES_CNT, 2*SCR_HTILES_CNT, 3
 			.byte 8*SCR_HTILES_CNT, 9*SCR_HTILES_CNT, 10*SCR_HTILES_CNT, 11*SCR_HTILES_CNT
 			.byte 12*SCR_HTILES_CNT, 13*SCR_HTILES_CNT, 14*SCR_HTILES_CNT, 15*SCR_HTILES_CNT
 
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 ; MACROSES
+
+	.IF TR_MIRRORING_VERTICAL
+
+	.macro tr_set_draw_flag_forced_top
+	lda inner_vars::_tr_forced_upd_flags
+	and #<~(inner_vars::TR_UPD_FLAG_FORCED_BOTTOM | inner_vars::TR_UPD_FLAG_FORCED_ATTRS)
+	ora #inner_vars::TR_UPD_FLAG_FORCED_TOP
+	sta inner_vars::_tr_forced_upd_flags
+	.endmacro
+
+	.macro tr_set_draw_flag_forced_bottom
+	lda inner_vars::_tr_forced_upd_flags
+	and #<~(inner_vars::TR_UPD_FLAG_FORCED_TOP | inner_vars::TR_UPD_FLAG_FORCED_ATTRS)
+	ora #inner_vars::TR_UPD_FLAG_FORCED_BOTTOM
+	sta inner_vars::_tr_forced_upd_flags
+	.endmacro
+
+	.ENDIF	;TR_MIRRORING_VERTICAL
 
 	; OUT: A - screen index
 	.macro get_screen_index _ovflw_flag, _check_scr_dir_proc, 
@@ -234,7 +265,7 @@ _tiles_col_offset:	.byte 0*SCR_HTILES_CNT, 1*SCR_HTILES_CNT, 2*SCR_HTILES_CNT, 3
 
 	upd_flag_set inner_vars::TR_UPD_FLAG_IGNORE_DOWN_OVERFLOW
 
-	.ENDIF	; FIX_MOVE_UP
+	.ENDIF	;FIX_MOVE_UP
 
 	.IF FIX_MOVE_DOWN
 	lda #$00
@@ -243,7 +274,7 @@ _tiles_col_offset:	.byte 0*SCR_HTILES_CNT, 1*SCR_HTILES_CNT, 2*SCR_HTILES_CNT, 3
 
 	upd_flag_set inner_vars::TR_UPD_FLAG_IGNORE_UP_OVERFLOW
 
-	.ENDIF	; FIX_MOVE_DOWN
+	.ENDIF	;FIX_MOVE_DOWN
 
 	.endmacro
 
@@ -382,7 +413,7 @@ init_draw:
 	.IF ::TR_DATA_TILES4X4
 	calc_data_offset_by_CHR_id tr_tiles_offs, tr_tiles, inner_vars::_tr_tiles, 0
 	calc_data_offset_by_CHR_id tr_tiles_offs, tr_attrs, inner_vars::_tr_attrs, 1
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 
 	; calc blocks data offset by CHR bank index
 	calc_data_offset_by_CHR_id tr_blocks_props_offs, tr_blocks, inner_vars::_tr_blocks, 0
@@ -396,6 +427,11 @@ init_draw:
 
 	lda #inner_vars::TR_UPD_FLAG_DIR_SELECT
 	sta inner_vars::_tr_upd_flags
+
+	.IF TR_MIRRORING_VERTICAL
+	lda #$00
+	sta inner_vars::_tr_forced_upd_flags
+	.ENDIF
 
 	lda #$02
 	sta inner_vars::_nametable
@@ -413,7 +449,7 @@ init_draw:
 
 	.IF !::TR_DATA_TILES4X4
 	pha
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 
 	; get screen tiles data ptr by index
 
@@ -446,7 +482,7 @@ init_draw:
 	.ELSE
 	pla
 	calc_64bytes_data_offset tr_attrs_scr, _tmp_val
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 	ldx #SCR_WATTRS_CNT
 
@@ -464,7 +500,7 @@ _apply_CHR_bank_and_palette:
 	.IF ::TR_DATA_TILES4X4
 	calc_data_offset_by_CHR_id tr_tiles_offs, tr_tiles, inner_vars::_tr_tiles, 0
 	calc_data_offset_by_CHR_id tr_tiles_offs, tr_attrs, inner_vars::_tr_attrs, 1
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 
 	; calc blocks data offset by CHR bank index
 	calc_data_offset_by_CHR_id tr_blocks_props_offs, tr_blocks, inner_vars::_tr_blocks, 0
@@ -563,7 +599,7 @@ move_left:
 
 	.IF TR_DYNAMIC_MIRRORING
 	jsr mirroring_vertical
-	.ENDIF	; TR_DYNAMIC_MIRRORING
+	.ENDIF	;TR_DYNAMIC_MIRRORING
 
 @cont:
 	ldx #$00
@@ -656,7 +692,7 @@ move_right:
 
 	.IF TR_DYNAMIC_MIRRORING
 	jsr mirroring_vertical
-	.ENDIF	; TR_DYNAMIC_MIRRORING
+	.ENDIF	;TR_DYNAMIC_MIRRORING
 
 @cont:
 	ldx #$00
@@ -693,9 +729,29 @@ move_right:
 	rts
 
 move_up:
+	.IF TR_MIRRORING_VERTICAL
+
+	lda inner_vars::_tr_forced_upd_flags
+	and #inner_vars::TR_UPD_FLAG_FORCED_TOP
+	beq @cont1
+
+	lda inner_vars::_tr_pos_y
+	beq @cont1
+
+	lda #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
+	sta inner_vars::_tr_forced_upd_flags
+
+	jsr _tr_drw_up_row
+
+@cont1:			
+	tr_set_draw_flag_forced_bottom
+
+	.ENDIF	;TR_MIRRORING_VERTICAL
+
 	check_direction inner_vars::TR_UPD_FLAG_DIR_UP_DOWN
 
 	lda inner_vars::_tr_pos_y + 1
+
 	beq @min_check
 
 	clc
@@ -709,6 +765,7 @@ move_up:
 	beq @cont0
 
 	upd_flag_reset inner_vars::TR_UPD_FLAG_IGNORE_UP_OVERFLOW
+
 	jmp @cont
 
 @cont0:
@@ -745,7 +802,7 @@ move_up:
 
 	.IF TR_DYNAMIC_MIRRORING
 	jsr mirroring_horizontal
-	.ENDIF	; TR_DYNAMIC_MIRRORING
+	.ENDIF	;TR_DYNAMIC_MIRRORING
 
 @cont:
 	ldx #$00
@@ -774,10 +831,58 @@ move_up:
 	beq @exit
 
 	jmp _tr_drw_up_row
+
 @exit:
 	rts
 
+	.IF TR_MIRRORING_VERTICAL
+	.IF ::TR_DATA_TILES4X4
+
+_tr_forced_drw_down_row_attrs:
+
+	get_screen_index_offset
+	lda (<TR_utils::tr_curr_scr), y	; A - screen index
+
+	pha
+
+	calc_64bytes_data_offset tr_tiles_scr, _tmp_val
+
+	lda inner_vars::_tr_pos_y
+	lsr a
+	lsr a
+	lsr a
+	lsr a
+	lsr a
+
+	tax	
+	ldy #$00
+	add_xy_to_word _tmp_val
+
+	pla
+
+	tay
+	jmp _tr_drw_down_row_attrs
+
+	.ENDIF ;TR_MIRRORING_VERTICAL
+	.ENDIF ;TR_DATA_TILES4X4
+
 move_down:
+	.IF TR_MIRRORING_VERTICAL
+
+	lda inner_vars::_tr_forced_upd_flags
+	and #inner_vars::TR_UPD_FLAG_FORCED_BOTTOM
+	beq @cont1
+
+	lda #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
+	sta inner_vars::_tr_forced_upd_flags
+
+	jsr _tr_drw_down_row
+
+@cont1:			
+	tr_set_draw_flag_forced_top
+
+	.ENDIF ;TR_MIRRORING_VERTICAL
+
 	check_direction inner_vars::TR_UPD_FLAG_DIR_UP_DOWN
 
 	lda inner_vars::_tr_pos_y
@@ -801,6 +906,13 @@ move_down:
 	eor #02
 	sta inner_vars::_nametable
 
+	; shift attrs drawing on 2 CHRs (bottom block fix)
+	.IF TR_MIRRORING_VERTICAL
+	.IF ::TR_DATA_TILES4X4
+	jsr _tr_forced_drw_down_row_attrs
+	.ENDIF	;TR_DATA_TILES4X4
+	.ENDIF	;TR_MIRRORING_VERTICAL
+
 	jmp @cont
 
 @cont0:
@@ -817,13 +929,20 @@ move_down:
 	eor #02
 	sta inner_vars::_nametable
 
+	; shift attrs drawing on 2 CHRs (bottom block fix)
+	.IF TR_MIRRORING_VERTICAL
+	.IF ::TR_DATA_TILES4X4
+	jsr _tr_forced_drw_down_row_attrs
+	.ENDIF	;TR_DATA_TILES4X4
+	.ENDIF	;TR_MIRRORING_VERTICAL
+
 	jmp @cont
 
 @min_check:
 
 	check_down_screen				; get the next screen
 
-	jmp_bcc @exit
+	jmp_bcc @exit					; no screen
 
 	check_direction_select inner_vars::TR_UPD_FLAG_DIR_UP_DOWN, inner_vars::_tr_pos_y, 0, 1
 
@@ -837,9 +956,10 @@ move_down:
 
 	.IF TR_DYNAMIC_MIRRORING
 	jsr mirroring_horizontal
-	.ENDIF	; TR_DYNAMIC_MIRRORING
+	.ENDIF	;TR_DYNAMIC_MIRRORING
 
 @cont:
+
 	ldx #$00
 
 	lda inner_vars::_tr_pos_y
@@ -868,6 +988,7 @@ move_down:
 	beq @exit
 
 	jmp _tr_drw_down_row
+
 @exit:
 	rts
 
@@ -882,7 +1003,7 @@ update_jpad:
 	beq @upd_check_right_btn
 
 	jsr move_left
-	jmp @exit
+;	jmp @exit
 
 @upd_check_right_btn:
 
@@ -890,7 +1011,7 @@ update_jpad:
 	beq @upd_check_up_btn
 
 	jsr move_right
-	jmp @exit
+;	jmp @exit
 
 @upd_check_up_btn:
 
@@ -898,7 +1019,7 @@ update_jpad:
 	beq @upd_check_down_btn
 
 	jsr move_up
-	jmp @exit
+;	jmp @exit
 
 @upd_check_down_btn:
 
@@ -938,18 +1059,17 @@ _tr_drw_up_row:
 	calc_64bytes_data_offset tr_tiles_scr, _tmp_val
 	.ELSE
 	calc_240bytes_data_offset tr_tiles_scr, _tmp_val
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 
-	; calc tile column address
+	; calc tile row address
 	lda inner_vars::_tr_pos_y
-
 	lsr a
 	lsr a
 	lsr a
 	lsr a
 	.IF ::TR_DATA_TILES4X4
 	lsr a
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 	tax
 	
@@ -961,11 +1081,10 @@ _tr_drw_up_row:
 	jsr ppu_calc_nametable_addr
 
 	lda inner_vars::_tr_pos_y
-	lsr a
-	lsr a
-	lsr a
 
-	pha					; save nametable row number
+	lsr a
+	lsr a
+	lsr a
 
 	tax
 
@@ -975,11 +1094,12 @@ _tr_drw_up_row:
 
 	; select data from table to search for blocks/CHRs
 	lda inner_vars::_tr_pos_y
+
 	.IF ::TR_DATA_TILES4X4
 	and #%00011111
 	.ELSE
 	and #%00001111
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 	lsr a
 	lsr a
 	lsr a
@@ -988,7 +1108,7 @@ _tr_drw_up_row:
 
 	.IF ::TR_DATA_TILES4X4
 	asl a
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 	asl a
 	sta inner_vars::_drw_rowcol_inds_offset
 
@@ -1006,42 +1126,56 @@ _tr_drw_up_row:
 	pop_word _tmp_val			; necessary for attributes drawing
 	.ELSE
 	jsr _drw_tiles_row_dyn
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 
-	pop_y					; get position in a tile
+	pop_x					; get position in a tile
+	pop_y					; screen index
 
-	pop_x					; nametable row number
+	.IF TR_MIRRORING_VERTICAL
+	lda inner_vars::_tr_forced_upd_flags
+	and #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
+	bne _tr_drw_up_row_attrs
+	.ENDIF	;TR_MIRRORING_VERTICAL
 
-	tya
+	txa
 
+	; shift attrs drawing on 2 CHRs
+	.IF TR_MIRRORING_VERTICAL
+	.IF ::TR_DATA_TILES4X4
+	cmp #$01
+	.ELSE
+;	cmp #$00
+	.ENDIF	;TR_DATA_TILES4X4
+	.ELSE
 	.IF ::TR_DATA_TILES4X4
 	cmp #$03
 	.ELSE
 	cmp #$01
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
+	.ENDIF	;TR_MIRRORING_VERTICAL
 
 	beq _tr_drw_up_row_attrs
+
+	lda inner_vars::_tr_pos_y
+	lsr a
+	lsr a
+	lsr a					; nametable row number
+
+	cmp #$1d				; the last 29 row
+	bne @exit
 
 	txa
-	cmp #$1d				; the last 29 row
-	bne @pre_exit
-
-	tya
 	cmp #$01
 	beq _tr_drw_up_row_attrs
-
-@pre_exit:
-	pla					; clear stack (screen index)
 
 @exit:
 	rts
 
 _tr_drw_up_row_attrs:
 
-	pla					; screen index
-
 	; calc attributes data address
 	.IF !::TR_DATA_TILES4X4
+	tya					; screen index
 	calc_64bytes_data_offset tr_attrs_scr, _tmp_val
 
 	lda inner_vars::_tr_pos_y
@@ -1053,11 +1187,12 @@ _tr_drw_up_row_attrs:
 	lsr a
 
 	add_a_to_word _tmp_val
-	.ENDIF	; !TR_DATA_TILES4X4
+	.ENDIF	;!TR_DATA_TILES4X4
 
 	; PPU address
 	; ( inner_vars::_tr_pos_y / 32 ) * 8
 	lda inner_vars::_tr_pos_y
+
 	lsr a
 	lsr a
 	and #%11111000
@@ -1094,18 +1229,17 @@ _tr_drw_down_row:
 	calc_64bytes_data_offset tr_tiles_scr, _tmp_val
 	.ELSE
 	calc_240bytes_data_offset tr_tiles_scr, _tmp_val
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 
-	; calc tile column address
+	; calc tile row address
 	lda inner_vars::_tr_pos_y
-
 	lsr a
 	lsr a
 	lsr a
 	lsr a
 	.IF ::TR_DATA_TILES4X4
 	lsr a
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 	tax
 	
@@ -1134,7 +1268,7 @@ _tr_drw_down_row:
 	and #%00011111
 	.ELSE
 	and #%00001111
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 	lsr a
 	lsr a
 	lsr a
@@ -1143,7 +1277,7 @@ _tr_drw_down_row:
 
 	.IF ::TR_DATA_TILES4X4
 	asl a
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 	asl a
 	sta inner_vars::_drw_rowcol_inds_offset
 
@@ -1161,12 +1295,28 @@ _tr_drw_down_row:
 	pop_word _tmp_val				; necessary for attributes drawing
 	.ELSE
 	jsr _drw_tiles_row_dyn
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 
 	pop_x						; get position in a tile
 	pop_y						; screen index
 
+	.IF TR_MIRRORING_VERTICAL
+	lda inner_vars::_tr_forced_upd_flags
+	and #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
+	bne _tr_drw_down_row_attrs
+	.ENDIF	;TR_MIRRORING_VERTICAL
+
 	txa
+
+	; shift attrs drawing on 2 CHRs
+	.IF TR_MIRRORING_VERTICAL
+	.IF ::TR_DATA_TILES4X4
+	cmp #$02
+	.ELSE
+	cmp #$01
+	.ENDIF	;TR_DATA_TILES4X4
+	.ENDIF	;TR_MIRRORING_VERTICAL
+
 	beq _tr_drw_down_row_attrs
 
 @exit:
@@ -1176,11 +1326,10 @@ _tr_drw_down_row_attrs:
 
 	; calc attributes data address
 	.IF !::TR_DATA_TILES4X4
-	tya
+	tya						; screen index
 	calc_64bytes_data_offset tr_attrs_scr, _tmp_val
 
 	lda inner_vars::_tr_pos_y
-
 	lsr a
 	lsr a
 	lsr a
@@ -1192,6 +1341,7 @@ _tr_drw_down_row_attrs:
 
 	; PPU address
 	; ( inner_vars::_tr_pos_y / 32 ) * 8
+
 	lda inner_vars::_tr_pos_y
 	lsr a
 	lsr a
@@ -1230,7 +1380,7 @@ _tr_drw_left_col:
 	calc_64bytes_data_offset tr_tiles_scr, _tmp_val
 	.ELSE
 	calc_240bytes_data_offset tr_tiles_scr, _tmp_val
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 
 	; calc tile column address
 	.IF ::TR_DATA_TILES4X4
@@ -1250,7 +1400,7 @@ _tr_drw_left_col:
 	tax
 	lda _tiles_col_offset, x			; mul by SCR_HTILES_CNT
 	tax
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 	ldy #$00
 	add_xy_to_word _tmp_val
@@ -1261,7 +1411,7 @@ _tr_drw_left_col:
 	and #%00011111
 	.ELSE
 	and #%00001111
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 	lsr a
 	lsr a
 	lsr a
@@ -1277,7 +1427,7 @@ _tr_drw_left_col:
 	asl a
 	clc
 	adc #$04
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 	sta inner_vars::_drw_rowcol_inds_offset
 
 	; calc PPU address
@@ -1316,7 +1466,7 @@ _tr_drw_left_col:
 	cmp #$03
 	.ELSE
 	cmp #$01
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 	beq _tr_drw_left_col_attrs	; draw attributes if non zero
 
@@ -1335,7 +1485,7 @@ _tr_drw_left_col_attrs:
 	div32_mul8
 
 	add_a_to_word _tmp_val
-	.ENDIF	; !TR_DATA_TILES4X4
+	.ENDIF	;!TR_DATA_TILES4X4
 
 	; calc PPU address
 	lda inner_vars::_tr_pos_x
@@ -1376,7 +1526,7 @@ _tr_drw_right_col:
 	calc_64bytes_data_offset tr_tiles_scr, _tmp_val
 	.ELSE
 	calc_240bytes_data_offset tr_tiles_scr, _tmp_val
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 
 	.IF ::TR_DATA_TILES4X4
 	lda inner_vars::_tr_pos_x
@@ -1395,7 +1545,7 @@ _tr_drw_right_col:
 	tax
 	lda _tiles_col_offset, x			; mul by SCR_HTILES_CNT
 	tax
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 	ldy #$00
 	add_xy_to_word _tmp_val
@@ -1406,7 +1556,7 @@ _tr_drw_right_col:
 	and #%00011111
 	.ELSE
 	and #%00001111
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 	lsr a
 	lsr a
 	lsr a
@@ -1422,7 +1572,7 @@ _tr_drw_right_col:
 	asl a
 	clc
 	adc #$04
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 	sta inner_vars::_drw_rowcol_inds_offset
 
 	; calc PPU address
@@ -1474,7 +1624,7 @@ _tr_drw_right_col_attrs:
 	div32_mul8
 
 	add_a_to_word _tmp_val
-	.ENDIF	; !TR_DATA_TILES4X4
+	.ENDIF	;!TR_DATA_TILES4X4
 
 	; calc PPU addr
 	lda inner_vars::_tr_pos_x
@@ -1518,7 +1668,7 @@ _drw_attrs_row_dyn:
 	.IF ::TR_DATA_TILES4X4
 	tay
 	lda (<inner_vars::_tr_attrs), y			; read attribute
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 	jsr TR_utils::buff_push_data
 
@@ -1526,7 +1676,7 @@ _drw_attrs_row_dyn:
 	lda #::SCR_HTILES_CNT
 	.ELSE
 	lda #::SCR_HATTRS_CNT
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 	add_a_to_word _tmp_val
 
 	dec inner_vars::_loop_cntr
@@ -1548,7 +1698,7 @@ _drw_attrs_col_dyn:
 	.IF ::TR_DATA_TILES4X4
 	tay
 	lda (<inner_vars::_tr_attrs), y			; read attribute
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 	
 	jsr TR_utils::buff_push_data
 
@@ -1577,7 +1727,7 @@ _drw_tiles_row_dyn:
 	add_word_to_xy inner_vars::_tr_tiles	; now XY contain tile's blocks address
 	.ELSE
 	add_word_to_xy inner_vars::_tr_blocks	; now XY contain an address of a 2x2 tile
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 	stx TR_utils::inner_vars::_tile_addr
 	sty TR_utils::inner_vars::_tile_addr + 1
@@ -1625,7 +1775,7 @@ _drw_tiles_row_dyn:
 
 	dec inner_vars::_loop_cntr
 	beq @exit
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 	lda #::SCR_HTILES_CNT
 	add_a_to_word _tmp_val
@@ -1654,7 +1804,7 @@ _drw_tiles_col_dyn:
 	add_word_to_xy inner_vars::_tr_tiles		; now XY contain tile's blocks address
 	.ELSE
 	add_word_to_xy inner_vars::_tr_blocks		; now XY contain an address of a 2x2 tile
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 	stx TR_utils::inner_vars::_tile_addr
 	sty TR_utils::inner_vars::_tile_addr + 1
@@ -1703,7 +1853,7 @@ _drw_tiles_col_dyn:
 
 	dec inner_vars::_loop_cntr
 	beq @exit
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 	pop_y
 	iny					;<----
@@ -1756,7 +1906,7 @@ _drw_blocks_dyn_xy:
 @exit:
 	sec						; set carry flag as a sign of the end
 	rts
-	.ENDIF; TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
 
 tr_get_prop:
 	; get the block property by current coordinates
@@ -1809,4 +1959,4 @@ TR_TILES	= TR_sts::inner_vars::_tr_tiles
 TR_ATTRS	= TR_sts::inner_vars::_tr_attrs
 	.ELSE
 TR_HATTRS_CNT:	.byte ::SCR_HATTRS_CNT
-	.ENDIF	; TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4

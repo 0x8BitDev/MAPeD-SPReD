@@ -1,6 +1,6 @@
 ;###############################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2020 0x8BitDev ( MIT license )
 ;
 ;###############################################
 ;
@@ -45,7 +45,7 @@ INES_4SCR	= 0 ; 1 = Hard-wired four screen mode
 	.include "../../common/jpad.asm"
 	
 	.include "../common/rle.asm"
-	.include "tilemap_render_MODE_static_screens.asm"
+	.include "../common/tilemap_render_MODE_static_screens.asm"
 
 mmc5_CHR_bankswitching:
 	sta $5123

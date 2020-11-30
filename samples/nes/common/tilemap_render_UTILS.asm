@@ -1,6 +1,6 @@
 ;###############################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2020 0x8BitDev ( MIT license )
 ;
 ;###############################################
 ;
@@ -81,11 +81,7 @@ TR_BUFF_END		= 0			; end of the buffer
 tr_data_flags:	.res 1
 tr_buff_pos:	.res 1
 
-	.IF MAP_CHECK(::MAP_FLAG_MODE_MULTIDIR_SCROLL)
-tr_buff:	.res 128		; 2 * ( 32 + 2*4 + 8 + 2*4 ) = 112
-	.ELSE
-tr_buff:	.res 70			; 16 + 32 + 8 + 4*3 = 68			
-	.ENDIF	; MAP_FLAG_MODE_MULTIDIR_SCROLL
+tr_buff:	.res 128
 
 	.ENDIF	; !MAP_FLAG_MODE_STATIC_SCREENS
 

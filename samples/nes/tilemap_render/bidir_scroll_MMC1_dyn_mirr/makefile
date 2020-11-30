@@ -1,10 +1,10 @@
 ################################################
 #
-# Copyright 2018-2019 0x8BitDev ( MIT license )
+# Copyright 2018-2020 0x8BitDev ( MIT license )
 #
 ################################################
 
-out_file = tilemap_render_bidir_scroll_MMC1
+out_file = tilemap_render_bidir_scroll_MMC1_dyn_mirr
 out_dir = ../../bin/
 inc_dir1 = ../../common/
 inc_dir2 = ./data/

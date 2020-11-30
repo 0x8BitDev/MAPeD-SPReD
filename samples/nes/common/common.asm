@@ -12,6 +12,8 @@
 ; inner variables for temporary calculations
 _tmp_val:	.res 2
 _tmp_val2:	.res 2
+_tmp_val3:	.res 2
+_tmp_val4:	.res 2
 _frames_cnt:	.res 1	; skipped frames counter
 
 ; outer variables

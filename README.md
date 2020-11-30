@@ -126,8 +126,10 @@ As mentioned before, you need to install Mono on your computer. To run the tools
 ## MAPeD-NES
 **NES:**
 
- - `./samples/nes/tilemap_render/bidir_scroll_MMC1/`	- bidirectional scroller with dynamic mirroring and CHR bank switching 
- - `./samples/nes/tilemap_render/multidir_scroll_MMC3/`	- multidirectional scroller 
+ - `./samples/nes/tilemap_render/bidir_scroll_MMC1_dyn_mirr/`	- bidirectional scroller with dynamic mirroring and CHR bank switching 
+ - `./samples/nes/tilemap_render/bidir_scroll_MMC1_vert_mirr/`	- bidirectional scroller with vertical mirroring
+ - `./samples/nes/tilemap_render/multidir_scroll_MMC3_4scr_mirr/`	- multidirectional scroller with 4-screen mirroring
+ - `./samples/nes/tilemap_render/multidir_scroll_MMC3_horiz_mirr/`	- the same as above, but with horizontal mirroring 
  - `./samples/nes/tilemap_render/static_screens_MMC5/`	- static screens switching with MMC5 extended attributes support
 
 ## MAPeD-SMS

@@ -1,10 +1,10 @@
 :################################################
 :#
-:# Copyright 2018-2019 0x8BitDev ( MIT license )
+:# Copyright 2018-2020 0x8BitDev ( MIT license )
 :#
 :################################################
 
-@set OutFile=tilemap_render_multidir_scroll_MMC3
+@set OutFile=tilemap_render_bidir_scroll_MMC1_dyn_mirr
 @set OutDir=..\..\bin\
 @set IncDir1=..\..\common\
 @set IncDir2=.\data\
@@ -16,7 +16,7 @@ ca65 -I %IncDir1% -I %IncDir2% main.asm  -o %OutDir%%OutFile%.o
 @if ERRORLEVEL 1 goto failure
 
 @echo linking...
-ld65 -o %OutDir%%OutFile%.nes -C MMC3.cfg %OutDir%%OutFile%.o
+ld65 -o %OutDir%%OutFile%.nes -C MMC1.cfg %OutDir%%OutFile%.o
 @if ERRORLEVEL 1 goto failure
 @echo Ok!
 

@@ -1,27 +1,37 @@
 ;###############################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2020 0x8BitDev ( MIT license )
 ;
 ;###############################################
 ;
 ; Multidirectional scroller example
 ;
 
+.debuginfo	-	; Generate debug info ( if '+' then ld65 -Ln symbols.txt )
+
 .segment "HDR"	
 
-.define TR_MIRRORING_VERTICAL 0	; 1 - vertical, 0 - 4-screen mirroring
+; TR_MIRRORING_HORIZONTAL 1 or 0 (1 - vertical, 0 - 4-screen mirroring) passed as command line parameter
+;
+	.IF mirror_horiz
+.define TR_MIRRORING_HORIZONTAL 1
+	.warning "[horizontal mirroring]"
+	.ELSE
+.define TR_MIRRORING_HORIZONTAL 0
+	.warning "[4-screen mirroring]]"
+	.ENDIF
 
 INES_MAPPER 	= 4 ; MMC3
 INES_SRAM   	= 0 ; 1 = "Battery" and other non-volatile memory at $6000-7FFF
 INES_TRAINER	= 0 ; 1 = 512-byte Trainer
 
-	.IF !TR_MIRRORING_VERTICAL
+	.IF !TR_MIRRORING_HORIZONTAL
 INES_MIRROR 	= 0	; 0 = Horizontal mirroring, 1 = Vertical mirroring
 INES_4SCR	= 1	; 1 = Hard-wired four screen mode
 	.ELSE
-INES_MIRROR 	= TR_MIRRORING_VERTICAL ; 0 = Horizontal mirroring, 1 = Vertical mirroring
+INES_MIRROR 	= !TR_MIRRORING_HORIZONTAL ; 0 = Horizontal mirroring, 1 = Vertical mirroring
 INES_4SCR	= 0
-	.ENDIF	; !TR_MIRRORING_VERTICAL
+	.ENDIF	; !TR_MIRRORING_HORIZONTAL
 
 .byte "NES", $1A
 .byte $02	; 16K PRG count
@@ -49,7 +59,31 @@ INES_4SCR	= 0
 	.include "../../common/jpad.asm"
 	
 	.include "../../common/rle.asm"
-	.include "tilemap_render_MODE_multidir_scroll.asm"
+	.include "../../common/tilemap_render_MODE_multidir_scroll.asm"
+
+	.IF TR_MIRR_HORIZ_HALF_ATTR
+_right_blank_col:
+	.byte $00, $00, $00, $F8
+	.byte $10, $00, $00, $F8
+	.byte $20, $00, $00, $F8
+	.byte $30, $00, $00, $F8
+	.byte $40, $00, $00, $F8
+	.byte $50, $00, $00, $F8
+	.byte $60, $00, $00, $F8
+	.byte $70, $00, $00, $F8
+	.byte $80, $00, $00, $F8
+	.byte $90, $00, $00, $F8
+	.byte $A0, $00, $00, $F8
+	.byte $B0, $00, $00, $F8
+	.byte $C0, $00, $00, $F8
+	.byte $D0, $00, $00, $F8
+	.byte $E0, $00, $00, $F8
+_right_blank_col_end:
+
+_right_blank_col_size:
+	.word _right_blank_col_end - _right_blank_col
+
+	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
 
 RESET:
 
@@ -61,8 +95,8 @@ RESET:
 	jsr mmc3_enable_wram
 	.ENDIF	
 
-	.IF TR_MIRRORING_VERTICAL
-	jsr mmc3_vert_mirror
+	.IF TR_MIRRORING_HORIZONTAL
+	jsr mmc3_horiz_mirror
 	.ENDIF
 
 	; bank 0 8000-9fff - swappable!
@@ -119,6 +153,35 @@ RESET:
 
 	set_ppu_1_inc
 
+	.IF TR_MIRR_HORIZ_HALF_ATTR
+
+	; save sprite palette color
+
+	ldx #$11		; low
+	ldy #$3f		; high
+
+	lda $2002	; read PPU state to reset HIGH\LOW byte latch
+	sty $2006	; save the high byte of the addr
+	stx $2006	; save the low byte of the addr
+
+	ldy #$00
+	lda (<TR_ms::tr_palette), y
+	sta $2007	
+
+	; transfer clipping column's sprite data
+
+	jsr clear_sprite_mem_256b_0x0200
+
+	load_data_ptr _right_blank_col, data_addr
+	load_data_word _right_blank_col_size, data_size
+
+	ldx #$00
+	ldy #$00
+
+	jsr ppu_load_sprite_0x0200
+	jsr ppu_DMA_transf_256b_0x0200
+	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
+
 ; load palette
 ; WARNING: palette can be loaded during VBlank only!
 
@@ -131,10 +194,18 @@ RESET:
 
 	jsr ppu_load_palettes
 
+	.IF TR_MIRRORING_HORIZONTAL
+	lda #%10110000		; NMI, background tiles from Pattern Table 1, 8x16
+	.ELSE
 	lda #%10010000		; NMI, background tiles from Pattern Table 1, 8x8
+	.ENDIF ;TR_MIRRORING_HORIZONTAL
 	jsr ppu_set_2000
 
+	.IF TR_MIRR_HORIZ_HALF_ATTR
+	lda #%00011000		; enable background drawing, CLIPPING for sprites and background
+	.ELSE
 	lda #%00001110		; enable background drawing, NO CLIPPING for sprites and background
+	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
 	jsr ppu_set_2001
 
 	jpad1_init
@@ -192,7 +263,27 @@ IRQ:
 
 ; *** CHR BANKS ***
 
-	; банки: 0, 1, 2, 3, 4, 5, 6, 7
+	; banks: 0, 1, 2, 3, 4, 5, 6, 7
 	.incbin "data/tilemap_Lev0_CHR.bin"
+
+	.IF TR_MIRR_HORIZ_HALF_ATTR
+
+	; two black CHRs for the left clipping column
+
+	.ALIGN 4096		; align sprites CHR data
+
+	.REPEAT 8
+	.byte $ff
+	.ENDREPEAT
+	.REPEAT 8
+	.byte $00
+	.ENDREPEAT
+	.REPEAT 8
+	.byte $ff
+	.ENDREPEAT
+	.REPEAT 8
+	.byte $00
+	.ENDREPEAT
+	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
 
 ; *** END OF CHR BANKS ***

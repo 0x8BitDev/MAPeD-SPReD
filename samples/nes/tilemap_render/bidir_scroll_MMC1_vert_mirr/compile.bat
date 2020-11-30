@@ -1,10 +1,10 @@
 :################################################
 :#
-:# Copyright 2018-2019 0x8BitDev ( MIT license )
+:# Copyright 2018-2020 0x8BitDev ( MIT license )
 :#
 :################################################
 
-@set OutFile=tilemap_render_bidir_scroll_MMC1
+@set OutFile=tilemap_render_bidir_scroll_MMC1_vert_mirr
 @set OutDir=..\..\bin\
 @set IncDir1=..\..\common\
 @set IncDir2=.\data\

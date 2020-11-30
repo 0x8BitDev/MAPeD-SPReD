@@ -1,11 +1,15 @@
 ;###############################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2020 0x8BitDev ( MIT license )
 ;
 ;###############################################
 ;
 ; Screen to screen scroller example
 ;
+
+.debuginfo	-	; Generate debug info ( if '+' then ld65 -Ln symbols.txt )
+
+.define TR_DYNAMIC_MIRRORING	1
 
 .segment "HDR"
 
@@ -37,7 +41,7 @@ INES_4SCR	= 0 ; 1 = Hard-wired four screen mode
 	.include "../../common/anm.asm"
 
 	.include "../../common/rle.asm"
-	.include "tilemap_render_MODE_bidir_scroll.asm"
+	.include "../../common/tilemap_render_MODE_bidir_scroll.asm"
 
 
 MMC1_MIRROR_VERT	= $02
@@ -61,8 +65,7 @@ RESET:
 	mmc1_reset
 
 	; switch separate 4 KB CHR, switch 16 KB bank at $8000-$c000, vertical mirroring
-	lda #( MMC1_CONFIG | MMC1_MIRROR_VERT )
-	jsr mmc1_config_write
+	jsr mmc1_mirroring_vertical
 
 	; bank 0 $8000-$c000
 	lda #$00

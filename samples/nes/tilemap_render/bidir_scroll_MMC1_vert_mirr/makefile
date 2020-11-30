@@ -1,14 +1,14 @@
 ################################################
 #
-# Copyright 2018-2019 0x8BitDev ( MIT license )
+# Copyright 2018-2020 0x8BitDev ( MIT license )
 #
 ################################################
 
-out_file = tilemap_render_multidir_scroll_MMC3
+out_file = tilemap_render_bidir_scroll_MMC1_vert_mirr
 out_dir = ../../bin/
 inc_dir1 = ../../common/
 inc_dir2 = ./data/
-cfg = MMC3.cfg
+cfg = MMC1.cfg
 
 CA65 = ca65
 LD65 = ld65
