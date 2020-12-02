@@ -49,15 +49,16 @@ namespace MAPeD
 			// 
 			this.label1.Location = new System.Drawing.Point(14, 9);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(256, 20);
+			this.label1.Size = new System.Drawing.Size(256, 30);
 			this.label1.TabIndex = 0;
-			this.label1.Text = "WARNING: This operation removes all unused data!";
+			this.label1.Text = "WARNING: This operation removes all unused/duplicate data!";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// CheckBoxOptimizeTiles
 			// 
 			this.CheckBoxOptimizeTiles.Checked = true;
 			this.CheckBoxOptimizeTiles.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CheckBoxOptimizeTiles.Location = new System.Drawing.Point(70, 70);
+			this.CheckBoxOptimizeTiles.Location = new System.Drawing.Point(71, 86);
 			this.CheckBoxOptimizeTiles.Name = "CheckBoxOptimizeTiles";
 			this.CheckBoxOptimizeTiles.Size = new System.Drawing.Size(68, 24);
 			this.CheckBoxOptimizeTiles.TabIndex = 1;
@@ -66,7 +67,7 @@ namespace MAPeD
 			// 
 			// CheckBoxOptimizeBlocks
 			// 
-			this.CheckBoxOptimizeBlocks.Location = new System.Drawing.Point(70, 91);
+			this.CheckBoxOptimizeBlocks.Location = new System.Drawing.Point(71, 107);
 			this.CheckBoxOptimizeBlocks.Name = "CheckBoxOptimizeBlocks";
 			this.CheckBoxOptimizeBlocks.Size = new System.Drawing.Size(68, 24);
 			this.CheckBoxOptimizeBlocks.TabIndex = 2;
@@ -76,7 +77,7 @@ namespace MAPeD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(116, 182);
+			this.BtnOk.Location = new System.Drawing.Point(117, 198);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 4;
@@ -86,16 +87,16 @@ namespace MAPeD
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(63, 29);
+			this.label2.Location = new System.Drawing.Point(64, 45);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(157, 23);
+			this.label2.Size = new System.Drawing.Size(157, 20);
 			this.label2.TabIndex = 3;
-			this.label2.Text = "Select the data for optimization:";
+			this.label2.Text = "Select data for optimization:";
 			// 
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(197, 182);
+			this.BtnCancel.Location = new System.Drawing.Point(198, 198);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
 			this.BtnCancel.TabIndex = 5;
@@ -105,7 +106,7 @@ namespace MAPeD
 			// 
 			// CheckBoxOptimizeCHRs
 			// 
-			this.CheckBoxOptimizeCHRs.Location = new System.Drawing.Point(70, 112);
+			this.CheckBoxOptimizeCHRs.Location = new System.Drawing.Point(71, 128);
 			this.CheckBoxOptimizeCHRs.Name = "CheckBoxOptimizeCHRs";
 			this.CheckBoxOptimizeCHRs.Size = new System.Drawing.Size(68, 24);
 			this.CheckBoxOptimizeCHRs.TabIndex = 3;
@@ -114,7 +115,7 @@ namespace MAPeD
 			// 
 			// CheckBoxOptimizeScreens
 			// 
-			this.CheckBoxOptimizeScreens.Location = new System.Drawing.Point(70, 49);
+			this.CheckBoxOptimizeScreens.Location = new System.Drawing.Point(71, 65);
 			this.CheckBoxOptimizeScreens.Name = "CheckBoxOptimizeScreens";
 			this.CheckBoxOptimizeScreens.Size = new System.Drawing.Size(68, 24);
 			this.CheckBoxOptimizeScreens.TabIndex = 0;
@@ -123,7 +124,7 @@ namespace MAPeD
 			// 
 			// CheckBoxGlobalOptimization
 			// 
-			this.CheckBoxGlobalOptimization.Location = new System.Drawing.Point(14, 140);
+			this.CheckBoxGlobalOptimization.Location = new System.Drawing.Point(15, 156);
 			this.CheckBoxGlobalOptimization.Name = "CheckBoxGlobalOptimization";
 			this.CheckBoxGlobalOptimization.Size = new System.Drawing.Size(256, 34);
 			this.CheckBoxGlobalOptimization.TabIndex = 3;
@@ -136,7 +137,7 @@ namespace MAPeD
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
-			this.ClientSize = new System.Drawing.Size(284, 216);
+			this.ClientSize = new System.Drawing.Size(284, 233);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);

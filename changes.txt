@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+02.12.2020 - Added removal of duplicate data during the optimization process
 30.11.2020 - NES: added bidirectional scrolling sample with vertical mirroring and multidirectional scroller sample with horizontal mirroring
 16.11.2020 - SMS: added static screens switching sample (VDP-ready screens data)
 15.11.2020 - SMS: added bidirectional static screens switching samples
@@ -61,7 +62,7 @@ SPReD-NES/SMS:
 02.07.2020 - Added iterative optimization during the packing operation
 01.07.2020 - Now the optimization performs for all sprites, and not for selected ones
 01.07.2020 - The layout window OSD info moved to the layout group box
-30.06.2020 - Added removing of duplicate CHRs during the optimization process
+30.06.2020 - Added removal of duplicate CHRs during the optimization process
 30.06.2020 - Added SMS raw tiles data loading
 29.06.2020 - Added a project statistics
 28.06.2020 - SMS samples added
