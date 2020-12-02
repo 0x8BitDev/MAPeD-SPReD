@@ -272,10 +272,17 @@ namespace MAPeD
 				}
 			}
 			
-			// copy patters
+			// copy patterns
 			if( patterns_data != null )
 			{
-				data.patterns_data = new Dictionary< string, List< pattern_data > >( patterns_data.Count, patterns_data.Comparer );
+				if( data.patterns_data == null )
+				{
+					data.patterns_data = new Dictionary< string, List< pattern_data > >( patterns_data.Count, patterns_data.Comparer );
+				}
+				else
+				{
+					data.patterns_data.Clear();
+				}
 				
 				foreach( KeyValuePair< string, List< pattern_data > > entry in patterns_data )
 				{
