@@ -1817,7 +1817,7 @@ namespace MAPeD
 		
 		void ClearAllTileToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( message_box( "Are you sure?\n\nWARNING: ALL the blocks references for all the tiles will be set to zero!", "Clear Tiles", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( message_box( "Are you sure?\n\nWARNING: ALL the blocks references for all the tiles will be set to zero!", "Clear All Tiles", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 				

@@ -207,6 +207,7 @@ namespace MAPeD
 			this.CheckBoxTileEditorLock = new System.Windows.Forms.CheckBox();
 			this.PBoxTilePreview = new System.Windows.Forms.PictureBox();
 			this.TabScreenEditor = new System.Windows.Forms.TabPage();
+			this.BtnPatterns = new System.Windows.Forms.Button();
 			this.BtnTilesBlocks = new System.Windows.Forms.Button();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
 			this.RBtnScreenEditModeLayout = new System.Windows.Forms.RadioButton();
@@ -318,10 +319,11 @@ namespace MAPeD
 			this.pasteTileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.separatorToolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
 			this.clearTileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.clearAllTileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
 			this.insertLeftTileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteTileToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator28 = new System.Windows.Forms.ToolStripSeparator();
+			this.clearAllTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ContextMenuBlocksList = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.copyBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pasteBlockCloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -343,7 +345,6 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.BtnPatterns = new System.Windows.Forms.Button();
 			this.ContextMenuEntitiesTreeGroup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
@@ -1937,6 +1938,16 @@ namespace MAPeD
 			this.TabScreenEditor.TabIndex = 1;
 			this.TabScreenEditor.Text = "Screens";
 			// 
+			// BtnPatterns
+			// 
+			this.BtnPatterns.Location = new System.Drawing.Point(678, 106);
+			this.BtnPatterns.Name = "BtnPatterns";
+			this.BtnPatterns.Size = new System.Drawing.Size(80, 23);
+			this.BtnPatterns.TabIndex = 53;
+			this.BtnPatterns.Text = "Patterns";
+			this.BtnPatterns.UseVisualStyleBackColor = true;
+			this.BtnPatterns.Click += new System.EventHandler(this.BtnPatternsClick_Event);
+			// 
 			// BtnTilesBlocks
 			// 
 			this.BtnTilesBlocks.Location = new System.Drawing.Point(678, 78);
@@ -3063,64 +3074,70 @@ namespace MAPeD
 									this.pasteTileToolStripMenuItem,
 									this.separatorToolStripMenuItem4,
 									this.clearTileToolStripMenuItem,
-									this.clearAllTileToolStripMenuItem,
 									this.toolStripSeparator21,
 									this.insertLeftTileToolStripMenuItem,
-									this.deleteTileToolStripMenuItem3});
+									this.deleteTileToolStripMenuItem3,
+									this.toolStripSeparator28,
+									this.clearAllTilesToolStripMenuItem});
 			this.ContextMenuTilesList.Name = "ContextMenuTilesList";
-			this.ContextMenuTilesList.Size = new System.Drawing.Size(144, 148);
+			this.ContextMenuTilesList.Size = new System.Drawing.Size(153, 176);
 			// 
 			// copyTileToolStripMenuItem
 			// 
 			this.copyTileToolStripMenuItem.Name = "copyTileToolStripMenuItem";
-			this.copyTileToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+			this.copyTileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.copyTileToolStripMenuItem.Text = "Copy";
 			this.copyTileToolStripMenuItem.Click += new System.EventHandler(this.CopyTileToolStripMenuItemClick_Event);
 			// 
 			// pasteTileToolStripMenuItem
 			// 
 			this.pasteTileToolStripMenuItem.Name = "pasteTileToolStripMenuItem";
-			this.pasteTileToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+			this.pasteTileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.pasteTileToolStripMenuItem.Text = "Paste";
 			this.pasteTileToolStripMenuItem.Click += new System.EventHandler(this.PasteTileToolStripMenuItemClick_Event);
 			// 
 			// separatorToolStripMenuItem4
 			// 
 			this.separatorToolStripMenuItem4.Name = "separatorToolStripMenuItem4";
-			this.separatorToolStripMenuItem4.Size = new System.Drawing.Size(140, 6);
+			this.separatorToolStripMenuItem4.Size = new System.Drawing.Size(149, 6);
 			// 
 			// clearTileToolStripMenuItem
 			// 
 			this.clearTileToolStripMenuItem.Name = "clearTileToolStripMenuItem";
-			this.clearTileToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+			this.clearTileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.clearTileToolStripMenuItem.Text = "Clear Refs";
 			this.clearTileToolStripMenuItem.Click += new System.EventHandler(this.ClearTileToolStripMenuItemClick_Event);
-			// 
-			// clearAllTileToolStripMenuItem
-			// 
-			this.clearAllTileToolStripMenuItem.Name = "clearAllTileToolStripMenuItem";
-			this.clearAllTileToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-			this.clearAllTileToolStripMenuItem.Text = "Clear All Refs";
-			this.clearAllTileToolStripMenuItem.Click += new System.EventHandler(this.ClearAllTileToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator21
 			// 
 			this.toolStripSeparator21.Name = "toolStripSeparator21";
-			this.toolStripSeparator21.Size = new System.Drawing.Size(140, 6);
+			this.toolStripSeparator21.Size = new System.Drawing.Size(149, 6);
 			// 
 			// insertLeftTileToolStripMenuItem
 			// 
 			this.insertLeftTileToolStripMenuItem.Name = "insertLeftTileToolStripMenuItem";
-			this.insertLeftTileToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+			this.insertLeftTileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.insertLeftTileToolStripMenuItem.Text = "Insert Left";
 			this.insertLeftTileToolStripMenuItem.Click += new System.EventHandler(this.InsertLeftTileToolStripMenuItemClick_Event);
 			// 
 			// deleteTileToolStripMenuItem3
 			// 
 			this.deleteTileToolStripMenuItem3.Name = "deleteTileToolStripMenuItem3";
-			this.deleteTileToolStripMenuItem3.Size = new System.Drawing.Size(143, 22);
+			this.deleteTileToolStripMenuItem3.Size = new System.Drawing.Size(152, 22);
 			this.deleteTileToolStripMenuItem3.Text = "Delete";
 			this.deleteTileToolStripMenuItem3.Click += new System.EventHandler(this.DeleteTileToolStripMenuItem3Click_Event);
+			// 
+			// toolStripSeparator28
+			// 
+			this.toolStripSeparator28.Name = "toolStripSeparator28";
+			this.toolStripSeparator28.Size = new System.Drawing.Size(149, 6);
+			// 
+			// clearAllTilesToolStripMenuItem
+			// 
+			this.clearAllTilesToolStripMenuItem.Name = "clearAllTilesToolStripMenuItem";
+			this.clearAllTilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.clearAllTilesToolStripMenuItem.Text = "Clear All Tiles";
+			this.clearAllTilesToolStripMenuItem.Click += new System.EventHandler(this.ClearAllTileToolStripMenuItemClick_Event);
 			// 
 			// ContextMenuBlocksList
 			// 
@@ -3277,16 +3294,6 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
 			// 
-			// BtnPatterns
-			// 
-			this.BtnPatterns.Location = new System.Drawing.Point(678, 106);
-			this.BtnPatterns.Name = "BtnPatterns";
-			this.BtnPatterns.Size = new System.Drawing.Size(80, 23);
-			this.BtnPatterns.TabIndex = 53;
-			this.BtnPatterns.Text = "Patterns";
-			this.BtnPatterns.UseVisualStyleBackColor = true;
-			this.BtnPatterns.Click += new System.EventHandler(this.BtnPatternsClick_Event);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3370,6 +3377,7 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator28;
 		private System.Windows.Forms.Button BtnPatterns;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.ComboBox ComboBoxEntityZoom;
@@ -3587,7 +3595,7 @@ namespace MAPeD
 		private System.Windows.Forms.Button BtnLayoutAddUpRow;
 		private System.Windows.Forms.ToolStripMenuItem clearRefsBlockToolStripMenuItem;
 		private System.Windows.Forms.SaveFileDialog Project_exportFileDialog;
-		private System.Windows.Forms.ToolStripMenuItem clearAllTileToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem clearAllTilesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem clearTileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator separatorToolStripMenuItem4;
 		private System.Windows.Forms.ToolStripMenuItem pasteTileToolStripMenuItem;
