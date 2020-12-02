@@ -638,6 +638,8 @@ namespace MAPeD
 			bool[] remapped_CHRs = new bool[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
 			Array.Clear( remapped_CHRs, 0, remapped_CHRs.Length );
 			
+			string invalid_data_msg = "";
+			
 			// run through blocks
 			for( block_n = _block_beg_ind; block_n < _block_end_ind; block_n += utils.CONST_BLOCK_SIZE )
 			{
@@ -654,6 +656,11 @@ namespace MAPeD
 						if( !plt_clr_inds.Contains( clr_ind ) )
 						{
 							plt_clr_inds.Add( clr_ind );
+							
+							if( plt_clr_inds.Count > 4 )
+							{
+								invalid_data_msg += "Block: " + utils.hex( "$", block_n >> 2 ) + " | CHR: " + utils.hex( "$", CHR_n ) + " | pix: " + ind_n + "\n";
+							}
 						}
 					}
 				}
@@ -864,6 +871,11 @@ namespace MAPeD
 				string reason_str = ( more_than_4_palettes ? "\n- more than 4 palettes":"" ) + ( more_than_4_color_in_palette ? "\n- more than 4 colors in a palette":"" );
 				
 				MainForm.message_box( "The imported image doesn't meet the requirements!\nSome color information will be lost!\n\nREASON: " + reason_str, "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				
+				if( invalid_data_msg.Length > 0 )
+				{
+					MainForm.message_box( "Invalid data:\n\n" + invalid_data_msg, "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				}
 			}
 		}
 #endif		
