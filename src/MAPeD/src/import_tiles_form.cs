@@ -582,7 +582,7 @@ namespace MAPeD
 			int block_ind;
 			
 			bool more_than_4_palettes 			= false;
-			bool more_than_4_color_in_palette 	= false;
+			bool more_than_4_colors_in_palette 	= false;
 
 			int max_weight 		= -1;
 			int transp_clr_ind	= -1;
@@ -659,7 +659,7 @@ namespace MAPeD
 							
 							if( plt_clr_inds.Count > 4 )
 							{
-								invalid_data_msg += "Block: " + utils.hex( "$", block_n >> 2 ) + " | CHR: " + utils.hex( "$", CHR_n ) + " | pix: " + ind_n + "\n";
+								invalid_data_msg += utils.hex( "$", block_n >> 2 ) + " | CHR: " + utils.hex( "$", CHR_n ) + " | pix: " + ind_n + "\n";
 							}
 						}
 					}
@@ -779,6 +779,44 @@ namespace MAPeD
 
 			more_than_4_palettes = palettes.Count > utils.CONST_NUM_SMALL_PALETTES ? true:false;
 			
+			// check colors overflow
+			for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
+			{
+				if( palettes[ plt_n ].Count > utils.CONST_PALETTE_SMALL_NUM_COLORS )
+				{
+					more_than_4_colors_in_palette = true;
+				}
+			}
+			
+			if( more_than_4_palettes || more_than_4_colors_in_palette )
+			{
+				// convert palettes array into string format
+				{
+					string plt_str = "Palettes:";
+					
+					for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
+					{
+						plt_clr_inds = palettes[ plt_n ];	// cut palettes more than 4
+						
+						plt_str += "\n" + ( plt_n + 1 ) + ": [ ";
+						
+						plt_clr_inds.ForEach( delegate( byte _val ) 
+						{
+							plt_str += _val.ToString() + " ";
+						});
+						
+						plt_str += "]";
+					}
+					
+					if( invalid_data_msg.Length > 0 )
+					{
+						invalid_data_msg = invalid_data_msg.Insert( 0, "\n\nBlocks:\n" );
+					}
+					
+					invalid_data_msg = invalid_data_msg.Insert( 0, plt_str );
+				}
+			}
+			
 			// remove transparent color inds
 			for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
 			{
@@ -854,10 +892,6 @@ namespace MAPeD
 					{
 						clr_inds[ ( plt_n << 2 ) + ( ++ind_n ) ] = _data.palettes[ _val >> 2 ][ _val & 0x03 ];
 					}
-					else
-					{
-						more_than_4_color_in_palette = true;
-					}
 				});
 			}
 			
@@ -866,16 +900,13 @@ namespace MAPeD
 				_data.palettes[ ind_n >> 2 ][ ind_n & 0x03 ] = clr_inds[ ind_n ];
 			}
 			
-			if( more_than_4_color_in_palette || more_than_4_palettes )
+			if( more_than_4_colors_in_palette || more_than_4_palettes )
 			{
-				string reason_str = ( more_than_4_palettes ? "\n- more than 4 palettes":"" ) + ( more_than_4_color_in_palette ? "\n- more than 4 colors in a palette":"" );
+				string reason_str = ( more_than_4_palettes ? "\n- more than 4 palettes":"" ) + ( more_than_4_colors_in_palette ? "\n- more than 4 colors in a palette":"" );
 				
 				MainForm.message_box( "The imported image doesn't meet the requirements!\nSome color information will be lost!\n\nREASON: " + reason_str, "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 				
-				if( invalid_data_msg.Length > 0 )
-				{
-					MainForm.message_box( "Invalid data:\n\n" + invalid_data_msg, "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-				}
+				MainForm.message_box( "Invalid data:\n\n" + invalid_data_msg, "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 			}
 		}
 #endif		
