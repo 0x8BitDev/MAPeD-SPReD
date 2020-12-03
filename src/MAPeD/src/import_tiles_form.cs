@@ -756,24 +756,27 @@ namespace MAPeD
 				}
 			}
 
-			// remove palettes without a transparent color
-			for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
+			if( palettes.Count > utils.CONST_NUM_SMALL_PALETTES )
 			{
-				if( !palettes[ plt_n ].Contains( ( byte )transp_clr_ind ) )
+				// remove palettes without a transparent color
+				for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
 				{
-					for( block_n = 0; block_n < n_blocks; block_n++ )
+					if( !palettes[ plt_n ].Contains( ( byte )transp_clr_ind ) )
 					{
-						if( block_plt_inds[ block_n ] >= plt_n )
+						for( block_n = 0; block_n < n_blocks; block_n++ )
 						{
-							if( block_plt_inds[ block_n ] != 0 )
+							if( block_plt_inds[ block_n ] >= plt_n )
 							{
-								--block_plt_inds[ block_n ];
+								if( block_plt_inds[ block_n ] != 0 )
+								{
+									--block_plt_inds[ block_n ];
+								}
 							}
 						}
+						
+						palettes.RemoveAt( plt_n );
+						--plt_n;
 					}
-					
-					palettes.RemoveAt( plt_n );
-					--plt_n;
 				}
 			}
 
