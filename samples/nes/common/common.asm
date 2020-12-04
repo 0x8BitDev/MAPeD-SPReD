@@ -1,6 +1,6 @@
 ;###############################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2020 0x8BitDev ( MIT license )
 ;
 ;###############################################
 ;
@@ -133,15 +133,36 @@ data_size:	.res 2
 	sta word2 + 1
 	.endmacro
 
-; word -= 1
-	.macro dec_word word
+; word += N
+	.macro add_N_to_word word, N
+	clc
+	lda word
+	adc N
+	sta word
+	lda word + 1
+	adc #$00
+	sta word + 1
+	.endmacro
+
+; word -= N
+	.macro sub_N_from_word word, N
 	sec
 	lda word
-	sbc #$01
+	sbc N
 	sta word
 	lda word + 1
 	sbc #$00
 	sta word + 1
+	.endmacro
+
+; word -= 1
+	.macro dec_word word
+	sub_N_from_word word, #$01
+	.endmacro
+
+; word += 1
+	.macro inc_word word
+	add_N_to_word word #$01
 	.endmacro
 
 ; word2 = word1 - word2

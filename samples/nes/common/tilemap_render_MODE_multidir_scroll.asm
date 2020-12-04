@@ -534,6 +534,8 @@ move_left:
 	and #<~(inner_vars::TR_UPD_FLAG_DRAW_UP | inner_vars::TR_UPD_FLAG_DRAW_DOWN)
 	sta inner_vars::_tr_upd_flags
 
+	.IF !TR_MIRR_HORIZ_HALF_ATTR
+
 	lda inner_vars::_tr_upd_flags
 	and #inner_vars::TR_UPD_FLAG_FORCED_RIGHT
 	beq @cont0
@@ -542,6 +544,8 @@ move_left:
 	rts
 
 @cont0:
+	.ENDIF ;!TR_MIRR_HORIZ_HALF_ATTR
+
 	tr_set_draw_flag_forced_left
 
 	.ENDIF	;TR_MIRRORING_HORIZONTAL
@@ -615,6 +619,8 @@ move_right:
 	rts
 @cont1:
 
+	.IF !TR_MIRR_HORIZ_HALF_ATTR
+
 	lda inner_vars::_tr_upd_flags
 	and #inner_vars::TR_UPD_FLAG_FORCED_LEFT
 	beq @cont2
@@ -623,6 +629,8 @@ move_right:
 	rts
 
 @cont2:
+	.ENDIF ;!TR_MIRR_HORIZ_HALF_ATTR
+
 	tr_set_draw_flag_forced_right
 
 post_move_right:
@@ -1301,6 +1309,10 @@ _tr_drw_left_col:
 
 	; draw tiles
 
+	.IF TR_MIRR_HORIZ_HALF_ATTR
+	add_N_to_word inner_vars::_tr_pos_x, #$08
+	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
+
 	; calculate PPU address
 	lda inner_vars::_tr_pos_x
 	lsr a
@@ -1406,10 +1418,14 @@ _tr_drw_left_col:
 
 	jsr _drw_tiles_col_dyn
 
+	.IF TR_MIRR_HORIZ_HALF_ATTR
+	sub_N_from_word inner_vars::_tr_pos_x, #$08
+	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
+
 	pla						; get position in a tile
 
 	.IF TR_MIRR_HORIZ_HALF_ATTR
-	and #$02
+	and #$01
 	bne _tr_drw_left_col_attrs
 	.ELSE
 	.IF ::TR_DATA_TILES4X4
@@ -1630,8 +1646,10 @@ _tr_drw_right_col:
 	pla						; load position in a tile
 	.IF TR_MIRR_HORIZ_HALF_ATTR
 	and #$01
-	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
+	bne _tr_drw_right_col_attrs
+	.ELSE
 	beq _tr_drw_right_col_attrs			; if position is zero, then it's time to draw attribute column
+	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
 
 	.IF TR_MIRRORING_HORIZONTAL
 	lda inner_vars::_tr_upd_flags

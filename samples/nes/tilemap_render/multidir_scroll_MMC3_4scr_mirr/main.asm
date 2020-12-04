@@ -11,7 +11,7 @@
 
 .segment "HDR"	
 
-; TR_MIRRORING_HORIZONTAL 1 or 0 (1 - vertical, 0 - 4-screen mirroring) passed as command line parameter
+; TR_MIRRORING_HORIZONTAL 1 or 0 (1 - horizontal, 0 - 4-screen mirroring) passed as command line parameter
 ;
 	.IF mirror_horiz
 .define TR_MIRRORING_HORIZONTAL 1
@@ -194,11 +194,11 @@ RESET:
 
 	jsr ppu_load_palettes
 
-	.IF TR_MIRRORING_HORIZONTAL
+	.IF TR_MIRR_HORIZ_HALF_ATTR
 	lda #%10110000		; NMI, background tiles from Pattern Table 1, 8x16
 	.ELSE
 	lda #%10010000		; NMI, background tiles from Pattern Table 1, 8x8
-	.ENDIF ;TR_MIRRORING_HORIZONTAL
+	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
 	jsr ppu_set_2000
 
 	.IF TR_MIRR_HORIZ_HALF_ATTR
