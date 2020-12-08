@@ -8,12 +8,14 @@
 ;	map with transition screen(s). It can be used with 4x4/2x2 tiles. The column data order is required.
 ;	Uses attributes per block (2x2 tile).
 ;
-; P.S.: An example of a real NES game that used dynamic mirroring is "Little Samson" © 1992 Taito / Takeru
-;
-;############################################################################################################
 ; LIMITATIONS:
 ;
 ;	- The mirroring can be changed dynamically at each even screen from the start one.
+;
+; P.S.: An example of a real NES game that used dynamic mirroring is "Little Samson" © 1992 Taito / Takeru
+;
+; P.P.S.: Also these sources contain a bidirectional scroller implementation with vertical mirroring
+;	 ( fullscreen NTSC without attribute\tile glitches ). See supported options below for details.
 ;
 ;############################################################################################################
 
@@ -31,7 +33,8 @@
 
 ; SUPPORTED OPTIONS:
 ;
-; .define TR_DYNAMIC_MIRRORING	1 / 0
+; .define TR_DYNAMIC_MIRRORING		1 / 0 - TR_MIRRORING_VERTICAL
+; .define TR_MIRR_VERT_HALF_ATTR	1 - half attributes (16x16) (min attr glitches), 0 - full attributes (32x32) (max attr glitches)
 ;
 ;	MAP_FLAG_TILES2X2
 ;	MAP_FLAG_TILES4X4
@@ -46,8 +49,12 @@
 CHR_bankswitching = mmc1_chr_bank1_write	; switch CHR bank \ A - bank index
 
 	.IF TR_DYNAMIC_MIRRORING
+.define	TR_MIRR_VERT_HALF_ATTR	0
+
 mirroring_vertical 	= mmc1_mirroring_vertical
 mirroring_horizontal	= mmc1_mirroring_horizontal
+	.ELSE
+.define	TR_MIRR_VERT_HALF_ATTR	1
 	.ENDIF	;TR_DYNAMIC_MIRRORING
 
 
@@ -137,11 +144,15 @@ _loop_cntr:	.res 1
 
 	.IF TR_MIRRORING_VERTICAL
 
-_tr_forced_upd_flags:	.res 1
+_tr_ext_upd_flags:	.res 1
 
 TR_UPD_FLAG_FORCED_ATTRS	= %00100000	; forced drawing of attributes
 TR_UPD_FLAG_FORCED_TOP		= %01000000	; forced drawing of top line
 TR_UPD_FLAG_FORCED_BOTTOM	= %10000000	; forced drawing of bottom line
+
+	.IF TR_MIRR_VERT_HALF_ATTR
+TR_EXTRA_FLAGS_DOWN_HALF_ATTR	= %10000000
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 
 	.ENDIF	;TR_MIRRORING_VERTICAL
 
@@ -171,17 +182,17 @@ _tiles_col_offset:	.byte 0*SCR_HTILES_CNT, 1*SCR_HTILES_CNT, 2*SCR_HTILES_CNT, 3
 	.IF TR_MIRRORING_VERTICAL
 
 	.macro tr_set_draw_flag_forced_top
-	lda inner_vars::_tr_forced_upd_flags
+	lda inner_vars::_tr_ext_upd_flags
 	and #<~(inner_vars::TR_UPD_FLAG_FORCED_BOTTOM | inner_vars::TR_UPD_FLAG_FORCED_ATTRS)
 	ora #inner_vars::TR_UPD_FLAG_FORCED_TOP
-	sta inner_vars::_tr_forced_upd_flags
+	sta inner_vars::_tr_ext_upd_flags
 	.endmacro
 
 	.macro tr_set_draw_flag_forced_bottom
-	lda inner_vars::_tr_forced_upd_flags
+	lda inner_vars::_tr_ext_upd_flags
 	and #<~(inner_vars::TR_UPD_FLAG_FORCED_TOP | inner_vars::TR_UPD_FLAG_FORCED_ATTRS)
 	ora #inner_vars::TR_UPD_FLAG_FORCED_BOTTOM
-	sta inner_vars::_tr_forced_upd_flags
+	sta inner_vars::_tr_ext_upd_flags
 	.endmacro
 
 	.ENDIF	;TR_MIRRORING_VERTICAL
@@ -207,23 +218,11 @@ _tiles_col_offset:	.byte 0*SCR_HTILES_CNT, 1*SCR_HTILES_CNT, 2*SCR_HTILES_CNT, 3
 @cont1:			
 	.endmacro
 
-	.macro jmp_bne _label
-	.local @cont
-	beq @cont
-	jmp _label
-@cont:
-	.endmacro			
+	; jmp_beq and jmp_bcc are macroses to fix out of range error
 
 	.macro jmp_beq _label
 	.local @cont
 	bne @cont
-	jmp _label
-@cont:
-	.endmacro			
-
-	.macro jmp_bcs _label
-	.local @cont
-	bcc @cont
 	jmp _label
 @cont:
 	.endmacro			
@@ -430,7 +429,7 @@ init_draw:
 
 	.IF TR_MIRRORING_VERTICAL
 	lda #$00
-	sta inner_vars::_tr_forced_upd_flags
+	sta inner_vars::_tr_ext_upd_flags
 	.ENDIF
 
 	lda #$02
@@ -555,15 +554,15 @@ move_left:
 
 	clc
 	adc #TR_SCROLL_STEP
-	bcc @cont
+	bcc @cont1
 
-	; reset active IGNORE_LEFT_OVERFLOW flag and jump to @cont
+	; reset active IGNORE_LEFT_OVERFLOW flag and jump to @cont0
 	lda inner_vars::_tr_upd_flags
 	and #inner_vars::TR_UPD_FLAG_IGNORE_LEFT_OVERFLOW
 	beq @cont0
 
 	upd_flag_reset inner_vars::TR_UPD_FLAG_IGNORE_LEFT_OVERFLOW
-	jmp @cont
+	jmp @cont1
 
 @cont0:
 	; switch screen
@@ -575,7 +574,7 @@ move_left:
 
 	upd_flag_reset inner_vars::TR_UPD_FLAG_IGNORE_RIGHT_OVERFLOW
 
-	jmp @cont
+	jmp @cont1
 
 @min_check:
 
@@ -601,7 +600,7 @@ move_left:
 	jsr mirroring_vertical
 	.ENDIF	;TR_DYNAMIC_MIRRORING
 
-@cont:
+@cont1:
 	ldx #$00
 
 	lda inner_vars::_tr_pos_x
@@ -644,9 +643,9 @@ move_right:
 
 	clc
 	adc #TR_SCROLL_STEP
-	jmp_bcc @cont
+	jmp_bcc @cont1
 
-	; reset active IGNORE_RIGHT_OVERFLOW flag and jump to @cont
+	; reset active IGNORE_RIGHT_OVERFLOW flag and jump to @cont0
 	lda inner_vars::_tr_upd_flags
 	and #inner_vars::TR_UPD_FLAG_IGNORE_RIGHT_OVERFLOW
 	beq @cont0
@@ -657,7 +656,7 @@ move_right:
 	eor #01
 	sta inner_vars::_nametable
 
-	jmp @cont
+	jmp @cont1
 
 @cont0:
 	; switch screen
@@ -673,7 +672,7 @@ move_right:
 	eor #01
 	sta inner_vars::_nametable
 
-	jmp @cont
+	jmp @cont1
 
 @min_check:
 	check_right_screen				; get the next screen
@@ -694,7 +693,7 @@ move_right:
 	jsr mirroring_vertical
 	.ENDIF	;TR_DYNAMIC_MIRRORING
 
-@cont:
+@cont1:
 	ldx #$00
 
 	lda inner_vars::_tr_pos_x
@@ -731,19 +730,21 @@ move_right:
 move_up:
 	.IF TR_MIRRORING_VERTICAL
 
-	lda inner_vars::_tr_forced_upd_flags
+	lda inner_vars::_tr_ext_upd_flags
 	and #inner_vars::TR_UPD_FLAG_FORCED_TOP
-	beq @cont1
+	beq @cont0
 
 	lda inner_vars::_tr_pos_y
-	beq @cont1
+	beq @cont0
 
+	.IF !TR_MIRR_VERT_HALF_ATTR
 	lda #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
-	sta inner_vars::_tr_forced_upd_flags
+	sta inner_vars::_tr_ext_upd_flags
 
 	jsr _tr_drw_up_row
+	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
 
-@cont1:			
+@cont0:
 	tr_set_draw_flag_forced_bottom
 
 	.ENDIF	;TR_MIRRORING_VERTICAL
@@ -757,18 +758,18 @@ move_up:
 	clc
 	adc #TR_SCROLL_STEP
 
-	jmp_bcc @cont
+	jmp_bcc @cont2
 
 	; reset active IGNORE_UP_OVERFLOW flag and jump to @cont
 	lda inner_vars::_tr_upd_flags
 	and #inner_vars::TR_UPD_FLAG_IGNORE_UP_OVERFLOW
-	beq @cont0
+	beq @cont1
 
 	upd_flag_reset inner_vars::TR_UPD_FLAG_IGNORE_UP_OVERFLOW
 
-	jmp @cont
+	jmp @cont2
 
-@cont0:
+@cont1:
 	; switch screen
 	check_up_screen					; skip screen which already at screen
 
@@ -778,7 +779,7 @@ move_up:
 
 	upd_flag_reset inner_vars::TR_UPD_FLAG_IGNORE_DOWN_OVERFLOW
 
-	jmp @cont
+	jmp @cont2
 
 @min_check:
 
@@ -804,17 +805,17 @@ move_up:
 	jsr mirroring_horizontal
 	.ENDIF	;TR_DYNAMIC_MIRRORING
 
-@cont:
+@cont2:
 	ldx #$00
 
 	lda inner_vars::_tr_pos_y
 	and #%00000111
 
-	bne @cont2
+	bne @cont3
 
 	inx						; need to draw a row
 
-@cont2:
+@cont3:
 	lda inner_vars::_tr_pos_y
 	sec
 	sbc #TR_SCROLL_STEP
@@ -869,16 +870,18 @@ _tr_forced_drw_down_row_attrs:
 move_down:
 	.IF TR_MIRRORING_VERTICAL
 
-	lda inner_vars::_tr_forced_upd_flags
+	lda inner_vars::_tr_ext_upd_flags
 	and #inner_vars::TR_UPD_FLAG_FORCED_BOTTOM
-	beq @cont1
+	beq @cont0
 
+	.IF !TR_MIRR_VERT_HALF_ATTR
 	lda #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
-	sta inner_vars::_tr_forced_upd_flags
+	sta inner_vars::_tr_ext_upd_flags
 
 	jsr _tr_drw_down_row
+	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
 
-@cont1:			
+@cont0:
 	tr_set_draw_flag_forced_top
 
 	.ENDIF ;TR_MIRRORING_VERTICAL
@@ -893,12 +896,21 @@ move_down:
 
 	sec
 	sbc #$f0
-	jmp_bcc @cont
+	jmp_bcc @cont2
 
-	; reset active IGNORE_DOWN_OVERFLOW flag and jump to @cont
+	.IF TR_MIRR_VERT_HALF_ATTR
+	lda #$00
+	sta inner_vars::_tr_pos_y
+	jsr _tr_drw_down_row				; draw the last row of the current screen
+
+	lda #( $f0 - TR_SCROLL_STEP )
+	sta inner_vars::_tr_pos_y
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+
+	; reset active IGNORE_DOWN_OVERFLOW flag and jump to @cont1
 	lda inner_vars::_tr_upd_flags
 	and #inner_vars::TR_UPD_FLAG_IGNORE_DOWN_OVERFLOW
-	beq @cont0
+	beq @cont1
 
 	upd_flag_reset inner_vars::TR_UPD_FLAG_IGNORE_DOWN_OVERFLOW
 
@@ -908,14 +920,16 @@ move_down:
 
 	; shift attrs drawing on 2 CHRs (bottom block fix)
 	.IF TR_MIRRORING_VERTICAL
+	.IF !TR_MIRR_VERT_HALF_ATTR
 	.IF ::TR_DATA_TILES4X4
 	jsr _tr_forced_drw_down_row_attrs
-	.ENDIF	;TR_DATA_TILES4X4
-	.ENDIF	;TR_MIRRORING_VERTICAL
+	.ENDIF ;TR_DATA_TILES4X4
+	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
-	jmp @cont
+	jmp @cont2
 
-@cont0:
+@cont1:
 	; switch screen
 	check_down_screen				; skip screen which already at screen
 
@@ -931,12 +945,14 @@ move_down:
 
 	; shift attrs drawing on 2 CHRs (bottom block fix)
 	.IF TR_MIRRORING_VERTICAL
+	.IF !TR_MIRR_VERT_HALF_ATTR
 	.IF ::TR_DATA_TILES4X4
 	jsr _tr_forced_drw_down_row_attrs
-	.ENDIF	;TR_DATA_TILES4X4
-	.ENDIF	;TR_MIRRORING_VERTICAL
+	.ENDIF ;TR_DATA_TILES4X4
+	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
-	jmp @cont
+	jmp @cont2
 
 @min_check:
 
@@ -958,18 +974,23 @@ move_down:
 	jsr mirroring_horizontal
 	.ENDIF	;TR_DYNAMIC_MIRRORING
 
-@cont:
+@cont2:
 
 	ldx #$00
 
 	lda inner_vars::_tr_pos_y
-	and #%00000111
 
-	bne @cont2
+	.IF TR_MIRR_VERT_HALF_ATTR
+	and #%00001000
+	beq @cont3
+	.ELSE
+	and #%00000111
+	bne @cont3
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 
 	inx						; need to draw a row
 
-@cont2:
+@cont3:
 	lda inner_vars::_tr_pos_y + 1
 	sec
 	sbc #TR_SCROLL_STEP
@@ -983,6 +1004,10 @@ move_down:
 	sec
 	sbc #$f0
 	check_direction_vert_overflow_pos
+
+	.IF TR_MIRR_VERT_HALF_ATTR
+	bcs @exit
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 
 	txa
 	beq @exit
@@ -1033,6 +1058,12 @@ update_jpad:
 
 	; enable scroll
 	upd_flag_set inner_vars::TR_UPD_FLAG_SCROLL
+
+	.IF TR_MIRR_VERT_HALF_ATTR
+	lda inner_vars::_tr_ext_upd_flags
+	and #<~inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
+	sta inner_vars::_tr_ext_upd_flags
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 
 	rts
 
@@ -1121,40 +1152,45 @@ _tr_drw_up_row:
 	jsr TR_utils::buff_push_hdr
 
 	.IF ::TR_DATA_TILES4X4
-	push_word _tmp_val
-	jsr _drw_tiles_row_dyn
-	pop_word _tmp_val			; necessary for attributes drawing
-	.ELSE
-	jsr _drw_tiles_row_dyn
+	load_data_word _tmp_val, _tmp_val3	; necessary for attributes drawing
 	.ENDIF	;TR_DATA_TILES4X4
+
+	jsr _drw_tiles_row_dyn
 
 	pop_x					; get position in a tile
 	pop_y					; screen index
 
 	.IF TR_MIRRORING_VERTICAL
-	lda inner_vars::_tr_forced_upd_flags
+	lda inner_vars::_tr_ext_upd_flags
 	and #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
 	bne _tr_drw_up_row_attrs
 	.ENDIF	;TR_MIRRORING_VERTICAL
 
 	txa
 
-	; shift attrs drawing on 2 CHRs
 	.IF TR_MIRRORING_VERTICAL
+	.IF TR_MIRR_VERT_HALF_ATTR
+	and #$01
+	beq _tr_drw_up_row_attrs
+	.ELSE
+	; shift attrs drawing on 2 CHRs
 	.IF ::TR_DATA_TILES4X4
 	cmp #$01
 	.ELSE
 ;	cmp #$00
-	.ENDIF	;TR_DATA_TILES4X4
+	.ENDIF ;TR_DATA_TILES4X4
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 	.ELSE
 	.IF ::TR_DATA_TILES4X4
 	cmp #$03
 	.ELSE
 	cmp #$01
-	.ENDIF	;TR_DATA_TILES4X4
-	.ENDIF	;TR_MIRRORING_VERTICAL
+	.ENDIF ;TR_DATA_TILES4X4
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
+	.IF !TR_MIRR_VERT_HALF_ATTR
 	beq _tr_drw_up_row_attrs
+	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
 
 	lda inner_vars::_tr_pos_y
 	lsr a
@@ -1164,17 +1200,64 @@ _tr_drw_up_row:
 	cmp #$1d				; the last 29 row
 	bne @exit
 
+	.IF !TR_MIRR_VERT_HALF_ATTR
 	txa
 	cmp #$01
 	beq _tr_drw_up_row_attrs
-
+	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
 @exit:
 	rts
 
 _tr_drw_up_row_attrs:
 
+	.IF TR_MIRR_VERT_HALF_ATTR
+	lda inner_vars::_tr_ext_upd_flags
+	and #<~inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
+	sta inner_vars::_tr_ext_upd_flags
+
+	push_y
+
+	lda inner_vars::_tr_upd_flags
+	and #inner_vars::TR_UPD_FLAG_IGNORE_DOWN_OVERFLOW
+	beq @cont0
+
+	get_screen_index_offset
+	lda (<TR_utils::tr_curr_scr), y	; A - screen index
+
+	jmp @cont1
+
+@cont0:
+	check_down_screen	
+	stx _tmp_val
+	sty _tmp_val + 1
+
+	get_screen_index_offset
+	lda (<_tmp_val), y	; A - screen index
+	
+@cont1:
 	; calc attributes data address
-	.IF !::TR_DATA_TILES4X4
+	; IN: A - screen index
+	.IF ::TR_DATA_TILES4X4
+	calc_64bytes_data_offset tr_tiles_scr, _tmp_val2
+	.ELSE
+	calc_64bytes_data_offset tr_attrs_scr, _tmp_val2
+	.ENDIF ;TR_DATA_TILES4X4
+
+	lda inner_vars::_tr_pos_y
+	lsr a
+	lsr a
+	lsr a
+	lsr a
+	lsr a
+	add_a_to_word _tmp_val2
+
+	pop_y
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+
+	; calc attributes data address
+	.IF ::TR_DATA_TILES4X4
+	load_data_word _tmp_val3, _tmp_val
+	.ELSE
 	tya					; screen index
 	calc_64bytes_data_offset tr_attrs_scr, _tmp_val
 
@@ -1187,15 +1270,12 @@ _tr_drw_up_row_attrs:
 	lsr a
 
 	add_a_to_word _tmp_val
-	.ENDIF	;!TR_DATA_TILES4X4
+	.ENDIF	;TR_DATA_TILES4X4
 
 	; PPU address
 	; ( inner_vars::_tr_pos_y / 32 ) * 8
 	lda inner_vars::_tr_pos_y
-
-	lsr a
-	lsr a
-	and #%11111000
+	div32_mul8
 
 	clc
 	adc #$c0
@@ -1230,6 +1310,32 @@ _tr_drw_down_row:
 	.ELSE
 	calc_240bytes_data_offset tr_tiles_scr, _tmp_val
 	.ENDIF	;TR_DATA_TILES4X4
+
+	.IF TR_MIRR_VERT_HALF_ATTR
+	lda inner_vars::_tr_pos_y
+	pha
+
+	sec 
+	sbc #$08
+
+	bcs @cont
+
+	eor #$ff
+	clc 
+	adc #$01	; a - inverted value with a positive sign
+
+	sec
+	sbc #$f0
+
+	eor #$ff
+	clc 
+	adc #$01	; a - inverted value with a positive sign
+
+@cont:
+
+	sta inner_vars::_tr_pos_y
+
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 
 	; calc tile row address
 	lda inner_vars::_tr_pos_y
@@ -1290,42 +1396,99 @@ _tr_drw_down_row:
 	jsr TR_utils::buff_push_hdr
 
 	.IF ::TR_DATA_TILES4X4
-	push_word _tmp_val
-	jsr _drw_tiles_row_dyn
-	pop_word _tmp_val				; necessary for attributes drawing
-	.ELSE
-	jsr _drw_tiles_row_dyn
+	load_data_word _tmp_val, _tmp_val3		; necessary for attributes drawing
 	.ENDIF	;TR_DATA_TILES4X4
 
+	jsr _drw_tiles_row_dyn
+
 	pop_x						; get position in a tile
+
+	.IF TR_MIRR_VERT_HALF_ATTR
+	pla
+	sta inner_vars::_tr_pos_y
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+
 	pop_y						; screen index
 
 	.IF TR_MIRRORING_VERTICAL
-	lda inner_vars::_tr_forced_upd_flags
+	lda inner_vars::_tr_ext_upd_flags
 	and #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
 	bne _tr_drw_down_row_attrs
 	.ENDIF	;TR_MIRRORING_VERTICAL
 
 	txa
 
-	; shift attrs drawing on 2 CHRs
 	.IF TR_MIRRORING_VERTICAL
+	.IF TR_MIRR_VERT_HALF_ATTR
+	and #$01
+	beq _tr_drw_down_row_attrs
+	.ELSE
+	; shift attrs drawing on 2 CHRs
 	.IF ::TR_DATA_TILES4X4
 	cmp #$02
 	.ELSE
 	cmp #$01
-	.ENDIF	;TR_DATA_TILES4X4
-	.ENDIF	;TR_MIRRORING_VERTICAL
+	.ENDIF ;TR_DATA_TILES4X4
+	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
+	.IF !TR_MIRR_VERT_HALF_ATTR
 	beq _tr_drw_down_row_attrs
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 
 @exit:
 	rts
 
 _tr_drw_down_row_attrs:
 
+	.IF TR_MIRR_VERT_HALF_ATTR
+	lda inner_vars::_tr_ext_upd_flags
+	ora #inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
+	sta inner_vars::_tr_ext_upd_flags
+
+	push_y
+
+	lda inner_vars::_tr_upd_flags
+	and #inner_vars::TR_UPD_FLAG_IGNORE_UP_OVERFLOW
+	beq @cont0
+
+	get_screen_index_offset
+	lda (<TR_utils::tr_curr_scr), y	; A - screen index
+
+	jmp @cont1
+
+@cont0:
+	check_up_screen	
+	stx _tmp_val
+	sty _tmp_val + 1
+
+	get_screen_index_offset
+	lda (<_tmp_val), y	; A - screen index
+	
+@cont1:
 	; calc attributes data address
-	.IF !::TR_DATA_TILES4X4
+	; IN: A - screen index
+	.IF ::TR_DATA_TILES4X4
+	calc_64bytes_data_offset tr_tiles_scr, _tmp_val2
+	.ELSE
+	calc_64bytes_data_offset tr_attrs_scr, _tmp_val2
+	.ENDIF ;TR_DATA_TILES4X4
+
+	lda inner_vars::_tr_pos_y
+	lsr a
+	lsr a
+	lsr a
+	lsr a
+	lsr a
+	add_a_to_word _tmp_val2
+
+	pop_y
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+
+	; calc attributes data address
+	.IF ::TR_DATA_TILES4X4
+	load_data_word _tmp_val3, _tmp_val
+	.ELSE
 	tya						; screen index
 	calc_64bytes_data_offset tr_attrs_scr, _tmp_val
 
@@ -1341,11 +1504,8 @@ _tr_drw_down_row_attrs:
 
 	; PPU address
 	; ( inner_vars::_tr_pos_y / 32 ) * 8
-
 	lda inner_vars::_tr_pos_y
-	lsr a
-	lsr a
-	and #%11111000
+	div32_mul8
 
 	clc
 	adc #$c0
@@ -1655,6 +1815,94 @@ _tr_drw_right_col_attrs:
 
 	jmp _drw_attrs_col_dyn
 
+	.IF TR_MIRR_VERT_HALF_ATTR
+
+; IN: 	A - current attribute
+
+half_attrs_fix_up_down:
+
+	pha
+
+	lda inner_vars::_tr_pos_y
+	lsr a
+	lsr a
+	lsr a
+
+	tay
+
+	; Y - tile rows
+	; STACK - attribute
+
+	lda inner_vars::_tr_ext_upd_flags
+	and #inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
+	beq @up_attrs
+
+	tya
+	and #$02
+	bne @_34_tiles_col_down
+
+	; 1-2 tiles col
+
+	ldy #$00
+	lda (<_tmp_val2), y
+
+	.IF ::TR_DATA_TILES4X4
+	tay
+	lda (<tr_attrs), y		; read attr
+	.ENDIF ;TR_DATA_TILES4X4
+
+	and #%11110000
+	sta _tmp_val4
+
+	pla
+
+	and #%00001111
+	ora _tmp_val4
+
+	jmp @cont_attrs
+
+@_34_tiles_col_down:
+
+	pla
+
+	jmp @cont_attrs
+
+@up_attrs:
+
+	tya
+	and #$02
+	beq @_34_tiles_col_up
+
+	; 1-2 tiles col
+
+	ldy #$00
+	lda (<_tmp_val2), y
+
+	.IF ::TR_DATA_TILES4X4
+	tay
+	lda (<tr_attrs), y
+	.ENDIF ;TR_DATA_TILES4X4
+
+	and #%00001111
+	sta _tmp_val4
+
+	pla
+
+	and #%11110000
+	ora _tmp_val4
+
+	jmp @cont_attrs
+
+@_34_tiles_col_up:
+
+	pla
+
+@cont_attrs:
+
+	rts
+
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+
 _drw_attrs_row_dyn:
 
 	; draw row of attributes
@@ -1670,7 +1918,20 @@ _drw_attrs_row_dyn:
 	lda (<inner_vars::_tr_attrs), y			; read attribute
 	.ENDIF ;TR_DATA_TILES4X4
 
+	.IF TR_MIRR_VERT_HALF_ATTR
+	jsr half_attrs_fix_up_down
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+
 	jsr TR_utils::buff_push_data
+
+	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF ::TR_DATA_TILES4X4
+	lda #::SCR_HTILES_CNT
+	.ELSE
+	lda #::SCR_HATTRS_CNT
+	.ENDIF ;TR_DATA_TILES4X4
+	add_a_to_word _tmp_val2
+	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 
 	.IF ::TR_DATA_TILES4X4
 	lda #::SCR_HTILES_CNT
