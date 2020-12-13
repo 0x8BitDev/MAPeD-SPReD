@@ -34,7 +34,6 @@
 ; SUPPORTED OPTIONS:
 ;
 ; .define TR_MIRRORING_VERTICAL	 --  1 vertical, 0 - 4-screen mirroring
-; .define TR_MIRR_VERT_HALF_ATTR --  1 - half attributes (16x16) (min attr glitches), 0 - full attributes (32x32) (max attr glitches)
 ;
 ;	MAP_FLAG_TILES2X2
 ;	MAP_FLAG_TILES4X4
@@ -43,13 +42,6 @@
 ;	MAP_FLAG_MODE_MULTIDIR_SCROLL
 ;	MAP_FLAG_ATTRS_PER_BLOCK
 ;
-
-
-	.IF TR_MIRRORING_VERTICAL
-.define	TR_MIRR_VERT_HALF_ATTR	1
-	.ELSE
-.define	TR_MIRR_VERT_HALF_ATTR	0
-	.ENDIF ;TR_MIRRORING_VERTICAL
 
 
 .include "../../common/tilemap_render_UTILS.asm"
@@ -118,15 +110,13 @@ TR_UPD_FLAG_DRAW_RIGHT	= %00010000
 
 	.IF TR_MIRRORING_VERTICAL
 
-_tr_ext_upd_flags:	.res 1
-
 TR_UPD_FLAG_FORCED_ATTRS	= %00100000	; forced drawing of attributes
 TR_UPD_FLAG_FORCED_TOP		= %01000000	; forced drawing of top line
 TR_UPD_FLAG_FORCED_BOTTOM	= %10000000	; forced drawing of bottom line
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+_tr_ext_upd_flags:	.res 1
+
 TR_EXTRA_FLAGS_DOWN_HALF_ATTR	= %10000000
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 
 	.ENDIF ;TR_MIRRORING_VERTICAL
 
@@ -725,7 +715,7 @@ move_down:
 	and #<~inner_vars::TR_UPD_FLAG_FORCED_TOP
 	sta inner_vars::_tr_upd_flags
 	.ENDIF ;TR_MIRRORING_VERTICAL
-
+	
 	rts
 
 @cont2:
@@ -737,11 +727,7 @@ move_down:
 	.IF !TR_MIRRORING_VERTICAL
 	bne @cont3
 	.ELSE
-	.IF TR_MIRR_VERT_HALF_ATTR
 	bne @cont4
-	.ELSE
-	bne @upd_drw_down_row
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 	.ENDIF ;!TR_MIRRORING_VERTICAL
 
 	lda #$00
@@ -749,9 +735,9 @@ move_down:
 
 	inc inner_vars::_tr_pos_y + 1
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	jmp @upd_drw_down_row
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	.IF !TR_MIRRORING_VERTICAL
 	lda inner_vars::_nametable
@@ -766,14 +752,14 @@ move_down:
 	rts
 	.ENDIF ;!TR_MIRRORING_VERTICAL
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 @cont4:
 	tya
 	and #%00001000
 	bne @upd_drw_down_row
 
 	rts
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 @upd_drw_down_row:
 
@@ -863,11 +849,11 @@ update_jpad:
 	ora #inner_vars::TR_UPD_FLAG_SCROLL
 	sta inner_vars::_tr_upd_flags
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	lda inner_vars::_tr_ext_upd_flags
 	and #<~inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
 	sta inner_vars::_tr_ext_upd_flags
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	jmp TR_utils::buff_end
 
@@ -979,19 +965,8 @@ _tr_drw_up_row:
 	tya
 
 	.IF TR_MIRRORING_VERTICAL
-	.IF TR_MIRR_VERT_HALF_ATTR
 	and #$01
 	beq _tr_drw_up_row_attrs
-	.ELSE
-
-	.IF ::TR_DATA_TILES4X4
-	cmp #$00
-	beq _tr_drw_up_row_attrs
-	cmp #$02
-	.ELSE
-;	cmp #$00
-	.ENDIF ;TR_DATA_TILES4X4
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 	.ELSE
 	.IF ::TR_DATA_TILES4X4
 	cmp #$03
@@ -1000,9 +975,9 @@ _tr_drw_up_row:
 	.ENDIF ;TR_DATA_TILES4X4
 	.ENDIF ;TR_MIRRORING_VERTICAL
 
-	.IF !TR_MIRR_VERT_HALF_ATTR
+	.IF !TR_MIRRORING_VERTICAL
 	beq _tr_drw_up_row_attrs
-	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;!TR_MIRRORING_VERTICAL
 
 	txa
 	cmp #$1d				; now we trace attribute drawing in the last 29th line
@@ -1020,11 +995,11 @@ _tr_drw_up_row_attrs:
 
 	; draw attrs
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	lda inner_vars::_tr_ext_upd_flags
 	and #<~inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
 	sta inner_vars::_tr_ext_upd_flags
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 	
 	; calculate PPU address
 	; ( inner_vars::_tr_pos_y / 32 ) * 8
@@ -1096,7 +1071,7 @@ _tr_drw_down_row:
 
 	; draw tiles
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	push_word inner_vars::_tr_pos_y
 
 	lda inner_vars::_tr_pos_y
@@ -1112,8 +1087,7 @@ _tr_drw_down_row:
 
 @cont:
 	sta inner_vars::_tr_pos_y
-
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	; calculate PPU address
 	lda inner_vars::_nametable
@@ -1209,28 +1183,18 @@ _tr_drw_down_row:
 	jsr _drw_tiles_row_dyn
 
 	pla						; load position in a tile
-	tay
-
-	.IF TR_MIRR_VERT_HALF_ATTR
-	pop_word inner_vars::_tr_pos_y
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 
 	.IF TR_MIRRORING_VERTICAL
+	tay
+	pop_word inner_vars::_tr_pos_y
+
 	lda inner_vars::_tr_upd_flags
 	and #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
 	bne _tr_drw_down_row_attrs
-	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	tya
-
-	.IF TR_MIRRORING_VERTICAL
-	.IF TR_MIRR_VERT_HALF_ATTR
 	and #$01
-	.ELSE
-	cmp #$01
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 	.ENDIF ;TR_MIRRORING_VERTICAL
-
 	beq _tr_drw_down_row_attrs	; if the position is zero, then it's time to draw attribute column
 
 	rts
@@ -1239,11 +1203,11 @@ _tr_drw_down_row_attrs:
 
 	; draw attributes
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	lda inner_vars::_tr_ext_upd_flags
 	ora #inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
 	sta inner_vars::_tr_ext_upd_flags
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	; calculate PPU address
 	; ( inner_vars::_tr_pos_y / 32 ) * 8
@@ -1434,6 +1398,7 @@ _tr_drw_left_col:
 	jsr _drw_tiles_col_dyn
 
 	pla						; get position in a tile
+
 	.IF ::TR_DATA_TILES4X4
 	cmp #$03
 	.ELSE
@@ -1504,7 +1469,7 @@ _tr_drw_left_col_attrs:
 	jsr TR_utils::buff_push_hdr
 
 	; calculate missing number of tiles to be drawn on another screen
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	ldx #::SCR_HATTRS_CNT
 	lda inner_vars::_tr_pos_y
 	lsr a
@@ -1517,7 +1482,7 @@ _tr_drw_left_col_attrs:
 	txa
 	.ELSE
 	lda #::SCR_HATTRS_CNT + 1
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 	sec
 	sbc inner_vars::_loop_cntr
 	sta inner_vars::_extra_cnt
@@ -1720,7 +1685,7 @@ _tr_drw_right_col_attrs:
 	jsr TR_utils::buff_push_hdr
 
 	; calculate missing number of tiles to be drawn on another screen
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	ldx #::SCR_HATTRS_CNT
 	lda inner_vars::_tr_pos_y
 	lsr a
@@ -1733,7 +1698,7 @@ _tr_drw_right_col_attrs:
 	txa
 	.ELSE
 	lda #::SCR_HATTRS_CNT + 1
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 	sec
 	sbc inner_vars::_loop_cntr
 	sta inner_vars::_extra_cnt
@@ -1762,7 +1727,7 @@ _tr_drw_right_col_attrs:
 	jmp _drw_attrs_col_dyn
 
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 
 ; IN: 	A - current attribute
 
@@ -1848,11 +1813,11 @@ half_attrs_fix_up_down:
 
 	rts
 
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 _drw_attrs_row_dyn:
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 
 	; _tmp_val2 = _tmp_val
 
@@ -1893,7 +1858,7 @@ _drw_attrs_row_dyn:
 
 	sta _tmp_val3			; save the map height in attributes
 
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	; draw tiles row
 
@@ -1908,16 +1873,16 @@ _drw_attrs_row_dyn:
 	lda (<tr_attrs), y		; read attr
 	.ENDIF ;TR_DATA_TILES4X4
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	jsr half_attrs_fix_up_down
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	jsr TR_utils::buff_push_data
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	lda _tmp_val3
 	add_a_to_word _tmp_val2		; go to the next attr
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	.IF ::TR_DATA_TILES4X4
 	lda tr_htiles
