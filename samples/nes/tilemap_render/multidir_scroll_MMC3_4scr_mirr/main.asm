@@ -61,7 +61,7 @@ INES_4SCR	= 0
 	.include "../../common/rle.asm"
 	.include "../../common/tilemap_render_MODE_multidir_scroll_4scr_horiz_mirr.asm"
 
-	.IF TR_MIRR_HORIZ_HALF_ATTR
+	.IF TR_MIRRORING_HORIZONTAL
 _right_blank_col:
 	.byte $00, $00, $00, $F8
 	.byte $10, $00, $00, $F8
@@ -83,7 +83,7 @@ _right_blank_col_end:
 _right_blank_col_size:
 	.word _right_blank_col_end - _right_blank_col
 
-	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_HORIZONTAL
 
 RESET:
 
@@ -153,7 +153,7 @@ RESET:
 
 	set_ppu_1_inc
 
-	.IF TR_MIRR_HORIZ_HALF_ATTR
+	.IF TR_MIRRORING_HORIZONTAL
 
 	; save sprite palette color
 
@@ -180,7 +180,7 @@ RESET:
 
 	jsr ppu_load_sprite_0x0200
 	jsr ppu_DMA_transf_256b_0x0200
-	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_HORIZONTAL
 
 ; load palette
 ; WARNING: palette can be loaded during VBlank only!
@@ -194,18 +194,18 @@ RESET:
 
 	jsr ppu_load_palettes
 
-	.IF TR_MIRR_HORIZ_HALF_ATTR
+	.IF TR_MIRRORING_HORIZONTAL
 	lda #%10110000		; NMI, background tiles from Pattern Table 1, 8x16
 	.ELSE
 	lda #%10010000		; NMI, background tiles from Pattern Table 1, 8x8
-	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_HORIZONTAL
 	jsr ppu_set_2000
 
-	.IF TR_MIRR_HORIZ_HALF_ATTR
+	.IF TR_MIRRORING_HORIZONTAL
 	lda #%00011000		; enable background drawing, CLIPPING for sprites and background
 	.ELSE
 	lda #%00001110		; enable background drawing, NO CLIPPING for sprites and background
-	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_HORIZONTAL
 	jsr ppu_set_2001
 
 	jpad1_init
@@ -266,7 +266,7 @@ IRQ:
 	; banks: 0, 1, 2, 3, 4, 5, 6, 7
 	.incbin "data/tilemap_Lev0_CHR.bin"
 
-	.IF TR_MIRR_HORIZ_HALF_ATTR
+	.IF TR_MIRRORING_HORIZONTAL
 
 	; two black CHRs for the left clipping column
 
@@ -284,6 +284,6 @@ IRQ:
 	.REPEAT 8
 	.byte $00
 	.ENDREPEAT
-	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_HORIZONTAL
 
 ; *** END OF CHR BANKS ***
