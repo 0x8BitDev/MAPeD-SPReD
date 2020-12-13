@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+13.12.2020 - NES: added multidirectional scrolling sample with vertical mirroring
 02.12.2020 - Added removal of duplicate data during the optimization process
 30.11.2020 - NES: added bidirectional scrolling sample with vertical mirroring and multidirectional scroller sample with horizontal mirroring
 16.11.2020 - SMS: added static screens switching sample (VDP-ready screens data)
