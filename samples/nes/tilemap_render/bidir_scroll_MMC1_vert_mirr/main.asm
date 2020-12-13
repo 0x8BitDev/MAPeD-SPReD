@@ -41,7 +41,7 @@ INES_4SCR	= 0 ; 1 = Hard-wired four screen mode
 	.include "../../common/anm.asm"
 
 	.include "../../common/rle.asm"
-	.include "../../common/tilemap_render_MODE_bidir_scroll.asm"
+	.include "../../common/tilemap_render_MODE_bidir_scroll_dyn_vert_mirr.asm"
 
 
 MMC1_MIRROR_VERT	= $02

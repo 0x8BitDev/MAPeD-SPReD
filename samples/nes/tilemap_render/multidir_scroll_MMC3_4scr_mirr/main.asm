@@ -59,7 +59,7 @@ INES_4SCR	= 0
 	.include "../../common/jpad.asm"
 	
 	.include "../../common/rle.asm"
-	.include "../../common/tilemap_render_MODE_multidir_scroll.asm"
+	.include "../../common/tilemap_render_MODE_multidir_scroll_4scr_horiz_mirr.asm"
 
 	.IF TR_MIRR_HORIZ_HALF_ATTR
 _right_blank_col:

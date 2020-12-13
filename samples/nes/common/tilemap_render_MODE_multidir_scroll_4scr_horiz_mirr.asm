@@ -529,12 +529,11 @@ _get_tile_addr_tbl_val:
 move_left:
 
 	.IF TR_MIRRORING_HORIZONTAL
+	.IF !TR_MIRR_HORIZ_HALF_ATTR
 	
 	lda inner_vars::_tr_upd_flags
 	and #<~(inner_vars::TR_UPD_FLAG_DRAW_UP | inner_vars::TR_UPD_FLAG_DRAW_DOWN)
 	sta inner_vars::_tr_upd_flags
-
-	.IF !TR_MIRR_HORIZ_HALF_ATTR
 
 	lda inner_vars::_tr_upd_flags
 	and #inner_vars::TR_UPD_FLAG_FORCED_RIGHT
@@ -544,11 +543,10 @@ move_left:
 	rts
 
 @cont0:
-	.ENDIF ;!TR_MIRR_HORIZ_HALF_ATTR
-
 	tr_set_draw_flag_forced_left
 
-	.ENDIF	;TR_MIRRORING_HORIZONTAL
+	.ENDIF ;!TR_MIRR_HORIZ_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_HORIZONTAL
 
 	lda #<-TR_SCROLL_STEP
 	ldx inner_vars::_tr_pos_x + 1			; to check screen switching
@@ -1855,13 +1853,13 @@ half_attrs_fix_left_right:
 	and #%00110011			; right #%11001100
 	ora _tmp_val4
 
-	jmp @cont_attrs
+	rts
 
 @_34_tiles_col_right:
 
 	pla
 
-	jmp @cont_attrs
+	rts
 
 @left_attrs:
 
@@ -1889,7 +1887,7 @@ half_attrs_fix_left_right:
 	and #%11001100			; left #%11001100
 	ora _tmp_val4
 
-	jmp @cont_attrs
+	rts
 
 @_34_tiles_col_left:
 

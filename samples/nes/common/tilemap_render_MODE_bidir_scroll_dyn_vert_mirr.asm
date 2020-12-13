@@ -729,6 +729,7 @@ move_right:
 
 move_up:
 	.IF TR_MIRRORING_VERTICAL
+	.IF !TR_MIRR_VERT_HALF_ATTR
 
 	lda inner_vars::_tr_ext_upd_flags
 	and #inner_vars::TR_UPD_FLAG_FORCED_TOP
@@ -737,16 +738,15 @@ move_up:
 	lda inner_vars::_tr_pos_y
 	beq @cont0
 
-	.IF !TR_MIRR_VERT_HALF_ATTR
 	lda #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
 	sta inner_vars::_tr_ext_upd_flags
 
 	jsr _tr_drw_up_row
-	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
 
 @cont0:
 	tr_set_draw_flag_forced_bottom
 
+	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
 	.ENDIF	;TR_MIRRORING_VERTICAL
 
 	check_direction inner_vars::TR_UPD_FLAG_DIR_UP_DOWN
@@ -869,21 +869,21 @@ _tr_forced_drw_down_row_attrs:
 
 move_down:
 	.IF TR_MIRRORING_VERTICAL
+	.IF !TR_MIRR_VERT_HALF_ATTR
 
 	lda inner_vars::_tr_ext_upd_flags
 	and #inner_vars::TR_UPD_FLAG_FORCED_BOTTOM
 	beq @cont0
 
-	.IF !TR_MIRR_VERT_HALF_ATTR
 	lda #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
 	sta inner_vars::_tr_ext_upd_flags
 
 	jsr _tr_drw_down_row
-	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
 
 @cont0:
 	tr_set_draw_flag_forced_top
 
+	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
 	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	check_direction inner_vars::TR_UPD_FLAG_DIR_UP_DOWN
@@ -1320,19 +1320,9 @@ _tr_drw_down_row:
 
 	bcs @cont
 
-	eor #$ff
-	clc 
-	adc #$01	; a - inverted value with a positive sign
-
-	sec
-	sbc #$f0
-
-	eor #$ff
-	clc 
-	adc #$01	; a - inverted value with a positive sign
+	lda #$e8					; the last bottom row pos
 
 @cont:
-
 	sta inner_vars::_tr_pos_y
 
 	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
@@ -1859,13 +1849,13 @@ half_attrs_fix_up_down:
 	and #%00001111
 	ora _tmp_val4
 
-	jmp @cont_attrs
+	rts
 
 @_34_tiles_col_down:
 
 	pla
 
-	jmp @cont_attrs
+	rts
 
 @up_attrs:
 
@@ -1891,13 +1881,11 @@ half_attrs_fix_up_down:
 	and #%11110000
 	ora _tmp_val4
 
-	jmp @cont_attrs
+	rts
 
 @_34_tiles_col_up:
 
 	pla
-
-@cont_attrs:
 
 	rts
 
