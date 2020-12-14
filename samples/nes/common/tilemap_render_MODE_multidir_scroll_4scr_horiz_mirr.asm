@@ -831,6 +831,8 @@ _tr_drw_up_row:
 	lsr a
 	lsr a
 
+	sta _tmp_val4				; _tr_pos_y /= 8
+
 	pha					; save the line number in nametable
 
 	tax
@@ -844,6 +846,9 @@ _tr_drw_up_row:
 	lsr a
 	lsr a
 	lsr a
+
+	sta _tmp_val4 + 1			; _tr_pos_x /= 8
+
 	tax
 
 	.IF ::TR_DATA_TILES4X4
@@ -892,15 +897,22 @@ _tr_drw_up_row:
 	jsr _get_tile_addr_tbl_val
 
 	; select data from the table to search for blocks/CHR
-	lda inner_vars::_tr_pos_y
+;	lda inner_vars::_tr_pos_y
+;	.IF ::TR_DATA_TILES4X4
+;	and #%00011111
+;	.ELSE
+;	and #%00001111
+;	.ENDIF ;TR_DATA_TILES4X4
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4				; _tr_pos_y /= 8
 	.IF ::TR_DATA_TILES4X4
-	and #%00011111
+	and #%00000011
 	.ELSE
-	and #%00001111
+	and #%00000001
 	.ENDIF ;TR_DATA_TILES4X4
-	lsr a
-	lsr a
-	lsr a
 
 	pha					; save offset in a row
 
@@ -962,10 +974,13 @@ _tr_drw_up_row_attrs:
 	sta data_addr + 1
 
 	; add X
-	lda inner_vars::_tr_pos_x
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_x
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4 + 1				; _tr_pos_x /= 8
+
 	lsr a
 	lsr a
 	tax
@@ -993,10 +1008,13 @@ _tr_drw_up_row_attrs:
 	; calculate missing number of tiles to be drawn on another screen
 	.IF TR_MIRRORING_HORIZONTAL
 	ldx #SCR_WATTRS_CNT
-	lda inner_vars::_tr_pos_x
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_x
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4 + 1				; _tr_pos_x /= 8
+
 	and #$01
 	beq @cont
 	inx
@@ -1035,6 +1053,9 @@ _tr_drw_down_row:
 	lsr a
 	lsr a
 	lsr a
+
+	sta _tmp_val4					; _tr_pos_y /= 8
+
 	tax
 
 	ldy #$00
@@ -1046,6 +1067,9 @@ _tr_drw_down_row:
 	lsr a
 	lsr a
 	lsr a
+
+	sta _tmp_val4 + 1				; _tr_pos_x /= 8
+
 	tax
 
 	.IF ::TR_DATA_TILES4X4
@@ -1097,15 +1121,22 @@ _tr_drw_down_row:
 	add_a_to_word _tmp_val
 
 	; select data from the table to search for blocks / CHR
-	lda inner_vars::_tr_pos_y
+;	lda inner_vars::_tr_pos_y
+;	.IF ::TR_DATA_TILES4X4
+;	and #%00011111
+;	.ELSE
+;	and #%00001111
+;	.ENDIF ;TR_DATA_TILES4X4
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_y /= 8
 	.IF ::TR_DATA_TILES4X4
-	and #%00011111
+	and #%00000011
 	.ELSE
-	and #%00001111
+	and #%00000001
 	.ENDIF ;TR_DATA_TILES4X4
-	lsr a
-	lsr a
-	lsr a
 
 	pha						; save offset in a row
 
@@ -1147,10 +1178,13 @@ _tr_drw_down_row_attrs:
 	sta data_addr + 1
 
 	; add X
-	lda inner_vars::_tr_pos_x
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_x
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4 + 1				; _tr_pos_x /= 8
+
 	lsr a
 	lsr a
 	tax
@@ -1178,10 +1212,13 @@ _tr_drw_down_row_attrs:
 	; calculate missing number of tiles to be drawn on another screen
 	.IF TR_MIRRORING_HORIZONTAL
 	ldx #SCR_WATTRS_CNT
-	lda inner_vars::_tr_pos_x
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_x
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4 + 1				; _tr_pos_x /= 8
+
 	and #$01
 	beq @cont
 	inx
@@ -1226,6 +1263,9 @@ _tr_drw_left_col:
 	lsr a
 	lsr a
 	lsr a
+
+	sta _tmp_val4					; _tr_pos_x /= 8
+
 	sta data_addr
 
 	lda inner_vars::_nametable
@@ -1240,6 +1280,9 @@ _tr_drw_left_col:
 	lsr a
 	lsr a
 	lsr a
+
+	sta _tmp_val4 + 1				; _tr_pos_y /= 8
+
 	tax
 
 	.IF ::TR_DATA_TILES4X4
@@ -1300,15 +1343,22 @@ _tr_drw_left_col:
 	jsr _get_tile_addr_tbl_val
 
 	; select data from the table to search for blocks / CHR
-	lda inner_vars::_tr_pos_x
+;	lda inner_vars::_tr_pos_x
+;	.IF ::TR_DATA_TILES4X4
+;	and #%00011111
+;	.ELSE
+;	and #%00001111
+;	.ENDIF ;TR_DATA_TILES4X4
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_x /= 8
 	.IF ::TR_DATA_TILES4X4
-	and #%00011111
+	and #%00000011
 	.ELSE
-	and #%00001111
+	and #%00000001
 	.ENDIF ;TR_DATA_TILES4X4
-	lsr a
-	lsr a
-	lsr a
 
 	pha						; save column index in a tile
 
@@ -1363,10 +1413,13 @@ _tr_drw_left_col_attrs:
 	.ENDIF ;TR_MIRRORING_HORIZONTAL
 
 	; calculate the PPU address
-	lda inner_vars::_tr_pos_x
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_x
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_x /= 8
+
 	lsr a
 	lsr a
 	clc
@@ -1381,10 +1434,13 @@ _tr_drw_left_col_attrs:
 	sta data_addr + 1
 
 	; add Y
-	lda inner_vars::_tr_pos_y
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_y
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4 + 1				; _tr_pos_y /= 8
+
 	lsr a
 	lsr a
 	tax
@@ -1446,6 +1502,9 @@ _tr_drw_right_col:
 	lsr a
 	lsr a
 	lsr a
+
+	sta _tmp_val4					; _tr_pos_x /= 8
+
 	sta data_addr
 
 	lda inner_vars::_nametable
@@ -1461,6 +1520,9 @@ _tr_drw_right_col:
 	lsr a
 	lsr a
 	lsr a
+
+	sta _tmp_val4 + 1				; _tr_pos_y /= 8
+
 	tax
 
 	.IF ::TR_DATA_TILES4X4			
@@ -1525,15 +1587,22 @@ _tr_drw_right_col:
 	jsr _get_tile_addr_tbl_val
 
 	; select data from the table to search for blocks / CHR
-	lda inner_vars::_tr_pos_x
+;	lda inner_vars::_tr_pos_x
+;	.IF ::TR_DATA_TILES4X4
+;	and #%00011111
+;	.ELSE
+;	and #%00001111
+;	.ENDIF ;TR_DATA_TILES4X4
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_x /= 8
 	.IF ::TR_DATA_TILES4X4
-	and #%00011111
+	and #%00000011
 	.ELSE
-	and #%00001111
+	and #%00000001
 	.ENDIF ;TR_DATA_TILES4X4
-	lsr a
-	lsr a
-	lsr a
 
 	pha						; save offset in a column
 
@@ -1578,10 +1647,13 @@ _tr_drw_right_col_attrs:
 	.ENDIF ;TR_MIRRORING_HORIZONTAL
 
 	; calculate PPU address
-	lda inner_vars::_tr_pos_x
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_x
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_x /= 8
+
 	lsr a
 	lsr a
 	clc
@@ -1597,10 +1669,13 @@ _tr_drw_right_col_attrs:
 	sta data_addr + 1
 
 	; add Y
-	lda inner_vars::_tr_pos_y
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_y
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4 + 1				; _tr_pos_y /= 8
+
 	lsr a
 	lsr a
 	tax

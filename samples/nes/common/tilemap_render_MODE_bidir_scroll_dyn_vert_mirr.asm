@@ -1037,6 +1037,9 @@ _tr_drw_up_row:
 	lsr a
 	lsr a
 	lsr a
+
+	sta _tmp_val4				; _tr_pos_y /= 8
+
 	lsr a
 	.IF ::TR_DATA_TILES4X4
 	lsr a
@@ -1051,11 +1054,12 @@ _tr_drw_up_row:
 	lda inner_vars::_nametable
 	jsr ppu_calc_nametable_addr
 
-	lda inner_vars::_tr_pos_y
+;	lda inner_vars::_tr_pos_y
+;	lsr a
+;	lsr a
+;	lsr a
 
-	lsr a
-	lsr a
-	lsr a
+	lda _tmp_val4				; _tr_pos_y /= 8
 
 	tax
 
@@ -1064,16 +1068,24 @@ _tr_drw_up_row:
 	add_xy_to_word data_addr
 
 	; select data from table to search for blocks/CHRs
-	lda inner_vars::_tr_pos_y
+;	lda inner_vars::_tr_pos_y
+;
+;	.IF ::TR_DATA_TILES4X4
+;	and #%00011111
+;	.ELSE
+;	and #%00001111
+;	.ENDIF ;TR_DATA_TILES4X4
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4				; _tr_pos_y /= 8
 
 	.IF ::TR_DATA_TILES4X4
-	and #%00011111
+	and #%00000011
 	.ELSE
-	and #%00001111
+	and #%00000001
 	.ENDIF ;TR_DATA_TILES4X4
-	lsr a
-	lsr a
-	lsr a
 
 	pha					; save offset in a tile by rows
 
@@ -1123,10 +1135,12 @@ _tr_drw_up_row:
 	beq _tr_drw_up_row_attrs
 	.ENDIF ;!TR_MIRRORING_VERTICAL
 
-	lda inner_vars::_tr_pos_y
-	lsr a
-	lsr a
-	lsr a					; nametable row number
+;	lda inner_vars::_tr_pos_y
+;	lsr a
+;	lsr a
+;	lsr a					; nametable row number
+
+	lda _tmp_val4				; _tr_pos_y /= 8
 
 	cmp #$1d				; the last 29 row
 	bne @exit
@@ -1174,12 +1188,20 @@ _tr_drw_up_row_attrs:
 	calc_64bytes_data_offset tr_attrs_scr, _tmp_val2
 	.ENDIF ;TR_DATA_TILES4X4
 
-	lda inner_vars::_tr_pos_y
+;	lda inner_vars::_tr_pos_y
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4				; _tr_pos_y /= 8
+
 	lsr a
 	lsr a
-	lsr a
-	lsr a
-	lsr a
+
+	.IF !::TR_DATA_TILES4X4
+	sta _tmp_val4				; _tr_pos_y /= 32
+	.ENDIF ;!::TR_DATA_TILES4X4
+
 	add_a_to_word _tmp_val2
 
 	pop_y
@@ -1192,13 +1214,16 @@ _tr_drw_up_row_attrs:
 	tya					; screen index
 	calc_64bytes_data_offset tr_attrs_scr, _tmp_val
 
+	.IF TR_MIRRORING_VERTICAL
+	lda _tmp_val4				; _tr_pos_y /= 32
+	.ELSE
 	lda inner_vars::_tr_pos_y
-
 	lsr a
 	lsr a
 	lsr a
 	lsr a
 	lsr a
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	add_a_to_word _tmp_val
 	.ENDIF	;TR_DATA_TILES4X4
@@ -1263,6 +1288,9 @@ _tr_drw_down_row:
 	lsr a
 	lsr a
 	lsr a
+
+	sta _tmp_val4					; _tr_pos_y /= 8
+
 	lsr a
 	.IF ::TR_DATA_TILES4X4
 	lsr a
@@ -1278,10 +1306,12 @@ _tr_drw_down_row:
 	eor #$02  			
 	jsr ppu_calc_nametable_addr
 
-	lda inner_vars::_tr_pos_y
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_y
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_y /= 8
 
 	tax
 
@@ -1290,15 +1320,23 @@ _tr_drw_down_row:
 	add_xy_to_word data_addr
 
 	; select data from the table to search for blocks/CHRs
-	lda inner_vars::_tr_pos_y
+;	lda inner_vars::_tr_pos_y
+;	.IF ::TR_DATA_TILES4X4
+;	and #%00011111
+;	.ELSE
+;	and #%00001111
+;	.ENDIF ;TR_DATA_TILES4X4
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_y /= 8
+
 	.IF ::TR_DATA_TILES4X4
-	and #%00011111
+	and #%00000011
 	.ELSE
-	and #%00001111
+	and #%00000001
 	.ENDIF ;TR_DATA_TILES4X4
-	lsr a
-	lsr a
-	lsr a
 
 	pha						; save offset in a tile by rows
 
@@ -1382,12 +1420,20 @@ _tr_drw_down_row_attrs:
 	calc_64bytes_data_offset tr_attrs_scr, _tmp_val2
 	.ENDIF ;TR_DATA_TILES4X4
 
-	lda inner_vars::_tr_pos_y
+;	lda inner_vars::_tr_pos_y
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_y /= 8
+
 	lsr a
 	lsr a
-	lsr a
-	lsr a
-	lsr a
+
+	.IF !::TR_DATA_TILES4X4
+	sta _tmp_val4					; _tr_pos_y /= 32
+	.ENDIF ;!::TR_DATA_TILES4X4
+
 	add_a_to_word _tmp_val2
 
 	pop_y
@@ -1400,12 +1446,16 @@ _tr_drw_down_row_attrs:
 	tya						; screen index
 	calc_64bytes_data_offset tr_attrs_scr, _tmp_val
 
+	.IF TR_MIRRORING_VERTICAL
+	lda _tmp_val4					; _tr_pos_y /= 32
+	.ELSE
 	lda inner_vars::_tr_pos_y
 	lsr a
 	lsr a
 	lsr a
 	lsr a
 	lsr a
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	add_a_to_word _tmp_val
 	.ENDIF	; !TR_DATA_TILES4X4
@@ -1458,11 +1508,13 @@ _tr_drw_left_col:
 
 	tax
 	.ELSE
-	lda inner_vars::_tr_pos_x
-	
+	lda inner_vars::_tr_pos_x	
 	lsr a
 	lsr a
 	lsr a
+
+	sta _tmp_val4					; _tr_pos_x /= 8
+
 	lsr a
 
 	tax
@@ -1474,15 +1526,20 @@ _tr_drw_left_col:
 	add_xy_to_word _tmp_val
 	
 	; select data from the table to search for blocks/CHRs
-	lda inner_vars::_tr_pos_x
 	.IF ::TR_DATA_TILES4X4
-	and #%00011111
+	lda inner_vars::_tr_pos_x
+	lsr a
+	lsr a
+	lsr a
+
+	sta _tmp_val4					; _tr_pos_x /= 8
+
+	and #%00000011
 	.ELSE
-	and #%00001111
+	lda _tmp_val4					; _tr_pos_x /= 8
+
+	and #%00000001
 	.ENDIF ;TR_DATA_TILES4X4
-	lsr a
-	lsr a
-	lsr a
 
 	pha						; save offset in tile by columns
 
@@ -1499,10 +1556,13 @@ _tr_drw_left_col:
 	sta inner_vars::_drw_rowcol_inds_offset
 
 	; calc PPU address
-	lda inner_vars::_tr_pos_x
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_x
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_x /= 8
+
 	sta data_addr
 
 	lda inner_vars::_nametable
@@ -1556,10 +1616,13 @@ _tr_drw_left_col_attrs:
 	.ENDIF	;!TR_DATA_TILES4X4
 
 	; calc PPU address
-	lda inner_vars::_tr_pos_x
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_x
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_x /= 8
+
 	lsr a
 	lsr a
 	clc
@@ -1604,10 +1667,12 @@ _tr_drw_right_col:
 	tax
 	.ELSE
 	lda inner_vars::_tr_pos_x
+	lsr a
+	lsr a
+	lsr a
 
-	lsr a
-	lsr a
-	lsr a
+	sta _tmp_val4					; _tr_pos_x /= 8
+
 	lsr a
 
 	tax
@@ -1619,15 +1684,20 @@ _tr_drw_right_col:
 	add_xy_to_word _tmp_val
 	
 	; select data from the table to search for blocks/CHRs
-	lda inner_vars::_tr_pos_x
 	.IF ::TR_DATA_TILES4X4
-	and #%00011111
+	lda inner_vars::_tr_pos_x
+	lsr a
+	lsr a
+	lsr a
+
+	sta _tmp_val4					; _tr_pos_x /= 8
+
+	and #%00000011
 	.ELSE
-	and #%00001111
+	lda _tmp_val4					; _tr_pos_x /= 8
+
+	and #%00000001
 	.ENDIF ;TR_DATA_TILES4X4
-	lsr a
-	lsr a
-	lsr a
 
 	pha						; save offset in tile by columns
 
@@ -1644,10 +1714,13 @@ _tr_drw_right_col:
 	sta inner_vars::_drw_rowcol_inds_offset
 
 	; calc PPU address
-	lda inner_vars::_tr_pos_x
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_x
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_x /= 8
+
 	sta data_addr
 
 	lda inner_vars::_nametable
@@ -1695,12 +1768,16 @@ _tr_drw_right_col_attrs:
 	.ENDIF	;!TR_DATA_TILES4X4
 
 	; calc PPU addr
-	lda inner_vars::_tr_pos_x
+;	lda inner_vars::_tr_pos_x
+;	lsr a
+;	lsr a
+;	lsr a
+
+	lda _tmp_val4					; _tr_pos_x /= 8
+
 	lsr a
 	lsr a
-	lsr a
-	lsr a
-	lsr a
+
 	clc
 	adc #$c0
 	sta data_addr
