@@ -34,7 +34,6 @@
 ; SUPPORTED OPTIONS:
 ;
 ; .define TR_DYNAMIC_MIRRORING		1 / 0 - TR_MIRRORING_VERTICAL
-; .define TR_MIRR_VERT_HALF_ATTR	1 - half attributes (16x16) (min attr glitches), 0 - full attributes (32x32) (max attr glitches)
 ;
 ;	MAP_FLAG_TILES2X2
 ;	MAP_FLAG_TILES4X4
@@ -49,12 +48,10 @@
 CHR_bankswitching = mmc1_chr_bank1_write	; switch CHR bank \ A - bank index
 
 	.IF TR_DYNAMIC_MIRRORING
-.define	TR_MIRR_VERT_HALF_ATTR	0
 
 mirroring_vertical 	= mmc1_mirroring_vertical
 mirroring_horizontal	= mmc1_mirroring_horizontal
-	.ELSE
-.define	TR_MIRR_VERT_HALF_ATTR	1
+
 	.ENDIF	;TR_DYNAMIC_MIRRORING
 
 
@@ -150,9 +147,7 @@ TR_UPD_FLAG_FORCED_ATTRS	= %00100000	; forced drawing of attributes
 TR_UPD_FLAG_FORCED_TOP		= %01000000	; forced drawing of top line
 TR_UPD_FLAG_FORCED_BOTTOM	= %10000000	; forced drawing of bottom line
 
-	.IF TR_MIRR_VERT_HALF_ATTR
 TR_EXTRA_FLAGS_DOWN_HALF_ATTR	= %10000000
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 
 	.ENDIF	;TR_MIRRORING_VERTICAL
 
@@ -728,26 +723,6 @@ move_right:
 	rts
 
 move_up:
-	.IF TR_MIRRORING_VERTICAL
-	.IF !TR_MIRR_VERT_HALF_ATTR
-
-	lda inner_vars::_tr_ext_upd_flags
-	and #inner_vars::TR_UPD_FLAG_FORCED_TOP
-	beq @cont0
-
-	lda inner_vars::_tr_pos_y
-	beq @cont0
-
-	lda #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
-	sta inner_vars::_tr_ext_upd_flags
-
-	jsr _tr_drw_up_row
-
-@cont0:
-	tr_set_draw_flag_forced_bottom
-
-	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
-	.ENDIF	;TR_MIRRORING_VERTICAL
 
 	check_direction inner_vars::TR_UPD_FLAG_DIR_UP_DOWN
 
@@ -864,27 +839,10 @@ _tr_forced_drw_down_row_attrs:
 	tay
 	jmp _tr_drw_down_row_attrs
 
-	.ENDIF ;TR_MIRRORING_VERTICAL
 	.ENDIF ;TR_DATA_TILES4X4
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 move_down:
-	.IF TR_MIRRORING_VERTICAL
-	.IF !TR_MIRR_VERT_HALF_ATTR
-
-	lda inner_vars::_tr_ext_upd_flags
-	and #inner_vars::TR_UPD_FLAG_FORCED_BOTTOM
-	beq @cont0
-
-	lda #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
-	sta inner_vars::_tr_ext_upd_flags
-
-	jsr _tr_drw_down_row
-
-@cont0:
-	tr_set_draw_flag_forced_top
-
-	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
-	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	check_direction inner_vars::TR_UPD_FLAG_DIR_UP_DOWN
 
@@ -898,14 +856,14 @@ move_down:
 	sbc #$f0
 	jmp_bcc @cont2
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	lda #$00
 	sta inner_vars::_tr_pos_y
 	jsr _tr_drw_down_row				; draw the last row of the current screen
 
 	lda #( $f0 - TR_SCROLL_STEP )
 	sta inner_vars::_tr_pos_y
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	; reset active IGNORE_DOWN_OVERFLOW flag and jump to @cont1
 	lda inner_vars::_tr_upd_flags
@@ -917,15 +875,6 @@ move_down:
 	lda inner_vars::_nametable
 	eor #02
 	sta inner_vars::_nametable
-
-	; shift attrs drawing on 2 CHRs (bottom block fix)
-	.IF TR_MIRRORING_VERTICAL
-	.IF !TR_MIRR_VERT_HALF_ATTR
-	.IF ::TR_DATA_TILES4X4
-	jsr _tr_forced_drw_down_row_attrs
-	.ENDIF ;TR_DATA_TILES4X4
-	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
-	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	jmp @cont2
 
@@ -942,15 +891,6 @@ move_down:
 	lda inner_vars::_nametable
 	eor #02
 	sta inner_vars::_nametable
-
-	; shift attrs drawing on 2 CHRs (bottom block fix)
-	.IF TR_MIRRORING_VERTICAL
-	.IF !TR_MIRR_VERT_HALF_ATTR
-	.IF ::TR_DATA_TILES4X4
-	jsr _tr_forced_drw_down_row_attrs
-	.ENDIF ;TR_DATA_TILES4X4
-	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
-	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	jmp @cont2
 
@@ -980,13 +920,13 @@ move_down:
 
 	lda inner_vars::_tr_pos_y
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	and #%00001000
 	beq @cont3
 	.ELSE
 	and #%00000111
 	bne @cont3
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	inx						; need to draw a row
 
@@ -1005,9 +945,9 @@ move_down:
 	sbc #$f0
 	check_direction_vert_overflow_pos
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	bcs @exit
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	txa
 	beq @exit
@@ -1059,11 +999,11 @@ update_jpad:
 	; enable scroll
 	upd_flag_set inner_vars::TR_UPD_FLAG_SCROLL
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	lda inner_vars::_tr_ext_upd_flags
 	and #<~inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
 	sta inner_vars::_tr_ext_upd_flags
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	rts
 
@@ -1169,17 +1109,8 @@ _tr_drw_up_row:
 	txa
 
 	.IF TR_MIRRORING_VERTICAL
-	.IF TR_MIRR_VERT_HALF_ATTR
 	and #$01
 	beq _tr_drw_up_row_attrs
-	.ELSE
-	; shift attrs drawing on 2 CHRs
-	.IF ::TR_DATA_TILES4X4
-	cmp #$01
-	.ELSE
-;	cmp #$00
-	.ENDIF ;TR_DATA_TILES4X4
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 	.ELSE
 	.IF ::TR_DATA_TILES4X4
 	cmp #$03
@@ -1188,9 +1119,9 @@ _tr_drw_up_row:
 	.ENDIF ;TR_DATA_TILES4X4
 	.ENDIF ;TR_MIRRORING_VERTICAL
 
-	.IF !TR_MIRR_VERT_HALF_ATTR
+	.IF !TR_MIRRORING_VERTICAL
 	beq _tr_drw_up_row_attrs
-	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;!TR_MIRRORING_VERTICAL
 
 	lda inner_vars::_tr_pos_y
 	lsr a
@@ -1200,17 +1131,17 @@ _tr_drw_up_row:
 	cmp #$1d				; the last 29 row
 	bne @exit
 
-	.IF !TR_MIRR_VERT_HALF_ATTR
+	.IF !TR_MIRRORING_VERTICAL
 	txa
 	cmp #$01
 	beq _tr_drw_up_row_attrs
-	.ENDIF ;!TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;!TR_MIRRORING_VERTICAL
 @exit:
 	rts
 
 _tr_drw_up_row_attrs:
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	lda inner_vars::_tr_ext_upd_flags
 	and #<~inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
 	sta inner_vars::_tr_ext_upd_flags
@@ -1252,7 +1183,7 @@ _tr_drw_up_row_attrs:
 	add_a_to_word _tmp_val2
 
 	pop_y
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	; calc attributes data address
 	.IF ::TR_DATA_TILES4X4
@@ -1311,7 +1242,7 @@ _tr_drw_down_row:
 	calc_240bytes_data_offset tr_tiles_scr, _tmp_val
 	.ENDIF	;TR_DATA_TILES4X4
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	lda inner_vars::_tr_pos_y
 	pha
 
@@ -1325,7 +1256,7 @@ _tr_drw_down_row:
 @cont:
 	sta inner_vars::_tr_pos_y
 
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	; calc tile row address
 	lda inner_vars::_tr_pos_y
@@ -1393,10 +1324,10 @@ _tr_drw_down_row:
 
 	pop_x						; get position in a tile
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	pla
 	sta inner_vars::_tr_pos_y
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	pop_y						; screen index
 
@@ -1409,29 +1340,16 @@ _tr_drw_down_row:
 	txa
 
 	.IF TR_MIRRORING_VERTICAL
-	.IF TR_MIRR_VERT_HALF_ATTR
 	and #$01
-	beq _tr_drw_down_row_attrs
-	.ELSE
-	; shift attrs drawing on 2 CHRs
-	.IF ::TR_DATA_TILES4X4
-	cmp #$02
-	.ELSE
-	cmp #$01
-	.ENDIF ;TR_DATA_TILES4X4
-	.ENDIF ;TR_MIRR_HORIZ_HALF_ATTR
 	.ENDIF ;TR_MIRRORING_VERTICAL
-
-	.IF !TR_MIRR_VERT_HALF_ATTR
 	beq _tr_drw_down_row_attrs
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
 
 @exit:
 	rts
 
 _tr_drw_down_row_attrs:
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	lda inner_vars::_tr_ext_upd_flags
 	ora #inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
 	sta inner_vars::_tr_ext_upd_flags
@@ -1473,7 +1391,7 @@ _tr_drw_down_row_attrs:
 	add_a_to_word _tmp_val2
 
 	pop_y
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	; calc attributes data address
 	.IF ::TR_DATA_TILES4X4
@@ -1805,7 +1723,7 @@ _tr_drw_right_col_attrs:
 
 	jmp _drw_attrs_col_dyn
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 
 ; IN: 	A - current attribute
 
@@ -1889,7 +1807,7 @@ half_attrs_fix_up_down:
 
 	rts
 
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 _drw_attrs_row_dyn:
 
@@ -1906,20 +1824,20 @@ _drw_attrs_row_dyn:
 	lda (<inner_vars::_tr_attrs), y			; read attribute
 	.ENDIF ;TR_DATA_TILES4X4
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	jsr half_attrs_fix_up_down
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	jsr TR_utils::buff_push_data
 
-	.IF TR_MIRR_VERT_HALF_ATTR
+	.IF TR_MIRRORING_VERTICAL
 	.IF ::TR_DATA_TILES4X4
 	lda #::SCR_HTILES_CNT
 	.ELSE
 	lda #::SCR_HATTRS_CNT
 	.ENDIF ;TR_DATA_TILES4X4
 	add_a_to_word _tmp_val2
-	.ENDIF ;TR_MIRR_VERT_HALF_ATTR
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	.IF ::TR_DATA_TILES4X4
 	lda #::SCR_HTILES_CNT
