@@ -38,7 +38,7 @@ MAP_FLAG_PROP_ID_PER_CHR          = $40000
 
 ; *** GLOBAL DATA ***
 
-; chr0:	.incbin "tilemap_chr0.bin"		; (4096)
+; chr0:	.incbin "tilemap_chr0.bin"		; (4048)
 
 tilemap_Blocks:	.incbin "tilemap_Blocks.bin"	; (484) blocks array of all exported data banks ( 4 bytes per block )
 tilemap_Props:	.incbin "tilemap_Props.bin"	; (121) block properties array of all exported data banks ( 1 byte per block; data offset = props offset / 4 )
