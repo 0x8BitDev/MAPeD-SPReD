@@ -7,7 +7,7 @@
 ; Multidirectional scroller example
 ;
 
-.debuginfo	+	; Generate debug info ( if '+' then ld65 -Ln symbols.txt )
+.debuginfo	-	; Generate debug info ( if '+' then ld65 -Ln symbols.txt )
 
 .segment "HDR"	
 
