@@ -133,7 +133,7 @@ data_size:	.res 2
 	sta word2 + 1
 	.endmacro
 
-; word += N
+; word += N [0..255]
 	.macro add_N_to_word word, N
 	clc
 	lda word
@@ -144,7 +144,7 @@ data_size:	.res 2
 	sta word + 1
 	.endmacro
 
-; word -= N
+; word -= N [0..255]
 	.macro sub_N_from_word word, N
 	sec
 	lda word
