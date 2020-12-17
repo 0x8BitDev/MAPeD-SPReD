@@ -1704,7 +1704,7 @@ _drw_attrs_row_dyn_and_fix_half_attr:
 	beq @exit
 
 	cmp #$03
-	beq @save_left
+	beq @save_last_attr
 
 	; combine left and right attrs
 	tya
@@ -1720,7 +1720,7 @@ _drw_attrs_row_dyn_and_fix_half_attr:
 @exit:
 	rts
 
-@save_left:
+@save_last_attr:
 	txa
 
 	ldy _tmp_val3
@@ -1735,12 +1735,13 @@ half_attrs_fix_left_right:
 
 	pha
 
-	lda inner_vars::_tr_pos_x
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_x
+;	lsr a
+;	lsr a
+;	lsr a
+;	tay
 
-	tay
+	ldy _tmp_val4 + 1		; _tr_pos_x /= 8
 
 	; Y - tile cols
 	; X - tile number
@@ -1821,6 +1822,13 @@ half_attrs_fix_left_right:
 _drw_attrs_col_dyn:
 
 	.IF TR_MIRRORING_HORIZONTAL
+
+	lda inner_vars::_tr_pos_x
+	lsr a
+	lsr a
+	lsr a
+	tay
+	sty _tmp_val4 + 1
 
 	; _tmp_val3 = _tmp_val
 

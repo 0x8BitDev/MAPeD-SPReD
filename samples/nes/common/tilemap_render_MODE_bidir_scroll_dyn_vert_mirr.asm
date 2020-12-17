@@ -811,37 +811,6 @@ move_up:
 @exit:
 	rts
 
-	.IF TR_MIRRORING_VERTICAL
-	.IF ::TR_DATA_TILES4X4
-
-_tr_forced_drw_down_row_attrs:
-
-	get_screen_index_offset
-	lda (<TR_utils::tr_curr_scr), y	; A - screen index
-
-	pha
-
-	calc_64bytes_data_offset tr_tiles_scr, _tmp_val
-
-	lda inner_vars::_tr_pos_y
-	lsr a
-	lsr a
-	lsr a
-	lsr a
-	lsr a
-
-	tax	
-	ldy #$00
-	add_xy_to_word _tmp_val
-
-	pla
-
-	tay
-	jmp _tr_drw_down_row_attrs
-
-	.ENDIF ;TR_DATA_TILES4X4
-	.ENDIF ;TR_MIRRORING_VERTICAL
-
 move_down:
 
 	check_direction inner_vars::TR_UPD_FLAG_DIR_UP_DOWN
