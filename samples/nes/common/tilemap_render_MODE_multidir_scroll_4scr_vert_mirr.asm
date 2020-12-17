@@ -1,10 +1,13 @@
 ;#########################################################################################################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2020 0x8BitDev ( MIT license )
 ;
 ;#########################################################################################################################
 ; DESC: Multidirectional tilemap scroller. It can be used with 4x4/2x2 tiles and compressed map data.
 ;	Uses attributes per block (2x2 tile). The column data order is required.
+;
+; 	Also these sources contain a multidirectional scroller implementation with vertical mirroring
+;	( fullscreen NTSC without attribute\tile glitches ).
 ;
 ;#########################################################################################################################
 ; LIMITATIONS:
@@ -15,7 +18,7 @@
 ;	- TR_MAP_FLAGS_TILES2Х2 : MAX 8 screens in width ( rewrite _get_tile_addr_tbl_val to use 16bit values )
 ;	  ( the memory limit is 8x9 of uncompressed screens );
 ;
-;	- The map data limit when using RLE is about 8Kb of decompressed data ( decompressed to the $6000 optional RAM );
+;	- The map data limit when using RLE is about 8Kb of decompressed data ( decompressed at $6000 optional RAM );
 ;
 ;#########################################################################################################################
 
@@ -110,12 +113,6 @@ TR_UPD_FLAG_DRAW_RIGHT	= %00010000
 
 	.IF TR_MIRRORING_VERTICAL
 
-TR_UPD_FLAG_FORCED_ATTRS	= %00100000	; forced drawing of attributes
-TR_UPD_FLAG_FORCED_TOP		= %01000000	; forced drawing of top line
-TR_UPD_FLAG_FORCED_BOTTOM	= %10000000	; forced drawing of bottom line
-
-_tr_ext_upd_flags:	.res 1
-
 TR_EXTRA_FLAGS_DOWN_HALF_ATTR	= %10000000
 
 	.ENDIF ;TR_MIRRORING_VERTICAL
@@ -137,38 +134,6 @@ _drw_rowcol_inds_tbl:	.byte 0, 1, 2, 3
 			.byte 0, 2, 1, 3
 
 	.ENDIF ;TR_DATA_TILES4X4
-
-	.IF TR_MIRRORING_VERTICAL
-
-	.macro tr_set_draw_flag_up_forced_bottom_attr
-	lda inner_vars::_tr_upd_flags
-	and #<~inner_vars::TR_UPD_FLAG_FORCED_TOP
-	ora #(inner_vars::TR_UPD_FLAG_DRAW_UP | inner_vars::TR_UPD_FLAG_FORCED_ATTRS | inner_vars::TR_UPD_FLAG_FORCED_BOTTOM)
-	sta inner_vars::_tr_upd_flags
-	.endmacro
-
-	.macro tr_set_draw_flag_down_forced_top_attr
-	lda inner_vars::_tr_upd_flags
-	and #<~inner_vars::TR_UPD_FLAG_FORCED_BOTTOM
-	ora #(inner_vars::TR_UPD_FLAG_DRAW_DOWN | inner_vars::TR_UPD_FLAG_FORCED_ATTRS | inner_vars::TR_UPD_FLAG_FORCED_TOP)
-	sta inner_vars::_tr_upd_flags
-	.endmacro
-
-	.macro tr_set_draw_flag_forced_top
-	lda inner_vars::_tr_upd_flags
-	and #<~inner_vars::TR_UPD_FLAG_FORCED_BOTTOM
-	ora #inner_vars::TR_UPD_FLAG_FORCED_TOP
-	sta inner_vars::_tr_upd_flags
-	.endmacro
-
-	.macro tr_set_draw_flag_forced_bottom
-	lda inner_vars::_tr_upd_flags
-	and #<~inner_vars::TR_UPD_FLAG_FORCED_TOP
-	ora #inner_vars::TR_UPD_FLAG_FORCED_BOTTOM
-	sta inner_vars::_tr_upd_flags
-	.endmacro
-
-	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	.macro tr_set_draw_flag_up
 	lda inner_vars::_tr_upd_flags
@@ -201,10 +166,6 @@ init_draw:
 
 	lda #$00
 	sta inner_vars::_tr_upd_flags
-
-	.IF TR_MIRRORING_VERTICAL
-	sta inner_vars::_tr_ext_upd_flags
-	.ENDIF
 
 	; decode compressed tilemap at $6000 ( additional 8K in MMC3 )
 
@@ -555,13 +516,6 @@ move_left:
 
 	tr_set_draw_flag_left
 
-	.IF TR_MIRRORING_VERTICAL
-	lda inner_vars::_tr_pos_y
-	and #$07
-	bne @cont3
-	tr_set_draw_flag_forced_top
-	.ENDIF ;TR_MIRRORING_VERTICAL	
-
 @cont3:
 
 	rts
@@ -601,32 +555,9 @@ move_right:
 
 	tr_set_draw_flag_right
 
-	.IF TR_MIRRORING_VERTICAL
-	lda inner_vars::_tr_pos_y
-	and #$07
-	bne @exit  			
-	tr_set_draw_flag_forced_top
-@exit:		
-	.ENDIF ;TR_MIRRORING_VERTICAL	
-
 	rts
 
 move_up:
-
-	.IF TR_MIRRORING_VERTICAL
-
-	lda inner_vars::_tr_upd_flags
-	and #inner_vars::TR_UPD_FLAG_FORCED_TOP
-	beq @cont1
-
-	tr_set_draw_flag_up_forced_bottom_attr
-	rts
-
-@cont1:
-
-	tr_set_draw_flag_forced_bottom
-
-	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	lda #<-TR_SCROLL_STEP
 	ldy inner_vars::_tr_pos_y			; to check drawing of new tiles
@@ -641,12 +572,6 @@ move_up:
 	sta inner_vars::_tr_pos_y
 	sta inner_vars::_tr_pos_y + 1
 
-	.IF TR_MIRRORING_VERTICAL
-	lda inner_vars::_tr_upd_flags
-	and #<~inner_vars::TR_UPD_FLAG_FORCED_BOTTOM
-	sta inner_vars::_tr_upd_flags
-	.ENDIF ;TR_MIRRORING_VERTICAL
-	
 	rts
 
 @cont2:
@@ -686,21 +611,6 @@ move_up:
 
 move_down:
 
-	.IF TR_MIRRORING_VERTICAL
-
-	lda inner_vars::_tr_upd_flags
-	and #inner_vars::TR_UPD_FLAG_FORCED_BOTTOM
-	beq @cont1
-
-	tr_set_draw_flag_down_forced_top_attr
-	rts
-
-@cont1:	
-
-	tr_set_draw_flag_forced_top
-
-	.ENDIF ;TR_MIRRORING_VERTICAL
-
 	lda #TR_SCROLL_STEP
 	ldy inner_vars::_tr_pos_y			; to check drawing of new tiles
 	add_a_to_word inner_vars::_tr_pos_y
@@ -710,12 +620,6 @@ move_down:
 
 	load_data_word inner_vars::_tr_max_y, inner_vars::_tr_pos_y
 
-	.IF TR_MIRRORING_VERTICAL
-	lda inner_vars::_tr_upd_flags
-	and #<~inner_vars::TR_UPD_FLAG_FORCED_TOP
-	sta inner_vars::_tr_upd_flags
-	.ENDIF ;TR_MIRRORING_VERTICAL
-	
 	rts
 
 @cont2:
@@ -773,7 +677,7 @@ update_jpad:
 	lda inner_vars::_tr_upd_flags
 
 	.IF TR_MIRRORING_VERTICAL
-	and #<~(inner_vars::TR_UPD_FLAG_DRAW_MASK | inner_vars::TR_UPD_FLAG_SCROLL | inner_vars::TR_UPD_FLAG_FORCED_ATTRS)
+	and #<~(inner_vars::TR_UPD_FLAG_DRAW_MASK | inner_vars::TR_UPD_FLAG_SCROLL | inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR)
 	.ELSE
 	and #<~(inner_vars::TR_UPD_FLAG_DRAW_MASK | inner_vars::TR_UPD_FLAG_SCROLL)
 	.ENDIF ;TR_MIRRORING_VERTICAL
@@ -848,12 +752,6 @@ update_jpad:
 	lda inner_vars::_tr_upd_flags
 	ora #inner_vars::TR_UPD_FLAG_SCROLL
 	sta inner_vars::_tr_upd_flags
-
-	.IF TR_MIRRORING_VERTICAL
-	lda inner_vars::_tr_ext_upd_flags
-	and #<~inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
-	sta inner_vars::_tr_ext_upd_flags
-	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	jmp TR_utils::buff_end
 
@@ -968,12 +866,6 @@ _tr_drw_up_row:
 
 	pop_x					; load a line number in the nametable
 
-	.IF TR_MIRRORING_VERTICAL
-	lda inner_vars::_tr_upd_flags
-	and #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
-	bne _tr_drw_up_row_attrs
-	.ENDIF ;TR_MIRRORING_VERTICAL
-
 	tya
 
 	.IF TR_MIRRORING_VERTICAL
@@ -1008,9 +900,9 @@ _tr_drw_up_row_attrs:
 	; draw attrs
 
 	.IF TR_MIRRORING_VERTICAL
-	lda inner_vars::_tr_ext_upd_flags
+	lda inner_vars::_tr_upd_flags
 	and #<~inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
-	sta inner_vars::_tr_ext_upd_flags
+	sta inner_vars::_tr_upd_flags
 	.ENDIF ;TR_MIRRORING_VERTICAL
 	
 	; calculate PPU address
@@ -1215,12 +1107,8 @@ _tr_drw_down_row:
 	.IF TR_MIRRORING_VERTICAL
 	tay
 	pop_word inner_vars::_tr_pos_y
-
-	lda inner_vars::_tr_upd_flags
-	and #inner_vars::TR_UPD_FLAG_FORCED_ATTRS
-	bne _tr_drw_down_row_attrs
-
 	tya
+
 	and #$01
 	.ENDIF ;TR_MIRRORING_VERTICAL
 	beq _tr_drw_down_row_attrs	; if the position is zero, then it's time to draw attribute column
@@ -1232,9 +1120,9 @@ _tr_drw_down_row_attrs:
 	; draw attributes
 
 	.IF TR_MIRRORING_VERTICAL
-	lda inner_vars::_tr_ext_upd_flags
+	lda inner_vars::_tr_upd_flags
 	ora #inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
-	sta inner_vars::_tr_ext_upd_flags
+	sta inner_vars::_tr_upd_flags
 	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	; calculate PPU address
@@ -1520,19 +1408,7 @@ _tr_drw_left_col_attrs:
 
 	; calculate missing number of tiles to be drawn on another screen
 	.IF TR_MIRRORING_VERTICAL
-	ldx #::SCR_HATTRS_CNT
-;	lda inner_vars::_tr_pos_y
-;	lsr a
-;	lsr a
-;	lsr a
-
-	lda _tmp_val4 + 1				; _tr_pos_y /= 8
-
-	and #$01;	???
-	beq @cont
-	inx
-@cont:
-	txa
+	lda #::SCR_HATTRS_CNT
 	.ELSE
 	lda #::SCR_HATTRS_CNT + 1
 	.ENDIF ;TR_MIRRORING_VERTICAL
@@ -1551,7 +1427,11 @@ _tr_drw_left_col_attrs:
 	jsr _get_attr_addr
 	.ENDIF ;TR_DATA_TILES4X4
 
+	.IF TR_MIRRORING_VERTICAL
+	jmp _drw_attrs_col_dyn_and_fix_half_attr
+	.ELSE
 	jmp _drw_attrs_col_dyn
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 _tr_drw_right_col:
 
@@ -1758,19 +1638,7 @@ _tr_drw_right_col_attrs:
 
 	; calculate missing number of tiles to be drawn on another screen
 	.IF TR_MIRRORING_VERTICAL
-	ldx #::SCR_HATTRS_CNT
-;	lda inner_vars::_tr_pos_y
-;	lsr a
-;	lsr a
-;	lsr a
-
-	lda _tmp_val4 + 1				; _tr_pos_y /= 8
-
-	and #$01;	???
-	beq @cont
-	inx
-@cont:
-	txa
+	lda #::SCR_HATTRS_CNT
 	.ELSE
 	lda #::SCR_HATTRS_CNT + 1
 	.ENDIF ;TR_MIRRORING_VERTICAL
@@ -1799,10 +1667,64 @@ _tr_drw_right_col_attrs:
 	jsr _get_attr_addr_interm
 	.ENDIF ;TR_DATA_TILES4X4
 
+	.IF TR_MIRRORING_VERTICAL
+	jmp _drw_attrs_col_dyn_and_fix_half_attr
+	.ELSE
 	jmp _drw_attrs_col_dyn
-
+	.ENDIF ;TR_MIRRORING_VERTICAL
 
 	.IF TR_MIRRORING_VERTICAL
+
+_drw_attrs_col_dyn_and_fix_half_attr:
+
+	lda TR_utils::tr_buff_pos
+	sta _tmp_val3					; save attr pos
+
+	jsr _drw_attrs_col_dyn
+
+	; get bottom attr
+;	ldy #$00 - valid Y returned from the previous JSR
+	lda (<_tmp_val), y
+
+	.IF ::TR_DATA_TILES4X4
+	tay
+	lda (<tr_attrs), y				; read attr
+	.ENDIF ;TR_DATA_TILES4X4
+	tax						; last attr
+
+	ldy _tmp_val3
+	lda TR_utils::tr_buff, y			; first attr
+	tay
+
+	lda _tmp_val4 + 1				; _tr_pos_x /= 8
+	and #$03
+;	cmp #$00
+	beq @exit
+
+	cmp #$03
+	beq @save_last_attr
+
+	; combine top and bottom attrs
+	tya
+	and #%11110000
+	sta _tmp_val4
+
+	txa
+	and #%00001111
+	ora _tmp_val4
+
+	ldy _tmp_val3
+	sta TR_utils::tr_buff, y
+@exit:
+	rts
+
+@save_last_attr:
+	txa
+
+	ldy _tmp_val3
+	sta TR_utils::tr_buff, y
+
+	rts
 
 ; IN: 	A - current attribute
 
@@ -1810,17 +1732,18 @@ half_attrs_fix_up_down:
 
 	pha
 
-	lda inner_vars::_tr_pos_y
-	lsr a
-	lsr a
-	lsr a
+;	lda inner_vars::_tr_pos_y
+;	lsr a
+;	lsr a
+;	lsr a
+;	tay
 
-	tay
+	ldy _tmp_val4 + 1		; _tr_pos_y /= 8
 
 	; Y - tile rows
 	; STACK - attribute
 
-	lda inner_vars::_tr_ext_upd_flags
+	lda inner_vars::_tr_upd_flags
 	and #inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
 	beq @up_attrs
 
@@ -1857,9 +1780,14 @@ half_attrs_fix_up_down:
 @up_attrs:
 
 	tya
+
+	cmp #$1d
+	beq @cont
+
 	and #$02
 	beq @_34_tiles_col_up
 
+@cont:
 	; 1-2 tiles col
 
 	ldy #$00
@@ -1884,8 +1812,6 @@ half_attrs_fix_up_down:
 
 	pla
 
-@cont_attrs:
-
 	rts
 
 	.ENDIF ;TR_MIRRORING_VERTICAL
@@ -1894,13 +1820,20 @@ _drw_attrs_row_dyn:
 
 	.IF TR_MIRRORING_VERTICAL
 
+	lda inner_vars::_tr_pos_y
+	lsr a
+	lsr a
+	lsr a
+	tay
+	sty _tmp_val4 + 1
+
 	; _tmp_val2 = _tmp_val
 
 	load_data_word _tmp_val, _tmp_val2
 
 	; _tmp_val2 -= scr_tiles_height
 
-	lda inner_vars::_tr_ext_upd_flags
+	lda inner_vars::_tr_upd_flags
 	and #inner_vars::TR_EXTRA_FLAGS_DOWN_HALF_ATTR
 	beq @add_offset
 
