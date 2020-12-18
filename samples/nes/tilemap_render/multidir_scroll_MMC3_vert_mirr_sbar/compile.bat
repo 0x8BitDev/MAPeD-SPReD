@@ -4,7 +4,7 @@
 :#
 :################################################
 
-@set OutFile=tilemap_render_multidir_scroll_MMC3_vert_mirr
+@set OutFile=tilemap_render_multidir_scroll_MMC3_vert_mirr_sbar
 @set OutDir=..\..\bin\
 @set IncDir1=..\..\common\
 @set IncDir2=.\data\
@@ -12,10 +12,12 @@
 @del %OutDir%%OutFile%.nes
 
 @echo compiling...
-ca65 -D mirror_vert=1 -D mmc3_status_bar=0 -I %IncDir1% -I %IncDir2% main.asm -o %OutDir%%OutFile%.o
+cd ..\multidir_scroll_MMC3_vert_mirr
+ca65 -D mirror_vert=1 -D mmc3_status_bar=1 -I %IncDir1% -I %IncDir2% main.asm -o %OutDir%%OutFile%.o
 @if ERRORLEVEL 1 goto failure
 
 @echo linking...
+cd ..\multidir_scroll_MMC3_vert_mirr_sbar
 ld65 -o %OutDir%%OutFile%.nes -C MMC3.cfg %OutDir%%OutFile%.o
 @if ERRORLEVEL 1 goto failure
 @echo Ok!

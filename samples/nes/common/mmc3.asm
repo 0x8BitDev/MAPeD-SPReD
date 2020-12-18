@@ -58,3 +58,17 @@ mmc3_disable_wram:
    lda #0
    sta $a001
    rts
+
+   .macro mmc3_IRQ_disable
+   sta $e000
+   .endmacro
+
+   .macro mmc3_IRQ_enable
+   sta $e001
+   .endmacro
+
+   .macro mmc3_IRQ_reload val
+   lda val
+   sta $c000
+   sta $c001
+   .endmacro

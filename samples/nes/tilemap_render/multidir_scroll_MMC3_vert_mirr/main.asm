@@ -13,11 +13,18 @@
 
 ; TR_MIRRORING_VERTICAL 1 or 0 (1 - vertical, 0 - 4-screen mirroring) passed as command line parameter
 ;
+
+	.IF mmc3_status_bar
+.define TR_MMC3_IRQ_STATUS_BAR	1
+	.ELSE
+.define TR_MMC3_IRQ_STATUS_BAR	0
+	.ENDIF
+
 	.IF mirror_vert
-.define TR_MIRRORING_VERTICAL 1
+.define TR_MIRRORING_VERTICAL	1
 	.warning "[vertical mirroring]"
 	.ELSE
-.define TR_MIRRORING_VERTICAL 0
+.define TR_MIRRORING_VERTICAL 	0
 	.warning "[4-screen mirroring]]"
 	.ENDIF
 
@@ -66,6 +73,8 @@ RESET:
 	init_hardware_clear_mem
 
 ; MMC3 init
+
+	mmc3_IRQ_disable
 
 	.IF ::TR_DATA_RLE
 	jsr mmc3_enable_wram
@@ -156,6 +165,10 @@ RESET:
 	sta $2005
 	sta $2005
 
+	.IF TR_MMC3_IRQ_STATUS_BAR
+	cli
+	.ENDIF ;TR_MMC3_IRQ_STATUS_BAR
+
 forever:
 
 	jsr TR_ms::update_jpad
@@ -163,6 +176,18 @@ forever:
 	; waiting for the next frame
 	lda #$01
 	SKIP_FRAMES
+
+	.IF TR_MMC3_IRQ_STATUS_BAR
+
+	; update PPUCTRL and nametable changed by IRQ routine
+	jsr ppu_get_2000
+	ora TR_ms::inner_vars::_nametable
+	sta $2000
+
+	mmc3_IRQ_reload #$e0	; scan-line on which the IRQ procedure executes
+	mmc3_IRQ_enable
+
+	.ENDIF ;TR_MMC3_IRQ_STATUS_BAR
 
 _bg_drw_wait_loop:
 	jsr TR_utils::need_draw
@@ -180,7 +205,41 @@ NMI:
 
 nmi_exit:
 
+	.IF !TR_MMC3_IRQ_STATUS_BAR
 	jsr TR_ms::update_scroll_reg
+	.ELSE
+	lda TR_ms::inner_vars::_tr_upd_flags
+	and #TR_ms::inner_vars::TR_UPD_FLAG_SCROLL
+	beq @_skip_upd_scroll
+
+	; clean up PPU address registers
+	lda #$00
+	sta $2006
+	sta $2006			
+
+	lda TR_ms::inner_vars::_tr_pos_x
+	sta $2005
+
+	; shift Y pos by 8 pixels
+	lda TR_ms::inner_vars::_tr_pos_y
+	clc
+	adc #$08
+	tax
+
+	; check Y overflow
+	and #%11110000
+	cmp #%11110000
+	bne @cont
+
+	txa
+	and #%00000111
+	tax
+@cont:
+	txa
+	sta $2005
+
+@_skip_upd_scroll:
+	.ENDIF ;!TR_MMC3_IRQ_STATUS_BAR
 
 	jsr TR_ms::update_nametable
 
@@ -190,6 +249,19 @@ nmi_exit:
 	rti
 
 IRQ:
+	.IF TR_MMC3_IRQ_STATUS_BAR
+	mmc3_IRQ_disable
+
+	push_FAXY
+
+	; in real project you need to reserve an
+	; empty CHR bank to make an empty status bar
+	jsr ppu_get_2000
+	and #<~%00010000		; switch to Table 0 cause it is empty
+	sta $2000
+
+	pop_FAXY
+	.ENDIF ;TR_MMC3_IRQ_STATUS_BAR
 	rti
 
 .segment "VECTORS"

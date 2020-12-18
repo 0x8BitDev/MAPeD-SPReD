@@ -131,6 +131,7 @@ As mentioned before, you need to install Mono on your computer. To run the tools
  - `./samples/nes/tilemap_render/multidir_scroll_MMC3_4scr_mirr/`	- multidirectional scroller with 4-screen mirroring
  - `./samples/nes/tilemap_render/multidir_scroll_MMC3_horiz_mirr/`	- the same as above, but with horizontal mirroring 
  - `./samples/nes/tilemap_render/multidir_scroll_MMC3_vert_mirr/`	- the same as above, but with vertical mirroring 
+ - `./samples/nes/tilemap_render/multidir_scroll_MMC3_vert_mirr_sbar/`	- the same as above, but with MMC3 IRQ status bar 
  - `./samples/nes/tilemap_render/static_screens_MMC5/`	- static screens switching with MMC5 extended attributes support
 
 ## MAPeD-SMS
