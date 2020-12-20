@@ -184,7 +184,7 @@ forever:
 	ora TR_ms::inner_vars::_nametable
 	sta $2000
 
-	mmc3_IRQ_reload #$e0	; scan-line on which the IRQ procedure executes
+	mmc3_IRQ_reload #$df	; scan-line on which the IRQ procedure executes
 	mmc3_IRQ_enable
 
 	.ENDIF ;TR_MMC3_IRQ_STATUS_BAR
@@ -205,9 +205,46 @@ NMI:
 
 nmi_exit:
 
-	.IF !TR_MMC3_IRQ_STATUS_BAR
-	jsr TR_ms::update_scroll_reg
+	.IF TR_MMC3_IRQ_STATUS_BAR
+	jsr update_scroll_reg_shift_y_8pix
 	.ELSE
+	jsr TR_ms::update_scroll_reg
+	.ENDIF ;TR_MMC3_IRQ_STATUS_BAR
+
+	jsr TR_ms::update_nametable
+
+	DEC_FRAMES_CNT
+
+	pop_FAXY
+	rti
+
+IRQ:
+	.IF TR_MMC3_IRQ_STATUS_BAR
+	mmc3_IRQ_disable
+
+	pha
+	push_x
+
+	; some delay to reduce scan-line glitches
+	ldx #$0f
+@delay_loop:
+	dex
+	bne @delay_loop
+
+	; in real project you need to reserve an empty
+	; CHR bank to make an empty status bar
+	jsr ppu_get_2000
+	and #<~%00010000		; switch to Table 0 cause it is empty
+	sta $2000
+
+	pop_x
+	pla
+	.ENDIF ;TR_MMC3_IRQ_STATUS_BAR
+	rti
+
+	.IF TR_MMC3_IRQ_STATUS_BAR
+update_scroll_reg_shift_y_8pix:
+
 	lda TR_ms::inner_vars::_tr_upd_flags
 	and #TR_ms::inner_vars::TR_UPD_FLAG_SCROLL
 	beq @_skip_upd_scroll
@@ -239,30 +276,9 @@ nmi_exit:
 	sta $2005
 
 @_skip_upd_scroll:
-	.ENDIF ;!TR_MMC3_IRQ_STATUS_BAR
 
-	jsr TR_ms::update_nametable
-
-	DEC_FRAMES_CNT
-
-	pop_FAXY
-	rti
-
-IRQ:
-	.IF TR_MMC3_IRQ_STATUS_BAR
-	mmc3_IRQ_disable
-
-	push_FAXY
-
-	; in real project you need to reserve an
-	; empty CHR bank to make an empty status bar
-	jsr ppu_get_2000
-	and #<~%00010000		; switch to Table 0 cause it is empty
-	sta $2000
-
-	pop_FAXY
+	rts
 	.ENDIF ;TR_MMC3_IRQ_STATUS_BAR
-	rti
 
 .segment "VECTORS"
 
