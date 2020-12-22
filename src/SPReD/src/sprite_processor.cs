@@ -85,11 +85,11 @@ namespace SPReD
 				throw new Exception( _filename + "\n\nOnly non interlaced .PNG images are supported!" );
 			}
 
-			if( ( png_reader.ImgInfo.Cols & 0x07 ) != 0 || ( png_reader.ImgInfo.Rows & 0x07 ) != 0 )
-			{
-				png_reader.End();
-				throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
-			}
+//			if( ( png_reader.ImgInfo.Cols & 0x07 ) != 0 || ( png_reader.ImgInfo.Rows & 0x07 ) != 0 )
+//			{
+//				png_reader.End();
+//				throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
+//			}
 	
 			if( ( ( png_reader.ImgInfo.Cols >> 3 ) * ( png_reader.ImgInfo.Rows >> 3 ) ) > utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
 			{
@@ -142,11 +142,11 @@ namespace SPReD
 #endif
 			}
 			
-			if( ( bmp.Width & 0x07 ) != 0 || ( bmp.Height & 0x07 ) != 0 )
-			{
-				bmp.Dispose();
-				throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
-			}
+//			if( ( bmp.Width & 0x07 ) != 0 || ( bmp.Height & 0x07 ) != 0 )
+//			{
+//				bmp.Dispose();
+//				throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
+//			}
 			
 			if( ( ( bmp.Width >> 3 ) * ( bmp.Height >> 3 ) ) > utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
 			{
