@@ -18,6 +18,46 @@ namespace MAPeD
 	/// </summary>
 	///
 
+	public class TilesPatternEventArg : EventArgs
+	{
+		private pattern_data 	m_data 			= null;
+		private int 			m_CHR_bank_id	= -1;
+		private int				m_pos_x			= -1;
+		private int				m_pos_y			= -1;
+		
+		public pattern_data data
+		{
+			get { return m_data; }
+			set {}
+		}
+		
+		public int CHR_bank_id
+		{
+			get { return m_CHR_bank_id; }
+			set {}
+		}
+		
+		public int pos_x
+		{
+			get { return m_pos_x; }
+			set {}
+		}
+
+		public int pos_y
+		{
+			get { return m_pos_y; }
+			set {}
+		}
+		
+		public TilesPatternEventArg( pattern_data _data, int _CHR_bank_id, int _pos_x, int _pos_y )
+		{
+			m_data 			= _data;
+			m_CHR_bank_id 	= _CHR_bank_id;
+			m_pos_x 		= _pos_x;
+			m_pos_y 		= _pos_y;
+		}
+	}
+
 	public class NewTileEventArg : EventArgs
 	{
 		private tiles_data 	m_data 		= null;
@@ -50,6 +90,7 @@ namespace MAPeD
 	public delegate void RequestRightScreen();	
 	public delegate void UpdateTileImage();
 	public delegate void CreatePatternEnd();
+	public delegate void PutTilesPattern();
 	
 	public class screen_editor : drawable_base
 	{
@@ -61,6 +102,7 @@ namespace MAPeD
 		public event EventHandler RequestRightScreen;
 		public event EventHandler UpdateTileImage;
 		public event EventHandler CreatePatternEnd;
+		public event EventHandler PutTilesPattern;
 		
 		public enum EMode
 		{
@@ -456,15 +498,25 @@ namespace MAPeD
 			else
 			if( m_state == EState.es_PlacePattern )
 			{
-				if( m_tile_x >= 0 && m_tile_y >= 0 )
+				if( m_tile_x != int.MinValue && m_tile_y != int.MinValue )
 				{
 					if( m_scr_ind >= 0 )
 					{
-						for( int tile_y = 0; tile_y < m_active_pattern.height; tile_y++ )
+						if( m_mode == EMode.em_Single )
 						{
-							for( int tile_x = 0; tile_x < m_active_pattern.width; tile_x++ )
+							for( int tile_y = 0; tile_y < m_active_pattern.height; tile_y++ )
 							{
-								m_tiles_data.scr_data[ m_scr_ind ][ ( ( m_tile_y + tile_y ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + m_tile_x + tile_x ] = m_active_pattern.data[ tile_y * m_active_pattern.width + tile_x ];
+								for( int tile_x = 0; tile_x < m_active_pattern.width; tile_x++ )
+								{
+									m_tiles_data.scr_data[ m_scr_ind ][ ( ( m_tile_y + tile_y ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + m_tile_x + tile_x ] = m_active_pattern.data[ tile_y * m_active_pattern.width + tile_x ];
+								}
+							}
+						}
+						else
+						{
+							if( PutTilesPattern != null )
+							{
+								PutTilesPattern( this, new TilesPatternEventArg( m_active_pattern, m_curr_CHR_bank_id, m_tile_x, m_tile_y ) );
 							}
 						}
 						
@@ -596,19 +648,27 @@ namespace MAPeD
 			{
 				if( get_tile_xy( e.X, e.Y, out m_tile_x, out m_tile_y ) == false )
 				{
-					m_tile_x = -1;
-					m_tile_y = -1;
+					m_tile_x = int.MinValue;
+					m_tile_y = int.MinValue;
 				}
 				else
 				{
 					int half_width	= m_active_pattern.width >> 1;
 					int half_height	= m_active_pattern.height >> 1;
 					
-					m_tile_x = m_tile_x - half_width < 0 ? 0:m_tile_x - half_width;
-					m_tile_x = m_tile_x + m_active_pattern.width > utils.CONST_SCREEN_NUM_WIDTH_TILES - 1 ? utils.CONST_SCREEN_NUM_WIDTH_TILES - m_active_pattern.width:m_tile_x;
-					
-					m_tile_y = m_tile_y - half_height < 0 ? 0:m_tile_y - half_height;
-					m_tile_y = m_tile_y + m_active_pattern.height > utils.CONST_SCREEN_NUM_HEIGHT_TILES - 1 ? utils.CONST_SCREEN_NUM_HEIGHT_TILES - m_active_pattern.height:m_tile_y;
+					if( m_mode == EMode.em_Single )
+					{
+						m_tile_x = m_tile_x - half_width < 0 ? 0:m_tile_x - half_width;
+						m_tile_y = m_tile_y - half_height < 0 ? 0:m_tile_y - half_height;
+	
+						m_tile_x = m_tile_x + m_active_pattern.width > utils.CONST_SCREEN_NUM_WIDTH_TILES - 1 ? utils.CONST_SCREEN_NUM_WIDTH_TILES - m_active_pattern.width:m_tile_x;
+						m_tile_y = m_tile_y + m_active_pattern.height > utils.CONST_SCREEN_NUM_HEIGHT_TILES - 1 ? utils.CONST_SCREEN_NUM_HEIGHT_TILES - m_active_pattern.height:m_tile_y;
+					}
+					else
+					{
+						m_tile_x -= half_width;
+						m_tile_y -= half_height;
+					}
 				}
 				
 				update();
@@ -1194,7 +1254,7 @@ namespace MAPeD
 					else
 					if( m_state == EState.es_PlacePattern )
 					{
-						if( m_tile_x >= 0 && m_tile_y >= 0 && ( m_active_pattern != null && m_active_pattern.data != null ) )
+						if( ( m_tile_x != int.MinValue && m_tile_y != int.MinValue ) && ( m_active_pattern != null && m_active_pattern.data != null ) )
 						{
 							for( int tile_y = 0; tile_y < m_active_pattern.height; tile_y++ )
 							{
@@ -1202,7 +1262,8 @@ namespace MAPeD
 								{
 									m_tile_ghost_img_rect.X = ( utils.CONST_SCREEN_OFFSET_X + m_tile_x * utils.CONST_SCREEN_TILES_SIZE ) + ( tile_x * utils.CONST_SCREEN_TILES_SIZE );
 									m_tile_ghost_img_rect.Y = ( utils.CONST_SCREEN_OFFSET_Y + m_tile_y * utils.CONST_SCREEN_TILES_SIZE ) + ( tile_y * utils.CONST_SCREEN_TILES_SIZE );
-#if DEF_SCREEN_HEIGHT_7d5_TILES									
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+									m_tile_ghost_img_rect.Y -= ( ( m_tile_y + tile_y ) > 7 ) ? utils.CONST_SCREEN_TILES_SIZE >> 1:0;
 									m_tile_ghost_img_rect.Height = ( ( m_tile_y + tile_y ) == 7 ) ? utils.CONST_SCREEN_TILES_SIZE >> 1:utils.CONST_SCREEN_TILES_SIZE;
 
 									m_gfx.DrawImage( m_tiles_imagelist.Images[ m_active_pattern.data[ tile_y * m_active_pattern.width + tile_x ] ], 

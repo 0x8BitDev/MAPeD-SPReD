@@ -216,6 +216,83 @@ namespace MAPeD
 			_scr_editor.RequestDownScreen	+= new EventHandler( request_down_screen );
 			_scr_editor.RequestLeftScreen	+= new EventHandler( request_left_screen );
 			_scr_editor.RequestRightScreen	+= new EventHandler( request_right_screen );
+			
+			_scr_editor.PutTilesPattern		+= new EventHandler( put_tiles_pattern );
+		}
+		
+		private void put_tiles_pattern( object sender, EventArgs e )
+		{
+			TilesPatternEventArg evn = e as TilesPatternEventArg;
+			
+			int pos_x = evn.pos_x;
+			int pos_y = evn.pos_y;
+			
+			int CHR_bank_id = evn.CHR_bank_id;
+			
+			pattern_data data = evn.data;
+			
+			int scr_ind = m_dispatch_mode_sel_screen_slot_id;
+			
+			// current selected screen
+			put_tiles_pattern_on_screen( scr_ind, CHR_bank_id, data, pos_x, pos_y );
+			
+			// run through adjacent screens
+			m_adjacent_scr_arr[0] = m_layout.get_adjacent_screen_index( scr_ind, -get_width() - 1 );
+			m_adjacent_scr_arr[1] = m_layout.get_adjacent_screen_index( scr_ind, -get_width() );
+			m_adjacent_scr_arr[2] = m_layout.get_adjacent_screen_index( scr_ind, -get_width() + 1 );
+			m_adjacent_scr_arr[3] =	m_layout.get_adjacent_screen_index( scr_ind, 1 );
+			m_adjacent_scr_arr[4] = m_layout.get_adjacent_screen_index( scr_ind, -1 );
+			m_adjacent_scr_arr[5] = m_layout.get_adjacent_screen_index( scr_ind, get_width() + 1 );
+			m_adjacent_scr_arr[6] = m_layout.get_adjacent_screen_index( scr_ind, get_width() );
+			m_adjacent_scr_arr[7] =	m_layout.get_adjacent_screen_index( scr_ind, get_width() - 1 );
+			
+			for( int n = 0; n < 8; n++ )
+			{
+				if( m_adjacent_scr_arr[ n ] >= 0 )
+				{
+					put_tiles_pattern_on_screen( m_adjacent_scr_arr[ n ], CHR_bank_id, data, pos_x, pos_y );
+				}
+			}
+			
+			// update border tiles
+			dispatch_event_screen_selected();
+		}
+		
+		void put_tiles_pattern_on_screen( int _scr_ind, int _CHR_bank_id, pattern_data _data, int _pos_x, int _pos_y )
+		{
+			int CHR_bank_id 		= -1;
+			int bank_scr_ind 		= -1;
+			tiles_data bank_data 	= null;
+			
+			if( get_screen_data( _scr_ind, ref CHR_bank_id, ref bank_scr_ind, ref bank_data ) )
+			{
+				if( CHR_bank_id == _CHR_bank_id )
+				{
+					int scr_x = ( _scr_ind % get_width() );
+					int scr_y = ( _scr_ind / get_width() );
+					
+					int scr_pttrn_x = ( m_dispatch_mode_sel_screen_slot_id % get_width() ) * utils.CONST_SCREEN_NUM_WIDTH_TILES + _pos_x;
+					int scr_pttrn_y = ( m_dispatch_mode_sel_screen_slot_id / get_width() ) * utils.CONST_SCREEN_NUM_HEIGHT_TILES + _pos_y;
+					
+					int pttrn_offs_x = scr_pttrn_x - scr_x * utils.CONST_SCREEN_NUM_WIDTH_TILES;
+					int pttrn_offs_y = scr_pttrn_y - scr_y * utils.CONST_SCREEN_NUM_HEIGHT_TILES; 
+		
+					if( Math.Max( 0, pttrn_offs_x ) < Math.Min( utils.CONST_SCREEN_NUM_WIDTH_TILES, pttrn_offs_x + _data.width ) &&
+					  ( Math.Max( 0, pttrn_offs_y ) < Math.Min( utils.CONST_SCREEN_NUM_HEIGHT_TILES, pttrn_offs_y + _data.height ) ) )
+					{
+						for( int tile_y = 0; tile_y < _data.height; tile_y++ )
+						{
+							for( int tile_x = 0; tile_x < _data.width; tile_x++ )
+							{
+								if( ( pttrn_offs_x + tile_x >=0 && pttrn_offs_x + tile_x < utils.CONST_SCREEN_NUM_WIDTH_TILES ) && ( pttrn_offs_y + tile_y >=0 && pttrn_offs_y + tile_y < utils.CONST_SCREEN_NUM_HEIGHT_TILES ) )
+								{
+									bank_data.scr_data[ bank_scr_ind ][ ( ( pttrn_offs_y + tile_y ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + pttrn_offs_x + tile_x ] = _data.data[ tile_y * _data.width + tile_x ];
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 
 		private void request_up_screen( object sender, EventArgs e )

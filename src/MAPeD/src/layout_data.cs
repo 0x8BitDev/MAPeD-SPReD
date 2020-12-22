@@ -784,6 +784,38 @@ namespace MAPeD
 					m_layout[ i ][ j ].load( _br, _get_ent, _file_ext, _scr_align_mode );
 				}
 			}
-		}		
+		}
+
+		public int get_adjacent_screen_index( int _scr_ind, int _offset )
+		{
+			int scr_ind = _scr_ind + _offset;
+			
+			int scr_cnt_x = get_width();
+			int scr_cnt_y = get_height();
+			
+			if( scr_ind < 0 || scr_ind >= ( scr_cnt_x * scr_cnt_y ) )
+			{
+				return -1;
+			}
+			
+			int base_scr_mod_x_ind = _scr_ind % scr_cnt_x;
+			int base_scr_mod_y_ind = _scr_ind / scr_cnt_x;
+			
+			int scr_mod_x_ind = scr_ind % scr_cnt_x;
+			int scr_mod_y_ind = scr_ind / scr_cnt_x;
+			
+			if( scr_mod_x_ind == ( base_scr_mod_x_ind - 1 ) || scr_mod_x_ind == base_scr_mod_x_ind || scr_mod_x_ind == ( base_scr_mod_x_ind + 1 ) )
+			{
+				if( scr_mod_y_ind == ( base_scr_mod_y_ind - 1 ) || scr_mod_y_ind == base_scr_mod_y_ind || scr_mod_y_ind == ( base_scr_mod_y_ind + 1 ) )
+				{
+					if( get_data( scr_mod_x_ind, scr_mod_y_ind ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
+					{
+						return scr_mod_y_ind * scr_cnt_x + scr_mod_x_ind;  
+					}
+				}
+			}
+			
+			return -1;
+		}
 	}
 }
