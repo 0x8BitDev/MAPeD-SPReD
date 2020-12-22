@@ -41,6 +41,7 @@ namespace MAPeD
 			this.TreeViewPatterns = new System.Windows.Forms.TreeView();
 			this.ContextMenuStripTreeViewGroup = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.addGroupToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.BtnResetPattern = new System.Windows.Forms.Button();
 			this.BtnRename = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.BtnGroupDelete = new System.Windows.Forms.Button();
@@ -100,6 +101,7 @@ namespace MAPeD
 			// 
 			// splitContainer1.Panel2
 			// 
+			this.splitContainer1.Panel2.Controls.Add(this.BtnResetPattern);
 			this.splitContainer1.Panel2.Controls.Add(this.BtnRename);
 			this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
 			this.splitContainer1.Panel2.Controls.Add(this.PixBoxPreview);
@@ -134,6 +136,16 @@ namespace MAPeD
 			this.addGroupToolStripMenuItem1.Size = new System.Drawing.Size(132, 22);
 			this.addGroupToolStripMenuItem1.Text = "Add Group";
 			this.addGroupToolStripMenuItem1.Click += new System.EventHandler(this.BtnGroupAddClick_Event);
+			// 
+			// BtnResetPattern
+			// 
+			this.BtnResetPattern.Location = new System.Drawing.Point(4, 273);
+			this.BtnResetPattern.Name = "BtnResetPattern";
+			this.BtnResetPattern.Size = new System.Drawing.Size(108, 30);
+			this.BtnResetPattern.TabIndex = 5;
+			this.BtnResetPattern.Text = "Reset Pattern";
+			this.BtnResetPattern.UseVisualStyleBackColor = true;
+			this.BtnResetPattern.Click += new System.EventHandler(this.BtnResetPatternClick_Event);
 			// 
 			// BtnRename
 			// 
@@ -247,19 +259,19 @@ namespace MAPeD
 									this.deleteToolStripMenuItem,
 									this.renameToolStripMenuItem});
 			this.ContextMenuStripPatternItem.Name = "ContextMenuStripPatternItem";
-			this.ContextMenuStripPatternItem.Size = new System.Drawing.Size(118, 48);
+			this.ContextMenuStripPatternItem.Size = new System.Drawing.Size(149, 48);
 			// 
 			// deleteToolStripMenuItem
 			// 
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-			this.deleteToolStripMenuItem.Text = "Delete";
-			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.BtnGroupDeleteClick_Event);
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.deleteToolStripMenuItem.Text = "Delete Pattern";
+			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.BtnPatternDeleteClick_Event);
 			// 
 			// renameToolStripMenuItem
 			// 
 			this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-			this.renameToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.renameToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.renameToolStripMenuItem.Text = "Rename";
 			this.renameToolStripMenuItem.Click += new System.EventHandler(this.BtnRenameClick_Event);
 			// 
@@ -291,6 +303,7 @@ namespace MAPeD
 			this.ContextMenuStripPatternItem.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button BtnResetPattern;
 		private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem addGroupToolStripMenuItem1;
 		private System.Windows.Forms.ContextMenuStrip ContextMenuStripTreeViewGroup;

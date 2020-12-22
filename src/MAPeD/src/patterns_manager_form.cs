@@ -112,6 +112,8 @@ namespace MAPeD
 			BtnPatternDelete.Enabled 	= _on;
 			
 			BtnRename.Enabled		= _on;
+			
+			BtnResetPattern.Enabled	= _on;
 		}
 		
 		private void PatternsMngr_MouseWheel(object sender, MouseEventArgs e)
@@ -152,7 +154,7 @@ namespace MAPeD
 					// redraw a current selected pattern
 					m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
 					
-					m_pattern_preview.draw_string( "Patterns are frequently used combination of tiles.\nHere you can create and manage them.\n\n- Press the 'Add' pattern button to add a new one.\n\n- Select a pattern in the tree view to put it on\na game screen.\n\n- Scale a selected pattern using a mouse wheel.", 0, 0 );
+					m_pattern_preview.draw_string( "Patterns are frequently used combination of tiles.\nHere you can create and manage them.\n\n- Click the 'Add' pattern button to add a new one.\n\n- Click the 'Add' button again to cancel the operation.\n\n- Select a pattern in the tree view to put it on\na game screen.\n\n- Scale a selected pattern using a mouse wheel.", 0, 0 );
 				}
 				else
 				{
@@ -692,6 +694,11 @@ namespace MAPeD
 				
 				update();
 			}
+		}
+		
+		void BtnResetPatternClick_Event(object sender, EventArgs e)
+		{
+			TreeViewPatterns.SelectedNode = TreeViewPatterns.TopNode;
 		}
 	}
 }
