@@ -1618,7 +1618,17 @@ namespace SPReD
 							{
 								select_last_sprite();
 								
-								palette_group.Instance.update_selected_color();
+								palette_group plt_grp = palette_group.Instance;
+								plt_grp.update_selected_color();
+#if DEF_NES								
+								// copy transparent color of the first palette to the rest transparent color slots
+								palette_small[] plt_arr = plt_grp.get_palettes_arr();
+								
+								for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+								{
+									plt_arr[ i ].update_color( plt_arr[ 0 ].get_color_inds()[0], 0 );
+								}
+#endif
 							}
 						}
 						break;
