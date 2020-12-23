@@ -244,9 +244,10 @@ namespace MAPeD
 					
 					( m_data.patterns_data[ key ] as List< pattern_data > ).ForEach( delegate( pattern_data _pattern ) { pattern_add( key, _pattern, false ); } );
 				}
-				
-				TreeViewPatterns.SelectedNode = null; 
 			}
+			
+			// on Linux TreeViewPatterns.SelectedNode is not reset when clearing nodes
+			TreeViewPatterns.SelectedNode = null; 
 		}
 
 		public void subscribe_event( screen_editor _scr_editor )
