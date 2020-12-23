@@ -126,7 +126,7 @@ RESET:
 	.ENDIF
 	sta $2000
 
-	lda #%00011110	; enable drawing of sprites and background, NO CLIPPING!
+	lda #%00011010	; enable drawing of sprites and background, sprites clipping
 	sta $2001
 
 	jpad1_init

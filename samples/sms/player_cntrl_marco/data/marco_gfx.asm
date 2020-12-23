@@ -9,109 +9,109 @@
 .define	SPR_CHRS_OFFSET	0	; first CHR index in a CHR bank
 
 
-;chr0:	.incbin "marco_gfx_chr0.bin"	; 544 bytes
-;chr1:	.incbin "marco_gfx_chr1.bin"	; 544 bytes
-;chr2:	.incbin "marco_gfx_chr2.bin"	; 544 bytes
-;chr3:	.incbin "marco_gfx_chr3.bin"	; 608 bytes
+;chr0:	.incbin "marco_gfx_chr0.bin"	; 512 bytes
+;chr1:	.incbin "marco_gfx_chr1.bin"	; 512 bytes
+;chr2:	.incbin "marco_gfx_chr2.bin"	; 512 bytes
+;chr3:	.incbin "marco_gfx_chr3.bin"	; 576 bytes
 ;chr4:	.incbin "marco_gfx_chr4.bin"	; 544 bytes
-;chr5:	.incbin "marco_gfx_chr5.bin"	; 416 bytes
-;chr6:	.incbin "marco_gfx_chr6.bin"	; 416 bytes
-;chr7:	.incbin "marco_gfx_chr7.bin"	; 416 bytes
-;chr8:	.incbin "marco_gfx_chr8.bin"	; 416 bytes
-;chr9:	.incbin "marco_gfx_chr9.bin"	; 512 bytes
-;chr10:	.incbin "marco_gfx_chr10.bin"	; 608 bytes
-;chr11:	.incbin "marco_gfx_chr11.bin"	; 544 bytes
-;chr12:	.incbin "marco_gfx_chr12.bin"	; 608 bytes
-;chr13:	.incbin "marco_gfx_chr13.bin"	; 544 bytes
+;chr5:	.incbin "marco_gfx_chr5.bin"	; 384 bytes
+;chr6:	.incbin "marco_gfx_chr6.bin"	; 384 bytes
+;chr7:	.incbin "marco_gfx_chr7.bin"	; 384 bytes
+;chr8:	.incbin "marco_gfx_chr8.bin"	; 384 bytes
+;chr9:	.incbin "marco_gfx_chr9.bin"	; 544 bytes
+;chr10:	.incbin "marco_gfx_chr10.bin"	; 544 bytes
+;chr11:	.incbin "marco_gfx_chr11.bin"	; 576 bytes
+;chr12:	.incbin "marco_gfx_chr12.bin"	; 512 bytes
+;chr13:	.incbin "marco_gfx_chr13.bin"	; 576 bytes
 ;chr14:	.incbin "marco_gfx_chr14.bin"	; 512 bytes
-;chr15:	.incbin "marco_gfx_chr15.bin"	; 544 bytes
-;chr16:	.incbin "marco_gfx_chr16.bin"	; 704 bytes
-;chr17:	.incbin "marco_gfx_chr17.bin"	; 544 bytes
-;chr18:	.incbin "marco_gfx_chr18.bin"	; 704 bytes
-;chr19:	.incbin "marco_gfx_chr19.bin"	; 768 bytes
-;chr20:	.incbin "marco_gfx_chr20.bin"	; 640 bytes
-;chr21:	.incbin "marco_gfx_chr21.bin"	; 608 bytes
-;chr22:	.incbin "marco_gfx_chr22.bin"	; 544 bytes
-;chr23:	.incbin "marco_gfx_chr23.bin"	; 544 bytes
-;chr24:	.incbin "marco_gfx_chr24.bin"	; 544 bytes
-;chr25:	.incbin "marco_gfx_chr25.bin"	; 544 bytes
-;chr26:	.incbin "marco_gfx_chr26.bin"	; 544 bytes
-;chr27:	.incbin "marco_gfx_chr27.bin"	; 544 bytes
-;chr28:	.incbin "marco_gfx_chr28.bin"	; 608 bytes
+;chr15:	.incbin "marco_gfx_chr15.bin"	; 672 bytes
+;chr16:	.incbin "marco_gfx_chr16.bin"	; 736 bytes
+;chr17:	.incbin "marco_gfx_chr17.bin"	; 576 bytes
+;chr18:	.incbin "marco_gfx_chr18.bin"	; 576 bytes
+;chr19:	.incbin "marco_gfx_chr19.bin"	; 512 bytes
+;chr20:	.incbin "marco_gfx_chr20.bin"	; 544 bytes
+;chr21:	.incbin "marco_gfx_chr21.bin"	; 544 bytes
+;chr22:	.incbin "marco_gfx_chr22.bin"	; 512 bytes
+;chr23:	.incbin "marco_gfx_chr23.bin"	; 512 bytes
+;chr24:	.incbin "marco_gfx_chr24.bin"	; 512 bytes
+;chr25:	.incbin "marco_gfx_chr25.bin"	; 512 bytes
+;chr26:	.incbin "marco_gfx_chr26.bin"	; 512 bytes
+;chr27:	.incbin "marco_gfx_chr27.bin"	; 512 bytes
+;chr28:	.incbin "marco_gfx_chr28.bin"	; 576 bytes
 ;chr29:	.incbin "marco_gfx_chr29.bin"	; 544 bytes
-;chr30:	.incbin "marco_gfx_chr30.bin"	; 416 bytes
-;chr31:	.incbin "marco_gfx_chr31.bin"	; 416 bytes
-;chr32:	.incbin "marco_gfx_chr32.bin"	; 416 bytes
-;chr33:	.incbin "marco_gfx_chr33.bin"	; 416 bytes
-;chr34:	.incbin "marco_gfx_chr34.bin"	; 416 bytes
-;chr35:	.incbin "marco_gfx_chr35.bin"	; 416 bytes
-;chr36:	.incbin "marco_gfx_chr36.bin"	; 416 bytes
-;chr37:	.incbin "marco_gfx_chr37.bin"	; 416 bytes
+;chr30:	.incbin "marco_gfx_chr30.bin"	; 384 bytes
+;chr31:	.incbin "marco_gfx_chr31.bin"	; 384 bytes
+;chr32:	.incbin "marco_gfx_chr32.bin"	; 384 bytes
+;chr33:	.incbin "marco_gfx_chr33.bin"	; 384 bytes
+;chr34:	.incbin "marco_gfx_chr34.bin"	; 384 bytes
+;chr35:	.incbin "marco_gfx_chr35.bin"	; 384 bytes
+;chr36:	.incbin "marco_gfx_chr36.bin"	; 384 bytes
+;chr37:	.incbin "marco_gfx_chr37.bin"	; 384 bytes
 ;chr38:	.incbin "marco_gfx_chr38.bin"	; 512 bytes
-;chr39:	.incbin "marco_gfx_chr39.bin"	; 608 bytes
+;chr39:	.incbin "marco_gfx_chr39.bin"	; 544 bytes
 ;chr40:	.incbin "marco_gfx_chr40.bin"	; 544 bytes
-;chr41:	.incbin "marco_gfx_chr41.bin"	; 608 bytes
+;chr41:	.incbin "marco_gfx_chr41.bin"	; 576 bytes
 ;chr42:	.incbin "marco_gfx_chr42.bin"	; 544 bytes
 ;chr43:	.incbin "marco_gfx_chr43.bin"	; 512 bytes
 ;chr44:	.incbin "marco_gfx_chr44.bin"	; 544 bytes
-;chr45:	.incbin "marco_gfx_chr45.bin"	; 704 bytes
-;chr46:	.incbin "marco_gfx_chr46.bin"	; 544 bytes
-;chr47:	.incbin "marco_gfx_chr47.bin"	; 704 bytes
-;chr48:	.incbin "marco_gfx_chr48.bin"	; 768 bytes
-;chr49:	.incbin "marco_gfx_chr49.bin"	; 640 bytes
-;chr50:	.incbin "marco_gfx_chr50.bin"	; 608 bytes
+;chr45:	.incbin "marco_gfx_chr45.bin"	; 576 bytes
+;chr46:	.incbin "marco_gfx_chr46.bin"	; 512 bytes
+;chr47:	.incbin "marco_gfx_chr47.bin"	; 672 bytes
+;chr48:	.incbin "marco_gfx_chr48.bin"	; 736 bytes
+;chr49:	.incbin "marco_gfx_chr49.bin"	; 576 bytes
+;chr50:	.incbin "marco_gfx_chr50.bin"	; 576 bytes
 ;marco_gfx_CHR_arr:	
-;	.word 544, chr0
-;	.word 544, chr1
-;	.word 544, chr2
-;	.word 608, chr3
+;	.word 512, chr0
+;	.word 512, chr1
+;	.word 512, chr2
+;	.word 576, chr3
 ;	.word 544, chr4
-;	.word 416, chr5
-;	.word 416, chr6
-;	.word 416, chr7
-;	.word 416, chr8
-;	.word 512, chr9
-;	.word 608, chr10
-;	.word 544, chr11
-;	.word 608, chr12
-;	.word 544, chr13
+;	.word 384, chr5
+;	.word 384, chr6
+;	.word 384, chr7
+;	.word 384, chr8
+;	.word 544, chr9
+;	.word 544, chr10
+;	.word 576, chr11
+;	.word 512, chr12
+;	.word 576, chr13
 ;	.word 512, chr14
-;	.word 544, chr15
-;	.word 704, chr16
-;	.word 544, chr17
-;	.word 704, chr18
-;	.word 768, chr19
-;	.word 640, chr20
-;	.word 608, chr21
-;	.word 544, chr22
-;	.word 544, chr23
-;	.word 544, chr24
-;	.word 544, chr25
-;	.word 544, chr26
-;	.word 544, chr27
-;	.word 608, chr28
+;	.word 672, chr15
+;	.word 736, chr16
+;	.word 576, chr17
+;	.word 576, chr18
+;	.word 512, chr19
+;	.word 544, chr20
+;	.word 544, chr21
+;	.word 512, chr22
+;	.word 512, chr23
+;	.word 512, chr24
+;	.word 512, chr25
+;	.word 512, chr26
+;	.word 512, chr27
+;	.word 576, chr28
 ;	.word 544, chr29
-;	.word 416, chr30
-;	.word 416, chr31
-;	.word 416, chr32
-;	.word 416, chr33
-;	.word 416, chr34
-;	.word 416, chr35
-;	.word 416, chr36
-;	.word 416, chr37
+;	.word 384, chr30
+;	.word 384, chr31
+;	.word 384, chr32
+;	.word 384, chr33
+;	.word 384, chr34
+;	.word 384, chr35
+;	.word 384, chr36
+;	.word 384, chr37
 ;	.word 512, chr38
-;	.word 608, chr39
+;	.word 544, chr39
 ;	.word 544, chr40
-;	.word 608, chr41
+;	.word 576, chr41
 ;	.word 544, chr42
 ;	.word 512, chr43
 ;	.word 544, chr44
-;	.word 704, chr45
-;	.word 544, chr46
-;	.word 704, chr47
-;	.word 768, chr48
-;	.word 640, chr49
-;	.word 608, chr50
+;	.word 576, chr45
+;	.word 512, chr46
+;	.word 672, chr47
+;	.word 736, chr48
+;	.word 576, chr49
+;	.word 576, chr50
 
 
 marco_gfx_palette:
@@ -188,55 +188,55 @@ marco_duck10_RIGHT_frame:
 marco_run01_RIGHT_frame:
 	.word marco_run01_RIGHT
 	.byte marco_run01_RIGHT_end - marco_run01_RIGHT
-	.byte 9
+	.byte 19
 marco_run02_RIGHT_frame:
 	.word marco_run02_RIGHT
 	.byte marco_run02_RIGHT_end - marco_run02_RIGHT
-	.byte 10
+	.byte 9
 marco_run03_RIGHT_frame:
 	.word marco_run03_RIGHT
 	.byte marco_run03_RIGHT_end - marco_run03_RIGHT
-	.byte 11
+	.byte 10
 marco_run04_RIGHT_frame:
 	.word marco_run04_RIGHT
 	.byte marco_run04_RIGHT_end - marco_run04_RIGHT
-	.byte 12
+	.byte 11
 marco_run05_RIGHT_frame:
 	.word marco_run05_RIGHT
 	.byte marco_run05_RIGHT_end - marco_run05_RIGHT
-	.byte 13
+	.byte 20
 marco_run06_RIGHT_frame:
 	.word marco_run06_RIGHT
 	.byte marco_run06_RIGHT_end - marco_run06_RIGHT
-	.byte 14
+	.byte 12
 marco_run07_RIGHT_frame:
 	.word marco_run07_RIGHT
 	.byte marco_run07_RIGHT_end - marco_run07_RIGHT
-	.byte 15
+	.byte 21
 marco_run08_RIGHT_frame:
 	.word marco_run08_RIGHT
 	.byte marco_run08_RIGHT_end - marco_run08_RIGHT
-	.byte 16
+	.byte 13
 marco_run09_RIGHT_frame:
 	.word marco_run09_RIGHT
 	.byte marco_run09_RIGHT_end - marco_run09_RIGHT
-	.byte 17
+	.byte 14
 marco_shoot01_RIGHT_frame:
 	.word marco_shoot01_RIGHT
 	.byte marco_shoot01_RIGHT_end - marco_shoot01_RIGHT
-	.byte 18
+	.byte 15
 marco_shoot02_RIGHT_frame:
 	.word marco_shoot02_RIGHT
 	.byte marco_shoot02_RIGHT_end - marco_shoot02_RIGHT
-	.byte 19
+	.byte 16
 marco_shoot03_RIGHT_frame:
 	.word marco_shoot03_RIGHT
 	.byte marco_shoot03_RIGHT_end - marco_shoot03_RIGHT
-	.byte 20
+	.byte 17
 marco_shoot04_RIGHT_frame:
 	.word marco_shoot04_RIGHT
 	.byte marco_shoot04_RIGHT_end - marco_shoot04_RIGHT
-	.byte 21
+	.byte 18
 marco_idle01_LEFT_frame:
 	.word marco_idle01_LEFT
 	.byte marco_idle01_LEFT_end - marco_idle01_LEFT
@@ -358,1150 +358,1094 @@ marco_shoot04_LEFT_frame:
 	; #1: Y pos, #2: X pos, #3: CHR index
 
 marco_idle01_RIGHT:
-	.byte $DA, $F5, $00
-	.byte $DA, $FD, $01
-	.byte $DA, $05, $02
-	.byte $E2, $F5, $03
-	.byte $E2, $FD, $04
-	.byte $E2, $05, $05
-	.byte $EA, $F5, $06
-	.byte $EA, $FD, $07
-	.byte $EA, $05, $08
-	.byte $EA, $0D, $09
-	.byte $F2, $F5, $0A
-	.byte $F2, $FD, $0B
-	.byte $F2, $05, $0C
-	.byte $F2, $0D, $0D
-	.byte $FA, $F5, $0E
-	.byte $FA, $FD, $0F
-	.byte $FA, $05, $10
+	.byte $D9, $FD, $00
+	.byte $D9, $05, $01
+	.byte $E1, $F6, $02
+	.byte $E1, $FE, $03
+	.byte $E1, $06, $04
+	.byte $E9, $F5, $05
+	.byte $E9, $FD, $06
+	.byte $E9, $05, $07
+	.byte $E9, $0D, $08
+	.byte $F1, $F7, $09
+	.byte $F1, $FF, $0A
+	.byte $F1, $07, $0B
+	.byte $F1, $0F, $0C
+	.byte $F9, $F5, $0D
+	.byte $F9, $FD, $0E
+	.byte $F9, $05, $0F
 marco_idle01_RIGHT_end:
 
 marco_idle02_RIGHT:
-	.byte $DA, $F5, $00
-	.byte $DA, $FD, $01
-	.byte $DA, $05, $02
-	.byte $E2, $F5, $03
-	.byte $E2, $FD, $04
-	.byte $E2, $05, $05
-	.byte $EA, $F5, $06
-	.byte $EA, $FD, $07
-	.byte $EA, $05, $08
-	.byte $EA, $0D, $09
-	.byte $F2, $F5, $0A
-	.byte $F2, $FD, $0B
-	.byte $F2, $05, $0C
-	.byte $F2, $0D, $0D
-	.byte $FA, $F5, $0E
-	.byte $FA, $FD, $0F
-	.byte $FA, $05, $10
+	.byte $D9, $FD, $00
+	.byte $D9, $05, $01
+	.byte $E1, $F6, $02
+	.byte $E1, $FE, $03
+	.byte $E1, $06, $04
+	.byte $E9, $F5, $05
+	.byte $E9, $FD, $06
+	.byte $E9, $05, $07
+	.byte $E9, $0D, $08
+	.byte $F1, $F7, $09
+	.byte $F1, $FF, $0A
+	.byte $F1, $07, $0B
+	.byte $F1, $0F, $0C
+	.byte $F9, $F5, $0D
+	.byte $F9, $FD, $0E
+	.byte $F9, $05, $0F
 marco_idle02_RIGHT_end:
 
 marco_idle03_RIGHT:
-	.byte $DA, $F5, $00
-	.byte $DA, $FD, $01
-	.byte $DA, $05, $02
-	.byte $E2, $F5, $03
-	.byte $E2, $FD, $04
-	.byte $E2, $05, $05
-	.byte $EA, $F5, $06
-	.byte $EA, $FD, $07
-	.byte $EA, $05, $08
-	.byte $EA, $0D, $09
-	.byte $F2, $F5, $0A
-	.byte $F2, $FD, $0B
-	.byte $F2, $05, $0C
-	.byte $F2, $0D, $0D
-	.byte $FA, $F5, $0E
-	.byte $FA, $FD, $0F
-	.byte $FA, $05, $10
+	.byte $D9, $FD, $00
+	.byte $D9, $05, $01
+	.byte $E1, $F6, $02
+	.byte $E1, $FE, $03
+	.byte $E1, $06, $04
+	.byte $E9, $F5, $05
+	.byte $E9, $FD, $06
+	.byte $E9, $05, $07
+	.byte $E9, $0D, $08
+	.byte $F1, $F7, $09
+	.byte $F1, $FF, $0A
+	.byte $F1, $07, $0B
+	.byte $F1, $0F, $0C
+	.byte $F9, $F5, $0D
+	.byte $F9, $FD, $0E
+	.byte $F9, $05, $0F
 marco_idle03_RIGHT_end:
 
 marco_idle04_RIGHT:
-	.byte $DA, $F5, $00
-	.byte $DA, $FD, $01
-	.byte $DA, $05, $02
-	.byte $E2, $F5, $03
-	.byte $E2, $FD, $04
-	.byte $E2, $05, $05
-	.byte $EA, $F5, $06
-	.byte $EA, $FD, $07
-	.byte $EA, $05, $08
-	.byte $EA, $0D, $09
-	.byte $F2, $F5, $0A
-	.byte $F2, $FD, $0B
-	.byte $F2, $05, $0C
-	.byte $F2, $0D, $0D
-	.byte $FA, $F5, $0E
-	.byte $FA, $FD, $0F
-	.byte $FA, $05, $10
+	.byte $D9, $FD, $00
+	.byte $D9, $05, $01
+	.byte $E1, $F6, $02
+	.byte $E1, $FE, $03
+	.byte $E1, $06, $04
+	.byte $E9, $F5, $05
+	.byte $E9, $FD, $06
+	.byte $E9, $05, $07
+	.byte $E9, $0D, $08
+	.byte $F1, $F7, $09
+	.byte $F1, $FF, $0A
+	.byte $F1, $07, $0B
+	.byte $F1, $0F, $0C
+	.byte $F9, $F5, $0D
+	.byte $F9, $FD, $0E
+	.byte $F9, $05, $0F
 marco_idle04_RIGHT_end:
 
 marco_idle05_RIGHT:
-	.byte $DA, $F5, $00
-	.byte $DA, $FD, $01
-	.byte $DA, $05, $02
-	.byte $E2, $F5, $03
-	.byte $E2, $FD, $04
-	.byte $E2, $05, $05
-	.byte $EA, $F5, $06
-	.byte $EA, $FD, $07
-	.byte $EA, $05, $08
-	.byte $EA, $0D, $09
-	.byte $F2, $F5, $0A
-	.byte $F2, $FD, $0B
-	.byte $F2, $05, $0C
-	.byte $F2, $0D, $0D
-	.byte $FA, $F5, $0E
-	.byte $FA, $FD, $0F
-	.byte $FA, $05, $10
+	.byte $D9, $FD, $00
+	.byte $D9, $05, $01
+	.byte $E1, $F6, $02
+	.byte $E1, $FE, $03
+	.byte $E1, $06, $04
+	.byte $E9, $F5, $05
+	.byte $E9, $FD, $06
+	.byte $E9, $05, $07
+	.byte $E9, $0D, $08
+	.byte $F1, $F7, $09
+	.byte $F1, $FF, $0A
+	.byte $F1, $07, $0B
+	.byte $F1, $0F, $0C
+	.byte $F9, $F5, $0D
+	.byte $F9, $FD, $0E
+	.byte $F9, $05, $0F
 marco_idle05_RIGHT_end:
 
 marco_idle06_RIGHT:
-	.byte $DA, $F5, $00
-	.byte $DA, $FD, $01
-	.byte $DA, $05, $02
-	.byte $E2, $F5, $03
-	.byte $E2, $FD, $04
-	.byte $E2, $05, $05
-	.byte $EA, $F5, $06
-	.byte $EA, $FD, $07
-	.byte $EA, $05, $08
-	.byte $EA, $0D, $09
-	.byte $F2, $F5, $0A
-	.byte $F2, $FD, $0B
-	.byte $F2, $05, $0C
-	.byte $F2, $0D, $0D
-	.byte $FA, $F5, $0E
-	.byte $FA, $FD, $0F
-	.byte $FA, $05, $10
+	.byte $D9, $FD, $00
+	.byte $D9, $05, $01
+	.byte $E1, $F6, $02
+	.byte $E1, $FE, $03
+	.byte $E1, $06, $04
+	.byte $E9, $F5, $05
+	.byte $E9, $FD, $06
+	.byte $E9, $05, $07
+	.byte $E9, $0D, $08
+	.byte $F1, $F7, $09
+	.byte $F1, $FF, $0A
+	.byte $F1, $07, $0B
+	.byte $F1, $0F, $0C
+	.byte $F9, $F5, $0D
+	.byte $F9, $FD, $0E
+	.byte $F9, $05, $0F
 marco_idle06_RIGHT_end:
 
 marco_duck01_RIGHT:
-	.byte $D7, $F4, $00
-	.byte $D7, $FC, $01
-	.byte $D7, $04, $02
-	.byte $DF, $F4, $03
-	.byte $DF, $FC, $04
-	.byte $DF, $04, $05
-	.byte $E7, $F4, $06
-	.byte $E7, $FC, $07
-	.byte $E7, $04, $08
-	.byte $EF, $F4, $09
-	.byte $EF, $FC, $0A
-	.byte $EF, $04, $0B
-	.byte $EF, $0C, $0C
-	.byte $F7, $F4, $0D
-	.byte $F7, $FC, $0E
-	.byte $F7, $04, $0F
-	.byte $FF, $F4, $10
-	.byte $FF, $FC, $11
-	.byte $FF, $04, $12
+	.byte $D7, $FA, $00
+	.byte $D7, $02, $01
+	.byte $DF, $F5, $02
+	.byte $DF, $FD, $03
+	.byte $DF, $05, $04
+	.byte $E7, $F4, $05
+	.byte $E7, $FC, $06
+	.byte $E7, $04, $07
+	.byte $EF, $F7, $08
+	.byte $EF, $FF, $09
+	.byte $EF, $07, $0A
+	.byte $EF, $0F, $0B
+	.byte $F7, $F5, $0C
+	.byte $F7, $FD, $0D
+	.byte $F7, $05, $0E
+	.byte $FF, $F5, $0F
+	.byte $FF, $FD, $10
+	.byte $FF, $05, $11
 marco_duck01_RIGHT_end:
 
 marco_duck02_RIGHT:
 	.byte $DA, $F5, $00
-	.byte $DA, $FD, $01
-	.byte $DA, $05, $02
-	.byte $E2, $F5, $03
-	.byte $E2, $FD, $04
-	.byte $E2, $05, $05
+	.byte $DA, $FE, $01
+	.byte $DA, $06, $02
+	.byte $E2, $F6, $03
+	.byte $E2, $FE, $04
+	.byte $E2, $06, $05
 	.byte $EA, $F5, $06
 	.byte $EA, $FD, $07
 	.byte $EA, $05, $08
 	.byte $EA, $0D, $09
-	.byte $F2, $F5, $0A
-	.byte $F2, $FD, $0B
-	.byte $F2, $05, $0C
-	.byte $F2, $0D, $0D
+	.byte $F2, $F7, $0A
+	.byte $F2, $FF, $0B
+	.byte $F2, $07, $0C
+	.byte $F2, $0F, $0D
 	.byte $FA, $F5, $0E
 	.byte $FA, $FD, $0F
 	.byte $FA, $05, $10
 marco_duck02_RIGHT_end:
 
 marco_duck03_RIGHT:
-	.byte $E8, $F0, $00
-	.byte $E8, $F8, $01
-	.byte $E8, $00, $02
-	.byte $E8, $08, $03
+	.byte $E8, $F1, $00
+	.byte $E8, $F9, $01
+	.byte $E8, $01, $02
+	.byte $E8, $09, $03
 	.byte $F0, $F0, $04
 	.byte $F0, $F8, $05
 	.byte $F0, $00, $06
 	.byte $F0, $08, $07
-	.byte $F8, $F0, $08
-	.byte $F8, $F8, $09
-	.byte $F8, $00, $0A
-	.byte $F8, $08, $0B
-	.byte $F8, $10, $0C
+	.byte $F8, $F2, $08
+	.byte $F8, $FA, $09
+	.byte $F8, $02, $0A
+	.byte $F8, $0A, $0B
 marco_duck03_RIGHT_end:
 
 marco_duck04_RIGHT:
-	.byte $E8, $F0, $00
-	.byte $E8, $F8, $01
-	.byte $E8, $00, $02
-	.byte $E8, $08, $03
+	.byte $E8, $F1, $00
+	.byte $E8, $F9, $01
+	.byte $E8, $01, $02
+	.byte $E8, $09, $03
 	.byte $F0, $F0, $04
 	.byte $F0, $F8, $05
 	.byte $F0, $00, $06
 	.byte $F0, $08, $07
-	.byte $F8, $F0, $08
-	.byte $F8, $F8, $09
-	.byte $F8, $00, $0A
-	.byte $F8, $08, $0B
-	.byte $F8, $10, $0C
+	.byte $F8, $F2, $08
+	.byte $F8, $FA, $09
+	.byte $F8, $02, $0A
+	.byte $F8, $0A, $0B
 marco_duck04_RIGHT_end:
 
 marco_duck05_RIGHT:
-	.byte $E8, $F0, $00
-	.byte $E8, $F8, $01
-	.byte $E8, $00, $02
-	.byte $E8, $08, $03
+	.byte $E8, $F1, $00
+	.byte $E8, $F9, $01
+	.byte $E8, $01, $02
+	.byte $E8, $09, $03
 	.byte $F0, $F0, $04
 	.byte $F0, $F8, $05
 	.byte $F0, $00, $06
 	.byte $F0, $08, $07
-	.byte $F8, $F0, $08
-	.byte $F8, $F8, $09
-	.byte $F8, $00, $0A
-	.byte $F8, $08, $0B
-	.byte $F8, $10, $0C
+	.byte $F8, $F2, $08
+	.byte $F8, $FA, $09
+	.byte $F8, $02, $0A
+	.byte $F8, $0A, $0B
 marco_duck05_RIGHT_end:
 
 marco_duck06_RIGHT:
-	.byte $E8, $F0, $00
-	.byte $E8, $F8, $01
-	.byte $E8, $00, $02
-	.byte $E8, $08, $03
+	.byte $E8, $F1, $00
+	.byte $E8, $F9, $01
+	.byte $E8, $01, $02
+	.byte $E8, $09, $03
 	.byte $F0, $F0, $04
 	.byte $F0, $F8, $05
 	.byte $F0, $00, $06
 	.byte $F0, $08, $07
-	.byte $F8, $F0, $08
-	.byte $F8, $F8, $09
-	.byte $F8, $00, $0A
-	.byte $F8, $08, $0B
-	.byte $F8, $10, $0C
+	.byte $F8, $F2, $08
+	.byte $F8, $FA, $09
+	.byte $F8, $02, $0A
+	.byte $F8, $0A, $0B
 marco_duck06_RIGHT_end:
 
 marco_duck07_RIGHT:
-	.byte $E8, $F0, $00
-	.byte $E8, $F8, $01
-	.byte $E8, $00, $02
-	.byte $E8, $08, $03
+	.byte $E8, $F1, $00
+	.byte $E8, $F9, $01
+	.byte $E8, $01, $02
+	.byte $E8, $09, $03
 	.byte $F0, $F0, $04
 	.byte $F0, $F8, $05
 	.byte $F0, $00, $06
 	.byte $F0, $08, $07
-	.byte $F8, $F0, $08
-	.byte $F8, $F8, $09
-	.byte $F8, $00, $0A
-	.byte $F8, $08, $0B
-	.byte $F8, $10, $0C
+	.byte $F8, $F2, $08
+	.byte $F8, $FA, $09
+	.byte $F8, $02, $0A
+	.byte $F8, $0A, $0B
 marco_duck07_RIGHT_end:
 
 marco_duck08_RIGHT:
-	.byte $E8, $F0, $00
-	.byte $E8, $F8, $01
-	.byte $E8, $00, $02
-	.byte $E8, $08, $03
+	.byte $E8, $F1, $00
+	.byte $E8, $F9, $01
+	.byte $E8, $01, $02
+	.byte $E8, $09, $03
 	.byte $F0, $F0, $04
 	.byte $F0, $F8, $05
 	.byte $F0, $00, $06
 	.byte $F0, $08, $07
-	.byte $F8, $F0, $08
-	.byte $F8, $F8, $09
-	.byte $F8, $00, $0A
-	.byte $F8, $08, $0B
-	.byte $F8, $10, $0C
+	.byte $F8, $F2, $08
+	.byte $F8, $FA, $09
+	.byte $F8, $02, $0A
+	.byte $F8, $0A, $0B
 marco_duck08_RIGHT_end:
 
 marco_duck09_RIGHT:
-	.byte $E8, $F0, $00
-	.byte $E8, $F8, $01
-	.byte $E8, $00, $02
-	.byte $E8, $08, $03
+	.byte $E8, $F1, $00
+	.byte $E8, $F9, $01
+	.byte $E8, $01, $02
+	.byte $E8, $09, $03
 	.byte $F0, $F0, $04
 	.byte $F0, $F8, $05
 	.byte $F0, $00, $06
 	.byte $F0, $08, $07
-	.byte $F8, $F0, $08
-	.byte $F8, $F8, $09
-	.byte $F8, $00, $0A
-	.byte $F8, $08, $0B
-	.byte $F8, $10, $0C
+	.byte $F8, $F2, $08
+	.byte $F8, $FA, $09
+	.byte $F8, $02, $0A
+	.byte $F8, $0A, $0B
 marco_duck09_RIGHT_end:
 
 marco_duck10_RIGHT:
-	.byte $E8, $F0, $00
-	.byte $E8, $F8, $01
-	.byte $E8, $00, $02
-	.byte $E8, $08, $03
+	.byte $E8, $F1, $00
+	.byte $E8, $F9, $01
+	.byte $E8, $01, $02
+	.byte $E8, $09, $03
 	.byte $F0, $F0, $04
 	.byte $F0, $F8, $05
 	.byte $F0, $00, $06
 	.byte $F0, $08, $07
-	.byte $F8, $F0, $08
-	.byte $F8, $F8, $09
-	.byte $F8, $00, $0A
-	.byte $F8, $08, $0B
-	.byte $F8, $10, $0C
+	.byte $F8, $F2, $08
+	.byte $F8, $FA, $09
+	.byte $F8, $02, $0A
+	.byte $F8, $0A, $0B
 marco_duck10_RIGHT_end:
 
 marco_run01_RIGHT:
-	.byte $D8, $FD, $00
-	.byte $D8, $05, $01
-	.byte $E0, $F5, $02
-	.byte $E0, $FD, $03
-	.byte $E0, $05, $04
+	.byte $D8, $FE, $00
+	.byte $D8, $06, $01
+	.byte $E0, $F6, $02
+	.byte $E0, $FE, $03
+	.byte $E0, $06, $04
 	.byte $E8, $F5, $05
 	.byte $E8, $FD, $06
 	.byte $E8, $05, $07
 	.byte $E8, $0D, $08
-	.byte $F0, $F5, $09
-	.byte $F0, $FD, $0A
-	.byte $F0, $05, $0B
-	.byte $F0, $0D, $0C
-	.byte $F8, $F5, $0D
-	.byte $F8, $FD, $0E
-	.byte $F8, $05, $0F
+	.byte $F0, $F9, $09
+	.byte $F0, $01, $0A
+	.byte $F0, $09, $0B
+	.byte $F0, $11, $0C
+	.byte $F8, $F8, $0D
+	.byte $F8, $00, $0E
+	.byte $F8, $08, $0F
 marco_run01_RIGHT_end:
 
 marco_run02_RIGHT:
-	.byte $D7, $FD, $00
-	.byte $D7, $05, $01
-	.byte $DF, $F5, $02
-	.byte $DF, $FD, $03
-	.byte $DF, $05, $04
-	.byte $E7, $F5, $05
-	.byte $E7, $FD, $06
-	.byte $E7, $05, $07
-	.byte $E7, $0D, $08
-	.byte $EF, $F5, $09
-	.byte $EF, $FD, $0A
-	.byte $EF, $05, $0B
-	.byte $EF, $0D, $0C
-	.byte $F7, $F5, $0D
-	.byte $F7, $FD, $0E
-	.byte $F7, $05, $0F
-	.byte $FF, $F5, $10
-	.byte $FF, $FD, $11
-	.byte $FF, $05, $12
+	.byte $D6, $FE, $00
+	.byte $D6, $06, $01
+	.byte $DE, $F6, $02
+	.byte $DE, $FE, $03
+	.byte $DE, $06, $04
+	.byte $E6, $F5, $05
+	.byte $E6, $FD, $06
+	.byte $E6, $05, $07
+	.byte $E6, $0D, $08
+	.byte $EE, $F8, $09
+	.byte $EE, $00, $0A
+	.byte $EE, $08, $0B
+	.byte $EE, $10, $0C
+	.byte $F6, $F9, $0D
+	.byte $F6, $01, $0E
+	.byte $FE, $FC, $0F
+	.byte $FE, $04, $10
 marco_run02_RIGHT_end:
 
 marco_run03_RIGHT:
-	.byte $D6, $F5, $00
-	.byte $D6, $FD, $01
-	.byte $D6, $05, $02
-	.byte $DE, $F5, $03
-	.byte $DE, $FD, $04
-	.byte $DE, $05, $05
-	.byte $E6, $F5, $06
-	.byte $E6, $FD, $07
-	.byte $E6, $05, $08
-	.byte $E6, $0D, $09
-	.byte $EE, $F5, $0A
-	.byte $EE, $FD, $0B
-	.byte $EE, $05, $0C
-	.byte $EE, $0D, $0D
-	.byte $F6, $F5, $0E
-	.byte $F6, $FD, $0F
-	.byte $F6, $05, $10
+	.byte $D5, $FE, $00
+	.byte $D5, $06, $01
+	.byte $DD, $F6, $02
+	.byte $DD, $FE, $03
+	.byte $DD, $06, $04
+	.byte $E5, $F5, $05
+	.byte $E5, $FD, $06
+	.byte $E5, $05, $07
+	.byte $E5, $0D, $08
+	.byte $ED, $FA, $09
+	.byte $ED, $02, $0A
+	.byte $ED, $0A, $0B
+	.byte $ED, $12, $0C
+	.byte $F5, $F6, $0D
+	.byte $F5, $FE, $0E
+	.byte $F5, $06, $0F
+	.byte $FD, $FA, $10
 marco_run03_RIGHT_end:
 
 marco_run04_RIGHT:
-	.byte $D5, $FA, $00
-	.byte $D5, $02, $01
-	.byte $D5, $0A, $02
-	.byte $DD, $F2, $03
-	.byte $DD, $FA, $04
-	.byte $DD, $02, $05
-	.byte $E5, $F2, $06
-	.byte $E5, $FA, $07
-	.byte $E5, $02, $08
-	.byte $E5, $0A, $09
-	.byte $ED, $F2, $0A
-	.byte $ED, $FA, $0B
-	.byte $ED, $02, $0C
-	.byte $ED, $0A, $0D
-	.byte $F5, $F2, $0E
-	.byte $F5, $FA, $0F
-	.byte $F5, $02, $10
-	.byte $F5, $0A, $11
-	.byte $FD, $F2, $12
+	.byte $D5, $FD, $00
+	.byte $D5, $05, $01
+	.byte $DD, $F5, $02
+	.byte $DD, $FD, $03
+	.byte $DD, $05, $04
+	.byte $E5, $F4, $05
+	.byte $E5, $FC, $06
+	.byte $E5, $04, $07
+	.byte $E5, $0C, $08
+	.byte $ED, $F6, $09
+	.byte $ED, $FE, $0A
+	.byte $ED, $06, $0B
+	.byte $ED, $0E, $0C
+	.byte $F5, $F2, $0D
+	.byte $F5, $FA, $0E
+	.byte $F5, $04, $0F
+	.byte $F5, $0C, $10
+	.byte $FD, $F6, $11
 marco_run04_RIGHT_end:
 
 marco_run05_RIGHT:
-	.byte $D8, $F4, $00
-	.byte $D8, $FC, $01
-	.byte $D8, $04, $02
-	.byte $E0, $F4, $03
-	.byte $E0, $FC, $04
-	.byte $E0, $04, $05
+	.byte $D8, $F7, $00
+	.byte $D8, $FF, $01
+	.byte $D8, $07, $02
+	.byte $E0, $F5, $03
+	.byte $E0, $FD, $04
+	.byte $E0, $05, $05
 	.byte $E8, $F4, $06
 	.byte $E8, $FC, $07
 	.byte $E8, $04, $08
 	.byte $E8, $0C, $09
-	.byte $F0, $F4, $0A
-	.byte $F0, $FC, $0B
-	.byte $F0, $04, $0C
-	.byte $F0, $0C, $0D
+	.byte $F0, $F6, $0A
+	.byte $F0, $FE, $0B
+	.byte $F0, $06, $0C
+	.byte $F0, $0E, $0D
 	.byte $F8, $F4, $0E
 	.byte $F8, $FC, $0F
 	.byte $F8, $04, $10
 marco_run05_RIGHT_end:
 
 marco_run06_RIGHT:
-	.byte $D8, $F4, $00
-	.byte $D8, $FC, $01
-	.byte $D8, $04, $02
-	.byte $E0, $F4, $03
-	.byte $E0, $FC, $04
-	.byte $E0, $04, $05
-	.byte $E8, $F4, $06
-	.byte $E8, $FC, $07
-	.byte $E8, $04, $08
-	.byte $E8, $0C, $09
-	.byte $F0, $F4, $0A
-	.byte $F0, $FC, $0B
-	.byte $F0, $04, $0C
-	.byte $F0, $0C, $0D
-	.byte $F8, $F4, $0E
-	.byte $F8, $FC, $0F
+	.byte $D7, $FD, $00
+	.byte $D7, $05, $01
+	.byte $DF, $F5, $02
+	.byte $DF, $FD, $03
+	.byte $DF, $05, $04
+	.byte $E7, $F4, $05
+	.byte $E7, $FC, $06
+	.byte $E7, $04, $07
+	.byte $E7, $0C, $08
+	.byte $EF, $F6, $09
+	.byte $EF, $FE, $0A
+	.byte $EF, $06, $0B
+	.byte $EF, $0E, $0C
+	.byte $F7, $F8, $0D
+	.byte $F7, $00, $0E
+	.byte $FF, $FD, $0F
 marco_run06_RIGHT_end:
 
 marco_run07_RIGHT:
-	.byte $D7, $F5, $00
-	.byte $D7, $FD, $01
-	.byte $D7, $05, $02
-	.byte $DF, $F5, $03
-	.byte $DF, $FD, $04
-	.byte $DF, $05, $05
+	.byte $D7, $F7, $00
+	.byte $D7, $FF, $01
+	.byte $D7, $07, $02
+	.byte $DF, $F6, $03
+	.byte $DF, $FE, $04
+	.byte $DF, $06, $05
 	.byte $E7, $F5, $06
 	.byte $E7, $FD, $07
 	.byte $E7, $05, $08
 	.byte $E7, $0D, $09
-	.byte $EF, $F5, $0A
-	.byte $EF, $FD, $0B
-	.byte $EF, $05, $0C
-	.byte $EF, $0D, $0D
+	.byte $EF, $F7, $0A
+	.byte $EF, $FF, $0B
+	.byte $EF, $07, $0C
+	.byte $EF, $0F, $0D
 	.byte $F7, $F5, $0E
 	.byte $F7, $FD, $0F
 	.byte $F7, $05, $10
 marco_run07_RIGHT_end:
 
 marco_run08_RIGHT:
-	.byte $D6, $F1, $00
-	.byte $D6, $F9, $01
-	.byte $D6, $01, $02
-	.byte $D6, $09, $03
-	.byte $DE, $F1, $04
-	.byte $DE, $F9, $05
-	.byte $DE, $01, $06
-	.byte $DE, $09, $07
-	.byte $E6, $F1, $08
-	.byte $E6, $F9, $09
-	.byte $E6, $01, $0A
-	.byte $E6, $09, $0B
-	.byte $E6, $11, $0C
-	.byte $EE, $F1, $0D
-	.byte $EE, $F9, $0E
-	.byte $EE, $01, $0F
-	.byte $EE, $09, $10
-	.byte $EE, $11, $11
-	.byte $F6, $F1, $12
-	.byte $F6, $F9, $13
-	.byte $F6, $01, $14
-	.byte $F6, $09, $15
+	.byte $D5, $FE, $00
+	.byte $D5, $06, $01
+	.byte $DD, $F6, $02
+	.byte $DD, $FE, $03
+	.byte $DD, $06, $04
+	.byte $E5, $F5, $05
+	.byte $E5, $FD, $06
+	.byte $E5, $05, $07
+	.byte $E5, $0D, $08
+	.byte $ED, $F2, $09
+	.byte $ED, $FA, $0A
+	.byte $ED, $02, $0B
+	.byte $ED, $0A, $0C
+	.byte $ED, $12, $0D
+	.byte $F5, $F1, $0E
+	.byte $F5, $F9, $0F
+	.byte $F5, $03, $10
+	.byte $F5, $0B, $11
 marco_run08_RIGHT_end:
 
 marco_run09_RIGHT:
-	.byte $D8, $F5, $00
-	.byte $D8, $FD, $01
-	.byte $D8, $05, $02
-	.byte $E0, $F5, $03
-	.byte $E0, $FD, $04
-	.byte $E0, $05, $05
-	.byte $E8, $F5, $06
-	.byte $E8, $FD, $07
-	.byte $E8, $05, $08
-	.byte $E8, $0D, $09
-	.byte $F0, $F5, $0A
-	.byte $F0, $FD, $0B
-	.byte $F0, $05, $0C
-	.byte $F0, $0D, $0D
-	.byte $F8, $F5, $0E
-	.byte $F8, $FD, $0F
-	.byte $F8, $05, $10
+	.byte $D7, $FF, $00
+	.byte $D7, $07, $01
+	.byte $DF, $F6, $02
+	.byte $DF, $FE, $03
+	.byte $DF, $06, $04
+	.byte $E7, $F5, $05
+	.byte $E7, $FD, $06
+	.byte $E7, $05, $07
+	.byte $E7, $0D, $08
+	.byte $EF, $FA, $09
+	.byte $EF, $02, $0A
+	.byte $EF, $0A, $0B
+	.byte $EF, $12, $0C
+	.byte $F7, $F8, $0D
+	.byte $F7, $00, $0E
+	.byte $FF, $FB, $0F
 marco_run09_RIGHT_end:
 
 marco_shoot01_RIGHT:
-	.byte $DB, $F5, $00
-	.byte $DB, $FD, $01
-	.byte $DB, $05, $02
-	.byte $DB, $15, $03
-	.byte $DB, $1D, $04
-	.byte $E3, $F5, $05
-	.byte $E3, $FD, $06
-	.byte $E3, $05, $07
-	.byte $E3, $0D, $08
-	.byte $E3, $15, $09
-	.byte $E3, $1D, $0A
-	.byte $E3, $25, $0B
-	.byte $EB, $F5, $0C
-	.byte $EB, $FD, $0D
-	.byte $EB, $05, $0E
-	.byte $EB, $0D, $0F
-	.byte $F3, $F5, $10
-	.byte $F3, $FD, $11
-	.byte $F3, $05, $12
-	.byte $FB, $F5, $13
-	.byte $FB, $FD, $14
-	.byte $FB, $05, $15
+	.byte $DA, $F8, $00
+	.byte $DA, $00, $01
+	.byte $DA, $08, $02
+	.byte $DA, $1E, $03
+	.byte $E2, $F5, $04
+	.byte $E2, $FD, $05
+	.byte $E2, $05, $06
+	.byte $E2, $0D, $07
+	.byte $E2, $15, $08
+	.byte $E2, $1D, $09
+	.byte $E2, $25, $0A
+	.byte $EA, $F5, $0B
+	.byte $EA, $FD, $0C
+	.byte $EA, $05, $0D
+	.byte $EA, $0D, $0E
+	.byte $F2, $F7, $0F
+	.byte $F2, $FF, $10
+	.byte $F2, $07, $11
+	.byte $FA, $F5, $12
+	.byte $FA, $FD, $13
+	.byte $FA, $05, $14
 marco_shoot01_RIGHT_end:
 
 marco_shoot02_RIGHT:
-	.byte $DB, $F5, $00
-	.byte $DB, $FD, $01
-	.byte $DB, $05, $02
-	.byte $DB, $0D, $03
-	.byte $DB, $15, $04
-	.byte $DB, $1D, $05
-	.byte $DB, $25, $06
-	.byte $E3, $F5, $07
-	.byte $E3, $FD, $08
-	.byte $E3, $05, $09
-	.byte $E3, $0D, $0A
-	.byte $E3, $15, $0B
-	.byte $E3, $1D, $0C
-	.byte $E3, $25, $0D
-	.byte $EB, $F5, $0E
-	.byte $EB, $FD, $0F
-	.byte $EB, $05, $10
-	.byte $EB, $0D, $11
-	.byte $F3, $F5, $12
-	.byte $F3, $FD, $13
-	.byte $F3, $05, $14
-	.byte $FB, $F5, $15
-	.byte $FB, $FD, $16
-	.byte $FB, $05, $17
+	.byte $DA, $F8, $00
+	.byte $DA, $00, $01
+	.byte $DA, $08, $02
+	.byte $DA, $10, $03
+	.byte $DA, $1E, $04
+	.byte $DA, $26, $05
+	.byte $E2, $F5, $06
+	.byte $E2, $FD, $07
+	.byte $E2, $05, $08
+	.byte $E2, $0D, $09
+	.byte $E2, $15, $0A
+	.byte $E2, $1D, $0B
+	.byte $E2, $25, $0C
+	.byte $EA, $F5, $0D
+	.byte $EA, $FD, $0E
+	.byte $EA, $05, $0F
+	.byte $EA, $0D, $10
+	.byte $F2, $F7, $11
+	.byte $F2, $FF, $12
+	.byte $F2, $07, $13
+	.byte $FA, $F5, $14
+	.byte $FA, $FD, $15
+	.byte $FA, $05, $16
 marco_shoot02_RIGHT_end:
 
 marco_shoot03_RIGHT:
-	.byte $DB, $F4, $00
-	.byte $DB, $FC, $01
-	.byte $DB, $04, $02
-	.byte $DB, $0C, $03
-	.byte $DB, $14, $04
-	.byte $E3, $F4, $05
-	.byte $E3, $FC, $06
-	.byte $E3, $04, $07
-	.byte $E3, $0C, $08
-	.byte $E3, $14, $09
-	.byte $EB, $F4, $0A
-	.byte $EB, $FC, $0B
-	.byte $EB, $04, $0C
-	.byte $EB, $0C, $0D
-	.byte $F3, $F4, $0E
-	.byte $F3, $FC, $0F
-	.byte $F3, $04, $10
-	.byte $FB, $F4, $11
-	.byte $FB, $FC, $12
-	.byte $FB, $04, $13
+	.byte $D8, $FF, $00
+	.byte $D8, $07, $01
+	.byte $D8, $0F, $02
+	.byte $E0, $F5, $03
+	.byte $E0, $FD, $04
+	.byte $E0, $05, $05
+	.byte $E0, $0D, $06
+	.byte $E0, $15, $07
+	.byte $E8, $F4, $08
+	.byte $E8, $FC, $09
+	.byte $E8, $04, $0A
+	.byte $E8, $0C, $0B
+	.byte $F0, $F7, $0C
+	.byte $F0, $FF, $0D
+	.byte $F0, $07, $0E
+	.byte $F8, $F5, $0F
+	.byte $F8, $FD, $10
+	.byte $F8, $05, $11
 marco_shoot03_RIGHT_end:
 
 marco_shoot04_RIGHT:
-	.byte $D9, $FC, $00
-	.byte $D9, $04, $01
-	.byte $D9, $0C, $02
-	.byte $D9, $14, $03
-	.byte $E1, $F4, $04
-	.byte $E1, $FC, $05
-	.byte $E1, $04, $06
-	.byte $E1, $0C, $07
-	.byte $E1, $14, $08
-	.byte $E9, $F4, $09
-	.byte $E9, $FC, $0A
-	.byte $E9, $04, $0B
-	.byte $E9, $0C, $0C
-	.byte $F1, $F4, $0D
-	.byte $F1, $FC, $0E
-	.byte $F1, $04, $0F
-	.byte $F9, $F4, $10
-	.byte $F9, $FC, $11
-	.byte $F9, $04, $12
+	.byte $D8, $FF, $00
+	.byte $D8, $07, $01
+	.byte $D8, $14, $02
+	.byte $E0, $F5, $03
+	.byte $E0, $FD, $04
+	.byte $E0, $05, $05
+	.byte $E0, $0D, $06
+	.byte $E0, $15, $07
+	.byte $E8, $F4, $08
+	.byte $E8, $FC, $09
+	.byte $E8, $04, $0A
+	.byte $E8, $0C, $0B
+	.byte $F0, $F7, $0C
+	.byte $F0, $FF, $0D
+	.byte $F0, $07, $0E
+	.byte $F8, $F5, $0F
+	.byte $F8, $FD, $10
+	.byte $F8, $05, $11
 marco_shoot04_RIGHT_end:
 
 marco_idle01_LEFT:
-	.byte $DA, $03, $00
-	.byte $DA, $FB, $01
-	.byte $DA, $F3, $02
-	.byte $E2, $03, $03
-	.byte $E2, $FB, $04
-	.byte $E2, $F3, $05
-	.byte $EA, $03, $06
-	.byte $EA, $FB, $07
-	.byte $EA, $F3, $08
-	.byte $EA, $EB, $09
-	.byte $F2, $03, $0A
-	.byte $F2, $FB, $0B
-	.byte $F2, $F3, $0C
-	.byte $F2, $EB, $0D
-	.byte $FA, $03, $0E
-	.byte $FA, $FB, $0F
-	.byte $FA, $F3, $10
+	.byte $D9, $FB, $00
+	.byte $D9, $F3, $01
+	.byte $E1, $02, $02
+	.byte $E1, $FA, $03
+	.byte $E1, $F2, $04
+	.byte $E9, $03, $05
+	.byte $E9, $FB, $06
+	.byte $E9, $F3, $07
+	.byte $E9, $EB, $08
+	.byte $F1, $01, $09
+	.byte $F1, $F9, $0A
+	.byte $F1, $F1, $0B
+	.byte $F1, $E9, $0C
+	.byte $F9, $03, $0D
+	.byte $F9, $FB, $0E
+	.byte $F9, $F3, $0F
 marco_idle01_LEFT_end:
 
 marco_idle02_LEFT:
-	.byte $DA, $03, $00
-	.byte $DA, $FB, $01
-	.byte $DA, $F3, $02
-	.byte $E2, $03, $03
-	.byte $E2, $FB, $04
-	.byte $E2, $F3, $05
-	.byte $EA, $03, $06
-	.byte $EA, $FB, $07
-	.byte $EA, $F3, $08
-	.byte $EA, $EB, $09
-	.byte $F2, $03, $0A
-	.byte $F2, $FB, $0B
-	.byte $F2, $F3, $0C
-	.byte $F2, $EB, $0D
-	.byte $FA, $03, $0E
-	.byte $FA, $FB, $0F
-	.byte $FA, $F3, $10
+	.byte $D9, $FB, $00
+	.byte $D9, $F3, $01
+	.byte $E1, $02, $02
+	.byte $E1, $FA, $03
+	.byte $E1, $F2, $04
+	.byte $E9, $03, $05
+	.byte $E9, $FB, $06
+	.byte $E9, $F3, $07
+	.byte $E9, $EB, $08
+	.byte $F1, $01, $09
+	.byte $F1, $F9, $0A
+	.byte $F1, $F1, $0B
+	.byte $F1, $E9, $0C
+	.byte $F9, $03, $0D
+	.byte $F9, $FB, $0E
+	.byte $F9, $F3, $0F
 marco_idle02_LEFT_end:
 
 marco_idle03_LEFT:
-	.byte $DA, $03, $00
-	.byte $DA, $FB, $01
-	.byte $DA, $F3, $02
-	.byte $E2, $03, $03
-	.byte $E2, $FB, $04
-	.byte $E2, $F3, $05
-	.byte $EA, $03, $06
-	.byte $EA, $FB, $07
-	.byte $EA, $F3, $08
-	.byte $EA, $EB, $09
-	.byte $F2, $03, $0A
-	.byte $F2, $FB, $0B
-	.byte $F2, $F3, $0C
-	.byte $F2, $EB, $0D
-	.byte $FA, $03, $0E
-	.byte $FA, $FB, $0F
-	.byte $FA, $F3, $10
+	.byte $D9, $FB, $00
+	.byte $D9, $F3, $01
+	.byte $E1, $02, $02
+	.byte $E1, $FA, $03
+	.byte $E1, $F2, $04
+	.byte $E9, $03, $05
+	.byte $E9, $FB, $06
+	.byte $E9, $F3, $07
+	.byte $E9, $EB, $08
+	.byte $F1, $01, $09
+	.byte $F1, $F9, $0A
+	.byte $F1, $F1, $0B
+	.byte $F1, $E9, $0C
+	.byte $F9, $03, $0D
+	.byte $F9, $FB, $0E
+	.byte $F9, $F3, $0F
 marco_idle03_LEFT_end:
 
 marco_idle04_LEFT:
-	.byte $DA, $03, $00
-	.byte $DA, $FB, $01
-	.byte $DA, $F3, $02
-	.byte $E2, $03, $03
-	.byte $E2, $FB, $04
-	.byte $E2, $F3, $05
-	.byte $EA, $03, $06
-	.byte $EA, $FB, $07
-	.byte $EA, $F3, $08
-	.byte $EA, $EB, $09
-	.byte $F2, $03, $0A
-	.byte $F2, $FB, $0B
-	.byte $F2, $F3, $0C
-	.byte $F2, $EB, $0D
-	.byte $FA, $03, $0E
-	.byte $FA, $FB, $0F
-	.byte $FA, $F3, $10
+	.byte $D9, $FB, $00
+	.byte $D9, $F3, $01
+	.byte $E1, $02, $02
+	.byte $E1, $FA, $03
+	.byte $E1, $F2, $04
+	.byte $E9, $03, $05
+	.byte $E9, $FB, $06
+	.byte $E9, $F3, $07
+	.byte $E9, $EB, $08
+	.byte $F1, $01, $09
+	.byte $F1, $F9, $0A
+	.byte $F1, $F1, $0B
+	.byte $F1, $E9, $0C
+	.byte $F9, $03, $0D
+	.byte $F9, $FB, $0E
+	.byte $F9, $F3, $0F
 marco_idle04_LEFT_end:
 
 marco_idle05_LEFT:
-	.byte $DA, $03, $00
-	.byte $DA, $FB, $01
-	.byte $DA, $F3, $02
-	.byte $E2, $03, $03
-	.byte $E2, $FB, $04
-	.byte $E2, $F3, $05
-	.byte $EA, $03, $06
-	.byte $EA, $FB, $07
-	.byte $EA, $F3, $08
-	.byte $EA, $EB, $09
-	.byte $F2, $03, $0A
-	.byte $F2, $FB, $0B
-	.byte $F2, $F3, $0C
-	.byte $F2, $EB, $0D
-	.byte $FA, $03, $0E
-	.byte $FA, $FB, $0F
-	.byte $FA, $F3, $10
+	.byte $D9, $FB, $00
+	.byte $D9, $F3, $01
+	.byte $E1, $02, $02
+	.byte $E1, $FA, $03
+	.byte $E1, $F2, $04
+	.byte $E9, $03, $05
+	.byte $E9, $FB, $06
+	.byte $E9, $F3, $07
+	.byte $E9, $EB, $08
+	.byte $F1, $01, $09
+	.byte $F1, $F9, $0A
+	.byte $F1, $F1, $0B
+	.byte $F1, $E9, $0C
+	.byte $F9, $03, $0D
+	.byte $F9, $FB, $0E
+	.byte $F9, $F3, $0F
 marco_idle05_LEFT_end:
 
 marco_idle06_LEFT:
-	.byte $DA, $03, $00
-	.byte $DA, $FB, $01
-	.byte $DA, $F3, $02
-	.byte $E2, $03, $03
-	.byte $E2, $FB, $04
-	.byte $E2, $F3, $05
-	.byte $EA, $03, $06
-	.byte $EA, $FB, $07
-	.byte $EA, $F3, $08
-	.byte $EA, $EB, $09
-	.byte $F2, $03, $0A
-	.byte $F2, $FB, $0B
-	.byte $F2, $F3, $0C
-	.byte $F2, $EB, $0D
-	.byte $FA, $03, $0E
-	.byte $FA, $FB, $0F
-	.byte $FA, $F3, $10
+	.byte $D9, $FB, $00
+	.byte $D9, $F3, $01
+	.byte $E1, $02, $02
+	.byte $E1, $FA, $03
+	.byte $E1, $F2, $04
+	.byte $E9, $03, $05
+	.byte $E9, $FB, $06
+	.byte $E9, $F3, $07
+	.byte $E9, $EB, $08
+	.byte $F1, $01, $09
+	.byte $F1, $F9, $0A
+	.byte $F1, $F1, $0B
+	.byte $F1, $E9, $0C
+	.byte $F9, $03, $0D
+	.byte $F9, $FB, $0E
+	.byte $F9, $F3, $0F
 marco_idle06_LEFT_end:
 
 marco_duck01_LEFT:
-	.byte $D7, $04, $00
-	.byte $D7, $FC, $01
-	.byte $D7, $F4, $02
-	.byte $DF, $04, $03
-	.byte $DF, $FC, $04
-	.byte $DF, $F4, $05
-	.byte $E7, $04, $06
-	.byte $E7, $FC, $07
-	.byte $E7, $F4, $08
-	.byte $EF, $04, $09
-	.byte $EF, $FC, $0A
-	.byte $EF, $F4, $0B
-	.byte $EF, $EC, $0C
-	.byte $F7, $04, $0D
-	.byte $F7, $FC, $0E
-	.byte $F7, $F4, $0F
-	.byte $FF, $04, $10
-	.byte $FF, $FC, $11
-	.byte $FF, $F4, $12
+	.byte $D7, $FE, $00
+	.byte $D7, $F6, $01
+	.byte $DF, $03, $02
+	.byte $DF, $FB, $03
+	.byte $DF, $F3, $04
+	.byte $E7, $04, $05
+	.byte $E7, $FC, $06
+	.byte $E7, $F4, $07
+	.byte $EF, $01, $08
+	.byte $EF, $F9, $09
+	.byte $EF, $F1, $0A
+	.byte $EF, $E9, $0B
+	.byte $F7, $03, $0C
+	.byte $F7, $FB, $0D
+	.byte $F7, $F3, $0E
+	.byte $FF, $03, $0F
+	.byte $FF, $FB, $10
+	.byte $FF, $F3, $11
 marco_duck01_LEFT_end:
 
 marco_duck02_LEFT:
 	.byte $DA, $03, $00
-	.byte $DA, $FB, $01
-	.byte $DA, $F3, $02
-	.byte $E2, $03, $03
-	.byte $E2, $FB, $04
-	.byte $E2, $F3, $05
+	.byte $DA, $FA, $01
+	.byte $DA, $F2, $02
+	.byte $E2, $02, $03
+	.byte $E2, $FA, $04
+	.byte $E2, $F2, $05
 	.byte $EA, $03, $06
 	.byte $EA, $FB, $07
 	.byte $EA, $F3, $08
 	.byte $EA, $EB, $09
-	.byte $F2, $03, $0A
-	.byte $F2, $FB, $0B
-	.byte $F2, $F3, $0C
-	.byte $F2, $EB, $0D
+	.byte $F2, $01, $0A
+	.byte $F2, $F9, $0B
+	.byte $F2, $F1, $0C
+	.byte $F2, $E9, $0D
 	.byte $FA, $03, $0E
 	.byte $FA, $FB, $0F
 	.byte $FA, $F3, $10
 marco_duck02_LEFT_end:
 
 marco_duck03_LEFT:
-	.byte $E8, $08, $00
-	.byte $E8, $00, $01
-	.byte $E8, $F8, $02
-	.byte $E8, $F0, $03
+	.byte $E8, $07, $00
+	.byte $E8, $FF, $01
+	.byte $E8, $F7, $02
+	.byte $E8, $EF, $03
 	.byte $F0, $08, $04
 	.byte $F0, $00, $05
 	.byte $F0, $F8, $06
 	.byte $F0, $F0, $07
-	.byte $F8, $08, $08
-	.byte $F8, $00, $09
-	.byte $F8, $F8, $0A
-	.byte $F8, $F0, $0B
-	.byte $F8, $E8, $0C
+	.byte $F8, $06, $08
+	.byte $F8, $FE, $09
+	.byte $F8, $F6, $0A
+	.byte $F8, $EE, $0B
 marco_duck03_LEFT_end:
 
 marco_duck04_LEFT:
-	.byte $E8, $08, $00
-	.byte $E8, $00, $01
-	.byte $E8, $F8, $02
-	.byte $E8, $F0, $03
+	.byte $E8, $07, $00
+	.byte $E8, $FF, $01
+	.byte $E8, $F7, $02
+	.byte $E8, $EF, $03
 	.byte $F0, $08, $04
 	.byte $F0, $00, $05
 	.byte $F0, $F8, $06
 	.byte $F0, $F0, $07
-	.byte $F8, $08, $08
-	.byte $F8, $00, $09
-	.byte $F8, $F8, $0A
-	.byte $F8, $F0, $0B
-	.byte $F8, $E8, $0C
+	.byte $F8, $06, $08
+	.byte $F8, $FE, $09
+	.byte $F8, $F6, $0A
+	.byte $F8, $EE, $0B
 marco_duck04_LEFT_end:
 
 marco_duck05_LEFT:
-	.byte $E8, $08, $00
-	.byte $E8, $00, $01
-	.byte $E8, $F8, $02
-	.byte $E8, $F0, $03
+	.byte $E8, $07, $00
+	.byte $E8, $FF, $01
+	.byte $E8, $F7, $02
+	.byte $E8, $EF, $03
 	.byte $F0, $08, $04
 	.byte $F0, $00, $05
 	.byte $F0, $F8, $06
 	.byte $F0, $F0, $07
-	.byte $F8, $08, $08
-	.byte $F8, $00, $09
-	.byte $F8, $F8, $0A
-	.byte $F8, $F0, $0B
-	.byte $F8, $E8, $0C
+	.byte $F8, $06, $08
+	.byte $F8, $FE, $09
+	.byte $F8, $F6, $0A
+	.byte $F8, $EE, $0B
 marco_duck05_LEFT_end:
 
 marco_duck06_LEFT:
-	.byte $E8, $08, $00
-	.byte $E8, $00, $01
-	.byte $E8, $F8, $02
-	.byte $E8, $F0, $03
+	.byte $E8, $07, $00
+	.byte $E8, $FF, $01
+	.byte $E8, $F7, $02
+	.byte $E8, $EF, $03
 	.byte $F0, $08, $04
 	.byte $F0, $00, $05
 	.byte $F0, $F8, $06
 	.byte $F0, $F0, $07
-	.byte $F8, $08, $08
-	.byte $F8, $00, $09
-	.byte $F8, $F8, $0A
-	.byte $F8, $F0, $0B
-	.byte $F8, $E8, $0C
+	.byte $F8, $06, $08
+	.byte $F8, $FE, $09
+	.byte $F8, $F6, $0A
+	.byte $F8, $EE, $0B
 marco_duck06_LEFT_end:
 
 marco_duck07_LEFT:
-	.byte $E8, $08, $00
-	.byte $E8, $00, $01
-	.byte $E8, $F8, $02
-	.byte $E8, $F0, $03
+	.byte $E8, $07, $00
+	.byte $E8, $FF, $01
+	.byte $E8, $F7, $02
+	.byte $E8, $EF, $03
 	.byte $F0, $08, $04
 	.byte $F0, $00, $05
 	.byte $F0, $F8, $06
 	.byte $F0, $F0, $07
-	.byte $F8, $08, $08
-	.byte $F8, $00, $09
-	.byte $F8, $F8, $0A
-	.byte $F8, $F0, $0B
-	.byte $F8, $E8, $0C
+	.byte $F8, $06, $08
+	.byte $F8, $FE, $09
+	.byte $F8, $F6, $0A
+	.byte $F8, $EE, $0B
 marco_duck07_LEFT_end:
 
 marco_duck08_LEFT:
-	.byte $E8, $08, $00
-	.byte $E8, $00, $01
-	.byte $E8, $F8, $02
-	.byte $E8, $F0, $03
+	.byte $E8, $07, $00
+	.byte $E8, $FF, $01
+	.byte $E8, $F7, $02
+	.byte $E8, $EF, $03
 	.byte $F0, $08, $04
 	.byte $F0, $00, $05
 	.byte $F0, $F8, $06
 	.byte $F0, $F0, $07
-	.byte $F8, $08, $08
-	.byte $F8, $00, $09
-	.byte $F8, $F8, $0A
-	.byte $F8, $F0, $0B
-	.byte $F8, $E8, $0C
+	.byte $F8, $06, $08
+	.byte $F8, $FE, $09
+	.byte $F8, $F6, $0A
+	.byte $F8, $EE, $0B
 marco_duck08_LEFT_end:
 
 marco_duck09_LEFT:
-	.byte $E8, $08, $00
-	.byte $E8, $00, $01
-	.byte $E8, $F8, $02
-	.byte $E8, $F0, $03
+	.byte $E8, $07, $00
+	.byte $E8, $FF, $01
+	.byte $E8, $F7, $02
+	.byte $E8, $EF, $03
 	.byte $F0, $08, $04
 	.byte $F0, $00, $05
 	.byte $F0, $F8, $06
 	.byte $F0, $F0, $07
-	.byte $F8, $08, $08
-	.byte $F8, $00, $09
-	.byte $F8, $F8, $0A
-	.byte $F8, $F0, $0B
-	.byte $F8, $E8, $0C
+	.byte $F8, $06, $08
+	.byte $F8, $FE, $09
+	.byte $F8, $F6, $0A
+	.byte $F8, $EE, $0B
 marco_duck09_LEFT_end:
 
 marco_duck10_LEFT:
-	.byte $E8, $08, $00
-	.byte $E8, $00, $01
-	.byte $E8, $F8, $02
-	.byte $E8, $F0, $03
+	.byte $E8, $07, $00
+	.byte $E8, $FF, $01
+	.byte $E8, $F7, $02
+	.byte $E8, $EF, $03
 	.byte $F0, $08, $04
 	.byte $F0, $00, $05
 	.byte $F0, $F8, $06
 	.byte $F0, $F0, $07
-	.byte $F8, $08, $08
-	.byte $F8, $00, $09
-	.byte $F8, $F8, $0A
-	.byte $F8, $F0, $0B
-	.byte $F8, $E8, $0C
+	.byte $F8, $06, $08
+	.byte $F8, $FE, $09
+	.byte $F8, $F6, $0A
+	.byte $F8, $EE, $0B
 marco_duck10_LEFT_end:
 
 marco_run01_LEFT:
-	.byte $D8, $FB, $00
-	.byte $D8, $F3, $01
-	.byte $E0, $03, $02
-	.byte $E0, $FB, $03
-	.byte $E0, $F3, $04
+	.byte $D8, $FA, $00
+	.byte $D8, $F2, $01
+	.byte $E0, $02, $02
+	.byte $E0, $FA, $03
+	.byte $E0, $F2, $04
 	.byte $E8, $03, $05
 	.byte $E8, $FB, $06
 	.byte $E8, $F3, $07
 	.byte $E8, $EB, $08
-	.byte $F0, $03, $09
-	.byte $F0, $FB, $0A
-	.byte $F0, $F3, $0B
-	.byte $F0, $EB, $0C
-	.byte $F8, $03, $0D
-	.byte $F8, $FB, $0E
-	.byte $F8, $F3, $0F
+	.byte $F0, $FF, $09
+	.byte $F0, $F7, $0A
+	.byte $F0, $EF, $0B
+	.byte $F0, $E7, $0C
+	.byte $F8, $00, $0D
+	.byte $F8, $F8, $0E
+	.byte $F8, $F0, $0F
 marco_run01_LEFT_end:
 
 marco_run02_LEFT:
-	.byte $D7, $FB, $00
-	.byte $D7, $F3, $01
-	.byte $DF, $03, $02
-	.byte $DF, $FB, $03
-	.byte $DF, $F3, $04
-	.byte $E7, $03, $05
-	.byte $E7, $FB, $06
-	.byte $E7, $F3, $07
-	.byte $E7, $EB, $08
-	.byte $EF, $03, $09
-	.byte $EF, $FB, $0A
-	.byte $EF, $F3, $0B
-	.byte $EF, $EB, $0C
-	.byte $F7, $03, $0D
-	.byte $F7, $FB, $0E
-	.byte $F7, $F3, $0F
-	.byte $FF, $03, $10
-	.byte $FF, $FB, $11
-	.byte $FF, $F3, $12
+	.byte $D6, $FA, $00
+	.byte $D6, $F2, $01
+	.byte $DE, $02, $02
+	.byte $DE, $FA, $03
+	.byte $DE, $F2, $04
+	.byte $E6, $03, $05
+	.byte $E6, $FB, $06
+	.byte $E6, $F3, $07
+	.byte $E6, $EB, $08
+	.byte $EE, $00, $09
+	.byte $EE, $F8, $0A
+	.byte $EE, $F0, $0B
+	.byte $EE, $E8, $0C
+	.byte $F6, $FF, $0D
+	.byte $F6, $F7, $0E
+	.byte $FE, $FC, $0F
+	.byte $FE, $F4, $10
 marco_run02_LEFT_end:
 
 marco_run03_LEFT:
-	.byte $D6, $03, $00
-	.byte $D6, $FB, $01
-	.byte $D6, $F3, $02
-	.byte $DE, $03, $03
-	.byte $DE, $FB, $04
-	.byte $DE, $F3, $05
-	.byte $E6, $03, $06
-	.byte $E6, $FB, $07
-	.byte $E6, $F3, $08
-	.byte $E6, $EB, $09
-	.byte $EE, $03, $0A
-	.byte $EE, $FB, $0B
-	.byte $EE, $F3, $0C
-	.byte $EE, $EB, $0D
-	.byte $F6, $03, $0E
-	.byte $F6, $FB, $0F
-	.byte $F6, $F3, $10
+	.byte $D5, $FA, $00
+	.byte $D5, $F2, $01
+	.byte $DD, $02, $02
+	.byte $DD, $FA, $03
+	.byte $DD, $F2, $04
+	.byte $E5, $03, $05
+	.byte $E5, $FB, $06
+	.byte $E5, $F3, $07
+	.byte $E5, $EB, $08
+	.byte $ED, $FE, $09
+	.byte $ED, $F6, $0A
+	.byte $ED, $EE, $0B
+	.byte $ED, $E6, $0C
+	.byte $F5, $02, $0D
+	.byte $F5, $FA, $0E
+	.byte $F5, $F2, $0F
+	.byte $FD, $FE, $10
 marco_run03_LEFT_end:
 
 marco_run04_LEFT:
-	.byte $D5, $FE, $00
-	.byte $D5, $F6, $01
-	.byte $D5, $EE, $02
-	.byte $DD, $06, $03
-	.byte $DD, $FE, $04
-	.byte $DD, $F6, $05
-	.byte $E5, $06, $06
-	.byte $E5, $FE, $07
-	.byte $E5, $F6, $08
-	.byte $E5, $EE, $09
-	.byte $ED, $06, $0A
-	.byte $ED, $FE, $0B
-	.byte $ED, $F6, $0C
-	.byte $ED, $EE, $0D
-	.byte $F5, $06, $0E
-	.byte $F5, $FE, $0F
-	.byte $F5, $F6, $10
-	.byte $F5, $EE, $11
-	.byte $FD, $06, $12
+	.byte $D5, $FB, $00
+	.byte $D5, $F3, $01
+	.byte $DD, $03, $02
+	.byte $DD, $FB, $03
+	.byte $DD, $F3, $04
+	.byte $E5, $04, $05
+	.byte $E5, $FC, $06
+	.byte $E5, $F4, $07
+	.byte $E5, $EC, $08
+	.byte $ED, $02, $09
+	.byte $ED, $FA, $0A
+	.byte $ED, $F2, $0B
+	.byte $ED, $EA, $0C
+	.byte $F5, $06, $0D
+	.byte $F5, $FE, $0E
+	.byte $F5, $F4, $0F
+	.byte $F5, $EC, $10
+	.byte $FD, $02, $11
 marco_run04_LEFT_end:
 
 marco_run05_LEFT:
-	.byte $D8, $04, $00
-	.byte $D8, $FC, $01
-	.byte $D8, $F4, $02
-	.byte $E0, $04, $03
-	.byte $E0, $FC, $04
-	.byte $E0, $F4, $05
+	.byte $D8, $01, $00
+	.byte $D8, $F9, $01
+	.byte $D8, $F1, $02
+	.byte $E0, $03, $03
+	.byte $E0, $FB, $04
+	.byte $E0, $F3, $05
 	.byte $E8, $04, $06
 	.byte $E8, $FC, $07
 	.byte $E8, $F4, $08
 	.byte $E8, $EC, $09
-	.byte $F0, $04, $0A
-	.byte $F0, $FC, $0B
-	.byte $F0, $F4, $0C
-	.byte $F0, $EC, $0D
+	.byte $F0, $02, $0A
+	.byte $F0, $FA, $0B
+	.byte $F0, $F2, $0C
+	.byte $F0, $EA, $0D
 	.byte $F8, $04, $0E
 	.byte $F8, $FC, $0F
 	.byte $F8, $F4, $10
 marco_run05_LEFT_end:
 
 marco_run06_LEFT:
-	.byte $D8, $04, $00
-	.byte $D8, $FC, $01
-	.byte $D8, $F4, $02
-	.byte $E0, $04, $03
-	.byte $E0, $FC, $04
-	.byte $E0, $F4, $05
-	.byte $E8, $04, $06
-	.byte $E8, $FC, $07
-	.byte $E8, $F4, $08
-	.byte $E8, $EC, $09
-	.byte $F0, $04, $0A
-	.byte $F0, $FC, $0B
-	.byte $F0, $F4, $0C
-	.byte $F0, $EC, $0D
-	.byte $F8, $04, $0E
-	.byte $F8, $FC, $0F
+	.byte $D7, $FB, $00
+	.byte $D7, $F3, $01
+	.byte $DF, $03, $02
+	.byte $DF, $FB, $03
+	.byte $DF, $F3, $04
+	.byte $E7, $04, $05
+	.byte $E7, $FC, $06
+	.byte $E7, $F4, $07
+	.byte $E7, $EC, $08
+	.byte $EF, $02, $09
+	.byte $EF, $FA, $0A
+	.byte $EF, $F2, $0B
+	.byte $EF, $EA, $0C
+	.byte $F7, $00, $0D
+	.byte $F7, $F8, $0E
+	.byte $FF, $FB, $0F
 marco_run06_LEFT_end:
 
 marco_run07_LEFT:
-	.byte $D7, $03, $00
-	.byte $D7, $FB, $01
-	.byte $D7, $F3, $02
-	.byte $DF, $03, $03
-	.byte $DF, $FB, $04
-	.byte $DF, $F3, $05
+	.byte $D7, $01, $00
+	.byte $D7, $F9, $01
+	.byte $D7, $F1, $02
+	.byte $DF, $02, $03
+	.byte $DF, $FA, $04
+	.byte $DF, $F2, $05
 	.byte $E7, $03, $06
 	.byte $E7, $FB, $07
 	.byte $E7, $F3, $08
 	.byte $E7, $EB, $09
-	.byte $EF, $03, $0A
-	.byte $EF, $FB, $0B
-	.byte $EF, $F3, $0C
-	.byte $EF, $EB, $0D
+	.byte $EF, $01, $0A
+	.byte $EF, $F9, $0B
+	.byte $EF, $F1, $0C
+	.byte $EF, $E9, $0D
 	.byte $F7, $03, $0E
 	.byte $F7, $FB, $0F
 	.byte $F7, $F3, $10
 marco_run07_LEFT_end:
 
 marco_run08_LEFT:
-	.byte $D6, $07, $00
-	.byte $D6, $FF, $01
-	.byte $D6, $F7, $02
-	.byte $D6, $EF, $03
-	.byte $DE, $07, $04
-	.byte $DE, $FF, $05
-	.byte $DE, $F7, $06
-	.byte $DE, $EF, $07
-	.byte $E6, $07, $08
-	.byte $E6, $FF, $09
-	.byte $E6, $F7, $0A
-	.byte $E6, $EF, $0B
-	.byte $E6, $E7, $0C
-	.byte $EE, $07, $0D
-	.byte $EE, $FF, $0E
-	.byte $EE, $F7, $0F
-	.byte $EE, $EF, $10
-	.byte $EE, $E7, $11
-	.byte $F6, $07, $12
-	.byte $F6, $FF, $13
-	.byte $F6, $F7, $14
-	.byte $F6, $EF, $15
+	.byte $D5, $FA, $00
+	.byte $D5, $F2, $01
+	.byte $DD, $02, $02
+	.byte $DD, $FA, $03
+	.byte $DD, $F2, $04
+	.byte $E5, $03, $05
+	.byte $E5, $FB, $06
+	.byte $E5, $F3, $07
+	.byte $E5, $EB, $08
+	.byte $ED, $06, $09
+	.byte $ED, $FE, $0A
+	.byte $ED, $F6, $0B
+	.byte $ED, $EE, $0C
+	.byte $ED, $E6, $0D
+	.byte $F5, $07, $0E
+	.byte $F5, $FF, $0F
+	.byte $F5, $F5, $10
+	.byte $F5, $ED, $11
 marco_run08_LEFT_end:
 
 marco_run09_LEFT:
-	.byte $D8, $03, $00
-	.byte $D8, $FB, $01
-	.byte $D8, $F3, $02
-	.byte $E0, $03, $03
-	.byte $E0, $FB, $04
-	.byte $E0, $F3, $05
-	.byte $E8, $03, $06
-	.byte $E8, $FB, $07
-	.byte $E8, $F3, $08
-	.byte $E8, $EB, $09
-	.byte $F0, $03, $0A
-	.byte $F0, $FB, $0B
-	.byte $F0, $F3, $0C
-	.byte $F0, $EB, $0D
-	.byte $F8, $03, $0E
-	.byte $F8, $FB, $0F
-	.byte $F8, $F3, $10
+	.byte $D7, $F9, $00
+	.byte $D7, $F1, $01
+	.byte $DF, $02, $02
+	.byte $DF, $FA, $03
+	.byte $DF, $F2, $04
+	.byte $E7, $03, $05
+	.byte $E7, $FB, $06
+	.byte $E7, $F3, $07
+	.byte $E7, $EB, $08
+	.byte $EF, $FE, $09
+	.byte $EF, $F6, $0A
+	.byte $EF, $EE, $0B
+	.byte $EF, $E6, $0C
+	.byte $F7, $00, $0D
+	.byte $F7, $F8, $0E
+	.byte $FF, $FD, $0F
 marco_run09_LEFT_end:
 
 marco_shoot01_LEFT:
-	.byte $DB, $03, $00
-	.byte $DB, $FB, $01
-	.byte $DB, $F3, $02
-	.byte $DB, $E3, $03
-	.byte $DB, $DB, $04
-	.byte $E3, $03, $05
-	.byte $E3, $FB, $06
-	.byte $E3, $F3, $07
-	.byte $E3, $EB, $08
-	.byte $E3, $E3, $09
-	.byte $E3, $DB, $0A
-	.byte $E3, $D3, $0B
-	.byte $EB, $03, $0C
-	.byte $EB, $FB, $0D
-	.byte $EB, $F3, $0E
-	.byte $EB, $EB, $0F
-	.byte $F3, $03, $10
-	.byte $F3, $FB, $11
-	.byte $F3, $F3, $12
-	.byte $FB, $03, $13
-	.byte $FB, $FB, $14
-	.byte $FB, $F3, $15
+	.byte $DA, $00, $00
+	.byte $DA, $F8, $01
+	.byte $DA, $F0, $02
+	.byte $DA, $DA, $03
+	.byte $E2, $03, $04
+	.byte $E2, $FB, $05
+	.byte $E2, $F3, $06
+	.byte $E2, $EB, $07
+	.byte $E2, $E3, $08
+	.byte $E2, $DB, $09
+	.byte $E2, $D3, $0A
+	.byte $EA, $03, $0B
+	.byte $EA, $FB, $0C
+	.byte $EA, $F3, $0D
+	.byte $EA, $EB, $0E
+	.byte $F2, $01, $0F
+	.byte $F2, $F9, $10
+	.byte $F2, $F1, $11
+	.byte $FA, $03, $12
+	.byte $FA, $FB, $13
+	.byte $FA, $F3, $14
 marco_shoot01_LEFT_end:
 
 marco_shoot02_LEFT:
-	.byte $DB, $03, $00
-	.byte $DB, $FB, $01
-	.byte $DB, $F3, $02
-	.byte $DB, $EB, $03
-	.byte $DB, $E3, $04
-	.byte $DB, $DB, $05
-	.byte $DB, $D3, $06
-	.byte $E3, $03, $07
-	.byte $E3, $FB, $08
-	.byte $E3, $F3, $09
-	.byte $E3, $EB, $0A
-	.byte $E3, $E3, $0B
-	.byte $E3, $DB, $0C
-	.byte $E3, $D3, $0D
-	.byte $EB, $03, $0E
-	.byte $EB, $FB, $0F
-	.byte $EB, $F3, $10
-	.byte $EB, $EB, $11
-	.byte $F3, $03, $12
-	.byte $F3, $FB, $13
-	.byte $F3, $F3, $14
-	.byte $FB, $03, $15
-	.byte $FB, $FB, $16
-	.byte $FB, $F3, $17
+	.byte $DA, $00, $00
+	.byte $DA, $F8, $01
+	.byte $DA, $F0, $02
+	.byte $DA, $E8, $03
+	.byte $DA, $DA, $04
+	.byte $DA, $D2, $05
+	.byte $E2, $03, $06
+	.byte $E2, $FB, $07
+	.byte $E2, $F3, $08
+	.byte $E2, $EB, $09
+	.byte $E2, $E3, $0A
+	.byte $E2, $DB, $0B
+	.byte $E2, $D3, $0C
+	.byte $EA, $03, $0D
+	.byte $EA, $FB, $0E
+	.byte $EA, $F3, $0F
+	.byte $EA, $EB, $10
+	.byte $F2, $01, $11
+	.byte $F2, $F9, $12
+	.byte $F2, $F1, $13
+	.byte $FA, $03, $14
+	.byte $FA, $FB, $15
+	.byte $FA, $F3, $16
 marco_shoot02_LEFT_end:
 
 marco_shoot03_LEFT:
-	.byte $DB, $04, $00
-	.byte $DB, $FC, $01
-	.byte $DB, $F4, $02
-	.byte $DB, $EC, $03
-	.byte $DB, $E4, $04
-	.byte $E3, $04, $05
-	.byte $E3, $FC, $06
-	.byte $E3, $F4, $07
-	.byte $E3, $EC, $08
-	.byte $E3, $E4, $09
-	.byte $EB, $04, $0A
-	.byte $EB, $FC, $0B
-	.byte $EB, $F4, $0C
-	.byte $EB, $EC, $0D
-	.byte $F3, $04, $0E
-	.byte $F3, $FC, $0F
-	.byte $F3, $F4, $10
-	.byte $FB, $04, $11
-	.byte $FB, $FC, $12
-	.byte $FB, $F4, $13
+	.byte $D8, $F9, $00
+	.byte $D8, $F1, $01
+	.byte $D8, $E9, $02
+	.byte $E0, $03, $03
+	.byte $E0, $FB, $04
+	.byte $E0, $F3, $05
+	.byte $E0, $EB, $06
+	.byte $E0, $E3, $07
+	.byte $E8, $04, $08
+	.byte $E8, $FC, $09
+	.byte $E8, $F4, $0A
+	.byte $E8, $EC, $0B
+	.byte $F0, $01, $0C
+	.byte $F0, $F9, $0D
+	.byte $F0, $F1, $0E
+	.byte $F8, $03, $0F
+	.byte $F8, $FB, $10
+	.byte $F8, $F3, $11
 marco_shoot03_LEFT_end:
 
 marco_shoot04_LEFT:
-	.byte $D9, $FC, $00
-	.byte $D9, $F4, $01
-	.byte $D9, $EC, $02
-	.byte $D9, $E4, $03
-	.byte $E1, $04, $04
-	.byte $E1, $FC, $05
-	.byte $E1, $F4, $06
-	.byte $E1, $EC, $07
-	.byte $E1, $E4, $08
-	.byte $E9, $04, $09
-	.byte $E9, $FC, $0A
-	.byte $E9, $F4, $0B
-	.byte $E9, $EC, $0C
-	.byte $F1, $04, $0D
-	.byte $F1, $FC, $0E
-	.byte $F1, $F4, $0F
-	.byte $F9, $04, $10
-	.byte $F9, $FC, $11
-	.byte $F9, $F4, $12
+	.byte $D8, $F9, $00
+	.byte $D8, $F1, $01
+	.byte $D8, $E4, $02
+	.byte $E0, $03, $03
+	.byte $E0, $FB, $04
+	.byte $E0, $F3, $05
+	.byte $E0, $EB, $06
+	.byte $E0, $E3, $07
+	.byte $E8, $04, $08
+	.byte $E8, $FC, $09
+	.byte $E8, $F4, $0A
+	.byte $E8, $EC, $0B
+	.byte $F0, $01, $0C
+	.byte $F0, $F9, $0D
+	.byte $F0, $F1, $0E
+	.byte $F8, $03, $0F
+	.byte $F8, $FB, $10
+	.byte $F8, $F3, $11
 marco_shoot04_LEFT_end:
 

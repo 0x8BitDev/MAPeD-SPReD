@@ -195,6 +195,10 @@ main:
 
 	call set_background_color
 
+	; init REG0
+
+	VDP_WRITE_REG_CMD 0 VDPR0_FIXED|VDPR0_BLANK_LEFT_COLUMN
+
 	; send show image command to VDP
 
 .if SPR_MODE_8X16 == 1
