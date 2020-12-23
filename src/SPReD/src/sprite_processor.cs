@@ -123,6 +123,8 @@ namespace SPReD
 			sprite_data spr = new sprite_data( _name );
 			spr.setup( spr_params );
 			
+			spr.update_dimensions();
+			
 			png_reader.End();
 			
 			return spr;
@@ -158,6 +160,8 @@ namespace SPReD
 			
 			sprite_data spr = new sprite_data( _name );
 			spr.setup( spr_params );
+			
+			spr.update_dimensions();
 			
 			bmp.Dispose();
 			

@@ -403,8 +403,14 @@ namespace SPReD
 				
 				int pix_acc = 0;
 				
+				int col_n;
+				int row_n;
+				int x_offset = 0;
+				
 				for( y = 0; y < _spr_params.m_size_y; y++ )
 				{
+					x_offset = 0;
+					
 					for( x = 0; x < _spr_params.m_size_x; x++ )
 					{
 						chr_pos_x = x*utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
@@ -417,6 +423,44 @@ namespace SPReD
 						
 						chr_pos_x += _min_x;
 						chr_pos_y += _min_y;
+						
+						// calc first non zero column
+						if( _alpha )
+						{
+							pix_acc = 0;
+							
+							chr_pos_x += x_offset;
+							
+							for( col_n = 0; col_n < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; col_n++ )
+							{
+								for( row_n = 0; row_n < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; row_n++ )
+								{
+									pixels_line = ( chr_pos_y + row_n < _lines_arr.Count ) ? _lines_arr[ chr_pos_y + row_n ]:null;
+									
+									pix_ind = ( chr_pos_x + col_n <= _max_x ) ? ( pixels_line != null ? pixels_line[ chr_pos_x + col_n ]:( _alpha ? (byte)_alpha_ind:(byte)0 ) ):( _alpha ? (byte)_alpha_ind:(byte)0 );
+									
+									++pix_ind;
+									pix_ind %= (byte)_num_colors;
+									
+									pix_acc += pix_ind;
+								}
+								
+								if( pix_acc != 0 )
+								{
+									x_offset	+= col_n;
+									chr_pos_x	+= col_n;
+									
+									chr_attr.x	+= x_offset;
+									
+									break;
+								}
+							}
+							
+							if( col_n == utils.CONST_CHR8x8_SIDE_PIXELS_CNT )
+							{
+								continue;
+							}
+						}
 						
 						for( i = 0; i < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; i++ )
 						{
@@ -463,6 +507,7 @@ namespace SPReD
 					
 					if( m_CHR_arr.Count >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
 					{
+						MainForm.message_box( "The CHR bank is full!", "Data Import", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
 						break;
 					}
 				}
