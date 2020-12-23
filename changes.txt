@@ -52,6 +52,7 @@ MAPeD-NES/SMS:
 SPReD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+23.12.2020 - removed restriction on imported image size (no more than 256 CHRs)
 22.12.2020 - removed restriction on imported image size (multiple of 8)
 30.07.2020 - pyScriptEditor project renamed to SPSeD
 15.07.2020 - SMS: added additional export options: 1/2/3/4 bpp and CHRs offset
