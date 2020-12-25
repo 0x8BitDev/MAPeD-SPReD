@@ -1495,6 +1495,11 @@ namespace SPReD
 				
 				if( ext == ".bmp" || ext == ".png" )
 				{
+					if( CBoxMode8x16.Checked )
+					{
+						throw new Exception( "At the moment, data import is only supported for 8x8 sprites!\n\nSwitch to 8x8 mode and try again!" );
+					}
+					
 					if( message_box( "Apply the nearest colors to the imported sprite(s)?\n\nNote: This will modify the palette!", "Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
 						apply_palette = true;
