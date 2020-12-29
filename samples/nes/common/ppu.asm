@@ -64,10 +64,12 @@
 
 
 ; DMA flags
-ppu_dma_flag_data_ready	= 1
-ppu_dma_flag_free	= 2
-ppu_dma_flags_mask	= ppu_dma_flag_data_ready | ppu_dma_flag_free
-ppu_dma_flags_mask_inv	= ~ppu_dma_flags_mask
+ppu_flag_dma_data_ready	= %00000001
+ppu_flag_dma_free	= %00000010
+ppu_flag_nmi_wait_frame	= %00000100
+ppu_flag_nmi_upd_regs	= %00001000	; update 2000 and 2001 regs
+ppu_flags_dma_mask	= ppu_flag_dma_data_ready | ppu_flag_dma_free
+ppu_flags_dma_mask_inv	= ~ppu_flags_dma_mask
 
 .segment "ZP"
 
@@ -83,6 +85,17 @@ ppu_2001:		.res 1	; $2001 last state
 .segment "CODE"
 
 ; MACROSES
+
+	.macro WAIT_FRAME
+	ppu_set_flag ppu_flag_nmi_wait_frame
+:	ppu_check_flag ppu_flag_nmi_wait_frame
+	bne :-
+	.endmacro
+
+	.macro FRAME_PASSED
+	ppu_res_flag ppu_flag_nmi_wait_frame
+	.endmacro
+
 	.macro set_ppu_addr
 	lda $2002
 	lda data_addr + 1
@@ -99,7 +112,7 @@ ppu_2001:		.res 1	; $2001 last state
 
 ; set DMA flag
 	.macro ppu_set_dma_state flag
-	lda #<ppu_dma_flags_mask_inv
+	lda #<ppu_flags_dma_mask_inv
 	and _ppu_flags
 	sta _ppu_flags
 	lda #flag
@@ -107,10 +120,31 @@ ppu_2001:		.res 1	; $2001 last state
 	sta _ppu_flags
 	.endmacro
 
-; get DMA state flag
-	.macro ppu_get_dma_state_a
-	lda #<ppu_dma_flags_mask
-	and _ppu_flags
+	.macro ppu_set_flag flag
+	lda _ppu_flags
+	ora #flag
+	sta _ppu_flags
+	.endmacro
+
+	.macro ppu_res_flag flag
+	lda _ppu_flags
+	and #<~flag
+	sta _ppu_flags
+	.endmacro
+
+	.macro ppu_check_and_update_regs
+	ppu_check_flag ppu_flag_nmi_upd_regs
+	beq @skip_upd_regs
+
+	lda ppu_2000
+	sta $2000
+
+	lda ppu_2001
+	sta $2001
+
+	ppu_res_flag ppu_flag_nmi_upd_regs
+
+@skip_upd_regs:
 	.endmacro
 
 	.macro set_ppu_32_inc
@@ -131,29 +165,6 @@ vblankwait:
 	bit $2002
   	bpl @vbwait
   	rts
-
-ppu_set_2000:
-	sta ppu_2000
-	sta $2000
-	rts
-
-ppu_get_2000:
-	lda ppu_2000
-	rts
-
-ppu_set_2001:
-	sta ppu_2001
-	sta $2001
-	rts
-
-ppu_get_2001:
-	lda ppu_2001
-	rts
-
-render_off:
-	lda #$00
-	sta $2001
-	rts
 
 ppu_DMA_transf_256b_0x0200:
 

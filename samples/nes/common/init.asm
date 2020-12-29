@@ -31,6 +31,9 @@
   	sta $0300, x
   	inx
   	bne @clrmem
+
+  	lda #$00
+  	sta _ppu_flags
    
 ; waiting for a new frame
   	jsr vblankwait	; PPU is ready after the second vblank

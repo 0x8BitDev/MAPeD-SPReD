@@ -145,11 +145,14 @@ RESET:
 
 	jsr TR_ss::init_screen
 
-	lda #%10001000			; enable NMI, tiles from Pattern Table 0, sprites from Pattern Table 1
-	jsr ppu_set_2000
+	lda #%10001000			; NMI, background tiles from Pattern Table 1, 8x8
+	sta ppu_2000
+	sta $2000			; enable NMI at startup
 
 	lda #%00001110			; enable background drawing, NO CLIPPING for sprites and background
-	jsr ppu_set_2001
+	sta ppu_2001
+
+	ppu_set_flag ppu_flag_nmi_upd_regs
 
 	jpad1_init
 
@@ -165,24 +168,19 @@ forever:
 	jsr TR_ss::update_ExRAM
 	.ENDIF	; MAP_FLAG_ATTRS_PER_CHR
 
-	jsr ppu_get_2001
-	sta $2001
+	jmp forever
+
+NMI:
+	push_FAXY
+
+	ppu_check_and_update_regs
 
 	; reset scroll registers
 	lda #$00
 	sta $2005
 	sta $2005
 
-	; skip 10 frames to make some delay between screen switching
-	lda #$0a
-	SKIP_FRAMES
-
-	jmp forever
-
-NMI:
-	push_FAXY
-
-	DEC_FRAMES_CNT
+	FRAME_PASSED
 
 	; ...
 

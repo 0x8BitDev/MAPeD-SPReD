@@ -120,14 +120,17 @@ RESET:
 	jsr ppu_load_palettes
 
 	.IF SPR_MODE_8X16
-	lda #%10110000	; enable NMI, sprites from Pattern Table 1, 8x16
+	lda #%10110000			; enable NMI, sprites from Pattern Table 1, 8x16
 	.ELSE
-	lda #%10010000	; enable NMI, sprites from Pattern Table 1, 8x8
+	lda #%10010000			; enable NMI, sprites from Pattern Table 1, 8x8
 	.ENDIF
-	sta $2000
+	sta ppu_2000
+	sta $2000			; enable NMI at startup
 
-	lda #%00011010	; enable drawing of sprites and background, sprites clipping
-	sta $2001
+	lda #%00011010			; enable drawing of sprites and background, sprites clipping
+	sta ppu_2001
+
+	ppu_set_flag ppu_flag_nmi_upd_regs
 
 	jpad1_init
 
@@ -143,14 +146,14 @@ RESET:
 ;-----------------------------
 
 	; set DMA ready flag by default
-	ppu_set_dma_state ppu_dma_flag_free
+	ppu_set_dma_state ppu_flag_dma_free
 
 forever:
 	jsr jpad1_read_state
 
 	jsr player_update
 
-	ppu_check_flag ppu_dma_flag_free
+	ppu_check_flag ppu_flag_dma_free
 	beq _skip_data_preparation		; if equal to zero -> NMI works
 
 	; push an animation frame to the characters "pool"
@@ -180,12 +183,11 @@ forever:
 	jsr ppu_load_sprite_0x0200
 
 	; set data ready flag
-	ppu_set_dma_state ppu_dma_flag_data_ready
+	ppu_set_dma_state ppu_flag_dma_data_ready
 
 _skip_data_preparation:
 
-	lda #$01
-	SKIP_FRAMES
+	WAIT_FRAME
 
 	jmp forever
 
@@ -193,7 +195,7 @@ NMI:
 	push_FAXY
 
 	; check DMA ready flag
-	ppu_check_flag ppu_dma_flag_data_ready
+	ppu_check_flag ppu_flag_dma_data_ready
 	beq nmi_exit
 
 	jsr ppu_DMA_transf_256b_0x0200
@@ -202,11 +204,13 @@ NMI:
 	mmc3_switch_sprite_CHR
 
 	; reset DMA ready flag
-	ppu_set_dma_state ppu_dma_flag_free
+	ppu_set_dma_state ppu_flag_dma_free
 
 nmi_exit:
 
-	DEC_FRAMES_CNT
+	ppu_check_and_update_regs
+
+	FRAME_PASSED
 
 	pop_FAXY
 	rti

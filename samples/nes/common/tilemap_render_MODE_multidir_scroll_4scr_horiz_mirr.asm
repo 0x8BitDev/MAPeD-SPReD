@@ -2257,7 +2257,7 @@ _skip_upd_scroll:
 
 update_nametable:
 
-	jsr ppu_get_2000
+	lda ppu_2000
 	ora inner_vars::_nametable
 	sta $2000
 

@@ -1,6 +1,6 @@
 ;############################################################################################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2020 0x8BitDev ( MIT license )
 ;
 ;############################################################################################################
 ; DESC: Static screens switching render which uses a level topology data.
@@ -156,6 +156,13 @@ update_PPU:
 
 @cont:
 
+	; switch render OFF
+	lda ppu_2001
+	and #%11110111
+	sta ppu_2001
+	ppu_set_flag ppu_flag_nmi_upd_regs
+	WAIT_FRAME
+
 	set_ppu_1_inc
 
 	lda inner_vars::_tr_update_flags
@@ -172,8 +179,6 @@ update_PPU:
 
 	; load palette
 	load_palette_16 tr_palettes, data_addr, data_size, $00
-
-	jsr render_off
 
 	; skip marks
 	.IF MAP_CHECK(::MAP_FLAG_MARKS)
@@ -221,6 +226,15 @@ update_PPU:
 	jsr ppu_load_data
 	.ENDIF	; MAP_FLAG_ATTRS_PER_BLOCK
 	.ENDIF	; MAP_FLAG_RLE
+
+	.IF !MAP_CHECK(::MAP_FLAG_ATTRS_PER_CHR)
+	; switch render ON	
+	lda ppu_2001
+	ora #%00001000
+	sta ppu_2001
+	ppu_set_flag ppu_flag_nmi_upd_regs
+	WAIT_FRAME
+	.ENDIF ; !MAP_FLAG_ATTRS_PER_CHR
 
 	rts
 
@@ -302,6 +316,13 @@ update_ExRAM:
 	; Nametable mapping: 0 - Single-screen CIRAM 0
 	lda #$00
 	sta $5105
+
+	; switch render ON	
+	lda ppu_2001
+	ora #%00001000
+	sta ppu_2001
+	ppu_set_flag ppu_flag_nmi_upd_regs
+	WAIT_FRAME
 
 	rts
 	.ENDIF	; MAP_FLAG_ATTRS_PER_CHR

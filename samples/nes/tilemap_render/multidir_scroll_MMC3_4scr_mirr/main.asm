@@ -199,14 +199,17 @@ RESET:
 	.ELSE
 	lda #%10010000		; NMI, background tiles from Pattern Table 1, 8x8
 	.ENDIF ;TR_MIRRORING_HORIZONTAL
-	jsr ppu_set_2000
+	sta ppu_2000
+	sta $2000		; enable NMI at startup
 
 	.IF TR_MIRRORING_HORIZONTAL
 	lda #%00011000		; enable background drawing, CLIPPING for sprites and background
 	.ELSE
 	lda #%00001110		; enable background drawing, NO CLIPPING for sprites and background
 	.ENDIF ;TR_MIRRORING_HORIZONTAL
-	jsr ppu_set_2001
+	sta ppu_2001
+
+	ppu_set_flag ppu_flag_nmi_upd_regs
 
 	jpad1_init
 
@@ -221,9 +224,7 @@ forever:
 
 	jsr TR_ms::update_jpad
 
-	; waiting for the next frame
-	lda #$01
-	SKIP_FRAMES
+	WAIT_FRAME
 
 _bg_drw_wait_loop:
 	jsr TR_utils::need_draw
@@ -241,11 +242,13 @@ NMI:
 
 nmi_exit:
 
+	ppu_check_and_update_regs
+
 	jsr TR_ms::update_scroll_reg
 
 	jsr TR_ms::update_nametable
 
-	DEC_FRAMES_CNT
+	FRAME_PASSED
 
 	pop_FAXY
 	rti

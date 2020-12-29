@@ -107,10 +107,13 @@ RESET:
 	jsr TR_sts::init_draw
 
 	lda #%10010000			; NMI, background tiles from Pattern Table 1, 8x8
-	jsr ppu_set_2000
+	sta ppu_2000
+	sta $2000			; enable NMI at startup
 
 	lda #%00001110			; enable background drawing, NO CLIPPING for sprites and background
-	jsr ppu_set_2001
+	sta ppu_2001
+
+	ppu_set_flag ppu_flag_nmi_upd_regs
 
 	jpad1_init
 
@@ -120,9 +123,7 @@ forever:
 
 	jsr TR_sts::update_jpad
 
-	; waiting for the next frame
-	lda #$01
-	SKIP_FRAMES
+	WAIT_FRAME
 
 	jmp forever
 
@@ -136,11 +137,13 @@ NMI:
 
 nmi_exit:
 
+	ppu_check_and_update_regs
+
 	jsr TR_sts::update_scroll_reg
 
 	jsr TR_sts::update_nametable
 
-	DEC_FRAMES_CNT
+	FRAME_PASSED
 
 	pop_FAXY
 	rti

@@ -150,11 +150,14 @@ RESET:
 
 	jsr ppu_load_palettes
 
-	lda #%10010000		; NMI, background tiles from Pattern Table 1, 8x8
-	jsr ppu_set_2000
+	lda #%10010000			; NMI, background tiles from Pattern Table 1, 8x8
+	sta ppu_2000
+	sta $2000			; enable NMI at startup
 
-	lda #%00001110		; enable background drawing, NO CLIPPING for sprites and background
-	jsr ppu_set_2001
+	lda #%00001110			; enable background drawing, NO CLIPPING for sprites and background
+	sta ppu_2001
+
+	ppu_set_flag ppu_flag_nmi_upd_regs
 
 	jpad1_init
 
@@ -173,16 +176,12 @@ forever:
 
 	jsr TR_ms::update_jpad
 
-	; waiting for the next frame
-	lda #$01
-	SKIP_FRAMES
+	WAIT_FRAME
 
 	.IF TR_MMC3_IRQ_STATUS_BAR
 
 	; update PPUCTRL and nametable changed by IRQ routine
-	jsr ppu_get_2000
-	ora TR_ms::inner_vars::_nametable
-	sta $2000
+	jsr TR_ms::update_nametable
 
 	mmc3_IRQ_reload #$df	; scan-line on which the IRQ procedure executes
 	mmc3_IRQ_enable
@@ -205,6 +204,8 @@ NMI:
 
 nmi_exit:
 
+	ppu_check_and_update_regs
+
 	.IF TR_MMC3_IRQ_STATUS_BAR
 	jsr update_scroll_reg_shift_y_8pix
 	.ELSE
@@ -213,7 +214,7 @@ nmi_exit:
 
 	jsr TR_ms::update_nametable
 
-	DEC_FRAMES_CNT
+	FRAME_PASSED
 
 	pop_FAXY
 	rti
@@ -233,7 +234,7 @@ IRQ:
 
 	; in real project you need to reserve an empty
 	; CHR bank to make an empty status bar
-	jsr ppu_get_2000
+	lda ppu_2000
 	and #<~%00010000		; switch to Table 0 cause it is empty
 	sta $2000
 
