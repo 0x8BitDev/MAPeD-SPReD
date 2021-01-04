@@ -27,8 +27,9 @@ The MAPeD is a tool for building a game levels for NES/SMS games from scratch.
 	- level topology options
 	- entities
 	- etc...
-- built-in **Python** script editor for writing custom data export scripts
 - export to **SjASMPlus** ( ZX Spectrum assembler )
+- export to **JSON** format
+- built-in **Python** script editor for writing custom data export scripts
 - **NES <=> SMS** data conversion**
 - etc...
 
