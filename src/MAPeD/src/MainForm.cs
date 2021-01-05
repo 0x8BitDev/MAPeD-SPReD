@@ -3754,6 +3754,7 @@ namespace MAPeD
 			plt_grp.update_selected_color();
 			
 			enable_update_gfx_btn( true );
+			enable_update_screens_btn( true );
 			
 			m_tiles_processor.update_graphics();
 		}
