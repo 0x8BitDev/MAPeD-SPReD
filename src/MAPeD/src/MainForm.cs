@@ -3785,16 +3785,19 @@ namespace MAPeD
 			
 			if( data != null )
 			{
-				if( data.palette_delete() )
+				if( message_box( "Are you sure?", "Delete Active Palette", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
-					palette_group.Instance.set_palette( data );
-					
-					update_palettes_arr( data, true );
-					enable_update_gfx_btn_Event( this, null );
-				}
-				else
-				{
-					message_box( "Can't delete the last palette!", "Delete Active Palette", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					if( data.palette_delete() )
+					{
+						palette_group.Instance.set_palette( data );
+						
+						update_palettes_arr( data, true );
+						enable_update_gfx_btn_Event( this, null );
+					}
+					else
+					{
+						message_box( "Can't delete the last palette!", "Delete Active Palette", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					}
 				}
 			}
 		}
