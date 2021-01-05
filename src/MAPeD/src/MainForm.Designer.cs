@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 01.05.2017
  * Time: 15:24
  */
@@ -179,13 +179,16 @@ namespace MAPeD
 			this.deleteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.BtnSwapColors = new System.Windows.Forms.Button();
+			this.CBoxPalettes = new System.Windows.Forms.ComboBox();
 			this.CheckBoxPalettePerCHR = new System.Windows.Forms.CheckBox();
 			this.Palette3 = new System.Windows.Forms.PictureBox();
 			this.Palette2 = new System.Windows.Forms.PictureBox();
 			this.Palette1 = new System.Windows.Forms.PictureBox();
+			this.BtnPltDelete = new System.Windows.Forms.Button();
 			this.Palette0 = new System.Windows.Forms.PictureBox();
 			this.PaletteMain = new System.Windows.Forms.PictureBox();
 			this.label4 = new System.Windows.Forms.Label();
+			this.BtnPltCopy = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
@@ -1601,36 +1604,49 @@ namespace MAPeD
 			// groupBox4
 			// 
 			this.groupBox4.Controls.Add(this.BtnSwapColors);
+			this.groupBox4.Controls.Add(this.CBoxPalettes);
 			this.groupBox4.Controls.Add(this.CheckBoxPalettePerCHR);
 			this.groupBox4.Controls.Add(this.Palette3);
 			this.groupBox4.Controls.Add(this.Palette2);
 			this.groupBox4.Controls.Add(this.Palette1);
+			this.groupBox4.Controls.Add(this.BtnPltDelete);
 			this.groupBox4.Controls.Add(this.Palette0);
 			this.groupBox4.Controls.Add(this.PaletteMain);
 			this.groupBox4.Controls.Add(this.label4);
+			this.groupBox4.Controls.Add(this.BtnPltCopy);
 			this.groupBox4.Controls.Add(this.label3);
 			this.groupBox4.Controls.Add(this.label2);
 			this.groupBox4.Controls.Add(this.label1);
 			this.groupBox4.Location = new System.Drawing.Point(6, 348);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(276, 181);
+			this.groupBox4.Size = new System.Drawing.Size(276, 214);
 			this.groupBox4.TabIndex = 24;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Palettes:";
 			// 
 			// BtnSwapColors
 			// 
-			this.BtnSwapColors.Location = new System.Drawing.Point(169, 154);
+			this.BtnSwapColors.Location = new System.Drawing.Point(181, 157);
 			this.BtnSwapColors.Name = "BtnSwapColors";
-			this.BtnSwapColors.Size = new System.Drawing.Size(96, 22);
+			this.BtnSwapColors.Size = new System.Drawing.Size(85, 23);
 			this.BtnSwapColors.TabIndex = 26;
 			this.BtnSwapColors.Text = "Swap Colors";
 			this.BtnSwapColors.UseVisualStyleBackColor = true;
 			this.BtnSwapColors.Click += new System.EventHandler(this.BtnSwapColorsClick_Event);
 			// 
+			// CBoxPalettes
+			// 
+			this.CBoxPalettes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.CBoxPalettes.FormattingEnabled = true;
+			this.CBoxPalettes.Location = new System.Drawing.Point(10, 158);
+			this.CBoxPalettes.Name = "CBoxPalettes";
+			this.CBoxPalettes.Size = new System.Drawing.Size(59, 21);
+			this.CBoxPalettes.TabIndex = 27;
+			this.CBoxPalettes.SelectedIndexChanged += new System.EventHandler(this.CBoxPalettesChanged_Event);
+			// 
 			// CheckBoxPalettePerCHR
 			// 
-			this.CheckBoxPalettePerCHR.Location = new System.Drawing.Point(10, 158);
+			this.CheckBoxPalettePerCHR.Location = new System.Drawing.Point(10, 186);
 			this.CheckBoxPalettePerCHR.Name = "CheckBoxPalettePerCHR";
 			this.CheckBoxPalettePerCHR.Size = new System.Drawing.Size(148, 19);
 			this.CheckBoxPalettePerCHR.TabIndex = 25;
@@ -1665,6 +1681,17 @@ namespace MAPeD
 			this.Palette1.TabIndex = 7;
 			this.Palette1.TabStop = false;
 			// 
+			// BtnPltDelete
+			// 
+			this.BtnPltDelete.BackColor = System.Drawing.Color.LemonChiffon;
+			this.BtnPltDelete.Location = new System.Drawing.Point(125, 157);
+			this.BtnPltDelete.Name = "BtnPltDelete";
+			this.BtnPltDelete.Size = new System.Drawing.Size(48, 23);
+			this.BtnPltDelete.TabIndex = 11;
+			this.BtnPltDelete.Text = "Delete";
+			this.BtnPltDelete.UseVisualStyleBackColor = true;
+			this.BtnPltDelete.Click += new System.EventHandler(this.BtnPltDeleteClick_Event);
+			// 
 			// Palette0
 			// 
 			this.Palette0.BackColor = System.Drawing.Color.Black;
@@ -1691,6 +1718,17 @@ namespace MAPeD
 			this.label4.Size = new System.Drawing.Size(26, 20);
 			this.label4.TabIndex = 8;
 			this.label4.Text = "4:";
+			// 
+			// BtnPltCopy
+			// 
+			this.BtnPltCopy.BackColor = System.Drawing.Color.LemonChiffon;
+			this.BtnPltCopy.Location = new System.Drawing.Point(74, 157);
+			this.BtnPltCopy.Name = "BtnPltCopy";
+			this.BtnPltCopy.Size = new System.Drawing.Size(48, 23);
+			this.BtnPltCopy.TabIndex = 11;
+			this.BtnPltCopy.Text = "Copy";
+			this.BtnPltCopy.UseVisualStyleBackColor = true;
+			this.BtnPltCopy.Click += new System.EventHandler(this.BtnPltCopyClick_Event);
 			// 
 			// label3
 			// 
@@ -1760,9 +1798,9 @@ namespace MAPeD
 									"13",
 									"14",
 									"15"});
-			this.CBoxBlockObjId.Location = new System.Drawing.Point(227, 333);
+			this.CBoxBlockObjId.Location = new System.Drawing.Point(225, 333);
 			this.CBoxBlockObjId.Name = "CBoxBlockObjId";
-			this.CBoxBlockObjId.Size = new System.Drawing.Size(39, 21);
+			this.CBoxBlockObjId.Size = new System.Drawing.Size(40, 21);
 			this.CBoxBlockObjId.TabIndex = 23;
 			this.CBoxBlockObjId.SelectionChangeCommitted += new System.EventHandler(this.CBoxBlockObjIdChanged_Event);
 			// 
@@ -1893,7 +1931,7 @@ namespace MAPeD
 			// 
 			// BtnTileReserveBlocks
 			// 
-			this.BtnTileReserveBlocks.Location = new System.Drawing.Point(145, 101);
+			this.BtnTileReserveBlocks.Location = new System.Drawing.Point(145, 123);
 			this.BtnTileReserveBlocks.Name = "BtnTileReserveBlocks";
 			this.BtnTileReserveBlocks.Size = new System.Drawing.Size(122, 22);
 			this.BtnTileReserveBlocks.TabIndex = 28;
@@ -1903,7 +1941,7 @@ namespace MAPeD
 			// 
 			// CheckBoxTileEditorLock
 			// 
-			this.CheckBoxTileEditorLock.Location = new System.Drawing.Point(145, 129);
+			this.CheckBoxTileEditorLock.Location = new System.Drawing.Point(149, 101);
 			this.CheckBoxTileEditorLock.Name = "CheckBoxTileEditorLock";
 			this.CheckBoxTileEditorLock.Size = new System.Drawing.Size(63, 19);
 			this.CheckBoxTileEditorLock.TabIndex = 29;
@@ -3080,62 +3118,62 @@ namespace MAPeD
 									this.toolStripSeparator28,
 									this.clearAllTilesToolStripMenuItem});
 			this.ContextMenuTilesList.Name = "ContextMenuTilesList";
-			this.ContextMenuTilesList.Size = new System.Drawing.Size(153, 176);
+			this.ContextMenuTilesList.Size = new System.Drawing.Size(146, 154);
 			// 
 			// copyTileToolStripMenuItem
 			// 
 			this.copyTileToolStripMenuItem.Name = "copyTileToolStripMenuItem";
-			this.copyTileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.copyTileToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
 			this.copyTileToolStripMenuItem.Text = "Copy";
 			this.copyTileToolStripMenuItem.Click += new System.EventHandler(this.CopyTileToolStripMenuItemClick_Event);
 			// 
 			// pasteTileToolStripMenuItem
 			// 
 			this.pasteTileToolStripMenuItem.Name = "pasteTileToolStripMenuItem";
-			this.pasteTileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.pasteTileToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
 			this.pasteTileToolStripMenuItem.Text = "Paste";
 			this.pasteTileToolStripMenuItem.Click += new System.EventHandler(this.PasteTileToolStripMenuItemClick_Event);
 			// 
 			// separatorToolStripMenuItem4
 			// 
 			this.separatorToolStripMenuItem4.Name = "separatorToolStripMenuItem4";
-			this.separatorToolStripMenuItem4.Size = new System.Drawing.Size(149, 6);
+			this.separatorToolStripMenuItem4.Size = new System.Drawing.Size(142, 6);
 			// 
 			// clearTileToolStripMenuItem
 			// 
 			this.clearTileToolStripMenuItem.Name = "clearTileToolStripMenuItem";
-			this.clearTileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.clearTileToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
 			this.clearTileToolStripMenuItem.Text = "Clear Refs";
 			this.clearTileToolStripMenuItem.Click += new System.EventHandler(this.ClearTileToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator21
 			// 
 			this.toolStripSeparator21.Name = "toolStripSeparator21";
-			this.toolStripSeparator21.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator21.Size = new System.Drawing.Size(142, 6);
 			// 
 			// insertLeftTileToolStripMenuItem
 			// 
 			this.insertLeftTileToolStripMenuItem.Name = "insertLeftTileToolStripMenuItem";
-			this.insertLeftTileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.insertLeftTileToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
 			this.insertLeftTileToolStripMenuItem.Text = "Insert Left";
 			this.insertLeftTileToolStripMenuItem.Click += new System.EventHandler(this.InsertLeftTileToolStripMenuItemClick_Event);
 			// 
 			// deleteTileToolStripMenuItem3
 			// 
 			this.deleteTileToolStripMenuItem3.Name = "deleteTileToolStripMenuItem3";
-			this.deleteTileToolStripMenuItem3.Size = new System.Drawing.Size(152, 22);
+			this.deleteTileToolStripMenuItem3.Size = new System.Drawing.Size(145, 22);
 			this.deleteTileToolStripMenuItem3.Text = "Delete";
 			this.deleteTileToolStripMenuItem3.Click += new System.EventHandler(this.DeleteTileToolStripMenuItem3Click_Event);
 			// 
 			// toolStripSeparator28
 			// 
 			this.toolStripSeparator28.Name = "toolStripSeparator28";
-			this.toolStripSeparator28.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator28.Size = new System.Drawing.Size(142, 6);
 			// 
 			// clearAllTilesToolStripMenuItem
 			// 
 			this.clearAllTilesToolStripMenuItem.Name = "clearAllTilesToolStripMenuItem";
-			this.clearAllTilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.clearAllTilesToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
 			this.clearAllTilesToolStripMenuItem.Text = "Clear All Tiles";
 			this.clearAllTilesToolStripMenuItem.Click += new System.EventHandler(this.ClearAllTileToolStripMenuItemClick_Event);
 			// 
@@ -3377,6 +3415,9 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Button BtnPltCopy;
+		private System.Windows.Forms.Button BtnPltDelete;
+		private System.Windows.Forms.ComboBox CBoxPalettes;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator28;
 		private System.Windows.Forms.Button BtnPatterns;
 		private System.Windows.Forms.Label label7;

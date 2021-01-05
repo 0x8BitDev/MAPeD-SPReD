@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 04.09.2020
  * Time: 14:06
  */
@@ -91,7 +91,7 @@ namespace MAPeD
 			_bw.Write( m_data, 0, m_width * m_height );
 		}
 		
-		public static pattern_data load( BinaryReader _br )
+		public static pattern_data load( byte _ver, BinaryReader _br )
 		{
 			string name		= _br.ReadString();
 			byte width		= _br.ReadByte();

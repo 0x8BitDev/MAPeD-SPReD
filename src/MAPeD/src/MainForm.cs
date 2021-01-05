@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 01.05.2017
  * Time: 15:24
  */
@@ -191,7 +191,7 @@ namespace MAPeD
 																new SToolTipData( CheckBoxScreensAutoUpdate, "Automatically updates the screen list when \"Update GFX\" button is pressed" ),
 																new SToolTipData( CheckBoxLayoutEditorAllBanks, "Show screens of all CHR banks" ),
 																new SToolTipData( CheckBoxPickupTargetEntity, "Pickup target entity" ),
-																new SToolTipData( BtnCopyCHRBank, "Copy active CHR bank" ),
+																new SToolTipData( BtnCopyCHRBank, "Add copy of active CHR bank" ),
 																new SToolTipData( BtnAddCHRBank, "Add new CHR bank" ),
 																new SToolTipData( BtnDeleteCHRBank, "Delete active CHR Bank" ),																
 																new SToolTipData( BtnCHRBankPrevPage, "Previous CHR Bank's page" ),
@@ -209,7 +209,10 @@ namespace MAPeD
 																new SToolTipData( CheckBoxShowEntities, "Show layout entities" ),
 																new SToolTipData( CheckBoxShowTargets, "Show entity targets" ),
 																new SToolTipData( CheckBoxShowCoords, "Show coordinates of a selected entity" ),
-																new SToolTipData( CheckBoxPalettePerCHR, "MMC5 extended attributes mode" ),
+																new SToolTipData( CheckBoxPalettePerCHR, "MMC5 extended attributes mode" ),																
+																new SToolTipData( CBoxPalettes, "Palettes array" ),
+																new SToolTipData( BtnPltCopy, "Add copy of active palette" ),
+																new SToolTipData( BtnPltDelete, "Delete active palette" ),																
 																new SToolTipData( BtnSwapColors, "Swap two selected colors without changing graphics" ),
 																new SToolTipData( BtnBlockReserveCHRs, "Make links to empty CHRs" ),
 																new SToolTipData( BtnTileReserveBlocks, "Make links to empty blocks" ),
@@ -418,6 +421,7 @@ namespace MAPeD
 			m_screen_editor.clear_active_tile_img();
 			
 			CBoxCHRBanks.Items.Clear();
+			CBoxPalettes.Items.Clear();
 			ListBoxScreens.Items.Clear();
 			ListBoxLayouts.Items.Clear();
 			
@@ -540,9 +544,9 @@ namespace MAPeD
 					{
 						byte ver = br.ReadByte();
 						
-						if( ver == utils.CONST_PROJECT_FILE_VER )
+						if( ver <= utils.CONST_PROJECT_FILE_VER )
 						{
-							m_data_manager.load( br, file_ext, m_data_conversion_options_form.screens_align_mode, m_data_conversion_options_form.convert_colors );
+							m_data_manager.load( ver, br, file_ext, m_data_conversion_options_form.screens_align_mode, m_data_conversion_options_form.convert_colors );
 							
 							uint flags = br.ReadUInt32();
 #if DEF_NES							
@@ -1095,6 +1099,13 @@ namespace MAPeD
 			
 			palette_group.Instance.active_palette = 0;
 			
+			// update palettes
+			{
+				update_palettes_arr( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), false );
+				
+				CBoxPalettes.SelectedIndex = 0;
+			}
+			
 			update_graphics( false );
 			
 			enable_copy_paste_action( false, ECopyPasteType.cpt_All );
@@ -1268,6 +1279,7 @@ namespace MAPeD
 					}
 				}
 
+				CBoxPalettes.Items.Clear();
 				CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_pos;
 				
 				enable_copy_paste_action( false, ECopyPasteType.cpt_All );
@@ -3730,6 +3742,75 @@ namespace MAPeD
 				}
 			}
 #endif
+		}
+		
+		void CBoxPalettesChanged_Event(object sender, EventArgs e)
+		{
+			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			data.palette_pos = CBoxPalettes.SelectedIndex; 
+			
+			palette_group plt_grp = palette_group.Instance;
+			plt_grp.set_palette( data );
+			plt_grp.update_selected_color();
+			
+			enable_update_gfx_btn( true );
+			
+			m_tiles_processor.update_graphics();
+		}
+		
+		void BtnPltCopyClick_Event(object sender, EventArgs e)
+		{
+			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			
+			if( data != null )
+			{
+				if( data.palette_copy() )
+				{
+					palette_group.Instance.set_palette( data );
+					
+					update_palettes_arr( data, true );
+					enable_update_gfx_btn_Event( this, null );
+				}
+				else
+				{
+					message_box( "The maximum allowed number of palettes - " + utils.CONST_PALETTES_COUNT, "Copy Active Palette", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
+			}
+		}
+		
+		void BtnPltDeleteClick_Event(object sender, EventArgs e)
+		{
+			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			
+			if( data != null )
+			{
+				if( data.palette_delete() )
+				{
+					palette_group.Instance.set_palette( data );
+					
+					update_palettes_arr( data, true );
+					enable_update_gfx_btn_Event( this, null );
+				}
+				else
+				{
+					message_box( "Can't delete the last palette!", "Delete Active Palette", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
+			}
+		}
+		
+		void update_palettes_arr( tiles_data _data, bool _update_pos )
+		{
+			CBoxPalettes.Items.Clear();
+			
+			for( int i = 0; i < _data.palettes_arr.Count; i++ )
+			{
+				CBoxPalettes.Items.Add( String.Format( "plt#{0:d2}", i ) );
+			}
+
+			if( _update_pos )
+			{
+				CBoxPalettes.SelectedIndex = _data.palette_pos;
+			}
 		}
 	}
 }

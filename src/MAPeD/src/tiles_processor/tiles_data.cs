@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 03.05.2017
  * Time: 17:18
  */
@@ -14,7 +14,38 @@ namespace MAPeD
 	/// <summary>
 	/// Description of tiles_data.
 	/// </summary>
-	/// 
+	///
+
+	public class palette16_data
+	{
+#if DEF_NES		
+		public byte[] m_palette0	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 1+16 ), (byte)( 1+32 ), (byte)( 1+48 ) };
+		public byte[] m_palette1	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 4+16 ), (byte)( 4+32 ), (byte)( 4+48 ) };
+		public byte[] m_palette2	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 7+16 ), (byte)( 7+32 ), (byte)( 7+48 ) };
+		public byte[] m_palette3	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 11+16 ), (byte)( 11+32 ), (byte)( 11+48 ) };
+#elif DEF_SMS
+		public byte[] m_palette0	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)0), (byte)( 3 ),  (byte)( 7 ),  (byte)( 11 ) };
+		public byte[] m_palette1	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)17), (byte)( 20 ), (byte)( 24 ), (byte)( 28 ) };
+		public byte[] m_palette2	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)34), (byte)( 37 ), (byte)( 41 ), (byte)( 45 ) };
+		public byte[] m_palette3	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)51), (byte)( 54 ), (byte)( 58 ), (byte)( 62 ) };
+#endif
+		public void reset()
+		{
+			m_palette0 = m_palette1 = m_palette2 = m_palette3 = null; 
+		}
+		
+		public palette16_data copy()
+		{
+			palette16_data data = new palette16_data();
+			
+			Array.Copy( this.m_palette0, data.m_palette0, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+			Array.Copy( this.m_palette1, data.m_palette1, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+			Array.Copy( this.m_palette2, data.m_palette2, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+			Array.Copy( this.m_palette3, data.m_palette3, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+			
+			return data;
+		}
+	}
 	
 	[DataContract]
 	public class tiles_data
@@ -36,17 +67,11 @@ namespace MAPeD
 		private string m_name	= null;
 		
 		private byte[] m_CHR_bank	= new byte[ utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ];
-#if DEF_NES		
-		private byte[] m_palette0	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 1+16 ), (byte)( 1+32 ), (byte)( 1+48 ) };
-		private byte[] m_palette1	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 4+16 ), (byte)( 4+32 ), (byte)( 4+48 ) };
-		private byte[] m_palette2	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 7+16 ), (byte)( 7+32 ), (byte)( 7+48 ) };
-		private byte[] m_palette3	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 11+16 ), (byte)( 11+32 ), (byte)( 11+48 ) };
-#elif DEF_SMS
-		private byte[] m_palette0	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)0), (byte)( 3 ),  (byte)( 7 ),  (byte)( 11 ) };
-		private byte[] m_palette1	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)17), (byte)( 20 ), (byte)( 24 ), (byte)( 28 ) };
-		private byte[] m_palette2	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)34), (byte)( 37 ), (byte)( 41 ), (byte)( 45 ) };
-		private byte[] m_palette3	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)51), (byte)( 54 ), (byte)( 58 ), (byte)( 62 ) };
-#endif
+		
+		[DataMember]
+		private List< palette16_data > m_palettes	= null;
+		private int	m_palette_pos					= -1;
+		
 		private ushort[] m_blocks	= new ushort[ utils.CONST_BLOCKS_USHORT_SIZE ];	// [ 15-8 -> property_id(4) [ NES:palette ind SMS:CHR bank page ](2) [ NES: not used SMS: hv_flip ](2) | CHR ind(8) <-- 7-0 ]
 		private uint[] m_tiles		= new uint[ utils.CONST_TILES_UINT_SIZE ];
 		
@@ -54,7 +79,6 @@ namespace MAPeD
 		
 		private Dictionary< string, List< pattern_data > >	m_patterns_data	= null;	// key = group name / value = List< pattern_data >
 
-		[DataMember]
 		public Dictionary< string, List< pattern_data > > patterns_data
 		{
 			get { return m_patterns_data; }
@@ -82,31 +106,45 @@ namespace MAPeD
 			set {}
 		}
 		
-		[DataMember]
+		public List< palette16_data > palettes_arr
+		{
+			get { return m_palettes; }
+			set {}
+		}
+		
+		public int palette_pos
+		{
+			get { return m_palette_pos; }
+			set 
+			{
+				if( value >= 0 && value < m_palettes.Count )
+				{
+					m_palette_pos = value;
+				}
+			}
+		}
+				
 		public byte[] palette0
 		{
-			get { return m_palette0; }
+			get { return m_palettes[ m_palette_pos ].m_palette0; }
 			set {}
 		}
 
-		[DataMember]
 		public byte[] palette1
 		{
-			get { return m_palette1; }
+			get { return m_palettes[ m_palette_pos ].m_palette1; }
 			set {}
 		}
 		
-		[DataMember]
 		public byte[] palette2
 		{
-			get { return m_palette2; }
+			get { return m_palettes[ m_palette_pos ].m_palette2; }
 			set {}
 		}
 		
-		[DataMember]
 		public byte[] palette3
 		{
-			get { return m_palette3; }
+			get { return m_palettes[ m_palette_pos ].m_palette3; }
 			set {}
 		}
 		
@@ -116,10 +154,10 @@ namespace MAPeD
 			{
 				List< byte[] > palettes	= new List< byte[] >( 4 );
 				
-				palettes.Add( m_palette0 );
-				palettes.Add( m_palette1 );
-				palettes.Add( m_palette2 );
-				palettes.Add( m_palette3 );
+				palettes.Add( m_palettes[ m_palette_pos ].m_palette0 );
+				palettes.Add( m_palettes[ m_palette_pos ].m_palette1 );
+				palettes.Add( m_palettes[ m_palette_pos ].m_palette2 );
+				palettes.Add( m_palettes[ m_palette_pos ].m_palette3 );
 				
 				return palettes;  
 			}
@@ -146,6 +184,10 @@ namespace MAPeD
 			
 			name = m_id.ToString();
 			
+			m_palettes = new List< palette16_data >( 16 );
+			m_palettes.Add( new palette16_data() );
+			m_palette_pos = 0;
+			
 			m_scr_data = new List< byte[] >( 100 );
 			
 			m_patterns_data	= new Dictionary< string, List< pattern_data > >( 10 );
@@ -157,15 +199,48 @@ namespace MAPeD
 			--m_id;
 			
 			m_CHR_bank 	= null;
-			m_palette0 	= null;
-			m_palette1 	= null;
-			m_palette2 	= null;
-			m_palette3 	= null;
+
+			palettes_clear();
+			
 			m_blocks 	= null;
 			m_tiles 	= null;
 			
 			m_scr_data.Clear();
 		}			
+
+		private void palettes_clear()
+		{
+			m_palettes.ForEach( delegate( palette16_data _obj ) { _obj.reset(); } );
+			m_palettes.Clear();
+		}
+
+		public bool palette_copy()
+		{
+			if( m_palettes.Count < utils.CONST_PALETTES_COUNT )
+			{
+				m_palettes.Add( m_palettes[ palette_pos ].copy() );
+				m_palette_pos = m_palettes.Count - 1;
+				
+				return true;
+			}
+			
+			return false;
+		}
+		
+		public bool palette_delete()
+		{
+			if( m_palettes.Count > 1 )
+			{
+				m_palettes[ palette_pos ].reset();
+				m_palettes.RemoveAt( palette_pos );
+				
+				m_palette_pos = Math.Min( m_palette_pos, m_palettes.Count - 1 );
+				
+				return true;
+			}
+			
+			return false;
+		}
 		
 		public pattern_data get_pattern_by_name( string _name )
 		{
@@ -249,14 +324,17 @@ namespace MAPeD
 		{
 			tiles_data data = new tiles_data();
 			
-			Array.Copy( m_CHR_bank, 0, data.CHR_bank,	0, m_CHR_bank.Length );
-			Array.Copy( m_palette0, 0, data.m_palette0, 0, utils.CONST_PALETTE_SMALL_NUM_COLORS );  
-			Array.Copy( m_palette1, 0, data.m_palette1, 0, utils.CONST_PALETTE_SMALL_NUM_COLORS );
-			Array.Copy( m_palette2, 0, data.m_palette2, 0, utils.CONST_PALETTE_SMALL_NUM_COLORS );
-			Array.Copy( m_palette3, 0, data.m_palette3, 0, utils.CONST_PALETTE_SMALL_NUM_COLORS );
- 
-			Array.Copy( m_blocks, 	0, data.m_blocks, 	0, utils.CONST_BLOCKS_USHORT_SIZE );
-			Array.Copy( m_tiles, 	0, data.m_tiles, 	0, utils.CONST_TILES_UINT_SIZE );
+			Array.Copy( m_CHR_bank, data.CHR_bank,	m_CHR_bank.Length );
+			
+			data.palettes_clear();
+			
+			for( int i = 0; i < m_palettes.Count; i++ )
+			{
+				data.m_palettes.Add( m_palettes[ i ].copy() );
+			}
+			
+			Array.Copy( m_blocks,	data.m_blocks,	utils.CONST_BLOCKS_USHORT_SIZE );
+			Array.Copy( m_tiles,	data.m_tiles,	utils.CONST_TILES_UINT_SIZE );
 
 			// COPY SCREENS
 			{
@@ -1092,7 +1170,7 @@ namespace MAPeD
 			}
 		}
 
-		public void load_tiles_patterns( BinaryReader _br )
+		public void load_tiles_patterns( byte _ver, BinaryReader _br )
 		{
 			List< pattern_data > pattrn_list;
 			
@@ -1114,7 +1192,7 @@ namespace MAPeD
 				
 				for( int pattrn_n = 0; pattrn_n < patterns_cnt; pattrn_n++ )
 				{
-					pattrn_list.Add( pattern_data.load( _br ) );
+					pattrn_list.Add( pattern_data.load( _ver, _br ) );
 				}
 			}
 		}
@@ -1124,10 +1202,19 @@ namespace MAPeD
 			int i;
 			
 			_bw.Write( m_CHR_bank );
-			_bw.Write( m_palette0 );
-			_bw.Write( m_palette1 );
-			_bw.Write( m_palette2 );
-			_bw.Write( m_palette3 );
+
+			// save palettes
+			{
+				_bw.Write( m_palettes.Count );
+				
+				for( i = 0; i < m_palettes.Count; i++ )
+				{
+					_bw.Write( m_palettes[ i ].m_palette0 );
+					_bw.Write( m_palettes[ i ].m_palette1 );
+					_bw.Write( m_palettes[ i ].m_palette2 );
+					_bw.Write( m_palettes[ i ].m_palette3 );
+				}
+			}
 			
 			for( i = 0; i < utils.CONST_BLOCKS_USHORT_SIZE; i++ )
 			{
@@ -1148,7 +1235,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void load( BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode )
+		public void load( byte _ver, BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode )
 		{
 			int i;
 			UInt16 val;
@@ -1188,17 +1275,45 @@ namespace MAPeD
 				m_CHR_bank 	= _br.ReadBytes( m_CHR_bank.Length );
 			}
 		
-			m_palette0	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
-			m_palette1	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
-			m_palette2	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
-			m_palette3	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
-
-#if DEF_NES
-			if( sms_file )
+			if( _ver == 1 )
 			{
-				m_palette1[ 0 ] = m_palette2[ 0 ] = m_palette3[ 0 ] = m_palette0[ 0 ];
+				m_palettes[ 0 ].m_palette0	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
+				m_palettes[ 0 ].m_palette1	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
+				m_palettes[ 0 ].m_palette2	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
+				m_palettes[ 0 ].m_palette3	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );				
+#if DEF_NES
+				if( sms_file )
+				{
+					m_palettes[ 0 ].m_palette1[ 0 ] = m_palettes[ 0 ].m_palette2[ 0 ] = m_palettes[ 0 ].m_palette3[ 0 ] = m_palettes[ 0 ].m_palette0[ 0 ];
+				}
+#endif				
 			}
-#endif
+			else
+			{
+				palettes_clear();
+				
+				palette16_data plt16 = null;
+				
+				int size = _br.ReadInt32();
+				
+				for( i = 0; i < size; i++ )
+				{
+					plt16 = new palette16_data();
+					
+					plt16.m_palette0 = _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
+					plt16.m_palette1 = _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
+					plt16.m_palette2 = _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
+					plt16.m_palette3 = _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
+#if DEF_NES
+					if( sms_file )
+					{
+						plt16.m_palette1[ 0 ] = plt16.m_palette2[ 0 ] = plt16.m_palette3[ 0 ] = plt16.m_palette0[ 0 ];
+					}
+#endif					
+					m_palettes.Add( plt16 );
+				}
+			}
+
 			for( i = 0; i < utils.CONST_BLOCKS_USHORT_SIZE; i++ )
 			{
 				val = _br.ReadUInt16();

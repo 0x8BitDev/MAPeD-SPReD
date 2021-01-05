@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 12:17
  */
@@ -708,7 +708,7 @@ namespace MAPeD
 			_bw.Write( utils.CONST_IO_DATA_END );
 		}
 		
-		public void load( BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode, bool _convert_colors )
+		public void load( byte _ver, BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode, bool _convert_colors )
 		{
 			byte data_id = 0;
 			
@@ -723,7 +723,7 @@ namespace MAPeD
 					for( int i = 0; i < tiles_data_cnt; i++ )
 					{
 						tiles_data_create();
-						get_tiles_data( tiles_data_pos ).load( _br, _file_ext, _scr_align_mode );
+						get_tiles_data( tiles_data_pos ).load( _ver, _br, _file_ext, _scr_align_mode );
 					}
 					
 					tiles_data_pos = _br.ReadInt32();
@@ -754,7 +754,7 @@ namespace MAPeD
 						for( int ent_n = 0; ent_n < ents_cnt; ent_n++ )
 						{
 							ent = new entity_data();
-							ent.load( _br );
+							ent.load( _ver, _br );
 							
 							ent_list.Add( ent );
 						}
@@ -770,7 +770,7 @@ namespace MAPeD
 					for( int i = 0; i < layouts_data_cnt; i++ )
 					{
 						layout_data_create();
-						get_layout_data( layouts_data_pos ).load( _br, get_entity_by_name, _file_ext, _scr_align_mode );
+						get_layout_data( layouts_data_pos ).load( _ver, _br, get_entity_by_name, _file_ext, _scr_align_mode );
 					}
 					
 					entity_instance.load_instances_counter( _br );
@@ -831,7 +831,7 @@ namespace MAPeD
 					
 					for( int i = 0; i < tiles_data_cnt; i++ )
 					{
-						m_tiles_data[ i ].load_tiles_patterns( _br );
+						m_tiles_data[ i ].load_tiles_patterns( _ver, _br );
 					}
 				}
 			}

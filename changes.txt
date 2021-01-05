@@ -1,6 +1,8 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+06.01.2021 - Added user defined palettes array
+
 24.12.2020 v0.60b
 
 18.12.2020 - NES: added multidirectional scrolling sample with vertical mirroring and MMC3 IRQ status bar

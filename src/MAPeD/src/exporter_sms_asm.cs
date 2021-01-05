@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 13.09.2018
  * Time: 17:59
  */
@@ -850,10 +850,15 @@ namespace MAPeD
 					
 					for( bank_n = 0; bank_n < banks.Count; bank_n++ )
 					{
-						bw.Write( banks[ bank_n ].palette0 );
-						bw.Write( banks[ bank_n ].palette1 );
-						bw.Write( banks[ bank_n ].palette2 );						
-						bw.Write( banks[ bank_n ].palette3 );
+						tiles = banks[ bank_n ];
+						
+						for( int i = 0; i < tiles.palettes_arr.Count; i++ )
+						{
+							bw.Write( tiles.palettes_arr[ i ].m_palette0 );
+							bw.Write( tiles.palettes_arr[ i ].m_palette1 );
+							bw.Write( tiles.palettes_arr[ i ].m_palette2 );
+							bw.Write( tiles.palettes_arr[ i ].m_palette3 );
+						}
 					}
 					
 					data_size = bw.BaseStream.Length;
@@ -1525,12 +1530,17 @@ namespace MAPeD
 					_sw.WriteLine( label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") lookup table for fast calculation of tile addresses; " + ( RBtnTilesDirColumns.Checked ? "columns by X coordinate":"rows by Y coordinate" ) + " ( 16 bit offset per " + ( RBtnTilesDirColumns.Checked ? "column":"row" ) + " of tiles )\n" );
 				}
 				
-				palette_str = CONST_FILENAME_LEVEL_PREFIX + level_n + "_Palette:\t.byte ";					
+				palette_str = CONST_FILENAME_LEVEL_PREFIX + level_n + "_Palette:";
 				
-				fill_palette_str( tiles.palette0, ref palette_str, false );
-				fill_palette_str( tiles.palette1, ref palette_str, false );
-				fill_palette_str( tiles.palette2, ref palette_str, false );
-				fill_palette_str( tiles.palette3, ref palette_str, true );
+				for( int i = 0; i < tiles.palettes_arr.Count; i++ )
+				{
+					palette_str += "\n\t\t.byte ";
+					
+					fill_palette_str( tiles.palettes_arr[ i ].m_palette0, ref palette_str, false );
+					fill_palette_str( tiles.palettes_arr[ i ].m_palette1, ref palette_str, false );
+					fill_palette_str( tiles.palettes_arr[ i ].m_palette2, ref palette_str, false );
+					fill_palette_str( tiles.palettes_arr[ i ].m_palette3, ref palette_str, true );
+				}
 				
 				_sw.WriteLine( palette_str + "\n" );
 

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 12.12.2018
  * Time: 18:27
  */
@@ -128,7 +128,7 @@ namespace MAPeD
 			_bw.Write( extra_data_size );
 		}
 		
-		public void load( BinaryReader _br, Func< string, entity_data > _get_ent, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode )
+		public void load( byte _ver, BinaryReader _br, Func< string, entity_data > _get_ent, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode )
 		{
 			string				base_ent_name;
 			
@@ -394,7 +394,7 @@ namespace MAPeD
 			_bw.Write( extra_data_size );
 		}
 		
-		public void load( BinaryReader _br )
+		public void load( byte _ver, BinaryReader _br )
 		{
 			m_name 				= _br.ReadString();
 			m_properties 		= _br.ReadString();

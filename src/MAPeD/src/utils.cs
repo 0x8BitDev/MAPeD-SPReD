@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 16.03.2017
  * Time: 16:35
  */
@@ -94,7 +94,7 @@ namespace MAPeD
 		public const string CONST_APP_NAME	= "MAPeD-" + CONST_PLATFORM;
 		
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'M';
-		public const byte CONST_PROJECT_FILE_VER	= 1; 
+		public const byte CONST_PROJECT_FILE_VER	= 2; 
 		
 		public const uint CONST_SPRED_FILE_MAGIC		= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
 		public const uint CONST_SPRED_PROJECT_FILE_VER	= 1;
@@ -196,6 +196,8 @@ namespace MAPeD
 		public const int CONST_NUM_SMALL_PALETTES 			= 4;
 		public const int CONST_PALETTE_SMALL_NUM_COLORS		= 4;
 		public const int CONST_PALETTE_MAIN_NUM_COLORS		= 64;
+		
+		public const int CONST_PALETTES_COUNT				= 16;
 		
 		public const int CONST_CHR_BANK_PAGE_SIDE			= 128;
 		public const int CONST_CHR_BANK_PAGE_SIZE			= CONST_CHR_BANK_PAGE_SIDE * CONST_CHR_BANK_PAGE_SIDE;

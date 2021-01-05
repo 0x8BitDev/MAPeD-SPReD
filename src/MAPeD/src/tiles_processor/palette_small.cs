@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 16:59
  */
@@ -158,6 +158,11 @@ namespace MAPeD
 		public byte[] get_color_inds()
 		{
 			return m_clr_inds;
+		}
+
+		public byte get_selected_slot_color_id()
+		{
+			return m_clr_inds[ m_sel_clr_ind ];
 		}
 		
 		public void set_color_inds( byte[] _plt )
