@@ -469,7 +469,12 @@ namespace MAPeD
 			exp_screen_data	exp_scr;
 			screen_data		scr_data;
 			tiles_data 		tiles = null;
+#if DEF_SMS
+			tiles_data		cntrl_tiles_data = null;
 			
+			bool diff_banks_in_layout 		= false;
+			bool more_than_1_plt_in_bank 	= false;
+#endif
 			ConcurrentDictionary< int, exp_screen_data >	screens	= null;	// ConcurrentDictionary for changing values in foreach
 			
 			List< tiles_data > 	banks 			= new List< tiles_data >( 10 );			
@@ -851,7 +856,9 @@ namespace MAPeD
 					for( bank_n = 0; bank_n < banks.Count; bank_n++ )
 					{
 						tiles = banks[ bank_n ];
-						
+#if DEF_SMS
+						more_than_1_plt_in_bank |= ( tiles.palettes_arr.Count > 1 ) ? true:false;
+#endif
 						for( int i = 0; i < tiles.palettes_arr.Count; i++ )
 						{
 							bw.Write( tiles.palettes_arr[ i ].m_palette0 );
@@ -883,7 +890,9 @@ namespace MAPeD
 				{
 					scr_arr = CONST_FILENAME_LEVEL_PREFIX + level_n + "_ScrArr:";
 				}
-				
+#if DEF_SMS
+				cntrl_tiles_data = null;
+#endif
 				for( int scr_n_Y = 0; scr_n_Y < n_scr_Y; scr_n_Y++ )
 				{
 					for( int scr_n_X = 0; scr_n_X < n_scr_X; scr_n_X++ )
@@ -940,7 +949,17 @@ namespace MAPeD
 								}
 								
 								exp_scr = screens[ scr_key ];
-								
+#if DEF_SMS
+								if( cntrl_tiles_data == null )
+								{
+									cntrl_tiles_data = exp_scr.m_tiles;
+								}
+								else
+								if( cntrl_tiles_data != exp_scr.m_tiles )
+								{
+									diff_banks_in_layout |= true;
+								}
+#endif
 								_sw.WriteLine( level_prefix_str + "Scr" + common_scr_ind + ":" );
 								_sw.WriteLine( "\t.byte " + banks.IndexOf( exp_scr.m_tiles ) + ( enable_comments ? "\t; chr_id":"" ) );
 								
@@ -1014,6 +1033,12 @@ namespace MAPeD
 			}
 			
 			foreach( var key in screens.Keys ) { screens[ key ].destroy(); }
+#if DEF_SMS
+			if( diff_banks_in_layout && more_than_1_plt_in_bank )
+			{
+				MainForm.message_box( "The exported layout contains more than one CHR bank data and at least one CHR bank has more than one palette!\n\nThis can make it difficult to get correct palette data in your code!", "Data Export", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+			}
+#endif
 		}
 
 		private bool compress_and_save_byte( BinaryWriter _bw, byte[] _data, ref int _data_offset )
