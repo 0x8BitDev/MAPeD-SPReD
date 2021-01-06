@@ -1,6 +1,6 @@
 #################################################################################################
 #
-# Copyright 2019 0x8BitDev ( MIT license )
+# Copyright 2019-2021 0x8BitDev ( MIT license )
 #
 # This is an example of using of MAPeD API functions which are available for custom data export
 #
@@ -34,8 +34,10 @@ print 'The active bank is ' + str( mpd_get_active_bank() )
 # Each graphics bank contains: CHR bank, blocks (256), tiles (256), palettes and screens
 for bank_n in xrange( num_banks ):
 	print '\tBank: ' + str( bank_n )
-	for plt_n in xrange( 4 ):
-		print '\t\tPalette' + str( plt_n ) + ': ' + str( mpd_get_palette( bank_n, plt_n ) )
+	for slot_n in xrange( mpd_get_palette_slots( bank_n ) ):
+		print '\t\tPalette' + str( slot_n ) + ':'
+		for plt_n in xrange( 4 ):
+			print '\t\t\t' + str( plt_n ) + ': ' + str( mpd_get_palette( bank_n, plt_n, slot_n ) )
 
 # CHR bank
 # CHR data is stored as image 128x128 (8bit)
@@ -51,7 +53,8 @@ for bank_n in xrange( num_banks ):
 	print '\n\t\tTiles: Array size: ' + str( tiles_data.Count ) + ' --> ' + str( tiles_data )
 
 # Dump 2x2 tiles (blocks) data
-# Each block's value (UInt16) has the following bits description: [ 15-8 -> property_id(4) palette ind(2) not used(2) | CHR ind(8) <-- 7-0 ]
+# Each block's value (UInt16) has the following bits description: 
+# NES/SMS: 15-12 -> Obj id | [10-11 NES: -> Palette id | SMS: -> CHR bank page] | [8-9 NES: not used | SMS: -> Flip flags (01-HFlip | 02-VFlip)] | 7-0 -> CHR id
 # Thereby, four UInt16 values form one 2x2 tile (block)
 	blocks_data = mpd_get_blocks( bank_n );
 	print '\n\t\tBlocks: Array size: ' + str( blocks_data.Count ) + ' --> ' + str( blocks_data )

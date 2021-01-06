@@ -18,7 +18,7 @@
 </P>
 <P LANG="en-US" STYLE="margin-left: 1.19cm; margin-bottom: 0cm; font-style: normal; line-height: 100%; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>MAPeD
-Data Export Python API v1.1</B></FONT></FONT></P>
+Data Export Python API v1.2</B></FONT></FONT></P>
 <HR>
 <P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
 <BR>
@@ -38,6 +38,8 @@ Banks Data</B></SPAN></FONT></A></P>
 <A HREF="#mpd_get_CHR_data|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_CHR_data</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
 <A HREF="#mpd_export_CHR_data|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_export_CHR_data</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_get_palette_slots|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_palette_slots</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
 <A HREF="#mpd_get_palette|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_palette</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
@@ -385,6 +387,43 @@ bytes or <B>-1</B> in case of an error</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
 <BR>
 </P>
+<DIV ID="mpd_get_palette_slots" DIR="LTR"><A NAME="mpd_get_palette_slots|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Int32</SPAN>
+	<B>mpd_get_palette_slots</B>( <SPAN LANG="en-US">Int32</SPAN> _bank_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get the number of palette slots.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the number of
+palette slots or <B>-1</B> in case of incorrect bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
 <DIV ID="mpd_get_palette" DIR="LTR"><A NAME="mpd_get_palette|region"></A>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
@@ -392,7 +431,7 @@ bytes or <B>-1</B> in case of an error</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[Byte]</SPAN>
 	<B>mpd_get_palette</B>( <SPAN LANG="en-US">Int32</SPAN> _bank_ind,
-	<SPAN LANG="en-US">Int32</SPAN> _plt_ind )</FONT></FONT></P>
+	<SPAN LANG="en-US">Int32</SPAN> _plt_ind, <SPAN LANG="en-US">Int32</SPAN> _slot_ind )</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
@@ -414,6 +453,9 @@ graphics bank index</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>_plt_ind &ndash; palette
 index (0-3)</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_slot_ind &ndash; palette
+slot index</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -1364,7 +1406,7 @@ text</FONT></FONT></P>
 </P>
 <P LANG="en-US" STYLE="margin-left: 1.24cm; margin-bottom: 0cm; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Copyright
-(c) 2019-2020 0x8BitDev</FONT></FONT></P>
+(c) 2019-2021 0x8BitDev</FONT></FONT></P>
 <P STYLE="margin-left: 1.24cm; margin-bottom: 0cm; line-height: 100%">
 <BR>
 </P>

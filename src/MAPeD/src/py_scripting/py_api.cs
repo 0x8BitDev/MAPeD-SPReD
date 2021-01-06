@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 22.05.2019
  * Time: 10:30
  */
@@ -54,8 +54,11 @@ namespace MAPeD
 #elif DEF_SMS
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, int, long >( export_CHR_data ) );
 #endif			
-			// byte[] get_palette( int _bank_ind, int _plt_ind )
-			_py_scope.SetVariable( CONST_PREFIX + "get_palette", new Func< int, int, byte[] >( get_palette ) );
+			// int get_palette_slots( int _bank_ind )
+			_py_scope.SetVariable( CONST_PREFIX + "get_palette_slots", new Func< int, int >( get_palette_slots ) );
+	
+			// byte[] get_palette( int _bank_ind, int _plt_ind, int _slot_ind )
+			_py_scope.SetVariable( CONST_PREFIX + "get_palette", new Func< int, int, int, byte[] >( get_palette ) );
 
 			// int num_screens( int _bank_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "num_screens", new Func< int, int >( num_screens ) );
@@ -389,28 +392,50 @@ namespace MAPeD
 			
 			return data_size;
 		}
-		
-		public byte[] get_palette( int _bank_ind, int _plt_ind )
+
+		public int get_palette_slots( int _bank_ind )
 		{
 			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
 			
-			if( data != null && _plt_ind >= 0 && _plt_ind < utils.CONST_NUM_SMALL_PALETTES )
+			if( data != null )
 			{
-				byte[] plt = null; 
-				
-				switch( _plt_ind )
+				return data.palettes_arr.Count; 
+			}
+			
+			return -1;
+		}
+		
+		public byte[] get_palette( int _bank_ind, int _plt_ind, int _slot_ind )
+		{
+			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
+			
+			if( data != null )
+			{
+				if( _plt_ind >= 0 && _plt_ind < utils.CONST_NUM_SMALL_PALETTES )
 				{
-					case 0: { plt = data.palette0; } break;
-					case 1: { plt = data.palette1; } break;
-					case 2: { plt = data.palette2; } break;
-					case 3: { plt = data.palette3; } break;
+					if( _slot_ind >= 0 && _slot_ind < data.palettes_arr.Count )
+					{
+						byte[] plt = null; 
+						
+						switch( _plt_ind )
+						{
+							case 0: { plt = data.palettes_arr[ _slot_ind ].m_palette0; } break;
+							case 1: { plt = data.palettes_arr[ _slot_ind ].m_palette1; } break;
+							case 2: { plt = data.palettes_arr[ _slot_ind ].m_palette2; } break;
+							case 3: { plt = data.palettes_arr[ _slot_ind ].m_palette3; } break;
+						}
+						
+						byte[] plt_copy = new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
+						
+						plt.CopyTo( plt_copy, 0 );
+						
+						return plt_copy;
+					}
+					else
+						throw new Exception( CONST_PREFIX + "get_palette error! Invalid argument: _slot_ind!\n" );
 				}
-				
-				byte[] plt_copy = new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
-				
-				plt.CopyTo( plt_copy, 0 );
-				
-				return plt_copy;
+				else
+					throw new Exception( CONST_PREFIX + "get_palette error! Invalid argument: _plt_ind!\n" );
 			}
 				
 			return null;
