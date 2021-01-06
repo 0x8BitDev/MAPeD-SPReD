@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+06.01.2021 - SMS: added column ordered palette
 06.01.2021 - Added user defined palettes array
 
 24.12.2020 v0.60b
@@ -55,6 +56,8 @@ MAPeD-NES/SMS:
 
 SPReD-NES/SMS:
 ~~~~~~~~~~~~~~~
+
+06.01.2021 - SMS: added column ordered palette
 
 24.12.2020 v0.60b
 

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 14:57
  */
@@ -113,13 +113,22 @@ namespace SPReD
 				clr = main_palette[ i ];
 				
 				utils.brush.Color = Color.FromArgb( (clr&0xff0000)>>16, (clr&0xff00)>>8, clr&0xff );
+#if DEF_NES		// row ordered data				
 				m_gfx.FillRectangle( utils.brush, ( i << 4 )%256, ( i>>4 ) << 4, 16, 16 );
+#elif DEF_SMS	// column ordered data
+				m_gfx.FillRectangle( utils.brush, ( i >> 2 ) << 4, ( i & 0x03 ) << 4, 16, 16 );
+#endif
 			}
 			
 			if( m_sel_clr_ind >= 0 )
 			{
+#if DEF_NES		// row ordered data				
 				int x = ( ( m_sel_clr_ind % 16 ) << 4 );
 				int y = ( ( m_sel_clr_ind >> 4 ) << 4 );
+#elif DEF_SMS	// column ordered data
+				int x = ( ( m_sel_clr_ind >> 2 ) << 4 );
+				int y = ( ( m_sel_clr_ind % 4  ) << 4 );
+#endif			
 				
 				m_pen.Color = Color.White;
 				m_gfx.DrawRectangle( m_pen, x+2, y+2, 13, 13 );
@@ -133,8 +142,11 @@ namespace SPReD
 		
 		private void Layout_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
-			m_sel_clr_ind = ( e.X >> 4 ) + 16 * ( e.Y >> 4 );
-			
+#if DEF_NES		// row ordered data				
+			m_sel_clr_ind = ( e.X >> 4 ) + ( ( e.Y >> 4 ) << 4 );
+#elif DEF_SMS	// column ordered data
+			m_sel_clr_ind = ( ( e.X >> 4 ) << 2 ) + ( e.Y >> 4 );
+#endif			
 			update();
 			
 			// dispatch an index of a selected color to the active palette

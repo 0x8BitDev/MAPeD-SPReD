@@ -166,14 +166,22 @@ namespace MAPeD
 				clr = main_palette[ i ];
 				
 				utils.brush.Color = Color.FromArgb( (clr&0xff0000)>>16, (clr&0xff00)>>8, clr&0xff );
+#if DEF_NES		// row ordered data				
 				m_gfx.FillRectangle( utils.brush, ( i << 4 )%256, ( i>>4 ) << 4, 16, 16 );
+#elif DEF_SMS	// column ordered data
+				m_gfx.FillRectangle( utils.brush, ( i >> 2 ) << 4, ( i & 0x03 ) << 4, 16, 16 );
+#endif
 			}
 			
 			if( m_sel_clr_ind >= 0 )
 			{
+#if DEF_NES		// row ordered data				
 				int x = ( ( m_sel_clr_ind % 16 ) << 4 );
 				int y = ( ( m_sel_clr_ind >> 4 ) << 4 );
-				
+#elif DEF_SMS	// column ordered data
+				int x = ( ( m_sel_clr_ind >> 2 ) << 4 );
+				int y = ( ( m_sel_clr_ind % 4  ) << 4 );
+#endif			
 				m_pen.Color = utils.CONST_COLOR_PALETTE_SELECTED_INNER_BORDER;
 				m_gfx.DrawRectangle( m_pen, x+2, y+2, 13, 13 );
 				
@@ -188,8 +196,11 @@ namespace MAPeD
 		
 		private void Layout_MouseClick(object sender, MouseEventArgs e)
 		{
-			byte sel_clr_ind = (byte)(( e.X >> 4 ) + 16 * ( e.Y >> 4 ));
-			
+#if DEF_NES		// row ordered data				
+			byte sel_clr_ind = (byte)(( e.X >> 4 ) + ( ( e.Y >> 4 ) << 4 ));
+#elif DEF_SMS	// column ordered data
+			byte sel_clr_ind = (byte)((( e.X >> 4 ) << 2 ) + ( e.Y >> 4 ));
+#endif			
 			if( m_sel_clr_ind >= 0 && sel_clr_ind != m_sel_clr_ind && m_plt_arr[ 0 ].get_color_inds() != null )
 			{
 				dispatch_event_need_gfx_update();
