@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 14.08.2020
  * Time: 16:25
  */
@@ -89,6 +89,7 @@ namespace MAPeD
 					
 					richTextBox.Text += "\nCHRs: " + ff_CHR + " / Blocks(2x2): " + ff_block + " / Tiles(4x4): " + ff_tile;
 					richTextBox.Text += "\nScreens: " + data.scr_data.Count;
+					richTextBox.Text += "\nPalettes: " + data.palettes_arr.Count;
 				}
 			}
 		}
