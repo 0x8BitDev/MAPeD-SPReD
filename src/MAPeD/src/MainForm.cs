@@ -1908,10 +1908,18 @@ namespace MAPeD
 					
 					if( m_optimization_form.need_update_screen_list )
 					{
-						// update screens images, just for testing purposes
-						m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), true, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
+						// update screens images
+						m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), true, -1 );
+						
+						if( !CheckBoxLayoutEditorAllBanks.Checked )
+						{
+							m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), true, CBoxCHRBanks.SelectedIndex );
+						}
+
+						enable_update_screens_btn( false );
 						
 						m_layout_editor.set_active_screen( -1 );
+						m_layout_editor.update();
 					}
 					
 					m_screen_editor.reset_last_empty_tile_ind();
