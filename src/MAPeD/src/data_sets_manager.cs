@@ -45,11 +45,6 @@ namespace MAPeD
 		}
 	}
 	
-	public delegate void SetLayoutData();
-	public delegate void SetTilesData();
-	public delegate void SetScreenData();
-	public delegate void SetEntitiesData();
-	
 	public delegate bool ReturnBoolEvent( object sender, EventArgs e );
 	
 	[DataContract]
@@ -66,9 +61,13 @@ namespace MAPeD
 		public event ReturnBoolEvent DeleteGroup;
 
 		[DataMember]
-		private string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ) + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_USHORT_SIZE + " | Screen Data Size: " + utils.CONST_SCREEN_TILES_CNT;
+		private string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ) + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_UINT_SIZE + " | Screen Data Size: " + utils.CONST_SCREEN_TILES_CNT;
 		[DataMember]
-		private string block_desc = "(bits): 15-12 -> Obj id | [10-11 NES: -> Palette id | SMS: -> CHR bank page] | [8-9 NES: not used | SMS: -> Flip flags (01-HFlip | 02-VFlip)] | 7-0 -> CHR id";
+		private string NES_block_desc_bits = "[ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)";
+		[DataMember]
+		private string SMS_block_desc_bits = "[ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)";
+		[DataMember]
+		private string PCE_block_desc_bits = "[ property_id ](4) [ palette ind ](4) [CHR ind](12)";
 		
 		[DataMember]		
 		private List< layout_data >	m_layouts_data	= null;
@@ -783,6 +782,8 @@ namespace MAPeD
 					bool ignore_palette = ( _file_ext == utils.CONST_SMS_FILE_EXT ) ? true:false;
 #elif DEF_SMS
 					bool ignore_palette = ( _file_ext == utils.CONST_NES_FILE_EXT ) ? true:false;
+#elif DEF_PCE
+					bool ignore_palette = false;
 #endif				
 					if( ignore_palette )
 					{
@@ -797,15 +798,15 @@ namespace MAPeD
 							}
 							while( ++data_pos != plt_main.Length );
 							
-							List< byte[] > palettes = null;
+							List< int[] > palettes = null;
 							
 							for( int data_n = 0; data_n < tiles_data_cnt; data_n++ )
 							{
-								palettes = get_tiles_data( data_n ).palettes;
+								palettes = get_tiles_data( data_n ).subpalettes;
 								
 								for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
 								{
-									palettes[ i >> 2 ][ i & 0x03 ] = ( byte )utils.find_nearest_color_ind( plt_main[ palettes[ i >> 2 ][ i & 0x03 ] ] );
+									palettes[ i >> 2 ][ i & 0x03 ] = utils.find_nearest_color_ind( plt_main[ palettes[ i >> 2 ][ i & 0x03 ] ] );
 								}
 							}
 							
@@ -909,7 +910,7 @@ namespace MAPeD
 				{
 					for( int plt_n = 0; plt_n < utils.CONST_PALETTE_SMALL_NUM_COLORS * utils.CONST_NUM_SMALL_PALETTES; plt_n++ )
 					{
-						data.palettes[ plt_n >> 2 ][ plt_n & 0x03 ] = (byte)_br.ReadInt32();
+						data.subpalettes[ plt_n >> 2 ][ plt_n & 0x03 ] = (byte)_br.ReadInt32();
 					}
 				}
 			}
@@ -917,6 +918,7 @@ namespace MAPeD
 			return res ? CHR_cnt:-1;
 		}
 		
+#if DEF_NES || DEF_SMS
 		public int merge_CHR_bin( BinaryReader _br )
 		{
 			tiles_data data = get_tiles_data( tiles_data_pos );
@@ -992,7 +994,7 @@ namespace MAPeD
 			
 			return added_CHRs;
 		}
-		
+#endif //DEF_NES || DEF_SMS
 		public void export_entity_asm( StreamWriter _sw, string _db, string _num_pref )
 		{
 			bool enable_comments = true;

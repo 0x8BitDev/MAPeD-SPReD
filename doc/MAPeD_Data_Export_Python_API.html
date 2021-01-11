@@ -18,7 +18,7 @@
 </P>
 <P LANG="en-US" STYLE="margin-left: 1.19cm; margin-bottom: 0cm; font-style: normal; line-height: 100%; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>MAPeD
-Data Export Python API v1.2</B></FONT></FONT></P>
+Data Export Python API v1.3</B></FONT></FONT></P>
 <HR>
 <P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
 <BR>
@@ -244,7 +244,7 @@ bytes )</FONT></FONT></P>
 	<BR>
 	</P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[UInt16]</SPAN>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[UInt32]</SPAN>
 	<B>mpd_get_blocks</B>( <SPAN LANG="en-US">Int32</SPAN> _bank_ind )</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
@@ -255,6 +255,31 @@ bytes )</FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get an array of blocks ( 2x2 tiles ) in a graphics bank.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">E</SPAN></SPAN><SPAN STYLE="font-weight: normal">ach
+block's CHR data (UInt32) has the following bits description:</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>
+<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal"><b>NES:</b> 15.. [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8) ..0
+</SPAN></SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>
+<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal"><b>SMS:</b> 15.. [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9) ..0
+</SPAN></SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>
+<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal"><b>PCE:</b> 19.. [ property_id ](4) [ palette ind ](4) [CHR ind](12) ..0
+</SPAN></SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>
+<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Four UInt32 values form one 2x2 tile (block).
+</SPAN></SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -273,19 +298,6 @@ graphics bank index</FONT></FONT></P>
 blocks data array </SPAN></SPAN><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">or
 </SPAN></SPAN><SPAN LANG="en-US"><B>null</B></SPAN> <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">in
 case of incorrect bank index</SPAN></SPAN></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
-<BR>
-</P>
-<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">E</SPAN></SPAN><SPAN STYLE="font-weight: normal">ach
-block (UInt16) has the following bits description: [ 15-8 -&gt;
-property_id(4) [<b>NES</b>:palette ind | <b>SMS</b>:CHR bank page*](2) [<b>NES</b>:not used | <b>SMS</b>:flip flags (01-HFlip | 02-VFlip)](2) | CHR ind(8) &lt;-- 7-0 ].
-</SPAN>Thereby, four UInt16 values form one block <SPAN LANG="en-US">(
-</SPAN>2x2 tile <SPAN LANG="en-US">)</SPAN>.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>
-<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">* One CHR bank page consists of 16x16 CHRs.
-</SPAN></SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -429,7 +441,7 @@ palette slots or <B>-1</B> in case of incorrect bank index</FONT></FONT></P>
 	<BR>
 	</P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[Byte]</SPAN>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[Int32]</SPAN>
 	<B>mpd_get_palette</B>( <SPAN LANG="en-US">Int32</SPAN> _bank_ind,
 	<SPAN LANG="en-US">Int32</SPAN> _plt_ind, <SPAN LANG="en-US">Int32</SPAN> _slot_ind )</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
@@ -462,7 +474,7 @@ slot index</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the 4 bytes array of
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the 4 integers array of
 color indices or <B>null</B> in case of incorrect bank index</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>

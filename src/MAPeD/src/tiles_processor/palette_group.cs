@@ -16,17 +16,15 @@ namespace MAPeD
 	/// </summary>
 	///
 
-	public delegate void UpdateColor();	
-	
 	public class palette_group : drawable_base
 	{
 		public event EventHandler NeedGFXUpdate;
 		public event EventHandler UpdateColor;
 		
 #if DEF_NES		
-		private byte m_sel_clr_ind		= 13;
-#elif DEF_SMS		
-		private byte m_sel_clr_ind		= 0;
+		private int m_sel_clr_ind		= 13;
+#else
+		private int m_sel_clr_ind		= 0;
 #endif		
 		private int m_active_plt_id		= -1;
 		
@@ -47,7 +45,7 @@ namespace MAPeD
 						plt = m_plt_arr[ i ]; 
 						plt.active = true;
 						
-						m_sel_clr_ind = (byte)plt.get_color_inds()[ plt.color_slot ];						
+						m_sel_clr_ind = plt.get_color_inds()[ plt.color_slot ];						
 						
 						update();
 					}
@@ -81,6 +79,8 @@ namespace MAPeD
 															0x00aaaa, 0x55aaaa, 0xaaaaaa, 0xffaaaa, 0x00ffaa, 0x55ffaa, 0xaaffaa, 0xffffaa,
 															0x0000ff, 0x5500ff, 0xaa00ff, 0xff00ff, 0x0055ff, 0x5555ff, 0xaa55ff, 0xff55ff,
 															0x00aaff, 0x55aaff, 0xaaaaff, 0xffaaff, 0x00ffff, 0x55ffff, 0xaaffff, 0xffffff };
+#elif DEF_PCE
+		private static int[] m_main_palette = new int[ utils.CONST_PALETTE_MAIN_NUM_COLORS ];
 #endif
 		public int[] main_palette
 		{
@@ -110,14 +110,26 @@ namespace MAPeD
 																				new palette_small( 1, _plt1 ),
 																			 	new palette_small( 2, _plt2 ),
 																				new palette_small( 3, _plt3 ) };
-									
-			for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+			int i;
+				
+			for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
 			{
 				m_plt_arr[ i ].ActivePalette += new EventHandler( update_palettes );
 			}
 			
 			m_pix_box.MouseClick += new MouseEventHandler( this.Layout_MouseClick );
-			
+#if DEF_PCE
+			int r, g, b;
+
+			for( i = 0; i < utils.CONST_PALETTE_MAIN_NUM_COLORS; i++ )
+			{
+			   b = 36 * ( i & 0x007 );
+			   r = 36 * ( ( i & 0x038 ) >> 3 );
+			   g = 36 * ( ( i & 0x1c0 ) >> 6 );
+			   
+			   m_main_palette[ i ] = ( r << 16 ) | ( g << 8 ) | b;
+			}
+#endif			
 			update();
 		}
 		
@@ -170,6 +182,8 @@ namespace MAPeD
 				m_gfx.FillRectangle( utils.brush, ( i << 4 )%256, ( i>>4 ) << 4, 16, 16 );
 #elif DEF_SMS	// column ordered data
 				m_gfx.FillRectangle( utils.brush, ( i >> 2 ) << 4, ( i & 0x03 ) << 4, 16, 16 );
+#elif DEF_PCE	// column ordered data
+				m_gfx.FillRectangle( utils.brush, ( i >> 3 ) << 2, ( i & 0x07 ) << 3, 4, 8 );
 #endif
 			}
 			
@@ -181,12 +195,21 @@ namespace MAPeD
 #elif DEF_SMS	// column ordered data
 				int x = ( ( m_sel_clr_ind >> 2 ) << 4 );
 				int y = ( ( m_sel_clr_ind % 4  ) << 4 );
-#endif			
+#elif DEF_PCE	// column ordered data
+				int x = ( ( m_sel_clr_ind >> 3 ) << 2 );
+				int y = ( ( m_sel_clr_ind % 8  ) << 3 );
+#endif
+
+#if !DEF_PCE
 				m_pen.Color = utils.CONST_COLOR_PALETTE_SELECTED_INNER_BORDER;
 				m_gfx.DrawRectangle( m_pen, x+2, y+2, 13, 13 );
 				
 				m_pen.Color = utils.CONST_COLOR_PALETTE_SELECTED_OUTER_BORDER;
 				m_gfx.DrawRectangle( m_pen, x+1, y+1, 15, 15 );
+#else
+				m_pen.Color = utils.CONST_COLOR_PALETTE_SELECTED_INNER_BORDER;
+				m_gfx.DrawRectangle( m_pen, x+1, y+1, 3, 7 );
+#endif
 			}
 			
 			draw_border( Color.Black );
@@ -197,9 +220,11 @@ namespace MAPeD
 		private void Layout_MouseClick(object sender, MouseEventArgs e)
 		{
 #if DEF_NES		// row ordered data				
-			byte sel_clr_ind = (byte)(( e.X >> 4 ) + ( ( e.Y >> 4 ) << 4 ));
+			int sel_clr_ind = ( e.X >> 4 ) + ( ( e.Y >> 4 ) << 4 );
 #elif DEF_SMS	// column ordered data
-			byte sel_clr_ind = (byte)((( e.X >> 4 ) << 2 ) + ( e.Y >> 4 ));
+			int sel_clr_ind = (( e.X >> 4 ) << 2 ) + ( e.Y >> 4 );
+#elif DEF_PCE	// column ordered data
+			int sel_clr_ind = (( e.X >> 2 ) << 3 ) + ( e.Y >> 3 );
 #endif			
 			if( m_sel_clr_ind >= 0 && sel_clr_ind != m_sel_clr_ind && m_plt_arr[ 0 ].get_color_inds() != null )
 			{
@@ -285,7 +310,7 @@ namespace MAPeD
 			
 			active_palette = plt.active ? plt.id:-1;
 			
-			m_sel_clr_ind = (byte)plt.get_color_inds()[ plt.color_slot ];
+			m_sel_clr_ind = plt.get_color_inds()[ plt.color_slot ];
 			
 			update();
 		}

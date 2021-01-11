@@ -19,19 +19,51 @@ namespace MAPeD
 	public class palette16_data
 	{
 #if DEF_NES		
-		public byte[] m_palette0	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 1+16 ), (byte)( 1+32 ), (byte)( 1+48 ) };
-		public byte[] m_palette1	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 4+16 ), (byte)( 4+32 ), (byte)( 4+48 ) };
-		public byte[] m_palette2	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 7+16 ), (byte)( 7+32 ), (byte)( 7+48 ) };
-		public byte[] m_palette3	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)14), (byte)( 11+16 ), (byte)( 11+32 ), (byte)( 11+48 ) };
+		public int[] m_palette0	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 14, ( 1+16 ), ( 1+32 ), ( 1+48 ) };
+		public int[] m_palette1	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 14, ( 4+16 ), ( 4+32 ), ( 4+48 ) };
+		public int[] m_palette2	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 14, ( 7+16 ), ( 7+32 ), ( 7+48 ) };
+		public int[] m_palette3	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 14, ( 11+16 ),( 11+32 ),( 11+48 ) };
 #elif DEF_SMS
-		public byte[] m_palette0	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)0), (byte)( 3 ),  (byte)( 7 ),  (byte)( 11 ) };
-		public byte[] m_palette1	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)17), (byte)( 20 ), (byte)( 24 ), (byte)( 28 ) };
-		public byte[] m_palette2	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)34), (byte)( 37 ), (byte)( 41 ), (byte)( 45 ) };
-		public byte[] m_palette3	= new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ((byte)51), (byte)( 54 ), (byte)( 58 ), (byte)( 62 ) };
+		public int[] m_palette0	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 0,  3,  7,  11 };
+		public int[] m_palette1	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 17, 20, 24, 28 };
+		public int[] m_palette2	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 34, 37, 41, 45 };
+		public int[] m_palette3	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 51, 54, 58, 62 };
+#elif DEF_PCE
+		public int[] m_palette0	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 0, 250, 260, 270 };
+		public int[] m_palette1	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 120, 130, 140, 150 };
+		public int[] m_palette2	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 160, 170, 180, 190 };
+		public int[] m_palette3	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 380, 390, 400, 450 };
 #endif
+		private List< int[] > m_subpalettes	= null;
+		
+		public List< int[] > subpalettes
+		{
+			get 
+			{
+				if( m_subpalettes == null )
+				{
+					m_subpalettes = new List< int[] >( 4 );
+					
+					m_subpalettes.Add( m_palette0 );
+					m_subpalettes.Add( m_palette1 );
+					m_subpalettes.Add( m_palette2 );
+					m_subpalettes.Add( m_palette3 );
+				}
+				
+				return m_subpalettes;  
+			}
+			set {}
+		}
+		
 		public void reset()
 		{
-			m_palette0 = m_palette1 = m_palette2 = m_palette3 = null; 
+			m_palette0 = m_palette1 = m_palette2 = m_palette3 = null;
+			
+			if( m_subpalettes != null )
+			{
+				m_subpalettes.Clear();
+				m_subpalettes = null;
+			}
 		}
 		
 		public palette16_data copy()
@@ -50,18 +82,23 @@ namespace MAPeD
 	[DataContract]
 	public class tiles_data
 	{
-		private static ushort CONST_MASK_FLIP			= 0x03;
-		private static ushort CONST_BLOCK_MASK_FLIP		= (ushort)( CONST_MASK_FLIP << 8 );
-#if DEF_NES
-		private static ushort CONST_MASK_PALETTE		= 0x03;
-		private static ushort CONST_BLOCK_MASK_PALETTE	= (ushort)( CONST_MASK_PALETTE << 10 );
-#elif DEF_SMS
-		private static ushort CONST_MASK_CHR_BANK_PAGE			= 0x03; 
-		private static ushort CONST_BLOCK_MASK_CHR_BANK_PAGE 	= (ushort)( CONST_MASK_CHR_BANK_PAGE << 10 );
+#if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
+		private static uint CONST_MASK_FLIP			= 0x03;
+		private static uint CONST_BLOCK_MASK_FLIP	= ( CONST_MASK_FLIP << 10 );
 #endif
-		private static ushort CONST_MASK_OBJ_ID			= 0x0f; 
-		private static ushort CONST_BLOCK_MASK_OBJ_ID	= (ushort)( CONST_MASK_OBJ_ID << 12 );
-		
+#if DEF_NES
+		private static uint CONST_MASK_PALETTE			= 0x03;
+		private static uint CONST_BLOCK_MASK_PALETTE	= ( CONST_MASK_PALETTE << 10 );
+#elif DEF_PCE
+		private static uint CONST_MASK_PALETTE			= 0x0f;
+		private static uint CONST_BLOCK_MASK_PALETTE	= ( CONST_MASK_PALETTE << 12 );
+#endif
+		private static uint CONST_MASK_OBJ_ID		= 0x0f; 
+#if DEF_PCE
+		private static uint CONST_BLOCK_MASK_OBJ_ID	= ( CONST_MASK_OBJ_ID << 16 );
+#else
+		private static uint CONST_BLOCK_MASK_OBJ_ID	= ( CONST_MASK_OBJ_ID << 12 );
+#endif
 		private static int m_id	= -1;
 		
 		private string m_name	= null;
@@ -72,8 +109,11 @@ namespace MAPeD
 		private List< palette16_data > m_palettes	= null;
 		private int	m_palette_pos					= -1;
 		
-		private ushort[] m_blocks	= new ushort[ utils.CONST_BLOCKS_USHORT_SIZE ];	// [ 15-8 -> property_id(4) [ NES:palette ind SMS:CHR bank page ](2) [ NES: not used SMS: hv_flip ](2) | CHR ind(8) <-- 7-0 ]
-		private uint[] m_tiles		= new uint[ utils.CONST_TILES_UINT_SIZE ];
+		// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
+		// SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
+		// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
+		private uint[] m_blocks	= new uint[ utils.CONST_BLOCKS_UINT_SIZE ];
+		private uint[] m_tiles	= new uint[ utils.CONST_TILES_UINT_SIZE ];
 		
 		private List< byte[] >	m_scr_data	= null;
 		
@@ -124,48 +164,41 @@ namespace MAPeD
 			}
 		}
 				
-		public byte[] palette0
+		public int[] palette0
 		{
 			get { return m_palettes[ m_palette_pos ].m_palette0; }
 			set {}
 		}
 
-		public byte[] palette1
+		public int[] palette1
 		{
 			get { return m_palettes[ m_palette_pos ].m_palette1; }
 			set {}
 		}
 		
-		public byte[] palette2
+		public int[] palette2
 		{
 			get { return m_palettes[ m_palette_pos ].m_palette2; }
 			set {}
 		}
 		
-		public byte[] palette3
+		public int[] palette3
 		{
 			get { return m_palettes[ m_palette_pos ].m_palette3; }
 			set {}
 		}
 		
-		public List< byte[] > palettes
+		public List< int[] > subpalettes
 		{
 			get 
 			{
-				List< byte[] > palettes	= new List< byte[] >( 4 );
-				
-				palettes.Add( m_palettes[ m_palette_pos ].m_palette0 );
-				palettes.Add( m_palettes[ m_palette_pos ].m_palette1 );
-				palettes.Add( m_palettes[ m_palette_pos ].m_palette2 );
-				palettes.Add( m_palettes[ m_palette_pos ].m_palette3 );
-				
-				return palettes;  
+				return m_palettes[ m_palette_pos ].subpalettes;  
 			}
 			set {}
 		}
 		
 		[DataMember]
-		public ushort[] blocks
+		public uint[] blocks
 		{
 			get { return m_blocks; }
 			set {}
@@ -333,7 +366,7 @@ namespace MAPeD
 				data.m_palettes.Add( m_palettes[ i ].copy() );
 			}
 			
-			Array.Copy( m_blocks,	data.m_blocks,	utils.CONST_BLOCKS_USHORT_SIZE );
+			Array.Copy( m_blocks,	data.m_blocks,	utils.CONST_BLOCKS_UINT_SIZE );
 			Array.Copy( m_tiles,	data.m_tiles,	utils.CONST_TILES_UINT_SIZE );
 
 			// COPY SCREENS
@@ -407,7 +440,7 @@ namespace MAPeD
 		private void blocks_CHRs_proc( Func< int, int > _func )
 		{
 			int		CHR_ind;
-			ushort	CHR_data;
+			uint	CHR_data;
 			
 			for( int i = 0; i < m_blocks.Length; i++ )
 			{
@@ -468,84 +501,86 @@ namespace MAPeD
 				m_tiles[ i ] = tile;
 			}
 		}
-		
-		public static byte get_block_flags_flip( ushort _block_chr_data )
+#if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
+		public static byte get_block_flags_flip( uint _block_chr_data )
 		{
-			return (byte)( ( _block_chr_data & CONST_BLOCK_MASK_FLIP ) >> 8 );
+			return (byte)( ( _block_chr_data & CONST_BLOCK_MASK_FLIP ) >> 10 );
 		}
 		
-		public static ushort set_block_flags_flip( byte _flip_flag, ushort _block_chr_data )
+		public static uint set_block_flags_flip( byte _flip_flag, uint _block_chr_data )
 		{
-			int var = _block_chr_data;
+			uint var = _block_chr_data;
 			
 			var &= ~CONST_BLOCK_MASK_FLIP;
-			var |= ( ( _flip_flag & CONST_MASK_FLIP ) << 8 );
+			var |= ( ( _flip_flag & CONST_MASK_FLIP ) << 10 );
 			
-			return (ushort)var;
+			return var;
 		}
-		
-#if DEF_NES		
-		public static int get_block_flags_palette( ushort _block_chr_data )
+#endif
+#if DEF_NES || DEF_PCE
+		public static int get_block_flags_palette( uint _block_chr_data )
 		{
-			return ( ( _block_chr_data & CONST_BLOCK_MASK_PALETTE ) >> 10 );
-		}
-		
-		public static ushort set_block_flags_palette( int _plt_ind, ushort _block_chr_data )
-		{
-			int var = _block_chr_data;
-			
-			var &= ~CONST_BLOCK_MASK_PALETTE;
-			var |= ( ( _plt_ind & CONST_MASK_PALETTE ) << 10 );
-			
-			return (ushort)var;
-		}
-#elif DEF_SMS
-		private static int get_block_flags_CHR_bank_page( ushort _block_chr_data )
-		{
-			return ( ( _block_chr_data & CONST_BLOCK_MASK_CHR_BANK_PAGE ) >> 10 );
+#if DEF_NES
+			return ( int )( ( _block_chr_data & CONST_BLOCK_MASK_PALETTE ) >> 10 );
+#elif DEF_PCE
+			return ( int )( ( _block_chr_data & CONST_BLOCK_MASK_PALETTE ) >> 12 );
+#endif
 		}
 
-		private static ushort set_block_flags_CHR_bank_page( int _CHR_bank_page, ushort _block_chr_data )
+		public static uint set_block_flags_palette( int _plt_ind, uint _block_chr_data )
 		{
-			int var = _block_chr_data;
-			
-			var &= ~CONST_BLOCK_MASK_CHR_BANK_PAGE;
-			var |= ( ( _CHR_bank_page & CONST_MASK_CHR_BANK_PAGE ) << 10 );
-			
-			return (ushort)var;
-		}
-		
+			uint var = _block_chr_data;
+#if DEF_NES
+			var &= ~CONST_BLOCK_MASK_PALETTE;
+			var |= ( uint )( ( _plt_ind & CONST_MASK_PALETTE ) << 10 );
+#elif DEF_PCE
+			var &= ~CONST_BLOCK_MASK_PALETTE;
+			var |= ( uint )( ( _plt_ind & CONST_MASK_PALETTE ) << 12 );
 #endif
-		public static int get_block_flags_obj_id( ushort _block_chr_data )
+			return var;
+		}
+#endif //DEF_NES || DEF_PCE
+		public static int get_block_flags_obj_id( uint _block_chr_data )
 		{
-			return ( _block_chr_data & CONST_BLOCK_MASK_OBJ_ID ) >> 12;
+#if DEF_PCE
+			return ( int )( ( _block_chr_data & CONST_BLOCK_MASK_OBJ_ID ) >> 16 );
+#else
+			return ( int )( ( _block_chr_data & CONST_BLOCK_MASK_OBJ_ID ) >> 12 );
+#endif
 		}
 		
-		public static ushort set_block_flags_obj_id( int _obj_id, ushort _block_chr_data )
+		public static uint set_block_flags_obj_id( int _obj_id, uint _block_chr_data )
 		{
-			int var = _block_chr_data;
+			uint var = _block_chr_data;
 			
 			var &= ~CONST_BLOCK_MASK_OBJ_ID;
-			var |= ( ( _obj_id & CONST_MASK_OBJ_ID ) << 12 );
-			
-			return (ushort)var;
+#if DEF_PCE
+			var |= ( uint )( ( _obj_id & CONST_MASK_OBJ_ID ) << 16 );
+#else
+			var |= ( uint )( ( _obj_id & CONST_MASK_OBJ_ID ) << 12 );
+#endif		
+			return var;
 		}
 		
-		public static int get_block_CHR_id( ushort _block_chr_data )
+		public static int get_block_CHR_id( uint _block_chr_data )
 		{
 #if DEF_NES
-			return _block_chr_data & 0x00ff;
+			return ( int )( _block_chr_data & 0x000000ff );
 #elif DEF_SMS
-			return ( _block_chr_data & 0x00ff ) | ( get_block_flags_CHR_bank_page( _block_chr_data ) << 8 );
+			return ( int )( _block_chr_data & 0x000001ff );
+#elif DEF_PCE
+			return ( int )( _block_chr_data & 0x00000fff );
 #endif
 		}
 		
-		public static ushort set_block_CHR_id( int _CHR_id, ushort _block_chr_data )
+		public static uint set_block_CHR_id( int _CHR_id, uint _block_chr_data )
 		{
 #if DEF_NES
-			return (ushort)( ( _block_chr_data & 0xff00 ) | _CHR_id );
+			return ( ( _block_chr_data & 0xffffff00 ) | ( uint )_CHR_id );
 #elif DEF_SMS
-			return (ushort)( ( set_block_flags_CHR_bank_page( ( _CHR_id >> 8 ), _block_chr_data ) & 0xff00 ) | ( _block_chr_data & ( CONST_BLOCK_MASK_FLIP|CONST_BLOCK_MASK_OBJ_ID ) ) | ( _CHR_id & 0xff ) );
+			return ( ( _block_chr_data & 0xfffffe00 ) | ( uint )_CHR_id );
+#elif DEF_PCE
+			return ( ( _block_chr_data & 0xfffff000 ) | ( uint )_CHR_id );
 #endif
 		}
 		
@@ -858,7 +893,7 @@ namespace MAPeD
 
 		public int block_sum( int _block_id )
 		{
-			int sum = 0;
+			uint sum = 0;
 			
 			int block_offset = _block_id << 2;
 			
@@ -867,7 +902,7 @@ namespace MAPeD
 				sum += m_blocks[ block_offset + i ];
 			}
 			
-			return sum;
+			return ( int )sum;
 		}
 
 		public int tile_sum( int _tile_id )
@@ -1057,9 +1092,9 @@ namespace MAPeD
 			}
 		}
 
-#if DEF_NES		
+#if DEF_NES		// TODO: try to update it to '#if DEF_NES #else ...'
 		public long export_CHR( BinaryWriter _bw, bool _save_padding = false )
-#elif DEF_SMS
+#elif DEF_SMS || DEF_PCE
 		public long export_CHR( BinaryWriter _bw, int _bpp )
 #endif			
 		{
@@ -1070,7 +1105,7 @@ namespace MAPeD
 			int val;
 			
 			byte data;
-#if DEF_SMS			
+#if DEF_SMS	|| DEF_PCE
 			int max_clr_ind = ( 2 << ( _bpp - 1 ) ) - 1;
 #endif			
 			int num_CHR_sprites = get_first_free_spr8x8_id();
@@ -1097,7 +1132,7 @@ namespace MAPeD
 						_bw.Write( data );
 					}
 				}
-#elif DEF_SMS
+#elif DEF_SMS || DEF_PCE
 				for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
 				{
 					for( j = 0; j < _bpp; j++ )
@@ -1209,14 +1244,14 @@ namespace MAPeD
 				
 				for( i = 0; i < m_palettes.Count; i++ )
 				{
-					_bw.Write( m_palettes[ i ].m_palette0 );
-					_bw.Write( m_palettes[ i ].m_palette1 );
-					_bw.Write( m_palettes[ i ].m_palette2 );
-					_bw.Write( m_palettes[ i ].m_palette3 );
+					utils.write_int_arr( _bw, m_palettes[ i ].m_palette0 );
+					utils.write_int_arr( _bw, m_palettes[ i ].m_palette1 );
+					utils.write_int_arr( _bw, m_palettes[ i ].m_palette2 );
+					utils.write_int_arr( _bw, m_palettes[ i ].m_palette3 );
 				}
 			}
 			
-			for( i = 0; i < utils.CONST_BLOCKS_USHORT_SIZE; i++ )
+			for( i = 0; i < utils.CONST_BLOCKS_UINT_SIZE; i++ )
 			{
 				_bw.Write( m_blocks[ i ] );
 			}
@@ -1238,16 +1273,17 @@ namespace MAPeD
 		public void load( byte _ver, BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode )
 		{
 			int i;
-			UInt16 val;
+			uint val;
 			
 			bool nes_file = _file_ext == utils.CONST_NES_FILE_EXT ? true:false;
 			bool sms_file = _file_ext == utils.CONST_SMS_FILE_EXT ? true:false;
+			bool pce_file = _file_ext == utils.CONST_PCE_FILE_EXT ? true:false;
 
 #if DEF_SMS
 			int CHR_id;
 			int palette_ind;
 			
-			Dictionary< int, int >	dict_CHR_palette_ind = nes_file ? new Dictionary<int, int>( utils.CONST_BLOCKS_USHORT_SIZE ):null;
+			Dictionary< int, int >	dict_CHR_palette_ind = nes_file ? new Dictionary<int, int>( utils.CONST_BLOCKS_UINT_SIZE ):null;
 #endif
 
 #if DEF_NES
@@ -1269,41 +1305,43 @@ namespace MAPeD
 					m_CHR_bank[ i ] = _br.ReadByte();
 				}
 			}
+#elif DEF_PCE
+			if( false )
+			{
+				//...
+			}
 #endif			
 			else
 			{
 				m_CHR_bank 	= _br.ReadBytes( m_CHR_bank.Length );
 			}
-		
-			if( _ver == 1 )
+
+			// load palette(s)			
 			{
-				m_palettes[ 0 ].m_palette0	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
-				m_palettes[ 0 ].m_palette1	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
-				m_palettes[ 0 ].m_palette2	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
-				m_palettes[ 0 ].m_palette3	= _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );				
-#if DEF_NES
-				if( sms_file )
-				{
-					m_palettes[ 0 ].m_palette1[ 0 ] = m_palettes[ 0 ].m_palette2[ 0 ] = m_palettes[ 0 ].m_palette3[ 0 ] = m_palettes[ 0 ].m_palette0[ 0 ];
-				}
-#endif				
-			}
-			else
-			{
+				int palettes_cnt = ( _ver == 1 ) ? 1: _br.ReadInt32();
+
 				palettes_clear();
 				
 				palette16_data plt16 = null;
 				
-				int size = _br.ReadInt32();
-				
-				for( i = 0; i < size; i++ )
+				for( i = 0; i < palettes_cnt; i++ )
 				{
 					plt16 = new palette16_data();
 					
-					plt16.m_palette0 = _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
-					plt16.m_palette1 = _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
-					plt16.m_palette2 = _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
-					plt16.m_palette3 = _br.ReadBytes( utils.CONST_PALETTE_SMALL_NUM_COLORS );
+					if( _ver <= 2 )
+					{
+						plt16.m_palette0 = utils.read_byte_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+						plt16.m_palette1 = utils.read_byte_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+						plt16.m_palette2 = utils.read_byte_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+						plt16.m_palette3 = utils.read_byte_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+					}
+					else
+					{
+						plt16.m_palette0 = utils.read_int_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+						plt16.m_palette1 = utils.read_int_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+						plt16.m_palette2 = utils.read_int_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+						plt16.m_palette3 = utils.read_int_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
+					}
 #if DEF_NES
 					if( sms_file )
 					{
@@ -1314,36 +1352,58 @@ namespace MAPeD
 				}
 			}
 
-			for( i = 0; i < utils.CONST_BLOCKS_USHORT_SIZE; i++ )
+			for( i = 0; i < utils.CONST_BLOCKS_UINT_SIZE; i++ )
 			{
-				val = _br.ReadUInt16();
+				if( _ver <= 2 )
+				{
+					val = _br.ReadUInt16();
+#if DEF_SMS
+					if( sms_file )
+					{
+						// OLD SMS: [ property_id ](4) [ CHR bank ](2) [ hv_flip ](2) [CHR ind](8)
+						// NEW SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
+						// 11-12 (CHR bank) <-> 9-10 (hv_flip)
+						val = ( val & 0xfffff0ff ) | ( ( ( val & 0x00000300 ) << 2 ) | ( ( val & 0x00000c00 ) >> 2 ) );
+					}
+#endif
+				}
+				else
+				{
+					val = _br.ReadUInt32();
+				}
 #if DEF_NES
 				if( sms_file )
 				{
-					// NES: palette instead of CHR bank page on SMS
+					// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
+					// SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
+
+					// NES: palette instead of hv_flip on SMS
 					if( get_block_flags_palette( val ) > 0 )
 					{
-						val = set_block_flags_palette( 0, val );	// TODO: test it with a CHR_id > 255 !!!!!!!!!!!!!
+						val = set_block_flags_palette( 0, val );
 						val = set_block_CHR_id( 0, val );
 					}
 				}
 #elif DEF_SMS
 				if( nes_file )
 				{
-					// NES: palette
-					palette_ind = get_block_flags_CHR_bank_page( val );
-					val = set_block_flags_CHR_bank_page( 0, val );
+					// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
+					// SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
 					
-					CHR_id = get_block_CHR_id( val );
+					// NES: palette -> SMS: flip flags
+					palette_ind	= get_block_flags_flip( val );
+					val 		= set_block_flags_flip( 0, val );
+					
+					CHR_id 		= get_block_CHR_id( val );
 					
 					if( !dict_CHR_palette_ind.ContainsKey( CHR_id ) )
 					{
-						// SMS: CHR bank page instead of palette on SMS
+						// SMS: flip flags instead of palette on SMS
 						dict_CHR_palette_ind.Add( CHR_id, palette_ind );
 					}					
-					
-					val = set_block_flags_CHR_bank_page( 0, val );
 				}
+#elif DEF_PCE
+				//...
 #endif
 				m_blocks[ i ] = val;
 			}
@@ -1385,7 +1445,7 @@ namespace MAPeD
 			for( i = 0; i < scr_cnt; i++ )
 			{
 				scr_data = scr_alloc_data();
-#if DEF_NES
+#if DEF_NES || DEF_PCE
 				if( sms_file )
 #elif DEF_SMS			
 				if( nes_file )
@@ -1395,7 +1455,7 @@ namespace MAPeD
 					{
 						case data_conversion_options_form.EScreensAlignMode.sam_Top:
 							{
-#if DEF_NES
+#if DEF_NES || DEF_PCE
 								sms_scr = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
 								Array.Copy( sms_scr, 0, scr_data, 0, sms_scr.Length );								
 #elif DEF_SMS
@@ -1409,7 +1469,7 @@ namespace MAPeD
 							
 						case data_conversion_options_form.EScreensAlignMode.sam_Center:
 							{
-#if DEF_NES
+#if DEF_NES || DEF_PCE
 								sms_scr = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
 								Array.Copy( sms_scr, 0, scr_data, ( nes_sms_scr_diff >> 1 ), sms_scr.Length );
 #elif DEF_SMS
@@ -1426,7 +1486,7 @@ namespace MAPeD
 							
 						case data_conversion_options_form.EScreensAlignMode.sam_Bottom:
 							{
-#if DEF_NES
+#if DEF_NES || DEF_PCE
 								sms_scr = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
 								Array.Copy( sms_scr, 0, scr_data, nes_sms_scr_diff, sms_scr.Length );
 #elif DEF_SMS

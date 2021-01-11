@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 13:11
  */
@@ -14,9 +14,6 @@ namespace MAPeD
 	/// Description of CHR_bank_viewer.
 	/// </summary>
 	/// 
-	
-	public delegate void DataChanged();
-	public delegate void CHRSelected();
 	
 	public class CHR_bank_viewer : drawable_base
 	{
@@ -124,18 +121,21 @@ namespace MAPeD
 			
 			m_sel_ind 			= -1;
 			m_sel_block_CHRs 	= 0;
-#if DEF_SMS	
+
 			m_active_page = 0;
 			
 			if( m_data != null )
 			{
-				update_active_page_text();
+				if( utils.CONST_CHR_BANK_PAGES_CNT > 1 )
+				{
+					update_active_page_text();
+				}
 			}
 			else
 			{
 				m_CHR_bank_grp_box.Text = "CHR Bank:";
 			}
-#endif			
+
 			update();
 		}
 		
@@ -153,7 +153,7 @@ namespace MAPeD
 					
 					if( draw_colored == true )
 					{
-						bmp = utils.create_bitmap( m_data.CHR_bank, utils.CONST_CHR_BANK_PAGE_SIDE, utils.CONST_CHR_BANK_PAGE_SIDE, 0, false, palette_group.Instance.active_palette, palette_group.Instance.get_palettes_arr(), utils.CONST_CHR_BANK_PAGE_SIZE * m_active_page );
+						bmp = utils.create_bitmap( m_data.CHR_bank, utils.CONST_CHR_BANK_PAGE_SIDE, utils.CONST_CHR_BANK_PAGE_SIDE, 0, false, palette_group.Instance.active_palette, m_data.palettes_arr[ m_data.palette_pos ], utils.CONST_CHR_BANK_PAGE_SIZE * m_active_page );
 					}
 					else
 					{
@@ -272,8 +272,8 @@ namespace MAPeD
 			{
 				switch( _type )
 				{
-					case utils.ETransformType.tt_vflip: 	{ tiles_data.CHR_bank_vflip( m_data.CHR_bank, m_sel_ind );  		} 	break;
-					case utils.ETransformType.tt_hflip: 	{ tiles_data.CHR_bank_hflip( m_data.CHR_bank, m_sel_ind );  		} 	break;
+					case utils.ETransformType.tt_vflip: 	{ tiles_data.CHR_bank_vflip( m_data.CHR_bank, m_sel_ind );  	} 	break;
+					case utils.ETransformType.tt_hflip: 	{ tiles_data.CHR_bank_hflip( m_data.CHR_bank, m_sel_ind );  	} 	break;
 					case utils.ETransformType.tt_rotate:	{ tiles_data.CHR_bank_rotate_cw( m_data.CHR_bank, m_sel_ind ); 	}	break;
 					
 				default:
@@ -281,6 +281,7 @@ namespace MAPeD
 				}
 				
 				dispatch_event_data_changed();
+				dispatch_event_need_gfx_update();	// just in case, when the Block editor is inactive
 				
 				update();
 			}
@@ -324,7 +325,7 @@ namespace MAPeD
 				{
 #if DEF_NES					
 					m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.get_palettes_arr()[ plt.active_palette ].color_slot );
-#elif DEF_SMS
+#else
 					m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.active_palette * utils.CONST_NUM_SMALL_PALETTES + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
 #endif
 					
@@ -341,7 +342,7 @@ namespace MAPeD
 			
 			return false;
 		}
-#if DEF_SMS		
+
 		public void next_page()
 		{
 			if( m_active_page + 1 < utils.CONST_CHR_BANK_PAGES_CNT )
@@ -370,6 +371,5 @@ namespace MAPeD
 		{
 			m_CHR_bank_grp_box.Text = "CHR Bank: " + "[" + ( m_active_page + 1 ) + "/" + utils.CONST_CHR_BANK_PAGES_CNT + "]";
 		}
-#endif	
 	}
 }

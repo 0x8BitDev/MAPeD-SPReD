@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 29.11.2018
  * Time: 16:49
  */
@@ -15,8 +15,6 @@ namespace MAPeD
 	/// <summary>
 	/// Description of optimization.
 	/// </summary>
-	
-	public delegate void UpdateGraphics();	
 	
 	public partial class optimization_form : Form
 	{
@@ -217,7 +215,7 @@ namespace MAPeD
 			int i;
 			int block_n;
 			
-			ushort block_data;
+			uint block_data;
 			
 			byte[] img_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
 			
@@ -231,7 +229,7 @@ namespace MAPeD
 				if( System.Linq.Enumerable.SequenceEqual( img_buff, utils.tmp_spr8x8_buff ) == true )
 				{
 					// remove duplicate(s)
-					for( block_n = 0; block_n < utils.CONST_BLOCKS_USHORT_SIZE; block_n += utils.CONST_BLOCK_SIZE )
+					for( block_n = 0; block_n < utils.CONST_BLOCKS_UINT_SIZE; block_n += utils.CONST_BLOCK_SIZE )
 					{
 						for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
 						{
@@ -246,7 +244,7 @@ namespace MAPeD
 				}
 			}
 			
-			for( block_n = 0; block_n < utils.CONST_BLOCKS_USHORT_SIZE; block_n += utils.CONST_BLOCK_SIZE )
+			for( block_n = 0; block_n < utils.CONST_BLOCKS_UINT_SIZE; block_n += utils.CONST_BLOCK_SIZE )
 			{
 				for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
 				{
@@ -264,10 +262,10 @@ namespace MAPeD
 		{
 			int block_CHR_id;
 			
-			ushort	raw_block_data;
+			uint	raw_block_data;
 			int 	CHR_offset;
 			
-			for( int block_n = 0; block_n < utils.CONST_BLOCKS_USHORT_SIZE; block_n += utils.CONST_BLOCK_SIZE )
+			for( int block_n = 0; block_n < utils.CONST_BLOCKS_UINT_SIZE; block_n += utils.CONST_BLOCK_SIZE )
 			{
 				for( int i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
 				{
@@ -289,7 +287,7 @@ namespace MAPeD
 		{
 			int deleted_blocks_cnt = 0;
 			
-			int sum;
+			uint sum;
 			int block_offset;
 			
 			int size = utils.CONST_MAX_BLOCKS_CNT;

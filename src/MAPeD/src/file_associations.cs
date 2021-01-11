@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2020
  * Time: 15:20
  */
@@ -42,6 +42,8 @@ namespace MAPeD
 	                Extension = ".mapednes",
 #elif DEF_SMS
 	                Extension = ".mapedsms",
+#elif DEF_PCE
+	                Extension = ".mapedpce",
 #endif		
 	                ProgId = utils.CONST_PLATFORM + "_GameMapsEditor",
 	                FileTypeDescription = utils.CONST_PLATFORM + " Game Maps Editor File",

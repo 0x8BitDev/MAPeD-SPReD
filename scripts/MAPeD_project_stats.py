@@ -53,9 +53,11 @@ for bank_n in xrange( num_banks ):
 	print '\n\t\tTiles: Array size: ' + str( tiles_data.Count ) + ' --> ' + str( tiles_data )
 
 # Dump 2x2 tiles (blocks) data
-# Each block's value (UInt16) has the following bits description: 
-# NES/SMS: 15-12 -> Obj id | [10-11 NES: -> Palette id | SMS: -> CHR bank page] | [8-9 NES: not used | SMS: -> Flip flags (01-HFlip | 02-VFlip)] | 7-0 -> CHR id
-# Thereby, four UInt16 values form one 2x2 tile (block)
+# Each block's value (UInt32) has the following bits description: 
+# NES: 15.. [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8) ..0
+# SMS: 15.. [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9) ..0
+# PCE: 19.. [ property_id ](4) [ palette ind ](4) [CHR ind](12) ..0
+# Four UInt32 values form one 2x2 tile (block)
 	blocks_data = mpd_get_blocks( bank_n );
 	print '\n\t\tBlocks: Array size: ' + str( blocks_data.Count ) + ' --> ' + str( blocks_data )
 

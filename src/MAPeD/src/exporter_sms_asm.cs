@@ -446,7 +446,7 @@ namespace MAPeD
 			int scr_width_blocks 	= utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
 			int scr_height_blocks 	= utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
 
-			ushort block_data		= 0;
+			uint block_data		= 0;
 			
 			byte tile_id			= 0;
 			byte block_id			= 0;
@@ -861,10 +861,10 @@ namespace MAPeD
 #endif
 						for( int i = 0; i < tiles.palettes_arr.Count; i++ )
 						{
-							bw.Write( tiles.palettes_arr[ i ].m_palette0 );
-							bw.Write( tiles.palettes_arr[ i ].m_palette1 );
-							bw.Write( tiles.palettes_arr[ i ].m_palette2 );
-							bw.Write( tiles.palettes_arr[ i ].m_palette3 );
+							utils.write_int_as_byte_arr( bw, tiles.palettes_arr[ i ].m_palette0 );
+							utils.write_int_as_byte_arr( bw, tiles.palettes_arr[ i ].m_palette1 );
+							utils.write_int_as_byte_arr( bw, tiles.palettes_arr[ i ].m_palette2 );
+							utils.write_int_as_byte_arr( bw, tiles.palettes_arr[ i ].m_palette3 );
 						}
 					}
 					
@@ -1182,19 +1182,19 @@ namespace MAPeD
 		
 		private ushort get_screen_attribute( tiles_data _tiles, int _tile_id, int _block_n, int _chr_n )
 		{
-			ushort block_data = _tiles.blocks[ ( _tiles.get_tile_block( _tile_id, _block_n ) << 2 ) + _chr_n ];
+			uint block_data = _tiles.blocks[ ( _tiles.get_tile_block( _tile_id, _block_n ) << 2 ) + _chr_n ];
 		
 			return get_screen_attribute( block_data );
 		}
 		
 		private ushort get_screen_attribute( tiles_data _tiles, int _block_n, int _chr_n )
 		{
-			ushort block_data = _tiles.blocks[ ( _block_n << 2 ) + _chr_n ];
+			uint block_data = _tiles.blocks[ ( _block_n << 2 ) + _chr_n ];
 			
 			return get_screen_attribute( block_data );
 		}
 		
-		private ushort get_screen_attribute( ushort _block_data )
+		private ushort get_screen_attribute( uint _block_data )
 		{
 			int block_prop = tiles_data.get_block_flags_obj_id( _block_data );
 	
@@ -1305,7 +1305,7 @@ namespace MAPeD
 			int blocks_props_size	= 0;
 			byte tile_id			= 0;
 			byte block_id			= 0;
-			ushort block_data		= 0;
+			uint block_data			= 0;
 			
 			screen_data	scr_data;
 			
@@ -1622,7 +1622,7 @@ namespace MAPeD
 			return RBtnTiles2x2.Checked ? _scr_cnt_y * utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS:_scr_cnt_y * utils.CONST_SCREEN_NUM_HEIGHT_TILES;
 		}
 		
-		void fill_palette_str( byte[] _plt, ref string _str, bool _end )
+		void fill_palette_str( int[] _plt, ref string _str, bool _end )
 		{
 			for( int j = 0; j < utils.CONST_PALETTE_SMALL_NUM_COLORS; j++ )
 			{

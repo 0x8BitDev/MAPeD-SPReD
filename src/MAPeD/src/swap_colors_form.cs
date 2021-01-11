@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 24.08.2020
  * Time: 18:09
  */
@@ -113,7 +113,7 @@ namespace MAPeD
 		
 		private Color get_color( int _ind )
 		{
-			return Color.FromArgb( palette_group.Instance.main_palette[ m_tiles_data.palettes[ _ind >> 2 ][ _ind & 0x03 ] ] );
+			return Color.FromArgb( palette_group.Instance.main_palette[ m_tiles_data.subpalettes[ _ind >> 2 ][ _ind & 0x03 ] ] );
 		}
 		
 		private void draw_sel_border( int _color_ind )
@@ -137,7 +137,7 @@ namespace MAPeD
 				
 				for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
 				{
-					clr = palette_group.Instance.main_palette[ m_tiles_data.palettes[ i >> 2 ][ i & 0x03 ] ];
+					clr = palette_group.Instance.main_palette[ m_tiles_data.subpalettes[ i >> 2 ][ i & 0x03 ] ];
 						
 					utils.brush.Color = Color.FromArgb( (clr&0xff0000)>>16, (clr&0xff00)>>8, clr&0xff );
 					m_main_gfx.FillRectangle( utils.brush, ( i << 4 ) + 1, 1, 16, 16 );
@@ -189,11 +189,11 @@ namespace MAPeD
 					}
 				}
 
-				byte ind_A = m_tiles_data.palettes[ m_color_A >> 2 ][ m_color_A & 0x03 ];
-				byte ind_B = m_tiles_data.palettes[ m_color_B >> 2 ][ m_color_B & 0x03 ];
+				int ind_A = m_tiles_data.subpalettes[ m_color_A >> 2 ][ m_color_A & 0x03 ];
+				int ind_B = m_tiles_data.subpalettes[ m_color_B >> 2 ][ m_color_B & 0x03 ];
 				
-				m_tiles_data.palettes[ m_color_A >> 2 ][ m_color_A & 0x03 ] = ind_B;
-				m_tiles_data.palettes[ m_color_B >> 2 ][ m_color_B & 0x03 ] = ind_A;
+				m_tiles_data.subpalettes[ m_color_A >> 2 ][ m_color_A & 0x03 ] = ind_B;
+				m_tiles_data.subpalettes[ m_color_B >> 2 ][ m_color_B & 0x03 ] = ind_A;
 				
 				for( int j = 0; j < utils.CONST_NUM_SMALL_PALETTES; j++ )
 				{

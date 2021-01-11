@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 29.08.2018
  * Time: 15:20
  */
@@ -202,7 +202,7 @@ namespace MAPeD
 				int n_screens 		= 0;
 				byte tile_id		= 0;
 				ushort tile_data	= 0;
-				ushort block_data	= 0;
+				uint block_data		= 0;
 				
 				byte[] mc_clr08 = new byte[64]{ 1,1,1,1,1,1,1,1,
 												1,1,1,1,1,1,1,1,
@@ -299,9 +299,11 @@ namespace MAPeD
 				Bitmap 		tile_bmp		= null;
 				Bitmap 		level_bmp 		= null;
 				Graphics 	level_gfx		= null;
-#if DEF_NES				
-				byte[] palette 		= null;
-#endif				
+#if DEF_NES
+				int[] palette 		= null;
+#elif DEF_SMS || DEF_PALETTE16_PER_CHR
+				palette16_data plt16 = null;
+#endif
 				byte[] ink_clr_weights		= new byte[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 				byte[] paper_clr_weights	= new byte[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 				
@@ -518,7 +520,11 @@ namespace MAPeD
 								Array.Clear( ink_clr_weights, 0, ink_clr_weights.Length );
 								Array.Clear( paper_clr_weights, 0, paper_clr_weights.Length );								
 #if DEF_NES
-								palette = tiles.palettes[ tiles_data.get_block_flags_palette( block_data ) ];
+								palette = tiles.subpalettes[ tiles_data.get_block_flags_palette( block_data ) ];
+#elif DEF_SMS
+								plt16 = tiles.palettes_arr[ 0 ];
+#elif DEF_PALETTE16_PER_CHR
+								plt16 = tiles.palettes_arr[ tiles_data.get_block_flags_palette( block_data ) ];
 #endif
 								no_ink = true;
 								
@@ -528,9 +534,9 @@ namespace MAPeD
 									pixel 		= tile_2x2_data_arr[ pixel_ind ];
 #if DEF_NES
 									bright_val = get_brightness( palette_group.Instance.main_palette[ palette[ pixel ] ] ) / 256.0;
-#elif DEF_SMS									
-									bright_val = get_brightness( palette_group.Instance.main_palette[ tiles.palettes[ pixel >> 2 ][ pixel & 0x03 ] ] ) / 256.0;
-#endif									
+#elif DEF_SMS || DEF_PALETTE16_PER_CHR
+									bright_val = get_brightness( palette_group.Instance.main_palette[ plt16.subpalettes[ pixel >> 2 ][ pixel & 0x03 ] ] ) / 256.0;
+#endif
 									if( ink_factor <= bright_val )
 									{
 										// paper
@@ -568,8 +574,8 @@ namespace MAPeD
 								max_weight_ind = utils.get_byte_arr_max_val_ind( paper_clr_weights );
 #if DEF_NES
 								paper_color_index |= palette[ max_weight_ind ] << ( chr_n << 3 );
-#elif DEF_SMS
-								paper_color_index |= tiles.palettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ] << ( chr_n << 3 );
+#elif DEF_SMS || DEF_PALETTE16_PER_CHR
+								paper_color_index |= plt16.subpalettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ] << ( chr_n << 3 );
 #endif								
 								// reset paper color to avoid equal colors on both ink and paper
 								ink_clr_weights[ max_weight_ind ] = 0;
@@ -579,8 +585,8 @@ namespace MAPeD
 									max_weight_ind = utils.get_byte_arr_max_val_ind( ink_clr_weights );
 #if DEF_NES
 									ink_color_index |= palette[ max_weight_ind ] << ( chr_n << 3 );
-#elif DEF_SMS
-									ink_color_index |= tiles.palettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ] << ( chr_n << 3 );
+#elif DEF_SMS || DEF_PALETTE16_PER_CHR
+									ink_color_index |= plt16.subpalettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ] << ( chr_n << 3 );
 #endif								
 								}
 #if DEF_NES									

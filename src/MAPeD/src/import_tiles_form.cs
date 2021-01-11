@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 14.12.2018
  * Time: 19:38
  */
@@ -78,7 +78,7 @@ namespace MAPeD
 		{
 			return _data_manager.get_local_screen_ind( _data_manager.tiles_data_pos, _global_scr_ind );
 		}
-		
+#if !DEF_PCE
 		public void data_processing( Bitmap _bmp, data_sets_manager _data_manager, Func< int, int, layout_data > _create_layout )
 		{
 			bool import_game_map_as_is = true;
@@ -487,13 +487,13 @@ namespace MAPeD
 			{
 				Color[] plt = _bmp.Palette.Entries;
 				
-				List< byte[] > palettes = _data.palettes;
+				List< int[] > palettes = _data.subpalettes;
 				
 				int num_clrs = Math.Min( plt.Length, utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS );
 				
 				for( int i = 0; i < num_clrs; i++ )
 				{
-					palettes[ i >> 2 ][ i & 0x03 ] = ( byte )utils.find_nearest_color_ind( plt[ i ].ToArgb() );
+					palettes[ i >> 2 ][ i & 0x03 ] = utils.find_nearest_color_ind( plt[ i ].ToArgb() );
 				}
 #if DEF_NES
 				apply_palettes( _data, _CHR_beg_ind, _CHR_end_ind, _block_beg_ind, _block_end_ind );
@@ -565,7 +565,7 @@ namespace MAPeD
 				}
 			}
 		}
-		
+#endif //!DEF_PCE
 #if DEF_NES
 		private void apply_palettes( tiles_data _data, int _CHR_beg_ind, int _CHR_end_ind, int _block_beg_ind, int _block_end_ind )
 		{
@@ -627,13 +627,13 @@ namespace MAPeD
 				return;
 			}
 			
-			byte[] clr_inds = new byte[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ];
+			int[] clr_inds = new int[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 			Array.Clear( clr_inds, 0, clr_inds.Length );
 
 			List< byte > block_plt_inds = new List< byte >( n_blocks );
-			SortedSet< byte > plt_clr_inds = null;
+			SortedSet< int > plt_clr_inds = null;
 			
-			List< SortedSet< byte > > palettes = new List< SortedSet< byte > >( 100 );
+			List< SortedSet< int > > palettes = new List< SortedSet< int > >( 100 );
 			
 			bool[] remapped_CHRs = new bool[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
 			Array.Clear( remapped_CHRs, 0, remapped_CHRs.Length );
@@ -643,7 +643,7 @@ namespace MAPeD
 			// run through blocks
 			for( block_n = _block_beg_ind; block_n < _block_end_ind; block_n += utils.CONST_BLOCK_SIZE )
 			{
-				plt_clr_inds = new SortedSet< byte >();
+				plt_clr_inds = new SortedSet< int >();
 					
 				for( CHR_n = 0; CHR_n < utils.CONST_BLOCK_SIZE; CHR_n++ )
 				{
@@ -741,7 +741,7 @@ namespace MAPeD
 				// calc color weights
 				for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
 				{
-					palettes[ plt_n ].ForEach( delegate( byte _val ) { ++clr_inds[ _val ]; });
+					palettes[ plt_n ].ForEach( delegate( int _val ) { ++clr_inds[ _val ]; });
 				}			
 				
 				// get max weight index
@@ -803,7 +803,7 @@ namespace MAPeD
 						
 						plt_str += "\n" + ( plt_n + 1 ) + ": [ ";
 						
-						plt_clr_inds.ForEach( delegate( byte _val ) 
+						plt_clr_inds.ForEach( delegate( int _val ) 
 						{
 							plt_str += _val.ToString() + " ";
 						});
@@ -838,7 +838,7 @@ namespace MAPeD
 				plt_clr_inds = palettes[ plt_n & 0x03 ];	// cut palettes more than 4
 				
 				ind_n = 0;
-				plt_clr_inds.ForEach( delegate( byte _val ) 
+				plt_clr_inds.ForEach( delegate( int _val ) 
 				{
 				    if( ind_n < 3 )	// cut color indices more than 4
 				    {
@@ -862,7 +862,7 @@ namespace MAPeD
 								
 								for( ind_n = 0; ind_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; ind_n++ )
 								{
-									utils.tmp_spr8x8_buff[ ind_n ] = clr_inds[ utils.tmp_spr8x8_buff[ ind_n ] ];
+									utils.tmp_spr8x8_buff[ ind_n ] = ( byte )clr_inds[ utils.tmp_spr8x8_buff[ ind_n ] ];
 								}
 								
 								_data.from_spr8x8_to_CHR_bank( CHR_ind, utils.tmp_spr8x8_buff );
@@ -886,21 +886,21 @@ namespace MAPeD
 			{
 				plt_clr_inds = palettes[ plt_n ];	// cut palettes more than 4
 				
-				clr_inds[ plt_n << 2 ] = _data.palettes[ transp_clr_ind >> 2 ][ transp_clr_ind & 0x03 ];
+				clr_inds[ plt_n << 2 ] = _data.subpalettes[ transp_clr_ind >> 2 ][ transp_clr_ind & 0x03 ];
 
 				ind_n = 0;
-				plt_clr_inds.ForEach( delegate( byte _val ) 
+				plt_clr_inds.ForEach( delegate( int _val ) 
 				{ 
 					if( ind_n < 3 )	// cut palette colors more than 4
 					{
-						clr_inds[ ( plt_n << 2 ) + ( ++ind_n ) ] = _data.palettes[ _val >> 2 ][ _val & 0x03 ];
+						clr_inds[ ( plt_n << 2 ) + ( ++ind_n ) ] = _data.subpalettes[ _val >> 2 ][ _val & 0x03 ];
 					}
 				});
 			}
 			
 			for( ind_n = 0; ind_n < clr_inds.Length; ind_n++ )
 			{
-				_data.palettes[ ind_n >> 2 ][ ind_n & 0x03 ] = clr_inds[ ind_n ];
+				_data.subpalettes[ ind_n >> 2 ][ ind_n & 0x03 ] = clr_inds[ ind_n ];
 			}
 			
 			if( more_than_4_colors_in_palette || more_than_4_palettes )

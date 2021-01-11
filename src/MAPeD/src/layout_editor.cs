@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 24.05.2017
  * Time: 16:40
  */
@@ -21,9 +21,6 @@ namespace MAPeD
 	/// Description of layout_editor.
 	/// </summary>
 	/// 
-	
-	public delegate void ScreenSelected();
-	public delegate void EntityInstanceSelected();
 	
 	public class layout_editor : drawable_base
 	{

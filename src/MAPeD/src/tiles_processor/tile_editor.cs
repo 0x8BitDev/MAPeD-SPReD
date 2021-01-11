@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 13:12
  */
@@ -14,8 +14,6 @@ namespace MAPeD
 	/// Description of tile_editor.
 	/// </summary>
 	/// 
-	
-	public delegate void UpdateSelectedBlock();
 	
 	public class tile_editor : drawable_base
 	{

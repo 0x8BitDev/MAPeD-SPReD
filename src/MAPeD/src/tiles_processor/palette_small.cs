@@ -16,8 +16,6 @@ namespace MAPeD
 	/// </summary>
 	/// 
 	
-	public delegate void ActivePalette();
-
 	public class palette_small : drawable_base
 	{
 		public event EventHandler ActivePalette;
@@ -52,7 +50,7 @@ namespace MAPeD
 		}
 		
 		private int m_sel_clr_ind 	= -1;
-		private byte[] m_clr_inds 	= null;
+		private int[] m_clr_inds 	= null;
 		
 		public int color_slot
 		{
@@ -131,7 +129,7 @@ namespace MAPeD
 			update();
 		}
 		
-		public void update_color( byte _clr_id, int _slot_id = -1 )
+		public void update_color( int _clr_id, int _slot_id = -1 )
 		{
 			if( m_clr_inds != null )
 			{
@@ -155,17 +153,17 @@ namespace MAPeD
 			}
 		}
 		
-		public byte[] get_color_inds()
+		public int[] get_color_inds()
 		{
 			return m_clr_inds;
 		}
 
-		public byte get_selected_slot_color_id()
+		public int get_selected_slot_color_id()
 		{
 			return m_clr_inds[ m_sel_clr_ind ];
 		}
 		
-		public void set_color_inds( byte[] _plt )
+		public void set_color_inds( int[] _plt )
 		{
 			m_clr_inds = _plt;
 			

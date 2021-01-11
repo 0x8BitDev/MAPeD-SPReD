@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 16:20
  */
@@ -433,8 +433,8 @@ namespace MAPeD
 			int tile_offs_x;
 			int tile_offs_y;
 			
-			ushort[] 	blocks_arr 	= _data.blocks;
-			byte[] 		CHR_data 	= _data.CHR_bank;
+			uint[] 	blocks_arr 	= _data.blocks;
+			byte[] 	CHR_data 	= _data.CHR_bank;
 			
 			palette_group.Instance.set_palette( _data );
 

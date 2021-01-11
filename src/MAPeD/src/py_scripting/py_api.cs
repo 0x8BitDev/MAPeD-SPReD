@@ -42,8 +42,8 @@ namespace MAPeD
 			// uint[] get_tiles( int _bank_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "get_tiles", new Func< int, uint[] >( get_tiles ) );
 			
-			// ushort[] get_blocks( int _bank_ind ) [ 15-8 -> obj_id(4)|plt(2)|not used(2)| 7-0 -> CHR ind(8) ]
-			_py_scope.SetVariable( CONST_PREFIX + "get_blocks", new Func< int, ushort[] >( get_blocks ) );
+			// uint[] get_blocks( int _bank_ind ) [ 15-8 -> obj_id(4)|plt(2)|not used(2)| 7-0 -> CHR ind(8) ]
+			_py_scope.SetVariable( CONST_PREFIX + "get_blocks", new Func< int, uint[] >( get_blocks ) );
 			
 			// byte[] get_CHR_data( int _bank_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "get_CHR_data", new Func< int, byte[] >( get_CHR_data ) );
@@ -57,8 +57,8 @@ namespace MAPeD
 			// int get_palette_slots( int _bank_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "get_palette_slots", new Func< int, int >( get_palette_slots ) );
 	
-			// byte[] get_palette( int _bank_ind, int _plt_ind, int _slot_ind )
-			_py_scope.SetVariable( CONST_PREFIX + "get_palette", new Func< int, int, int, byte[] >( get_palette ) );
+			// int[] get_palette( int _bank_ind, int _plt_ind, int _slot_ind )
+			_py_scope.SetVariable( CONST_PREFIX + "get_palette", new Func< int, int, int, int[] >( get_palette ) );
 
 			// int num_screens( int _bank_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "num_screens", new Func< int, int >( num_screens ) );
@@ -322,7 +322,7 @@ namespace MAPeD
 			return null;
 		}
 
-		public ushort[] get_blocks( int _bank_ind )
+		public uint[] get_blocks( int _bank_ind )
 		{
 			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
 			
@@ -348,7 +348,7 @@ namespace MAPeD
 		
 #if DEF_NES
 		public long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
-#elif DEF_SMS
+#elif DEF_SMS || DEF_PCE
 		public long export_CHR_data( int _bank_ind, string _filename, int _bpp )
 #endif			
 		{
@@ -365,7 +365,7 @@ namespace MAPeD
 					bw = new BinaryWriter( File.Open( _filename, FileMode.Create ) );
 #if DEF_NES					
 					data_size = data.export_CHR( bw, _save_padding );
-#elif DEF_SMS
+#elif DEF_SMS || DEF_PCE
 					if( _bpp < 1 || _bpp > 4 )
 					{
 						throw new Exception( "Invalid CHRs bpp value! The valid range is 1-4." );
@@ -405,7 +405,7 @@ namespace MAPeD
 			return -1;
 		}
 		
-		public byte[] get_palette( int _bank_ind, int _plt_ind, int _slot_ind )
+		public int[] get_palette( int _bank_ind, int _plt_ind, int _slot_ind )
 		{
 			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
 			
@@ -415,7 +415,7 @@ namespace MAPeD
 				{
 					if( _slot_ind >= 0 && _slot_ind < data.palettes_arr.Count )
 					{
-						byte[] plt = null; 
+						int[] plt = null; 
 						
 						switch( _plt_ind )
 						{
@@ -425,7 +425,7 @@ namespace MAPeD
 							case 3: { plt = data.palettes_arr[ _slot_ind ].m_palette3; } break;
 						}
 						
-						byte[] plt_copy = new byte[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
+						int[] plt_copy = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 						
 						plt.CopyTo( plt_copy, 0 );
 						

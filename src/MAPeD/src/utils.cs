@@ -8,9 +8,10 @@
 /*
 defines:
 ~~~~~~~~
-DEF_SCREEN_HEIGHT_7d5_TILES		(NES)
+DEF_SCREEN_HEIGHT_7d5_TILES		(NES/PCE)
 DEF_TILE_DRAW_FAST
 DEF_FLIP_BLOCKS_SPR_BY_FLAGS	(SMS)
+DEF_PALETTE16_PER_CHR			(PCE)
 */
 
 using System;
@@ -39,6 +40,8 @@ namespace MAPeD
 		public const string	CONST_PLATFORM	= "NES";
 #elif DEF_SMS
 		public const string	CONST_PLATFORM	= "SMS";
+#elif DEF_PCE
+		public const string	CONST_PLATFORM	= "PCE";
 #else
 		public const string	CONST_PLATFORM	= "UNKNOWN";
 #endif
@@ -94,8 +97,11 @@ namespace MAPeD
 		public const string CONST_APP_NAME	= "MAPeD-" + CONST_PLATFORM;
 		
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'M';
-		public const byte CONST_PROJECT_FILE_VER	= 2; 
-		
+		public const byte CONST_PROJECT_FILE_VER	= 3;
+		// v1: initial data format
+		// v2: added palettes array
+		// v3: blocks data USHORT -> UINT; palette index BYTE -> INT
+
 		public const uint CONST_SPRED_FILE_MAGIC		= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
 		public const uint CONST_SPRED_PROJECT_FILE_VER	= 1;
 		
@@ -111,20 +117,27 @@ namespace MAPeD
 		
 		public const string CONST_SMS_FILE_EXT			= "mapedsms";
 		public const string CONST_NES_FILE_EXT			= "mapednes";
+		public const string CONST_PCE_FILE_EXT			= "mapedpce";
 		
 		// 1 page = 16x16 CHRs
 		public const int CONST_NES_CHR_BANK_NUM_PAGES	= 1;	// 1x4K (native)
 		public const int CONST_SMS_CHR_BANK_NUM_PAGES	= 2;	// 2x8K (native)
+		public const int CONST_PCE_CHR_BANK_NUM_PAGES	= 8;	// 8x8K (native)
 		
 		public const int CONST_NES_SCREEN_NUM_WIDTH_TILES	= 8;
 		public const int CONST_NES_SCREEN_NUM_HEIGHT_TILES	= 8;		
 
 		public const int CONST_SMS_SCREEN_NUM_WIDTH_TILES	= 8;
 		public const int CONST_SMS_SCREEN_NUM_HEIGHT_TILES	= 6;
+
+		public const int CONST_PCE_SCREEN_NUM_WIDTH_TILES	= 8;
+		public const int CONST_PCE_SCREEN_NUM_HEIGHT_TILES	= 8;		
 		
 #if DEF_NES		
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 16;
 #elif DEF_SMS
+		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
+#elif DEF_PCE
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
 #endif		
 		
@@ -141,6 +154,8 @@ namespace MAPeD
 		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_NES_CHR_BANK_NUM_PAGES;
 		
 		public const int CONST_CHR_BANK_MAX_SPRITES_CNT	= 256 * CONST_NES_CHR_BANK_NUM_PAGES;
+		
+		public const int CONST_PALETTE_MAIN_NUM_COLORS	= 64;
 #elif DEF_SMS
 		public const int CONST_SCREEN_NUM_WIDTH_TILES	= CONST_SMS_SCREEN_NUM_WIDTH_TILES;
 		public const int CONST_SCREEN_NUM_HEIGHT_TILES	= CONST_SMS_SCREEN_NUM_HEIGHT_TILES;
@@ -154,6 +169,23 @@ namespace MAPeD
 		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_SMS_CHR_BANK_NUM_PAGES;
 		
 		public const int CONST_CHR_BANK_MAX_SPRITES_CNT	= 256 * CONST_SMS_CHR_BANK_NUM_PAGES;		
+		
+		public const int CONST_PALETTE_MAIN_NUM_COLORS	= 64;
+#elif DEF_PCE
+		public const int CONST_SCREEN_NUM_WIDTH_TILES	= CONST_PCE_SCREEN_NUM_WIDTH_TILES;
+		public const int CONST_SCREEN_NUM_HEIGHT_TILES	= CONST_PCE_SCREEN_NUM_HEIGHT_TILES;
+		
+		public const int CONST_SCREEN_NUM_WIDTH_BLOCKS	= CONST_SCREEN_NUM_WIDTH_TILES << 1;
+		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_SCREEN_NUM_HEIGHT_TILES << 1;
+		
+		public const int CONST_SCREEN_OFFSET_X			= 32;
+		public const int CONST_SCREEN_OFFSET_Y			= 32;
+		
+		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_PCE_CHR_BANK_NUM_PAGES;
+		
+		public const int CONST_CHR_BANK_MAX_SPRITES_CNT	= 256 * CONST_PCE_CHR_BANK_NUM_PAGES;
+		
+		public const int CONST_PALETTE_MAIN_NUM_COLORS	= 512;
 #endif
 
 		public const int CONST_SCREEN_TILES_SIZE		= 64;	// pixels
@@ -195,7 +227,6 @@ namespace MAPeD
 		
 		public const int CONST_NUM_SMALL_PALETTES 			= 4;
 		public const int CONST_PALETTE_SMALL_NUM_COLORS		= 4;
-		public const int CONST_PALETTE_MAIN_NUM_COLORS		= 64;
 		
 		public const int CONST_PALETTES_COUNT				= 16;
 		
@@ -204,13 +235,13 @@ namespace MAPeD
 		public const int CONST_CHR_BANK_PAGE_SPRITES_CNT	= 256;
 		public const int CONST_CHR_BANK_MAX_CNT				= 256;
 		
-		public const int CONST_BLOCK_SIZE					= 4;	// ushorts
+		public const int CONST_BLOCK_SIZE					= 4;	// uints
 		public const int CONST_TILE_SIZE					= 4;	// bytes
 		
 		public const int CONST_MAX_BLOCKS_CNT				= 256;
 		public const int CONST_MAX_TILES_CNT				= 256;
 
-		public const int CONST_BLOCKS_USHORT_SIZE			= CONST_MAX_BLOCKS_CNT * CONST_BLOCK_SIZE;
+		public const int CONST_BLOCKS_UINT_SIZE				= CONST_MAX_BLOCKS_CNT * CONST_BLOCK_SIZE;
 		public const int CONST_TILES_UINT_SIZE				= CONST_MAX_TILES_CNT;
 		
 		// the NES hardware doesn't support flipping of a background on per CHR's basis
@@ -263,8 +294,9 @@ namespace MAPeD
 		// block editor
 		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_GRID						= Color.FromArgb( 0x78808080 );
 		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_CHR_BORDER					= Color.White;
-		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_OUTER_BORDER	= Color.White;
-		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_INNER_BORDER	= Color.Red;
+		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_OUTER_BORDER	= Color.Red;
+		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_INNER_BORDER	= Color.White;
+		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_DRAW_MODE_CHR_OUTER_BORDER	= Color.OrangeRed;
 		// CHR bank viewer
 		public static readonly Color	CONST_COLOR_CHR_BANK_SELECTED_DEFAULT					= Color.Black;
 		public static readonly Color	CONST_COLOR_CHR_BANK_GRID								= Color.FromArgb( 0x78808080 );
@@ -312,7 +344,7 @@ namespace MAPeD
 			}
 		}
 		
-		public static Bitmap create_bitmap( byte[] _arr, int _width, int _height, byte _flags, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null, int _arr_offset = 0 )
+		public static Bitmap create_bitmap( byte[] _arr, int _width, int _height, byte _flags, bool _alpha, int _plt_ind, palette16_data _plt = null, int _arr_offset = 0 )
 		{
 			int img_size = _width * _height;
 			
@@ -320,8 +352,8 @@ namespace MAPeD
 			
 			GCHandle handle = GCHandle.Alloc( img_buff, GCHandleType.Pinned );
 #if DEF_NES
-			bool apply_palette 	= ( _plt_arr != null && _plt_ind >= 0 );
-			byte[] clr_inds 	= apply_palette ? _plt_arr[ _plt_ind ].get_color_inds():null;
+			bool apply_palette 	= ( _plt != null && _plt_ind >= 0 );
+			int[] clr_inds 	= apply_palette ? _plt.subpalettes[ _plt_ind ]:null;
 			int alpha;
 			
 			apply_palette = (clr_inds != null) && apply_palette;
@@ -329,9 +361,9 @@ namespace MAPeD
 			int clr;
 			int pix_ind;
 
-#if DEF_SMS
+#if !DEF_NES
 			// valid palette ?
-			if( palette_group.Instance.get_palettes_arr()[ 0 ].get_color_inds() != null )
+			if( _plt != null )
 #endif			
 			{
 				for( int p = 0; p < img_size; p++ )
@@ -342,9 +374,9 @@ namespace MAPeD
 #endif					
 					{
 #if DEF_NES					
-						clr = palette_group.Instance.main_palette[ ( int )clr_inds[ pix_ind ] ];
-#elif DEF_SMS
-						clr = palette_group.Instance.main_palette[ palette_group.Instance.get_palettes_arr()[ pix_ind / CONST_NUM_SMALL_PALETTES ].get_color_inds()[ pix_ind % CONST_NUM_SMALL_PALETTES ] ];
+						clr = palette_group.Instance.main_palette[ clr_inds[ pix_ind ] ];
+#else
+						clr = palette_group.Instance.main_palette[ _plt.subpalettes[ pix_ind / CONST_NUM_SMALL_PALETTES ][ pix_ind % CONST_NUM_SMALL_PALETTES ] ];
 #endif
 						if( ( clr != 0 && _alpha == true ) || _alpha == false )
 						{
@@ -377,21 +409,30 @@ namespace MAPeD
 		{
 			Bitmap 	bmp;
 			
-			ushort 	chr_data;
-			byte 	flip_flag;
+			uint 	chr_data;
+			byte 	flip_flag = 0;
 			int		plt_ind = -1;
+			
+			palette16_data plt16 = null;
 			
 			for( int j = 0; j < utils.CONST_BLOCK_SIZE; j++ )
 			{
-				chr_data = _data.blocks[ ( _block_id << 2 ) + j ];
-				
+				chr_data = _data.blocks[ ( _block_id << 2 ) + j ];				
+#if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
 				flip_flag 	= tiles_data.get_block_flags_flip( chr_data );
+#endif
 #if DEF_NES				
 				plt_ind		= tiles_data.get_block_flags_palette( chr_data );
-#endif				
+#endif
+
+#if DEF_PALETTE16_PER_CHR
+				plt16 = _data.palettes_arr[ tiles_data.get_block_flags_palette( chr_data ) ];
+#else
+				plt16 = _data.palettes_arr[ _data.palette_pos ];
+#endif
 				_data.from_CHR_bank_to_spr8x8( tiles_data.get_block_CHR_id( chr_data ), utils.tmp_spr8x8_buff );
 				
-				bmp = utils.create_bitmap( utils.tmp_spr8x8_buff, 8, 8, flip_flag, false, plt_ind, palette_group.Instance.get_palettes_arr() );
+				bmp = utils.create_bitmap( utils.tmp_spr8x8_buff, 8, 8, flip_flag, false, plt_ind, plt16 );
 				
 				_gfx.DrawImage( bmp, _x_offs + ( ( j % 2 ) * _img_half_width ), _y_offs + ( ( j >> 1 ) * _img_half_height ), _img_half_width, _img_half_height );
 				
@@ -801,6 +842,46 @@ namespace MAPeD
 			}
 			
 			return best_color_ind;
+		}
+		
+		public static int[] read_byte_arr( BinaryReader _br, int _size )
+		{
+			int[] arr = new int[ _size ];
+			
+			for( int i = 0; i < _size; i++ )
+			{
+				arr[ i ] = ( int )_br.ReadByte();
+			}
+			
+			return arr;
+		}
+		
+		public static int[] read_int_arr( BinaryReader _br, int _size )
+		{
+			int[] arr = new int[ _size ];
+			
+			for( int i = 0; i < _size; i++ )
+			{
+				arr[ i ] = _br.ReadInt32();
+			}
+			
+			return arr;
+		}
+		
+		public static void write_int_arr( BinaryWriter _bw, int[] _arr )
+		{
+			for( int i = 0; i < _arr.Length; i++ )
+			{
+				_bw.Write( _arr[ i ] );
+			}
+		}
+		
+		public static void write_int_as_byte_arr( BinaryWriter _bw, int[] _arr )
+		{
+			for( int i = 0; i < _arr.Length; i++ )
+			{
+				_bw.Write( ( byte )_arr[ i ] );
+			}
 		}
 	}
 }

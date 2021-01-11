@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 03.09.2020
  * Time: 16:34
  */
@@ -40,11 +40,6 @@ namespace MAPeD
 			m_data = _data;
 		}
 	}
-	
-	public delegate void PatternsManagerClosed();
-	public delegate void CreatePatternBegin();
-	public delegate void ScreenEditorSwitchToBuildMode();
-	public delegate void EnablePlacePatternMode();
 	
 	public partial class patterns_manager_form : Form
 	{

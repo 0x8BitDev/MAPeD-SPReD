@@ -26,8 +26,12 @@ namespace MAPeD
 		private exporter_nes_asm	m_exp_nes_asm	= null;
 #elif DEF_SMS
 		private exporter_sms_asm	m_exp_sms_asm		= null;
+#elif DEF_PCE
+		private exporter_pce_asm	m_exp_pce_asm		= null;
+#endif
+#if !DEF_NES
 		private swap_colors_form	m_swap_colors_form	= null;
-#endif		
+#endif
 		private data_conversion_options_form	m_data_conversion_options_form	= null;
 		
 		private data_sets_manager	m_data_manager		= null;
@@ -101,7 +105,10 @@ namespace MAPeD
 			m_exp_nes_asm		= new exporter_nes_asm( m_data_manager );
 #elif DEF_SMS
 			m_exp_sms_asm		= new exporter_sms_asm( m_data_manager );
-			
+#elif DEF_PCE
+			m_exp_pce_asm		= new exporter_pce_asm( m_data_manager );
+#endif
+#if !DEF_NES
 			m_swap_colors_form	= new swap_colors_form();
 #endif
 			m_data_conversion_options_form	= new data_conversion_options_form();
@@ -174,6 +181,9 @@ namespace MAPeD
 			m_optimization_form = new optimization_form( m_data_manager );
 			m_optimization_form.UpdateGraphics += new EventHandler( MainForm_UpdateGraphicsAfterOptimization );
 			
+#if DEF_PALETTE16_PER_CHR
+			m_tiles_processor.UpdatePaletteListPos	+= new EventHandler( update_palette_list_pos );
+#endif
 			m_tiles_processor.NeedGFXUpdate 	+= new EventHandler( enable_update_gfx_btn_Event );
 			m_screen_editor.NeedScreensUpdate	+= new EventHandler( enable_update_screens_btn_Event );
 			
@@ -243,7 +253,7 @@ namespace MAPeD
 			Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
 			Project_openFileDialog.Filter = Project_openFileDialog.Filter + "|MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT;
 			
-			BtnSwapColors.Enabled = false;
+			BtnSwapColors.Visible = false;
 #elif DEF_SMS
 			Project_saveFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "SMS" );
@@ -261,12 +271,27 @@ namespace MAPeD
 			CheckBoxPalettePerCHR.Visible = false;
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false; 
+#elif DEF_PCE
+			Project_saveFileDialog.DefaultExt = utils.CONST_PCE_FILE_EXT;
+			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "PCE" );
+			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "pce" );
+
+			Project_openFileDialog.DefaultExt = utils.CONST_PCE_FILE_EXT;
+			Project_openFileDialog.Filter = "MAPeD-PCE (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT + "|" + Project_openFileDialog.Filter;
+			
+			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "??? CA65 ???" );
+
+			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp";
+			
+			CheckBoxPalettePerCHR.Visible = false;
+			
+			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false; 
 #endif
 
 			if( utils.CONST_CHR_BANK_PAGES_CNT == 1 )
 			{
-				BtnCHRBankNextPage.Enabled = BtnCHRBankPrevPage.Enabled = false;
-				prevPageToolStripMenuItem.Enabled = nextPageToolStripMenuItem.Enabled = false;
+				BtnCHRBankNextPage.Visible = BtnCHRBankPrevPage.Visible = false;
+				prevPageToolStripMenuItem.Visible = nextPageToolStripMenuItem.Visible = false;
 			}
 			
 			if( _args.Length > 0 )
@@ -587,7 +612,7 @@ namespace MAPeD
 					
 					m_layout_editor.update();
 					update_graphics( false );
-#if DEF_SMS
+#if !DEF_NES
 					palette_group.Instance.active_palette = 0;
 #endif
 				}
@@ -706,9 +731,13 @@ namespace MAPeD
 					{
 						case ".bmp":
 							{
+#if !DEF_PCE
 								bmp = new Bitmap( filename );
-								
+#if DEF_PCE
+								if( bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed || bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
+#else
 								if( bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
+#endif
 								{
 									if( m_import_tiles_form.ShowDialog() == DialogResult.OK )
 									{
@@ -736,13 +765,21 @@ namespace MAPeD
 								}
 								else
 								{
+#if DEF_PCE
+									throw new Exception( "The imported image must have indexed color depth 4/8bpp!" );
+#else
 									throw new Exception( "The imported image must have 4bpp color depth!" );
+#endif
 								}
 								
 								bmp.Dispose();
 								bmp = null;
+#else
+								throw new Exception( "Not implemented yet!" );
+#endif //!DEF_PCE
 							}
-							break;							
+							break;
+#if DEF_NES || DEF_SMS
 #if DEF_NES
 						case ".sprednes":
 #elif DEF_SMS
@@ -775,7 +812,7 @@ namespace MAPeD
 								update_graphics( true );
 							}
 							break;
-							
+
 						case ".chr":
 						case ".bin":
 							{
@@ -812,6 +849,7 @@ namespace MAPeD
 								}
 							}
 							break;
+#endif //DEF_NES || DEF_SMS
 					}
 				}
 			}
@@ -850,7 +888,7 @@ namespace MAPeD
 			}
 		}
 
-		void export_tiles_blocks_data( int _max_data_cnt, Func< int, int > _act_data_sum, int _data_size, ImageList _image_list, string _filename )
+		void export_tiles_blocks_data( int _max_data_cnt, Func< int, uint > _act_data_sum, int _data_size, ImageList _image_list, string _filename )
 		{
 			update_graphics( false );
 			
@@ -858,7 +896,7 @@ namespace MAPeD
 			int num_active_tiles = 0;
 			int i;
 			
-			int tile_sum;
+			uint tile_sum;
 			
 			for( i = _max_data_cnt - 1; i > 0; i-- )
 			{
@@ -912,7 +950,7 @@ namespace MAPeD
 								{
 									export_tiles_blocks_data( utils.CONST_MAX_TILES_CNT, delegate( int _data_n ) 
 									                         {
-																return ( int )m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ).tiles[ _data_n ];
+																return m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ).tiles[ _data_n ];
 									                         }, 32, m_imagelist_manager.get_tiles_image_list(), filename );
 								}
 								else
@@ -921,7 +959,7 @@ namespace MAPeD
 									                         {
 																tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 									                         		
-									                         	int block_sum = 0;
+									                         	uint block_sum = 0;
 									                         	
 																for( int j = 0; j < utils.CONST_BLOCK_SIZE; j++ )
 																{
@@ -992,9 +1030,10 @@ namespace MAPeD
 						{
 #if DEF_NES							
 							m_exp_nes_asm.ShowDialog( filename );
-#endif							
-#if DEF_SMS
+#elif DEF_SMS
 							m_exp_sms_asm.ShowDialog( filename );
+#elif DEF_PCE
+							m_exp_pce_asm.ShowDialog( filename );
 #endif
 						}
 						break;
@@ -1025,7 +1064,7 @@ namespace MAPeD
 		
 		void AboutToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			message_box( "Game Maps Editor (" + utils.CONST_PLATFORM + ") \n\n" + utils.CONST_APP_VER + " " + utils.build_str + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
+			message_box( "Game Maps Editor (" + utils.CONST_PLATFORM + ") \n\n" + utils.CONST_APP_VER + " " + utils.build_str + " pfv" + utils.CONST_PROJECT_FILE_VER + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 
 		void MenuHelpQuickGuideClick_Event(object sender, EventArgs e)
@@ -1161,16 +1200,18 @@ namespace MAPeD
 		
 		void BtnCHRBankNextPageClick_Event(object sender, EventArgs e)
 		{
-#if DEF_SMS			
-			m_tiles_processor.CHR_bank_next_page();
-#endif			
+			if( utils.CONST_CHR_BANK_PAGES_CNT > 1 )
+			{
+				m_tiles_processor.CHR_bank_next_page();
+			}
 		}
 		
 		void BtnCHRBankPrevPageClick_Event(object sender, EventArgs e)
 		{
-#if DEF_SMS			
-			m_tiles_processor.CHR_bank_prev_page();
-#endif			
+			if( utils.CONST_CHR_BANK_PAGES_CNT > 1 )
+			{
+				m_tiles_processor.CHR_bank_prev_page();
+			}
 		}
 		
 		void BtnCopyCHRBankClick_Event(object sender, EventArgs e)
@@ -1614,7 +1655,7 @@ namespace MAPeD
 			{
 				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 				
-				ushort 	block_val;
+				uint 	block_val;
 				int 	chr_ind;
 				int 	free_chr_ind 	= -1;
 				
@@ -1685,7 +1726,7 @@ namespace MAPeD
 				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 				
 				byte[] 	CHR_data = data.CHR_bank;
-				ushort 	block_val;
+				uint 	block_val;
 				int 	chr_ind;
 				
 				for( int i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
@@ -1940,6 +1981,7 @@ namespace MAPeD
 			if( m_tiles_processor.block_reserve_CHRs( m_tiles_processor.get_selected_block(), m_data_manager ) > 0 )
 			{
 				enable_update_gfx_btn( true );
+				enable_update_screens_btn( true );
 			}
 		}
 		
@@ -1952,6 +1994,7 @@ namespace MAPeD
 				select_block_button( block_ind );
 				
 				enable_update_gfx_btn( true );
+				enable_update_screens_btn( true );
 			}
 		}
 #endregion		
@@ -1972,14 +2015,14 @@ namespace MAPeD
 			}
 		}
 
-#if DEF_NES
+#if DEF_SCREEN_HEIGHT_7d5_TILES
 		bool check_empty_screen( uint[] _tiles, byte[] _scr_data )
-#elif DEF_SMS
+#else
 		bool check_empty_screen( byte[] _scr_data )
 #endif
 		{
 			int tile_n;
-#if DEF_NES
+#if DEF_SCREEN_HEIGHT_7d5_TILES
 			uint tile_ind;
 			
 			int scr_first_tile_ind	= _scr_data[ 0 ];
@@ -2016,7 +2059,7 @@ namespace MAPeD
 				return true;
 			}
 			
-#elif DEF_SMS
+#else
 			int scr_first_tile_ind = _scr_data[ 0 ];
 			
 			for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
@@ -2045,9 +2088,9 @@ namespace MAPeD
 			
 			for( scr_n = 0; scr_n < m_data_manager.scr_data_cnt; scr_n++ )
 			{
-#if DEF_NES
+#if DEF_SCREEN_HEIGHT_7d5_TILES
 				if( check_empty_screen( data.tiles, data.scr_data[ scr_n ] ) )
-#elif DEF_SMS
+#else
 				if( check_empty_screen( data.scr_data[ scr_n ] ) )
 #endif
 				{
@@ -3741,7 +3784,7 @@ namespace MAPeD
 		
 		void BtnSwapColorsClick_Event(object sender, EventArgs e)
 		{
-#if DEF_SMS			
+#if !DEF_NES
 			if( m_data_manager.tiles_data_cnt > 0 )
 			{
 				if( m_swap_colors_form.ShowDialog( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) ) == DialogResult.OK )
@@ -3824,5 +3867,17 @@ namespace MAPeD
 				CBoxPalettes.SelectedIndex = _data.palette_pos;
 			}
 		}
+		
+#if DEF_PALETTE16_PER_CHR
+		void update_palette_list_pos( object sender, EventArgs e )
+		{
+			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			
+			if( data != null )
+			{
+				CBoxPalettes.SelectedIndex = data.palette_pos;
+			}
+		}
+#endif
 	}
 }

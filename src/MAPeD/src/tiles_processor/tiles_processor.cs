@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 12:36
  */
@@ -21,7 +21,9 @@ namespace MAPeD
 	{
 		public event EventHandler NeedGFXUpdate;
 		public event EventHandler GFXUpdate;
-		
+#if DEF_PALETTE16_PER_CHR		
+		public event EventHandler UpdatePaletteListPos;
+#endif		
 		private CHR_bank_viewer	m_CHR_bank_viewer	= null;
 		private block_editor	m_block_editor		= null;
 		private tile_editor		m_tile_editor		= null;
@@ -59,7 +61,9 @@ namespace MAPeD
 			m_block_editor.NeedGFXUpdate 	+= new EventHandler( need_gfx_update_event );
 			m_tile_editor.NeedGFXUpdate		+= new EventHandler( need_gfx_update_event );
 			m_palette_grp.NeedGFXUpdate		+= new EventHandler( need_gfx_update_event );
-			
+#if DEF_PALETTE16_PER_CHR
+			m_block_editor.UpdatePaletteListPos	+= new EventHandler( update_palette_list_pos );
+#endif
 			m_CHR_bank_viewer.subscribe_event( this );
 			m_block_editor.subscribe_event( this );
 			m_tile_editor.subscribe_event( this );
@@ -81,6 +85,15 @@ namespace MAPeD
 			}
 		}
 		
+#if DEF_PALETTE16_PER_CHR
+		private void update_palette_list_pos( object sender, EventArgs e )
+		{
+			if( UpdatePaletteListPos != null )
+			{
+				UpdatePaletteListPos( sender, e );
+			}
+		}
+#endif		
 		public void subscribe_block_quad_selected_event( EventHandler _e )
 		{
 			m_block_editor.BlockQuadSelected += new EventHandler( _e );
@@ -96,7 +109,7 @@ namespace MAPeD
 		{
 			m_tile_editor.set_selected_tile( _tile_id, _data );
 		}
-		
+#if DEF_FLIP_BLOCKS_SPR_BY_FLAGS		
 		public void set_CHR_flag_vflip()
 		{
 			m_block_editor.set_CHR_flag_vflip();
@@ -106,7 +119,7 @@ namespace MAPeD
 		{
 			m_block_editor.set_CHR_flag_hflip();
 		}
-
+#endif
 		public void set_block_flags_obj_id( int _id, bool _per_block )
 		{
 			m_block_editor.set_block_flags_obj_id( _id, _per_block );
@@ -345,7 +358,7 @@ namespace MAPeD
 		{
 			return m_CHR_bank_viewer.get_selected_CHR_ind();
 		}
-#if DEF_SMS		
+
 		public void CHR_bank_next_page()
 		{
 			m_CHR_bank_viewer.next_page();
@@ -355,6 +368,5 @@ namespace MAPeD
 		{
 			m_CHR_bank_viewer.prev_page();
 		}
-#endif
 	}
 }

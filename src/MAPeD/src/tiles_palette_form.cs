@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 26.11.2018
  * Time: 17:38
  */
@@ -14,11 +14,6 @@ namespace MAPeD
 	/// Description of tiles_palette.
 	/// </summary>
 	/// 
-	
-	public delegate void TilesBlocksClosed();
-	public delegate void TileSelected();
-	public delegate void BlockSelected();
-	public delegate void ResetActiveTile();
 	
 	public partial class tiles_palette_form : Form
 	{

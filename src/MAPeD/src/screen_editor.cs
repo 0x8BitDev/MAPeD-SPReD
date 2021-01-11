@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 09.05.2017
  * Time: 17:34
  */
@@ -81,16 +81,6 @@ namespace MAPeD
 			m_data = _data;
 		}
 	}
-	
-	public delegate void ModeChanged();
-	public delegate void NeedScreensUpdate();
-	public delegate void RequestUpScreen();
-	public delegate void RequestDownScreen();
-	public delegate void RequestLeftScreen();
-	public delegate void RequestRightScreen();	
-	public delegate void UpdateTileImage();
-	public delegate void CreatePatternEnd();
-	public delegate void PutTilesPattern();
 	
 	public class screen_editor : drawable_base
 	{
