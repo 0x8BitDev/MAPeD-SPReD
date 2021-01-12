@@ -258,7 +258,7 @@ namespace MAPeD
 			
 #if DEF_NES
 			Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
-			Project_openFileDialog.Filter = Project_openFileDialog.Filter + "|MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT;
+			Project_openFileDialog.Filter = Project_openFileDialog.Filter + "|MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT + "|" + "MAPeD-PCE (*." + utils.CONST_PCE_FILE_EXT + ")|*." + utils.CONST_PCE_FILE_EXT;
 			
 			BtnSwapColors.Visible = false;
 #elif DEF_SMS
@@ -267,7 +267,7 @@ namespace MAPeD
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "sms" );
 
 			Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
-			Project_openFileDialog.Filter = "MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT + "|" + Project_openFileDialog.Filter;
+			Project_openFileDialog.Filter = "MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT + "|" + "MAPeD-PCE (*." + utils.CONST_PCE_FILE_EXT + ")|*." + utils.CONST_PCE_FILE_EXT + "|" + Project_openFileDialog.Filter;
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "WLA-DX" );
 
@@ -564,11 +564,11 @@ namespace MAPeD
 			{
 				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
 #if DEF_NES
-				if( file_ext != utils.CONST_NES_FILE_EXT )
+				if( file_ext == utils.CONST_SMS_FILE_EXT )
 #elif DEF_SMS
 				if( file_ext != utils.CONST_SMS_FILE_EXT )
 #elif DEF_PCE
-				if( file_ext != utils.CONST_PCE_FILE_EXT )
+				if( file_ext == utils.CONST_SMS_FILE_EXT )
 #endif
 				{
 					if( m_data_conversion_options_form.ShowDialog() == DialogResult.Cancel )

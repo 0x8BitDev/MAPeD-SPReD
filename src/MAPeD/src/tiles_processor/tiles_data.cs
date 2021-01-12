@@ -1300,30 +1300,41 @@ namespace MAPeD
 		{
 			int i;
 			uint val;
+
+			int CHR_id;
+			int prop_id;
 			
 			bool nes_file = _file_ext == utils.CONST_NES_FILE_EXT ? true:false;
 			bool sms_file = _file_ext == utils.CONST_SMS_FILE_EXT ? true:false;
 			bool pce_file = _file_ext == utils.CONST_PCE_FILE_EXT ? true:false;
 
 #if DEF_SMS || DEF_PCE
-			int CHR_id;
 			int palette_ind;
-#if DEF_PCE
-			int prop_id;
-#endif
+
 			Dictionary< int, int >	dict_CHR_palette_ind = nes_file ? new Dictionary<int, int>( utils.CONST_BLOCKS_UINT_SIZE ):null;
 #endif
 
 #if DEF_NES
-			if( sms_file )
+			int num_pages;
+
+			if( sms_file || pce_file )
 			{
 				for( i = 0; i < m_CHR_bank.Length; i++ )
 				{
 					m_CHR_bank[ i ] = ( byte )( _br.ReadByte() & 0x03 );
 				}
 				
+				if( sms_file )
+				{
+					num_pages = utils.CONST_SMS_CHR_BANK_NUM_PAGES;
+				}
+				else
+				{
+					num_pages = utils.CONST_PCE_CHR_BANK_NUM_PAGES;
+				}
+				
 				// skip the rest data
-				_br.ReadBytes( ( utils.CONST_SMS_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_PAGE_SIZE ) - m_CHR_bank.Length );
+				_br.ReadBytes( ( num_pages * utils.CONST_CHR_BANK_PAGE_SIZE ) - m_CHR_bank.Length );
 			}
 #elif DEF_SMS			
 			if( nes_file )
@@ -1332,6 +1343,17 @@ namespace MAPeD
 				{
 					m_CHR_bank[ i ] = _br.ReadByte();
 				}
+			}
+			else
+			if( pce_file )
+			{
+				for( i = 0; i < m_CHR_bank.Length; i++ )
+				{
+					m_CHR_bank[ i ] = _br.ReadByte();
+				}
+				
+				// skip the rest data
+				_br.ReadBytes( ( utils.CONST_PCE_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_PAGE_SIZE ) - m_CHR_bank.Length );
 			}
 #elif DEF_PCE
 			if( sms_file )
@@ -1433,6 +1455,18 @@ namespace MAPeD
 						val = set_block_CHR_id( 0, val );
 					}
 				}
+				else
+				if( pce_file )
+				{
+					// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
+					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
+					CHR_id	= ( int )( val & 0x00000fff );
+					prop_id = ( int )( ( val & 0x000f0000 ) >> 16 );
+					
+					val = 0;
+					val = set_block_CHR_id( CHR_id, val );
+					val = set_block_flags_obj_id( prop_id, val );
+				}
 #elif DEF_SMS
 				if( nes_file )
 				{
@@ -1450,6 +1484,18 @@ namespace MAPeD
 						// SMS: flip flags instead of palette on SMS
 						dict_CHR_palette_ind.Add( CHR_id, palette_ind );
 					}					
+				}
+				else
+				if( pce_file )
+				{
+					// SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
+					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
+					CHR_id	= ( int )( val & 0x00000fff );
+					prop_id = ( int )( ( val & 0x000f0000 ) >> 16 );
+					
+					val = 0;
+					val = set_block_CHR_id( CHR_id, val );
+					val = set_block_flags_obj_id( prop_id, val );
 				}
 #elif DEF_PCE
 				if( sms_file )
@@ -1488,7 +1534,7 @@ namespace MAPeD
 				m_blocks[ i ] = val;
 			}
 #if DEF_SMS || DEF_PCE
-			if( nes_file && dict_CHR_palette_ind != null )
+			if( dict_CHR_palette_ind != null )
 			{
 				byte[] img_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
 				
@@ -1528,7 +1574,7 @@ namespace MAPeD
 #if DEF_NES || DEF_PCE
 				if( sms_file )
 #elif DEF_SMS			
-				if( nes_file )
+				if( nes_file || pce_file )
 #endif			
 				{
 					switch( _scr_align_mode )

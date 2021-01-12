@@ -710,6 +710,7 @@ namespace MAPeD
 		public void load( byte _ver, BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode, bool _convert_colors )
 		{
 			byte data_id = 0;
+			int data_set_pos = 0;
 			
 			do
 			{
@@ -725,7 +726,7 @@ namespace MAPeD
 						get_tiles_data( tiles_data_pos ).load( _ver, _br, _file_ext, _scr_align_mode );
 					}
 					
-					tiles_data_pos = _br.ReadInt32();
+					data_set_pos = _br.ReadInt32();
 				}
 				else
 				if( data_id == utils.CONST_IO_DATA_ENTITIES )
@@ -838,6 +839,8 @@ namespace MAPeD
 				}
 			}
 			while( data_id != utils.CONST_IO_DATA_END );
+			
+			tiles_data_pos = data_set_pos;
 		}
 		
 		public void save_JSON( TextWriter _tw )
