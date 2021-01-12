@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+12.01.2021 - MAPeD-PCE: added loading\saving of a project data (+SMS\NES projects)
 11.01.2021 - MAPeD-PCE added (limited functionality)
 11.01.2021 - Changed project file format (v3): palette indices BYTE -> INT; blocks data USHORT -> UINT; SMS: changed bit values of block descriptions
 06.01.2021 - SMS: added column ordered palette

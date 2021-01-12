@@ -777,13 +777,14 @@ namespace MAPeD
 				else				
 				if( data_id == utils.CONST_IO_DATA_PALETTE )
 				{
-					int[] plt_main	= new int[ palette_group.Instance.main_palette.Length ];
+					int plt_len 	= utils.get_palette_len_by_file_ext( _file_ext );
+					int[] plt_main	= new int[ plt_len ];
 #if DEF_NES								
-					bool ignore_palette = ( _file_ext == utils.CONST_SMS_FILE_EXT ) ? true:false;
+					bool ignore_palette = ( _file_ext != utils.CONST_NES_FILE_EXT ) ? true:false;
 #elif DEF_SMS
-					bool ignore_palette = ( _file_ext == utils.CONST_NES_FILE_EXT ) ? true:false;
+					bool ignore_palette = ( _file_ext != utils.CONST_SMS_FILE_EXT ) ? true:false;
 #elif DEF_PCE
-					bool ignore_palette = false;
+					bool ignore_palette = ( _file_ext != utils.CONST_PCE_FILE_EXT ) ? true:false;
 #endif				
 					if( ignore_palette )
 					{
@@ -791,12 +792,12 @@ namespace MAPeD
 						{
 							// load main palette from the project file
 							int data_pos = 0;
-						
+							
 							do
 							{
 								plt_main[ data_pos ] = _br.ReadByte() << 16 | _br.ReadByte() << 8 | _br.ReadByte();
 							}
-							while( ++data_pos != plt_main.Length );
+							while( ++data_pos != plt_len );
 							
 							List< int[] > palettes = null;
 							
@@ -817,7 +818,7 @@ namespace MAPeD
 						}
 						else
 						{
-							_br.ReadBytes( 192 );
+							_br.ReadBytes( plt_len * 3 );
 						}
 					}
 					else

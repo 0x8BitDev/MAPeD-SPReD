@@ -51,6 +51,9 @@ namespace MAPeD
 		
 		private SPSeD.py_editor		m_py_editor	= null;
 
+#if DEF_FIXED_LEN_PALETTE16_ARR
+		private int	m_palette_copy_ind	= -1;
+#endif
 		private bool m_project_loaded	= false;
 		
 		private export_active_tile_block_set_form	m_export_active_tile_block_set_form	= null;
@@ -221,7 +224,11 @@ namespace MAPeD
 																new SToolTipData( CheckBoxShowCoords, "Show coordinates of a selected entity" ),
 																new SToolTipData( CheckBoxPalettePerCHR, "MMC5 extended attributes mode" ),																
 																new SToolTipData( CBoxPalettes, "Palettes array" ),
+#if DEF_FIXED_LEN_PALETTE16_ARR
+																new SToolTipData( BtnPltCopy, "Copy palette to selected slot" ),
+#else
 																new SToolTipData( BtnPltCopy, "Add copy of active palette" ),
+#endif
 																new SToolTipData( BtnPltDelete, "Delete active palette" ),																
 																new SToolTipData( BtnSwapColors, "Swap two selected colors without changing graphics" ),
 																new SToolTipData( BtnBlockReserveCHRs, "Make links to empty CHRs" ),
@@ -277,13 +284,14 @@ namespace MAPeD
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "pce" );
 
 			Project_openFileDialog.DefaultExt = utils.CONST_PCE_FILE_EXT;
-			Project_openFileDialog.Filter = "MAPeD-PCE (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT + "|" + Project_openFileDialog.Filter;
+			Project_openFileDialog.Filter = "MAPeD-PCE (*." + utils.CONST_PCE_FILE_EXT + ")|*." + utils.CONST_PCE_FILE_EXT + "|" + "MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT + "|" + Project_openFileDialog.Filter;
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "??? CA65 ???" );
 
 			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp";
 			
 			CheckBoxPalettePerCHR.Visible = false;
+			BtnPltDelete.Enabled = false;
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false; 
 #endif
@@ -480,6 +488,11 @@ namespace MAPeD
 			{
 				tabControlTilesScreens.SelectTab( TabTiles );
 			}
+			
+#if DEF_FIXED_LEN_PALETTE16_ARR
+			m_palette_copy_ind = -1;
+			BtnPltCopy.Text = "Copy";
+#endif
 		}
 		
 		void ExitToolStripMenuItemClick_Event(object sender, EventArgs e)
@@ -551,9 +564,11 @@ namespace MAPeD
 			{
 				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
 #if DEF_NES
-				if( file_ext == utils.CONST_SMS_FILE_EXT )
+				if( file_ext != utils.CONST_NES_FILE_EXT )
 #elif DEF_SMS
-				if( file_ext == utils.CONST_NES_FILE_EXT )
+				if( file_ext != utils.CONST_SMS_FILE_EXT )
+#elif DEF_PCE
+				if( file_ext != utils.CONST_PCE_FILE_EXT )
 #endif
 				{
 					if( m_data_conversion_options_form.ShowDialog() == DialogResult.Cancel )
@@ -3800,14 +3815,7 @@ namespace MAPeD
 			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 			data.palette_pos = CBoxPalettes.SelectedIndex; 
 			
-			palette_group plt_grp = palette_group.Instance;
-			plt_grp.set_palette( data );
-			plt_grp.update_selected_color();
-			
-			enable_update_gfx_btn( true );
-			enable_update_screens_btn( true );
-			
-			m_tiles_processor.update_graphics();
+			update_palette_related_data( data );
 		}
 		
 		void BtnPltCopyClick_Event(object sender, EventArgs e)
@@ -3816,6 +3824,24 @@ namespace MAPeD
 			
 			if( data != null )
 			{
+#if DEF_FIXED_LEN_PALETTE16_ARR
+				if( m_palette_copy_ind < 0 )
+				{
+					// copy
+					BtnPltCopy.Text = "Paste";
+					m_palette_copy_ind = data.palette_pos;
+				}
+				else
+				{
+					// paste
+					data.palettes_arr[ data.palette_pos ].copy( data.palettes_arr[ m_palette_copy_ind ] );
+					
+					BtnPltCopy.Text = "Copy";
+					m_palette_copy_ind = -1;
+
+					update_palette_related_data( data );
+				}
+#else
 				if( data.palette_copy() )
 				{
 					palette_group.Instance.set_palette( data );
@@ -3827,6 +3853,7 @@ namespace MAPeD
 				{
 					message_box( "The maximum allowed number of palettes - " + utils.CONST_PALETTES_COUNT, "Copy Active Palette", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
+#endif
 			}
 		}
 		
@@ -3851,6 +3878,18 @@ namespace MAPeD
 					}
 				}
 			}
+		}
+
+		void update_palette_related_data( tiles_data _data )
+		{
+			palette_group plt_grp = palette_group.Instance;
+			plt_grp.set_palette( _data );
+			plt_grp.update_selected_color();
+			
+			enable_update_gfx_btn( true );
+			enable_update_screens_btn( true );
+			
+			m_tiles_processor.update_graphics();
 		}
 		
 		void update_palettes_arr( tiles_data _data, bool _update_pos )

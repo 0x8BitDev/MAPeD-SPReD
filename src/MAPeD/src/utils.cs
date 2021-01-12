@@ -12,6 +12,7 @@ DEF_SCREEN_HEIGHT_7d5_TILES		(NES/PCE)
 DEF_TILE_DRAW_FAST
 DEF_FLIP_BLOCKS_SPR_BY_FLAGS	(SMS)
 DEF_PALETTE16_PER_CHR			(PCE)
+DEF_FIXED_LEN_PALETTE16_ARR		(PCE)
 */
 
 using System;
@@ -186,6 +187,8 @@ namespace MAPeD
 		public const int CONST_CHR_BANK_MAX_SPRITES_CNT	= 256 * CONST_PCE_CHR_BANK_NUM_PAGES;
 		
 		public const int CONST_PALETTE_MAIN_NUM_COLORS	= 512;
+		
+		public const int CONST_PALETTE16_ARR_LEN		= 16;	//DEF_FIXED_LEN_PALETTE16_ARR
 #endif
 
 		public const int CONST_SCREEN_TILES_SIZE		= 64;	// pixels
@@ -882,6 +885,27 @@ namespace MAPeD
 			{
 				_bw.Write( ( byte )_arr[ i ] );
 			}
+		}
+		
+		public static int get_palette_len_by_file_ext( string _file_ext )
+		{
+			switch( _file_ext )
+			{
+				case CONST_NES_FILE_EXT:
+				case CONST_SMS_FILE_EXT:
+					{
+						return 64;
+					}
+					break;
+					
+				case CONST_PCE_FILE_EXT:
+					{
+						return 512;
+					}
+					break;
+			}
+			
+			throw new Exception( "utils.get_palette_len_by_file_ext(...) : invalid parameter!" );
 		}
 	}
 }
