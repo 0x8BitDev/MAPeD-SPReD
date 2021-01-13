@@ -3885,6 +3885,9 @@ namespace MAPeD
 			enable_update_gfx_btn( true );
 			enable_update_screens_btn( true );
 			
+#if DEF_PALETTE16_PER_CHR
+			m_tiles_processor.block_editor_update_sel_CHR_palette();
+#endif
 			m_tiles_processor.update_graphics();
 		}
 		

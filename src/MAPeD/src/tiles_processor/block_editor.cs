@@ -198,7 +198,7 @@ namespace MAPeD
 #if DEF_PALETTE16_PER_CHR
 			if( _need_draw )
 			{
-				update_block_palette();
+				update_sel_CHR_palette();
 			}
 			else
 			{
@@ -240,7 +240,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void update_block_palette()
+		public void update_sel_CHR_palette()
 		{
 			if( m_data != null && m_sel_quad_ind >= 0 && m_sel_block_id >= 0 )
 			{
@@ -270,8 +270,8 @@ namespace MAPeD
 			}
 			
 #if DEF_PALETTE16_PER_CHR
-			update_block_palette();
-#endif
+			update_palette_list_pos();
+#endif			
 			update();
 		}
 		

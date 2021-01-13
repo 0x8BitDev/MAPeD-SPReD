@@ -139,7 +139,12 @@ namespace MAPeD
 		{
 			m_block_editor.shift_colors( _shift_transp );
 		}
-		
+#if DEF_PALETTE16_PER_CHR
+		public void block_editor_update_sel_CHR_palette()
+		{
+			m_block_editor.update_sel_CHR_palette();
+		}
+#endif
 		public void transform_selected_CHR( utils.ETransformType _type )
 		{
 			m_CHR_bank_viewer.transform_selected_CHR( _type );
