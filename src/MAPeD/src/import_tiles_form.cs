@@ -52,8 +52,10 @@ namespace MAPeD
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+#if DEF_SMS || DEF_PCE
 #if DEF_SMS
 			BtnApplyPaletteDesc.Visible = false;
+#endif
 			CheckBoxApplyPalette.Text = "Apply palette";
 #endif
 			CheckBoxApplyPalette.Checked = true;
@@ -78,7 +80,7 @@ namespace MAPeD
 		{
 			return _data_manager.get_local_screen_ind( _data_manager.tiles_data_pos, _global_scr_ind );
 		}
-#if !DEF_PCE
+
 		public void data_processing( Bitmap _bmp, data_sets_manager _data_manager, Func< int, int, layout_data > _create_layout )
 		{
 			bool import_game_map_as_is = true;
@@ -260,7 +262,7 @@ namespace MAPeD
 											// extract a CHR if it's not an invisible part of a tile ( the bottom blocks of the eigth tiles row ) 
 											if( !( ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) == 7 && block_y > 0 ) )
 											{
-												extract_CHR( CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
+												extract_CHR( _bmp.PixelFormat, CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 											}
 											else
 											{
@@ -273,7 +275,7 @@ namespace MAPeD
 										}
 										else
 #endif											
-										extract_CHR( CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
+										extract_CHR( _bmp.PixelFormat, CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 										
 										if( !check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, _data ) )
 										{
@@ -370,7 +372,7 @@ namespace MAPeD
 						{
 							for( int CHR_n = 0; CHR_n < 4; CHR_n++ )
 							{
-								extract_CHR( CHR_n, block_x, block_y, stride, utils.tmp_spr8x8_buff, data_ptr );
+								extract_CHR( _bmp.PixelFormat, CHR_n, block_x, block_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 								
 								if( !check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, _data ) )
 								{
@@ -496,32 +498,40 @@ namespace MAPeD
 					palettes[ i >> 2 ][ i & 0x03 ] = utils.find_nearest_color_ind( plt[ i ].ToArgb() );
 				}
 #if DEF_NES
-				apply_palettes( _data, _CHR_beg_ind, _CHR_end_ind, _block_beg_ind, _block_end_ind );
+				if( fix_broken_blocks( _data, _block_beg_ind, ref _block_end_ind ) == true )
+				{
+					NES_apply_palettes( _data, _block_beg_ind, _block_end_ind );
+				}
 				
 				palettes[ 1 ][ 0 ] = palettes[ 2 ][ 0 ] = palettes[ 3 ][ 0 ] = palettes[ 0 ][ 0 ];
+#elif DEF_PCE
+				if( fix_broken_blocks( _data, _block_beg_ind, ref _block_end_ind ) == true )
+				{
+					PCE_apply_palettes( plt, _data, _block_beg_ind, _block_end_ind );
+				}
 #endif
 				for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
 				{
 					palette_group.Instance.get_palettes_arr()[ i ].update();
 				}				
-#if DEF_SMS
+#if !DEF_NES
 				palette_group.Instance.active_palette = 0;
 #endif
 			}
 		}
 
-		private void extract_CHR( int _CHR_n, int _block_offset_x, int _block_offset_y, int _stride, byte[] _img_buff, System.IntPtr _data_ptr )
+		private void extract_CHR( PixelFormat _pix_fmt, int _CHR_n, int _block_offset_x, int _block_offset_y, int _stride, byte[] _img_buff, System.IntPtr _data_ptr )
 		{
 			int CHR_offset_x;
 			int CHR_offset_y;
 			
 			byte index_byte;
 			
-			byte color_index;
+			byte color_index = 0;
 #if DEF_NES
 			bool need_remapping = CheckBoxApplyPalette.Checked ? false:true;
 			SortedList< byte, byte > inds_remap_arr = new SortedList<byte, byte>();
-#elif DEF_SMS
+#elif DEF_SMS || DEF_PCE
 			bool need_remapping = false;
 			SortedList< byte, byte > inds_remap_arr = null;
 #endif			
@@ -532,9 +542,17 @@ namespace MAPeD
 			{
 				for( int CHR_x = 0; CHR_x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; CHR_x++ )
 				{
-					index_byte = Marshal.ReadByte( _data_ptr, ( CHR_offset_y + CHR_y ) * _stride + ( ( CHR_offset_x + CHR_x ) >> 1 ) );
-
-					color_index = ( byte )( ( ( CHR_x & 0x01 ) == 0x01 ) ? ( index_byte & 0x0f ):( ( index_byte & 0xf0 ) >> 4 ) );
+					if( _pix_fmt == PixelFormat.Format4bppIndexed )
+					{
+						index_byte = Marshal.ReadByte( _data_ptr, ( CHR_offset_y + CHR_y ) * _stride + ( ( CHR_offset_x + CHR_x ) >> 1 ) );	
+						
+						color_index = ( byte )( ( ( CHR_x & 0x01 ) == 0x01 ) ? ( index_byte & 0x0f ):( ( index_byte & 0xf0 ) >> 4 ) );
+					}
+					else
+					if( _pix_fmt == PixelFormat.Format8bppIndexed )
+					{
+						color_index = Marshal.ReadByte( _data_ptr, ( CHR_offset_y + CHR_y ) * _stride + ( CHR_offset_x + CHR_x ) );
+					}
 
 					if( need_remapping )
 					{
@@ -565,27 +583,11 @@ namespace MAPeD
 				}
 			}
 		}
-#endif //!DEF_PCE
-#if DEF_NES
-		private void apply_palettes( tiles_data _data, int _CHR_beg_ind, int _CHR_end_ind, int _block_beg_ind, int _block_end_ind )
+		
+		private bool fix_broken_blocks( tiles_data _data, int _block_beg_ind, ref int _block_end_ind )
 		{
 			int block_n;
-			int CHR_n;
-			int ind_n;
-			int plt_n;
-			
-			int plt1_n;
-			int plt2_n;
-
-			byte clr_ind;
 			int CHR_ind;
-			int block_ind;
-			
-			bool more_than_4_palettes 			= false;
-			bool more_than_4_colors_in_palette 	= false;
-
-			int max_weight 		= -1;
-			int transp_clr_ind	= -1;
 			
 			// delete "broken" block data
 			if( ( _block_end_ind & 0x03 ) != 0 )
@@ -618,14 +620,37 @@ namespace MAPeD
 				_block_end_ind = _block_end_ind & ~0x03; 
 			}
 
-			int n_blocks = ( _block_end_ind - _block_beg_ind ) >> 2;
-			
-			if( n_blocks == 0 )
+			if( ( _block_end_ind - _block_beg_ind ) >> 2 == 0 )
 			{
-				MainForm.message_box( "No data to import!\nCan't apply palettes!", "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				MainForm.message_box( "No data to import!\nCan't apply palettes!", "Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 				
-				return;
+				return false;
 			}
+			
+			return true;
+		}
+#if DEF_NES
+		private void NES_apply_palettes( tiles_data _data, int _block_beg_ind, int _block_end_ind )
+		{
+			int block_n;
+			int CHR_n;
+			int ind_n;
+			int plt_n;
+			
+			int plt1_n;
+			int plt2_n;
+
+			byte clr_ind;
+			int CHR_ind;
+			int block_ind;
+			
+			bool more_than_4_palettes 			= false;
+			bool more_than_4_colors_in_palette 	= false;
+
+			int max_weight 		= -1;
+			int transp_clr_ind	= -1;
+			
+			int n_blocks = ( _block_end_ind - _block_beg_ind ) >> 2;
 			
 			int[] clr_inds = new int[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 			Array.Clear( clr_inds, 0, clr_inds.Length );
@@ -799,7 +824,7 @@ namespace MAPeD
 					
 					for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
 					{
-						plt_clr_inds = palettes[ plt_n ];	// cut palettes more than 4
+						plt_clr_inds = palettes[ plt_n ];
 						
 						plt_str += "\n" + ( plt_n + 1 ) + ": [ ";
 						
@@ -912,10 +937,274 @@ namespace MAPeD
 				MainForm.message_box( "Invalid data:\n\n" + invalid_data_msg, "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 			}
 		}
-#endif		
+#endif //DEF_NES
+#if DEF_PCE
+		private void PCE_apply_palettes( Color[] _plt, tiles_data _data, int _block_beg_ind, int _block_end_ind )
+		{
+			int block_n;
+			int CHR_n;
+			int ind_n;
+			int plt_n;
+			
+			int plt1_n;
+			int plt2_n;
+
+			byte clr_ind;
+			int CHR_ind;
+			int block_ind;
+			
+			bool more_than_16_palettes 			= false;
+			bool more_than_16_colors_in_palette = false;
+
+			int n_CHRs		= _block_end_ind - _block_beg_ind;
+			int n_blocks	= n_CHRs >> 2;
+			
+			int[] clr_inds = new int[ utils.CONST_PALETTE_MAIN_NUM_COLORS ];
+			Array.Clear( clr_inds, 0, clr_inds.Length );
+
+			List< byte > CHR_plt_inds = new List< byte >( n_CHRs );
+			SortedSet< int > plt_clr_inds = null;
+			
+			List< SortedSet< int > > palettes = new List< SortedSet< int > >( 256 );
+			
+			bool[] remapped_CHRs = new bool[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
+			Array.Clear( remapped_CHRs, 0, remapped_CHRs.Length );
+			
+			string invalid_data_msg = "";
+			
+			// convert colors to the local palette indices
+			int plt_clrs = _plt.Length;
+			int[] img_clr_inds = new int[ _plt.Length ];
+			
+			for( ind_n = 0; ind_n < plt_clrs; ind_n++ )
+			{
+				img_clr_inds[ ind_n ] = utils.find_nearest_color_ind( _plt[ ind_n ].ToArgb() );
+			}
+			
+			// run through blocks and CHRs
+			for( block_n = _block_beg_ind; block_n < _block_end_ind; block_n += utils.CONST_BLOCK_SIZE )
+			{
+				for( CHR_n = 0; CHR_n < utils.CONST_BLOCK_SIZE; CHR_n++ )
+				{
+					plt_clr_inds = new SortedSet< int >();
+					
+					_data.from_CHR_bank_to_spr8x8( tiles_data.get_block_CHR_id( _data.blocks[ block_n + CHR_n ] ), utils.tmp_spr8x8_buff );
+					
+					for( ind_n = 0; ind_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; ind_n++ )
+					{
+						clr_ind = ( byte )utils.tmp_spr8x8_buff[ ind_n ];
+						
+						if( !plt_clr_inds.Contains( clr_ind ) )
+						{
+							plt_clr_inds.Add( clr_ind );
+							
+							if( plt_clr_inds.Count > 16 )
+							{
+								invalid_data_msg += utils.hex( "$", block_n >> 2 ) + " | CHR: " + utils.hex( "$", CHR_n ) + " | pix: " + ind_n + "\n";
+							}
+						}
+					}
+					
+					for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
+					{
+						if( palettes[ plt_n ].IsSupersetOf( plt_clr_inds ) )
+						{
+							CHR_plt_inds.Add( ( byte )plt_n );
+							
+							break;
+						}
+					}
+					
+					if( plt_n == palettes.Count )
+					{
+						palettes.Add( plt_clr_inds );
+						
+						CHR_plt_inds.Add( ( byte )( palettes.Count - 1 ) );
+					}
+				}
+			}
+			
+			SortedSet< int > tmp_palette = new SortedSet<int>();
+			
+			bool remove_plt = false; 
+			
+			for( plt1_n = 0; plt1_n < palettes.Count; plt1_n++ )
+			{
+				for( plt2_n = plt1_n; plt2_n < palettes.Count; plt2_n++ )
+				{
+					if( plt1_n != plt2_n )
+					{
+						remove_plt = false;
+
+						if( palettes[ plt2_n ].IsSupersetOf( palettes[ plt1_n ] ) )
+						{
+							remove_plt = true;
+						}
+						else
+						{
+							tmp_palette.Clear();
+							tmp_palette.UnionWith( palettes[ plt1_n ] );
+							tmp_palette.UnionWith( palettes[ plt2_n ] );
+							
+							if( tmp_palette.Count <= 16 )
+							{
+								palettes[ plt2_n ].UnionWith( palettes[ plt1_n ] );
+								
+								remove_plt = true;
+							}
+						}
+						
+						if( remove_plt )
+						{
+							// remove palettes[ plt1_n ]
+							palettes.RemoveAt( plt1_n );
+							
+							for( ind_n = 0; ind_n < CHR_plt_inds.Count; ind_n++ )
+							{
+								if( CHR_plt_inds[ ind_n ] == plt1_n )
+								{
+									CHR_plt_inds[ ind_n ] = ( byte )plt2_n;
+								}
+								
+								if( CHR_plt_inds[ ind_n ] >= plt1_n )
+								{
+									--CHR_plt_inds[ ind_n ];
+								}
+							}
+
+							--plt1_n;
+							
+							break;
+						}
+					}
+				}
+			}
+			
+			more_than_16_palettes = palettes.Count > utils.CONST_PALETTE16_ARR_LEN ? true:false;
+			
+			// check colors overflow
+			for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
+			{
+				if( palettes[ plt_n ].Count > ( utils.CONST_PALETTE_SMALL_NUM_COLORS * utils.CONST_NUM_SMALL_PALETTES ) )
+				{
+					more_than_16_colors_in_palette = true;
+				}
+			}
+			
+			if( more_than_16_palettes || more_than_16_colors_in_palette )
+			{
+				// convert palettes array into string format
+				{
+					string plt_str = "Palettes:";
+					
+					for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
+					{
+						plt_clr_inds = palettes[ plt_n ];
+						
+						plt_str += "\n" + ( plt_n + 1 ) + ": [ ";
+						
+						plt_clr_inds.ForEach( delegate( int _val ) 
+						{
+							plt_str += _val.ToString() + " ";
+						});
+						
+						plt_str += "]";
+					}
+					
+					if( invalid_data_msg.Length > 0 )
+					{
+						invalid_data_msg = invalid_data_msg.Insert( 0, "\n\nBlocks:\n" );
+					}
+					
+					invalid_data_msg = invalid_data_msg.Insert( 0, plt_str );
+				}
+			}
+			
+			// CHRs remapping and palettes applying
+			int palettes_cnt = Math.Min( palettes.Count, utils.CONST_PALETTE16_ARR_LEN );
+			
+			for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
+			{
+				// build remapping table
+				Array.Clear( clr_inds, 0, clr_inds.Length );
+				
+				plt_clr_inds = palettes[ plt_n ];
+				
+				ind_n = 0;
+				plt_clr_inds.ForEach( delegate( int _val ) 
+				{
+				    if( ind_n < 16 )	// cut color indices more than 16
+				    {
+						clr_inds[ _val ] = ( byte )( ind_n++ );
+				    }
+				});
+				
+				// run through all blocks and remap inds belonging to a current palette
+				for( block_n = 0; block_n < n_blocks; block_n++ )
+				{
+					for( CHR_n = 0; CHR_n < utils.CONST_BLOCK_SIZE; CHR_n++ )
+					{
+						if( CHR_plt_inds[ ( block_n << 2 ) + CHR_n ] == plt_n )
+						{
+							block_ind	= _block_beg_ind + ( block_n << 2 ) + CHR_n;
+							CHR_ind		= tiles_data.get_block_CHR_id( _data.blocks[ block_ind ] );
+							
+							if( !remapped_CHRs[ CHR_ind ] )
+							{
+								_data.from_CHR_bank_to_spr8x8( CHR_ind, utils.tmp_spr8x8_buff );
+								
+								for( ind_n = 0; ind_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; ind_n++ )
+								{
+									utils.tmp_spr8x8_buff[ ind_n ] = ( byte )clr_inds[ utils.tmp_spr8x8_buff[ ind_n ] ];
+								}
+								
+								_data.from_spr8x8_to_CHR_bank( CHR_ind, utils.tmp_spr8x8_buff );
+								
+								remapped_CHRs[ CHR_ind ] = true;
+							}
+							
+							// apply palette
+							_data.blocks[ block_ind ] = tiles_data.set_block_flags_palette( plt_n, _data.blocks[ block_ind ] );
+						}
+					}
+				}
+			}			
+
+			// apply final palettes
+			palettes_cnt = Math.Min( palettes.Count, utils.CONST_PALETTE16_ARR_LEN );
+			
+			for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
+			{
+				plt_clr_inds = palettes[ plt_n ];	// cut palettes more than 16
+				
+				ind_n = 0;
+				plt_clr_inds.ForEach( delegate( int _val ) 
+				{ 
+					if( ind_n < 16 )	// cut palette colors more than 16
+					{
+						_data.palettes_arr[ plt_n ].subpalettes[ ind_n >> 2 ][ ind_n & 0x03 ] = img_clr_inds[ _val ];
+						++ind_n;
+					}
+				});
+			}
+			
+			if( more_than_16_colors_in_palette || more_than_16_palettes )
+			{
+				string reason_str = ( more_than_16_palettes ? "\n- more than 16 palettes":"" ) + ( more_than_16_colors_in_palette ? "\n- more than 16 colors in a palette":"" );
+				
+				MainForm.message_box( "The imported image doesn't meet the requirements!\nSome color information will be lost!\n\nREASON: " + reason_str, "NES Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				
+				MainForm.message_box( "Invalid data:\n\n" + invalid_data_msg, "PCE Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+			}
+		}
+#endif //DEF_PCE
 		void BtnApplyPaletteDescClick_Event(object sender, EventArgs e)
 		{
+#if DEF_NES
 			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- NES compatible graphics\n- no more than 13 colors\n- one CHR bank data\n- static palette\n- tiles aligned", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
+#elif DEF_PCE
+			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- PCE compatible graphics\n- tiles aligned", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
+#endif
 		}
 	}
 }

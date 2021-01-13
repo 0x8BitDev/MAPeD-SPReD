@@ -746,12 +746,11 @@ namespace MAPeD
 					{
 						case ".bmp":
 							{
-#if !DEF_PCE
 								bmp = new Bitmap( filename );
 #if DEF_PCE
-								if( bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed || bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
+								if( bmp.PixelFormat == PixelFormat.Format8bppIndexed || bmp.PixelFormat == PixelFormat.Format4bppIndexed )
 #else
-								if( bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
+								if( bmp.PixelFormat == PixelFormat.Format4bppIndexed )
 #endif
 								{
 									if( m_import_tiles_form.ShowDialog() == DialogResult.OK )
@@ -789,9 +788,6 @@ namespace MAPeD
 								
 								bmp.Dispose();
 								bmp = null;
-#else
-								throw new Exception( "Not implemented yet!" );
-#endif //!DEF_PCE
 							}
 							break;
 #if DEF_NES || DEF_SMS
