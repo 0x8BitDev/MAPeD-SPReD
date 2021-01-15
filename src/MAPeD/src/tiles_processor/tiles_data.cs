@@ -30,7 +30,7 @@ namespace MAPeD
 		public int[] m_palette3	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 51, 54, 58, 62 };
 #elif DEF_PCE
 		public int[] m_palette0	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 0, 73, 219, 511 };
-		public int[] m_palette1	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 7, 15+64, 15+128, 15+192 };
+		public int[] m_palette1	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 4, 15+64, 15+128, 15+192 };
 		public int[] m_palette2	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 40, 40+72, 56+128, 56+192 };
 		public int[] m_palette3	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 192, 192+64, 192+128, 192+192 };
 #endif

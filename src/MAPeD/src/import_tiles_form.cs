@@ -96,7 +96,7 @@ namespace MAPeD
 				{
 					if( import_game_map )
 					{
-						if( ( _bmp.Width > 0 && ( _bmp.Width % utils.CONST_SCREEN_WIDTH_PIXELS ) != 0 ) || ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) != 0 ) )
+						if( ( _bmp.Width > 0 && ( _bmp.Width / ( float )utils.CONST_SCREEN_WIDTH_PIXELS ) > 1.0f ) || ( _bmp.Height > 0 && ( _bmp.Height / ( float )utils.CONST_SCREEN_HEIGHT_PIXELS ) > 1.0f ) )
 						{
 							DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nCrop the imported game map or leave it 'as is'?\n\n[Yes] to crop the game map to fully filled screens\n[No] to import the game map 'as is'", "Game map Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
 							
