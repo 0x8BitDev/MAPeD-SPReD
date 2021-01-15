@@ -132,7 +132,7 @@ namespace MAPeD
 		public const int CONST_SMS_SCREEN_NUM_HEIGHT_TILES	= 6;
 
 		public const int CONST_PCE_SCREEN_NUM_WIDTH_TILES	= 8;
-		public const int CONST_PCE_SCREEN_NUM_HEIGHT_TILES	= 8;		
+		public const int CONST_PCE_SCREEN_NUM_HEIGHT_TILES	= 7;		
 		
 #if DEF_NES		
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 16;
@@ -180,7 +180,7 @@ namespace MAPeD
 		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_SCREEN_NUM_HEIGHT_TILES << 1;
 		
 		public const int CONST_SCREEN_OFFSET_X			= 32;
-		public const int CONST_SCREEN_OFFSET_Y			= 32;
+		public const int CONST_SCREEN_OFFSET_Y			= 64;
 		
 		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_PCE_CHR_BANK_NUM_PAGES;
 		
