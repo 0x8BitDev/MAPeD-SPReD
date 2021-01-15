@@ -43,6 +43,13 @@ namespace MAPeD
 			this.CheckBoxOptimizeCHRs = new System.Windows.Forms.CheckBox();
 			this.CheckBoxOptimizeScreens = new System.Windows.Forms.CheckBox();
 			this.CheckBoxGlobalOptimization = new System.Windows.Forms.CheckBox();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.BtnMatchedBlocksInfo = new System.Windows.Forms.Button();
+			this.NumUpDownMatcingPercent = new System.Windows.Forms.NumericUpDown();
+			this.BtnCheckMatchedBlocks = new System.Windows.Forms.Button();
+			this.label3 = new System.Windows.Forms.Label();
+			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.NumUpDownMatcingPercent)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -77,7 +84,7 @@ namespace MAPeD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(117, 198);
+			this.BtnOk.Location = new System.Drawing.Point(119, 266);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 4;
@@ -96,7 +103,7 @@ namespace MAPeD
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(198, 198);
+			this.BtnCancel.Location = new System.Drawing.Point(200, 266);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
 			this.BtnCancel.TabIndex = 5;
@@ -131,13 +138,72 @@ namespace MAPeD
 			this.CheckBoxGlobalOptimization.Text = "Optimize all the data banks (otherwise the active data bank will be optimized)";
 			this.CheckBoxGlobalOptimization.UseVisualStyleBackColor = true;
 			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.BtnMatchedBlocksInfo);
+			this.groupBox1.Controls.Add(this.NumUpDownMatcingPercent);
+			this.groupBox1.Controls.Add(this.BtnCheckMatchedBlocks);
+			this.groupBox1.Controls.Add(this.label3);
+			this.groupBox1.Location = new System.Drawing.Point(14, 194);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(256, 58);
+			this.groupBox1.TabIndex = 6;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Blocks (2x2) Matching Degree";
+			// 
+			// BtnMatchedBlocksInfo
+			// 
+			this.BtnMatchedBlocksInfo.Location = new System.Drawing.Point(199, 23);
+			this.BtnMatchedBlocksInfo.Name = "BtnMatchedBlocksInfo";
+			this.BtnMatchedBlocksInfo.Size = new System.Drawing.Size(20, 20);
+			this.BtnMatchedBlocksInfo.TabIndex = 3;
+			this.BtnMatchedBlocksInfo.Text = "?";
+			this.BtnMatchedBlocksInfo.UseVisualStyleBackColor = true;
+			this.BtnMatchedBlocksInfo.Click += new System.EventHandler(this.BtnMatchedBlocksInfoClick_Event);
+			// 
+			// NumUpDownMatcingPercent
+			// 
+			this.NumUpDownMatcingPercent.Location = new System.Drawing.Point(53, 24);
+			this.NumUpDownMatcingPercent.Minimum = new decimal(new int[] {
+									1,
+									0,
+									0,
+									0});
+			this.NumUpDownMatcingPercent.Name = "NumUpDownMatcingPercent";
+			this.NumUpDownMatcingPercent.Size = new System.Drawing.Size(58, 20);
+			this.NumUpDownMatcingPercent.TabIndex = 0;
+			this.NumUpDownMatcingPercent.Value = new decimal(new int[] {
+									1,
+									0,
+									0,
+									0});
+			// 
+			// BtnCheckMatchedBlocks
+			// 
+			this.BtnCheckMatchedBlocks.Location = new System.Drawing.Point(118, 22);
+			this.BtnCheckMatchedBlocks.Name = "BtnCheckMatchedBlocks";
+			this.BtnCheckMatchedBlocks.Size = new System.Drawing.Size(75, 23);
+			this.BtnCheckMatchedBlocks.TabIndex = 2;
+			this.BtnCheckMatchedBlocks.Text = "Check";
+			this.BtnCheckMatchedBlocks.UseVisualStyleBackColor = true;
+			this.BtnCheckMatchedBlocks.Click += new System.EventHandler(this.BtnCheckMatchedBlocksClick_Event);
+			// 
+			// label3
+			// 
+			this.label3.Location = new System.Drawing.Point(36, 26);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(20, 19);
+			this.label3.TabIndex = 1;
+			this.label3.Text = "%";
+			// 
 			// optimization_form
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
-			this.ClientSize = new System.Drawing.Size(284, 233);
+			this.ClientSize = new System.Drawing.Size(284, 301);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
@@ -153,8 +219,15 @@ namespace MAPeD
 			this.Name = "optimization_form";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Data Optimization";
+			this.groupBox1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.NumUpDownMatcingPercent)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button BtnMatchedBlocksInfo;
+		private System.Windows.Forms.NumericUpDown NumUpDownMatcingPercent;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Button BtnCheckMatchedBlocks;
+		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.CheckBox CheckBoxGlobalOptimization;
 		private System.Windows.Forms.CheckBox CheckBoxOptimizeScreens;
 		private System.Windows.Forms.CheckBox CheckBoxOptimizeCHRs;

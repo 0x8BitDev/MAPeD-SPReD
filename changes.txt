@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+15.01.2021 - MAPeD: added checking of matched blocks (2x2), to identify similar data (the "Optimization" button)
 11.01.2021 - MAPeD-PCE added
 11.01.2021 - Changed project file format (v3): palette indices BYTE -> INT; blocks data USHORT -> UINT; SMS: changed bit values of block descriptions
 06.01.2021 - SMS: added column ordered palette

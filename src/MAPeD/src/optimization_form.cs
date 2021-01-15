@@ -42,6 +42,8 @@ namespace MAPeD
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			
+			NumUpDownMatcingPercent.Value = 90;
 		}
 		
 		void BtnOkClick_event(object sender, EventArgs e)
@@ -602,6 +604,93 @@ namespace MAPeD
 			}
 			
 			return res;
+		}
+		
+		private static void check_matched_blocks( tiles_data _data, float _mfactor )
+		{
+			if( _data != null )
+			{
+				float match_factor;
+				int diff_pix_n;
+	
+				string res = "";
+				
+				byte[] A_CHR_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
+				byte[] B_CHR_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
+				
+				int ff_block_id = _data.get_first_free_block_id();
+				
+				for( int blockA_n = 0; blockA_n < ff_block_id; blockA_n++ )
+				{
+					for( int blockB_n = blockA_n; blockB_n < ff_block_id; blockB_n++ )
+					{
+						if( blockA_n != blockB_n )
+						{
+							match_factor = 0.0f;
+							
+							for( int CHR_n = 0; CHR_n < 4; CHR_n++ )
+							{
+								uint blockA = _data.blocks[ ( blockA_n << 2 ) + CHR_n ];
+								uint blockB = _data.blocks[ ( blockB_n << 2 ) + CHR_n ];
+#if !DEF_SMS
+								if( tiles_data.get_block_flags_palette( blockA ) != tiles_data.get_block_flags_palette( blockB ) )
+								{
+									continue;
+								}
+#endif
+								int A_CHR_id = tiles_data.get_block_CHR_id( blockA );
+								int B_CHR_id = tiles_data.get_block_CHR_id( blockB );
+	
+								if( A_CHR_id != B_CHR_id )
+								{
+									_data.from_CHR_bank_to_spr8x8( A_CHR_id, A_CHR_buff, 0 );
+									_data.from_CHR_bank_to_spr8x8( B_CHR_id, B_CHR_buff, 0 );
+									
+									diff_pix_n = 0;
+									
+									for( int pix_n = 0; pix_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; pix_n++ )
+									{
+										if( A_CHR_buff[ pix_n ] != B_CHR_buff[ pix_n ] )
+										{
+											++diff_pix_n;
+										}
+									}
+									
+									match_factor += 25.0f * ( 1.0f - ( diff_pix_n / ( float )utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ) );
+								}
+								else
+								{
+									match_factor += 25.0f;
+								}
+							}
+							
+							if( match_factor >= _mfactor )
+							{
+								res += utils.hex( "#", blockA_n ) + " <-> " + utils.hex( "#", blockB_n ) + " [" + ( int )match_factor + "%]\n";
+							}
+						}
+					}
+				}
+				
+				if( res.Length > 0 )
+				{
+					MainForm.message_box( res, "Matched Blocks", MessageBoxButtons.OK, MessageBoxIcon.Information );
+				}
+				else
+				{
+					MainForm.message_box( "No matches found!", "Matched Blocks", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				}
+			}
+		}
+		
+		void BtnCheckMatchedBlocksClick_Event(object sender, EventArgs e)
+		{
+			check_matched_blocks( m_data_sets.get_tiles_data( m_data_sets.tiles_data_pos ), ( float )NumUpDownMatcingPercent.Value );
+		}
+		
+		void BtnMatchedBlocksInfoClick_Event(object sender, EventArgs e)
+		{
+			MainForm.message_box( "By checking the matched blocks, you can identify similar data.\n\nEnter the boundary value (1-100%) and click the \"Check\" button.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 	}
 }
