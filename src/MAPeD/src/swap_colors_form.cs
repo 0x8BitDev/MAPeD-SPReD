@@ -176,6 +176,50 @@ namespace MAPeD
 		{
 			if( m_color_A >= 0 && m_color_B >= 0 )
 			{
+#if DEF_PALETTE16_PER_CHR
+				int pix_n;
+				int CHR_id;
+				int CHR_n;
+				int block_n;
+				
+				bool[] CHR_flags = new bool[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
+				Array.Clear( CHR_flags, 0, CHR_flags.Length );
+
+				uint block_data;
+				int ff_block_n = m_tiles_data.get_first_free_block_id();
+
+				for( block_n = 0; block_n < ff_block_n; block_n++ )
+				{
+					for( CHR_n = 0; CHR_n < utils.CONST_BLOCK_SIZE; CHR_n++ )
+					{
+						block_data = m_tiles_data.blocks[ ( block_n << 2 ) + CHR_n ];
+						
+						CHR_id = tiles_data.get_block_CHR_id( block_data );
+						
+						if( CHR_flags[ CHR_id ] == false && ( tiles_data.get_block_flags_palette( block_data ) == m_tiles_data.palette_pos ) )
+						{
+							m_tiles_data.from_CHR_bank_to_spr8x8( CHR_id, utils.tmp_spr8x8_buff, 0 );
+							
+							for( pix_n = 0; pix_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; pix_n++ )
+							{
+								if( utils.tmp_spr8x8_buff[ pix_n ] == m_color_A )
+								{
+									utils.tmp_spr8x8_buff[ pix_n ] = ( byte )m_color_B;
+								}
+								else
+								if( utils.tmp_spr8x8_buff[ pix_n ] == m_color_B )
+								{
+									utils.tmp_spr8x8_buff[ pix_n ] = ( byte )m_color_A;
+								}
+							}
+							
+							m_tiles_data.from_spr8x8_to_CHR_bank( CHR_id, utils.tmp_spr8x8_buff );
+							
+							CHR_flags[ CHR_id ] = true;
+						}
+					}
+				}
+#else					
 				for( int i = 0; i < m_tiles_data.CHR_bank.Length; i++ )
 				{
 					if( m_tiles_data.CHR_bank[ i ] == m_color_A )
@@ -188,13 +232,12 @@ namespace MAPeD
 						m_tiles_data.CHR_bank[ i ] = ( byte )m_color_A;
 					}
 				}
-
+#endif
 				int ind_A = m_tiles_data.subpalettes[ m_color_A >> 2 ][ m_color_A & 0x03 ];
 				int ind_B = m_tiles_data.subpalettes[ m_color_B >> 2 ][ m_color_B & 0x03 ];
 				
 				m_tiles_data.subpalettes[ m_color_A >> 2 ][ m_color_A & 0x03 ] = ind_B;
 				m_tiles_data.subpalettes[ m_color_B >> 2 ][ m_color_B & 0x03 ] = ind_A;
-				
 				for( int j = 0; j < utils.CONST_NUM_SMALL_PALETTES; j++ )
 				{
 					palette_group.Instance.get_palettes_arr()[ j ].update();

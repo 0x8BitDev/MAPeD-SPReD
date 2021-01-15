@@ -3801,6 +3801,8 @@ namespace MAPeD
 				if( m_swap_colors_form.ShowDialog( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) ) == DialogResult.OK )
 				{
 					BtnUpdateGFXClick_Event( null, null );
+					
+					palette_group.Instance.update_selected_color();
 				}
 			}
 #endif
