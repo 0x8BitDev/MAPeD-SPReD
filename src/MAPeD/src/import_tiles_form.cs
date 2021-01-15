@@ -945,6 +945,7 @@ namespace MAPeD
 			int CHR_n;
 			int ind_n;
 			int plt_n;
+			int val;
 			
 			int plt1_n;
 			int plt2_n;
@@ -952,6 +953,11 @@ namespace MAPeD
 			byte clr_ind;
 			int CHR_ind;
 			int block_ind;
+			
+			int transp_clr_ind = -1;
+			int transp_clr_pos = -1;
+			
+			palette16_data plt16;
 			
 			bool more_than_16_palettes 			= false;
 			bool more_than_16_colors_in_palette = false;
@@ -1080,6 +1086,44 @@ namespace MAPeD
 				}
 			}
 			
+			// get a transparent color
+			if( palettes.Count > 0 )
+			{
+				SortedSet< int > plt_a = new SortedSet<int>();
+				SortedSet< int > plt_b = new SortedSet<int>();
+
+				palettes[ 0 ].ForEach( delegate( int _val ) { plt_a.Add( _val ); });
+				
+				for( plt_n = 1; plt_n < palettes.Count; plt_n++ )
+				{
+					plt_b.Clear();
+					palettes[ plt_n ].ForEach( delegate( int _val ) { plt_b.Add( _val ); });
+					
+					plt_a.IntersectWith( plt_b );
+				}
+				
+				// get min color index
+				if( plt_a.Count > 0 )
+				{
+					int min_index = int.MaxValue;
+					clr_ind = 0;
+					plt_a.ForEach( delegate( int _val ) 
+					{
+					              	if( min_index > img_clr_inds[ _val ] )
+					              	{
+					              		min_index = _val;
+					              	}
+					              	++clr_ind;
+					});
+					
+					transp_clr_ind	= min_index;
+				}
+				else
+				{
+					MainForm.message_box( "Can't find a transparent color!\nPlease, fix it manually.", "Palettes Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				}
+			}
+			
 			more_than_16_palettes = palettes.Count > utils.CONST_PALETTE16_ARR_LEN ? true:false;
 			
 			// check colors overflow
@@ -1138,6 +1182,13 @@ namespace MAPeD
 						clr_inds[ _val ] = ( byte )( ind_n++ );
 				    }
 				});
+
+				if( transp_clr_ind >= 0 )
+				{
+					val = clr_inds[ plt_clr_inds.Min ];
+					clr_inds[ plt_clr_inds.Min ]	= clr_inds[ transp_clr_ind ];
+					clr_inds[ transp_clr_ind ]		= val;
+				}
 				
 				// run through all blocks and remap inds belonging to a current palette
 				for( block_n = 0; block_n < n_blocks; block_n++ )
@@ -1176,16 +1227,31 @@ namespace MAPeD
 			for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
 			{
 				plt_clr_inds = palettes[ plt_n ];	// cut palettes more than 16
-				
+
+				plt16 = _data.palettes_arr[ plt_n ];
+
 				ind_n = 0;
 				plt_clr_inds.ForEach( delegate( int _val ) 
 				{ 
 					if( ind_n < 16 )	// cut palette colors more than 16
 					{
-						_data.palettes_arr[ plt_n ].subpalettes[ ind_n >> 2 ][ ind_n & 0x03 ] = img_clr_inds[ _val ];
+						plt16.subpalettes[ ind_n >> 2 ][ ind_n & 0x03 ] = img_clr_inds[ _val ];
+						
+						if( _val == transp_clr_ind )
+						{
+							transp_clr_pos = ind_n;
+						}
+						
 						++ind_n;
 					}
 				});
+				
+				if( transp_clr_ind >= 0 )
+				{
+					val = plt16.subpalettes[ 0 ][ 0 ];
+					plt16.subpalettes[ 0 ][ 0 ]	= plt16.subpalettes[ transp_clr_pos >> 2 ][ transp_clr_pos & 0x03 ];
+					plt16.subpalettes[ transp_clr_pos >> 2 ][ transp_clr_pos & 0x03 ]	= val;
+				}
 			}
 			
 			if( more_than_16_colors_in_palette || more_than_16_palettes )
