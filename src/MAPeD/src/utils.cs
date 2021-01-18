@@ -157,6 +157,8 @@ namespace MAPeD
 		public const int CONST_CHR_BANK_MAX_SPRITES_CNT	= 256 * CONST_NES_CHR_BANK_NUM_PAGES;
 		
 		public const int CONST_PALETTE_MAIN_NUM_COLORS	= 64;
+		
+		public const string CONST_FILE_EXT				= CONST_NES_FILE_EXT; 
 #elif DEF_SMS
 		public const int CONST_SCREEN_NUM_WIDTH_TILES	= CONST_SMS_SCREEN_NUM_WIDTH_TILES;
 		public const int CONST_SCREEN_NUM_HEIGHT_TILES	= CONST_SMS_SCREEN_NUM_HEIGHT_TILES;
@@ -172,6 +174,8 @@ namespace MAPeD
 		public const int CONST_CHR_BANK_MAX_SPRITES_CNT	= 256 * CONST_SMS_CHR_BANK_NUM_PAGES;		
 		
 		public const int CONST_PALETTE_MAIN_NUM_COLORS	= 64;
+		
+		public const string CONST_FILE_EXT				= CONST_SMS_FILE_EXT;
 #elif DEF_PCE
 		public const int CONST_SCREEN_NUM_WIDTH_TILES	= CONST_PCE_SCREEN_NUM_WIDTH_TILES;
 		public const int CONST_SCREEN_NUM_HEIGHT_TILES	= CONST_PCE_SCREEN_NUM_HEIGHT_TILES;
@@ -189,6 +193,8 @@ namespace MAPeD
 		public const int CONST_PALETTE_MAIN_NUM_COLORS	= 512;
 		
 		public const int CONST_PALETTE16_ARR_LEN		= 16;	//DEF_FIXED_LEN_PALETTE16_ARR
+		
+		public const string CONST_FILE_EXT				= CONST_PCE_FILE_EXT;
 #endif
 
 		public const int CONST_SCREEN_TILES_SIZE		= 64;	// pixels
@@ -906,6 +912,32 @@ namespace MAPeD
 			}
 			
 			throw new Exception( "utils.get_palette_len_by_file_ext(...) : invalid parameter!" );
+		}
+		
+		public static int get_scr_data_len_by_file_ext( string _file_ext )
+		{
+			switch( _file_ext )
+			{
+				case CONST_NES_FILE_EXT:
+					{
+						return CONST_NES_SCREEN_NUM_WIDTH_TILES * CONST_NES_SCREEN_NUM_HEIGHT_TILES;
+					}
+					break;
+					
+				case CONST_SMS_FILE_EXT:
+					{
+						return CONST_SMS_SCREEN_NUM_WIDTH_TILES * CONST_SMS_SCREEN_NUM_HEIGHT_TILES;
+					}
+					break;
+					
+				case CONST_PCE_FILE_EXT:
+					{
+						return CONST_PCE_SCREEN_NUM_WIDTH_TILES * CONST_PCE_SCREEN_NUM_HEIGHT_TILES;
+					}
+					break;
+			}
+			
+			throw new Exception( "utils.get_scr_data_len_by_file_ext(...) : invalid parameter!" );
 		}
 	}
 }

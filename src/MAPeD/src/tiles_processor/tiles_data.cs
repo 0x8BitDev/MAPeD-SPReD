@@ -1404,23 +1404,13 @@ namespace MAPeD
 						plt16.m_palette3 = utils.read_int_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
 					}
 #if DEF_NES
-					if( sms_file )
+					if( !nes_file )
 					{
 						plt16.m_palette1[ 0 ] = plt16.m_palette2[ 0 ] = plt16.m_palette3[ 0 ] = plt16.m_palette0[ 0 ];
 					}
 #endif					
 					m_palettes.Add( plt16 );
 				}
-				
-#if DEF_FIXED_LEN_PALETTE16_ARR
-				if( palettes_cnt < utils.CONST_PALETTE16_ARR_LEN )
-				{
-					for( i = palettes_cnt; i < utils.CONST_PALETTE16_ARR_LEN; i++ )
-					{
-						m_palettes.Add( new palette16_data() );
-					}
-				}
-#endif
 			}
 
 			for( i = 0; i < utils.CONST_BLOCKS_UINT_SIZE; i++ )
@@ -1563,64 +1553,74 @@ namespace MAPeD
 			
 			byte[] scr_data;
 			
-			byte[] sms_scr = new byte[ utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES ];
+			int loaded_scr_data_len = utils.get_scr_data_len_by_file_ext( _file_ext );
+			int scr_data_len 		= utils.CONST_SCREEN_TILES_CNT;
 			
-			int nes_sms_scr_diff = ( utils.CONST_NES_SCREEN_NUM_WIDTH_TILES * utils.CONST_NES_SCREEN_NUM_HEIGHT_TILES ) - ( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
-			int nes_sms_scr_half_diff = nes_sms_scr_diff >> 1;
+			byte[] loaded_scr = new byte[ loaded_scr_data_len ];
+			
+			int data_diff_half = 0;
 			
 			for( i = 0; i < scr_cnt; i++ )
 			{
 				scr_data = scr_alloc_data();
-#if DEF_NES || DEF_PCE
-				if( sms_file )
-#elif DEF_SMS			
-				if( nes_file || pce_file )
-#endif			
+				
+				if( loaded_scr_data_len != scr_data_len )
 				{
 					switch( _scr_align_mode )
 					{
 						case data_conversion_options_form.EScreensAlignMode.sam_Top:
 							{
-#if DEF_NES || DEF_PCE
-								sms_scr = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
-								Array.Copy( sms_scr, 0, scr_data, 0, sms_scr.Length );								
-#elif DEF_SMS
-								scr_data = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
-								
-								// skip the rest
-								_br.ReadBytes( nes_sms_scr_diff );
-#endif
+								if( scr_data_len > loaded_scr_data_len )
+								{
+									loaded_scr = _br.ReadBytes( loaded_scr_data_len );
+									Array.Copy( loaded_scr, 0, scr_data, 0, loaded_scr.Length );								
+								}
+								else
+								{
+									scr_data = _br.ReadBytes( scr_data_len );
+									
+									// skip the rest
+									_br.ReadBytes( loaded_scr_data_len - scr_data_len );
+								}
 							}
 							break;
 							
 						case data_conversion_options_form.EScreensAlignMode.sam_Center:
 							{
-#if DEF_NES || DEF_PCE
-								sms_scr = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
-								Array.Copy( sms_scr, 0, scr_data, ( nes_sms_scr_diff >> 1 ), sms_scr.Length );
-#elif DEF_SMS
-								// skip the first data
-								_br.ReadBytes( nes_sms_scr_half_diff );
-
-								scr_data = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
-								
-								// skip the rest
-								_br.ReadBytes( nes_sms_scr_half_diff );
-#endif							
+								if( scr_data_len > loaded_scr_data_len )
+								{
+									loaded_scr = _br.ReadBytes( loaded_scr_data_len );
+									Array.Copy( loaded_scr, 0, scr_data, ( ( ( ( scr_data_len - loaded_scr_data_len ) / utils.CONST_SCREEN_NUM_WIDTH_TILES ) >> 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ), loaded_scr.Length );
+								}
+								else
+								{
+									data_diff_half = ( ( ( loaded_scr_data_len - scr_data_len ) / utils.CONST_SCREEN_NUM_WIDTH_TILES ) >> 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES;
+									
+									// skip the first data
+									_br.ReadBytes( data_diff_half );
+	
+									scr_data = _br.ReadBytes( scr_data_len );
+									
+									// skip the rest
+									_br.ReadBytes( ( data_diff_half == 0 ) ? utils.CONST_SCREEN_NUM_WIDTH_TILES:data_diff_half );
+								}
 							}
 							break;
 							
 						case data_conversion_options_form.EScreensAlignMode.sam_Bottom:
 							{
-#if DEF_NES || DEF_PCE
-								sms_scr = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
-								Array.Copy( sms_scr, 0, scr_data, nes_sms_scr_diff, sms_scr.Length );
-#elif DEF_SMS
-								// skip the first data
-								_br.ReadBytes( nes_sms_scr_diff );
-
-								scr_data = _br.ReadBytes( utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES );
-#endif							
+								if( scr_data_len > loaded_scr_data_len )
+								{
+									loaded_scr = _br.ReadBytes( loaded_scr_data_len );
+									Array.Copy( loaded_scr, 0, scr_data, ( scr_data_len - loaded_scr_data_len ), loaded_scr.Length );
+								}
+								else
+								{
+									// skip the first data
+									_br.ReadBytes( loaded_scr_data_len - scr_data_len );
+	
+									scr_data = _br.ReadBytes( scr_data_len );
+								}
 							}
 							break;
 					}

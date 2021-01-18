@@ -555,27 +555,25 @@ namespace MAPeD
 
 		void project_load( string _filename )
 		{
-			reset();
-			
 			FileStream 		fs = null;
 			BinaryReader 	br = null;
 			
 			try
 			{
 				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
-#if DEF_NES
-				if( file_ext == utils.CONST_SMS_FILE_EXT )
-#elif DEF_SMS
-				if( file_ext != utils.CONST_SMS_FILE_EXT )
-#elif DEF_PCE
-				if( file_ext == utils.CONST_SMS_FILE_EXT )
-#endif
+				
+				int load_scr_data_len 	= utils.get_scr_data_len_by_file_ext( file_ext );
+				int scr_data_len 		= utils.CONST_SCREEN_TILES_CNT;
+
+				if( load_scr_data_len != scr_data_len )
 				{
 					if( m_data_conversion_options_form.ShowDialog() == DialogResult.Cancel )
 					{
 						return;
 					}
 				}
+
+				reset();
 				
 				fs = new FileStream( _filename, FileMode.Open, FileAccess.Read );
 				{

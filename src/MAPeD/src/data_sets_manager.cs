@@ -718,9 +718,9 @@ namespace MAPeD
 				
 				if( data_id == utils.CONST_IO_DATA_TILES_AND_SCREENS )
 				{
-					int tiles_data_cnt = _br.ReadInt32();
+					int data_cnt = _br.ReadInt32();
 					
-					for( int i = 0; i < tiles_data_cnt; i++ )
+					for( int i = 0; i < data_cnt; i++ )
 					{
 						tiles_data_create();
 						get_tiles_data( tiles_data_pos ).load( _ver, _br, _file_ext, _scr_align_mode );
@@ -778,15 +778,17 @@ namespace MAPeD
 				else				
 				if( data_id == utils.CONST_IO_DATA_PALETTE )
 				{
+					int i;
+					int plt_n;
+					int data_n;
+					
+					tiles_data data = null;
+					
 					int plt_len 	= utils.get_palette_len_by_file_ext( _file_ext );
 					int[] plt_main	= new int[ plt_len ];
-#if DEF_NES								
-					bool ignore_palette = ( _file_ext != utils.CONST_NES_FILE_EXT ) ? true:false;
-#elif DEF_SMS
-					bool ignore_palette = ( _file_ext != utils.CONST_SMS_FILE_EXT ) ? true:false;
-#elif DEF_PCE
-					bool ignore_palette = ( _file_ext != utils.CONST_PCE_FILE_EXT ) ? true:false;
-#endif				
+
+					bool ignore_palette = ( _file_ext != utils.CONST_FILE_EXT ) ? true:false;
+					
 					if( ignore_palette )
 					{
 						if( _convert_colors )
@@ -799,28 +801,45 @@ namespace MAPeD
 								plt_main[ data_pos ] = _br.ReadByte() << 16 | _br.ReadByte() << 8 | _br.ReadByte();
 							}
 							while( ++data_pos != plt_len );
-							
+
 							List< int[] > palettes = null;
 							
-							for( int data_n = 0; data_n < tiles_data_cnt; data_n++ )
+							for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
 							{
-								palettes = get_tiles_data( data_n ).subpalettes;
+								data = get_tiles_data( data_n );
 								
-								for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+								for( plt_n = 0; plt_n < data.palettes_arr.Count; plt_n++ )
 								{
-									palettes[ i >> 2 ][ i & 0x03 ] = utils.find_nearest_color_ind( plt_main[ palettes[ i >> 2 ][ i & 0x03 ] ] );
+									palettes = data.palettes_arr[ plt_n ].subpalettes;
+									
+									for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+									{
+										palettes[ i >> 2 ][ i & 0x03 ] = utils.find_nearest_color_ind( plt_main[ palettes[ i >> 2 ][ i & 0x03 ] ] );
+									}
 								}
 							}
 							
-							for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+							for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
 							{
 								palette_group.Instance.get_palettes_arr()[ i ].update();
 							}
 						}
 						else
 						{
-							_br.ReadBytes( plt_len * 3 );
+							_br.ReadBytes( plt_main.Length * 3 );
 						}
+						
+#if DEF_FIXED_LEN_PALETTE16_ARR
+						for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
+						{
+							data = get_tiles_data( data_n );
+							
+							for( i = data.palettes_arr.Count; i < utils.CONST_PALETTE16_ARR_LEN; i++ )
+							{
+								data.palettes_arr.Add( new palette16_data() );
+							}
+						}
+#endif
 					}
 					else
 					{
@@ -830,9 +849,9 @@ namespace MAPeD
 				else
 				if( data_id == utils.CONST_IO_DATA_TILES_PATTERNS )
 				{
-					int tiles_data_cnt = _br.ReadInt32();
+					int data_cnt = _br.ReadInt32();
 					
-					for( int i = 0; i < tiles_data_cnt; i++ )
+					for( int i = 0; i < data_cnt; i++ )
 					{
 						m_tiles_data[ i ].load_tiles_patterns( _ver, _br );
 					}
