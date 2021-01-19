@@ -90,22 +90,40 @@ namespace MAPeD
 	[DataContract]
 	public class tiles_data
 	{
+		private static uint CONST_OBJ_ID_MASK	= 0x0f;
+		
+		// NES
+		private static uint CONST_NES_PALETTE_MASK			= 0x03;
+		private static uint CONST_NES_BLOCK_PALETTE_MASK	= ( CONST_NES_PALETTE_MASK << 10 );
+		private static uint CONST_NES_BLOCK_CHR_ID_MASK		= 0x000000ff; 
+		
+		// SMS
+		private static uint CONST_SMS_BLOCK_CHR_ID_MASK		= 0x000001ff;
+		
+		// NES/SMS
+		private static uint CONST_NES_SMS_BLOCK_OBJ_ID_MASK	= ( CONST_OBJ_ID_MASK << 12 );
+		
+		// PCE
+		private static uint CONST_PCE_PALETTE_MASK			= 0x0f;
+		private static uint CONST_PCE_BLOCK_PALETTE_MASK	= ( CONST_PCE_PALETTE_MASK << 12 );
+		private static uint CONST_PCE_BLOCK_OBJ_ID_MASK		= ( CONST_OBJ_ID_MASK << 16 );
+		private static uint CONST_PCE_BLOCK_CHR_ID_MASK			= 0x00000fff;		
+		
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
-		private static uint CONST_MASK_FLIP			= 0x03;
-		private static uint CONST_BLOCK_MASK_FLIP	= ( CONST_MASK_FLIP << 10 );
+		private static uint CONST_FLIP_MASK			= 0x03;
+		private static uint CONST_BLOCK_FLIP_MASK	= ( CONST_FLIP_MASK << 10 );
 #endif
 #if DEF_NES
-		private static uint CONST_MASK_PALETTE			= 0x03;
-		private static uint CONST_BLOCK_MASK_PALETTE	= ( CONST_MASK_PALETTE << 10 );
+		private static uint CONST_PALETTE_MASK			= CONST_NES_PALETTE_MASK;
+		private static uint CONST_BLOCK_PALETTE_MASK	= CONST_NES_BLOCK_PALETTE_MASK;
 #elif DEF_PCE
-		private static uint CONST_MASK_PALETTE			= 0x0f;
-		private static uint CONST_BLOCK_MASK_PALETTE	= ( CONST_MASK_PALETTE << 12 );
+		private static uint CONST_PALETTE_MASK			= CONST_PCE_PALETTE_MASK;
+		private static uint CONST_BLOCK_PALETTE_MASK	= CONST_PCE_BLOCK_PALETTE_MASK;
 #endif
-		private static uint CONST_MASK_OBJ_ID		= 0x0f; 
 #if DEF_PCE
-		private static uint CONST_BLOCK_MASK_OBJ_ID	= ( CONST_MASK_OBJ_ID << 16 );
+		private static uint CONST_BLOCK_OBJ_ID_MASK	= CONST_PCE_BLOCK_OBJ_ID_MASK;
 #else
-		private static uint CONST_BLOCK_MASK_OBJ_ID	= ( CONST_MASK_OBJ_ID << 12 );
+		private static uint CONST_BLOCK_OBJ_ID_MASK	= CONST_NES_SMS_BLOCK_OBJ_ID_MASK;
 #endif
 		private static int m_id	= -1;
 		
@@ -530,15 +548,15 @@ namespace MAPeD
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
 		public static byte get_block_flags_flip( uint _block_chr_data )
 		{
-			return (byte)( ( _block_chr_data & CONST_BLOCK_MASK_FLIP ) >> 10 );
+			return (byte)( ( _block_chr_data & CONST_BLOCK_FLIP_MASK ) >> 10 );
 		}
 		
 		public static uint set_block_flags_flip( byte _flip_flag, uint _block_chr_data )
 		{
 			uint var = _block_chr_data;
 			
-			var &= ~CONST_BLOCK_MASK_FLIP;
-			var |= ( ( _flip_flag & CONST_MASK_FLIP ) << 10 );
+			var &= ~CONST_BLOCK_FLIP_MASK;
+			var |= ( ( _flip_flag & CONST_FLIP_MASK ) << 10 );
 			
 			return var;
 		}
@@ -547,9 +565,9 @@ namespace MAPeD
 		public static int get_block_flags_palette( uint _block_chr_data )
 		{
 #if DEF_NES
-			return ( int )( ( _block_chr_data & CONST_BLOCK_MASK_PALETTE ) >> 10 );
+			return ( int )( ( _block_chr_data & CONST_BLOCK_PALETTE_MASK ) >> 10 );
 #elif DEF_PCE
-			return ( int )( ( _block_chr_data & CONST_BLOCK_MASK_PALETTE ) >> 12 );
+			return ( int )( ( _block_chr_data & CONST_BLOCK_PALETTE_MASK ) >> 12 );
 #endif
 		}
 
@@ -557,11 +575,11 @@ namespace MAPeD
 		{
 			uint var = _block_chr_data;
 #if DEF_NES
-			var &= ~CONST_BLOCK_MASK_PALETTE;
-			var |= ( uint )( ( _plt_ind & CONST_MASK_PALETTE ) << 10 );
+			var &= ~CONST_BLOCK_PALETTE_MASK;
+			var |= ( uint )( ( _plt_ind & CONST_PALETTE_MASK ) << 10 );
 #elif DEF_PCE
-			var &= ~CONST_BLOCK_MASK_PALETTE;
-			var |= ( uint )( ( _plt_ind & CONST_MASK_PALETTE ) << 12 );
+			var &= ~CONST_BLOCK_PALETTE_MASK;
+			var |= ( uint )( ( _plt_ind & CONST_PALETTE_MASK ) << 12 );
 #endif
 			return var;
 		}
@@ -569,9 +587,9 @@ namespace MAPeD
 		public static int get_block_flags_obj_id( uint _block_chr_data )
 		{
 #if DEF_PCE
-			return ( int )( ( _block_chr_data & CONST_BLOCK_MASK_OBJ_ID ) >> 16 );
+			return ( int )( ( _block_chr_data & CONST_BLOCK_OBJ_ID_MASK ) >> 16 );
 #else
-			return ( int )( ( _block_chr_data & CONST_BLOCK_MASK_OBJ_ID ) >> 12 );
+			return ( int )( ( _block_chr_data & CONST_BLOCK_OBJ_ID_MASK ) >> 12 );
 #endif
 		}
 		
@@ -579,11 +597,11 @@ namespace MAPeD
 		{
 			uint var = _block_chr_data;
 			
-			var &= ~CONST_BLOCK_MASK_OBJ_ID;
+			var &= ~CONST_BLOCK_OBJ_ID_MASK;
 #if DEF_PCE
-			var |= ( uint )( ( _obj_id & CONST_MASK_OBJ_ID ) << 16 );
+			var |= ( uint )( ( _obj_id & CONST_OBJ_ID_MASK ) << 16 );
 #else
-			var |= ( uint )( ( _obj_id & CONST_MASK_OBJ_ID ) << 12 );
+			var |= ( uint )( ( _obj_id & CONST_OBJ_ID_MASK ) << 12 );
 #endif		
 			return var;
 		}
@@ -591,22 +609,22 @@ namespace MAPeD
 		public static int get_block_CHR_id( uint _block_chr_data )
 		{
 #if DEF_NES
-			return ( int )( _block_chr_data & 0x000000ff );
+			return ( int )( _block_chr_data & CONST_NES_BLOCK_CHR_ID_MASK );
 #elif DEF_SMS
-			return ( int )( _block_chr_data & 0x000001ff );
+			return ( int )( _block_chr_data & CONST_SMS_BLOCK_CHR_ID_MASK );
 #elif DEF_PCE
-			return ( int )( _block_chr_data & 0x00000fff );
+			return ( int )( _block_chr_data & CONST_PCE_BLOCK_CHR_ID_MASK );
 #endif
 		}
 		
 		public static uint set_block_CHR_id( int _CHR_id, uint _block_chr_data )
 		{
 #if DEF_NES
-			return ( ( _block_chr_data & 0xffffff00 ) | ( uint )_CHR_id );
+			return ( ( _block_chr_data & ~CONST_NES_BLOCK_CHR_ID_MASK ) | ( uint )_CHR_id );
 #elif DEF_SMS
-			return ( ( _block_chr_data & 0xfffffe00 ) | ( uint )_CHR_id );
+			return ( ( _block_chr_data & ~CONST_SMS_BLOCK_CHR_ID_MASK ) | ( uint )_CHR_id );
 #elif DEF_PCE
-			return ( ( _block_chr_data & 0xfffff000 ) | ( uint )_CHR_id );
+			return ( ( _block_chr_data & ~CONST_PCE_BLOCK_CHR_ID_MASK ) | ( uint )_CHR_id );
 #endif
 		}
 		
@@ -1450,8 +1468,8 @@ namespace MAPeD
 				{
 					// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
 					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
-					CHR_id	= ( int )( val & 0x00000fff );
-					prop_id = ( int )( ( val & 0x000f0000 ) >> 16 );
+					CHR_id	= ( int )( val & CONST_PCE_BLOCK_CHR_ID_MASK );
+					prop_id = ( int )( ( val & CONST_PCE_BLOCK_OBJ_ID_MASK ) >> 16 );
 					
 					val = 0;
 					val = set_block_CHR_id( CHR_id, val );
@@ -1480,8 +1498,8 @@ namespace MAPeD
 				{
 					// SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
 					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
-					CHR_id	= ( int )( val & 0x00000fff );
-					prop_id = ( int )( ( val & 0x000f0000 ) >> 16 );
+					CHR_id	= ( int )( val & CONST_PCE_BLOCK_CHR_ID_MASK );
+					prop_id = ( int )( ( val & CONST_PCE_BLOCK_OBJ_ID_MASK ) >> 16 );
 					
 					val = 0;
 					val = set_block_CHR_id( CHR_id, val );
@@ -1492,8 +1510,8 @@ namespace MAPeD
 				{
 					// SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
 					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
-					CHR_id	= ( int )( val & 0x000001ff );
-					prop_id = ( int )( ( val & 0x0000f000 ) >> 12 );
+					CHR_id	= ( int )( val & CONST_SMS_BLOCK_CHR_ID_MASK );
+					prop_id = ( int )( ( val & CONST_NES_SMS_BLOCK_OBJ_ID_MASK ) >> 12 );
 					
 					val = 0;
 					val = set_block_CHR_id( CHR_id, val );
@@ -1506,9 +1524,9 @@ namespace MAPeD
 					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
 					
 					// NES: palette -> PCE: CHR id
-					palette_ind	= ( int )( ( val & 0x00000c00 ) >> 10 );
-					prop_id 	= ( int )( ( val & 0x0000f000 ) >> 12 );
-					CHR_id 		= ( int )( val & 0x000000ff );
+					palette_ind	= ( int )( ( val & CONST_NES_BLOCK_PALETTE_MASK ) >> 10 );
+					prop_id 	= ( int )( ( val & CONST_NES_SMS_BLOCK_OBJ_ID_MASK ) >> 12 );
+					CHR_id 		= ( int )( val & CONST_NES_BLOCK_CHR_ID_MASK );
 					
 					val = 0;
 					val = set_block_CHR_id( CHR_id, val );
