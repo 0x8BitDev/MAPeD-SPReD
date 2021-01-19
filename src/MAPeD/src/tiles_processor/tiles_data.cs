@@ -1571,7 +1571,7 @@ namespace MAPeD
 			
 			byte[] scr_data;
 			
-			int loaded_scr_data_len = utils.get_scr_data_len_by_file_ext( _file_ext );
+			int loaded_scr_data_len = utils.get_scr_tiles_cnt_by_file_ext( _file_ext );
 			int scr_data_len 		= utils.CONST_SCREEN_TILES_CNT;
 			
 			byte[] loaded_scr = new byte[ loaded_scr_data_len ];

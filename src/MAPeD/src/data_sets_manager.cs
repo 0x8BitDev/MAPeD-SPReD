@@ -689,7 +689,14 @@ namespace MAPeD
 			{
 				_bw.Write( utils.CONST_IO_DATA_PALETTE );
 				
+				// save the NES\SMS palettes only,
+				// cause they can be imported to
+				// save in a project file
+				// the other ones can be generated
+				
+#if DEF_NES || DEF_SMS				
 				palette_group.Instance.save_main_palette( _bw );
+#endif
 			}
 			
 			// TILES PATTERNS
@@ -785,40 +792,58 @@ namespace MAPeD
 					tiles_data data = null;
 					
 					int plt_len 	= utils.get_palette_len_by_file_ext( _file_ext );
-					int[] plt_main	= new int[ plt_len ];
-
+					int[] plt_main	= null;
+					
 					bool ignore_palette = ( _file_ext != utils.CONST_FILE_EXT ) ? true:false;
 					
 					if( ignore_palette )
 					{
 						if( _convert_colors )
 						{
-							// load main palette from the project file
-							int data_pos = 0;
-							
-							do
+#if DEF_NES || DEF_SMS
+							plt_main = utils.get_palette_by_file_ext( _file_ext );
+#else
+							plt_main = new int[ plt_len ];
+#endif
+							if( _file_ext == utils.CONST_NES_FILE_EXT || _file_ext == utils.CONST_SMS_FILE_EXT )
 							{
-								plt_main[ data_pos ] = _br.ReadByte() << 16 | _br.ReadByte() << 8 | _br.ReadByte();
-							}
-							while( ++data_pos != plt_len );
-
-							List< int[] > palettes = null;
-							
-							for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
-							{
-								data = get_tiles_data( data_n );
+								// load main palette from the project file
+								int data_pos = 0;
 								
-								for( plt_n = 0; plt_n < data.palettes_arr.Count; plt_n++ )
+								do
 								{
-									palettes = data.palettes_arr[ plt_n ].subpalettes;
-									
-									for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+									plt_main[ data_pos ] = _br.ReadByte() << 16 | _br.ReadByte() << 8 | _br.ReadByte();
+								}
+								while( ++data_pos != plt_len );
+							}
+						}
+							
+						List< int[] > palettes = null;
+						
+						for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
+						{
+							data = get_tiles_data( data_n );
+							
+							for( plt_n = 0; plt_n < data.palettes_arr.Count; plt_n++ )
+							{
+								palettes = data.palettes_arr[ plt_n ].subpalettes;
+								
+								for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+								{
+									if( _convert_colors )
 									{
 										palettes[ i >> 2 ][ i & 0x03 ] = utils.find_nearest_color_ind( plt_main[ palettes[ i >> 2 ][ i & 0x03 ] ] );
 									}
+									else
+									{
+										palettes[ i >> 2 ][ i & 0x03 ] = palettes[ i >> 2 ][ i & 0x03 ] & ( utils.CONST_PALETTE_MAIN_NUM_COLORS - 1 );
+									}
 								}
 							}
+						}
 							
+						if( _convert_colors )
+						{
 							for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
 							{
 								palette_group.Instance.get_palettes_arr()[ i ].update();
@@ -826,7 +851,11 @@ namespace MAPeD
 						}
 						else
 						{
-							_br.ReadBytes( plt_main.Length * 3 );
+							if( _file_ext == utils.CONST_NES_FILE_EXT || _file_ext == utils.CONST_SMS_FILE_EXT )
+							{
+								// skip palette
+								_br.ReadBytes( plt_len * 3 );
+							}
 						}
 						
 #if DEF_FIXED_LEN_PALETTE16_ARR
@@ -841,10 +870,12 @@ namespace MAPeD
 						}
 #endif
 					}
+#if DEF_NES || DEF_SMS
 					else
 					{
 						palette_group.Instance.load_main_palette( _br );
 					}
+#endif
 				}
 				else
 				if( data_id == utils.CONST_IO_DATA_TILES_PATTERNS )

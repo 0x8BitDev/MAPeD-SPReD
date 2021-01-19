@@ -562,7 +562,7 @@ namespace MAPeD
 			{
 				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
 				
-				int load_scr_data_len 	= utils.get_scr_data_len_by_file_ext( file_ext );
+				int load_scr_data_len 	= utils.get_scr_tiles_cnt_by_file_ext( file_ext );
 				int scr_data_len 		= utils.CONST_SCREEN_TILES_CNT;
 
 				if( load_scr_data_len != scr_data_len )
