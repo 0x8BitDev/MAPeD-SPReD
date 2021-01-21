@@ -308,8 +308,6 @@ namespace MAPeD
 			}
 			else
 			{
-				set_title_name( null );
-				
 				reset();
 				set_status_msg( "Add a new CHR bank to begin. Press the \"Bank+\" button! <F1> - Quick Guide" );
 			}
@@ -488,6 +486,10 @@ namespace MAPeD
 			{
 				tabControlTilesScreens.SelectTab( TabTiles );
 			}
+
+			set_title_name( null );
+			
+			m_description_form.edit_text = "";
 			
 #if DEF_FIXED_LEN_PALETTE16_ARR
 			m_palette_copy_ind = -1;
@@ -507,10 +509,6 @@ namespace MAPeD
 				reset();
 				
 				set_status_msg( "Project closed" );
-				
-				set_title_name( null );
-				
-				m_description_form.edit_text = "";
 			}
 		}
 
@@ -1290,66 +1288,58 @@ namespace MAPeD
 		{
 			if( CBoxCHRBanks.Items.Count > 0 && message_box( "Are you sure?", "Remove CHR Bank", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
-				ListViewScreens.BeginUpdate();
+				if( m_data_manager.tiles_data_cnt == 1 )
 				{
-					bool res = false;
-					
-					int screens_cnt = m_data_manager.scr_data_cnt;
-					
-					for( int screen_n = 0; screen_n < screens_cnt; screen_n++ )
-					{
-						m_data_manager.remove_screen_from_layouts( CBoxCHRBanks.SelectedIndex, 0 );
-						
-						res |= m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, screen_n );
-					}
+					reset();
 
-					m_data_manager.tiles_data_destroy();
-					
-					if( res )
-					{
-						update_screens_labels_by_bank_id();
-						
-						m_layout_editor.set_active_screen( -1 );
-					}
-					
-					m_layout_editor.update_dimension_changes();
-				}
-				ListViewScreens.EndUpdate();
-
-				// update CHR bank labels
-				int size;
-				{
-					CBoxCHRBanks.Items.Clear();
-					
-					size = m_data_manager.tiles_data_cnt;
-					
-					for( int i = 0; i < size; i++ )
-					{
-						CBoxCHRBanks.Items.Add( m_data_manager.get_tiles_data( i ) );
-					}
-				}
-
-				CBoxPalettes.Items.Clear();
-				CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_pos;
-				
-				enable_copy_paste_action( false, ECopyPasteType.cpt_All );
-				
-				if( size == 0 )
-				{
-					enable_main_UI( false );
-					
-					CBoxBlockObjId.SelectedIndex = 0;
-					
-					ListBoxScreens.Items.Clear();
-					
-					update_graphics( false );
-					
 					set_status_msg( "No data" );
-					
-					set_title_name( null );
 				}
 				else
 				{
+					ListViewScreens.BeginUpdate();
+					{
+						bool res = false;
+
+						int screens_cnt = m_data_manager.scr_data_cnt;
+						
+						for( int screen_n = 0; screen_n < screens_cnt; screen_n++ )
+						{
+							m_data_manager.remove_screen_from_layouts( CBoxCHRBanks.SelectedIndex, 0 );
+							
+							res |= m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, screen_n );
+						}
+
+						m_data_manager.tiles_data_destroy();
+						
+						if( res )
+						{
+							update_screens_labels_by_bank_id();
+							
+							m_layout_editor.set_active_screen( -1 );
+						}
+
+						m_layout_editor.update_dimension_changes();
+					}
+					ListViewScreens.EndUpdate();
+
+					// update CHR bank labels
+					int size;
+					{
+						CBoxCHRBanks.Items.Clear();
+
+						size = m_data_manager.tiles_data_cnt;
+
+						for( int i = 0; i < size; i++ )
+						{
+							CBoxCHRBanks.Items.Add( m_data_manager.get_tiles_data( i ) );
+						}
+					}
+
+					CBoxPalettes.Items.Clear();
+					CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_pos;
+
+					enable_copy_paste_action( false, ECopyPasteType.cpt_All );
+
 					palette_group.Instance.active_palette = 0;
 					
 					set_status_msg( "CHR bank removed" );
@@ -3785,7 +3775,7 @@ namespace MAPeD
 		}
 #endregion		
 // 	PALETTE ******************************************************************************************//
-
+#region palette
 		void CheckBoxPalettePerCHRChecked_Event(object sender, EventArgs e)
 		{
 			m_tiles_processor.set_block_editor_palette_per_CHR_mode( ( sender as CheckBox ).Checked );
@@ -3917,5 +3907,6 @@ namespace MAPeD
 			}
 		}
 #endif
+#endregion		
 	}
 }
