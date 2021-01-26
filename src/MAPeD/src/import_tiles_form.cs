@@ -96,9 +96,9 @@ namespace MAPeD
 				{
 					if( import_game_map )
 					{
-						if( ( _bmp.Width > 0 && ( _bmp.Width / ( float )utils.CONST_SCREEN_WIDTH_PIXELS ) > 1.0f ) || ( _bmp.Height > 0 && ( _bmp.Height / ( float )utils.CONST_SCREEN_HEIGHT_PIXELS ) > 1.0f ) )
+						if( ( _bmp.Width > 0 && ( _bmp.Width % utils.CONST_SCREEN_WIDTH_PIXELS ) != 0 ) || ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) != 0 ) )
 						{
-							DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nCrop the imported game map or leave it 'as is'?\n\n[Yes] to crop the game map to fully filled screens\n[No] to import the game map 'as is'", "Game map Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
+							DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nCrop the imported game map or leave it 'as is'?\n\n[Yes] Crop the game map to fully filled screens\n[No] Import the game map 'as is'", "Game map Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
 							
 							if( dlg_res == DialogResult.Cancel )
 							{
@@ -179,6 +179,7 @@ namespace MAPeD
 				int beg_block_ind 	= block_ind;
 				
 				int scr_tile_ind;
+				int scr_block_ind;
 
 				if( import_tiles )
 				{
@@ -300,48 +301,72 @@ namespace MAPeD
 										}
 									}
 									
-									tile_data = utils.set_byte_to_uint( tile_data, block_num++, ( dup_block_ind >= 0 ? (byte)( dup_block_ind >> 2 ):( byte )( ( block_ind - 1 ) >> 2 ) ) );
-									
-									if( ( block_num & 0x03 ) == 0x00 )
+									if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 									{
-										scr_tile_ind = tile_ind;
+										tile_data = utils.set_byte_to_uint( tile_data, block_num++, ( dup_block_ind >= 0 ? (byte)( dup_block_ind >> 2 ):( byte )( ( block_ind - 1 ) >> 2 ) ) );
+										
+										if( ( block_num & 0x03 ) == 0x00 )
+										{
+											scr_tile_ind = tile_ind;
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-										if( ( dup_tile_ind = _data.contains_tile( tile_ind, tile_data, half_tile ) ) >= 0 )
+											if( ( dup_tile_ind = _data.contains_tile( tile_ind, tile_data, half_tile ) ) >= 0 )
 #else
-										if( ( dup_tile_ind = _data.contains_tile( tile_ind, tile_data ) ) >= 0 )
+											if( ( dup_tile_ind = _data.contains_tile( tile_ind, tile_data ) ) >= 0 )
 #endif											
-										{
-											scr_tile_ind = dup_tile_ind; 
-										}
-										else
-										{
-											if( tile_ind >= utils.CONST_MAX_TILES_CNT )
 											{
-												MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+												scr_tile_ind = dup_tile_ind; 
+											}
+											else
+											{
+												if( tile_ind >= utils.CONST_MAX_TILES_CNT )
+												{
+													MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+													
+													MainForm.message_box( "The tiles list is full!\n\nTry switching to the Blocks (2x2) mode.", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+													
+													import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
+													
+													return;
+												}
 												
-												MainForm.message_box( "The tiles list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-												
-												import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
-												
-												return;
+												_data.tiles[ tile_ind++ ] = tile_data;
 											}
 											
-											_data.tiles[ tile_ind++ ] = tile_data;
+											block_num = 0;
+	
+											if( import_game_map )
+											{
+												scr_x = tile_x / utils.CONST_SCREEN_WIDTH_PIXELS;											
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+												scr_y = ( block_offset_y - block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
+	
+												_data.scr_data[ get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
+#else
+												scr_y = tile_y / utils.CONST_SCREEN_HEIGHT_PIXELS;
+												
+												_data.scr_data[ get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( tile_y >> 5 ) % utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
+#endif
+											}
 										}
-										
-										block_num = 0;
-
+									}
+									else
+									{
 										if( import_game_map )
 										{
-											scr_x = tile_x / utils.CONST_SCREEN_WIDTH_PIXELS;											
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-											scr_y = ( block_offset_y - block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
-
-											_data.scr_data[ get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
-#else
-											scr_y = tile_y / utils.CONST_SCREEN_HEIGHT_PIXELS;
+											scr_block_ind = ( dup_block_ind >= 0 ? (byte)( dup_block_ind >> 2 ):( byte )( ( block_ind - 1 ) >> 2 ) );
 											
-											_data.scr_data[ get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( tile_y >> 5 ) % utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
+											scr_x = ( tile_x + block_x ) / utils.CONST_SCREEN_WIDTH_PIXELS;
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+											if( !half_tile )
+											{
+												scr_y = ( block_offset_y - block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
+	
+												_data.scr_data[ get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( block_offset_y % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 4 ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) ] = (byte)scr_block_ind;
+											}
+#else
+											scr_y = ( tile_y + block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
+											
+											_data.scr_data[ get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( ( tile_y + block_y ) >> 4 ) % utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) ] = (byte)scr_block_ind;
 #endif
 										}
 									}
@@ -429,7 +454,7 @@ namespace MAPeD
 			}
 			else
 			{
-#if DEF_SMS
+#if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
 				Array.Copy( utils.tmp_spr8x8_buff, _CHR_buff, _CHR_buff.Length );
 				
 				tiles_data.hflip( utils.tmp_spr8x8_buff );	// HFLIP

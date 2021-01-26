@@ -175,7 +175,7 @@ namespace MAPeD
 			m_tiles_palette_form.BlockSelected 		+= new EventHandler( MainForm_BlockSelected );
 			m_tiles_palette_form.ResetActiveTile 	+= new EventHandler( MainForm_ResetActiveTile );
 			
-			m_patterns_manager_form = new patterns_manager_form( m_imagelist_manager.get_tiles_image_list() );
+			m_patterns_manager_form = new patterns_manager_form( m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list() );
 			m_patterns_manager_form.PatternsManagerClosed 	+= new EventHandler( MainForm_PatternsManagerClosed );
 			
 			m_patterns_manager_form.subscribe_event( m_screen_editor );
@@ -410,12 +410,18 @@ namespace MAPeD
 			}
 			
 			PanelBlocks.Enabled = _on;
-			PanelTiles.Enabled	= _on;
+			
+			if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				PanelTiles.Enabled	= _on;
+			}
 			
 			m_tiles_palette_form.enable( _on );
 			m_patterns_manager_form.enable( _on );
 			
 			tabControlScreensEntities.Enabled = _on;
+			
+			GrpBoxScreenData.Enabled = _on;
 		}
 		
 		private void reset()
@@ -434,6 +440,8 @@ namespace MAPeD
 			CheckBoxShowCoords.Checked		= true;
 			
 			CheckBoxPalettePerCHR.Checked	= false;
+
+			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
 
 			enable_main_UI( false );
 			
@@ -462,7 +470,7 @@ namespace MAPeD
 			ComboBoxEntityZoom.SelectedIndex = 0;
 
 			m_layout_editor.reset( false );
-			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data() );
+			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type );
 			
 			enable_copy_paste_action( false, ECopyPasteType.cpt_All );
 			
@@ -582,13 +590,22 @@ namespace MAPeD
 						
 						if( ver <= utils.CONST_PROJECT_FILE_VER )
 						{
+							if( ver >= 4 )
+							{
+								uint pre_flags = br.ReadUInt32();
+								
+								bool scr_data_tiles4x4 = ( ( pre_flags & utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 ) == utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 ) ? true:false;
+								
+								set_screen_data_type( scr_data_tiles4x4 ? data_sets_manager.EScreenDataType.sdt_Tiles4x4:data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+							}
+							
 							m_data_manager.load( ver, br, file_ext, m_data_conversion_options_form.screens_align_mode, m_data_conversion_options_form.convert_colors );
 							
-							uint flags = br.ReadUInt32();
+							uint post_flags = br.ReadUInt32();
 #if DEF_NES							
-							CheckBoxPalettePerCHR.Checked 	= ( ( flags&utils.CONST_IO_DATA_FLAG_MMC5 ) == utils.CONST_IO_DATA_FLAG_MMC5 ? true:false );
+							CheckBoxPalettePerCHR.Checked 	= ( ( post_flags & utils.CONST_IO_DATA_POST_FLAG_MMC5 ) == utils.CONST_IO_DATA_POST_FLAG_MMC5 ? true:false );
 #endif
-							property_id_per_block( ( ( flags&utils.CONST_IO_DATA_FLAG_PROP_PER_CHR ) == utils.CONST_IO_DATA_FLAG_PROP_PER_CHR ? false:true ) );
+							property_id_per_block( ( ( post_flags & utils.CONST_IO_DATA_POST_FLAG_PROP_PER_CHR ) == utils.CONST_IO_DATA_POST_FLAG_PROP_PER_CHR ? false:true ) );
 
 							// Load description
 							m_description_form.edit_text = br.ReadString();
@@ -612,7 +629,7 @@ namespace MAPeD
 							CBoxCHRBanks.Items.Add( m_data_manager.get_tiles_data( i ) );
 						}
 
-						m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data() );
+						m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type );
 						
 						CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_pos;
 						
@@ -680,12 +697,15 @@ namespace MAPeD
 					bw.Write( utils.CONST_PROJECT_FILE_MAGIC );
 					bw.Write( utils.CONST_PROJECT_FILE_VER );
 
+					uint pre_flags = ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4:0;
+					bw.Write( pre_flags );
+					
 					m_data_manager.save( bw );
 
-					uint flags = ( uint )( CheckBoxPalettePerCHR.Checked ? utils.CONST_IO_DATA_FLAG_MMC5:0 );
-					flags |= ( uint )( PropIdPerCHRToolStripMenuItem.Checked ? utils.CONST_IO_DATA_FLAG_PROP_PER_CHR:0 );
+					uint post_flags = ( uint )( CheckBoxPalettePerCHR.Checked ? utils.CONST_IO_DATA_POST_FLAG_MMC5:0 );
+					post_flags |= ( uint )( PropIdPerCHRToolStripMenuItem.Checked ? utils.CONST_IO_DATA_POST_FLAG_PROP_PER_CHR:0 );
 
-					bw.Write( flags );
+					bw.Write( post_flags );
 					
 					// save description
 					bw.Write( m_description_form.edit_text );
@@ -1183,8 +1203,8 @@ namespace MAPeD
 		{
 			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 			
-			m_imagelist_manager.update_blocks( CBoxTileViewType.SelectedIndex, data, PropertyPerBlockToolStripMenuItem.Checked );
-			m_imagelist_manager.update_tiles( CBoxTileViewType.SelectedIndex, data );	// called after update_blocks, because it uses updated gfx of blocks to speed up drawing
+			m_imagelist_manager.update_blocks( CBoxTileViewType.SelectedIndex, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );
+			m_imagelist_manager.update_tiles( CBoxTileViewType.SelectedIndex, data, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated gfx of blocks to speed up drawing
 
 			m_screen_editor.update();
 
@@ -1777,7 +1797,16 @@ namespace MAPeD
 					Array.Copy( data.blocks, block_ind, data.blocks, block_ind + utils.CONST_BLOCK_SIZE, data.blocks.Length - block_ind - utils.CONST_BLOCK_SIZE );
 					
 					data.clear_block( sel_ind );
-					data.inc_tiles_blocks( ( byte )sel_ind );
+					
+					if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					{
+						data.inc_tiles_blocks( ( byte )sel_ind );
+					}
+					else
+					{
+						data.inc_screen_blocks( ( byte )sel_ind );
+						data.inc_patterns_tiles( ( byte )sel_ind );
+					}
 					
 					m_screen_editor.clear_active_tile_img();
 					
@@ -1803,7 +1832,15 @@ namespace MAPeD
 						
 						Array.Copy( data.blocks, block_ind + utils.CONST_BLOCK_SIZE, data.blocks, block_ind, data.blocks.Length - block_ind - utils.CONST_BLOCK_SIZE );
 						
-						data.dec_tiles_blocks( ( byte )sel_ind );
+						if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+						{
+							data.dec_tiles_blocks( ( byte )sel_ind );
+						}
+						else
+						{
+							data.dec_screen_blocks( ( byte )sel_ind );
+							data.dec_patterns_tiles( ( byte )sel_ind );
+						}
 						data.clear_block( data.tiles.Length - 1 );
 						
 						m_screen_editor.clear_active_tile_img();
@@ -1898,6 +1935,7 @@ namespace MAPeD
 					
 					data.clear_tile( sel_ind );
 					data.inc_screen_tiles( ( byte )sel_ind );
+					data.inc_patterns_tiles( ( byte )sel_ind );
 					
 					m_screen_editor.clear_active_tile_img();
 					
@@ -1949,11 +1987,11 @@ namespace MAPeD
 					if( m_optimization_form.need_update_screen_list )
 					{
 						// update screens images
-						m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), true, -1 );
+						m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, -1 );
 						
 						if( !CheckBoxLayoutEditorAllBanks.Checked )
 						{
-							m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), true, CBoxCHRBanks.SelectedIndex );
+							m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, CBoxCHRBanks.SelectedIndex );
 						}
 
 						enable_update_screens_btn( false );
@@ -2022,58 +2060,64 @@ namespace MAPeD
 		{
 			int tile_n;
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-			uint tile_ind;
-			
-			int scr_first_tile_ind	= _scr_data[ 0 ];
-			
-			for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES; tile_n++ )
+			if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				if( scr_first_tile_ind != _scr_data[ tile_n ] )
-				{
-					break;
-				}
-			}
-			
-			if( tile_n != utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES )
-			{
-				return false;
-			}
-
-			// check the last upper half of the tiles line
-			int scr_block_ind	= utils.get_byte_from_uint( _tiles[ _scr_data[ 0 ] ], 0 );
-
-			for( tile_n = utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
-			{
-				tile_ind = _tiles[ _scr_data[ tile_n ] ];
+				uint tile_ind;
 				
-				if( ( scr_block_ind != utils.get_byte_from_uint( tile_ind, 0 ) ||
-				    ( scr_block_ind != utils.get_byte_from_uint( tile_ind, 1 ) ) ) )
+				int scr_first_tile_ind	= _scr_data[ 0 ];
+				
+				for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES; tile_n++ )
 				{
-					break;
+					if( scr_first_tile_ind != _scr_data[ tile_n ] )
+					{
+						break;
+					}
+				}
+				
+				if( tile_n != utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES )
+				{
+					return false;
+				}
+	
+				// check the last upper half of the tiles line
+				int scr_block_ind	= utils.get_byte_from_uint( _tiles[ _scr_data[ 0 ] ], 0 );
+	
+				for( tile_n = utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+				{
+					tile_ind = _tiles[ _scr_data[ tile_n ] ];
+					
+					if( ( scr_block_ind != utils.get_byte_from_uint( tile_ind, 0 ) ||
+					    ( scr_block_ind != utils.get_byte_from_uint( tile_ind, 1 ) ) ) )
+					{
+						break;
+					}
+				}
+				
+				if( tile_n == utils.CONST_SCREEN_TILES_CNT )
+				{
+					return true;
 				}
 			}
-			
-			if( tile_n == utils.CONST_SCREEN_TILES_CNT )
-			{
-				return true;
-			}
-			
-#else
-			int scr_first_tile_ind = _scr_data[ 0 ];
-			
-			for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
-			{
-				if( scr_first_tile_ind != _scr_data[ tile_n ] )
-				{
-					break;
-				}
-			}
-			
-			if( tile_n == utils.CONST_SCREEN_TILES_CNT )
-			{
-				return true;
-			}
+			else
 #endif
+			{
+				int scr_first_tile_ind = _scr_data[ 0 ];
+				int num_tiles = utils.get_screen_tiles_cnt_uni( m_data_manager.screen_data_type );
+				
+				for( tile_n = 1; tile_n < num_tiles; tile_n++ )
+				{
+					if( scr_first_tile_ind != _scr_data[ tile_n ] )
+					{
+						break;
+					}
+				}
+				
+				if( tile_n == num_tiles )
+				{
+					return true;
+				}
+			}
+
 			return false;
 		}
 		
@@ -2310,7 +2354,7 @@ namespace MAPeD
 			int tile_ind 	= event_args.tile_ind;
 			tiles_data data = event_args.data;
 			
-			m_imagelist_manager.update_tile( tile_ind, CBoxTileViewType.SelectedIndex, data, null, null );
+			m_imagelist_manager.update_tile( tile_ind, CBoxTileViewType.SelectedIndex, data, null, null, m_data_manager.screen_data_type );
 		}
 		
 		void MainForm_UpdateGraphicsAfterOptimization(object sender, EventArgs e)
@@ -2413,7 +2457,7 @@ namespace MAPeD
 			
 			if( scr_global_ind < utils.CONST_SCREEN_MAX_CNT )
 			{
-				m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, _scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data() );			
+				m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, _scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type );
 				
 				palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
 				
@@ -2474,7 +2518,7 @@ namespace MAPeD
 		{
 			if( need_update_screens() )
 			{
-				m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), true, m_data_manager.tiles_data_pos );
+				m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_data_manager.tiles_data_pos );
 				
 				return true;
 			}
@@ -2932,7 +2976,7 @@ namespace MAPeD
 		
 		void update_screens_by_bank_id( bool _disable_upd_scr_btn, bool _update_images )
 		{
-			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), _update_images, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
+			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, _update_images, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 			
 			// renew a palette
 			palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
@@ -3907,6 +3951,84 @@ namespace MAPeD
 			}
 		}
 #endif
+#endregion		
+//	SCREEN DATA CONVERTER ****************************************************************************//
+#region screen data converter
+		void BtnScreenDataInfoClick_Event(object sender, EventArgs e)
+		{
+			message_box( strings.CONST_SCREEN_DATA_TYPE_INFO, strings.CONST_SCREEN_DATA_TYPE_INFO_CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Information );
+		}
+		
+		void RBtnScreenDataTilesClick_Event(object sender, EventArgs e)
+		{
+			if( m_data_manager.tiles_data_cnt > 0 )
+			{
+				RadioButton rbtn = ( RadioButton )sender;
+				
+				if( !rbtn.Checked )
+				{
+					if( message_box( strings.CONST_SCREEN_DATA_CONV_BLOCKS2TILES, strings.CONST_SCREEN_DATA_CONV_BLOCKS2TILES_CAPTION, MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+					{
+						set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
+						update_graphics( false );
+					}
+				}
+			}
+		}
+		
+		void RBtnScreenDataBlocksClick_Event(object sender, EventArgs e)
+		{
+			if( m_data_manager.tiles_data_cnt > 0 )
+			{
+				RadioButton rbtn = ( RadioButton )sender;
+				
+				if( !rbtn.Checked )
+				{
+					if( message_box( strings.CONST_SCREEN_DATA_CONV_TILES2BLOCKS, strings.CONST_SCREEN_DATA_CONV_TILES2BLOCKS_CAPTION, MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+					{
+						set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+						update_graphics( false );
+					}
+				}
+			}
+		}
+		
+		void set_screen_data_type( data_sets_manager.EScreenDataType _type )
+		{
+			switch( _type )
+			{
+				case data_sets_manager.EScreenDataType.sdt_Tiles4x4:
+					{
+						RBtnScreenDataTiles.Checked		= true;
+						RBtnScreenDataBlocks.Checked	= false;
+
+						PanelTiles.Enabled = true;
+						
+						GrpBoxTileEditor.Enabled = true;
+					}
+					break;
+
+				case data_sets_manager.EScreenDataType.sdt_Blocks2x2:
+					{
+						RBtnScreenDataTiles.Checked		= false;
+						RBtnScreenDataBlocks.Checked	= true;
+						
+						PanelTiles.Enabled = false;
+						
+						GrpBoxTileEditor.Enabled = false;
+						
+						m_tiles_processor.tile_select_event( -1, null );
+					}
+					break;
+			}
+			
+			m_data_manager.screen_data_type = _type;
+			m_screen_editor.set_screen_data_type( _type );
+			m_tiles_palette_form.set_screen_data_type( _type );
+			m_optimization_form.set_screen_data_type( _type );
+			m_patterns_manager_form.set_screen_data_type( _type );
+		}
+		
 #endregion		
 	}
 }

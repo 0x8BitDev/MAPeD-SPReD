@@ -61,7 +61,7 @@ namespace MAPeD
 		public event ReturnBoolEvent DeleteGroup;
 
 		[DataMember]
-		private string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ) + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_UINT_SIZE + " | Screen Data Size: " + utils.CONST_SCREEN_TILES_CNT;
+		private string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ) + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_UINT_SIZE + " | Screen Data (Tiles4x4): " + utils.CONST_SCREEN_TILES_CNT + " | Screen Data (Blocks2x2): " + utils.CONST_SCREEN_BLOCKS_CNT;
 		[DataMember]
 		private string NES_block_desc_bits = "[ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)";
 		[DataMember]
@@ -69,7 +69,47 @@ namespace MAPeD
 		[DataMember]
 		private string PCE_block_desc_bits = "[ property_id ](4) [ palette ind ](4) [CHR ind](12)";
 		
-		[DataMember]		
+		public enum EScreenDataType
+		{
+			sdt_Tiles4x4,
+			sdt_Blocks2x2,
+		};
+		
+		private EScreenDataType	m_screen_data_type	= EScreenDataType.sdt_Tiles4x4;
+		
+		[DataMember]
+		public EScreenDataType screen_data_type
+		{
+			get { return m_screen_data_type; }
+			set 
+			{
+				if( m_screen_data_type != value )
+				{
+					m_screen_data_type = value;
+					
+					// convert screen data
+					if( tiles_data_cnt > 0 )
+					{
+						switch( value )
+						{
+							case EScreenDataType.sdt_Tiles4x4:
+								{
+									blocks_to_tiles();
+								}
+								break;
+								
+							case EScreenDataType.sdt_Blocks2x2:
+								{
+									tiles_to_blocks();
+								}
+								break;
+						}
+					}
+				}
+			}
+		}
+		
+		[DataMember]
 		private List< layout_data >	m_layouts_data	= null;
 		private int m_layouts_data_pos				= -1;
 		
@@ -180,6 +220,8 @@ namespace MAPeD
 			group_add( "ENEMIES" );
 			group_add( "BONUSES" );
 			group_add( "POWER-UPS" );
+			
+			screen_data_type = EScreenDataType.sdt_Tiles4x4;
 		}
 		
 		public entity_data get_entity_by_name( string _name )
@@ -503,7 +545,7 @@ namespace MAPeD
 		{
 			if( tiles_data_pos >= 0 )
 			{
-				get_tiles_data( tiles_data_pos ).create_screen();
+				get_tiles_data( tiles_data_pos ).create_screen( screen_data_type );
 				++m_scr_data_pos;
 				
 				return true;
@@ -516,7 +558,7 @@ namespace MAPeD
 		{
 			if( tiles_data_pos >= 0 && scr_data_pos >= 0 && scr_data_cnt > 0 )
 			{
-				get_tiles_data( tiles_data_pos ).copy_screen( scr_data_pos );
+				get_tiles_data( tiles_data_pos ).copy_screen( scr_data_pos, screen_data_type );
 				
 				return true;
 			}
@@ -536,7 +578,7 @@ namespace MAPeD
 		{
 			if( tiles_data_pos >= 0 && m_tiles_data.Count < utils.CONST_CHR_BANK_MAX_CNT )
 			{
-				m_tiles_data.Add( get_tiles_data( tiles_data_pos ).copy() );
+				m_tiles_data.Add( get_tiles_data( tiles_data_pos ).copy( screen_data_type ) );
 				
 				return true;
 			}
@@ -647,7 +689,7 @@ namespace MAPeD
 				
 				for( int i = 0; i < m_tiles_data.Count; i++ )
 				{
-					m_tiles_data[ i ].save( _bw );
+					m_tiles_data[ i ].save( _bw, screen_data_type );
 				}
 				
 				_bw.Write( m_tiles_data_pos );
@@ -730,7 +772,7 @@ namespace MAPeD
 					for( int i = 0; i < data_cnt; i++ )
 					{
 						tiles_data_create();
-						get_tiles_data( tiles_data_pos ).load( _ver, _br, _file_ext, _scr_align_mode );
+						get_tiles_data( tiles_data_pos ).load( _ver, _br, _file_ext, _scr_align_mode, screen_data_type );
 					}
 					
 					data_set_pos = _br.ReadInt32();
@@ -1074,6 +1116,78 @@ namespace MAPeD
 				});
 			}			
 		}
-		
+
+		private void tiles_to_blocks()
+		{
+			tiles_data data = null;
+			
+			byte[] new_scr = null;
+			byte[] old_scr = null;
+			byte[] new_pattern = null;
+			
+			int data_n;
+			int scr_n;
+			int tile_n;
+			int block_n;
+			int y_pos;
+
+			for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
+			{
+				data = get_tiles_data( data_n );
+				
+				// convert screens
+				for( scr_n = 0; scr_n < data.scr_data.Count; scr_n++ )
+				{
+					old_scr = data.scr_data[ scr_n ];
+					new_scr = new byte[ utils.CONST_SCREEN_BLOCKS_CNT ];
+					
+					for( tile_n = 0; tile_n < old_scr.Length; tile_n++ )
+					{
+						for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
+						{
+							y_pos = ( ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 1 ) + ( ( block_n & 0x02 ) >> 1 );
+							
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+							if( y_pos <= 14 )
+#endif
+							new_scr[ ( y_pos * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) + ( ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 1 ) + ( block_n & 0x01 ) ] = utils.get_byte_from_uint( data.tiles[ old_scr[ tile_n ] ], block_n );
+						}
+					}
+					
+					data.scr_data[ scr_n ] = new_scr;
+				}
+				
+				// convert tiles patterns
+				foreach( string key in data.patterns_data.Keys ) 
+				{ 
+					List< pattern_data > pattrn_list = data.patterns_data[ key ] as List< pattern_data >;
+					
+					pattrn_list.ForEach( delegate( pattern_data _pattern ) 
+					{
+						new_pattern = new byte[ ( _pattern.width * _pattern.height ) << 2 ];
+
+						for( tile_n = 0; tile_n < _pattern.data.Length; tile_n++ )
+						{
+							for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
+							{
+								new_pattern[ ( ( ( ( tile_n / _pattern.width ) << 1 ) + ( ( block_n & 0x02 ) >> 1 ) ) * ( _pattern.width << 1 ) ) + ( ( tile_n % _pattern.width ) << 1 ) + ( block_n & 0x01 ) ] = utils.get_byte_from_uint( data.tiles[ _pattern.data[ tile_n ] ], block_n );
+							}
+						}
+						
+						_pattern.data = new_pattern;
+						
+						_pattern.width	<<= 1;
+						_pattern.height	<<= 1;
+					});
+				}
+				
+				Array.Clear( data.tiles, 0, data.tiles.Length );
+			}
+		}
+
+		private void blocks_to_tiles()
+		{
+			//...
+		}
 	}
 }

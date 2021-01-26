@@ -51,6 +51,7 @@ namespace MAPeD
 		private tiles_data	m_data				= null;
 		
 		private ImageList 	m_tiles_image_list 	= null;
+		private ImageList 	m_blocks_image_list = null;
 		
 		private image_preview		m_pattern_preview	= null;
 		private object_name_form	m_object_name_form	= null;
@@ -60,7 +61,9 @@ namespace MAPeD
 		
 		private int			m_scale_pow		= 0;
 		
-		public patterns_manager_form( ImageList _tiles_image_list )
+		private data_sets_manager.EScreenDataType	m_screen_data_type = data_sets_manager.EScreenDataType.sdt_Tiles4x4;
+		
+		public patterns_manager_form( ImageList _tiles_image_list, ImageList _blocks_image_list )
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -71,6 +74,7 @@ namespace MAPeD
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			m_tiles_image_list 	= _tiles_image_list;
+			m_blocks_image_list = _blocks_image_list;
 			
 			m_pattern_preview = new image_preview( PixBoxPreview );
 			
@@ -193,7 +197,18 @@ namespace MAPeD
 			{
 				m_gfx.Clear( Color.FromArgb( 0 ) );
 
-				int scr_tile_size = utils.CONST_SCREEN_TILES_SIZE >> 1;
+				int scr_tile_size	= utils.CONST_SCREEN_TILES_SIZE >> 1;
+				ImageList img_list	= null;
+				
+				if( m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+				{
+					img_list = m_tiles_image_list;
+				}
+				else
+				{
+					img_list = m_blocks_image_list;
+					scr_tile_size >>= 1;
+				}
 				
 				int start_pos_x = ( m_pattern_image.Width >> 1 ) - ( ( pattern.width * scr_tile_size ) >> 1 );
 				int start_pos_y = ( m_pattern_image.Height >> 1 ) - ( ( pattern.height * scr_tile_size ) >> 1 );
@@ -202,14 +217,14 @@ namespace MAPeD
 				{
 					for( int tile_x = 0; tile_x < pattern.width; tile_x++ )
 					{
-						m_gfx.DrawImage( m_tiles_image_list.Images[ pattern.data[ tile_y * pattern.width + tile_x ] ], start_pos_x + tile_x * scr_tile_size, start_pos_y + tile_y * scr_tile_size, scr_tile_size, scr_tile_size );
+						m_gfx.DrawImage( img_list.Images[ pattern.data[ tile_y * pattern.width + tile_x ] ], start_pos_x + tile_x * scr_tile_size, start_pos_y + tile_y * scr_tile_size, scr_tile_size, scr_tile_size );
 					}
 				}
-				
+
 				return pattern;
 			}
 			
-			MainForm.message_box( "UNEXPECTED ERROR!\n\nCan't find the pattern <" + _name + ">!", "Updating Pattern Image", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			MainForm.message_box( "UNEXPECTED ERROR!\n\nCan't find the pattern <" + _name + ">!", "Pattern Image Update", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			
 			return null;
 		}
@@ -695,6 +710,11 @@ namespace MAPeD
 		void BtnResetPatternClick_Event(object sender, EventArgs e)
 		{
 			TreeViewPatterns.SelectedNode = TreeViewPatterns.TopNode;
+		}
+		
+		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
+		{
+			m_screen_data_type = _type;
 		}
 	}
 }

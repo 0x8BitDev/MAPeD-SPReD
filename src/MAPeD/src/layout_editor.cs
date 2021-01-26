@@ -1654,7 +1654,7 @@ namespace MAPeD
 					
 					int sel_scr_pos_x = m_dispatch_mode_sel_screen_slot_id % get_width();
 					int sel_scr_pos_y = m_dispatch_mode_sel_screen_slot_id / get_width();
-					
+// TODO: fix CONST_SCREEN_TILES_CNT !!!
 					// upper line
 					{
 						// top/left

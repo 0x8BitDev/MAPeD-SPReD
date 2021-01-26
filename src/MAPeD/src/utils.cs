@@ -98,10 +98,11 @@ namespace MAPeD
 		public const string CONST_APP_NAME	= "MAPeD-" + CONST_PLATFORM;
 		
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'M';
-		public const byte CONST_PROJECT_FILE_VER	= 3;
+		public const byte CONST_PROJECT_FILE_VER	= 4;
 		// v1: initial data format
 		// v2: added palettes array
 		// v3: blocks data USHORT -> UINT; palette index BYTE -> INT
+		// v4: pre data flags: screen data type ( Tiles4X4 / Blocks2X2 )
 
 		public const uint CONST_SPRED_FILE_MAGIC		= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
 		public const uint CONST_SPRED_PROJECT_FILE_VER	= 1;
@@ -113,8 +114,10 @@ namespace MAPeD
 		public const byte	CONST_IO_DATA_TILES_PATTERNS	= 0x10;
 		public const byte	CONST_IO_DATA_END				= 0xff;
 
-		public const uint	CONST_IO_DATA_FLAG_MMC5			= 0x01;
-		public const uint	CONST_IO_DATA_FLAG_PROP_PER_CHR	= 0x02;
+		public const uint	CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4		= 0x01;
+		
+		public const uint	CONST_IO_DATA_POST_FLAG_MMC5			= 0x01;
+		public const uint	CONST_IO_DATA_POST_FLAG_PROP_PER_CHR	= 0x02;
 		
 		public const string CONST_SMS_FILE_EXT			= "mapedsms";
 		public const string CONST_NES_FILE_EXT			= "mapednes";
@@ -204,6 +207,13 @@ namespace MAPeD
 		public const int CONST_SCREEN_BLOCKS_SIZE		= 32;	// pixels
 		
 		public const int CONST_SCREEN_TILES_CNT			= CONST_SCREEN_NUM_WIDTH_TILES * CONST_SCREEN_NUM_HEIGHT_TILES;
+		
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+		public const int CONST_SCREEN_BLOCKS_CNT		= ( CONST_SCREEN_TILES_CNT << 2 ) - CONST_SCREEN_NUM_WIDTH_BLOCKS;
+#else
+		public const int CONST_SCREEN_BLOCKS_CNT		= CONST_SCREEN_TILES_CNT << 2;
+#endif
+		
 		public const int CONST_SCREEN_MAX_CNT			= 255;	// 1...255
 		
 		public const int CONST_SCREEN_WIDTH_PIXELS		= 32 * CONST_SCREEN_NUM_WIDTH_TILES;
@@ -1008,6 +1018,18 @@ namespace MAPeD
 			}
 			
 			throw new Exception( "utils.get_palette_by_file_ext(...) : invalid parameter!" );
+		}
+		
+		public static int get_screen_tiles_cnt_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return CONST_SCREEN_TILES_CNT;
+			}
+			else
+			{
+				return CONST_SCREEN_BLOCKS_CNT;
+			}
 		}
 	}
 }

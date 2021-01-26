@@ -156,7 +156,7 @@ namespace MAPeD
 			}
 			while( !_check && ( res_screens + res_tiles + res_blocks + res_CHRs ) != 0 );
 		}
-		
+// TODO: fix CHRs data optimization on PCE
 		int CHRs_optimization( tiles_data _data, bool _check )
 		{
 			int deleted_CHRs_cnt = 0;
@@ -331,8 +331,16 @@ namespace MAPeD
 						_data.blocks[ last_block_ind - 3 ] = 0;
 						_data.blocks[ last_block_ind - 4 ] = 0;
 					}
-					
-					shift_tiles_data( block_n, _data );
+
+					if( m_data_sets.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					{
+						shift_tiles_data( block_n, _data );
+					}
+					else
+					{					
+						_data.dec_screen_tiles( ( byte )block_n );
+						_data.dec_patterns_tiles( ( byte )block_n );
+					}
 					
 					--block_n;
 					--size;
@@ -344,54 +352,107 @@ namespace MAPeD
 
 		bool check_tiles_block( int _block_id, tiles_data _data )
 		{
-			int tile_n;
-			int i;
-			
-			int _block_id_offset = _block_id << 2;
-			int block_n_offset;
-			
-			// check duplicate(s)
-			for( int block_n = 0; block_n < _block_id; block_n++ )
+			if( m_data_sets.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				block_n_offset = block_n << 2; 
+				int tile_n;
+				int i;
 				
-				for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+				int _block_id_offset = _block_id << 2;
+				int block_n_offset;
+				
+				// check duplicate(s)
+				for( int block_n = 0; block_n < _block_id; block_n++ )
 				{
-					if( _data.blocks[ block_n_offset + i ] != _data.blocks[ _block_id_offset + i ] )
+					block_n_offset = block_n << 2; 
+					
+					for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
 					{
-						break;
+						if( _data.blocks[ block_n_offset + i ] != _data.blocks[ _block_id_offset + i ] )
+						{
+							break;
+						}
+					}
+					
+					if( i == utils.CONST_BLOCK_SIZE )
+					{
+						// duplicate found
+						for( tile_n = 0; tile_n < utils.CONST_TILES_UINT_SIZE; tile_n++ )
+						{
+							for( i = 0; i < utils.CONST_TILE_SIZE; i++ )
+							{
+								if( _block_id == _data.get_tile_block( tile_n, i ) )
+								{
+									// replace _block_id with block_n
+									_data.set_tile_block( tile_n, i, ( byte )block_n );
+								}
+							}
+						}
 					}
 				}
 				
-				if( i == utils.CONST_BLOCK_SIZE )
+				for( tile_n = 0; tile_n < utils.CONST_TILES_UINT_SIZE; tile_n++ )
 				{
-					// duplicate found
-					for( tile_n = 0; tile_n < utils.CONST_TILES_UINT_SIZE; tile_n++ )
+					for( i = 0; i < utils.CONST_TILE_SIZE; i++ )
 					{
-						for( i = 0; i < utils.CONST_TILE_SIZE; i++ )
+						if( _block_id == _data.get_tile_block( tile_n, i ) )
 						{
-							if( _block_id == _data.get_tile_block( tile_n, i ) )
+							return true;
+						}
+					}
+				}
+			}
+			else
+			{
+				return check_screens_block( _block_id, _data );
+			}
+			
+			return false;
+		}
+		
+		bool check_screens_block( int _block_id, tiles_data _data )
+		{
+			int block_n;
+			int scr_n;
+			int scr_block_n;
+			
+			List< byte[] > scr_list = _data.scr_data;
+			byte[] 	scr_data = null;
+			
+			// check duplicate(s)
+			for( block_n = 0; block_n < _block_id; block_n++ )
+			{
+				if( _data.cmp_blocks( _block_id, block_n ) )
+				{
+					for( scr_n = 0; scr_n < scr_list.Count; scr_n++ )
+					{
+						scr_data = scr_list[ scr_n ];
+						
+						for( scr_block_n = 0; scr_block_n < scr_data.Length; scr_block_n++ )
+						{
+							if( scr_data[ scr_block_n ] == _block_id )
 							{
 								// replace _block_id with block_n
-								_data.set_tile_block( tile_n, i, ( byte )block_n );
+								scr_data[ scr_block_n ] = ( byte )block_n;
 							}
 						}
 					}
 				}
 			}
 			
-			for( tile_n = 0; tile_n < utils.CONST_TILES_UINT_SIZE; tile_n++ )
+			for( scr_n = 0; scr_n < scr_list.Count; scr_n++ )
 			{
-				for( i = 0; i < utils.CONST_TILE_SIZE; i++ )
+				scr_data = scr_list[ scr_n ];
+				
+				for( scr_block_n = 0; scr_block_n < scr_data.Length; scr_block_n++ )
 				{
-					if( _block_id == _data.get_tile_block( tile_n, i ) )
+					if( scr_data[ scr_block_n ] == _block_id )
 					{
 						return true;
 					}
 				}
 			}
-			
-			return false;
+
+			return false;			
 		}
 
 		void shift_tiles_data( int _block_id, tiles_data _data )
@@ -691,6 +752,12 @@ namespace MAPeD
 		void BtnMatchedBlocksInfoClick_Event(object sender, EventArgs e)
 		{
 			MainForm.message_box( "By checking the matched blocks, you can identify similar data.\n\nEnter the boundary value (1-100%) and click the \"Check\" button.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information );
+		}
+		
+		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
+		{
+			CheckBoxOptimizeTiles.Enabled = ( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? true:false;
+			CheckBoxOptimizeTiles.Checked = ( _type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) ? false:CheckBoxOptimizeTiles.Checked;
 		}
 	}
 }

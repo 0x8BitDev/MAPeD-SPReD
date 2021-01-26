@@ -40,15 +40,6 @@ namespace MAPeD
 		private static readonly int[] zx_palette = new int[]{ 0x000000, 0x0022c7, 0xd62816, 0xd433c7, 0x00c525, 0x00c7c9, 0xccc82a, 0xcacaca,	// not bright
 															  0x000000, 0x002bfb, 0xff331c, 0xff40fc, 0x00f92f, 0x00fbfe, 0xfffc36, 0xffffff };	// bright
 		
-		public static int[] zx_clrs_conv_tbl = new int[]{ 	 -1, -1, -1, -1, -1, -1, -1, -1,
-															 -1, -1, -1, -1, -1, -1, -1, -1,
-															 -1, -1, -1, -1, -1, -1, -1, -1,
-															 -1, -1, -1, -1, -1, -1, -1, -1,
-															 -1, -1, -1, -1, -1, -1, -1, -1,
-															 -1, -1, -1, -1, -1, -1, -1, -1,
-															 -1, -1, -1, -1, -1, -1, -1, -1,
-															 -1, -1, -1, -1, -1, -1, -1, -1 };
-		
 		public exporter_zx_sjasm( data_sets_manager _data_mngr )
 		{
 			m_data_mngr = _data_mngr;
@@ -151,6 +142,17 @@ namespace MAPeD
 			m_path_filename			= m_path + m_filename;
 			m_extra_path_filename	= Path.GetDirectoryName( _full_path ) + Path.DirectorySeparatorChar + m_filename + "_Extra" + Path.DirectorySeparatorChar + m_filename;
 			
+			if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
+			{
+				ExpZXAsmTiles2x2.Checked = true;
+				ExpZXAsmTiles2x2.Enabled = ExpZXAsmTiles4x4.Enabled = false;
+			}
+			else
+			{
+				ExpZXAsmTiles2x2.Enabled = true;
+				//ExpZXAsmTiles4x4.Enabled = TODO: enable it when with support of tiles 4x4 
+			}
+			
 			ShowDialog();				
 		}
 		
@@ -162,8 +164,6 @@ namespace MAPeD
 			{
 				System.IO.Directory.CreateDirectory( m_path_filename + "_Extra" + Path.DirectorySeparatorChar );
 			}
-			
-			calc_colors_conversion_table();
 			
 			try
 			{
@@ -315,8 +315,8 @@ namespace MAPeD
 				
 				bool no_ink;
 				
-				int ink_color_index 	= 0;
-				int paper_color_index 	= 0;
+				int[] ink_color_index 		= new int[ 4 ];
+				int[] paper_color_index 	= new int[ 4 ];
 				int zx_ink_color_index 		= 0;
 				int zx_paper_color_index 	= 0;
 				bool zx_bright_flag			= false;
@@ -413,40 +413,63 @@ namespace MAPeD
 								
 								tiles = scr_tiles_data[ bank_ind ];
 								
-								for( int tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+								if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 								{
-									tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES );
-									tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES );
-									
-									tile_id = tiles.scr_data[ scr_ind ][ tile_n ];
-									
-									if( ExpZXAsmTiles2x2.Checked )
+									for( int tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
 									{
-										tile_offs_x <<= 1;
-										tile_offs_y <<= 1;
+										tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES );
+										tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES );
 										
-										// make a list of unique 2x2 tiles in the map
-										for( int block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
+										tile_id = tiles.scr_data[ scr_ind ][ tile_n ];
+										
+										if( ExpZXAsmTiles2x2.Checked )
 										{
-											tile_data = (ushort)( tiles.get_tile_block( tile_id, block_n ) | ( ( bank_ind + 1 ) << 8 ) );
+											tile_offs_x <<= 1;
+											tile_offs_y <<= 1;
+											
+											// make a list of unique 2x2 tiles in the map
+											for( int block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
+											{
+												tile_data = (ushort)( tiles.get_tile_block( tile_id, block_n ) | ( ( bank_ind + 1 ) << 8 ) );
+												
+												if( unique_tiles_arr.Contains( tile_data ) == false )
+												{
+													unique_tiles_arr.Add( tile_data );
+												}
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+												if( tile_offs_y < 14 || ( tile_offs_y >= 14 && block_n < 2 ) )
+												{
+													map_tiles_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + ( ( block_n & 0x01 ) == 0x01 ? n_Y_tiles:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ) ] = tile_data;
+												}
+#else
+												map_tiles_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + ( ( block_n & 0x01 ) == 0x01 ? n_Y_tiles:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ) ] = tile_data;
+#endif											
+											}
+										}
+										else
+										{
+											// make a list of unique 4x4 tiles in the map
+											tile_data = (ushort)(( tile_id | ( ( bank_ind + 1 ) << 8 )) );
 											
 											if( unique_tiles_arr.Contains( tile_data ) == false )
 											{
 												unique_tiles_arr.Add( tile_data );
 											}
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-											if( tile_offs_y < 14 || ( tile_offs_y >= 14 && block_n < 2 ) )
-											{
-												map_tiles_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + ( ( block_n & 0x01 ) == 0x01 ? n_Y_tiles:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ) ] = tile_data;
-											}
-#else
-											map_tiles_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + ( ( block_n & 0x01 ) == 0x01 ? n_Y_tiles:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ) ] = tile_data;
-#endif											
+											
+											map_tiles_arr[ scr_n_X * ( n_Y_tiles * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( scr_n_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_data;
 										}
 									}
-									else
+								}
+								else
+								{
+									for( int block_n = 0; block_n < utils.CONST_SCREEN_BLOCKS_CNT; block_n++ )
 									{
-										// make a list of unique 4x4 tiles in the map
+										tile_offs_x = ( block_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
+										tile_offs_y = ( block_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
+										
+										tile_id = tiles.scr_data[ scr_ind ][ block_n ];
+										
+										// make a list of unique 2x2 tiles in the map
 										tile_data = (ushort)(( tile_id | ( ( bank_ind + 1 ) << 8 )) );
 										
 										if( unique_tiles_arr.Contains( tile_data ) == false )
@@ -454,7 +477,7 @@ namespace MAPeD
 											unique_tiles_arr.Add( tile_data );
 										}
 										
-										map_tiles_arr[ scr_n_X * ( n_Y_tiles * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( scr_n_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_data;
+										map_tiles_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_data;
 									}
 								}
 							}
@@ -493,9 +516,6 @@ namespace MAPeD
 						// tiles data processing
 						if( ExpZXAsmTiles2x2.Checked )
 						{
-							ink_color_index 	= 0;
-							paper_color_index 	= 0;
-							
 							for( chr_n = 0; chr_n < 4; chr_n++ )
 							{
 								tiles 		= scr_tiles_data[ ( (tile_data&0xff00) >> 8 ) - 1 ];
@@ -573,9 +593,9 @@ namespace MAPeD
 								
 								max_weight_ind = utils.get_byte_arr_max_val_ind( paper_clr_weights );
 #if DEF_NES
-								paper_color_index |= palette[ max_weight_ind ] << ( chr_n << 3 );
+								paper_color_index[ chr_n ] = palette[ max_weight_ind ];
 #elif DEF_SMS || DEF_PALETTE16_PER_CHR
-								paper_color_index |= plt16.subpalettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ] << ( chr_n << 3 );
+								paper_color_index[ chr_n ] = plt16.subpalettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ];
 #endif								
 								// reset paper color to avoid equal colors on both ink and paper
 								ink_clr_weights[ max_weight_ind ] = 0;
@@ -584,15 +604,15 @@ namespace MAPeD
 								{
 									max_weight_ind = utils.get_byte_arr_max_val_ind( ink_clr_weights );
 #if DEF_NES
-									ink_color_index |= palette[ max_weight_ind ] << ( chr_n << 3 );
+									ink_color_index[ chr_n ] = palette[ max_weight_ind ];
 #elif DEF_SMS || DEF_PALETTE16_PER_CHR
-									ink_color_index |= plt16.subpalettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ] << ( chr_n << 3 );
+									ink_color_index[ chr_n ] = plt16.subpalettes[ max_weight_ind >> 2 ][ max_weight_ind & 0x03 ];
 #endif								
 								}
 #if DEF_NES									
 								else
 								{
-									ink_color_index |= 13 << ( chr_n << 3 );
+									ink_color_index[ chr_n ] |= 13;
 								}
 #endif								
 							}
@@ -607,8 +627,8 @@ namespace MAPeD
 							{
 								for( chr_n = 0; chr_n < 4; chr_n++ )
 								{
-									zx_paper_color_index 	= zx_clrs_conv_tbl[ ( paper_color_index >> ( chr_n << 3 ) ) & 0xff ];
-									zx_ink_color_index 		= zx_clrs_conv_tbl[ ( ink_color_index >> ( chr_n << 3 ) ) & 0xff ];
+									zx_paper_color_index 	= get_nearest_color( palette_group.Instance.main_palette[ paper_color_index[ chr_n ] ] );
+									zx_ink_color_index 		= get_nearest_color( palette_group.Instance.main_palette[ ink_color_index[ chr_n ] ] );
 									
 									if( ( zx_paper_color_index & 0x07 ) == ( zx_ink_color_index & 0x07 ) )
 									{
@@ -807,7 +827,7 @@ namespace MAPeD
 			return Math.Sqrt( ( 0.299 * r*r ) + ( 0.587 * g*g ) + ( 0.114 * b*b ) );
 		}
 		
-		void calc_colors_conversion_table()
+		int get_nearest_color( int _color )
 		{
 			double r = 0.0;
 			double g = 0.0;
@@ -817,58 +837,50 @@ namespace MAPeD
 			double zx_g = 	0.0;
 			double zx_b = 	0.0;
 			
-			int color = 0;
 			int zx_color  = 0;
 			
 			double 	fi			= 0.0;
 			double 	fi_min 		= 0.0;
 			int 	best_color 	= -1;			
-
-			for( int color_n = 0; color_n < 64; color_n++ )
+			
+			r = ( double )( ( _color >> 16 ) & 0xff );
+			g = ( double )( ( _color >> 8 ) & 0xff );
+			b = ( double )( _color & 0xff );
+			
+			fi_min 		= 1000000.0;
+			best_color 	= -1;
+			
+			for( int zx_color_n = 0; zx_color_n < 16; zx_color_n++ )
 			{
-				color = palette_group.Instance.main_palette[ color_n ];
+				zx_color = zx_palette[ zx_color_n ];
 				
-				r = ( double )( ( color >> 16 ) & 0xff );
-				g = ( double )( ( color >> 8 ) & 0xff );
-				b = ( double )( color & 0xff );
-				
-				fi_min 		= 1000000.0;
-				best_color 	= -1;
-				
-				for( int zx_color_n = 0; zx_color_n < 16; zx_color_n++ )
-				{
-					zx_color = zx_palette[ zx_color_n ];
-					
-					zx_r = ( double )( ( zx_color >> 16 ) & 0xff );
-					zx_g = ( double )( ( zx_color >> 8 ) & 0xff );
-					zx_b = ( double )( zx_color & 0xff );
+				zx_r = ( double )( ( zx_color >> 16 ) & 0xff );
+				zx_g = ( double )( ( zx_color >> 8 ) & 0xff );
+				zx_b = ( double )( zx_color & 0xff );
 
-					switch( ExpZXAsmColorConversionModes.SelectedIndex )
-					{
-						case 0:
-							{
-								fi = 30.0 * Math.Pow( r - zx_r, 2.0 ) + 59.0 * Math.Pow( g - zx_g, 2.0 ) + 11.0 * Math.Pow( b - zx_b, 2.0 );
-							}
-							break;
-							
-						case 1:
-							{
-								fi = Math.Sqrt( Math.Pow( r - zx_r, 2.0 ) + Math.Pow( g - zx_g, 2.0 ) + Math.Pow( b - zx_b, 2.0 ) );
-							}
-							break;
-					}
-					
-					if( fi < fi_min )
-					{
-						best_color 	= zx_color_n;
-						fi_min 		= fi;
-					}
+				switch( ExpZXAsmColorConversionModes.SelectedIndex )
+				{
+					case 0:
+						{
+							fi = 30.0 * Math.Pow( r - zx_r, 2.0 ) + 59.0 * Math.Pow( g - zx_g, 2.0 ) + 11.0 * Math.Pow( b - zx_b, 2.0 );
+						}
+						break;
+						
+					case 1:
+						{
+							fi = Math.Sqrt( Math.Pow( r - zx_r, 2.0 ) + Math.Pow( g - zx_g, 2.0 ) + Math.Pow( b - zx_b, 2.0 ) );
+						}
+						break;
 				}
 				
-				zx_clrs_conv_tbl[ color_n ] = best_color;
-				
-				//palette_group.Instance.main_palette[ color_n ] = zx_palette[ best_color ];//!!!
+				if( fi < fi_min )
+				{
+					best_color 	= zx_color_n;
+					fi_min 		= fi;
+				}
 			}
+			
+			return best_color;
 		}
 		
 		private void save_tiles_gfx( BinaryWriter _bw, byte[] _tile_2x2_data_arr )

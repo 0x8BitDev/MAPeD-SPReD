@@ -331,7 +331,33 @@ namespace MAPeD
 			return pattern;
 		}
 		
-		public void dec_patterns_tiles( byte _tile_id )
+		public void dec_patterns_tiles( byte _start_ind )
+		{
+			patterns_tiles_proc( delegate( byte _tile_ind ) 
+			{
+				if( _tile_ind >= _start_ind && _tile_ind > 0 )
+				{
+					--_tile_ind;
+				}
+				
+				return _tile_ind;
+			} );
+		}
+
+		public void inc_patterns_tiles( byte _start_ind )
+		{
+			patterns_tiles_proc( delegate( byte _tile_ind ) 
+			{
+				if( _tile_ind >= _start_ind && _tile_ind > 0 )
+				{
+					++_tile_ind;
+				}
+				
+				return _tile_ind;
+			} );
+		}
+		
+		public void patterns_tiles_proc( Func< byte, byte > _func )
 		{
 			byte tile_id;
 			
@@ -345,10 +371,9 @@ namespace MAPeD
 						{
 							tile_id = _pattern.data[ tile_ind ];
 							
-							if( tile_id >= _tile_id && tile_id > 0 )
-							{
-								_pattern.data[ tile_ind ] = ( byte )( tile_id - 1 );
-							}
+							tile_id = _func( tile_id );
+							
+							_pattern.data[ tile_ind ] = tile_id;
 						}
 					}
 				});
@@ -397,7 +422,7 @@ namespace MAPeD
 			return name;
 		}
 		
-		public tiles_data copy()
+		public tiles_data copy( data_sets_manager.EScreenDataType _scr_type )
 		{
 			tiles_data data = new tiles_data();
 			
@@ -419,9 +444,9 @@ namespace MAPeD
 					
 				for( int i = 0; i < scr_data.Count; i++ )
 				{
-					screen_data = scr_alloc_data();
+					screen_data = scr_alloc_data( _scr_type );
 					
-					Array.Copy( m_scr_data[ i ], 0, screen_data, 0, utils.CONST_SCREEN_TILES_CNT );
+					Array.Copy( m_scr_data[ i ], 0, screen_data, 0, screen_data.Length );
 					
 					data.m_scr_data.Add( screen_data );
 				}
@@ -455,6 +480,22 @@ namespace MAPeD
 			return data;
 		}
 
+		public bool cmp_blocks( int _a, int _b )
+		{
+			int A_offs = _a << 2;
+			int B_offs = _b << 2;
+			
+			for( int i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+			{
+				if( blocks[ A_offs + i ] != blocks[ B_offs + i ] )
+				{
+					return false;
+				}
+			}
+			
+			return true;
+		}
+		
 		public void inc_blocks_CHRs( int _start_ind )
 		{
 			blocks_CHRs_proc( delegate( int _CHR_ind ) 
@@ -1029,20 +1070,23 @@ namespace MAPeD
 			return tile_id;
 		}
 		
-		public int get_tile_usage( byte _tile_ind )
+		public int get_tile_usage( byte _tile_ind, data_sets_manager.EScreenDataType _scr_type )
 		{
 			int res = 0;
 			
-			int scr_n;
-			int tile_n;
-			
-			for( scr_n = 0; scr_n < scr_data.Count; scr_n++ )
+			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+				int scr_n;
+				int tile_n;
+				
+				for( scr_n = 0; scr_n < scr_data.Count; scr_n++ )
 				{
-					if( scr_data[ scr_n ][ tile_n ] == _tile_ind )
+					for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
 					{
-						++res;
+						if( scr_data[ scr_n ][ tile_n ] == _tile_ind )
+						{
+							++res;
+						}
 					}
 				}
 			}
@@ -1050,20 +1094,37 @@ namespace MAPeD
 			return res;
 		}
 
-		public int get_block_usage( byte _block_ind )
+		public int get_block_usage( byte _block_ind, data_sets_manager.EScreenDataType _scr_type )
 		{
 			int res = 0;
 			
+			int scr_n;
 			int tile_n;
 			int block_n;
 			
-			for( tile_n = 0; tile_n < utils.CONST_MAX_TILES_CNT; tile_n++ )
+			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				for( block_n = 0; block_n < utils.CONST_TILE_SIZE; block_n++ )
+				for( tile_n = 0; tile_n < utils.CONST_MAX_TILES_CNT; tile_n++ )
 				{
-					if( utils.get_byte_from_uint( m_tiles[ tile_n ], block_n ) == _block_ind )
+					for( block_n = 0; block_n < utils.CONST_TILE_SIZE; block_n++ )
 					{
-						++res;
+						if( utils.get_byte_from_uint( m_tiles[ tile_n ], block_n ) == _block_ind )
+						{
+							++res;
+						}
+					}
+				}
+			}
+			else
+			{
+				for( scr_n = 0; scr_n < scr_data.Count; scr_n++ )
+				{
+					for( block_n = 0; block_n < utils.CONST_SCREEN_BLOCKS_CNT; block_n++ )
+					{
+						if( scr_data[ scr_n ][ block_n ] == _block_ind )
+						{
+							++res;
+						}
 					}
 				}
 			}
@@ -1071,21 +1132,21 @@ namespace MAPeD
 			return res;
 		}
 		
-		private byte[] scr_alloc_data()
+		private byte[] scr_alloc_data( data_sets_manager.EScreenDataType _type )
 		{
-			return new byte[ utils.CONST_SCREEN_TILES_CNT ];
+			return new byte[ utils.get_screen_tiles_cnt_uni( _type ) ];
 		}
 		
-		public void create_screen()
+		public void create_screen( data_sets_manager.EScreenDataType _type )
 		{
-			m_scr_data.Add( scr_alloc_data() );
+			m_scr_data.Add( scr_alloc_data( _type ) );
 		}
 		
-		public void copy_screen( int _id )
+		public void copy_screen( int _id, data_sets_manager.EScreenDataType _type )
 		{
-			byte[] scr_copy = scr_alloc_data();
+			byte[] scr_copy = scr_alloc_data( _type );
 			
-			Array.Copy( m_scr_data[ _id ], scr_copy, utils.CONST_SCREEN_TILES_CNT );
+			Array.Copy( m_scr_data[ _id ], scr_copy, scr_copy.Length );
 			
 			m_scr_data.Add( scr_copy );
 		}
@@ -1122,6 +1183,47 @@ namespace MAPeD
 		}
 		
 		private void screen_tiles_proc( Func< byte, byte > _func )
+		{
+			byte[] screen_data = null; 
+				
+			for( int i = 0; i < scr_data.Count; i++ )
+			{
+				screen_data = scr_data[ i ];
+				
+				for( int j = 0; j < screen_data.Length; j++ )
+				{
+					screen_data[ j ] = _func( screen_data[ j ] );
+				}
+			}
+		}
+
+		public void inc_screen_blocks( byte _start_ind )
+		{
+			screen_tiles_proc( delegate( byte _block_ind ) 
+			{
+				if( _block_ind >= _start_ind )
+				{
+					++_block_ind;
+				}
+				
+				return _block_ind;
+			} );
+		}
+		
+		public void dec_screen_blocks( byte _start_ind )
+		{
+			screen_tiles_proc( delegate( byte _block_ind ) 
+			{
+				if( _block_ind > _start_ind )
+				{
+					--_block_ind;
+				}
+				
+				return _block_ind;
+			} );
+		}
+		
+		private void screen_blocks_proc( Func< byte, byte > _func )
 		{
 			byte[] screen_data = null; 
 				
@@ -1276,7 +1378,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void save( BinaryWriter _bw )
+		public void save( BinaryWriter _bw, data_sets_manager.EScreenDataType _scr_type )
 		{
 			int i;
 			
@@ -1300,9 +1402,12 @@ namespace MAPeD
 				_bw.Write( m_blocks[ i ] );
 			}
 
-			for( i = 0; i < utils.CONST_TILES_UINT_SIZE; i++ )
+			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				_bw.Write( m_tiles[ i ] );
+				for( i = 0; i < utils.CONST_TILES_UINT_SIZE; i++ )
+				{
+					_bw.Write( m_tiles[ i ] );
+				}
 			}
 			
 			// save screens data
@@ -1314,7 +1419,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void load( byte _ver, BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode )
+		public void load( byte _ver, BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode, data_sets_manager.EScreenDataType _scr_type )
 		{
 			int i;
 			uint val;
@@ -1560,10 +1665,13 @@ namespace MAPeD
 				
 				dict_CHR_palette_ind.Clear();
 			}
-#endif			
-			for( i = 0; i < utils.CONST_TILES_UINT_SIZE; i++ )
+#endif
+			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				m_tiles[ i ] = _br.ReadUInt32();
+				for( i = 0; i < utils.CONST_TILES_UINT_SIZE; i++ )
+				{
+					m_tiles[ i ] = _br.ReadUInt32();
+				}
 			}
 			
 			// load screens data
@@ -1571,8 +1679,8 @@ namespace MAPeD
 			
 			byte[] scr_data;
 			
-			int loaded_scr_data_len = utils.get_scr_tiles_cnt_by_file_ext( _file_ext );
-			int scr_data_len 		= utils.CONST_SCREEN_TILES_CNT;
+			int loaded_scr_data_len = utils.get_scr_tiles_cnt_by_file_ext( _file_ext ) * ( _scr_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 ? 4:1 );
+			int scr_data_len 		= utils.get_screen_tiles_cnt_uni( _scr_type );
 			
 			byte[] loaded_scr = new byte[ loaded_scr_data_len ];
 			
@@ -1580,7 +1688,7 @@ namespace MAPeD
 			
 			for( i = 0; i < scr_cnt; i++ )
 			{
-				scr_data = scr_alloc_data();
+				scr_data = scr_alloc_data( _scr_type );
 				
 				if( loaded_scr_data_len != scr_data_len )
 				{
@@ -1645,7 +1753,7 @@ namespace MAPeD
 				}
 				else
 				{
-					scr_data = _br.ReadBytes( utils.CONST_SCREEN_TILES_CNT );
+					scr_data = _br.ReadBytes( scr_data_len );
 				}
 				
 				m_scr_data.Add( scr_data );

@@ -51,7 +51,7 @@ namespace MAPeD
 		public byte[] data
 		{
 			get { return m_data; }
-			set {}
+			set { m_data = value; }
 		}
 		
 		public pattern_data( string _name, byte _width, byte _height, byte[] _data )

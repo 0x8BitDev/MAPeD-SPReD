@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 30.07.2020
  * Time: 13:48
  */
@@ -71,5 +71,14 @@ namespace MAPeD
 		public const string CONST_STR_EXP_CHR_OFFSET			= "\n\nCHR offset: This value will be added to each CHR index in a screen map. In other words, it's a free space at the beginning of a CHR bank.";
 		
 		public const string CONST_STR_EXP_WARNING				= "\n\nWARNING: To reduce the amount of exported data, please make a global data optimization.";
+		
+		public const string CONST_SCREEN_DATA_TYPE_INFO_CAPTION	= "Screen Data Type Info"; 
+		public const string CONST_SCREEN_DATA_TYPE_INFO			= "Screen data can be stored as Tiles(4x4) or Blocks(2x2).\n\nTiles(4x4) are the most compact way to store screen data. Takes less memory and less graphics variety.\n\nBlocks(2x2) data takes up 4 times the memory, but brings more graphics variety. Suitable for dynamic maps.\n\nSwitching between these modes AFFECTS ALL THE CHR BANKS!";
+		
+		public const string CONST_SCREEN_DATA_CONV_BLOCKS2TILES_CAPTION	= "Screen Data Conversion: Blocks->Tiles";
+		public const string CONST_SCREEN_DATA_CONV_BLOCKS2TILES = "The Tiles(4x4) list will be filled in with the screens data.\n\nWARNING: This operation affects all the CHR banks!\n\nAre you sure?";
+		
+		public const string CONST_SCREEN_DATA_CONV_TILES2BLOCKS_CAPTION	= "Screen Data Conversion: Tiles->Blocks";
+		public const string CONST_SCREEN_DATA_CONV_TILES2BLOCKS = "All the Tiles(4x4) data will be used to update screens data and the Tiles(4x4) list will be cleared.\n\nWARNING: This operation affects all the CHR banks!\n\nAre you sure?";
 	}
 }
