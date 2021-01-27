@@ -160,8 +160,6 @@ namespace MAPeD
 		
 		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_NES_CHR_BANK_NUM_PAGES;
 		
-		public const int CONST_CHR_BANK_MAX_SPRITES_CNT	= 256 * CONST_NES_CHR_BANK_NUM_PAGES;
-		
 		public const int CONST_PALETTE_MAIN_NUM_COLORS	= CONST_NES_PALETTE_NUM_COLORS;
 		
 		public const string CONST_FILE_EXT				= CONST_NES_FILE_EXT; 
@@ -177,8 +175,6 @@ namespace MAPeD
 		
 		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_SMS_CHR_BANK_NUM_PAGES;
 		
-		public const int CONST_CHR_BANK_MAX_SPRITES_CNT	= 256 * CONST_SMS_CHR_BANK_NUM_PAGES;		
-		
 		public const int CONST_PALETTE_MAIN_NUM_COLORS	= CONST_SMS_PALETTE_NUM_COLORS;
 		
 		public const string CONST_FILE_EXT				= CONST_SMS_FILE_EXT;
@@ -193,8 +189,6 @@ namespace MAPeD
 		public const int CONST_SCREEN_OFFSET_Y			= 64;
 		
 		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_PCE_CHR_BANK_NUM_PAGES;
-		
-		public const int CONST_CHR_BANK_MAX_SPRITES_CNT	= 256 * CONST_PCE_CHR_BANK_NUM_PAGES;
 		
 		public const int CONST_PALETTE_MAIN_NUM_COLORS	= CONST_PCE_PALETTE_NUM_COLORS;
 		
@@ -255,6 +249,7 @@ namespace MAPeD
 		public const int CONST_CHR_BANK_PAGE_SIDE			= 128;
 		public const int CONST_CHR_BANK_PAGE_SIZE			= CONST_CHR_BANK_PAGE_SIDE * CONST_CHR_BANK_PAGE_SIDE;
 		public const int CONST_CHR_BANK_PAGE_SPRITES_CNT	= 256;
+		public const int CONST_CHR_BANK_MAX_SPRITES_CNT		= CONST_CHR_BANK_PAGE_SPRITES_CNT * CONST_CHR_BANK_PAGES_CNT;
 		public const int CONST_CHR_BANK_MAX_CNT				= 256;
 		
 		public const int CONST_BLOCK_SIZE					= 4;	// uints

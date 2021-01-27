@@ -156,7 +156,7 @@ namespace MAPeD
 			}
 			while( !_check && ( res_screens + res_tiles + res_blocks + res_CHRs ) != 0 );
 		}
-// TODO: fix CHRs data optimization on PCE
+
 		int CHRs_optimization( tiles_data _data, bool _check )
 		{
 			int deleted_CHRs_cnt = 0;
@@ -166,7 +166,8 @@ namespace MAPeD
 			byte[] img_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
 			
 			int size_offs;			
-			int size = utils.CONST_CHR_BANK_MAX_SPRITES_CNT;
+			int size = _data.get_first_free_spr8x8_id();
+			size = size < 0 ? utils.CONST_CHR_BANK_MAX_SPRITES_CNT:size;
 			
 			for( int CHR_n = 0; CHR_n < size; CHR_n++ )
 			{
