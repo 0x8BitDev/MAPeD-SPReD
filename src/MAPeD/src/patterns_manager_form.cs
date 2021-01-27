@@ -153,7 +153,7 @@ namespace MAPeD
 					// redraw a current selected pattern
 					m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
 					
-					m_pattern_preview.draw_string( "Patterns are often-used combinations of tiles.\nHere you can create and manage them.\n\n- Click the 'Add' pattern button to add a new one.\n\n- Click the 'Add' button again to cancel the operation.\n\n- Select a pattern in the tree view to put it on\na game screen.\n\n- Scale a selected pattern using a mouse wheel.", 0, 0 );
+					m_pattern_preview.draw_string( "Patterns are often-used combinations of tiles.\nHere you can create and manage them.\n\n- Click the 'Add' pattern button to add a new one.\n\n- Click the 'Add' button again to cancel operation.\n\n- Select a pattern in the tree view to put it on\na game screen.\n\n- Scale a selected pattern using a mouse wheel.", 0, 0 );
 				}
 				else
 				{
@@ -162,7 +162,7 @@ namespace MAPeD
 						// redraw a current selected pattern
 						m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
 						
-						m_pattern_preview.draw_string( "Select a rectangle area in the screen editor\nto create a pattern.", 0, 0 );
+						m_pattern_preview.draw_string( "Select a rectangle area in the screen editor\nto create a pattern.\nClick the 'Add' button again to cancel operation.", 0, 0 );
 					}
 					else
 					{
@@ -267,10 +267,6 @@ namespace MAPeD
 		
 		private void create_pattern_end(object sender, EventArgs e)
 		{
-			enable( true );
-			
-			CheckBoxAddPattern.Checked = false;
-			
 			if( sender != this )
 			{
 				m_object_name_form.Text = "Add Pattern";
@@ -279,6 +275,9 @@ namespace MAPeD
 				
 				if( m_object_name_form.ShowWindow() == DialogResult.OK )
 				{
+					enable( true );
+					CheckBoxAddPattern.Checked = false;
+					
 					PatternEventArg pattern_event = e as PatternEventArg;
 					
 					pattern_data data = pattern_event.data;
@@ -310,6 +309,9 @@ namespace MAPeD
 		private void hide_wnd()
 		{
 			Visible = false;
+			
+			enable( true );
+			CheckBoxAddPattern.Checked = false;
 			
 			if( ScreenEditorSwitchToBuildMode != null )
 			{
@@ -709,12 +711,19 @@ namespace MAPeD
 		
 		void BtnResetPatternClick_Event(object sender, EventArgs e)
 		{
+			reset_active_pattern();
+		}
+		
+		void reset_active_pattern()
+		{
 			TreeViewPatterns.SelectedNode = TreeViewPatterns.TopNode;
 		}
 		
 		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
 		{
 			m_screen_data_type = _type;
+			
+			reset_active_pattern();
 		}
 	}
 }

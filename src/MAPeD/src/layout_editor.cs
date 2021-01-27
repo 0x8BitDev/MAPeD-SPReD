@@ -137,7 +137,9 @@ namespace MAPeD
 				update();
 			}
 		}
-		
+
+		private data_sets_manager.EScreenDataType	m_screen_data_type = data_sets_manager.EScreenDataType.sdt_Tiles4x4;
+
 		public layout_editor( PictureBox _pbox, Label _label, List< tiles_data > _tiles_data, ListView _listview_screens ) : base( _pbox )
 		{
 			m_label				= _label;
@@ -265,25 +267,28 @@ namespace MAPeD
 			{
 				if( CHR_bank_id == _CHR_bank_id )
 				{
+					int num_width_tiles		= utils.get_screen_num_width_tiles_uni( m_screen_data_type );
+					int num_height_tiles	= utils.get_screen_num_height_tiles_uni( m_screen_data_type );
+					
 					int scr_x = ( _scr_ind % get_width() );
 					int scr_y = ( _scr_ind / get_width() );
 					
-					int scr_pttrn_x = ( m_dispatch_mode_sel_screen_slot_id % get_width() ) * utils.CONST_SCREEN_NUM_WIDTH_TILES + _pos_x;
-					int scr_pttrn_y = ( m_dispatch_mode_sel_screen_slot_id / get_width() ) * utils.CONST_SCREEN_NUM_HEIGHT_TILES + _pos_y;
+					int scr_pttrn_x = ( m_dispatch_mode_sel_screen_slot_id % get_width() ) * num_width_tiles + _pos_x;
+					int scr_pttrn_y = ( m_dispatch_mode_sel_screen_slot_id / get_width() ) * num_height_tiles + _pos_y;
 					
-					int pttrn_offs_x = scr_pttrn_x - scr_x * utils.CONST_SCREEN_NUM_WIDTH_TILES;
-					int pttrn_offs_y = scr_pttrn_y - scr_y * utils.CONST_SCREEN_NUM_HEIGHT_TILES; 
+					int pttrn_offs_x = scr_pttrn_x - scr_x * num_width_tiles;
+					int pttrn_offs_y = scr_pttrn_y - scr_y * num_height_tiles; 
 		
-					if( Math.Max( 0, pttrn_offs_x ) < Math.Min( utils.CONST_SCREEN_NUM_WIDTH_TILES, pttrn_offs_x + _data.width ) &&
-					  ( Math.Max( 0, pttrn_offs_y ) < Math.Min( utils.CONST_SCREEN_NUM_HEIGHT_TILES, pttrn_offs_y + _data.height ) ) )
+					if( Math.Max( 0, pttrn_offs_x ) < Math.Min( num_width_tiles, pttrn_offs_x + _data.width ) &&
+					  ( Math.Max( 0, pttrn_offs_y ) < Math.Min( num_height_tiles, pttrn_offs_y + _data.height ) ) )
 					{
 						for( int tile_y = 0; tile_y < _data.height; tile_y++ )
 						{
 							for( int tile_x = 0; tile_x < _data.width; tile_x++ )
 							{
-								if( ( pttrn_offs_x + tile_x >=0 && pttrn_offs_x + tile_x < utils.CONST_SCREEN_NUM_WIDTH_TILES ) && ( pttrn_offs_y + tile_y >=0 && pttrn_offs_y + tile_y < utils.CONST_SCREEN_NUM_HEIGHT_TILES ) )
+								if( ( pttrn_offs_x + tile_x >=0 && pttrn_offs_x + tile_x < num_width_tiles ) && ( pttrn_offs_y + tile_y >=0 && pttrn_offs_y + tile_y < num_height_tiles ) )
 								{
-									bank_data.scr_data[ bank_scr_ind ][ ( ( pttrn_offs_y + tile_y ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + pttrn_offs_x + tile_x ] = _data.data[ tile_y * _data.width + tile_x ];
+									bank_data.scr_data[ bank_scr_ind ][ ( ( pttrn_offs_y + tile_y ) * num_width_tiles ) + pttrn_offs_x + tile_x ] = _data.data[ tile_y * _data.width + tile_x ];
 								}
 							}
 						}
@@ -1943,6 +1948,11 @@ namespace MAPeD
 			}
 			
 			return res;
+		}
+		
+		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
+		{
+			m_screen_data_type = _type;
 		}
 	}
 }

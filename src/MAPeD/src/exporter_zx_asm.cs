@@ -150,7 +150,7 @@ namespace MAPeD
 			else
 			{
 				ExpZXAsmTiles2x2.Enabled = true;
-				//ExpZXAsmTiles4x4.Enabled = TODO: enable it when with support of tiles 4x4 
+				//ExpZXAsmTiles4x4.Enabled = TODO: enable it with support of 4x4 tiles 
 			}
 			
 			ShowDialog();				
@@ -340,14 +340,7 @@ namespace MAPeD
 				}
 				
 				sw.WriteLine( "\nscr_2x2tiles_w\tequ " + scr_width_blocks + "\t\t; number of screen tiles 2x2 in width" );
-				
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-				scr_height_blocks -= 1;
-				
 				sw.WriteLine( "scr_2x2tiles_h\tequ " + scr_height_blocks + "\t\t; number of screen tiles 2x2 in height\n" );
-#else
-				sw.WriteLine( "scr_2x2tiles_h\tequ " + scr_height_blocks + "\t\t; number of screen tiles 2x2 in height\n" );
-#endif				
 
 				for( int level_n = 0; level_n < n_levels; level_n++ )
 				{

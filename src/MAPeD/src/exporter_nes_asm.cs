@@ -458,9 +458,6 @@ namespace MAPeD
 			int scr_width_blocks 	= utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
 			int scr_height_blocks 	= utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
 
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-			scr_height_blocks -= 1;
-#endif	
 			uint block_data		= 0;
 			
 			byte tile_id			= 0;
@@ -1317,7 +1314,7 @@ namespace MAPeD
 				
 				if( RBtnModeMultidirScroll.Checked )
 				{
-					block_n += ( _Y_scr_cnt * _scr_height_blocks ) * ( block_n / ( utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS * _Y_scr_cnt ) );
+					block_n += ( _Y_scr_cnt * _scr_height_blocks ) * ( block_n / ( ( utils.CONST_SCREEN_NUM_HEIGHT_TILES << 1 ) * _Y_scr_cnt ) );
 					block_n -= _tile_n >> 3;
 				}
 				else
@@ -1579,9 +1576,6 @@ namespace MAPeD
 			int scr_width_blocks 	= utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
 			int scr_height_blocks 	= utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
 			
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-			scr_height_blocks -= 1;
-#endif				
 			tiles_data tiles = null;
 
 			for( int level_n = 0; level_n < n_levels; level_n++ )

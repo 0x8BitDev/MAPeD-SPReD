@@ -153,7 +153,7 @@ namespace MAPeD
 		public const int CONST_SCREEN_NUM_HEIGHT_TILES	= CONST_NES_SCREEN_NUM_HEIGHT_TILES;
 		
 		public const int CONST_SCREEN_NUM_WIDTH_BLOCKS	= CONST_SCREEN_NUM_WIDTH_TILES << 1;
-		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_SCREEN_NUM_HEIGHT_TILES << 1;
+		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS	= ( CONST_SCREEN_NUM_HEIGHT_TILES << 1 ) - 1;	// DEF_SCREEN_HEIGHT_7d5_TILES by default
 		
 		public const int CONST_SCREEN_OFFSET_X			= 32;
 		public const int CONST_SCREEN_OFFSET_Y			= 32;
@@ -218,7 +218,7 @@ namespace MAPeD
 		
 		public const int CONST_SCREEN_WIDTH_PIXELS		= 32 * CONST_SCREEN_NUM_WIDTH_TILES;
 		
-#if DEF_SCREEN_HEIGHT_7d5_TILES		
+#if DEF_SCREEN_HEIGHT_7d5_TILES
 		public const int CONST_SCREEN_HEIGHT_PIXELS		= CONST_SCREEN_WIDTH_PIXELS - 16;
 #else		
 		public const int CONST_SCREEN_HEIGHT_PIXELS		= 32 * CONST_SCREEN_NUM_HEIGHT_TILES;
@@ -1029,6 +1029,54 @@ namespace MAPeD
 			else
 			{
 				return CONST_SCREEN_BLOCKS_CNT;
+			}
+		}
+		
+		public static int get_screen_num_width_tiles_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return CONST_SCREEN_NUM_WIDTH_TILES;
+			}
+			else
+			{
+				return CONST_SCREEN_NUM_WIDTH_BLOCKS;
+			}
+		}
+		
+		public static int get_screen_num_height_tiles_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return CONST_SCREEN_NUM_HEIGHT_TILES;
+			}
+			else
+			{
+				return CONST_SCREEN_NUM_HEIGHT_BLOCKS;
+			}
+		}
+		
+		public static int get_screen_tiles_size_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return CONST_SCREEN_TILES_SIZE;
+			}
+			else
+			{
+				return CONST_SCREEN_BLOCKS_SIZE;
+			}
+		}
+		
+		public static screen_editor.EFillMode get_screen_fill_mode_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return screen_editor.EFillMode.efm_Tile;
+			}
+			else
+			{
+				return screen_editor.EFillMode.efm_Block;
 			}
 		}
 	}
