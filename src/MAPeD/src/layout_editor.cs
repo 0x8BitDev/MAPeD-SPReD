@@ -173,7 +173,7 @@ namespace MAPeD
 
 			reset( true );
 			
-			m_border_tiles = new short[ utils.CONST_BORDER_TILES_CNT ];	// 4x8 ( up\right\down\left ) + 4 ( four corners )
+			m_border_tiles = new short[ utils.CONST_BORDER_TILES_CNT << 1 ];	// 4x8 ( up\right\down\left ) + 4 ( four corners ) ; +2x2 mode
 			
 			m_adjacent_scr_arr = new int[]{ -1, /*( -width - 1 )*/0, /*-width*/0, /*( -width + 1 )*/0, +1, /*( width + 1 )*/0, /*width*/0, /*( width - 1 )*/0, -1 };
 		}
@@ -1644,7 +1644,7 @@ namespace MAPeD
 				{
 					int i;
 					
-					for( i = 0; i < utils.CONST_BORDER_TILES_CNT; i++ )
+					for( i = 0; i < m_border_tiles.Length; i++ )
 					{
 						m_border_tiles[ i ] = unchecked( (short)0xffff );
 					}
@@ -1659,7 +1659,13 @@ namespace MAPeD
 					
 					int sel_scr_pos_x = m_dispatch_mode_sel_screen_slot_id % get_width();
 					int sel_scr_pos_y = m_dispatch_mode_sel_screen_slot_id / get_width();
-// TODO: fix CONST_SCREEN_TILES_CNT !!!
+					
+					int num_scr_tiles		= utils.get_screen_tiles_cnt_uni( m_screen_data_type );
+					int num_width_tiles		= utils.get_screen_num_width_tiles_uni( m_screen_data_type );
+					int num_height_tiles	= utils.get_screen_num_height_tiles_uni( m_screen_data_type );
+					
+					int offs_factor			= m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 1:2;
+					
 					// upper line
 					{
 						// top/left
@@ -1669,7 +1675,7 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								m_border_tiles[ utils.CONST_ADJ_SCR_TILE_IND_UP_LEFT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ utils.CONST_SCREEN_TILES_CNT - 1 ] );
+								m_border_tiles[ utils.CONST_ADJ_SCR_TILE_IND_UP_LEFT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ num_scr_tiles - 1 ] );
 							}
 						}
 						
@@ -1680,9 +1686,9 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								tile_offset = utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES;
+								tile_offset = num_scr_tiles - num_width_tiles;
 								
-								for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES; i++ )
+								for( i = 0; i < num_width_tiles; i++ )
 								{
 									m_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_UP ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ tile_offset + i ] );
 								}
@@ -1696,7 +1702,7 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								m_border_tiles[ utils.CONST_ADJ_SCR_TILE_IND_UP_RIGHT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES ] );
+								m_border_tiles[ offs_factor * utils.CONST_ADJ_SCR_TILE_IND_UP_RIGHT - ( offs_factor - 1 ) ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ num_scr_tiles - num_width_tiles ] );
 							}
 						}
 					}
@@ -1710,7 +1716,7 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								m_border_tiles[ utils.CONST_ADJ_SCR_TILE_IND_DOWN_LEFT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ utils.CONST_SCREEN_NUM_WIDTH_TILES - 1 ] );
+								m_border_tiles[ offs_factor * utils.CONST_ADJ_SCR_TILE_IND_DOWN_LEFT + ( offs_factor - 1 ) ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ num_width_tiles - 1 ] );
 							}
 						}
 						
@@ -1721,9 +1727,9 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES; i++ )
+								for( i = 0; i < num_width_tiles; i++ )
 								{
-									m_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_DOWN ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ i ] );
+									m_border_tiles[ i + offs_factor * utils.CONST_ADJ_SCR_TILE_IND_DOWN ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ i ] );
 								}
 							}
 						}
@@ -1735,7 +1741,7 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								m_border_tiles[ utils.CONST_ADJ_SCR_TILE_IND_DOWN_RIGHT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ 0 ] );
+								m_border_tiles[ offs_factor * utils.CONST_ADJ_SCR_TILE_IND_DOWN_RIGHT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ 0 ] );
 							}
 						}
 					}
@@ -1748,9 +1754,9 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								for( i = 0; i < utils.CONST_SCREEN_NUM_HEIGHT_TILES; i++ )
+								for( i = 0; i < num_height_tiles; i++ )
 								{
-									m_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_LEFT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ ( i + 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES - 1 ] );
+									m_border_tiles[ i + offs_factor * utils.CONST_ADJ_SCR_TILE_IND_LEFT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ ( i + 1 ) * num_width_tiles - 1 ] );
 								}
 							}
 						}
@@ -1764,9 +1770,9 @@ namespace MAPeD
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								for( i = 0; i < utils.CONST_SCREEN_NUM_HEIGHT_TILES; i++ )
+								for( i = 0; i < num_height_tiles; i++ )
 								{
-									m_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_RIGHT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ i * utils.CONST_SCREEN_NUM_WIDTH_TILES ] );
+									m_border_tiles[ i + offs_factor * utils.CONST_ADJ_SCR_TILE_IND_RIGHT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ i * num_width_tiles ] );
 								}
 							}
 						}

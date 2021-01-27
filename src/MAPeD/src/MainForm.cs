@@ -4028,6 +4028,8 @@ namespace MAPeD
 			m_optimization_form.set_screen_data_type( _type );
 			m_patterns_manager_form.set_screen_data_type( _type );
 			m_layout_editor.set_screen_data_type( _type );
+			
+			RBtnScreenEditModeSingle.Checked = true;
 		}
 		
 #endregion		
