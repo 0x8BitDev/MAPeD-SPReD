@@ -270,6 +270,8 @@ namespace MAPeD
 			m_tiles 	= null;
 			
 			m_scr_data.Clear();
+			
+			delete_patterns();
 		}			
 
 #if DEF_FIXED_LEN_PALETTE16_ARR
@@ -317,6 +319,19 @@ namespace MAPeD
 			}
 			
 			return false;
+		}
+		
+		private void delete_patterns()
+		{
+			foreach( var key in m_patterns_data.Keys )
+			{ 
+				List< pattern_data > ptrn_list = m_patterns_data[ key ] as List< pattern_data >;
+				
+				ptrn_list.ForEach( delegate( pattern_data _pattern ) { _pattern.reset(); });
+				ptrn_list.Clear();
+			};
+			
+			m_patterns_data.Clear();
 		}
 		
 		public pattern_data get_pattern_by_name( string _name )
