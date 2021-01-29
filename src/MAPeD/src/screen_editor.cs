@@ -294,8 +294,8 @@ namespace MAPeD
 			
 			m_pix_box.Cursor = Cursors.Arrow;
 			
-			m_tile_x = -1;
-			m_tile_y = -1;
+			m_tile_x = int.MinValue;
+			m_tile_y = int.MinValue;
 			
 			m_fill_mode = utils.get_screen_fill_mode_uni( m_screen_data_type );
 			
@@ -502,11 +502,19 @@ namespace MAPeD
 						{
 							int num_width_tiles = utils.get_screen_num_width_tiles_uni( m_screen_data_type );
 							
-							for( int tile_y = 0; tile_y < m_active_pattern.height; tile_y++ )
+							int y_pos = 0;
+							
+							if( m_tile_y < 0 )
+							{
+								y_pos = -m_tile_y;
+								m_tile_y = 0;
+							}
+							
+							for( int tile_y = y_pos; tile_y < m_active_pattern.height; tile_y++ )
 							{
 								for( int tile_x = 0; tile_x < m_active_pattern.width; tile_x++ )
 								{
-									m_tiles_data.scr_data[ m_scr_ind ][ ( ( m_tile_y + tile_y ) * num_width_tiles ) + m_tile_x + tile_x ] = m_active_pattern.data[ tile_y * m_active_pattern.width + tile_x ];
+									m_tiles_data.scr_data[ m_scr_ind ][ ( ( m_tile_y + tile_y-y_pos ) * num_width_tiles ) + m_tile_x + tile_x ] = m_active_pattern.data[ tile_y * m_active_pattern.width + tile_x ];
 								}
 							}
 						}
