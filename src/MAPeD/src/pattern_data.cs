@@ -5,8 +5,6 @@
  * Time: 14:06
  */
 using System;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
 using System.IO;
 
 namespace MAPeD
@@ -16,7 +14,6 @@ namespace MAPeD
 	/// </summary>
 	///
 	
-	[DataContract]
 	public class pattern_data
 	{
 		private string	m_name = null;
@@ -26,28 +23,24 @@ namespace MAPeD
 		
 		private byte[]	m_data = null;
 		
-		[DataMember]
 		public string name
 		{
 			get { return m_name; }
 			set { m_name = value; }
 		}
 
-		[DataMember]
 		public byte width
 		{
 			get { return m_width; }
 			set { m_width = value; }
 		}
 
-		[DataMember]
 		public byte height
 		{
 			get { return m_height; }
 			set { m_height = value; }
 		}
 		
-		[DataMember]
 		public byte[] data
 		{
 			get { return m_data; }
