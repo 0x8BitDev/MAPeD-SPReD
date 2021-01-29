@@ -1,6 +1,7 @@
 MAPeD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+29.01.2021 - Updated Python API v1.4; added mpd_api_ver and mpd_screen_mode
 26.01.2021 - Added 2x2 tile screen mode
 15.01.2021 - Added checking of matched blocks (2x2), to identify similar data (the "Optimization" button)
 11.01.2021 - MAPeD-PCE added

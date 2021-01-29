@@ -245,6 +245,8 @@ namespace MAPeD
 				TreeViewPatterns.Nodes.Clear();
 			}
 			TreeViewPatterns.EndUpdate();
+
+			int ptrns_cnt = 0;
 			
 			if( m_data != null )
 			{
@@ -252,12 +254,19 @@ namespace MAPeD
 				{ 
 					group_add( key, false );
 					
-					( m_data.patterns_data[ key ] as List< pattern_data > ).ForEach( delegate( pattern_data _pattern ) { pattern_add( key, _pattern, false ); } );
+					( m_data.patterns_data[ key ] as List< pattern_data > ).ForEach( delegate( pattern_data _pattern ) { ++ptrns_cnt; pattern_add( key, _pattern, false ); } );
 				}
 			}
 			
 			// on Linux TreeViewPatterns.SelectedNode is not reset when clearing nodes
-			TreeViewPatterns.SelectedNode = null; 
+			if( ptrns_cnt > 0 )
+			{
+				reset_active_pattern();
+			}
+			else
+			{
+				TreeViewPatterns.SelectedNode = null;
+			}
 		}
 
 		public void subscribe_event( screen_editor _scr_editor )
@@ -722,8 +731,18 @@ namespace MAPeD
 		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
 		{
 			m_screen_data_type = _type;
-			
+
 			reset_active_pattern();
+			
+			CheckBoxAddPattern.Checked = false;
+			enable( !CheckBoxAddPattern.Checked );
+
+			if( ScreenEditorSwitchToBuildMode != null )
+			{
+				ScreenEditorSwitchToBuildMode( this, null );
+			}
+			
+			create_pattern_end( this, null );
 		}
 	}
 }

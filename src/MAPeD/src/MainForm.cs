@@ -4043,8 +4043,8 @@ namespace MAPeD
 			m_optimization_form.set_screen_data_type( _type );
 			m_layout_editor.set_screen_data_type( _type );
 			
-			m_patterns_manager_form.set_screen_data_type( _type );
 			m_patterns_manager_form.set_data( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+			m_patterns_manager_form.set_screen_data_type( _type );
 			
 			RBtnScreenEditModeSingle.Checked = true;
 			
