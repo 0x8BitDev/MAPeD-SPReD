@@ -85,8 +85,6 @@ namespace MAPeD
 			{
 				if( m_screen_data_type != value )
 				{
-					m_screen_data_type = value;
-					
 					// convert screen data
 					if( tiles_data_cnt > 0 )
 					{
@@ -105,6 +103,8 @@ namespace MAPeD
 								break;
 						}
 					}
+					
+					m_screen_data_type = value;
 				}
 			}
 		}
@@ -1187,7 +1187,205 @@ namespace MAPeD
 
 		private void blocks_to_tiles()
 		{
-			//...
+			tiles_data data = null;
+			
+			byte[] new_scr = null;
+			byte[] old_scr = null;
+			byte[] new_pattern = null;
+			
+			int ptrn_width;
+			int ptrn_height;
+			
+			int i;
+			int scr_n;
+			int data_n;
+			int tile_n;
+			int tile_x;
+			int tile_y;
+			int tile_offs;
+			int tile_ind;
+			uint tile;
+			byte tile_val0 = 0;
+			byte tile_val1 = 0;
+			byte tile_val2 = 0;
+			byte tile_val3 = 0;
+			
+			bool tiles_arr_overflow	= false;
+
+			string ptrn_invalid_size_str = "";
+			string ptrn_invalid_tile_str = "";
+			
+			Dictionary< int, List< byte[] > > 	bank_id_screens	= new Dictionary< int, List< byte[] > >( tiles_data_cnt );
+			Dictionary< int, uint[] >			bank_id_tiles	= new Dictionary< int, uint[] >( tiles_data_cnt );
+ 
+			for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
+			{
+				data = get_tiles_data( data_n );
+				
+				List< byte[] >	screens	= new List< byte[] >( data.scr_data.Count );
+				uint[] 			tiles	= new uint[ utils.CONST_MAX_TILES_CNT ];
+				Array.Clear( tiles, 0, tiles.Length );
+				
+				tile_ind = 0;
+				
+				// convert screens and fill tile arrays
+				for( scr_n = 0; scr_n < data.scr_data.Count; scr_n++ )
+				{
+					old_scr = data.scr_data[ scr_n ];
+					new_scr = new byte[ utils.CONST_SCREEN_TILES_CNT ];
+					
+					for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+					{
+						tile_x = tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES;
+						tile_y = tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES;
+						
+						tile_offs = ( tile_x << 1 ) + ( ( tile_y << 1 ) * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
+						
+						tile_val0 = old_scr[ tile_offs ];
+						tile_val1 = old_scr[ tile_offs + 1 ];
+						
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+						if( tile_y < 7 )
+#endif
+						{
+							tile_val2 = old_scr[ tile_offs + utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ];
+							tile_val3 = old_scr[ tile_offs + utils.CONST_SCREEN_NUM_WIDTH_BLOCKS + 1 ];
+						}
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+						else
+						{
+							tile_val2 = tile_val3 = 0;
+						}
+#endif						
+						tile = unchecked( ( uint )( tile_val0 << 24 | tile_val1 << 16 | tile_val2 << 8 | tile_val3 ) );
+
+						// check new tile
+						for( i = 0; i < tile_ind; i++ )
+						{
+							if( tiles[ i ] == tile )
+							{
+								break;
+							}
+						}
+						
+						if( i == tile_ind )
+						{
+							if( tile_ind == utils.CONST_MAX_TILES_CNT )
+							{
+								tiles_arr_overflow = true;
+								goto free_data;
+							}
+							
+							new_scr[ tile_x + tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES ] = ( byte )tile_ind;
+							tiles[ tile_ind++ ] = tile;
+						}
+						else
+						{
+							new_scr[ tile_x + tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES ] = ( byte )i;
+						}
+					}
+					
+					screens.Add( new_scr );
+				}
+				
+				bank_id_screens[ data_n ]	= screens;
+				bank_id_tiles[ data_n ]		= tiles;
+
+				// convert tiles patterns
+				foreach( string key in data.patterns_data.Keys ) 
+				{ 
+					List< pattern_data > pattrn_list = data.patterns_data[ key ] as List< pattern_data >;
+					
+					pattrn_list.ForEach( delegate( pattern_data _pattern ) 
+					{
+						if( ( _pattern.width & 0x01 ) != 0 || ( _pattern.height & 0x01 ) != 0 )
+						{
+							ptrn_invalid_size_str += _pattern.name + " / CHR bank: " + data_n + "\n";
+							_pattern.name = "BAD~" + _pattern.name; 
+						}
+						else
+						{
+							ptrn_width	= _pattern.width >> 1;
+							ptrn_height	= _pattern.height >> 1;
+							
+							new_pattern = new byte[ ptrn_width * ptrn_height ];
+	
+							for( tile_n = 0; tile_n < new_pattern.Length; tile_n++ )
+							{
+								tile_x = tile_n % ptrn_width;
+								tile_y = tile_n / ptrn_width;
+								
+								tile_offs = ( tile_x << 1 ) + ( ( tile_y << 1 ) * _pattern.width );
+								
+								tile_val0 = _pattern.data[ tile_offs ];
+								tile_val1 = _pattern.data[ tile_offs + 1 ];
+								tile_val2 = _pattern.data[ tile_offs + _pattern.width ];
+								tile_val3 = _pattern.data[ tile_offs + _pattern.width + 1 ];
+								
+								tile = unchecked( ( uint )( tile_val0 << 24 | tile_val1 << 16 | tile_val2 << 8 | tile_val3 ) );
+
+								// get tile index
+								for( i = 0; i < tile_ind; i++ )
+								{
+									if( tiles[ i ] == tile )
+									{
+										break;
+									}
+								}
+								
+								if( i == tile_ind )
+								{
+									ptrn_invalid_tile_str += _pattern.name + " / CHR bank: " + data_n + "\n";
+									_pattern.name = "BAD~" + _pattern.name;
+								}
+								else
+								{
+									new_pattern[ tile_x + tile_y * ptrn_width ] = ( byte )i;
+								}
+							}
+							
+							_pattern.width	= ( byte )ptrn_width;
+							_pattern.height	= ( byte )ptrn_height;
+							_pattern.data	= new_pattern;
+						}
+					});
+				}
+				
+				if( ptrn_invalid_size_str.Length > 0 || ptrn_invalid_tile_str.Length > 0 )
+				{
+					MainForm.message_box( ( ptrn_invalid_size_str.Length > 0 ? "Invalid size:\n\n" + ptrn_invalid_size_str + "\n":"" ) + ( ptrn_invalid_tile_str.Length > 0 ? "Invalid data:\n\n" + ptrn_invalid_tile_str + "\n":"" ) + "Invalid pattern(s) will be market as 'BAD~'", "Invalid Tiles Patterns Detected", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				}				
+			}
+
+			// commit new data
+			for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
+			{
+				data = get_tiles_data( data_n );
+
+				// update tiles & screens
+				Array.Copy( bank_id_tiles[ data_n ] as uint[], data.tiles, utils.CONST_MAX_TILES_CNT );
+				
+				for( scr_n = 0; scr_n < data.scr_data.Count; scr_n++ )
+				{
+					data.scr_data[ scr_n ] = bank_id_screens[ data_n ][ scr_n ];
+					bank_id_screens[ data_n ][ scr_n ] = null;
+				}
+				
+				bank_id_screens[ data_n ].Clear();
+			}
+			
+			free_data:
+			{
+				foreach( var key in bank_id_screens.Keys ) { ( bank_id_screens[ key ] as List< byte[] > ).Clear(); };
+				bank_id_screens.Clear();
+
+				bank_id_tiles.Clear();
+			}
+			
+			if( tiles_arr_overflow )
+			{
+				throw new Exception( "Tiles array overflow!\nCHR bank: " + data_n );
+			}
 		}
 	}
 }

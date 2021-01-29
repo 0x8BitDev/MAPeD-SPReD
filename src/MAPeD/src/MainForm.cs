@@ -3969,8 +3969,10 @@ namespace MAPeD
 				{
 					if( message_box( strings.CONST_SCREEN_DATA_CONV_BLOCKS2TILES, strings.CONST_SCREEN_DATA_CONV_BLOCKS2TILES_CAPTION, MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
-						set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
-						update_graphics( false );
+						if( set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) )
+						{
+							update_graphics( false );
+						}
 					}
 				}
 			}
@@ -3986,15 +3988,29 @@ namespace MAPeD
 				{
 					if( message_box( strings.CONST_SCREEN_DATA_CONV_TILES2BLOCKS, strings.CONST_SCREEN_DATA_CONV_TILES2BLOCKS_CAPTION, MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
-						set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
-						update_graphics( false );
+						if( set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) )
+						{
+							update_graphics( false );
+						}
 					}
 				}
 			}
 		}
 		
-		void set_screen_data_type( data_sets_manager.EScreenDataType _type )
+		bool set_screen_data_type( data_sets_manager.EScreenDataType _type )
 		{
+			try
+			{
+				m_data_manager.screen_data_type = _type;
+			}
+			catch( Exception _err ) 
+			{
+				set_status_msg( "Screen data coversion canceled!" );
+				message_box( _err.Message, "Data Conversion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				
+				return false;
+			}
+			
 			switch( _type )
 			{
 				case data_sets_manager.EScreenDataType.sdt_Tiles4x4:
@@ -4022,14 +4038,17 @@ namespace MAPeD
 					break;
 			}
 			
-			m_data_manager.screen_data_type = _type;
 			m_screen_editor.set_screen_data_type( _type );
 			m_tiles_palette_form.set_screen_data_type( _type );
 			m_optimization_form.set_screen_data_type( _type );
-			m_patterns_manager_form.set_screen_data_type( _type );
 			m_layout_editor.set_screen_data_type( _type );
 			
+			m_patterns_manager_form.set_screen_data_type( _type );
+			m_patterns_manager_form.set_data( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+			
 			RBtnScreenEditModeSingle.Checked = true;
+			
+			return true;
 		}
 		
 #endregion		
