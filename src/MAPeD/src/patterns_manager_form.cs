@@ -232,6 +232,9 @@ namespace MAPeD
 		public void set_data( tiles_data _data )
 		{
 			m_data = _data;
+		
+			CheckBoxAddPattern.Checked = false;
+			enable( true );
 			
 			update_tree_view();
 			
@@ -319,22 +322,22 @@ namespace MAPeD
 		{
 			Visible = false;
 			
+			reset_state();
+			
+			if( PatternsManagerClosed != null )
+			{
+				PatternsManagerClosed( this, null );
+			}
+		}
+		
+		private void reset_state()
+		{
 			enable( true );
 			CheckBoxAddPattern.Checked = false;
 			
 			if( ScreenEditorSwitchToBuildMode != null )
 			{
 				ScreenEditorSwitchToBuildMode( this, null );
-			}
-			
-			if( CheckBoxAddPattern.Checked )
-			{
-				create_pattern_end( this, null );
-			}
-			
-			if( PatternsManagerClosed != null )
-			{
-				PatternsManagerClosed( this, null );
 			}
 		}
 		
@@ -734,15 +737,7 @@ namespace MAPeD
 
 			reset_active_pattern();
 			
-			CheckBoxAddPattern.Checked = false;
-			enable( !CheckBoxAddPattern.Checked );
-
-			if( ScreenEditorSwitchToBuildMode != null )
-			{
-				ScreenEditorSwitchToBuildMode( this, null );
-			}
-			
-			create_pattern_end( this, null );
+			reset_state();
 		}
 	}
 }
