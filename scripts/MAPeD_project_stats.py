@@ -24,6 +24,9 @@ def dump_base_entity( _ent ):
 	print '\t\tproperties: ' + _ent.properties
 	print '\t\tinst_properties: ' + _ent.inst_properties + '\n'
 
+# Get the API version
+api_ver = mpd_api_ver()
+print 'API ver: ' + str( api_ver >> 8 ) + '.' + str( api_ver & 0xff )
 
 print '*** The active project stats: ***\n'
 num_banks = mpd_num_banks()
@@ -62,9 +65,15 @@ for bank_n in xrange( num_banks ):
 	print '\n\t\tBlocks: Array size: ' + str( blocks_data.Count ) + ' --> ' + str( blocks_data )
 
 # Dump screens data
-# Each screen data consist of byte array of 4x4 tiles ordered left to right, up to down
+# Each screen data consist of byte array of 4x4 or 2x2 tiles ordered left to right, up to down
+	screen_mode_str = ''
+	if mpd_screen_mode():
+		screen_mode_str = 'Blocks2x2'
+	else:
+		screen_mode_str = 'Tiles4x4'
+
 	n_screens = mpd_num_screens( bank_n )
-	print '\n\t\tNumber of screens: ' + str( n_screens )
+	print '\n\t\tNumber of screens: ' + str( n_screens ) + ' / ' + screen_mode_str
 	for scr_n in xrange( n_screens ):
 		scr_data = mpd_get_screen_data( bank_n, scr_n )
 		print '\t\tScreen' + str( scr_n ) + ': Array size: ' + str( scr_data.Count ) + ' --> ' + str( scr_data )

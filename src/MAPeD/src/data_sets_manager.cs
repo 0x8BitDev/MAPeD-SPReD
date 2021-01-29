@@ -71,7 +71,7 @@ namespace MAPeD
 		
 		public enum EScreenDataType
 		{
-			sdt_Tiles4x4,
+			sdt_Tiles4x4 = 0,
 			sdt_Blocks2x2,
 		};
 		

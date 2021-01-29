@@ -32,6 +32,9 @@ namespace MAPeD
 		public void init( ScriptScope _py_scope )
 		{
 			// Bank Data
+
+			// ushort api_ver( void )
+			_py_scope.SetVariable( CONST_PREFIX + "api_ver", new Func< ushort >( api_ver ) );
 			
 			// int num_banks( void )
 			_py_scope.SetVariable( CONST_PREFIX + "num_banks", new Func< int >( num_banks ) );
@@ -62,6 +65,9 @@ namespace MAPeD
 
 			// int num_screens( int _bank_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "num_screens", new Func< int, int >( num_screens ) );
+
+			// int screen_mode( void )
+			_py_scope.SetVariable( CONST_PREFIX + "screen_mode", new Func< int >( screen_mode ) );
 			
 			// byte[] get_screen_data( int _bank_ind, int _scr_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "get_screen_data", new Func< int, int, byte[] >( get_screen_data ) );
@@ -120,6 +126,11 @@ namespace MAPeD
 		public void deinit()
 		{
 			m_data_mngr = null;
+		}
+
+		public ushort api_ver()
+		{
+			return 0x0104;
 		}
 		
 		public int num_banks()
@@ -441,6 +452,11 @@ namespace MAPeD
 			return null;
 		}
 
+		public int screen_mode()
+		{
+			return ( int )m_data_mngr.screen_data_type;
+		}
+		
 		public byte[] get_screen_data( int _bank_ind, int _scr_ind )
 		{
 			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
