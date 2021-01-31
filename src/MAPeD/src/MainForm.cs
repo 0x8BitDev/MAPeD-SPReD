@@ -4021,6 +4021,8 @@ namespace MAPeD
 						PanelTiles.Enabled = true;
 						
 						GrpBoxTileEditor.Enabled = true;
+						
+						ScreenDataTypeLabel.Text = "Tiles4x4";
 					}
 					break;
 
@@ -4032,6 +4034,8 @@ namespace MAPeD
 						PanelTiles.Enabled = false;
 						
 						GrpBoxTileEditor.Enabled = false;
+						
+						ScreenDataTypeLabel.Text = "Blocks2x2";
 						
 						m_tiles_processor.tile_select_event( -1, null );
 					}

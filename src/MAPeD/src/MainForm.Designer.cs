@@ -214,6 +214,8 @@ namespace MAPeD
 			this.CheckBoxTileEditorLock = new System.Windows.Forms.CheckBox();
 			this.PBoxTilePreview = new System.Windows.Forms.PictureBox();
 			this.TabScreenEditor = new System.Windows.Forms.TabPage();
+			this.ScreenDataTypeLabel = new System.Windows.Forms.Label();
+			this.label11 = new System.Windows.Forms.Label();
 			this.BtnPatterns = new System.Windows.Forms.Button();
 			this.BtnTilesBlocks = new System.Windows.Forms.Button();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
@@ -352,6 +354,7 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.ContextMenuEntitiesTreeGroup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
@@ -2014,6 +2017,8 @@ namespace MAPeD
 			// 
 			this.TabScreenEditor.AutoScroll = true;
 			this.TabScreenEditor.BackColor = System.Drawing.Color.Silver;
+			this.TabScreenEditor.Controls.Add(this.ScreenDataTypeLabel);
+			this.TabScreenEditor.Controls.Add(this.label11);
 			this.TabScreenEditor.Controls.Add(this.BtnPatterns);
 			this.TabScreenEditor.Controls.Add(this.BtnTilesBlocks);
 			this.TabScreenEditor.Controls.Add(this.groupBox8);
@@ -2021,6 +2026,7 @@ namespace MAPeD
 			this.TabScreenEditor.Controls.Add(this.groupBox6);
 			this.TabScreenEditor.Controls.Add(this.CheckBoxScreenShowGrid);
 			this.TabScreenEditor.Controls.Add(this.PBoxScreen);
+			this.TabScreenEditor.Controls.Add(this.groupBox3);
 			this.TabScreenEditor.Location = new System.Drawing.Point(4, 22);
 			this.TabScreenEditor.Name = "TabScreenEditor";
 			this.TabScreenEditor.Padding = new System.Windows.Forms.Padding(3);
@@ -2028,9 +2034,25 @@ namespace MAPeD
 			this.TabScreenEditor.TabIndex = 1;
 			this.TabScreenEditor.Text = "Screens";
 			// 
+			// ScreenDataTypeLabel
+			// 
+			this.ScreenDataTypeLabel.Location = new System.Drawing.Point(680, 11);
+			this.ScreenDataTypeLabel.Name = "ScreenDataTypeLabel";
+			this.ScreenDataTypeLabel.Size = new System.Drawing.Size(71, 16);
+			this.ScreenDataTypeLabel.TabIndex = 55;
+			this.ScreenDataTypeLabel.Text = "...";
+			// 
+			// label11
+			// 
+			this.label11.Location = new System.Drawing.Point(620, 11);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(64, 16);
+			this.label11.TabIndex = 55;
+			this.label11.Text = "Data Type:";
+			// 
 			// BtnPatterns
 			// 
-			this.BtnPatterns.Location = new System.Drawing.Point(678, 106);
+			this.BtnPatterns.Location = new System.Drawing.Point(678, 132);
 			this.BtnPatterns.Name = "BtnPatterns";
 			this.BtnPatterns.Size = new System.Drawing.Size(80, 23);
 			this.BtnPatterns.TabIndex = 53;
@@ -2040,7 +2062,7 @@ namespace MAPeD
 			// 
 			// BtnTilesBlocks
 			// 
-			this.BtnTilesBlocks.Location = new System.Drawing.Point(678, 78);
+			this.BtnTilesBlocks.Location = new System.Drawing.Point(678, 104);
 			this.BtnTilesBlocks.Name = "BtnTilesBlocks";
 			this.BtnTilesBlocks.Size = new System.Drawing.Size(80, 23);
 			this.BtnTilesBlocks.TabIndex = 52;
@@ -2052,7 +2074,7 @@ namespace MAPeD
 			// 
 			this.groupBox8.Controls.Add(this.RBtnScreenEditModeLayout);
 			this.groupBox8.Controls.Add(this.RBtnScreenEditModeSingle);
-			this.groupBox8.Location = new System.Drawing.Point(677, 8);
+			this.groupBox8.Location = new System.Drawing.Point(677, 34);
 			this.groupBox8.Name = "groupBox8";
 			this.groupBox8.Size = new System.Drawing.Size(83, 64);
 			this.groupBox8.TabIndex = 49;
@@ -2085,7 +2107,7 @@ namespace MAPeD
 			// 
 			this.GrpBoxActiveTile.Controls.Add(this.PBoxActiveTile);
 			this.GrpBoxActiveTile.Controls.Add(this.BtnResetTile);
-			this.GrpBoxActiveTile.Location = new System.Drawing.Point(588, 8);
+			this.GrpBoxActiveTile.Location = new System.Drawing.Point(588, 34);
 			this.GrpBoxActiveTile.Name = "GrpBoxActiveTile";
 			this.GrpBoxActiveTile.Size = new System.Drawing.Size(81, 121);
 			this.GrpBoxActiveTile.TabIndex = 41;
@@ -2118,9 +2140,9 @@ namespace MAPeD
 			this.groupBox6.Controls.Add(this.BtnCopyScreen);
 			this.groupBox6.Controls.Add(this.BtnDeleteEmptyScreens);
 			this.groupBox6.Controls.Add(this.BtnDeleteScreen);
-			this.groupBox6.Location = new System.Drawing.Point(588, 135);
+			this.groupBox6.Location = new System.Drawing.Point(588, 161);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(81, 442);
+			this.groupBox6.Size = new System.Drawing.Size(81, 416);
 			this.groupBox6.TabIndex = 43;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Screens:";
@@ -2131,14 +2153,14 @@ namespace MAPeD
 			this.ListBoxScreens.FormattingEnabled = true;
 			this.ListBoxScreens.Location = new System.Drawing.Point(8, 20);
 			this.ListBoxScreens.Name = "ListBoxScreens";
-			this.ListBoxScreens.Size = new System.Drawing.Size(64, 290);
+			this.ListBoxScreens.Size = new System.Drawing.Size(64, 264);
 			this.ListBoxScreens.TabIndex = 44;
 			this.ListBoxScreens.Click += new System.EventHandler(this.ListBoxScreensClick_Event);
 			this.ListBoxScreens.SelectedIndexChanged += new System.EventHandler(this.ListBoxScreensClick_Event);
 			// 
 			// BtnCreateScreen
 			// 
-			this.BtnCreateScreen.Location = new System.Drawing.Point(8, 326);
+			this.BtnCreateScreen.Location = new System.Drawing.Point(8, 299);
 			this.BtnCreateScreen.Name = "BtnCreateScreen";
 			this.BtnCreateScreen.Size = new System.Drawing.Size(64, 23);
 			this.BtnCreateScreen.TabIndex = 45;
@@ -2148,7 +2170,7 @@ namespace MAPeD
 			// 
 			// BtnCopyScreen
 			// 
-			this.BtnCopyScreen.Location = new System.Drawing.Point(8, 355);
+			this.BtnCopyScreen.Location = new System.Drawing.Point(8, 328);
 			this.BtnCopyScreen.Name = "BtnCopyScreen";
 			this.BtnCopyScreen.Size = new System.Drawing.Size(64, 23);
 			this.BtnCopyScreen.TabIndex = 46;
@@ -2158,7 +2180,7 @@ namespace MAPeD
 			// 
 			// BtnDeleteEmptyScreens
 			// 
-			this.BtnDeleteEmptyScreens.Location = new System.Drawing.Point(8, 413);
+			this.BtnDeleteEmptyScreens.Location = new System.Drawing.Point(8, 386);
 			this.BtnDeleteEmptyScreens.Name = "BtnDeleteEmptyScreens";
 			this.BtnDeleteEmptyScreens.Size = new System.Drawing.Size(64, 23);
 			this.BtnDeleteEmptyScreens.TabIndex = 48;
@@ -2168,7 +2190,7 @@ namespace MAPeD
 			// 
 			// BtnDeleteScreen
 			// 
-			this.BtnDeleteScreen.Location = new System.Drawing.Point(8, 384);
+			this.BtnDeleteScreen.Location = new System.Drawing.Point(8, 357);
 			this.BtnDeleteScreen.Name = "BtnDeleteScreen";
 			this.BtnDeleteScreen.Size = new System.Drawing.Size(64, 23);
 			this.BtnDeleteScreen.TabIndex = 47;
@@ -3384,6 +3406,14 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
 			// 
+			// groupBox3
+			// 
+			this.groupBox3.Location = new System.Drawing.Point(588, 0);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(172, 31);
+			this.groupBox3.TabIndex = 56;
+			this.groupBox3.TabStop = false;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3468,6 +3498,9 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Label ScreenDataTypeLabel;
 		private System.Windows.Forms.Button BtnScreenDataInfo;
 		private System.Windows.Forms.RadioButton RBtnScreenDataTiles;
 		private System.Windows.Forms.RadioButton RBtnScreenDataBlocks;
