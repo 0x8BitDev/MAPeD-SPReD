@@ -5,7 +5,7 @@
 	<TITLE></TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.7  (Win32)">
 	<META NAME="CREATED" CONTENT="20190708;11162720">
-	<META NAME="CHANGED" CONTENT="20210131;21494198">
+	<META NAME="CHANGED" CONTENT="20210131;22140576">
 	<STYLE TYPE="text/css">
 	<!--
 		p { margin:0; }
@@ -32,6 +32,9 @@
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Tile / Block Editing|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Tile
 	/ Block Editing</B></SPAN></FONT></FONT></A></P>
 	<UL>
+		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#CHR Bank|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>CHR
+		Bank</B></SPAN></FONT></FONT></A></P>
+		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Palette|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Palette</B></SPAN></FONT></FONT></A></P>
 		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Block Editor|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Block
 		Editor</B></SPAN></FONT></FONT></A></P>
 		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Tile Editor|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Tile
@@ -43,9 +46,6 @@
 		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; background: transparent">
 		<A HREF="#Additional Operations|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Additional
 		Operations</B></SPAN></FONT></FONT></A></P>
-		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#CHR Bank|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>CHR
-		Bank</B></SPAN></FONT></FONT></A></P>
-		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Palette|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Palette</B></SPAN></FONT></FONT></A></P>
 		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; background: transparent">
 		<A HREF="#The Steps to Quick Start|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>The
 		Steps to Quick Start</B></SPAN></FONT></FONT></A></P>
@@ -187,10 +187,10 @@ datasets:</FONT></FONT></P>
 		a game map.</FONT></FONT></P>
 		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Layouts.</B></SPAN></FONT></FONT>
 		<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">A
-		layout is a matrix of cells that represents your game map structure.
-		Each cell can contain one link to a screen of any CHR bank and any
-		number of entities instances. The maximum number of layouts
-		available in a project is 256.</SPAN></SPAN></FONT></FONT></P>
+		layout is a matrix of cells that represents your game map
+		structure. Each cell can contain one link to a screen of any CHR
+		bank and any number of entities instances. The maximum number of
+		layouts available in a project is 256.</SPAN></SPAN></FONT></FONT></P>
 	</OL>
 </OL>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -226,22 +226,138 @@ affects all CHR banks in your project.</FONT></FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
+<DIV ID="CHR Bank" DIR="LTR"><A NAME="CHR Bank|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>CHR
+	Bank</B></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>Main</B> Tab &rarr; <B>Tiles</B>
 Tab</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>Tiles /
-Blocks</B></FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>CHR Bank</B></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">CHR &ndash; 1x1 tile ( 8x8 pixels )</FONT></P>
+<FONT FACE="Arial, sans-serif">The &ldquo;CHR Bank&rdquo; is a
+graphics data bank, which contains 1x1 tiles data.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Block &ndash; 2x2 tile</FONT></P>
+<IMG SRC="res/CHR_bank.png" NAME="Графический объект4" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=288 HEIGHT=349 BORDER=0><FONT FACE="Arial, sans-serif">The
+main operations are ( select a CHR you want to work with ):</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Tile &ndash; 4x4 tile</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>CHR data transformations:</B></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">There are three types of
+transformations: vertical flipping, horizontal flipping and clockwise
+rotation. Press appropriate buttons to perform the actions. This also
+affects on blocks/tiles/screens.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>CHR operations:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Copy:</B> <SPAN STYLE="font-weight: normal">Copies
+a selected CHR.</SPAN></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Paste:</B> Pastes a
+copy to <SPAN STYLE="font-weight: normal">selected position.</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Fill With Color:</B>
+<SPAN STYLE="font-weight: normal">Fills a selected position with an
+active color.</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Insert Left:</B>
+<SPAN STYLE="font-weight: normal">Inserts an empty CHR and shifts the
+rest to the right.</SPAN></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Delete:</B> <SPAN STYLE="font-weight: normal">Deletes
+a selected CHR and shifts the rest to the left.</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Data banks management:</B> </FONT>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">Add a new bank ( the &ldquo;Bank+&rdquo;
+button ), delete an active bank ( the &ldquo;Bank-&rdquo; button ),
+make a copy of an active bank ( the &ldquo;Copy&rdquo; button ). Also
+you can switch between banks by selecting an appropriate bank from
+the &ldquo;Banks&rdquo; list.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>SMS/PCE:</B></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Press
+the &quot;&lt;&lt;&quot; / &quot;&gt;&gt;&quot; buttons to switch
+between CHR bank's pages. Each page consists of 16x16 CHRs. The SMS
+hardware is capable of defining up to 448 characters.</SPAN></SPAN></FONT></FONT></SPAN></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<DIV ID="Palette" DIR="LTR"><A NAME="Palette|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
+	<IMG SRC="res/palette.png" NAME="Графический объект5" ALIGN=LEFT HSPACE=19 VSPACE=9 WIDTH=286 HEIGHT=224 BORDER=0><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Palette</B></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Main</B> Tab &rarr; <B>Tiles</B>
+Tab</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">There are 4 user defined palettes ( 1,
+2, 3, 4 ). Press <B>Shift+1, 2, 3, 4</B> to switch between them and
+press <B>Ctrl+1, 2, 3, 4</B> to switch between colors inside an
+active palette.</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">To assign a new color to an active
+palette, just select a color slot inside the palette and click on any
+color in the main palette.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>NES:</B> T<SPAN STYLE="font-weight: normal">he
+leftmost color of each palette is a transparent color.</SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">Custom palettes are stored in an
+array. You can copy or delete an active palette.</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>NES/SMS:</B> &quot;plt#00&quot; is
+the main one and is active by default. All other palettes are
+auxiliary.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>NES:</B> <SPAN STYLE="font-weight: normal">Also
+you can enable MMC5 extended attributes mode. When enabled, this
+allows you to assign a palette per CHR. By default you can assign a
+palette per block only.</SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>SMS/PCE:</B> <SPAN STYLE="font-weight: normal">Sometimes
+you may need to change colors order without changing graphics. For
+example, after importing of graphics from images, you may need to
+back in place a transparent color. You can do that by pressing the
+&quot;Swap Colors&quot; button. Select two colors in the opened
+dialog and press the 'Ok' button.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/tile-block_editors.png" NAME="Графический объект1" ALIGN=LEFT HSPACE=38 VSPACE=19 WIDTH=288 HEIGHT=582 BORDER=0><BR>
 </P>
 <DIV ID="Block Editor" DIR="LTR"><A NAME="Block Editor|region"></A>
@@ -249,6 +365,19 @@ Blocks</B></FONT></P>
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Block
 	Editor</B></FONT></FONT></P>
 </DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Main</B> Tab &rarr; <B>Tiles</B>
+Tab</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>Blocks</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Block &ndash; 2x2 tile</B></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -364,8 +493,21 @@ block.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Main</B> Tab &rarr; <B>Tiles</B>
+Tab</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>Tiles</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Tile &ndash; 4x4 tile</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">The &ldquo;Tile Editor&rdquo; allows
-you to build tiles from blocks.</FONT></P>
+you to build tiles from blocks (see the image above).</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -498,140 +640,6 @@ Also you can check matched blocks (2x2) to identify similar data.</SPAN></FONT><
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <BR>
 </P>
-<DIV ID="CHR Bank" DIR="LTR"><A NAME="CHR Bank|region"></A>
-	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>CHR
-	Bank</B></FONT></FONT></P>
-</DIV>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Main</B> Tab &rarr; <B>Tiles</B>
-Tab</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>CHR Bank</B></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">The &ldquo;CHR Bank&rdquo; is a
-graphics data bank, which contains 1x1 tiles data.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<IMG SRC="res/CHR_bank.png" NAME="Графический объект4" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=288 HEIGHT=349 BORDER=0><FONT FACE="Arial, sans-serif">The
-main operations are ( select a CHR you want to work with ):</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>CHR data transformations:</B></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">There are three types of
-transformations: vertical flipping, horizontal flipping and clockwise
-rotation. Press appropriate buttons to perform the actions. This also
-affects on blocks/tiles/screens.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>CHR operations:</B></FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Copy:</B> <SPAN STYLE="font-weight: normal">Copies
-a selected CHR.</SPAN></FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Paste:</B> Pastes a
-copy to <SPAN STYLE="font-weight: normal">selected position.</SPAN></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Fill With Color:</B>
-<SPAN STYLE="font-weight: normal">Fills a selected position with an
-active color.</SPAN></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Insert Left:</B>
-<SPAN STYLE="font-weight: normal">Inserts an empty CHR and shifts the
-rest to the right.</SPAN></FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Delete:</B> <SPAN STYLE="font-weight: normal">Deletes
-a selected CHR and shifts the rest to the left.</SPAN></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Data banks management:</B> </FONT>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Add a new bank ( the &ldquo;Bank+&rdquo;
-button ), delete an active bank ( the &ldquo;Bank-&rdquo; button ),
-make a copy of an active bank ( the &ldquo;Copy&rdquo; button ). Also
-you can switch between banks by selecting an appropriate bank from
-the &ldquo;Banks&rdquo; list.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>SMS/PCE:</B> <SPAN STYLE="font-weight: normal">Press
-the &quot;&lt;&lt;&quot; / &quot;&gt;&gt;&quot; buttons to switch
-between CHR bank's pages. Each page consists of 16x16 CHRs. The SMS
-hardware is capable of defining up to 448 characters.</SPAN></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<DIV ID="Palette" DIR="LTR"><A NAME="Palette|region"></A>
-	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
-	<IMG SRC="res/palette.png" NAME="Графический объект5" ALIGN=LEFT HSPACE=19 VSPACE=9 WIDTH=286 HEIGHT=224 BORDER=0><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Palette</B></FONT></FONT></P>
-</DIV>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Main</B> Tab &rarr; <B>Tiles</B>
-Tab</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">There are 4 user defined palettes ( 1,
-2, 3, 4 ). Press <B>Shift+1, 2, 3, 4</B> to switch between them and
-press <B>Ctrl+1, 2, 3, 4</B> to switch between colors inside an
-active palette.</FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">To assign a new color to an active
-palette, just select a color slot inside the palette and click on any
-color in the main palette.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>NES:</B> T<SPAN STYLE="font-weight: normal">he
-leftmost color of each palette is a transparent color.</SPAN></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Custom palettes are stored in an
-array. You can copy or delete an active palette.</FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>NES/SMS:</B> &quot;plt#00&quot; is
-the main one and is active by default. All other palettes are
-auxiliary.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>NES:</B> <SPAN STYLE="font-weight: normal">Also
-you can enable MMC5 extended attributes mode. When enabled, this
-allows you to assign a palette per CHR. By default you can assign a
-palette per block only.</SPAN></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>SMS/PCE:</B> <SPAN STYLE="font-weight: normal">Sometimes
-you may need to change colors order without changing graphics. For
-example, after importing of graphics from images, you may need to
-back in place a transparent color. You can do that by pressing the
-&quot;Swap Colors&quot; button. Select two colors in the opened
-dialog and press the 'Ok' button.</SPAN></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <DIV ID="The Steps to Quick Start" DIR="LTR"><A NAME="The Steps to Quick Start|region"></A>
@@ -724,9 +732,10 @@ list</A> at the </SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Tab.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/screen_editor.png" NAME="Графический объект6" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=185 HEIGHT=398 BORDER=0><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">At
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<IMG SRC="res/screen_editor.png" NAME="Графический объект6" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=185 HEIGHT=398 BORDER=0><FONT FACE="Arial, sans-serif">At
 the top of the tool panel you can see the current screen data type:
-Tiles(4x4) or Blocks(2x2).</SPAN></FONT></P>
+Tiles(4x4) or Blocks(2x2).</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">When the Tiles(4x4) mode is active,
 you can build screens using Tiles(4x4) and Blocks(2x2) (blocks data
@@ -734,8 +743,7 @@ is used for building tiles).</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">When the Blocks(2x2) mode is active,
 you can use blocks data only.</FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">The main operations are:</FONT></P>
@@ -803,8 +811,6 @@ button ).</FONT></P>
 <FONT FACE="Arial, sans-serif"><B>Note:</B> <SPAN STYLE="font-weight: normal">When
 the &quot;Layout&quot; mode is active, you'll see an active CHR
 bank's screens only! The other ones will be blank.</SPAN></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
