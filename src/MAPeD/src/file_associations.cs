@@ -38,13 +38,7 @@ namespace MAPeD
 	        EnsureAssociationsSet(
 	            new FileAssociation
 	            {
-#if DEF_NES		
-	                Extension = ".mapednes",
-#elif DEF_SMS
-	                Extension = ".mapedsms",
-#elif DEF_PCE
-	                Extension = ".mapedpce",
-#endif		
+	            	Extension = "." + utils.CONST_FILE_EXT,
 	                ProgId = utils.CONST_PLATFORM + "_GameMapsEditor",
 	                FileTypeDescription = utils.CONST_PLATFORM + " Game Maps Editor File",
 	                ExecutableFilePath = filePath
