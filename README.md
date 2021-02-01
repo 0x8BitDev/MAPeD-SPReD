@@ -1,10 +1,10 @@
 Hi retro game developers! 
 
-Here you can find **NES/SMS** development tools:
+Here you can find the **NES/SMS/PCE** development tools:
 
 
-# MAPeD-NES/SMS - Game maps editor
-The MAPeD is a tool for building a game levels for NES/SMS games from scratch.
+# MAPeD-NES/SMS/PCE - Game maps editor
+The MAPeD is a tool for building a game levels for NES/SMS/PCE games from scratch.
 
 **The main features are:**
 - tiles drawing/composing tools
@@ -30,16 +30,16 @@ The MAPeD is a tool for building a game levels for NES/SMS games from scratch.
 - export to **SjASMPlus** ( ZX Spectrum assembler )
 - export to **JSON** format
 - built-in **Python** script editor for writing custom data export scripts
-- **NES <=> SMS** data conversion**
+- **NES/SMS/PCE** data conversion**
 - etc...
 
-\* Smart import of images with checking of duplicate CHRs/blocks/tiles and flipped CHRs. Automatic palettes applying supported for both **NES** and **SMS** images.
+\* Smart import of images with checking of duplicate CHRs/blocks/tiles and flipped CHRs. Automatic palettes applying is supported for all platforms.
 
-\** You can load a **NES** project into **SMS** editor and vice versa.
+\** You can load a **NES/SMS/PCE** project into any MAPeD editor.
 
 **Examples of tiles and maps images:** `./data/tiles-maps`
 
-**Example projects (.mapednes/.mapedsms):** `./data`
+**Example projects (.mapednes/.mapedsms/.mapedpce):** `./data`
 
 **Quick Guide:** `./doc/MAPeD/Quick_Guide.html`
 
@@ -84,9 +84,8 @@ Sample scripts of using the APIs:
 
 # Compiling
 The solution files you can find here:
-- `./src/MAPeD/MAPeD-NES.sln`
-- `./src/SPReD/SPReD-NES.sln`
-- `./src/SPReD/SPReD-SMS.sln`
+- `./src/MAPeD/`
+- `./src/SPReD/`
 
 **Note:** **.Net 4.5.1** profile is required to build the tools.
 
@@ -145,7 +144,12 @@ As mentioned before, you need to install Mono on your computer. To run the tools
  - `./samples/sms/tilemap_render/bidir_stat_scr_ADJ_SCR_MASKS/`	- the same as above, but with static screens switching
  - `./samples/sms/tilemap_render/stat_scr_VDP_data/`	- static screens switching using VDP-ready screens data
 
-**ZX Spectrum (MAPeD-NES/SMS):**
+## MAPeD-PCE
+**PCE:**
+
+coming soon...
+
+**ZX Spectrum (MAPeD-NES/SMS/PCE):**
 
  - `./samples/zx/tilemap_render/` - tilemap renderer with wide variety of settings
 
@@ -213,7 +217,7 @@ https://github.com/0x8BitDev/MAPeD-SPReD/releases
 The latest development build can be found **[here](https://drive.google.com/open?id=1Jopms8ENPrjTktrt_V36TQC2FZT2agId)**.
 
 ---
-Developed by 0x8BitDev Copyright © 2017-2020
+Developed by 0x8BitDev Copyright © 2017-2021
 
 Released under the MIT license. See LICENSE.txt
 
