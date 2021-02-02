@@ -999,53 +999,25 @@ namespace MAPeD
 			
 			int ent_img_pos_x = transform_to_img_pos( _ent_pos_x, m_offset_x, m_scr_half_width );
 			int ent_img_pos_y = transform_to_img_pos( _ent_pos_y, m_offset_y, m_scr_half_height );
-
-			if( ent_img_pos_x < 0 )
+			
+			if( ( ent_img_pos_x - _ent.pivot_x ) < 0 )
 			{
-				if( ent_img_pos_x > -_ent.width )
-				{
-					_ent_pos_x = transform_to_scr_pos( /*0 + */m_offset_x, m_scr_half_width );
-				}
-				else
-				{
-					valid_pos = false;
-				}
+				_ent_pos_x = transform_to_scr_pos( _ent.pivot_x + m_offset_x, m_scr_half_width );
 			}
 			
-			if( ent_img_pos_x > layout_width - _ent.width )
+			if( ( ent_img_pos_x - _ent.pivot_x ) + _ent.width > layout_width )
 			{
-				if( ent_img_pos_x < layout_width )
-				{
-					_ent_pos_x = transform_to_scr_pos( ( layout_width - _ent.width ) + m_offset_x, m_scr_half_width );
-				}
-				else
-				{
-					valid_pos = false;
-				}
-			}
-
-			if( ent_img_pos_y < 0 )
-			{
-				if( ent_img_pos_y > -_ent.height )
-				{
-					_ent_pos_y = transform_to_scr_pos( /*0 + */m_offset_y, m_scr_half_height );
-				}
-				else
-				{
-					valid_pos = false;
-				}
+				_ent_pos_x = transform_to_scr_pos( ( layout_width - _ent.width + _ent.pivot_x ) + m_offset_x, m_scr_half_width );
 			}
 			
-			if( ent_img_pos_y > layout_height - _ent.height )
+			if( ( ent_img_pos_y - _ent.pivot_y ) < 0 )
 			{
-				if( ent_img_pos_y < layout_height )
-				{
-					_ent_pos_y = transform_to_scr_pos( ( layout_height - _ent.height ) + m_offset_y, m_scr_half_height );
-				}
-				else
-				{
-					valid_pos = false;
-				}
+				_ent_pos_y = transform_to_scr_pos( _ent.pivot_y + m_offset_y, m_scr_half_height );
+			}
+			
+			if( ( ent_img_pos_y - _ent.pivot_y ) + _ent.height > layout_height )
+			{
+				_ent_pos_y = transform_to_scr_pos( ( layout_height - _ent.height + _ent.pivot_y ) + m_offset_y, m_scr_half_height );
 			}
 			
 			return valid_pos;
@@ -1272,7 +1244,7 @@ namespace MAPeD
 							ent_pos_x -= ent_pivot_x;
 							ent_pos_y -= ent_pivot_y;
 #endif							
-							if( check_entity_pos( ref ent_pos_x, ref ent_pos_y, m_ent_data ) && m_sel_screen_slot_id >= 0 && m_layout.get_data( get_sel_scr_pos_x(), get_sel_scr_pos_y() ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
+							if( m_sel_screen_slot_id >= 0 && m_layout.get_data( get_sel_scr_pos_x(), get_sel_scr_pos_y() ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 							{
 								m_gfx.DrawImage( m_ent_data.bitmap, ent_pos_x, ent_pos_y, ent_width, ent_height );
 								
@@ -1328,9 +1300,7 @@ namespace MAPeD
 							}
 							
 							int ent_width	= ( int )( m_ent_inst.base_entity.width * m_scale );
-							int ent_height 	= ( int )( m_ent_inst.base_entity.height * m_scale );
-							
-							check_entity_pos( ref capt_pos_x, ref capt_pos_y, m_ent_inst.base_entity );
+							int ent_height 	= ( int )( m_ent_inst.base_entity.height * m_scale );							
 							
 							if( m_ent_inst_screen_slot_id >= 0 )
 							{
