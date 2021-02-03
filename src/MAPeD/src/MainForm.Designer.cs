@@ -232,6 +232,7 @@ namespace MAPeD
 			this.BtnDeleteScreen = new System.Windows.Forms.Button();
 			this.CheckBoxScreenShowGrid = new System.Windows.Forms.CheckBox();
 			this.PBoxScreen = new System.Windows.Forms.PictureBox();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.TabLayout = new System.Windows.Forms.TabPage();
 			this.tabControlScreensEntities = new System.Windows.Forms.TabControl();
 			this.TabScreenList = new System.Windows.Forms.TabPage();
@@ -354,7 +355,6 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.ContextMenuEntitiesTreeGroup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
@@ -1287,7 +1287,7 @@ namespace MAPeD
 			this.label6.Location = new System.Drawing.Point(2, 8);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(62, 19);
-			this.label6.TabIndex = 18;
+			this.label6.TabIndex = 0;
 			this.label6.Text = "View Type:";
 			// 
 			// PanelTiles
@@ -1341,7 +1341,7 @@ namespace MAPeD
 			this.GrpBoxScreenData.Location = new System.Drawing.Point(442, 376);
 			this.GrpBoxScreenData.Name = "GrpBoxScreenData";
 			this.GrpBoxScreenData.Size = new System.Drawing.Size(122, 74);
-			this.GrpBoxScreenData.TabIndex = 30;
+			this.GrpBoxScreenData.TabIndex = 33;
 			this.GrpBoxScreenData.TabStop = false;
 			this.GrpBoxScreenData.Text = "Screen Data";
 			// 
@@ -1350,7 +1350,7 @@ namespace MAPeD
 			this.BtnScreenDataInfo.Location = new System.Drawing.Point(91, 20);
 			this.BtnScreenDataInfo.Name = "BtnScreenDataInfo";
 			this.BtnScreenDataInfo.Size = new System.Drawing.Size(20, 20);
-			this.BtnScreenDataInfo.TabIndex = 31;
+			this.BtnScreenDataInfo.TabIndex = 34;
 			this.BtnScreenDataInfo.Text = "?";
 			this.BtnScreenDataInfo.UseVisualStyleBackColor = true;
 			this.BtnScreenDataInfo.Click += new System.EventHandler(this.BtnScreenDataInfoClick_Event);
@@ -1361,7 +1361,7 @@ namespace MAPeD
 			this.RBtnScreenDataBlocks.Location = new System.Drawing.Point(17, 43);
 			this.RBtnScreenDataBlocks.Name = "RBtnScreenDataBlocks";
 			this.RBtnScreenDataBlocks.Size = new System.Drawing.Size(92, 20);
-			this.RBtnScreenDataBlocks.TabIndex = 0;
+			this.RBtnScreenDataBlocks.TabIndex = 36;
 			this.RBtnScreenDataBlocks.Text = "Blocks (2x2)";
 			this.RBtnScreenDataBlocks.UseVisualStyleBackColor = true;
 			this.RBtnScreenDataBlocks.Click += new System.EventHandler(this.RBtnScreenDataBlocksClick_Event);
@@ -1373,7 +1373,7 @@ namespace MAPeD
 			this.RBtnScreenDataTiles.Location = new System.Drawing.Point(17, 20);
 			this.RBtnScreenDataTiles.Name = "RBtnScreenDataTiles";
 			this.RBtnScreenDataTiles.Size = new System.Drawing.Size(92, 20);
-			this.RBtnScreenDataTiles.TabIndex = 0;
+			this.RBtnScreenDataTiles.TabIndex = 35;
 			this.RBtnScreenDataTiles.TabStop = true;
 			this.RBtnScreenDataTiles.Text = "Tiles (4x4)";
 			this.RBtnScreenDataTiles.UseVisualStyleBackColor = true;
@@ -1684,7 +1684,7 @@ namespace MAPeD
 			this.BtnSwapColors.Location = new System.Drawing.Point(181, 157);
 			this.BtnSwapColors.Name = "BtnSwapColors";
 			this.BtnSwapColors.Size = new System.Drawing.Size(85, 23);
-			this.BtnSwapColors.TabIndex = 26;
+			this.BtnSwapColors.TabIndex = 28;
 			this.BtnSwapColors.Text = "Swap Colors";
 			this.BtnSwapColors.UseVisualStyleBackColor = true;
 			this.BtnSwapColors.Click += new System.EventHandler(this.BtnSwapColorsClick_Event);
@@ -1696,7 +1696,7 @@ namespace MAPeD
 			this.CBoxPalettes.Location = new System.Drawing.Point(10, 158);
 			this.CBoxPalettes.Name = "CBoxPalettes";
 			this.CBoxPalettes.Size = new System.Drawing.Size(59, 21);
-			this.CBoxPalettes.TabIndex = 27;
+			this.CBoxPalettes.TabIndex = 25;
 			this.CBoxPalettes.SelectedIndexChanged += new System.EventHandler(this.CBoxPalettesChanged_Event);
 			// 
 			// CheckBoxPalettePerCHR
@@ -1704,7 +1704,7 @@ namespace MAPeD
 			this.CheckBoxPalettePerCHR.Location = new System.Drawing.Point(10, 186);
 			this.CheckBoxPalettePerCHR.Name = "CheckBoxPalettePerCHR";
 			this.CheckBoxPalettePerCHR.Size = new System.Drawing.Size(148, 19);
-			this.CheckBoxPalettePerCHR.TabIndex = 25;
+			this.CheckBoxPalettePerCHR.TabIndex = 29;
 			this.CheckBoxPalettePerCHR.Text = "Palette per CHR (MMC5)";
 			this.CheckBoxPalettePerCHR.UseVisualStyleBackColor = true;
 			this.CheckBoxPalettePerCHR.CheckedChanged += new System.EventHandler(this.CheckBoxPalettePerCHRChecked_Event);
@@ -1742,7 +1742,7 @@ namespace MAPeD
 			this.BtnPltDelete.Location = new System.Drawing.Point(125, 157);
 			this.BtnPltDelete.Name = "BtnPltDelete";
 			this.BtnPltDelete.Size = new System.Drawing.Size(48, 23);
-			this.BtnPltDelete.TabIndex = 11;
+			this.BtnPltDelete.TabIndex = 27;
 			this.BtnPltDelete.Text = "Delete";
 			this.BtnPltDelete.UseVisualStyleBackColor = true;
 			this.BtnPltDelete.Click += new System.EventHandler(this.BtnPltDeleteClick_Event);
@@ -1780,7 +1780,7 @@ namespace MAPeD
 			this.BtnPltCopy.Location = new System.Drawing.Point(74, 157);
 			this.BtnPltCopy.Name = "BtnPltCopy";
 			this.BtnPltCopy.Size = new System.Drawing.Size(48, 23);
-			this.BtnPltCopy.TabIndex = 11;
+			this.BtnPltCopy.TabIndex = 26;
 			this.BtnPltCopy.Text = "Copy";
 			this.BtnPltCopy.UseVisualStyleBackColor = true;
 			this.BtnPltCopy.Click += new System.EventHandler(this.BtnPltCopyClick_Event);
@@ -1957,7 +1957,7 @@ namespace MAPeD
 			this.groupBox2.Location = new System.Drawing.Point(570, 6);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(192, 573);
-			this.groupBox2.TabIndex = 29;
+			this.groupBox2.TabIndex = 37;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Blocks:";
 			// 
@@ -1970,7 +1970,7 @@ namespace MAPeD
 			this.PanelBlocks.Location = new System.Drawing.Point(6, 14);
 			this.PanelBlocks.Name = "PanelBlocks";
 			this.PanelBlocks.Size = new System.Drawing.Size(180, 553);
-			this.PanelBlocks.TabIndex = 30;
+			this.PanelBlocks.TabIndex = 38;
 			// 
 			// GrpBoxTileEditor
 			// 
@@ -1980,7 +1980,7 @@ namespace MAPeD
 			this.GrpBoxTileEditor.Location = new System.Drawing.Point(288, 376);
 			this.GrpBoxTileEditor.Name = "GrpBoxTileEditor";
 			this.GrpBoxTileEditor.Size = new System.Drawing.Size(148, 203);
-			this.GrpBoxTileEditor.TabIndex = 27;
+			this.GrpBoxTileEditor.TabIndex = 30;
 			this.GrpBoxTileEditor.TabStop = false;
 			this.GrpBoxTileEditor.Text = "Tile Editor:";
 			// 
@@ -1989,7 +1989,7 @@ namespace MAPeD
 			this.BtnTileReserveBlocks.Location = new System.Drawing.Point(10, 174);
 			this.BtnTileReserveBlocks.Name = "BtnTileReserveBlocks";
 			this.BtnTileReserveBlocks.Size = new System.Drawing.Size(128, 22);
-			this.BtnTileReserveBlocks.TabIndex = 28;
+			this.BtnTileReserveBlocks.TabIndex = 32;
 			this.BtnTileReserveBlocks.Text = "Reserve Blocks";
 			this.BtnTileReserveBlocks.UseVisualStyleBackColor = true;
 			this.BtnTileReserveBlocks.Click += new System.EventHandler(this.BtnTileReserveBlocksClick_Event);
@@ -1999,7 +1999,7 @@ namespace MAPeD
 			this.CheckBoxTileEditorLock.Location = new System.Drawing.Point(10, 151);
 			this.CheckBoxTileEditorLock.Name = "CheckBoxTileEditorLock";
 			this.CheckBoxTileEditorLock.Size = new System.Drawing.Size(63, 19);
-			this.CheckBoxTileEditorLock.TabIndex = 29;
+			this.CheckBoxTileEditorLock.TabIndex = 31;
 			this.CheckBoxTileEditorLock.Text = "Locked";
 			this.CheckBoxTileEditorLock.UseVisualStyleBackColor = true;
 			this.CheckBoxTileEditorLock.CheckedChanged += new System.EventHandler(this.CheckBoxTileEditorLockedChecked_Event);
@@ -2039,7 +2039,7 @@ namespace MAPeD
 			this.ScreenDataTypeLabel.Location = new System.Drawing.Point(680, 11);
 			this.ScreenDataTypeLabel.Name = "ScreenDataTypeLabel";
 			this.ScreenDataTypeLabel.Size = new System.Drawing.Size(71, 16);
-			this.ScreenDataTypeLabel.TabIndex = 55;
+			this.ScreenDataTypeLabel.TabIndex = 0;
 			this.ScreenDataTypeLabel.Text = "...";
 			// 
 			// label11
@@ -2047,7 +2047,7 @@ namespace MAPeD
 			this.label11.Location = new System.Drawing.Point(620, 11);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(64, 16);
-			this.label11.TabIndex = 55;
+			this.label11.TabIndex = 0;
 			this.label11.Text = "Data Type:";
 			// 
 			// BtnPatterns
@@ -2218,6 +2218,14 @@ namespace MAPeD
 			this.PBoxScreen.Size = new System.Drawing.Size(576, 576);
 			this.PBoxScreen.TabIndex = 0;
 			this.PBoxScreen.TabStop = false;
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Location = new System.Drawing.Point(588, 0);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(172, 31);
+			this.groupBox3.TabIndex = 0;
+			this.groupBox3.TabStop = false;
 			// 
 			// TabLayout
 			// 
@@ -3333,7 +3341,7 @@ namespace MAPeD
 			this.StatusBar.Name = "StatusBar";
 			this.StatusBar.Size = new System.Drawing.Size(1032, 22);
 			this.StatusBar.SizingGrip = false;
-			this.StatusBar.TabIndex = 27;
+			this.StatusBar.TabIndex = 4;
 			this.StatusBar.Text = "...";
 			// 
 			// StatusBarLabel
@@ -3405,14 +3413,6 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Filter = "Bitmap (*.bmp)|*.bmp";
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
-			// 
-			// groupBox3
-			// 
-			this.groupBox3.Location = new System.Drawing.Point(588, 0);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(172, 31);
-			this.groupBox3.TabIndex = 56;
-			this.groupBox3.TabStop = false;
 			// 
 			// MainForm
 			// 
