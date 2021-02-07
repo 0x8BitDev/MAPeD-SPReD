@@ -891,18 +891,18 @@ namespace MAPeD
 			return -1;
 		}
 		
-		public int contains_block( int _block_ind )
+		public int contains_block( uint[] _block_data, int _max_block )
 		{
 			int block_n;
 			
-			int size = _block_ind < 0 ? blocks.Length:_block_ind;
+			int size = _max_block < 0 ? blocks.Length:_max_block;
 			
 			for( block_n = 0; block_n < size; block_n += utils.CONST_BLOCK_SIZE )
 			{
-				if( blocks[ block_n ] == blocks[ _block_ind ] && 
- 				    blocks[ block_n + 1 ] == blocks[ _block_ind + 1 ] && 
- 				    blocks[ block_n + 2 ] == blocks[ _block_ind + 2 ] && 
- 				    blocks[ block_n + 3 ] == blocks[ _block_ind + 3 ] )
+				if( blocks[ block_n ] == _block_data[ 0 ] && 
+ 				    blocks[ block_n + 1 ] == _block_data[ 1 ] && 
+ 				    blocks[ block_n + 2 ] == _block_data[ 2 ] && 
+ 				    blocks[ block_n + 3 ] == _block_data[ 3 ] )
 				{
 					return block_n;
 				}

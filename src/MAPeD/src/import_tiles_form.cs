@@ -87,11 +87,13 @@ namespace MAPeD
 
 			if( import_tiles )
 			{
+				int tile_size = _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 32:16;
+				
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-				if( ( !import_game_map && ( _bmp.Width > 0 && ( _bmp.Width % 32 ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % 32 ) == 0 ) ) ||
-					( import_game_map && ( _bmp.Width > 0 && ( _bmp.Width % 32 ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) == 0 ) ) )
+				if( ( !import_game_map && ( _bmp.Width > 0 && ( _bmp.Width % tile_size ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % tile_size ) == 0 ) ) ||
+					( import_game_map && ( _bmp.Width > 0 && ( _bmp.Width % tile_size ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) == 0 ) ) )
 #else
-				if( ( _bmp.Width > 0 && ( _bmp.Width % 32 ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % 32 ) == 0 ) )
+				if( ( _bmp.Width > 0 && ( _bmp.Width % tile_size ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % tile_size ) == 0 ) )
 #endif
 				{
 					if( import_game_map )
@@ -116,11 +118,11 @@ namespace MAPeD
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 					if( import_game_map )
 					{
-						throw new Exception( "To import a game map, the imported image width must be a multiple of 32, the image height must be a multiple of 240!" );
+						throw new Exception( "To import a game map, the imported image width must be a multiple of " + tile_size + ", the image height must be a multiple of 240!" );
 					}
 					else
 #endif
-					throw new Exception( "The imported image size must be a multiple of 32!" );
+					throw new Exception( "The imported image size must be a multiple of " + tile_size + "!" );
 				}
 			}
 			else
@@ -171,6 +173,8 @@ namespace MAPeD
 				block_ind = ( block_ind == 0 && skip_zero_CHR_Block == true ) ? 4:block_ind;
 				
 				byte[] CHR_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
+				
+				uint[] block_data = new uint[ utils.CONST_BLOCK_SIZE ];
 				
 				int dup_block_ind;
 				int dup_tile_ind;
@@ -244,6 +248,14 @@ namespace MAPeD
 #endif
 							for( int block_y = 0; block_y < 32; block_y += 16 )
 							{
+								if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
+								{
+									if( tile_y + block_y >= bmp_height )
+									{
+										break;
+									}
+								}
+								
 								block_offset_y = tile_y + block_y;
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 								if( import_game_map )
@@ -253,6 +265,14 @@ namespace MAPeD
 #endif
 								for( int block_x = 0; block_x < 32; block_x += 16 )
 								{
+									if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
+									{
+										if( tile_x + block_x >= bmp_width )
+										{
+											break;
+										}
+									}
+									
 									block_offset_x = tile_x + block_x;
 									
 									for( int CHR_n = 0; CHR_n < 4; CHR_n++ )
@@ -278,7 +298,7 @@ namespace MAPeD
 #endif											
 										extract_CHR( _bmp.PixelFormat, CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 										
-										if( !check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, _data ) )
+										if( !check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, block_data, CHR_n, _data ) )
 										{
 											MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 											
@@ -292,12 +312,23 @@ namespace MAPeD
 									
 									// check duplicate blocks
 									{
-										if( ( dup_block_ind = _data.contains_block( block_ind - 4 ) ) >= 0 )
+										if( ( dup_block_ind = _data.contains_block( block_data, block_ind ) ) < 0 )
 										{
-											_data.blocks[ --block_ind ] = 0;
-											_data.blocks[ --block_ind ] = 0;
-											_data.blocks[ --block_ind ] = 0;
-											_data.blocks[ --block_ind ] = 0;
+											if( ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+											{
+												MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+												
+												MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+												
+												import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
+												
+												return;
+											}
+											
+											_data.blocks[ block_ind++ ] = block_data[ 0 ];
+											_data.blocks[ block_ind++ ] = block_data[ 1 ];
+											_data.blocks[ block_ind++ ] = block_data[ 2 ];
+											_data.blocks[ block_ind++ ] = block_data[ 3 ];
 										}
 									}
 									
@@ -370,17 +401,6 @@ namespace MAPeD
 #endif
 										}
 									}
-									
-									if( ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
-									{
-										MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
-										
-										MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-										
-										import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
-										
-										return;
-									}
 								}
 							}
 						}
@@ -399,7 +419,7 @@ namespace MAPeD
 							{
 								extract_CHR( _bmp.PixelFormat, CHR_n, block_x, block_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 								
-								if( !check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, _data ) )
+								if( !check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, block_data, CHR_n, _data ) )
 								{
 									MainForm.set_status_msg( string.Format( "Merged: Blocks: {0} \\ CHRs: {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 									
@@ -409,27 +429,27 @@ namespace MAPeD
 									
 									return;
 								}
-								
-								if( ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
-								{
-									MainForm.set_status_msg( string.Format( "Merged: Blocks: {0} \\ CHRs: {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
-									
-									MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-									
-									import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
-									
-									return;
-								}
 							}
 							
 							// check duplicate blocks
 							{
-								if( ( dup_block_ind = _data.contains_block( block_ind - 4 ) ) >= 0 )
+								if( ( dup_block_ind = _data.contains_block( block_data, block_ind ) ) < 0 )
 								{
-									_data.blocks[ --block_ind ] = 0;
-									_data.blocks[ --block_ind ] = 0;
-									_data.blocks[ --block_ind ] = 0;
-									_data.blocks[ --block_ind ] = 0;
+									if( ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+									{
+										MainForm.set_status_msg( string.Format( "Merged: Blocks: {0} \\ CHRs: {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+										
+										MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+										
+										import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
+										
+										return;
+									}
+									
+									_data.blocks[ block_ind++ ] = block_data[ 0 ];
+									_data.blocks[ block_ind++ ] = block_data[ 1 ];
+									_data.blocks[ block_ind++ ] = block_data[ 2 ];
+									_data.blocks[ block_ind++ ] = block_data[ 3 ];
 								}
 							}
 						}
@@ -444,13 +464,13 @@ namespace MAPeD
 			}
 		}
 		
-		private bool check_CHR_and_build_block( ref int _CHR_ind, ref int _block_ind, byte[] _CHR_buff, tiles_data _data )
+		private bool check_CHR_and_build_block( ref int _CHR_ind, ref int _block_ind, byte[] _CHR_buff, uint[] _block_data, int _CHR_n, tiles_data _data )
 		{
 			int dup_CHR_ind;
 			
 			if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, _CHR_ind ) ) >= 0 )
 			{
-				_data.blocks[ _block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, 0 );
+				_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, 0 );
 			}
 			else
 			{
@@ -461,7 +481,7 @@ namespace MAPeD
 				
 				if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, _CHR_ind ) ) >= 0 )
 				{
-					_data.blocks[ _block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP, 0 ) );
+					_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP, 0 ) );
 				}
 				else
 				{
@@ -470,7 +490,7 @@ namespace MAPeD
 					
 					if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, _CHR_ind ) ) >= 0 )
 					{
-						_data.blocks[ _block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
+						_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
 					}
 					else
 					{
@@ -478,7 +498,7 @@ namespace MAPeD
 						
 						if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, _CHR_ind ) ) >= 0 )
 						{
-							_data.blocks[ _block_ind++ ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP|utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
+							_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP|utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
 						}
 						else
 						{
@@ -487,7 +507,7 @@ namespace MAPeD
 								return false;
 							}
 							
-							_data.blocks[ _block_ind++ ] = tiles_data.set_block_CHR_id( _CHR_ind, 0 );
+							_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( _CHR_ind, 0 );
 
 							_data.from_spr8x8_to_CHR_bank( _CHR_ind++, _CHR_buff );
 						}
@@ -499,7 +519,7 @@ namespace MAPeD
 					return false;
 				}
 
-				_data.blocks[ _block_ind++ ] = tiles_data.set_block_CHR_id( _CHR_ind, 0 );
+				_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( _CHR_ind, 0 );
 
 				_data.from_spr8x8_to_CHR_bank( _CHR_ind++, utils.tmp_spr8x8_buff );
 #endif									
