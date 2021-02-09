@@ -785,6 +785,9 @@ namespace MAPeD
 												}
 											}
 											
+											// reset the layout mode
+											RBtnScreenEditModeSingle.Checked = true;
+											
 											update_screens( true, false );
 											
 											m_layout_editor.update_dimension_changes();
@@ -1183,6 +1186,9 @@ namespace MAPeD
 				update_screens_list_box();
 				
 				ListBoxScreens.SelectedIndex = -1;
+				
+				// reset the layout mode
+				RBtnScreenEditModeSingle.Checked = true;
 			}
 			
 			update_screens_by_bank_id( true, false );
