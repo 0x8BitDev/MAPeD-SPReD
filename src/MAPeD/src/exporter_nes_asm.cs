@@ -1338,9 +1338,7 @@ namespace MAPeD
 		
 		private byte get_MMC5_attribute( int _bank_n, tiles_data _tiles, int _tile_id, int _block_n, int _chr_n, int _CHR_data_size )
 		{
-			uint block_data = _tiles.blocks[ ( _tiles.get_tile_block( _tile_id, _block_n ) << 2 ) + _chr_n ];
-			
-			return get_screen_attribute( _bank_n, block_data, _CHR_data_size );
+			return get_MMC5_attribute( _bank_n, _tiles, _tiles.get_tile_block( _tile_id, _block_n ), _chr_n, _CHR_data_size );
 		}
 
 		private byte get_MMC5_attribute( int _bank_n, tiles_data _tiles, int _block_n, int _chr_n, int _CHR_data_size )

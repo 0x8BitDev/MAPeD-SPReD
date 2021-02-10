@@ -286,7 +286,7 @@ namespace MAPeD
 			Project_openFileDialog.DefaultExt = utils.CONST_PCE_FILE_EXT;
 			Project_openFileDialog.Filter = "MAPeD-PCE (*." + utils.CONST_PCE_FILE_EXT + ")|*." + utils.CONST_PCE_FILE_EXT + "|" + "MAPeD-SMS (*." + utils.CONST_SMS_FILE_EXT + ")|*." + utils.CONST_SMS_FILE_EXT + "|" + Project_openFileDialog.Filter;
 			
-			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "??? CA65 ???" );
+			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "CA65\\PCEAS" );
 
 			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp";
 			

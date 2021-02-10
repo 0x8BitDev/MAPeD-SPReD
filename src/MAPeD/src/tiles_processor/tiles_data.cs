@@ -1253,10 +1253,12 @@ namespace MAPeD
 			}
 		}
 
-#if DEF_NES		// TODO: try to update it to '#if DEF_NES #else ...'
+#if DEF_NES
 		public long export_CHR( BinaryWriter _bw, bool _save_padding = false )
-#elif DEF_SMS || DEF_PCE
+#elif DEF_SMS
 		public long export_CHR( BinaryWriter _bw, int _bpp )
+#elif DEF_PCE
+		public long export_CHR( BinaryWriter _bw )
 #endif			
 		{
 			int i;
@@ -1264,9 +1266,14 @@ namespace MAPeD
 			int x;
 			int y;
 			int val;
-			
+
+#if DEF_NES || DEF_SMS			
 			byte data;
-#if DEF_SMS	|| DEF_PCE
+#elif DEF_PCE
+			ushort data;
+			int x_pos;
+#endif
+#if DEF_SMS
 			int max_clr_ind = ( 2 << ( _bpp - 1 ) ) - 1;
 #endif			
 			int num_CHR_sprites = get_first_free_spr8x8_id();
@@ -1293,7 +1300,7 @@ namespace MAPeD
 						_bw.Write( data );
 					}
 				}
-#elif DEF_SMS || DEF_PCE
+#elif DEF_SMS
 				for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
 				{
 					for( j = 0; j < _bpp; j++ )
@@ -1307,6 +1314,27 @@ namespace MAPeD
 							val = ( val > max_clr_ind ) ? 0:val;
 							
 							data |= ( byte )( ( ( val >> j ) & 0x01 ) << x );
+						}
+						
+						_bw.Write( data );
+					}
+				}
+#elif DEF_PCE
+				for( j = 0; j < 2; j++ )
+				{
+					for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
+					{
+						data = 0;
+						
+						for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+						{
+							x_pos = 7 - x;
+							
+							val = utils.tmp_spr8x8_buff[ ( y << 3 ) + x_pos ];
+							
+							val = ( val >> ( j << 1 ) ) & 0x03;
+							
+							data |= ( ushort )( ( ( val & 0x01 ) << ( 8 + x_pos ) ) | ( ( ( val >> 1 ) & 0x01 ) << x_pos ) );
 						}
 						
 						_bw.Write( data );

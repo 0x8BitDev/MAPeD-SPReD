@@ -178,7 +178,7 @@ namespace MAPeD
 			
 			if( CheckBoxRLE.Checked )
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMS_RLE_COMPRESSION;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_RLE_COMPRESSION;
 			}
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_DATA_ORDER;
@@ -189,7 +189,7 @@ namespace MAPeD
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMS_DATA_ORDER_ROWS;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_DATA_ORDER_ROWS;
 			}
 
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE;
@@ -1246,9 +1246,7 @@ namespace MAPeD
 		
 		private ushort get_screen_attribute( tiles_data _tiles, int _tile_id, int _block_n, int _chr_n )
 		{
-			uint block_data = _tiles.blocks[ ( _tiles.get_tile_block( _tile_id, _block_n ) << 2 ) + _chr_n ];
-		
-			return get_screen_attribute( block_data );
+			return get_screen_attribute( _tiles, _tiles.get_tile_block( _tile_id, _block_n ), _chr_n );
 		}
 		
 		private ushort get_screen_attribute( tiles_data _tiles, int _block_n, int _chr_n )

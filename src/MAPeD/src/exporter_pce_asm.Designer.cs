@@ -44,17 +44,10 @@ namespace MAPeD
 			this.RBtnTiles4x4 = new System.Windows.Forms.RadioButton();
 			this.RBtnTiles2x2 = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.ComboBoxCHRsBPP = new System.Windows.Forms.ComboBox();
 			this.NumericUpDownCHRsOffset = new System.Windows.Forms.NumericUpDown();
-			this.ComboBoxColorsGroup = new System.Windows.Forms.ComboBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
-			this.ComboBoxInFrontOfSpritesProp = new System.Windows.Forms.ComboBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.CheckBoxMovePropsToScrMap = new System.Windows.Forms.CheckBox();
 			this.RBtnPropPerCHR = new System.Windows.Forms.RadioButton();
 			this.RBtnPropPerBlock = new System.Windows.Forms.RadioButton();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -76,6 +69,7 @@ namespace MAPeD
 			this.groupBox3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownCHRsOffset)).BeginInit();
+			this.groupBox6.SuspendLayout();
 			this.groupBox7.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.groupBoxEntityCoordinates.SuspendLayout();
@@ -86,7 +80,7 @@ namespace MAPeD
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(516, 376);
+			this.BtnCancel.Location = new System.Drawing.Point(516, 275);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
 			this.BtnCancel.TabIndex = 37;
@@ -97,7 +91,7 @@ namespace MAPeD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(435, 376);
+			this.BtnOk.Location = new System.Drawing.Point(435, 275);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 36;
@@ -185,12 +179,6 @@ namespace MAPeD
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.ComboBoxCHRsBPP);
-			this.groupBox2.Controls.Add(this.NumericUpDownCHRsOffset);
-			this.groupBox2.Controls.Add(this.ComboBoxColorsGroup);
-			this.groupBox2.Controls.Add(this.label3);
-			this.groupBox2.Controls.Add(this.label2);
-			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.groupBox6);
 			this.groupBox2.Controls.Add(this.groupBox7);
 			this.groupBox2.Controls.Add(this.groupBox5);
@@ -199,27 +187,13 @@ namespace MAPeD
 			this.groupBox2.Controls.Add(this.groupBox1);
 			this.groupBox2.Location = new System.Drawing.Point(5, 3);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(305, 352);
+			this.groupBox2.Size = new System.Drawing.Size(305, 253);
 			this.groupBox2.TabIndex = 0;
 			this.groupBox2.TabStop = false;
 			// 
-			// ComboBoxCHRsBPP
-			// 
-			this.ComboBoxCHRsBPP.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.ComboBoxCHRsBPP.FormattingEnabled = true;
-			this.ComboBoxCHRsBPP.Items.AddRange(new object[] {
-									"1 bpp",
-									"2 bpp",
-									"3 bpp",
-									"4 bpp"});
-			this.ComboBoxCHRsBPP.Location = new System.Drawing.Point(75, 284);
-			this.ComboBoxCHRsBPP.Name = "ComboBoxCHRsBPP";
-			this.ComboBoxCHRsBPP.Size = new System.Drawing.Size(71, 21);
-			this.ComboBoxCHRsBPP.TabIndex = 30;
-			// 
 			// NumericUpDownCHRsOffset
 			// 
-			this.NumericUpDownCHRsOffset.Location = new System.Drawing.Point(218, 285);
+			this.NumericUpDownCHRsOffset.Location = new System.Drawing.Point(74, 16);
 			this.NumericUpDownCHRsOffset.Maximum = new decimal(new int[] {
 									255,
 									0,
@@ -229,37 +203,9 @@ namespace MAPeD
 			this.NumericUpDownCHRsOffset.Size = new System.Drawing.Size(71, 20);
 			this.NumericUpDownCHRsOffset.TabIndex = 32;
 			// 
-			// ComboBoxColorsGroup
-			// 
-			this.ComboBoxColorsGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.ComboBoxColorsGroup.FormattingEnabled = true;
-			this.ComboBoxColorsGroup.Items.AddRange(new object[] {
-									"First (0-15)",
-									"Second (16-31)"});
-			this.ComboBoxColorsGroup.Location = new System.Drawing.Point(127, 311);
-			this.ComboBoxColorsGroup.Name = "ComboBoxColorsGroup";
-			this.ComboBoxColorsGroup.Size = new System.Drawing.Size(111, 21);
-			this.ComboBoxColorsGroup.TabIndex = 34;
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(56, 315);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(75, 17);
-			this.label3.TabIndex = 33;
-			this.label3.Text = "Colors group:";
-			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(12, 288);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(75, 17);
-			this.label2.TabIndex = 29;
-			this.label2.Text = "CHRs BPP:";
-			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(152, 288);
+			this.label1.Location = new System.Drawing.Point(8, 19);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(75, 17);
 			this.label1.TabIndex = 31;
@@ -267,75 +213,29 @@ namespace MAPeD
 			// 
 			// groupBox6
 			// 
-			this.groupBox6.Location = new System.Drawing.Point(7, 267);
+			this.groupBox6.Controls.Add(this.NumericUpDownCHRsOffset);
+			this.groupBox6.Controls.Add(this.label1);
+			this.groupBox6.Location = new System.Drawing.Point(145, 196);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(290, 75);
+			this.groupBox6.Size = new System.Drawing.Size(152, 45);
 			this.groupBox6.TabIndex = 28;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Exrtra";
 			// 
 			// groupBox7
 			// 
-			this.groupBox7.Controls.Add(this.ComboBoxInFrontOfSpritesProp);
-			this.groupBox7.Controls.Add(this.label4);
-			this.groupBox7.Controls.Add(this.CheckBoxMovePropsToScrMap);
 			this.groupBox7.Controls.Add(this.RBtnPropPerCHR);
 			this.groupBox7.Controls.Add(this.RBtnPropPerBlock);
 			this.groupBox7.Location = new System.Drawing.Point(7, 196);
 			this.groupBox7.Name = "groupBox7";
-			this.groupBox7.Size = new System.Drawing.Size(290, 65);
+			this.groupBox7.Size = new System.Drawing.Size(132, 45);
 			this.groupBox7.TabIndex = 22;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "Property Id per";
 			// 
-			// ComboBoxInFrontOfSpritesProp
-			// 
-			this.ComboBoxInFrontOfSpritesProp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.ComboBoxInFrontOfSpritesProp.FormattingEnabled = true;
-			this.ComboBoxInFrontOfSpritesProp.Items.AddRange(new object[] {
-									"NONE",
-									"0",
-									"1",
-									"2",
-									"3",
-									"4",
-									"5",
-									"6",
-									"7",
-									"8",
-									"9",
-									"10",
-									"11",
-									"12",
-									"13",
-									"14",
-									"15"});
-			this.ComboBoxInFrontOfSpritesProp.Location = new System.Drawing.Point(172, 38);
-			this.ComboBoxInFrontOfSpritesProp.Name = "ComboBoxInFrontOfSpritesProp";
-			this.ComboBoxInFrontOfSpritesProp.Size = new System.Drawing.Size(71, 21);
-			this.ComboBoxInFrontOfSpritesProp.TabIndex = 27;
-			// 
-			// label4
-			// 
-			this.label4.Location = new System.Drawing.Point(53, 42);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(126, 17);
-			this.label4.TabIndex = 26;
-			this.label4.Text = "\'In front of sprites\' prop:";
-			// 
-			// CheckBoxMovePropsToScrMap
-			// 
-			this.CheckBoxMovePropsToScrMap.Location = new System.Drawing.Point(124, 15);
-			this.CheckBoxMovePropsToScrMap.Name = "CheckBoxMovePropsToScrMap";
-			this.CheckBoxMovePropsToScrMap.Size = new System.Drawing.Size(160, 20);
-			this.CheckBoxMovePropsToScrMap.TabIndex = 25;
-			this.CheckBoxMovePropsToScrMap.Text = "Move to screen map (3 bits)";
-			this.CheckBoxMovePropsToScrMap.UseVisualStyleBackColor = true;
-			this.CheckBoxMovePropsToScrMap.CheckedChanged += new System.EventHandler(this.CheckBoxMovePropsToScrMapChanged_Event);
-			// 
 			// RBtnPropPerCHR
 			// 
-			this.RBtnPropPerCHR.Location = new System.Drawing.Point(69, 16);
+			this.RBtnPropPerCHR.Location = new System.Drawing.Point(67, 16);
 			this.RBtnPropPerCHR.Name = "RBtnPropPerCHR";
 			this.RBtnPropPerCHR.Size = new System.Drawing.Size(54, 17);
 			this.RBtnPropPerCHR.TabIndex = 24;
@@ -519,7 +419,7 @@ namespace MAPeD
 			this.RichTextBoxExportDesc.Name = "RichTextBoxExportDesc";
 			this.RichTextBoxExportDesc.ReadOnly = true;
 			this.RichTextBoxExportDesc.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-			this.RichTextBoxExportDesc.Size = new System.Drawing.Size(275, 345);
+			this.RichTextBoxExportDesc.Size = new System.Drawing.Size(275, 246);
 			this.RichTextBoxExportDesc.TabIndex = 35;
 			this.RichTextBoxExportDesc.Text = "";
 			// 
@@ -529,7 +429,7 @@ namespace MAPeD
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
-			this.ClientSize = new System.Drawing.Size(597, 411);
+			this.ClientSize = new System.Drawing.Size(597, 315);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
@@ -539,11 +439,12 @@ namespace MAPeD
 			this.MinimizeBox = false;
 			this.Name = "exporter_pce_asm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "??? CA65 ??? Asm Export Options";
+			this.Text = "CA65\\PCEAS Export Options";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownCHRsOffset)).EndInit();
+			this.groupBox6.ResumeLayout(false);
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
 			this.groupBoxEntityCoordinates.ResumeLayout(false);
@@ -551,16 +452,9 @@ namespace MAPeD
 			this.groupBoxLayout.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.ComboBox ComboBoxInFrontOfSpritesProp;
 		private System.Windows.Forms.GroupBox groupBox6;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.ComboBox ComboBoxColorsGroup;
-		private System.Windows.Forms.CheckBox CheckBoxMovePropsToScrMap;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.NumericUpDown NumericUpDownCHRsOffset;
-		private System.Windows.Forms.ComboBox ComboBoxCHRsBPP;
 		private System.Windows.Forms.RadioButton RBtnPropPerBlock;
 		private System.Windows.Forms.RadioButton RBtnPropPerCHR;
 		private System.Windows.Forms.GroupBox groupBox7;

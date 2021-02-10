@@ -51,11 +51,15 @@ namespace MAPeD
 			// byte[] get_CHR_data( int _bank_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "get_CHR_data", new Func< int, byte[] >( get_CHR_data ) );
 			
-			// long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
+			// NES: long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
+			// SMS: long export_CHR_data( int _bank_ind, string _filename, int _bpp )
+			// PCE: long export_CHR_data( int _bank_ind, string _filename )
 #if DEF_NES			
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, bool, long >( export_CHR_data ) );
 #elif DEF_SMS
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, int, long >( export_CHR_data ) );
+#elif DEF_PCE
+			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, long >( export_CHR_data ) );
 #endif			
 			// int get_palette_slots( int _bank_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "get_palette_slots", new Func< int, int >( get_palette_slots ) );
@@ -359,8 +363,10 @@ namespace MAPeD
 		
 #if DEF_NES
 		public long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
-#elif DEF_SMS || DEF_PCE
+#elif DEF_SMS
 		public long export_CHR_data( int _bank_ind, string _filename, int _bpp )
+#elif DEF_PCE
+		public long export_CHR_data( int _bank_ind, string _filename )
 #endif			
 		{
 			long data_size = -1;
@@ -376,14 +382,16 @@ namespace MAPeD
 					bw = new BinaryWriter( File.Open( _filename, FileMode.Create ) );
 #if DEF_NES					
 					data_size = data.export_CHR( bw, _save_padding );
-#elif DEF_SMS || DEF_PCE
+#elif DEF_SMS
 					if( _bpp < 1 || _bpp > 4 )
 					{
 						throw new Exception( "Invalid CHRs bpp value! The valid range is 1-4." );
 					}
 					
 					data_size = data.export_CHR( bw, _bpp );
-#endif					
+#elif DEF_PCE
+					data_size = data.export_CHR( bw );
+#endif
 					bw.Close();
 				}
 				else

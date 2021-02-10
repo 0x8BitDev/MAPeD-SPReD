@@ -96,10 +96,6 @@ namespace MAPeD
 			//
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = false;
 			
-			ComboBoxCHRsBPP.SelectedIndex = 3;
-			ComboBoxColorsGroup.SelectedIndex = 0;
-			ComboBoxInFrontOfSpritesProp.SelectedIndex = 0;
-			
 			update_desc();
 		}
 
@@ -151,15 +147,6 @@ namespace MAPeD
 			update_desc();
 		}
 
-		void CheckBoxMovePropsToScrMapChanged_Event(object sender, EventArgs e)
-		{
-			RBtnPropPerBlock.Enabled = RBtnPropPerCHR.Enabled = !CheckBoxMovePropsToScrMap.Checked;
-			
-			RBtnPropPerCHR.Checked = CheckBoxMovePropsToScrMap.Checked ? true:RBtnPropPerCHR.Checked;
-			
-			update_desc();
-		}
-		
 		void ParamChanged_Event(object sender, EventArgs e)
 		{
 			update_desc();
@@ -178,18 +165,18 @@ namespace MAPeD
 			
 			if( CheckBoxRLE.Checked )
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMS_RLE_COMPRESSION;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_RLE_COMPRESSION;
 			}
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_DATA_ORDER;
 			
 			if( RBtnTilesDirColumns.Checked )
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMS_DATA_ORDER_COLS;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PCE_DATA_ORDER_COLS;
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMS_DATA_ORDER_ROWS;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_DATA_ORDER_ROWS;
 			}
 
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE;
@@ -205,7 +192,7 @@ namespace MAPeD
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMS_MODE_STAT_SCR;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PCE_MODE_STAT_SCR;
 			}
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP;
@@ -217,15 +204,6 @@ namespace MAPeD
 			else
 			{
 				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP_PER_CHR;
-			}
-			
-			if( CheckBoxMovePropsToScrMap.Checked )
-			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMS_MOVE_PROP_TO_SCR_MAP_ON;
-			}
-			else
-			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMS_MOVE_PROP_TO_SCR_MAP_OFF;
 			}
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP_IN_FRONT_OF_SPRITES;
@@ -323,7 +301,7 @@ namespace MAPeD
 
 					sw.WriteLine( ";\t- tiles " + ( RBtnTiles4x4.Checked ? "4x4":"2x2" ) + ( CheckBoxRLE.Checked ? " (RLE)":"" ) + ( RBtnTilesDirColumns.Checked ? "/(columns)":"/(rows)" ) );
 					
-					sw.WriteLine( ";\t- properties per " + ( RBtnPropPerBlock.Checked ? "block":"CHR" ) + ( CheckBoxMovePropsToScrMap.Checked ? " (screen attributes)":"" ) );
+					sw.WriteLine( ";\t- properties per " + ( RBtnPropPerBlock.Checked ? "block":"CHR" ) );
 					
 					if( RBtnModeMultidirScroll.Checked )
 					{
@@ -343,7 +321,6 @@ namespace MAPeD
 					sw.WriteLine( ";\t- layout: " + ( RBtnLayoutAdjacentScreens.Checked ? "adjacent screens":RBtnLayoutAdjacentScreenIndices.Checked ? "adjacent screen indices":"matrix" ) + ( CheckBoxExportMarks.Checked ? " (marks)":" (no marks)" ) );
 					
 					sw.WriteLine( ";\t- " + ( CheckBoxExportEntities.Checked ? "entities " + ( RBtnEntityCoordScreen.Checked ? "(screen coordinates)":"(map coordinates)" ):"no entities" ) );
-					sw.WriteLine( ";\t- " + ( ComboBoxColorsGroup.SelectedIndex == 0 ? "first color group":"second color group" ) );
 					sw.WriteLine( "\n" );
 				}
 				
@@ -355,9 +332,7 @@ namespace MAPeD
 				                                              		( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordScreen.Checked ? 512:1024 ):0 ) |
 				                                              		( RBtnLayoutAdjacentScreens.Checked ? 2048:RBtnLayoutAdjacentScreenIndices.Checked ? 4096:8192 ) |
 				                                              		( CheckBoxExportMarks.Checked ? 16384:0 ) |
- 				                                              		( RBtnPropPerBlock.Checked ? 32768:65536 ) |
- 				                                              		( CheckBoxMovePropsToScrMap.Checked ? 131072:0 ) |
-																	( ComboBoxColorsGroup.SelectedIndex == 0 ? 262144:524288 ) ) );
+				                                              		( RBtnPropPerBlock.Checked ? 32768:65536 ) ) );
 				sw.WriteLine( "\n; data flags:" );
 				sw.WriteLine( ".define MAP_FLAG_TILES2X2                 " + utils.hex( "$", 1 ) );
 				sw.WriteLine( ".define MAP_FLAG_TILES4X4                 " + utils.hex( "$", 2 ) );
@@ -376,11 +351,7 @@ namespace MAPeD
 				sw.WriteLine( ".define MAP_FLAG_MARKS                    " + utils.hex( "$", 16384 ) );
 				sw.WriteLine( ".define MAP_FLAG_PROP_ID_PER_BLOCK        " + utils.hex( "$", 32768 ) );
 				sw.WriteLine( ".define MAP_FLAG_PROP_ID_PER_CHR          " + utils.hex( "$", 65536 ) );
-				sw.WriteLine( ".define MAP_FLAG_PROP_IN_SCR_ATTRS        " + utils.hex( "$", 131072 ) );
-				sw.WriteLine( ".define MAP_FLAG_COLORS_GROUP_FIRST       " + utils.hex( "$", 262144 ) );
-				sw.WriteLine( ".define MAP_FLAG_COLORS_GROUP_SECOND      " + utils.hex( "$", 524288 ) );
 				
-				sw.WriteLine( "\n.define\tMAP_CHR_BPP\t" + get_CHRs_bpp() );
 				sw.WriteLine( ".define\tMAP_CHRS_OFFSET\t" + ( int )NumericUpDownCHRsOffset.Value + "\t; first CHR index in CHR bank" );
 
 				sw.WriteLine( "\n.define ScrTilesWidth\t" + get_tiles_cnt_width( 1 ) + "\t; number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in width" );
@@ -615,7 +586,7 @@ namespace MAPeD
 					label = "chr" + bank_n;
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 					{
-						banks_size_arr[ bank_n + 1 ] += banks_size_arr[ bank_n ] + ( int )( data_size = tiles.export_CHR( bw, get_CHRs_bpp() ) );
+						banks_size_arr[ bank_n + 1 ] += banks_size_arr[ bank_n ] + ( int )( data_size = tiles.export_CHR( bw ) );
 					}
 					bw.Close();
 					
@@ -648,65 +619,62 @@ namespace MAPeD
 				
 				// blocks&props
 				{
-					if( !CheckBoxMovePropsToScrMap.Checked )
-					{
-						label_props = "_Props";
-						bw_props = new BinaryWriter( File.Open( m_path_filename + label_props + CONST_BIN_EXT, FileMode.Create ) );
+					label_props = "_Props";
+					bw_props = new BinaryWriter( File.Open( m_path_filename + label_props + CONST_BIN_EXT, FileMode.Create ) );
+				
+					data_offset = 0;
+					data_offset_str = "";
 					
-						data_offset = 0;
-						data_offset_str = "";
-						
-						for( bank_n = 0; bank_n < banks.Count; bank_n++ )
-						{
-							tiles = banks[ bank_n ];
-	
-							if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-							{
-								blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
-							}
-							else
-							{
-								blocks_props_size = ( 1 + tiles.get_first_free_block_id() ) << 2;
-							}
-							
-							for( block_n = 0; block_n < blocks_props_size; block_n++ )
-							{
-								block_data = tiles.blocks[ block_n ];
-								
-								if( RBtnPropPerBlock.Checked && ( block_n % 4 ) != 0 )
-								{
-									continue;
-								}
-								
-								bw_props.Write( ( byte )tiles_data.get_block_flags_obj_id( block_data ) );
-							}
-							
-							data_offset_str += "\t.word " + data_offset + "\t; (chr" + bank_n + ")\n";
+					for( bank_n = 0; bank_n < banks.Count; bank_n++ )
+					{
+						tiles = banks[ bank_n ];
 
-							data_offset += blocks_props_size;
-						}
-	
-						data_size = bw_props.BaseStream.Length;
-						bw_props.Close();
-						
-						_sw.WriteLine( m_filename + label_props + ":\t.incbin \"" + m_filename + label_props + CONST_BIN_EXT + "\"\t; (" + data_size + ") block properties array of all exported data banks ( " + ( RBtnPropPerCHR.Checked ? "4 bytes":"1 byte" ) + " per block )" + ( RBtnPropPerBlock.Checked ? ", data offset = props offset / 4":"" ) + "\n" );
-						
-						if( RBtnModeBidirScroll.Checked )
+						if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 						{
-							_sw.WriteLine( m_filename + "_BlocksPropsOffs:" );
+							blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
 						}
 						else
 						{
-							_sw.WriteLine( m_filename + "_PropsOffs:" );
+							blocks_props_size = ( 1 + tiles.get_first_free_block_id() ) << 2;
 						}
 						
-						_sw.WriteLine( data_offset_str );
+						for( block_n = 0; block_n < blocks_props_size; block_n++ )
+						{
+							block_data = tiles.blocks[ block_n ];
+							
+							if( RBtnPropPerBlock.Checked && ( block_n % 4 ) != 0 )
+							{
+								continue;
+							}
+							
+							bw_props.Write( ( byte )tiles_data.get_block_flags_obj_id( block_data ) );
+						}
+						
+						data_offset_str += "\t.word " + data_offset + "\t; (chr" + bank_n + ")\n";
+
+						data_offset += blocks_props_size;
 					}
+
+					data_size = bw_props.BaseStream.Length;
+					bw_props.Close();
+					
+					_sw.WriteLine( m_filename + label_props + ":\t.incbin \"" + m_filename + label_props + CONST_BIN_EXT + "\"\t; (" + data_size + ") block properties array of all exported data banks ( " + ( RBtnPropPerCHR.Checked ? "4 bytes":"1 byte" ) + " per block )" + ( RBtnPropPerBlock.Checked ? ", data offset = props offset / 4":"" ) + "\n" );
+					
+					if( RBtnModeBidirScroll.Checked )
+					{
+						_sw.WriteLine( m_filename + "_BlocksPropsOffs:" );
+					}
+					else
+					{
+						_sw.WriteLine( m_filename + "_PropsOffs:" );
+					}
+					
+					_sw.WriteLine( data_offset_str );
 				}
 				
 				// tiles
 				{
-					if( RBtnModeBidirScroll.Checked || !CheckBoxMovePropsToScrMap.Checked )
+					if( RBtnModeBidirScroll.Checked )
 					{
 						// write tiles data
 						label = "_Tiles";
@@ -856,7 +824,7 @@ namespace MAPeD
 				}
 				
 				// map
-				if( RBtnModeBidirScroll.Checked || !CheckBoxMovePropsToScrMap.Checked )
+				if( RBtnModeBidirScroll.Checked )
 				{
 					// tiles indices array for each screen
 					label = "_TilesScr";
@@ -1221,9 +1189,7 @@ namespace MAPeD
 		
 		private ushort get_screen_attribute( tiles_data _tiles, int _tile_id, int _block_n, int _chr_n )
 		{
-			uint block_data = _tiles.blocks[ ( _tiles.get_tile_block( _tile_id, _block_n ) << 2 ) + _chr_n ];
-		
-			return get_screen_attribute( block_data );
+			return get_screen_attribute( _tiles, _tiles.get_tile_block( _tile_id, _block_n ), _chr_n );
 		}
 		
 		private ushort get_screen_attribute( tiles_data _tiles, int _block_n, int _chr_n )
@@ -1235,34 +1201,7 @@ namespace MAPeD
 		
 		private ushort get_screen_attribute( uint _block_data )
 		{
-			int block_prop = tiles_data.get_block_flags_obj_id( _block_data );
-	
-			ushort res = ( ushort )( ( tiles_data.get_block_CHR_id( _block_data ) + ( ushort )NumericUpDownCHRsOffset.Value ) & 0x01ff );
-			
-			// add flipping
-			{
-//				res |= ( ushort )( tiles_data.get_block_flags_flip( _block_data ) << 9 );
-			}
-			
-			// add colors bank
-			{
-				res |= ( ushort )( ComboBoxColorsGroup.SelectedIndex << 11 );
-			}
-
-			// add background/foreground property
-			{
-				if( ComboBoxInFrontOfSpritesProp.SelectedIndex > 0 && block_prop == ( ComboBoxInFrontOfSpritesProp.SelectedIndex - 1 ) )
-				{
-					res |= ( ushort )( 1 << 12 );
-				}
-			}
-			
-			if( CheckBoxMovePropsToScrMap.Checked )
-			{
-				res |= ( ushort )( ( block_prop & 0x07 ) << 13 );
-			}
-			
-			return res;
+			return ( ushort )( _block_data & 0xffff );
 		}
 		
 		private string get_adjacent_screen_index( int _level_n, layout_data _data, int _scr_ind, int _offset )
@@ -1471,7 +1410,7 @@ namespace MAPeD
 				label = CONST_FILENAME_LEVEL_PREFIX + level_n + "_CHR";
 				bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 				{
-					tiles.export_CHR( bw, get_CHRs_bpp() );
+					tiles.export_CHR( bw );
 				}
 				long CHR_data_size = data_size = bw.BaseStream.Length;
 				bw.Close();
@@ -1525,7 +1464,6 @@ namespace MAPeD
 				}
 				
 				// blocks and properties
-				if( !CheckBoxMovePropsToScrMap.Checked )
 				{
 					blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_ind ) ) << 2;//max_tile_ind << 2 ) ) << 2;
 					
@@ -1698,11 +1636,6 @@ namespace MAPeD
           	byte v3 = ( byte )( _val & 0xff );
 			
           	return unchecked( ( uint )( v3 << 24 | v2 << 16 | v1 << 8 | v0 ) );
-		}
-		
-		int get_CHRs_bpp()
-		{
-			return ComboBoxCHRsBPP.SelectedIndex + 1;
 		}
 #endif	//DEF_PCE
 	}
