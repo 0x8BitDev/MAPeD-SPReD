@@ -65,9 +65,9 @@ namespace MAPeD
 		[DataMember]
 		private string NES_block_desc_bits = "[ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)";
 		[DataMember]
-		private string SMS_block_desc_bits = "[ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)";
+		private string SMS_block_desc_bits = "[ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [ CHR ind ](9)";
 		[DataMember]
-		private string PCE_block_desc_bits = "[ property_id ](4) [ palette ind ](4) [CHR ind](12)";
+		private string PCE_block_desc_bits = "[ property_id ](4) [ palette ind ](4) [ CHR ind ](12)";
 		
 		public enum EScreenDataType
 		{

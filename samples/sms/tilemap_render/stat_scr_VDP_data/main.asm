@@ -12,7 +12,6 @@
 ;	- properties per CHR: any
 ;	- layout: adjacent screens OR adjacent screen inds (NO MARKS!)
 ;	- entities: off
-;	- first color group
 ;	- CHR bpp: 4
 ;
 
@@ -149,11 +148,6 @@ vblank_handler:
 
 .if MAP_CHR_BPP != 4
 	.printt "*** ERROR: This sample supports 4 bpp tiles only! ***\n"
-	.fail
-.endif
-
-.if MAP_DATA_MAGIC&MAP_FLAG_COLORS_GROUP_SECOND == MAP_FLAG_COLORS_GROUP_SECOND
-	.printt "*** ERROR: The second color group for a palette isn't supported by this sample! ***\n"
 	.fail
 .endif
 

@@ -13,7 +13,6 @@
 ;	- mode: multidirectional scrolling
 ;	- layout: matrix (no marks)
 ;	- no entities
-;	- first color group
 
 ;************************************************************************
 ;
@@ -171,11 +170,6 @@ exit:
 	.fail
 .endif
 
-.if MAP_DATA_MAGIC&MAP_FLAG_COLORS_GROUP_SECOND == MAP_FLAG_COLORS_GROUP_SECOND
-	.printt "*** ERROR: The second color group for a palette isn't supported by this sample! ***\n"
-	.fail
-.endif
-
 	.incdir "../../common"
 	.include "vdp.asm"
 	.include "vdp_data_buffer.asm"
@@ -196,8 +190,8 @@ exit:
 main:
 	call VDP_init_clear_mem
 
-	call init_sprite
 	call init_game_level
+	call init_sprite
 
 	; init REG0
 
@@ -236,7 +230,7 @@ init_game_level:
 	; load palette into the first colors group
 
 	VDP_WRITE_CLR_CMD $0000
-	VDP_WRITE_DATA_ARRAY Lev0_Palette 16
+	VDP_WRITE_DATA_ARRAY Lev0_Palette 32
 
 	; load CHR data
 

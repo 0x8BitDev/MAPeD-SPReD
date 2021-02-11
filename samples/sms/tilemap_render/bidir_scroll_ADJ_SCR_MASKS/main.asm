@@ -14,7 +14,6 @@
 ;	- mode: bidirectional scrolling
 ;	- layout: adjacent screens OR adjacent screen inds (marks)
 ;	- entities: any
-;	- first color group
 ;	- CHR bpp: 4
 ;
 
@@ -160,11 +159,6 @@ exit:
 
 .if MAP_CHR_BPP != 4
 	.printt "*** ERROR: This sample supports 4 bpp tiles only! ***\n"
-	.fail
-.endif
-
-.if MAP_DATA_MAGIC&MAP_FLAG_COLORS_GROUP_SECOND == MAP_FLAG_COLORS_GROUP_SECOND
-	.printt "*** ERROR: The second color group for a palette isn't supported by this sample! ***\n"
 	.fail
 .endif
 

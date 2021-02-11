@@ -98,6 +98,8 @@ namespace MAPeD
 		private static uint CONST_NES_BLOCK_CHR_ID_MASK		= 0x000000ff; 
 		
 		// SMS
+		private static uint CONST_SMS_PALETTE_MASK			= 0x01;
+		private static uint CONST_SMS_BLOCK_PALETTE_MASK	= ( CONST_SMS_PALETTE_MASK << 9 );
 		private static uint CONST_SMS_BLOCK_CHR_ID_MASK		= 0x000001ff;
 		
 		// NES/SMS
@@ -116,6 +118,9 @@ namespace MAPeD
 #if DEF_NES
 		private static uint CONST_PALETTE_MASK			= CONST_NES_PALETTE_MASK;
 		private static uint CONST_BLOCK_PALETTE_MASK	= CONST_NES_BLOCK_PALETTE_MASK;
+#elif DEF_SMS
+		private static uint CONST_PALETTE_MASK			= CONST_SMS_PALETTE_MASK;
+		private static uint CONST_BLOCK_PALETTE_MASK	= CONST_SMS_BLOCK_PALETTE_MASK;
 #elif DEF_PCE
 		private static uint CONST_PALETTE_MASK			= CONST_PCE_PALETTE_MASK;
 		private static uint CONST_BLOCK_PALETTE_MASK	= CONST_PCE_BLOCK_PALETTE_MASK;
@@ -136,7 +141,7 @@ namespace MAPeD
 		private int	m_palette_pos					= -1;
 		
 		// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
-		// SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
+		// SMS: [ property_id ](4) [ hv_flip ](2) [ palette_ind ](1) [CHR ind](9)
 		// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
 		private uint[] m_blocks	= new uint[ utils.CONST_BLOCKS_UINT_SIZE ];
 		private uint[] m_tiles	= new uint[ utils.CONST_TILES_UINT_SIZE ];
@@ -617,11 +622,12 @@ namespace MAPeD
 			return var;
 		}
 #endif
-#if DEF_NES || DEF_PCE
 		public static int get_block_flags_palette( uint _block_chr_data )
 		{
 #if DEF_NES
 			return ( int )( ( _block_chr_data & CONST_BLOCK_PALETTE_MASK ) >> 10 );
+#elif DEF_SMS
+			return ( int )( ( _block_chr_data & CONST_BLOCK_PALETTE_MASK ) >> 9 );
 #elif DEF_PCE
 			return ( int )( ( _block_chr_data & CONST_BLOCK_PALETTE_MASK ) >> 12 );
 #endif
@@ -630,16 +636,18 @@ namespace MAPeD
 		public static uint set_block_flags_palette( int _plt_ind, uint _block_chr_data )
 		{
 			uint var = _block_chr_data;
+			
+			var &= ~CONST_BLOCK_PALETTE_MASK;
 #if DEF_NES
-			var &= ~CONST_BLOCK_PALETTE_MASK;
 			var |= ( uint )( ( _plt_ind & CONST_PALETTE_MASK ) << 10 );
+#elif DEF_SMS
+			var |= ( uint )( ( _plt_ind & CONST_PALETTE_MASK ) << 9 );
 #elif DEF_PCE
-			var &= ~CONST_BLOCK_PALETTE_MASK;
 			var |= ( uint )( ( _plt_ind & CONST_PALETTE_MASK ) << 12 );
 #endif
 			return var;
 		}
-#endif //DEF_NES || DEF_PCE
+
 		public static int get_block_flags_obj_id( uint _block_chr_data )
 		{
 #if DEF_PCE
@@ -1574,9 +1582,23 @@ namespace MAPeD
 					{
 						plt16.m_palette1[ 0 ] = plt16.m_palette2[ 0 ] = plt16.m_palette3[ 0 ] = plt16.m_palette0[ 0 ];
 					}
-#endif					
+#endif
+
+#if DEF_SMS
+					if( i >= utils.CONST_PALETTE16_ARR_LEN )
+					{
+						continue;
+					}
+#endif
 					m_palettes.Add( plt16 );
 				}
+#if DEF_SMS
+				// fill missing palette(s)
+				for( i = m_palettes.Count; i < utils.CONST_PALETTE16_ARR_LEN; i++ )
+				{
+					m_palettes.Add( new palette16_data() );
+				}
+#endif
 			}
 
 			for( i = 0; i < utils.CONST_BLOCKS_UINT_SIZE; i++ )
@@ -1588,7 +1610,7 @@ namespace MAPeD
 					if( sms_file )
 					{
 						// OLD SMS: [ property_id ](4) [ CHR bank ](2) [ hv_flip ](2) [CHR ind](8)
-						// NEW SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
+						// NEW SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
 						// 11-12 (CHR bank) <-> 9-10 (hv_flip)
 						val = ( val & 0xfffff0ff ) | ( ( ( val & 0x00000300 ) << 2 ) | ( ( val & 0x00000c00 ) >> 2 ) );
 					}
@@ -1601,7 +1623,7 @@ namespace MAPeD
 				if( sms_file )
 				{
 					// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
-					// SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
+					// SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
 
 					// check CHR bank overflow
 					if( ( val & 0x000000100 ) != 0 )
@@ -1627,7 +1649,7 @@ namespace MAPeD
 				if( nes_file )
 				{
 					// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
-					// SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
+					// SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
 					
 					// NES: palette -> SMS: flip flags
 					palette_ind	= get_block_flags_flip( val );
@@ -1644,25 +1666,29 @@ namespace MAPeD
 				else
 				if( pce_file )
 				{
-					// SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
+					// SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
 					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
-					CHR_id	= ( int )( val & CONST_PCE_BLOCK_CHR_ID_MASK );
-					prop_id = ( int )( ( val & CONST_PCE_BLOCK_OBJ_ID_MASK ) >> 16 );
+					CHR_id		= ( int )( val & CONST_PCE_BLOCK_CHR_ID_MASK );
+					prop_id 	= ( int )( ( val & CONST_PCE_BLOCK_OBJ_ID_MASK ) >> 16 );
+					palette_ind = ( int )( ( ( val & CONST_PCE_BLOCK_PALETTE_MASK ) >> 12 ) & CONST_SMS_PALETTE_MASK ); // clamp PCE palette by SMS palette mask
 					
 					val = 0;
 					val = set_block_CHR_id( CHR_id, val );
+					val = set_block_flags_palette( palette_ind, val );
 					val = set_block_flags_obj_id( prop_id, val );
 				}
 #elif DEF_PCE
 				if( sms_file )
 				{
-					// SMS: [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9)
+					// SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
 					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
-					CHR_id	= ( int )( val & CONST_SMS_BLOCK_CHR_ID_MASK );
-					prop_id = ( int )( ( val & CONST_NES_SMS_BLOCK_OBJ_ID_MASK ) >> 12 );
+					CHR_id		= ( int )( val & CONST_SMS_BLOCK_CHR_ID_MASK );
+					prop_id 	= ( int )( ( val & CONST_NES_SMS_BLOCK_OBJ_ID_MASK ) >> 12 );
+					palette_ind = ( int )( ( val & CONST_SMS_BLOCK_PALETTE_MASK ) >> 9 );
 					
 					val = 0;
 					val = set_block_CHR_id( CHR_id, val );
+					val = set_block_flags_palette( palette_ind, val );
 					val = set_block_flags_obj_id( prop_id, val );
 				}
 				else

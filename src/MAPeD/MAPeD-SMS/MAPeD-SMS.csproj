@@ -37,7 +37,7 @@
     <DebugType>Full</DebugType>
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <DefineConstants>DEBUG;TRACE;DEF_TILE_DRAW_FAST;DEF_FLIP_BLOCKS_SPR_BY_FLAGS;DEF_SMS</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;DEF_TILE_DRAW_FAST;DEF_FLIP_BLOCKS_SPR_BY_FLAGS;DEF_FIXED_LEN_PALETTE16_ARR;DEF_PALETTE16_PER_CHR;DEF_SMS</DefineConstants>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <StartAction>Project</StartAction>
   </PropertyGroup>
@@ -47,7 +47,7 @@
     <DebugType>None</DebugType>
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-    <DefineConstants>TRACE;DEF_TILE_DRAW_FAST;DEF_FLIP_BLOCKS_SPR_BY_FLAGS;DEF_SMS</DefineConstants>
+    <DefineConstants>TRACE;DEF_TILE_DRAW_FAST;DEF_FLIP_BLOCKS_SPR_BY_FLAGS;DEF_FIXED_LEN_PALETTE16_ARR;DEF_PALETTE16_PER_CHR;DEF_SMS</DefineConstants>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>

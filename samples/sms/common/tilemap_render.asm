@@ -770,7 +770,7 @@ _tr_upload_palette_tiles:
 
 	ld a, c
 
-	MUL_POW2_A 4			; a x= 16
+	MUL_POW2_A 5			; a *= 32
 
 	ld e, a
 	ld d, 0
@@ -778,7 +778,7 @@ _tr_upload_palette_tiles:
 	ld hl, (TR_PALETTES_ARR)
 	add hl, de
 
-	ld b, 16
+	ld b, 32
 
 	ld c, VDP_CMD_DATA_REG
 	otir

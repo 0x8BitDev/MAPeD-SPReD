@@ -58,7 +58,7 @@ for bank_n in xrange( num_banks ):
 # Dump 2x2 tiles (blocks) data
 # Each block's value (UInt32) has the following bits description: 
 # NES: 15.. [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8) ..0
-# SMS: 15.. [ property_id ](4) [ hv_flip ](2) [X](1) [CHR ind](9) ..0
+# SMS: 15.. [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9) ..0
 # PCE: 19.. [ property_id ](4) [ palette ind ](4) [CHR ind](12) ..0
 # Four UInt32 values form one 2x2 tile (block)
 	blocks_data = mpd_get_blocks( bank_n );

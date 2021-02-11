@@ -46,8 +46,6 @@ namespace MAPeD
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.ComboBoxCHRsBPP = new System.Windows.Forms.ComboBox();
 			this.NumericUpDownCHRsOffset = new System.Windows.Forms.NumericUpDown();
-			this.ComboBoxColorsGroup = new System.Windows.Forms.ComboBox();
-			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -86,7 +84,7 @@ namespace MAPeD
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(516, 376);
+			this.BtnCancel.Location = new System.Drawing.Point(516, 353);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
 			this.BtnCancel.TabIndex = 37;
@@ -97,7 +95,7 @@ namespace MAPeD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(435, 376);
+			this.BtnOk.Location = new System.Drawing.Point(435, 353);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 36;
@@ -187,8 +185,6 @@ namespace MAPeD
 			// 
 			this.groupBox2.Controls.Add(this.ComboBoxCHRsBPP);
 			this.groupBox2.Controls.Add(this.NumericUpDownCHRsOffset);
-			this.groupBox2.Controls.Add(this.ComboBoxColorsGroup);
-			this.groupBox2.Controls.Add(this.label3);
 			this.groupBox2.Controls.Add(this.label2);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.groupBox6);
@@ -199,7 +195,7 @@ namespace MAPeD
 			this.groupBox2.Controls.Add(this.groupBox1);
 			this.groupBox2.Location = new System.Drawing.Point(5, 3);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(305, 352);
+			this.groupBox2.Size = new System.Drawing.Size(305, 330);
 			this.groupBox2.TabIndex = 0;
 			this.groupBox2.TabStop = false;
 			// 
@@ -229,26 +225,6 @@ namespace MAPeD
 			this.NumericUpDownCHRsOffset.Size = new System.Drawing.Size(71, 20);
 			this.NumericUpDownCHRsOffset.TabIndex = 32;
 			// 
-			// ComboBoxColorsGroup
-			// 
-			this.ComboBoxColorsGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.ComboBoxColorsGroup.FormattingEnabled = true;
-			this.ComboBoxColorsGroup.Items.AddRange(new object[] {
-									"First (0-15)",
-									"Second (16-31)"});
-			this.ComboBoxColorsGroup.Location = new System.Drawing.Point(127, 311);
-			this.ComboBoxColorsGroup.Name = "ComboBoxColorsGroup";
-			this.ComboBoxColorsGroup.Size = new System.Drawing.Size(111, 21);
-			this.ComboBoxColorsGroup.TabIndex = 34;
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(56, 315);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(75, 17);
-			this.label3.TabIndex = 33;
-			this.label3.Text = "Colors group:";
-			// 
 			// label2
 			// 
 			this.label2.Location = new System.Drawing.Point(12, 288);
@@ -269,7 +245,7 @@ namespace MAPeD
 			// 
 			this.groupBox6.Location = new System.Drawing.Point(7, 267);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(290, 75);
+			this.groupBox6.Size = new System.Drawing.Size(290, 50);
 			this.groupBox6.TabIndex = 28;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Exrtra";
@@ -519,7 +495,7 @@ namespace MAPeD
 			this.RichTextBoxExportDesc.Name = "RichTextBoxExportDesc";
 			this.RichTextBoxExportDesc.ReadOnly = true;
 			this.RichTextBoxExportDesc.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-			this.RichTextBoxExportDesc.Size = new System.Drawing.Size(275, 345);
+			this.RichTextBoxExportDesc.Size = new System.Drawing.Size(275, 323);
 			this.RichTextBoxExportDesc.TabIndex = 35;
 			this.RichTextBoxExportDesc.Text = "";
 			// 
@@ -529,7 +505,7 @@ namespace MAPeD
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
-			this.ClientSize = new System.Drawing.Size(597, 411);
+			this.ClientSize = new System.Drawing.Size(597, 392);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
@@ -554,8 +530,6 @@ namespace MAPeD
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.ComboBox ComboBoxInFrontOfSpritesProp;
 		private System.Windows.Forms.GroupBox groupBox6;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.ComboBox ComboBoxColorsGroup;
 		private System.Windows.Forms.CheckBox CheckBoxMovePropsToScrMap;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;

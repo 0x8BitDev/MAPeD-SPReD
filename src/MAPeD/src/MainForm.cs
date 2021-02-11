@@ -291,11 +291,13 @@ namespace MAPeD
 			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp";
 			
 			CheckBoxPalettePerCHR.Visible = false;
-			BtnPltDelete.Enabled = false;
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false; 
 #endif
 
+#if DEF_FIXED_LEN_PALETTE16_ARR
+			BtnPltDelete.Enabled = false;
+#endif
 			if( utils.CONST_CHR_BANK_PAGES_CNT == 1 )
 			{
 				BtnCHRBankNextPage.Visible = BtnCHRBankPrevPage.Visible = false;

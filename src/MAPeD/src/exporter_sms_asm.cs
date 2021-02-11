@@ -97,7 +97,6 @@ namespace MAPeD
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = false;
 			
 			ComboBoxCHRsBPP.SelectedIndex = 3;
-			ComboBoxColorsGroup.SelectedIndex = 0;
 			ComboBoxInFrontOfSpritesProp.SelectedIndex = 0;
 			
 			update_desc();
@@ -343,7 +342,6 @@ namespace MAPeD
 					sw.WriteLine( ";\t- layout: " + ( RBtnLayoutAdjacentScreens.Checked ? "adjacent screens":RBtnLayoutAdjacentScreenIndices.Checked ? "adjacent screen indices":"matrix" ) + ( CheckBoxExportMarks.Checked ? " (marks)":" (no marks)" ) );
 					
 					sw.WriteLine( ";\t- " + ( CheckBoxExportEntities.Checked ? "entities " + ( RBtnEntityCoordScreen.Checked ? "(screen coordinates)":"(map coordinates)" ):"no entities" ) );
-					sw.WriteLine( ";\t- " + ( ComboBoxColorsGroup.SelectedIndex == 0 ? "first color group":"second color group" ) );
 					sw.WriteLine( "\n" );
 				}
 				
@@ -356,8 +354,7 @@ namespace MAPeD
 				                                              		( RBtnLayoutAdjacentScreens.Checked ? 2048:RBtnLayoutAdjacentScreenIndices.Checked ? 4096:8192 ) |
 				                                              		( CheckBoxExportMarks.Checked ? 16384:0 ) |
  				                                              		( RBtnPropPerBlock.Checked ? 32768:65536 ) |
- 				                                              		( CheckBoxMovePropsToScrMap.Checked ? 131072:0 ) |
-																	( ComboBoxColorsGroup.SelectedIndex == 0 ? 262144:524288 ) ) );
+ 				                                              		( CheckBoxMovePropsToScrMap.Checked ? 131072:0 ) ) );
 				sw.WriteLine( "\n; data flags:" );
 				sw.WriteLine( ".define MAP_FLAG_TILES2X2                 " + utils.hex( "$", 1 ) );
 				sw.WriteLine( ".define MAP_FLAG_TILES4X4                 " + utils.hex( "$", 2 ) );
@@ -377,8 +374,6 @@ namespace MAPeD
 				sw.WriteLine( ".define MAP_FLAG_PROP_ID_PER_BLOCK        " + utils.hex( "$", 32768 ) );
 				sw.WriteLine( ".define MAP_FLAG_PROP_ID_PER_CHR          " + utils.hex( "$", 65536 ) );
 				sw.WriteLine( ".define MAP_FLAG_PROP_IN_SCR_ATTRS        " + utils.hex( "$", 131072 ) );
-				sw.WriteLine( ".define MAP_FLAG_COLORS_GROUP_FIRST       " + utils.hex( "$", 262144 ) );
-				sw.WriteLine( ".define MAP_FLAG_COLORS_GROUP_SECOND      " + utils.hex( "$", 524288 ) );
 				
 				sw.WriteLine( "\n.define\tMAP_CHR_BPP\t" + get_CHRs_bpp() );
 				sw.WriteLine( ".define\tMAP_CHRS_OFFSET\t" + ( int )NumericUpDownCHRsOffset.Value + "\t; first CHR index in CHR bank" );
@@ -479,12 +474,7 @@ namespace MAPeD
 			exp_screen_data	exp_scr;
 			screen_data		scr_data;
 			tiles_data 		tiles = null;
-#if DEF_SMS
-			tiles_data		cntrl_tiles_data = null;
 			
-			bool diff_banks_in_layout 		= false;
-			bool more_than_1_plt_in_bank 	= false;
-#endif
 			ConcurrentDictionary< int, exp_screen_data >	screens	= null;	// ConcurrentDictionary for changing values in foreach
 			
 			List< tiles_data > 	banks 			= new List< tiles_data >( 10 );			
@@ -900,9 +890,7 @@ namespace MAPeD
 					for( bank_n = 0; bank_n < banks.Count; bank_n++ )
 					{
 						tiles = banks[ bank_n ];
-#if DEF_SMS
-						more_than_1_plt_in_bank |= ( tiles.palettes_arr.Count > 1 ) ? true:false;
-#endif
+						
 						for( int i = 0; i < tiles.palettes_arr.Count; i++ )
 						{
 							utils.write_int_as_byte_arr( bw, tiles.palettes_arr[ i ].m_palette0 );
@@ -915,7 +903,7 @@ namespace MAPeD
 					data_size = bw.BaseStream.Length;
 					bw.Close();
 					
-					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") palettes array of all exported data banks ( data offset = chr_id * 16 )" );
+					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") palettes array of all exported data banks ( data offset = chr_id * 32 )" );
 				}
 			}
 
@@ -934,9 +922,7 @@ namespace MAPeD
 				{
 					scr_arr = CONST_FILENAME_LEVEL_PREFIX + level_n + "_ScrArr:";
 				}
-#if DEF_SMS
-				cntrl_tiles_data = null;
-#endif
+				
 				for( int scr_n_Y = 0; scr_n_Y < n_scr_Y; scr_n_Y++ )
 				{
 					for( int scr_n_X = 0; scr_n_X < n_scr_X; scr_n_X++ )
@@ -993,17 +979,7 @@ namespace MAPeD
 								}
 								
 								exp_scr = screens[ scr_key ];
-#if DEF_SMS
-								if( cntrl_tiles_data == null )
-								{
-									cntrl_tiles_data = exp_scr.m_tiles;
-								}
-								else
-								if( cntrl_tiles_data != exp_scr.m_tiles )
-								{
-									diff_banks_in_layout |= true;
-								}
-#endif
+								
 								_sw.WriteLine( level_prefix_str + "Scr" + common_scr_ind + ":" );
 								_sw.WriteLine( "\t.byte " + banks.IndexOf( exp_scr.m_tiles ) + ( enable_comments ? "\t; chr_id":"" ) );
 								
@@ -1077,12 +1053,6 @@ namespace MAPeD
 			}
 			
 			foreach( var key in screens.Keys ) { screens[ key ].destroy(); }
-#if DEF_SMS
-			if( diff_banks_in_layout && more_than_1_plt_in_bank )
-			{
-				MainForm.message_box( "The exported layout contains more than one CHR bank data and at least one CHR bank has more than one palette!\n\nThis can make it difficult to get correct palette data in your code!", "Data Export", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-			}
-#endif
 		}
 
 		private bool compress_and_save_byte( BinaryWriter _bw, byte[] _data, ref int _data_offset )
@@ -1267,9 +1237,9 @@ namespace MAPeD
 				res |= ( ushort )( tiles_data.get_block_flags_flip( _block_data ) << 9 );
 			}
 			
-			// add colors bank
+			// add colors bank ( 16 colors palette index )
 			{
-				res |= ( ushort )( ComboBoxColorsGroup.SelectedIndex << 11 );
+				res |= ( ushort )( tiles_data.get_block_flags_palette( _block_data ) << 11 );
 			}
 
 			// add background/foreground property
