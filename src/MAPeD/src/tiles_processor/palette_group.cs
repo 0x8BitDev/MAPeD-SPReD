@@ -197,7 +197,9 @@ namespace MAPeD
 			int sel_clr_ind = (( e.X >> 4 ) << 2 ) + ( e.Y >> 4 );
 #elif DEF_PCE	// column ordered data
 			int sel_clr_ind = (( e.X >> 2 ) << 3 ) + ( e.Y >> 3 );
-#endif			
+#endif
+			MainForm.set_status_msg( utils.hex( "Selected color: #", sel_clr_ind ) );
+
 			if( m_sel_clr_ind >= 0 && sel_clr_ind != m_sel_clr_ind && m_plt_arr[ 0 ].get_color_inds() != null )
 			{
 				dispatch_event_need_gfx_update();

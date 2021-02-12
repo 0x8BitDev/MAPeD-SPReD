@@ -124,6 +124,8 @@ namespace MAPeD
 			
 			m_sel_clr_ind = e.X / 20;
 			
+			MainForm.set_status_msg( utils.hex( "Selected color: #", m_clr_inds[ m_sel_clr_ind ] ) );
+			
 			dispatch_event_active_palette();
 
 			update();
