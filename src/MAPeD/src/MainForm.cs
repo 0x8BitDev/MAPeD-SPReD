@@ -274,6 +274,7 @@ namespace MAPeD
 			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "NES", "SMS" );
 			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "nes", "sms" );
 			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "SMS CHR Bank", "SMS CHR Bank 4bpp" );
+			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "Map 2/4 bpp", "Map 2/4/8 bpp" );
 			
 			CheckBoxPalettePerCHR.Visible = false;
 			
@@ -765,10 +766,10 @@ namespace MAPeD
 						case ".bmp":
 							{
 								bmp = new Bitmap( filename );
-#if DEF_PCE
-								if( bmp.PixelFormat == PixelFormat.Format8bppIndexed || bmp.PixelFormat == PixelFormat.Format4bppIndexed )
-#else
+#if DEF_NES
 								if( bmp.PixelFormat == PixelFormat.Format4bppIndexed )
+#else
+								if( bmp.PixelFormat == PixelFormat.Format8bppIndexed || bmp.PixelFormat == PixelFormat.Format4bppIndexed )
 #endif
 								{
 									if( m_import_tiles_form.ShowDialog() == DialogResult.OK )
@@ -800,10 +801,10 @@ namespace MAPeD
 								}
 								else
 								{
-#if DEF_PCE
-									throw new Exception( "The imported image must have indexed color depth 4/8bpp!" );
-#else
+#if DEF_NES
 									throw new Exception( "The imported image must have 4bpp color depth!" );
+#else
+									throw new Exception( "The imported image must have indexed color depth 4/8bpp!" );
 #endif
 								}
 								
