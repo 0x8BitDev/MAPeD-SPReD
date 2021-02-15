@@ -50,7 +50,7 @@ namespace MAPeD
 			public int			m_tiles_offset;
 			public int			m_blocks_offset;			
 			
-			public int			m_VDP_scr_offset;
+			public int			m_VDC_scr_offset;
 			
 			public static int	_tiles_offset;
 			public static int	_blocks_offset;
@@ -70,7 +70,7 @@ namespace MAPeD
 				_tiles_offset 	+= _scr_tiles_size;
 				_blocks_offset 	+= _scr_blocks_size;
 				
-				m_VDP_scr_offset = 0;
+				m_VDC_scr_offset = 0;
 			}
 			
 			public void destroy()
@@ -352,7 +352,7 @@ namespace MAPeD
 				sw.WriteLine( ".define MAP_FLAG_PROP_ID_PER_BLOCK        " + utils.hex( "$", 32768 ) );
 				sw.WriteLine( ".define MAP_FLAG_PROP_ID_PER_CHR          " + utils.hex( "$", 65536 ) );
 				
-				sw.WriteLine( ".define\tMAP_CHRS_OFFSET\t" + ( int )NumericUpDownCHRsOffset.Value + "\t; first CHR index in CHR bank" );
+				sw.WriteLine( "\n.define\tMAP_CHRS_OFFSET\t" + ( int )NumericUpDownCHRsOffset.Value + "\t; first CHR index in CHR bank" );
 
 				sw.WriteLine( "\n.define ScrTilesWidth\t" + get_tiles_cnt_width( 1 ) + "\t; number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in width" );
 				sw.WriteLine( ".define ScrTilesHeight\t" + get_tiles_cnt_height( 1 ) + "\t; number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in height" );
@@ -599,11 +599,11 @@ namespace MAPeD
 				_sw.WriteLine( "\n" + m_filename + "_CHRs:\n" + chr_arr );
 				_sw.WriteLine( m_filename + "_CHRs_size:\n" + chr_size );
 				
-				// static screens ( VDP-READY DATA ):
+				// static screens ( VDC-READY DATA ):
 				// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				// [SKIP] attrs map arr - attributes array for each screen
 				// [SKIP] blocks arr	- blocks data array
-				// map arr				- GFX array for each screen (RLE) (VDP-ready) [CHRs]
+				// map arr				- GFX array for each screen (RLE) (VDC-ready) [CHRs]
 				// plts arr 			- bank palettes
 				// props arr 			- bank props
 				//
@@ -721,10 +721,10 @@ namespace MAPeD
 					}
 				}
 				
-				// save VDP-ready data for STATIC SCREENS mode
+				// save VDC-ready data for STATIC SCREENS mode
 				if( RBtnModeStaticScreen.Checked )
 				{
-					label = "_VDPScr";
+					label = "_VDCScr";
 					bw = new BinaryWriter( File.Open( m_path_filename + label + CONST_BIN_EXT, FileMode.Create ) );
 
 					data_offset = 0;
@@ -768,7 +768,7 @@ namespace MAPeD
 						scr_bmp.Dispose();
 						tile_bmp.Dispose();
 #endif
-						exp_scr.m_VDP_scr_offset = data_offset;
+						exp_scr.m_VDC_scr_offset = data_offset;
 						screens[ key ] = exp_scr;
 						
 						if( compress_and_save_ushort( bw, attrs_chr, ref data_offset ) == false )
@@ -782,7 +782,7 @@ namespace MAPeD
 					data_size = bw.BaseStream.Length;
 					bw.Close();
 					
-					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") VDP-ready data array for each screen (1536 bytes per screen)" );					
+					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") VDC-ready data array for each screen (" + ( utils.CONST_SCREEN_TILES_CNT << 5 ) + " bytes per screen)" );
 					
 					if( !CheckBoxRLE.Checked )
 					{
@@ -866,17 +866,17 @@ namespace MAPeD
 						
 						for( int i = 0; i < tiles.palettes_arr.Count; i++ )
 						{
-							utils.write_int_as_byte_arr( bw, tiles.palettes_arr[ i ].m_palette0 );
-							utils.write_int_as_byte_arr( bw, tiles.palettes_arr[ i ].m_palette1 );
-							utils.write_int_as_byte_arr( bw, tiles.palettes_arr[ i ].m_palette2 );
-							utils.write_int_as_byte_arr( bw, tiles.palettes_arr[ i ].m_palette3 );
+							utils.write_int_as_ushort_arr( bw, tiles.palettes_arr[ i ].m_palette0 );
+							utils.write_int_as_ushort_arr( bw, tiles.palettes_arr[ i ].m_palette1 );
+							utils.write_int_as_ushort_arr( bw, tiles.palettes_arr[ i ].m_palette2 );
+							utils.write_int_as_ushort_arr( bw, tiles.palettes_arr[ i ].m_palette3 );
 						}
 					}
 					
 					data_size = bw.BaseStream.Length;
 					bw.Close();
 					
-					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") palettes array of all exported data banks ( data offset = chr_id * 16 )" );
+					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") palettes array of all exported data banks ( data offset = chr_id * " + ( ( utils.CONST_PALETTE16_ARR_LEN << 4 ) << 1 ) + " )" );
 				}
 			}
 
@@ -963,7 +963,7 @@ namespace MAPeD
 								
 								if( RBtnModeStaticScreen.Checked )
 								{
-									_sw.WriteLine( "\n\t.word " + exp_scr.m_VDP_scr_offset + ( enable_comments ? "\t; " + m_filename + "_VDPScr offset":"" ) );
+									_sw.WriteLine( "\n\t.word " + exp_scr.m_VDC_scr_offset + ( enable_comments ? "\t; " + m_filename + "_VDCScr offset":"" ) );
 								}
 								
 								_sw.WriteLine( "\n\t.byte " + exp_scr.m_scr_ind + ( enable_comments ? "\t; screen index":"" ) );
@@ -1557,7 +1557,7 @@ namespace MAPeD
 				
 				for( int i = 0; i < tiles.palettes_arr.Count; i++ )
 				{
-					palette_str += "\n\t\t.byte ";
+					palette_str += "\n\t\t.word ";
 					
 					fill_palette_str( tiles.palettes_arr[ i ].m_palette0, ref palette_str, false );
 					fill_palette_str( tiles.palettes_arr[ i ].m_palette1, ref palette_str, false );
@@ -1565,7 +1565,7 @@ namespace MAPeD
 					fill_palette_str( tiles.palettes_arr[ i ].m_palette3, ref palette_str, true );
 				}
 				
-				_sw.WriteLine( palette_str + "\n" );
+				_sw.WriteLine( palette_str + "\n" + ( CONST_FILENAME_LEVEL_PREFIX + level_n + "_Palette_End:\n" ) );
 
 				int start_scr_ind = level_data.get_start_screen_ind();
 				
