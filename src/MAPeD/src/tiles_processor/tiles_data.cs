@@ -300,7 +300,7 @@ namespace MAPeD
 
 		public bool palette_copy()
 		{
-			if( m_palettes.Count < utils.CONST_PALETTES_COUNT )
+			if( m_palettes.Count < utils.CONST_PALETTES_MAX_CNT )
 			{
 				m_palettes.Add( m_palettes[ palette_pos ].copy() );
 				m_palette_pos = m_palettes.Count - 1;

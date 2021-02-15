@@ -3890,7 +3890,7 @@ namespace MAPeD
 				}
 				else
 				{
-					message_box( "The maximum allowed number of palettes - " + utils.CONST_PALETTES_COUNT, "Copy Active Palette", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "The maximum allowed number of palettes - " + utils.CONST_PALETTES_MAX_CNT, "Copy Active Palette", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 #endif
 			}

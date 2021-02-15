@@ -246,7 +246,7 @@ namespace MAPeD
 		public const int CONST_NUM_SMALL_PALETTES 			= 4;
 		public const int CONST_PALETTE_SMALL_NUM_COLORS		= 4;
 		
-		public const int CONST_PALETTES_COUNT				= 16;
+		public const int CONST_PALETTES_MAX_CNT				= 16;
 		
 		public const int CONST_CHR_BANK_PAGE_SIDE			= 128;
 		public const int CONST_CHR_BANK_PAGE_SIZE			= CONST_CHR_BANK_PAGE_SIDE * CONST_CHR_BANK_PAGE_SIDE;
@@ -892,6 +892,14 @@ namespace MAPeD
 			for( int i = 0; i < _arr.Length; i++ )
 			{
 				_bw.Write( _arr[ i ] );
+			}
+		}
+
+		public static void write_int_as_ushort_arr( BinaryWriter _bw, int[] _arr )
+		{
+			for( int i = 0; i < _arr.Length; i++ )
+			{
+				_bw.Write( ( ushort )_arr[ i ] );
 			}
 		}
 		
