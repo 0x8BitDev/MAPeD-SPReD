@@ -98,6 +98,8 @@ You can download it at: https://drive.google.com/file/d/1kX_h38VViI9akc1vdt1Um6Y
 3) Menu: `Build -> Build Solution`.
 4) `./bin` will contain output executable file.
 
+Also you can use the Microsoft Visual Studio.
+
 ## Linux
 The tools were tested on **Ubuntu 16.4.6** and **Debian 9.9.0** with **Mono v5.20.1.19**.
 
