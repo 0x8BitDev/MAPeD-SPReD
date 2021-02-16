@@ -58,9 +58,23 @@ namespace MAPeD
 			CheckBoxApplyPalette.Checked = true;
 		}
 		
+		void CheckBoxBlocksChanged_Event(object sender, EventArgs e)
+		{
+			CheckBoxApplyPalette.Enabled = CheckBoxBlocks.Checked;
+			CheckBoxApplyPalette.Checked = false;
+			CheckBoxTiles.Checked = CheckBoxBlocks.Checked ? CheckBoxTiles.Checked:false;
+		}
+		
+		void CheckBoxTilesChanged_Event(object sender, EventArgs e)
+		{
+			CheckBoxBlocks.Enabled = !CheckBoxTiles.Checked;
+			CheckBoxBlocks.Checked =  CheckBoxTiles.Checked ? true:CheckBoxBlocks.Checked;
+		}
+		
 		void CheckBoxGameMapChanged_Event(object sender, EventArgs e)
 		{
-			CheckBoxTiles.Checked = CheckBoxGameMap.Checked ? true:CheckBoxTiles.Checked;
+			CheckBoxBlocks.Checked = CheckBoxTiles.Checked = CheckBoxGameMap.Checked ? true:CheckBoxTiles.Checked;
+			CheckBoxApplyPalette.Checked = CheckBoxGameMap.Checked ? true:CheckBoxApplyPalette.Checked;
 			CheckBoxDeleteEmptyScreens.Enabled = !( CheckBoxTiles.Enabled = CheckBoxGameMap.Checked ? false:true );
 			CheckBoxDeleteEmptyScreens.Checked = CheckBoxDeleteEmptyScreens.Enabled ? CheckBoxDeleteEmptyScreens.Checked:false;
 		}
@@ -429,6 +443,7 @@ namespace MAPeD
 							}
 							
 							// check duplicate blocks
+							if( CheckBoxBlocks.Checked )
 							{
 								if( ( dup_block_ind = _data.contains_block( block_data, block_ind ) ) < 0 )
 								{
@@ -467,7 +482,10 @@ namespace MAPeD
 			
 			if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, _CHR_ind ) ) >= 0 )
 			{
-				_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, 0 );
+				if( CheckBoxBlocks.Checked )
+				{
+					_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, 0 );
+				}
 			}
 			else
 			{
@@ -478,7 +496,10 @@ namespace MAPeD
 				
 				if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, _CHR_ind ) ) >= 0 )
 				{
-					_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP, 0 ) );
+					if( CheckBoxBlocks.Checked )
+					{
+						_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP, 0 ) );
+					}
 				}
 				else
 				{
@@ -487,7 +508,10 @@ namespace MAPeD
 					
 					if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, _CHR_ind ) ) >= 0 )
 					{
-						_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
+						if( CheckBoxBlocks.Checked )
+						{
+							_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
+						}
 					}
 					else
 					{
@@ -495,7 +519,10 @@ namespace MAPeD
 						
 						if( ( dup_CHR_ind = _data.contains_CHR( utils.tmp_spr8x8_buff, _CHR_ind ) ) >= 0 )
 						{
-							_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP|utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
+							if( CheckBoxBlocks.Checked )
+							{
+								_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( dup_CHR_ind, tiles_data.set_block_flags_flip( utils.CONST_CHR_ATTR_FLAG_HFLIP|utils.CONST_CHR_ATTR_FLAG_VFLIP, 0 ) );
+							}
 						}
 						else
 						{
@@ -504,7 +531,10 @@ namespace MAPeD
 								return false;
 							}
 							
-							_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( _CHR_ind, 0 );
+							if( CheckBoxBlocks.Checked )
+							{
+								_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( _CHR_ind, 0 );
+							}
 
 							_data.from_spr8x8_to_CHR_bank( _CHR_ind++, _CHR_buff );
 						}
@@ -516,13 +546,28 @@ namespace MAPeD
 					return false;
 				}
 
-				_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( _CHR_ind, 0 );
+				if( CheckBoxBlocks.Checked )
+				{
+					_block_data[ _CHR_n ] = tiles_data.set_block_CHR_id( _CHR_ind, 0 );
+				}
 
 				_data.from_spr8x8_to_CHR_bank( _CHR_ind++, utils.tmp_spr8x8_buff );
 #endif									
 			}
 			
 			return true;
+		}
+		
+		void fix_CHR_inds( byte[] _arr )
+		{
+			for( int ind_n = 0; ind_n < _arr.Length; ind_n++ )
+			{
+#if DEF_ENS
+				_arr[ ind_n ] = ( byte )( _arr[ ind_n ] & 0x03 );
+#else
+				_arr[ ind_n ] = ( byte )( _arr[ ind_n ] & 0x0f );
+#endif
+			}
 		}
 		
 		private void import_bmp_palette( tiles_data _data, Bitmap _bmp, int _CHR_beg_ind, int _CHR_end_ind, int _block_beg_ind, int _block_end_ind )
@@ -560,6 +605,10 @@ namespace MAPeD
 				palette_group.Instance.active_palette = 0;
 #endif
 			}
+			else
+			{
+				fix_CHR_inds( _data.CHR_bank );
+			}
 		}
 
 		private void extract_CHR( PixelFormat _pix_fmt, int _CHR_n, int _block_offset_x, int _block_offset_y, int _stride, byte[] _img_buff, System.IntPtr _data_ptr )
@@ -573,7 +622,7 @@ namespace MAPeD
 #if DEF_NES
 			bool need_remapping = CheckBoxApplyPalette.Checked ? false:true;
 			SortedList< byte, byte > inds_remap_arr = new SortedList<byte, byte>();
-#elif DEF_SMS || DEF_PCE
+#else
 			bool need_remapping = false;
 			SortedList< byte, byte > inds_remap_arr = null;
 #endif			
@@ -1273,11 +1322,8 @@ namespace MAPeD
 				if( !remapped_CHRs[ CHR_n ] )
 				{
 					_data.from_CHR_bank_to_spr8x8( CHR_n, utils.tmp_spr8x8_buff );
-					
-					for( ind_n = 0; ind_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; ind_n++ )
-					{
-						utils.tmp_spr8x8_buff[ ind_n ] = ( byte )( utils.tmp_spr8x8_buff[ ind_n ] & 0x0f );
-					}
+
+					fix_CHR_inds( utils.tmp_spr8x8_buff );
 					
 					_data.from_spr8x8_to_CHR_bank( CHR_n, utils.tmp_spr8x8_buff );
 					

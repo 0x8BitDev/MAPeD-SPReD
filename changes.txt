@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+16.02.2021 - Added a separate option to import CHRs from images
 12.02.2021 - SMS: added import of 32 color images
 11.02.2021 - SMS: added support of two 16 color palettes
 31.01.2021 - Updated Python API / Quick Guide documentations
