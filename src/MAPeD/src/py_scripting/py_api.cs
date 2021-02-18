@@ -392,7 +392,6 @@ namespace MAPeD
 #elif DEF_PCE
 					data_size = data.export_CHR( bw );
 #endif
-					bw.Close();
 				}
 				else
 				{
@@ -401,12 +400,15 @@ namespace MAPeD
 			}
 			catch( Exception _err )
 			{
+				throw new Exception( CONST_PREFIX + "export_CHR_data error! Can't save CHR data!\n" + _err.Message );
+			}
+			
+			finally
+			{
 				if( bw != null )
 				{
 					bw.Close();
 				}
-				
-				throw new Exception( CONST_PREFIX + "export_CHR_data error! Can't save CHR data!\n" + _err.Message );
 			}
 			
 			return data_size;

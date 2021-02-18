@@ -661,14 +661,17 @@ namespace MAPeD
 				message_box( _err.Message, "Project Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 
-			if( br != null )
+			finally
 			{
-				br.Close();
-			}
-			
-			if( fs != null )
-			{
-				fs.Close();
+				if( br != null )
+				{
+					br.Close();
+				}
+				
+				if( fs != null )
+				{
+					fs.Close();
+				}
 			}
 		}
 		
@@ -723,14 +726,17 @@ namespace MAPeD
 				message_box( _err.Message, "Project Saving Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
-			if( bw != null )
+			finally
 			{
-				bw.Close();
-			}
-			
-			if( fs != null )
-			{
-				fs.Close();
+				if( bw != null )
+				{
+					bw.Close();
+				}
+				
+				if( fs != null )
+				{
+					fs.Close();
+				}
 			}
 		}
 		
@@ -898,14 +904,17 @@ namespace MAPeD
 				message_box( _err.Message, "Data Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
-			if( br != null )
+			finally
 			{
-				br.Close();
-			}
-			
-			if( fs != null )
-			{
-				br.Close();
+				if( br != null )
+				{
+					br.Close();
+				}
+				
+				if( fs != null )
+				{
+					fs.Close();
+				}
 			}
 		}
 

@@ -395,17 +395,18 @@ namespace MAPeD
 				{
 					save_single_screen_mode( sw );
 				}
-				
-				sw.Close();
 			}
 			catch( System.Exception _err )
+			{
+				MainForm.message_box( _err.Message, "CA65 / NES Asm Data Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error ); 
+			}
+			
+			finally
 			{
 				if( sw != null )
 				{
 					sw.Close();
 				}
-				
-				MainForm.message_box( _err.Message, "CA65 / NES Asm Data Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error ); 
 			}
 		}
 		

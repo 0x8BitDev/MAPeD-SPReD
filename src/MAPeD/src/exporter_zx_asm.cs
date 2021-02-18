@@ -164,6 +164,9 @@ namespace MAPeD
 			{
 				System.IO.Directory.CreateDirectory( m_path_filename + "_Extra" + Path.DirectorySeparatorChar );
 			}
+
+			BinaryWriter 	bw = null;
+			StreamWriter 	sw = null;
 			
 			try
 			{
@@ -172,8 +175,6 @@ namespace MAPeD
 				// tile properties
 				// tile colors
 				// level map
-				BinaryWriter 	bw = null;
-				StreamWriter 	sw = null;
 				
 				List< ushort >	unique_tiles_arr	= new List< ushort >();
 				ushort[]		map_tiles_arr		= null;
@@ -480,7 +481,6 @@ namespace MAPeD
 					// check the number of unique tiles in the map
 					if( unique_tiles_arr.Count > 128 )
 					{
-						sw.Close();
 						throw new System.Exception( String.Format( "The level{0} has more than 128 tiles 2x2!", level_n ) );
 					}
 					
@@ -802,12 +802,18 @@ namespace MAPeD
 				}
 
 				unique_tiles_arr = null;
-				
-				sw.Close();
 			}
 			catch( System.Exception _err )
 			{
 				MainForm.message_box( _err.Message, "ZX Asm Data Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error ); 
+			}
+			
+			finally
+			{
+				if( sw != null )
+				{
+					sw.Close();
+				}
 			}
 		}
 		
