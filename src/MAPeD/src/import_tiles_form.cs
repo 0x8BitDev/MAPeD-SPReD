@@ -562,7 +562,7 @@ namespace MAPeD
 		{
 			for( int ind_n = 0; ind_n < _arr.Length; ind_n++ )
 			{
-#if DEF_ENS
+#if DEF_NES
 				_arr[ ind_n ] = ( byte )( _arr[ ind_n ] & 0x03 );
 #else
 				_arr[ ind_n ] = ( byte )( _arr[ ind_n ] & 0x0f );
@@ -991,7 +991,9 @@ namespace MAPeD
 						}
 					}
 				}
-			}			
+			}
+			
+			fix_unremapped_CHRs( _data, remapped_CHRs );
 			
 			// apply final palettes
 			Array.Clear( clr_inds, 0, clr_inds.Length );
@@ -1047,6 +1049,8 @@ namespace MAPeD
 			
 			int transp_clr_ind = -1;
 			int transp_clr_pos = -1;
+			
+			int palettes_cnt;
 			
 			palette16_data plt16;
 			
@@ -1181,11 +1185,62 @@ namespace MAPeD
 			}
 
 			// get a transparent color
-			if( palettes.Count > 0 )
+			palettes_cnt = palettes.Count;
+			
+			if( palettes_cnt > 0 )
 			{
 				SortedSet< int > plt_a = new SortedSet<int>();
 				SortedSet< int > plt_b = new SortedSet<int>();
-
+				
+				// get color index belonging to most palettes
+				{
+					for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
+					{
+						plt_a.UnionWith( palettes[ plt_n ] );
+					}
+					
+					int ind_cnt;
+					int max_cnt = int.MinValue;
+					int max_val = -1;
+					
+					plt_a.ForEach( delegate( int _val )
+					{
+						ind_cnt = 0;
+						
+						palettes.ForEach( delegate( SortedSet< int > _palette )
+						{
+	  	                 	if( _palette.Contains( _val ) )
+	  	                 	{
+	  	                 		++ind_cnt;
+	  	                 	}
+						});
+						
+						if( ind_cnt > max_cnt )
+						{
+							max_cnt = ind_cnt;
+							max_val = _val;
+						}
+					});
+					
+					if( max_cnt < palettes_cnt )
+					{
+						if( max_cnt > ( palettes_cnt >> 1 ) )
+						{
+							// add missing transparent color value
+							palettes.ForEach( delegate( SortedSet< int > _palette )
+							{
+								if( !_palette.Contains( max_val ) && _palette.Count < 16 )
+		  	                 	{
+		  	                 		_palette.Add( max_val );
+		  	                 	}
+							});
+						}
+					}
+				}
+				
+				plt_a.Clear();
+				plt_b.Clear();
+				
 				palettes[ 0 ].ForEach( delegate( int _val ) { plt_a.Add( _val ); });
 				
 				for( plt_n = 1; plt_n < palettes.Count; plt_n++ )
@@ -1259,7 +1314,7 @@ namespace MAPeD
 			}
 			
 			// CHRs remapping and palettes applying
-			int palettes_cnt = Math.Min( palettes.Count, utils.CONST_PALETTE16_ARR_LEN );
+			palettes_cnt = Math.Min( palettes.Count, utils.CONST_PALETTE16_ARR_LEN );
 			
 			for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
 			{
@@ -1315,21 +1370,7 @@ namespace MAPeD
 				}
 			}
 
-			// fix unremapped CHR's to avoid errors
-			int max_CHRs_cnt = _data.get_first_free_spr8x8_id();
-			for( CHR_n = 0; CHR_n < max_CHRs_cnt; CHR_n++ )
-			{
-				if( !remapped_CHRs[ CHR_n ] )
-				{
-					_data.from_CHR_bank_to_spr8x8( CHR_n, utils.tmp_spr8x8_buff );
-
-					fix_CHR_inds( utils.tmp_spr8x8_buff );
-					
-					_data.from_spr8x8_to_CHR_bank( CHR_n, utils.tmp_spr8x8_buff );
-					
-					remapped_CHRs[ CHR_n ] = true;
-				}
-			}
+			fix_unremapped_CHRs( _data, remapped_CHRs );
 
 			// apply final palettes
 			palettes_cnt = Math.Min( palettes.Count, utils.CONST_PALETTE16_ARR_LEN );
@@ -1421,8 +1462,27 @@ namespace MAPeD
 #if DEF_NES
 			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- NES compatible graphics\n- no more than 13 colors\n- one CHR bank data\n- static palette\n- tiles aligned", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
 #elif DEF_FIXED_LEN_PALETTE16_ARR
-			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- " + utils.CONST_PLATFORM + " compatible graphics\n- tiles aligned", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
+			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- " + utils.CONST_PLATFORM + " compatible graphics\n- colors are not duplicated in a palette\n- tiles aligned", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
 #endif
+		}
+		
+		void fix_unremapped_CHRs( tiles_data _data, bool[] _remapped_CHRs )
+		{
+			// fix unremapped CHR's to avoid errors
+			int max_CHRs_cnt = _data.get_first_free_spr8x8_id();
+			for( int CHR_n = 0; CHR_n < max_CHRs_cnt; CHR_n++ )
+			{
+				if( !_remapped_CHRs[ CHR_n ] )
+				{
+					_data.from_CHR_bank_to_spr8x8( CHR_n, utils.tmp_spr8x8_buff );
+
+					fix_CHR_inds( utils.tmp_spr8x8_buff );
+					
+					_data.from_spr8x8_to_CHR_bank( CHR_n, utils.tmp_spr8x8_buff );
+					
+					_remapped_CHRs[ CHR_n ] = true;
+				}
+			}
 		}
 	}
 }

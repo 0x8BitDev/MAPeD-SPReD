@@ -3864,6 +3864,8 @@ namespace MAPeD
 			data.palette_pos = CBoxPalettes.SelectedIndex; 
 			
 			update_palette_related_data( data );
+			
+			set_status_msg( "Palette changed" );
 		}
 		
 		void BtnPltCopyClick_Event(object sender, EventArgs e)
