@@ -1469,7 +1469,9 @@ namespace MAPeD
 		void fix_unremapped_CHRs( tiles_data _data, bool[] _remapped_CHRs )
 		{
 			// fix unremapped CHR's to avoid errors
-			int max_CHRs_cnt = _data.get_first_free_spr8x8_id();
+			int max_CHRs_cnt = _data.get_first_free_spr8x8_id();			
+			max_CHRs_cnt = ( max_CHRs_cnt < 0 ) ? utils.CONST_CHR_BANK_MAX_SPRITES_CNT:max_CHRs_cnt;
+			
 			for( int CHR_n = 0; CHR_n < max_CHRs_cnt; CHR_n++ )
 			{
 				if( !_remapped_CHRs[ CHR_n ] )
