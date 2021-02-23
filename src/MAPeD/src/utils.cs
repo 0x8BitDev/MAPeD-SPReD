@@ -911,6 +911,20 @@ namespace MAPeD
 			}
 		}
 		
+		public static int calc_progress_val( ref int _progress_val, int _max_parts, int _part_n )
+		{
+			_progress_val = ( 100 / ( _max_parts + 1 ) ) * ( _part_n + 1 );
+			
+			return _progress_val;
+		}
+		
+		public static int calc_progress_val_half( ref int _progress_val )
+		{
+			_progress_val += ( 100 - _progress_val ) >> 1;
+			
+			return _progress_val;
+		}
+		
 		public static int get_palette_len_by_file_ext( string _file_ext )
 		{
 			switch( _file_ext )

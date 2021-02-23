@@ -11,6 +11,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Threading.Tasks;
 
 namespace MAPeD
 {
@@ -21,6 +22,10 @@ namespace MAPeD
 	
 	public partial class MainForm : Form
 	{
+		private progress_form		m_progress_form		= null;
+		private Progress< int >		m_progress_val		= null;
+		private Progress< string >	m_progress_status	= null;
+		
 		private exporter_zx_sjasm	m_exp_zx_asm	= null;
 #if DEF_NES
 		private exporter_nes_asm	m_exp_nes_asm	= null;
@@ -101,15 +106,20 @@ namespace MAPeD
 			//
 			InitializeComponent();
 
-			m_data_manager 		= new data_sets_manager();
+			m_data_manager 	= new data_sets_manager();
 			
-			m_exp_zx_asm		= new exporter_zx_sjasm( m_data_manager );
+			m_progress_val		= new Progress< int >( percent => { progress_bar_value( percent ); } );
+			m_progress_status	= new Progress< string >( status => { progress_bar_status( status ); } );
+			
+			m_progress_form	= new progress_form();
+			
+			m_exp_zx_asm	= new exporter_zx_sjasm( m_data_manager );
 #if DEF_NES			
-			m_exp_nes_asm		= new exporter_nes_asm( m_data_manager );
+			m_exp_nes_asm	= new exporter_nes_asm( m_data_manager );
 #elif DEF_SMS
-			m_exp_sms_asm		= new exporter_sms_asm( m_data_manager );
+			m_exp_sms_asm	= new exporter_sms_asm( m_data_manager );
 #elif DEF_PCE
-			m_exp_pce_asm		= new exporter_pce_asm( m_data_manager );
+			m_exp_pce_asm	= new exporter_pce_asm( m_data_manager );
 #endif
 #if !DEF_NES
 			m_swap_colors_form	= new swap_colors_form();
@@ -316,6 +326,42 @@ namespace MAPeD
 			}
 		}
 
+		private void progress_bar_show( bool _on, string _operation = "" )
+		{
+			if( _on )
+			{
+				m_progress_form.Left	= this.Left + ( this.Width >> 1 ) - ( m_progress_form.Width >> 1 );
+				m_progress_form.Top		= this.Top + ( this.Height >> 1 ) - ( m_progress_form.Height >> 1 );
+
+				m_progress_form.Show( this );
+				
+				m_progress_form.operation_label.Text = _operation;
+				m_progress_form.operation_label.Update();
+
+				progress_bar_value( 0 );
+				progress_bar_status( "Please wait..." );
+				
+				set_status_msg( "" );
+			}
+			else
+			{
+				m_progress_form.Hide();
+			}
+		}
+		
+		private void progress_bar_value( int _val )
+		{
+			m_progress_form.progress_bar.Value = _val; 
+			m_progress_form.progress_bar.PerformStep();
+			m_progress_form.progress_bar.Update();
+		}
+		
+		private void progress_bar_status( string _status )
+		{
+			m_progress_form.status_label.Text = _status; 
+			m_progress_form.status_label.Update();
+		}
+		
 		private void OnFormClosing(object sender, FormClosingEventArgs e)
 		{
 			e.Cancel = true;
@@ -562,13 +608,15 @@ namespace MAPeD
 			project_load( ( ( FileDialog )sender ).FileName );
 		}
 
-		void project_load( string _filename )
+		async void project_load( string _filename )
 		{
 			FileStream 		fs = null;
 			BinaryReader 	br = null;
 			
 			try
 			{
+				progress_bar_show( true, "Project loading..." );
+				
 				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
 				
 				int load_scr_data_len 	= utils.get_scr_tiles_cnt_by_file_ext( file_ext );
@@ -602,7 +650,7 @@ namespace MAPeD
 								set_screen_data_type( scr_data_tiles4x4 ? data_sets_manager.EScreenDataType.sdt_Tiles4x4:data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
 							}
 							
-							m_data_manager.load( ver, br, file_ext, m_data_conversion_options_form.screens_align_mode, m_data_conversion_options_form.convert_colors );
+							m_data_manager.tiles_data_pos = await Task.Run( () => m_data_manager.load( ver, br, file_ext, m_data_conversion_options_form.screens_align_mode, m_data_conversion_options_form.convert_colors, m_progress_val, m_progress_status ) );
 							
 							uint post_flags = br.ReadUInt32();
 #if DEF_NES							
@@ -625,6 +673,8 @@ namespace MAPeD
 					
 					// update controls
 					{
+						progress_bar_status( "Data updating..." );
+						
 						int tiles_cnt = m_data_manager.tiles_data_cnt;
 						
 						for( int i = 0; i < tiles_cnt; i++ )
@@ -658,6 +708,8 @@ namespace MAPeD
 			{
 				reset();
 				
+				set_status_msg( "Project loading error" );
+				
 				message_box( _err.Message, "Project Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 
@@ -665,13 +717,15 @@ namespace MAPeD
 			{
 				if( br != null )
 				{
-					br.Close();
+					br.Dispose();
 				}
 				
 				if( fs != null )
 				{
-					fs.Close();
+					fs.Dispose();
 				}
+				
+				progress_bar_show( false );
 			}
 		}
 		
@@ -687,7 +741,7 @@ namespace MAPeD
 			}
 		}
 		
-		void ProjectSaveOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
+		async void ProjectSaveOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			// SAVE PROJECT...
 			String filename = ( ( FileDialog )sender ).FileName;
@@ -697,24 +751,29 @@ namespace MAPeD
 			
 			try
 			{
+				progress_bar_show( true, "Project saving..." );
+				
 				fs = new FileStream( filename, FileMode.Create, FileAccess.Write );
 				{
-					bw = new BinaryWriter( fs );
-					bw.Write( utils.CONST_PROJECT_FILE_MAGIC );
-					bw.Write( utils.CONST_PROJECT_FILE_VER );
+					await Task.Run( () => 
+					{
+						bw = new BinaryWriter( fs );
+						bw.Write( utils.CONST_PROJECT_FILE_MAGIC );
+						bw.Write( utils.CONST_PROJECT_FILE_VER );
+	
+						uint pre_flags = ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4:0;
+						bw.Write( pre_flags );
 
-					uint pre_flags = ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4:0;
-					bw.Write( pre_flags );
-					
-					m_data_manager.save( bw );
-
-					uint post_flags = ( uint )( CheckBoxPalettePerCHR.Checked ? utils.CONST_IO_DATA_POST_FLAG_MMC5:0 );
-					post_flags |= ( uint )( PropIdPerCHRToolStripMenuItem.Checked ? utils.CONST_IO_DATA_POST_FLAG_PROP_PER_CHR:0 );
-
-					bw.Write( post_flags );
-					
-					// save description
-					bw.Write( m_description_form.edit_text );
+						m_data_manager.save( bw, m_progress_val, m_progress_status );
+						
+						uint post_flags = ( uint )( CheckBoxPalettePerCHR.Checked ? utils.CONST_IO_DATA_POST_FLAG_MMC5:0 );
+						post_flags |= ( uint )( PropIdPerCHRToolStripMenuItem.Checked ? utils.CONST_IO_DATA_POST_FLAG_PROP_PER_CHR:0 );
+	
+						bw.Write( post_flags );
+						
+						// save description
+						bw.Write( m_description_form.edit_text );
+					});
 				}
 				
 				set_title_name( Path.GetFileNameWithoutExtension( filename ) );
@@ -723,6 +782,8 @@ namespace MAPeD
 			}
 			catch( Exception _err )
 			{
+				set_status_msg( "Project saving error" );
+				
 				message_box( _err.Message, "Project Saving Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
@@ -730,13 +791,15 @@ namespace MAPeD
 			{
 				if( bw != null )
 				{
-					bw.Close();
+					bw.Dispose();
 				}
 				
 				if( fs != null )
 				{
-					fs.Close();
+					fs.Dispose();
 				}
+				
+				progress_bar_show( false );
 			}
 		}
 		
@@ -908,12 +971,12 @@ namespace MAPeD
 			{
 				if( br != null )
 				{
-					br.Close();
+					br.Dispose();
 				}
 				
 				if( fs != null )
 				{
-					fs.Close();
+					fs.Dispose();
 				}
 			}
 		}
@@ -1060,12 +1123,11 @@ namespace MAPeD
 						
 					case ".json":
 						{
-							TextWriter tw = new StreamWriter( filename );
+							using( TextWriter tw = new StreamWriter( filename ) )
 							{
 								m_data_manager.save_JSON( tw );
 							}
-							tw.Close();
-                		}
+						}
 						break;
 						
 					case ".asm":

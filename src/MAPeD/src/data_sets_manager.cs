@@ -9,7 +9,6 @@ using System.IO;
 using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
@@ -45,11 +44,11 @@ namespace MAPeD
 		}
 	}
 	
-	public delegate bool ReturnBoolEvent( object sender, EventArgs e );
-	
 	[DataContract]
 	public class data_sets_manager
 	{
+		public delegate bool ReturnBoolEvent( object sender, EventArgs e );
+		
 		public event EventHandler SetLayoutData;
 		public event EventHandler SetTilesData;
 		public event EventHandler SetScreenData;
@@ -679,8 +678,10 @@ namespace MAPeD
 			return ( _pos >= 0 && _pos < layouts_data_cnt ) ? m_layouts_data[ _pos ]:null;
 		}
 		
-		public void save( BinaryWriter _bw )
+		public void save( BinaryWriter _bw, IProgress< int > _progress, IProgress< string > _status )
 		{
+			int save_progress = 0;
+
 			// TILES&SCREENS
 			{
 				_bw.Write( utils.CONST_IO_DATA_TILES_AND_SCREENS );
@@ -690,6 +691,8 @@ namespace MAPeD
 				for( int i = 0; i < m_tiles_data.Count; i++ )
 				{
 					m_tiles_data[ i ].save( _bw, screen_data_type );
+					
+					_progress.Report( utils.calc_progress_val( ref save_progress, m_tiles_data.Count, i ) );
 				}
 				
 				_bw.Write( m_tiles_data_pos );
@@ -711,6 +714,8 @@ namespace MAPeD
 					
 					ent_list.ForEach( delegate( entity_data _ent ) { _ent.save( _bw ); } ); 
 				}
+				
+				_progress.Report( utils.calc_progress_val_half( ref save_progress ) );
 			}
 			
 			// LAYOUTS
@@ -725,6 +730,8 @@ namespace MAPeD
 				}
 				
 				entity_instance.save_instances_counter( _bw );
+				
+				_progress.Report( utils.calc_progress_val_half( ref save_progress ) );
 			}
 			
 			// PALETTE
@@ -739,6 +746,7 @@ namespace MAPeD
 #if DEF_NES || DEF_SMS				
 				palette_group.Instance.save_main_palette( _bw );
 #endif
+				_progress.Report( utils.calc_progress_val_half( ref save_progress ) );
 			}
 			
 			// TILES PATTERNS
@@ -751,13 +759,17 @@ namespace MAPeD
 				{
 					m_tiles_data[ i ].save_tiles_patterns( _bw );
 				}
+				
+				_progress.Report( utils.calc_progress_val_half( ref save_progress ) );
 			}
 			
 			_bw.Write( utils.CONST_IO_DATA_END );
 		}
 		
-		public void load( byte _ver, BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode, bool _convert_colors )
+		public int load( byte _ver, BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode, bool _convert_colors, IProgress< int > _progress, IProgress< string > _status )
 		{
+			int load_progress = 0;
+			
 			byte data_id = 0;
 			int data_set_pos = 0;
 			
@@ -767,12 +779,16 @@ namespace MAPeD
 				
 				if( data_id == utils.CONST_IO_DATA_TILES_AND_SCREENS )
 				{
+					_status.Report( "Tiles && screens" );
+					
 					int data_cnt = _br.ReadInt32();
 					
 					for( int i = 0; i < data_cnt; i++ )
 					{
 						tiles_data_create();
 						get_tiles_data( tiles_data_pos ).load( _ver, _br, _file_ext, _scr_align_mode, screen_data_type );
+						
+						_progress.Report( utils.calc_progress_val( ref load_progress, data_cnt, i ) );
 					}
 					
 					data_set_pos = _br.ReadInt32();
@@ -780,6 +796,8 @@ namespace MAPeD
 				else
 				if( data_id == utils.CONST_IO_DATA_ENTITIES )
 				{
+					_status.Report( "Entities" );
+					
 					List< entity_data > ent_list;
 					
 					entity_data ent;
@@ -810,10 +828,14 @@ namespace MAPeD
 					}
 					
 					dispatch_event_set_entities_data();
+					
+					_progress.Report( utils.calc_progress_val_half( ref load_progress ) );
 				}
 				else
 				if( data_id == utils.CONST_IO_DATA_LAYOUT )
 				{
+					_status.Report( "Layouts" );
+					
 					int layouts_data_cnt = _br.ReadInt32();
 					
 					for( int i = 0; i < layouts_data_cnt; i++ )
@@ -823,10 +845,14 @@ namespace MAPeD
 					}
 					
 					entity_instance.load_instances_counter( _br );
+					
+					_progress.Report( utils.calc_progress_val_half( ref load_progress ) );
 				}
 				else				
 				if( data_id == utils.CONST_IO_DATA_PALETTE )
 				{
+					_status.Report( "Palette" );
+					
 					int i;
 					int plt_n;
 					int data_n;
@@ -918,21 +944,26 @@ namespace MAPeD
 						palette_group.Instance.load_main_palette( _br );
 					}
 #endif
+					_progress.Report( utils.calc_progress_val_half( ref load_progress ) );
 				}
 				else
 				if( data_id == utils.CONST_IO_DATA_TILES_PATTERNS )
 				{
+					_status.Report( "Tiles Patterns" );
+					
 					int data_cnt = _br.ReadInt32();
 					
 					for( int i = 0; i < data_cnt; i++ )
 					{
 						m_tiles_data[ i ].load_tiles_patterns( _ver, _br );
 					}
+
+					_progress.Report( utils.calc_progress_val_half( ref load_progress ) );
 				}
 			}
 			while( data_id != utils.CONST_IO_DATA_END );
 			
-			tiles_data_pos = data_set_pos;
+			return data_set_pos;
 		}
 		
 		public void save_JSON( TextWriter _tw )
