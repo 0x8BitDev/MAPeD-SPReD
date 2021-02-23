@@ -11,6 +11,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MAPeD
@@ -342,9 +343,13 @@ namespace MAPeD
 				progress_bar_status( "Please wait..." );
 				
 				set_status_msg( "" );
+				
+				Thread.Sleep( 250 );
 			}
 			else
 			{
+				Thread.Sleep( 250 );
+				
 				m_progress_form.Hide();
 			}
 		}
@@ -615,8 +620,6 @@ namespace MAPeD
 			
 			try
 			{
-				progress_bar_show( true, "Project loading..." );
-				
 				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
 				
 				int load_scr_data_len 	= utils.get_scr_tiles_cnt_by_file_ext( file_ext );
@@ -629,6 +632,8 @@ namespace MAPeD
 						return;
 					}
 				}
+
+				progress_bar_show( true, "Project loading..." );
 
 				reset();
 				
@@ -651,6 +656,8 @@ namespace MAPeD
 							}
 							
 							m_data_manager.tiles_data_pos = await Task.Run( () => m_data_manager.load( ver, br, file_ext, m_data_conversion_options_form.screens_align_mode, m_data_conversion_options_form.convert_colors, m_progress_val, m_progress_status ) );
+							
+							m_data_manager.post_load_update();
 							
 							uint post_flags = br.ReadUInt32();
 #if DEF_NES							
@@ -753,28 +760,28 @@ namespace MAPeD
 			{
 				progress_bar_show( true, "Project saving..." );
 				
-				fs = new FileStream( filename, FileMode.Create, FileAccess.Write );
-				{
 					await Task.Run( () => 
 					{
-						bw = new BinaryWriter( fs );
-						bw.Write( utils.CONST_PROJECT_FILE_MAGIC );
-						bw.Write( utils.CONST_PROJECT_FILE_VER );
+						fs = new FileStream( filename, FileMode.Create, FileAccess.Write );
+						{
+							bw = new BinaryWriter( fs );
+							bw.Write( utils.CONST_PROJECT_FILE_MAGIC );
+							bw.Write( utils.CONST_PROJECT_FILE_VER );
+		
+							uint pre_flags = ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4:0;
+							bw.Write( pre_flags );
 	
-						uint pre_flags = ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4:0;
-						bw.Write( pre_flags );
-
-						m_data_manager.save( bw, m_progress_val, m_progress_status );
-						
-						uint post_flags = ( uint )( CheckBoxPalettePerCHR.Checked ? utils.CONST_IO_DATA_POST_FLAG_MMC5:0 );
-						post_flags |= ( uint )( PropIdPerCHRToolStripMenuItem.Checked ? utils.CONST_IO_DATA_POST_FLAG_PROP_PER_CHR:0 );
-	
-						bw.Write( post_flags );
-						
-						// save description
-						bw.Write( m_description_form.edit_text );
+							m_data_manager.save( bw, m_progress_val, m_progress_status );
+							
+							uint post_flags = ( uint )( CheckBoxPalettePerCHR.Checked ? utils.CONST_IO_DATA_POST_FLAG_MMC5:0 );
+							post_flags |= ( uint )( PropIdPerCHRToolStripMenuItem.Checked ? utils.CONST_IO_DATA_POST_FLAG_PROP_PER_CHR:0 );
+		
+							bw.Write( post_flags );
+							
+							// save description
+							bw.Write( m_description_form.edit_text );
+						}
 					});
-				}
 				
 				set_title_name( Path.GetFileNameWithoutExtension( filename ) );
 				

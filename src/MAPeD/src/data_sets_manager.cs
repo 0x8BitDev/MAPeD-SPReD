@@ -827,7 +827,7 @@ namespace MAPeD
 						}
 					}
 					
-					dispatch_event_set_entities_data();
+					// dispatch_event_set_entities_data(); - moved to the post_load_update()
 					
 					_progress.Report( utils.calc_progress_val_half( ref load_progress ) );
 				}
@@ -964,6 +964,14 @@ namespace MAPeD
 			while( data_id != utils.CONST_IO_DATA_END );
 			
 			return data_set_pos;
+		}
+		
+		public void post_load_update()
+		{
+			if( entities_data.Count > 0 )
+			{
+				dispatch_event_set_entities_data();
+			}
 		}
 		
 		public void save_JSON( TextWriter _tw )
