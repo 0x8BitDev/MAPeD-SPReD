@@ -36,6 +36,7 @@ namespace MAPeD
 #endif
 		private List< int[] > m_subpalettes	= null;
 		
+		[IgnoreDataMember]
 		public List< int[] > subpalettes
 		{
 			get 
