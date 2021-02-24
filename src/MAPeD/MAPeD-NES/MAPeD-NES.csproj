@@ -193,6 +193,13 @@
     <Compile Include="..\src\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
+    <Compile Include="..\src\progress_form.cs">
+      <Link>progress_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\progress_form.Designer.cs">
+      <Link>progress_form.Designer.cs</Link>
+      <DependentUpon>progress_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\py_scripting\py_api.cs">
       <Link>py_scripting\py_api.cs</Link>
     </Compile>
@@ -306,6 +313,10 @@
     <EmbeddedResource Include="..\src\patterns_manager_form.resx">
       <Link>patterns_manager_form.resx</Link>
       <DependentUpon>patterns_manager_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\progress_form.resx">
+      <Link>progress_form.resx</Link>
+      <DependentUpon>progress_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\screen_mark_form.resx">
       <Link>screen_mark_form.resx</Link>

@@ -945,7 +945,12 @@ namespace MAPeD
 							{
 								if( br.BaseStream.Length == 192 )
 								{
-									palette_group.Instance.load_main_palette( br );
+									palette_group plt_grp = palette_group.Instance;
+									
+									plt_grp.load_main_palette( br );
+									
+									// update selected palette color
+									plt_grp.active_palette = 0;									
 									
 									update_graphics( true );
 									update_screens( false );

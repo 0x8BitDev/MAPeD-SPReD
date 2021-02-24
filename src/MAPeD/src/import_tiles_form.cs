@@ -601,9 +601,9 @@ namespace MAPeD
 				{
 					palette_group.Instance.get_palettes_arr()[ i ].update();
 				}				
-#if !DEF_NES
+
+				// update selected palette color
 				palette_group.Instance.active_palette = 0;
-#endif
 			}
 			else
 			{

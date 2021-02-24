@@ -45,7 +45,7 @@ namespace MAPeD
 						plt = m_plt_arr[ i ]; 
 						plt.active = true;
 						
-						m_sel_clr_ind = plt.get_color_inds()[ plt.color_slot ];						
+						m_sel_clr_ind = plt.get_color_inds()[ plt.color_slot ];
 						
 						update();
 					}
@@ -269,13 +269,6 @@ namespace MAPeD
 			{
 				m_main_palette[ i ] = _br.ReadByte() << 16 | _br.ReadByte() << 8 | _br.ReadByte();
 			}
-			
-			for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
-			{
-				m_plt_arr[ i ].update();
-			}
-				
-			update();
 		}
 		
 		private void update_palettes(object sender, EventArgs e)
