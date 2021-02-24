@@ -334,6 +334,7 @@ namespace MAPeD
 				m_progress_form.Left	= this.Left + ( this.Width >> 1 ) - ( m_progress_form.Width >> 1 );
 				m_progress_form.Top		= this.Top + ( this.Height >> 1 ) - ( m_progress_form.Height >> 1 );
 
+				this.Enabled = false;
 				m_progress_form.Show( this );
 				
 				m_progress_form.operation_label.Text = _operation;
@@ -351,6 +352,7 @@ namespace MAPeD
 				Thread.Sleep( 250 );
 				
 				m_progress_form.Hide();
+				this.Enabled = true;
 			}
 		}
 		
@@ -822,7 +824,7 @@ namespace MAPeD
 			}
 		}
 
-		void DataImportOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
+		async void DataImportOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			String filename = ( ( FileDialog )sender ).FileName;
 		
@@ -850,12 +852,35 @@ namespace MAPeD
 								{
 									if( m_import_tiles_form.ShowDialog() == DialogResult.OK )
 									{
-										m_import_tiles_form.data_processing( bmp, m_data_manager, create_layout_with_empty_screens );
+										progress_bar_show( true, "Image Data Importing..." );
+										
+										await Task.Run( () => m_import_tiles_form.data_processing( bmp, m_data_manager, create_layout_with_empty_screens_beg, m_progress_val, m_progress_status ) );
 										
 										if( m_import_tiles_form.import_game_map )
 										{
+											progress_bar_status( "Layout init..." );
+											
+											// add layout to UI
+											create_layout_with_empty_screens_end( m_import_tiles_form.level_layout );
+
+											// update palettes
+											if( m_import_tiles_form.apply_palette )
+											{
+												palette_group plt_grp = palette_group.Instance;
+												
+												for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+												{
+													plt_grp.get_palettes_arr()[ i ].update();
+												}				
+
+												// update selected palette color
+												plt_grp.active_palette = 0;
+											}
+											
 											if( m_import_tiles_form.delete_empty_screens )
 											{
+												progress_bar_status( "Empty screens deletion..." );
+												
 												if( delete_empty_screens() > 0 )
 												{
 													update_screens_list_box();
@@ -864,12 +889,18 @@ namespace MAPeD
 												}
 											}
 											
+											progress_bar_status( "Screens data init..." );
+											
 											// reset the layout mode
 											RBtnScreenEditModeSingle.Checked = true;
 											
 											update_screens( true, false );
 											
 											m_layout_editor.update_dimension_changes();
+										}
+										else
+										{
+											progress_bar_status( "Data updating..." );
 										}
 										
 										update_graphics( true );
@@ -990,6 +1021,8 @@ namespace MAPeD
 				{
 					fs.Dispose();
 				}
+				
+				progress_bar_show( false );
 			}
 		}
 
@@ -2477,13 +2510,10 @@ namespace MAPeD
 #endregion		
 // LAYOUT EDITOR *************************************************************************************//		
 #region layout editor
-		layout_data create_layout_with_empty_screens( int _scr_width, int _scr_height )
+		layout_data create_layout_with_empty_screens_beg( int _scr_width, int _scr_height )
 		{
 			if( m_data_manager.layout_data_create() == true )
 			{
-				ListBoxLayouts.Items.Add( m_data_manager.layouts_data_cnt - 1 );
-				m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;
-				
 				layout_data layout = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
 				
 				// create a level layout
@@ -2508,33 +2538,30 @@ namespace MAPeD
 					{
 						for( int x = 0; x < _scr_width; x++ )
 						{
-							if( m_data_manager.screen_data_create() == true )
+							m_data_manager.screen_data_create();
+							
+							scr_global_ind = m_data_manager.get_global_screen_ind( m_data_manager.tiles_data_pos, m_data_manager.scr_data_cnt - 1 );
+							
+							if( scr_global_ind < utils.CONST_SCREEN_MAX_CNT )
 							{
-								scr_global_ind = insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 );
-
-								if( scr_global_ind >= 0 )
-								{
-									ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
-									m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
-								
-									scr_data = layout.get_data( x, y );
-									scr_data.m_scr_ind = (byte)scr_global_ind;
-									layout.set_data( scr_data, x, y );
-								}
-								else
-								{
-									m_data_manager.screen_data_delete();
-									
-									throw new Exception( "Can't create screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
-								}
+								scr_data = layout.get_data( x, y );
+								scr_data.m_scr_ind = (byte)scr_global_ind;
+								layout.set_data( scr_data, x, y );
 							}
 							else
 							{
+								// clear all screens and layout
+								while( m_data_manager.scr_data_cnt > 0 )
+								{
+									m_data_manager.screen_data_delete();
+								}
+								
+								m_data_manager.layout_data_delete();
+								
 								throw new Exception( "Can't create screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
 							}
 						}
 					}
-					
 				}
 				
 				return layout;
@@ -2543,6 +2570,44 @@ namespace MAPeD
 			return null;
 		}
 
+		bool create_layout_with_empty_screens_end( layout_data _data )
+		{
+			if( _data != null )
+			{
+				m_data_manager.layouts_data_pos = m_data_manager.layouts_data_cnt - 1;
+				
+				ListBoxLayouts.Items.Add( m_data_manager.layouts_data_pos );
+				ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_pos;
+				
+				// create screens and fill the layout
+				{
+					int scr_local_ind;
+					int scr_global_ind;
+					
+					for( int y = 0; y < _data.get_height(); y++ )
+					{
+						for( int x = 0; x < _data.get_width(); x++ )
+						{
+							scr_global_ind = _data.get_data( x, y ).m_scr_ind;
+							scr_local_ind = m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, scr_global_ind );
+							
+							m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type );
+							
+							ListBoxScreens.Items.Add( ListBoxScreens.Items.Count );
+						}
+					}
+				}
+				
+				palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+				
+				m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
+				
+				return true;
+			}
+			
+			return false;
+		}
+		
 		private int insert_screen_into_layouts( int _scr_local_ind )
 		{
 			int scr_global_ind = m_data_manager.get_global_screen_ind( m_data_manager.tiles_data_pos, _scr_local_ind );
@@ -2859,7 +2924,7 @@ namespace MAPeD
 			{
 				if( m_data_manager.tiles_data_pos >= 0 && m_create_layout_form.ShowDialog() == DialogResult.OK )
 				{
-					if( create_layout_with_empty_screens( m_create_layout_form.layout_width, m_create_layout_form.layout_height ) != null )
+					if( create_layout_with_empty_screens_end( create_layout_with_empty_screens_beg( m_create_layout_form.layout_width, m_create_layout_form.layout_height ) ) != false )
 					{
 						reset_entity_instance_preview();
 						

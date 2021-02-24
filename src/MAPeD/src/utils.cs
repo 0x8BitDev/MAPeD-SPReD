@@ -913,7 +913,7 @@ namespace MAPeD
 		
 		public static int calc_progress_val( ref int _progress_val, int _max_parts, int _part_n )
 		{
-			_progress_val = ( 100 / ( _max_parts + 1 ) ) * ( _part_n + 1 );
+			_progress_val = ( int )( ( 100 / ( float )( _max_parts + 1 ) ) * ( float )( _part_n + 1 ) );
 			
 			return _progress_val;
 		}

@@ -18,6 +18,22 @@ namespace MAPeD
 	/// </summary>
 	public partial class import_tiles_form : Form
 	{
+		delegate void update_progress_bar();
+		
+		private layout_data	m_level_layout = null;
+		
+		public layout_data level_layout
+		{
+			get
+			{
+				layout_data data	= m_level_layout;
+				m_level_layout		= null;
+				
+				return data;
+			}
+			set {}
+		}
+		
 		public bool import_tiles
 		{
 			get { return CheckBoxTiles.Checked; }
@@ -33,6 +49,12 @@ namespace MAPeD
 		public bool delete_empty_screens
 		{
 			get { return CheckBoxDeleteEmptyScreens.Checked; }
+			set {}
+		}
+		
+		public bool apply_palette
+		{
+			get { return CheckBoxApplyPalette.Checked; }
 			set {}
 		}
 		
@@ -92,7 +114,7 @@ namespace MAPeD
 			return _data_manager.get_local_screen_ind( _data_manager.tiles_data_pos, _global_scr_ind );
 		}
 
-		public void data_processing( Bitmap _bmp, data_sets_manager _data_manager, Func< int, int, layout_data > _create_layout )
+		public void data_processing( Bitmap _bmp, data_sets_manager _data_manager, Func< int, int, layout_data > _create_layout, IProgress< int > _progress_val, IProgress< string > _progress_status )
 		{
 			bool import_game_map_as_is = true;
 
@@ -122,7 +144,7 @@ namespace MAPeD
 						}
 					}
 
-					import_image_data( import_game_map_as_is, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), _data_manager, _create_layout );
+					import_image_data( import_game_map_as_is, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), _data_manager, _create_layout, _progress_val, _progress_status );
 				}
 				else
 				{
@@ -140,7 +162,7 @@ namespace MAPeD
 			{
 				if( ( _bmp.Width > 0 && ( _bmp.Width % 16 ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % 16 ) == 0 ) )
 				{
-					import_image_data( false, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), null, null );
+					import_image_data( false, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), null, null, _progress_val, _progress_status );
 				}
 				else
 				{
@@ -151,9 +173,11 @@ namespace MAPeD
 		
 		public void import_image_data( 	bool 							_import_game_map_as_is,
 										Bitmap							_bmp,		                              
-		                              	tiles_data 						_data, 
-		                              	data_sets_manager 				_data_manager, 
-		                              	Func< int, int, layout_data > 	_create_layout )
+										tiles_data 						_data, 
+										data_sets_manager 				_data_manager, 
+										Func< int, int, layout_data > 	_create_layout,
+										IProgress< int > 				_progress_val,
+										IProgress< string > 			_progress_status )
 		{
 			BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, _bmp.Width, _bmp.Height ), ImageLockMode.ReadOnly, _bmp.PixelFormat );
 			
@@ -196,6 +220,19 @@ namespace MAPeD
 				int scr_tile_ind;
 				int scr_block_ind;
 
+				int tile_cnt	= ( _bmp.Width >> 4 ) * ( _bmp.Height >> 4 );
+				int tile_n		= 0;
+				int progress	= 0;
+				
+				update_progress_bar upd_progress = delegate() 
+				{
+					if( ( tile_n % 50 ) == 0 )
+					{
+						_progress_val.Report( utils.calc_progress_val( ref progress, tile_cnt, tile_n ) );
+					}
+					++tile_n;									
+				};
+				
 				if( import_tiles )
 				{
 					uint tile_data = 0;
@@ -226,8 +263,6 @@ namespace MAPeD
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 					bool half_tile = false;
 #endif
-					layout_data level_layout = null;
-					
 					if( import_game_map )
 					{
 						bmp_width	= ( bmp_width == 0 ) ? utils.CONST_SCREEN_WIDTH_PIXELS:bmp_width;
@@ -236,12 +271,18 @@ namespace MAPeD
 						scr_x_cnt = ( ( bmp_width % utils.CONST_SCREEN_WIDTH_PIXELS ) == 0 ) ? ( bmp_width / utils.CONST_SCREEN_WIDTH_PIXELS ):( bmp_width / utils.CONST_SCREEN_WIDTH_PIXELS ) + 1;
 						scr_y_cnt = ( ( bmp_height % utils.CONST_SCREEN_HEIGHT_PIXELS ) == 0 ) ? ( bmp_height / utils.CONST_SCREEN_HEIGHT_PIXELS ):( bmp_height / utils.CONST_SCREEN_HEIGHT_PIXELS ) + 1;
 						
-						level_layout = _create_layout( scr_x_cnt, scr_y_cnt );
+						m_level_layout = _create_layout( scr_x_cnt, scr_y_cnt );
 						
-						if( level_layout == null )
+						if( m_level_layout == null )
 						{
 							throw new Exception( "Can't create layout!\nThe maximum allowed number of layouts - " + utils.CONST_LAYOUT_MAX_CNT );
 						}
+						
+						_progress_status.Report( "Map data" );
+					}
+					else
+					{
+						_progress_status.Report( "Tiles data" );
 					}
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 					if( import_game_map )
@@ -315,7 +356,7 @@ namespace MAPeD
 											
 											MainForm.message_box( "The CHR Bank is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 											
-											import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
+											import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
 											
 											return;
 										}
@@ -331,7 +372,7 @@ namespace MAPeD
 												
 												MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 												
-												import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
+												import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
 												
 												return;
 											}
@@ -366,7 +407,7 @@ namespace MAPeD
 													
 													MainForm.message_box( "The tiles list is full!\n\nTry switching to the Blocks (2x2) mode.", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 													
-													import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
+													import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
 													
 													return;
 												}
@@ -382,11 +423,11 @@ namespace MAPeD
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 												scr_y = ( block_offset_y - block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
 	
-												_data.scr_data[ get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
+												_data.scr_data[ get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
 #else
 												scr_y = tile_y / utils.CONST_SCREEN_HEIGHT_PIXELS;
 												
-												_data.scr_data[ get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( tile_y >> 5 ) % utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
+												_data.scr_data[ get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( tile_y >> 5 ) % utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
 #endif
 											}
 										}
@@ -403,15 +444,17 @@ namespace MAPeD
 											{
 												scr_y = ( block_offset_y - block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
 	
-												_data.scr_data[ get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( block_offset_y % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 4 ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) ] = (byte)scr_block_ind;
+												_data.scr_data[ get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( block_offset_y % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 4 ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) ] = (byte)scr_block_ind;
 											}
 #else
 											scr_y = ( tile_y + block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
 											
-											_data.scr_data[ get_local_scr_ind( level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( ( tile_y + block_y ) >> 4 ) % utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) ] = (byte)scr_block_ind;
+											_data.scr_data[ get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( ( tile_y + block_y ) >> 4 ) % utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) ] = (byte)scr_block_ind;
 #endif
 										}
 									}
+
+									upd_progress();
 								}
 							}
 						}
@@ -421,6 +464,8 @@ namespace MAPeD
 				}
 				else
 				{
+					_progress_status.Report( CheckBoxBlocks.Checked ? "Blocks data":"CHR data" );
+					
 					// blocks/CHRs
 					for( int block_y = 0; block_y < _bmp.Height; block_y += 16 )
 					{
@@ -436,7 +481,7 @@ namespace MAPeD
 									
 									MainForm.message_box( "The CHR Bank is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 									
-									import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
+									import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
 									
 									return;
 								}
@@ -453,7 +498,7 @@ namespace MAPeD
 										
 										MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 										
-										import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
+										import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
 										
 										return;
 									}
@@ -464,6 +509,8 @@ namespace MAPeD
 									_data.blocks[ block_ind++ ] = block_data[ 3 ];
 								}
 							}
+
+							upd_progress();
 						}
 					}
 					
@@ -472,7 +519,7 @@ namespace MAPeD
 				
 				_bmp.UnlockBits( bmp_data );
 				
-				import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind );
+				import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
 			}
 		}
 		
@@ -570,10 +617,12 @@ namespace MAPeD
 			}
 		}
 		
-		private void import_bmp_palette( tiles_data _data, Bitmap _bmp, int _CHR_beg_ind, int _CHR_end_ind, int _block_beg_ind, int _block_end_ind )
+		private void import_bmp_palette( tiles_data _data, Bitmap _bmp, int _CHR_beg_ind, int _CHR_end_ind, int _block_beg_ind, int _block_end_ind, IProgress< string > _progress_status )
 		{
 			if( CheckBoxApplyPalette.Checked )
 			{
+				_progress_status.Report( "Palettes applying" );
+				
 				Color[] plt = _bmp.Palette.Entries;
 				
 				List< int[] > palettes = _data.subpalettes;
@@ -597,13 +646,6 @@ namespace MAPeD
 					apply_palettes_arr( plt, _data, _block_beg_ind, _block_end_ind );
 				}
 #endif
-				for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
-				{
-					palette_group.Instance.get_palettes_arr()[ i ].update();
-				}				
-
-				// update selected palette color
-				palette_group.Instance.active_palette = 0;
 			}
 			else
 			{
