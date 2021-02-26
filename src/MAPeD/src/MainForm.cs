@@ -339,7 +339,6 @@ namespace MAPeD
 				m_progress_form.progress_bar.Visible = _show_progress_bar;
 				
 				m_progress_form.operation_label.Text = _operation;
-				m_progress_form.operation_label.Update();
 
 				m_progress_form.Show( this );
 
@@ -371,7 +370,7 @@ namespace MAPeD
 		private void progress_bar_status( string _status )
 		{
 			m_progress_form.status_label.Text = _status; 
-			m_progress_form.status_label.Update();
+			m_progress_form.Update();
 		}
 		
 		private void OnFormClosing(object sender, FormClosingEventArgs e)
