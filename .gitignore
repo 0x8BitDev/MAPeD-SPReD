@@ -3,6 +3,8 @@
 /src/MAPeD/MAPeD-NES/obj/*
 /src/MAPeD/MAPeD-SMS/obj/*
 /src/MAPeD/MAPeD-PCE/obj/*
+/src/MAPeD/.vs/*
+/src/lib/SPSeD.dll
 /src/SPSeD/obj/*
 /samples/samples.sublime-project
 /samples/samples.sublime-workspace
