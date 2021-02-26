@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: sutr
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 22.02.2021
  * Time: 18:33
  */
@@ -54,6 +54,7 @@ namespace MAPeD
 			this.ProgressBar.Name = "ProgressBar";
 			this.ProgressBar.Size = new System.Drawing.Size(233, 19);
 			this.ProgressBar.Step = 5;
+			this.ProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
 			this.ProgressBar.TabIndex = 0;
 			// 
 			// OperationLabel
@@ -76,6 +77,7 @@ namespace MAPeD
 			this.Controls.Add(this.StatusLabel);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "progress_form";
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.ResumeLayout(false);
 		}

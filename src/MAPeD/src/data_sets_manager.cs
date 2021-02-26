@@ -678,10 +678,8 @@ namespace MAPeD
 			return ( _pos >= 0 && _pos < layouts_data_cnt ) ? m_layouts_data[ _pos ]:null;
 		}
 		
-		public void save( BinaryWriter _bw, IProgress< int > _progress, IProgress< string > _status )
+		public void save( BinaryWriter _bw )
 		{
-			int save_progress = 0;
-
 			// TILES&SCREENS
 			{
 				_bw.Write( utils.CONST_IO_DATA_TILES_AND_SCREENS );
@@ -691,8 +689,6 @@ namespace MAPeD
 				for( int i = 0; i < m_tiles_data.Count; i++ )
 				{
 					m_tiles_data[ i ].save( _bw, screen_data_type );
-					
-					_progress.Report( utils.calc_progress_val( ref save_progress, m_tiles_data.Count, i ) );
 				}
 				
 				_bw.Write( m_tiles_data_pos );
@@ -714,8 +710,6 @@ namespace MAPeD
 					
 					ent_list.ForEach( delegate( entity_data _ent ) { _ent.save( _bw ); } ); 
 				}
-				
-				_progress.Report( utils.calc_progress_val_half( ref save_progress ) );
 			}
 			
 			// LAYOUTS
@@ -730,8 +724,6 @@ namespace MAPeD
 				}
 				
 				entity_instance.save_instances_counter( _bw );
-				
-				_progress.Report( utils.calc_progress_val_half( ref save_progress ) );
 			}
 			
 			// PALETTE
@@ -746,7 +738,6 @@ namespace MAPeD
 #if DEF_NES || DEF_SMS				
 				palette_group.Instance.save_main_palette( _bw );
 #endif
-				_progress.Report( utils.calc_progress_val_half( ref save_progress ) );
 			}
 			
 			// TILES PATTERNS
@@ -759,8 +750,6 @@ namespace MAPeD
 				{
 					m_tiles_data[ i ].save_tiles_patterns( _bw );
 				}
-				
-				_progress.Report( utils.calc_progress_val_half( ref save_progress ) );
 			}
 			
 			_bw.Write( utils.CONST_IO_DATA_END );

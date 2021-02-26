@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MAPeD
 {
@@ -22,6 +23,8 @@ namespace MAPeD
 		
 		private data_sets_manager m_data_sets 	= null;
 		
+		private Action< bool, string, bool >	m_show_progress_wnd	= null;
+		
 		private bool m_need_update_screen_list	= false;
 		
 		public bool need_update_screen_list
@@ -30,9 +33,10 @@ namespace MAPeD
 			set {}
 		}
 		
-		public optimization_form( data_sets_manager _data_sets )
+		public optimization_form( data_sets_manager _data_sets, Action< bool, string, bool > _show_progress_wnd )
 		{
-			m_data_sets = _data_sets;
+			m_data_sets 		= _data_sets;
+			m_show_progress_wnd = _show_progress_wnd;
 			
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -61,6 +65,8 @@ namespace MAPeD
 					int stat_blocks		= 0;
 					int stat_CHRs		= 0;
 
+					m_show_progress_wnd( true, "Data checking...", false );
+					
 					if( CheckBoxGlobalOptimization.Checked )
 					{
 						m_data_sets.get_tiles_data().ForEach( delegate( tiles_data _data ) 
@@ -73,16 +79,20 @@ namespace MAPeD
 						optimization( true, data, ref stat_screens, ref stat_tiles, ref stat_blocks, ref stat_CHRs );
 					}
 					
+					m_show_progress_wnd( false, "", true );
+					
 					if( MainForm.message_box( String.Format( "As a result of the optimization the following data will be deleted:\n\nScreens: ~{0} \\ Tiles: ~{1} \\ Blocks: ~{2} \\ CHRs: ~{3}\n\nConfirm to continue...", stat_screens, stat_tiles, stat_blocks, stat_CHRs ), "Confirm The Optimization Results", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.No )
 					{
 						MainForm.set_status_msg( "Optimization canceled!" );
 						return;
 					}
-					
+
 					stat_screens	= 0;
 					stat_tiles		= 0;
 					stat_blocks		= 0;
 					stat_CHRs		= 0;
+					
+					m_show_progress_wnd( true, "Optimization...", false );
 					
 					if( CheckBoxGlobalOptimization.Checked )
 					{
@@ -95,6 +105,8 @@ namespace MAPeD
 					{
 						optimization( false, data, ref stat_screens, ref stat_tiles, ref stat_blocks, ref stat_CHRs );
 					}
+					
+					m_show_progress_wnd( false, "", true );
 					
 					m_need_update_screen_list = stat_screens > 0 ? true:false;
 					

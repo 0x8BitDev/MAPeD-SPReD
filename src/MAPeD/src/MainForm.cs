@@ -24,8 +24,8 @@ namespace MAPeD
 	public partial class MainForm : Form
 	{
 		private progress_form		m_progress_form		= null;
-		private Progress< int >		m_progress_val		= null;
-		private Progress< string >	m_progress_status	= null;
+		private IProgress< int >	m_progress_val		= null;
+		private IProgress< string >	m_progress_status	= null;
 		
 		private exporter_zx_sjasm	m_exp_zx_asm	= null;
 #if DEF_NES
@@ -192,7 +192,7 @@ namespace MAPeD
 			m_patterns_manager_form.subscribe_event( m_screen_editor );
 			m_screen_editor.subscribe_event( m_patterns_manager_form );
 			
-			m_optimization_form = new optimization_form( m_data_manager );
+			m_optimization_form = new optimization_form( m_data_manager, progress_bar_show );
 			m_optimization_form.UpdateGraphics += new EventHandler( MainForm_UpdateGraphicsAfterOptimization );
 			
 #if DEF_PALETTE16_PER_CHR
@@ -327,7 +327,7 @@ namespace MAPeD
 			}
 		}
 
-		private void progress_bar_show( bool _on, string _operation = "" )
+		private void progress_bar_show( bool _on, string _operation = "", bool _show_progress_bar = true )
 		{
 			if( _on )
 			{
@@ -335,10 +335,13 @@ namespace MAPeD
 				m_progress_form.Top		= this.Top + ( this.Height >> 1 ) - ( m_progress_form.Height >> 1 );
 
 				this.Enabled = false;
-				m_progress_form.Show( this );
+				
+				m_progress_form.progress_bar.Visible = _show_progress_bar;
 				
 				m_progress_form.operation_label.Text = _operation;
 				m_progress_form.operation_label.Update();
+
+				m_progress_form.Show( this );
 
 				progress_bar_value( 0 );
 				progress_bar_status( "Please wait..." );
@@ -351,6 +354,8 @@ namespace MAPeD
 			{
 				Thread.Sleep( 250 );
 				
+				m_progress_form.progress_bar.Visible = false;
+				
 				m_progress_form.Hide();
 				this.Enabled = true;
 			}
@@ -358,9 +363,9 @@ namespace MAPeD
 		
 		private void progress_bar_value( int _val )
 		{
-			m_progress_form.progress_bar.Value = _val; 
-			m_progress_form.progress_bar.PerformStep();
-			m_progress_form.progress_bar.Update();
+			m_progress_form.progress_bar.Value = _val;
+			m_progress_form.progress_bar.Increment( _val );
+			m_progress_form.progress_bar.Refresh();
 		}
 		
 		private void progress_bar_status( string _status )
@@ -750,7 +755,7 @@ namespace MAPeD
 			}
 		}
 		
-		async void ProjectSaveOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
+		void ProjectSaveOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			// SAVE PROJECT...
 			String filename = ( ( FileDialog )sender ).FileName;
@@ -760,30 +765,27 @@ namespace MAPeD
 			
 			try
 			{
-				progress_bar_show( true, "Project saving..." );
+				progress_bar_show( true, "Project saving...", false );
 				
-					await Task.Run( () => 
-					{
-						fs = new FileStream( filename, FileMode.Create, FileAccess.Write );
-						{
-							bw = new BinaryWriter( fs );
-							bw.Write( utils.CONST_PROJECT_FILE_MAGIC );
-							bw.Write( utils.CONST_PROJECT_FILE_VER );
-		
-							uint pre_flags = ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4:0;
-							bw.Write( pre_flags );
-	
-							m_data_manager.save( bw, m_progress_val, m_progress_status );
-							
-							uint post_flags = ( uint )( CheckBoxPalettePerCHR.Checked ? utils.CONST_IO_DATA_POST_FLAG_MMC5:0 );
-							post_flags |= ( uint )( PropIdPerCHRToolStripMenuItem.Checked ? utils.CONST_IO_DATA_POST_FLAG_PROP_PER_CHR:0 );
-		
-							bw.Write( post_flags );
-							
-							// save description
-							bw.Write( m_description_form.edit_text );
-						}
-					});
+				fs = new FileStream( filename, FileMode.Create, FileAccess.Write );
+				{
+					bw = new BinaryWriter( fs );
+					bw.Write( utils.CONST_PROJECT_FILE_MAGIC );
+					bw.Write( utils.CONST_PROJECT_FILE_VER );
+
+					uint pre_flags = ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4:0;
+					bw.Write( pre_flags );
+
+					m_data_manager.save( bw );
+					
+					uint post_flags = ( uint )( CheckBoxPalettePerCHR.Checked ? utils.CONST_IO_DATA_POST_FLAG_MMC5:0 );
+					post_flags |= ( uint )( PropIdPerCHRToolStripMenuItem.Checked ? utils.CONST_IO_DATA_POST_FLAG_PROP_PER_CHR:0 );
+
+					bw.Write( post_flags );
+					
+					// save description
+					bw.Write( m_description_form.edit_text );
+				}
 				
 				set_title_name( Path.GetFileNameWithoutExtension( filename ) );
 				
@@ -2111,6 +2113,8 @@ namespace MAPeD
 					
 					if( m_optimization_form.need_update_screen_list )
 					{
+						progress_bar_show( true, "Updating screens...", false );
+						
 						// update screens images
 						m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, -1 );
 						
@@ -2123,6 +2127,8 @@ namespace MAPeD
 						
 						m_layout_editor.set_active_screen( -1 );
 						m_layout_editor.update();
+						
+						progress_bar_show( false );
 					}
 					
 					m_screen_editor.reset_last_empty_tile_ind();
