@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="..\src\create_layout_form.cs">
       <Link>create_layout_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\create_layout_form.Designer.cs">
       <Link>create_layout_form.Designer.cs</Link>
@@ -95,6 +96,7 @@
     </Compile>
     <Compile Include="..\src\data_conversion_options_form.cs">
       <Link>data_conversion_options_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\data_conversion_options_form.Designer.cs">
       <Link>data_conversion_options_form.Designer.cs</Link>
@@ -105,6 +107,7 @@
     </Compile>
     <Compile Include="..\src\description_form.cs">
       <Link>description_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\description_form.Designer.cs">
       <Link>description_form.Designer.cs</Link>
@@ -118,6 +121,7 @@
     </Compile>
     <Compile Include="..\src\exporter_sms_asm.cs">
       <Link>exporter_sms_asm.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\exporter_sms_asm.Designer.cs">
       <Link>exporter_sms_asm.Designer.cs</Link>
@@ -125,6 +129,7 @@
     </Compile>
     <Compile Include="..\src\exporter_zx_asm.cs">
       <Link>exporter_zx_asm.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\exporter_zx_asm.Designer.cs">
       <Link>exporter_zx_asm.Designer.cs</Link>
@@ -132,6 +137,7 @@
     </Compile>
     <Compile Include="..\src\export_active_tile_block_set_form.cs">
       <Link>export_active_tile_block_set_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\export_active_tile_block_set_form.Designer.cs">
       <Link>export_active_tile_block_set_form.Designer.cs</Link>
@@ -148,6 +154,7 @@
     </Compile>
     <Compile Include="..\src\import_tiles_form.cs">
       <Link>import_tiles_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\import_tiles_form.Designer.cs">
       <Link>import_tiles_form.Designer.cs</Link>
@@ -160,6 +167,7 @@
       <Link>layout_editor.cs</Link>
     </Compile>
     <Compile Include="..\src\MainForm.cs">
+      <SubType>Form</SubType>
       <Link>MainForm.cs</Link>
     </Compile>
     <Compile Include="..\src\MainForm.Designer.cs">
@@ -168,6 +176,7 @@
     </Compile>
     <Compile Include="..\src\object_name_form.cs">
       <Link>object_name_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\object_name_form.Designer.cs">
       <Link>object_name_form.Designer.cs</Link>
@@ -175,6 +184,7 @@
     </Compile>
     <Compile Include="..\src\optimization_form.cs">
       <Link>optimization_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\optimization_form.Designer.cs">
       <Link>optimization_form.Designer.cs</Link>
@@ -195,6 +205,7 @@
     </Compile>
     <Compile Include="..\src\progress_form.cs">
       <Link>progress_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\progress_form.Designer.cs">
       <Link>progress_form.Designer.cs</Link>
@@ -208,6 +219,7 @@
     </Compile>
     <Compile Include="..\src\screen_mark_form.cs">
       <Link>screen_mark_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\screen_mark_form.Designer.cs">
       <Link>screen_mark_form.Designer.cs</Link>
@@ -215,6 +227,7 @@
     </Compile>
     <Compile Include="..\src\statistics_form.cs">
       <Link>statistics_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\statistics_form.Designer.cs">
       <Link>statistics_form.Designer.cs</Link>
@@ -225,6 +238,7 @@
     </Compile>
     <Compile Include="..\src\swap_colors_form.cs">
       <Link>swap_colors_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\swap_colors_form.Designer.cs">
       <Link>swap_colors_form.Designer.cs</Link>
@@ -232,6 +246,7 @@
     </Compile>
     <Compile Include="..\src\tab_page_container.cs">
       <Link>tab_page_container.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\tab_page_container.Designer.cs">
       <Link>tab_page_container.Designer.cs</Link>
@@ -239,6 +254,7 @@
     </Compile>
     <Compile Include="..\src\tiles_palette_form.cs">
       <Link>tiles_palette_form.cs</Link>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\tiles_palette_form.Designer.cs">
       <Link>tiles_palette_form.Designer.cs</Link>
@@ -351,9 +367,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="py_scripting" />
-    <Folder Include="tiles_processor" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

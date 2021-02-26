@@ -66,17 +66,24 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="py_api_doc.cs" />
+    <Compile Include="py_api_doc.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="py_api_doc.Designer.cs">
       <DependentUpon>py_api_doc.cs</DependentUpon>
     </Compile>
     <Compile Include="py_api_i.cs" />
-    <Compile Include="py_editor.cs" />
+    <Compile Include="py_editor.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="py_editor.Designer.cs">
       <DependentUpon>py_editor.cs</DependentUpon>
     </Compile>
-    <Compile Include="py_editor_doc_page.cs" />
+    <Compile Include="py_editor_doc_page.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="py_editor_doc_page.Designer.cs">
+      <SubType>Form</SubType>
       <DependentUpon>py_editor_doc_page.cs</DependentUpon>
     </Compile>
   </ItemGroup>
