@@ -64,6 +64,8 @@ namespace MAPeD
 					int stat_tiles		= 0;
 					int stat_blocks		= 0;
 					int stat_CHRs		= 0;
+					
+					m_need_update_screen_list = false;
 
 					m_show_progress_wnd( true, "Data checking...", false );
 					
