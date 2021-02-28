@@ -38,7 +38,7 @@ namespace MAPeD
 		
 		private int m_active_page	= 0;
 		
-		private GroupBox m_CHR_bank_grp_box = null;
+		private readonly GroupBox m_CHR_bank_grp_box = null;
 		
 		public CHR_bank_viewer( PictureBox _PBoxCHRBank, GroupBox _grp_box ) : base( _PBoxCHRBank )
 		{

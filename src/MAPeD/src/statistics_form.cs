@@ -15,7 +15,7 @@ namespace MAPeD
 	/// </summary>
 	public partial class statistics_form : Form
 	{
-		private data_sets_manager m_data_manager	= null;
+		private readonly data_sets_manager m_data_manager	= null;
 		
 		public statistics_form( data_sets_manager _data_manager )
 		{

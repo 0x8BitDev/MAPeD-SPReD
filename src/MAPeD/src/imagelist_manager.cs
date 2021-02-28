@@ -19,18 +19,18 @@ namespace MAPeD
 	/// </summary>
 	public class imagelist_manager
 	{
-		private ListView	m_listview_screens	= null;
+		private readonly ListView m_listview_screens	= null;
 		
-		private FlowLayoutPanel	m_panel_tiles	= null;
-		private FlowLayoutPanel	m_panel_blocks	= null;
+		private readonly FlowLayoutPanel m_panel_tiles	= null;
+		private readonly FlowLayoutPanel m_panel_blocks	= null;
 		
-		private ImageList	m_imagelist_blocks	= null;
-		private ImageList	m_imagelist_tiles	= null;
+		private readonly ImageList m_imagelist_blocks	= null;
+		private readonly ImageList m_imagelist_tiles	= null;
 		
 		private static Rectangle	m_block_rect	= new Rectangle( 0, 0, utils.CONST_BLOCKS_IMG_SIZE, utils.CONST_BLOCKS_IMG_SIZE );
 		private static Rectangle	m_tile_rect		= new Rectangle( 0, 0, utils.CONST_TILES_IMG_SIZE, utils.CONST_TILES_IMG_SIZE );
 		
-		private static int[]	m_clrs_arr = new int[ 16 ]{ 0x00ffffff, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x00ff4500, 0x00dc803c, 0x00406080, 0x00ffff00,	0x00ffa500, 0x0020b2aa, 0x0000ffff, 0x00808000,	0x00800080, 0x00c0c0c0,	0x007b68ee, 0xff1493 };
+		private readonly static int[]	m_clrs_arr = new int[ 16 ]{ 0x00ffffff, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x00ff4500, 0x00dc803c, 0x00406080, 0x00ffff00,	0x00ffa500, 0x0020b2aa, 0x0000ffff, 0x00808000,	0x00800080, 0x00c0c0c0,	0x007b68ee, 0xff1493 };
 		
 		private const int CONST_ALPHA = 0x60;
 		
@@ -78,7 +78,7 @@ namespace MAPeD
 			il.ImageSize = new Size( _size, _size );
 			il.ColorDepth = ColorDepth.Depth24Bit;// 32bit - way too slow rendering... I don't know why...
 			
-			Bitmap bmp = null;
+			Bitmap bmp;
 
 			for( i = 0; i < _cnt; i++ )
 			{
@@ -447,9 +447,6 @@ namespace MAPeD
 			int tile_id;
 			int tile_offs_x;
 			int tile_offs_y;
-			
-			uint[] 	blocks_arr 	= _data.blocks;
-			byte[] 	CHR_data 	= _data.CHR_bank;
 			
 			palette_group.Instance.set_palette( _data );
 

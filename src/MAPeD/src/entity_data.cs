@@ -146,8 +146,8 @@ namespace MAPeD
 			m_uid 		= _br.ReadInt32();
 			target_uid 	= _br.ReadInt32();
 		
-			bool nes_file = _file_ext == utils.CONST_NES_FILE_EXT ? true:false;
-			bool sms_file = _file_ext == utils.CONST_SMS_FILE_EXT ? true:false;
+			bool nes_file = ( _file_ext == utils.CONST_NES_FILE_EXT );
+			bool sms_file = ( _file_ext == utils.CONST_SMS_FILE_EXT );
 #if DEF_NES
 			if( sms_file )
 #elif DEF_SMS			

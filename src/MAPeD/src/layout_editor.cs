@@ -27,9 +27,10 @@ namespace MAPeD
 		public event EventHandler ScreenSelected;
 		public event EventHandler EntityInstanceSelected;
 
-		private bool 	m_dispatch_selection_mode		= false;
+		private bool 	m_dispatch_selection_mode			= false;
 		private int		m_dispatch_mode_sel_screen_slot_id	= -1;
-		private short[]	m_border_tiles	= null;
+
+		private readonly short[]	m_border_tiles	= null;
 
 		private int 	m_offset_x 		= 0;
 		private int 	m_offset_y 		= 0;
@@ -42,24 +43,24 @@ namespace MAPeD
 		private int		m_last_mouse_x	 = 0;
 		private int		m_last_mouse_y	 = 0;
 
-		private int 	m_scr_half_width  = 0;
-		private int 	m_scr_half_height = 0;
+		private readonly int m_scr_half_width  = 0;
+		private readonly int m_scr_half_height = 0;
 		
 		private int 	m_sel_screen_slot_id	= -1;
 		private byte	m_active_screen_index	= layout_data.CONST_EMPTY_CELL_ID;
 		
-		private ImageAttributes m_scr_img_attr		= null;
-		private Rectangle		m_scr_img_rect;
+		private readonly ImageAttributes m_scr_img_attr	= null;
+		private Rectangle 			m_scr_img_rect;
 		
 		private Rectangle			m_pbox_rect;
 		
-		private layout_data			m_layout		= null;
+		private layout_data			m_layout = null;
 		
-		private List< tiles_data > 	m_tiles_data	= null;
+		private readonly List< tiles_data > 	m_tiles_data	= null;
 		
-		private ListView 	m_listview_screens		= null;
+		private readonly ListView m_listview_screens			= null;
 		
-		private Label		m_label					= null;
+		private readonly Label m_label				= null;
 		
 		private entity_data		m_ent_data			= null;
 		private entity_instance	m_ent_inst			= null;
@@ -68,7 +69,7 @@ namespace MAPeD
 		
 		private bool 	m_ent_inst_captured			= false;
 		
-		private int[] 	m_adjacent_scr_arr			= null;
+		private readonly int[] 	m_adjacent_scr_arr	= null;
 		
 		private bool	m_high_quality_render		= true;
 		
@@ -356,7 +357,7 @@ namespace MAPeD
 		
 		private void screen_editor_mode_changed( object sender, EventArgs e )
 		{
-			m_dispatch_selection_mode 		= ( sender as screen_editor ).mode == screen_editor.EMode.em_Layout ? true:false;
+			m_dispatch_selection_mode = ( ( sender as screen_editor ).mode == screen_editor.EMode.em_Layout );
 			m_dispatch_mode_sel_screen_slot_id 	= -1;
 			
 			update();
@@ -515,7 +516,7 @@ namespace MAPeD
 			
 			screen_data scr_data = m_layout.get_data( _scr_pos_x, _scr_pos_y );
 
-			bool valid_pos = ( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID ) ? true:false;
+			bool valid_pos = ( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID );
 			
 			if( valid_pos == true )
 			{
@@ -650,7 +651,7 @@ namespace MAPeD
 				
 				screen_data scr_data = m_layout.get_data( scr_pos_x, scr_pos_y );
 				
-				bool valid_pos = ( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID ) ? true:false;
+				bool valid_pos = ( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID );
 				
 				if( valid_pos == true && check_entity_pos( ref ent_pos_x, ref ent_pos_y, _ent_data ) )
 				{
@@ -694,7 +695,7 @@ namespace MAPeD
 				
 				screen_data scr_data = m_layout.get_data( scr_pos_x, scr_pos_y );
 				
-				bool valid_pos = ( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID ) ? true:false;
+				bool valid_pos = ( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID );
 				
 				if( valid_pos == true && check_entity_pos( ref ent_pos_x, ref ent_pos_y, _ent_inst.base_entity ) )
 				{
@@ -1622,9 +1623,9 @@ namespace MAPeD
 					_border_tiles = m_border_tiles;
 					
 					tiles_data 	btiles_data 	= null;
-					int 		bscr_ind		= -1;
 					int 		bCHR_ind		= -1;
 					int 		bank_scr_ind	= -1;
+					int			bscr_ind;
 					int			tile_offset;
 					
 					int sel_scr_pos_x = m_dispatch_mode_sel_screen_slot_id % get_width();
@@ -1785,7 +1786,7 @@ namespace MAPeD
 			
 			if( _scr_ind >= 0 && _scr_ind < width * get_height() )
 			{
-				return ( m_layout.get_data( _scr_ind % width, _scr_ind / width ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID ) ? true:false;
+				return ( m_layout.get_data( _scr_ind % width, _scr_ind / width ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID );
 			}
 			
 			return false;
@@ -1793,7 +1794,7 @@ namespace MAPeD
 		
 		private bool valid_screen_slot( int _pos_x, int _pos_y )
 		{
-			return ( _pos_x >= 0 && _pos_x < get_width() && _pos_y >= 0 && _pos_y < get_height() ) ? true:false;
+			return ( _pos_x >= 0 && _pos_x < get_width() && _pos_y >= 0 && _pos_y < get_height() );
 		}
 		
 		private void get_snapped_pos( ref int _x, ref int _y, bool _pix_space = true )

@@ -22,11 +22,11 @@ namespace MAPeD
 		public event EventHandler BlockSelected;
 		public event EventHandler ResetActiveTile;
 		
-		private ImageList m_tiles_image_list 	= null;
-		private ImageList m_blocks_image_list	= null;
+		private readonly ImageList m_tiles_image_list 	= null;
+		private readonly ImageList m_blocks_image_list	= null;
 		
-		private ContextMenuStrip	m_cm_tiles	= null;
-		private ContextMenuStrip	m_cm_blocks	= null;
+		private readonly ContextMenuStrip m_cm_tiles	= null;
+		private readonly ContextMenuStrip m_cm_blocks	= null;
 		
 		private int m_active_item_id = -1;
 		
@@ -145,7 +145,7 @@ namespace MAPeD
 		
 		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
 		{
-			PanelPaletteTiles.Enabled = ( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? true:false;
+			PanelPaletteTiles.Enabled = ( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
 			
 			reset();
 		}

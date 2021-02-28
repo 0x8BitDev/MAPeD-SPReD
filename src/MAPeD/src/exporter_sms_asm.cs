@@ -27,14 +27,13 @@ namespace MAPeD
 	public partial class exporter_sms_asm : Form
 	{
 #if DEF_SMS
-		private data_sets_manager m_data_mngr = null;
+		private readonly data_sets_manager m_data_mngr = null;
 		
 		private string	m_filename			= null;
 		private string	m_path				= null;
 		private string 	m_path_filename_ext	= null;
 		private string 	m_path_filename		= null;
 		
-		private const string	CONST_FILENAME_LEVEL_POSTFIX	= "_Lev";
 		private const string	CONST_FILENAME_LEVEL_PREFIX		= "Lev";
 		private const string	CONST_BIN_EXT					= ".bin";
 	
@@ -1058,13 +1057,12 @@ namespace MAPeD
 
 		private bool compress_and_save_byte( BinaryWriter _bw, byte[] _data, ref int _data_offset )
 		{
-			byte[] rle_data_arr	= null;
-			int rle_data_size 	= 0;
-			
 			if( CheckBoxRLE.Checked )
 			{
-				rle_data_size = utils.RLE( _data, ref rle_data_arr );
-				
+				byte[] rle_data_arr	= null;
+
+				int rle_data_size = utils.RLE( _data, ref rle_data_arr );
+
 				if( rle_data_size < 0 )
 				{
 					return false;
@@ -1090,17 +1088,16 @@ namespace MAPeD
 
 		private bool compress_and_save_ushort( BinaryWriter _bw, ushort[] _data, ref int _data_offset )
 		{
-			byte[] rle_data_arr	= null;
-			int rle_data_size 	= 0;
-			
 			byte[] data_copy = new byte[ _data.Length << 1 ];
 			
 			Buffer.BlockCopy( _data, 0, data_copy, 0, data_copy.Length );
 			
 			if( CheckBoxRLE.Checked )
 			{
-				rle_data_size = utils.RLE( data_copy, ref rle_data_arr );
-				
+				byte[] rle_data_arr	= null;
+
+				int rle_data_size = utils.RLE( data_copy, ref rle_data_arr );
+
 				if( rle_data_size < 0 )
 				{
 					return false;

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 29.05.2019
  * Time: 18:27
  */
@@ -182,16 +182,14 @@ namespace SPSeD
 		
 		void update_line_numbers()
 		{
-			Bitmap pbox_bmp = null;
-			
 			if( LineNumberPixBox.Image == null || ( LineNumberPixBox.Width != LineNumberPixBox.Image.Width || LineNumberPixBox.Height != LineNumberPixBox.Image.Height ) )
 			{
 				if( LineNumberPixBox.Image != null )
 				{
 					LineNumberPixBox.Image.Dispose();
 				}
-				
-				pbox_bmp = new Bitmap( LineNumberPixBox.Width, LineNumberPixBox.Height, PixelFormat.Format32bppArgb );
+
+				Bitmap pbox_bmp = new Bitmap( LineNumberPixBox.Width, LineNumberPixBox.Height, PixelFormat.Format32bppArgb );
 				LineNumberPixBox.Image = pbox_bmp;
 				
 				m_gfx = Graphics.FromImage( pbox_bmp );
@@ -206,17 +204,17 @@ namespace SPSeD
 				int pix_offset = ( ScriptTextBox.GetPositionFromCharIndex( 0 ).Y % m_line_height );
 	
 				m_tmp_pos.X = m_tmp_pos.Y = 0;
-			    int first_ind	= ScriptTextBox.GetCharIndexFromPosition( m_tmp_pos );
-			    int first_line	= ScriptTextBox.GetLineFromCharIndex( first_ind );			
-	    
+				int first_ind	= ScriptTextBox.GetCharIndexFromPosition( m_tmp_pos );
+				int first_line	= ScriptTextBox.GetLineFromCharIndex( first_ind );
+
 				m_tmp_pos.X = ClientRectangle.Width;
 				m_tmp_pos.Y = ClientRectangle.Height;
 				int last_ind	= ScriptTextBox.GetCharIndexFromPosition( m_tmp_pos );
 				int last_line	= ScriptTextBox.GetLineFromCharIndex( last_ind );
 				
-				int y_step 		= 0;
-				int line_offset = 0;
-	    
+				int line_offset;
+				int y_step;
+
 				for( int i = 0; i <= last_line - first_line; i++ )
 				{
 					line_offset = first_line + i;
@@ -230,37 +228,37 @@ namespace SPSeD
 			LineNumberPixBox.Invalidate();
 		}
 		
-		public void update_line_number_pixbox_width()    
-        {    
+		public void update_line_number_pixbox_width()
+		{
 			int width = ( int )( m_gfx.MeasureString( "0", ScriptTextBox.Font ).Width ) + 1;
-			int mul = 0;
-            
-            int lines = ScriptTextBox.Lines.Length;    
-    
-            if( lines <= 99 )
-            {    
-            	mul = 2;
-            }    
-            else 
-            if( lines <= 999 )
-            {    
-                mul = 3;    
-            }    
-            else    
-            {    
-                mul = 4;    
-            }    
-    
-            width = width * mul;
-            
-            LineNumberScriptFieldSplitContainer.IsSplitterFixed = false;
-            {
-            	LineNumberPixBox.Width 									= width;
-	            LineNumberScriptFieldSplitContainer.Panel1MinSize 		= width;
-	            LineNumberScriptFieldSplitContainer.SplitterDistance 	= width;
-            }
-            LineNumberScriptFieldSplitContainer.IsSplitterFixed = true;
-        }
+			int mul;
+			
+			int lines = ScriptTextBox.Lines.Length;
+	
+			if( lines <= 99 )
+			{
+				mul = 2;
+			}
+			else 
+			if( lines <= 999 )
+			{
+				mul = 3;
+			}
+			else
+			{
+				mul = 4;
+			}
+
+			width *= mul;
+			
+			LineNumberScriptFieldSplitContainer.IsSplitterFixed = false;
+			{
+				LineNumberPixBox.Width 									= width;
+				LineNumberScriptFieldSplitContainer.Panel1MinSize 		= width;
+				LineNumberScriptFieldSplitContainer.SplitterDistance 	= width;
+			}
+			LineNumberScriptFieldSplitContainer.IsSplitterFixed = true;
+		}
 		
 		public bool get_data_changed_flag()
 		{

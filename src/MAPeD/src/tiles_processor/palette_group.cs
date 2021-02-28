@@ -59,7 +59,7 @@ namespace MAPeD
 			}
 		}
 		
-		private palette_small[] m_plt_arr	= null;
+		private readonly palette_small[] m_plt_arr	= null;
 		
 		private static int[] m_main_palette = null;
 		

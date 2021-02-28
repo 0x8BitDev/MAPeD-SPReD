@@ -23,37 +23,37 @@ namespace MAPeD
 	
 	public partial class MainForm : Form
 	{
-		private progress_form		m_progress_form		= null;
-		private IProgress< int >	m_progress_val		= null;
-		private IProgress< string >	m_progress_status	= null;
+		private readonly progress_form m_progress_form				= null;
+		private readonly IProgress< int >	m_progress_val			= null;
+		private readonly IProgress< string >	m_progress_status	= null;
 		
-		private exporter_zx_sjasm	m_exp_zx_asm	= null;
+		private readonly exporter_zx_sjasm m_exp_zx_asm		= null;
 #if DEF_NES
-		private exporter_nes_asm	m_exp_nes_asm	= null;
+		private readonly exporter_nes_asm	m_exp_nes_asm	= null;
 #elif DEF_SMS
-		private exporter_sms_asm	m_exp_sms_asm		= null;
+		private readonly exporter_sms_asm	m_exp_sms_asm	= null;
 #elif DEF_PCE
-		private exporter_pce_asm	m_exp_pce_asm		= null;
+		private readonly exporter_pce_asm m_exp_pce_asm		= null;
 #endif
 #if !DEF_NES
-		private swap_colors_form	m_swap_colors_form	= null;
+		private readonly swap_colors_form m_swap_colors_form	= null;
 #endif
-		private data_conversion_options_form	m_data_conversion_options_form	= null;
+		private readonly data_conversion_options_form m_data_conversion_options_form	= null;
 		
-		private data_sets_manager	m_data_manager		= null;
-		private tiles_processor		m_tiles_processor	= null;		
-		private screen_editor		m_screen_editor		= null;
-		private layout_editor		m_layout_editor		= null;
+		private readonly data_sets_manager m_data_manager	= null;
+		private readonly tiles_processor m_tiles_processor	= null;	
+		private readonly screen_editor m_screen_editor		= null;
+		private readonly layout_editor m_layout_editor		= null;
 		
-		private tiles_palette_form		m_tiles_palette_form	= null;
-		private patterns_manager_form	m_patterns_manager_form	= null;
-		private optimization_form		m_optimization_form		= null;
-		private object_name_form		m_object_name_form		= null;
-		private import_tiles_form		m_import_tiles_form		= null;
-		private screen_mark_form		m_screen_mark_form		= null;
-		private description_form		m_description_form		= null;
-		private statistics_form			m_statistics_form		= null;
-		private create_layout_form		m_create_layout_form	= null;
+		private readonly tiles_palette_form m_tiles_palette_form		= null;
+		private readonly patterns_manager_form m_patterns_manager_form	= null;
+		private readonly optimization_form m_optimization_form			= null;
+		private readonly object_name_form m_object_name_form			= null;
+		private readonly import_tiles_form m_import_tiles_form			= null;
+		private readonly screen_mark_form m_screen_mark_form			= null;
+		private readonly description_form m_description_form			= null;
+		private readonly statistics_form m_statistics_form				= null;
+		private readonly create_layout_form m_create_layout_form		= null;
 		
 		private SPSeD.py_editor		m_py_editor	= null;
 
@@ -62,14 +62,14 @@ namespace MAPeD
 #endif
 		private bool m_project_loaded	= false;
 		
-		private export_active_tile_block_set_form	m_export_active_tile_block_set_form	= null;
+		private readonly export_active_tile_block_set_form m_export_active_tile_block_set_form	= null;
 		
-		private image_preview		m_entity_preview	= null;
+		private readonly image_preview m_entity_preview	= null;
 		
 		private int	m_block_copy_item_ind	= -1;
 		private int	m_tile_copy_item_ind	= -1;
 		
-		private imagelist_manager	m_imagelist_manager	= null;
+		private readonly imagelist_manager m_imagelist_manager	= null;
 		
 		private static ToolStripStatusLabel	m_status_bar_label = null;
 		
@@ -656,7 +656,7 @@ namespace MAPeD
 							{
 								uint pre_flags = br.ReadUInt32();
 								
-								bool scr_data_tiles4x4 = ( ( pre_flags & utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 ) == utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 ) ? true:false;
+								bool scr_data_tiles4x4 = ( ( pre_flags & utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 ) == utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 );
 								
 								set_screen_data_type( scr_data_tiles4x4 ? data_sets_manager.EScreenDataType.sdt_Tiles4x4:data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
 							}
@@ -667,7 +667,7 @@ namespace MAPeD
 							
 							uint post_flags = br.ReadUInt32();
 #if DEF_NES							
-							CheckBoxPalettePerCHR.Checked 	= ( ( post_flags & utils.CONST_IO_DATA_POST_FLAG_MMC5 ) == utils.CONST_IO_DATA_POST_FLAG_MMC5 ? true:false );
+							CheckBoxPalettePerCHR.Checked 	= ( ( post_flags & utils.CONST_IO_DATA_POST_FLAG_MMC5 ) == utils.CONST_IO_DATA_POST_FLAG_MMC5 );
 #endif
 							property_id_per_block( ( ( post_flags & utils.CONST_IO_DATA_POST_FLAG_PROP_PER_CHR ) == utils.CONST_IO_DATA_POST_FLAG_PROP_PER_CHR ? false:true ) );
 
@@ -1225,18 +1225,18 @@ namespace MAPeD
 			
 			if( utils.is_win )
 			{
-				System.Diagnostics.Process process = System.Diagnostics.Process.Start( doc_path );
+				System.Diagnostics.Process.Start( doc_path );
 			}
 			else
 			if( utils.is_linux )
 			{
-				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "xdg-open", doc_path );
+				System.Diagnostics.Process.Start( "xdg-open", doc_path );
 			}
 			else
 			if( utils.is_macos )
 			{
 				// need to test it...
-				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "open", doc_path );
+				System.Diagnostics.Process.Start( "open", doc_path );
 			}
 		}
 		
@@ -1870,7 +1870,6 @@ namespace MAPeD
 			{
 				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 				
-				byte[] 	CHR_data = data.CHR_bank;
 				uint 	block_val;
 				int 	chr_ind;
 				
@@ -2154,7 +2153,7 @@ namespace MAPeD
 		
 		void BtnTileReserveBlocksClick_Event(object sender, EventArgs e)
 		{
-			int block_ind = -1;
+			int block_ind;
 			
 			if( ( block_ind = m_tiles_processor.tile_reserve_blocks( m_data_manager ) ) >= 0 )
 			{
@@ -2379,7 +2378,7 @@ namespace MAPeD
 		{
 			if( ListBoxScreens.Items.Count > 0 && message_box( "Delete all one tile filled screens?", "Clean Up", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
-				int deleted_screens_cnt = 0;
+				int deleted_screens_cnt;
 				
 				if( ( deleted_screens_cnt = delete_empty_screens() ) > 0 )
 				{
@@ -2720,7 +2719,7 @@ namespace MAPeD
 		
 		void BtnLayoutRemoveTopRowClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1 ? true:false; }, delegate( layout_data _data ) { return _data.remove_up(); }, "Remove Top Row" );
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data ) { return _data.remove_up(); }, "Remove Top Row" );
 		}
 		
 		void BtnLayoutAddDownRowClick_Event(object sender, EventArgs e)
@@ -2737,7 +2736,7 @@ namespace MAPeD
 		
 		void BtnLayoutRemoveBottomRowClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1 ? true:false; }, delegate( layout_data _data ) { return _data.remove_down(); }, "Remove Bottom Row" );
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data ) { return _data.remove_down(); }, "Remove Bottom Row" );
 		}
 		
 		void BtnLayoutAddLeftColumnClick_Event(object sender, EventArgs e)
@@ -2754,7 +2753,7 @@ namespace MAPeD
 		
 		void BtnLayoutRemoveLeftColumnClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1 ? true:false; }, delegate( layout_data _data ) { return _data.remove_left(); }, "Remove Left Column" );
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data ) { return _data.remove_left(); }, "Remove Left Column" );
 		}
 		
 		void BtnLayoutAddRightColumnClick_Event(object sender, EventArgs e)
@@ -2771,7 +2770,7 @@ namespace MAPeD
 	
 		void BtnLayoutRemoveRightColumnClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1 ? true:false; }, delegate( layout_data _data ) { return _data.remove_right(); }, "Remove Right Column" );				
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data ) { return _data.remove_right(); }, "Remove Right Column" );				
 		}
 
 		void delete_layout_row_column( Func< layout_data, bool > _condition, Func< layout_data, bool > _act, string _caption_msg )
@@ -3092,7 +3091,7 @@ namespace MAPeD
 					{
 						m_data_manager.layout_swap( ListBoxLayouts.SelectedIndex, ListBoxLayouts.SelectedIndex + 1 );
 						
-						ListBoxLayouts.SelectedIndex = ListBoxLayouts.SelectedIndex + 1;
+						++ListBoxLayouts.SelectedIndex;
 					}
 				}
 				else
@@ -3112,7 +3111,7 @@ namespace MAPeD
 					{
 						m_data_manager.layout_swap( ListBoxLayouts.SelectedIndex, ListBoxLayouts.SelectedIndex - 1 );
 						
-						ListBoxLayouts.SelectedIndex = ListBoxLayouts.SelectedIndex - 1;
+						--ListBoxLayouts.SelectedIndex;
 					}
 				}
 				else
@@ -3131,7 +3130,7 @@ namespace MAPeD
 		{
 			ScreensShowAllBanksToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
 			
-			update_screens_by_bank_id( true, need_update_screens() ? true:false );
+			update_screens_by_bank_id( true, need_update_screens() );
 			
 			m_layout_editor.update();
 		}
@@ -3471,9 +3470,7 @@ namespace MAPeD
 			string ent_name = args.param1 as string;
 			string grp_name = args.param2 as string;
 			
-			TreeNode[] nodes_arr = null;
-			
-			nodes_arr = TreeViewEntities.Nodes.Find( ent_name, true );
+			TreeNode[] nodes_arr = TreeViewEntities.Nodes.Find( ent_name, true );
 			
 			if( nodes_arr.Length > 0 )
 			{
@@ -3551,11 +3548,11 @@ namespace MAPeD
 #region entity properties editor
 		void fill_entity_data( entity_data _ent, string _inst_prop = "", string _inst_name = "", int _targ_uid = -1 )
 		{
-			groupBoxEntityEditor.Enabled = ( _ent != null ) ? true:false;
+			groupBoxEntityEditor.Enabled = ( _ent != null );
 			
 			if( _ent != null )
 			{
-				bool edit_inst_mode = ( m_layout_editor.mode == layout_editor.EMode.em_EditInstances || m_layout_editor.mode == layout_editor.EMode.em_PickupTargetEntity ) ? true:false;
+				bool edit_inst_mode = ( m_layout_editor.mode == layout_editor.EMode.em_EditInstances || m_layout_editor.mode == layout_editor.EMode.em_PickupTargetEntity );
 
 				NumericUpDownEntityUID.Value 	= _ent.uid;
 				NumericUpDownEntityWidth.Value 	= _ent.width;
@@ -3596,7 +3593,7 @@ namespace MAPeD
 
 			CheckBoxPickupTargetEntity.Text		= "Target UID: " + ( _targ_uid < 0 ? "none":_targ_uid.ToString() );
 			
-			update_entity_preview( ( _ent == null ) ? true:false );
+			update_entity_preview( _ent == null );
 		}
 
 		void PBoxColorClick(object sender, EventArgs e)
@@ -3761,13 +3758,11 @@ namespace MAPeD
 				if( bmp != null )
 				{
 					bmp.Dispose();
-					bmp = null;
 				}
 
 				if( unlocked_bmp != null )
 				{
 					unlocked_bmp.Dispose();
-					unlocked_bmp = null;
 				}
 				
 				message_box( _err.Message, "Entity Image Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error );

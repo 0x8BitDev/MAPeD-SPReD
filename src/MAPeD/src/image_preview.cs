@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 21.12.2018
  * Time: 16:34
  */
@@ -15,8 +15,8 @@ namespace MAPeD
 	/// </summary>
 	public class image_preview : drawable_base
 	{
-		private int m_scr_half_width  = 0;
-		private int m_scr_half_height = 0;
+		private readonly int m_scr_half_width  = 0;
+		private readonly int m_scr_half_height = 0;
 		
 		private Rectangle m_rect;
 		

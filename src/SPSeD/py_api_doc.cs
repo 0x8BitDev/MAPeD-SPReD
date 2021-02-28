@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 24.05.2019
  * Time: 18:57
  */
@@ -54,7 +54,7 @@ namespace SPSeD
 
 		public static bool is_active()
 		{
-			return m_instance != null ? true:false;
+			return m_instance != null;
 		}
 		
 		public static void set_focus()

@@ -140,7 +140,7 @@ namespace MAPeD
 								throw new Exception( "Operation aborted!" );
 							}
 							
-							import_game_map_as_is = ( dlg_res == DialogResult.No ) ? true:false;
+							import_game_map_as_is = ( dlg_res == DialogResult.No );
 						}
 					}
 
@@ -750,7 +750,7 @@ namespace MAPeD
 					}
 				}
 				
-				_block_end_ind = _block_end_ind & ~0x03; 
+				_block_end_ind &= ~0x03; 
 			}
 
 			if( ( _block_end_ind - _block_beg_ind ) >> 2 == 0 )
@@ -1315,7 +1315,7 @@ namespace MAPeD
 				}
 			}
 			
-			more_than_max_palettes = palettes.Count > utils.CONST_PALETTE16_ARR_LEN ? true:false;
+			more_than_max_palettes = ( palettes.Count > utils.CONST_PALETTE16_ARR_LEN );
 			
 			// check colors overflow
 			for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
@@ -1462,7 +1462,7 @@ namespace MAPeD
 			SortedSet< int > tmp_palette = new SortedSet<int>();
 			
 			int min_union	= int.MinValue;
-			int union_diff	= 0;
+			int union_diff;
 
 			_plt1_n = -1;
 			_plt2_n = -1;

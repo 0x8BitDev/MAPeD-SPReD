@@ -21,7 +21,7 @@ namespace MAPeD
 		public event EventHandler ActivePalette;
 		
 		private bool 	m_active	= false;
-		private int 	m_id 		= -1;
+		private readonly int m_id 	= -1;
 		
 		public int id
 		{

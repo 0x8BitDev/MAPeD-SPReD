@@ -20,10 +20,10 @@ namespace MAPeD
 
 	public class TilesPatternEventArg : EventArgs
 	{
-		private pattern_data 	m_data 			= null;
-		private int 			m_CHR_bank_id	= -1;
-		private int				m_pos_x			= -1;
-		private int				m_pos_y			= -1;
+		private readonly pattern_data m_data 	= null;
+		private readonly int m_CHR_bank_id		= -1;
+		private readonly int m_pos_x			= -1;
+		private readonly int m_pos_y			= -1;
 		
 		public pattern_data data
 		{
@@ -60,8 +60,8 @@ namespace MAPeD
 
 	public class NewTileEventArg : EventArgs
 	{
-		private tiles_data 	m_data 		= null;
-		private int 		m_tile_ind 	= -1;
+		private readonly tiles_data m_data 	= null;
+		private readonly int m_tile_ind 	= -1;
 		
 		public int tile_ind
 		{
@@ -134,7 +134,7 @@ namespace MAPeD
 		private Point		m_sel_rect_beg	= new Point();
 		private Point		m_sel_rect_end	= new Point();
 		
-		private Bitmap		m_sel_area_tile	= null;
+		private readonly Bitmap m_sel_area_tile	= null;
 		
 		public enum EState
 		{
@@ -163,21 +163,21 @@ namespace MAPeD
 		private Image 			m_tile_img				= null;
 		private int				m_tile_x				= -1;
 		private int				m_tile_y				= -1;
-		private ImageAttributes m_tile_img_attr			= null;
 		private Rectangle		m_tile_ghost_img_rect;
 		private Rectangle		m_border_tile_img_rect;
+		private readonly 		ImageAttributes m_tile_img_attr	= null;
 		
-		private ImageList		m_tiles_imagelist		= null;
-		private ImageList		m_blocks_imagelist		= null;
+		private readonly ImageList m_tiles_imagelist	= null;
+		private readonly ImageList m_blocks_imagelist	= null;
 		
-		private List< int >		m_block_tiles			= null;
-		private int				m_last_empty_tile_ind	= -1;
+		private readonly List< int >	m_block_tiles			= null;
+		private int						m_last_empty_tile_ind	= -1;
 
-		private PictureBox		m_pbox_active_tile		= null;
-		private GroupBox		m_grp_box_active_tile	= null;		
+		private readonly PictureBox m_pbox_active_tile		= null;
+		private readonly GroupBox	m_grp_box_active_tile	= null;	
 		
-		private Pen			m_pbox_active_tile_pen		= null;
-		private Graphics 	m_pbox_active_tile_gfx		= null;
+		private readonly Pen 		m_pbox_active_tile_pen	= null;
+		private readonly Graphics 	m_pbox_active_tile_gfx	= null;
 		
 		public bool draw_grid_flag
 		{
@@ -248,8 +248,8 @@ namespace MAPeD
 		{
 			if( mode == EMode.em_Layout )
 			{
-				int 		CHR_bank_ind 	= 0;
-				tiles_data 	data			= null;
+				int 		CHR_bank_ind;
+				tiles_data 	data;
 				
 				m_layout_mode_border_tiles	= null;
 				
@@ -598,8 +598,8 @@ namespace MAPeD
 				}
 				else
 				{
-					int new_tile_x = 0;
-					int new_tile_y = 0;
+					int new_tile_x;
+					int new_tile_y;
 					
 					if( get_tile_xy( e.X, e.Y, out new_tile_x, out new_tile_y ) == true )
 					{
@@ -717,8 +717,8 @@ namespace MAPeD
 		
 		private bool inside_screen( int _x, int _y )
 		{
-			int tile_x = 0;
-			int tile_y = 0;
+			int tile_x;
+			int tile_y;
 			
 			return get_tile_xy( _x, _y, out tile_x, out tile_y );
 		}

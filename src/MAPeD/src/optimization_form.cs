@@ -21,9 +21,9 @@ namespace MAPeD
 	{
 		public event EventHandler UpdateGraphics;
 		
-		private data_sets_manager m_data_sets 	= null;
+		private readonly data_sets_manager m_data_sets 	= null;
 		
-		private Action< bool, string, bool >	m_show_progress_wnd	= null;
+		private readonly Action< bool, string, bool >	m_show_progress_wnd	= null;
 		
 		private bool m_need_update_screen_list	= false;
 		
@@ -110,7 +110,7 @@ namespace MAPeD
 					
 					m_show_progress_wnd( false, "", true );
 					
-					m_need_update_screen_list = stat_screens > 0 ? true:false;
+					m_need_update_screen_list = ( stat_screens > 0 );
 					
 					if( UpdateGraphics != null )
 					{
@@ -175,7 +175,7 @@ namespace MAPeD
 		{
 			int deleted_CHRs_cnt = 0;
 			
-			int CHR_data_sum = 0;
+			int CHR_data_sum;
 
 			byte[] img_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
 			
@@ -430,8 +430,8 @@ namespace MAPeD
 			int scr_n;
 			int scr_block_n;
 			
-			List< byte[] > scr_list = _data.scr_data;
-			byte[] 	scr_data = null;
+			List< byte[] >	scr_list = _data.scr_data;
+			byte[] 			scr_data;
 			
 			// check duplicate(s)
 			for( block_n = 0; block_n < _block_id; block_n++ )
@@ -532,7 +532,7 @@ namespace MAPeD
 			int scr_tile_n;
 			
 			List< byte[] > 	scr_list = _data.scr_data;
-			byte[] 			scr_data = null;
+			byte[] 			scr_data;
 			
 			// check duplicate(s)
 			for( tile_n = 0; tile_n < _tile_id; tile_n++ )
@@ -771,7 +771,7 @@ namespace MAPeD
 		
 		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
 		{
-			CheckBoxOptimizeTiles.Enabled = ( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? true:false;
+			CheckBoxOptimizeTiles.Enabled = ( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
 			CheckBoxOptimizeTiles.Checked = ( _type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) ? false:CheckBoxOptimizeTiles.Checked;
 		}
 	}

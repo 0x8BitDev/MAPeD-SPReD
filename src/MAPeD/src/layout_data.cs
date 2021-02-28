@@ -710,8 +710,6 @@ namespace MAPeD
 				
 				for( y = 0; y < height; y++ )
 				{
-					data_str = "\t" + _dw + " ";
-					
 					for( x = 0; x < width; x++ )
 					{
 						scr_data = get_data( x, y );

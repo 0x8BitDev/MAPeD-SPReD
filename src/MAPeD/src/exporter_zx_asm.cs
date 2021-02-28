@@ -20,7 +20,7 @@ namespace MAPeD
 	/// </summary>
 	public partial class exporter_zx_sjasm : Form
 	{
-		private data_sets_manager m_data_mngr = null;
+		private readonly data_sets_manager m_data_mngr = null;
 		
 		private string 	m_path_filename_ext		= null;
 		private string 	m_path_filename			= null;
@@ -69,7 +69,7 @@ namespace MAPeD
 
 		void ExpEntitiesChanged_Event(object sender, EventArgs e)
 		{
-			GrpBoxEntCoords.Enabled = ExpZXAsmExportEntities.Checked ? true:false;
+			GrpBoxEntCoords.Enabled = ExpZXAsmExportEntities.Checked;
 			
 			update_desc();
 		}
@@ -828,26 +828,19 @@ namespace MAPeD
 		
 		int get_nearest_color( int _color )
 		{
-			double r = 0.0;
-			double g = 0.0;
-			double b = 0.0;
-
-			double zx_r = 	0.0;
-			double zx_g = 	0.0;
-			double zx_b = 	0.0;
+			double zx_r;
+			double zx_g;
+			double zx_b;
 			
-			int zx_color  = 0;
+			int zx_color;
 			
 			double 	fi			= 0.0;
-			double 	fi_min 		= 0.0;
-			int 	best_color 	= -1;			
-			
-			r = ( double )( ( _color >> 16 ) & 0xff );
-			g = ( double )( ( _color >> 8 ) & 0xff );
-			b = ( double )( _color & 0xff );
-			
-			fi_min 		= 1000000.0;
-			best_color 	= -1;
+			double 	fi_min 		= 1000000.0;
+			int 	best_color 	= -1;
+
+			double r = ( double )( ( _color >> 16 ) & 0xff );
+			double g = ( double )( ( _color >> 8 ) & 0xff );
+			double b = ( double )( _color & 0xff );
 			
 			for( int zx_color_n = 0; zx_color_n < 16; zx_color_n++ )
 			{

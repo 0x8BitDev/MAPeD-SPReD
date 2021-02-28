@@ -50,14 +50,14 @@ namespace MAPeD
 		
 		private tiles_data	m_data				= null;
 		
-		private ImageList 	m_tiles_image_list 	= null;
-		private ImageList 	m_blocks_image_list = null;
+		private readonly ImageList m_tiles_image_list	= null;
+		private readonly ImageList m_blocks_image_list	= null;
 		
-		private image_preview		m_pattern_preview	= null;
-		private object_name_form	m_object_name_form	= null;
+		private readonly image_preview m_pattern_preview		= null;
+		private readonly object_name_form m_object_name_form	= null;
 		
-		private Bitmap		m_pattern_image	= null;
-		private Graphics	m_gfx			= null;
+		private readonly Bitmap		m_pattern_image	= null;
+		private readonly Graphics	m_gfx			= null;
 		
 		private int			m_scale_pow		= 0;
 		
@@ -198,7 +198,7 @@ namespace MAPeD
 				m_gfx.Clear( Color.FromArgb( 0 ) );
 
 				int scr_tile_size	= utils.CONST_SCREEN_TILES_SIZE >> 1;
-				ImageList img_list	= null;
+				ImageList img_list;
 				
 				if( m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 				{

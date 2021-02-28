@@ -27,8 +27,8 @@ namespace MAPeD
 		
 		private bool m_locked	= false;
 		
-		private SolidBrush 	m_brush 		= new SolidBrush( utils.CONST_COLOR_TILE_EDITOR_TRANSLUCENT_QUAD );
-		private Region 		m_tile_region	= null;
+		private readonly SolidBrush m_brush 	= new SolidBrush( utils.CONST_COLOR_TILE_EDITOR_TRANSLUCENT_QUAD );
+		private readonly Region m_tile_region	= null;
 		
 		public tile_editor( PictureBox _pbox ) : base( _pbox )
 		{

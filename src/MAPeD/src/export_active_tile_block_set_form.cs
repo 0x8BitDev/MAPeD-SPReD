@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 28.12.2018
  * Time: 16:46
  */
@@ -17,7 +17,7 @@ namespace MAPeD
 	{
 		public bool export_tiles
 		{
-			get { return RradioButtonTiles.Checked ? true:false; }
+			get { return RradioButtonTiles.Checked; }
 			set {}
 		}
 		

@@ -22,8 +22,8 @@ namespace MAPeD
 
 	public class EventArg2Params : EventArgs
 	{
-		private object	m_param1	= null;
-		private object	m_param2	= null;
+		private readonly object	m_param1	= null;
+		private readonly object	m_param2	= null;
 		
 		public object param1
 		{
@@ -60,13 +60,13 @@ namespace MAPeD
 		public event ReturnBoolEvent DeleteGroup;
 
 		[DataMember]
-		private string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ) + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_UINT_SIZE + " | Screen Data (Tiles4x4): " + utils.CONST_SCREEN_TILES_CNT + " | Screen Data (Blocks2x2): " + utils.CONST_SCREEN_BLOCKS_CNT;
+		private readonly string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ) + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_UINT_SIZE + " | Screen Data (Tiles4x4): " + utils.CONST_SCREEN_TILES_CNT + " | Screen Data (Blocks2x2): " + utils.CONST_SCREEN_BLOCKS_CNT;
 		[DataMember]
-		private string NES_block_desc_bits = "[ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)";
+		private readonly string NES_block_desc_bits = "[ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)";
 		[DataMember]
-		private string SMS_block_desc_bits = "[ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [ CHR ind ](9)";
+		private readonly string SMS_block_desc_bits = "[ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [ CHR ind ](9)";
 		[DataMember]
-		private string PCE_block_desc_bits = "[ property_id ](4) [ palette ind ](4) [ CHR ind ](12)";
+		private readonly string PCE_block_desc_bits = "[ property_id ](4) [ palette ind ](4) [ CHR ind ](12)";
 		
 		public enum EScreenDataType
 		{
@@ -109,7 +109,7 @@ namespace MAPeD
 		}
 		
 		[DataMember]
-		private List< layout_data >	m_layouts_data	= null;
+		private readonly List< layout_data >	m_layouts_data	= null;
 		private int m_layouts_data_pos				= -1;
 		
 		public int layouts_data_pos
@@ -130,7 +130,7 @@ namespace MAPeD
 		}
 		
 		[DataMember]
-		private List< tiles_data >	m_tiles_data	= null;
+		private readonly List< tiles_data >	m_tiles_data	= null;
 		private int m_tiles_data_pos				= -1;
 		private int m_scr_data_pos					= -1;
 		
@@ -179,7 +179,7 @@ namespace MAPeD
 			set {}
 		}
 		
-		private Dictionary< string, List< entity_data > >	m_entities_data	= null;	// key = group name / value = List< entity_data >
+		private readonly Dictionary< string, List< entity_data > >	m_entities_data	= null;	// key = group name / value = List< entity_data >
 		
 		[DataMember]
 		public Dictionary< string, List< entity_data > > entities_data
@@ -851,7 +851,7 @@ namespace MAPeD
 					int plt_len 	= utils.get_palette_len_by_file_ext( _file_ext );
 					int[] plt_main	= null;
 					
-					bool ignore_palette = ( _file_ext != utils.CONST_FILE_EXT ) ? true:false;
+					bool ignore_palette = ( _file_ext != utils.CONST_FILE_EXT );
 					
 					if( ignore_palette )
 					{
@@ -986,7 +986,7 @@ namespace MAPeD
 
 			tiles_data data = get_tiles_data( tiles_data_pos );
 			
-			int chr_id = 0;
+			int chr_id;
 			
 			// get a first free spr8x8 position
 			{

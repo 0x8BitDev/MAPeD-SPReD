@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2019-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2019-2021 ( MIT license. See LICENSE.txt )
  * Date: 20.05.2019
  * Time: 16:19
  */
@@ -86,7 +86,7 @@ namespace SPSeD
 		
 		public static bool is_active()
 		{
-			return m_instance != null ? true:false;
+			return m_instance != null;
 		}
 
 		public static void set_focus()
@@ -124,7 +124,7 @@ namespace SPSeD
 		
 		void update_tab_page_text( TabPage _tab_page, bool _force_update )
 		{
-			bool has_data_changed_mark = _tab_page.Text.IndexOf( "*" ) >= 0 ? true:false;
+			bool has_data_changed_mark = ( _tab_page.Text.IndexOf( "*" ) >= 0 );
 			
 			py_editor_doc_page doc_page = _tab_page.Controls[ 0 ] as py_editor_doc_page;
 			
@@ -313,7 +313,7 @@ namespace SPSeD
 		
 		void SaveAllToolStripMenuItemClick(object sender, EventArgs e)
 		{
-			py_editor_doc_page doc_page = null;
+			py_editor_doc_page doc_page;
 			
 			foreach( TabPage page in DocPagesContainer.TabPages )
 			{
@@ -497,25 +497,24 @@ namespace SPSeD
 			
 			if( ( m_os_flag & CONST_OS_WIN ) != 0 )
 			{
-				System.Diagnostics.Process process = System.Diagnostics.Process.Start( doc_path );
+				System.Diagnostics.Process.Start( doc_path );
 			}
 			else
 			if( ( m_os_flag & CONST_OS_LINUX ) != 0 )
 			{
-				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "xdg-open", doc_path );
+				System.Diagnostics.Process.Start( "xdg-open", doc_path );
 			}
 			else
 			if( ( m_os_flag & CONST_OS_MACOS ) != 0 )
 			{
 				// need to test it...
-				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "open", doc_path );
+				System.Diagnostics.Process.Start( "open", doc_path );
 			}
 		}
 		
 		void AboutToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			Version ver			= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-			string build_str	= "Build: " + ver.Build;
 			DateTime build_date = new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
 	
 			message_box( "Simple Python script editor" + "\n\n" + get_app_version() + " Build: " + ver.Build + "\nBuild date: " + build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2019-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
@@ -561,7 +560,7 @@ namespace SPSeD
 				copyToolStripMenuItem1.Enabled		= 				
 				cutToolStripButton.Enabled			= 
 				cutToolStripMenuItem.Enabled 		=
-				cutToolStripMenuItem1.Enabled		= doc_page.script_text_box.SelectedText.Length > 0 ? true:false;
+				cutToolStripMenuItem1.Enabled		= ( doc_page.script_text_box.SelectedText.Length > 0 );
 			}
 			
 			pasteToolStripButton.Enabled 	= 
@@ -776,8 +775,8 @@ namespace SPSeD
 	
 	class py_output : TextWriter
 	{
-		private RichTextBox m_txt_box	= null;
-		private bool 		m_is_win	= false;
+		private readonly RichTextBox	m_txt_box	= null;
+		private readonly bool			m_is_win	= false;
 		
 		public py_output( RichTextBox _txt_box, bool _is_win )
 		{

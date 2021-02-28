@@ -91,45 +91,45 @@ namespace MAPeD
 	[DataContract]
 	public class tiles_data
 	{
-		private static uint CONST_OBJ_ID_MASK	= 0x0f;
+		private readonly static uint CONST_OBJ_ID_MASK	= 0x0f;
 		
 		// NES
-		private static uint CONST_NES_PALETTE_MASK			= 0x03;
-		private static uint CONST_NES_BLOCK_PALETTE_MASK	= ( CONST_NES_PALETTE_MASK << 10 );
-		private static uint CONST_NES_BLOCK_CHR_ID_MASK		= 0x000000ff; 
+		private readonly static uint CONST_NES_PALETTE_MASK			= 0x03;
+		private readonly static uint CONST_NES_BLOCK_PALETTE_MASK	= ( CONST_NES_PALETTE_MASK << 10 );
+		private readonly static uint CONST_NES_BLOCK_CHR_ID_MASK	= 0x000000ff; 
 		
 		// SMS
-		private static uint CONST_SMS_PALETTE_MASK			= 0x01;
-		private static uint CONST_SMS_BLOCK_PALETTE_MASK	= ( CONST_SMS_PALETTE_MASK << 9 );
-		private static uint CONST_SMS_BLOCK_CHR_ID_MASK		= 0x000001ff;
+		private readonly static uint CONST_SMS_PALETTE_MASK			= 0x01;
+		private readonly static uint CONST_SMS_BLOCK_PALETTE_MASK	= ( CONST_SMS_PALETTE_MASK << 9 );
+		private readonly static uint CONST_SMS_BLOCK_CHR_ID_MASK	= 0x000001ff;
 		
 		// NES/SMS
-		private static uint CONST_NES_SMS_BLOCK_OBJ_ID_MASK	= ( CONST_OBJ_ID_MASK << 12 );
+		private readonly static uint CONST_NES_SMS_BLOCK_OBJ_ID_MASK	= ( CONST_OBJ_ID_MASK << 12 );
 		
 		// PCE
-		private static uint CONST_PCE_PALETTE_MASK			= 0x0f;
-		private static uint CONST_PCE_BLOCK_PALETTE_MASK	= ( CONST_PCE_PALETTE_MASK << 12 );
-		private static uint CONST_PCE_BLOCK_OBJ_ID_MASK		= ( CONST_OBJ_ID_MASK << 16 );
-		private static uint CONST_PCE_BLOCK_CHR_ID_MASK			= 0x00000fff;		
-		
+		private readonly static uint CONST_PCE_PALETTE_MASK			= 0x0f;
+		private readonly static uint CONST_PCE_BLOCK_PALETTE_MASK	= ( CONST_PCE_PALETTE_MASK << 12 );
+		private readonly static uint CONST_PCE_BLOCK_OBJ_ID_MASK	= ( CONST_OBJ_ID_MASK << 16 );
+		private readonly static uint CONST_PCE_BLOCK_CHR_ID_MASK	= 0x00000fff;
+
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
-		private static uint CONST_FLIP_MASK			= 0x03;
-		private static uint CONST_BLOCK_FLIP_MASK	= ( CONST_FLIP_MASK << 10 );
+		private readonly static uint CONST_FLIP_MASK		= 0x03;
+		private readonly static uint CONST_BLOCK_FLIP_MASK	= ( CONST_FLIP_MASK << 10 );
 #endif
 #if DEF_NES
-		private static uint CONST_PALETTE_MASK			= CONST_NES_PALETTE_MASK;
-		private static uint CONST_BLOCK_PALETTE_MASK	= CONST_NES_BLOCK_PALETTE_MASK;
+		private readonly static uint CONST_PALETTE_MASK			= CONST_NES_PALETTE_MASK;
+		private readonly static uint CONST_BLOCK_PALETTE_MASK	= CONST_NES_BLOCK_PALETTE_MASK;
 #elif DEF_SMS
-		private static uint CONST_PALETTE_MASK			= CONST_SMS_PALETTE_MASK;
-		private static uint CONST_BLOCK_PALETTE_MASK	= CONST_SMS_BLOCK_PALETTE_MASK;
+		private readonly static uint CONST_PALETTE_MASK			= CONST_SMS_PALETTE_MASK;
+		private readonly static uint CONST_BLOCK_PALETTE_MASK	= CONST_SMS_BLOCK_PALETTE_MASK;
 #elif DEF_PCE
-		private static uint CONST_PALETTE_MASK			= CONST_PCE_PALETTE_MASK;
-		private static uint CONST_BLOCK_PALETTE_MASK	= CONST_PCE_BLOCK_PALETTE_MASK;
+		private readonly static uint CONST_PALETTE_MASK			= CONST_PCE_PALETTE_MASK;
+		private readonly static uint CONST_BLOCK_PALETTE_MASK	= CONST_PCE_BLOCK_PALETTE_MASK;
 #endif
 #if DEF_PCE
-		private static uint CONST_BLOCK_OBJ_ID_MASK	= CONST_PCE_BLOCK_OBJ_ID_MASK;
+		private readonly static uint CONST_BLOCK_OBJ_ID_MASK	= CONST_PCE_BLOCK_OBJ_ID_MASK;
 #else
-		private static uint CONST_BLOCK_OBJ_ID_MASK	= CONST_NES_SMS_BLOCK_OBJ_ID_MASK;
+		private readonly static uint CONST_BLOCK_OBJ_ID_MASK	= CONST_NES_SMS_BLOCK_OBJ_ID_MASK;
 #endif
 		private static int m_id	= -1;
 		
@@ -147,9 +147,9 @@ namespace MAPeD
 		private uint[] m_blocks	= new uint[ utils.CONST_BLOCKS_UINT_SIZE ];
 		private uint[] m_tiles	= new uint[ utils.CONST_TILES_UINT_SIZE ];
 		
-		private List< byte[] >	m_scr_data	= null;
+		private readonly List< byte[] >	m_scr_data	= null;
 		
-		private Dictionary< string, List< pattern_data > >	m_patterns_data	= null;	// key = group name / value = List< pattern_data >
+		private readonly Dictionary< string, List< pattern_data > >	m_patterns_data	= null;	// key = group name / value = List< pattern_data >
 
 		public Dictionary< string, List< pattern_data > > patterns_data
 		{
@@ -461,7 +461,7 @@ namespace MAPeD
 
 			// COPY SCREENS
 			{
-				byte[] screen_data = null; 
+				byte[] screen_data;
 					
 				for( int i = 0; i < scr_data.Count; i++ )
 				{
@@ -864,7 +864,7 @@ namespace MAPeD
 		
 		public int contains_CHR( byte[] _CHR8x8, int _max_ind )
 		{
-			bool contains = true;
+			bool contains;
 			
 			int CHR_ind;
 			int i;
@@ -1208,7 +1208,7 @@ namespace MAPeD
 		
 		private void screen_tiles_proc( Func< byte, byte > _func )
 		{
-			byte[] screen_data = null; 
+			byte[] screen_data;
 				
 			for( int i = 0; i < scr_data.Count; i++ )
 			{
@@ -1247,21 +1247,6 @@ namespace MAPeD
 			} );
 		}
 		
-		private void screen_blocks_proc( Func< byte, byte > _func )
-		{
-			byte[] screen_data = null; 
-				
-			for( int i = 0; i < scr_data.Count; i++ )
-			{
-				screen_data = scr_data[ i ];
-				
-				for( int j = 0; j < screen_data.Length; j++ )
-				{
-					screen_data[ j ] = _func( screen_data[ j ] );
-				}
-			}
-		}
-
 #if DEF_NES
 		public long export_CHR( BinaryWriter _bw, bool _save_padding = false )
 #elif DEF_SMS
@@ -1479,9 +1464,9 @@ namespace MAPeD
 			int CHR_id;
 			int prop_id;
 			
-			bool nes_file = _file_ext == utils.CONST_NES_FILE_EXT ? true:false;
-			bool sms_file = _file_ext == utils.CONST_SMS_FILE_EXT ? true:false;
-			bool pce_file = _file_ext == utils.CONST_PCE_FILE_EXT ? true:false;
+			bool nes_file = ( _file_ext == utils.CONST_NES_FILE_EXT );
+			bool sms_file = ( _file_ext == utils.CONST_SMS_FILE_EXT );
+			bool pce_file = ( _file_ext == utils.CONST_PCE_FILE_EXT );
 
 #if DEF_SMS || DEF_PCE
 			int palette_ind;

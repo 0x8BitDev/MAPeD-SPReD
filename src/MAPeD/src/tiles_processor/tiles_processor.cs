@@ -24,10 +24,10 @@ namespace MAPeD
 #if DEF_PALETTE16_PER_CHR		
 		public event EventHandler UpdatePaletteListPos;
 #endif		
-		private CHR_bank_viewer	m_CHR_bank_viewer	= null;
-		private block_editor	m_block_editor		= null;
-		private tile_editor		m_tile_editor		= null;
-		private palette_group 	m_palette_grp		= null;
+		private readonly CHR_bank_viewer m_CHR_bank_viewer	= null;
+		private readonly block_editor m_block_editor		= null;
+		private readonly tile_editor m_tile_editor			= null;
+		private readonly palette_group m_palette_grp		= null;
 		
 		public tiles_processor( PictureBox 			_PBoxCHRBank,
 		                       GroupBox				_CHRBankGrpBox,
@@ -209,7 +209,7 @@ namespace MAPeD
 				// reset tile's links
 				if( reserve_blocks_CHRs )
 				{
-					int block_data_offs = 0;
+					int block_data_offs;
 					
 					for( int i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
 					{
@@ -308,7 +308,7 @@ namespace MAPeD
 				ff_block_ind = ff_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:ff_block_ind;
 				ff_block_ind = ff_block_ind < 4 ? 4:ff_block_ind;
 				
-				int block_n = 0;
+				int block_n;
 				
 				for( int CHR_n = 1; CHR_n < utils.CONST_CHR_BANK_MAX_SPRITES_CNT; CHR_n++ )
 				{
