@@ -2380,6 +2380,8 @@ namespace MAPeD
 			{
 				int deleted_screens_cnt;
 				
+				progress_bar_show( true, "Empty screens deletion...", false );
+				
 				if( ( deleted_screens_cnt = delete_empty_screens() ) > 0 )
 				{
 					m_layout_editor.update_dimension_changes();
@@ -2401,6 +2403,8 @@ namespace MAPeD
 				{
 					set_status_msg( "Clean up: no empty screens found" );
 				}
+				
+				progress_bar_show( false );
 			}
 		}
 		
@@ -4128,10 +4132,14 @@ namespace MAPeD
 				{
 					if( message_box( strings.CONST_SCREEN_DATA_CONV_BLOCKS2TILES, strings.CONST_SCREEN_DATA_CONV_BLOCKS2TILES_CAPTION, MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
+						progress_bar_show( true, "Blocks (2x2) -> Tiles (4x4)", false );
+						
 						if( set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) )
 						{
 							update_graphics( false );
 						}
+						
+						progress_bar_show( false );
 					}
 				}
 			}
@@ -4147,10 +4155,14 @@ namespace MAPeD
 				{
 					if( message_box( strings.CONST_SCREEN_DATA_CONV_TILES2BLOCKS, strings.CONST_SCREEN_DATA_CONV_TILES2BLOCKS_CAPTION, MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
+						progress_bar_show( true, "Tiles (4x4) -> Blocks (2x2)", false );
+						
 						if( set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) )
 						{
 							update_graphics( false );
 						}
+						
+						progress_bar_show( false );
 					}
 				}
 			}
