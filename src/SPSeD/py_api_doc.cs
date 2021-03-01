@@ -59,7 +59,7 @@ namespace SPSeD
 		
 		public static void set_focus()
 		{
-			if( m_instance != null )
+			if( is_active() )
 			{
 				m_instance.Focus();
 			}
