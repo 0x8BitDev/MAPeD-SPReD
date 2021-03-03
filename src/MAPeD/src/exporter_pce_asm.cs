@@ -323,7 +323,7 @@ namespace MAPeD
 					sw.WriteLine( "\n" );
 				}
 				
-				sw.WriteLine( ".define MAP_DATA_MAGIC " + utils.hex( "$", ( RBtnTiles2x2.Checked ? 1:2 ) | 
+				sw.WriteLine( "MAP_DATA_MAGIC = " + utils.hex( "$", ( RBtnTiles2x2.Checked ? 1:2 ) | 
 				                                              		( CheckBoxRLE.Checked ? 4:0 ) |
 				                                              		( RBtnTilesDirColumns.Checked ? 8:16 ) |
 				                                              		( RBtnModeMultidirScroll.Checked ? 32:RBtnModeBidirScroll.Checked ? 64:128 ) | 
@@ -333,31 +333,31 @@ namespace MAPeD
 				                                              		( CheckBoxExportMarks.Checked ? 16384:0 ) |
 				                                              		( RBtnPropPerBlock.Checked ? 32768:65536 ) ) );
 				sw.WriteLine( "\n; data flags:" );
-				sw.WriteLine( ".define MAP_FLAG_TILES2X2                 " + utils.hex( "$", 1 ) );
-				sw.WriteLine( ".define MAP_FLAG_TILES4X4                 " + utils.hex( "$", 2 ) );
-				sw.WriteLine( ".define MAP_FLAG_RLE                      " + utils.hex( "$", 4 ) );
-				sw.WriteLine( ".define MAP_FLAG_DIR_COLUMNS              " + utils.hex( "$", 8 ) );
-				sw.WriteLine( ".define MAP_FLAG_DIR_ROWS                 " + utils.hex( "$", 16 ) );
-				sw.WriteLine( ".define MAP_FLAG_MODE_MULTIDIR_SCROLL     " + utils.hex( "$", 32 ) );
-				sw.WriteLine( ".define MAP_FLAG_MODE_BIDIR_SCROLL        " + utils.hex( "$", 64 ) );
-				sw.WriteLine( ".define MAP_FLAG_MODE_STATIC_SCREENS      " + utils.hex( "$", 128 ) );
-				sw.WriteLine( ".define MAP_FLAG_ENTITIES                 " + utils.hex( "$", 256 ) );
-				sw.WriteLine( ".define MAP_FLAG_ENTITY_SCREEN_COORDS     " + utils.hex( "$", 512 ) );
-				sw.WriteLine( ".define MAP_FLAG_ENTITY_MAP_COORS         " + utils.hex( "$", 1024 ) );
-				sw.WriteLine( ".define MAP_FLAG_LAYOUT_ADJACENT_SCREENS  " + utils.hex( "$", 2048 ) );
-				sw.WriteLine( ".define MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS " + utils.hex( "$", 4096 ) );
-				sw.WriteLine( ".define MAP_FLAG_LAYOUT_MATRIX            " + utils.hex( "$", 8192 ) );
-				sw.WriteLine( ".define MAP_FLAG_MARKS                    " + utils.hex( "$", 16384 ) );
-				sw.WriteLine( ".define MAP_FLAG_PROP_ID_PER_BLOCK        " + utils.hex( "$", 32768 ) );
-				sw.WriteLine( ".define MAP_FLAG_PROP_ID_PER_CHR          " + utils.hex( "$", 65536 ) );
+				sw.WriteLine( "MAP_FLAG_TILES2X2                 = " + utils.hex( "$", 1 ) );
+				sw.WriteLine( "MAP_FLAG_TILES4X4                 = " + utils.hex( "$", 2 ) );
+				sw.WriteLine( "MAP_FLAG_RLE                      = " + utils.hex( "$", 4 ) );
+				sw.WriteLine( "MAP_FLAG_DIR_COLUMNS              = " + utils.hex( "$", 8 ) );
+				sw.WriteLine( "MAP_FLAG_DIR_ROWS                 = " + utils.hex( "$", 16 ) );
+				sw.WriteLine( "MAP_FLAG_MODE_MULTIDIR_SCROLL     = " + utils.hex( "$", 32 ) );
+				sw.WriteLine( "MAP_FLAG_MODE_BIDIR_SCROLL        = " + utils.hex( "$", 64 ) );
+				sw.WriteLine( "MAP_FLAG_MODE_STATIC_SCREENS      = " + utils.hex( "$", 128 ) );
+				sw.WriteLine( "MAP_FLAG_ENTITIES                 = " + utils.hex( "$", 256 ) );
+				sw.WriteLine( "MAP_FLAG_ENTITY_SCREEN_COORDS     = " + utils.hex( "$", 512 ) );
+				sw.WriteLine( "MAP_FLAG_ENTITY_MAP_COORS         = " + utils.hex( "$", 1024 ) );
+				sw.WriteLine( "MAP_FLAG_LAYOUT_ADJACENT_SCREENS  = " + utils.hex( "$", 2048 ) );
+				sw.WriteLine( "MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS = " + utils.hex( "$", 4096 ) );
+				sw.WriteLine( "MAP_FLAG_LAYOUT_MATRIX            = " + utils.hex( "$", 8192 ) );
+				sw.WriteLine( "MAP_FLAG_MARKS                    = " + utils.hex( "$", 16384 ) );
+				sw.WriteLine( "MAP_FLAG_PROP_ID_PER_BLOCK        = " + utils.hex( "$", 32768 ) );
+				sw.WriteLine( "MAP_FLAG_PROP_ID_PER_CHR          = " + utils.hex( "$", 65536 ) );
 				
-				sw.WriteLine( "\n.define\tMAP_CHRS_OFFSET\t" + ( int )NumericUpDownCHRsOffset.Value + "\t; first CHR index in CHR bank" );
+				sw.WriteLine( "\nMAP_CHRS_OFFSET = " + ( int )NumericUpDownCHRsOffset.Value + "\t; first CHR index in CHR bank" );
 
-				sw.WriteLine( "\n.define ScrTilesWidth\t" + get_tiles_cnt_width( 1 ) + "\t; number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in width" );
-				sw.WriteLine( ".define ScrTilesHeight\t" + get_tiles_cnt_height( 1 ) + "\t; number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in height" );
+				sw.WriteLine( "\nScrTilesWidth = " + get_tiles_cnt_width( 1 ) + "\t; number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in width" );
+				sw.WriteLine( "ScrTilesHeight = " + get_tiles_cnt_height( 1 ) + "\t; number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in height" );
 
-				sw.WriteLine( "\n.define ScrPixelsWidth\t" + get_tiles_cnt_width( 1 ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; screen width in pixels" );
-				sw.WriteLine( ".define ScrPixelsHeight\t" + get_tiles_cnt_height( 1 ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; screen height in pixels" );
+				sw.WriteLine( "\nScrPixelsWidth = " + get_tiles_cnt_width( 1 ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; screen width in pixels" );
+				sw.WriteLine( "ScrPixelsHeight = " + get_tiles_cnt_height( 1 ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; screen height in pixels" );
 				
 				if( CheckBoxExportEntities.Checked )
 				{
@@ -786,7 +786,7 @@ namespace MAPeD
 					
 					if( !CheckBoxRLE.Checked )
 					{
-						_sw.WriteLine( "\n.define ScrGfxDataSize\t " + ( utils.CONST_SCREEN_TILES_CNT << 5 ) + "\n" );
+						_sw.WriteLine( "\nScrGfxDataSize = " + ( utils.CONST_SCREEN_TILES_CNT << 5 ) + "\n" );
 					}
 				}
 				
@@ -938,16 +938,16 @@ namespace MAPeD
 									
 									if( RBtnLayoutMatrix.Checked )
 									{
-										_sw.WriteLine( ".define " + level_prefix_str + "_StartScr\t" + ( start_scr_ind < 0 ? common_scr_ind:start_scr_ind ) + "\n" );
+										_sw.WriteLine( level_prefix_str + "_StartScr\t.dw " + ( start_scr_ind < 0 ? common_scr_ind:start_scr_ind ) + "\n" );
 									}
 									else
 									{
-										_sw.WriteLine( ".define " + level_prefix_str + "_StartScr\t" + ( start_scr_ind < 0 ? level_prefix_str + "Scr" + common_scr_ind:level_prefix_str + "Scr" + start_scr_ind ) + "\n" );
+										_sw.WriteLine( level_prefix_str + "_StartScr\t.dw " + ( start_scr_ind < 0 ? level_prefix_str + "Scr" + common_scr_ind:level_prefix_str + "Scr" + start_scr_ind ) + "\n" );
 									}
 									
 									if( RBtnLayoutMatrix.Checked )
 									{
-										level_data.export_asm( _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".define", ".byte", ".word", "$", false, false, false, false );
+										level_data.export_asm( _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, null, ".byte", ".word", "$", false, false, false, false );
 									}
 								}
 								
@@ -1574,31 +1574,31 @@ namespace MAPeD
 					start_scr_ind = 0;
 				}
 				
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_CHR_data_size\t" + CHR_data_size );
+				_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_CHR_data_size = " + CHR_data_size );
 				
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_StartScr\t" + start_scr_ind + "\t; start screen" );
+				_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_StartScr\t.dw " + start_scr_ind + "\t; start screen" );
 
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_WTilesCnt\t" + get_tiles_cnt_width( n_scr_X ) + "\t; number of level tiles in width" );
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_HTilesCnt\t" + get_tiles_cnt_height( n_scr_Y ) + "\t; number of level tiles in height" );
+				_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_WTilesCnt = " + get_tiles_cnt_width( n_scr_X ) + "\t; number of level tiles in width" );
+				_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_HTilesCnt = " + get_tiles_cnt_height( n_scr_Y ) + "\t; number of level tiles in height" );
 				
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_WPixelsCnt\t" + get_tiles_cnt_width( n_scr_X ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; map width in pixels" );
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_HPixelsCnt\t" + get_tiles_cnt_height( n_scr_Y ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; map height in pixels" );
+				_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_WPixelsCnt = " + get_tiles_cnt_width( n_scr_X ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; map width in pixels" );
+				_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_HPixelsCnt = " + get_tiles_cnt_height( n_scr_Y ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; map height in pixels" );
 					
 				if( RBtnTiles4x4.Checked )
 				{
-					_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_TilesCnt\t" + max_tile_ind );
+					_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_TilesCnt = " + max_tile_ind );
 				}
 				
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_BlocksCnt\t" + max_block_ind + "\n" );
+				_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_BlocksCnt = " + max_block_ind + "\n" );
 
 				if( CheckBoxExportEntities.Checked )
 				{
-					level_data.export_asm( _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".define", ".byte", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+					level_data.export_asm( _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, null, ".byte", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
 				}
 				else
 				{
-					_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_WScrCnt\t" + n_scr_X + "\t; number of screens in width" );
-					_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_HScrCnt\t" + n_scr_Y + "\t; number of screens in height\n" );
+					_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_WScrCnt = " + n_scr_X + "\t; number of screens in width" );
+					_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_HScrCnt = " + n_scr_Y + "\t; number of screens in height\n" );
 				}
 				
 				map_data_arr 	= null;
