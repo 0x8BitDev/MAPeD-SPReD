@@ -1328,7 +1328,7 @@ namespace MAPeD
 							
 							val = ( val >> ( j << 1 ) ) & 0x03;
 							
-							data |= ( ushort )( ( ( val & 0x01 ) << ( 8 + x_pos ) ) | ( ( ( val >> 1 ) & 0x01 ) << x_pos ) );
+							data |= ( ushort )( ( ( val & 0x01 ) << x ) | ( ( ( val >> 1 ) & 0x01 ) << ( 8 + x ) ) );
 						}
 						
 						_bw.Write( data );
