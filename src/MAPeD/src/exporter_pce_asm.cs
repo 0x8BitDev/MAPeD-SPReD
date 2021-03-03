@@ -36,7 +36,10 @@ namespace MAPeD
 		
 		private const string	CONST_FILENAME_LEVEL_PREFIX		= "Lev";
 		private const string	CONST_BIN_EXT					= ".bin";
-	
+
+		private int[] m_CHR_offset	= { 64, 128, 256, 128, 256, 512 };
+		private int[] m_BAT_index	= { 0, 1, 3, 4, 5, 7 };
+		
 		private struct exp_screen_data
 		{
 			public int 			m_scr_ind;
@@ -94,6 +97,8 @@ namespace MAPeD
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = false;
+			
+			ComboBoxBAT.SelectedIndex = 0;
 			
 			update_desc();
 		}
@@ -252,7 +257,7 @@ namespace MAPeD
 				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NO_ENTITIES;
 			}
 			
-			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_CHR_OFFSET;
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PCE_CHR_OFFSET;
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_WARNING;
 		}
@@ -351,7 +356,8 @@ namespace MAPeD
 				sw.WriteLine( "MAP_FLAG_PROP_ID_PER_BLOCK        = " + utils.hex( "$", 32768 ) );
 				sw.WriteLine( "MAP_FLAG_PROP_ID_PER_CHR          = " + utils.hex( "$", 65536 ) );
 				
-				sw.WriteLine( "\nMAP_CHRS_OFFSET = " + ( int )NumericUpDownCHRsOffset.Value + "\t; first CHR index in CHR bank" );
+				sw.WriteLine( "\nBAT_INDEX = " + m_BAT_index[ ComboBoxBAT.SelectedIndex ] );
+				sw.WriteLine( "MAP_CHRS_OFFSET = " + get_CHR_offset() + "\t; first CHR index from the end of a BAT" );
 
 				sw.WriteLine( "\nScrTilesWidth = " + get_tiles_cnt_width( 1 ) + "\t; number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in width" );
 				sw.WriteLine( "ScrTilesHeight = " + get_tiles_cnt_height( 1 ) + "\t; number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in height" );
@@ -786,7 +792,7 @@ namespace MAPeD
 					
 					if( !CheckBoxRLE.Checked )
 					{
-						_sw.WriteLine( "\nScrGfxDataSize = " + ( utils.CONST_SCREEN_TILES_CNT << 5 ) + "\n" );
+						_sw.WriteLine( "\nScrGfxDataSize = " + ( utils.CONST_SCREEN_TILES_CNT << 4 ) + "\n" );
 					}
 				}
 				
@@ -1199,7 +1205,7 @@ namespace MAPeD
 		
 		private ushort get_screen_attribute( uint _block_data )
 		{
-			return ( ushort )( _block_data & 0xffff );
+			return ( ushort )( ( ushort )( ( tiles_data.get_block_CHR_id( _block_data ) + ( ushort )get_CHR_offset() ) & 0x0fff ) | ( ushort )( _block_data & 0xf000 ) );
 		}
 		
 		private string get_adjacent_screen_index( int _level_n, layout_data _data, int _scr_ind, int _offset )
@@ -1212,6 +1218,11 @@ namespace MAPeD
 			}
 			
 			return utils.hex( "$", ( adj_scr_ind >= 0 ? adj_scr_ind:255 ) );
+		}
+		
+		private int get_CHR_offset()
+		{
+			return m_CHR_offset[ ComboBoxBAT.SelectedIndex + ( int )NumericUpDownCHROffset.Value ];
 		}
 		
 		private string get_adjacent_screen_label( int _level_n, layout_data _data, int _scr_ind, int _offset )

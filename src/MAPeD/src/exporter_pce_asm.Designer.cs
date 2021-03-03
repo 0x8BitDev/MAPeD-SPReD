@@ -44,9 +44,11 @@ namespace MAPeD
 			this.RBtnTiles4x4 = new System.Windows.Forms.RadioButton();
 			this.RBtnTiles2x2 = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.NumericUpDownCHRsOffset = new System.Windows.Forms.NumericUpDown();
-			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.NumericUpDownCHROffset = new System.Windows.Forms.NumericUpDown();
+			this.label2 = new System.Windows.Forms.Label();
+			this.ComboBoxBAT = new System.Windows.Forms.ComboBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
 			this.RBtnPropPerCHR = new System.Windows.Forms.RadioButton();
 			this.RBtnPropPerBlock = new System.Windows.Forms.RadioButton();
@@ -68,8 +70,8 @@ namespace MAPeD
 			this.groupBox1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownCHRsOffset)).BeginInit();
 			this.groupBox6.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownCHROffset)).BeginInit();
 			this.groupBox7.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.groupBoxEntityCoordinates.SuspendLayout();
@@ -187,40 +189,66 @@ namespace MAPeD
 			this.groupBox2.Controls.Add(this.groupBox1);
 			this.groupBox2.Location = new System.Drawing.Point(5, 3);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(305, 253);
+			this.groupBox2.Size = new System.Drawing.Size(305, 284);
 			this.groupBox2.TabIndex = 0;
 			this.groupBox2.TabStop = false;
 			// 
-			// NumericUpDownCHRsOffset
-			// 
-			this.NumericUpDownCHRsOffset.Location = new System.Drawing.Point(74, 16);
-			this.NumericUpDownCHRsOffset.Maximum = new decimal(new int[] {
-									255,
-									0,
-									0,
-									0});
-			this.NumericUpDownCHRsOffset.Name = "NumericUpDownCHRsOffset";
-			this.NumericUpDownCHRsOffset.Size = new System.Drawing.Size(71, 20);
-			this.NumericUpDownCHRsOffset.TabIndex = 32;
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(8, 19);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(75, 17);
-			this.label1.TabIndex = 31;
-			this.label1.Text = "CHRs offset:";
-			// 
 			// groupBox6
 			// 
-			this.groupBox6.Controls.Add(this.NumericUpDownCHRsOffset);
+			this.groupBox6.Controls.Add(this.NumericUpDownCHROffset);
+			this.groupBox6.Controls.Add(this.label2);
+			this.groupBox6.Controls.Add(this.ComboBoxBAT);
 			this.groupBox6.Controls.Add(this.label1);
 			this.groupBox6.Location = new System.Drawing.Point(145, 196);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(152, 45);
-			this.groupBox6.TabIndex = 28;
+			this.groupBox6.Size = new System.Drawing.Size(152, 76);
+			this.groupBox6.TabIndex = 25;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Exrtra";
+			// 
+			// NumericUpDownCHROffset
+			// 
+			this.NumericUpDownCHROffset.Location = new System.Drawing.Point(83, 18);
+			this.NumericUpDownCHROffset.Maximum = new decimal(new int[] {
+									2048,
+									0,
+									0,
+									0});
+			this.NumericUpDownCHROffset.Name = "NumericUpDownCHROffset";
+			this.NumericUpDownCHROffset.Size = new System.Drawing.Size(57, 20);
+			this.NumericUpDownCHROffset.TabIndex = 27;
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(16, 20);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(77, 17);
+			this.label2.TabIndex = 26;
+			this.label2.Text = "CHR Offset:";
+			// 
+			// ComboBoxBAT
+			// 
+			this.ComboBoxBAT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.ComboBoxBAT.FormattingEnabled = true;
+			this.ComboBoxBAT.Items.AddRange(new object[] {
+									"32x32",
+									"64x32",
+									"128x32",
+									"32x64",
+									"64x64",
+									"128x64"});
+			this.ComboBoxBAT.Location = new System.Drawing.Point(60, 43);
+			this.ComboBoxBAT.Name = "ComboBoxBAT";
+			this.ComboBoxBAT.Size = new System.Drawing.Size(80, 21);
+			this.ComboBoxBAT.TabIndex = 29;
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(16, 47);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(40, 17);
+			this.label1.TabIndex = 28;
+			this.label1.Text = "BAT:";
 			// 
 			// groupBox7
 			// 
@@ -443,8 +471,8 @@ namespace MAPeD
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownCHRsOffset)).EndInit();
 			this.groupBox6.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownCHROffset)).EndInit();
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
 			this.groupBoxEntityCoordinates.ResumeLayout(false);
@@ -452,9 +480,11 @@ namespace MAPeD
 			this.groupBoxLayout.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.NumericUpDown NumericUpDownCHROffset;
+		private System.Windows.Forms.ComboBox ComboBoxBAT;
 		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.NumericUpDown NumericUpDownCHRsOffset;
 		private System.Windows.Forms.RadioButton RBtnPropPerBlock;
 		private System.Windows.Forms.RadioButton RBtnPropPerCHR;
 		private System.Windows.Forms.GroupBox groupBox7;

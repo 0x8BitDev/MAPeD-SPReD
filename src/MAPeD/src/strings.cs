@@ -70,7 +70,8 @@ namespace MAPeD
 
 		public const string CONST_STR_EXP_ZX_INK_FACTOR			= "\n\nNOTE: Try to change the 'Ink Factor' value to achieve the best result.";		
 		
-		public const string CONST_STR_EXP_CHR_OFFSET			= "\n\nCHR offset: This value will be added to each CHR index in a screen map. In other words, it's a free space at the beginning of a CHR bank.";
+		public const string CONST_STR_EXP_CHR_OFFSET			= "\n\nCHR offset: This value will be added to each CHR index in a screen map. In other words, it's a free space at the beginning of a CHR bank.";		
+		public const string CONST_STR_EXP_PCE_CHR_OFFSET		= "\n\nCHR offset: This value will be added to each CHR index in a screen map. In other words, it's a free space from the end of a BAT.";
 		
 		public const string CONST_STR_EXP_WARNING				= "\n\nWARNING: To reduce the amount of exported data, please make a global data optimization.";
 		
