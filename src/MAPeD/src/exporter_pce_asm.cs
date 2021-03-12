@@ -1070,7 +1070,7 @@ namespace MAPeD
 									
 									if( m_HuC_writer != null )
 									{
-										m_HuC_writer.WriteLine( "extern char\t" + utils.skip_exp_pref( level_prefix_str ) + "_StartScr;" );
+										m_HuC_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( level_prefix_str ) + "_StartScr;" );
 									}
 									
 									if( RBtnLayoutMatrix.Checked )

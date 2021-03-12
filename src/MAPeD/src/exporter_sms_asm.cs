@@ -974,7 +974,7 @@ namespace MAPeD
 									
 									if( RBtnLayoutMatrix.Checked )
 									{
-										level_data.export_asm( _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".define", ".byte", ".word", "$", false, false, false, false );
+										level_data.export_asm( null, _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".define", ".byte", ".word", "$", false, false, false, false );
 									}
 								}
 								
@@ -1648,7 +1648,7 @@ namespace MAPeD
 
 				if( CheckBoxExportEntities.Checked )
 				{
-					level_data.export_asm( _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".define", ".byte", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+					level_data.export_asm( null, _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".define", ".byte", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
 				}
 				else
 				{
