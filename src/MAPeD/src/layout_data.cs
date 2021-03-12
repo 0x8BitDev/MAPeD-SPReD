@@ -667,7 +667,7 @@ namespace MAPeD
 			});
 		}
 		
-		public void export_asm( StreamWriter _sw, string _data_mark, string _define, string _db, string _dw, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr )
+		public void export_asm( StreamWriter _C_sw, StreamWriter _sw, string _data_mark, string _define, string _db, string _dw, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr )
 		{
 			int x;
 			int y;
@@ -689,8 +689,17 @@ namespace MAPeD
 					_sw.WriteLine( _data_mark + "_WScrCnt = " + width + "\t; number of screens in width" );
 					_sw.WriteLine( _data_mark + "_HScrCnt = " + height + "\t; number of screens in height" );
 				}
-
+				
 				_sw.WriteLine( "\n" + _data_mark + "_Layout:\t" );
+
+				if( _C_sw != null )
+				{
+					string c_dmark = utils.skip_exp_pref( _data_mark );
+					
+					_C_sw.WriteLine( "extern int\t" + c_dmark + "_WScrCnt;" );
+					_C_sw.WriteLine( "extern int\t" + c_dmark + "_HScrCnt;" );
+					_C_sw.WriteLine( "extern int*\t" + c_dmark + "_Layout;" );
+				}
 				
 				for( y = 0; y < height; y++ )
 				{

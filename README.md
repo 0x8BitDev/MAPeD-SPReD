@@ -17,7 +17,7 @@ The MAPeD is a tool for building a game levels for NES/SMS/PCE games from scratc
 - tile properties editing ( can be used as collisions data etc )
 - **NES:** palette per 1x1 tile support ( MMC5 )
 - import of tiles and game maps from images*
-- export to **NES: CA65/NESasm / SMS: WLA-DX** with wide variety of options:
+- export to **NES: CA65/NESasm / SMS: WLA-DX / PCE: CA65/PCEAS/HuC** with wide variety of options:
 	- 2x2/4x4 tiles
 	- column/row data order
 	- RLE compression
@@ -30,7 +30,7 @@ The MAPeD is a tool for building a game levels for NES/SMS/PCE games from scratc
 - export to **SjASMPlus** ( ZX Spectrum assembler )
 - export to **JSON** format
 - built-in **Python** script editor for writing custom data export scripts
-- **NES/SMS/PCE** data conversion**
+- easy data conversion**
 - etc...
 
 \* Smart import of images with checking of duplicate CHRs/blocks/tiles and flipped CHRs. Automatic palettes applying is supported for all platforms.

@@ -44,6 +44,7 @@ namespace MAPeD
 			this.RBtnTiles4x4 = new System.Windows.Forms.RadioButton();
 			this.RBtnTiles2x2 = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.CheckBoxGenerateHuCFile = new System.Windows.Forms.CheckBox();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.NumericUpDownCHROffset = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
@@ -82,7 +83,7 @@ namespace MAPeD
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(516, 275);
+			this.BtnCancel.Location = new System.Drawing.Point(516, 302);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
 			this.BtnCancel.TabIndex = 37;
@@ -93,7 +94,7 @@ namespace MAPeD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(435, 275);
+			this.BtnOk.Location = new System.Drawing.Point(435, 302);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 36;
@@ -181,6 +182,7 @@ namespace MAPeD
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.CheckBoxGenerateHuCFile);
 			this.groupBox2.Controls.Add(this.groupBox6);
 			this.groupBox2.Controls.Add(this.groupBox7);
 			this.groupBox2.Controls.Add(this.groupBox5);
@@ -193,6 +195,15 @@ namespace MAPeD
 			this.groupBox2.TabIndex = 0;
 			this.groupBox2.TabStop = false;
 			// 
+			// CheckBoxGenerateHuCFile
+			// 
+			this.CheckBoxGenerateHuCFile.Location = new System.Drawing.Point(14, 255);
+			this.CheckBoxGenerateHuCFile.Name = "CheckBoxGenerateHuCFile";
+			this.CheckBoxGenerateHuCFile.Size = new System.Drawing.Size(125, 17);
+			this.CheckBoxGenerateHuCFile.TabIndex = 25;
+			this.CheckBoxGenerateHuCFile.Text = "Generate HuC file";
+			this.CheckBoxGenerateHuCFile.UseVisualStyleBackColor = true;
+			// 
 			// groupBox6
 			// 
 			this.groupBox6.Controls.Add(this.NumericUpDownCHROffset);
@@ -202,7 +213,7 @@ namespace MAPeD
 			this.groupBox6.Location = new System.Drawing.Point(145, 196);
 			this.groupBox6.Name = "groupBox6";
 			this.groupBox6.Size = new System.Drawing.Size(152, 76);
-			this.groupBox6.TabIndex = 25;
+			this.groupBox6.TabIndex = 26;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Exrtra";
 			// 
@@ -216,14 +227,14 @@ namespace MAPeD
 									0});
 			this.NumericUpDownCHROffset.Name = "NumericUpDownCHROffset";
 			this.NumericUpDownCHROffset.Size = new System.Drawing.Size(57, 20);
-			this.NumericUpDownCHROffset.TabIndex = 27;
+			this.NumericUpDownCHROffset.TabIndex = 28;
 			// 
 			// label2
 			// 
 			this.label2.Location = new System.Drawing.Point(16, 20);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(77, 17);
-			this.label2.TabIndex = 26;
+			this.label2.TabIndex = 27;
 			this.label2.Text = "CHR Offset:";
 			// 
 			// ComboBoxBAT
@@ -240,14 +251,14 @@ namespace MAPeD
 			this.ComboBoxBAT.Location = new System.Drawing.Point(60, 43);
 			this.ComboBoxBAT.Name = "ComboBoxBAT";
 			this.ComboBoxBAT.Size = new System.Drawing.Size(80, 21);
-			this.ComboBoxBAT.TabIndex = 29;
+			this.ComboBoxBAT.TabIndex = 30;
 			// 
 			// label1
 			// 
 			this.label1.Location = new System.Drawing.Point(16, 47);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(40, 17);
-			this.label1.TabIndex = 28;
+			this.label1.TabIndex = 29;
 			this.label1.Text = "BAT:";
 			// 
 			// groupBox7
@@ -447,7 +458,7 @@ namespace MAPeD
 			this.RichTextBoxExportDesc.Name = "RichTextBoxExportDesc";
 			this.RichTextBoxExportDesc.ReadOnly = true;
 			this.RichTextBoxExportDesc.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-			this.RichTextBoxExportDesc.Size = new System.Drawing.Size(275, 246);
+			this.RichTextBoxExportDesc.Size = new System.Drawing.Size(275, 277);
 			this.RichTextBoxExportDesc.TabIndex = 35;
 			this.RichTextBoxExportDesc.Text = "";
 			// 
@@ -457,7 +468,7 @@ namespace MAPeD
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
-			this.ClientSize = new System.Drawing.Size(597, 315);
+			this.ClientSize = new System.Drawing.Size(597, 337);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
@@ -467,7 +478,7 @@ namespace MAPeD
 			this.MinimizeBox = false;
 			this.Name = "exporter_pce_asm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "CA65\\PCEAS Export Options";
+			this.Text = "CA65\\PCEAS\\HuC Export Options";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
@@ -480,6 +491,7 @@ namespace MAPeD
 			this.groupBoxLayout.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox CheckBoxGenerateHuCFile;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.NumericUpDown NumericUpDownCHROffset;
 		private System.Windows.Forms.ComboBox ComboBoxBAT;
