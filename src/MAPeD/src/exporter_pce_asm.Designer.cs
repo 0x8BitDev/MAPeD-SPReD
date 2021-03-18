@@ -44,7 +44,7 @@ namespace MAPeD
 			this.RBtnTiles4x4 = new System.Windows.Forms.RadioButton();
 			this.RBtnTiles2x2 = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.CheckBoxGenerateHuCFile = new System.Windows.Forms.CheckBox();
+			this.CheckBoxGenerateHFile = new System.Windows.Forms.CheckBox();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.NumericUpDownCHROffset = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
@@ -182,7 +182,7 @@ namespace MAPeD
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.CheckBoxGenerateHuCFile);
+			this.groupBox2.Controls.Add(this.CheckBoxGenerateHFile);
 			this.groupBox2.Controls.Add(this.groupBox6);
 			this.groupBox2.Controls.Add(this.groupBox7);
 			this.groupBox2.Controls.Add(this.groupBox5);
@@ -195,14 +195,14 @@ namespace MAPeD
 			this.groupBox2.TabIndex = 0;
 			this.groupBox2.TabStop = false;
 			// 
-			// CheckBoxGenerateHuCFile
+			// CheckBoxGenerateHFile
 			// 
-			this.CheckBoxGenerateHuCFile.Location = new System.Drawing.Point(14, 255);
-			this.CheckBoxGenerateHuCFile.Name = "CheckBoxGenerateHuCFile";
-			this.CheckBoxGenerateHuCFile.Size = new System.Drawing.Size(125, 17);
-			this.CheckBoxGenerateHuCFile.TabIndex = 25;
-			this.CheckBoxGenerateHuCFile.Text = "Generate HuC file";
-			this.CheckBoxGenerateHuCFile.UseVisualStyleBackColor = true;
+			this.CheckBoxGenerateHFile.Location = new System.Drawing.Point(14, 255);
+			this.CheckBoxGenerateHFile.Name = "CheckBoxGenerateHFile";
+			this.CheckBoxGenerateHFile.Size = new System.Drawing.Size(125, 17);
+			this.CheckBoxGenerateHFile.TabIndex = 25;
+			this.CheckBoxGenerateHFile.Text = "Generate *.h file";
+			this.CheckBoxGenerateHFile.UseVisualStyleBackColor = true;
 			// 
 			// groupBox6
 			// 
@@ -478,7 +478,7 @@ namespace MAPeD
 			this.MinimizeBox = false;
 			this.Name = "exporter_pce_asm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "CA65\\PCEAS\\HuC Export Options";
+			this.Text = "CA65\\PCEAS Export Options";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
@@ -491,7 +491,7 @@ namespace MAPeD
 			this.groupBoxLayout.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
-		private System.Windows.Forms.CheckBox CheckBoxGenerateHuCFile;
+		private System.Windows.Forms.CheckBox CheckBoxGenerateHFile;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.NumericUpDown NumericUpDownCHROffset;
 		private System.Windows.Forms.ComboBox ComboBoxBAT;
