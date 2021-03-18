@@ -155,9 +155,6 @@ namespace MAPeD
 		public const int CONST_SCREEN_NUM_WIDTH_BLOCKS	= CONST_SCREEN_NUM_WIDTH_TILES << 1;
 		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS	= ( CONST_SCREEN_NUM_HEIGHT_TILES << 1 ) - 1;	// DEF_SCREEN_HEIGHT_7d5_TILES by default
 		
-		public const int CONST_SCREEN_OFFSET_X			= 32;
-		public const int CONST_SCREEN_OFFSET_Y			= 32;
-		
 		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_NES_CHR_BANK_NUM_PAGES;
 		
 		public const int CONST_PALETTE_MAIN_NUM_COLORS	= CONST_NES_PALETTE_NUM_COLORS;
@@ -169,9 +166,6 @@ namespace MAPeD
 		
 		public const int CONST_SCREEN_NUM_WIDTH_BLOCKS	= CONST_SCREEN_NUM_WIDTH_TILES << 1;
 		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_SCREEN_NUM_HEIGHT_TILES << 1;
-		
-		public const int CONST_SCREEN_OFFSET_X			= 32;
-		public const int CONST_SCREEN_OFFSET_Y			= 96;
 		
 		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_SMS_CHR_BANK_NUM_PAGES;
 		
@@ -186,9 +180,6 @@ namespace MAPeD
 		
 		public const int CONST_SCREEN_NUM_WIDTH_BLOCKS	= CONST_SCREEN_NUM_WIDTH_TILES << 1;
 		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_SCREEN_NUM_HEIGHT_TILES << 1;
-		
-		public const int CONST_SCREEN_OFFSET_X			= 32;
-		public const int CONST_SCREEN_OFFSET_Y			= 64;
 		
 		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_PCE_CHR_BANK_NUM_PAGES;
 		
