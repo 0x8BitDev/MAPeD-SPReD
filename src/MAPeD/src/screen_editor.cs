@@ -134,6 +134,8 @@ namespace MAPeD
 		private Point		m_sel_rect_beg	= new Point();
 		private Point		m_sel_rect_end	= new Point();
 		
+		private Rectangle m_rect_tile;
+		
 		private readonly Bitmap m_sel_area_tile	= null;
 		
 		public enum EState
@@ -235,6 +237,8 @@ namespace MAPeD
 				
 				clear_active_tile_img();
 			}
+			
+			m_rect_tile	= new Rectangle();
 			
 			update();
 		}
@@ -413,8 +417,6 @@ namespace MAPeD
 					{				
 						m_tile_x = -1;
 						m_tile_y = -1;
-						
-						update();
 					}
 				}
 			}
@@ -592,8 +594,6 @@ namespace MAPeD
 					{
 						m_tile_x = -1;
 						m_tile_y = -1;
-						
-						update();
 					}
 				}
 				else
@@ -775,6 +775,8 @@ namespace MAPeD
 			{
 				return false;
 			}
+		
+			Region old_region = m_gfx.Clip;
 			
 			if( m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
@@ -805,12 +807,33 @@ namespace MAPeD
 				}
 				
 				m_tiles_data.scr_data[ m_scr_ind ][ ( m_tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + m_tile_x ] = (byte)tile_id;
+				
+				draw_tile( m_tile_x, m_tile_y, tile_id );
+
+				m_rect_tile.X = get_scr_offs_x() + ( m_tile_x * utils.CONST_SCREEN_TILES_SIZE );
+				m_rect_tile.Y = get_scr_offs_y() + ( m_tile_y * utils.CONST_SCREEN_TILES_SIZE );
+				m_rect_tile.Width = m_rect_tile.Height = utils.CONST_SCREEN_TILES_SIZE;
+				
+				m_gfx.Clip = new Region( m_rect_tile );
 			}
 			else
 			{
 				m_tiles_data.scr_data[ m_scr_ind ][ ( m_tile_y * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) + m_tile_x ] = (byte)m_active_tile_id;
+				
+				draw_block( m_tile_x, m_tile_y, m_active_tile_id );
+				
+				m_rect_tile.X = get_scr_offs_x() + ( m_tile_x * utils.CONST_SCREEN_BLOCKS_SIZE );
+				m_rect_tile.Y = get_scr_offs_y() + ( m_tile_y * utils.CONST_SCREEN_BLOCKS_SIZE );
+				m_rect_tile.Width = m_rect_tile.Height = utils.CONST_SCREEN_BLOCKS_SIZE;
+				
+				m_gfx.Clip = new Region( m_rect_tile );
 			}
 			
+			draw_grid_and_border();
+			invalidate();
+			
+			m_gfx.Clip = old_region;
+
 			if( NeedScreensUpdate != null )
 			{
 				NeedScreensUpdate( this, null );
@@ -1218,34 +1241,14 @@ namespace MAPeD
 					{
 						for( i = 0; i < utils.CONST_SCREEN_TILES_CNT; i++ )
 						{
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-							m_border_tile_img_rect.X		= 0;
-							m_border_tile_img_rect.Y		= 0;
-							m_border_tile_img_rect.Height	= ( i / utils.CONST_SCREEN_NUM_WIDTH_TILES == 7 ) ? utils.CONST_SCREEN_TILES_SIZE >> 1:utils.CONST_SCREEN_TILES_SIZE;
-							
-							m_gfx.DrawImage( 	m_tiles_imagelist.Images[ tile_ids[ i ] ],
-	                							get_scr_offs_x() + ( i % utils.CONST_SCREEN_NUM_WIDTH_TILES ) * utils.CONST_SCREEN_TILES_SIZE, 
-	                							get_scr_offs_y() + ( i / utils.CONST_SCREEN_NUM_WIDTH_TILES ) * utils.CONST_SCREEN_TILES_SIZE,
-	                							m_border_tile_img_rect,
-	                							GraphicsUnit.Pixel );
-#else
-							m_gfx.DrawImage( 	m_tiles_imagelist.Images[ tile_ids[ i ] ], 
-	                							get_scr_offs_x() + ( i % utils.CONST_SCREEN_NUM_WIDTH_TILES ) * utils.CONST_SCREEN_TILES_SIZE, 
-	                							get_scr_offs_y() + ( i / utils.CONST_SCREEN_NUM_WIDTH_TILES ) * utils.CONST_SCREEN_TILES_SIZE, 
-	                							utils.CONST_SCREEN_TILES_SIZE, 
-	                							utils.CONST_SCREEN_TILES_SIZE );
-#endif	//DEF_SCREEN_HEIGHT_7d5_TILES						
+							draw_tile( i % utils.CONST_SCREEN_NUM_WIDTH_TILES, i / utils.CONST_SCREEN_NUM_WIDTH_TILES, tile_ids[ i ] );
 						}
 					}
 					else
 					{
 						for( i = 0; i < utils.CONST_SCREEN_BLOCKS_CNT; i++ )
 						{
-							m_gfx.DrawImage( 	m_blocks_imagelist.Images[ tile_ids[ i ] ], 
-	                							get_scr_offs_x() + ( i % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) * utils.CONST_SCREEN_BLOCKS_SIZE, 
-	                							get_scr_offs_y() + ( i / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) * utils.CONST_SCREEN_BLOCKS_SIZE, 
-	                							utils.CONST_SCREEN_BLOCKS_SIZE, 
-	                							utils.CONST_SCREEN_BLOCKS_SIZE );
+							draw_block( i % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS, i / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS, tile_ids[ i ] );
 						}
 					}
 					
@@ -1258,8 +1261,8 @@ namespace MAPeD
 							{
 								case EFillMode.efm_Tile:
 									{
-										m_tile_ghost_img_rect.X 		= get_scr_offs_x() + ( m_tile_x * utils.CONST_SCREEN_TILES_SIZE );
-										m_tile_ghost_img_rect.Y 		= get_scr_offs_y() + ( m_tile_y * utils.CONST_SCREEN_TILES_SIZE );
+										m_tile_ghost_img_rect.X = get_scr_offs_x() + ( m_tile_x * utils.CONST_SCREEN_TILES_SIZE );
+										m_tile_ghost_img_rect.Y = get_scr_offs_y() + ( m_tile_y * utils.CONST_SCREEN_TILES_SIZE );
 										
 										m_gfx.DrawImage( m_tile_img, m_tile_ghost_img_rect, 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE, GraphicsUnit.Pixel, m_tile_img_attr );
 									}
@@ -1267,8 +1270,8 @@ namespace MAPeD
 	
 								case EFillMode.efm_Block:
 									{
-										m_tile_ghost_img_rect.X			= get_scr_offs_x() + ( m_tile_x * utils.CONST_SCREEN_BLOCKS_SIZE );
-										m_tile_ghost_img_rect.Y			= get_scr_offs_y() + ( m_tile_y * utils.CONST_SCREEN_BLOCKS_SIZE );
+										m_tile_ghost_img_rect.X	= get_scr_offs_x() + ( m_tile_x * utils.CONST_SCREEN_BLOCKS_SIZE );
+										m_tile_ghost_img_rect.Y	= get_scr_offs_y() + ( m_tile_y * utils.CONST_SCREEN_BLOCKS_SIZE );
 										
 										m_gfx.DrawImage( m_tile_img, m_tile_ghost_img_rect, 0, 0, utils.CONST_SCREEN_BLOCKS_SIZE, utils.CONST_SCREEN_BLOCKS_SIZE, GraphicsUnit.Pixel, m_tile_img_attr );
 									}
@@ -1365,75 +1368,8 @@ namespace MAPeD
 						}
 					}
 				}
-				
-				if( m_draw_grid )
-				{
-					m_pen.Color = ( m_fill_mode == EFillMode.efm_Tile ) ? utils.CONST_COLOR_SCREEN_GRID_THICK_TILE_MODE:utils.CONST_COLOR_SCREEN_GRID_THICK_BLOCK_MODE;
-					
-					int offs_x;
-					int offs_y;
 
-					int scr_offs_x = get_scr_offs_x();
-					int scr_offs_y = get_scr_offs_y();
-					
-					int scr_end_x = scr_offs_x + ( utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE );
-					int scr_end_y = scr_offs_y + ( utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE );
-					
-					for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES; i++ )
-					{
-						offs_x = get_scr_offs_x() + ( i * utils.CONST_SCREEN_TILES_SIZE );
-						m_gfx.DrawLine( m_pen, offs_x, scr_offs_y, offs_x, scr_end_y );
-					}
-					
-					for( i = 0; i < utils.CONST_SCREEN_NUM_HEIGHT_TILES; i++ )
-					{
-						offs_y = ( get_scr_offs_y() + ( i * utils.CONST_SCREEN_TILES_SIZE ) );
-						
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-						offs_y = ( i < 8 ) ? offs_y:offs_y - ( utils.CONST_SCREEN_TILES_SIZE >> 1 );
-#endif //DEF_SCREEN_HEIGHT_7d5_TILES
-
-						m_gfx.DrawLine( m_pen, scr_offs_x, offs_y, scr_end_x, offs_y );
-					}
-
-					// blocks grid
-					{
-						m_pen.Color = utils.CONST_COLOR_SCREEN_GRID_THIN;
-						
-						int start_offs_x = ( scr_offs_x + ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
-						int start_offs_y = ( scr_offs_y + ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
-						
-						for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES; i++ )
-						{
-							offs_x = start_offs_x + ( i * utils.CONST_SCREEN_TILES_SIZE );
-							m_gfx.DrawLine( m_pen, offs_x, scr_offs_y, offs_x, scr_end_y );
-						}
-						
-						for( i = 0; i < utils.CONST_SCREEN_NUM_HEIGHT_TILES; i++ )
-						{
-							offs_y = start_offs_y + ( i * utils.CONST_SCREEN_TILES_SIZE );
-							m_gfx.DrawLine( m_pen, scr_offs_x, offs_y, scr_end_x, offs_y );
-						}
-					}
-				}
-
-				// red rectangle
-				{
-					m_pen.Color = Color.Red;
-					m_pen.Width = 2.0f;
-					
-					int width 	= utils.CONST_SCREEN_NUM_WIDTH_TILES * utils.CONST_SCREEN_TILES_SIZE;
-					int height	= utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE;
-					
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-					m_gfx.DrawRectangle( m_pen, get_scr_offs_x(), get_scr_offs_y(), width, height - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
-#else
-					m_gfx.DrawRectangle( m_pen, get_scr_offs_x(), get_scr_offs_y(), width, height );
-#endif					
-					m_pen.Width = 1.0f;
-				}
-				
-				disable( false );
+				draw_grid_and_border();
 			}
 			else
 			{
@@ -1473,6 +1409,112 @@ namespace MAPeD
 		private int get_scr_offs_y()
 		{
 			return ( m_pix_box.Height - ( utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE ) ) >> 1;
+		}
+
+		private void draw_grid_and_border()
+		{
+			if( m_draw_grid )
+			{
+				int i;
+				
+				int offs_x;
+				int offs_y;
+
+				int scr_offs_x = get_scr_offs_x();
+				int scr_offs_y = get_scr_offs_y();
+
+				int scr_end_x = scr_offs_x + ( utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE );
+				int scr_end_y = scr_offs_y + ( utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE );
+				
+				// blocks grid
+				{
+					m_pen.Color = utils.CONST_COLOR_SCREEN_GRID_THIN;
+					
+					int start_offs_x = ( scr_offs_x + ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
+					int start_offs_y = ( scr_offs_y + ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
+					
+					for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES; i++ )
+					{
+						offs_x = start_offs_x + ( i * utils.CONST_SCREEN_TILES_SIZE );
+						m_gfx.DrawLine( m_pen, offs_x, scr_offs_y, offs_x, scr_end_y );
+					}
+					
+					for( i = 0; i < utils.CONST_SCREEN_NUM_HEIGHT_TILES; i++ )
+					{
+						offs_y = start_offs_y + ( i * utils.CONST_SCREEN_TILES_SIZE );
+						m_gfx.DrawLine( m_pen, scr_offs_x, offs_y, scr_end_x, offs_y );
+					}
+				}
+
+				// tiles grid
+				{
+					m_pen.Color = ( m_fill_mode == EFillMode.efm_Tile ) ? utils.CONST_COLOR_SCREEN_GRID_THICK_TILE_MODE:utils.CONST_COLOR_SCREEN_GRID_THICK_BLOCK_MODE;
+					
+					for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES; i++ )
+					{
+						offs_x = get_scr_offs_x() + ( i * utils.CONST_SCREEN_TILES_SIZE );
+						m_gfx.DrawLine( m_pen, offs_x, scr_offs_y, offs_x, scr_end_y );
+					}
+					
+					for( i = 0; i < utils.CONST_SCREEN_NUM_HEIGHT_TILES; i++ )
+					{
+						offs_y = ( get_scr_offs_y() + ( i * utils.CONST_SCREEN_TILES_SIZE ) );
+						
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+						offs_y = ( i < 8 ) ? offs_y:offs_y - ( utils.CONST_SCREEN_TILES_SIZE >> 1 );
+#endif //DEF_SCREEN_HEIGHT_7d5_TILES
+
+						m_gfx.DrawLine( m_pen, scr_offs_x, offs_y, scr_end_x, offs_y );
+					}
+				}
+			}
+
+			// red rectangle
+			{
+				m_pen.Color = Color.Red;
+				m_pen.Width = 2.0f;
+				
+				int width 	= utils.CONST_SCREEN_NUM_WIDTH_TILES * utils.CONST_SCREEN_TILES_SIZE;
+				int height	= utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE;
+				
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+				m_gfx.DrawRectangle( m_pen, get_scr_offs_x(), get_scr_offs_y(), width, height - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
+#else
+				m_gfx.DrawRectangle( m_pen, get_scr_offs_x(), get_scr_offs_y(), width, height );
+#endif					
+				m_pen.Width = 1.0f;
+			}
+			
+			disable( false );
+		}
+
+		private void draw_tile( int _x, int _y, int _tile_id )
+		{
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+			m_border_tile_img_rect.X		= 0;
+			m_border_tile_img_rect.Y		= 0;
+			m_border_tile_img_rect.Height	= ( _y == 7 ) ? utils.CONST_SCREEN_TILES_SIZE >> 1:utils.CONST_SCREEN_TILES_SIZE;
+			
+			m_gfx.DrawImage( 	m_tiles_imagelist.Images[ _tile_id ],
+								get_scr_offs_x() + ( _x * utils.CONST_SCREEN_TILES_SIZE ),
+								get_scr_offs_y() + ( _y * utils.CONST_SCREEN_TILES_SIZE ),
+								m_border_tile_img_rect,
+								GraphicsUnit.Pixel );
+#else
+			m_gfx.DrawImage( 	m_tiles_imagelist.Images[ _tile_id ], 
+								get_scr_offs_x() + ( _x * utils.CONST_SCREEN_TILES_SIZE ),
+								get_scr_offs_y() + ( _y * utils.CONST_SCREEN_TILES_SIZE ),
+								utils.CONST_SCREEN_TILES_SIZE, 
+								utils.CONST_SCREEN_TILES_SIZE );
+#endif	//DEF_SCREEN_HEIGHT_7d5_TILES						
+		}
+		private void draw_block( int _x, int _y, int _tile_id )
+		{
+			m_gfx.DrawImage( 	m_blocks_imagelist.Images[ _tile_id ], 
+								get_scr_offs_x() + ( _x * utils.CONST_SCREEN_BLOCKS_SIZE ),
+								get_scr_offs_y() + ( _y * utils.CONST_SCREEN_BLOCKS_SIZE ),
+								utils.CONST_SCREEN_BLOCKS_SIZE, 
+								utils.CONST_SCREEN_BLOCKS_SIZE );
 		}
 	}
 }
