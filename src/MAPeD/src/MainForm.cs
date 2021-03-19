@@ -662,6 +662,11 @@ namespace MAPeD
 								
 								set_screen_data_type( scr_data_tiles4x4 ? data_sets_manager.EScreenDataType.sdt_Tiles4x4:data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
 							}
+							else
+							{
+								// early versions always work in the Tiles4x4 mode
+								set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
+							}
 							
 							m_data_manager.tiles_data_pos = await Task.Run( () => m_data_manager.load( ver, br, file_ext, m_data_conversion_options_form.screens_align_mode, m_data_conversion_options_form.convert_colors, m_progress_val, m_progress_status ) );
 							
