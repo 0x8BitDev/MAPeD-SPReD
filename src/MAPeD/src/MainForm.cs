@@ -1289,6 +1289,9 @@ namespace MAPeD
 			
 			// force update of screens if needed
 			update_screens_if_needed();
+
+			// reset the layout mode
+			RBtnScreenEditModeSingle.Checked = true;
 			
 			m_data_manager.scr_data_pos 	= -1;
 			m_data_manager.tiles_data_pos 	= chr_bank_cbox.SelectedIndex;
@@ -1313,9 +1316,6 @@ namespace MAPeD
 				update_screens_list_box();
 				
 				ListBoxScreens.SelectedIndex = -1;
-				
-				// reset the layout mode
-				RBtnScreenEditModeSingle.Checked = true;
 			}
 			
 			update_screens_by_bank_id( true, false );

@@ -138,6 +138,8 @@ namespace MAPeD
 
 		public const byte	CONST_EMPTY_CELL_ID		= 255;
 		
+		public static readonly int[] adj_scr_slots	= new int[]{ -1, -1, 0, -1, 1, -1, -1, 1, 0, 1, 1, 1, -1, 0, 1, 0 };
+		
 		public layout_data()
 		{
 			m_layout = new List< List< screen_data > >();

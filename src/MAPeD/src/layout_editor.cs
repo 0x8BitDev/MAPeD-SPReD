@@ -30,7 +30,9 @@ namespace MAPeD
 		private bool 	m_dispatch_selection_mode			= false;
 		private int		m_dispatch_mode_sel_screen_slot_id	= -1;
 
-		private readonly short[]	m_border_tiles	= null;
+		private readonly short[]	m_adj_scr_data_arr	= null;
+		private readonly int[] 		m_adj_scr_ind_arr	= null;
+		private readonly int[] 		m_adj_scr_offs 		= new int[ layout_data.adj_scr_slots.Length >> 1 ];
 
 		private int 	m_offset_x 		= 0;
 		private int 	m_offset_y 		= 0;
@@ -68,8 +70,6 @@ namespace MAPeD
 		private int 	m_ent_inst_screen_slot_id	= -1;
 		
 		private bool 	m_ent_inst_captured			= false;
-		
-		private readonly int[] 	m_adjacent_scr_arr	= null;
 		
 		private bool	m_high_quality_render		= true;
 		
@@ -174,9 +174,9 @@ namespace MAPeD
 
 			reset( true );
 			
-			m_border_tiles = new short[ utils.CONST_BORDER_TILES_CNT << 1 ];	// 4x8 ( up\right\down\left ) + 4 ( four corners ) ; +2x2 mode
+			m_adj_scr_data_arr = new short[ layout_data.adj_scr_slots.Length ];
 			
-			m_adjacent_scr_arr = new int[]{ -1, /*( -width - 1 )*/0, /*-width*/0, /*( -width + 1 )*/0, +1, /*( width + 1 )*/0, /*width*/0, /*( width - 1 )*/0, -1 };
+			m_adj_scr_ind_arr = new int[]{ -1, /*( -width - 1 )*/0, /*-width*/0, /*( -width + 1 )*/0, +1, /*( width + 1 )*/0, /*width*/0, /*( width - 1 )*/0, -1 };
 		}
 		
 		public void reset( bool _init )
@@ -237,21 +237,9 @@ namespace MAPeD
 			put_tiles_pattern_on_screen( scr_ind, CHR_bank_id, data, pos_x, pos_y );
 			
 			// run through adjacent screens
-			m_adjacent_scr_arr[0] = m_layout.get_adjacent_screen_index( scr_ind, -get_width() - 1 );
-			m_adjacent_scr_arr[1] = m_layout.get_adjacent_screen_index( scr_ind, -get_width() );
-			m_adjacent_scr_arr[2] = m_layout.get_adjacent_screen_index( scr_ind, -get_width() + 1 );
-			m_adjacent_scr_arr[3] =	m_layout.get_adjacent_screen_index( scr_ind, 1 );
-			m_adjacent_scr_arr[4] = m_layout.get_adjacent_screen_index( scr_ind, -1 );
-			m_adjacent_scr_arr[5] = m_layout.get_adjacent_screen_index( scr_ind, get_width() + 1 );
-			m_adjacent_scr_arr[6] = m_layout.get_adjacent_screen_index( scr_ind, get_width() );
-			m_adjacent_scr_arr[7] =	m_layout.get_adjacent_screen_index( scr_ind, get_width() - 1 );
-			
 			for( int n = 0; n < 8; n++ )
 			{
-				if( m_adjacent_scr_arr[ n ] >= 0 )
-				{
-					put_tiles_pattern_on_screen( m_adjacent_scr_arr[ n ], CHR_bank_id, data, pos_x, pos_y );
-				}
+				put_tiles_pattern_on_screen( m_layout.get_adjacent_screen_index( scr_ind, m_adj_scr_offs[ n ] ), CHR_bank_id, data, pos_x, pos_y );
 			}
 			
 			// update border tiles
@@ -264,7 +252,7 @@ namespace MAPeD
 			int bank_scr_ind 		= -1;
 			tiles_data bank_data 	= null;
 			
-			if( get_screen_data( _scr_ind, ref CHR_bank_id, ref bank_scr_ind, ref bank_data ) )
+			if( _scr_ind >= 0 && get_screen_data( _scr_ind, ref CHR_bank_id, ref bank_scr_ind, ref bank_data ) )
 			{
 				if( CHR_bank_id == _CHR_bank_id )
 				{
@@ -399,13 +387,13 @@ namespace MAPeD
 							
 							int max_scr_cnt = scr_cnt_x * scr_cnt_y;
 							
-							m_adjacent_scr_arr[ 1 ] = -scr_cnt_x - 1;
-							m_adjacent_scr_arr[ 2 ] = -scr_cnt_x;	
-							m_adjacent_scr_arr[ 3 ] = -scr_cnt_x + 1;
+							m_adj_scr_ind_arr[ 1 ] = -scr_cnt_x - 1;
+							m_adj_scr_ind_arr[ 2 ] = -scr_cnt_x;	
+							m_adj_scr_ind_arr[ 3 ] = -scr_cnt_x + 1;
 
-							m_adjacent_scr_arr[ 5 ] = scr_cnt_x + 1;
-							m_adjacent_scr_arr[ 6 ] = scr_cnt_x;	
-							m_adjacent_scr_arr[ 7 ] = scr_cnt_x - 1;
+							m_adj_scr_ind_arr[ 5 ] = scr_cnt_x + 1;
+							m_adj_scr_ind_arr[ 6 ] = scr_cnt_x;	
+							m_adj_scr_ind_arr[ 7 ] = scr_cnt_x - 1;
 							
 							int arr_ind = 0;
 							
@@ -433,7 +421,7 @@ namespace MAPeD
 							
 							for( int i = arr_ind; i < last_arr_ind; i++ )
 							{
-								scr_ind = m_sel_screen_slot_id + m_adjacent_scr_arr[ i ];
+								scr_ind = m_sel_screen_slot_id + m_adj_scr_ind_arr[ i ];
 								
 								if( scr_ind < 0 || scr_ind >= max_scr_cnt )
 								{
@@ -1552,6 +1540,18 @@ namespace MAPeD
 			
 			m_layout = data_mngr.get_layout_data( data_mngr.layouts_data_pos );
 			
+			if( m_layout != null )
+			{
+				m_adj_scr_offs[ 0 ] = -get_width() - 1;
+				m_adj_scr_offs[ 1 ] = -get_width();
+				m_adj_scr_offs[ 2 ] = -get_width() + 1;
+				m_adj_scr_offs[ 3 ] =  get_width() - 1;
+				m_adj_scr_offs[ 4 ] =  get_width();
+				m_adj_scr_offs[ 5 ] =  get_width() + 1;
+				m_adj_scr_offs[ 6 ] = -1;
+				m_adj_scr_offs[ 7 ] =  1;
+			}
+			
 			if( m_dispatch_selection_mode && m_dispatch_mode_sel_screen_slot_id >= 0 )
 			{
 				m_dispatch_mode_sel_screen_slot_id = -1;
@@ -1615,136 +1615,30 @@ namespace MAPeD
 				{
 					int i;
 					
-					for( i = 0; i < m_border_tiles.Length; i++ )
+					for( i = 0; i < m_adj_scr_data_arr.Length; i++ )
 					{
-						m_border_tiles[ i ] = unchecked( (short)0xffff );
+						m_adj_scr_data_arr[ i ] = unchecked( (short)0xffff );
 					}
 					
-					_border_tiles = m_border_tiles;
+					_border_tiles = m_adj_scr_data_arr;
 					
 					tiles_data 	btiles_data 	= null;
 					int 		bCHR_ind		= -1;
 					int 		bank_scr_ind	= -1;
 					int			bscr_ind;
-					int			tile_offset;
 					
 					int sel_scr_pos_x = m_dispatch_mode_sel_screen_slot_id % get_width();
 					int sel_scr_pos_y = m_dispatch_mode_sel_screen_slot_id / get_width();
 					
-					int num_scr_tiles		= utils.get_screen_tiles_cnt_uni( m_screen_data_type );
-					int num_width_tiles		= utils.get_screen_num_width_tiles_uni( m_screen_data_type );
-					int num_height_tiles	= utils.get_screen_num_height_tiles_uni( m_screen_data_type );
-					
-					int offs_factor			= m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 1:2;
-					
-					// upper line
+					for( i = 0; i < m_adj_scr_offs.Length; i++ )
 					{
-						// top/left
-						bscr_ind = m_dispatch_mode_sel_screen_slot_id - get_width() - 1;
+						bscr_ind = m_dispatch_mode_sel_screen_slot_id + m_adj_scr_offs[ i ];
 						
-						if( has_screen( bscr_ind ) && valid_screen_slot( sel_scr_pos_x - 1, sel_scr_pos_y - 1 ) )
+						if( has_screen( bscr_ind ) && valid_screen_slot( sel_scr_pos_x + layout_data.adj_scr_slots[ i << 1 ], sel_scr_pos_y + layout_data.adj_scr_slots[ ( i << 1 ) + 1 ] ) )
 						{
 							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
 							{
-								m_border_tiles[ utils.CONST_ADJ_SCR_TILE_IND_UP_LEFT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ num_scr_tiles - 1 ] );
-							}
-						}
-						
-						// top/center
-						bscr_ind = m_dispatch_mode_sel_screen_slot_id - get_width();
-							
-						if( has_screen( bscr_ind ) && valid_screen_slot( sel_scr_pos_x, sel_scr_pos_y - 1 ) )
-						{
-							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
-							{
-								tile_offset = num_scr_tiles - num_width_tiles;
-								
-								for( i = 0; i < num_width_tiles; i++ )
-								{
-									m_border_tiles[ i + utils.CONST_ADJ_SCR_TILE_IND_UP ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ tile_offset + i ] );
-								}
-							}
-						}
-						
-						// top/right
-						bscr_ind = m_dispatch_mode_sel_screen_slot_id - get_width() + 1;
-						
-						if( has_screen( bscr_ind ) && valid_screen_slot( sel_scr_pos_x + 1, sel_scr_pos_y - 1 ) )
-						{
-							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
-							{
-								m_border_tiles[ offs_factor * utils.CONST_ADJ_SCR_TILE_IND_UP_RIGHT - ( offs_factor - 1 ) ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ num_scr_tiles - num_width_tiles ] );
-							}
-						}
-					}
-					
-					// lower line
-					{
-						// bottom/left
-						bscr_ind = m_dispatch_mode_sel_screen_slot_id + get_width() - 1;
-						
-						if( has_screen( bscr_ind ) && valid_screen_slot( sel_scr_pos_x - 1, sel_scr_pos_y + 1 ) )
-						{
-							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
-							{
-								m_border_tiles[ offs_factor * utils.CONST_ADJ_SCR_TILE_IND_DOWN_LEFT + ( offs_factor - 1 ) ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ num_width_tiles - 1 ] );
-							}
-						}
-						
-						// bottom/center
-						bscr_ind = m_dispatch_mode_sel_screen_slot_id + get_width();
-							
-						if( has_screen( bscr_ind ) && valid_screen_slot( sel_scr_pos_x, sel_scr_pos_y + 1 ) )
-						{
-							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
-							{
-								for( i = 0; i < num_width_tiles; i++ )
-								{
-									m_border_tiles[ i + offs_factor * utils.CONST_ADJ_SCR_TILE_IND_DOWN ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ i ] );
-								}
-							}
-						}
-						
-						// bottom/right
-						bscr_ind = m_dispatch_mode_sel_screen_slot_id + get_width() + 1;
-						
-						if( has_screen( bscr_ind ) && valid_screen_slot( sel_scr_pos_x + 1, sel_scr_pos_y + 1 ) )
-						{
-							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
-							{
-								m_border_tiles[ offs_factor * utils.CONST_ADJ_SCR_TILE_IND_DOWN_RIGHT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ 0 ] );
-							}
-						}
-					}
-					
-					// left
-					{
-						bscr_ind = m_dispatch_mode_sel_screen_slot_id - 1;
-							
-						if( has_screen( bscr_ind ) && valid_screen_slot( sel_scr_pos_x - 1, sel_scr_pos_y ) )
-						{
-							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
-							{
-								for( i = 0; i < num_height_tiles; i++ )
-								{
-									m_border_tiles[ i + offs_factor * utils.CONST_ADJ_SCR_TILE_IND_LEFT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ ( i + 1 ) * num_width_tiles - 1 ] );
-								}
-							}
-						}
-					}
-					
-					// right
-					{
-						bscr_ind = m_dispatch_mode_sel_screen_slot_id + 1;
-							
-						if( has_screen( bscr_ind ) && valid_screen_slot( sel_scr_pos_x + 1, sel_scr_pos_y ) )
-						{
-							if( get_screen_data( bscr_ind, ref bCHR_ind, ref bank_scr_ind, ref btiles_data ) )
-							{
-								for( i = 0; i < num_height_tiles; i++ )
-								{
-									m_border_tiles[ i + offs_factor * utils.CONST_ADJ_SCR_TILE_IND_RIGHT ] = (short)( ( (byte)bCHR_ind << 8 ) | btiles_data.scr_data[ bank_scr_ind ][ i * num_width_tiles ] );
-								}
+								m_adj_scr_data_arr[ i ] = (short)( ( (byte)bCHR_ind << 8 ) | bank_scr_ind );
 							}
 						}
 					}
