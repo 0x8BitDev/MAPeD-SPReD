@@ -1643,7 +1643,15 @@ namespace MAPeD
 				
 				// blocks and properties
 				{
-					blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_ind ) ) << 2;//max_tile_ind << 2 ) ) << 2;
+					
+					if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					{
+						blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_ind ) ) << 2;//max_tile_ind << 2 ) ) << 2;
+					}
+					else
+					{
+						blocks_props_size = ( 1 + tiles.get_first_free_block_id() ) << 2;
+					}
 					
 					block_props_arr = new byte[ RBtnPropPerBlock.Checked ? ( blocks_props_size >> 2 ):blocks_props_size ];
 					Array.Clear( block_props_arr, 0, block_props_arr.Length );
@@ -1795,18 +1803,18 @@ namespace MAPeD
 					
 					def_sw	= m_C_writer;
 				}
-				
-				def_sw.WriteLine( c_int + level_prefix_str + "_CHR_data_size\t= " + CHR_data_size + c_code_comm_delim + "map CHRs size in bytes" );
-				
+
 				if( m_C_writer != null )
 				{
 					m_C_writer.WriteLine( c_char + level_prefix_str + "_StartScr\t= " + start_scr_ind + c_code_comm_delim + "start screen" );
 				}
 				else
 				{
-					_sw.WriteLine( level_prefix_str + "_StartScr:\t.word " + start_scr_ind + "\t; start screen" );
+					_sw.WriteLine( level_prefix_str + "_StartScr:\t.word " + start_scr_ind + "\t; start screen\n" );
 				}
-
+				
+				def_sw.WriteLine( c_int + level_prefix_str + "_CHR_data_size\t= " + CHR_data_size + c_code_comm_delim + "map CHRs size in bytes" );
+				
 				def_sw.WriteLine( c_int + level_prefix_str + "_WTilesCnt\t= " + get_tiles_cnt_width( n_scr_X ) + c_code_comm_delim + "number of level tiles in width" );
 				def_sw.WriteLine( c_int + level_prefix_str + "_HTilesCnt\t= " + get_tiles_cnt_height( n_scr_Y ) + c_code_comm_delim + "number of level tiles in height" );
 				
