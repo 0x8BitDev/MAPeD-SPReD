@@ -291,9 +291,9 @@ namespace MAPeD
 		// block editor
 		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_GRID						= Color.FromArgb( 0x78808080 );
 		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_CHR_BORDER					= Color.White;
+		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_DRAW_MODE_CHR_SPLITTER		= Color.DarkGray;
 		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_OUTER_BORDER	= Color.Red;
 		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_INNER_BORDER	= Color.White;
-		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_DRAW_MODE_CHR_OUTER_BORDER	= Color.OrangeRed;
 		// CHR bank viewer
 		public static readonly Color	CONST_COLOR_CHR_BANK_SELECTED_DEFAULT					= Color.Black;
 		public static readonly Color	CONST_COLOR_CHR_BANK_GRID								= Color.FromArgb( 0x78808080 );

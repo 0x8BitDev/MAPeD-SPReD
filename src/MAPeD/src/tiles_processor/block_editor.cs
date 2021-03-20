@@ -399,7 +399,14 @@ namespace MAPeD
 						m_gfx.DrawLine( m_pen, 0, pos, m_pix_box.Height, pos );
 					}
 					
-					m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_CHR_BORDER;
+					if( m_edit_mode == EMode.bem_CHR_select )
+					{
+						m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_CHR_BORDER;
+					}
+					else
+					{
+						m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_DRAW_MODE_CHR_SPLITTER;
+					}
 					
 					pos = 8 << 4;
 					m_gfx.DrawLine( m_pen, pos, 0, pos, m_pix_box.Width );
@@ -408,25 +415,17 @@ namespace MAPeD
 				
 				draw_border( Color.Black );
 				
-				if( m_sel_quad_ind >= 0 )
+				if( ( m_edit_mode == EMode.bem_CHR_select ) && ( m_sel_quad_ind >= 0 ) )
 				{
 					int x = ( ( m_sel_quad_ind % 2 ) << 7 );
 					int y = ( ( m_sel_quad_ind >> 1 ) << 7 );
 					
 					int quad_width = m_pix_box.Width >> 1;
 
-					if( m_edit_mode == EMode.bem_CHR_select )
-					{
-						m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_INNER_BORDER;
-						m_gfx.DrawRectangle( m_pen, x+2, y+2, quad_width - 3, quad_width - 3 );
-						
-						m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_OUTER_BORDER;
-					}
-					else
-					{
-						m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_DRAW_MODE_CHR_OUTER_BORDER;
-					}
+					m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_INNER_BORDER;
+					m_gfx.DrawRectangle( m_pen, x+2, y+2, quad_width - 3, quad_width - 3 );
 					
+					m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_SELECTED_CHR_OUTER_BORDER;					
 					m_gfx.DrawRectangle( m_pen, x+1, y+1, quad_width - 1, quad_width - 1 );
 				}
 				
