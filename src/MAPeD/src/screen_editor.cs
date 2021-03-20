@@ -684,29 +684,11 @@ namespace MAPeD
 			}
 		}
 
-		public void update_adjacent_screen_tiles()
+		public void update_adjacent_screens()
 		{
 			if( mode == EMode.em_Layout )
 			{
-				if( RequestUpScreen != null )
-				{
-					RequestUpScreen( this, null );
-				}
-				
-				if( RequestDownScreen != null )
-				{
-					RequestDownScreen( this, null );
-				}
-				
-				if( RequestLeftScreen != null )
-				{
-					RequestLeftScreen( this, null );
-				}
-				
-				if( RequestRightScreen != null )
-				{
-					RequestRightScreen( this, null );
-				}
+				update();
 			}
 		}
 		

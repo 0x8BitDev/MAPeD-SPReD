@@ -2140,7 +2140,7 @@ namespace MAPeD
 					// when drawing by blocks 2x2 when the 'Tiles (4x4)' mode is active
 					m_screen_editor.clear_active_tile_img();
 					
-					m_screen_editor.update_adjacent_screen_tiles();
+					m_screen_editor.update_adjacent_screens();
 				}
 				ListViewScreens.EndUpdate();
 			}
