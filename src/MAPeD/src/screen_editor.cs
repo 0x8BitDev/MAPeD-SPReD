@@ -172,7 +172,7 @@ namespace MAPeD
 		private readonly ImageList m_tiles_imagelist	= null;
 		private readonly ImageList m_blocks_imagelist	= null;
 		
-		private readonly List< int >	m_block_tiles			= null;
+		private readonly List< int >	m_block_tiles_cache			= null;
 		private int						m_last_empty_tile_ind	= -1;
 
 		private readonly PictureBox m_pbox_active_tile		= null;
@@ -212,7 +212,7 @@ namespace MAPeD
 			m_tile_ghost_img_rect	= new Rectangle( 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE );
 			m_border_tile_img_rect	= new Rectangle( 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE );
 			
-			m_block_tiles = new List< int >( utils.CONST_TILES_UINT_SIZE );
+			m_block_tiles_cache = new List< int >( utils.CONST_TILES_UINT_SIZE );
 			
 			m_sel_area_tile = new Bitmap( utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE, PixelFormat.Format24bppRgb );
 			Graphics.FromImage( m_sel_area_tile ).Clear( utils.CONST_COLOR_SCREEN_SELECTION_TILE );
@@ -849,26 +849,27 @@ namespace MAPeD
 		
 		private int save_new_tile( uint _tile )
 		{
-			m_last_empty_tile_ind = m_last_empty_tile_ind < 0 ? 1:m_last_empty_tile_ind;	// skip zero tile as reserved clear space tile
-			
-			for( int i = m_last_empty_tile_ind; i < utils.CONST_TILES_UINT_SIZE; i++ )
+			if( m_last_empty_tile_ind >= 0 )
 			{
-				if( m_tiles_data.tiles[ i ] == 0 )
+				for( int i = m_last_empty_tile_ind; i < utils.CONST_TILES_UINT_SIZE; i++ )
 				{
-					m_tiles_data.tiles[ i ] = _tile;
-					
-					// add the tile to the cache
-					m_block_tiles.Add( i );
-					
-					// redraw tile image here...
-					if( UpdateTileImage != null )
+					if( m_tiles_data.tiles[ i ] == 0 )
 					{
-						UpdateTileImage( this, new NewTileEventArg( i, m_tiles_data ) );
+						m_tiles_data.tiles[ i ] = _tile;
+						
+						// add the tile to the cache
+						m_block_tiles_cache.Add( i );
+						
+						// redraw tile image here...
+						if( UpdateTileImage != null )
+						{
+							UpdateTileImage( this, new NewTileEventArg( i, m_tiles_data ) );
+						}
+						
+						m_last_empty_tile_ind = i;
+						
+						return i;
 					}
-					
-					m_last_empty_tile_ind = i;
-					
-					return i;
 				}
 			}
 			
@@ -886,11 +887,11 @@ namespace MAPeD
 		{
 			int tile_ind;
 			
-			int size = m_block_tiles.Count;
+			int size = m_block_tiles_cache.Count;
 			
 			for( int i = 0; i < size; i++ )
 			{
-				tile_ind = m_block_tiles[ i ];
+				tile_ind = m_block_tiles_cache[ i ];
 				
 				if( m_tiles_data.tiles[ tile_ind ] == _tile_data )
 				{
@@ -920,7 +921,7 @@ namespace MAPeD
 					
 					m_fill_mode = _fill_mode;
 					
-					m_block_tiles.Clear();
+					m_block_tiles_cache.Clear();
 
 					Image img = null;
 					
@@ -1000,24 +1001,20 @@ namespace MAPeD
 
 			uint tile_data;
 			
-			m_last_empty_tile_ind = -1;
+			m_last_empty_tile_ind = m_tiles_data.get_first_free_tile_id();
+			m_last_empty_tile_ind = ( m_last_empty_tile_ind == 0 ) ? 1:m_last_empty_tile_ind;	// skip zero tile as reserved for an empty space
 			
-			m_block_tiles.Clear();
+			m_block_tiles_cache.Clear();
 			
 			for( i = 0; i < utils.CONST_TILES_UINT_SIZE; i++ )
 			{
 				tile_data = m_tiles_data.tiles[ i ];
-				
+
 				for( j = 0; j < utils.CONST_TILE_SIZE; j++ )
 				{
-					if( i > 0 && m_last_empty_tile_ind < 0 && tile_data == 0 )
-					{
-						m_last_empty_tile_ind = i;
-					}
-					
 					if( utils.get_byte_from_uint( tile_data, j ) == _block_ind )
 					{
-						m_block_tiles.Add( i );
+						m_block_tiles_cache.Add( i );
 			
 						break;
 					}
