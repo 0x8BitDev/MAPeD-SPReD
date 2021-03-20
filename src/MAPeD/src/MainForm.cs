@@ -184,7 +184,7 @@ namespace MAPeD
 			m_tiles_palette_form.TilesBlocksClosed 	+= new EventHandler( MainForm_TilesBlocksClosed );
 			m_tiles_palette_form.TileSelected 		+= new EventHandler( MainForm_TileSelected );
 			m_tiles_palette_form.BlockSelected 		+= new EventHandler( MainForm_BlockSelected );
-			m_tiles_palette_form.ResetActiveTile 	+= new EventHandler( MainForm_ResetActiveTile );
+			m_tiles_palette_form.ResetActiveTile 	+= new EventHandler( BtnResetTileClick_Event );
 			
 			m_patterns_manager_form = new patterns_manager_form( m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list() );
 			m_patterns_manager_form.PatternsManagerClosed 	+= new EventHandler( MainForm_PatternsManagerClosed );
@@ -2136,7 +2136,9 @@ namespace MAPeD
 						progress_bar_show( false );
 					}
 					
-					m_screen_editor.reset_last_empty_tile_ind();
+					// need to be reset to avoid incorrect tiles array filling
+					// when drawing by blocks 2x2 when the 'Tiles (4x4)' mode is active
+					m_screen_editor.clear_active_tile_img();
 					
 					m_screen_editor.update_adjacent_screen_tiles();
 				}
@@ -2482,11 +2484,6 @@ namespace MAPeD
 			}
 		}
 		
-		void MainForm_ResetActiveTile(object sender, EventArgs e)
-		{
-			m_screen_editor.clear_active_tile_img();
-		}
-
 		private void update_tile_image( object sender, EventArgs e )
 		{
 			NewTileEventArg event_args = e as NewTileEventArg;

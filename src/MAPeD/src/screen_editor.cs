@@ -842,11 +842,6 @@ namespace MAPeD
 			return true;
 		}
 		
-		public void reset_last_empty_tile_ind()
-		{
-			m_last_empty_tile_ind = -1;
-		}
-		
 		private int save_new_tile( uint _tile )
 		{
 			if( m_last_empty_tile_ind >= 0 )
@@ -1234,6 +1229,8 @@ namespace MAPeD
 		public void clear_active_tile_img()
 		{
 			set_active_tile( -1, screen_editor.EFillMode.efm_Unknown );
+			
+			m_last_empty_tile_ind = -1;
 		}
 		
 		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
