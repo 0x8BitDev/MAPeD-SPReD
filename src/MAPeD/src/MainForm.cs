@@ -27,14 +27,8 @@ namespace MAPeD
 		private readonly IProgress< int >	m_progress_val			= null;
 		private readonly IProgress< string >	m_progress_status	= null;
 		
-		private readonly exporter_zx_sjasm m_exp_zx_asm		= null;
-#if DEF_NES
-		private readonly exporter_nes_asm	m_exp_nes_asm	= null;
-#elif DEF_SMS
-		private readonly exporter_sms_asm	m_exp_sms_asm	= null;
-#elif DEF_PCE
-		private readonly exporter_pce_asm m_exp_pce_asm		= null;
-#endif
+		private readonly exporter_zx_sjasm 	m_exp_zx_asm	= null;
+		private readonly exporter_asm 		m_exp_asm		= null;
 #if !DEF_NES
 		private readonly swap_colors_form m_swap_colors_form	= null;
 #endif
@@ -115,13 +109,7 @@ namespace MAPeD
 			m_progress_form	= new progress_form();
 			
 			m_exp_zx_asm	= new exporter_zx_sjasm( m_data_manager );
-#if DEF_NES			
-			m_exp_nes_asm	= new exporter_nes_asm( m_data_manager );
-#elif DEF_SMS
-			m_exp_sms_asm	= new exporter_sms_asm( m_data_manager );
-#elif DEF_PCE
-			m_exp_pce_asm	= new exporter_pce_asm( m_data_manager );
-#endif
+			m_exp_asm		= new exporter_asm( m_data_manager );
 #if !DEF_NES
 			m_swap_colors_form	= new swap_colors_form();
 #endif
@@ -1185,13 +1173,7 @@ namespace MAPeD
 						
 					case ".asm":
 						{
-#if DEF_NES							
-							m_exp_nes_asm.ShowDialog( filename );
-#elif DEF_SMS
-							m_exp_sms_asm.ShowDialog( filename );
-#elif DEF_PCE
-							m_exp_pce_asm.ShowDialog( filename );
-#endif
+							m_exp_asm.ShowDialog( filename );
 						}
 						break;
 						

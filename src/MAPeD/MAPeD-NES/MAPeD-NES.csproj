@@ -119,14 +119,6 @@
     <Compile Include="..\src\entity_data.cs">
       <Link>entity_data.cs</Link>
     </Compile>
-    <Compile Include="..\src\exporter_nes_asm.cs">
-      <Link>exporter_nes_asm.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\src\exporter_nes_asm.Designer.cs">
-      <Link>exporter_nes_asm.Designer.cs</Link>
-      <DependentUpon>exporter_nes_asm.cs</DependentUpon>
-    </Compile>
     <Compile Include="..\src\exporter_zx_asm.cs">
       <Link>exporter_zx_asm.cs</Link>
       <SubType>Form</SubType>
@@ -276,6 +268,10 @@
     <Compile Include="..\src\utils.cs">
       <Link>utils.cs</Link>
     </Compile>
+    <Compile Include="exporter_asm.cs" />
+    <Compile Include="exporter_asm.Designer.cs">
+      <DependentUpon>exporter_asm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MAPeD-NES.Designer.cs">
       <DependentUpon>MAPeD-NES.settings</DependentUpon>
     </Compile>
@@ -296,10 +292,6 @@
     <EmbeddedResource Include="..\src\description_form.resx">
       <Link>description_form.resx</Link>
       <DependentUpon>description_form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\src\exporter_nes_asm.resx">
-      <Link>exporter_nes_asm.resx</Link>
-      <DependentUpon>exporter_nes_asm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\exporter_zx_asm.resx">
       <Link>exporter_zx_asm.resx</Link>
@@ -348,6 +340,9 @@
     <EmbeddedResource Include="..\src\tiles_palette_form.resx">
       <Link>tiles_palette_form.resx</Link>
       <DependentUpon>tiles_palette_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="exporter_asm.resx">
+      <DependentUpon>exporter_asm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
