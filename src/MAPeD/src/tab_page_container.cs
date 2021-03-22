@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 09.05.2017
  * Time: 12:35
  */
@@ -48,7 +48,8 @@ namespace MAPeD
 				
 				_tab_cntrl.TabPages.Remove( m_tab_page );
 			
-				m_inner_tab_cntrl = new System.Windows.Forms.TabControl();
+				m_inner_tab_cntrl 		= new System.Windows.Forms.TabControl();
+				m_inner_tab_cntrl.Dock 	= DockStyle.Fill; 
 				m_inner_tab_cntrl.TabPages.Add( m_tab_page );
 
 				// mono's "feature"
@@ -67,11 +68,7 @@ namespace MAPeD
 					m_tab_page.Height	= pt.Y;
 				}
 
-				m_inner_tab_cntrl.Width		= this.Width	= m_tab_page.Width;
-				m_inner_tab_cntrl.Height	= this.Height	= m_tab_page.Height;
-				
-				this.Width	= m_inner_tab_cntrl.Width	+= 20;
-				this.Height	= m_inner_tab_cntrl.Height	+= 60;
+				this.ClientSize = new Size( m_tab_cntrl.Width, m_tab_page.Height + ( m_tab_cntrl.Height - m_tab_page.Height ) );
 			}
 		}
 		
