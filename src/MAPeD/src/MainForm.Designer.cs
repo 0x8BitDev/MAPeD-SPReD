@@ -146,21 +146,7 @@ namespace MAPeD
 			this.PanelTiles = new System.Windows.Forms.FlowLayoutPanel();
 			this.tabControlTilesScreens = new System.Windows.Forms.TabControl();
 			this.TabTiles = new System.Windows.Forms.TabPage();
-			this.GrpBoxScreenData = new System.Windows.Forms.GroupBox();
-			this.BtnScreenDataInfo = new System.Windows.Forms.Button();
-			this.RBtnScreenDataBlocks = new System.Windows.Forms.RadioButton();
-			this.RBtnScreenDataTiles = new System.Windows.Forms.RadioButton();
-			this.PBoxBlockEditor = new System.Windows.Forms.PictureBox();
-			this.ContextMenuBlockEditor = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.blockEditModesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.separatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-			this.CHRSelectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.DrawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
-			this.propertyIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
-			this.PropIdPerBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PropIdPerCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
 			this.GrpBoxCHRBank = new System.Windows.Forms.GroupBox();
 			this.BtnCHRBankNextPage = new System.Windows.Forms.Button();
 			this.BtnCHRBankPrevPage = new System.Windows.Forms.Button();
@@ -181,7 +167,7 @@ namespace MAPeD
 			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
 			this.insertLeftCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.GrpBoxPalettes = new System.Windows.Forms.GroupBox();
 			this.BtnSwapColors = new System.Windows.Forms.Button();
 			this.CBoxPalettes = new System.Windows.Forms.ComboBox();
 			this.CheckBoxPalettePerCHR = new System.Windows.Forms.CheckBox();
@@ -196,7 +182,18 @@ namespace MAPeD
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.GrpBoxBlockEditor = new System.Windows.Forms.GroupBox();
+			this.PBoxBlockEditor = new System.Windows.Forms.PictureBox();
+			this.ContextMenuBlockEditor = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.blockEditModesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.separatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
+			this.CHRSelectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DrawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
+			this.propertyIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
+			this.PropIdPerBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PropIdPerCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CBoxBlockObjId = new System.Windows.Forms.ComboBox();
 			this.BtnBlockReserveCHRs = new System.Windows.Forms.Button();
 			this.BtnBlockRotate = new System.Windows.Forms.Button();
@@ -207,13 +204,19 @@ namespace MAPeD
 			this.BtnBlockHFlip = new System.Windows.Forms.Button();
 			this.BtnBlockVFlip = new System.Windows.Forms.Button();
 			this.label10 = new System.Windows.Forms.Label();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.PanelBlocks = new System.Windows.Forms.FlowLayoutPanel();
 			this.GrpBoxTileEditor = new System.Windows.Forms.GroupBox();
 			this.BtnTileReserveBlocks = new System.Windows.Forms.Button();
 			this.CheckBoxTileEditorLock = new System.Windows.Forms.CheckBox();
 			this.PBoxTilePreview = new System.Windows.Forms.PictureBox();
+			this.GrpBoxScreenData = new System.Windows.Forms.GroupBox();
+			this.BtnScreenDataInfo = new System.Windows.Forms.Button();
+			this.RBtnScreenDataBlocks = new System.Windows.Forms.RadioButton();
+			this.RBtnScreenDataTiles = new System.Windows.Forms.RadioButton();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.PanelBlocks = new System.Windows.Forms.FlowLayoutPanel();
 			this.TabScreenEditor = new System.Windows.Forms.TabPage();
+			this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+			this.PBoxScreen = new System.Windows.Forms.PictureBox();
 			this.ScreenDataTypeLabel = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
 			this.BtnPatterns = new System.Windows.Forms.Button();
@@ -231,9 +234,9 @@ namespace MAPeD
 			this.BtnDeleteEmptyScreens = new System.Windows.Forms.Button();
 			this.BtnDeleteScreen = new System.Windows.Forms.Button();
 			this.CheckBoxScreenShowGrid = new System.Windows.Forms.CheckBox();
-			this.PBoxScreen = new System.Windows.Forms.PictureBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.TabLayout = new System.Windows.Forms.TabPage();
+			this.splitContainer5 = new System.Windows.Forms.SplitContainer();
 			this.tabControlScreensEntities = new System.Windows.Forms.TabControl();
 			this.TabScreenList = new System.Windows.Forms.TabPage();
 			this.CheckBoxLayoutEditorAllBanks = new System.Windows.Forms.CheckBox();
@@ -277,23 +280,7 @@ namespace MAPeD
 			this.LabelEntityName = new System.Windows.Forms.Label();
 			this.TextBoxEntityProperties = new System.Windows.Forms.TextBox();
 			this.TextBoxEntityInstanceProp = new System.Windows.Forms.TextBox();
-			this.groupBox7 = new System.Windows.Forms.GroupBox();
-			this.BtnLayoutMoveDown = new System.Windows.Forms.Button();
-			this.BtnLayoutMoveUp = new System.Windows.Forms.Button();
-			this.ListBoxLayouts = new System.Windows.Forms.ListBox();
-			this.BtnCopyLayout = new System.Windows.Forms.Button();
-			this.BtnDeleteLayout = new System.Windows.Forms.Button();
-			this.BtnCreateLayoutWxH = new System.Windows.Forms.Button();
-			this.BtnCreateLayout = new System.Windows.Forms.Button();
-			this.LayoutLabel = new System.Windows.Forms.Label();
-			this.BtnLayoutRemoveRightColumn = new System.Windows.Forms.Button();
-			this.BtnLayoutAddRightColumn = new System.Windows.Forms.Button();
-			this.BtnLayoutRemoveLeftColumn = new System.Windows.Forms.Button();
-			this.BtnLayoutAddLeftColumn = new System.Windows.Forms.Button();
-			this.BtnLayoutRemoveDownRow = new System.Windows.Forms.Button();
-			this.BtnLayoutAddDownRow = new System.Windows.Forms.Button();
-			this.BtnLayoutRemoveUpRow = new System.Windows.Forms.Button();
-			this.BtnLayoutAddUpRow = new System.Windows.Forms.Button();
+			this.splitContainer6 = new System.Windows.Forms.SplitContainer();
 			this.PBoxLayout = new System.Windows.Forms.PictureBox();
 			this.ContextMenuLayoutEditor = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.LayoutDeleteScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -319,6 +306,23 @@ namespace MAPeD
 			this.AdjScrMaskLRDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AdjScrMaskLUDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AdjScrMaskLURDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.BtnLayoutMoveDown = new System.Windows.Forms.Button();
+			this.BtnLayoutMoveUp = new System.Windows.Forms.Button();
+			this.ListBoxLayouts = new System.Windows.Forms.ListBox();
+			this.BtnCopyLayout = new System.Windows.Forms.Button();
+			this.BtnDeleteLayout = new System.Windows.Forms.Button();
+			this.BtnCreateLayoutWxH = new System.Windows.Forms.Button();
+			this.BtnCreateLayout = new System.Windows.Forms.Button();
+			this.LayoutLabel = new System.Windows.Forms.Label();
+			this.BtnLayoutRemoveRightColumn = new System.Windows.Forms.Button();
+			this.BtnLayoutAddRightColumn = new System.Windows.Forms.Button();
+			this.BtnLayoutRemoveLeftColumn = new System.Windows.Forms.Button();
+			this.BtnLayoutAddLeftColumn = new System.Windows.Forms.Button();
+			this.BtnLayoutRemoveDownRow = new System.Windows.Forms.Button();
+			this.BtnLayoutAddDownRow = new System.Windows.Forms.Button();
+			this.BtnLayoutRemoveUpRow = new System.Windows.Forms.Button();
+			this.BtnLayoutAddUpRow = new System.Windows.Forms.Button();
 			this.groupBox13 = new System.Windows.Forms.GroupBox();
 			this.CheckBoxShowCoords = new System.Windows.Forms.CheckBox();
 			this.CheckBoxShowTargets = new System.Windows.Forms.CheckBox();
@@ -369,29 +373,41 @@ namespace MAPeD
 			this.splitContainer2.SuspendLayout();
 			this.tabControlTilesScreens.SuspendLayout();
 			this.TabTiles.SuspendLayout();
-			this.GrpBoxScreenData.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.PBoxBlockEditor)).BeginInit();
-			this.ContextMenuBlockEditor.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+			this.splitContainer3.Panel1.SuspendLayout();
+			this.splitContainer3.Panel2.SuspendLayout();
+			this.splitContainer3.SuspendLayout();
 			this.GrpBoxCHRBank.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBoxCHRBank)).BeginInit();
 			this.ContextMenuCHRBank.SuspendLayout();
-			this.groupBox4.SuspendLayout();
+			this.GrpBoxPalettes.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Palette3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette0)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.PaletteMain)).BeginInit();
-			this.groupBox1.SuspendLayout();
-			this.groupBox2.SuspendLayout();
+			this.GrpBoxBlockEditor.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.PBoxBlockEditor)).BeginInit();
+			this.ContextMenuBlockEditor.SuspendLayout();
 			this.GrpBoxTileEditor.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBoxTilePreview)).BeginInit();
+			this.GrpBoxScreenData.SuspendLayout();
+			this.groupBox2.SuspendLayout();
 			this.TabScreenEditor.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
+			this.splitContainer4.Panel1.SuspendLayout();
+			this.splitContainer4.Panel2.SuspendLayout();
+			this.splitContainer4.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.PBoxScreen)).BeginInit();
 			this.groupBox8.SuspendLayout();
 			this.GrpBoxActiveTile.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBoxActiveTile)).BeginInit();
 			this.groupBox6.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.PBoxScreen)).BeginInit();
 			this.TabLayout.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).BeginInit();
+			this.splitContainer5.Panel1.SuspendLayout();
+			this.splitContainer5.Panel2.SuspendLayout();
+			this.splitContainer5.SuspendLayout();
 			this.tabControlScreensEntities.SuspendLayout();
 			this.TabScreenList.SuspendLayout();
 			this.TabEntities.SuspendLayout();
@@ -409,9 +425,13 @@ namespace MAPeD
 			this.groupBox12.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownEntityPivotY)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownEntityPivotX)).BeginInit();
-			this.groupBox7.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer6)).BeginInit();
+			this.splitContainer6.Panel1.SuspendLayout();
+			this.splitContainer6.Panel2.SuspendLayout();
+			this.splitContainer6.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBoxLayout)).BeginInit();
 			this.ContextMenuLayoutEditor.SuspendLayout();
+			this.groupBox7.SuspendLayout();
 			this.groupBox13.SuspendLayout();
 			this.ContextMenuTilesList.SuspendLayout();
 			this.ContextMenuBlocksList.SuspendLayout();
@@ -1195,10 +1215,11 @@ namespace MAPeD
 			// 
 			this.tabControlMainLayout.Controls.Add(this.TabMain);
 			this.tabControlMainLayout.Controls.Add(this.TabLayout);
-			this.tabControlMainLayout.Location = new System.Drawing.Point(0, 27);
+			this.tabControlMainLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabControlMainLayout.Location = new System.Drawing.Point(0, 24);
 			this.tabControlMainLayout.Name = "tabControlMainLayout";
 			this.tabControlMainLayout.SelectedIndex = 0;
-			this.tabControlMainLayout.Size = new System.Drawing.Size(1034, 641);
+			this.tabControlMainLayout.Size = new System.Drawing.Size(1032, 647);
 			this.tabControlMainLayout.TabIndex = 60;
 			this.tabControlMainLayout.DoubleClick += new System.EventHandler(this.TabCntrlDblClick_Event);
 			// 
@@ -1208,7 +1229,7 @@ namespace MAPeD
 			this.TabMain.Location = new System.Drawing.Point(4, 22);
 			this.TabMain.Name = "TabMain";
 			this.TabMain.Padding = new System.Windows.Forms.Padding(3);
-			this.TabMain.Size = new System.Drawing.Size(1026, 615);
+			this.TabMain.Size = new System.Drawing.Size(1024, 621);
 			this.TabMain.TabIndex = 0;
 			this.TabMain.Text = "Main";
 			this.TabMain.UseVisualStyleBackColor = true;
@@ -1217,6 +1238,8 @@ namespace MAPeD
 			// 
 			this.splitContainer1.BackColor = System.Drawing.Color.Gainsboro;
 			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+			this.splitContainer1.IsSplitterFixed = true;
 			this.splitContainer1.Location = new System.Drawing.Point(3, 3);
 			this.splitContainer1.Name = "splitContainer1";
 			// 
@@ -1228,7 +1251,7 @@ namespace MAPeD
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.tabControlTilesScreens);
-			this.splitContainer1.Size = new System.Drawing.Size(1020, 609);
+			this.splitContainer1.Size = new System.Drawing.Size(1018, 615);
 			this.splitContainer1.SplitterDistance = 242;
 			this.splitContainer1.TabIndex = 19;
 			// 
@@ -1250,7 +1273,7 @@ namespace MAPeD
 			// splitContainer2.Panel2
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.PanelTiles);
-			this.splitContainer2.Size = new System.Drawing.Size(242, 609);
+			this.splitContainer2.Size = new System.Drawing.Size(242, 615);
 			this.splitContainer2.SplitterDistance = 26;
 			this.splitContainer2.TabIndex = 1;
 			// 
@@ -1300,7 +1323,7 @@ namespace MAPeD
 			this.PanelTiles.ForeColor = System.Drawing.SystemColors.ControlLight;
 			this.PanelTiles.Location = new System.Drawing.Point(0, 0);
 			this.PanelTiles.Name = "PanelTiles";
-			this.PanelTiles.Size = new System.Drawing.Size(242, 579);
+			this.PanelTiles.Size = new System.Drawing.Size(242, 585);
 			this.PanelTiles.TabIndex = 3;
 			// 
 			// tabControlTilesScreens
@@ -1311,7 +1334,7 @@ namespace MAPeD
 			this.tabControlTilesScreens.Location = new System.Drawing.Point(0, 0);
 			this.tabControlTilesScreens.Name = "tabControlTilesScreens";
 			this.tabControlTilesScreens.SelectedIndex = 0;
-			this.tabControlTilesScreens.Size = new System.Drawing.Size(774, 609);
+			this.tabControlTilesScreens.Size = new System.Drawing.Size(772, 615);
 			this.tabControlTilesScreens.TabIndex = 40;
 			this.tabControlTilesScreens.DoubleClick += new System.EventHandler(this.TabCntrlDblClick_Event);
 			// 
@@ -1319,149 +1342,36 @@ namespace MAPeD
 			// 
 			this.TabTiles.AutoScroll = true;
 			this.TabTiles.BackColor = System.Drawing.Color.Silver;
-			this.TabTiles.Controls.Add(this.GrpBoxScreenData);
-			this.TabTiles.Controls.Add(this.PBoxBlockEditor);
-			this.TabTiles.Controls.Add(this.GrpBoxCHRBank);
-			this.TabTiles.Controls.Add(this.groupBox4);
-			this.TabTiles.Controls.Add(this.groupBox1);
-			this.TabTiles.Controls.Add(this.groupBox2);
-			this.TabTiles.Controls.Add(this.GrpBoxTileEditor);
+			this.TabTiles.Controls.Add(this.splitContainer3);
 			this.TabTiles.Location = new System.Drawing.Point(4, 22);
 			this.TabTiles.Name = "TabTiles";
 			this.TabTiles.Padding = new System.Windows.Forms.Padding(3);
-			this.TabTiles.Size = new System.Drawing.Size(766, 583);
+			this.TabTiles.Size = new System.Drawing.Size(764, 589);
 			this.TabTiles.TabIndex = 0;
 			this.TabTiles.Text = "Tiles";
 			// 
-			// GrpBoxScreenData
+			// splitContainer3
 			// 
-			this.GrpBoxScreenData.Controls.Add(this.BtnScreenDataInfo);
-			this.GrpBoxScreenData.Controls.Add(this.RBtnScreenDataBlocks);
-			this.GrpBoxScreenData.Controls.Add(this.RBtnScreenDataTiles);
-			this.GrpBoxScreenData.Location = new System.Drawing.Point(442, 376);
-			this.GrpBoxScreenData.Name = "GrpBoxScreenData";
-			this.GrpBoxScreenData.Size = new System.Drawing.Size(122, 74);
-			this.GrpBoxScreenData.TabIndex = 33;
-			this.GrpBoxScreenData.TabStop = false;
-			this.GrpBoxScreenData.Text = "Screen Data";
+			this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer3.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+			this.splitContainer3.IsSplitterFixed = true;
+			this.splitContainer3.Location = new System.Drawing.Point(3, 3);
+			this.splitContainer3.Name = "splitContainer3";
 			// 
-			// BtnScreenDataInfo
+			// splitContainer3.Panel1
 			// 
-			this.BtnScreenDataInfo.Location = new System.Drawing.Point(91, 20);
-			this.BtnScreenDataInfo.Name = "BtnScreenDataInfo";
-			this.BtnScreenDataInfo.Size = new System.Drawing.Size(20, 20);
-			this.BtnScreenDataInfo.TabIndex = 34;
-			this.BtnScreenDataInfo.Text = "?";
-			this.BtnScreenDataInfo.UseVisualStyleBackColor = true;
-			this.BtnScreenDataInfo.Click += new System.EventHandler(this.BtnScreenDataInfoClick_Event);
+			this.splitContainer3.Panel1.Controls.Add(this.GrpBoxCHRBank);
+			this.splitContainer3.Panel1.Controls.Add(this.GrpBoxPalettes);
+			this.splitContainer3.Panel1.Controls.Add(this.GrpBoxBlockEditor);
+			this.splitContainer3.Panel1.Controls.Add(this.GrpBoxTileEditor);
+			this.splitContainer3.Panel1.Controls.Add(this.GrpBoxScreenData);
 			// 
-			// RBtnScreenDataBlocks
+			// splitContainer3.Panel2
 			// 
-			this.RBtnScreenDataBlocks.AutoCheck = false;
-			this.RBtnScreenDataBlocks.Location = new System.Drawing.Point(17, 43);
-			this.RBtnScreenDataBlocks.Name = "RBtnScreenDataBlocks";
-			this.RBtnScreenDataBlocks.Size = new System.Drawing.Size(92, 20);
-			this.RBtnScreenDataBlocks.TabIndex = 36;
-			this.RBtnScreenDataBlocks.Text = "Blocks (2x2)";
-			this.RBtnScreenDataBlocks.UseVisualStyleBackColor = true;
-			this.RBtnScreenDataBlocks.Click += new System.EventHandler(this.RBtnScreenDataBlocksClick_Event);
-			// 
-			// RBtnScreenDataTiles
-			// 
-			this.RBtnScreenDataTiles.AutoCheck = false;
-			this.RBtnScreenDataTiles.Checked = true;
-			this.RBtnScreenDataTiles.Location = new System.Drawing.Point(17, 20);
-			this.RBtnScreenDataTiles.Name = "RBtnScreenDataTiles";
-			this.RBtnScreenDataTiles.Size = new System.Drawing.Size(92, 20);
-			this.RBtnScreenDataTiles.TabIndex = 35;
-			this.RBtnScreenDataTiles.TabStop = true;
-			this.RBtnScreenDataTiles.Text = "Tiles (4x4)";
-			this.RBtnScreenDataTiles.UseVisualStyleBackColor = true;
-			this.RBtnScreenDataTiles.Click += new System.EventHandler(this.RBtnScreenDataTilesClick_Event);
-			// 
-			// PBoxBlockEditor
-			// 
-			this.PBoxBlockEditor.BackColor = System.Drawing.Color.Black;
-			this.PBoxBlockEditor.ContextMenuStrip = this.ContextMenuBlockEditor;
-			this.PBoxBlockEditor.Location = new System.Drawing.Point(298, 24);
-			this.PBoxBlockEditor.Name = "PBoxBlockEditor";
-			this.PBoxBlockEditor.Size = new System.Drawing.Size(256, 256);
-			this.PBoxBlockEditor.TabIndex = 5;
-			this.PBoxBlockEditor.TabStop = false;
-			// 
-			// ContextMenuBlockEditor
-			// 
-			this.ContextMenuBlockEditor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.blockEditModesToolStripMenuItem,
-									this.separatorToolStripMenuItem,
-									this.CHRSelectToolStripMenuItem,
-									this.DrawToolStripMenuItem,
-									this.toolStripSeparator14,
-									this.propertyIdToolStripMenuItem,
-									this.toolStripSeparator15,
-									this.PropIdPerBlockToolStripMenuItem,
-									this.PropIdPerCHRToolStripMenuItem});
-			this.ContextMenuBlockEditor.Name = "ContextMenuBlockEditor";
-			this.ContextMenuBlockEditor.Size = new System.Drawing.Size(153, 154);
-			// 
-			// blockEditModesToolStripMenuItem
-			// 
-			this.blockEditModesToolStripMenuItem.Enabled = false;
-			this.blockEditModesToolStripMenuItem.Name = "blockEditModesToolStripMenuItem";
-			this.blockEditModesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.blockEditModesToolStripMenuItem.Text = "Edit Modes:";
-			// 
-			// separatorToolStripMenuItem
-			// 
-			this.separatorToolStripMenuItem.Name = "separatorToolStripMenuItem";
-			this.separatorToolStripMenuItem.Size = new System.Drawing.Size(149, 6);
-			// 
-			// CHRSelectToolStripMenuItem
-			// 
-			this.CHRSelectToolStripMenuItem.CheckOnClick = true;
-			this.CHRSelectToolStripMenuItem.Name = "CHRSelectToolStripMenuItem";
-			this.CHRSelectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.CHRSelectToolStripMenuItem.Text = "Select CHRs";
-			this.CHRSelectToolStripMenuItem.Click += new System.EventHandler(this.SelectCHRToolStripMenuItemClick_Event);
-			// 
-			// DrawToolStripMenuItem
-			// 
-			this.DrawToolStripMenuItem.CheckOnClick = true;
-			this.DrawToolStripMenuItem.Name = "DrawToolStripMenuItem";
-			this.DrawToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.DrawToolStripMenuItem.Text = "Draw";
-			this.DrawToolStripMenuItem.Click += new System.EventHandler(this.DrawToolStripMenuItemClick_Event);
-			// 
-			// toolStripSeparator14
-			// 
-			this.toolStripSeparator14.Name = "toolStripSeparator14";
-			this.toolStripSeparator14.Size = new System.Drawing.Size(149, 6);
-			// 
-			// propertyIdToolStripMenuItem
-			// 
-			this.propertyIdToolStripMenuItem.Enabled = false;
-			this.propertyIdToolStripMenuItem.Name = "propertyIdToolStripMenuItem";
-			this.propertyIdToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.propertyIdToolStripMenuItem.Text = "Property Id per";
-			// 
-			// toolStripSeparator15
-			// 
-			this.toolStripSeparator15.Name = "toolStripSeparator15";
-			this.toolStripSeparator15.Size = new System.Drawing.Size(149, 6);
-			// 
-			// PropIdPerBlockToolStripMenuItem
-			// 
-			this.PropIdPerBlockToolStripMenuItem.Name = "PropIdPerBlockToolStripMenuItem";
-			this.PropIdPerBlockToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.PropIdPerBlockToolStripMenuItem.Text = "Block";
-			this.PropIdPerBlockToolStripMenuItem.Click += new System.EventHandler(this.PropertyPerBlockToolStripMenuItemClick_Event);
-			// 
-			// PropIdPerCHRToolStripMenuItem
-			// 
-			this.PropIdPerCHRToolStripMenuItem.Name = "PropIdPerCHRToolStripMenuItem";
-			this.PropIdPerCHRToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.PropIdPerCHRToolStripMenuItem.Text = "CHR";
-			this.PropIdPerCHRToolStripMenuItem.Click += new System.EventHandler(this.PropertyPerCHRToolStripMenuItemClick_Event);
+			this.splitContainer3.Panel2.Controls.Add(this.groupBox2);
+			this.splitContainer3.Size = new System.Drawing.Size(758, 583);
+			this.splitContainer3.SplitterDistance = 563;
+			this.splitContainer3.TabIndex = 0;
 			// 
 			// GrpBoxCHRBank
 			// 
@@ -1476,7 +1386,7 @@ namespace MAPeD
 			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRVFlip);
 			this.GrpBoxCHRBank.Controls.Add(this.label5);
 			this.GrpBoxCHRBank.Controls.Add(this.PBoxCHRBank);
-			this.GrpBoxCHRBank.Location = new System.Drawing.Point(6, 6);
+			this.GrpBoxCHRBank.Location = new System.Drawing.Point(2, 6);
 			this.GrpBoxCHRBank.Name = "GrpBoxCHRBank";
 			this.GrpBoxCHRBank.Size = new System.Drawing.Size(276, 336);
 			this.GrpBoxCHRBank.TabIndex = 5;
@@ -1656,28 +1566,28 @@ namespace MAPeD
 			this.deleteCHRToolStripMenuItem.Text = "Delete";
 			this.deleteCHRToolStripMenuItem.Click += new System.EventHandler(this.DeleteCHRToolStripMenuItemClick_Event);
 			// 
-			// groupBox4
+			// GrpBoxPalettes
 			// 
-			this.groupBox4.Controls.Add(this.BtnSwapColors);
-			this.groupBox4.Controls.Add(this.CBoxPalettes);
-			this.groupBox4.Controls.Add(this.CheckBoxPalettePerCHR);
-			this.groupBox4.Controls.Add(this.Palette3);
-			this.groupBox4.Controls.Add(this.Palette2);
-			this.groupBox4.Controls.Add(this.Palette1);
-			this.groupBox4.Controls.Add(this.BtnPltDelete);
-			this.groupBox4.Controls.Add(this.Palette0);
-			this.groupBox4.Controls.Add(this.PaletteMain);
-			this.groupBox4.Controls.Add(this.label4);
-			this.groupBox4.Controls.Add(this.BtnPltCopy);
-			this.groupBox4.Controls.Add(this.label3);
-			this.groupBox4.Controls.Add(this.label2);
-			this.groupBox4.Controls.Add(this.label1);
-			this.groupBox4.Location = new System.Drawing.Point(6, 348);
-			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(276, 231);
-			this.groupBox4.TabIndex = 24;
-			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "Palettes:";
+			this.GrpBoxPalettes.Controls.Add(this.BtnSwapColors);
+			this.GrpBoxPalettes.Controls.Add(this.CBoxPalettes);
+			this.GrpBoxPalettes.Controls.Add(this.CheckBoxPalettePerCHR);
+			this.GrpBoxPalettes.Controls.Add(this.Palette3);
+			this.GrpBoxPalettes.Controls.Add(this.Palette2);
+			this.GrpBoxPalettes.Controls.Add(this.Palette1);
+			this.GrpBoxPalettes.Controls.Add(this.BtnPltDelete);
+			this.GrpBoxPalettes.Controls.Add(this.Palette0);
+			this.GrpBoxPalettes.Controls.Add(this.PaletteMain);
+			this.GrpBoxPalettes.Controls.Add(this.label4);
+			this.GrpBoxPalettes.Controls.Add(this.BtnPltCopy);
+			this.GrpBoxPalettes.Controls.Add(this.label3);
+			this.GrpBoxPalettes.Controls.Add(this.label2);
+			this.GrpBoxPalettes.Controls.Add(this.label1);
+			this.GrpBoxPalettes.Location = new System.Drawing.Point(2, 348);
+			this.GrpBoxPalettes.Name = "GrpBoxPalettes";
+			this.GrpBoxPalettes.Size = new System.Drawing.Size(276, 231);
+			this.GrpBoxPalettes.TabIndex = 24;
+			this.GrpBoxPalettes.TabStop = false;
+			this.GrpBoxPalettes.Text = "Palettes:";
 			// 
 			// BtnSwapColors
 			// 
@@ -1812,24 +1722,109 @@ namespace MAPeD
 			this.label1.TabIndex = 8;
 			this.label1.Text = "1:";
 			// 
-			// groupBox1
+			// GrpBoxBlockEditor
 			// 
-			this.groupBox1.Controls.Add(this.CBoxBlockObjId);
-			this.groupBox1.Controls.Add(this.BtnBlockReserveCHRs);
-			this.groupBox1.Controls.Add(this.BtnBlockRotate);
-			this.groupBox1.Controls.Add(this.LabelObjId);
-			this.groupBox1.Controls.Add(this.BtnEditModeDraw);
-			this.groupBox1.Controls.Add(this.BtnUpdateGFX);
-			this.groupBox1.Controls.Add(this.BtnEditModeSelectCHR);
-			this.groupBox1.Controls.Add(this.BtnBlockHFlip);
-			this.groupBox1.Controls.Add(this.BtnBlockVFlip);
-			this.groupBox1.Controls.Add(this.label10);
-			this.groupBox1.Location = new System.Drawing.Point(288, 6);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(276, 364);
-			this.groupBox1.TabIndex = 15;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Block Editor:";
+			this.GrpBoxBlockEditor.Controls.Add(this.PBoxBlockEditor);
+			this.GrpBoxBlockEditor.Controls.Add(this.CBoxBlockObjId);
+			this.GrpBoxBlockEditor.Controls.Add(this.BtnBlockReserveCHRs);
+			this.GrpBoxBlockEditor.Controls.Add(this.BtnBlockRotate);
+			this.GrpBoxBlockEditor.Controls.Add(this.LabelObjId);
+			this.GrpBoxBlockEditor.Controls.Add(this.BtnEditModeDraw);
+			this.GrpBoxBlockEditor.Controls.Add(this.BtnUpdateGFX);
+			this.GrpBoxBlockEditor.Controls.Add(this.BtnEditModeSelectCHR);
+			this.GrpBoxBlockEditor.Controls.Add(this.BtnBlockHFlip);
+			this.GrpBoxBlockEditor.Controls.Add(this.BtnBlockVFlip);
+			this.GrpBoxBlockEditor.Controls.Add(this.label10);
+			this.GrpBoxBlockEditor.Location = new System.Drawing.Point(284, 6);
+			this.GrpBoxBlockEditor.Name = "GrpBoxBlockEditor";
+			this.GrpBoxBlockEditor.Size = new System.Drawing.Size(276, 364);
+			this.GrpBoxBlockEditor.TabIndex = 15;
+			this.GrpBoxBlockEditor.TabStop = false;
+			this.GrpBoxBlockEditor.Text = "Block Editor:";
+			// 
+			// PBoxBlockEditor
+			// 
+			this.PBoxBlockEditor.BackColor = System.Drawing.Color.Black;
+			this.PBoxBlockEditor.ContextMenuStrip = this.ContextMenuBlockEditor;
+			this.PBoxBlockEditor.Location = new System.Drawing.Point(10, 18);
+			this.PBoxBlockEditor.Name = "PBoxBlockEditor";
+			this.PBoxBlockEditor.Size = new System.Drawing.Size(256, 256);
+			this.PBoxBlockEditor.TabIndex = 5;
+			this.PBoxBlockEditor.TabStop = false;
+			// 
+			// ContextMenuBlockEditor
+			// 
+			this.ContextMenuBlockEditor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.blockEditModesToolStripMenuItem,
+									this.separatorToolStripMenuItem,
+									this.CHRSelectToolStripMenuItem,
+									this.DrawToolStripMenuItem,
+									this.toolStripSeparator14,
+									this.propertyIdToolStripMenuItem,
+									this.toolStripSeparator15,
+									this.PropIdPerBlockToolStripMenuItem,
+									this.PropIdPerCHRToolStripMenuItem});
+			this.ContextMenuBlockEditor.Name = "ContextMenuBlockEditor";
+			this.ContextMenuBlockEditor.Size = new System.Drawing.Size(153, 154);
+			// 
+			// blockEditModesToolStripMenuItem
+			// 
+			this.blockEditModesToolStripMenuItem.Enabled = false;
+			this.blockEditModesToolStripMenuItem.Name = "blockEditModesToolStripMenuItem";
+			this.blockEditModesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.blockEditModesToolStripMenuItem.Text = "Edit Modes:";
+			// 
+			// separatorToolStripMenuItem
+			// 
+			this.separatorToolStripMenuItem.Name = "separatorToolStripMenuItem";
+			this.separatorToolStripMenuItem.Size = new System.Drawing.Size(149, 6);
+			// 
+			// CHRSelectToolStripMenuItem
+			// 
+			this.CHRSelectToolStripMenuItem.CheckOnClick = true;
+			this.CHRSelectToolStripMenuItem.Name = "CHRSelectToolStripMenuItem";
+			this.CHRSelectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.CHRSelectToolStripMenuItem.Text = "Select CHRs";
+			this.CHRSelectToolStripMenuItem.Click += new System.EventHandler(this.SelectCHRToolStripMenuItemClick_Event);
+			// 
+			// DrawToolStripMenuItem
+			// 
+			this.DrawToolStripMenuItem.CheckOnClick = true;
+			this.DrawToolStripMenuItem.Name = "DrawToolStripMenuItem";
+			this.DrawToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.DrawToolStripMenuItem.Text = "Draw";
+			this.DrawToolStripMenuItem.Click += new System.EventHandler(this.DrawToolStripMenuItemClick_Event);
+			// 
+			// toolStripSeparator14
+			// 
+			this.toolStripSeparator14.Name = "toolStripSeparator14";
+			this.toolStripSeparator14.Size = new System.Drawing.Size(149, 6);
+			// 
+			// propertyIdToolStripMenuItem
+			// 
+			this.propertyIdToolStripMenuItem.Enabled = false;
+			this.propertyIdToolStripMenuItem.Name = "propertyIdToolStripMenuItem";
+			this.propertyIdToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.propertyIdToolStripMenuItem.Text = "Property Id per";
+			// 
+			// toolStripSeparator15
+			// 
+			this.toolStripSeparator15.Name = "toolStripSeparator15";
+			this.toolStripSeparator15.Size = new System.Drawing.Size(149, 6);
+			// 
+			// PropIdPerBlockToolStripMenuItem
+			// 
+			this.PropIdPerBlockToolStripMenuItem.Name = "PropIdPerBlockToolStripMenuItem";
+			this.PropIdPerBlockToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.PropIdPerBlockToolStripMenuItem.Text = "Block";
+			this.PropIdPerBlockToolStripMenuItem.Click += new System.EventHandler(this.PropertyPerBlockToolStripMenuItemClick_Event);
+			// 
+			// PropIdPerCHRToolStripMenuItem
+			// 
+			this.PropIdPerCHRToolStripMenuItem.Name = "PropIdPerCHRToolStripMenuItem";
+			this.PropIdPerCHRToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.PropIdPerCHRToolStripMenuItem.Text = "CHR";
+			this.PropIdPerCHRToolStripMenuItem.Click += new System.EventHandler(this.PropertyPerCHRToolStripMenuItemClick_Event);
 			// 
 			// CBoxBlockObjId
 			// 
@@ -1951,33 +1946,12 @@ namespace MAPeD
 			this.label10.TabIndex = 0;
 			this.label10.Text = "Modes:";
 			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.PanelBlocks);
-			this.groupBox2.Location = new System.Drawing.Point(570, 6);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(192, 573);
-			this.groupBox2.TabIndex = 37;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Blocks:";
-			// 
-			// PanelBlocks
-			// 
-			this.PanelBlocks.AutoScroll = true;
-			this.PanelBlocks.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.PanelBlocks.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.PanelBlocks.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.PanelBlocks.Location = new System.Drawing.Point(6, 14);
-			this.PanelBlocks.Name = "PanelBlocks";
-			this.PanelBlocks.Size = new System.Drawing.Size(180, 553);
-			this.PanelBlocks.TabIndex = 38;
-			// 
 			// GrpBoxTileEditor
 			// 
 			this.GrpBoxTileEditor.Controls.Add(this.BtnTileReserveBlocks);
 			this.GrpBoxTileEditor.Controls.Add(this.CheckBoxTileEditorLock);
 			this.GrpBoxTileEditor.Controls.Add(this.PBoxTilePreview);
-			this.GrpBoxTileEditor.Location = new System.Drawing.Point(288, 376);
+			this.GrpBoxTileEditor.Location = new System.Drawing.Point(285, 376);
 			this.GrpBoxTileEditor.Name = "GrpBoxTileEditor";
 			this.GrpBoxTileEditor.Size = new System.Drawing.Size(148, 203);
 			this.GrpBoxTileEditor.TabIndex = 30;
@@ -2013,59 +1987,158 @@ namespace MAPeD
 			this.PBoxTilePreview.TabIndex = 16;
 			this.PBoxTilePreview.TabStop = false;
 			// 
+			// GrpBoxScreenData
+			// 
+			this.GrpBoxScreenData.Controls.Add(this.BtnScreenDataInfo);
+			this.GrpBoxScreenData.Controls.Add(this.RBtnScreenDataBlocks);
+			this.GrpBoxScreenData.Controls.Add(this.RBtnScreenDataTiles);
+			this.GrpBoxScreenData.Location = new System.Drawing.Point(439, 376);
+			this.GrpBoxScreenData.Name = "GrpBoxScreenData";
+			this.GrpBoxScreenData.Size = new System.Drawing.Size(122, 74);
+			this.GrpBoxScreenData.TabIndex = 33;
+			this.GrpBoxScreenData.TabStop = false;
+			this.GrpBoxScreenData.Text = "Screen Data";
+			// 
+			// BtnScreenDataInfo
+			// 
+			this.BtnScreenDataInfo.Location = new System.Drawing.Point(91, 20);
+			this.BtnScreenDataInfo.Name = "BtnScreenDataInfo";
+			this.BtnScreenDataInfo.Size = new System.Drawing.Size(20, 20);
+			this.BtnScreenDataInfo.TabIndex = 34;
+			this.BtnScreenDataInfo.Text = "?";
+			this.BtnScreenDataInfo.UseVisualStyleBackColor = true;
+			this.BtnScreenDataInfo.Click += new System.EventHandler(this.BtnScreenDataInfoClick_Event);
+			// 
+			// RBtnScreenDataBlocks
+			// 
+			this.RBtnScreenDataBlocks.AutoCheck = false;
+			this.RBtnScreenDataBlocks.Location = new System.Drawing.Point(13, 43);
+			this.RBtnScreenDataBlocks.Name = "RBtnScreenDataBlocks";
+			this.RBtnScreenDataBlocks.Size = new System.Drawing.Size(103, 20);
+			this.RBtnScreenDataBlocks.TabIndex = 36;
+			this.RBtnScreenDataBlocks.Text = "Blocks (2x2)";
+			this.RBtnScreenDataBlocks.UseVisualStyleBackColor = true;
+			this.RBtnScreenDataBlocks.Click += new System.EventHandler(this.RBtnScreenDataBlocksClick_Event);
+			// 
+			// RBtnScreenDataTiles
+			// 
+			this.RBtnScreenDataTiles.AutoCheck = false;
+			this.RBtnScreenDataTiles.Checked = true;
+			this.RBtnScreenDataTiles.Location = new System.Drawing.Point(13, 20);
+			this.RBtnScreenDataTiles.Name = "RBtnScreenDataTiles";
+			this.RBtnScreenDataTiles.Size = new System.Drawing.Size(98, 20);
+			this.RBtnScreenDataTiles.TabIndex = 35;
+			this.RBtnScreenDataTiles.TabStop = true;
+			this.RBtnScreenDataTiles.Text = "Tiles (4x4)";
+			this.RBtnScreenDataTiles.UseVisualStyleBackColor = true;
+			this.RBtnScreenDataTiles.Click += new System.EventHandler(this.RBtnScreenDataTilesClick_Event);
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.PanelBlocks);
+			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupBox2.Location = new System.Drawing.Point(0, 0);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Padding = new System.Windows.Forms.Padding(6, 3, 6, 6);
+			this.groupBox2.Size = new System.Drawing.Size(191, 583);
+			this.groupBox2.TabIndex = 37;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Blocks:";
+			// 
+			// PanelBlocks
+			// 
+			this.PanelBlocks.AutoScroll = true;
+			this.PanelBlocks.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.PanelBlocks.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.PanelBlocks.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.PanelBlocks.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+			this.PanelBlocks.Location = new System.Drawing.Point(6, 16);
+			this.PanelBlocks.Name = "PanelBlocks";
+			this.PanelBlocks.Size = new System.Drawing.Size(179, 561);
+			this.PanelBlocks.TabIndex = 38;
+			// 
 			// TabScreenEditor
 			// 
 			this.TabScreenEditor.AutoScroll = true;
 			this.TabScreenEditor.BackColor = System.Drawing.Color.Silver;
-			this.TabScreenEditor.Controls.Add(this.ScreenDataTypeLabel);
-			this.TabScreenEditor.Controls.Add(this.label11);
-			this.TabScreenEditor.Controls.Add(this.BtnPatterns);
-			this.TabScreenEditor.Controls.Add(this.BtnTilesBlocks);
-			this.TabScreenEditor.Controls.Add(this.groupBox8);
-			this.TabScreenEditor.Controls.Add(this.GrpBoxActiveTile);
-			this.TabScreenEditor.Controls.Add(this.groupBox6);
-			this.TabScreenEditor.Controls.Add(this.CheckBoxScreenShowGrid);
-			this.TabScreenEditor.Controls.Add(this.PBoxScreen);
-			this.TabScreenEditor.Controls.Add(this.groupBox3);
+			this.TabScreenEditor.Controls.Add(this.splitContainer4);
 			this.TabScreenEditor.Location = new System.Drawing.Point(4, 22);
 			this.TabScreenEditor.Name = "TabScreenEditor";
 			this.TabScreenEditor.Padding = new System.Windows.Forms.Padding(3);
-			this.TabScreenEditor.Size = new System.Drawing.Size(766, 583);
+			this.TabScreenEditor.Size = new System.Drawing.Size(764, 589);
 			this.TabScreenEditor.TabIndex = 1;
 			this.TabScreenEditor.Text = "Screens";
 			// 
+			// splitContainer4
+			// 
+			this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer4.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.splitContainer4.IsSplitterFixed = true;
+			this.splitContainer4.Location = new System.Drawing.Point(3, 3);
+			this.splitContainer4.Name = "splitContainer4";
+			// 
+			// splitContainer4.Panel1
+			// 
+			this.splitContainer4.Panel1.Controls.Add(this.PBoxScreen);
+			this.splitContainer4.Panel1.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
+			// 
+			// splitContainer4.Panel2
+			// 
+			this.splitContainer4.Panel2.Controls.Add(this.ScreenDataTypeLabel);
+			this.splitContainer4.Panel2.Controls.Add(this.label11);
+			this.splitContainer4.Panel2.Controls.Add(this.BtnPatterns);
+			this.splitContainer4.Panel2.Controls.Add(this.BtnTilesBlocks);
+			this.splitContainer4.Panel2.Controls.Add(this.groupBox8);
+			this.splitContainer4.Panel2.Controls.Add(this.GrpBoxActiveTile);
+			this.splitContainer4.Panel2.Controls.Add(this.groupBox6);
+			this.splitContainer4.Panel2.Controls.Add(this.CheckBoxScreenShowGrid);
+			this.splitContainer4.Panel2.Controls.Add(this.groupBox3);
+			this.splitContainer4.Size = new System.Drawing.Size(758, 583);
+			this.splitContainer4.SplitterDistance = 575;
+			this.splitContainer4.TabIndex = 0;
+			// 
+			// PBoxScreen
+			// 
+			this.PBoxScreen.BackColor = System.Drawing.Color.Black;
+			this.PBoxScreen.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.PBoxScreen.Location = new System.Drawing.Point(0, 4);
+			this.PBoxScreen.Name = "PBoxScreen";
+			this.PBoxScreen.Size = new System.Drawing.Size(575, 575);
+			this.PBoxScreen.TabIndex = 56;
+			this.PBoxScreen.TabStop = false;
+			// 
 			// ScreenDataTypeLabel
 			// 
-			this.ScreenDataTypeLabel.Location = new System.Drawing.Point(680, 11);
+			this.ScreenDataTypeLabel.Location = new System.Drawing.Point(98, 9);
 			this.ScreenDataTypeLabel.Name = "ScreenDataTypeLabel";
 			this.ScreenDataTypeLabel.Size = new System.Drawing.Size(71, 16);
-			this.ScreenDataTypeLabel.TabIndex = 0;
+			this.ScreenDataTypeLabel.TabIndex = 67;
 			this.ScreenDataTypeLabel.Text = "...";
 			// 
 			// label11
 			// 
-			this.label11.Location = new System.Drawing.Point(620, 11);
+			this.label11.Location = new System.Drawing.Point(35, 9);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(64, 16);
-			this.label11.TabIndex = 0;
+			this.label11.TabIndex = 66;
 			this.label11.Text = "Data Type:";
 			// 
 			// BtnPatterns
 			// 
-			this.BtnPatterns.Location = new System.Drawing.Point(678, 132);
+			this.BtnPatterns.Location = new System.Drawing.Point(95, 130);
 			this.BtnPatterns.Name = "BtnPatterns";
 			this.BtnPatterns.Size = new System.Drawing.Size(80, 23);
-			this.BtnPatterns.TabIndex = 53;
+			this.BtnPatterns.TabIndex = 72;
 			this.BtnPatterns.Text = "Patterns";
 			this.BtnPatterns.UseVisualStyleBackColor = true;
 			this.BtnPatterns.Click += new System.EventHandler(this.BtnPatternsClick_Event);
 			// 
 			// BtnTilesBlocks
 			// 
-			this.BtnTilesBlocks.Location = new System.Drawing.Point(678, 104);
+			this.BtnTilesBlocks.Location = new System.Drawing.Point(95, 102);
 			this.BtnTilesBlocks.Name = "BtnTilesBlocks";
 			this.BtnTilesBlocks.Size = new System.Drawing.Size(80, 23);
-			this.BtnTilesBlocks.TabIndex = 52;
+			this.BtnTilesBlocks.TabIndex = 71;
 			this.BtnTilesBlocks.Text = "Tiles/Blocks";
 			this.BtnTilesBlocks.UseVisualStyleBackColor = true;
 			this.BtnTilesBlocks.Click += new System.EventHandler(this.BtnTilesBlocksClick_Event);
@@ -2074,10 +2147,10 @@ namespace MAPeD
 			// 
 			this.groupBox8.Controls.Add(this.RBtnScreenEditModeLayout);
 			this.groupBox8.Controls.Add(this.RBtnScreenEditModeSingle);
-			this.groupBox8.Location = new System.Drawing.Point(677, 34);
+			this.groupBox8.Location = new System.Drawing.Point(94, 32);
 			this.groupBox8.Name = "groupBox8";
 			this.groupBox8.Size = new System.Drawing.Size(83, 64);
-			this.groupBox8.TabIndex = 49;
+			this.groupBox8.TabIndex = 70;
 			this.groupBox8.TabStop = false;
 			this.groupBox8.Text = "Edit Mode:";
 			// 
@@ -2107,10 +2180,10 @@ namespace MAPeD
 			// 
 			this.GrpBoxActiveTile.Controls.Add(this.PBoxActiveTile);
 			this.GrpBoxActiveTile.Controls.Add(this.BtnResetTile);
-			this.GrpBoxActiveTile.Location = new System.Drawing.Point(588, 34);
+			this.GrpBoxActiveTile.Location = new System.Drawing.Point(5, 32);
 			this.GrpBoxActiveTile.Name = "GrpBoxActiveTile";
 			this.GrpBoxActiveTile.Size = new System.Drawing.Size(81, 121);
-			this.GrpBoxActiveTile.TabIndex = 41;
+			this.GrpBoxActiveTile.TabIndex = 68;
 			this.GrpBoxActiveTile.TabStop = false;
 			this.GrpBoxActiveTile.Text = "...";
 			// 
@@ -2140,10 +2213,10 @@ namespace MAPeD
 			this.groupBox6.Controls.Add(this.BtnCopyScreen);
 			this.groupBox6.Controls.Add(this.BtnDeleteEmptyScreens);
 			this.groupBox6.Controls.Add(this.BtnDeleteScreen);
-			this.groupBox6.Location = new System.Drawing.Point(588, 161);
+			this.groupBox6.Location = new System.Drawing.Point(5, 158);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(81, 416);
-			this.groupBox6.TabIndex = 43;
+			this.groupBox6.Size = new System.Drawing.Size(81, 421);
+			this.groupBox6.TabIndex = 69;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Screens:";
 			// 
@@ -2153,14 +2226,14 @@ namespace MAPeD
 			this.ListBoxScreens.FormattingEnabled = true;
 			this.ListBoxScreens.Location = new System.Drawing.Point(8, 20);
 			this.ListBoxScreens.Name = "ListBoxScreens";
-			this.ListBoxScreens.Size = new System.Drawing.Size(64, 264);
+			this.ListBoxScreens.Size = new System.Drawing.Size(64, 277);
 			this.ListBoxScreens.TabIndex = 44;
 			this.ListBoxScreens.Click += new System.EventHandler(this.ListBoxScreensClick_Event);
 			this.ListBoxScreens.SelectedIndexChanged += new System.EventHandler(this.ListBoxScreensClick_Event);
 			// 
 			// BtnCreateScreen
 			// 
-			this.BtnCreateScreen.Location = new System.Drawing.Point(8, 299);
+			this.BtnCreateScreen.Location = new System.Drawing.Point(8, 304);
 			this.BtnCreateScreen.Name = "BtnCreateScreen";
 			this.BtnCreateScreen.Size = new System.Drawing.Size(64, 23);
 			this.BtnCreateScreen.TabIndex = 45;
@@ -2170,7 +2243,7 @@ namespace MAPeD
 			// 
 			// BtnCopyScreen
 			// 
-			this.BtnCopyScreen.Location = new System.Drawing.Point(8, 328);
+			this.BtnCopyScreen.Location = new System.Drawing.Point(8, 333);
 			this.BtnCopyScreen.Name = "BtnCopyScreen";
 			this.BtnCopyScreen.Size = new System.Drawing.Size(64, 23);
 			this.BtnCopyScreen.TabIndex = 46;
@@ -2180,7 +2253,7 @@ namespace MAPeD
 			// 
 			// BtnDeleteEmptyScreens
 			// 
-			this.BtnDeleteEmptyScreens.Location = new System.Drawing.Point(8, 386);
+			this.BtnDeleteEmptyScreens.Location = new System.Drawing.Point(8, 391);
 			this.BtnDeleteEmptyScreens.Name = "BtnDeleteEmptyScreens";
 			this.BtnDeleteEmptyScreens.Size = new System.Drawing.Size(64, 23);
 			this.BtnDeleteEmptyScreens.TabIndex = 48;
@@ -2190,7 +2263,7 @@ namespace MAPeD
 			// 
 			// BtnDeleteScreen
 			// 
-			this.BtnDeleteScreen.Location = new System.Drawing.Point(8, 357);
+			this.BtnDeleteScreen.Location = new System.Drawing.Point(8, 362);
 			this.BtnDeleteScreen.Name = "BtnDeleteScreen";
 			this.BtnDeleteScreen.Size = new System.Drawing.Size(64, 23);
 			this.BtnDeleteScreen.TabIndex = 47;
@@ -2202,67 +2275,62 @@ namespace MAPeD
 			// 
 			this.CheckBoxScreenShowGrid.Checked = true;
 			this.CheckBoxScreenShowGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CheckBoxScreenShowGrid.Location = new System.Drawing.Point(682, 555);
+			this.CheckBoxScreenShowGrid.Location = new System.Drawing.Point(99, 558);
 			this.CheckBoxScreenShowGrid.Name = "CheckBoxScreenShowGrid";
 			this.CheckBoxScreenShowGrid.Size = new System.Drawing.Size(78, 22);
-			this.CheckBoxScreenShowGrid.TabIndex = 54;
+			this.CheckBoxScreenShowGrid.TabIndex = 73;
 			this.CheckBoxScreenShowGrid.Text = "Show Grid";
 			this.CheckBoxScreenShowGrid.UseVisualStyleBackColor = true;
 			this.CheckBoxScreenShowGrid.CheckedChanged += new System.EventHandler(this.CheckBoxScreenShowGridChecked_Event);
 			// 
-			// PBoxScreen
-			// 
-			this.PBoxScreen.BackColor = System.Drawing.Color.Black;
-			this.PBoxScreen.Location = new System.Drawing.Point(3, 4);
-			this.PBoxScreen.Name = "PBoxScreen";
-			this.PBoxScreen.Size = new System.Drawing.Size(576, 576);
-			this.PBoxScreen.TabIndex = 0;
-			this.PBoxScreen.TabStop = false;
-			// 
 			// groupBox3
 			// 
-			this.groupBox3.Location = new System.Drawing.Point(588, 0);
+			this.groupBox3.Location = new System.Drawing.Point(5, -2);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(172, 31);
-			this.groupBox3.TabIndex = 0;
+			this.groupBox3.TabIndex = 65;
 			this.groupBox3.TabStop = false;
 			// 
 			// TabLayout
 			// 
 			this.TabLayout.BackColor = System.Drawing.Color.Silver;
-			this.TabLayout.Controls.Add(this.tabControlScreensEntities);
-			this.TabLayout.Controls.Add(this.groupBox7);
-			this.TabLayout.Controls.Add(this.BtnCopyLayout);
-			this.TabLayout.Controls.Add(this.BtnDeleteLayout);
-			this.TabLayout.Controls.Add(this.BtnCreateLayoutWxH);
-			this.TabLayout.Controls.Add(this.BtnCreateLayout);
-			this.TabLayout.Controls.Add(this.LayoutLabel);
-			this.TabLayout.Controls.Add(this.BtnLayoutRemoveRightColumn);
-			this.TabLayout.Controls.Add(this.BtnLayoutAddRightColumn);
-			this.TabLayout.Controls.Add(this.BtnLayoutRemoveLeftColumn);
-			this.TabLayout.Controls.Add(this.BtnLayoutAddLeftColumn);
-			this.TabLayout.Controls.Add(this.BtnLayoutRemoveDownRow);
-			this.TabLayout.Controls.Add(this.BtnLayoutAddDownRow);
-			this.TabLayout.Controls.Add(this.BtnLayoutRemoveUpRow);
-			this.TabLayout.Controls.Add(this.BtnLayoutAddUpRow);
-			this.TabLayout.Controls.Add(this.PBoxLayout);
-			this.TabLayout.Controls.Add(this.groupBox13);
+			this.TabLayout.Controls.Add(this.splitContainer5);
 			this.TabLayout.Location = new System.Drawing.Point(4, 22);
 			this.TabLayout.Name = "TabLayout";
 			this.TabLayout.Padding = new System.Windows.Forms.Padding(3);
-			this.TabLayout.Size = new System.Drawing.Size(1026, 615);
+			this.TabLayout.Size = new System.Drawing.Size(1024, 621);
 			this.TabLayout.TabIndex = 1;
 			this.TabLayout.Text = "Layout";
+			// 
+			// splitContainer5
+			// 
+			this.splitContainer5.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer5.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+			this.splitContainer5.IsSplitterFixed = true;
+			this.splitContainer5.Location = new System.Drawing.Point(3, 3);
+			this.splitContainer5.Name = "splitContainer5";
+			// 
+			// splitContainer5.Panel1
+			// 
+			this.splitContainer5.Panel1.Controls.Add(this.tabControlScreensEntities);
+			// 
+			// splitContainer5.Panel2
+			// 
+			this.splitContainer5.Panel2.Controls.Add(this.splitContainer6);
+			this.splitContainer5.Size = new System.Drawing.Size(1018, 615);
+			this.splitContainer5.SplitterDistance = 325;
+			this.splitContainer5.TabIndex = 0;
 			// 
 			// tabControlScreensEntities
 			// 
 			this.tabControlScreensEntities.Controls.Add(this.TabScreenList);
 			this.tabControlScreensEntities.Controls.Add(this.TabEntities);
-			this.tabControlScreensEntities.Location = new System.Drawing.Point(0, 6);
+			this.tabControlScreensEntities.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabControlScreensEntities.Location = new System.Drawing.Point(0, 0);
 			this.tabControlScreensEntities.Name = "tabControlScreensEntities";
 			this.tabControlScreensEntities.SelectedIndex = 0;
-			this.tabControlScreensEntities.Size = new System.Drawing.Size(326, 609);
-			this.tabControlScreensEntities.TabIndex = 60;
+			this.tabControlScreensEntities.Size = new System.Drawing.Size(325, 615);
+			this.tabControlScreensEntities.TabIndex = 61;
 			this.tabControlScreensEntities.Selected += new System.Windows.Forms.TabControlEventHandler(this.TabControlScreensEntitiesSelected_Event);
 			// 
 			// TabScreenList
@@ -2277,7 +2345,7 @@ namespace MAPeD
 			this.TabScreenList.Location = new System.Drawing.Point(4, 22);
 			this.TabScreenList.Name = "TabScreenList";
 			this.TabScreenList.Padding = new System.Windows.Forms.Padding(3);
-			this.TabScreenList.Size = new System.Drawing.Size(318, 583);
+			this.TabScreenList.Size = new System.Drawing.Size(317, 589);
 			this.TabScreenList.TabIndex = 0;
 			this.TabScreenList.Text = "Screens";
 			// 
@@ -2347,7 +2415,7 @@ namespace MAPeD
 			this.TabEntities.Location = new System.Drawing.Point(4, 22);
 			this.TabEntities.Name = "TabEntities";
 			this.TabEntities.Padding = new System.Windows.Forms.Padding(3);
-			this.TabEntities.Size = new System.Drawing.Size(318, 583);
+			this.TabEntities.Size = new System.Drawing.Size(317, 589);
 			this.TabEntities.TabIndex = 1;
 			this.TabEntities.Text = "Entities";
 			// 
@@ -2767,185 +2835,49 @@ namespace MAPeD
 			this.TextBoxEntityInstanceProp.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBoxEntityPropertiesKeyPress_Event);
 			this.TextBoxEntityInstanceProp.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TextBoxEntityInstancePropTextKeyUp_Event);
 			// 
-			// groupBox7
+			// splitContainer6
 			// 
-			this.groupBox7.Controls.Add(this.BtnLayoutMoveDown);
-			this.groupBox7.Controls.Add(this.BtnLayoutMoveUp);
-			this.groupBox7.Controls.Add(this.ListBoxLayouts);
-			this.groupBox7.Location = new System.Drawing.Point(941, 139);
-			this.groupBox7.Name = "groupBox7";
-			this.groupBox7.Size = new System.Drawing.Size(79, 242);
-			this.groupBox7.TabIndex = 69;
-			this.groupBox7.TabStop = false;
-			this.groupBox7.Text = "Layouts:";
+			this.splitContainer6.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer6.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.splitContainer6.IsSplitterFixed = true;
+			this.splitContainer6.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer6.Name = "splitContainer6";
 			// 
-			// BtnLayoutMoveDown
+			// splitContainer6.Panel1
 			// 
-			this.BtnLayoutMoveDown.Location = new System.Drawing.Point(6, 212);
-			this.BtnLayoutMoveDown.Name = "BtnLayoutMoveDown";
-			this.BtnLayoutMoveDown.Size = new System.Drawing.Size(67, 23);
-			this.BtnLayoutMoveDown.TabIndex = 72;
-			this.BtnLayoutMoveDown.Text = "Move Dn";
-			this.BtnLayoutMoveDown.UseVisualStyleBackColor = true;
-			this.BtnLayoutMoveDown.Click += new System.EventHandler(this.BtnLayoutMoveDownClick_Event);
+			this.splitContainer6.Panel1.Controls.Add(this.PBoxLayout);
+			this.splitContainer6.Panel1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 6);
 			// 
-			// BtnLayoutMoveUp
+			// splitContainer6.Panel2
 			// 
-			this.BtnLayoutMoveUp.Location = new System.Drawing.Point(6, 185);
-			this.BtnLayoutMoveUp.Name = "BtnLayoutMoveUp";
-			this.BtnLayoutMoveUp.Size = new System.Drawing.Size(67, 23);
-			this.BtnLayoutMoveUp.TabIndex = 71;
-			this.BtnLayoutMoveUp.Text = "Move Up";
-			this.BtnLayoutMoveUp.UseVisualStyleBackColor = true;
-			this.BtnLayoutMoveUp.Click += new System.EventHandler(this.BtnLayoutMoveUpClick_Event);
-			// 
-			// ListBoxLayouts
-			// 
-			this.ListBoxLayouts.BackColor = System.Drawing.Color.LightGray;
-			this.ListBoxLayouts.FormattingEnabled = true;
-			this.ListBoxLayouts.Location = new System.Drawing.Point(6, 19);
-			this.ListBoxLayouts.Name = "ListBoxLayouts";
-			this.ListBoxLayouts.Size = new System.Drawing.Size(67, 160);
-			this.ListBoxLayouts.TabIndex = 70;
-			this.ListBoxLayouts.Click += new System.EventHandler(this.ListBoxLayoutsClick_Event);
-			this.ListBoxLayouts.SelectedIndexChanged += new System.EventHandler(this.ListBoxLayoutsClick_Event);
-			// 
-			// BtnCopyLayout
-			// 
-			this.BtnCopyLayout.Location = new System.Drawing.Point(941, 81);
-			this.BtnCopyLayout.Name = "BtnCopyLayout";
-			this.BtnCopyLayout.Size = new System.Drawing.Size(79, 23);
-			this.BtnCopyLayout.TabIndex = 67;
-			this.BtnCopyLayout.Text = "Copy";
-			this.BtnCopyLayout.UseVisualStyleBackColor = true;
-			this.BtnCopyLayout.Click += new System.EventHandler(this.BtnCopyLayoutClick_Event);
-			// 
-			// BtnDeleteLayout
-			// 
-			this.BtnDeleteLayout.Location = new System.Drawing.Point(941, 110);
-			this.BtnDeleteLayout.Name = "BtnDeleteLayout";
-			this.BtnDeleteLayout.Size = new System.Drawing.Size(79, 23);
-			this.BtnDeleteLayout.TabIndex = 68;
-			this.BtnDeleteLayout.Text = "Delete";
-			this.BtnDeleteLayout.UseVisualStyleBackColor = true;
-			this.BtnDeleteLayout.Click += new System.EventHandler(this.BtnDeleteLayoutClick_Event);
-			// 
-			// BtnCreateLayoutWxH
-			// 
-			this.BtnCreateLayoutWxH.Location = new System.Drawing.Point(940, 52);
-			this.BtnCreateLayoutWxH.Name = "BtnCreateLayoutWxH";
-			this.BtnCreateLayoutWxH.Size = new System.Drawing.Size(79, 23);
-			this.BtnCreateLayoutWxH.TabIndex = 66;
-			this.BtnCreateLayoutWxH.Text = "Create WxH";
-			this.BtnCreateLayoutWxH.UseVisualStyleBackColor = true;
-			this.BtnCreateLayoutWxH.Click += new System.EventHandler(this.BtnCreateLayoutWxHClick_Event);
-			// 
-			// BtnCreateLayout
-			// 
-			this.BtnCreateLayout.Location = new System.Drawing.Point(941, 23);
-			this.BtnCreateLayout.Name = "BtnCreateLayout";
-			this.BtnCreateLayout.Size = new System.Drawing.Size(79, 23);
-			this.BtnCreateLayout.TabIndex = 65;
-			this.BtnCreateLayout.Text = "Create";
-			this.BtnCreateLayout.UseVisualStyleBackColor = true;
-			this.BtnCreateLayout.Click += new System.EventHandler(this.BtnCreateLayoutClick_Event);
-			// 
-			// LayoutLabel
-			// 
-			this.LayoutLabel.Location = new System.Drawing.Point(941, 6);
-			this.LayoutLabel.Name = "LayoutLabel";
-			this.LayoutLabel.Size = new System.Drawing.Size(79, 14);
-			this.LayoutLabel.TabIndex = 6;
-			this.LayoutLabel.Text = "...";
-			// 
-			// BtnLayoutRemoveRightColumn
-			// 
-			this.BtnLayoutRemoveRightColumn.Location = new System.Drawing.Point(980, 474);
-			this.BtnLayoutRemoveRightColumn.Name = "BtnLayoutRemoveRightColumn";
-			this.BtnLayoutRemoveRightColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveRightColumn.TabIndex = 80;
-			this.BtnLayoutRemoveRightColumn.Text = "-R";
-			this.BtnLayoutRemoveRightColumn.UseVisualStyleBackColor = true;
-			this.BtnLayoutRemoveRightColumn.Click += new System.EventHandler(this.BtnLayoutRemoveRightColumnClick_Event);
-			// 
-			// BtnLayoutAddRightColumn
-			// 
-			this.BtnLayoutAddRightColumn.Location = new System.Drawing.Point(941, 474);
-			this.BtnLayoutAddRightColumn.Name = "BtnLayoutAddRightColumn";
-			this.BtnLayoutAddRightColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutAddRightColumn.TabIndex = 79;
-			this.BtnLayoutAddRightColumn.Text = "+R";
-			this.BtnLayoutAddRightColumn.UseVisualStyleBackColor = true;
-			this.BtnLayoutAddRightColumn.Click += new System.EventHandler(this.BtnLayoutAddRightColumnClick_Event);
-			// 
-			// BtnLayoutRemoveLeftColumn
-			// 
-			this.BtnLayoutRemoveLeftColumn.Location = new System.Drawing.Point(980, 445);
-			this.BtnLayoutRemoveLeftColumn.Name = "BtnLayoutRemoveLeftColumn";
-			this.BtnLayoutRemoveLeftColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveLeftColumn.TabIndex = 78;
-			this.BtnLayoutRemoveLeftColumn.Text = "-L";
-			this.BtnLayoutRemoveLeftColumn.UseVisualStyleBackColor = true;
-			this.BtnLayoutRemoveLeftColumn.Click += new System.EventHandler(this.BtnLayoutRemoveLeftColumnClick_Event);
-			// 
-			// BtnLayoutAddLeftColumn
-			// 
-			this.BtnLayoutAddLeftColumn.Location = new System.Drawing.Point(941, 445);
-			this.BtnLayoutAddLeftColumn.Name = "BtnLayoutAddLeftColumn";
-			this.BtnLayoutAddLeftColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutAddLeftColumn.TabIndex = 77;
-			this.BtnLayoutAddLeftColumn.Text = "+L";
-			this.BtnLayoutAddLeftColumn.UseVisualStyleBackColor = true;
-			this.BtnLayoutAddLeftColumn.Click += new System.EventHandler(this.BtnLayoutAddLeftColumnClick_Event);
-			// 
-			// BtnLayoutRemoveDownRow
-			// 
-			this.BtnLayoutRemoveDownRow.Location = new System.Drawing.Point(980, 416);
-			this.BtnLayoutRemoveDownRow.Name = "BtnLayoutRemoveDownRow";
-			this.BtnLayoutRemoveDownRow.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveDownRow.TabIndex = 76;
-			this.BtnLayoutRemoveDownRow.Text = "-D";
-			this.BtnLayoutRemoveDownRow.UseVisualStyleBackColor = true;
-			this.BtnLayoutRemoveDownRow.Click += new System.EventHandler(this.BtnLayoutRemoveBottomRowClick_Event);
-			// 
-			// BtnLayoutAddDownRow
-			// 
-			this.BtnLayoutAddDownRow.Location = new System.Drawing.Point(941, 416);
-			this.BtnLayoutAddDownRow.Name = "BtnLayoutAddDownRow";
-			this.BtnLayoutAddDownRow.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutAddDownRow.TabIndex = 75;
-			this.BtnLayoutAddDownRow.Text = "+D";
-			this.BtnLayoutAddDownRow.UseVisualStyleBackColor = true;
-			this.BtnLayoutAddDownRow.Click += new System.EventHandler(this.BtnLayoutAddDownRowClick_Event);
-			// 
-			// BtnLayoutRemoveUpRow
-			// 
-			this.BtnLayoutRemoveUpRow.Location = new System.Drawing.Point(980, 387);
-			this.BtnLayoutRemoveUpRow.Name = "BtnLayoutRemoveUpRow";
-			this.BtnLayoutRemoveUpRow.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveUpRow.TabIndex = 74;
-			this.BtnLayoutRemoveUpRow.Text = "-U";
-			this.BtnLayoutRemoveUpRow.UseVisualStyleBackColor = true;
-			this.BtnLayoutRemoveUpRow.Click += new System.EventHandler(this.BtnLayoutRemoveTopRowClick_Event);
-			// 
-			// BtnLayoutAddUpRow
-			// 
-			this.BtnLayoutAddUpRow.Location = new System.Drawing.Point(941, 387);
-			this.BtnLayoutAddUpRow.Name = "BtnLayoutAddUpRow";
-			this.BtnLayoutAddUpRow.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutAddUpRow.TabIndex = 73;
-			this.BtnLayoutAddUpRow.Text = "+U";
-			this.BtnLayoutAddUpRow.UseVisualStyleBackColor = true;
-			this.BtnLayoutAddUpRow.Click += new System.EventHandler(this.BtnLayoutAddUpRowClick_Event);
+			this.splitContainer6.Panel2.Controls.Add(this.groupBox7);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnCopyLayout);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnDeleteLayout);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnCreateLayoutWxH);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnCreateLayout);
+			this.splitContainer6.Panel2.Controls.Add(this.LayoutLabel);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnLayoutRemoveRightColumn);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnLayoutAddRightColumn);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnLayoutRemoveLeftColumn);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnLayoutAddLeftColumn);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnLayoutRemoveDownRow);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnLayoutAddDownRow);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnLayoutRemoveUpRow);
+			this.splitContainer6.Panel2.Controls.Add(this.BtnLayoutAddUpRow);
+			this.splitContainer6.Panel2.Controls.Add(this.groupBox13);
+			this.splitContainer6.Size = new System.Drawing.Size(689, 615);
+			this.splitContainer6.SplitterDistance = 604;
+			this.splitContainer6.TabIndex = 0;
 			// 
 			// PBoxLayout
 			// 
 			this.PBoxLayout.BackColor = System.Drawing.Color.Black;
 			this.PBoxLayout.ContextMenuStrip = this.ContextMenuLayoutEditor;
-			this.PBoxLayout.Location = new System.Drawing.Point(332, 6);
+			this.PBoxLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.PBoxLayout.Location = new System.Drawing.Point(0, 5);
 			this.PBoxLayout.Name = "PBoxLayout";
-			this.PBoxLayout.Size = new System.Drawing.Size(603, 603);
-			this.PBoxLayout.TabIndex = 2;
+			this.PBoxLayout.Size = new System.Drawing.Size(604, 604);
+			this.PBoxLayout.TabIndex = 99;
 			this.PBoxLayout.TabStop = false;
 			// 
 			// ContextMenuLayoutEditor
@@ -3134,16 +3066,187 @@ namespace MAPeD
 			this.AdjScrMaskLURDToolStripMenuItem.Text = "LURD";
 			this.AdjScrMaskLURDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick_Event);
 			// 
+			// groupBox7
+			// 
+			this.groupBox7.Controls.Add(this.BtnLayoutMoveDown);
+			this.groupBox7.Controls.Add(this.BtnLayoutMoveUp);
+			this.groupBox7.Controls.Add(this.ListBoxLayouts);
+			this.groupBox7.Location = new System.Drawing.Point(1, 139);
+			this.groupBox7.Name = "groupBox7";
+			this.groupBox7.Size = new System.Drawing.Size(79, 242);
+			this.groupBox7.TabIndex = 104;
+			this.groupBox7.TabStop = false;
+			this.groupBox7.Text = "Layouts:";
+			// 
+			// BtnLayoutMoveDown
+			// 
+			this.BtnLayoutMoveDown.Location = new System.Drawing.Point(6, 212);
+			this.BtnLayoutMoveDown.Name = "BtnLayoutMoveDown";
+			this.BtnLayoutMoveDown.Size = new System.Drawing.Size(67, 23);
+			this.BtnLayoutMoveDown.TabIndex = 72;
+			this.BtnLayoutMoveDown.Text = "Move Dn";
+			this.BtnLayoutMoveDown.UseVisualStyleBackColor = true;
+			this.BtnLayoutMoveDown.Click += new System.EventHandler(this.BtnLayoutMoveDownClick_Event);
+			// 
+			// BtnLayoutMoveUp
+			// 
+			this.BtnLayoutMoveUp.Location = new System.Drawing.Point(6, 185);
+			this.BtnLayoutMoveUp.Name = "BtnLayoutMoveUp";
+			this.BtnLayoutMoveUp.Size = new System.Drawing.Size(67, 23);
+			this.BtnLayoutMoveUp.TabIndex = 71;
+			this.BtnLayoutMoveUp.Text = "Move Up";
+			this.BtnLayoutMoveUp.UseVisualStyleBackColor = true;
+			this.BtnLayoutMoveUp.Click += new System.EventHandler(this.BtnLayoutMoveUpClick_Event);
+			// 
+			// ListBoxLayouts
+			// 
+			this.ListBoxLayouts.BackColor = System.Drawing.Color.LightGray;
+			this.ListBoxLayouts.FormattingEnabled = true;
+			this.ListBoxLayouts.Location = new System.Drawing.Point(6, 19);
+			this.ListBoxLayouts.Name = "ListBoxLayouts";
+			this.ListBoxLayouts.Size = new System.Drawing.Size(67, 160);
+			this.ListBoxLayouts.TabIndex = 70;
+			this.ListBoxLayouts.Click += new System.EventHandler(this.ListBoxLayoutsClick_Event);
+			this.ListBoxLayouts.SelectedIndexChanged += new System.EventHandler(this.ListBoxLayoutsClick_Event);
+			// 
+			// BtnCopyLayout
+			// 
+			this.BtnCopyLayout.Location = new System.Drawing.Point(1, 81);
+			this.BtnCopyLayout.Name = "BtnCopyLayout";
+			this.BtnCopyLayout.Size = new System.Drawing.Size(79, 23);
+			this.BtnCopyLayout.TabIndex = 102;
+			this.BtnCopyLayout.Text = "Copy";
+			this.BtnCopyLayout.UseVisualStyleBackColor = true;
+			this.BtnCopyLayout.Click += new System.EventHandler(this.BtnCopyLayoutClick_Event);
+			// 
+			// BtnDeleteLayout
+			// 
+			this.BtnDeleteLayout.Location = new System.Drawing.Point(1, 110);
+			this.BtnDeleteLayout.Name = "BtnDeleteLayout";
+			this.BtnDeleteLayout.Size = new System.Drawing.Size(79, 23);
+			this.BtnDeleteLayout.TabIndex = 103;
+			this.BtnDeleteLayout.Text = "Delete";
+			this.BtnDeleteLayout.UseVisualStyleBackColor = true;
+			this.BtnDeleteLayout.Click += new System.EventHandler(this.BtnDeleteLayoutClick_Event);
+			// 
+			// BtnCreateLayoutWxH
+			// 
+			this.BtnCreateLayoutWxH.Location = new System.Drawing.Point(0, 52);
+			this.BtnCreateLayoutWxH.Name = "BtnCreateLayoutWxH";
+			this.BtnCreateLayoutWxH.Size = new System.Drawing.Size(79, 23);
+			this.BtnCreateLayoutWxH.TabIndex = 101;
+			this.BtnCreateLayoutWxH.Text = "Create WxH";
+			this.BtnCreateLayoutWxH.UseVisualStyleBackColor = true;
+			this.BtnCreateLayoutWxH.Click += new System.EventHandler(this.BtnCreateLayoutWxHClick_Event);
+			// 
+			// BtnCreateLayout
+			// 
+			this.BtnCreateLayout.Location = new System.Drawing.Point(1, 23);
+			this.BtnCreateLayout.Name = "BtnCreateLayout";
+			this.BtnCreateLayout.Size = new System.Drawing.Size(79, 23);
+			this.BtnCreateLayout.TabIndex = 100;
+			this.BtnCreateLayout.Text = "Create";
+			this.BtnCreateLayout.UseVisualStyleBackColor = true;
+			this.BtnCreateLayout.Click += new System.EventHandler(this.BtnCreateLayoutClick_Event);
+			// 
+			// LayoutLabel
+			// 
+			this.LayoutLabel.Location = new System.Drawing.Point(1, 6);
+			this.LayoutLabel.Name = "LayoutLabel";
+			this.LayoutLabel.Size = new System.Drawing.Size(79, 14);
+			this.LayoutLabel.TabIndex = 99;
+			this.LayoutLabel.Text = "...";
+			// 
+			// BtnLayoutRemoveRightColumn
+			// 
+			this.BtnLayoutRemoveRightColumn.Location = new System.Drawing.Point(40, 474);
+			this.BtnLayoutRemoveRightColumn.Name = "BtnLayoutRemoveRightColumn";
+			this.BtnLayoutRemoveRightColumn.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutRemoveRightColumn.TabIndex = 112;
+			this.BtnLayoutRemoveRightColumn.Text = "-R";
+			this.BtnLayoutRemoveRightColumn.UseVisualStyleBackColor = true;
+			this.BtnLayoutRemoveRightColumn.Click += new System.EventHandler(this.BtnLayoutRemoveRightColumnClick_Event);
+			// 
+			// BtnLayoutAddRightColumn
+			// 
+			this.BtnLayoutAddRightColumn.Location = new System.Drawing.Point(1, 474);
+			this.BtnLayoutAddRightColumn.Name = "BtnLayoutAddRightColumn";
+			this.BtnLayoutAddRightColumn.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutAddRightColumn.TabIndex = 111;
+			this.BtnLayoutAddRightColumn.Text = "+R";
+			this.BtnLayoutAddRightColumn.UseVisualStyleBackColor = true;
+			this.BtnLayoutAddRightColumn.Click += new System.EventHandler(this.BtnLayoutAddRightColumnClick_Event);
+			// 
+			// BtnLayoutRemoveLeftColumn
+			// 
+			this.BtnLayoutRemoveLeftColumn.Location = new System.Drawing.Point(40, 445);
+			this.BtnLayoutRemoveLeftColumn.Name = "BtnLayoutRemoveLeftColumn";
+			this.BtnLayoutRemoveLeftColumn.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutRemoveLeftColumn.TabIndex = 110;
+			this.BtnLayoutRemoveLeftColumn.Text = "-L";
+			this.BtnLayoutRemoveLeftColumn.UseVisualStyleBackColor = true;
+			this.BtnLayoutRemoveLeftColumn.Click += new System.EventHandler(this.BtnLayoutRemoveLeftColumnClick_Event);
+			// 
+			// BtnLayoutAddLeftColumn
+			// 
+			this.BtnLayoutAddLeftColumn.Location = new System.Drawing.Point(1, 445);
+			this.BtnLayoutAddLeftColumn.Name = "BtnLayoutAddLeftColumn";
+			this.BtnLayoutAddLeftColumn.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutAddLeftColumn.TabIndex = 109;
+			this.BtnLayoutAddLeftColumn.Text = "+L";
+			this.BtnLayoutAddLeftColumn.UseVisualStyleBackColor = true;
+			this.BtnLayoutAddLeftColumn.Click += new System.EventHandler(this.BtnLayoutAddLeftColumnClick_Event);
+			// 
+			// BtnLayoutRemoveDownRow
+			// 
+			this.BtnLayoutRemoveDownRow.Location = new System.Drawing.Point(40, 416);
+			this.BtnLayoutRemoveDownRow.Name = "BtnLayoutRemoveDownRow";
+			this.BtnLayoutRemoveDownRow.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutRemoveDownRow.TabIndex = 108;
+			this.BtnLayoutRemoveDownRow.Text = "-D";
+			this.BtnLayoutRemoveDownRow.UseVisualStyleBackColor = true;
+			this.BtnLayoutRemoveDownRow.Click += new System.EventHandler(this.BtnLayoutRemoveBottomRowClick_Event);
+			// 
+			// BtnLayoutAddDownRow
+			// 
+			this.BtnLayoutAddDownRow.Location = new System.Drawing.Point(1, 416);
+			this.BtnLayoutAddDownRow.Name = "BtnLayoutAddDownRow";
+			this.BtnLayoutAddDownRow.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutAddDownRow.TabIndex = 107;
+			this.BtnLayoutAddDownRow.Text = "+D";
+			this.BtnLayoutAddDownRow.UseVisualStyleBackColor = true;
+			this.BtnLayoutAddDownRow.Click += new System.EventHandler(this.BtnLayoutAddDownRowClick_Event);
+			// 
+			// BtnLayoutRemoveUpRow
+			// 
+			this.BtnLayoutRemoveUpRow.Location = new System.Drawing.Point(40, 387);
+			this.BtnLayoutRemoveUpRow.Name = "BtnLayoutRemoveUpRow";
+			this.BtnLayoutRemoveUpRow.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutRemoveUpRow.TabIndex = 106;
+			this.BtnLayoutRemoveUpRow.Text = "-U";
+			this.BtnLayoutRemoveUpRow.UseVisualStyleBackColor = true;
+			this.BtnLayoutRemoveUpRow.Click += new System.EventHandler(this.BtnLayoutRemoveTopRowClick_Event);
+			// 
+			// BtnLayoutAddUpRow
+			// 
+			this.BtnLayoutAddUpRow.Location = new System.Drawing.Point(1, 387);
+			this.BtnLayoutAddUpRow.Name = "BtnLayoutAddUpRow";
+			this.BtnLayoutAddUpRow.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutAddUpRow.TabIndex = 105;
+			this.BtnLayoutAddUpRow.Text = "+U";
+			this.BtnLayoutAddUpRow.UseVisualStyleBackColor = true;
+			this.BtnLayoutAddUpRow.Click += new System.EventHandler(this.BtnLayoutAddUpRowClick_Event);
+			// 
 			// groupBox13
 			// 
 			this.groupBox13.Controls.Add(this.CheckBoxShowCoords);
 			this.groupBox13.Controls.Add(this.CheckBoxShowTargets);
 			this.groupBox13.Controls.Add(this.CheckBoxShowMarks);
 			this.groupBox13.Controls.Add(this.CheckBoxShowEntities);
-			this.groupBox13.Location = new System.Drawing.Point(940, 508);
+			this.groupBox13.Location = new System.Drawing.Point(0, 508);
 			this.groupBox13.Name = "groupBox13";
 			this.groupBox13.Size = new System.Drawing.Size(80, 101);
-			this.groupBox13.TabIndex = 81;
+			this.groupBox13.TabIndex = 113;
 			this.groupBox13.TabStop = false;
 			this.groupBox13.Text = "Show";
 			// 
@@ -3418,9 +3521,9 @@ namespace MAPeD
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(1032, 693);
-			this.Controls.Add(this.StatusBar);
 			this.Controls.Add(this.tabControlMainLayout);
 			this.Controls.Add(this.MenuStrip);
+			this.Controls.Add(this.StatusBar);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = global::MAPeD.Properties.Resources.MAPeD_icon;
 			this.KeyPreview = true;
@@ -3445,29 +3548,41 @@ namespace MAPeD
 			this.splitContainer2.ResumeLayout(false);
 			this.tabControlTilesScreens.ResumeLayout(false);
 			this.TabTiles.ResumeLayout(false);
-			this.GrpBoxScreenData.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.PBoxBlockEditor)).EndInit();
-			this.ContextMenuBlockEditor.ResumeLayout(false);
+			this.splitContainer3.Panel1.ResumeLayout(false);
+			this.splitContainer3.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+			this.splitContainer3.ResumeLayout(false);
 			this.GrpBoxCHRBank.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PBoxCHRBank)).EndInit();
 			this.ContextMenuCHRBank.ResumeLayout(false);
-			this.groupBox4.ResumeLayout(false);
+			this.GrpBoxPalettes.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.Palette3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette0)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.PaletteMain)).EndInit();
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox2.ResumeLayout(false);
+			this.GrpBoxBlockEditor.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.PBoxBlockEditor)).EndInit();
+			this.ContextMenuBlockEditor.ResumeLayout(false);
 			this.GrpBoxTileEditor.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PBoxTilePreview)).EndInit();
+			this.GrpBoxScreenData.ResumeLayout(false);
+			this.groupBox2.ResumeLayout(false);
 			this.TabScreenEditor.ResumeLayout(false);
+			this.splitContainer4.Panel1.ResumeLayout(false);
+			this.splitContainer4.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
+			this.splitContainer4.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.PBoxScreen)).EndInit();
 			this.groupBox8.ResumeLayout(false);
 			this.GrpBoxActiveTile.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PBoxActiveTile)).EndInit();
 			this.groupBox6.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.PBoxScreen)).EndInit();
 			this.TabLayout.ResumeLayout(false);
+			this.splitContainer5.Panel1.ResumeLayout(false);
+			this.splitContainer5.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).EndInit();
+			this.splitContainer5.ResumeLayout(false);
 			this.tabControlScreensEntities.ResumeLayout(false);
 			this.TabScreenList.ResumeLayout(false);
 			this.TabEntities.ResumeLayout(false);
@@ -3486,9 +3601,13 @@ namespace MAPeD
 			this.groupBox12.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownEntityPivotY)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownEntityPivotX)).EndInit();
-			this.groupBox7.ResumeLayout(false);
+			this.splitContainer6.Panel1.ResumeLayout(false);
+			this.splitContainer6.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer6)).EndInit();
+			this.splitContainer6.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PBoxLayout)).EndInit();
 			this.ContextMenuLayoutEditor.ResumeLayout(false);
+			this.groupBox7.ResumeLayout(false);
 			this.groupBox13.ResumeLayout(false);
 			this.ContextMenuTilesList.ResumeLayout(false);
 			this.ContextMenuBlocksList.ResumeLayout(false);
@@ -3498,6 +3617,10 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.SplitContainer splitContainer6;
+		private System.Windows.Forms.SplitContainer splitContainer5;
+		private System.Windows.Forms.SplitContainer splitContainer4;
+		private System.Windows.Forms.SplitContainer splitContainer3;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label ScreenDataTypeLabel;
@@ -3782,7 +3905,7 @@ namespace MAPeD
 		private System.Windows.Forms.ComboBox CBoxTileViewType;
 		private System.Windows.Forms.Button BtnBlockVFlip;
 		private System.Windows.Forms.Button BtnBlockHFlip;
-		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.GroupBox GrpBoxBlockEditor;
 		private System.Windows.Forms.PictureBox PBoxBlockEditor;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Button BtnAddCHRBank;
@@ -3799,7 +3922,7 @@ namespace MAPeD
 		private System.Windows.Forms.PictureBox Palette1;
 		private System.Windows.Forms.PictureBox Palette2;
 		private System.Windows.Forms.PictureBox Palette3;
-		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.GroupBox GrpBoxPalettes;
 		private System.Windows.Forms.TabPage TabLayout;
 		private System.Windows.Forms.TabPage TabScreenEditor;
 		private System.Windows.Forms.TabControl tabControlTilesScreens;

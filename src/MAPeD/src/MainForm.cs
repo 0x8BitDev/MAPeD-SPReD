@@ -2538,17 +2538,27 @@ namespace MAPeD
 							
 							if( scr_global_ind < utils.CONST_SCREEN_MAX_CNT )
 							{
+								m_data_manager.insert_screen_into_layouts( scr_global_ind );
+
 								scr_data = layout.get_data( x, y );
 								scr_data.m_scr_ind = (byte)scr_global_ind;
 								layout.set_data( scr_data, x, y );
 							}
 							else
 							{
-								// clear all screens and layout
-								while( m_data_manager.scr_data_cnt > 0 )
+								// clear all created screens and layout
+								int scr_cnt = ( y * _scr_width ) + x + 1;
+								
+								m_data_manager.scr_data_pos = m_data_manager.scr_data_cnt - 1; 
+								
+								do
 								{
 									m_data_manager.screen_data_delete();
 								}
+								while( --scr_cnt > 0 );
+								
+								// reset screen pointer
+								m_data_manager.scr_data_pos = -1;
 								
 								m_data_manager.layout_data_delete();
 								
@@ -2568,11 +2578,6 @@ namespace MAPeD
 		{
 			if( _data != null )
 			{
-				m_data_manager.layouts_data_pos = m_data_manager.layouts_data_cnt - 1;
-				
-				ListBoxLayouts.Items.Add( m_data_manager.layouts_data_pos );
-				ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_pos;
-				
 				// create screens and fill the layout
 				{
 					int scr_local_ind;
@@ -2591,6 +2596,11 @@ namespace MAPeD
 						}
 					}
 				}
+				
+				m_data_manager.layouts_data_pos = m_data_manager.layouts_data_cnt - 1;
+				
+				ListBoxLayouts.Items.Add( m_data_manager.layouts_data_pos );
+				ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_pos;
 				
 				palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
 				

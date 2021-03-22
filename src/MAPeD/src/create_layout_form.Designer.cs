@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 10.08.2020
  * Time: 18:54
  */
@@ -50,7 +50,7 @@ namespace MAPeD
 			this.BtnOk.Location = new System.Drawing.Point(14, 105);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 0;
+			this.BtnOk.TabIndex = 2;
 			this.BtnOk.Text = "&Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			// 
@@ -60,7 +60,7 @@ namespace MAPeD
 			this.BtnCancel.Location = new System.Drawing.Point(96, 105);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
-			this.BtnCancel.TabIndex = 1;
+			this.BtnCancel.TabIndex = 3;
 			this.BtnCancel.Text = "&Cancel";
 			this.BtnCancel.UseVisualStyleBackColor = true;
 			// 
@@ -79,7 +79,7 @@ namespace MAPeD
 									0});
 			this.numericUpDownWidth.Name = "numericUpDownWidth";
 			this.numericUpDownWidth.Size = new System.Drawing.Size(58, 20);
-			this.numericUpDownWidth.TabIndex = 2;
+			this.numericUpDownWidth.TabIndex = 0;
 			this.numericUpDownWidth.Value = new decimal(new int[] {
 									1,
 									0,
@@ -117,7 +117,7 @@ namespace MAPeD
 									0});
 			this.numericUpDownHeight.Name = "numericUpDownHeight";
 			this.numericUpDownHeight.Size = new System.Drawing.Size(58, 20);
-			this.numericUpDownHeight.TabIndex = 2;
+			this.numericUpDownHeight.TabIndex = 1;
 			this.numericUpDownHeight.Value = new decimal(new int[] {
 									1,
 									0,
