@@ -209,6 +209,9 @@
     <Compile Include="..\src\screen_editor.cs">
       <Link>screen_editor.cs</Link>
     </Compile>
+    <Compile Include="..\src\screen_list.cs">
+      <Link>screen_list.cs</Link>
+    </Compile>
     <Compile Include="..\src\screen_mark_form.cs">
       <Link>screen_mark_form.cs</Link>
       <SubType>Form</SubType>
@@ -288,7 +291,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="screen_list.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
