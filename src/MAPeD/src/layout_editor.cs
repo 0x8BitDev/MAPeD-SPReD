@@ -742,7 +742,7 @@ namespace MAPeD
 			
 			{
 				int x = transform_to_img_pos( m_mouse_x, m_offset_x, m_scr_half_width );
-				int y = transform_to_img_pos( m_mouse_y, m_offset_y, m_scr_half_width );
+				int y = transform_to_img_pos( m_mouse_y, m_offset_y, m_scr_half_height );
 				
 				int layout_width	= get_width() * utils.CONST_SCREEN_WIDTH_PIXELS;
 				int layout_height	= get_height() * utils.CONST_SCREEN_HEIGHT_PIXELS;
