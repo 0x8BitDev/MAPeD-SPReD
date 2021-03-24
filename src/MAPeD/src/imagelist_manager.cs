@@ -20,6 +20,7 @@ namespace MAPeD
 	public class imagelist_manager
 	{
 		private readonly ListView m_listview_screens	= null;
+		private i_screen_list		m_scr_list			= null;
 		
 		private readonly FlowLayoutPanel m_panel_tiles	= null;
 		private readonly FlowLayoutPanel m_panel_blocks	= null;
@@ -52,10 +53,22 @@ namespace MAPeD
 		
 		private void listview_init_screens()
 		{
-			ImageList il = new ImageList();
-			il.ImageSize = new Size( utils.CONST_SCREEN_WIDTH_PIXELS, utils.CONST_SCREEN_HEIGHT_PIXELS );
-			il.ColorDepth = ColorDepth.Depth24Bit;// 32bit - way too slow rendering... I don't know why...
+			float	k		= ( 256 / ( float )utils.CONST_SCREEN_WIDTH_PIXELS );
+			int		height	= ( int )( k * ( float )utils.CONST_SCREEN_HEIGHT_PIXELS );
 			
+			ImageList il = new ImageList();
+			il.ImageSize = new Size( Math.Min( 256, utils.CONST_SCREEN_WIDTH_PIXELS ), height );
+			il.ColorDepth = ColorDepth.Depth24Bit;// 32bit - way too slow rendering... I don't know why...
+
+			if( utils.CONST_SCREEN_WIDTH_PIXELS > 256 )
+			{
+				m_scr_list = new screen_list_oversize( il );
+			}
+			else
+			{
+				m_scr_list = new screen_list_normal( il );
+			}
+
 			m_listview_screens.LargeImageList = il;
 		}
 		
@@ -326,7 +339,7 @@ namespace MAPeD
 					{
 						for( int screen_n = 0; screen_n < screens_cnt; screen_n++ )
 						{
-							m_listview_screens.LargeImageList.Images.Add( ( Image )m_listview_screens.LargeImageList.Images[ screens_ind + screen_n ].Clone() );
+							m_scr_list.add( ( Image )m_scr_list.get( screens_ind + screen_n ).Clone() );
 						}
 						
 						break;
@@ -349,14 +362,7 @@ namespace MAPeD
 			
 			// clear items
 			{
-				int size = m_listview_screens.Items.Count;
-				
-				for( int i = 0; i < size; i++ )
-				{
-					m_listview_screens.LargeImageList.Images[ i ].Dispose();
-				}
-				
-				m_listview_screens.LargeImageList.Images.Clear();
+				m_scr_list.clear();
 				m_listview_screens.Items.Clear();
 			}
 			
@@ -377,7 +383,7 @@ namespace MAPeD
 				
 				for( int screen_n = 0; screen_n < screens_cnt; screen_n++ )
 				{
-					m_listview_screens.LargeImageList.Images.Add( create_screen_image( screen_n, data, _scr_type ) );
+					m_scr_list.add( create_screen_image( screen_n, data, _scr_type ) );
 					
 				 	lst 				= new ListViewItem();
 				 	lst.Name = lst.Text = utils.get_screen_id_str( bank_n, screen_n );
@@ -422,8 +428,8 @@ namespace MAPeD
 						
 						if( _update_images )
 						{
-							m_listview_screens.LargeImageList.Images[ img_ind ].Dispose();
-							m_listview_screens.LargeImageList.Images[ img_ind ] = create_screen_image( screen_n, data, _scr_type );
+							m_scr_list.get( img_ind ).Dispose();
+							m_scr_list.replace( img_ind, create_screen_image( screen_n, data, _scr_type ) );
 						}
 						
 					 	lst 				= new ListViewItem();
@@ -530,9 +536,6 @@ namespace MAPeD
 			{
 				if( m_listview_screens.Items[ item_n ].Text == scr_id_str )
 				{
-					Image img = m_listview_screens.LargeImageList.Images[ item_n ];
-					img.Dispose();
-					
 					int remove_img_ind = m_listview_screens.Items[ item_n ].ImageIndex;
 					
 					for( int i = 0; i < m_listview_screens.Items.Count; i++ )
@@ -543,7 +546,7 @@ namespace MAPeD
 						}
 					}
 
-					m_listview_screens.LargeImageList.Images.RemoveAt( remove_img_ind );
+					m_scr_list.remove( remove_img_ind );
 					m_listview_screens.Items.RemoveAt( item_n );
 					
 					res = true;
@@ -564,24 +567,24 @@ namespace MAPeD
 
 			Bitmap bmp = create_screen_image( _scr_local_ind, _tiles_data[ _CHR_bank_ind ], _scr_type );
 			
-			if( _scr_global_ind == m_listview_screens.LargeImageList.Images.Count )
+			if( _scr_global_ind == m_scr_list.count() )
 			{
 				// add image
-				m_listview_screens.LargeImageList.Images.Add( bmp );
+				m_scr_list.add( bmp );
 			}
 			else
 			{
 				// insert image
-				m_listview_screens.LargeImageList.Images.Add( bmp );
+				m_scr_list.add( bmp );
 				
-				size = m_listview_screens.LargeImageList.Images.Count;
+				size = m_scr_list.count();
 				
 				for( i = size - 1; i > _scr_global_ind; i-- )
 				{
-					m_listview_screens.LargeImageList.Images[ i ] = m_listview_screens.LargeImageList.Images[ i - 1 ];
+					m_scr_list.replace( i, m_scr_list.get( i - 1 ) );
 				}
 				
-				m_listview_screens.LargeImageList.Images[ _scr_global_ind ] = bmp;
+				m_scr_list.replace( _scr_global_ind, bmp );
 			}			
 					
 		 	ListViewItem lst 	= new ListViewItem();
@@ -612,6 +615,11 @@ namespace MAPeD
 		public ImageList get_tiles_image_list()
 		{
 			return m_imagelist_tiles;
+		}
+		
+		public i_screen_list	get_screen_list()
+		{
+			return m_scr_list;
 		}
 	}
 }

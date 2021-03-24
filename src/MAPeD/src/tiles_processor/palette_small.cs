@@ -79,7 +79,7 @@ namespace MAPeD
 			update();
 		}
 		
-		public void update()
+		public override void update()
 		{
 			clear_background( CONST_BACKGROUND_COLOR );
 			

@@ -12,7 +12,7 @@ namespace SPSeD
 	/// <summary>
 	/// Description of py_api_i.
 	/// </summary>
-	public interface py_api_i
+	public interface i_py_api
 	{
 		string get_prefix();
 		

@@ -45,8 +45,8 @@ namespace MAPeD
 		private int		m_last_mouse_x	 = 0;
 		private int		m_last_mouse_y	 = 0;
 
-		private readonly int m_scr_half_width  = 0;
-		private readonly int m_scr_half_height = 0;
+		private int m_scr_half_width  = 0;
+		private int m_scr_half_height = 0;
 		
 		private int 	m_sel_screen_slot_id	= -1;
 		private byte	m_active_screen_index	= layout_data.CONST_EMPTY_CELL_ID;
@@ -60,7 +60,7 @@ namespace MAPeD
 		
 		private readonly List< tiles_data > 	m_tiles_data	= null;
 		
-		private readonly ListView m_listview_screens			= null;
+		private readonly i_screen_list m_scr_list	= null;
 		
 		private readonly Label m_label				= null;
 		
@@ -141,11 +141,11 @@ namespace MAPeD
 
 		private data_sets_manager.EScreenDataType	m_screen_data_type = data_sets_manager.EScreenDataType.sdt_Tiles4x4;
 
-		public layout_editor( PictureBox _pbox, Label _label, List< tiles_data > _tiles_data, ListView _listview_screens ) : base( _pbox )
+		public layout_editor( PictureBox _pbox, Label _label, List< tiles_data > _tiles_data, i_screen_list _scr_list ) : base( _pbox )
 		{
-			m_label				= _label;
-			m_tiles_data 		= _tiles_data;
-			m_listview_screens	= _listview_screens;
+			m_label			= _label;
+			m_tiles_data 	= _tiles_data;
+			m_scr_list		= _scr_list;
 			
 			m_pix_box.MouseDown 	+= new MouseEventHandler( Layout_MouseDown );
 			m_pix_box.MouseUp		+= new MouseEventHandler( Layout_MouseUp );
@@ -177,6 +177,17 @@ namespace MAPeD
 			m_adj_scr_data_arr = new short[ layout_data.adj_scr_slots.Length ];
 			
 			m_adj_scr_ind_arr = new int[]{ -1, /*( -width - 1 )*/0, /*-width*/0, /*( -width + 1 )*/0, +1, /*( width + 1 )*/0, /*width*/0, /*( width - 1 )*/0, -1 };
+		}
+		
+		protected override void Resize_Event(object sender, EventArgs e)
+		{
+			base.Resize_Event(sender, e);
+			
+			m_scr_half_width  = m_pix_box.Width >> 1;
+			m_scr_half_height = m_pix_box.Height >> 1;
+			
+			m_pbox_rect.Width	= m_pix_box.Width;
+			m_pbox_rect.Height	= m_pix_box.Height;
 		}
 		
 		public void reset( bool _init )
@@ -1029,7 +1040,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void update()
+		public override void update()
 		{
 			clear_background( CONST_BACKGROUND_COLOR );
 			
@@ -1049,11 +1060,11 @@ namespace MAPeD
 				int i;
 				int j;
 				
-				if( m_listview_screens.Items.Count > 0 )
+				if( m_scr_list.count() > 0 )
 				{
 					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_ind, screen_data _scr_data, int _x, int _y ) 
 					{ 
-						m_gfx.DrawImage( m_listview_screens.LargeImageList.Images[ _scr_data.m_scr_ind ], _x, _y, scr_size_width, scr_size_height );
+						m_gfx.DrawImage( m_scr_list.get( _scr_data.m_scr_ind ), _x, _y, scr_size_width, scr_size_height );
 					});
 
 					if( show_entities )
@@ -1175,14 +1186,14 @@ namespace MAPeD
 						m_gfx.DrawRectangle( m_pen, x+1, y+1, scr_size_width - 1, scr_size_height - 1 );
 						
 						// draw ghost image
-						if( m_active_screen_index != layout_data.CONST_EMPTY_CELL_ID && m_listview_screens.Items.Count > 0 )
+						if( m_active_screen_index != layout_data.CONST_EMPTY_CELL_ID && m_scr_list.count() > 0 )
 						{
 							m_scr_img_rect.X 		= x;
 							m_scr_img_rect.Y 		= y;
 							m_scr_img_rect.Width	= scr_size_width;
 							m_scr_img_rect.Height 	= scr_size_height;
 							
-							m_gfx.DrawImage( m_listview_screens.LargeImageList.Images[ m_active_screen_index ], m_scr_img_rect, 0, 0, utils.CONST_SCREEN_WIDTH_PIXELS, utils.CONST_SCREEN_HEIGHT_PIXELS, GraphicsUnit.Pixel, m_scr_img_attr );
+							m_gfx.DrawImage( m_scr_list.get( m_active_screen_index ), m_scr_img_rect, 0, 0, utils.CONST_SCREEN_WIDTH_PIXELS, utils.CONST_SCREEN_HEIGHT_PIXELS, GraphicsUnit.Pixel, m_scr_img_attr );
 						}
 					}
 					

@@ -288,6 +288,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="screen_list.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

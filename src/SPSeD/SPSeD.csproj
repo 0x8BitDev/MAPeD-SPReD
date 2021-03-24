@@ -72,7 +72,7 @@
     <Compile Include="py_api_doc.Designer.cs">
       <DependentUpon>py_api_doc.cs</DependentUpon>
     </Compile>
-    <Compile Include="py_api_i.cs" />
+    <Compile Include="i_py_api.cs" />
     <Compile Include="py_editor.cs">
       <SubType>Form</SubType>
     </Compile>

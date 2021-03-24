@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 15:20
  */
@@ -28,15 +28,45 @@ namespace MAPeD
 		{
 			m_pix_box = _pbox;
 			
-			m_main_bmp = new Bitmap( _pbox.Width, _pbox.Height, PixelFormat.Format32bppArgb );
-			_pbox.Image = m_main_bmp;
-			
-			m_gfx = Graphics.FromImage( m_main_bmp );
-			enable_smoothing_mode( false );
+			prepare_pix_box();
+
+			m_pix_box.Resize += new EventHandler( Resize_Event );
 			
 			m_pen = new Pen( utils.CONST_COLOR_PIXBOX_DEFAULT );
 			m_pen.EndCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;
 			m_pen.StartCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;			
+		}
+		
+		protected virtual void Resize_Event( object sender, EventArgs e )
+		{
+			prepare_pix_box();
+			
+			update();
+		}
+		
+		public virtual void update()
+		{
+			//...
+		}
+		
+		private void prepare_pix_box()
+		{
+			if( m_main_bmp != null )
+			{
+				m_main_bmp.Dispose();
+			}
+			
+			if( m_gfx != null )
+			{
+				m_gfx.Dispose();
+			}
+			
+			m_main_bmp = new Bitmap( m_pix_box.Width, m_pix_box.Height, PixelFormat.Format32bppArgb );
+			
+			m_gfx = Graphics.FromImage( m_main_bmp );
+			enable_smoothing_mode( false );
+			
+			m_pix_box.Image = m_main_bmp;
 		}
 		
 		protected void clear_background( int _color )

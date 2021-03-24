@@ -2104,6 +2104,7 @@ namespace MAPeD
 			this.PBoxScreen.Location = new System.Drawing.Point(0, 4);
 			this.PBoxScreen.Name = "PBoxScreen";
 			this.PBoxScreen.Size = new System.Drawing.Size(575, 575);
+			this.PBoxScreen.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.PBoxScreen.TabIndex = 56;
 			this.PBoxScreen.TabStop = false;
 			// 
@@ -2228,7 +2229,6 @@ namespace MAPeD
 			this.ListBoxScreens.Name = "ListBoxScreens";
 			this.ListBoxScreens.Size = new System.Drawing.Size(64, 277);
 			this.ListBoxScreens.TabIndex = 44;
-			this.ListBoxScreens.Click += new System.EventHandler(this.ListBoxScreensClick_Event);
 			this.ListBoxScreens.SelectedIndexChanged += new System.EventHandler(this.ListBoxScreensClick_Event);
 			// 
 			// BtnCreateScreen
@@ -2275,9 +2275,9 @@ namespace MAPeD
 			// 
 			this.CheckBoxScreenShowGrid.Checked = true;
 			this.CheckBoxScreenShowGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CheckBoxScreenShowGrid.Location = new System.Drawing.Point(99, 558);
+			this.CheckBoxScreenShowGrid.Location = new System.Drawing.Point(94, 557);
 			this.CheckBoxScreenShowGrid.Name = "CheckBoxScreenShowGrid";
-			this.CheckBoxScreenShowGrid.Size = new System.Drawing.Size(78, 22);
+			this.CheckBoxScreenShowGrid.Size = new System.Drawing.Size(81, 22);
 			this.CheckBoxScreenShowGrid.TabIndex = 73;
 			this.CheckBoxScreenShowGrid.Text = "Show Grid";
 			this.CheckBoxScreenShowGrid.UseVisualStyleBackColor = true;
@@ -2287,9 +2287,11 @@ namespace MAPeD
 			// 
 			this.groupBox3.Location = new System.Drawing.Point(5, -2);
 			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
 			this.groupBox3.Size = new System.Drawing.Size(172, 31);
 			this.groupBox3.TabIndex = 65;
 			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "[!]";
 			// 
 			// TabLayout
 			// 
@@ -2877,6 +2879,7 @@ namespace MAPeD
 			this.PBoxLayout.Location = new System.Drawing.Point(0, 5);
 			this.PBoxLayout.Name = "PBoxLayout";
 			this.PBoxLayout.Size = new System.Drawing.Size(604, 604);
+			this.PBoxLayout.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.PBoxLayout.TabIndex = 99;
 			this.PBoxLayout.TabStop = false;
 			// 
@@ -3106,7 +3109,6 @@ namespace MAPeD
 			this.ListBoxLayouts.Name = "ListBoxLayouts";
 			this.ListBoxLayouts.Size = new System.Drawing.Size(67, 160);
 			this.ListBoxLayouts.TabIndex = 70;
-			this.ListBoxLayouts.Click += new System.EventHandler(this.ListBoxLayoutsClick_Event);
 			this.ListBoxLayouts.SelectedIndexChanged += new System.EventHandler(this.ListBoxLayoutsClick_Event);
 			// 
 			// BtnCopyLayout
@@ -3570,6 +3572,7 @@ namespace MAPeD
 			this.groupBox2.ResumeLayout(false);
 			this.TabScreenEditor.ResumeLayout(false);
 			this.splitContainer4.Panel1.ResumeLayout(false);
+			this.splitContainer4.Panel1.PerformLayout();
 			this.splitContainer4.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
 			this.splitContainer4.ResumeLayout(false);
@@ -3602,6 +3605,7 @@ namespace MAPeD
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownEntityPivotY)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownEntityPivotX)).EndInit();
 			this.splitContainer6.Panel1.ResumeLayout(false);
+			this.splitContainer6.Panel1.PerformLayout();
 			this.splitContainer6.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer6)).EndInit();
 			this.splitContainer6.ResumeLayout(false);

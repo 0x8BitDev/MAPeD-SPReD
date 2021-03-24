@@ -101,6 +101,9 @@ namespace MAPeD
 			//
 			InitializeComponent();
 
+			// scale the main window horizontaly
+			this.Width += 3 * utils.CONST_SCREEN_TILES_SIZE;
+
 			m_data_manager 	= new data_sets_manager();
 			
 			m_progress_val		= new Progress< int >( percent => { progress_bar_value( percent ); } );
@@ -133,7 +136,7 @@ namespace MAPeD
 			m_screen_editor = new screen_editor( PBoxScreen, m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list(), PBoxActiveTile, GrpBoxActiveTile );
 			m_screen_editor.subscribe_event( m_data_manager );
 			
-			m_layout_editor = new layout_editor( PBoxLayout, LayoutLabel, m_data_manager.get_tiles_data(), ListViewScreens );
+			m_layout_editor = new layout_editor( PBoxLayout, LayoutLabel, m_data_manager.get_tiles_data(), m_imagelist_manager.get_screen_list() );
 			m_layout_editor.subscribe_event( m_data_manager );
 			m_layout_editor.subscribe_event( m_screen_editor );
 			m_layout_editor.EntityInstanceSelected += new EventHandler( MainForm_EntityInstanceSelected );
@@ -151,19 +154,13 @@ namespace MAPeD
 			
 			m_status_bar_label = StatusBarLabel;
 			
-			m_object_name_form = new object_name_form();
-			
-			m_import_tiles_form = new import_tiles_form();
-			
-			m_export_active_tile_block_set_form = new export_active_tile_block_set_form();
-			
-			m_screen_mark_form = new screen_mark_form();
-			
-			m_description_form = new description_form();
-			
-			m_statistics_form = new statistics_form( m_data_manager );
-			
-			m_create_layout_form = new create_layout_form();
+			m_object_name_form					= new object_name_form();
+			m_import_tiles_form					= new import_tiles_form();
+			m_screen_mark_form					= new screen_mark_form();
+			m_description_form					= new description_form();
+			m_statistics_form					= new statistics_form( m_data_manager );
+			m_create_layout_form				= new create_layout_form();
+			m_export_active_tile_block_set_form	= new export_active_tile_block_set_form();
 
 			enable_update_gfx_btn( false );
 			enable_update_screens_btn( true );

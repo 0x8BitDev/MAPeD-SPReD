@@ -141,7 +141,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void update()
+		public override void update()
 		{
 			int clr;
 			

@@ -288,6 +288,7 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_SCREEN_BORDER					= Color.Red;
 		public static readonly Color	CONST_COLOR_SCREEN_SELECTION_RECTANGLE		= Color.White;
 		public static readonly Color	CONST_COLOR_SCREEN_SELECTION_TILE			= Color.DeepSkyBlue;
+		public static readonly Color	CONST_COLOR_SCREEN_TRANSLUCENT_QUAD			= Color.FromArgb( unchecked( (int)0x40000000 ) );
 		// block editor
 		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_GRID						= Color.FromArgb( 0x78808080 );
 		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_CHR_BORDER					= Color.White;

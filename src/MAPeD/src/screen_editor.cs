@@ -999,7 +999,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void update()
+		public override void update()
 		{
 			clear_background( CONST_BACKGROUND_COLOR );
 			
@@ -1053,6 +1053,10 @@ namespace MAPeD
 							}
 						}
 					}
+					
+					// draw transparent fullscreen quad
+					utils.brush.Color = utils.CONST_COLOR_SCREEN_TRANSLUCENT_QUAD;
+					m_gfx.FillRectangle( utils.brush, 0, 0, m_pix_box.Width, m_pix_box.Height );
 				}
 				
 				// draw a tiled screen

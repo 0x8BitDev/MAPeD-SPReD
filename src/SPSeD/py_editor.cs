@@ -29,7 +29,7 @@ namespace SPSeD
 		private ScriptEngine	m_py_engine	= null;
 		private ScriptScope		m_py_scope	= null;
 		
-		private py_api_i		m_py_api		= null;
+		private i_py_api		m_py_api		= null;
 		private py_api_doc		m_py_api_doc	= null;
 
 		private static	py_editor m_instance = null;
@@ -44,7 +44,7 @@ namespace SPSeD
 		
 		private static int m_os_flag	= 0x00;
 		
-		public py_editor( Icon _icon, py_api_i _api, string _api_doc_title, string _api_doc_str, string _api_doc_html_filename )
+		public py_editor( Icon _icon, i_py_api _api, string _api_doc_title, string _api_doc_str, string _api_doc_html_filename )
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
