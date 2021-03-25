@@ -133,6 +133,9 @@ namespace MAPeD
 #endif
 		private static int m_id	= -1;
 		
+		private readonly static map_data_config_base m_map_data_config_app 		= map_data_config_provider.config_app();
+		private readonly static map_data_config_base m_map_data_config_native 	= map_data_config_provider.config_native();
+		
 		private string m_name	= null;
 		
 		private byte[] m_CHR_bank	= new byte[ utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ];
@@ -610,87 +613,51 @@ namespace MAPeD
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
 		public static byte get_block_flags_flip( uint _block_chr_data )
 		{
-			return (byte)( ( _block_chr_data & CONST_BLOCK_FLIP_MASK ) >> 10 );
+			return ( byte )m_map_data_config_app.unpack_data( map_data_config_base.EData.ed_VH_Flip, _block_chr_data );
 		}
 		
 		public static uint set_block_flags_flip( byte _flip_flag, uint _block_chr_data )
 		{
-			uint var = _block_chr_data;
-			
-			var &= ~CONST_BLOCK_FLIP_MASK;
-			var |= ( ( _flip_flag & CONST_FLIP_MASK ) << 10 );
-			
-			return var;
+			return m_map_data_config_app.pack_data( map_data_config_base.EData.ed_VH_Flip, ( int )_flip_flag, _block_chr_data );
 		}
 #endif
 		public static int get_block_flags_palette( uint _block_chr_data )
 		{
-#if DEF_NES
-			return ( int )( ( _block_chr_data & CONST_BLOCK_PALETTE_MASK ) >> 10 );
-#elif DEF_SMS
-			return ( int )( ( _block_chr_data & CONST_BLOCK_PALETTE_MASK ) >> 9 );
-#elif DEF_PCE
-			return ( int )( ( _block_chr_data & CONST_BLOCK_PALETTE_MASK ) >> 12 );
-#endif
+			return m_map_data_config_app.unpack_data( map_data_config_base.EData.ed_Palette, _block_chr_data );
 		}
 
 		public static uint set_block_flags_palette( int _plt_ind, uint _block_chr_data )
 		{
-			uint var = _block_chr_data;
-			
-			var &= ~CONST_BLOCK_PALETTE_MASK;
-#if DEF_NES
-			var |= ( uint )( ( _plt_ind & CONST_PALETTE_MASK ) << 10 );
-#elif DEF_SMS
-			var |= ( uint )( ( _plt_ind & CONST_PALETTE_MASK ) << 9 );
-#elif DEF_PCE
-			var |= ( uint )( ( _plt_ind & CONST_PALETTE_MASK ) << 12 );
-#endif
-			return var;
+			return m_map_data_config_app.pack_data( map_data_config_base.EData.ed_Palette, _plt_ind, _block_chr_data );
 		}
 
 		public static int get_block_flags_obj_id( uint _block_chr_data )
 		{
-#if DEF_PCE
-			return ( int )( ( _block_chr_data & CONST_BLOCK_OBJ_ID_MASK ) >> 16 );
-#else
-			return ( int )( ( _block_chr_data & CONST_BLOCK_OBJ_ID_MASK ) >> 12 );
-#endif
+			return m_map_data_config_app.unpack_data( map_data_config_base.EData.ed_Obj_id, _block_chr_data );
 		}
 		
 		public static uint set_block_flags_obj_id( int _obj_id, uint _block_chr_data )
 		{
-			uint var = _block_chr_data;
-			
-			var &= ~CONST_BLOCK_OBJ_ID_MASK;
-#if DEF_PCE
-			var |= ( uint )( ( _obj_id & CONST_OBJ_ID_MASK ) << 16 );
-#else
-			var |= ( uint )( ( _obj_id & CONST_OBJ_ID_MASK ) << 12 );
-#endif		
-			return var;
+			return m_map_data_config_app.pack_data( map_data_config_base.EData.ed_Obj_id, _obj_id, _block_chr_data );
 		}
 		
 		public static int get_block_CHR_id( uint _block_chr_data )
 		{
-#if DEF_NES
-			return ( int )( _block_chr_data & CONST_NES_BLOCK_CHR_ID_MASK );
-#elif DEF_SMS
-			return ( int )( _block_chr_data & CONST_SMS_BLOCK_CHR_ID_MASK );
-#elif DEF_PCE
-			return ( int )( _block_chr_data & CONST_PCE_BLOCK_CHR_ID_MASK );
-#endif
+			return m_map_data_config_app.unpack_data( map_data_config_base.EData.ed_CHR_id, _block_chr_data );
 		}
 		
 		public static uint set_block_CHR_id( int _CHR_id, uint _block_chr_data )
 		{
-#if DEF_NES
-			return ( ( _block_chr_data & ~CONST_NES_BLOCK_CHR_ID_MASK ) | ( uint )_CHR_id );
-#elif DEF_SMS
-			return ( ( _block_chr_data & ~CONST_SMS_BLOCK_CHR_ID_MASK ) | ( uint )_CHR_id );
-#elif DEF_PCE
-			return ( ( _block_chr_data & ~CONST_PCE_BLOCK_CHR_ID_MASK ) | ( uint )_CHR_id );
-#endif
+			return m_map_data_config_app.pack_data( map_data_config_base.EData.ed_CHR_id, _CHR_id, _block_chr_data );
+		}
+		
+		public static uint block_data_repack_to_native( uint _block_chr_data, int _CHR_offset )
+		{
+			uint native_data = m_map_data_config_native.repack( m_map_data_config_app, _block_chr_data );
+			
+			bit_field bf_CHR_id = m_map_data_config_native.get_bit_field( map_data_config_base.EData.ed_CHR_id );
+			
+			return bf_CHR_id.overwrite( bf_CHR_id.unpack( native_data ) + _CHR_offset, native_data );
 		}
 		
 		public static void CHR_bank_vflip( byte[] _CHR_data, int _spr_ind )

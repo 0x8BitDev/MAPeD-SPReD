@@ -1226,20 +1226,10 @@ namespace MAPeD
 		
 		private ushort get_screen_attribute( uint _block_data )
 		{
+			ushort res = ( ushort )tiles_data.block_data_repack_to_native( _block_data, ( int )NumericUpDownCHRsOffset.Value );
+			
 			int block_prop = tiles_data.get_block_flags_obj_id( _block_data );
-	
-			ushort res = ( ushort )( ( tiles_data.get_block_CHR_id( _block_data ) + ( ushort )NumericUpDownCHRsOffset.Value ) & 0x01ff );
 			
-			// add flipping
-			{
-				res |= ( ushort )( tiles_data.get_block_flags_flip( _block_data ) << 9 );
-			}
-			
-			// add colors bank ( 16 colors palette index )
-			{
-				res |= ( ushort )( tiles_data.get_block_flags_palette( _block_data ) << 11 );
-			}
-
 			// add background/foreground property
 			{
 				if( ComboBoxInFrontOfSpritesProp.SelectedIndex > 0 && block_prop == ( ComboBoxInFrontOfSpritesProp.SelectedIndex - 1 ) )

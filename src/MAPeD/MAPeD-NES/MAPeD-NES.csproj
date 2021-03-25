@@ -166,6 +166,9 @@
       <Link>MainForm.Designer.cs</Link>
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\map_data_config.cs">
+      <Link>map_data_config.cs</Link>
+    </Compile>
     <Compile Include="..\src\object_name_form.cs">
       <Link>object_name_form.cs</Link>
       <SubType>Form</SubType>

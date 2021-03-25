@@ -347,8 +347,10 @@ namespace MAPeD
 		
 		private void progress_bar_value( int _val )
 		{
-			m_progress_form.progress_bar.Value = _val;
-			m_progress_form.progress_bar.Increment( _val );
+			int val = Math.Min( _val, m_progress_form.progress_bar.Maximum );
+			
+			m_progress_form.progress_bar.Value = val;
+			m_progress_form.progress_bar.Increment( val );
 			m_progress_form.progress_bar.Refresh();
 		}
 		

@@ -1347,7 +1347,7 @@ namespace MAPeD
 		
 		private ushort get_screen_attribute( uint _block_data )
 		{
-			return ( ushort )( ( ushort )( ( tiles_data.get_block_CHR_id( _block_data ) + ( ushort )get_CHR_offset() ) & 0x0fff ) | ( ushort )( _block_data & 0xf000 ) );
+			return ( ushort )tiles_data.block_data_repack_to_native( _block_data, get_CHR_offset() );
 		}
 		
 		private string get_adjacent_screen_index( int _level_n, layout_data _data, int _scr_ind, int _offset )
@@ -1364,7 +1364,7 @@ namespace MAPeD
 		
 		private int get_CHR_offset()
 		{
-			return m_CHR_offset[ ComboBoxBAT.SelectedIndex + ( int )NumericUpDownCHROffset.Value ];
+			return m_CHR_offset[ ComboBoxBAT.SelectedIndex ] + ( int )NumericUpDownCHROffset.Value;
 		}
 		
 		private string get_adjacent_screen_label( int _level_n, layout_data _data, int _scr_ind, int _offset )

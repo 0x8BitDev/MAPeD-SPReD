@@ -36,13 +36,21 @@ namespace MAPeD
 	{
 		private const bool CONST_DEV_BUILD_FLAG	= true;
 		private const bool CONST_BETA_FLAG		= true; 
+
+		public const string CONST_PLATFORM_NES = "NES";
+		public const string CONST_PLATFORM_SMS = "SMS";
+		public const string CONST_PLATFORM_PCE = "PCE";
+
+		public const string CONST_NES_FILE_EXT = "mapednes";
+		public const string CONST_SMS_FILE_EXT = "mapedsms";
+		public const string CONST_PCE_FILE_EXT = "mapedpce";
 		
 #if DEF_NES
-		public const string	CONST_PLATFORM	= "NES";
+		public const string	CONST_PLATFORM	= CONST_PLATFORM_NES;
 #elif DEF_SMS
-		public const string	CONST_PLATFORM	= "SMS";
+		public const string	CONST_PLATFORM	= CONST_PLATFORM_SMS;
 #elif DEF_PCE
-		public const string	CONST_PLATFORM	= "PCE";
+		public const string	CONST_PLATFORM	= CONST_PLATFORM_PCE;
 #else
 		public const string	CONST_PLATFORM	= "UNKNOWN";
 #endif
@@ -118,10 +126,6 @@ namespace MAPeD
 		
 		public const uint	CONST_IO_DATA_POST_FLAG_MMC5			= 0x01;
 		public const uint	CONST_IO_DATA_POST_FLAG_PROP_PER_CHR	= 0x02;
-		
-		public const string CONST_SMS_FILE_EXT			= "mapedsms";
-		public const string CONST_NES_FILE_EXT			= "mapednes";
-		public const string CONST_PCE_FILE_EXT			= "mapedpce";
 		
 		// 1 page = 16x16 CHRs
 		public const int CONST_NES_CHR_BANK_NUM_PAGES	= 1;	// 1x4K (native)
