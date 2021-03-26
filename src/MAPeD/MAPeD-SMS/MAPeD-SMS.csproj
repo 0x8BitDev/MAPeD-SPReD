@@ -195,6 +195,9 @@
     <Compile Include="..\src\pattern_data.cs">
       <Link>pattern_data.cs</Link>
     </Compile>
+    <Compile Include="..\src\platform_data_provider.cs">
+      <Link>platform_data_provider.cs</Link>
+    </Compile>
     <Compile Include="..\src\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
@@ -205,6 +208,9 @@
     <Compile Include="..\src\progress_form.Designer.cs">
       <Link>progress_form.Designer.cs</Link>
       <DependentUpon>progress_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\project_data_converter.cs">
+      <Link>project_data_converter.cs</Link>
     </Compile>
     <Compile Include="..\src\py_scripting\py_api.cs">
       <Link>py_scripting\py_api.cs</Link>

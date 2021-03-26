@@ -848,7 +848,7 @@ namespace MAPeD
 					
 					tiles_data data = null;
 					
-					int plt_len 	= utils.get_palette_len_by_file_ext( _file_ext );
+					int plt_len 	= platform_data_provider.get_palette_size_by_file_ext( _file_ext );
 					int[] plt_main	= null;
 					
 					bool ignore_palette = ( _file_ext != utils.CONST_FILE_EXT );
@@ -858,7 +858,7 @@ namespace MAPeD
 						if( _convert_colors )
 						{
 #if DEF_NES || DEF_SMS
-							plt_main = utils.get_palette_by_file_ext( _file_ext );
+							plt_main = platform_data_provider.get_palette_by_file_ext( _file_ext );
 #else
 							plt_main = new int[ plt_len ];
 #endif

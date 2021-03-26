@@ -91,46 +91,6 @@ namespace MAPeD
 	[DataContract]
 	public class tiles_data
 	{
-		private readonly static uint CONST_OBJ_ID_MASK	= 0x0f;
-		
-		// NES
-		private readonly static uint CONST_NES_PALETTE_MASK			= 0x03;
-		private readonly static uint CONST_NES_BLOCK_PALETTE_MASK	= ( CONST_NES_PALETTE_MASK << 10 );
-		private readonly static uint CONST_NES_BLOCK_CHR_ID_MASK	= 0x000000ff; 
-		
-		// SMS
-		private readonly static uint CONST_SMS_PALETTE_MASK			= 0x01;
-		private readonly static uint CONST_SMS_BLOCK_PALETTE_MASK	= ( CONST_SMS_PALETTE_MASK << 9 );
-		private readonly static uint CONST_SMS_BLOCK_CHR_ID_MASK	= 0x000001ff;
-		
-		// NES/SMS
-		private readonly static uint CONST_NES_SMS_BLOCK_OBJ_ID_MASK	= ( CONST_OBJ_ID_MASK << 12 );
-		
-		// PCE
-		private readonly static uint CONST_PCE_PALETTE_MASK			= 0x0f;
-		private readonly static uint CONST_PCE_BLOCK_PALETTE_MASK	= ( CONST_PCE_PALETTE_MASK << 12 );
-		private readonly static uint CONST_PCE_BLOCK_OBJ_ID_MASK	= ( CONST_OBJ_ID_MASK << 16 );
-		private readonly static uint CONST_PCE_BLOCK_CHR_ID_MASK	= 0x00000fff;
-
-#if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
-		private readonly static uint CONST_FLIP_MASK		= 0x03;
-		private readonly static uint CONST_BLOCK_FLIP_MASK	= ( CONST_FLIP_MASK << 10 );
-#endif
-#if DEF_NES
-		private readonly static uint CONST_PALETTE_MASK			= CONST_NES_PALETTE_MASK;
-		private readonly static uint CONST_BLOCK_PALETTE_MASK	= CONST_NES_BLOCK_PALETTE_MASK;
-#elif DEF_SMS
-		private readonly static uint CONST_PALETTE_MASK			= CONST_SMS_PALETTE_MASK;
-		private readonly static uint CONST_BLOCK_PALETTE_MASK	= CONST_SMS_BLOCK_PALETTE_MASK;
-#elif DEF_PCE
-		private readonly static uint CONST_PALETTE_MASK			= CONST_PCE_PALETTE_MASK;
-		private readonly static uint CONST_BLOCK_PALETTE_MASK	= CONST_PCE_BLOCK_PALETTE_MASK;
-#endif
-#if DEF_PCE
-		private readonly static uint CONST_BLOCK_OBJ_ID_MASK	= CONST_PCE_BLOCK_OBJ_ID_MASK;
-#else
-		private readonly static uint CONST_BLOCK_OBJ_ID_MASK	= CONST_NES_SMS_BLOCK_OBJ_ID_MASK;
-#endif
 		private static int m_id	= -1;
 		
 		private readonly static map_data_config_base m_map_data_config_app 		= map_data_config_provider.config_app();
@@ -1428,82 +1388,13 @@ namespace MAPeD
 			int i;
 			uint val;
 
-			int CHR_id;
-			int prop_id;
-			
 			bool nes_file = ( _file_ext == utils.CONST_NES_FILE_EXT );
-			bool sms_file = ( _file_ext == utils.CONST_SMS_FILE_EXT );
-			bool pce_file = ( _file_ext == utils.CONST_PCE_FILE_EXT );
-
-#if DEF_SMS || DEF_PCE
-			int palette_ind;
-
-			Dictionary< int, int >	dict_CHR_palette_ind = nes_file ? new Dictionary<int, int>( utils.CONST_BLOCKS_UINT_SIZE ):null;
-#endif
-
-#if DEF_NES
-			int num_pages;
-
-			if( sms_file || pce_file )
-			{
-				for( i = 0; i < m_CHR_bank.Length; i++ )
-				{
-					m_CHR_bank[ i ] = ( byte )( _br.ReadByte() & 0x03 );
-				}
-				
-				if( sms_file )
-				{
-					num_pages = utils.CONST_SMS_CHR_BANK_NUM_PAGES;
-				}
-				else
-				{
-					num_pages = utils.CONST_PCE_CHR_BANK_NUM_PAGES;
-				}
-				
-				// skip the rest data
-				_br.ReadBytes( ( num_pages * utils.CONST_CHR_BANK_PAGE_SIZE ) - m_CHR_bank.Length );
-			}
-#elif DEF_SMS			
-			if( nes_file )
-			{
-				for( i = 0; i < ( utils.CONST_NES_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_PAGE_SIZE ); i++ )
-				{
-					m_CHR_bank[ i ] = _br.ReadByte();
-				}
-			}
-			else
-			if( pce_file )
-			{
-				for( i = 0; i < m_CHR_bank.Length; i++ )
-				{
-					m_CHR_bank[ i ] = _br.ReadByte();
-				}
-				
-				// skip the rest data
-				_br.ReadBytes( ( utils.CONST_PCE_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_PAGE_SIZE ) - m_CHR_bank.Length );
-			}
-#elif DEF_PCE
-			if( sms_file )
-			{
-				for( i = 0; i < ( utils.CONST_SMS_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_PAGE_SIZE ); i++ )
-				{
-					m_CHR_bank[ i ] = _br.ReadByte();
-				}
-			}
-			else
-			if( nes_file )
-			{
-				for( i = 0; i < ( utils.CONST_NES_CHR_BANK_NUM_PAGES * utils.CONST_CHR_BANK_PAGE_SIZE ); i++ )
-				{
-					m_CHR_bank[ i ] = _br.ReadByte();
-				}
-			}
-#endif			
-			else
-			{
-				m_CHR_bank 	= _br.ReadBytes( m_CHR_bank.Length );
-			}
-
+			
+			utils.EPlatformType			prj_platform	= platform_data_provider.get_platform_by_ext( _file_ext );
+			i_project_data_converter	data_converter	= project_data_converter_provider.get_converter();
+			
+			data_converter.load_CHR_bank( _ver, _br, prj_platform, ref m_CHR_bank );
+			
 			// load palette(s)			
 			{
 				int palettes_cnt = ( _ver == 1 ) ? 1: _br.ReadInt32();
@@ -1554,145 +1445,35 @@ namespace MAPeD
 #endif
 			}
 
-			for( i = 0; i < utils.CONST_BLOCKS_UINT_SIZE; i++ )
+			// block 2x2 data
 			{
-				if( _ver <= 2 )
-				{
-					val = _br.ReadUInt16();
-
-					if( sms_file )
-					{
-						// OLD SMS: [ property_id ](4) [ CHR bank ](2) [ hv_flip ](2) [CHR ind](8)
-						// NEW SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
-						// 11-12 (CHR bank) <-> 9-10 (hv_flip)
-						val = ( val & 0xfffff0ff ) | ( ( ( val & 0x00000300 ) << 2 ) | ( ( val & 0x00000c00 ) >> 2 ) );
-					}
-				}
-				else
-				{
-					val = _br.ReadUInt32();
-				}
-#if DEF_NES
-				if( sms_file )
-				{
-					// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
-					// SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
-
-					// check CHR bank overflow
-					if( ( val & 0x000000100 ) != 0 )
-					{
-						// clear overflowed data
-						val = set_block_flags_palette( 0, val );
-						val = set_block_CHR_id( 0, val );
-					}
-				}
-				else
-				if( pce_file )
-				{
-					// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
-					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
-					CHR_id	= ( int )( val & CONST_PCE_BLOCK_CHR_ID_MASK );
-					prop_id = ( int )( ( val & CONST_PCE_BLOCK_OBJ_ID_MASK ) >> 16 );
-					
-					val = 0;
-					val = set_block_CHR_id( CHR_id, val );
-					val = set_block_flags_obj_id( prop_id, val );
-				}
-#elif DEF_SMS
-				if( nes_file )
-				{
-					// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
-					// SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
-					
-					// NES: palette -> SMS: flip flags
-					palette_ind	= get_block_flags_flip( val );
-					val 		= set_block_flags_flip( 0, val );
-					
-					CHR_id 		= get_block_CHR_id( val );
-					
-					if( !dict_CHR_palette_ind.ContainsKey( CHR_id ) )
-					{
-						// SMS: flip flags instead of palette on SMS
-						dict_CHR_palette_ind.Add( CHR_id, palette_ind );
-					}					
-				}
-				else
-				if( pce_file )
-				{
-					// SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
-					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
-					CHR_id		= ( int )( val & CONST_PCE_BLOCK_CHR_ID_MASK );
-					prop_id 	= ( int )( ( val & CONST_PCE_BLOCK_OBJ_ID_MASK ) >> 16 );
-					palette_ind = ( int )( ( ( val & CONST_PCE_BLOCK_PALETTE_MASK ) >> 12 ) & CONST_SMS_PALETTE_MASK ); // clamp PCE palette by SMS palette mask
-					
-					val = 0;
-					val = set_block_CHR_id( CHR_id, val );
-					val = set_block_flags_palette( palette_ind, val );
-					val = set_block_flags_obj_id( prop_id, val );
-				}
-#elif DEF_PCE
-				if( sms_file )
-				{
-					// SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
-					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
-					CHR_id		= ( int )( val & CONST_SMS_BLOCK_CHR_ID_MASK );
-					prop_id 	= ( int )( ( val & CONST_NES_SMS_BLOCK_OBJ_ID_MASK ) >> 12 );
-					palette_ind = ( int )( ( val & CONST_SMS_BLOCK_PALETTE_MASK ) >> 9 );
-					
-					val = 0;
-					val = set_block_CHR_id( CHR_id, val );
-					val = set_block_flags_palette( palette_ind, val );
-					val = set_block_flags_obj_id( prop_id, val );
-				}
-				else
-				if( nes_file )
-				{
-					// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
-					// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
-					
-					// NES: palette -> PCE: CHR id
-					palette_ind	= ( int )( ( val & CONST_NES_BLOCK_PALETTE_MASK ) >> 10 );
-					prop_id 	= ( int )( ( val & CONST_NES_SMS_BLOCK_OBJ_ID_MASK ) >> 12 );
-					CHR_id 		= ( int )( val & CONST_NES_BLOCK_CHR_ID_MASK );
-					
-					val = 0;
-					val = set_block_CHR_id( CHR_id, val );
-					val = set_block_flags_obj_id( prop_id, val );
-					
-					if( !dict_CHR_palette_ind.ContainsKey( CHR_id ) )
-					{
-						// SMS: flip flags instead of palette on SMS
-						dict_CHR_palette_ind.Add( CHR_id, palette_ind );
-					}					
-				}
-#endif
-				m_blocks[ i ] = val;
-			}
-#if DEF_SMS || DEF_PCE
-			if( dict_CHR_palette_ind != null )
-			{
-				byte[] img_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
+				data_converter.pre_load_block_data( prj_platform );
 				
-				foreach( var obj in dict_CHR_palette_ind ) 
+				for( i = 0; i < utils.CONST_BLOCKS_UINT_SIZE; i++ )
 				{
-					from_CHR_bank_to_spr8x8( obj.Key, img_buff );
+					if( _ver <= 2 )
 					{
-						for( i = 0; i < img_buff.Length; i++ )
-						{
-							img_buff[ i ] += ( byte )( obj.Value * utils.CONST_PALETTE_SMALL_NUM_COLORS );
-						}
+						val = _br.ReadUInt16();
 					}
-					from_spr8x8_to_CHR_bank( obj.Key, img_buff );
+					else
+					{
+						val = _br.ReadUInt32();
+					}
+					
+					m_blocks[ i ] = data_converter.convert_block_data( _ver, prj_platform, val );
 				}
-				
-				dict_CHR_palette_ind.Clear();
 			}
-#endif
-			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			
+			// tiles 4x4 data
 			{
-				for( i = 0; i < utils.CONST_TILES_UINT_SIZE; i++ )
+				data_converter.post_load_block_data( this );
+				
+				if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 				{
-					m_tiles[ i ] = _br.ReadUInt32();
+					for( i = 0; i < utils.CONST_TILES_UINT_SIZE; i++ )
+					{
+						m_tiles[ i ] = _br.ReadUInt32();
+					}
 				}
 			}
 			
@@ -1701,8 +1482,9 @@ namespace MAPeD
 			
 			byte[] scr_data;
 			
-			int loaded_scr_data_len = utils.get_scr_tiles_cnt_by_file_ext( _file_ext ) * ( _scr_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 ? 4:1 );
+			int loaded_scr_data_len = platform_data_provider.get_scr_tiles_cnt_by_file_ext( _file_ext ) * ( _scr_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 ? 4:1 );
 			int scr_data_len 		= utils.get_screen_tiles_cnt_uni( _scr_type );
+			int num_width_tiles 	= utils.get_screen_num_width_tiles_uni( _scr_type );
 			
 			byte[] loaded_scr = new byte[ loaded_scr_data_len ];
 			
@@ -1738,11 +1520,11 @@ namespace MAPeD
 								if( scr_data_len > loaded_scr_data_len )
 								{
 									loaded_scr = _br.ReadBytes( loaded_scr_data_len );
-									Array.Copy( loaded_scr, 0, scr_data, ( ( ( ( scr_data_len - loaded_scr_data_len ) / utils.CONST_SCREEN_NUM_WIDTH_TILES ) >> 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ), loaded_scr.Length );
+									Array.Copy( loaded_scr, 0, scr_data, ( ( ( ( scr_data_len - loaded_scr_data_len ) / num_width_tiles ) >> 1 ) * num_width_tiles ), loaded_scr.Length );
 								}
 								else
 								{
-									data_diff_half = ( ( ( loaded_scr_data_len - scr_data_len ) / utils.CONST_SCREEN_NUM_WIDTH_TILES ) >> 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES;
+									data_diff_half = ( ( ( loaded_scr_data_len - scr_data_len ) / num_width_tiles ) >> 1 ) * num_width_tiles;
 									
 									// skip the first data
 									_br.ReadBytes( data_diff_half );
@@ -1750,7 +1532,7 @@ namespace MAPeD
 									scr_data = _br.ReadBytes( scr_data_len );
 									
 									// skip the rest
-									_br.ReadBytes( ( data_diff_half == 0 ) ? utils.CONST_SCREEN_NUM_WIDTH_TILES:data_diff_half );
+									_br.ReadBytes( ( data_diff_half == 0 ) ? num_width_tiles:data_diff_half );
 								}
 							}
 							break;

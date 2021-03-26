@@ -61,7 +61,7 @@ namespace MAPeD
 		
 		private readonly palette_small[] m_plt_arr	= null;
 		
-		private static int[] m_main_palette = null;
+		private readonly int[] m_main_palette = null;
 		
 		public int[] main_palette
 		{
@@ -100,7 +100,7 @@ namespace MAPeD
 			
 			m_pix_box.MouseClick += new MouseEventHandler( this.Layout_MouseClick );
 			
-			m_main_palette = utils.get_palette_by_file_ext( utils.CONST_FILE_EXT );
+			m_main_palette = platform_data_provider.get_palette_by_file_ext( utils.CONST_FILE_EXT );
 			
 			update();
 		}
