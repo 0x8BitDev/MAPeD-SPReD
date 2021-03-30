@@ -114,11 +114,12 @@ namespace MAPeD
 		public const string CONST_APP_NAME	= "MAPeD-" + CONST_PLATFORM;
 		
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'M';
-		public const byte CONST_PROJECT_FILE_VER	= 4;
+		public const byte CONST_PROJECT_FILE_VER	= 5;
 		// v1: initial data format
 		// v2: added palettes array
 		// v3: blocks data USHORT -> UINT; palette index BYTE -> INT
 		// v4: pre data flags: screen data type ( Tiles4X4 / Blocks2X2 )
+		// v5: screen data -> USHORT
 
 		public const uint CONST_SPRED_FILE_MAGIC		= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
 		public const uint CONST_SPRED_PROJECT_FILE_VER	= 1;
@@ -524,69 +525,6 @@ namespace MAPeD
 		}
 		// JSON formatter END
 		
-		public static int	get_byte_arr_max_val( byte[] _arr, int _max = 0 )
-		{
-			byte max_val = 0;
-			
-			int size = ( _max == 0 ) ? _arr.Length:_max;
-			
-			for( int i = 0; i < size; i++ )
-			{
-				if( _arr[ i ] > max_val )
-				{
-					max_val = _arr[ i ];
-				}
-			}
-			
-			return (int)max_val;
-		}
-
-		public static int	get_byte_arr_max_val_ind( byte[] _arr, int _max = 0 )
-		{
-			byte max_val = 0;
-			int max_ind = 0;
-			
-			int size = ( _max == 0 ) ? _arr.Length:_max;
-			
-			for( int i = 0; i < size; i++ )
-			{
-				if( _arr[ i ] > max_val )
-				{
-					max_val = _arr[ i ];
-					max_ind = i;
-				}
-			}
-			
-			return max_ind;
-		}
-		
-		public static int	get_uint_arr_max_val( uint[] _arr, int _max = 0 )
-		{
-			uint max_val = 0;
-			
-			int size = ( _max == 0 ) ? _arr.Length:_max;
-			
-			int i;
-			int j;
-			
-			uint val;
-			
-			for( i = 0; i < size; i++ )
-			{
-				for( j = 0; j < 4; j++ )
-				{
-					val = ( _arr[ i ] >> ( ( 4 - j - 1 ) << 3 ) ) & 0xff;
-					
-					if( val > max_val )
-					{
-						max_val = val;
-					}
-				}
-			}
-			
-			return (int)max_val;
-		}
-		
 		public static byte get_byte_from_uint( uint _uint, int _ind )
 		{
 			return ( byte )( ( _uint >> ( ( 4 - _ind - 1 ) << 3 ) ) & 0xff );			
@@ -703,14 +641,14 @@ namespace MAPeD
 			}
 		}
 		
-		public static void swap_columns_rows_order_byte( byte[] _arr, int _width, int _height )
+		public static void swap_columns_rows_order<T>( T[] _arr, int _width, int _height )
 		{	
 			if( _arr.Length != _width * _height )
 			{
 				throw new Exception( "utils.swap_columns_rows_byte( byte[] _arr, int _width, int _height )\n Invalid input arguments!" );
 			}
 			
-			byte[] tmp_arr = new byte[ _arr.Length ];
+			T[] tmp_arr = new T[ _arr.Length ];
 			
 			int ind = 0;
 			

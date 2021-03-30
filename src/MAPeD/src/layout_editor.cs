@@ -288,7 +288,7 @@ namespace MAPeD
 							{
 								if( ( pttrn_offs_x + tile_x >=0 && pttrn_offs_x + tile_x < num_width_tiles ) && ( pttrn_offs_y + tile_y >=0 && pttrn_offs_y + tile_y < num_height_tiles ) )
 								{
-									bank_data.scr_data[ bank_scr_ind ][ ( ( pttrn_offs_y + tile_y ) * num_width_tiles ) + pttrn_offs_x + tile_x ] = _data.data[ tile_y * _data.width + tile_x ];
+									bank_data.set_screen_tile( bank_scr_ind, ( ( pttrn_offs_y + tile_y ) * num_width_tiles ) + pttrn_offs_x + tile_x, _data.data.get_tile( tile_y * _data.width + tile_x ) );
 								}
 							}
 						}
@@ -513,7 +513,7 @@ namespace MAPeD
 			
 			bool res = false;  
 			
-			screen_data scr_data = m_layout.get_data( _scr_pos_x, _scr_pos_y );
+			layout_screen_data scr_data = m_layout.get_data( _scr_pos_x, _scr_pos_y );
 
 			bool valid_pos = ( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID );
 			
@@ -572,7 +572,7 @@ namespace MAPeD
 				{
 					if( m_active_screen_index != layout_data.CONST_EMPTY_CELL_ID )
 					{
-						screen_data scr_data = m_layout.get_data( get_sel_scr_pos_x(), get_sel_scr_pos_y() );
+						layout_screen_data scr_data = m_layout.get_data( get_sel_scr_pos_x(), get_sel_scr_pos_y() );
 						
 						scr_data.m_scr_ind = m_active_screen_index;
 					}
@@ -648,7 +648,7 @@ namespace MAPeD
 				int scr_pos_x = get_sel_scr_pos_x();
 				int scr_pos_y = get_sel_scr_pos_y();
 				
-				screen_data scr_data = m_layout.get_data( scr_pos_x, scr_pos_y );
+				layout_screen_data scr_data = m_layout.get_data( scr_pos_x, scr_pos_y );
 				
 				bool valid_pos = ( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID );
 				
@@ -692,7 +692,7 @@ namespace MAPeD
 				int scr_pos_x = get_sel_scr_pos_x();
 				int scr_pos_y = get_sel_scr_pos_y();
 				
-				screen_data scr_data = m_layout.get_data( scr_pos_x, scr_pos_y );
+				layout_screen_data scr_data = m_layout.get_data( scr_pos_x, scr_pos_y );
 				
 				bool valid_pos = ( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID );
 				
@@ -890,9 +890,9 @@ namespace MAPeD
 			return ( int )( ( float )( _pos - _offset ) / m_scale - ( m_scale - 1 ) * ( ( float )( _offset - _half_scr ) / m_scale ) );
 		}
 		
-		private void draw_screen_data( int _scr_width, int _scr_height, int _scr_size_width, int _scr_size_height, Action< int, screen_data, int, int > _act )
+		private void draw_screen_data( int _scr_width, int _scr_height, int _scr_size_width, int _scr_size_height, Action< int, layout_screen_data, int, int > _act )
 		{
-			screen_data scr_data;
+			layout_screen_data scr_data;
 			int scr_x;
 			int scr_y;
 			int i;
@@ -940,7 +940,7 @@ namespace MAPeD
 		
 		private void draw_targets( int _scr_width, int _scr_height )
 		{
-			screen_data scr_data 	= null;
+			layout_screen_data scr_data 	= null;
 			entity_instance	ent 	= null;
 			
 			int targ_scr_x;
@@ -1054,7 +1054,7 @@ namespace MAPeD
 				int scr_size_width 	= (int)( utils.CONST_SCREEN_WIDTH_PIXELS * m_scale );
 				int scr_size_height = (int)( utils.CONST_SCREEN_HEIGHT_PIXELS * m_scale );
 				
-				screen_data scr_data = null;
+				layout_screen_data scr_data = null;
 				int x;
 				int y;
 				int i;
@@ -1062,7 +1062,7 @@ namespace MAPeD
 				
 				if( m_scr_list.count() > 0 )
 				{
-					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_ind, screen_data _scr_data, int _x, int _y ) 
+					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_ind, layout_screen_data _scr_data, int _x, int _y ) 
 					{ 
 						m_gfx.DrawImage( m_scr_list.get( _scr_data.m_scr_ind ), _x, _y, scr_size_width, scr_size_height );
 					});
@@ -1074,7 +1074,7 @@ namespace MAPeD
 							draw_targets( width, height );
 						}
 						
-						draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_ind, screen_data _scr_data, int _scr_x, int _scr_y ) 
+						draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_ind, layout_screen_data _scr_data, int _scr_x, int _scr_y ) 
 						{ 
 							_scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst )
 							{
@@ -1085,7 +1085,7 @@ namespace MAPeD
 					
 					if( show_marks )
 					{
-						draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_ind, screen_data _scr_data, int _x, int _y )
+						draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_ind, layout_screen_data _scr_data, int _x, int _y )
 						{ 
 		                 	if( m_layout.get_start_screen_ind() == _scr_ind )
 		                 	{
@@ -1454,7 +1454,7 @@ namespace MAPeD
 					int scr_pos_x = get_sel_scr_pos_x();
 					int scr_pos_y = get_sel_scr_pos_y();
 					
-					screen_data scr_data = m_layout.get_data( scr_pos_x, scr_pos_y );
+					layout_screen_data scr_data = m_layout.get_data( scr_pos_x, scr_pos_y );
 					
 					scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) { if( m_ent_inst != null && _ent_inst == m_ent_inst ) { reset_entity_instance(); } } );
 					
@@ -1490,7 +1490,7 @@ namespace MAPeD
 				{
 					if( MainForm.message_box( "Are you sure?", "Delete Entity Instance", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
-						screen_data scr_data = m_layout.get_data( m_ent_inst_screen_slot_id % get_width(), m_ent_inst_screen_slot_id / get_width() );
+						layout_screen_data scr_data = m_layout.get_data( m_ent_inst_screen_slot_id % get_width(), m_ent_inst_screen_slot_id / get_width() );
 					
 						if( scr_data.m_ents.Remove( m_ent_inst ) == false )
 						{
@@ -1668,7 +1668,7 @@ namespace MAPeD
 			
 			for( int i = 0; i < size; i++ )
 			{
-				screens_cnt = m_tiles_data[ i ].scr_data.Count;
+				screens_cnt = m_tiles_data[ i ].screen_data_cnt();
 				
 				total_screens += screens_cnt;
 				

@@ -215,6 +215,9 @@
     <Compile Include="..\src\py_scripting\py_api.cs">
       <Link>py_scripting\py_api.cs</Link>
     </Compile>
+    <Compile Include="..\src\screen_data.cs">
+      <Link>screen_data.cs</Link>
+    </Compile>
     <Compile Include="..\src\screen_editor.cs">
       <Link>screen_editor.cs</Link>
     </Compile>

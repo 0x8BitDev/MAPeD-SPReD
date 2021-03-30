@@ -175,7 +175,7 @@ namespace MAPeD
 		
 		public int scr_data_cnt
 		{
-			get { return ( tiles_data_pos >= 0 ) ? get_tiles_data( tiles_data_pos ).scr_data.Count:-1; }
+			get { return ( tiles_data_pos >= 0 ) ? get_tiles_data( tiles_data_pos ).screen_data_cnt():-1; }
 			set {}
 		}
 		
@@ -240,9 +240,9 @@ namespace MAPeD
 			
 			m_layouts_data.ForEach( delegate( layout_data _layout )
 			{
-				_layout.get_raw_data().ForEach( delegate( List< screen_data > _scr_data_list )
+				_layout.get_raw_data().ForEach( delegate( List< layout_screen_data > _scr_data_list )
 				{ 
-					_scr_data_list.ForEach( delegate( screen_data _scr_data ) 
+					_scr_data_list.ForEach( delegate( layout_screen_data _scr_data ) 
 					{
 			            for( int ent_n = 0; ent_n < _scr_data.m_ents.Count; ent_n++ )
 			            {
@@ -445,7 +445,7 @@ namespace MAPeD
 			int 	width;
 			int 	height;
 			
-			screen_data scr_data;
+			layout_screen_data scr_data;
 			
 			layout_data data;
 			
@@ -488,7 +488,7 @@ namespace MAPeD
 			int 	width;
 			int 	height;
 			
-			screen_data scr_data;
+			layout_screen_data scr_data;
 			
 			layout_data data;
 			
@@ -522,7 +522,7 @@ namespace MAPeD
 			
 			for( int i = 0; i < _CHR_bank_ind; i++ )
 			{
-				scr_ind += get_tiles_data()[ i ].scr_data.Count;
+				scr_ind += get_tiles_data()[ i ].screen_data_cnt();
 			}
 			
 			return scr_ind;
@@ -534,7 +534,7 @@ namespace MAPeD
 			
 			for( int i = 0; i < _CHR_bank_ind; i++ )
 			{
-				scr_ind -= get_tiles_data()[ i ].scr_data.Count;
+				scr_ind -= get_tiles_data()[ i ].screen_data_cnt();
 			}
 			
 			return scr_ind;
@@ -557,7 +557,7 @@ namespace MAPeD
 		{
 			if( tiles_data_pos >= 0 && scr_data_pos >= 0 && scr_data_cnt > 0 )
 			{
-				get_tiles_data( tiles_data_pos ).copy_screen( scr_data_pos, screen_data_type );
+				get_tiles_data( tiles_data_pos ).copy_screen( scr_data_pos );
 				
 				return true;
 			}
@@ -577,7 +577,7 @@ namespace MAPeD
 		{
 			if( tiles_data_pos >= 0 && m_tiles_data.Count < utils.CONST_CHR_BANK_MAX_CNT )
 			{
-				m_tiles_data.Add( get_tiles_data( tiles_data_pos ).copy( screen_data_type ) );
+				m_tiles_data.Add( get_tiles_data( tiles_data_pos ).copy() );
 				
 				return true;
 			}
@@ -1149,27 +1149,28 @@ namespace MAPeD
 		{
 			tiles_data data = null;
 			
-			byte[] new_scr = null;
-			byte[] old_scr = null;
-			byte[] new_pattern = null;
+			screen_data		new_pattern	= null;
+			pattern_data	pattern		= null;
+			
+			screen_data new_scr;
 			
 			int data_n;
+			int ptrn_n;
 			int scr_n;
 			int tile_n;
 			int block_n;
 			int y_pos;
-
+			
 			for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
 			{
 				data = get_tiles_data( data_n );
 				
 				// convert screens
-				for( scr_n = 0; scr_n < data.scr_data.Count; scr_n++ )
+				for( scr_n = 0; scr_n < data.screen_data_cnt(); scr_n++ )
 				{
-					old_scr = data.scr_data[ scr_n ];
-					new_scr = new byte[ utils.CONST_SCREEN_BLOCKS_CNT ];
+					new_scr = new screen_data( EScreenDataType.sdt_Blocks2x2 );
 					
-					for( tile_n = 0; tile_n < old_scr.Length; tile_n++ )
+					for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
 					{
 						for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 						{
@@ -1178,11 +1179,11 @@ namespace MAPeD
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 							if( y_pos <= 14 )
 #endif
-							new_scr[ ( y_pos * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) + ( ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 1 ) + ( block_n & 0x01 ) ] = utils.get_byte_from_uint( data.tiles[ old_scr[ tile_n ] ], block_n );
+								new_scr.set_tile( ( y_pos * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) + ( ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 1 ) + ( block_n & 0x01 ), utils.get_byte_from_uint( data.tiles[ data.get_screen_tile( scr_n, tile_n ) ], block_n ) );
 						}
 					}
 					
-					data.scr_data[ scr_n ] = new_scr;
+					data.screen_data_replace( scr_n, new_scr );
 				}
 				
 				// convert tiles patterns
@@ -1190,23 +1191,23 @@ namespace MAPeD
 				{ 
 					List< pattern_data > pattrn_list = data.patterns_data[ key ] as List< pattern_data >;
 					
-					pattrn_list.ForEach( delegate( pattern_data _pattern ) 
+					for( ptrn_n = 0; ptrn_n < pattrn_list.Count; ptrn_n++ )
 					{
-						new_pattern = new byte[ ( _pattern.width * _pattern.height ) << 2 ];
+						pattern = pattrn_list[ ptrn_n ];
 
-						for( tile_n = 0; tile_n < _pattern.data.Length; tile_n++ )
+						new_pattern = new screen_data( pattern.width << 1, pattern.height << 1 );
+
+						for( tile_n = 0; tile_n < pattern.data.length; tile_n++ )
 						{
 							for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 							{
-								new_pattern[ ( ( ( ( tile_n / _pattern.width ) << 1 ) + ( ( block_n & 0x02 ) >> 1 ) ) * ( _pattern.width << 1 ) ) + ( ( tile_n % _pattern.width ) << 1 ) + ( block_n & 0x01 ) ] = utils.get_byte_from_uint( data.tiles[ _pattern.data[ tile_n ] ], block_n );
+								new_pattern.set_tile( ( ( ( ( tile_n / pattern.width ) << 1 ) + ( ( block_n & 0x02 ) >> 1 ) ) * ( pattern.width << 1 ) ) + ( ( tile_n % pattern.width ) << 1 ) + ( block_n & 0x01 ), utils.get_byte_from_uint( data.tiles[ pattern.data.get_tile( tile_n ) ], block_n ) );
 							}
 						}
 						
-						_pattern.data = new_pattern;
-						
-						_pattern.width	<<= 1;
-						_pattern.height	<<= 1;
-					});
+						pattrn_list[ ptrn_n ] = new pattern_data( pattern.name, new_pattern );
+						pattern.reset();
+					}
 				}
 				
 				Array.Clear( data.tiles, 0, data.tiles.Length );
@@ -1215,11 +1216,10 @@ namespace MAPeD
 
 		private void blocks_to_tiles()
 		{
-			tiles_data data = null;
-			
-			byte[] new_scr = null;
-			byte[] old_scr = null;
-			byte[] new_pattern = null;
+			tiles_data		data;
+			pattern_data	pattern;
+			screen_data		new_pattern;
+			screen_data		new_scr;
 			
 			int ptrn_width;
 			int ptrn_height;
@@ -1227,40 +1227,39 @@ namespace MAPeD
 			int i;
 			int scr_n;
 			int data_n;
+			int ptrn_n;
 			int tile_n;
 			int tile_x;
 			int tile_y;
 			int tile_offs;
-			int tile_ind;
 			uint tile;
-			byte tile_val0 = 0;
-			byte tile_val1 = 0;
-			byte tile_val2 = 0;
-			byte tile_val3 = 0;
+			ushort tile_val0 = 0;
+			ushort tile_val1 = 0;
+			ushort tile_val2 = 0;
+			ushort tile_val3 = 0;
 			
 			bool tiles_arr_overflow	= false;
 
 			string ptrn_invalid_size_str = "";
 			string ptrn_invalid_tile_str = "";
 			
-			Dictionary< int, List< byte[] > > 	bank_id_screens	= new Dictionary< int, List< byte[] > >( tiles_data_cnt );
+			Dictionary< int, List< screen_data > > 	bank_id_screens	= new Dictionary< int, List< screen_data > >( tiles_data_cnt );
 			Dictionary< int, uint[] >			bank_id_tiles	= new Dictionary< int, uint[] >( tiles_data_cnt );
  
 			for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
 			{
 				data = get_tiles_data( data_n );
 				
-				List< byte[] >	screens	= new List< byte[] >( data.scr_data.Count );
-				uint[] 			tiles	= new uint[ utils.CONST_MAX_TILES_CNT ];
+				List< screen_data >	screens	= new List< screen_data >( data.screen_data_cnt() );
+				uint[] 				tiles	= new uint[ utils.CONST_MAX_TILES_CNT ];
 				Array.Clear( tiles, 0, tiles.Length );
 				
-				tile_ind = 0;
+				ushort tile_ind = 0;
 				
 				// convert screens and fill tile arrays
-				for( scr_n = 0; scr_n < data.scr_data.Count; scr_n++ )
+				for( scr_n = 0; scr_n < data.screen_data_cnt(); scr_n++ )
 				{
-					old_scr = data.scr_data[ scr_n ];
-					new_scr = new byte[ utils.CONST_SCREEN_TILES_CNT ];
+					new_scr = new screen_data( EScreenDataType.sdt_Tiles4x4 );
 					
 					for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
 					{
@@ -1269,15 +1268,15 @@ namespace MAPeD
 						
 						tile_offs = ( tile_x << 1 ) + ( ( tile_y << 1 ) * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
 						
-						tile_val0 = old_scr[ tile_offs ];
-						tile_val1 = old_scr[ tile_offs + 1 ];
+						tile_val0 = data.get_screen_tile( scr_n, tile_offs );
+						tile_val1 = data.get_screen_tile( scr_n, tile_offs + 1 );
 						
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 						if( tile_y < 7 )
 #endif
 						{
-							tile_val2 = old_scr[ tile_offs + utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ];
-							tile_val3 = old_scr[ tile_offs + utils.CONST_SCREEN_NUM_WIDTH_BLOCKS + 1 ];
+							tile_val2 = data.get_screen_tile( scr_n, tile_offs + utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
+							tile_val3 = data.get_screen_tile( scr_n, tile_offs + utils.CONST_SCREEN_NUM_WIDTH_BLOCKS + 1 );
 						}
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 						else
@@ -1304,12 +1303,12 @@ namespace MAPeD
 								goto free_data;
 							}
 							
-							new_scr[ tile_x + tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES ] = ( byte )tile_ind;
+							new_scr.set_tile( tile_x + tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES, tile_ind );
 							tiles[ tile_ind++ ] = tile;
 						}
 						else
 						{
-							new_scr[ tile_x + tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES ] = ( byte )i;
+							new_scr.set_tile( tile_x + tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES, ( ushort )i );
 						}
 					}
 					
@@ -1324,31 +1323,33 @@ namespace MAPeD
 				{ 
 					List< pattern_data > pattrn_list = data.patterns_data[ key ] as List< pattern_data >;
 					
-					pattrn_list.ForEach( delegate( pattern_data _pattern ) 
+					for( ptrn_n = 0; ptrn_n < pattrn_list.Count; ptrn_n++ )
 					{
-						if( ( _pattern.width & 0x01 ) != 0 || ( _pattern.height & 0x01 ) != 0 )
+						pattern = pattrn_list[ ptrn_n ];
+						
+						if( ( pattern.width & 0x01 ) != 0 || ( pattern.height & 0x01 ) != 0 )
 						{
-							ptrn_invalid_size_str += _pattern.name + " / CHR bank: " + data_n + "\n";
-							_pattern.name = "BAD~" + _pattern.name; 
+							ptrn_invalid_size_str += pattern.name + " / CHR bank: " + data_n + "\n";
+							pattern.name = "BAD~" + pattern.name; 
 						}
 						else
 						{
-							ptrn_width	= _pattern.width >> 1;
-							ptrn_height	= _pattern.height >> 1;
+							ptrn_width	= pattern.width >> 1;
+							ptrn_height	= pattern.height >> 1;							
 							
-							new_pattern = new byte[ ptrn_width * ptrn_height ];
+							new_pattern = new screen_data( ptrn_width, ptrn_height );
 	
-							for( tile_n = 0; tile_n < new_pattern.Length; tile_n++ )
+							for( tile_n = 0; tile_n < new_pattern.length; tile_n++ )
 							{
 								tile_x = tile_n % ptrn_width;
 								tile_y = tile_n / ptrn_width;
 								
-								tile_offs = ( tile_x << 1 ) + ( ( tile_y << 1 ) * _pattern.width );
+								tile_offs = ( tile_x << 1 ) + ( ( tile_y << 1 ) * pattern.width );
 								
-								tile_val0 = _pattern.data[ tile_offs ];
-								tile_val1 = _pattern.data[ tile_offs + 1 ];
-								tile_val2 = _pattern.data[ tile_offs + _pattern.width ];
-								tile_val3 = _pattern.data[ tile_offs + _pattern.width + 1 ];
+								tile_val0 = pattern.data.get_tile( tile_offs );
+								tile_val1 = pattern.data.get_tile( tile_offs + 1 );
+								tile_val2 = pattern.data.get_tile( tile_offs + pattern.width );
+								tile_val3 = pattern.data.get_tile( tile_offs + pattern.width + 1 );
 								
 								tile = unchecked( ( uint )( tile_val0 << 24 | tile_val1 << 16 | tile_val2 << 8 | tile_val3 ) );
 
@@ -1363,20 +1364,19 @@ namespace MAPeD
 								
 								if( i == tile_ind )
 								{
-									ptrn_invalid_tile_str += _pattern.name + " / CHR bank: " + data_n + "\n";
-									_pattern.name = "BAD~" + _pattern.name;
+									ptrn_invalid_tile_str += pattern.name + " / CHR bank: " + data_n + "\n";
+									pattern.name = "BAD~" + pattern.name;
 								}
 								else
 								{
-									new_pattern[ tile_x + tile_y * ptrn_width ] = ( byte )i;
+									new_pattern.set_tile( tile_x + tile_y * ptrn_width, ( ushort )i );
 								}
 							}
 							
-							_pattern.width	= ( byte )ptrn_width;
-							_pattern.height	= ( byte )ptrn_height;
-							_pattern.data	= new_pattern;
+							pattrn_list[ ptrn_n ] = new pattern_data( pattern.name, new_pattern );
+							pattern.reset();
 						}
-					});
+					}
 				}
 				
 				if( ptrn_invalid_size_str.Length > 0 || ptrn_invalid_tile_str.Length > 0 )
@@ -1393,9 +1393,9 @@ namespace MAPeD
 				// update tiles & screens
 				Array.Copy( bank_id_tiles[ data_n ] as uint[], data.tiles, utils.CONST_MAX_TILES_CNT );
 				
-				for( scr_n = 0; scr_n < data.scr_data.Count; scr_n++ )
+				for( scr_n = 0; scr_n < data.screen_data_cnt(); scr_n++ )
 				{
-					data.scr_data[ scr_n ] = bank_id_screens[ data_n ][ scr_n ];
+					data.screen_data_replace( scr_n, bank_id_screens[ data_n ][ scr_n ] );
 					bank_id_screens[ data_n ][ scr_n ] = null;
 				}
 				
@@ -1404,7 +1404,7 @@ namespace MAPeD
 			
 			free_data:
 			{
-				foreach( var key in bank_id_screens.Keys ) { ( bank_id_screens[ key ] as List< byte[] > ).Clear(); };
+				foreach( var key in bank_id_screens.Keys ) { ( bank_id_screens[ key ] as List< screen_data > ).Clear(); };
 				bank_id_screens.Clear();
 
 				bank_id_tiles.Clear();

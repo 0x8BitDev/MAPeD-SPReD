@@ -17,7 +17,7 @@ namespace MAPeD
 	/// 
 	
 	[DataContract]
-	public class screen_data
+	public class layout_screen_data
 	{
 		[DataMember]
 		private ushort	m_marks = 0;	// 8 bits currently in use. the rest are reserved for future purposes.
@@ -46,15 +46,15 @@ namespace MAPeD
 		[DataMember]
 		public List< entity_instance > 	m_ents;
 		
-		public screen_data( byte _scr_ind )
+		public layout_screen_data( byte _scr_ind )
 		{
 			m_scr_ind = _scr_ind;
 			m_ents = new List< entity_instance >();
 		}
 		
-		public screen_data copy()
+		public layout_screen_data copy()
 		{
-			screen_data new_data = new screen_data( m_scr_ind );
+			layout_screen_data new_data = new layout_screen_data( m_scr_ind );
 			
 			new_data.mark = mark;
 			
@@ -134,7 +134,7 @@ namespace MAPeD
 		private int m_start_scr_ind	= -1;
 
 		[DataMember]
-		private List< List< screen_data > >	m_layout	= null;
+		private List< List< layout_screen_data > >	m_layout	= null;
 
 		public const byte	CONST_EMPTY_CELL_ID		= 255;
 		
@@ -142,16 +142,16 @@ namespace MAPeD
 		
 		public layout_data()
 		{
-			m_layout = new List< List< screen_data > >();
+			m_layout = new List< List< layout_screen_data > >();
 			
 			reset( true );
 		}
 		
 		public void reset( bool _init )
 		{
-			m_layout.ForEach( delegate( List< screen_data > _list ) 
+			m_layout.ForEach( delegate( List< layout_screen_data > _list ) 
 			{ 
-				_list.ForEach( delegate( screen_data _data ) 
+				_list.ForEach( delegate( layout_screen_data _data ) 
 				{
  	              	_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) 
 					{
@@ -171,8 +171,8 @@ namespace MAPeD
 			
 			if( _init )
 			{
-				List< screen_data > row = new List< screen_data >();
-				row.Add( new screen_data( CONST_EMPTY_CELL_ID ) );
+				List< layout_screen_data > row = new List< layout_screen_data >();
+				row.Add( new layout_screen_data( CONST_EMPTY_CELL_ID ) );
 				m_layout.Add( row );
 			}
 		}
@@ -189,11 +189,11 @@ namespace MAPeD
 			layout_data new_data = new layout_data();
 			new_data.m_layout.Clear();
 			
-			m_layout.ForEach( delegate( List< screen_data > _list ) 
+			m_layout.ForEach( delegate( List< layout_screen_data > _list ) 
 			{ 
-			    new_data.m_layout.Add( new List< screen_data >() );
+			    new_data.m_layout.Add( new List< layout_screen_data >() );
 			    
-				_list.ForEach( delegate( screen_data _data ) 
+				_list.ForEach( delegate( layout_screen_data _data ) 
 				{
 					new_data.m_layout[ new_data.m_layout.Count - 1 ].Add( _data.copy() );
 				}); 
@@ -282,7 +282,7 @@ namespace MAPeD
 		{
 			if( _scr_ind >= 0 )
 			{
-				screen_data scr_data = get_data( _scr_ind % get_width(), _scr_ind / get_width() );
+				layout_screen_data scr_data = get_data( _scr_ind % get_width(), _scr_ind / get_width() );
 				
 				if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 				{
@@ -305,7 +305,7 @@ namespace MAPeD
 		{
 			if( _scr_ind >= 0 )
 			{
-				screen_data scr_data = get_data( _scr_ind % get_width(), _scr_ind / get_width() );
+				layout_screen_data scr_data = get_data( _scr_ind % get_width(), _scr_ind / get_width() );
 				
 				if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 				{
@@ -322,7 +322,7 @@ namespace MAPeD
 		{
 			if( _scr_ind >= 0 )
 			{
-				screen_data scr_data = get_data( _scr_ind % get_width(), _scr_ind / get_width() );
+				layout_screen_data scr_data = get_data( _scr_ind % get_width(), _scr_ind / get_width() );
 				
 				if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 				{
@@ -343,9 +343,9 @@ namespace MAPeD
 			int 			ent_scr_ind = 0;
 			int 			scr_ind 	= 0;
 			
-			m_layout.ForEach( delegate( List< screen_data > _list ) 
+			m_layout.ForEach( delegate( List< layout_screen_data > _list ) 
 			{ 
-				_list.ForEach( delegate( screen_data _scr_data ) 
+				_list.ForEach( delegate( layout_screen_data _scr_data ) 
 				{
  	              	_scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) 
 					{
@@ -382,9 +382,9 @@ namespace MAPeD
 		
 		public void entity_instance_reset_target_uid( int _uid )
 		{
-			get_raw_data().ForEach( delegate( List< screen_data > _scr_data_list )
+			get_raw_data().ForEach( delegate( List< layout_screen_data > _scr_data_list )
 			{ 
-				_scr_data_list.ForEach( delegate( screen_data _scr_data ) 
+				_scr_data_list.ForEach( delegate( layout_screen_data _scr_data ) 
 				{
 					_scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst )
 		            {
@@ -407,7 +407,7 @@ namespace MAPeD
 			delete_screen_by_data( get_data( _x, _y ), ( _y * get_width() + _x ) );
 		}
 
-		public void delete_screen_by_data( screen_data _data, int _scr_ind )
+		public void delete_screen_by_data( layout_screen_data _data, int _scr_ind )
 		{
 			_data.m_scr_ind = layout_data.CONST_EMPTY_CELL_ID;
 			_data.mark = _data.adj_scr_mask = 0;
@@ -421,15 +421,15 @@ namespace MAPeD
 			}
 		}
 		
-		private List< screen_data > allocate_row( int _width = -1 )
+		private List< layout_screen_data > allocate_row( int _width = -1 )
 		{
 			int width = ( _width < 0 ) ? get_width():_width;
 
-			List< screen_data > row = new List< screen_data >( width );
+			List< layout_screen_data > row = new List< layout_screen_data >( width );
 			
 			for( int i = 0; i < width; i++ )
 			{
-				row.Add( new screen_data( CONST_EMPTY_CELL_ID ) );
+				row.Add( new layout_screen_data( CONST_EMPTY_CELL_ID ) );
 			}
 			
 			return row;
@@ -526,7 +526,7 @@ namespace MAPeD
 			
 			for( int i = 0; i < height; i++ )
 			{
-				m_layout[ i ].Insert( 0, new screen_data( CONST_EMPTY_CELL_ID ) );
+				m_layout[ i ].Insert( 0, new layout_screen_data( CONST_EMPTY_CELL_ID ) );
 			}
 		}
 
@@ -575,7 +575,7 @@ namespace MAPeD
 			
 			for( int i = 0; i < height; i++ )
 			{
-				m_layout[ i ].Insert( width, new screen_data( CONST_EMPTY_CELL_ID ) );
+				m_layout[ i ].Insert( width, new layout_screen_data( CONST_EMPTY_CELL_ID ) );
 			}
 		}
 		
@@ -628,26 +628,26 @@ namespace MAPeD
 			return m_layout.Count;
 		}
 		
-		public List< List< screen_data > > get_raw_data()
+		public List< List< layout_screen_data > > get_raw_data()
 		{
 			return m_layout;
 		}
 		
-		public screen_data get_data( int _x, int _y )
+		public layout_screen_data get_data( int _x, int _y )
 		{
 			return m_layout[ _y ][ _x ];
 		}
 
-		public void set_data( screen_data _data, int _x, int _y )
+		public void set_data( layout_screen_data _data, int _x, int _y )
 		{
 			m_layout[ _y ][ _x ] = _data;
 		}
 		
 		public void delete_all_entities()
 		{
-			m_layout.ForEach( delegate( List< screen_data > _list ) 
+			m_layout.ForEach( delegate( List< layout_screen_data > _list ) 
 			{ 
-				_list.ForEach( delegate( screen_data _data ) 
+				_list.ForEach( delegate( layout_screen_data _data ) 
 				{
  	              	_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) { _ent_inst.reset(); } );
  	              	_data.m_ents.Clear();
@@ -659,9 +659,9 @@ namespace MAPeD
 		{
 			m_start_scr_ind = -1;
 			
-			m_layout.ForEach( delegate( List< screen_data > _list ) 
+			m_layout.ForEach( delegate( List< layout_screen_data > _list ) 
 			{ 
-				_list.ForEach( delegate( screen_data _data ) 
+				_list.ForEach( delegate( layout_screen_data _data ) 
 				{
 					_data.mark = 0;
 					_data.adj_scr_mask = 0;
@@ -725,7 +725,7 @@ namespace MAPeD
 				
 				bool enable_comments = true;
 				
-				screen_data scr_data;
+				layout_screen_data scr_data;
 				
 				for( y = 0; y < height; y++ )
 				{

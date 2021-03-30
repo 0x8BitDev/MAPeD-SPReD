@@ -73,8 +73,8 @@ namespace MAPeD
 			// int screen_mode( void )
 			_py_scope.SetVariable( CONST_PREFIX + "screen_mode", new Func< int >( screen_mode ) );
 			
-			// byte[] get_screen_data( int _bank_ind, int _scr_ind )
-			_py_scope.SetVariable( CONST_PREFIX + "get_screen_data", new Func< int, int, byte[] >( get_screen_data ) );
+			// ushort[] get_screen_data( int _bank_ind, int _scr_ind )
+			_py_scope.SetVariable( CONST_PREFIX + "get_screen_data", new Func< int, int, ushort[] >( get_screen_data ) );
 			
 			// Layouts Data
 
@@ -153,7 +153,7 @@ namespace MAPeD
 			
 			if( data != null )
 			{
-				return data.scr_data.Count;
+				return data.screen_data_cnt();
 			}
 			
 			return -1;
@@ -194,7 +194,7 @@ namespace MAPeD
 			return -1;
 		}
 
-		private screen_data get_layout_screen_data( int _layout_ind, int _scr_pos_x, int _scr_pos_y )
+		private layout_screen_data get_layout_screen_data( int _layout_ind, int _scr_pos_x, int _scr_pos_y )
 		{
 			if( _layout_ind >= 0 && _layout_ind < m_data_mngr.layouts_data_cnt )
 			{
@@ -208,7 +208,7 @@ namespace MAPeD
 		
 		public int layout_screen_ind( int _layout_ind, int _scr_pos_x, int _scr_pos_y )
 		{
-			screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
+			layout_screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
 			
 			if( data != null )
 			{
@@ -220,7 +220,7 @@ namespace MAPeD
 
 		public ushort layout_screen_marks( int _layout_ind, int _scr_pos_x, int _scr_pos_y )
 		{
-			screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
+			layout_screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
 			
 			if( data != null )
 			{
@@ -232,7 +232,7 @@ namespace MAPeD
 
 		public int layout_screen_num_entities( int _layout_ind, int _scr_pos_x, int _scr_pos_y )
 		{
-			screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
+			layout_screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
 			
 			if( data != null )
 			{
@@ -244,7 +244,7 @@ namespace MAPeD
 
 		public mpd_inst_entity layout_get_inst_entity( int _layout_ind, int _scr_pos_x, int _scr_pos_y, int _ent_ind )		
 		{
-			screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
+			layout_screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
 			
 			if( data != null && _ent_ind >= 0 && _ent_ind < data.m_ents.Count )
 			{
@@ -467,15 +467,15 @@ namespace MAPeD
 			return ( int )m_data_mngr.screen_data_type;
 		}
 		
-		public byte[] get_screen_data( int _bank_ind, int _scr_ind )
+		public ushort[] get_screen_data( int _bank_ind, int _scr_ind )
 		{
 			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
 			
 			if( data != null )
 			{
-				if( _scr_ind >= 0 && _scr_ind < data.scr_data.Count )
+				if( _scr_ind >= 0 && _scr_ind < data.screen_data_cnt() )
 				{
-					return data.scr_data[ _scr_ind ];
+					return data.get_screen_data( _scr_ind ).copy_to_arr();
 				}
 			}
 			

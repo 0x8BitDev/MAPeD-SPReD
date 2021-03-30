@@ -476,18 +476,18 @@ namespace MAPeD
 						
 						int num_width_tiles = utils.get_screen_num_width_tiles_uni( m_screen_data_type );
 						
-						byte[] data = new byte[ tiles_width * tiles_height ];
+						screen_data pttrn_data = new screen_data( tiles_width, tiles_height );
 						
 						for( tile_y = 0; tile_y < tiles_height; tile_y++ )
 						{
 							for( tile_x = 0; tile_x < tiles_width; tile_x++ )
 							{
-								data[ ++pos ] = m_tiles_data.scr_data[ m_scr_ind ][ ( ( tile_pos_y + tile_y ) * num_width_tiles ) + tile_pos_x + tile_x ];
+								pttrn_data.set_tile( ++pos, m_tiles_data.get_screen_tile( m_scr_ind, ( ( tile_pos_y + tile_y ) * num_width_tiles ) + tile_pos_x + tile_x ) );
 							}
 						}
 						
 						// send PATTERNS's data
-						CreatePatternEnd( this, new PatternEventArg( new pattern_data( null, ( byte )tiles_width, ( byte )tiles_height, data ) ) );
+						CreatePatternEnd( this, new PatternEventArg( new pattern_data( null, pttrn_data ) ) );
 						
 						return;
 					}
@@ -516,7 +516,7 @@ namespace MAPeD
 							{
 								for( int tile_x = 0; tile_x < m_active_pattern.width; tile_x++ )
 								{
-									m_tiles_data.scr_data[ m_scr_ind ][ ( ( m_tile_y + tile_y-y_pos ) * num_width_tiles ) + m_tile_x + tile_x ] = m_active_pattern.data[ tile_y * m_active_pattern.width + tile_x ];
+									m_tiles_data.set_screen_tile( m_scr_ind, ( ( m_tile_y + tile_y-y_pos ) * num_width_tiles ) + m_tile_x + tile_x, m_active_pattern.data.get_tile( tile_y * m_active_pattern.width + tile_x ) );
 								}
 							}
 						}
@@ -788,7 +788,7 @@ namespace MAPeD
 					m_tile_x >>= 1;
 				}
 				
-				m_tiles_data.scr_data[ m_scr_ind ][ ( m_tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + m_tile_x ] = (byte)tile_id;
+				m_tiles_data.set_screen_tile( m_scr_ind, ( m_tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + m_tile_x, ( ushort )tile_id );
 				
 				draw_tile( m_tile_x, m_tile_y, tile_id );
 
@@ -800,7 +800,7 @@ namespace MAPeD
 			}
 			else
 			{
-				m_tiles_data.scr_data[ m_scr_ind ][ ( m_tile_y * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) + m_tile_x ] = (byte)m_active_tile_id;
+				m_tiles_data.set_screen_tile( m_scr_ind, ( m_tile_y * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) + m_tile_x, ( ushort )m_active_tile_id );
 				
 				draw_block( m_tile_x, m_tile_y, m_active_tile_id );
 				
@@ -881,7 +881,7 @@ namespace MAPeD
 		
 		private uint build_new_tile( int _tile_x, int _tile_y )
 		{
-			uint old_tile = m_tiles_data.tiles[ m_tiles_data.scr_data[ m_scr_ind ][ ( ( _tile_y >> 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( _tile_x >> 1 ) ] ];
+			uint old_tile = m_tiles_data.tiles[ m_tiles_data.get_screen_tile( m_scr_ind, ( ( _tile_y >> 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( _tile_x >> 1 ) ) ];
 			
 			int block_ind = ( _tile_x & 0x01 ) + ( ( _tile_y & 0x01 ) << 1 );
 			
@@ -1006,14 +1006,13 @@ namespace MAPeD
 			if( m_tiles_data != null )
 			{
 				int i;
+				screen_data scr;
 			
 				if( mode == EMode.em_Layout && m_layout_mode_adj_scr != null )
 				{
 					const short zero_scr = unchecked( (short)0xffff );
 					
 					short	tile_data;
-					
-					byte[] tile_ids;
 					
 					int scr_width	= utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE;
 					int scr_height	= utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE;
@@ -1026,7 +1025,7 @@ namespace MAPeD
 						{
 							if( ( ( tile_data & 0xff00 ) >> 8 ) == m_curr_CHR_bank_id )
 							{
-								tile_ids = m_tiles_data.scr_data[ tile_data & 0x00ff ];
+								scr = m_tiles_data.get_screen_data( tile_data & 0x00ff );
 								
 								if( m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 								{
@@ -1034,7 +1033,7 @@ namespace MAPeD
 									{
 										draw_tile( 	i % utils.CONST_SCREEN_NUM_WIDTH_TILES,
 										          	i / utils.CONST_SCREEN_NUM_WIDTH_TILES,
-										          	tile_ids[ i ],
+										          	scr.get_tile( i ),
 										          	scr_width * layout_data.adj_scr_slots[ ( scr_n << 1 ) ],
 										          	scr_height * layout_data.adj_scr_slots[ ( scr_n << 1 ) + 1 ] );
 									}
@@ -1045,7 +1044,7 @@ namespace MAPeD
 									{
 										draw_block(	i % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS,
 										          	i / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS,
-										          	tile_ids[ i ],
+										          	scr.get_tile( i ),
 										          	scr_width * layout_data.adj_scr_slots[ ( scr_n << 1 ) ],
 										          	scr_height * layout_data.adj_scr_slots[ ( scr_n << 1 ) + 1 ] );
 									}
@@ -1062,20 +1061,20 @@ namespace MAPeD
 				// draw a tiled screen
 				if( m_scr_ind >= 0 )
 				{
-					byte[] tile_ids = m_tiles_data.scr_data[ m_scr_ind ];
+					scr = m_tiles_data.get_screen_data( m_scr_ind );
 					
 					if( m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 					{
 						for( i = 0; i < utils.CONST_SCREEN_TILES_CNT; i++ )
 						{
-							draw_tile( i % utils.CONST_SCREEN_NUM_WIDTH_TILES, i / utils.CONST_SCREEN_NUM_WIDTH_TILES, tile_ids[ i ] );
+							draw_tile( i % utils.CONST_SCREEN_NUM_WIDTH_TILES, i / utils.CONST_SCREEN_NUM_WIDTH_TILES, scr.get_tile( i ) );
 						}
 					}
 					else
 					{
 						for( i = 0; i < utils.CONST_SCREEN_BLOCKS_CNT; i++ )
 						{
-							draw_block( i % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS, i / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS, tile_ids[ i ] );
+							draw_block( i % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS, i / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS, scr.get_tile( i ) );
 						}
 					}
 					
@@ -1172,7 +1171,7 @@ namespace MAPeD
 										m_tile_ghost_img_rect.Height = ( ( m_tile_y + tile_y ) == 7 ) ? tile_size >> 1:tile_size;
 									}
 
-									m_gfx.DrawImage( img_list.Images[ m_active_pattern.data[ tile_y * m_active_pattern.width + tile_x ] ], 
+									m_gfx.DrawImage( img_list.Images[ m_active_pattern.data.get_tile( tile_y * m_active_pattern.width + tile_x ) ],
                 									 m_tile_ghost_img_rect, 
                 									 0, 
                 									 0, 
@@ -1181,7 +1180,7 @@ namespace MAPeD
                 									 GraphicsUnit.Pixel, 
                 									 m_tile_img_attr );
 #else
-									m_gfx.DrawImage( img_list.Images[ m_active_pattern.data[ tile_y * m_active_pattern.width + tile_x ] ], 
+									m_gfx.DrawImage( img_list.Images[ m_active_pattern.data.get_tile( tile_y * m_active_pattern.width + tile_x ) ],
                 									 m_tile_ghost_img_rect, 
                 									 0, 
                 									 0, 

@@ -333,7 +333,7 @@ namespace MAPeD
 				{
 					data = _tiles_data[ bank_n ];
 	
-					screens_cnt = data.scr_data.Count;
+					screens_cnt = data.screen_data_cnt();
 	
 					if( _bank_id == bank_n )
 					{
@@ -379,7 +379,7 @@ namespace MAPeD
 
 				palette_group.Instance.set_palette( data );
 				
-				screens_cnt = data.scr_data.Count;
+				screens_cnt = data.screen_data_cnt();
 				
 				for( int screen_n = 0; screen_n < screens_cnt; screen_n++ )
 				{
@@ -416,7 +416,7 @@ namespace MAPeD
 			{
 				data = _tiles_data[ bank_n ];
 
-				screens_cnt = data.scr_data.Count;
+				screens_cnt = data.screen_data_cnt();
 
 				if( ( _bank_id >= 0 && _bank_id == bank_n ) || _bank_id < 0 )
 				{
@@ -450,7 +450,9 @@ namespace MAPeD
 		{
 			int tile_n;
 			int block_n;
-			int tile_id;
+			
+			ushort tile_id;
+			
 			int tile_offs_x;
 			int tile_offs_y;
 			
@@ -469,7 +471,7 @@ namespace MAPeD
 			{
 				for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
 				{
-					tile_id = _data.scr_data[ _screen_n ][ tile_n ];
+					tile_id = _data.get_screen_tile( _screen_n, tile_n );
 					
 					tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 5;
 					tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 5;
@@ -484,7 +486,7 @@ namespace MAPeD
 			{
 				for( tile_n = 0; tile_n < utils.CONST_SCREEN_BLOCKS_CNT; tile_n++ )
 				{
-					utils.update_block_gfx( _data.scr_data[ _screen_n ][ tile_n ], _data, gfx, 8, 8, ( ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) << 4 ), ( ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) << 4 ) );
+					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 8, 8, ( ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) << 4 ), ( ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) << 4 ) );
 				}
 			}
 			
@@ -504,7 +506,7 @@ namespace MAPeD
 				for( int bank_n = 0; bank_n < banks_cnt; bank_n++ )
 				{
 					data 		= _tiles_data[ bank_n ];
-					screens_cnt = data.scr_data.Count;
+					screens_cnt = data.screen_data_cnt();
 					
 					for( int screen_n = 0; screen_n < screens_cnt; screen_n++ )
 					{

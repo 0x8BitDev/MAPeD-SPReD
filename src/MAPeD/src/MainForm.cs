@@ -2172,9 +2172,9 @@ namespace MAPeD
 		}
 
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-		bool check_empty_screen( uint[] _tiles, byte[] _scr_data )
+		bool check_empty_screen( uint[] _tiles, screen_data _scr_data )
 #else
-		bool check_empty_screen( byte[] _scr_data )
+		bool check_empty_screen( screen_data _scr_data )
 #endif
 		{
 			int tile_n;
@@ -2183,11 +2183,11 @@ namespace MAPeD
 			{
 				uint tile_ind;
 				
-				int scr_first_tile_ind	= _scr_data[ 0 ];
+				int scr_first_tile_ind	= _scr_data.get_tile( 0 );
 				
 				for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES; tile_n++ )
 				{
-					if( scr_first_tile_ind != _scr_data[ tile_n ] )
+					if( scr_first_tile_ind != _scr_data.get_tile( tile_n ) )
 					{
 						break;
 					}
@@ -2199,11 +2199,11 @@ namespace MAPeD
 				}
 	
 				// check the last upper half of the tiles line
-				int scr_block_ind	= utils.get_byte_from_uint( _tiles[ _scr_data[ 0 ] ], 0 );
+				int scr_block_ind	= utils.get_byte_from_uint( _tiles[ _scr_data.get_tile( 0 ) ], 0 );
 	
 				for( tile_n = utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
 				{
-					tile_ind = _tiles[ _scr_data[ tile_n ] ];
+					tile_ind = _tiles[ _scr_data.get_tile( tile_n ) ];
 					
 					if( ( scr_block_ind != utils.get_byte_from_uint( tile_ind, 0 ) ||
 					    ( scr_block_ind != utils.get_byte_from_uint( tile_ind, 1 ) ) ) )
@@ -2220,12 +2220,12 @@ namespace MAPeD
 			else
 #endif
 			{
-				int scr_first_tile_ind = _scr_data[ 0 ];
+				int scr_first_tile_ind = _scr_data.get_tile( 0 );
 				int num_tiles = utils.get_screen_tiles_cnt_uni( m_data_manager.screen_data_type );
 				
 				for( tile_n = 1; tile_n < num_tiles; tile_n++ )
 				{
-					if( scr_first_tile_ind != _scr_data[ tile_n ] )
+					if( scr_first_tile_ind != _scr_data.get_tile( tile_n ) )
 					{
 						break;
 					}
@@ -2251,9 +2251,9 @@ namespace MAPeD
 			for( scr_n = 0; scr_n < m_data_manager.scr_data_cnt; scr_n++ )
 			{
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-				if( check_empty_screen( data.tiles, data.scr_data[ scr_n ] ) )
+				if( check_empty_screen( data.tiles, data.get_screen_data( scr_n ) ) )
 #else
-				if( check_empty_screen( data.scr_data[ scr_n ] ) )
+					if( check_empty_screen( data.get_screen_data( scr_n ) ) )
 #endif
 				{
 					delete_screen( scr_n );
@@ -2525,7 +2525,7 @@ namespace MAPeD
 				// create screens and fill the layout
 				{
 					int scr_global_ind;
-					screen_data scr_data;
+					layout_screen_data scr_data;
 					
 					for( int y = 0; y < _scr_height; y++ )
 					{

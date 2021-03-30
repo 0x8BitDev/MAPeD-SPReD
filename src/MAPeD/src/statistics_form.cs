@@ -57,7 +57,7 @@ namespace MAPeD
 				
 				for( CHR_bank_n = 0; CHR_bank_n < m_data_manager.tiles_data_cnt; CHR_bank_n++ )
 				{
-					screens_cnt += m_data_manager.get_tiles_data()[ CHR_bank_n ].scr_data.Count;
+					screens_cnt += m_data_manager.get_tiles_data()[ CHR_bank_n ].screen_data_cnt();
 				}
 				
 				richTextBox.Text += "\nScreens: " + screens_cnt + " (Max: " + utils.CONST_SCREEN_MAX_CNT + ")";
@@ -88,7 +88,7 @@ namespace MAPeD
 					ff_tile		= ff_tile < 0 ? utils.CONST_MAX_TILES_CNT:ff_tile;
 					
 					richTextBox.Text += "\nCHRs: " + ff_CHR + " / Blocks(2x2): " + ff_block + " / Tiles(4x4): " + ff_tile;
-					richTextBox.Text += "\nScreens: " + data.scr_data.Count;
+					richTextBox.Text += "\nScreens: " + data.screen_data_cnt();
 					richTextBox.Text += "\nPalettes: " + data.palettes_arr.Count;
 				}
 			}

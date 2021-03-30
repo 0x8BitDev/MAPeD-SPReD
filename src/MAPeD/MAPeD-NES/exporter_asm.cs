@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.Linq;
 
 namespace MAPeD
 {
@@ -44,8 +45,8 @@ namespace MAPeD
 			
 			public tiles_data 	m_tiles;
 			
-			public byte[] 		m_scr_tiles;
-			public byte[] 		m_scr_blocks;
+			public screen_data	m_scr_tiles;
+			public screen_data	m_scr_blocks;
 			
 			public int			m_tiles_offset;
 			public int			m_blocks_offset;			
@@ -56,20 +57,20 @@ namespace MAPeD
 			public static int	_tiles_offset;
 			public static int	_blocks_offset;
 			
-			public exp_screen_data( int _scr_ind, tiles_data _tiles, int _scr_tiles_size, int _scr_blocks_size )
+			public exp_screen_data( int _scr_ind, tiles_data _tiles )
 			{
 				m_scr_ind		= _scr_ind;
 				
 				m_tiles 		= _tiles;
 				
-				m_scr_tiles		= new byte[ _scr_tiles_size ];
-				m_scr_blocks	= new byte[ _scr_blocks_size ];
+				m_scr_tiles		= new screen_data( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
+				m_scr_blocks	= new screen_data( data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
 				
 				m_tiles_offset	= _tiles_offset;
 				m_blocks_offset	= _blocks_offset;
 				
-				_tiles_offset 	+= _scr_tiles_size;
-				_blocks_offset 	+= _scr_blocks_size;
+				_tiles_offset 	+= m_scr_tiles.length;
+				_blocks_offset 	+= m_scr_blocks.length;
 				
 				m_PPU_scr_offset		= 0;
 				m_MMC5_scr_attrs_offset	= 0;
@@ -460,10 +461,10 @@ namespace MAPeD
 
 			uint block_data		= 0;
 			
-			byte tile_id			= 0;
-			byte block_id			= 0;
+			ushort tile_id			= 0;
+			ushort block_id			= 0;
 			
-			byte[] tile_inds		= null;
+			screen_data tile_inds	= null;
 			byte[] tile_attrs_arr	= new byte[ 16 ];
 			
 			long data_size 			= 0;
@@ -478,9 +479,9 @@ namespace MAPeD
 			string scr_arr			= null;
 			string data_offset_str	= null;
 			
-			exp_screen_data	exp_scr;
-			screen_data		scr_data;
-			tiles_data 		tiles = null;
+			exp_screen_data		exp_scr;
+			layout_screen_data	scr_data;
+			tiles_data 			tiles = null;
 #if DEF_NES
 			tiles_data		cntrl_tiles_data = null;
 			
@@ -520,7 +521,7 @@ namespace MAPeD
 				
 				max_tile_ind = Int32.MinValue;
 				
-				for( int scr_n = 0; scr_n < tiles.scr_data.Count; scr_n++ )
+				for( int scr_n = 0; scr_n < tiles.screen_data_cnt(); scr_n++ )
 				{
 					if( check_screen_layouts( scr_ind ) == true )
 					{
@@ -531,7 +532,7 @@ namespace MAPeD
 						
 						valid_bank = true;
 						
-						exp_scr = new exp_screen_data( scr_ind_opt++, tiles, utils.CONST_SCREEN_TILES_CNT, scr_width_blocks * scr_height_blocks );
+						exp_scr = new exp_screen_data( scr_ind_opt++, tiles );
 						
 						screens[ ( bank_n << 8 ) | scr_n ] = exp_scr;
 						
@@ -542,9 +543,9 @@ namespace MAPeD
 								tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES );
 								tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES );
 								
-								tile_id = exp_scr.m_tiles.scr_data[ scr_n ][ tile_n ];
+								tile_id = exp_scr.m_tiles.get_screen_tile( scr_n, tile_n );
 		
-								exp_scr.m_scr_tiles[ tile_offs_x * utils.CONST_SCREEN_NUM_HEIGHT_TILES + tile_offs_y ] = tile_id;
+								exp_scr.m_scr_tiles.set_tile( tile_offs_x * utils.CONST_SCREEN_NUM_HEIGHT_TILES + tile_offs_y, tile_id );
 								
 								if( RBtnTiles2x2.Checked )
 								{
@@ -559,7 +560,7 @@ namespace MAPeD
 										if( tile_offs_y < 14 || ( tile_offs_y >= 14 && block_n < 2 ) )
 #endif											
 										{
-											exp_scr.m_scr_blocks[ ( tile_offs_x * scr_height_blocks ) + ( ( block_n & 0x01 ) == 0x01 ? scr_height_blocks:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ) ] = block_id;
+											exp_scr.m_scr_blocks.set_tile( ( tile_offs_x * scr_height_blocks ) + ( ( block_n & 0x01 ) == 0x01 ? scr_height_blocks:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ), block_id );
 										}
 									}
 								}
@@ -572,11 +573,11 @@ namespace MAPeD
 								tile_offs_x = ( block_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
 								tile_offs_y = ( block_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
 								
-								exp_scr.m_scr_blocks[ ( tile_offs_x * scr_height_blocks ) + tile_offs_y ] = tiles.scr_data[ scr_n ][ block_n ];
+								exp_scr.m_scr_blocks.set_tile( ( tile_offs_x * scr_height_blocks ) + tile_offs_y, tiles.get_screen_tile( scr_n, block_n ) );
 							}
 						}
 						
-						max_scr_tile = utils.get_byte_arr_max_val( exp_scr.m_scr_tiles );
+						max_scr_tile = exp_scr.m_scr_tiles.max_val();
 						
 						if( max_tile_ind < max_scr_tile )
 						{
@@ -585,7 +586,7 @@ namespace MAPeD
 						
 						if( RBtnTiles2x2.Checked )
 						{
-							max_scr_block = utils.get_byte_arr_max_val( exp_scr.m_scr_blocks );
+							max_scr_block = exp_scr.m_scr_blocks.max_val();
 							
 							if( max_block_ind < max_scr_block )
 							{
@@ -670,7 +671,7 @@ namespace MAPeD
 
 						if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 						{
-							blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
+							blocks_props_size = ( 1 + ( int )tiles.tiles.Max() ) << 2;
 						}
 						else
 						{
@@ -773,7 +774,7 @@ namespace MAPeD
 							exp_scr = screens[ key ];
 							
 							tile_inds	= exp_scr.m_scr_tiles;
-							tiles_cnt 	= tile_inds.Length;
+							tiles_cnt 	= tile_inds.length;
 							tiles 		= exp_scr.m_tiles;
 
 							if( RBtnAttrsPerCHR.Checked )
@@ -798,11 +799,11 @@ namespace MAPeD
 								{
 									if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 									{
-										utils.swap_columns_rows_order_byte( tile_inds, utils.CONST_SCREEN_NUM_WIDTH_TILES, utils.CONST_SCREEN_NUM_HEIGHT_TILES );
+										tile_inds.swap_col_row_data();
 									}
 									else
 									{
-										utils.swap_columns_rows_order_byte( exp_scr.m_scr_blocks, utils.CONST_SCREEN_NUM_WIDTH_BLOCKS, utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS );
+										exp_scr.m_scr_blocks.swap_col_row_data();
 									}
 								}						
 								
@@ -842,7 +843,7 @@ namespace MAPeD
 						exp_scr = screens[ key ];
 						
 						tile_inds	= exp_scr.m_scr_tiles;
-						tiles_cnt 	= tile_inds.Length;
+						tiles_cnt 	= tile_inds.length;
 						tiles 		= exp_scr.m_tiles;
 
 #if DEF_DBG_PPU_READY_DATA_SAVE_IMG
@@ -859,7 +860,7 @@ namespace MAPeD
 						{
 							if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 							{
-								tile_id = tile_inds[ tile_n ];
+								tile_id = tile_inds.get_tile( tile_n );
 							}
 						
 							tile_offs_y = ( tile_n % utils.CONST_SCREEN_NUM_HEIGHT_TILES ) << 1;
@@ -876,7 +877,7 @@ namespace MAPeD
 									}
 									else
 									{
-										block_id = exp_scr.m_scr_blocks[ ( ( tile_n / utils.CONST_SCREEN_NUM_HEIGHT_TILES ) * ( scr_height_blocks << 1 ) ) + tile_offs_y + ( block_n >> 1 ) + ( ( block_n & 0x01 ) * scr_height_blocks ) ];
+										block_id = exp_scr.m_scr_blocks.get_tile( ( ( tile_n / utils.CONST_SCREEN_NUM_HEIGHT_TILES ) * ( scr_height_blocks << 1 ) ) + tile_offs_y + ( block_n >> 1 ) + ( ( block_n & 0x01 ) * scr_height_blocks ) );
 									}
 									
 									for( chr_n = 0; chr_n < 4; chr_n++ )
@@ -953,7 +954,7 @@ namespace MAPeD
 							exp_scr = screens[ key ];
 							
 							tile_inds	= screens[ key ].m_scr_tiles;
-							tiles_cnt 	= tile_inds.Length;
+							tiles_cnt 	= tile_inds.length;
 							tiles 		= screens[ key ].m_tiles;
 
 							fill_screen_attrs_per_CHR( 	attrs_chr,
@@ -1023,7 +1024,7 @@ namespace MAPeD
 									
 								if( RBtnTilesDirRows.Checked )
 								{
-									utils.swap_columns_rows_order_byte( tile_attrs_arr, 4, 4 );
+									utils.swap_columns_rows_order<byte>( tile_attrs_arr, 4, 4 );
 								}
 								
 								bw.Write( tile_attrs_arr );
@@ -1054,32 +1055,25 @@ namespace MAPeD
 					label = "_TilesScr";
 					bw = new BinaryWriter( File.Open( m_path_filename + label + CONST_BIN_EXT, FileMode.Create ) );
 
-					if( RBtnTiles4x4.Checked )
-					{
-						foreach( var key in screens.Keys ) 
-						{ 
+					foreach( var key in screens.Keys ) 
+					{ 
+						if( RBtnTiles4x4.Checked )
+						{
 							tile_inds = screens[ key ].m_scr_tiles;
-							
-							if( RBtnTilesDirRows.Checked )
-							{
-								utils.swap_columns_rows_order_byte( tile_inds, get_tiles_cnt_width( 1 ), get_tiles_cnt_height( 1 ) );
-							}						
-							
-							bw.Write( tile_inds ); 
 						}
-					}
-					else
-					{
-						foreach( var key in screens.Keys ) 
-						{ 
+						else
+						{
 							tile_inds = screens[ key ].m_scr_blocks;
-
-							if( RBtnTilesDirRows.Checked )
-							{
-								utils.swap_columns_rows_order_byte( tile_inds, get_tiles_cnt_width( 1 ), get_tiles_cnt_height( 1 ) );
-							}						
-							
-							bw.Write( tile_inds ); 
+						}
+						
+						if( RBtnTilesDirRows.Checked )
+						{
+							tile_inds.swap_col_row_data();
+						}						
+						
+						for( int i = 0; i < tile_inds.length; i++ )
+						{
+							bw.Write( ( byte )tile_inds.get_tile( i ) );
 						}
 					}
 					
@@ -1146,7 +1140,7 @@ namespace MAPeD
 							n_screens = 0;
 							for( bank_ind = 0; bank_ind < n_banks; bank_ind++ )
 							{
-								n_screens += scr_tiles_data[ bank_ind ].scr_data.Count;
+								n_screens += scr_tiles_data[ bank_ind ].screen_data_cnt();
 								
 								if( scr_data.m_scr_ind < n_screens )
 								{
@@ -1155,7 +1149,7 @@ namespace MAPeD
 							}
 							
 							// convert a screen index into local index in the bank
-							scr_ind = scr_data.m_scr_ind - ( n_screens - scr_tiles_data[ bank_ind ].scr_data.Count );
+							scr_ind = scr_data.m_scr_ind - ( n_screens - scr_tiles_data[ bank_ind ].screen_data_cnt() );
 							
 							scr_key = ( bank_ind << 8 ) | scr_ind;
 							
@@ -1289,10 +1283,20 @@ namespace MAPeD
 
 		private byte get_tile_attribute( int _tile_n, exp_screen_data _exp_scr, int _scr_height_blocks )
 		{
-			return get_tile_attribute( _tile_n, _exp_scr.m_scr_tiles, _exp_scr.m_scr_blocks, _exp_scr.m_tiles, _scr_height_blocks, 1 );
+			return get_tile_attribute( _tile_n, 
+										delegate( int _tile_id ) { return _exp_scr.m_scr_tiles.get_tile( _tile_id ); }, 
+										delegate( int _tile_id ) { return _exp_scr.m_scr_blocks.get_tile( _tile_id ); }, 
+										_exp_scr.m_tiles, 
+										_scr_height_blocks, 
+										1 );
 		}
 		
-		private byte get_tile_attribute( int _tile_n, byte[] _tiles_arr, byte[] _blocks_arr, tiles_data _data, int _scr_height_blocks, int _Y_scr_cnt )
+		private byte get_tile_attribute( 	int 				_tile_n, 
+											Func< int, ushort > _tiles_arr_get_tile, 
+											Func< int, ushort > _blocks_arr_get_tile, 
+											tiles_data 			_data, 
+											int 				_scr_height_blocks, 
+											int 				_Y_scr_cnt )
 		{
 			int attr = 0;
 			
@@ -1301,7 +1305,7 @@ namespace MAPeD
 			
 			if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				tile_id = _tiles_arr[ _tile_n ];
+				tile_id = _tiles_arr_get_tile( _tile_n );
 				
 				for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 				{
@@ -1323,13 +1327,13 @@ namespace MAPeD
 					block_n += _scr_height_blocks * ( _tile_n >> 3 );
 				}
 				
-				attr |= ( ( tiles_data.get_block_flags_palette( _data.blocks[ _blocks_arr[ block_n ] << 2 ] ) ) 										& 0x03 ) << 0;
-				attr |= ( ( tiles_data.get_block_flags_palette( _data.blocks[ _blocks_arr[ ( block_n + _scr_height_blocks * _Y_scr_cnt ) ] << 2 ] ) ) 	& 0x03 ) << 2;
+				attr |= ( ( tiles_data.get_block_flags_palette( _data.blocks[ _blocks_arr_get_tile( block_n ) << 2 ] ) ) 										& 0x03 ) << 0;
+				attr |= ( ( tiles_data.get_block_flags_palette( _data.blocks[ _blocks_arr_get_tile( ( block_n + _scr_height_blocks * _Y_scr_cnt ) ) << 2 ] ) ) 	& 0x03 ) << 2;
 				
 				if( ( ( _tile_n + 1 ) & 0x07 ) != 0 )
 				{
-					attr |= ( ( tiles_data.get_block_flags_palette( _data.blocks[ _blocks_arr[ ( block_n + 1) ] << 2 ] ) ) 										& 0x03 ) << 4;
-					attr |= ( ( tiles_data.get_block_flags_palette( _data.blocks[ _blocks_arr[ ( block_n + _scr_height_blocks * _Y_scr_cnt + 1 ) ] << 2 ] ) ) 	& 0x03 ) << 6;
+					attr |= ( ( tiles_data.get_block_flags_palette( _data.blocks[ _blocks_arr_get_tile( block_n + 1 ) << 2 ] ) ) 										& 0x03 ) << 4;
+					attr |= ( ( tiles_data.get_block_flags_palette( _data.blocks[ _blocks_arr_get_tile( ( block_n + _scr_height_blocks * _Y_scr_cnt + 1 ) ) << 2 ] ) ) 	& 0x03 ) << 6;
 				}
 			}
 			
@@ -1396,18 +1400,18 @@ namespace MAPeD
 		}
 		
 		private void fill_screen_attrs_per_CHR( byte[] 			_attrs_chr,
-		                                       	int 			_bank_ind, 
-		                                       	int[] 			_banks_size_arr, 
-		                                       	tiles_data 		_tiles, 
-		                                       	byte[] 			_tile_inds, 
-		                                       	bool 			_force_swapping,
-		                                       	int 			_scr_width_blocks_mul2, 
+												int 			_bank_ind, 
+												int[] 			_banks_size_arr, 
+												tiles_data 		_tiles, 
+												screen_data		_tile_inds, 
+												bool 			_force_swapping,
+												int 			_scr_width_blocks_mul2, 
 												int 			_scr_height_blocks,
-		                                       	int 			_scr_height_blocks_mul2, 
-		                                       	int 			_scr_height_blocks_mul4,
-		                                       	byte[]			_block_inds )
+												int 			_scr_height_blocks_mul2, 
+												int 			_scr_height_blocks_mul4,
+												screen_data		_block_inds )
 		{
-			byte tile_id			= 0;
+			ushort tile_id			= 0;
 			
 			int tile_x				= 0;
 			int tile_y				= 0;
@@ -1421,14 +1425,14 @@ namespace MAPeD
 			int tile_n;
 			int block_n;
 			int chr_n;
-			int tiles_cnt = _tile_inds.Length;
+			int tiles_cnt = _tile_inds.length;
 			
 			if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
 				// MMC5 extended attributes data
 				for( tile_n = 0; tile_n < tiles_cnt; tile_n++ )
 				{
-					tile_id = _tile_inds[ tile_n ];
+					tile_id = _tile_inds.get_tile( tile_n );
 	
 					tile_offs_x = ( tile_n / utils.CONST_SCREEN_NUM_HEIGHT_TILES ) << 1;
 					tile_offs_y = ( tile_n % utils.CONST_SCREEN_NUM_HEIGHT_TILES ) << 1;
@@ -1470,14 +1474,14 @@ namespace MAPeD
 						chr_y	= ( ( chr_n & 0x02 ) == 0x02 ? 1:0 );
 						
 						// column order by default
-						_attrs_chr[ block_x + block_y + chr_x + chr_y ] = get_MMC5_attribute( _bank_ind, _tiles, _block_inds[ block_n ], chr_n, _banks_size_arr[ _bank_ind ] );
+						_attrs_chr[ block_x + block_y + chr_x + chr_y ] = get_MMC5_attribute( _bank_ind, _tiles, _block_inds.get_tile( block_n ), chr_n, _banks_size_arr[ _bank_ind ] );
 					}
 				}
 			}
 			
 			if( RBtnTilesDirRows.Checked || _force_swapping )
 			{
-				utils.swap_columns_rows_order_byte( _attrs_chr, _scr_width_blocks_mul2, _scr_height_blocks_mul2 );
+				utils.swap_columns_rows_order<byte>( _attrs_chr, _scr_width_blocks_mul2, _scr_height_blocks_mul2 );
 			}
 		}
 		
@@ -1560,11 +1564,11 @@ namespace MAPeD
 			int max_tile_ind 		= 0;
 			int blocks_props_size	= 0;
 			int attr				= 0;
-			byte tile_id			= 0;
+			ushort tile_id			= 0;
 			byte block_id			= 0;
 			uint block_data			= 0;
 			
-			screen_data	scr_data;
+			layout_screen_data	scr_data;
 			
 			long 	data_size 	= 0;
 			string 	label 		= null;
@@ -1615,7 +1619,7 @@ namespace MAPeD
 							n_screens = 0;
 							for( bank_ind = 0; bank_ind < n_banks; bank_ind++ )
 							{
-								n_screens += scr_tiles_data[ bank_ind ].scr_data.Count;
+								n_screens += scr_tiles_data[ bank_ind ].screen_data_cnt();
 								
 								if( scr_data.m_scr_ind < n_screens )
 								{
@@ -1632,7 +1636,7 @@ namespace MAPeD
 							chk_bank_ind = bank_ind;
 							
 							// convert a screen index into local index in the bank
-							scr_ind = scr_data.m_scr_ind - ( n_screens - scr_tiles_data[ bank_ind ].scr_data.Count );
+							scr_ind = scr_data.m_scr_ind - ( n_screens - scr_tiles_data[ bank_ind ].screen_data_cnt() );
 							
 							// fill the map by tiles of a current screen
 							tiles = scr_tiles_data[ bank_ind ];
@@ -1644,11 +1648,11 @@ namespace MAPeD
 									tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES );
 									tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES );
 									
-									tile_id = tiles.scr_data[ scr_ind ][ tile_n ];
+									tile_id = tiles.get_screen_tile( scr_ind, tile_n );
 									
 									if( RBtnTiles2x2.Checked )
 									{
-										map_tiles_arr[ scr_n_X * ( ( n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( scr_n_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( tile_offs_x * ( n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) ) + tile_offs_y ] = tile_id;
+										map_tiles_arr[ scr_n_X * ( ( n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( scr_n_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( tile_offs_x * ( n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) ) + tile_offs_y ] = ( byte )tile_id;
 										
 										tile_offs_x <<= 1;
 										tile_offs_y <<= 1;
@@ -1667,7 +1671,7 @@ namespace MAPeD
 									}
 									else
 									{
-										map_tiles_arr[ scr_n_X * ( n_Y_tiles * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( scr_n_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_id;
+										map_tiles_arr[ scr_n_X * ( n_Y_tiles * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( scr_n_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = ( byte )tile_id;
 									}
 								}
 							}
@@ -1679,7 +1683,7 @@ namespace MAPeD
 									tile_offs_x = ( block_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
 									tile_offs_y = ( block_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
 									
-									map_blocks_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tiles.scr_data[ scr_ind ][ block_n ];
+									map_blocks_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = ( byte )tiles.get_screen_tile( scr_ind, block_n );
 								}
 							}
 						}
@@ -1704,7 +1708,7 @@ namespace MAPeD
 
 				if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 				{
-					max_tile_ind = 1 + utils.get_byte_arr_max_val( map_tiles_arr );	// one based index
+					max_tile_ind = 1 + map_tiles_arr.Max();	// one based index
 				}
 				else
 				{
@@ -1735,12 +1739,17 @@ namespace MAPeD
 
 					for( tile_n = 0; tile_n < map_tiles_arr.Length; tile_n++ )
 					{
-						map_tiles_arr[ tile_n ] = get_tile_attribute( tile_n, map_tiles_arr, map_blocks_arr, tiles, scr_height_blocks, n_scr_Y );
+						map_tiles_arr[ tile_n ] = get_tile_attribute( 	tile_n, 
+																		delegate( int _tile_id ) { return map_tiles_arr[ _tile_id ]; },
+																		delegate( int _tile_id ) { return map_blocks_arr[ _tile_id ]; },
+																		tiles, 
+																		scr_height_blocks, 
+																		n_scr_Y );
 					}
 					
 					if( RBtnTilesDirRows.Checked )
 					{
-						utils.swap_columns_rows_order_byte( map_tiles_arr, n_scr_X * utils.CONST_SCREEN_NUM_WIDTH_TILES, n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES );
+						utils.swap_columns_rows_order<byte>( map_tiles_arr, n_scr_X * utils.CONST_SCREEN_NUM_WIDTH_TILES, n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES );
 					}
 					
 					if( compress_and_save( bw, map_tiles_arr ) == false )
@@ -1787,7 +1796,7 @@ namespace MAPeD
 				{
 					if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 					{
-						blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_ind ) ) << 2;
+						blocks_props_size = ( 1 + ( int )tiles.tiles.Max() ) << 2;
 					}
 					else
 					{
@@ -1849,7 +1858,7 @@ namespace MAPeD
 				
 				if( RBtnTilesDirRows.Checked )
 				{
-					utils.swap_columns_rows_order_byte( map_data_arr, get_tiles_cnt_width( n_scr_X ), get_tiles_cnt_height( n_scr_Y ) );
+					utils.swap_columns_rows_order<byte>( map_data_arr, get_tiles_cnt_width( n_scr_X ), get_tiles_cnt_height( n_scr_Y ) );
 				}
 				
 				if( compress_and_save( bw, map_data_arr ) == false )

@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.Linq;
 
 namespace MAPeD
 {
@@ -201,7 +202,7 @@ namespace MAPeD
 				int bank_ind		= 0;
 				int n_banks			= scr_tiles_data.Count;
 				int n_screens 		= 0;
-				byte tile_id		= 0;
+				ushort tile_id		= 0;
 				ushort tile_data	= 0;
 				uint block_data		= 0;
 				
@@ -327,7 +328,7 @@ namespace MAPeD
 				int scr_width_blocks 	= utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
 				int scr_height_blocks 	= utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
 				
-				screen_data scr_data;
+				layout_screen_data scr_data;
 				
 				sw = new StreamWriter( m_path_filename_ext );
 				
@@ -394,7 +395,7 @@ namespace MAPeD
 								n_screens = 0;
 								for( bank_ind = 0; bank_ind < n_banks; bank_ind++ )
 								{
-									n_screens += scr_tiles_data[ bank_ind ].scr_data.Count;
+									n_screens += scr_tiles_data[ bank_ind ].screen_data_cnt();
 									
 									if( scr_data.m_scr_ind < n_screens )
 									{
@@ -403,7 +404,7 @@ namespace MAPeD
 								}
 								
 								// convert screen index to local bank index
-								scr_ind = scr_data.m_scr_ind - ( n_screens - scr_tiles_data[ bank_ind ].scr_data.Count );
+								scr_ind = scr_data.m_scr_ind - ( n_screens - scr_tiles_data[ bank_ind ].screen_data_cnt() );
 								
 								tiles = scr_tiles_data[ bank_ind ];
 								
@@ -414,7 +415,7 @@ namespace MAPeD
 										tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES );
 										tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES );
 										
-										tile_id = tiles.scr_data[ scr_ind ][ tile_n ];
+										tile_id = tiles.get_screen_tile( scr_ind, tile_n );
 										
 										if( ExpZXAsmTiles2x2.Checked )
 										{
@@ -461,7 +462,7 @@ namespace MAPeD
 										tile_offs_x = ( block_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
 										tile_offs_y = ( block_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
 										
-										tile_id = tiles.scr_data[ scr_ind ][ block_n ];
+										tile_id = tiles.get_screen_tile( scr_ind, block_n );
 										
 										// make a list of unique 2x2 tiles in the map
 										tile_data = (ushort)(( tile_id | ( ( bank_ind + 1 ) << 8 )) );
@@ -584,7 +585,7 @@ namespace MAPeD
 									}
 								}
 								
-								max_weight_ind = utils.get_byte_arr_max_val_ind( paper_clr_weights );
+								max_weight_ind = Array.IndexOf( paper_clr_weights, paper_clr_weights.Max() );
 #if DEF_NES
 								paper_color_index[ chr_n ] = palette[ max_weight_ind ];
 #elif DEF_SMS || DEF_PALETTE16_PER_CHR
@@ -595,7 +596,7 @@ namespace MAPeD
 								
 								if( !no_ink )
 								{
-									max_weight_ind = utils.get_byte_arr_max_val_ind( ink_clr_weights );
+									max_weight_ind = Array.IndexOf( ink_clr_weights, ink_clr_weights.Max() );
 #if DEF_NES
 									ink_color_index[ chr_n ] = palette[ max_weight_ind ];
 #elif DEF_SMS || DEF_PALETTE16_PER_CHR

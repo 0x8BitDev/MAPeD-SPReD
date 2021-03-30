@@ -18,10 +18,7 @@ namespace MAPeD
 	{
 		private string	m_name = null;
 		
-		private byte m_width	= 0xff;
-		private byte m_height	= 0xff;
-		
-		private byte[]	m_data = null;
+		private screen_data	m_data = null;
 		
 		public string name
 		{
@@ -29,68 +26,60 @@ namespace MAPeD
 			set { m_name = value; }
 		}
 
-		public byte width
+		public int width
 		{
-			get { return m_width; }
-			set { m_width = value; }
+			get { return m_data.width; }
 		}
 
-		public byte height
+		public int height
 		{
-			get { return m_height; }
-			set { m_height = value; }
+			get { return m_data.height; }
 		}
 		
-		public byte[] data
+		public screen_data data
 		{
 			get { return m_data; }
-			set { m_data = value; }
 		}
 		
-		public pattern_data( string _name, byte _width, byte _height, byte[] _data )
+		public pattern_data( string _name, screen_data _data )
 		{
 			m_name		= _name;
-			m_width		= _width;
-			m_height	= _height;
 			m_data		= _data;
 		}
 		
 		public void reset()
 		{
 			m_name		= null;
-			m_data		= null;
+			
+			if( m_data != null )
+			{
+				m_data.reset();
+				m_data = null;
+			}
 		}
 		
 		public pattern_data copy()
 		{
-			byte[] arr = null;
-			
 			if( data != null )
 			{
-				arr = new byte[ data.Length ];
-				
-				Array.Copy( data, arr, data.Length );
+				return new pattern_data( name, m_data.copy() );
 			}
 			
-			return new pattern_data( name, width, height, arr );
+			throw new Exception( "pattern_data.copy() error! Can't copy an empty data!" );
 		}
 		
 		public void save( BinaryWriter _bw )
 		{
 			_bw.Write( m_name );
-			_bw.Write( m_width );
-			_bw.Write( m_height );
 			
-			_bw.Write( m_data, 0, m_width * m_height );
+			m_data.save( _bw, true );
 		}
 		
 		public static pattern_data load( byte _ver, BinaryReader _br )
 		{
-			string name		= _br.ReadString();
-			byte width		= _br.ReadByte();
-			byte height		= _br.ReadByte();
+			string name	= _br.ReadString();
 
-			return new pattern_data( name, width, height, _br.ReadBytes( width * height ) );
+			return new pattern_data( name, screen_data.load( _ver, _br ) );
 		}
 	}
 }

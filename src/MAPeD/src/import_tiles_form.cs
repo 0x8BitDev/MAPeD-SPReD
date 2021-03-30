@@ -423,11 +423,11 @@ namespace MAPeD
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 												scr_y = ( block_offset_y - block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
 	
-												_data.scr_data[ get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
+												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ), ( ushort )scr_tile_ind );
 #else
 												scr_y = tile_y / utils.CONST_SCREEN_HEIGHT_PIXELS;
 												
-												_data.scr_data[ get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( tile_y >> 5 ) % utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ) ] = (byte)scr_tile_ind;
+												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( tile_y >> 5 ) % utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ), ( ushort )scr_tile_ind );
 #endif
 											}
 										}
@@ -444,12 +444,12 @@ namespace MAPeD
 											{
 												scr_y = ( block_offset_y - block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
 	
-												_data.scr_data[ get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( block_offset_y % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 4 ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) ] = (byte)scr_block_ind;
+												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( block_offset_y % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 4 ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ), ( ushort )scr_block_ind );
 											}
 #else
 											scr_y = ( tile_y + block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
 											
-											_data.scr_data[ get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ) ][ utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( ( tile_y + block_y ) >> 4 ) % utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) ] = (byte)scr_block_ind;
+											_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( ( tile_y + block_y ) >> 4 ) % utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ), ( ushort )scr_block_ind );
 #endif
 										}
 									}

@@ -217,7 +217,7 @@ namespace MAPeD
 				{
 					for( int tile_x = 0; tile_x < pattern.width; tile_x++ )
 					{
-						m_gfx.DrawImage( img_list.Images[ pattern.data[ tile_y * pattern.width + tile_x ] ], start_pos_x + tile_x * scr_tile_size, start_pos_y + tile_y * scr_tile_size, scr_tile_size, scr_tile_size );
+						m_gfx.DrawImage( img_list.Images[ pattern.data.get_tile( tile_y * pattern.width + tile_x ) ], start_pos_x + tile_x * scr_tile_size, start_pos_y + tile_y * scr_tile_size, scr_tile_size, scr_tile_size );
 					}
 				}
 

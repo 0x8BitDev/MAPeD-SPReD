@@ -430,37 +430,36 @@ namespace MAPeD
 			int scr_n;
 			int scr_block_n;
 			
-			List< byte[] >	scr_list = _data.scr_data;
-			byte[] 			scr_data;
+			screen_data 	scr;
 			
 			// check duplicate(s)
 			for( block_n = 0; block_n < _block_id; block_n++ )
 			{
 				if( _data.cmp_blocks( _block_id, block_n ) )
 				{
-					for( scr_n = 0; scr_n < scr_list.Count; scr_n++ )
+					for( scr_n = 0; scr_n < _data.screen_data_cnt(); scr_n++ )
 					{
-						scr_data = scr_list[ scr_n ];
+						scr = _data.get_screen_data( scr_n );
 						
-						for( scr_block_n = 0; scr_block_n < scr_data.Length; scr_block_n++ )
+						for( scr_block_n = 0; scr_block_n < scr.length; scr_block_n++ )
 						{
-							if( scr_data[ scr_block_n ] == _block_id )
+							if( scr.get_tile( scr_block_n ) == _block_id )
 							{
 								// replace _block_id with block_n
-								scr_data[ scr_block_n ] = ( byte )block_n;
+								scr.set_tile( scr_block_n, ( ushort )block_n );
 							}
 						}
 					}
 				}
 			}
 			
-			for( scr_n = 0; scr_n < scr_list.Count; scr_n++ )
+			for( scr_n = 0; scr_n < _data.screen_data_cnt(); scr_n++ )
 			{
-				scr_data = scr_list[ scr_n ];
+				scr = _data.get_screen_data( scr_n );
 				
-				for( scr_block_n = 0; scr_block_n < scr_data.Length; scr_block_n++ )
+				for( scr_block_n = 0; scr_block_n < scr.length; scr_block_n++ )
 				{
-					if( scr_data[ scr_block_n ] == _block_id )
+					if( scr.get_tile( scr_block_n ) == _block_id )
 					{
 						return true;
 					}
@@ -531,37 +530,36 @@ namespace MAPeD
 			int scr_n;
 			int scr_tile_n;
 			
-			List< byte[] > 	scr_list = _data.scr_data;
-			byte[] 			scr_data;
+			screen_data 	scr;
 			
 			// check duplicate(s)
 			for( tile_n = 0; tile_n < _tile_id; tile_n++ )
 			{
 				if( _data.tiles[ _tile_id ] == _data.tiles[ tile_n ] )
 				{
-					for( scr_n = 0; scr_n < scr_list.Count; scr_n++ )
+					for( scr_n = 0; scr_n < _data.screen_data_cnt(); scr_n++ )
 					{
-						scr_data = scr_list[ scr_n ];
+						scr = _data.get_screen_data( scr_n );
 						
-						for( scr_tile_n = 0; scr_tile_n < scr_data.Length; scr_tile_n++ )
+						for( scr_tile_n = 0; scr_tile_n < scr.length; scr_tile_n++ )
 						{
-							if( scr_data[ scr_tile_n ] == _tile_id )
+							if( scr.get_tile( scr_tile_n ) == _tile_id )
 							{
 								// replace _tile_id with tile_n
-								scr_data[ scr_tile_n ] = ( byte )tile_n;
+								scr.set_tile( scr_tile_n, ( ushort )tile_n );
 							}
 						}
 					}
 				}
 			}
 			
-			for( scr_n = 0; scr_n < scr_list.Count; scr_n++ )
+			for( scr_n = 0; scr_n < _data.screen_data_cnt(); scr_n++ )
 			{
-				scr_data = scr_list[ scr_n ];
+				scr = _data.get_screen_data( scr_n );
 				
-				for( scr_tile_n = 0; scr_tile_n < scr_data.Length; scr_tile_n++ )
+				for( scr_tile_n = 0; scr_tile_n < scr.length; scr_tile_n++ )
 				{
-					if( scr_data[ scr_tile_n ] == _tile_id )
+					if( scr.get_tile( scr_tile_n ) == _tile_id )
 					{
 						return true;
 					}
@@ -577,7 +575,7 @@ namespace MAPeD
 
 			int bank_id = Convert.ToInt32( _data.name );
 			
-			int size = _data.scr_data.Count;
+			int size = _data.screen_data_cnt();
 			
 			for( int scr_n = 0; scr_n < size; scr_n++ )
 			{
@@ -622,19 +620,19 @@ namespace MAPeD
 
 			for( tiles_data_n = 0; tiles_data_n < bank_id; tiles_data_n++ )
 			{
-				common_scr_ind += m_data_sets.get_tiles_data( tiles_data_n ).scr_data.Count;
+				common_scr_ind += m_data_sets.get_tiles_data( tiles_data_n ).screen_data_cnt();
 			}
 			
 			// check duplicate(s)
 			for( scr_n = 0; scr_n < _scr_n; scr_n++ )
 			{
-				if( System.Linq.Enumerable.SequenceEqual( _data.scr_data[ scr_n ], _data.scr_data[ _scr_n ] ) == true )
+				if( _data.get_screen_data( scr_n ).equal( _data.get_screen_data( _scr_n ) ) == true )
 				{
 					curr_common_scr_ind = scr_n;
 					
 					for( tiles_data_n = 0; tiles_data_n < bank_id; tiles_data_n++ )
 					{
-						curr_common_scr_ind += m_data_sets.get_tiles_data( tiles_data_n ).scr_data.Count;
+						curr_common_scr_ind += m_data_sets.get_tiles_data( tiles_data_n ).screen_data_cnt();
 					}
 					
 					// remove duplicate(s)
@@ -642,9 +640,9 @@ namespace MAPeD
 					{
 						ldata = m_data_sets.get_layout_data( layout_n );
 						
-						ldata.get_raw_data().ForEach( delegate( List< screen_data > _list ) 
+						ldata.get_raw_data().ForEach( delegate( List< layout_screen_data > _list ) 
 						{ 
-							_list.ForEach( delegate( screen_data _scr_data ) 
+							_list.ForEach( delegate( layout_screen_data _scr_data ) 
 							{
 								if( _scr_data.m_scr_ind == common_scr_ind )
 								{
@@ -660,9 +658,9 @@ namespace MAPeD
 			{
 				ldata = m_data_sets.get_layout_data( layout_n );
 				
-				ldata.get_raw_data().ForEach( delegate( List< screen_data > _list ) 
+				ldata.get_raw_data().ForEach( delegate( List< layout_screen_data > _list ) 
 				{ 
-					_list.ForEach( delegate( screen_data _scr_data ) 
+					_list.ForEach( delegate( layout_screen_data _scr_data ) 
 					{
 						if( _scr_data.m_scr_ind == common_scr_ind )
 						{
