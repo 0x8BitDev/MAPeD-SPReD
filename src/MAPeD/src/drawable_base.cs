@@ -24,13 +24,23 @@ namespace MAPeD
 		
 		protected const int	CONST_BACKGROUND_COLOR	= 0x78505050;
 		
+		public drawable_base()
+		{
+			//...
+		}
+		
 		public drawable_base( PictureBox _pbox )
+		{
+			set_pix_box( _pbox );
+		}
+		
+		protected void set_pix_box( PictureBox _pbox )
 		{
 			m_pix_box = _pbox;
 			
 			prepare_pix_box();
 
-			m_pix_box.Resize += new EventHandler( Resize_Event );
+			m_pix_box.Resize += Resize_Event;
 			
 			m_pen = new Pen( utils.CONST_COLOR_PIXBOX_DEFAULT );
 			m_pen.EndCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;
@@ -49,7 +59,7 @@ namespace MAPeD
 			//...
 		}
 		
-		private void prepare_pix_box()
+		protected virtual void prepare_pix_box()
 		{
 			if( m_main_bmp != null )
 			{
@@ -72,6 +82,11 @@ namespace MAPeD
 		protected void clear_background( int _color )
 		{
 			m_gfx.Clear( Color.FromArgb( _color ) );
+		}
+
+		protected void clear_background( Color _color )
+		{
+			m_gfx.Clear( _color );
 		}
 		
 		public void invalidate()

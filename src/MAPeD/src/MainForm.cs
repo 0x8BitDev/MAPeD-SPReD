@@ -63,7 +63,8 @@ namespace MAPeD
 		private int	m_block_copy_item_ind	= -1;
 		private int	m_tile_copy_item_ind	= -1;
 		
-		private readonly imagelist_manager m_imagelist_manager	= null;
+		private readonly imagelist_manager 	m_imagelist_manager	= null;
+		private readonly tile_list_manager	m_tile_list_manager	= null;
 		
 		private static ToolStripStatusLabel	m_status_bar_label = null;
 		
@@ -102,7 +103,7 @@ namespace MAPeD
 			InitializeComponent();
 
 			// scale the main window horizontaly
-			this.Width += 3 * utils.CONST_SCREEN_TILES_SIZE;
+			this.Width += ( 3 * utils.CONST_SCREEN_TILES_SIZE ) - 14;
 
 			m_data_manager 	= new data_sets_manager();
 			
@@ -131,7 +132,9 @@ namespace MAPeD
 			
 			m_tiles_processor.subscribe_block_quad_selected_event( MainForm_BlockQuadSelected );
 
-			m_imagelist_manager	= new imagelist_manager( PanelTiles, PanelTilesClick_Event, ContextMenuTilesList, PanelBlocks, PanelBlocksClick_Event, ContextMenuBlocksList, ListViewScreens );
+			m_tile_list_manager = new tile_list_manager();
+			
+			m_imagelist_manager	= new imagelist_manager( PanelTiles, PanelTilesClick_Event, ContextMenuTilesList, PanelBlocks, PanelBlocksClick_Event, ContextMenuBlocksList, ListViewScreens, m_tile_list_manager );
 			
 			m_screen_editor = new screen_editor( PBoxScreen, m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list(), PBoxActiveTile, GrpBoxActiveTile );
 			m_screen_editor.subscribe_event( m_data_manager );
@@ -165,7 +168,7 @@ namespace MAPeD
 			enable_update_gfx_btn( false );
 			enable_update_screens_btn( true );
 
-			m_tiles_palette_form = new tiles_palette_form( m_imagelist_manager.get_tiles_image_list(), ContextMenuTilesList, m_imagelist_manager.get_blocks_image_list(), ContextMenuBlocksList );
+			m_tiles_palette_form = new tiles_palette_form( m_imagelist_manager.get_tiles_image_list(), ContextMenuTilesList, m_imagelist_manager.get_blocks_image_list(), ContextMenuBlocksList, m_tile_list_manager );
 			m_tiles_palette_form.TilesBlocksClosed 	+= new EventHandler( MainForm_TilesBlocksClosed );
 			m_tiles_palette_form.TileSelected 		+= new EventHandler( MainForm_TileSelected );
 			m_tiles_palette_form.BlockSelected 		+= new EventHandler( MainForm_BlockSelected );
@@ -1319,6 +1322,8 @@ namespace MAPeD
 			
 			m_imagelist_manager.update_blocks( CBoxTileViewType.SelectedIndex, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );
 			m_imagelist_manager.update_tiles( CBoxTileViewType.SelectedIndex, data, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated gfx of blocks to speed up drawing
+			
+			m_tile_list_manager.update_all();
 
 			m_screen_editor.update();
 
@@ -1504,11 +1509,6 @@ namespace MAPeD
 			}
 		}
 		
-		void select_block_button( int _btn_ind )
-		{
-			PanelBlocks.Controls[ _btn_ind ].Select();		
-		}
-
 		void PanelTilesClick_Event(object sender, EventArgs e)
 		{
 			select_tile( get_sender_index( sender ) );
@@ -1693,20 +1693,24 @@ namespace MAPeD
 					enable_update_screens_btn( true );
 					update_graphics( true );
 				}
+				else
+				{
+					message_box( "Please, select a CHR!", "Insert CHR", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
 			}
 		}
 		
 		void DeleteCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( message_box( "Are you sure?", "Delete CHR", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( m_data_manager.tiles_data_pos >= 0 )
 			{
-				if( m_data_manager.tiles_data_pos >= 0 )
+				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+
+				int sel_ind = m_tiles_processor.CHR_bank_get_selected_CHR_ind();
+				
+				if( sel_ind >= 0 )
 				{
-					tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
-	
-					int sel_ind = m_tiles_processor.CHR_bank_get_selected_CHR_ind();
-					
-					if( sel_ind >= 0 )
+					if( message_box( "Are you sure?", "Delete CHR", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
 						for( int i = sel_ind; i < utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1; i++ )
 						{
@@ -1723,45 +1727,23 @@ namespace MAPeD
 						update_graphics( true );
 					}
 				}
+				else
+				{
+					message_box( "Please, select a CHR!", "Delete CHR", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
 			}
 		}
 		
 		int get_context_menu_sender_index( object sender )
 		{
 			Control cntrl = ( ( sender as ToolStripDropDownItem ).Owner as ContextMenuStrip ).SourceControl;
-				
-			Button sender_btn 			= cntrl as Button;
-			ListView sender_list_view 	= cntrl as ListView;
-
-			if( sender_btn != null )
-			{
-				return sender_btn.ImageIndex;
-			}
 			
-			if( sender_list_view.SelectedIndices.Count > 0 )
-			{
-				return sender_list_view.SelectedIndices[ 0 ];
-			}
-			
-			return -1;
+			return ( cntrl.Tag as tile_list ).selected_tile_ind();
 		}
 
 		int get_sender_index( object sender )
 		{
-			Button sender_btn 			= sender as Button;
-			ListView sender_list_view 	= sender as ListView;
-
-			if( sender_btn != null )
-			{
-				return sender_btn.ImageIndex;
-			}
-			
-			if( sender_list_view.SelectedIndices.Count > 0 )
-			{
-				return sender_list_view.SelectedIndices[ 0 ];
-			}
-			
-			return -1;
+			return ( sender as tile_list ).selected_tile_ind();
 		}
 		
 		void CopyBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
@@ -1819,8 +1801,6 @@ namespace MAPeD
 					data.blocks[ ( _sel_ind << 2 ) + i ] = block_val;
 				}
 
-//!!!			enable_copy_paste_action( false, ECopyPasteType.cpt_Blocks_list );
-				
 				if( _paste_clone )
 				{
 					set_status_msg( String.Format( "Block List: block #{0:X2} cloned to block #{1:X2}", m_block_copy_item_ind, _sel_ind ) );
@@ -1832,7 +1812,27 @@ namespace MAPeD
 
 				enable_update_screens_btn( true );
 				
-				update_graphics( true );
+//				update_graphics( true );
+				
+				// optimized update_graphics
+				{
+					m_tile_list_manager.copy_tile( tile_list.EType.t_Blocks, m_block_copy_item_ind, _sel_ind );
+					
+					if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					{
+						m_imagelist_manager.update_tiles( CBoxTileViewType.SelectedIndex, data, m_data_manager.screen_data_type );
+						m_tile_list_manager.update_tiles( tile_list.EType.t_Tiles );
+					}
+					
+					m_screen_editor.update();
+					m_patterns_manager_form.update();
+					m_tiles_processor.update_graphics();
+					
+					if( CheckBoxScreensAutoUpdate.Checked )
+					{
+						update_screens( false );
+					}
+				}
 			}
 		}
 
@@ -1986,12 +1986,25 @@ namespace MAPeD
 					data.set_tile_block( sel_ind, i, data.get_tile_block( m_tile_copy_item_ind, i ) );
 				}
 
-//!!!			enable_copy_paste_action( false, ECopyPasteType.cpt_Tiles_list );
-
 				set_status_msg( String.Format( "Tile List: tile #{0:X2} is copied to #{1:X2}", m_tile_copy_item_ind, sel_ind ) );
 				
 				enable_update_screens_btn( true );
-				update_graphics( true );
+				
+//				update_graphics( true );
+				
+				// optimized update_graphics
+				{
+					m_tile_list_manager.copy_tile( tile_list.EType.t_Tiles, m_tile_copy_item_ind, sel_ind );
+					
+					m_screen_editor.update();
+					m_patterns_manager_form.update();
+					m_tiles_processor.update_graphics();
+					
+					if( CheckBoxScreensAutoUpdate.Checked )
+					{
+						update_screens( false );
+					}
+				}
 			}
 		}
 		
@@ -2147,8 +2160,6 @@ namespace MAPeD
 			
 			if( ( block_ind = m_tiles_processor.tile_reserve_blocks( m_data_manager ) ) >= 0 )
 			{
-				select_block_button( block_ind );
-				
 				enable_update_gfx_btn( true );
 				enable_update_screens_btn( true );
 			}
@@ -2456,12 +2467,6 @@ namespace MAPeD
 			{
 				// show property
 				select_block( sel_block_ind, false, false );
-			}
-			
-			// highlight selected block button
-			if( sel_block_ind >= 0 )
-			{
-				select_block_button( m_tiles_processor.get_selected_block() );
 			}
 		}
 		
@@ -4189,6 +4194,8 @@ namespace MAPeD
 						GrpBoxTileEditor.Enabled = true;
 						
 						ScreenDataTypeLabel.Text = "Tiles4x4";
+						
+						m_tile_list_manager.visible( tile_list.EType.t_Tiles, true );
 					}
 					break;
 
@@ -4204,6 +4211,8 @@ namespace MAPeD
 						ScreenDataTypeLabel.Text = "Blocks2x2";
 						
 						m_tiles_processor.tile_select_event( -1, null );
+						
+						m_tile_list_manager.visible( tile_list.EType.t_Tiles, false );
 					}
 					break;
 			}

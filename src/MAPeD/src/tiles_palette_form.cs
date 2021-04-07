@@ -28,6 +28,9 @@ namespace MAPeD
 		private readonly ContextMenuStrip m_cm_tiles	= null;
 		private readonly ContextMenuStrip m_cm_blocks	= null;
 		
+		private readonly tile_list	m_tile_list		= null;
+		private readonly tile_list	m_block_list	= null;
+		
 		private int m_active_item_id = -1;
 		
 		public int active_item_id
@@ -36,7 +39,7 @@ namespace MAPeD
 			set {}
 		}
 		
-		public tiles_palette_form( ImageList _tiles_image_list, ContextMenuStrip _cm_tiles, ImageList _blocks_image_list, ContextMenuStrip _cm_blocks )
+		public tiles_palette_form( ImageList _tiles_image_list, ContextMenuStrip _cm_tiles, ImageList _blocks_image_list, ContextMenuStrip _cm_blocks, tile_list_manager _tl_cntnr )
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -52,10 +55,10 @@ namespace MAPeD
 			m_cm_tiles	= _cm_tiles;
 			m_cm_blocks	= _cm_blocks;
 			
-			utils.fill_buttons( PanelPaletteTiles, m_tiles_image_list, BtnItemClick, m_cm_tiles );
-			utils.fill_buttons( PanelPaletteBlocks, m_blocks_image_list, BtnItemClick, m_cm_blocks );
-
-			BtnTilesClick_event( null, null );
+			m_tile_list		= new tile_list( tile_list.EType.t_Tiles, PanelPaletteTiles, m_tiles_image_list, BtnItemClick, m_cm_tiles, _tl_cntnr );
+			m_block_list	= new tile_list( tile_list.EType.t_Blocks, PanelPaletteBlocks, m_blocks_image_list, BtnItemClick, m_cm_blocks, _tl_cntnr );
+			
+			BtnTilesClick_Event( null, null );
 		}
 		
 		public void reset()
@@ -71,12 +74,12 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnTilesClick_event(object sender, EventArgs e)
+		void BtnTilesClick_Event(object sender, EventArgs e)
 		{
 			enable_tiles_panel( true );
 		}
 		
-		void BtnBlocksClick_event(object sender, EventArgs e)
+		void BtnBlocksClick_Event(object sender, EventArgs e)
 		{
 			enable_tiles_panel( false );
 		}
@@ -97,7 +100,7 @@ namespace MAPeD
 		
 		private void BtnItemClick( object sender, EventArgs e )
 		{
-			m_active_item_id = ( sender as Button ).ImageIndex;
+			m_active_item_id = ( sender as tile_list ).selected_tile_ind();
 			
 			if( BtnBlocks.Enabled )
 			{
@@ -121,12 +124,12 @@ namespace MAPeD
 			PanelPaletteBlocks.Enabled	= _on;
 		}
 
-		void BtnCloseClick_event(object sender, EventArgs e)
+		void BtnCloseClick_Event(object sender, EventArgs e)
 		{
 			hide_wnd();
 		}
 		
-		void Closing_event(object sender, FormClosingEventArgs e)
+		void Closing_Event(object sender, FormClosingEventArgs e)
 		{
 			e.Cancel = true;
 

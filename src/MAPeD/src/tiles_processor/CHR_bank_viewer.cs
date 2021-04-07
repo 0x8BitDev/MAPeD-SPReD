@@ -289,11 +289,18 @@ namespace MAPeD
 		
 		public bool copy_spr()
 		{
-			if( m_sel_ind >= 0 && m_data != null )
+			if( m_data != null )
 			{
-				m_copy_spr_ind = m_sel_ind;
-
-				return true;				
+				if( m_sel_ind >= 0 )
+				{
+					m_copy_spr_ind = m_sel_ind;
+					
+					return true;				
+				}
+				else
+				{
+					MainForm.message_box( "Please, select a CHR!", "Copy CHR", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
 			}
 			
 			return false;
@@ -301,17 +308,24 @@ namespace MAPeD
 		
 		public void paste_spr()
 		{
-			if( m_copy_spr_ind >= 0 && m_sel_ind >= 0 && m_data != null )
+			if( m_copy_spr_ind >= 0 && m_data != null )
 			{
-				m_data.from_CHR_bank_to_spr8x8( m_copy_spr_ind, utils.tmp_spr8x8_buff );
-				m_data.from_spr8x8_to_CHR_bank( m_sel_ind, utils.tmp_spr8x8_buff );
-				
-				MainForm.set_status_msg( String.Format( "CHR Bank: Sprite #{0:X2} copied to #{1:X2}", m_copy_spr_ind, m_sel_ind ) );
-				
-				update();
-				
-				dispatch_event_need_gfx_update();
-				dispatch_event_data_changed();
+				if( m_sel_ind >= 0 )
+				{
+					m_data.from_CHR_bank_to_spr8x8( m_copy_spr_ind, utils.tmp_spr8x8_buff );
+					m_data.from_spr8x8_to_CHR_bank( m_sel_ind, utils.tmp_spr8x8_buff );
+					
+					MainForm.set_status_msg( String.Format( "CHR Bank: Sprite #{0:X2} copied to #{1:X2}", m_copy_spr_ind, m_sel_ind ) );
+					
+					update();
+					
+					dispatch_event_need_gfx_update();
+					dispatch_event_data_changed();
+				}
+				else
+				{
+					MainForm.message_box( "Please, select a CHR!", "Paste CHR", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
 			}
 		}
 		
@@ -321,17 +335,24 @@ namespace MAPeD
 			
 			if( plt.active_palette >= 0 )
 			{
-				if( m_data != null && m_sel_ind >= 0 )
+				if( m_data != null )
 				{
+					if( m_sel_ind >= 0 )
+					{
 #if DEF_NES					
-					m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.get_palettes_arr()[ plt.active_palette ].color_slot );
+						m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.get_palettes_arr()[ plt.active_palette ].color_slot );
 #else
-					m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.active_palette * utils.CONST_NUM_SMALL_PALETTES + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
+						m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.active_palette * utils.CONST_NUM_SMALL_PALETTES + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
 #endif
 					
-					MainForm.set_status_msg( String.Format( "CHR Bank: Sprite #{0:X2} is filled with a palette slot index: {1}", m_sel_ind, plt.get_palettes_arr()[ plt.active_palette ].color_slot ) );
+						MainForm.set_status_msg( String.Format( "CHR Bank: Sprite #{0:X2} is filled with a palette slot index: {1}", m_sel_ind, plt.get_palettes_arr()[ plt.active_palette ].color_slot ) );
 					
-					update();
+						update();
+					}
+					else
+					{
+						MainForm.message_box( "Please, select a CHR!", "Fill CHR With Color", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					}
 				}
 				
 				dispatch_event_need_gfx_update();

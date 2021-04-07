@@ -334,6 +334,10 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_PIXBOX_DEFAULT						= Color.White;
 		public static readonly Color	CONST_COLOR_IMG_PREVIEW_PIVOT_CROSS				= Color.OrangeRed;
 		public static readonly Color	CONST_COLOR_IMG_PREVIEW_PIVOT_RECT 				= Color.LimeGreen;
+		// tile list
+		public static readonly Color	CONST_COLOR_TILE_LIST_BACKGROUND				= Color.LightGray;
+		public static readonly Color	CONST_COLOR_TILE_LIST_GRID						= Color.White;
+		public static readonly Color	CONST_COLOR_TILE_LIST_SELECTION					= Color.Red;
 		
 		public enum ETransformType
 		{
@@ -536,40 +540,6 @@ namespace MAPeD
 			int byte_mask		= ( int )( 0xff << byte_ind_shift );
 			
 			return ( ( uint )_val << ( byte_ind_shift ) ) | ( uint )( ~( _uint & ( byte_mask ) ) & _uint );
-		}
-		
-		public static void fill_buttons( FlowLayoutPanel _panel, ImageList _il, EventHandler _e, ContextMenuStrip _cm, int _margin = 0 )
-		{
-			_panel.Controls.Clear();
-			_panel.SuspendLayout();
-			
-			ToolTip tp;
-			Button	btn;
-			
-		    for( int i = 0; i < _il.Images.Count; i++ )
-		    {
-		        btn = new Button();
-		        
-	        	btn.FlatStyle 	= FlatStyle.Flat;
-	        	btn.FlatAppearance.BorderColor = Color.White;
-	        	
-		        btn.Size 		= _il.ImageSize;
-		        btn.ImageList 	= _il;
-		        btn.ImageIndex 	= i;
-		        btn.Click 		+= _e;
-		        btn.Margin 		= new Padding( _margin );
-		        btn.Padding 	= new Padding( 1 );
-		        btn.TabStop 	= false;
-		        
-		        btn.ContextMenuStrip = _cm;
-		        
-		        tp		= new ToolTip();
-		        tp.SetToolTip( btn, String.Format( "#{0:X2}", i ) );
-		        
-		        _panel.Controls.Add( btn );
-		    }
-			
-			_panel.ResumeLayout();
 		}
 		
 		public static void write_title( StreamWriter _sw, bool _C_exp = false )

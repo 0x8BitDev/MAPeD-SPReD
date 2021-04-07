@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+07.04.2021 - Optimization and speed-up of work with tiles
 26.02.2021 - Added asynchronous project loading/image importing operations with a progress bar
 16.02.2021 - Added a separate option to import CHRs from images
 12.02.2021 - SMS: added import of 32 color images

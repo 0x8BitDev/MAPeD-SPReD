@@ -28,6 +28,9 @@ namespace MAPeD
 		private readonly ImageList m_imagelist_blocks	= null;
 		private readonly ImageList m_imagelist_tiles	= null;
 		
+		private readonly tile_list	m_tile_list		= null;
+		private readonly tile_list	m_block_list	= null;
+		
 		private static Rectangle	m_block_rect	= new Rectangle( 0, 0, utils.CONST_BLOCKS_IMG_SIZE, utils.CONST_BLOCKS_IMG_SIZE );
 		private static Rectangle	m_tile_rect		= new Rectangle( 0, 0, utils.CONST_TILES_IMG_SIZE, utils.CONST_TILES_IMG_SIZE );
 		
@@ -35,7 +38,14 @@ namespace MAPeD
 		
 		private const int CONST_ALPHA = 0x60;
 		
-		public imagelist_manager( FlowLayoutPanel _panel_tiles, EventHandler _tiles_e, ContextMenuStrip _tiles_cm, FlowLayoutPanel _panel_blocks, EventHandler _blocks_e, ContextMenuStrip _blocks_cm, ListView _listview_screens )
+		public imagelist_manager(	FlowLayoutPanel		_panel_tiles,
+		                         	EventHandler		_tiles_e, 
+		                         	ContextMenuStrip	_tiles_cm, 
+		                         	FlowLayoutPanel		_panel_blocks, 
+		                         	EventHandler		_blocks_e, 
+		                         	ContextMenuStrip	_blocks_cm, 
+		                         	ListView			_listview_screens,
+									tile_list_manager	_tl_cntnr )
 		{
 			m_panel_tiles		= _panel_tiles;
 			m_panel_blocks		= _panel_blocks;
@@ -45,8 +55,8 @@ namespace MAPeD
 			m_imagelist_tiles 	= imagelist_init( utils.CONST_MAX_TILES_CNT, utils.CONST_TILES_IMG_SIZE );
 			m_imagelist_blocks 	= imagelist_init( utils.CONST_MAX_BLOCKS_CNT, utils.CONST_BLOCKS_IMG_SIZE );
 			
-			utils.fill_buttons( m_panel_tiles, m_imagelist_tiles, _tiles_e, _tiles_cm, 5 );
-			utils.fill_buttons( m_panel_blocks, m_imagelist_blocks, _blocks_e, _blocks_cm, 0 );
+			m_tile_list		= new tile_list( tile_list.EType.t_Tiles, m_panel_tiles, m_imagelist_tiles, _tiles_e, _tiles_cm, _tl_cntnr );
+			m_block_list	= new tile_list( tile_list.EType.t_Blocks, m_panel_blocks, m_imagelist_blocks, _blocks_e, _blocks_cm, _tl_cntnr );
 			
 			listview_init_screens();
 		}
@@ -118,7 +128,7 @@ namespace MAPeD
 				
 				if( _tiles_data != null )
 				{
-					update_tile( i, _view_type, _tiles_data, gfx, img, _scr_type );
+					update_tile( i, _view_type, _tiles_data, gfx, img, _scr_type, false );
 				}
 				else
 				{
@@ -133,7 +143,7 @@ namespace MAPeD
 			m_panel_tiles.Refresh();
 		}
 
-		public void update_tile( int _tile_ind, int _view_type, tiles_data _tiles_data, Graphics _gfx, Image _img, data_sets_manager.EScreenDataType _scr_type )
+		public void update_tile( int _tile_ind, int _view_type, tiles_data _tiles_data, Graphics _gfx, Image _img, data_sets_manager.EScreenDataType _scr_type, bool _update_image_list_tile = true )
 		{
 #if DEF_TILE_DRAW_FAST
 			Image	block_img;
@@ -172,7 +182,7 @@ namespace MAPeD
 			}
 			
 			gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
-			gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;
+			gfx.PixelOffsetMode 	= PixelOffsetMode.None;
 
 #if DEF_TILE_DRAW_FAST					
 			for( int j = 0; j < utils.CONST_TILE_SIZE; j++ )
@@ -210,8 +220,11 @@ namespace MAPeD
 			if( _gfx == null )
 			{
 				gfx.Dispose();
-				
-				( m_panel_tiles.Controls[ _tile_ind ] as Button ).Refresh();
+			}
+			
+			if( _update_image_list_tile )
+			{
+				m_tile_list.update_tile( _tile_ind );
 			}
 		}
 		
@@ -245,7 +258,7 @@ namespace MAPeD
 				if( _tiles_data != null )
 				{
 					gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
-					gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;
+					gfx.PixelOffsetMode 	= PixelOffsetMode.Half;
 					
 					utils.update_block_gfx( i, _tiles_data, gfx, img.Width >> 1, img.Height >> 1 );
 					
@@ -463,7 +476,7 @@ namespace MAPeD
 			Graphics gfx = Graphics.FromImage( bmp );
 			
 			gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
-			gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;
+			gfx.PixelOffsetMode 	= PixelOffsetMode.None;
 			
 			gfx.Clear( utils.CONST_COLOR_SCREEN_CLEAR );
 			

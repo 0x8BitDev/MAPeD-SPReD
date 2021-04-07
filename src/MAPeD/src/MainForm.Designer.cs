@@ -1318,7 +1318,7 @@ namespace MAPeD
 			this.PanelTiles.AutoScroll = true;
 			this.PanelTiles.BackColor = System.Drawing.Color.Silver;
 			this.PanelTiles.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.PanelTiles.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.PanelTiles.Cursor = System.Windows.Forms.Cursors.No;
 			this.PanelTiles.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.PanelTiles.ForeColor = System.Drawing.SystemColors.ControlLight;
 			this.PanelTiles.Location = new System.Drawing.Point(0, 0);
@@ -2049,7 +2049,7 @@ namespace MAPeD
 			// 
 			this.PanelBlocks.AutoScroll = true;
 			this.PanelBlocks.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.PanelBlocks.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.PanelBlocks.Cursor = System.Windows.Forms.Cursors.No;
 			this.PanelBlocks.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.PanelBlocks.ForeColor = System.Drawing.SystemColors.ControlLightLight;
 			this.PanelBlocks.Location = new System.Drawing.Point(6, 16);

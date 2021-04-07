@@ -288,6 +288,9 @@
     <Compile Include="..\src\tiles_processor\tile_editor.cs">
       <Link>tiles_processor\tile_editor.cs</Link>
     </Compile>
+    <Compile Include="..\src\tile_list.cs">
+      <Link>tile_list.cs</Link>
+    </Compile>
     <Compile Include="..\src\utils.cs">
       <Link>utils.cs</Link>
     </Compile>
