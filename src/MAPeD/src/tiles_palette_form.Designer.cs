@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 26.11.2018
  * Time: 17:38
  */
@@ -58,7 +58,7 @@ namespace MAPeD
 			this.PanelPaletteTiles.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
 			this.PanelPaletteTiles.Location = new System.Drawing.Point(0, 0);
 			this.PanelPaletteTiles.Name = "PanelPaletteTiles";
-			this.PanelPaletteTiles.Size = new System.Drawing.Size(554, 512);
+			this.PanelPaletteTiles.Size = new System.Drawing.Size(554, 537);
 			this.PanelPaletteTiles.TabIndex = 3;
 			// 
 			// PanelPaletteBlocks
@@ -71,7 +71,7 @@ namespace MAPeD
 			this.PanelPaletteBlocks.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
 			this.PanelPaletteBlocks.Location = new System.Drawing.Point(0, 0);
 			this.PanelPaletteBlocks.Name = "PanelPaletteBlocks";
-			this.PanelPaletteBlocks.Size = new System.Drawing.Size(554, 512);
+			this.PanelPaletteBlocks.Size = new System.Drawing.Size(554, 537);
 			this.PanelPaletteBlocks.TabIndex = 3;
 			// 
 			// splitContainer1
@@ -84,14 +84,14 @@ namespace MAPeD
 			// 
 			// splitContainer1.Panel1
 			// 
-			this.splitContainer1.Panel1.Controls.Add(this.PanelPaletteTiles);
 			this.splitContainer1.Panel1.Controls.Add(this.PanelPaletteBlocks);
+			this.splitContainer1.Panel1.Controls.Add(this.PanelPaletteTiles);
 			// 
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.panel1);
-			this.splitContainer1.Size = new System.Drawing.Size(554, 546);
-			this.splitContainer1.SplitterDistance = 512;
+			this.splitContainer1.Size = new System.Drawing.Size(554, 573);
+			this.splitContainer1.SplitterDistance = 537;
 			this.splitContainer1.TabIndex = 5;
 			// 
 			// panel1
@@ -103,7 +103,7 @@ namespace MAPeD
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(554, 30);
+			this.panel1.Size = new System.Drawing.Size(554, 32);
 			this.panel1.TabIndex = 1;
 			// 
 			// BtnBlocks
@@ -140,7 +140,7 @@ namespace MAPeD
 			// tiles_palette_form
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(554, 546);
+			this.ClientSize = new System.Drawing.Size(554, 573);
 			this.Controls.Add(this.splitContainer1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = global::MAPeD.Properties.Resources.MAPeD_icon;

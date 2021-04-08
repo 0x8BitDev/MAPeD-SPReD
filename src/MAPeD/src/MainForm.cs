@@ -490,10 +490,10 @@ namespace MAPeD
 			CheckBoxShowCoords.Checked		= true;
 			
 			CheckBoxPalettePerCHR.Checked	= false;
-#if DEF_NES || DEF_SMS
-			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
-#else
+#if DEF_16BIT_PLATFORM
 			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+#else
+			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
 #endif
 			enable_main_UI( false );
 			
