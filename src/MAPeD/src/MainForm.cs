@@ -490,10 +490,10 @@ namespace MAPeD
 			CheckBoxShowCoords.Checked		= true;
 			
 			CheckBoxPalettePerCHR.Checked	= false;
-#if DEF_16BIT_PLATFORM
-			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
-#else
+#if DEF_NES || DEF_SMS
 			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
+#else
+			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
 #endif
 			enable_main_UI( false );
 			
@@ -1205,7 +1205,7 @@ namespace MAPeD
 		
 		void AboutToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			message_box( "Game Maps Editor (" + utils.CONST_PLATFORM + ") \n\n" + utils.CONST_APP_VER + " " + utils.build_str + " pfv" + utils.CONST_PROJECT_FILE_VER + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
+			message_box( "Game Maps Editor (" + utils.CONST_PLATFORM + ")\n" + utils.CONST_PLATFORM_DESC + "\n\n" + utils.CONST_APP_VER + " " + utils.build_str + " pfv" + utils.CONST_PROJECT_FILE_VER + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 
 		void MenuHelpQuickGuideClick_Event(object sender, EventArgs e)
@@ -1824,6 +1824,7 @@ namespace MAPeD
 						m_tile_list_manager.update_tiles( tile_list.EType.t_Tiles );
 					}
 					
+					update_active_block_img( _sel_ind );
 					m_screen_editor.update();
 					m_patterns_manager_form.update();
 					m_tiles_processor.update_graphics();
@@ -1996,6 +1997,7 @@ namespace MAPeD
 				{
 					m_tile_list_manager.copy_tile( tile_list.EType.t_Tiles, m_tile_copy_item_ind, sel_ind );
 					
+					update_active_tile_img( sel_ind );
 					m_screen_editor.update();
 					m_patterns_manager_form.update();
 					m_tiles_processor.update_graphics();

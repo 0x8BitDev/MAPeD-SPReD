@@ -13,7 +13,6 @@ DEF_TILE_DRAW_FAST
 DEF_FLIP_BLOCKS_SPR_BY_FLAGS	(SMS)
 DEF_PALETTE16_PER_CHR			(PCE/SMS)
 DEF_FIXED_LEN_PALETTE16_ARR		(PCE/SMS)
-DEF_16BIT_PLATFORM				(SMD/SNES/NEOGEO)
 */
 
 using System;
@@ -38,9 +37,14 @@ namespace MAPeD
 		private const bool CONST_DEV_BUILD_FLAG	= true;
 		private const bool CONST_BETA_FLAG		= true; 
 
-		public const string CONST_PLATFORM_NES = "NES";
-		public const string CONST_PLATFORM_SMS = "SMS";
-		public const string CONST_PLATFORM_PCE = "PCE";
+		public const string CONST_PLATFORM_NES		= "NES";
+		public const string CONST_PLATFORM_NES_DESC	= "Nintendo Intertainment System";
+		
+		public const string CONST_PLATFORM_SMS		= "SMS";
+		public const string CONST_PLATFORM_SMS_DESC	= "Sega Master System";
+		
+		public const string CONST_PLATFORM_PCE		= "PCE";
+		public const string CONST_PLATFORM_PCE_DESC	= "PC-Engine / TurboGrafx-16";
 
 		public const string CONST_NES_FILE_EXT = "mapednes";
 		public const string CONST_SMS_FILE_EXT = "mapedsms";
@@ -55,13 +59,17 @@ namespace MAPeD
 		}
 		
 #if DEF_NES
-		public const string	CONST_PLATFORM	= CONST_PLATFORM_NES;
+		public const string	CONST_PLATFORM		= CONST_PLATFORM_NES;
+		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_NES_DESC;
 #elif DEF_SMS
-		public const string	CONST_PLATFORM	= CONST_PLATFORM_SMS;
+		public const string	CONST_PLATFORM		= CONST_PLATFORM_SMS;
+		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_SMS_DESC;
 #elif DEF_PCE
-		public const string	CONST_PLATFORM	= CONST_PLATFORM_PCE;
+		public const string	CONST_PLATFORM		= CONST_PLATFORM_PCE;
+		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_PCE_DESC;
 #else
-		public const string	CONST_PLATFORM	= "UNKNOWN";
+		public const string	CONST_PLATFORM		= "UNKNOWN";
+		public const string	CONST_PLATFORM_DESC	= "UNKNOWN";
 #endif
 
 #if	DEBUG
