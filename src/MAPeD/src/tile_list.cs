@@ -238,7 +238,7 @@ namespace MAPeD
 				string info = String.Format( "{0:X2}", m_sel_tile_ind );
 				
 				utils.brush.Color = Color.FromArgb( unchecked( (int)0xff000000 ) );
-				m_gfx.DrawString( info, utils.fnt10_Arial, utils.brush, pos_x + 3, str_pos_y + 2 );
+				m_gfx.DrawString( info, utils.fnt10_Arial, utils.brush, pos_x + 2, str_pos_y + 1 );
 				
 				utils.brush.Color = Color.FromArgb( unchecked( (int)0xffffffff ) );
 				m_gfx.DrawString( info, utils.fnt10_Arial, utils.brush, pos_x + 1, str_pos_y + 1 );

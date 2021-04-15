@@ -1516,11 +1516,14 @@ namespace MAPeD
 		
 		void select_tile( int _id )
 		{
-			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
-			
-			m_tiles_processor.tile_select_event( _id, data );
-			
-			update_active_tile_img( _id );
+			if( _id >= 0 )
+			{
+				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+				
+				m_tiles_processor.tile_select_event( _id, data );
+				
+				update_active_tile_img( _id );
+			}
 		}
 
 		private void update_active_tile_img( int _ind )

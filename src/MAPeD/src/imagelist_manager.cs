@@ -324,10 +324,10 @@ namespace MAPeD
 			_gfx.FillRectangle( utils.brush, m_block_rect );
 			
 			utils.brush.Color = Color.FromArgb( unchecked( (int)0xff000000 ) );
-			_gfx.DrawString( _info, utils.fnt10_Arial, utils.brush, 2, 2 );
+			_gfx.DrawString( _info, utils.fnt10_Arial, utils.brush, 1, 0 );
 			
 			utils.brush.Color = Color.FromArgb( unchecked( (int)0xffffffff ) );
-			_gfx.DrawString( _info, utils.fnt10_Arial, utils.brush, 1, 1 );
+			_gfx.DrawString( _info, utils.fnt10_Arial, utils.brush, 0, 0 );
 		}
 
 		public bool copy_screens_to_the_end( List< tiles_data > _tiles_data, int _bank_id )
