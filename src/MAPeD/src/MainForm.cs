@@ -54,8 +54,6 @@ namespace MAPeD
 #if DEF_FIXED_LEN_PALETTE16_ARR
 		private int	m_palette_copy_ind	= -1;
 #endif
-		private bool m_project_loaded	= false;
-		
 		private readonly export_active_tile_block_set_form m_export_active_tile_block_set_form	= null;
 		
 		private readonly image_preview m_entity_preview	= null;
@@ -582,8 +580,6 @@ namespace MAPeD
 #region load save import export
 		void LoadToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			m_project_loaded = false;
-			
 			if( m_data_manager.tiles_data_cnt > 0 )
 			{
 				if( message_box( "Are you sure you want to close the current project?", "Load Project", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
@@ -594,14 +590,6 @@ namespace MAPeD
 			else
 			{
 				Project_openFileDialog.ShowDialog();
-			}
-			
-			if( m_project_loaded )
-			{
-				if( m_description_form.auto_show() && m_description_form.edit_text.Length > 0 )
-				{
-					m_description_form.ShowDialog( this );
-				}
 			}
 		}
 
@@ -711,8 +699,6 @@ namespace MAPeD
 				set_title_name( Path.GetFileNameWithoutExtension( _filename ) );
 				
 				set_status_msg( "Project loaded" );
-				
-				m_project_loaded = true;
 			}
 			catch( Exception _err )
 			{
@@ -736,6 +722,11 @@ namespace MAPeD
 				}
 				
 				progress_bar_show( false );
+				
+				if( m_description_form.auto_show() && m_description_form.edit_text.Length > 0 )
+				{
+					m_description_form.ShowDialog( this );
+				}
 			}
 		}
 		
