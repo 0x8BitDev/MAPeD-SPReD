@@ -701,7 +701,7 @@ namespace MAPeD
 
 						if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 						{
-							blocks_props_size = ( 1 + ( int )tiles.tiles.Max() ) << 2;
+							blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
 						}
 						else
 						{
@@ -915,7 +915,7 @@ namespace MAPeD
 						
 						if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 						{
-							blocks_props_size = ( 1 + ( int )tiles.tiles.Max() ) << 2;
+							blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
 						}
 						else
 						{
@@ -1647,10 +1647,9 @@ namespace MAPeD
 				
 				// blocks and properties
 				{
-					
 					if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 					{
-						blocks_props_size = ( 1 + ( int )tiles.tiles.Max() ) << 2;//max_tile_ind << 2 ) ) << 2;
+						blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_ind ) ) << 2;//max_tile_ind << 2 ) ) << 2;
 					}
 					else
 					{

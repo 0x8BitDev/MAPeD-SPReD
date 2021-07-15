@@ -538,6 +538,33 @@ namespace MAPeD
 		}
 		// JSON formatter END
 		
+		public static int	get_uint_arr_max_val( uint[] _arr, int _max = 0 )
+		{
+			uint max_val = 0;
+			
+			int size = ( _max == 0 ) ? _arr.Length:_max;
+			
+			int i;
+			int j;
+			
+			uint val;
+			
+			for( i = 0; i < size; i++ )
+			{
+				for( j = 0; j < 4; j++ )
+				{
+					val = ( _arr[ i ] >> ( ( 4 - j - 1 ) << 3 ) ) & 0xff;
+					
+					if( val > max_val )
+					{
+						max_val = val;
+					}
+				}
+			}
+			
+			return (int)max_val;
+		}
+		
 		public static byte get_byte_from_uint( uint _uint, int _ind )
 		{
 			return ( byte )( ( _uint >> ( ( 4 - _ind - 1 ) << 3 ) ) & 0xff );			
