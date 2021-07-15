@@ -96,7 +96,7 @@ namespace MAPeD
 			}
 		}
 
-		public void export_entities_asm( StreamWriter _sw, string _label, string _db, string _dw, string _num_pref, bool _ent_coords_scr, int _x, int _y, bool _enable_comments )
+		public void export_entities_asm( StreamWriter _sw, ref int _ent_n, string _label, string _db, string _dw, string _num_pref, bool _ent_coords_scr, int _x, int _y, bool _enable_comments )
 		{
 			entity_instance ent_inst;
 			
@@ -117,12 +117,18 @@ namespace MAPeD
 				ent_inst = m_ents[ ent_n ];
 				
 				_sw.WriteLine( ent_inst.name + ":" );
+				_sw.WriteLine( "\t" + _db + " " + utils.hex( _num_pref, _ent_n++ ) + ( _enable_comments ? "\t; entity instance number (0..n)":"" ) );
 				_sw.WriteLine( "\t" + _dw + " " + ent_inst.base_entity.name + ( _enable_comments ? "\t; base entity":"" ) );
 				_sw.WriteLine( "\t" + _dw + " " + ( ent_inst.target_uid >= 0 ? ( "Instance" + ent_inst.target_uid.ToString() ):( utils.hex( _num_pref, 0 ) ) ) + ( _enable_comments ? "\t; target entity":"" ) );
 				_sw.WriteLine( "\t" + _dw + " " + utils.hex( _num_pref, ent_inst.x + ent_inst.base_entity.pivot_x + ( _ent_coords_scr ? 0:_x * utils.CONST_SCREEN_WIDTH_PIXELS ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " X" ):"" ) );
 				_sw.WriteLine( "\t" + _dw + " " + utils.hex( _num_pref, ent_inst.y + ent_inst.base_entity.pivot_y + ( _ent_coords_scr ? 0:_y * utils.CONST_SCREEN_HEIGHT_PIXELS ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " Y" ):"" ) );
 					
 				utils.save_prop_asm( _sw, _db, _num_pref, ent_inst.properties, _enable_comments );
+				
+				if( _ent_n >= ( utils.CONST_MAX_ENT_INST_CNT - 1 ) )
+				{
+					throw new Exception( "The number of entity instances is out of range!\nThe maximum number allowed to export: " + utils.CONST_MAX_ENT_INST_CNT + "\n\n[" + _label + "]" );
+				}
 			}
 		}
 	}
@@ -725,6 +731,8 @@ namespace MAPeD
 				
 				bool enable_comments = true;
 				
+				int ent_n = 0;
+				
 				layout_screen_data scr_data;
 				
 				for( y = 0; y < height; y++ )
@@ -746,7 +754,7 @@ namespace MAPeD
 	
 							if( _export_entities )
 							{
-								scr_data.export_entities_asm( _sw, lev_scr_id + "EntsArr", _db, _dw, _num_pref, _ent_coords_scr, x, y, enable_comments );
+								scr_data.export_entities_asm( _sw, ref ent_n, lev_scr_id + "EntsArr", _db, _dw, _num_pref, _ent_coords_scr, x, y, enable_comments );
 							}
 							
 							enable_comments = false;
@@ -754,6 +762,11 @@ namespace MAPeD
 							_sw.WriteLine( "" );
 						}
 					}
+				}
+				
+				if( _export_entities )
+				{
+					_sw.WriteLine( _define + " " + _data_mark + "_EntInstCnt\t" + ent_n + "\t; number of entities instances" );
 				}
 			}
 		}

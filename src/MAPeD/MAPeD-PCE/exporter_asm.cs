@@ -475,6 +475,7 @@ namespace MAPeD
 			int max_scr_block		= 0;
 			int max_block_ind		= 0;
 			int start_scr_ind		= 0;
+			int ent_n				= 0;
 			
 			int scr_width_blocks_mul2 	= 0;
 			int scr_height_blocks_mul2 	= 0;
@@ -1038,6 +1039,8 @@ namespace MAPeD
 					}
 				}
 				
+				ent_n = 0;
+				
 				for( int scr_n_Y = 0; scr_n_Y < n_scr_Y; scr_n_Y++ )
 				{
 					for( int scr_n_X = 0; scr_n_X < n_scr_X; scr_n_X++ )
@@ -1143,7 +1146,7 @@ namespace MAPeD
 								
 								if( CheckBoxExportEntities.Checked )
 								{
-									scr_data.export_entities_asm( _sw, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
+									scr_data.export_entities_asm( _sw, ref ent_n, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
 									
 									_sw.WriteLine( "" );
 								}
@@ -1168,8 +1171,13 @@ namespace MAPeD
 				if( RBtnLayoutAdjacentScreenIndices.Checked )
 				{
 					_sw.WriteLine( "; screens array" );
-					_sw.WriteLine( scr_arr );
+					_sw.WriteLine( scr_arr + "\n" );
 				}
+				
+				if( CheckBoxExportEntities.Checked )
+				{
+					_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_EntInstCnt\t" + ent_n + "\t; number of entities instances\n" );
+				}				
 			}
 			
 			foreach( var key in screens.Keys ) { screens[ key ].destroy(); }

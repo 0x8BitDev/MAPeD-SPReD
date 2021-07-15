@@ -259,6 +259,8 @@ namespace MAPeD
 		
 		public const int CONST_MAX_BLOCKS_CNT				= 256;
 		public const int CONST_MAX_TILES_CNT				= 256;
+		
+		public const int CONST_MAX_ENT_INST_CNT				= 256;	// max number of entities instances in a level
 
 		public const int CONST_BLOCKS_UINT_SIZE				= CONST_MAX_BLOCKS_CNT * CONST_BLOCK_SIZE;
 		public const int CONST_TILES_UINT_SIZE				= CONST_MAX_TILES_CNT;
