@@ -1,10 +1,10 @@
 Hi retro game developers! 
 
-Here you can find the **NES/SMS/PCE** development tools:
+Here you can find the **NES/SMS/PCE/ZX** development tools:
 
 
-# MAPeD-NES/SMS/PCE - Game maps editor
-The MAPeD is a tool for building a game levels for NES/SMS/PCE games from scratch.
+# MAPeD-NES/SMS/PCE/ZX - Game maps editor
+The MAPeD is a tool for building a game levels for NES/SMS/PCE/ZX games from scratch.
 
 **The main features are:**
 - tiles drawing/composing tools
@@ -17,7 +17,7 @@ The MAPeD is a tool for building a game levels for NES/SMS/PCE games from scratc
 - tile properties editing ( can be used as collisions data etc )
 - **NES:** palette per 1x1 tile support ( MMC5 )
 - import of tiles and game maps from images*
-- export to **NES: CA65/NESasm / SMS: WLA-DX / PCE: CA65/PCEAS** with wide variety of options:
+- export to **NES: CA65/NESasm / SMS: WLA-DX / PCE: CA65/PCEAS / ZX: SjASMPlus** with wide variety of options:
 	- 2x2/4x4 tiles
 	- column/row data order
 	- RLE compression
@@ -27,7 +27,6 @@ The MAPeD is a tool for building a game levels for NES/SMS/PCE games from scratc
 	- level topology options
 	- entities
 	- etc...
-- export to **SjASMPlus** ( ZX Spectrum assembler )
 - export to **JSON** format
 - built-in **Python** script editor for writing custom data export scripts
 - easy data conversion**
@@ -35,7 +34,7 @@ The MAPeD is a tool for building a game levels for NES/SMS/PCE games from scratc
 
 \* Smart import of images with checking of duplicate CHRs/blocks/tiles and flipped CHRs. Automatic palettes applying is supported for all platforms.
 
-\** You can load a **NES/SMS/PCE** project into any MAPeD editor.
+\** You can load a **NES/SMS/PCE/ZX** project into any MAPeD editor.
 
 **Examples of tiles and maps images:** `./data/tiles-maps`
 
@@ -126,7 +125,6 @@ As mentioned before, you need to install Mono on your computer. To run the tools
 
 # Samples
 ## MAPeD-NES
-**NES:**
 
  - `./samples/nes/tilemap_render/bidir_scroll_MMC1_dyn_mirr/`	- bidirectional scroller with dynamic mirroring and CHR bank switching 
  - `./samples/nes/tilemap_render/bidir_scroll_MMC1_vert_mirr/`	- bidirectional scroller with vertical mirroring
@@ -137,7 +135,6 @@ As mentioned before, you need to install Mono on your computer. To run the tools
  - `./samples/nes/tilemap_render/static_screens_MMC5/`	- static screens switching with MMC5 extended attributes support
 
 ## MAPeD-SMS
-**SMS:**
 
  - `./samples/sms/tilemap_render/multidir_scroll/`	- multidirectional scroller 
  - `./samples/sms/tilemap_render/bidir_scroll/`		- bidirectional scroller 
@@ -147,13 +144,12 @@ As mentioned before, you need to install Mono on your computer. To run the tools
  - `./samples/sms/tilemap_render/stat_scr_VDP_data/`	- static screens switching using VDP-ready screens data
 
 ## MAPeD-PCE
-**PCE:**
 
 coming soon...
 
-**ZX Spectrum (MAPeD-NES/SMS/PCE):**
+## MAPeD-ZX (MAPeD-NES/SMS/PCE):**
 
- - `./samples/zx/tilemap_render/` - tilemap renderer with wide variety of settings
+ - `./samples/zx/tilemap_render/` - tilemap renderer with wide variety of settings (see 'MOD_tilemap2x2_clr_render_settings.asm' for details)
 
 ## SPReD-NES
 
@@ -200,11 +196,12 @@ You can use/modify them for free at your own risk without any warranties.
 
 # Third-party libraries
 
-**MAPeD/SPReD:** IronPython for custom data export scripts. Copyright (c) .NET Foundation and Contributors ( Apache License, Version 2.0 )
+**MAPeD/SPReD:** IronPython.
+Copyright (c) .NET Foundation and Contributors ( Apache License, Version 2.0 )
 
 https://ironpython.net
 
-**SPReD:** PNGCS to read PNG images.
+**SPReD:** PNGCS.
 Developed by Hernan J Gonzalez Copyright 2012 ( Apache License, Version 2.0 )
 
 https://github.com/leonbloy/pngcs
