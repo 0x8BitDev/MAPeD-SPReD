@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
  * Date: 24.07.2020
  * Time: 10:25
  */
@@ -59,6 +59,9 @@ namespace MAPeD
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+#if DEF_ZX
+			CBoxConvertColors.Enabled = false;
+#endif
 		}
 	}
 }

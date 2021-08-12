@@ -3,6 +3,7 @@
 /src/MAPeD/MAPeD-NES/obj/*
 /src/MAPeD/MAPeD-SMS/obj/*
 /src/MAPeD/MAPeD-PCE/obj/*
+/src/MAPeD/MAPeD-ZX/obj/*
 /src/MAPeD/.vs/*
 /src/lib/SPSeD.dll
 /src/SPSeD/obj/*

@@ -19,7 +19,15 @@ namespace MAPeD
 	{
 		public event EventHandler NeedGFXUpdate;
 		public event EventHandler UpdateSelectedBlock;
+#if DEF_ZX
+		private utils.ETileViewType	m_view_type		= utils.ETileViewType.tvt_Unknown;
 		
+		public utils.ETileViewType view_type
+		{
+			get { return m_view_type; }
+			set { m_view_type = value; update(); }
+		}
+#endif
 		private tiles_data	m_tiles_data	= null;
 		
 		private int m_selected_quad_ind	= -1;
@@ -110,8 +118,11 @@ namespace MAPeD
 					for( int i = 0; i < utils.CONST_TILE_SIZE; i++ )
 					{
 						tile_block = m_tiles_data.get_tile_block( m_selected_tile_id, i );
-						
+#if DEF_ZX
+						utils.update_block_gfx( tile_block, m_tiles_data, m_gfx, m_pix_box.Width >> 2, m_pix_box.Height >> 2, ( ( i % 2 ) << 6 ), ( ( i >> 1 ) << 6 ), utils.get_draw_block_flags_by_view_type( view_type ) );
+#else
 						utils.update_block_gfx( tile_block, m_tiles_data, m_gfx, m_pix_box.Width >> 2, m_pix_box.Height >> 2, ( ( i % 2 ) << 6 ), ( ( i >> 1 ) << 6 ) );
+#endif
 					}
 				}			
 			

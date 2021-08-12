@@ -46,7 +46,7 @@ namespace MAPeD
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.ExpZXAsmRenderTilesPNG = new System.Windows.Forms.CheckBox();
 			this.ExpZXAsmRenderLevelPNG = new System.Windows.Forms.CheckBox();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.groupBoxColorConversion = new System.Windows.Forms.GroupBox();
 			this.ExpZXAsmInkFactor = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
 			this.ExpZXAsmColorConversionModes = new System.Windows.Forms.ComboBox();
@@ -62,7 +62,7 @@ namespace MAPeD
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
-			this.groupBox4.SuspendLayout();
+			this.groupBoxColorConversion.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.ExpZXAsmInkFactor)).BeginInit();
 			this.groupBox5.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -198,17 +198,17 @@ namespace MAPeD
 			this.ExpZXAsmRenderLevelPNG.Text = "Level .png";
 			this.ExpZXAsmRenderLevelPNG.UseVisualStyleBackColor = true;
 			// 
-			// groupBox4
+			// groupBoxColorConversion
 			// 
-			this.groupBox4.Controls.Add(this.ExpZXAsmInkFactor);
-			this.groupBox4.Controls.Add(this.label2);
-			this.groupBox4.Controls.Add(this.ExpZXAsmColorConversionModes);
-			this.groupBox4.Location = new System.Drawing.Point(117, 106);
-			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(158, 67);
-			this.groupBox4.TabIndex = 10;
-			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "Color Conversion";
+			this.groupBoxColorConversion.Controls.Add(this.ExpZXAsmInkFactor);
+			this.groupBoxColorConversion.Controls.Add(this.label2);
+			this.groupBoxColorConversion.Controls.Add(this.ExpZXAsmColorConversionModes);
+			this.groupBoxColorConversion.Location = new System.Drawing.Point(117, 106);
+			this.groupBoxColorConversion.Name = "groupBoxColorConversion";
+			this.groupBoxColorConversion.Size = new System.Drawing.Size(158, 67);
+			this.groupBoxColorConversion.TabIndex = 10;
+			this.groupBoxColorConversion.TabStop = false;
+			this.groupBoxColorConversion.Text = "Color Conversion";
 			// 
 			// ExpZXAsmInkFactor
 			// 
@@ -359,7 +359,7 @@ namespace MAPeD
 			this.Controls.Add(this.RichTextBoxExportDesc);
 			this.Controls.Add(this.groupBox6);
 			this.Controls.Add(this.groupBox5);
-			this.Controls.Add(this.groupBox4);
+			this.Controls.Add(this.groupBoxColorConversion);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
@@ -374,7 +374,7 @@ namespace MAPeD
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
-			this.groupBox4.ResumeLayout(false);
+			this.groupBoxColorConversion.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.ExpZXAsmInkFactor)).EndInit();
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
@@ -393,7 +393,7 @@ namespace MAPeD
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.ComboBox ExpZXAsmColorConversionModes;
-		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.GroupBox groupBoxColorConversion;
 		private System.Windows.Forms.CheckBox ExpZXAsmGFXDithering;
 		private System.Windows.Forms.CheckBox ExpZXAsmRenderLevelPNG;
 		private System.Windows.Forms.CheckBox ExpZXAsmRenderTilesPNG;

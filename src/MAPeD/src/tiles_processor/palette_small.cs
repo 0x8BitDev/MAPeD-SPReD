@@ -41,8 +41,12 @@ namespace MAPeD
 					m_sel_clr_ind = -1; 
 				} 
 				else 
-				{ 
+				{
+#if DEF_ZX
+					m_sel_clr_ind = ( m_sel_clr_ind < 0 ) ? 0:m_sel_clr_ind;	// the 0 color slot will be active by default on ZX (no opacity color!)
+#else
 					m_sel_clr_ind = ( m_sel_clr_ind < 0 ) ? 1:m_sel_clr_ind;	// the 1st color slot will be active by default
+#endif
 				}
 
 				update();

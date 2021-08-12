@@ -408,12 +408,21 @@ namespace MAPeD
 			return false;
 		}
 			
-		public void layout_data_delete()
+		public void layout_data_delete( bool _global_update = true )
 		{
 			if( layouts_data_pos >= 0 )
 			{
 				m_layouts_data[ layouts_data_pos ].destroy();
-				m_layouts_data.RemoveAt( layouts_data_pos-- );
+				m_layouts_data.RemoveAt( layouts_data_pos );
+				
+				if( _global_update )
+				{
+					--layouts_data_pos;	// here is a global data update
+				}
+				else
+				{
+					--m_layouts_data_pos; // just a class's variable decrement ( silent layout deletion )
+				}
 			}
 		}
 
@@ -843,10 +852,6 @@ namespace MAPeD
 					_status.Report( "Palette" );
 					
 					int i;
-					int plt_n;
-					int data_n;
-					
-					tiles_data data = null;
 					
 					int plt_len 	= platform_data_provider.get_palette_size_by_file_ext( _file_ext );
 					int[] plt_main	= null;
@@ -857,11 +862,8 @@ namespace MAPeD
 					{
 						if( _convert_colors )
 						{
-#if DEF_NES || DEF_SMS
 							plt_main = platform_data_provider.get_palette_by_file_ext( _file_ext );
-#else
-							plt_main = new int[ plt_len ];
-#endif
+							
 							if( _file_ext == utils.CONST_NES_FILE_EXT || _file_ext == utils.CONST_SMS_FILE_EXT )
 							{
 								// load main palette from the project file
@@ -875,29 +877,7 @@ namespace MAPeD
 							}
 						}
 							
-						List< int[] > palettes = null;
-						
-						for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
-						{
-							data = get_tiles_data( data_n );
-							
-							for( plt_n = 0; plt_n < data.palettes_arr.Count; plt_n++ )
-							{
-								palettes = data.palettes_arr[ plt_n ].subpalettes;
-								
-								for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
-								{
-									if( _convert_colors )
-									{
-										palettes[ i >> 2 ][ i & 0x03 ] = utils.find_nearest_color_ind( plt_main[ palettes[ i >> 2 ][ i & 0x03 ] ] );
-									}
-									else
-									{
-										palettes[ i >> 2 ][ i & 0x03 ] = palettes[ i >> 2 ][ i & 0x03 ] & ( utils.CONST_PALETTE_MAIN_NUM_COLORS - 1 );
-									}
-								}
-							}
-						}
+						project_data_converter_provider.get_converter().palettes_processing( _ver, platform_data_provider.get_platform_by_ext( _file_ext ), _convert_colors, this, plt_main );
 							
 						if( _convert_colors )
 						{
@@ -914,9 +894,19 @@ namespace MAPeD
 								_br.ReadBytes( plt_len * 3 );
 							}
 						}
-						
+					}
+#if DEF_NES || DEF_SMS
+					else
+					{
+						palette_group.Instance.load_main_palette( _br );
+					}
+#endif
 #if DEF_FIXED_LEN_PALETTE16_ARR
-						for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
+					// fill missing palette(s)
+					{
+						tiles_data data;
+						
+						for( int data_n = 0; data_n < tiles_data_cnt; data_n++ )
 						{
 							data = get_tiles_data( data_n );
 							
@@ -925,12 +915,6 @@ namespace MAPeD
 								data.palettes_arr.Add( new palette16_data() );
 							}
 						}
-#endif
-					}
-#if DEF_NES || DEF_SMS
-					else
-					{
-						palette_group.Instance.load_main_palette( _br );
 					}
 #endif
 					_progress.Report( utils.calc_progress_val_half( ref load_progress ) );
@@ -957,6 +941,8 @@ namespace MAPeD
 		
 		public void post_load_update()
 		{
+			project_data_converter_provider.get_converter().post_load_data_cleanup();
+			
 			if( entities_data.Count > 0 )
 			{
 				dispatch_event_set_entities_data();

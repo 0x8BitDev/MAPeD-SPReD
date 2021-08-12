@@ -53,7 +53,15 @@ namespace MAPeD
 				update();
 			}
 		}
+#if DEF_ZX
+		private utils.ETileViewType	m_view_type		= utils.ETileViewType.tvt_Unknown;
 		
+		public utils.ETileViewType view_type
+		{
+			get { return m_view_type; }
+			set { m_view_type = value; update(); }
+		}
+#endif
 		private tiles_data	m_data	= null;
 
 		private int m_sel_quad_ind	= -1;
@@ -61,6 +69,8 @@ namespace MAPeD
 		
 		private bool m_drawing_state	= false;
 
+		private int m_CHR_pix_offset = -1;
+		
 		private static readonly byte[] clr_ind_remap_arr = new byte[]
 		{
 			0,1,2,3,
@@ -119,6 +129,8 @@ namespace MAPeD
 			if( e.Button == MouseButtons.Left )
 			{
 				m_drawing_state = false;
+				
+				m_CHR_pix_offset = -1;
 			}
 		}
 
@@ -173,7 +185,21 @@ namespace MAPeD
 					byte clr_slot = (byte)plt.get_palettes_arr()[ plt.active_palette ].color_slot;
 #else
 					byte clr_slot = (byte)( ( plt.active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
-#endif					
+#endif
+
+#if DEF_ZX
+					// paper color
+					byte paper_clr_slot = (byte)( ( plt.paper_active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.paper_active_palette ].color_slot );
+					
+					// apply paper/ink color
+					m_data.update_ink_paper_colors( get_selected_quad_CHR_id(), clr_slot, paper_clr_slot );
+					
+					if( m_data.CHR_bank[ ( ( chr_x << 3 ) + local_x ) + ( ( ( chr_y * utils.CONST_CHR_BANK_PAGE_SIDE ) << 3 ) + local_y * utils.CONST_CHR_BANK_PAGE_SIDE ) ] == clr_slot )
+					{
+						clr_slot = paper_clr_slot;
+					}
+#endif
+
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
 					byte flip_flags = tiles_data.get_block_flags_flip( block_data );
 
@@ -187,9 +213,20 @@ namespace MAPeD
 						local_y = utils.CONST_SPR8x8_SIDE_PIXELS_CNT - local_y - 1;
 					}
 #endif
-					m_data.CHR_bank[ ( ( chr_x << 3 ) + local_x ) + ( ( ( chr_y * utils.CONST_CHR_BANK_PAGE_SIDE ) << 3 ) + local_y * utils.CONST_CHR_BANK_PAGE_SIDE ) ] = clr_slot;
+					int pix_offset = ( ( chr_x << 3 ) + local_x ) + ( ( ( chr_y * utils.CONST_CHR_BANK_PAGE_SIDE ) << 3 ) + local_y * utils.CONST_CHR_BANK_PAGE_SIDE );
 					
-					dispath_event_pixel_changed();
+					if( pix_offset == m_CHR_pix_offset )
+					{
+						return;
+					}
+					else
+					{
+						m_data.CHR_bank[ pix_offset ] = clr_slot;
+						
+						m_CHR_pix_offset = pix_offset;
+					}
+					
+					dispatch_event_pixel_changed();
 					dispatch_event_data_changed();
 					dispatch_event_need_gfx_update();
 				}
@@ -202,7 +239,11 @@ namespace MAPeD
 			}
 			else
 			{
+#if DEF_ZX
+				set_active_palette();
+#else
 				update_palette_list_pos();
+#endif
 			}
 #endif			
 			update();
@@ -218,6 +259,27 @@ namespace MAPeD
 				palette_group.Instance.active_palette = tiles_data.get_block_flags_palette( m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ] );
 #elif DEF_PALETTE16_PER_CHR
 				update_palette_list_pos();
+#endif
+
+#if DEF_ZX
+				byte ink_clr	= 0xff;
+				byte paper_clr	= 0xff;
+				
+				m_data.get_ink_paper_colors( get_selected_quad_CHR_id(), ref ink_clr, ref paper_clr );
+				
+				palette_group plt = palette_group.Instance;
+				
+				if( ink_clr != 0xff )
+				{
+					plt.active_palette = ink_clr >> 2;
+					plt.get_palettes_arr()[ plt.active_palette ].color_slot = ink_clr & 0x03; 
+				}
+				
+				if( paper_clr != 0xff )
+				{
+					plt.active_palette = paper_clr >> 2;
+					plt.get_palettes_arr()[ plt.paper_active_palette ].color_slot = paper_clr & 0x03; 
+				}
 #endif
 			}
 			else
@@ -325,6 +387,14 @@ namespace MAPeD
 						m_data.blocks[ chr_data_ind ] = tiles_data.set_block_flags_palette( palette_group.Instance.active_palette, m_data.blocks[ chr_data_ind ] );
 					}
 				}
+#elif DEF_ZX
+				palette_group plt = palette_group.Instance;
+				
+				byte ink_clr_slot	= ( byte )( ( plt.active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
+				byte paper_clr_slot	= ( byte )( ( plt.paper_active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.paper_active_palette ].color_slot );
+
+				// apply paper/ink color
+				m_data.update_ink_paper_colors( get_selected_quad_CHR_id(), ink_clr_slot, paper_clr_slot );
 #endif
 				dispatch_event_data_changed();
 				dispatch_event_need_gfx_update();
@@ -347,7 +417,9 @@ namespace MAPeD
 				dispatch_event_need_gfx_update();
 				
 				dispatch_event_quad_selected();
-				
+#if DEF_ZX
+				set_active_palette();
+#endif
 				update();
 				
 				update_status_bar();
@@ -366,7 +438,7 @@ namespace MAPeD
 
 		private void update_changes()
 		{
-			dispath_event_pixel_changed();
+			dispatch_event_pixel_changed();
 			dispatch_event_need_gfx_update();
 			dispatch_event_data_changed();
 			
@@ -381,7 +453,11 @@ namespace MAPeD
 			{
 				// draw images...
 				{
+#if DEF_ZX
+					utils.update_block_gfx( m_sel_block_id, m_data, m_gfx, m_pix_box.Width >> 1, m_pix_box.Height >> 1, 0, 0, utils.get_draw_block_flags_by_view_type( view_type ) );
+#else
 					utils.update_block_gfx( m_sel_block_id, m_data, m_gfx, m_pix_box.Width >> 1, m_pix_box.Height >> 1 );
+#endif
 				}			
 			
 				// draw grid
@@ -545,7 +621,7 @@ namespace MAPeD
 			return 0;
 		}
 
-		private void dispath_event_pixel_changed()
+		private void dispatch_event_pixel_changed()
 		{
 			if( PixelChanged != null )
 			{
@@ -627,8 +703,8 @@ namespace MAPeD
 			{
 				switch( _type )
 				{
-					case utils.ETransformType.tt_vflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_VFLIP, m_sel_block_id, m_sel_quad_ind );	} 	return;
-					case utils.ETransformType.tt_hflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_HFLIP, m_sel_block_id, m_sel_quad_ind );	} 	return;
+					case utils.ETransformType.tt_vflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_VFLIP, m_sel_block_id, m_sel_quad_ind );	} 	dispatch_event_need_gfx_update(); return;
+					case utils.ETransformType.tt_hflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_HFLIP, m_sel_block_id, m_sel_quad_ind );	} 	dispatch_event_need_gfx_update(); return;
 				}
 			}
 			else
@@ -745,12 +821,69 @@ namespace MAPeD
 					m_data.from_spr8x8_to_CHR_bank( m_CHR_ids[ CHR_n ], utils.tmp_spr8x8_buff );
 				}
 				
-				dispath_event_pixel_changed();
+				dispatch_event_pixel_changed();
 				dispatch_event_data_changed();
 				dispatch_event_need_gfx_update();
 				
 				update();
 			}
 		}
+#if DEF_ZX
+		public void zx_swap_ink_paper( bool _inv_ink_paper )
+		{
+			if( m_sel_quad_ind >= 0 && m_sel_block_id >= 0 )
+			{
+				Action< int > swap_ink_paper = chr_id => 
+				{
+					byte ink_clr	= 0xff;
+					byte paper_clr	= 0xff;
+
+					m_data.get_ink_paper_colors( chr_id, ref ink_clr, ref paper_clr );
+					
+					if( paper_clr != 0xff )
+					{
+						paper_clr &= 0x07;
+					}
+
+					if( ink_clr != 0xff )
+					{
+						ink_clr |= 0x08;
+					}
+					
+					if( _inv_ink_paper )
+					{
+						m_data.update_ink_paper_colors( chr_id, ink_clr, paper_clr );
+					}
+					else
+					{
+						m_data.update_ink_paper_colors( chr_id, paper_clr, ink_clr );
+					}
+				};
+				
+				if( m_edit_mode == EMode.bem_CHR_select )
+				{
+					swap_ink_paper( get_selected_quad_CHR_id() );
+				}
+				else
+				{
+					ulong chr_ids = get_selected_block_CHRs();
+					
+					for( int i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+					{
+						swap_ink_paper( ( int )( ( chr_ids >> ( i << 4 ) ) & 0xffff ) );
+					}
+				}
+				
+				// update palette slots
+				set_active_palette();
+				
+				dispatch_event_pixel_changed();
+				dispatch_event_data_changed();
+				dispatch_event_need_gfx_update();
+				
+				update();
+			}
+		}
+#endif
 	}
 }

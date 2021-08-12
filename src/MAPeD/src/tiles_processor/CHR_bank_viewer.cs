@@ -21,6 +21,15 @@ namespace MAPeD
 		public event EventHandler CHRSelected;
 		public event EventHandler NeedGFXUpdate;
 
+#if DEF_ZX
+		private utils.ETileViewType	m_view_type		= utils.ETileViewType.tvt_Unknown;
+		
+		public utils.ETileViewType view_type
+		{
+			get { return m_view_type; }
+			set { m_view_type = value; update(); }
+		}
+#endif
 		private int m_copy_spr_ind = -1;
 		
 		private int 	m_sel_ind			= -1;
@@ -55,10 +64,7 @@ namespace MAPeD
 			
 //			update();	- will update in 'CHRSelected -> block_quad_selected'
 			
-			if( CHRSelected != null )
-			{
-				CHRSelected( this, null );
-			}
+			dispatch_event_CHR_selected();
 			
 			if( m_data != null )
 			{
@@ -153,7 +159,11 @@ namespace MAPeD
 					
 					if( draw_colored == true )
 					{
+#if DEF_ZX
+						bmp = utils.create_bitmap( m_data.CHR_bank, utils.CONST_CHR_BANK_PAGE_SIDE, utils.CONST_CHR_BANK_PAGE_SIDE, 0, false, palette_group.Instance.active_palette, utils.get_draw_block_palette_by_view_type( view_type, m_data.palettes_arr[ m_data.palette_pos ] ), utils.CONST_CHR_BANK_PAGE_SIZE * m_active_page );
+#else
 						bmp = utils.create_bitmap( m_data.CHR_bank, utils.CONST_CHR_BANK_PAGE_SIDE, utils.CONST_CHR_BANK_PAGE_SIDE, 0, false, palette_group.Instance.active_palette, m_data.palettes_arr[ m_data.palette_pos ], utils.CONST_CHR_BANK_PAGE_SIZE * m_active_page );
+#endif
 					}
 					else
 					{
@@ -228,8 +238,9 @@ namespace MAPeD
 		
 		public void subscribe_event( palette_group _plt )
 		{
+#if !DEF_ZX
 			_plt.UpdateColor += new EventHandler( update_color );
-			
+#endif
 			palette_small[] plt_arr = _plt.get_palettes_arr();
 			
 			plt_arr[ 0 ].ActivePalette += new EventHandler( update_color );
@@ -261,6 +272,14 @@ namespace MAPeD
 			}
 		}
 		
+		private void dispatch_event_CHR_selected()
+		{
+			if( CHRSelected != null )
+			{
+				CHRSelected( this, null );
+			}
+		}
+
 		public int get_selected_CHR_ind()
 		{
 			return m_sel_ind;
@@ -320,7 +339,11 @@ namespace MAPeD
 					update();
 					
 					dispatch_event_need_gfx_update();
+#if DEF_ZX
+					dispatch_event_CHR_selected();
+#else
 					dispatch_event_data_changed();
+#endif
 				}
 				else
 				{

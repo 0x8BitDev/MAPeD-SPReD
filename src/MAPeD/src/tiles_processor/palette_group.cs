@@ -19,7 +19,9 @@ namespace MAPeD
 	public class palette_group : drawable_base
 	{
 		public event EventHandler NeedGFXUpdate;
+#if !DEF_ZX
 		public event EventHandler UpdateColor;
+#endif
 		
 #if DEF_NES		
 		private int m_sel_clr_ind		= 13;
@@ -28,30 +30,61 @@ namespace MAPeD
 #endif		
 		private int m_active_plt_id		= -1;
 		
+#if DEF_ZX
+		private int m_paper_active_plt_id = -1;
+		
+		public int paper_active_palette
+		{
+			get { return m_paper_active_plt_id; }
+		}
+#endif		
 		public int active_palette
 		{
 			get { return m_active_plt_id; }
 			set 
 			{
+#if DEF_ZX
+				if( value < 2 )
+				{
+					m_active_plt_id = value;
+					
+					if( value >= 0 && m_paper_active_plt_id < 0 )
+					{
+						m_paper_active_plt_id = utils.CONST_ZX_DEFAULT_PAPER_COLOR >> 2;
+						m_plt_arr[ m_paper_active_plt_id ].color_slot = utils.CONST_ZX_DEFAULT_PAPER_COLOR & 0x03;
+					}
+				}
+				else
+				{
+					m_paper_active_plt_id = value;
+				}
+#else
 				m_active_plt_id = value;
-				
+#endif
 				palette_small plt;
 				
 				// reset the active flag of the rest palettes, except of the current one
 				for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
 				{
-					if( i == m_active_plt_id )
+					if( i == value )
 					{
 						plt = m_plt_arr[ i ]; 
 						plt.active = true;
-						
+#if !DEF_ZX
 						m_sel_clr_ind = plt.get_color_inds()[ plt.color_slot ];
-						
+#endif
 						update();
 					}
 					else
 					{
+#if DEF_ZX
+						if( ( value < 2 && i < 2 ) || ( value > 1 && i > 1 ) )
+						{
+							m_plt_arr[ i ].active = false;
+						}
+#else
 						m_plt_arr[ i ].active = false;
+#endif
 					}
 					
 					//m_plt_arr[ i ].active = ( i == m_active_plt_id ) ? true:false;
@@ -156,6 +189,8 @@ namespace MAPeD
 				m_gfx.FillRectangle( utils.brush, ( i >> 2 ) << 4, ( i & 0x03 ) << 4, 16, 16 );
 #elif DEF_PCE	// column ordered data
 				m_gfx.FillRectangle( utils.brush, ( i >> 3 ) << 2, ( i & 0x07 ) << 3, 4, 8 );
+#elif DEF_ZX	// row ordered data
+				m_gfx.FillRectangle( utils.brush, ( i << 5 )%256, ( i >> 3 ) << 5, 32, 32 );
 #endif
 			}
 			
@@ -170,14 +205,25 @@ namespace MAPeD
 #elif DEF_PCE	// column ordered data
 				int x = ( ( m_sel_clr_ind >> 3 ) << 2 );
 				int y = ( ( m_sel_clr_ind % 8  ) << 3 );
+#elif DEF_ZX	// row ordered data
+				int x = 0;
+				int y = ( m_sel_clr_ind >> 3 ) << 5;
 #endif
 
 #if !DEF_PCE
+#if DEF_ZX
+				m_pen.Color = utils.CONST_COLOR_PALETTE_SELECTED_INNER_BORDER;
+				m_gfx.DrawRectangle( m_pen, x+2, y+2, 253, 29 );
+				
+				m_pen.Color = utils.CONST_COLOR_PALETTE_SELECTED_OUTER_BORDER;
+				m_gfx.DrawRectangle( m_pen, x+1, y+1, 255, 31 );
+#else
 				m_pen.Color = utils.CONST_COLOR_PALETTE_SELECTED_INNER_BORDER;
 				m_gfx.DrawRectangle( m_pen, x+2, y+2, 13, 13 );
 				
 				m_pen.Color = utils.CONST_COLOR_PALETTE_SELECTED_OUTER_BORDER;
 				m_gfx.DrawRectangle( m_pen, x+1, y+1, 15, 15 );
+#endif
 #else
 				m_pen.Color = utils.CONST_COLOR_PALETTE_SELECTED_INNER_BORDER;
 				m_gfx.DrawRectangle( m_pen, x+1, y+1, 3, 7 );
@@ -191,6 +237,8 @@ namespace MAPeD
 		
 		private void Layout_MouseClick(object sender, MouseEventArgs e)
 		{
+#if !DEF_ZX
+		
 #if DEF_NES		// row ordered data				
 			int sel_clr_ind = ( e.X >> 4 ) + ( ( e.Y >> 4 ) << 4 );
 #elif DEF_SMS	// column ordered data
@@ -227,9 +275,9 @@ namespace MAPeD
 				{
 					m_plt_arr[ m_active_plt_id ].update_color( m_sel_clr_ind );
 				}
-				
 				dispatch_event_update_color();				
 			}
+#endif //!DEF_ZX
 		}
 
 		private void dispatch_event_need_gfx_update()
@@ -242,11 +290,13 @@ namespace MAPeD
 		
 		private void dispatch_event_update_color()
 		{
+#if !DEF_ZX
 			// update color event
 			if( UpdateColor != null )
 			{
 				UpdateColor( this, System.Windows.Forms.MouseEventArgs.Empty );
 			}
+#endif
 		}
 		
 		public void save_main_palette( BinaryWriter _bw )
@@ -330,13 +380,21 @@ namespace MAPeD
 				if( e.KeyCode == Keys.D3 )
 				{
 					active_palette = 2;
+#if DEF_ZX
+					m_plt_arr[ paper_active_palette ].color_slot = m_plt_arr[ paper_active_palette ].color_slot;
+#else
 					m_plt_arr[ active_palette ].color_slot = m_plt_arr[ active_palette ].color_slot;
+#endif
 				}
 				else
 				if( e.KeyCode == Keys.D4 )
 				{
 					active_palette = 3;
+#if DEF_ZX
+					m_plt_arr[ paper_active_palette ].color_slot = m_plt_arr[ paper_active_palette ].color_slot;
+#else
 					m_plt_arr[ active_palette ].color_slot = m_plt_arr[ active_palette ].color_slot;
+#endif
 				}
 			}
 					

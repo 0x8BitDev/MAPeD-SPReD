@@ -58,7 +58,7 @@ namespace MAPeD
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, bool, long >( export_CHR_data ) );
 #elif DEF_SMS
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, int, long >( export_CHR_data ) );
-#elif DEF_PCE
+#elif DEF_PCE || DEF_ZX
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, long >( export_CHR_data ) );
 #endif			
 			// int get_palette_slots( int _bank_ind )
@@ -365,7 +365,7 @@ namespace MAPeD
 		public long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
 #elif DEF_SMS
 		public long export_CHR_data( int _bank_ind, string _filename, int _bpp )
-#elif DEF_PCE
+#elif DEF_PCE || DEF_ZX
 		public long export_CHR_data( int _bank_ind, string _filename )
 #endif			
 		{
@@ -389,7 +389,7 @@ namespace MAPeD
 					}
 					
 					data_size = data.export_CHR( bw, _bpp );
-#elif DEF_PCE
+#elif DEF_PCE || DEF_ZX
 					data_size = data.export_CHR( bw );
 #endif
 				}

@@ -34,6 +34,12 @@ namespace MAPeD
 						return utils.CONST_PCE_PALETTE_NUM_COLORS;
 					}
 					break;
+
+				case utils.CONST_ZX_FILE_EXT:
+					{
+						return utils.CONST_ZX_PALETTE_NUM_COLORS;
+					}
+					break;
 			}
 			
 			throw new Exception( "platform_data_provider.get_palette_size_by_file_ext(...) : invalid parameter!" );
@@ -60,6 +66,12 @@ namespace MAPeD
 						return utils.CONST_PCE_SCREEN_NUM_WIDTH_TILES * utils.CONST_PCE_SCREEN_NUM_HEIGHT_TILES;
 					}
 					break;
+					
+				case utils.CONST_ZX_FILE_EXT:
+					{
+						return utils.CONST_ZX_SCREEN_NUM_WIDTH_TILES * utils.CONST_ZX_SCREEN_NUM_HEIGHT_TILES;
+					}
+					break;
 			}
 			
 			throw new Exception( "platform_data_provider.get_scr_tiles_cnt_by_file_ext(...) : invalid parameter!" );
@@ -84,6 +96,11 @@ namespace MAPeD
 																0x00aaff, 0x55aaff, 0xaaaaff, 0xffaaff, 0x00ffff, 0x55ffff, 0xaaffff, 0xffffff };
 		
 		private static int[] PCE_palette = null;
+		
+		// 7: flashing, 6: brightness, 3-5: paper color, 0-2: ink color
+		private static int[] ZX_palette = new int[]{  0x000000, 0x0022c7, 0xd62816, 0xd433c7, 0x00c525, 0x00c7c9, 0xccc82a, 0xcacaca,	// not bright
+													  0x000000, 0x002bfb, 0xff331c, 0xff40fc, 0x00f92f, 0x00fbfe, 0xfffc36, 0xffffff };	// bright
+		
 		
 		public static int[] get_palette_by_file_ext( string _file_ext )
 		{
@@ -122,6 +139,12 @@ namespace MAPeD
 						return PCE_palette;
 					}
 					break;
+					
+				case utils.CONST_ZX_FILE_EXT:
+					{
+						return ZX_palette;
+					}
+					break;
 			}
 			
 			throw new Exception( "platform_data_provider.get_palette_by_file_ext(...) : invalid parameter!" );
@@ -148,9 +171,51 @@ namespace MAPeD
 						return utils.EPlatformType.pt_PCE; 
 					}
 					break;
+					
+				case utils.CONST_ZX_FILE_EXT:
+					{
+						return utils.EPlatformType.pt_ZX; 
+					}
+					break;
 			}
 			
 			throw new Exception( "platform_data_provider.get_platform_by_ext(...) : invalid parameter!" );
+		}
+		
+		public static int get_CHR_bank_pages_cnt_by_platform_type( utils.EPlatformType _type )
+		{
+			switch( _type )
+			{
+				case utils.EPlatformType.pt_NES:
+					{
+						return utils.CONST_NES_CHR_BANK_NUM_PAGES;
+					}
+					break;
+					
+				case utils.EPlatformType.pt_SMS:
+					{
+						return utils.CONST_SMS_CHR_BANK_NUM_PAGES;
+					}
+					break;
+					
+				case utils.EPlatformType.pt_PCE:
+					{
+						return utils.CONST_PCE_CHR_BANK_NUM_PAGES; 
+					}
+					break;
+
+				case utils.EPlatformType.pt_ZX:
+					{
+						return utils.CONST_ZX_CHR_BANK_NUM_PAGES;; 
+					}
+					break;
+					
+				default:
+					{
+						throw new Exception( "platform_data_provider.get_CHR_bank_pages_cnt_by_platform_type(...) : unknown platform detected!" );
+					}
+					break;
+			}
 		}
 		
 		private static utils.EPlatformType	m_platform = utils.EPlatformType.pt_UNKNOWN;
@@ -179,6 +244,12 @@ namespace MAPeD
 				case utils.CONST_PLATFORM_PCE:
 					{
 						m_platform = utils.EPlatformType.pt_PCE; 
+					}
+					break;
+
+				case utils.CONST_PLATFORM_ZX:
+					{
+						m_platform = utils.EPlatformType.pt_ZX; 
 					}
 					break;
 					

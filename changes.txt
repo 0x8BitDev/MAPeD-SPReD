@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+12.08.2021 - Added MAPeD-ZX
 07.04.2021 - Optimization and speed-up of work with tiles
 26.02.2021 - Added asynchronous project loading/image importing operations with a progress bar
 16.02.2021 - Added a separate option to import CHRs from images
@@ -10,7 +11,7 @@ MAPeD-NES/SMS/PCE:
 29.01.2021 - Updated Python API v1.4; added mpd_api_ver and mpd_screen_mode
 26.01.2021 - Added 2x2 tile screen mode
 15.01.2021 - Added checking of matched blocks (2x2), to identify similar data (the "Optimization" button)
-11.01.2021 - MAPeD-PCE added
+11.01.2021 - Added MAPeD-PCE
 11.01.2021 - Changed project file format (v3): palette indices BYTE -> INT; blocks data USHORT -> UINT; SMS: changed bit values of block descriptions
 06.01.2021 - SMS: added column ordered palette
 06.01.2021 - Added user defined palettes array
@@ -40,7 +41,7 @@ MAPeD-NES/SMS/PCE:
 30.07.2020 - Added export of matrix layout/marks/entities to ZX exporter
 28.07.2020 - Added buttons to switch between CHR bank's pages
 27.07.2020 - Screen editor: added reset active tile button
-27.07.2020 - MAPeD-SMS added
+27.07.2020 - Added MAPeD-SMS
 
 03.07.2020 v0.58b
 
@@ -92,7 +93,7 @@ SPReD-NES/SMS:
 29.06.2020 - Added a project statistics
 28.06.2020 - SMS samples added
 06.07.2019 - Quick guide added
-14.06.2019 - SPReD-SMS added
+14.06.2019 - Added SPReD-SMS
 05.06.2019 - Added a Python script editor, an API help and a sample script
 
 17.05.2019 v0.54b

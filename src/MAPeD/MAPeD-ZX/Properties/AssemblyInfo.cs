@@ -9,11 +9,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NES Game Maps Editor")]
-[assembly: AssemblyDescription("NES Game Maps Editor")]
+[assembly: AssemblyTitle("ZX Spectrum Game Maps Editor")]
+[assembly: AssemblyDescription("ZX Spectrum Game Maps Editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("0x8BitDev")]
-[assembly: AssemblyProduct("MAPeD-NES")]
+[assembly: AssemblyProduct("MAPeD-ZX")]
 [assembly: AssemblyCopyright("Copyright © 2017-2021 by 0x8BitDev ( MIT license. See LICENSE.txt )")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

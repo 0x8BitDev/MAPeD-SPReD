@@ -11,8 +11,8 @@ defines:
 DEF_SCREEN_HEIGHT_7d5_TILES		(NES)
 DEF_TILE_DRAW_FAST
 DEF_FLIP_BLOCKS_SPR_BY_FLAGS	(SMS)
-DEF_PALETTE16_PER_CHR			(PCE/SMS)
-DEF_FIXED_LEN_PALETTE16_ARR		(PCE/SMS)
+DEF_PALETTE16_PER_CHR			(PCE/SMS/ZX)
+DEF_FIXED_LEN_PALETTE16_ARR		(PCE/SMS/ZX)
 */
 
 using System;
@@ -37,6 +37,8 @@ namespace MAPeD
 		private const bool CONST_DEV_BUILD_FLAG	= true;
 		private const bool CONST_BETA_FLAG		= true; 
 
+		public const string CONST_APP_NAME			= "MAPeD";
+		
 		public const string CONST_PLATFORM_NES		= "NES";
 		public const string CONST_PLATFORM_NES_DESC	= "Nintendo Intertainment System";
 		
@@ -46,15 +48,36 @@ namespace MAPeD
 		public const string CONST_PLATFORM_PCE		= "PCE";
 		public const string CONST_PLATFORM_PCE_DESC	= "PC-Engine / TurboGrafx-16";
 
-		public const string CONST_NES_FILE_EXT = "mapednes";
-		public const string CONST_SMS_FILE_EXT = "mapedsms";
-		public const string CONST_PCE_FILE_EXT = "mapedpce";
+		public const string CONST_PLATFORM_ZX		= "ZX";
+		public const string CONST_PLATFORM_ZX_DESC	= "ZX Spectrum";
+
+		public const string CONST_NES_FILE_EXT	= "mapednes";
+		public const string CONST_SMS_FILE_EXT	= "mapedsms";
+		public const string CONST_PCE_FILE_EXT	= "mapedpce";
+		public const string CONST_ZX_FILE_EXT	= "mapedzx";
+		
+		public static readonly string[] CONST_PLATFORMS_FILE_EXT_ARR = new string[]
+		{
+			CONST_NES_FILE_EXT,
+			CONST_SMS_FILE_EXT,
+			CONST_PCE_FILE_EXT,
+			CONST_ZX_FILE_EXT,
+		};
+		
+		public static readonly string[] CONST_FULL_APP_NAMES_ARR = new string[]
+		{
+			CONST_APP_NAME + "-" + CONST_PLATFORM_NES,
+			CONST_APP_NAME + "-" + CONST_PLATFORM_SMS,
+			CONST_APP_NAME + "-" + CONST_PLATFORM_PCE,
+			CONST_APP_NAME + "-" + CONST_PLATFORM_ZX,
+		};
 		
 		public enum EPlatformType
 		{
 			pt_NES = 0,
 			pt_SMS,
 			pt_PCE,
+			pt_ZX,
 			pt_UNKNOWN
 		}
 		
@@ -67,6 +90,9 @@ namespace MAPeD
 #elif DEF_PCE
 		public const string	CONST_PLATFORM		= CONST_PLATFORM_PCE;
 		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_PCE_DESC;
+#elif DEF_ZX
+		public const string	CONST_PLATFORM		= CONST_PLATFORM_ZX;
+		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_ZX_DESC;
 #else
 		public const string	CONST_PLATFORM		= "UNKNOWN";
 		public const string	CONST_PLATFORM_DESC	= "UNKNOWN";
@@ -115,12 +141,12 @@ namespace MAPeD
 		    }
 		}
 
-		private readonly static Version ver	= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-		public static string build_str		= "Build: " + ver.Build;
-		public static DateTime build_date 	= new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
+		private static readonly Version ver	= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+		public static readonly string build_str		= "Build: " + ver.Build;
+		public static readonly DateTime build_date 	= new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
 
-		public static string CONST_APP_VER	= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev":"" ) + CONST_BUILD_CFG;
-		public const string CONST_APP_NAME	= "MAPeD-" + CONST_PLATFORM;
+		public static readonly string CONST_APP_VER		= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev":"" ) + CONST_BUILD_CFG;
+		public static readonly string CONST_FULL_APP_NAME	= CONST_FULL_APP_NAMES_ARR[ ( int )platform_data_provider.get_platform_type() ];
 		
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'M';
 		public const byte CONST_PROJECT_FILE_VER	= 5;
@@ -149,6 +175,7 @@ namespace MAPeD
 		public const int CONST_NES_CHR_BANK_NUM_PAGES	= 1;	// 1x4K (native)
 		public const int CONST_SMS_CHR_BANK_NUM_PAGES	= 2;	// 2x8K (native)
 		public const int CONST_PCE_CHR_BANK_NUM_PAGES	= 8;	// 8x8K (native)
+		public const int CONST_ZX_CHR_BANK_NUM_PAGES	= 4;	// 4x2K
 		
 		public const int CONST_NES_SCREEN_NUM_WIDTH_TILES	= 8;
 		public const int CONST_NES_SCREEN_NUM_HEIGHT_TILES	= 8;
@@ -161,6 +188,10 @@ namespace MAPeD
 		public const int CONST_PCE_SCREEN_NUM_WIDTH_TILES	= 8;
 		public const int CONST_PCE_SCREEN_NUM_HEIGHT_TILES	= 7;		
 		public const int CONST_PCE_PALETTE_NUM_COLORS		= 512;
+
+		public const int CONST_ZX_SCREEN_NUM_WIDTH_TILES	= 8;
+		public const int CONST_ZX_SCREEN_NUM_HEIGHT_TILES	= 6;		
+		public const int CONST_ZX_PALETTE_NUM_COLORS		= 16;
 		
 #if DEF_NES		
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 16;
@@ -168,6 +199,8 @@ namespace MAPeD
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
 #elif DEF_PCE
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
+#elif DEF_ZX
+		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 9;	// 8 - CHR data + 1 - color data
 #endif		
 		
 #if DEF_NES		
@@ -210,6 +243,45 @@ namespace MAPeD
 		public const int CONST_PALETTE16_ARR_LEN		= 16;	//DEF_FIXED_LEN_PALETTE16_ARR
 		
 		public const string CONST_FILE_EXT				= CONST_PCE_FILE_EXT;
+#elif DEF_ZX
+		public const int CONST_SCREEN_NUM_WIDTH_TILES	= CONST_ZX_SCREEN_NUM_WIDTH_TILES;
+		public const int CONST_SCREEN_NUM_HEIGHT_TILES	= CONST_ZX_SCREEN_NUM_HEIGHT_TILES;
+		
+		public const int CONST_SCREEN_NUM_WIDTH_BLOCKS	= CONST_SCREEN_NUM_WIDTH_TILES << 1;
+		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_SCREEN_NUM_HEIGHT_TILES << 1;
+		
+		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_ZX_CHR_BANK_NUM_PAGES;
+		
+		public const int CONST_PALETTE_MAIN_NUM_COLORS	= CONST_ZX_PALETTE_NUM_COLORS;
+		
+		public const int CONST_PALETTE16_ARR_LEN		= 2;	//DEF_FIXED_LEN_PALETTE16_ARR
+		
+		public const string CONST_FILE_EXT				= CONST_ZX_FILE_EXT;
+		
+		public const byte CONST_ZX_DEFAULT_PAPER_COLOR	= 15;
+
+		private const uint CONST_DRAW_BLOCK_FLAGS_BW		= 0x01;
+		private const uint CONST_DRAW_BLOCK_FLAGS_INV_BW	= 0x02;
+		
+		private const uint CONST_ZX_PALETTE_BW			= 0;	// black and white mode
+		private const uint CONST_ZX_PALETTE_INV_BW		= 1;	// inverse black and white mode
+		
+		private static palette16_data[] zx_alt_palettes	= new palette16_data[ 2 ]{	new palette16_data( new int[ 16 ]{ 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 7, 7, 7 } ),
+																					new palette16_data( new int[ 16 ]{ 7, 7, 7, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0 } ) };
+		public static uint get_draw_block_flags_by_view_type( ETileViewType _view_type )
+		{
+			return ( _view_type == ETileViewType.tvt_BW ) ? CONST_DRAW_BLOCK_FLAGS_BW:( _view_type == ETileViewType.tvt_Inv_BW ) ? CONST_DRAW_BLOCK_FLAGS_INV_BW:0;
+		}
+		
+		public static palette16_data get_draw_block_palette_by_view_type( ETileViewType _view_type, palette16_data _default_plt )
+		{
+			return ( _view_type == ETileViewType.tvt_BW ) ? zx_alt_palettes[ CONST_ZX_PALETTE_BW ]:( _view_type == ETileViewType.tvt_Inv_BW ) ? zx_alt_palettes[ CONST_ZX_PALETTE_INV_BW ]:_default_plt;
+		}
+		
+		public static palette16_data get_draw_block_palette_by_draw_block_flags( uint _flags )
+		{
+			return ( _flags == CONST_DRAW_BLOCK_FLAGS_BW ) ? zx_alt_palettes[ CONST_ZX_PALETTE_BW ]:( _flags == CONST_DRAW_BLOCK_FLAGS_INV_BW ) ? zx_alt_palettes[ CONST_ZX_PALETTE_INV_BW ]:null;
+		}
 #endif
 
 		public const int CONST_SCREEN_TILES_SIZE		= 64;	// pixels
@@ -357,6 +429,21 @@ namespace MAPeD
 			tt_rotate,
 		};
 		
+		public enum ETileViewType
+		{
+			tvt_Unknown		= -1,
+			
+			tvt_Graphics	= 0,
+			tvt_ObjectId	= 1,
+			tvt_Number		= 2,
+			tvt_TilesUsage	= 3,
+			tvt_BlocksUsage	= 4,
+#if DEF_ZX
+			tvt_BW			= 5,
+			tvt_Inv_BW		= 6,
+#endif
+		};
+		
 		private static void flip_bmp( Bitmap _bmp, byte _flags )
 		{
 			if( ( _flags & CONST_CHR_ATTR_FLAG_HFLIP ) == CONST_CHR_ATTR_FLAG_HFLIP )
@@ -431,19 +518,21 @@ namespace MAPeD
 			return bmp;
 		}
 		
-		public static void update_block_gfx( int _block_id, tiles_data _data, Graphics _gfx, int _img_half_width, int _img_half_height, int _x_offs = 0, int _y_offs = 0 )
+		public static void update_block_gfx( int _block_id, tiles_data _data, Graphics _gfx, int _img_half_width, int _img_half_height, int _x_offs = 0, int _y_offs = 0, uint _flags = 0 )
 		{
 			Bitmap 	bmp;
 			
 			uint 	chr_data;
-			byte 	flip_flag = 0;
-			int		plt_ind = -1;
-			
+			byte 	flip_flag	= 0;
+			int		plt_ind		= -1;
+#if DEF_ZX
+			palette16_data zx_plt = get_draw_block_palette_by_draw_block_flags( _flags );
+#endif
 			palette16_data plt16 = null;
 			
 			for( int j = 0; j < utils.CONST_BLOCK_SIZE; j++ )
 			{
-				chr_data = _data.blocks[ ( _block_id << 2 ) + j ];				
+				chr_data = _data.blocks[ ( _block_id << 2 ) + j ];
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
 				flip_flag 	= tiles_data.get_block_flags_flip( chr_data );
 #endif
@@ -453,6 +542,9 @@ namespace MAPeD
 
 #if DEF_PALETTE16_PER_CHR
 				plt16 = _data.palettes_arr[ tiles_data.get_block_flags_palette( chr_data ) ];
+#if DEF_ZX
+				plt16 = ( zx_plt != null ) ? zx_plt:plt16;
+#endif
 #else
 				plt16 = _data.palettes_arr[ _data.palette_pos ];
 #endif
@@ -585,7 +677,7 @@ namespace MAPeD
 			string comment = ( _C_exp == true ) ? "//":";";
 			
 			_sw.WriteLine( comment + "#######################################################\n" + comment );
-			_sw.WriteLine( comment + " Generated by " + utils.CONST_APP_NAME + " Copyright 2017-" + DateTime.Now.Year + " 0x8BitDev\n" + comment );
+			_sw.WriteLine( comment + " Generated by " + utils.CONST_FULL_APP_NAME + " Copyright 2017-" + DateTime.Now.Year + " 0x8BitDev\n" + comment );
 			_sw.WriteLine( comment + "#######################################################\n" );
 		}
 		

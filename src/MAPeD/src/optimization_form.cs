@@ -212,8 +212,14 @@ namespace MAPeD
 					
 					// the last CHR is an empty space
 					{
+#if DEF_ZX
+						for( int i = 0; i < img_buff.Length; i++ )
+						{
+							img_buff[ i ] = utils.CONST_ZX_DEFAULT_PAPER_COLOR;
+						}
+#else
 						Array.Clear( img_buff, 0, utils.CONST_SPR8x8_TOTAL_PIXELS_CNT );
-						
+#endif						
 						_data.from_spr8x8_to_CHR_bank( utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1, img_buff  );
 					}
 					

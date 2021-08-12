@@ -182,6 +182,8 @@ namespace MAPeD
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
+			this.LabelPalette12 = new System.Windows.Forms.Label();
+			this.LabelPalette34 = new System.Windows.Forms.Label();
 			this.GrpBoxBlockEditor = new System.Windows.Forms.GroupBox();
 			this.PBoxBlockEditor = new System.Windows.Forms.PictureBox();
 			this.ContextMenuBlockEditor = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -198,6 +200,8 @@ namespace MAPeD
 			this.BtnBlockReserveCHRs = new System.Windows.Forms.Button();
 			this.BtnBlockRotate = new System.Windows.Forms.Button();
 			this.LabelObjId = new System.Windows.Forms.Label();
+			this.BtnInvInk = new System.Windows.Forms.Button();
+			this.BtnSwapInkPaper = new System.Windows.Forms.Button();
 			this.BtnEditModeDraw = new System.Windows.Forms.Button();
 			this.BtnUpdateGFX = new System.Windows.Forms.Button();
 			this.BtnEditModeSelectCHR = new System.Windows.Forms.Button();
@@ -359,6 +363,9 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.ZXToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+			this.ZXSwapInkPaperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ZXInvertImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ContextMenuEntitiesTreeGroup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
@@ -653,7 +660,10 @@ namespace MAPeD
 									this.shiftTransparencyToolStripMenuItem,
 									this.shiftColorsToolStripMenuItem,
 									this.toolStripSeparator24,
-									this.reserveCHRsToolStripMenuItem});
+									this.reserveCHRsToolStripMenuItem,
+									this.ZXToolStripSeparator,
+									this.ZXSwapInkPaperToolStripMenuItem,
+									this.ZXInvertImageToolStripMenuItem});
 			this.blocksToolStripMenuItem.Name = "blocksToolStripMenuItem";
 			this.blocksToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
 			this.blocksToolStripMenuItem.Text = "&Blocks";
@@ -1582,6 +1592,8 @@ namespace MAPeD
 			this.GrpBoxPalettes.Controls.Add(this.label3);
 			this.GrpBoxPalettes.Controls.Add(this.label2);
 			this.GrpBoxPalettes.Controls.Add(this.label1);
+			this.GrpBoxPalettes.Controls.Add(this.LabelPalette12);
+			this.GrpBoxPalettes.Controls.Add(this.LabelPalette34);
 			this.GrpBoxPalettes.Location = new System.Drawing.Point(2, 348);
 			this.GrpBoxPalettes.Name = "GrpBoxPalettes";
 			this.GrpBoxPalettes.Size = new System.Drawing.Size(276, 231);
@@ -1722,6 +1734,31 @@ namespace MAPeD
 			this.label1.TabIndex = 8;
 			this.label1.Text = "1:";
 			// 
+			// LabelPalette12
+			// 
+			this.LabelPalette12.BackColor = System.Drawing.Color.Silver;
+			this.LabelPalette12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.LabelPalette12.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.LabelPalette12.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.LabelPalette12.Location = new System.Drawing.Point(5, 23);
+			this.LabelPalette12.Name = "LabelPalette12";
+			this.LabelPalette12.Size = new System.Drawing.Size(16, 20);
+			this.LabelPalette12.TabIndex = 8;
+			this.LabelPalette12.Text = "i";
+			this.LabelPalette12.Visible = false;
+			// 
+			// LabelPalette34
+			// 
+			this.LabelPalette34.BackColor = System.Drawing.Color.Red;
+			this.LabelPalette34.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.LabelPalette34.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+			this.LabelPalette34.Location = new System.Drawing.Point(5, 52);
+			this.LabelPalette34.Name = "LabelPalette34";
+			this.LabelPalette34.Size = new System.Drawing.Size(16, 20);
+			this.LabelPalette34.TabIndex = 8;
+			this.LabelPalette34.Text = "p";
+			this.LabelPalette34.Visible = false;
+			// 
 			// GrpBoxBlockEditor
 			// 
 			this.GrpBoxBlockEditor.Controls.Add(this.PBoxBlockEditor);
@@ -1729,6 +1766,8 @@ namespace MAPeD
 			this.GrpBoxBlockEditor.Controls.Add(this.BtnBlockReserveCHRs);
 			this.GrpBoxBlockEditor.Controls.Add(this.BtnBlockRotate);
 			this.GrpBoxBlockEditor.Controls.Add(this.LabelObjId);
+			this.GrpBoxBlockEditor.Controls.Add(this.BtnInvInk);
+			this.GrpBoxBlockEditor.Controls.Add(this.BtnSwapInkPaper);
 			this.GrpBoxBlockEditor.Controls.Add(this.BtnEditModeDraw);
 			this.GrpBoxBlockEditor.Controls.Add(this.BtnUpdateGFX);
 			this.GrpBoxBlockEditor.Controls.Add(this.BtnEditModeSelectCHR);
@@ -1851,7 +1890,7 @@ namespace MAPeD
 			this.CBoxBlockObjId.Location = new System.Drawing.Point(225, 333);
 			this.CBoxBlockObjId.Name = "CBoxBlockObjId";
 			this.CBoxBlockObjId.Size = new System.Drawing.Size(40, 21);
-			this.CBoxBlockObjId.TabIndex = 23;
+			this.CBoxBlockObjId.TabIndex = 25;
 			this.CBoxBlockObjId.SelectionChangeCommitted += new System.EventHandler(this.CBoxBlockObjIdChanged_Event);
 			// 
 			// BtnBlockReserveCHRs
@@ -1859,7 +1898,7 @@ namespace MAPeD
 			this.BtnBlockReserveCHRs.Location = new System.Drawing.Point(10, 334);
 			this.BtnBlockReserveCHRs.Name = "BtnBlockReserveCHRs";
 			this.BtnBlockReserveCHRs.Size = new System.Drawing.Size(93, 22);
-			this.BtnBlockReserveCHRs.TabIndex = 19;
+			this.BtnBlockReserveCHRs.TabIndex = 23;
 			this.BtnBlockReserveCHRs.Text = "Reserve CHRs";
 			this.BtnBlockReserveCHRs.UseVisualStyleBackColor = true;
 			this.BtnBlockReserveCHRs.Click += new System.EventHandler(this.BtnBlockReserveCHRsClick_Event);
@@ -1870,7 +1909,7 @@ namespace MAPeD
 			this.BtnBlockRotate.Location = new System.Drawing.Point(10, 309);
 			this.BtnBlockRotate.Name = "BtnBlockRotate";
 			this.BtnBlockRotate.Size = new System.Drawing.Size(93, 20);
-			this.BtnBlockRotate.TabIndex = 18;
+			this.BtnBlockRotate.TabIndex = 20;
 			this.BtnBlockRotate.Text = "Rotate";
 			this.BtnBlockRotate.UseVisualStyleBackColor = false;
 			this.BtnBlockRotate.Click += new System.EventHandler(this.BtnBlockRotateClick_Event);
@@ -1883,13 +1922,37 @@ namespace MAPeD
 			this.LabelObjId.TabIndex = 0;
 			this.LabelObjId.Text = "Property Id:";
 			// 
+			// BtnInvInk
+			// 
+			this.BtnInvInk.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
+			this.BtnInvInk.Location = new System.Drawing.Point(106, 334);
+			this.BtnInvInk.Name = "BtnInvInk";
+			this.BtnInvInk.Size = new System.Drawing.Size(49, 22);
+			this.BtnInvInk.TabIndex = 24;
+			this.BtnInvInk.Text = "Invert";
+			this.BtnInvInk.UseVisualStyleBackColor = false;
+			this.BtnInvInk.Visible = false;
+			this.BtnInvInk.Click += new System.EventHandler(this.BtnInvInkClick_Event);
+			// 
+			// BtnSwapInkPaper
+			// 
+			this.BtnSwapInkPaper.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
+			this.BtnSwapInkPaper.Location = new System.Drawing.Point(106, 309);
+			this.BtnSwapInkPaper.Name = "BtnSwapInkPaper";
+			this.BtnSwapInkPaper.Size = new System.Drawing.Size(49, 20);
+			this.BtnSwapInkPaper.TabIndex = 21;
+			this.BtnSwapInkPaper.Text = "I <-> P";
+			this.BtnSwapInkPaper.UseVisualStyleBackColor = false;
+			this.BtnSwapInkPaper.Visible = false;
+			this.BtnSwapInkPaper.Click += new System.EventHandler(this.BtnSwapInkPaperClick_Event);
+			// 
 			// BtnEditModeDraw
 			// 
 			this.BtnEditModeDraw.BackColor = System.Drawing.Color.White;
 			this.BtnEditModeDraw.Location = new System.Drawing.Point(217, 283);
 			this.BtnEditModeDraw.Name = "BtnEditModeDraw";
 			this.BtnEditModeDraw.Size = new System.Drawing.Size(49, 20);
-			this.BtnEditModeDraw.TabIndex = 21;
+			this.BtnEditModeDraw.TabIndex = 19;
 			this.BtnEditModeDraw.Text = "Draw";
 			this.BtnEditModeDraw.UseVisualStyleBackColor = true;
 			this.BtnEditModeDraw.Click += new System.EventHandler(this.DrawToolStripMenuItemClick_Event);
@@ -1911,7 +1974,7 @@ namespace MAPeD
 			this.BtnEditModeSelectCHR.Location = new System.Drawing.Point(158, 283);
 			this.BtnEditModeSelectCHR.Name = "BtnEditModeSelectCHR";
 			this.BtnEditModeSelectCHR.Size = new System.Drawing.Size(54, 20);
-			this.BtnEditModeSelectCHR.TabIndex = 20;
+			this.BtnEditModeSelectCHR.TabIndex = 18;
 			this.BtnEditModeSelectCHR.Text = "Select";
 			this.BtnEditModeSelectCHR.UseVisualStyleBackColor = true;
 			this.BtnEditModeSelectCHR.Click += new System.EventHandler(this.SelectCHRToolStripMenuItemClick_Event);
@@ -3519,6 +3582,29 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
 			// 
+			// ZXToolStripSeparator
+			// 
+			this.ZXToolStripSeparator.Name = "ZXToolStripSeparator";
+			this.ZXToolStripSeparator.Size = new System.Drawing.Size(175, 6);
+			this.ZXToolStripSeparator.Visible = false;
+			// 
+			// ZXSwapInkPaperToolStripMenuItem
+			// 
+			this.ZXSwapInkPaperToolStripMenuItem.Name = "ZXSwapInkPaperToolStripMenuItem";
+			this.ZXSwapInkPaperToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.ZXSwapInkPaperToolStripMenuItem.Text = "S&wap Ink to Paper";
+			this.ZXSwapInkPaperToolStripMenuItem.Visible = false;
+			this.ZXSwapInkPaperToolStripMenuItem.Click += new System.EventHandler(this.BtnSwapInkPaperClick_Event);
+			// 
+			// ZXInvertImageToolStripMenuItem
+			// 
+			this.ZXInvertImageToolStripMenuItem.Name = "ZXInvertImageToolStripMenuItem";
+			this.ZXInvertImageToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.I)));
+			this.ZXInvertImageToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.ZXInvertImageToolStripMenuItem.Text = "&Invert Image";
+			this.ZXInvertImageToolStripMenuItem.Visible = false;
+			this.ZXInvertImageToolStripMenuItem.Click += new System.EventHandler(this.BtnInvInkClick_Event);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3621,6 +3707,13 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem ZXInvertImageToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ZXSwapInkPaperToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator ZXToolStripSeparator;
+		private System.Windows.Forms.Button BtnInvInk;
+		private System.Windows.Forms.Button BtnSwapInkPaper;
+		private System.Windows.Forms.Label LabelPalette34;
+		private System.Windows.Forms.Label LabelPalette12;
 		private System.Windows.Forms.SplitContainer splitContainer6;
 		private System.Windows.Forms.SplitContainer splitContainer5;
 		private System.Windows.Forms.SplitContainer splitContainer4;

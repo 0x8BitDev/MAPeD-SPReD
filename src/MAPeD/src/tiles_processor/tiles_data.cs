@@ -33,6 +33,11 @@ namespace MAPeD
 		public int[] m_palette1	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 4, 15+64, 15+128, 15+192 };
 		public int[] m_palette2	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 40, 40+72, 56+128, 56+192 };
 		public int[] m_palette3	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 192, 192+64, 192+128, 192+192 };
+#elif DEF_ZX
+		public int[] m_palette0	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 0, 1, 2, 3 };
+		public int[] m_palette1	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 4, 5, 6, 7 };
+		public int[] m_palette2	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 0, 1, 2, 3 };
+		public int[] m_palette3	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 4, 5, 6, 7 };
 #endif
 		private List< int[] > m_subpalettes	= null;
 		
@@ -54,6 +59,19 @@ namespace MAPeD
 				return m_subpalettes;  
 			}
 			set {}
+		}
+		
+		public palette16_data()
+		{
+			//...
+		}
+		
+		public palette16_data(	int[] _arr )
+		{
+			for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
+			{
+				subpalettes[ i >> 2 ][ i & 0x03 ] = _arr[ i ];
+			}
 		}
 		
 		public void reset()
@@ -200,11 +218,17 @@ namespace MAPeD
 			set {}
 		}
 		
-		public tiles_data()
+		public tiles_data( bool _temp_data = false )
 		{
-			++m_id;
-			
-			name = m_id.ToString();
+			if( !_temp_data )
+			{
+				++m_id;
+				name = m_id.ToString();
+			}
+			else
+			{
+				name = "temp";
+			}
 			
 #if DEF_FIXED_LEN_PALETTE16_ARR
 			palettes_create_fixed_arr();
@@ -219,11 +243,21 @@ namespace MAPeD
 			
 			m_patterns_data	= new Dictionary< string, List< pattern_data > >( 10 );
 			m_patterns_data.Add( "MAIN", new List< pattern_data >() );
+			
+#if DEF_ZX
+			for( int i = 0; i < m_CHR_bank.Length; i++ )
+			{
+				m_CHR_bank[ i ] = utils.CONST_ZX_DEFAULT_PAPER_COLOR;
+			}
+#endif
 		}
 		
-		public void destroy()
+		public void destroy( bool _temp_data = false )
 		{
-			--m_id;
+			if( !_temp_data )
+			{
+				--m_id;
+			}
 			
 			m_CHR_bank 	= null;
 
@@ -250,6 +284,13 @@ namespace MAPeD
 			}
 			
 			m_palette_pos = 0;
+#if DEF_ZX	
+			// bright colors palette
+			for( int i = 0; i < 16; i++ )
+			{
+				m_palettes[ 1 ].subpalettes[ i >> 2 ][ i & 0x03 ] += 8;
+			}
+#endif
 		}
 #endif
 		private void palettes_clear_arr()
@@ -866,7 +907,52 @@ namespace MAPeD
 			
 			return -1;
 		}
+#if DEF_ZX
+		public void update_ink_paper_colors( int _chr_id, byte _ink_clr, byte _paper_clr )
+		{
+			// apply paper/ink color
+			CHR_bank_spr8x8_change_proc( _chr_id, delegate( byte _pix ) 
+			{
+				if( ( ( int )_pix & 0x08 ) == 0x08 )
+				{
+					if( _paper_clr != 0xff )
+					{
+						return ( byte )_paper_clr;
+					}
+				}
+				else
+				{
+					if( _ink_clr != 0xff )
+					{
+						return ( byte )_ink_clr;
+					}
+				}
+				
+				return _pix;
+			});
+		}
 		
+		public void get_ink_paper_colors( int _chr_id, ref byte _ink_clr, ref byte _paper_clr )
+		{
+			byte ink	= 0xff;
+			byte paper	= 0xff;
+			
+			CHR_bank_spr8x8_enum_proc( _chr_id, delegate( byte _pix ) 
+			{
+				if( ( ( int )_pix & 0x08 ) == 0x08 )
+				{
+					paper = _pix;
+				}
+				else
+				{
+					ink = _pix;
+				}
+			});
+			
+			_ink_clr	= ink;
+			_paper_clr	= paper;
+		}
+#endif		
 		public void from_CHR_bank_to_spr8x8( int _chr_id, byte[] _img_buff, int _img_buff_offset = 0 )
 		{
 			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_PAGE_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
@@ -887,7 +973,28 @@ namespace MAPeD
 			}
 		}
 		
+		public void CHR_bank_spr8x8_change_proc( int _chr_id, Func< byte, byte > _func )
+		{
+			int pix_ind;
+			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_PAGE_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
+			
+			for( int i = 0; i < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; i++ )
+			{
+				for( int j = 0; j < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; j++ )
+				{
+					pix_ind = chr_offset + i * utils.CONST_CHR_BANK_PAGE_SIDE + j;
+					
+					m_CHR_bank[ pix_ind ] = _func( m_CHR_bank[ pix_ind ] );
+				}
+			}
+		}
+
 		public void fill_CHR_bank_spr8x8_by_color_ind( int _chr_id, int _clr_ind )
+		{
+			CHR_bank_spr8x8_change_proc( _chr_id, delegate( byte _pix ) { return (byte)_clr_ind; } );
+		}
+
+		public void CHR_bank_spr8x8_enum_proc( int _chr_id, Action< byte > _func )
 		{
 			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_PAGE_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
 			
@@ -895,7 +1002,7 @@ namespace MAPeD
 			{
 				for( int j = 0; j < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; j++ )
 				{
-					m_CHR_bank[ chr_offset + i * utils.CONST_CHR_BANK_PAGE_SIDE + j ] = (byte)_clr_ind;
+					_func( m_CHR_bank[ chr_offset + i * utils.CONST_CHR_BANK_PAGE_SIDE + j ] );
 				}
 			}
 		}
@@ -904,15 +1011,14 @@ namespace MAPeD
 		{
 			int sum = 0;
 			
-			int chr_offset = ( ( _chr_id >> 4 ) * ( utils.CONST_CHR_BANK_PAGE_SIDE << 3 ) ) + ( ( _chr_id % 16 ) << 3 );
-			
-			for( int i = 0; i < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; i++ )
+			CHR_bank_spr8x8_enum_proc( _chr_id, delegate( byte _pix )
 			{
-				for( int j = 0; j < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; j++ )
-				{
-					sum += m_CHR_bank[ chr_offset + i * utils.CONST_CHR_BANK_PAGE_SIDE + j ];
-				}
-			}
+#if DEF_ZX
+				sum += ( ( ( int )_pix & 0x08 ) == 0x08 ) ? 0:1;
+#else
+				sum += _pix;
+#endif
+			});
 			
 			return sum;
 		}
@@ -1189,20 +1295,24 @@ namespace MAPeD
 		public long export_CHR( BinaryWriter _bw, bool _save_padding = false )
 #elif DEF_SMS
 		public long export_CHR( BinaryWriter _bw, int _bpp )
-#elif DEF_PCE
+#elif DEF_PCE || DEF_ZX
 		public long export_CHR( BinaryWriter _bw )
 #endif			
 		{
 			int i;
-			int j;
 			int x;
 			int y;
 			int val;
 
-#if DEF_NES || DEF_SMS			
+#if DEF_NES || DEF_SMS
+			int j;
 			byte data;
 #elif DEF_PCE
+			int j;
 			ushort data;
+			int x_pos;
+#elif DEF_ZX
+			byte data;
 			int x_pos;
 #endif
 #if DEF_SMS
@@ -1271,6 +1381,22 @@ namespace MAPeD
 						
 						_bw.Write( data );
 					}
+				}
+#elif DEF_ZX
+				for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
+				{
+					data = 0;
+					
+					for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+					{
+						x_pos = 7 - x;
+						
+						val = utils.tmp_spr8x8_buff[ ( y << 3 ) + x_pos ];
+						
+						data |= ( byte )( ( ( val & 0x08 ) != 0 ) ? 0:( 1 << x ) );
+					}
+					
+					_bw.Write( data );
 				}
 #endif				
 			}
@@ -1399,63 +1525,14 @@ namespace MAPeD
 			int i;
 			uint val;
 
-			bool nes_file = ( _file_ext == utils.CONST_NES_FILE_EXT );
-			
 			utils.EPlatformType			prj_platform	= platform_data_provider.get_platform_by_ext( _file_ext );
 			i_project_data_converter	data_converter	= project_data_converter_provider.get_converter();
 			
 			data_converter.load_CHR_bank( _ver, _br, prj_platform, ref m_CHR_bank );
+
+			palettes_clear_arr();
+			data_converter.load_palettes( _ver, _br, prj_platform, _file_ext, this );
 			
-			// load palette(s)			
-			{
-				int palettes_cnt = ( _ver == 1 ) ? 1: _br.ReadInt32();
-
-				palettes_clear_arr();
-				
-				palette16_data plt16 = null;
-				
-				for( i = 0; i < palettes_cnt; i++ )
-				{
-					plt16 = new palette16_data();
-					
-					if( _ver <= 2 )
-					{
-						plt16.m_palette0 = utils.read_byte_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
-						plt16.m_palette1 = utils.read_byte_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
-						plt16.m_palette2 = utils.read_byte_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
-						plt16.m_palette3 = utils.read_byte_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
-					}
-					else
-					{
-						plt16.m_palette0 = utils.read_int_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
-						plt16.m_palette1 = utils.read_int_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
-						plt16.m_palette2 = utils.read_int_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
-						plt16.m_palette3 = utils.read_int_arr( _br, utils.CONST_PALETTE_SMALL_NUM_COLORS );
-					}
-#if DEF_NES
-					if( !nes_file )
-					{
-						plt16.m_palette1[ 0 ] = plt16.m_palette2[ 0 ] = plt16.m_palette3[ 0 ] = plt16.m_palette0[ 0 ];
-					}
-#endif
-
-#if DEF_SMS
-					if( i >= utils.CONST_PALETTE16_ARR_LEN )
-					{
-						continue;
-					}
-#endif
-					m_palettes.Add( plt16 );
-				}
-#if DEF_SMS
-				// fill missing palette(s)
-				for( i = m_palettes.Count; i < utils.CONST_PALETTE16_ARR_LEN; i++ )
-				{
-					m_palettes.Add( new palette16_data() );
-				}
-#endif
-			}
-
 			// block 2x2 data
 			{
 				data_converter.pre_load_block_data( prj_platform );
@@ -1471,7 +1548,7 @@ namespace MAPeD
 						val = _br.ReadUInt32();
 					}
 					
-					m_blocks[ i ] = data_converter.convert_block_data( _ver, prj_platform, val );
+					m_blocks[ i ] = data_converter.convert_block_data( _ver, prj_platform, i, val );
 				}
 				
 				data_converter.post_load_block_data( this );
@@ -1499,6 +1576,8 @@ namespace MAPeD
 			
 			int data_diff_half = 0;
 			
+			Action< int > skip_data = data_len => { if( _ver < 5 ) { _br.ReadBytes( data_len ); } else { _br.ReadBytes( data_len << 1 ); } };
+			
 			for( i = 0; i < scr_cnt; i++ )
 			{
 				scr = new screen_data( _scr_type );
@@ -1518,7 +1597,7 @@ namespace MAPeD
 									scr.load( _ver, _br, scr_data_len, -1 );
 									
 									// skip the rest
-									_br.ReadBytes( loaded_scr_data_len - scr_data_len );
+									skip_data( loaded_scr_data_len - scr_data_len );
 								}
 							}
 							break;
@@ -1534,12 +1613,12 @@ namespace MAPeD
 									data_diff_half = ( ( ( loaded_scr_data_len - scr_data_len ) / num_width_tiles ) >> 1 ) * num_width_tiles;
 									
 									// skip the first data
-									_br.ReadBytes( data_diff_half );
+									skip_data( data_diff_half );
 	
 									scr.load( _ver, _br, scr_data_len, -1 );
 									
 									// skip the rest
-									_br.ReadBytes( ( data_diff_half == 0 ) ? num_width_tiles:data_diff_half );
+									skip_data( ( data_diff_half == 0 ) ? num_width_tiles:data_diff_half );
 								}
 							}
 							break;
@@ -1553,7 +1632,7 @@ namespace MAPeD
 								else
 								{
 									// skip the first data
-									_br.ReadBytes( loaded_scr_data_len - scr_data_len );
+									skip_data( loaded_scr_data_len - scr_data_len );
 	
 									scr.load( _ver, _br, scr_data_len, -1 );
 								}

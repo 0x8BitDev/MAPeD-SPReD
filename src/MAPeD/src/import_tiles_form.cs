@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace MAPeD
 {
@@ -78,6 +79,9 @@ namespace MAPeD
 			CheckBoxApplyPalette.Text = "Apply palette";
 #endif
 			CheckBoxApplyPalette.Checked = true;
+#if DEF_ZX
+			CheckBoxApplyPalette.Enabled = false;
+#endif
 		}
 		
 		void CheckBoxBlocksChanged_Event(object sender, EventArgs e)
@@ -626,13 +630,14 @@ namespace MAPeD
 				Color[] plt = _bmp.Palette.Entries;
 				
 				List< int[] > palettes = _data.subpalettes;
-				
+#if !DEF_ZX
 				int num_clrs = Math.Min( plt.Length, utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS );
 				
 				for( int i = 0; i < num_clrs; i++ )
 				{
 					palettes[ i >> 2 ][ i & 0x03 ] = utils.find_nearest_color_ind( plt[ i ].ToArgb() );
 				}
+#endif
 #if DEF_NES
 				if( fix_broken_blocks( _data, _block_beg_ind, ref _block_end_ind ) == true )
 				{
@@ -641,10 +646,17 @@ namespace MAPeD
 				
 				palettes[ 1 ][ 0 ] = palettes[ 2 ][ 0 ] = palettes[ 3 ][ 0 ] = palettes[ 0 ][ 0 ];
 #elif DEF_FIXED_LEN_PALETTE16_ARR
+#if DEF_ZX
+				if( fix_broken_blocks( _data, _block_beg_ind, ref _block_end_ind ) == true )
+				{
+					ZX_apply_palettes( plt, _data, _block_beg_ind, _block_end_ind );
+				}
+#else
 				if( plt.Length > 16 && fix_broken_blocks( _data, _block_beg_ind, ref _block_end_ind ) == true )
 				{
-					apply_palettes_arr( plt, _data, _block_beg_ind, _block_end_ind );
+					apply_16colors_palettes_arr( plt, _data, _block_beg_ind, _block_end_ind );
 				}
+#endif
 #endif
 			}
 			else
@@ -1074,7 +1086,190 @@ namespace MAPeD
 		}
 #endif //DEF_NES
 #if DEF_FIXED_LEN_PALETTE16_ARR
-		private void apply_palettes_arr( Color[] _plt, tiles_data _data, int _block_beg_ind, int _block_end_ind )
+#if DEF_ZX
+		private void ZX_apply_palettes( Color[] _plt, tiles_data _data, int _block_beg_ind, int _block_end_ind )
+		{
+			int				block_n;
+			int				blocks_cnt;
+			uint			block_data;
+			int				chr_id;
+			int				pix_n;
+			byte 			paper_clr;
+			byte 			ink_clr;
+			byte			max_pix_val_ind;
+			int				pure_paper_clr;
+			int				pure_ink_clr;
+			byte			alt_ink_clr;
+			bool			ink_paper_equal; 
+			
+			byte[] grid_pattern = new byte[64]{ 0,1,0,1,0,1,0,1,
+												1,0,1,0,1,0,1,0,
+												0,1,0,1,0,1,0,1,
+												1,0,1,0,1,0,1,0,
+												0,1,0,1,0,1,0,1,
+												1,0,1,0,1,0,1,0,
+												0,1,0,1,0,1,0,1,
+												1,0,1,0,1,0,1,0 };
+			
+			
+			Dictionary< int, int >	palette_inds	= new Dictionary< int, int >( utils.CONST_PALETTE_MAIN_NUM_COLORS );
+			Dictionary< byte, int >	pix_value		= new Dictionary< byte, int >( utils.CONST_PALETTE_MAIN_NUM_COLORS );
+			byte[]					chr_id_flags	= null;
+			
+			const byte CONST_FLAG_USED_CHR	= 0x01;
+			const byte CONST_FLAG_BRIGHT	= 0x02;
+
+			// convert colors to the local palette indices
+			for( int ind_n = 0; ind_n < _plt.Length; ind_n++ )
+			{
+				palette_inds[ ind_n ] = utils.find_nearest_color_ind( _plt[ ind_n ].ToArgb() );
+			}
+			
+			blocks_cnt = _data.get_first_free_block_id() << 2;
+			
+			chr_id_flags = new byte[ blocks_cnt ];
+			Array.Clear( chr_id_flags, 0, chr_id_flags.Length );
+			
+			for( block_n = ( skip_zero_CHR_Block ? 4:0 ); block_n < blocks_cnt; block_n++ )
+			{
+				block_data = _data.blocks[ block_n ];
+				
+				chr_id = tiles_data.get_block_CHR_id( block_data );
+				
+				if( ( chr_id_flags[ chr_id ] & CONST_FLAG_USED_CHR ) == 0 )
+				{
+					chr_id_flags[ chr_id ] |= CONST_FLAG_USED_CHR;
+					
+					// collect pixel weights data
+					_data.CHR_bank_spr8x8_change_proc( chr_id, delegate( byte _pix )
+					{
+						byte new_clr = ( byte )palette_inds[ ( int )_pix ];
+
+						if( !pix_value.ContainsKey( new_clr ) )
+						{
+							pix_value[ new_clr ] = 1;
+						}
+						else
+						{
+							++pix_value[ new_clr ];
+						}
+
+						return new_clr; 
+					});
+					
+					// get paper color ( max pixel value )
+					{
+						max_pix_val_ind = ( byte )pix_value.Values.ToList().IndexOf( pix_value.Values.Max() );
+
+						paper_clr	= ( byte )pix_value.Keys.ToList()[ max_pix_val_ind ];
+						pix_value.Remove( paper_clr );
+					}
+					
+					// get ink color ( the next max pixel value )
+					{
+						if( pix_value.Count > 0 )
+						{
+							max_pix_val_ind = ( byte )pix_value.Values.ToList().IndexOf( pix_value.Values.Max() );
+							ink_clr	= ( byte )pix_value.Keys.ToList()[ max_pix_val_ind ];
+						}
+						else
+						{
+							ink_clr	= 0xff;
+						}
+					}
+
+					// check bright color
+					{
+						if( ( ( ink_clr != 0xff ) && ( ( ink_clr & 0x08 ) != 0 ) ) || ( ( paper_clr & 0x08 ) != 0 ) )
+						{
+							_data.blocks[ block_n ] = tiles_data.set_block_flags_palette( 1, block_data );
+							
+							chr_id_flags[ chr_id ] |= CONST_FLAG_BRIGHT;
+						}
+					}
+					
+					// check if paper color is equal to ink one
+					{
+						pure_paper_clr	= paper_clr & 0x07;
+						pure_ink_clr	= ink_clr & 0x07;
+						alt_ink_clr		= 0;
+						ink_paper_equal	= false; 
+						
+						if( pure_paper_clr == pure_ink_clr )
+						{
+							if( pure_ink_clr == 0 || pure_ink_clr == 0x07 )
+							{
+								alt_ink_clr = ( byte )( pure_ink_clr ^ 0x07 );
+							}
+								
+							ink_paper_equal = true;
+						}
+					}
+					
+					pix_n = 0;
+					
+					// fix CHR to 2 colors
+					_data.CHR_bank_spr8x8_change_proc( chr_id, delegate( byte _pix )
+					{
+						if( _pix == paper_clr )
+						{
+							_pix |= 0x08;	// the second 8 colors are paper ones
+						}
+						else
+						if( ink_clr != 0xff )
+						{
+							if( _pix != ink_clr )
+							{
+								if( grid_pattern[ pix_n ] != 0 )
+								{
+									if( ink_paper_equal )
+									{
+										_pix = alt_ink_clr;
+									}
+									else
+									{
+										_pix = ( byte )( ink_clr & 0x07 );	// reset paper flag
+									}
+								}
+								else
+								{
+									// apply grid to mid colors
+									_pix = ( byte )( 0x08 | paper_clr );
+								}
+							}
+							else
+							{
+								if( ink_paper_equal )
+								{
+									_pix = alt_ink_clr;
+								}
+								else
+								{
+									_pix = ( byte )( ink_clr & 0x07 );	// reset paper flag
+								}
+							}
+						}
+
+						++pix_n;
+						
+						return _pix; 
+					});
+					
+					pix_value.Clear();
+				}
+				else
+				{
+					if( ( chr_id_flags[ chr_id ] & CONST_FLAG_BRIGHT ) != 0 )
+					{
+						_data.blocks[ block_n ] = tiles_data.set_block_flags_palette( 1, block_data );
+					}
+				}
+			}
+				
+			palette_inds.Clear();
+		}
+#else
+		private void apply_16colors_palettes_arr( Color[] _plt, tiles_data _data, int _block_beg_ind, int _block_end_ind )
 		{
 			int block_n;
 			int CHR_n;
@@ -1497,7 +1692,8 @@ namespace MAPeD
 			}
 			
 			return ( min_union == int.MinValue ) ? false:true;
-		}		
+		}
+#endif //!DEF_ZX
 #endif //DEF_FIXED_LEN_PALETTE16_ARR
 		void BtnApplyPaletteDescClick_Event(object sender, EventArgs e)
 		{

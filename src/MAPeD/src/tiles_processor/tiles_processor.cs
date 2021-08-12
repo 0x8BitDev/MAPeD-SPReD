@@ -373,5 +373,16 @@ namespace MAPeD
 		{
 			m_CHR_bank_viewer.prev_page();
 		}
+#if DEF_ZX
+		public void set_view_type( utils.ETileViewType _view_type )
+		{
+			m_tile_editor.view_type = m_block_editor.view_type = m_CHR_bank_viewer.view_type = _view_type;
+		}
+
+		public void zx_swap_ink_paper( bool _inv_ink_paper )
+		{
+			m_block_editor.zx_swap_ink_paper( _inv_ink_paper );
+		}
+#endif
 	}
 }
