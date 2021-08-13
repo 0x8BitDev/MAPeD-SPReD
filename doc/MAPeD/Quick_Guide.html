@@ -5,7 +5,7 @@
 	<TITLE></TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.7  (Win32)">
 	<META NAME="CREATED" CONTENT="20190708;11162720">
-	<META NAME="CHANGED" CONTENT="20210131;22140576">
+	<META NAME="CHANGED" CONTENT="20210813;14410089">
 	<STYLE TYPE="text/css">
 	<!--
 		p { margin:0; }
@@ -88,7 +88,7 @@
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>The <B>MAPeD</B> is a
-tool for building a game levels for <B>NES/SMS/PCE</B> games from
+tool for building a game levels for <B>NES/SMS/PCE/ZX</B> games from
 scratch.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -115,9 +115,10 @@ scratch.</FONT></FONT></P>
 	of tiles and game maps from images **</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>NES:
 	</B>palette per 1x1 tile support ( <B>MMC5</B> )</FONT></FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>export
-	to <B>NES: CA65/NESasm / SMS: WLA-DX</B> with wide variety of
-	options:</FONT></FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3>export to <B>NES:
+	CA65/NESasm / SMS: WLA-DX / PCE: CA65/PCEAS / ZX: SjASMPlus</B> with
+	wide variety of options:</FONT></FONT></P>
 </UL>
 <UL>
 	<UL>
@@ -142,9 +143,7 @@ scratch.</FONT></FONT></P>
 <UL>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>built-in
 	<B>Python</B> script editor for writing custom data export scripts</FONT></FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>export
-	to <B>SjASMPlus</B> ( ZX Spectrum assembler )</FONT></FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES/SMS/PCE</B>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">easy
 	data conversion ***</FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -159,11 +158,11 @@ Close detached tab container to return the tab to its place.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">** Smart import of tiles and game maps
 from images with checking of duplicate CHRs/blocks/tiles and flipped
-CHRs. Automatic palettes applying supported for both <B>NES</B> and
-<B>SMS</B> images.</FONT></P>
+CHRs. Automatic applying of palettes is supported for all platforms.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">*** You can load a <B>NES/SMS/PCE</B>
-project into any MAPeD editor.</FONT></P>
+<FONT FACE="Arial, sans-serif">*** You can load a <B>NES/SMS/PCE/ZX</B>
+project into any MAPeD editor with automatic data conversion. So it's
+easy to adapt graphics from one platform to another.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -297,11 +296,10 @@ you can switch between banks by selecting an appropriate bank from
 the &ldquo;Banks&rdquo; list.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>SMS/PCE:</B></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>SMS/PCE/ZX:</B></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
 </SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Press
 the &quot;&lt;&lt;&quot; / &quot;&gt;&gt;&quot; buttons to switch
-between CHR bank's pages. Each page consists of 16x16 CHRs. The SMS
-hardware is capable of defining up to 448 characters.</SPAN></SPAN></FONT></FONT></SPAN></P>
+between CHR bank's pages. Each page consists of 16x16 CHRs.</SPAN></SPAN></FONT></FONT></SPAN></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -333,15 +331,24 @@ color in the main palette.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>NES:</B> T<SPAN STYLE="font-weight: normal">he
 leftmost color of each palette is a transparent color.</SPAN></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>SMS/PCE:</B><SPAN STYLE="font-weight: normal">
+The leftmost color of the first 4 colors palette is a transparent
+color.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Custom palettes are stored in an
-array. You can copy or delete (<B>NES</B>) an active palette.</FONT></P>
+<FONT FACE="Arial, sans-serif">Custom palettes are stored in an array
+in a separate list. You can copy or delete (<B>NES</B>) an active
+palette.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>NES:</B> &quot;plt#00&quot; is
-the main one and is active by default. All other palettes are
-auxiliary.</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>NES:</B> &quot;plt#00&quot; is the
+main one and is active by default. All other palettes are auxiliary.</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>ZX:</B><SPAN STYLE="font-weight: normal">
+In the Speccy version there are two fixed color palettes. The first
+one is for dark colors (plt#00). The second one is for bright colors
+(plt#01).</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -356,8 +363,9 @@ palette per block only.</SPAN></FONT></P>
 you may need to change colors order without changing graphics. For
 example, after importing of graphics from images, you may need to
 back in place a transparent color. You can do that by pressing the
-&quot;Swap Colors&quot; button. Select two colors in the opened
-dialog and press the 'Ok' button.</SPAN></FONT></P>
+</SPAN><B>&quot;Swap Colors&quot;</B><SPAN STYLE="font-weight: normal">
+button. Select two colors in the opened dialog and press the 'Ok'
+button.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/tile-block_editors.png" NAME="Графический объект1" ALIGN=LEFT HSPACE=38 VSPACE=19 WIDTH=288 HEIGHT=582 BORDER=0><BR>
 </P>
 <DIV ID="Block Editor" DIR="LTR"><A NAME="Block Editor|region"></A>
@@ -483,6 +491,31 @@ transparency color index will be ignored.</FONT></P>
 is active this operation affects on a selected CHR only. When the
 &quot;Draw&quot; mode is active, you can modify CHRs indices of whole
 block.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>ZX:</B> <SPAN STYLE="font-weight: normal">There
+are two additional buttons:</SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">&ldquo;<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>I&harr;P&rdquo;</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+- it swaps ink to paper and swaps colors. The operation result is
+visible in </SPAN></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>black
+and white mode</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">
+</SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">only
+( <A HREF="#Additional Operations|region">View Type</A>: &ldquo;B/W&rdquo;
+or &ldquo;Inv B/W&rdquo; ). For example, when you import a game level
+from an image, you can't control an ink/paper order, so some CHRs can
+be inverted and you can find it by switching to the black and white
+mode. Using this button you can fix the issue.</SPAN></SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">&ldquo;<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Invert&rdquo;</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+- it swaps ink to paper. The operation result is visible in </SPAN></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>color
+mode</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">
+</SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">only
+( <A HREF="#Additional Operations|region">View Type</A>: &ldquo;Graphics&rdquo;
+).</SPAN></SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">When
+the &ldquo;Select CHRs&rdquo; mode is active, these buttons invert a
+selected CHR and when the &ldquo;Draw&rdquo; mode is active, a whole
+block will be inverted.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <DIV ID="Tile Editor" DIR="LTR"><A NAME="Tile Editor|region"></A>
@@ -629,6 +662,15 @@ allows you to show the additional information: graphics ( by default
 ), property Id ( numbers/colors ) on both tiles and blocks, tile
 numbers or usage of tiles or blocks. It also affects on graphics in
 the <A HREF="#Screen Editor|region">screen editor</A>.</SPAN></SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>ZX:</B></SPAN></FONT>
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">There
+are two additional modes: &ldquo;B/W&rdquo;, &ldquo;Inv B/W&rdquo;.
+&ldquo;B/W&rdquo; - black and white mode ( all inks &ndash; black,
+all papers &ndash; white ). &ldquo;Inv B/W&rdquo; - inverted black
+and white mode ( all inks &ndash; white, all papers - black ). Using
+these modes you can find inverted CHR glitches and fix them using
+&ldquo;I&harr;P&rdquo; button.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <BR>
 </P>
@@ -1222,6 +1264,10 @@ decimal values.</FONT></P>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>PCE</B></SPAN>
 <SPAN LANG="en-US">project file has a </SPAN><SPAN LANG="en-US"><B>.mapedpce</B></SPAN>
 <SPAN LANG="en-US">extension.</SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>ZX</B></SPAN><SPAN LANG="en-US">
+project file has a </SPAN><SPAN LANG="en-US"><B>.mapedzx</B></SPAN><SPAN LANG="en-US">
+extension.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -1252,6 +1298,8 @@ for import:</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif"><B>NES/SMS </B>Palette ( 192 bytes )
 	( .plt )</FONT></P>
+	<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
+	</P>
 </UL>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">* Smart import of tiles from images
@@ -1261,14 +1309,14 @@ multiple of 32 for tiles data. Also the same way you can import game
 maps from images. It's recommended that an imported image size must
 be a multiple of a game screen size.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Automatic palettes applying supported.
-You can import native indexed <B>NES</B> images &quot;as is&quot;.
-The same with <B>SMS/PCE</B> images.</FONT></P>
+<FONT FACE="Arial, sans-serif">Automatic applying of palettes is also
+supported. You can import native indexed <B>NES</B> images &quot;as
+is&quot;. The same with <B>SMS/PCE/ZX</B> images.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Note:</B> To get the best result, colors should not
-be duplicated in a palette.</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Note:</B> To get the best result,
+colors should not be duplicated in a palette.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -1306,7 +1354,9 @@ palettes, an importing image must meets the following requirements:</FONT></P>
 for export:</FONT></P>
 <UL>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES:</B>
-	CA65/NESasm / <B>SMS: </B>WLA-DX ( .asm ) *</FONT></P>
+	CA65/NESasm / <B>SMS: </B>WLA-DX / <B>PCE:</B><SPAN STYLE="font-weight: normal">
+	CA65/PCEAS / </SPAN><B>ZX:</B><SPAN STYLE="font-weight: normal">
+	SjASMPlus</SPAN> ( .asm ) *</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">ZX
 	Asm ( .zxa ) - SjASMPlus data **</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Active
@@ -1315,15 +1365,16 @@ for export:</FONT></P>
 	layout ( .png ) ***</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Text
 	( .json ) - whole project data</FONT></P>
+	<P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"></P>
 </UL>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">* See exported .asm / .zxa files to
 get more info.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">** Level data is stored as a single
-matrix of tile indices in a column order. Can be used for
-multidirectional scroller. To achieve the best result, try to change
-the &quot;Ink Factor&quot; value.</FONT></P>
+<FONT FACE="Arial, sans-serif">** The same as in the ZX version, but
+with dithering. To achieve the best result, try to change the &quot;Ink
+Factor&quot; value. So there are two ways to export ZX data: using
+MAPeD-ZX or any other MAPeD editor.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">*** Just an image of an active layout
 without entities.</FONT></P>
