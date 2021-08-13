@@ -237,7 +237,7 @@ namespace MAPeD
 		}
 	}
 
-	// ZX: [ property_id ](4) [CHR ind](11)
+	// ZX: [ property_id ](4) [ palette ind ][1] [CHR ind](11)
 	public class map_data_app_ZX : map_data_config_base
 	{
 		public map_data_app_ZX()
@@ -248,7 +248,7 @@ namespace MAPeD
 			         	new bit_field( 11, 0 ), 	// CHR id
 			         	new bit_field( 1, 11 ), 	// palette index
 			         	new bit_field( 0, 0 ), 		// H/V flipping
-			         	new bit_field( 4, 16 ) } );	// property id
+			         	new bit_field( 4, 12 ) } );	// property id
 		}
 	}
 

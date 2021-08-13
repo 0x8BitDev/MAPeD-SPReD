@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+13.08.2021 - Updated Python API v1.6 (added: mpd_get_tiles_cnt, mpd_get_blocks_cnt, mpd_get_CHRs_cnt mpd_get_CHR; renamed: mpd_get_CHR_data -> mpd_get_CHRs_data)
 12.08.2021 - Added MAPeD-ZX
 07.04.2021 - Optimization and speed-up of work with tiles
 26.02.2021 - Added asynchronous project loading/image importing operations with a progress bar

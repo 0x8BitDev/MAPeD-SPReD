@@ -42,18 +42,30 @@ namespace MAPeD
 			// int get_active_bank( void )
 			_py_scope.SetVariable( CONST_PREFIX + "get_active_bank", new Func< int >( get_active_bank ) );
 
+			// int get_tiles_cnt( int _bank_ind )
+			_py_scope.SetVariable( CONST_PREFIX + "get_tiles_cnt", new Func< int, int >( get_tiles_cnt ) );
+
+			// int get_blocks_cnt( int _bank_ind )
+			_py_scope.SetVariable( CONST_PREFIX + "get_blocks_cnt", new Func< int, int >( get_blocks_cnt ) );
+			
+			// int get_CHRs_cnt( int _bank_ind )
+			_py_scope.SetVariable( CONST_PREFIX + "get_CHRs_cnt", new Func< int, int >( get_CHRs_cnt ) );
+
 			// uint[] get_tiles( int _bank_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "get_tiles", new Func< int, uint[] >( get_tiles ) );
 			
 			// uint[] get_blocks( int _bank_ind ) [ 15-8 -> obj_id(4)|plt(2)|not used(2)| 7-0 -> CHR ind(8) ]
 			_py_scope.SetVariable( CONST_PREFIX + "get_blocks", new Func< int, uint[] >( get_blocks ) );
 			
-			// byte[] get_CHR_data( int _bank_ind )
-			_py_scope.SetVariable( CONST_PREFIX + "get_CHR_data", new Func< int, byte[] >( get_CHR_data ) );
+			// byte[] get_CHRs_data( int _bank_ind )
+			_py_scope.SetVariable( CONST_PREFIX + "get_CHRs_data", new Func< int, byte[] >( get_CHRs_data ) );
+
+			// byte[] get_CHR( int _bank_ind, int _CHR_ind )
+			_py_scope.SetVariable( CONST_PREFIX + "get_CHR", new Func< int, int, byte[] >( get_CHR ) );
 			
-			// NES: long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
-			// SMS: long export_CHR_data( int _bank_ind, string _filename, int _bpp )
-			// PCE: long export_CHR_data( int _bank_ind, string _filename )
+			// NES:		long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
+			// SMS:		long export_CHR_data( int _bank_ind, string _filename, int _bpp )
+			// PCE/ZX:	long export_CHR_data( int _bank_ind, string _filename )
 #if DEF_NES			
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, bool, long >( export_CHR_data ) );
 #elif DEF_SMS
@@ -134,7 +146,7 @@ namespace MAPeD
 
 		public ushort api_ver()
 		{
-			return 0x0104;
+			return 0x0106;
 		}
 		
 		public int num_banks()
@@ -324,6 +336,71 @@ namespace MAPeD
 			
 			return base_ent;
 		}
+
+		public int get_tiles_cnt( int _bank_ind )
+		{
+			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
+			
+			if( data != null )
+			{
+				int cnt = data.get_first_free_tile_id();
+				
+				return cnt >= 0 ? cnt:utils.CONST_MAX_TILES_CNT;
+			}
+			
+			return -1;
+		}
+
+		public int get_blocks_cnt( int _bank_ind )
+		{
+			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
+			
+			if( data != null )
+			{
+				int cnt = data.get_first_free_block_id();
+				
+				return cnt >= 0 ? cnt:utils.CONST_MAX_BLOCKS_CNT;
+			}
+			
+			return -1;
+		}
+			
+		public int get_CHRs_cnt( int _bank_ind )
+		{
+			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
+			
+			if( data != null )
+			{
+				int cnt = data.get_first_free_spr8x8_id();
+				
+				return cnt >= 0 ? cnt:utils.CONST_CHR_BANK_MAX_SPRITES_CNT;
+			}
+			
+			return -1;
+		}
+
+		public byte[] get_CHR( int _bank_ind, int _CHR_ind )
+		{
+			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
+			
+			if( data != null )
+			{
+				if( _CHR_ind >= 0 && _CHR_ind < utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+				{
+					byte[] CHR_data = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
+					
+					data.from_CHR_bank_to_spr8x8( _CHR_ind, CHR_data, 0 );
+					
+					return CHR_data;
+				}
+				else
+				{
+					throw new Exception( CONST_PREFIX + "get_CHRs_cnt error! Invalid argument: _CHR_ind!\n" );
+				}
+			}
+			
+			return null;
+		}
 		
 		public uint[] get_tiles( int _bank_ind )
 		{
@@ -331,7 +408,7 @@ namespace MAPeD
 			
 			if( data != null )
 			{
-				return data.tiles;
+				return copy_arr< uint >( data.tiles );
 			}
 			
 			return null;
@@ -343,19 +420,19 @@ namespace MAPeD
 			
 			if( data != null )
 			{
-				return data.blocks;
+				return copy_arr< uint >( data.blocks );
 			}
 			
 			return null;
 		}
 		
-		public byte[] get_CHR_data( int _bank_ind )
+		public byte[] get_CHRs_data( int _bank_ind )
 		{
 			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
 			
 			if( data != null )
 			{
-				return data.CHR_bank;
+				return copy_arr< byte >( data.CHR_bank );
 			}
 			
 			return null;
@@ -446,11 +523,7 @@ namespace MAPeD
 							case 3: { plt = data.palettes_arr[ _slot_ind ].m_palette3; } break;
 						}
 						
-						int[] plt_copy = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
-						
-						plt.CopyTo( plt_copy, 0 );
-						
-						return plt_copy;
+						return copy_arr< int >( plt );
 					}
 					else
 						throw new Exception( CONST_PREFIX + "get_palette error! Invalid argument: _slot_ind!\n" );
@@ -475,7 +548,7 @@ namespace MAPeD
 			{
 				if( _scr_ind >= 0 && _scr_ind < data.screen_data_cnt() )
 				{
-					return data.get_screen_data( _scr_ind ).copy_to_arr();
+					return copy_arr< ushort >( data.get_screen_data( _scr_ind ).m_arr );
 				}
 			}
 			
@@ -492,6 +565,14 @@ namespace MAPeD
 			}
 			
 			return res_arr;
+		}
+		
+		private T[] copy_arr<T>( T[] _arr )
+		{
+			T[] out_arr = new T[ _arr.Length ];
+			Array.Copy( _arr, out_arr, _arr.Length );
+			
+			return out_arr;
 		}
 	}
 

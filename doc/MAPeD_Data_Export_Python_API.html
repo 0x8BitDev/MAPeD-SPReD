@@ -5,7 +5,7 @@
 	<TITLE></TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.7  (Win32)">
 	<META NAME="CREATED" CONTENT="20190523;18115340">
-	<META NAME="CHANGED" CONTENT="20210129;19251141">
+	<META NAME="CHANGED" CONTENT="20210813;20082363">
 	<STYLE TYPE="text/css">
 	<!--
 		p { margin:0; }
@@ -18,7 +18,7 @@
 </P>
 <P LANG="en-US" STYLE="margin-left: 1.19cm; margin-bottom: 0cm; font-style: normal; line-height: 100%; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>MAPeD
-Data Export Python API v1.5</B></FONT></FONT></P>
+Data Export Python API v1.6</B></FONT></FONT></P>
 <HR>
 <P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
 <BR>
@@ -31,11 +31,19 @@ Banks Data</B></SPAN></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%; page-break-before: auto; page-break-after: auto">
 <A HREF="#mpd_get_active_bank|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_active_bank</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_get_tiles_cnt|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_tiles_cnt</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_get_blocks_cnt|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_blocks_cnt</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_get_CHRs_cnt|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_CHRs_cnt</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
 <A HREF="#mpd_get_tiles|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_tiles</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
 <A HREF="#mpd_get_blocks|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_blocks</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
-<A HREF="#mpd_get_CHR_data|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_CHR_data</B></SPAN></FONT></FONT></A></P>
+<A HREF="#mpd_get_CHR_data|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_CHRs_data</B></SPAN></FONT></FONT></A></P>
+<P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<A HREF="#mpd_get_CHR|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_get_CHR</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
 <A HREF="#mpd_export_CHR_data|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><SPAN LANG="en-US"><B>mpd_export_CHR_data</B></SPAN></FONT></FONT></A></P>
 <P ALIGN=LEFT STYLE="text-indent: 2.09cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
@@ -126,10 +134,9 @@ Entities</B></SPAN></FONT></A></P>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1.24cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; page-break-before: auto; page-break-after: auto">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Each graphics bank
-contains: <SPAN LANG="ru-RU">CHR b</SPAN>ank<SPAN LANG="ru-RU">, </SPAN>2x2
-tiles (<SPAN LANG="ru-RU">blocks</SPAN>) <SPAN LANG="ru-RU">(256),
-</SPAN>4x4 <SPAN LANG="ru-RU">tiles (256), palette</SPAN>s <SPAN LANG="ru-RU">and
-screens </SPAN>data.</FONT></FONT></P>
+contains: <SPAN LANG="ru-RU">CHR b</SPAN>ank (1x1)<SPAN LANG="ru-RU">,
+blocks </SPAN>(2x2)<SPAN LANG="ru-RU">, tiles </SPAN>(4x4)<SPAN LANG="ru-RU">,
+palette</SPAN>s <SPAN LANG="ru-RU">and screens </SPAN>data.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -196,6 +203,128 @@ bank</FONT></FONT></P>
 <BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+
+<DIV ID="mpd_get_tiles_cnt" DIR="LTR"><A NAME="mpd_get_tiles_cnt|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Int32</SPAN>
+	<B>mpd_get_tiles_</B><SPAN LANG="en-US"><B>cnt</B></SPAN>( <SPAN LANG="en-US">Int32</SPAN>
+	_bank_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get the number of used
+tiles (4x4) in a graphics bank.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">the
+number of used tiles or </SPAN><B>-1</B><SPAN STYLE="font-weight: normal">
+in case of incorrect bank index</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<DIV ID="mpd_get_blocks_cnt" DIR="LTR"><A NAME="mpd_get_blocks_cnt|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Int32</SPAN>
+	<SPAN LANG="en-US"><B>mpd_get_blocks_cnt</B></SPAN>( <SPAN LANG="en-US">Int32</SPAN>
+	_bank_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get the number of used
+blocks (2x2) in a graphics bank.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">the
+number of used blocks or </SPAN><B>-1</B><SPAN STYLE="font-weight: normal">
+in case of incorrect bank index</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; line-height: 100%"><BR>
+</P>
+<DIV ID="mpd_get_CHRs_cnt" DIR="LTR"><A NAME="mpd_get_CHRs_cnt|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Int32</SPAN>
+	<B>mpd_get_</B><SPAN LANG="en-US"><B>CHR</B></SPAN><B>s_</B><SPAN LANG="en-US"><B>cnt</B></SPAN>(
+	<SPAN LANG="en-US">Int32</SPAN> _bank_ind )</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Get the number of used
+CHRs (1x1) in a graphics bank.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">the
+number of used CHRs or </SPAN><B>-1</B><SPAN STYLE="font-weight: normal">
+in case of incorrect bank index</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
 </P>
 <DIV ID="mpd_get_tiles" DIR="LTR"><A NAME="mpd_get_tiles|region"></A>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
@@ -279,6 +408,9 @@ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9) ..0 </FONT></FON
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>PCE:</B> 19.. [
 property_id ](4) [ palette ind ](4) [CHR ind](12) ..0 </FONT></FONT>
 </P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>ZX:</B> 15.. [
+property_id ](4) [ palette ind ](1) [CHR ind](11) ..0</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -316,7 +448,8 @@ incorrect bank index</SPAN></SPAN></FONT></FONT></P>
 	</P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[Byte]</SPAN>
-	<B>mpd_get_CHR_data</B>( <SPAN LANG="en-US">Int32</SPAN> _bank_ind )</FONT></FONT></P>
+	<B>mpd_get_CHR</B><SPAN LANG="en-US"><B>s</B></SPAN><B>_data</B>(
+	<SPAN LANG="en-US">Int32</SPAN> _bank_ind )</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
 	</P>
@@ -326,8 +459,8 @@ incorrect bank index</SPAN></SPAN></FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">Get
-a raw CHR data.</SPAN> <SPAN LANG="ru-RU">The CHR data is stored as
-(128x128) x number of pages image (8bit).</SPAN></FONT></FONT></P>
+a raw CHRs data.</SPAN> <SPAN LANG="ru-RU">The CHR data is stored as
+128x128 x number of pages image (8bit).</SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -342,8 +475,55 @@ graphics bank index</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the array of bytes
-or <B>null</B> in case of incorrect bank index</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the array of bytes or
+<B>null</B> in case of incorrect bank index</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: transparent; line-height: 100%">
+<BR>
+</P>
+<DIV ID="mpd_get_CHR" DIR="LTR"><A NAME="mpd_get_CHR|region"></A>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN LANG="en-US">Array[Byte]</SPAN></SPAN>
+	<B>mpd_get_CHR</B>( <SPAN LANG="en-US"><SPAN LANG="en-US">Int32</SPAN></SPAN>
+	_bank_ind, <SPAN LANG="en-US"><SPAN LANG="en-US">Int32 _</SPAN></SPAN><SPAN LANG="en-US"><SPAN STYLE="text-decoration: none"><SPAN LANG="en-US">CHR_ind</SPAN></SPAN></SPAN>
+	)</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
+	<BR>
+	</P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">Get
+a raw CHR data by index.</SPAN> The data array length is 64 bytes
+(8x8 pixels)<SPAN LANG="ru-RU">.</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Parameters:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_bank_ind &ndash;
+graphics bank index</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>_CHR_ind &ndash; CHR
+index ( min = 0; max = ( mpd_get_CHRs_data( bank_n ).Count / 64 ) - 1
+)</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the array of bytes or
+<B>null</B> in case of incorrect bank<SPAN STYLE="text-decoration: none">
+index</SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -365,8 +545,8 @@ or <B>null</B> in case of incorrect bank index</FONT></FONT></P>
 	_bank_ind, <SPAN LANG="en-US">String</SPAN> _filename, <SPAN LANG="en-US">Int32</SPAN>
 	_bpp )</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>PCE: </B><SPAN LANG="en-US">Long</SPAN>
-	<B>mpd_export_CHR_data</B>( <SPAN LANG="en-US">Int32</SPAN>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>PCE/</B><SPAN LANG="en-US"><B>ZX</B></SPAN><B>:
+	</B><SPAN LANG="en-US">Long</SPAN> <B>mpd_export_CHR_data</B>( <SPAN LANG="en-US">Int32</SPAN>
 	_bank_ind, <SPAN LANG="en-US">String</SPAN> _filename )</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
@@ -602,8 +782,8 @@ index</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Returns:</B></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the array of 4x4 or
-2x2 tiles indices of a particular screen or <B>null</B> in case of
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>the array of 4x4 or 2x2
+tiles indices of a particular screen or <B>null</B> in case of
 incorrect bank index</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>

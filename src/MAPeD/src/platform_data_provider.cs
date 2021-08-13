@@ -177,9 +177,12 @@ namespace MAPeD
 						return utils.EPlatformType.pt_ZX; 
 					}
 					break;
+
+				default:
+					{
+						throw new Exception( "platform_data_provider.get_platform_by_ext(...) : invalid parameter!" );
+					}
 			}
-			
-			throw new Exception( "platform_data_provider.get_platform_by_ext(...) : invalid parameter!" );
 		}
 		
 		public static int get_CHR_bank_pages_cnt_by_platform_type( utils.EPlatformType _type )
@@ -206,7 +209,7 @@ namespace MAPeD
 
 				case utils.EPlatformType.pt_ZX:
 					{
-						return utils.CONST_ZX_CHR_BANK_NUM_PAGES;; 
+						return utils.CONST_ZX_CHR_BANK_NUM_PAGES;
 					}
 					break;
 					

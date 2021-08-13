@@ -94,15 +94,6 @@ namespace MAPeD
 			return data;
 		}
 		
-		public ushort[] copy_to_arr()
-		{
-			ushort[] tiles_arr = new ushort[ length ];
-			
-			Array.Copy( m_arr, tiles_arr, length );
-			
-			return tiles_arr;
-		}
-		
 		public void swap_col_row_data()
 		{
 			utils.swap_columns_rows_order< ushort >( m_arr, m_width, m_height );

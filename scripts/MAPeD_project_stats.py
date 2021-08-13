@@ -3,6 +3,7 @@
 # Copyright 2019-2021 0x8BitDev ( MIT license )
 #
 # This is an example of using of MAPeD API functions which are available for custom data export
+# ( see 'doc\MAPeD_Data_Export_Python_API.html' for details )
 #
 #################################################################################################
 
@@ -42,27 +43,34 @@ for bank_n in xrange( num_banks ):
 		for plt_n in xrange( 4 ):
 			print '\t\t\t' + str( plt_n ) + ': ' + str( mpd_get_palette( bank_n, plt_n, slot_n ) )
 
+# CHRs/Blocks/Tiles count
+	print '\n\t\tCHRs(1x1):\t' + str( mpd_get_CHRs_cnt( bank_n ) )
+	print '\t\tBlocks(2x2):\t' + str( mpd_get_blocks_cnt( bank_n ) )
+	print '\t\tTiles(4x4):\t' + str( mpd_get_tiles_cnt( bank_n ) )
+
 # CHR bank
-# CHR data is stored as image 128x128 (8bit)
-# Use mpd_get_CHR_data( int _bank_n ) to get CHR's raw data
+# CHR data is stored as image 128 x 128 x Pages count (8bit)
+# Use mpd_get_CHRs_data( int _bank_n ) to get CHR's raw data
 # NES: Use mpd_export_CHR_data( int _bank_n, string _filename, bool _need_padding ) to export NES-ready data
 # SMS: Use mpd_export_CHR_data( int _bank_n, string _filename, int _bpp ) to export SMS-ready data
-	CHR_data = mpd_get_CHR_data( bank_n )
+# PCE/ZX: Use mpd_export_CHR_data( int _bank_n, string _filename ) to export platform-ready data
+	CHR_data = mpd_get_CHRs_data( bank_n )
 	print '\n\t\tCHR data size: ' + str( CHR_data.Count ) + ' --> Array[Byte]' # + str( CHR_data )
-
-# Dump 4x4 tiles data
-# Each tile value (UInt32) consists of blocks indices ordered left to right, up to down from low to high byte
-	tiles_data = mpd_get_tiles( bank_n )
-	print '\n\t\tTiles: Array size: ' + str( tiles_data.Count ) + ' --> ' + str( tiles_data )
 
 # Dump 2x2 tiles (blocks) data
 # Each block's value (UInt32) has the following bits description: 
 # NES: 15.. [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8) ..0
 # SMS: 15.. [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9) ..0
 # PCE: 19.. [ property_id ](4) [ palette ind ](4) [CHR ind](12) ..0
+# ZX: 15.. [ property_id ](4) [ palette ind ](1) [CHR ind](11)..0
 # Four UInt32 values form one 2x2 tile (block)
 	blocks_data = mpd_get_blocks( bank_n );
 	print '\n\t\tBlocks: Array size: ' + str( blocks_data.Count ) + ' --> ' + str( blocks_data )
+
+# Dump 4x4 tiles data
+# Each tile value (UInt32) consists of blocks indices ordered left to right, up to down from low to high byte
+	tiles_data = mpd_get_tiles( bank_n )
+	print '\n\t\tTiles: Array size: ' + str( tiles_data.Count ) + ' --> ' + str( tiles_data )
 
 # Dump screens data
 # Each screen data consist of byte array of 4x4 or 2x2 tiles ordered left to right, up to down
