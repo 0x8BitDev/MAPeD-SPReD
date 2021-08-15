@@ -390,7 +390,7 @@ namespace MAPeD
 									
 									if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 									{
-										tile_data = utils.set_byte_to_uint( tile_data, block_num++, ( dup_block_ind >= 0 ? (byte)( dup_block_ind >> 2 ):( byte )( ( block_ind - 1 ) >> 2 ) ) );
+										tile_data = utils.set_byte_to_uint( tile_data, block_num++, ( dup_block_ind >= 0 ? ( byte )( dup_block_ind >> 2 ):( byte )( ( block_ind - 1 ) >> 2 ) ) );
 										
 										if( ( block_num & 0x03 ) == 0x00 )
 										{
@@ -440,7 +440,7 @@ namespace MAPeD
 									{
 										if( import_game_map )
 										{
-											scr_block_ind = ( dup_block_ind >= 0 ? (byte)( dup_block_ind >> 2 ):( byte )( ( block_ind - 1 ) >> 2 ) );
+											scr_block_ind = ( dup_block_ind >= 0 ? ( dup_block_ind >> 2 ):( ( block_ind - 1 ) >> 2 ) );
 											
 											scr_x = ( tile_x + block_x ) / utils.CONST_SCREEN_WIDTH_PIXELS;
 #if DEF_SCREEN_HEIGHT_7d5_TILES
