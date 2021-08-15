@@ -925,7 +925,10 @@ namespace MAPeD
 								m_tile_ghost_img_rect.Width = utils.CONST_SCREEN_BLOCKS_SIZE;
 								m_tile_ghost_img_rect.Height = utils.CONST_SCREEN_BLOCKS_SIZE;
 								
-								calc_common_blocks( ( byte )_tile_ind );
+								if( m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+								{
+									calc_common_blocks( ( byte )_tile_ind );
+								}
 								
 								m_pbox_active_tile_gfx.DrawImage( img, 0, 0, m_pbox_active_tile.Width, m_pbox_active_tile.Height );
 								m_pbox_active_tile.Invalidate();
