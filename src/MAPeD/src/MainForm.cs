@@ -2544,6 +2544,7 @@ namespace MAPeD
 			tiles_data data = event_args.data;
 			
 			m_imagelist_manager.update_tile( tile_ind, m_view_type, data, null, null, m_data_manager.screen_data_type );
+			m_tile_list_manager.update_tile( tile_list.EType.t_Tiles, tile_ind );
 		}
 		
 		void MainForm_UpdateGraphicsAfterOptimization(object sender, EventArgs e)

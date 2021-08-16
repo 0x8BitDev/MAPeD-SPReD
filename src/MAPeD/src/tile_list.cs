@@ -59,6 +59,17 @@ namespace MAPeD
 				}
 			}
 		}
+
+		public void update_tile( tile_list.EType _type, int _tile_id )
+		{
+			foreach( var obj in m_objs )
+			{
+				if( obj.type == _type )
+				{
+					obj.update_tile( _tile_id );
+				}
+			}
+		}
 		
 		public void visible( tile_list.EType _type, bool _on )
 		{

@@ -130,7 +130,7 @@ namespace MAPeD
 				
 				if( _tiles_data != null )
 				{
-					update_tile( i, _view_type, _tiles_data, gfx, img, _scr_type, false );
+					update_tile( i, _view_type, _tiles_data, gfx, img, _scr_type );
 				}
 				else
 				{
@@ -145,7 +145,7 @@ namespace MAPeD
 			m_panel_tiles.Refresh();
 		}
 
-		public void update_tile( int _tile_ind, utils.ETileViewType _view_type, tiles_data _tiles_data, Graphics _gfx, Image _img, data_sets_manager.EScreenDataType _scr_type, bool _update_image_list_tile = true )
+		public void update_tile( int _tile_ind, utils.ETileViewType _view_type, tiles_data _tiles_data, Graphics _gfx, Image _img, data_sets_manager.EScreenDataType _scr_type )
 		{
 #if DEF_TILE_DRAW_FAST
 			Image	block_img;
@@ -222,11 +222,6 @@ namespace MAPeD
 			if( _gfx == null )
 			{
 				gfx.Dispose();
-			}
-			
-			if( _update_image_list_tile )
-			{
-				m_tile_list.update_tile( _tile_ind );
 			}
 		}
 		
