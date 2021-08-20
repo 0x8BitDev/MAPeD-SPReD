@@ -266,6 +266,36 @@ namespace MAPeD
 			         	new bit_field( 0, 0 ) } );	// property id
 		}
 	}
+
+	// SMD: [ property_id ](4) [x](1) [ palette ind ](2) [ hv_flip ](2) [CHR ind](11)
+	public class map_data_app_SMD : map_data_config_base
+	{
+		public map_data_app_SMD()
+		{
+			m_platform = utils.EPlatformType.pt_SMD;
+			
+			set_data( new bit_field[]{ 
+			         	new bit_field( 11, 0 ), 	// CHR id
+			         	new bit_field( 2, 13 ), 	// palette index
+			         	new bit_field( 2, 11 ), 	// H/V flipping
+			         	new bit_field( 4, 16 ) } );	// property id
+		}
+	}
+
+	// SMD: [ palette ind ](2) [ hv_flip ](2) [CHR ind](11)
+	public class map_data_native_SMD : map_data_config_base
+	{
+		public map_data_native_SMD()
+		{
+			m_platform = utils.EPlatformType.pt_SMD;
+			
+			set_data( new bit_field[]{ 
+			         	new bit_field( 11, 0 ), 	// CHR id
+			         	new bit_field( 2, 13 ), 	// palette index
+			         	new bit_field( 2, 11 ), 	// H/V flipping
+			         	new bit_field( 0, 0 ) } );	// property id
+		}
+	}
 	
 	public static class map_data_config_provider
 	{
@@ -273,6 +303,7 @@ namespace MAPeD
 		private static readonly map_data_app_SMS m_map_data_app_SMS = new map_data_app_SMS();
 		private static readonly map_data_app_PCE m_map_data_app_PCE = new map_data_app_PCE();
 		private static readonly map_data_app_ZX	 m_map_data_app_ZX	= new map_data_app_ZX();
+		private static readonly map_data_app_SMD m_map_data_app_SMD	= new map_data_app_SMD();
 		
 		private static readonly Dictionary< utils.EPlatformType, map_data_config_base > m_map_data_app_dict = new Dictionary< utils.EPlatformType, map_data_config_base >();
 
@@ -280,6 +311,7 @@ namespace MAPeD
 		private static readonly map_data_native_SMS m_map_data_native_SMS	= new map_data_native_SMS();
 		private static readonly map_data_native_PCE m_map_data_native_PCE	= new map_data_native_PCE();
 		private static readonly map_data_native_ZX	m_map_data_native_ZX	= new map_data_native_ZX();
+		private static readonly map_data_native_SMD	m_map_data_native_SMD	= new map_data_native_SMD();
 		
 		private static readonly Dictionary< utils.EPlatformType, map_data_config_base > m_map_data_native_dict = new Dictionary< utils.EPlatformType, map_data_config_base >();
 		
@@ -289,11 +321,13 @@ namespace MAPeD
 			m_map_data_app_dict.Add( m_map_data_app_SMS.platform(),	m_map_data_app_SMS );
 			m_map_data_app_dict.Add( m_map_data_app_PCE.platform(),	m_map_data_app_PCE );
 			m_map_data_app_dict.Add( m_map_data_app_ZX.platform(),	m_map_data_app_ZX );
+			m_map_data_app_dict.Add( m_map_data_app_SMD.platform(),	m_map_data_app_SMD );
 			
 			m_map_data_native_dict.Add( m_map_data_native_NES.platform(),	m_map_data_native_NES );
 			m_map_data_native_dict.Add( m_map_data_native_SMS.platform(),	m_map_data_native_SMS );
 			m_map_data_native_dict.Add( m_map_data_native_PCE.platform(),	m_map_data_native_PCE );
 			m_map_data_native_dict.Add( m_map_data_native_ZX.platform(),	m_map_data_native_ZX );
+			m_map_data_native_dict.Add( m_map_data_native_SMD.platform(),	m_map_data_native_SMD );
 		}
 		
 		public static map_data_config_base config_app()

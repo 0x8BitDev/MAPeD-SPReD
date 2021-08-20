@@ -187,7 +187,8 @@ namespace MAPeD
 				m_gfx.FillRectangle( utils.brush, ( i << 4 )%256, ( i>>4 ) << 4, 16, 16 );
 #elif DEF_SMS	// column ordered data
 				m_gfx.FillRectangle( utils.brush, ( i >> 2 ) << 4, ( i & 0x03 ) << 4, 16, 16 );
-#elif DEF_PCE	// column ordered data
+#elif DEF_PCE || DEF_SMD
+				// column ordered data
 				m_gfx.FillRectangle( utils.brush, ( i >> 3 ) << 2, ( i & 0x07 ) << 3, 4, 8 );
 #elif DEF_ZX	// row ordered data
 				m_gfx.FillRectangle( utils.brush, ( i << 5 )%256, ( i >> 3 ) << 5, 32, 32 );
@@ -202,15 +203,21 @@ namespace MAPeD
 #elif DEF_SMS	// column ordered data
 				int x = ( ( m_sel_clr_ind >> 2 ) << 4 );
 				int y = ( ( m_sel_clr_ind % 4  ) << 4 );
-#elif DEF_PCE	// column ordered data
+#elif DEF_PCE || DEF_SMD
+				// column ordered data
 				int x = ( ( m_sel_clr_ind >> 3 ) << 2 );
 				int y = ( ( m_sel_clr_ind % 8  ) << 3 );
 #elif DEF_ZX	// row ordered data
+				// draw 'disabled' red line
+				{
+					m_pen.Color = utils.CONST_COLOR_PIXBOX_INACTIVE_CROSS;
+					m_gfx.DrawLine( m_pen, 0, 0, m_pix_box.Width, m_pix_box.Height );
+				}
 				int x = 0;
 				int y = ( m_sel_clr_ind >> 3 ) << 5;
 #endif
 
-#if !DEF_PCE
+#if !DEF_PCE && !DEF_SMD
 #if DEF_ZX
 				m_pen.Color = utils.CONST_COLOR_PALETTE_SELECTED_INNER_BORDER;
 				m_gfx.DrawRectangle( m_pen, x+2, y+2, 253, 29 );
@@ -239,11 +246,14 @@ namespace MAPeD
 		{
 #if !DEF_ZX
 		
-#if DEF_NES		// row ordered data				
+#if DEF_NES	
+			// row ordered data
 			int sel_clr_ind = ( e.X >> 4 ) + ( ( e.Y >> 4 ) << 4 );
-#elif DEF_SMS	// column ordered data
+#elif DEF_SMS
+			// column ordered data
 			int sel_clr_ind = (( e.X >> 4 ) << 2 ) + ( e.Y >> 4 );
-#elif DEF_PCE	// column ordered data
+#elif DEF_PCE || DEF_SMD
+			// column ordered data
 			int sel_clr_ind = (( e.X >> 2 ) << 3 ) + ( e.Y >> 3 );
 #endif
 			MainForm.set_status_msg( utils.hex( "Selected color: #", sel_clr_ind ) );

@@ -23,6 +23,7 @@ namespace MAPeD
 		public const string CONST_STR_EXP_NES_DATA_ORDER_ROWS	= "Rows\nAll the map\\screens data are stored in a row order.";
 
 		public const string CONST_STR_EXP_SMS_DATA_ORDER_COLS	= "Columns\nAll the map\\screens data are stored in a column order except of VDP-ready data ( static screens mode ).";
+		public const string CONST_STR_EXP_SMD_DATA_ORDER_COLS	= CONST_STR_EXP_SMS_DATA_ORDER_COLS; 
 		public const string CONST_STR_EXP_PCE_DATA_ORDER_COLS	= "Columns\nAll the map\\screens data are stored in a column order except of VDC-ready data ( static screens mode ).";
 		public const string CONST_STR_EXP_DATA_ORDER_ROWS		= "Rows\nAll the map\\screens data are stored in a row order.";
 		
@@ -42,7 +43,8 @@ namespace MAPeD
 		public const string CONST_STR_EXP_SMS_MOVE_PROP_TO_SCR_MAP_ON	= "\nThe properties 0-7 (3 bits) will be moved to a screen map data.";
 		public const string CONST_STR_EXP_SMS_MOVE_PROP_TO_SCR_MAP_OFF	= "\nAll the properties will be stored in a separate file.";
 		
-		public const string CONST_STR_EXP_PROP_IN_FRONT_OF_SPRITES	= "\n'In front of sprites' property: What property will be used as the 'In front of sprites' flag in a screen map data.";
+		public const string CONST_STR_EXP_PROP_IN_FRONT_OF_SPRITES		= "\n'In front of sprites' property: What property will be used as the 'In front of sprites' flag in a screen map data.";
+		public const string CONST_STR_SMD_EXP_PROP_IN_FRONT_OF_SPRITES	= "\n'Priority id' property: What property will be used as the 'Priority Bit' in a screen map data.";
 		
 		public const string CONST_STR_EXP_MODE					= "\n\nMODE: "; 
 		public const string CONST_STR_EXP_MODE_MULTIDIR			= "Multidirectional scrolling\nAll screens data are stored in a common array of tiles. Suitable for map scrolling in any direction.";
@@ -52,6 +54,7 @@ namespace MAPeD
 		
 		public const string CONST_STR_EXP_SMS_MODE_STAT_SCR		= "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are VDP-ready - 1536 bytes per screen. Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
 		public const string CONST_STR_EXP_PCE_MODE_STAT_SCR		= "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are VDC-ready - 1792 bytes per screen. Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
+		public const string CONST_STR_EXP_SMD_MODE_STAT_SCR		= "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are VDP-ready. Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
 
 		public const string CONST_STR_EXP_LAYOUT				= "\n\nLAYOUT: "; 
 		public const string CONST_STR_EXP_LAYOUT_ADJ_SCR		= "Adjacent Screens\nEach screen description stores 4 labels of adjacent screens ( calculates automatically during the export process ).";

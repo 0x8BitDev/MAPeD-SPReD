@@ -21,13 +21,12 @@ using System.Linq;
 namespace MAPeD
 {
 	/// <summary>
-	/// Description of exporter_pce_asm.
+	/// Description of exporter_asm.
 	/// </summary>
 	/// 
 
 	public partial class exporter_asm : Form
 	{
-#if DEF_PCE
 		private readonly data_sets_manager m_data_mngr = null;
 		
 		private string	m_filename			= null;
@@ -40,9 +39,6 @@ namespace MAPeD
 		private const string	CONST_FILENAME_LEVEL_PREFIX		= "Lev";
 		private const string	CONST_BIN_EXT					= ".bin";
 
-		private int[] m_CHR_offset	= { 64, 128, 256, 128, 256, 512 };
-		private int[] m_BAT_index	= { 0, 1, 3, 4, 5, 7 };
-		
 		private StreamWriter	m_C_writer	= null;
 		
 		private struct exp_scr_data
@@ -103,7 +99,7 @@ namespace MAPeD
 			//
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = false;
 			
-			ComboBoxBAT.SelectedIndex = 0;
+			ComboBoxInFrontOfSpritesProp.SelectedIndex = 0;
 			
 			update_desc();
 		}
@@ -181,7 +177,7 @@ namespace MAPeD
 			
 			if( RBtnTilesDirColumns.Checked )
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PCE_DATA_ORDER_COLS;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMD_DATA_ORDER_COLS;
 			}
 			else
 			{
@@ -201,7 +197,7 @@ namespace MAPeD
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PCE_MODE_STAT_SCR;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMD_MODE_STAT_SCR;
 			}
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP;
@@ -214,6 +210,8 @@ namespace MAPeD
 			{
 				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP_PER_CHR;
 			}
+			
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP_IN_FRONT_OF_SPRITES;
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_LAYOUT;
 			
@@ -260,7 +258,7 @@ namespace MAPeD
 				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NO_ENTITIES;
 			}
 			
-			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PCE_CHR_OFFSET;
+			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_CHR_OFFSET;
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_WARNING;
 		}
@@ -431,7 +429,6 @@ namespace MAPeD
 			_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_BLOCK        " + c_def_eq + utils.hex( c_hex_pref, 32768 ) );
 			_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_CHR          " + c_def_eq + utils.hex( c_hex_pref, 65536 ) );
 			
-			_sw.WriteLine( "\n" + c_def + "BAT_INDEX\t" + c_def_eq + m_BAT_index[ ComboBoxBAT.SelectedIndex ] );
 			_sw.WriteLine( c_def + "CHRS_OFFSET\t" + c_def_eq + get_CHR_offset() + "\t" + c_comment + " first CHR index from the begining of VRAM" );
 
 			_sw.WriteLine( "\n" + c_def + "ScrTilesWidth\t" + c_def_eq + get_tiles_cnt_width( 1 ) + "\t" + c_comment + " number of screen tiles (" + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + ") in width" );
@@ -574,6 +571,9 @@ namespace MAPeD
 									for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 									{
 										block_id = tiles.get_tile_block( tile_id, block_n );
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+										if( tile_offs_y < 14 || ( tile_offs_y >= 14 && block_n < 2 ) )
+#endif											
 										{
 											exp_scr.m_scr_blocks.set_tile( ( tile_offs_x * scr_height_blocks ) + ( ( block_n & 0x01 ) == 0x01 ? scr_height_blocks:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ), block_id );
 										}
@@ -1305,16 +1305,21 @@ namespace MAPeD
 					
 					for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 					{
-						block_x = ( ( block_n & 0x01 ) == 0x01 ? _scr_height_blocks_mul4:0 );
-						block_y = ( ( block_n & 0x02 ) == 0x02 ? 2:0 );
-						
-						for( chr_n = 0; chr_n < 4; chr_n++ )
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+						if( tile_offs_y < 14 || ( tile_offs_y >= 14 && block_n < 2 ) )
+#endif					
 						{
-							chr_x	= ( ( chr_n & 0x01 ) == 0x01 ? _scr_height_blocks_mul2:0 );
-							chr_y	= ( ( chr_n & 0x02 ) == 0x02 ? 1:0 );
+							block_x = ( ( block_n & 0x01 ) == 0x01 ? _scr_height_blocks_mul4:0 );
+							block_y = ( ( block_n & 0x02 ) == 0x02 ? 2:0 );
 							
-							// column order by default
-							_attrs_chr[ tile_x + tile_y + block_x + block_y + chr_x + chr_y ] = get_screen_attribute( _tiles, tile_id, block_n, chr_n );
+							for( chr_n = 0; chr_n < 4; chr_n++ )
+							{
+								chr_x	= ( ( chr_n & 0x01 ) == 0x01 ? _scr_height_blocks_mul2:0 );
+								chr_y	= ( ( chr_n & 0x02 ) == 0x02 ? 1:0 );
+								
+								// column order by default
+								_attrs_chr[ tile_x + tile_y + block_x + block_y + chr_x + chr_y ] = get_screen_attribute( _tiles, tile_id, block_n, chr_n );
+							}
 						}
 					}
 				}
@@ -1357,7 +1362,17 @@ namespace MAPeD
 		
 		private ushort get_screen_attribute( uint _block_data )
 		{
-			return ( ushort )tiles_data.block_data_repack_to_native( _block_data, get_CHR_offset() );
+			ushort native_data = ( ushort )tiles_data.block_data_repack_to_native( _block_data, get_CHR_offset() );
+
+			int block_prop = tiles_data.get_block_flags_obj_id( _block_data );
+
+			// add priority bit
+			if( ComboBoxInFrontOfSpritesProp.SelectedIndex > 0 && block_prop == ( ComboBoxInFrontOfSpritesProp.SelectedIndex - 1 ) )
+			{
+				native_data |= ( ushort )( 1 << 15 );
+			}
+			
+			return native_data;
 		}
 		
 		private string get_adjacent_screen_index( int _level_n, layout_data _data, int _scr_ind, int _offset )
@@ -1374,7 +1389,7 @@ namespace MAPeD
 		
 		private int get_CHR_offset()
 		{
-			return m_CHR_offset[ ComboBoxBAT.SelectedIndex ] + ( int )NumericUpDownCHROffset.Value;
+			return ( int )NumericUpDownCHROffset.Value;
 		}
 		
 		private string get_adjacent_screen_label( int _level_n, layout_data _data, int _scr_ind, int _offset )
@@ -1468,8 +1483,11 @@ namespace MAPeD
 				n_scr_X = level_data.get_width();
 				n_scr_Y = level_data.get_height();
 
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+				n_Y_tiles = n_scr_Y * ( ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * ( RBtnTiles4x4.Checked ? 1:2 ) ) - ( RBtnTiles4x4.Checked ? 0:1 ) );
+#else					
 				n_Y_tiles = n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES * ( RBtnTiles4x4.Checked ? 1:2 );
-				
+#endif
 				// game level tilemap analysing
 				{
 					map_tiles_arr = new byte[ n_scr_X * n_scr_Y * utils.CONST_SCREEN_TILES_CNT ];
@@ -1540,6 +1558,9 @@ namespace MAPeD
 										for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 										{
 											block_id = ( byte )tiles.get_tile_block( tile_id, block_n );
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+											if( tile_offs_y < 14 || ( tile_offs_y >= 14 && block_n < 2 ) )
+#endif
 											{
 												map_blocks_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + ( ( block_n & 0x01 ) == 0x01 ? n_Y_tiles:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ) ] = block_id;
 											}
@@ -1886,6 +1907,5 @@ namespace MAPeD
 			
           	return unchecked( ( uint )( v3 << 24 | v2 << 16 | v1 << 8 | v0 ) );
 		}
-#endif	//DEF_PCE
 	}
 }

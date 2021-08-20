@@ -1,0 +1,385 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <ProjectGuid>{4B5F193D-F5D1-4292-A88A-87B1867EB886}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>MAPeD</RootNamespace>
+    <AssemblyName>MAPeD-SMD</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <WarningLevel>4</WarningLevel>
+    <NoWin32Manifest>False</NoWin32Manifest>
+    <SignAssembly>False</SignAssembly>
+    <DelaySign>False</DelaySign>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunCodeAnalysis>False</RunCodeAnalysis>
+    <SourceAnalysisOverrideSettingsFile>C:\Users\sutr\AppData\Roaming\ICSharpCode/SharpDevelop4\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <ApplicationIcon>..\src\icon\MAPeD.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <BaseAddress>4194304</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>..\..\..\bin\</OutputPath>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE;DEF_SCREEN_HEIGHT_7d5_TILES;DEF_TILE_DRAW_FAST;DEF_PALETTE16_PER_CHR;DEF_FIXED_LEN_PALETTE16_ARR;DEF_FLIP_BLOCKS_SPR_BY_FLAGS;DEF_SMD</DefineConstants>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <StartAction>Project</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>..\..\..\bin\</OutputPath>
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE;DEF_SCREEN_HEIGHT_7d5_TILES;DEF_TILE_DRAW_FAST;DEF_PALETTE16_PER_CHR;DEF_FIXED_LEN_PALETTE16_ARR;DEF_FLIP_BLOCKS_SPR_BY_FLAGS;DEF_SMD</DefineConstants>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="IronPython">
+      <HintPath>..\..\lib\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules">
+      <HintPath>..\..\lib\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic">
+      <HintPath>..\..\lib\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting">
+      <HintPath>..\..\lib\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="SPSeD">
+      <HintPath>..\..\lib\SPSeD.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Json" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\src\create_layout_form.cs">
+      <Link>create_layout_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\create_layout_form.Designer.cs">
+      <Link>create_layout_form.Designer.cs</Link>
+      <DependentUpon>create_layout_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\data_conversion_options_form.cs">
+      <Link>data_conversion_options_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\data_conversion_options_form.Designer.cs">
+      <Link>data_conversion_options_form.Designer.cs</Link>
+      <DependentUpon>data_conversion_options_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\data_sets_manager.cs">
+      <Link>data_sets_manager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\description_form.cs">
+      <Link>description_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\description_form.Designer.cs">
+      <Link>description_form.Designer.cs</Link>
+      <DependentUpon>description_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\drawable_base.cs">
+      <Link>drawable_base.cs</Link>
+    </Compile>
+    <Compile Include="..\src\entity_data.cs">
+      <Link>entity_data.cs</Link>
+    </Compile>
+    <Compile Include="..\src\exporter_zx_asm.cs">
+      <Link>exporter_zx_asm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\exporter_zx_asm.Designer.cs">
+      <Link>exporter_zx_asm.Designer.cs</Link>
+      <DependentUpon>exporter_zx_asm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\export_active_tile_block_set_form.cs">
+      <Link>export_active_tile_block_set_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\export_active_tile_block_set_form.Designer.cs">
+      <Link>export_active_tile_block_set_form.Designer.cs</Link>
+      <DependentUpon>export_active_tile_block_set_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\file_associations.cs">
+      <Link>file_associations.cs</Link>
+    </Compile>
+    <Compile Include="..\src\imagelist_manager.cs">
+      <Link>imagelist_manager.cs</Link>
+    </Compile>
+    <Compile Include="..\src\image_preview.cs">
+      <Link>image_preview.cs</Link>
+    </Compile>
+    <Compile Include="..\src\import_tiles_form.cs">
+      <Link>import_tiles_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\import_tiles_form.Designer.cs">
+      <Link>import_tiles_form.Designer.cs</Link>
+      <DependentUpon>import_tiles_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\layout_data.cs">
+      <Link>layout_data.cs</Link>
+    </Compile>
+    <Compile Include="..\src\layout_editor.cs">
+      <Link>layout_editor.cs</Link>
+    </Compile>
+    <Compile Include="..\src\MainForm.cs">
+      <Link>MainForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\MainForm.Designer.cs">
+      <Link>MainForm.Designer.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\map_data_config.cs">
+      <Link>map_data_config.cs</Link>
+    </Compile>
+    <Compile Include="..\src\object_name_form.cs">
+      <Link>object_name_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\object_name_form.Designer.cs">
+      <Link>object_name_form.Designer.cs</Link>
+      <DependentUpon>object_name_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\optimization_form.cs">
+      <Link>optimization_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\optimization_form.Designer.cs">
+      <Link>optimization_form.Designer.cs</Link>
+      <DependentUpon>optimization_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\patterns_manager_form.cs">
+      <Link>patterns_manager_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\patterns_manager_form.Designer.cs">
+      <Link>patterns_manager_form.Designer.cs</Link>
+      <DependentUpon>patterns_manager_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\pattern_data.cs">
+      <Link>pattern_data.cs</Link>
+    </Compile>
+    <Compile Include="..\src\platform_data_provider.cs">
+      <Link>platform_data_provider.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Program.cs">
+      <Link>Program.cs</Link>
+    </Compile>
+    <Compile Include="..\src\progress_form.cs">
+      <Link>progress_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\progress_form.Designer.cs">
+      <Link>progress_form.Designer.cs</Link>
+      <DependentUpon>progress_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\project_data_converter.cs">
+      <Link>project_data_converter.cs</Link>
+    </Compile>
+    <Compile Include="..\src\py_scripting\py_api.cs">
+      <Link>py_scripting\py_api.cs</Link>
+    </Compile>
+    <Compile Include="..\src\screen_data.cs">
+      <Link>screen_data.cs</Link>
+    </Compile>
+    <Compile Include="..\src\screen_editor.cs">
+      <Link>screen_editor.cs</Link>
+    </Compile>
+    <Compile Include="..\src\screen_list.cs">
+      <Link>screen_list.cs</Link>
+    </Compile>
+    <Compile Include="..\src\screen_mark_form.cs">
+      <Link>screen_mark_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\screen_mark_form.Designer.cs">
+      <Link>screen_mark_form.Designer.cs</Link>
+      <DependentUpon>screen_mark_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\statistics_form.cs">
+      <Link>statistics_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\statistics_form.Designer.cs">
+      <Link>statistics_form.Designer.cs</Link>
+      <DependentUpon>statistics_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\strings.cs">
+      <Link>strings.cs</Link>
+    </Compile>
+    <Compile Include="..\src\swap_colors_form.cs">
+      <Link>swap_colors_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\swap_colors_form.Designer.cs">
+      <Link>swap_colors_form.Designer.cs</Link>
+      <DependentUpon>swap_colors_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\tab_page_container.cs">
+      <Link>tab_page_container.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\tab_page_container.Designer.cs">
+      <Link>tab_page_container.Designer.cs</Link>
+      <DependentUpon>tab_page_container.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\tiles_palette_form.cs">
+      <Link>tiles_palette_form.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\src\tiles_palette_form.Designer.cs">
+      <Link>tiles_palette_form.Designer.cs</Link>
+      <DependentUpon>tiles_palette_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\tiles_processor\block_editor.cs">
+      <Link>tiles_processor\block_editor.cs</Link>
+    </Compile>
+    <Compile Include="..\src\tiles_processor\CHR_bank_viewer.cs">
+      <Link>tiles_processor\CHR_bank_viewer.cs</Link>
+    </Compile>
+    <Compile Include="..\src\tiles_processor\palette_group.cs">
+      <Link>tiles_processor\palette_group.cs</Link>
+    </Compile>
+    <Compile Include="..\src\tiles_processor\palette_small.cs">
+      <Link>tiles_processor\palette_small.cs</Link>
+    </Compile>
+    <Compile Include="..\src\tiles_processor\tiles_data.cs">
+      <Link>tiles_processor\tiles_data.cs</Link>
+    </Compile>
+    <Compile Include="..\src\tiles_processor\tiles_processor.cs">
+      <Link>tiles_processor\tiles_processor.cs</Link>
+    </Compile>
+    <Compile Include="..\src\tiles_processor\tile_editor.cs">
+      <Link>tiles_processor\tile_editor.cs</Link>
+    </Compile>
+    <Compile Include="..\src\tile_list.cs">
+      <Link>tile_list.cs</Link>
+    </Compile>
+    <Compile Include="..\src\utils.cs">
+      <Link>utils.cs</Link>
+    </Compile>
+    <Compile Include="exporter_asm.cs" />
+    <Compile Include="exporter_asm.Designer.cs">
+      <DependentUpon>exporter_asm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MAPeD-SMD.Designer.cs">
+      <DependentUpon>MAPeD-SMD.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="MAPeD-SMD.settings" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\src\create_layout_form.resx">
+      <Link>create_layout_form.resx</Link>
+      <DependentUpon>create_layout_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\data_conversion_options_form.resx">
+      <DependentUpon>data_conversion_options_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\description_form.resx">
+      <Link>description_form.resx</Link>
+      <DependentUpon>description_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\exporter_zx_asm.resx">
+      <Link>exporter_zx_asm.resx</Link>
+      <DependentUpon>exporter_zx_asm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\export_active_tile_block_set_form.resx">
+      <Link>export_active_tile_block_set_form.resx</Link>
+      <DependentUpon>export_active_tile_block_set_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\import_tiles_form.resx">
+      <Link>import_tiles_form.resx</Link>
+      <DependentUpon>import_tiles_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\MainForm.resx">
+      <Link>MainForm.resx</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\object_name_form.resx">
+      <Link>object_name_form.resx</Link>
+      <DependentUpon>object_name_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\optimization_form.resx">
+      <Link>optimization_form.resx</Link>
+      <DependentUpon>optimization_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\patterns_manager_form.resx">
+      <Link>patterns_manager_form.resx</Link>
+      <DependentUpon>patterns_manager_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\progress_form.resx">
+      <Link>progress_form.resx</Link>
+      <DependentUpon>progress_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\screen_mark_form.resx">
+      <Link>screen_mark_form.resx</Link>
+      <DependentUpon>screen_mark_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\statistics_form.resx">
+      <DependentUpon>statistics_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\swap_colors_form.resx">
+      <DependentUpon>swap_colors_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\tab_page_container.resx">
+      <Link>tab_page_container.resx</Link>
+      <DependentUpon>tab_page_container.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\tiles_palette_form.resx">
+      <Link>tiles_palette_form.resx</Link>
+      <DependentUpon>tiles_palette_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="exporter_asm.resx">
+      <DependentUpon>exporter_asm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -122,56 +122,38 @@ namespace MAPeD
 		{
 			bool import_game_map_as_is = true;
 
+#if DEF_SCREEN_HEIGHT_7d5_TILES
+			int tile_size = 16;
+#else
+			int tile_size = _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 32:16;
+#endif
+			if( ( _bmp.Width % tile_size ) != 0 || ( _bmp.Height % tile_size ) != 0 )
+			{
+				MainForm.message_box( "The imported image isn't multiple to a tile size: " + tile_size + "\n\nThe imported data will be trimmed.", "Image Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Information );
+			}
+			
 			if( import_tiles )
 			{
-				int tile_size = _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 32:16;
-				
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-				if( ( !import_game_map && ( _bmp.Width > 0 && ( _bmp.Width % tile_size ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % tile_size ) == 0 ) ) ||
-					( import_game_map && ( _bmp.Width > 0 && ( _bmp.Width % tile_size ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) == 0 ) ) )
-#else
-				if( ( _bmp.Width > 0 && ( _bmp.Width % tile_size ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % tile_size ) == 0 ) )
-#endif
+				if( import_game_map )
 				{
-					if( import_game_map )
+					if( ( _bmp.Width > 0 && ( _bmp.Width % utils.CONST_SCREEN_WIDTH_PIXELS ) != 0 ) || ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) != 0 ) )
 					{
-						if( ( _bmp.Width > 0 && ( _bmp.Width % utils.CONST_SCREEN_WIDTH_PIXELS ) != 0 ) || ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) != 0 ) )
+						DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nCrop the imported game map or leave it 'as is'?\n\n[Yes] Crop the game map to fully filled screens\n[No] Import the game map 'as is'", "Game map Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
+						
+						if( dlg_res == DialogResult.Cancel )
 						{
-							DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nCrop the imported game map or leave it 'as is'?\n\n[Yes] Crop the game map to fully filled screens\n[No] Import the game map 'as is'", "Game map Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
-							
-							if( dlg_res == DialogResult.Cancel )
-							{
-								throw new Exception( "Operation aborted!" );
-							}
-							
-							import_game_map_as_is = ( dlg_res == DialogResult.No );
+							throw new Exception( "Operation aborted!" );
 						}
+						
+						import_game_map_as_is = ( dlg_res == DialogResult.No );
 					}
+				}
 
-					import_image_data( import_game_map_as_is, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), _data_manager, _create_layout, _progress_val, _progress_status );
-				}
-				else
-				{
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-					if( import_game_map )
-					{
-						throw new Exception( "To import a game map, the imported image width must be a multiple of " + tile_size + ", the image height must be a multiple of 240!" );
-					}
-					else
-#endif
-					throw new Exception( "The imported image size must be a multiple of " + tile_size + "!" );
-				}
+				import_image_data( import_game_map_as_is, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), _data_manager, _create_layout, _progress_val, _progress_status );
 			}
 			else
 			{
-				if( ( _bmp.Width > 0 && ( _bmp.Width % 16 ) == 0 ) && ( _bmp.Height > 0 && ( _bmp.Height % 16 ) == 0 ) )
-				{
-					import_image_data( false, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), null, null, _progress_val, _progress_status );
-				}
-				else
-				{
-					throw new Exception( "The imported image size must be a multiple of 16!" );
-				}
+				import_image_data( false, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), null, null, _progress_val, _progress_status );
 			}
 		}
 		
@@ -224,7 +206,10 @@ namespace MAPeD
 				int scr_tile_ind;
 				int scr_block_ind;
 
-				int tile_cnt	= ( _bmp.Width >> 4 ) * ( _bmp.Height >> 4 );
+				int bmp_width	= _bmp.Width - ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( _bmp.Width % 32 ):( _bmp.Width % 16 ) );
+				int bmp_height	= _bmp.Height - ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( _bmp.Height % 32 ):( _bmp.Height % 16 ) );
+
+				int tile_cnt	= ( bmp_width >> 4 ) * ( bmp_height >> 4 );
 				int tile_n		= 0;
 				int progress	= 0;
 				
@@ -256,8 +241,8 @@ namespace MAPeD
 					
 					tile_ind = beg_tile_ind;
 					
-					int bmp_width	= ( import_game_map && !_import_game_map_as_is ) ? ( ( _bmp.Width / utils.CONST_SCREEN_WIDTH_PIXELS ) * utils.CONST_SCREEN_WIDTH_PIXELS ):_bmp.Width;
-					int bmp_height	= ( import_game_map && !_import_game_map_as_is ) ? ( ( _bmp.Height / utils.CONST_SCREEN_HEIGHT_PIXELS ) * utils.CONST_SCREEN_HEIGHT_PIXELS ):_bmp.Height;
+					bmp_width	= ( import_game_map && !_import_game_map_as_is ) ? ( ( bmp_width / utils.CONST_SCREEN_WIDTH_PIXELS ) * utils.CONST_SCREEN_WIDTH_PIXELS ):bmp_width;
+					bmp_height	= ( import_game_map && !_import_game_map_as_is ) ? ( ( bmp_height / utils.CONST_SCREEN_HEIGHT_PIXELS ) * utils.CONST_SCREEN_HEIGHT_PIXELS ):bmp_height;
 					
 					int scr_x_cnt = 0;
 					int scr_y_cnt = 0;
@@ -471,9 +456,9 @@ namespace MAPeD
 					_progress_status.Report( CheckBoxBlocks.Checked ? "Blocks data":"CHR data" );
 					
 					// blocks/CHRs
-					for( int block_y = 0; block_y < _bmp.Height; block_y += 16 )
+					for( int block_y = 0; block_y < bmp_height; block_y += 16 )
 					{
-						for( int block_x = 0; block_x < _bmp.Width; block_x += 16 )
+						for( int block_x = 0; block_x < bmp_width; block_x += 16 )
 						{
 							for( int CHR_n = 0; CHR_n < 4; CHR_n++ )
 							{

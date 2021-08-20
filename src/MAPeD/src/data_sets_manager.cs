@@ -839,7 +839,7 @@ namespace MAPeD
 					for( int i = 0; i < layouts_data_cnt; i++ )
 					{
 						layout_data_create();
-						get_layout_data( layouts_data_pos ).load( _ver, _br, get_entity_by_name, _file_ext, _scr_align_mode );
+						get_layout_data( layouts_data_pos ).load( _ver, _br, get_entity_by_name, _file_ext, _scr_align_mode, screen_data_type );
 					}
 					
 					entity_instance.load_instances_counter( _br );
@@ -877,7 +877,7 @@ namespace MAPeD
 							}
 						}
 							
-						project_data_converter_provider.get_converter().palettes_processing( _ver, platform_data_provider.get_platform_by_ext( _file_ext ), _convert_colors, this, plt_main );
+						project_data_converter_provider.get_converter().palettes_processing( _ver, platform_data_provider.get_platform_type_by_file_ext( _file_ext ), _convert_colors, this, plt_main );
 							
 						if( _convert_colors )
 						{

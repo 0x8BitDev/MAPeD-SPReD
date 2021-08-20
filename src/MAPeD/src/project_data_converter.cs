@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 
 namespace MAPeD
 {
@@ -28,6 +29,17 @@ namespace MAPeD
 		
 		void palettes_processing( byte _ver, utils.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main );
 		
+		void load_screens(	byte 											_ver, 
+                         	BinaryReader 									_br, 
+                         	data_sets_manager.EScreenDataType 				_scr_type, 
+                         	data_conversion_options_form.EScreensAlignMode 	_scr_align_mode, 
+                         	int 											_prj_scr_tiles_width, 
+                         	int 											_prj_scr_tiles_height, 
+                         	tiles_data 										_data );
+		
+		Rectangle get_native_scr_rect();
+		Rectangle get_prj_scr_rect();
+		
 		void post_load_data_cleanup();
 	}
 
@@ -42,6 +54,9 @@ namespace MAPeD
 		private List< palette16_data >	m_palettes			= null;
 		protected List< tiles_data >	m_inner_tiles_data	= null; 
 
+		private Rectangle m_native_scr_rect	= new Rectangle( 0, 0, 0, 0 );
+		private Rectangle m_prj_scr_rect	= new Rectangle( 0, 0, 0, 0 );
+		
 		public virtual void load_CHR_bank( byte _ver, BinaryReader _br, utils.EPlatformType _prj_platform, ref byte[] _CHR_bank )
 		{
 			load_CHR_data( _ver, _br, _prj_platform, ref _CHR_bank, delegate( byte _val ) { return _val; });
@@ -234,6 +249,102 @@ namespace MAPeD
 			return m_inner_tiles_data[ m_inner_tiles_data.Count - 1 ];
 		}
 		
+		public void load_screens(	byte 											_ver, 
+		                         	BinaryReader 									_br, 
+		                         	data_sets_manager.EScreenDataType 				_scr_type, 
+		                         	data_conversion_options_form.EScreensAlignMode 	_scr_align_mode, 
+		                         	int 											_prj_scr_tiles_width, 
+		                         	int 											_prj_scr_tiles_height, 
+		                         	tiles_data 										_data )
+		{
+			screen_data scr;
+			
+			int tile_x;
+			int tile_y;
+			int tile_y_offset;
+			
+			int scr_data_len			= utils.get_screen_tiles_cnt_uni( _scr_type );
+			int native_scr_tiles_width	= utils.get_screen_num_width_tiles_uni( _scr_type );
+			int native_scr_tiles_height	= utils.get_screen_num_height_tiles_uni( _scr_type );
+
+			m_native_scr_rect.X			= 0;
+			m_native_scr_rect.Y			= 0;
+			m_native_scr_rect.Width		= native_scr_tiles_width;
+			m_native_scr_rect.Height	= native_scr_tiles_height;
+			
+			m_prj_scr_rect.X			= ( m_native_scr_rect.Width >> 1 ) - ( _prj_scr_tiles_width >> 1 );
+			m_prj_scr_rect.Y			= 0;
+			m_prj_scr_rect.Width		= _prj_scr_tiles_width;
+			m_prj_scr_rect.Height		= _prj_scr_tiles_height;
+			
+			// calc aligned prj screen pos
+			switch( _scr_align_mode )
+			{
+				case data_conversion_options_form.EScreensAlignMode.sam_Center:
+					{
+						m_prj_scr_rect.Y = ( m_native_scr_rect.Height >> 1 ) - ( _prj_scr_tiles_height >> 1 );
+					}
+					break;
+
+				case data_conversion_options_form.EScreensAlignMode.sam_Bottom:
+					{
+						m_prj_scr_rect.Y = m_native_scr_rect.Height - m_prj_scr_rect.Height;
+					}
+					break;
+			}
+			
+			bool native_scr_data = ( ( native_scr_tiles_width == _prj_scr_tiles_width ) && ( native_scr_tiles_height == _prj_scr_tiles_height ) );
+			
+			int scr_cnt = _br.ReadInt32();
+
+			Action< int > skip_tiles = tiles_cnt => { if( _ver < 5 ) { _br.ReadBytes( tiles_cnt ); } else { _br.ReadBytes( tiles_cnt << 1 ); } };
+
+			for( int i = 0; i < scr_cnt; i++ )
+			{
+				scr = _data.create_screen( _scr_type );
+				
+				if( native_scr_data )
+				{
+					scr.load( _ver, _br, scr_data_len, -1 );
+				}
+				else
+				{
+					for( tile_y = m_prj_scr_rect.Y; tile_y < ( m_prj_scr_rect.Y + m_prj_scr_rect.Height ); tile_y++ )
+					{
+						if( tile_y < 0 || tile_y >= native_scr_tiles_height )
+						{
+							skip_tiles( _prj_scr_tiles_width );
+							continue;
+						}
+						
+						tile_y_offset = native_scr_tiles_width * tile_y;
+						
+						for( tile_x = m_prj_scr_rect.X; tile_x < ( m_prj_scr_rect.X + m_prj_scr_rect.Width ); tile_x++ )
+						{
+							if( tile_x < 0 || tile_x >= native_scr_tiles_width )
+							{
+								skip_tiles( _prj_scr_tiles_width );
+							}
+							else
+							{
+								scr.load( _ver, _br, 1, tile_y_offset + tile_x );
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		public Rectangle get_native_scr_rect()
+		{
+			return m_native_scr_rect;
+		}
+		
+		public Rectangle get_prj_scr_rect()
+		{
+			return m_prj_scr_rect;
+		}
+		
 		public void post_load_data_cleanup()
 		{
 			if( m_inner_tiles_data != null )
@@ -276,6 +387,15 @@ namespace MAPeD
 	}
 #elif DEF_PCE
 	// PCE data converter
+	public class project_data_converter : project_data_converter_base
+	{
+		public project_data_converter()
+		{
+			//...
+		}
+	}
+#elif DEF_SMD
+	// SMD data converter
 	public class project_data_converter : project_data_converter_base
 	{
 		public project_data_converter()

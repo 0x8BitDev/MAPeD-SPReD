@@ -28,7 +28,7 @@ namespace MAPeD
 		public int[] m_palette1	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 17, 20, 24, 28 };
 		public int[] m_palette2	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 34, 37, 41, 45 };
 		public int[] m_palette3	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 51, 54, 58, 62 };
-#elif DEF_PCE
+#elif DEF_PCE || DEF_SMD
 		public int[] m_palette0	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 0, 73, 219, 511 };
 		public int[] m_palette1	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 4, 15+64, 15+128, 15+192 };
 		public int[] m_palette2	= new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 40, 40+72, 56+128, 56+192 };
@@ -1209,9 +1209,13 @@ namespace MAPeD
 			m_scr_data[ _scr_ind ] = _data;
 		}
 		
-		public void create_screen( data_sets_manager.EScreenDataType _type )
+		public screen_data create_screen( data_sets_manager.EScreenDataType _type )
 		{
-			m_scr_data.Add( new screen_data( _type ) );
+			screen_data scr = new screen_data( _type );
+			
+			m_scr_data.Add( scr );
+			
+			return scr;
 		}
 		
 		public void copy_screen( int _id )
@@ -1295,7 +1299,7 @@ namespace MAPeD
 		public long export_CHR( BinaryWriter _bw, bool _save_padding = false )
 #elif DEF_SMS
 		public long export_CHR( BinaryWriter _bw, int _bpp )
-#elif DEF_PCE || DEF_ZX
+#elif DEF_PCE || DEF_ZX || DEF_SMD
 		public long export_CHR( BinaryWriter _bw )
 #endif			
 		{
@@ -1304,7 +1308,11 @@ namespace MAPeD
 			int y;
 			int val;
 
-#if DEF_NES || DEF_SMS
+#if DEF_SMD
+			int _bpp = 4;
+#endif
+			
+#if DEF_NES || DEF_SMS || DEF_SMD
 			int j;
 			byte data;
 #elif DEF_PCE
@@ -1315,7 +1323,7 @@ namespace MAPeD
 			byte data;
 			int x_pos;
 #endif
-#if DEF_SMS
+#if DEF_SMS || DEF_SMD
 			int max_clr_ind = ( 2 << ( _bpp - 1 ) ) - 1;
 #endif			
 			int num_CHR_sprites = get_first_free_spr8x8_id();
@@ -1342,7 +1350,7 @@ namespace MAPeD
 						_bw.Write( data );
 					}
 				}
-#elif DEF_SMS
+#elif DEF_SMS || DEF_SMD
 				for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
 				{
 					for( j = 0; j < _bpp; j++ )
@@ -1525,7 +1533,7 @@ namespace MAPeD
 			int i;
 			uint val;
 
-			utils.EPlatformType			prj_platform	= platform_data_provider.get_platform_by_ext( _file_ext );
+			utils.EPlatformType			prj_platform	= platform_data_provider.get_platform_type_by_file_ext( _file_ext );
 			i_project_data_converter	data_converter	= project_data_converter_provider.get_converter();
 			
 			data_converter.load_CHR_bank( _ver, _br, prj_platform, ref m_CHR_bank );
@@ -1537,7 +1545,10 @@ namespace MAPeD
 			{
 				data_converter.pre_load_block_data( prj_platform );
 				
-				for( i = 0; i < utils.CONST_BLOCKS_UINT_SIZE; i++ )
+				int file_blocks_cnt = platform_data_provider.get_blocks_cnt_by_file_ext( _file_ext ) * utils.CONST_BLOCK_SIZE;
+				int read_blocks_cnt = Math.Min( m_blocks.Length, file_blocks_cnt );
+				
+				for( i = 0; i < read_blocks_cnt; i++ )
 				{
 					if( _ver <= 2 )
 					{
@@ -1549,6 +1560,20 @@ namespace MAPeD
 					}
 					
 					m_blocks[ i ] = data_converter.convert_block_data( _ver, prj_platform, i, val );
+				}
+				
+				int skip_data_size = file_blocks_cnt - m_blocks.Length;
+				
+				if( skip_data_size > 0 )
+				{
+					if( _ver <= 2 )
+					{
+						_br.ReadBytes( skip_data_size * sizeof( UInt16 ) );
+					}
+					else
+					{
+						_br.ReadBytes( skip_data_size * sizeof( UInt32 ) );
+					}
 				}
 				
 				data_converter.post_load_block_data( this );
@@ -1566,86 +1591,11 @@ namespace MAPeD
 			}
 			
 			// load screens data
-			int scr_cnt = _br.ReadInt32();
-			
-			screen_data scr;
-			
-			int loaded_scr_data_len = platform_data_provider.get_scr_tiles_cnt_by_file_ext( _file_ext ) * ( _scr_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 ? 4:1 );
-			int scr_data_len 		= utils.get_screen_tiles_cnt_uni( _scr_type );
-			int num_width_tiles 	= utils.get_screen_num_width_tiles_uni( _scr_type );
-			
-			int data_diff_half = 0;
-			
-			Action< int > skip_data = data_len => { if( _ver < 5 ) { _br.ReadBytes( data_len ); } else { _br.ReadBytes( data_len << 1 ); } };
-			
-			for( i = 0; i < scr_cnt; i++ )
 			{
-				scr = new screen_data( _scr_type );
+				int prj_scr_tiles_width		= platform_data_provider.get_screen_tiles_width_by_file_ext_uni( _file_ext, _scr_type );
+				int prj_scr_tiles_height	= platform_data_provider.get_screen_tiles_height_by_file_ext_uni( _file_ext, _scr_type );
 				
-				if( loaded_scr_data_len != scr_data_len )
-				{
-					switch( _scr_align_mode )
-					{
-						case data_conversion_options_form.EScreensAlignMode.sam_Top:
-							{
-								if( scr_data_len > loaded_scr_data_len )
-								{
-									scr.load( _ver, _br, loaded_scr_data_len, -1 );
-								}
-								else
-								{
-									scr.load( _ver, _br, scr_data_len, -1 );
-									
-									// skip the rest
-									skip_data( loaded_scr_data_len - scr_data_len );
-								}
-							}
-							break;
-							
-						case data_conversion_options_form.EScreensAlignMode.sam_Center:
-							{
-								if( scr_data_len > loaded_scr_data_len )
-								{
-									scr.load( _ver, _br, loaded_scr_data_len, ( ( ( ( scr_data_len - loaded_scr_data_len ) / num_width_tiles ) >> 1 ) * num_width_tiles ) );
-								}
-								else
-								{
-									data_diff_half = ( ( ( loaded_scr_data_len - scr_data_len ) / num_width_tiles ) >> 1 ) * num_width_tiles;
-									
-									// skip the first data
-									skip_data( data_diff_half );
-	
-									scr.load( _ver, _br, scr_data_len, -1 );
-									
-									// skip the rest
-									skip_data( ( data_diff_half == 0 ) ? num_width_tiles:data_diff_half );
-								}
-							}
-							break;
-							
-						case data_conversion_options_form.EScreensAlignMode.sam_Bottom:
-							{
-								if( scr_data_len > loaded_scr_data_len )
-								{
-									scr.load( _ver, _br, loaded_scr_data_len, ( scr_data_len - loaded_scr_data_len ) );
-								}
-								else
-								{
-									// skip the first data
-									skip_data( loaded_scr_data_len - scr_data_len );
-	
-									scr.load( _ver, _br, scr_data_len, -1 );
-								}
-							}
-							break;
-					}
-				}
-				else
-				{
-					scr.load( _ver, _br, scr_data_len, -1 );
-				}
-				
-				m_scr_data.Add( scr );
+				data_converter.load_screens( _ver, _br, _scr_type, _scr_align_mode, prj_scr_tiles_width, prj_scr_tiles_height, this );
 			}
 		}
 	}

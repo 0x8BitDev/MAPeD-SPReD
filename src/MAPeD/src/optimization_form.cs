@@ -313,7 +313,8 @@ namespace MAPeD
 			uint sum;
 			int block_offset;
 			
-			int size = utils.CONST_MAX_BLOCKS_CNT;
+			int size = _data.get_first_free_block_id();
+			size = size < 0 ? utils.CONST_MAX_BLOCKS_CNT:size;
 			
 			for( int block_n = 0; block_n < size; block_n++ )
 			{
@@ -497,7 +498,8 @@ namespace MAPeD
 		{
 			int deleted_tiles_cnt = 0;
 			
-			int size = utils.CONST_TILES_UINT_SIZE;
+			int size = _data.get_first_free_tile_id();
+			size = size < 0 ? utils.CONST_MAX_TILES_CNT:size;
 			
 			for( int tile_n = 0; tile_n < size; tile_n++ )
 			{

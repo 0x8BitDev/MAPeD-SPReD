@@ -128,9 +128,14 @@ namespace MAPeD
 			_bw.Write( extra_data_size );
 		}
 		
-		public void load( byte _ver, BinaryReader _br, Func< string, entity_data > _get_ent, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode )
+		public void load(	byte 											_ver, 
+		                 	BinaryReader 									_br, 
+		                 	Func< string, entity_data > 					_get_ent, 
+		                 	string 											_file_ext, 
+		                 	data_conversion_options_form.EScreensAlignMode 	_scr_align_mode, 
+		                 	data_sets_manager.EScreenDataType 				_scr_type )
 		{
-			string				base_ent_name;
+			string base_ent_name;
 			
 			base_ent_name 	= _br.ReadString();
 			base_entity		= _get_ent( base_ent_name );
@@ -146,39 +151,18 @@ namespace MAPeD
 			m_uid 		= _br.ReadInt32();
 			target_uid 	= _br.ReadInt32();
 		
-			bool nes_file = ( _file_ext == utils.CONST_NES_FILE_EXT );
-			bool sms_file = ( _file_ext == utils.CONST_SMS_FILE_EXT );
-#if DEF_NES
-			if( sms_file )
-#elif DEF_SMS			
-			if( nes_file )
-#endif			
 			{
-				switch( _scr_align_mode )
-				{
-					case data_conversion_options_form.EScreensAlignMode.sam_Center:
-						{
-#if DEF_NES
-							y += utils.CONST_SPR8x8_SIDE_PIXELS_CNT * 4;
-#elif DEF_SMS
-							y -= utils.CONST_SPR8x8_SIDE_PIXELS_CNT * 4;
-#endif							
-						}
-						break;
-						
-					case data_conversion_options_form.EScreensAlignMode.sam_Bottom:
-						{
-#if DEF_NES
-							y += utils.CONST_SPR8x8_SIDE_PIXELS_CNT * 8;
-#elif DEF_SMS
-							y -= utils.CONST_SPR8x8_SIDE_PIXELS_CNT * 8;
-#endif							
-						}
-						break;
-				}
+				int			CHRs_in_tile = ( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? 32:16;
+				Rectangle	prj_scr_rect = project_data_converter_provider.get_converter().get_prj_scr_rect();
+				
+				y += prj_scr_rect.Y * CHRs_in_tile;
+				x += prj_scr_rect.X * CHRs_in_tile;
 				
 				y = y < 0 ? 0:y;
-				y = y > utils.CONST_SCREEN_HEIGHT_PIXELS ? utils.CONST_SCREEN_HEIGHT_PIXELS:y;
+				y = ( y >= utils.CONST_SCREEN_HEIGHT_PIXELS ) ? ( utils.CONST_SCREEN_HEIGHT_PIXELS - 1 ):y;
+				
+				x = x < 0 ? 0:x;
+				x = ( x >= utils.CONST_SCREEN_WIDTH_PIXELS ) ? ( utils.CONST_SCREEN_WIDTH_PIXELS - 1 ):x;
 			}
 			
 			// extra data ( reserved for future purposes )

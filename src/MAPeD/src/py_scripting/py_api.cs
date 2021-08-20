@@ -440,7 +440,7 @@ namespace MAPeD
 		
 #if DEF_NES
 		public long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
-#elif DEF_SMS
+#elif DEF_SMS || DEF_SMD
 		public long export_CHR_data( int _bank_ind, string _filename, int _bpp )
 #elif DEF_PCE || DEF_ZX
 		public long export_CHR_data( int _bank_ind, string _filename )
@@ -466,7 +466,7 @@ namespace MAPeD
 					}
 					
 					data_size = data.export_CHR( bw, _bpp );
-#elif DEF_PCE || DEF_ZX
+#elif DEF_PCE || DEF_ZX || DEF_SMD
 					data_size = data.export_CHR( bw );
 #endif
 				}

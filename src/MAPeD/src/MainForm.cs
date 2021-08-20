@@ -326,6 +326,21 @@ namespace MAPeD
 			
 			CBoxTileViewType.Items.Add( "B/W" );
 			CBoxTileViewType.Items.Add( "Inv B/W" );
+#elif DEF_SMD
+			Project_saveFileDialog.DefaultExt = utils.CONST_SMD_FILE_EXT;
+			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "SMD" );
+			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "smd" );
+
+			Project_openFileDialog.DefaultExt = utils.CONST_SMD_FILE_EXT;
+			Project_openFileDialog.Filter = get_all_projects_open_file_filter( utils.EPlatformType.pt_SMD );
+			
+			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "SGDK\\Asm" );
+
+			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp";
+			
+			CheckBoxPalettePerCHR.Visible = false;
+			
+			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false;
 #endif
 
 #if DEF_FIXED_LEN_PALETTE16_ARR
@@ -678,7 +693,7 @@ namespace MAPeD
 			{
 				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
 				
-				int load_scr_data_len 	= platform_data_provider.get_scr_tiles_cnt_by_file_ext( file_ext );
+				int load_scr_data_len 	= platform_data_provider.get_screen_tiles_cnt_by_file_ext( file_ext );
 				int scr_data_len 		= utils.CONST_SCREEN_TILES_CNT;
 
 				if( load_scr_data_len != scr_data_len )

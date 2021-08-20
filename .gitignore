@@ -4,6 +4,7 @@
 /src/MAPeD/MAPeD-SMS/obj/*
 /src/MAPeD/MAPeD-PCE/obj/*
 /src/MAPeD/MAPeD-ZX/obj/*
+/src/MAPeD/MAPeD-SMD/obj/*
 /src/MAPeD/.vs/*
 /src/lib/SPSeD.dll
 /src/SPSeD/obj/*
