@@ -272,25 +272,34 @@ namespace MAPeD
 			m_native_scr_rect.Width		= native_scr_tiles_width;
 			m_native_scr_rect.Height	= native_scr_tiles_height;
 			
-			m_prj_scr_rect.X			= ( m_native_scr_rect.Width >> 1 ) - ( _prj_scr_tiles_width >> 1 );
+			m_prj_scr_rect.X			= 0;
 			m_prj_scr_rect.Y			= 0;
 			m_prj_scr_rect.Width		= _prj_scr_tiles_width;
 			m_prj_scr_rect.Height		= _prj_scr_tiles_height;
 			
 			// calc aligned prj screen pos
-			switch( _scr_align_mode )
 			{
-				case data_conversion_options_form.EScreensAlignMode.sam_Center:
-					{
-						m_prj_scr_rect.Y = ( m_native_scr_rect.Height >> 1 ) - ( _prj_scr_tiles_height >> 1 );
-					}
-					break;
-
-				case data_conversion_options_form.EScreensAlignMode.sam_Bottom:
-					{
-						m_prj_scr_rect.Y = m_native_scr_rect.Height - m_prj_scr_rect.Height;
-					}
-					break;
+				int scr_align_data = ( int )_scr_align_mode;
+				
+				if( ( scr_align_data & data_conversion_options_form.CONST_ALIGN_X_MID ) != 0 )
+				{
+					m_prj_scr_rect.X = ( m_native_scr_rect.Width >> 1 ) - ( _prj_scr_tiles_width >> 1 );
+				}
+				else
+				if( ( scr_align_data & data_conversion_options_form.CONST_ALIGN_X_RIGHT ) != 0 )
+				{
+					m_prj_scr_rect.X = m_native_scr_rect.Width - m_prj_scr_rect.Width;
+				}
+					
+				if( ( scr_align_data & data_conversion_options_form.CONST_ALIGN_Y_MID ) != 0 )
+				{
+					m_prj_scr_rect.Y = ( m_native_scr_rect.Height >> 1 ) - ( _prj_scr_tiles_height >> 1 );
+				}
+				else
+				if( ( scr_align_data & data_conversion_options_form.CONST_ALIGN_Y_BOTTOM ) != 0 )
+				{
+					m_prj_scr_rect.Y = m_native_scr_rect.Height - m_prj_scr_rect.Height;
+				}
 			}
 			
 			bool native_scr_data = ( ( native_scr_tiles_width == _prj_scr_tiles_width ) && ( native_scr_tiles_height == _prj_scr_tiles_height ) );
