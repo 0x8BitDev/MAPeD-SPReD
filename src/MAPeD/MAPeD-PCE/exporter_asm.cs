@@ -1095,7 +1095,7 @@ namespace MAPeD
 									
 									if( RBtnLayoutMatrix.Checked )
 									{
-										level_data.export_asm( m_C_writer, _sw, m_level_prefix + level_n, null, ".byte", ".word", "$", false, false, false, false );
+										level_data.export_asm( m_C_writer, _sw, m_level_prefix + level_n, null, ".byte", ".word", ".word", "$", false, false, false, false );
 									}
 								}
 								
@@ -1144,7 +1144,7 @@ namespace MAPeD
 								
 								if( CheckBoxExportEntities.Checked )
 								{
-									scr_data.export_entities_asm( _sw, ref ent_n, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
+									scr_data.export_entities_asm( _sw, ref ent_n, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
 									
 									_sw.WriteLine( "" );
 								}
@@ -1839,7 +1839,7 @@ namespace MAPeD
 
 				if( CheckBoxExportEntities.Checked )
 				{
-					level_data.export_asm( m_C_writer, _sw, get_exp_prefix() + level_prefix_str, null, ".byte", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+					level_data.export_asm( m_C_writer, _sw, get_exp_prefix() + level_prefix_str, null, ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
 				}
 				else
 				{

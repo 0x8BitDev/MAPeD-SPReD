@@ -44,7 +44,7 @@ namespace MAPeD
 		public const string CONST_STR_EXP_SMS_MOVE_PROP_TO_SCR_MAP_OFF	= "\nAll the properties will be stored in a separate file.";
 		
 		public const string CONST_STR_EXP_PROP_IN_FRONT_OF_SPRITES		= "\n'In front of sprites' property: What property will be used as the 'In front of sprites' flag in a screen map data.";
-		public const string CONST_STR_SMD_EXP_PROP_IN_FRONT_OF_SPRITES	= "\n'Priority id' property: What property will be used as the 'Priority Bit' in a screen map data.";
+		public const string CONST_STR_SMD_EXP_PROP_IN_FRONT_OF_SPRITES	= "\n\n'Priority id' property: What block's property will be used as the 'Priority Bit' in a screen map data.";
 		
 		public const string CONST_STR_EXP_MODE					= "\n\nMODE: "; 
 		public const string CONST_STR_EXP_MODE_MULTIDIR			= "Multidirectional scrolling\nAll screens data are stored in a common array of tiles. Suitable for map scrolling in any direction.";

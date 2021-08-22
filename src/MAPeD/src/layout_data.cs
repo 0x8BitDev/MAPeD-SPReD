@@ -96,19 +96,19 @@ namespace MAPeD
 			}
 		}
 
-		public void export_entities_asm( StreamWriter _sw, ref int _ent_n, string _label, string _db, string _dw, string _num_pref, bool _ent_coords_scr, int _x, int _y, bool _enable_comments )
+		public void export_entities_asm( StreamWriter _sw, ref int _ent_n, string _label, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _ent_coords_scr, int _x, int _y, bool _enable_comments )
 		{
 			entity_instance ent_inst;
 			
 			_sw.WriteLine( _label + ":" );
-			_sw.WriteLine( "\t" + _db + " " + m_ents.Count );
+			_sw.WriteLine( "\t" + _def_num + " " + m_ents.Count );
 
 			// ent labels arr
 			for( int ent_n = 0; ent_n < m_ents.Count; ent_n++ )
 			{
 				ent_inst = m_ents[ ent_n ];
 				
-				_sw.WriteLine( "\t" + _dw + " " + ent_inst.name );
+				_sw.WriteLine( "\t" + _def_addr + " " + ent_inst.name );
 			}
 			
 			// ent data arr			
@@ -117,13 +117,13 @@ namespace MAPeD
 				ent_inst = m_ents[ ent_n ];
 				
 				_sw.WriteLine( ent_inst.name + ":" );
-				_sw.WriteLine( "\t" + _db + " " + utils.hex( _num_pref, _ent_n++ ) + ( _enable_comments ? "\t; entity instance number (0..n)":"" ) );
-				_sw.WriteLine( "\t" + _dw + " " + ent_inst.base_entity.name + ( _enable_comments ? "\t; base entity":"" ) );
-				_sw.WriteLine( "\t" + _dw + " " + ( ent_inst.target_uid >= 0 ? ( "Instance" + ent_inst.target_uid.ToString() ):( utils.hex( _num_pref, 0 ) ) ) + ( _enable_comments ? "\t; target entity":"" ) );
-				_sw.WriteLine( "\t" + _dw + " " + utils.hex( _num_pref, ent_inst.x + ent_inst.base_entity.pivot_x + ( _ent_coords_scr ? 0:_x * utils.CONST_SCREEN_WIDTH_PIXELS ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " X" ):"" ) );
-				_sw.WriteLine( "\t" + _dw + " " + utils.hex( _num_pref, ent_inst.y + ent_inst.base_entity.pivot_y + ( _ent_coords_scr ? 0:_y * utils.CONST_SCREEN_HEIGHT_PIXELS ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " Y" ):"" ) );
+				_sw.WriteLine( "\t" + _def_num + " " + utils.hex( _num_pref, _ent_n++ ) + ( _enable_comments ? "\t; entity instance number (0..n)":"" ) );
+				_sw.WriteLine( "\t" + _def_addr + " " + ent_inst.base_entity.name + ( _enable_comments ? "\t; base entity":"" ) );
+				_sw.WriteLine( "\t" + _def_addr + " " + ( ent_inst.target_uid >= 0 ? ( "Instance" + ent_inst.target_uid.ToString() ):( utils.hex( _num_pref, 0 ) ) ) + ( _enable_comments ? "\t; target entity":"" ) );
+				_sw.WriteLine( "\t" + _def_coord + " " + utils.hex( _num_pref, ent_inst.x + ent_inst.base_entity.pivot_x + ( _ent_coords_scr ? 0:_x * utils.CONST_SCREEN_WIDTH_PIXELS ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " X" ):"" ) );
+				_sw.WriteLine( "\t" + _def_coord + " " + utils.hex( _num_pref, ent_inst.y + ent_inst.base_entity.pivot_y + ( _ent_coords_scr ? 0:_y * utils.CONST_SCREEN_HEIGHT_PIXELS ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " Y" ):"" ) );
 					
-				utils.save_prop_asm( _sw, _db, _num_pref, ent_inst.properties, _enable_comments );
+				utils.save_prop_asm( _sw, _def_num, _num_pref, ent_inst.properties, _enable_comments );
 				
 				if( _ent_n >= ( utils.CONST_MAX_ENT_INST_CNT - 1 ) )
 				{
@@ -675,7 +675,7 @@ namespace MAPeD
 			});
 		}
 		
-		public void export_asm( StreamWriter _C_sw, StreamWriter _sw, string _data_mark, string _define, string _db, string _dw, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr )
+		public void export_asm( StreamWriter _C_sw, StreamWriter _sw, string _data_mark, string _define, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr )
 		{
 			int x;
 			int y;
@@ -711,7 +711,7 @@ namespace MAPeD
 				
 				for( y = 0; y < height; y++ )
 				{
-					data_str = "\t" + _dw + " ";
+					data_str = "\t" + _def_addr + " ";
 					
 					for( x = 0; x < width; x++ )
 					{
@@ -749,12 +749,12 @@ namespace MAPeD
 							
 							if( _export_marks )
 							{
-								_sw.WriteLine( "\t" + _db + " " + utils.hex( _num_pref, scr_data.mark_adj_scr_mask ) + ( enable_comments ? "\t; (marks) bits: 7-4 - bit mask of user defined adjacent screens ( Down(7)-Right(6)-Up(5)-Left(4) ); 3-0 - screen property":"" )  );
+								_sw.WriteLine( "\t" + _def_num + " " + utils.hex( _num_pref, scr_data.mark_adj_scr_mask ) + ( enable_comments ? "\t; (marks) bits: 7-4 - bit mask of user defined adjacent screens ( Down(7)-Right(6)-Up(5)-Left(4) ); 3-0 - screen property":"" )  );
 							}
 	
 							if( _export_entities )
 							{
-								scr_data.export_entities_asm( _sw, ref ent_n, lev_scr_id + "EntsArr", _db, _dw, _num_pref, _ent_coords_scr, x, y, enable_comments );
+								scr_data.export_entities_asm( _sw, ref ent_n, lev_scr_id + "EntsArr", _def_num, _def_addr, _def_coord, _num_pref, _ent_coords_scr, x, y, enable_comments );
 							}
 							
 							enable_comments = false;
@@ -766,7 +766,14 @@ namespace MAPeD
 				
 				if( _export_entities )
 				{
-					_sw.WriteLine( _define + " " + _data_mark + "_EntInstCnt\t" + ent_n + "\t; number of entities instances" );
+					if( _define != null )
+					{
+						_sw.WriteLine( _define + " " + _data_mark + "_EntInstCnt\t" + ent_n + "\t; number of entities instances" );
+					}
+					else
+					{
+						_sw.WriteLine( _data_mark + "_EntInstCnt = " + ent_n + "\t; number of entities instances" );
+					}
 				}
 			}
 		}

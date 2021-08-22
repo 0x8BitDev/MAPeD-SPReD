@@ -334,7 +334,7 @@ namespace MAPeD
 			Project_openFileDialog.DefaultExt = utils.CONST_SMD_FILE_EXT;
 			Project_openFileDialog.Filter = get_all_projects_open_file_filter( utils.EPlatformType.pt_SMD );
 			
-			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "SGDK\\Asm" );
+			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "vasm\\SGDK" );
 
 			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp";
 			
