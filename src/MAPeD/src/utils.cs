@@ -13,6 +13,7 @@ DEF_TILE_DRAW_FAST
 DEF_FLIP_BLOCKS_SPR_BY_FLAGS	(SMS/SMD)
 DEF_PALETTE16_PER_CHR			(PCE/SMS/ZX/SMD)
 DEF_FIXED_LEN_PALETTE16_ARR		(PCE/SMS/ZX/SMD)
+DEF_ENT_PROP_16BIT				(SMD)
 */
 
 using System;
@@ -779,8 +780,15 @@ namespace MAPeD
 					
 					for( prop_n = 0; prop_n < props_cnt; prop_n++ )
 					{
-						prop_val = UInt32.Parse( ent_props[ prop_n ], System.Globalization.NumberStyles.HexNumber );
-	
+						prop_val = UInt32.Parse( ent_props[ prop_n ], System.Globalization.NumberStyles.HexNumber );	
+#if DEF_ENT_PROP_16BIT
+						data_str += utils.hex( _num_pref, ( prop_val & 0xffff ) );
+						
+						if( prop_val > 0xffff )
+						{
+							data_str += ", " + utils.hex( _num_pref, ( ( prop_val & 0xffff0000 ) >> 16 ) );
+						}
+#else
 						data_str += utils.hex( _num_pref, ( prop_val & 0xff ) );
 						
 						if( prop_val > 0xff )
@@ -797,7 +805,7 @@ namespace MAPeD
 								}
 							}
 						}
-						
+#endif
 						data_str += ( prop_n < ( props_cnt - 1 ) ? ", ":"" );
 					}
 				}
