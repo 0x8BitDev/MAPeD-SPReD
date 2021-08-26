@@ -3685,8 +3685,7 @@ namespace MAPeD
 				NumericUpDownEntityPivotX.Value = 0;
 				NumericUpDownEntityPivotY.Value = 0;
 				PBoxColor.BackColor				= utils.CONST_COLOR_ENTITY_PIXBOX_INACTIVE;
-				TextBoxEntityProperties.Text	= "space separated decimal values";
-				TextBoxEntityInstanceProp.Text	= "space separated decimal values";
+				TextBoxEntityInstanceProp.Text	= TextBoxEntityProperties.Text	= "space separated HEX values: f012 a3 14 etc";
 				LabelEntityName.Text			= "ENTITY NAME";
 			}
 
@@ -3901,7 +3900,7 @@ namespace MAPeD
 		
 		void TextBoxEntityPropertiesKeyPress_Event(object sender, KeyPressEventArgs e)
 		{
-		    if( !char.IsControl( e.KeyChar ) && !char.IsDigit( e.KeyChar ) && ( e.KeyChar != ' ' ) )
+			if( !char.IsControl( e.KeyChar ) && "0123456789abcdefABCDEF".IndexOf( e.KeyChar ) < 0 && ( e.KeyChar != ' ' ) )
 		    {
 		    	e.Handled = true;
 		    }

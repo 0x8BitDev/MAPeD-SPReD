@@ -767,19 +767,19 @@ namespace MAPeD
 				string[] 	ent_props;
 				uint 		prop_val;
 				
-				char[] props_separator = new char[]{ ' ' };
-				
-				ent_props = _prop.Split( props_separator );
+				ent_props = _prop.Split( ' ' );
 				
 				props_cnt = ent_props.Length;
+
+				data_str = "\t" + _db + " " + utils.hex( _num_pref, props_cnt ) + ( _enable_comments ? "\t; properties count\n":"\n" );
 				
 				if( props_cnt > 0 )
 				{
-					data_str = "\t" + _db + " ";
+					data_str += "\t" + _db + " ";
 					
 					for( prop_n = 0; prop_n < props_cnt; prop_n++ )
 					{
-						prop_val = UInt32.Parse( ent_props[ prop_n ] );
+						prop_val = UInt32.Parse( ent_props[ prop_n ], System.Globalization.NumberStyles.HexNumber );
 	
 						data_str += utils.hex( _num_pref, ( prop_val & 0xff ) );
 						
@@ -800,9 +800,9 @@ namespace MAPeD
 						
 						data_str += ( prop_n < ( props_cnt - 1 ) ? ", ":"" );
 					}
-					
-					_sw.WriteLine( data_str + ( _enable_comments ? "\t; properties":"" ) );
 				}
+				
+				_sw.WriteLine( data_str + ( _enable_comments ? "\t; properties data":"" ) );
 			}
 		}
 		
@@ -848,19 +848,6 @@ namespace MAPeD
 			}
 
 			Array.Copy( tmp_arr, _arr, _arr.Length );
-		}
-		
-		public static string get_exp_prefix( bool _C_exp )
-		{
-			return _C_exp ? "_":"";
-		}
-		
-		public static string skip_exp_pref( string _str )
-		{
-			int offs = _str.IndexOf( "_" );
-			offs = offs >= 0 ? ( offs + 1 ):0;
-			
-			return _str.Substring( offs );
 		}
 		
 		// RLE routine from NESst tool by Shiru
