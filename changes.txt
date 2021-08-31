@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+31.08.2021 - Updated Python API v1.7 (mpd_RLE renamed to mpd_RLE8; added: mpd_RLE16)
 26.08.2021 - Entity properties changed from decimal to hexadecimal values
 20.08.2021 - Added screen data alignment by 9 positions when loading another platform project
 20.08.2021 - Added MAPeD-SMD
