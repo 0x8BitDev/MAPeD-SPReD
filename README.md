@@ -1,10 +1,10 @@
 Hi retro game developers! 
 
-Here you can find the **NES/SMS/PCE/ZX** development tools:
+Here you can find the **NES/SMS/PCE/ZX/SMD** development tools:
 
 
-# MAPeD-NES/SMS/PCE/ZX - Game maps editor
-The MAPeD is a tool for building a game levels for NES/SMS/PCE/ZX games from scratch.
+# MAPeD-NES/SMS/PCE/ZX/SMD - Game maps editor
+The MAPeD is a tool for building a game levels from scratch.
 
 **The main features are:**
 - tiles drawing/composing tools
@@ -17,7 +17,7 @@ The MAPeD is a tool for building a game levels for NES/SMS/PCE/ZX games from scr
 - tile properties editing ( can be used as collisions data etc )
 - **NES:** palette per 1x1 tile support ( MMC5 )
 - import of tiles and game maps from images*
-- export to **NES: CA65/NESasm / SMS: WLA-DX / PCE: CA65/PCEAS / ZX: SjASMPlus** with wide variety of options:
+- export to **NES: CA65/NESasm / SMS: WLA-DX / PCE: CA65/PCEAS / ZX: SjASMPlus / SMD: vasm/SGDK** with wide variety of options:
 	- 2x2/4x4 tiles
 	- column/row data order
 	- RLE compression
@@ -34,11 +34,11 @@ The MAPeD is a tool for building a game levels for NES/SMS/PCE/ZX games from scr
 
 \* Smart import of images with checking of duplicate CHRs/blocks/tiles and flipped CHRs. Automatic palettes applying is supported for all platforms.
 
-\** You can load a **NES/SMS/PCE/ZX** project into any MAPeD editor.
+\** You can load any platform project into any MAPeD editor with automatic data conversion. So it's easy to adapt graphics and data when creating a cross-platform project.
 
 **Examples of tiles and maps images:** `./data/tiles-maps`
 
-**Example projects (.mapednes/.mapedsms/.mapedpce):** `./data`
+**Example projects:** `./data`
 
 **Quick Guide:** `./doc/MAPeD/Quick_Guide.html`
 
@@ -120,7 +120,7 @@ The Linux versions were tested using **MonoDevelop 7.8.2 (build 2)**. The latest
 https://www.microsoft.com/en-us/download/details.aspx?id=40779
 
 ## Linux
-As mentioned before, you need to install Mono on your computer. To run the tools you may need to configure your environment to allow it to automatically run .exe files through Mono, or manually run the tools in terminal: `mono MAPeD-NES.exe`, `mono SPReD-NES.exe`, `mono SPReD-SMS.exe`.
+As mentioned before, you need to install Mono on your computer. To run the tools you may need to configure your environment to allow it to automatically run .exe files through Mono, or manually run the tools in terminal: `mono <app.exe>`.
 
 
 # Samples
@@ -144,6 +144,10 @@ As mentioned before, you need to install Mono on your computer. To run the tools
  - `./samples/sms/tilemap_render/stat_scr_VDP_data/`	- static screens switching using VDP-ready screens data
 
 ## MAPeD-PCE
+
+coming soon...
+
+## MAPeD-SMD
 
 coming soon...
 
@@ -214,6 +218,15 @@ Compiled executables and compiled binaries of the **NES/SMS/ZX** samples you can
 https://github.com/0x8BitDev/MAPeD-SPReD/releases
 
 The latest development build can be found **[here](https://drive.google.com/open?id=1Jopms8ENPrjTktrt_V36TQC2FZT2agId)**.
+
+---
+- **NES:** Nintendo Entertainment System / Nintendo
+- **SMS:** Sega Master System / Sega Corp.
+- **ZX:** ZX-Spectrum / Sinclair Research Ltd
+- **PCE:** PC Engine/TurboGrafx-16 / NEC
+- **SMD:** Sega Megadrive/Genesis / Sega Corp.
+
+Are trademarks of their respective owners and I am not affiliated with these companies in any way. Therefore, you can use this software at your own risk and without warranty of any kind.
 
 ---
 Developed by 0x8BitDev Copyright © 2017-2021
