@@ -37,6 +37,8 @@ namespace MAPeD
 		
 		private const string	CONST_FILENAME_LEVEL_PREFIX		= "Lev";
 		private const string	CONST_BIN_EXT					= ".bin";
+		
+		private const int		CONST_VDP_READY_SCR_DATA_SIZE 	= utils.CONST_SCREEN_TILES_CNT << 5;
 	
 		private struct exp_screen_data
 		{
@@ -145,7 +147,7 @@ namespace MAPeD
 			
 			CheckBoxExportMarks.Enabled = true;
 			
-			CheckBoxRLE.Checked = CheckBoxRLE.Enabled = false;
+			CheckBoxRLE.Enabled = true;
 			
 			update_desc();
 		}
@@ -204,7 +206,7 @@ namespace MAPeD
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMS_MODE_STAT_SCR;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE_STAT_SCR.Replace( "<data>", "VDP-ready - " + CONST_VDP_READY_SCR_DATA_SIZE.ToString() );
 			}
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP;
@@ -811,11 +813,11 @@ namespace MAPeD
 					data_size = bw.BaseStream.Length;
 					bw.Close();
 					
-					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") VDP-ready data array for each screen (" + ( utils.CONST_SCREEN_TILES_CNT << 5 ) + " bytes per screen)" );
+					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + data_offset + ( CheckBoxRLE.Checked ? " / " + ( screens.Count * CONST_VDP_READY_SCR_DATA_SIZE ):"" ) + ") VDP-ready data array for each screen (" + CONST_VDP_READY_SCR_DATA_SIZE + " bytes per screen)" );
 					
 					if( !CheckBoxRLE.Checked )
 					{
-						_sw.WriteLine( "\n.define ScrGfxDataSize\t " + ( utils.CONST_SCREEN_TILES_CNT << 5 ) + "\n" );
+						_sw.WriteLine( "\n.define ScrGfxDataSize\t " + CONST_VDP_READY_SCR_DATA_SIZE + "\n" );
 					}
 				}
 				

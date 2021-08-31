@@ -52,9 +52,7 @@ namespace MAPeD
 		
 		public const string CONST_STR_EXP_NES_MODE_STAT_SCR		= "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are PPU-ready - 1024 bytes per screen ( 960 bytes of CHR data and 64 bytes of attributes ). Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
 		
-		public const string CONST_STR_EXP_SMS_MODE_STAT_SCR		= "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are VDP-ready - 1536 bytes per screen. Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
-		public const string CONST_STR_EXP_PCE_MODE_STAT_SCR		= "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are VDC-ready - 1792 bytes per screen. Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
-		public const string CONST_STR_EXP_SMD_MODE_STAT_SCR		= "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are VDP-ready. Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
+		public const string CONST_STR_EXP_MODE_STAT_SCR			= "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are <data> bytes per screen. The data can be compressed. Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
 
 		public const string CONST_STR_EXP_LAYOUT				= "\n\nLAYOUT: "; 
 		public const string CONST_STR_EXP_LAYOUT_ADJ_SCR		= "Adjacent Screens\nEach screen description stores 4 labels of adjacent screens ( calculates automatically during the export process ).";

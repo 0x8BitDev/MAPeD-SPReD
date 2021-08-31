@@ -161,6 +161,11 @@ vblank_handler:
 	.fail
 .endif
 
+.if MAP_DATA_MAGIC&MAP_FLAG_RLE == MAP_FLAG_RLE
+	.printt "*** ERROR: This sample doesn't support RLE compressed data! Please, re export with 'RLE: OFF'. ***\n"
+	.fail
+.endif
+
 	.incdir "../../common"
 	.include "vdp.asm"
 	.include "vdp_data_buffer.asm"

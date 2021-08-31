@@ -153,7 +153,7 @@ namespace MAPeD
 			
 			CheckBoxExportMarks.Enabled = true;
 			
-//!!!		CheckBoxRLE.Checked = CheckBoxRLE.Enabled = false;
+			CheckBoxRLE.Enabled = true;
 			
 			update_desc();
 		}
@@ -203,7 +203,7 @@ namespace MAPeD
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PCE_MODE_STAT_SCR;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE_STAT_SCR.Replace( "<data>", "VDC-ready - " + CONST_VDC_READY_SCR_DATA_SIZE.ToString() );
 			}
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP;

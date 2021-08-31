@@ -50,7 +50,7 @@ namespace MAPeD
 		private const string	CONST_S_FILE_DIR				= "src";
 		private const string	CONST_H_FILE_DIR				= "inc";
 		
-		private const int 		CONST_VDC_READY_SCR_DATA_SIZE 	= utils.CONST_SCREEN_TILES_CNT << 5;
+		private const int 		CONST_VDP_READY_SCR_DATA_SIZE 	= utils.CONST_SCREEN_TILES_CNT << 5;
 
 		private StreamWriter	m_C_writer	= null;
 		
@@ -283,7 +283,7 @@ namespace MAPeD
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_SMD_MODE_STAT_SCR;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE_STAT_SCR.Replace( "<data>", "VDP-ready - " + CONST_VDP_READY_SCR_DATA_SIZE.ToString() );;
 			}
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP;
@@ -1020,7 +1020,7 @@ namespace MAPeD
 					exp_data_size += data_size;
 					
 					write_alignment_data( _sw );
-					_sw.WriteLine( m_filename + label + ":\tincbin \"" + get_data_subdir() + m_filename + label + CONST_BIN_EXT + "\"\t; " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + data_offset + ( CheckBoxRLE.Checked ? " / " + ( screens.Count * CONST_VDC_READY_SCR_DATA_SIZE ):"" ) + ") VDP-ready data array for each screen (" + CONST_VDC_READY_SCR_DATA_SIZE + " bytes per screen)" );
+					_sw.WriteLine( m_filename + label + ":\tincbin \"" + get_data_subdir() + m_filename + label + CONST_BIN_EXT + "\"\t; " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + data_offset + ( CheckBoxRLE.Checked ? " / " + ( screens.Count * CONST_VDP_READY_SCR_DATA_SIZE ):"" ) + ") VDP-ready data array for each screen (" + CONST_VDP_READY_SCR_DATA_SIZE + " bytes per screen)" );
 					
 					if( m_C_writer != null )
 					{
@@ -1031,11 +1031,11 @@ namespace MAPeD
 					{
 						if( m_C_writer != null )
 						{
-							m_C_writer.WriteLine( "\nconst u16\tScrGfxDataSize = " + CONST_VDC_READY_SCR_DATA_SIZE + ";\t// VDP-ready screen data in bytes\n" );
+							m_C_writer.WriteLine( "\nconst u16\tScrGfxDataSize = " + CONST_VDP_READY_SCR_DATA_SIZE + ";\t// VDP-ready screen data in bytes\n" );
 						}
 						else
 						{
-							_sw.WriteLine( "\nScrGfxDataSize = " + CONST_VDC_READY_SCR_DATA_SIZE + "\n" );
+							_sw.WriteLine( "\nScrGfxDataSize = " + CONST_VDP_READY_SCR_DATA_SIZE + "\n" );
 						}
 					}
 				}
