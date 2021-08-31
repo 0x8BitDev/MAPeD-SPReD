@@ -44,7 +44,7 @@ namespace MAPeD
 			this.RBtnTiles4x4 = new System.Windows.Forms.RadioButton();
 			this.RBtnTiles2x2 = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.CheckBoxGenerateSGDKResourceFile = new System.Windows.Forms.CheckBox();
+			this.CheckBoxExportSGDKData = new System.Windows.Forms.CheckBox();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.ComboBoxInFrontOfSpritesProp = new System.Windows.Forms.ComboBox();
 			this.NumericUpDownCHROffset = new System.Windows.Forms.NumericUpDown();
@@ -182,7 +182,7 @@ namespace MAPeD
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.CheckBoxGenerateSGDKResourceFile);
+			this.groupBox2.Controls.Add(this.CheckBoxExportSGDKData);
 			this.groupBox2.Controls.Add(this.groupBox6);
 			this.groupBox2.Controls.Add(this.groupBox7);
 			this.groupBox2.Controls.Add(this.groupBox5);
@@ -195,16 +195,17 @@ namespace MAPeD
 			this.groupBox2.TabIndex = 0;
 			this.groupBox2.TabStop = false;
 			// 
-			// CheckBoxGenerateSGDKResourceFile
+			// CheckBoxExportSGDKData
 			// 
-			this.CheckBoxGenerateSGDKResourceFile.Checked = true;
-			this.CheckBoxGenerateSGDKResourceFile.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CheckBoxGenerateSGDKResourceFile.Location = new System.Drawing.Point(14, 255);
-			this.CheckBoxGenerateSGDKResourceFile.Name = "CheckBoxGenerateSGDKResourceFile";
-			this.CheckBoxGenerateSGDKResourceFile.Size = new System.Drawing.Size(125, 17);
-			this.CheckBoxGenerateSGDKResourceFile.TabIndex = 25;
-			this.CheckBoxGenerateSGDKResourceFile.Text = "Generate SGDK res";
-			this.CheckBoxGenerateSGDKResourceFile.UseVisualStyleBackColor = true;
+			this.CheckBoxExportSGDKData.Checked = true;
+			this.CheckBoxExportSGDKData.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.CheckBoxExportSGDKData.Location = new System.Drawing.Point(14, 255);
+			this.CheckBoxExportSGDKData.Name = "CheckBoxExportSGDKData";
+			this.CheckBoxExportSGDKData.Size = new System.Drawing.Size(125, 17);
+			this.CheckBoxExportSGDKData.TabIndex = 25;
+			this.CheckBoxExportSGDKData.Text = "Export SGDK (.h, .s)";
+			this.CheckBoxExportSGDKData.UseVisualStyleBackColor = true;
+			this.CheckBoxExportSGDKData.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
 			// groupBox6
 			// 
@@ -506,7 +507,7 @@ namespace MAPeD
 		}
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ComboBox ComboBoxInFrontOfSpritesProp;
-		private System.Windows.Forms.CheckBox CheckBoxGenerateSGDKResourceFile;
+		private System.Windows.Forms.CheckBox CheckBoxExportSGDKData;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.NumericUpDown NumericUpDownCHROffset;
 		private System.Windows.Forms.GroupBox groupBox6;

@@ -44,7 +44,8 @@ bobik_zdoh:
 	.byte $20	; height
 	.byte $0C	; pivot x
 	.byte $20	; pivot y
-	.byte $7B, $2D	; properties
+	.byte $03	; properties count
+	.byte $23, $01, $45	; properties data
 
 walking_robot01:
 	.byte $01
@@ -52,7 +53,8 @@ walking_robot01:
 	.byte $20
 	.byte $0C
 	.byte $20
-	.byte $50
+	.byte $01
+	.byte $80
 
 crystal01:
 	.byte $02
@@ -60,6 +62,7 @@ crystal01:
 	.byte $10
 	.byte $08
 	.byte $10
+	.byte $00
 
 energy01:
 	.byte $03
@@ -67,13 +70,15 @@ energy01:
 	.byte $10
 	.byte $08
 	.byte $10
-	.byte $64
+	.byte $02
+	.byte $00, $01
 
 lift01:
 	.byte $04
 	.byte $40
 	.byte $08
 	.byte $20
+	.byte $00
 	.byte $00
 
 switch01:
@@ -82,6 +87,7 @@ switch01:
 	.byte $10
 	.byte $08
 	.byte $10
+	.byte $00
 
 
 ; *** Lev0 ***
@@ -123,18 +129,21 @@ Instance48:
 	.word $00	; target entity
 	.word $40	; scr X
 	.word $60	; scr Y
+	.byte $00	; properties count
 Instance39:
 	.byte $01	; entity instance number (0..n)
 	.word switch01	; base entity
 	.word Instance34	; target entity
 	.word $D0	; scr X
 	.word $60	; scr Y
+	.byte $00	; properties count
 Instance65:
 	.byte $02	; entity instance number (0..n)
 	.word bobik_zdoh	; base entity
 	.word $00	; target entity
 	.word $88	; scr X
 	.word $C0	; scr Y
+	.byte $00	; properties count
 
 Lev0Scr1:
 Lev0Scr1EntsArr:
@@ -149,25 +158,29 @@ Instance49:
 	.word $00
 	.word $20
 	.word $60
+	.byte $00
 Instance59:
 	.byte $04
 	.word walking_robot01
 	.word $00
 	.word $B0
 	.word $C0
+	.byte $00
 Instance44:
 	.byte $05
 	.word energy01
 	.word $00
 	.word $D8
 	.word $60
+	.byte $00
 Instance34:
 	.byte $06
 	.word lift01
 	.word $00
 	.word $20
 	.word $C0
-	.byte $01, $50
+	.byte $02
+	.byte $01, $80
 
 Lev0Scr2:
 Lev0Scr2EntsArr:
@@ -179,6 +192,7 @@ Instance50:
 	.word $00
 	.word $70
 	.word $60
+	.byte $00
 
 Lev0Scr3:
 Lev0Scr3EntsArr:
@@ -191,13 +205,15 @@ Instance51:
 	.word $00
 	.word $18
 	.word $60
+	.byte $00
 Instance38:
 	.byte $09
 	.word lift01
 	.word $00
 	.word $C0
 	.word $C0
-	.byte $02, $60
+	.byte $02
+	.byte $02, $96
 
 Lev0Scr4:
 Lev0Scr4EntsArr:
@@ -211,18 +227,21 @@ Instance52:
 	.word $00
 	.word $98
 	.word $80
+	.byte $00
 Instance53:
 	.byte $0B
 	.word crystal01
 	.word $00
 	.word $40
 	.word $E0
+	.byte $00
 Instance62:
 	.byte $0C
 	.word walking_robot01
 	.word $00
 	.word $88
 	.word $E0
+	.byte $00
 
 Lev0Scr5:
 Lev0Scr5EntsArr:
@@ -234,6 +253,7 @@ Instance61:
 	.word $00
 	.word $B0
 	.word $80
+	.byte $00
 
 Lev0Scr6:
 Lev0Scr6EntsArr:
@@ -249,31 +269,36 @@ Instance40:
 	.word Instance36
 	.word $28
 	.word $80
+	.byte $00
 Instance45:
 	.byte $0F
 	.word energy01
 	.word $00
 	.word $C0
 	.word $20
+	.byte $00
 Instance54:
 	.byte $10
 	.word crystal01
 	.word $00
 	.word $C0
 	.word $E0
+	.byte $00
 Instance60:
 	.byte $11
 	.word walking_robot01
 	.word $00
 	.word $88
 	.word $20
+	.byte $00
 Instance36:
 	.byte $12
 	.word lift01
 	.word $00
 	.word $60
 	.word $E0
-	.byte $02, $60
+	.byte $02
+	.byte $02, $96
 
 Lev0Scr7:
 Lev0Scr7EntsArr:
@@ -286,13 +311,15 @@ Instance43:
 	.word Instance38
 	.word $20
 	.word $80
+	.byte $00
 Instance37:
 	.byte $14
 	.word lift01
 	.word $00
 	.word $50
 	.word $E0
-	.byte $01, $60
+	.byte $02
+	.byte $01, $96
 
 Lev0Scr8:
 Lev0Scr8EntsArr:
@@ -306,18 +333,21 @@ Instance46:
 	.word $00
 	.word $E8
 	.word $50
+	.byte $00
 Instance55:
 	.byte $16
 	.word crystal01
 	.word $00
 	.word $70
 	.word $50
+	.byte $00
 Instance63:
 	.byte $17
 	.word walking_robot01
 	.word $00
 	.word $60
 	.word $C0
+	.byte $00
 
 Lev0Scr9:
 Lev0Scr9EntsArr:
@@ -331,19 +361,22 @@ Instance42:
 	.word Instance35
 	.word $F8
 	.word $C0
+	.byte $00
 Instance56:
 	.byte $19
 	.word crystal01
 	.word $00
 	.word $38
 	.word $C0
+	.byte $00
 Instance35:
 	.byte $1A
 	.word lift01
 	.word $00
 	.word $C0
 	.word $50
-	.byte $01, $70
+	.byte $03
+	.byte $01, $12, $01
 
 Lev0Scr10:
 Lev0Scr10EntsArr:
@@ -357,18 +390,21 @@ Instance41:
 	.word Instance37
 	.word $E0
 	.word $50
+	.byte $00
 Instance57:
 	.byte $1C
 	.word crystal01
 	.word $00
 	.word $30
 	.word $50
+	.byte $00
 Instance64:
 	.byte $1D
 	.word walking_robot01
 	.word $00
 	.word $98
 	.word $C0
+	.byte $00
 
 Lev0Scr11:
 Lev0Scr11EntsArr:
@@ -381,11 +417,13 @@ Instance47:
 	.word $00
 	.word $C0
 	.word $C0
+	.byte $00
 Instance58:
 	.byte $1F
 	.word crystal01
 	.word $00
 	.word $90
 	.word $50
+	.byte $00
 
 .define Lev0_EntInstCnt	32	; number of entities instances

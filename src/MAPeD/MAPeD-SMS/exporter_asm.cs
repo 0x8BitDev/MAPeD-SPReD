@@ -444,7 +444,7 @@ namespace MAPeD
 			int max_scr_block		= 0;
 			int max_block_ind		= 0;
 			int start_scr_ind		= 0;
-			int ent_n				= 0;
+			int ents_cnt;
 			
 			int scr_width_blocks_mul2 	= 0;
 			int scr_height_blocks_mul2 	= 0;
@@ -916,19 +916,23 @@ namespace MAPeD
 			{
 				enable_comments = true;
 				
-				_sw.WriteLine( "\n; *** " + CONST_FILENAME_LEVEL_PREFIX + level_n + " ***\n" );
-				
 				level_data = m_data_mngr.get_layout_data( level_n );
+				
+				level_prefix_str = CONST_FILENAME_LEVEL_PREFIX + level_n;
+				
+				check_ent_instances_cnt( level_data, level_prefix_str );
+
+				_sw.WriteLine( "\n; *** " + level_prefix_str + " ***\n" );
 				
 				n_scr_X = level_data.get_width();
 				n_scr_Y = level_data.get_height();
 
 				if( RBtnLayoutAdjacentScreenIndices.Checked )
 				{
-					scr_arr = CONST_FILENAME_LEVEL_PREFIX + level_n + "_ScrArr:";
+					scr_arr = level_prefix_str + "_ScrArr:";
 				}
 				
-				ent_n = 0;
+				ents_cnt = 0;
 				
 				for( int scr_n_Y = 0; scr_n_Y < n_scr_Y; scr_n_Y++ )
 				{
@@ -959,8 +963,6 @@ namespace MAPeD
 							{
 								common_scr_ind = scr_n_Y * n_scr_X + scr_n_X;
 								
-								level_prefix_str = CONST_FILENAME_LEVEL_PREFIX + level_n;
-								
 								if( enable_comments )
 								{
 									start_scr_ind = level_data.get_start_screen_ind();
@@ -970,18 +972,17 @@ namespace MAPeD
 										MainForm.message_box( "The start screen wasn't assigned to layout: " + level_n + "\n\nWARNING: A first valid screen will be used as a start one.", "Start Screen Warning", MessageBoxButtons.OK );
 									}
 									
-									if( RBtnLayoutMatrix.Checked )
-									{
-										_sw.WriteLine( ".define " + level_prefix_str + "_StartScr\t" + ( start_scr_ind < 0 ? common_scr_ind:start_scr_ind ) + "\n" );
-									}
-									else
-									{
-										_sw.WriteLine( ".define " + level_prefix_str + "_StartScr\t" + ( start_scr_ind < 0 ? level_prefix_str + "Scr" + common_scr_ind:level_prefix_str + "Scr" + start_scr_ind ) + "\n" );
-									}
+									start_scr_ind = ( start_scr_ind < 0 ) ? common_scr_ind:start_scr_ind;
 									
 									if( RBtnLayoutMatrix.Checked )
 									{
-										level_data.export_asm( null, _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".define", ".byte", ".word", ".word", "$", false, false, false, false );
+										_sw.WriteLine( ".define " + level_prefix_str + "_StartScr\t" + start_scr_ind + "\n" );
+										
+										level_data.export_asm( _sw, level_prefix_str, ".define", ".byte", ".word", ".word", "$", false, false, false, false );
+									}
+									else
+									{
+										_sw.WriteLine( ".define " + level_prefix_str + "_StartScr\t" + level_prefix_str + "Scr" + start_scr_ind + "\n" );
 									}
 								}
 								
@@ -1017,7 +1018,7 @@ namespace MAPeD
 									if( enable_comments )
 									{
 										_sw.WriteLine( "; adjacent screen indices ( the valid values are $00 - $FE, $FF - means no screen )" );
-										_sw.WriteLine( "; use the " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_ScrArr array to get a screen description by adjacent screen index" );
+										_sw.WriteLine( "; use the " + level_prefix_str + "_ScrArr array to get a screen description by adjacent screen index" );
 									}
 									
 									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -1 	 	) + ( enable_comments ? "\t; left adjacent screen index":"" ) );
@@ -1025,12 +1026,12 @@ namespace MAPeD
 									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, 1 		) + ( enable_comments ? "\t; right adjacent screen index":"" ) );
 									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, n_scr_X	) + ( enable_comments ? "\t; down adjacent screen index\n":"\n" ) );
 									
-									scr_arr += "\n\t.word " + CONST_FILENAME_LEVEL_PREFIX + level_n + "Scr" + common_scr_ind;
+									scr_arr += "\n\t.word " + level_prefix_str + "Scr" + common_scr_ind;
 								}
 								
 								if( CheckBoxExportEntities.Checked )
 								{
-									scr_data.export_entities_asm( _sw, ref ent_n, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
+									scr_data.export_entities_asm( _sw, ref ents_cnt, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
 									
 									_sw.WriteLine( "" );
 								}
@@ -1060,7 +1061,7 @@ namespace MAPeD
 				
 				if( CheckBoxExportEntities.Checked )
 				{
-					_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_EntInstCnt\t" + ent_n + "\t; number of entities instances\n" );
+					_sw.WriteLine( ".define " + level_prefix_str + "_EntInstCnt\t" + level_data.get_ent_instances_cnt() + "\t; number of entities instances\n" );
 				}				
 			}
 			
@@ -1073,7 +1074,7 @@ namespace MAPeD
 			{
 				byte[] rle_data_arr	= null;
 
-				int rle_data_size = utils.RLE( _data, ref rle_data_arr );
+				int rle_data_size = utils.RLE8( _data, ref rle_data_arr );
 
 				if( rle_data_size < 0 )
 				{
@@ -1100,32 +1101,28 @@ namespace MAPeD
 
 		private bool compress_and_save_ushort( BinaryWriter _bw, ushort[] _data, ref int _data_offset )
 		{
-			byte[] data_copy = new byte[ _data.Length << 1 ];
-			
-			Buffer.BlockCopy( _data, 0, data_copy, 0, data_copy.Length );
-			
 			if( CheckBoxRLE.Checked )
 			{
-				byte[] rle_data_arr	= null;
+				ushort[] rle_data_arr	= null;
 
-				int rle_data_size = utils.RLE( data_copy, ref rle_data_arr );
-
+				int rle_data_size = utils.RLE16( _data, ref rle_data_arr );
+				
 				if( rle_data_size < 0 )
 				{
 					return false;
 				}
 				else
 				{
-					_bw.Write( rle_data_arr, 0, rle_data_size );
+					utils.write_ushort_arr( _bw, rle_data_arr, rle_data_size );
 					
-					_data_offset += rle_data_size;
+					_data_offset += rle_data_size * sizeof( ushort );
 				}
 				
 				rle_data_arr = null;
 			}
 			else
 			{
-				_bw.Write( data_copy );
+				utils.write_ushort_arr( _bw, _data, _data.Length );
 				
 				_data_offset += _data.Length * sizeof( ushort );
 			}
@@ -1341,9 +1338,10 @@ namespace MAPeD
 			
 			layout_screen_data	scr_data;
 			
-			long 	data_size 	= 0;
-			string 	label 		= null;
-			string 	palette_str	= null;
+			long 	data_size			= 0;
+			string 	label				= null;
+			string 	palette_str			= null;
+			string	level_prefix_str	= null;
 			
 			int scr_width_blocks 	= utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
 			int scr_height_blocks 	= utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
@@ -1353,6 +1351,10 @@ namespace MAPeD
 			for( int level_n = 0; level_n < n_levels; level_n++ )
 			{
 				level_data = m_data_mngr.get_layout_data( level_n );
+				
+				level_prefix_str = CONST_FILENAME_LEVEL_PREFIX + level_n;
+				
+				check_ent_instances_cnt( level_data, level_prefix_str );
 				
 				n_scr_X = level_data.get_width();
 				n_scr_Y = level_data.get_height();
@@ -1456,12 +1458,12 @@ namespace MAPeD
 				}
 
 				// write collected data
-				_sw.WriteLine( "\n; *** " + CONST_FILENAME_LEVEL_PREFIX + level_n + " ***\n" );
+				_sw.WriteLine( "\n; *** " + level_prefix_str + " ***\n" );
 				
 				tiles = scr_tiles_data[ chk_bank_ind ]; 
 				
 				// write CHR banks data
-				label = CONST_FILENAME_LEVEL_PREFIX + level_n + "_CHR";
+				label = level_prefix_str + "_CHR";
 				bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 				{
 					tiles.export_CHR( bw, get_CHRs_bpp() );
@@ -1483,7 +1485,7 @@ namespace MAPeD
 				if( RBtnTiles4x4.Checked )
 				{
 					// write tiles
-					label = CONST_FILENAME_LEVEL_PREFIX + level_n + "_Tiles";
+					label = level_prefix_str + "_Tiles";
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 					
 					for( int i = 0; i < max_tile_ind; i++ )
@@ -1501,7 +1503,7 @@ namespace MAPeD
 					max_block_ind = tiles.get_first_free_block_id() << 2;	// 4 ushorts per block
 					max_block_ind = max_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:max_block_ind;
 					
-					label = CONST_FILENAME_LEVEL_PREFIX + level_n + "_Attrs";
+					label = level_prefix_str + "_Attrs";
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 	
 					for( block_n = 0; block_n < max_block_ind; block_n++ )
@@ -1538,7 +1540,7 @@ namespace MAPeD
 					}
 					
 					// save properties
-					label = CONST_FILENAME_LEVEL_PREFIX + level_n + "_Props";
+					label = level_prefix_str + "_Props";
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 					bw.Write( block_props_arr );
 					data_size = bw.BaseStream.Length;
@@ -1549,7 +1551,7 @@ namespace MAPeD
 
 				// write map
 				{
-					label = CONST_FILENAME_LEVEL_PREFIX + level_n + "_Map";
+					label = level_prefix_str + "_Map";
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 					
 					if( RBtnTiles2x2.Checked )
@@ -1581,7 +1583,7 @@ namespace MAPeD
 				
 				// tiles lookup table
 				{
-					label = CONST_FILENAME_LEVEL_PREFIX + level_n + "_MapTbl";
+					label = level_prefix_str + "_MapTbl";
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 					
 					int w_tiles_cnt = get_tiles_cnt_width( n_scr_X );
@@ -1608,7 +1610,7 @@ namespace MAPeD
 					_sw.WriteLine( label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") lookup table for fast calculation of tile addresses; " + ( RBtnTilesDirColumns.Checked ? "columns by X coordinate":"rows by Y coordinate" ) + " ( 16 bit offset per " + ( RBtnTilesDirColumns.Checked ? "column":"row" ) + " of tiles )\n" );
 				}
 				
-				palette_str = CONST_FILENAME_LEVEL_PREFIX + level_n + "_Palette:";
+				palette_str = level_prefix_str + "_Palette:";
 				
 				for( int i = 0; i < tiles.palettes_arr.Count; i++ )
 				{
@@ -1631,31 +1633,31 @@ namespace MAPeD
 					start_scr_ind = 0;
 				}
 				
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_CHR_data_size\t" + CHR_data_size );
+				_sw.WriteLine( ".define " + level_prefix_str + "_CHR_data_size\t" + CHR_data_size );
 				
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_StartScr\t" + start_scr_ind + "\t; start screen" );
+				_sw.WriteLine( ".define " + level_prefix_str + "_StartScr\t" + start_scr_ind + "\t; start screen" );
 
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_WTilesCnt\t" + get_tiles_cnt_width( n_scr_X ) + "\t; number of level tiles in width" );
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_HTilesCnt\t" + get_tiles_cnt_height( n_scr_Y ) + "\t; number of level tiles in height" );
+				_sw.WriteLine( ".define " + level_prefix_str + "_WTilesCnt\t" + get_tiles_cnt_width( n_scr_X ) + "\t; number of level tiles in width" );
+				_sw.WriteLine( ".define " + level_prefix_str + "_HTilesCnt\t" + get_tiles_cnt_height( n_scr_Y ) + "\t; number of level tiles in height" );
 				
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_WPixelsCnt\t" + get_tiles_cnt_width( n_scr_X ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; map width in pixels" );
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_HPixelsCnt\t" + get_tiles_cnt_height( n_scr_Y ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; map height in pixels" );
+				_sw.WriteLine( ".define " + level_prefix_str + "_WPixelsCnt\t" + get_tiles_cnt_width( n_scr_X ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; map width in pixels" );
+				_sw.WriteLine( ".define " + level_prefix_str + "_HPixelsCnt\t" + get_tiles_cnt_height( n_scr_Y ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t; map height in pixels" );
 					
 				if( RBtnTiles4x4.Checked )
 				{
-					_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_TilesCnt\t" + max_tile_ind );
+					_sw.WriteLine( ".define " + level_prefix_str + "_TilesCnt\t" + max_tile_ind );
 				}
 				
-				_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_BlocksCnt\t" + max_block_ind + "\n" );
+				_sw.WriteLine( ".define " + level_prefix_str + "_BlocksCnt\t" + max_block_ind + "\n" );
 
 				if( CheckBoxExportEntities.Checked )
 				{
-					level_data.export_asm( null, _sw, CONST_FILENAME_LEVEL_PREFIX + level_n, ".define", ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+					level_data.export_asm( _sw, level_prefix_str, ".define", ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
 				}
 				else
 				{
-					_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_WScrCnt\t" + n_scr_X + "\t; number of screens in width" );
-					_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_HScrCnt\t" + n_scr_Y + "\t; number of screens in height\n" );
+					_sw.WriteLine( ".define " + level_prefix_str + "_WScrCnt\t" + n_scr_X + "\t; number of screens in width" );
+					_sw.WriteLine( ".define " + level_prefix_str + "_HScrCnt\t" + n_scr_Y + "\t; number of screens in height\n" );
 				}
 				
 				map_data_arr 	= null;
@@ -1696,6 +1698,17 @@ namespace MAPeD
 		int get_CHRs_bpp()
 		{
 			return ComboBoxCHRsBPP.SelectedIndex + 1;
+		}
+
+		void check_ent_instances_cnt( layout_data _layout, string _lev_pref_str )
+		{
+			if( CheckBoxExportEntities.Checked )
+			{
+				if( _layout.get_ent_instances_cnt() > utils.CONST_MAX_ENT_INST_CNT )
+				{
+					throw new Exception( "The number of entity instances is out of range!\nThe maximum number allowed to export: " + utils.CONST_MAX_ENT_INST_CNT + "\n\n[" + _lev_pref_str + "]" );
+				}
+			}
 		}
 #endif	//DEF_SMS
 	}

@@ -44,7 +44,7 @@ namespace MAPeD
 		public const string CONST_STR_EXP_SMS_MOVE_PROP_TO_SCR_MAP_OFF	= "\nAll the properties will be stored in a separate file.";
 		
 		public const string CONST_STR_EXP_PROP_IN_FRONT_OF_SPRITES		= "\n'In front of sprites' property: What property will be used as the 'In front of sprites' flag in a screen map data.";
-		public const string CONST_STR_SMD_EXP_PROP_IN_FRONT_OF_SPRITES	= "\n\n'Priority id' property: What block's property will be used as the 'Priority Bit' in a screen map data.";
+		public const string CONST_STR_EXP_SMD_PROP_IN_FRONT_OF_SPRITES	= "\n\n'Priority id' property: What block's property will be used as the 'Priority Bit' in a screen map data.";
 		
 		public const string CONST_STR_EXP_MODE					= "\n\nMODE: "; 
 		public const string CONST_STR_EXP_MODE_MULTIDIR			= "Multidirectional scrolling\nAll screens data are stored in a common array of tiles. Suitable for map scrolling in any direction.";
@@ -75,6 +75,8 @@ namespace MAPeD
 		
 		public const string CONST_STR_EXP_CHR_OFFSET			= "\n\nCHR offset: This value will be added to each CHR index in a screen map. In other words, it's a free space at the beginning of a CHR bank.";		
 		public const string CONST_STR_EXP_PCE_CHR_OFFSET		= "\n\nCHR offset: This value will be added to each CHR index in a screen map. In other words, it's a free space from the end of a BAT.";
+		
+		public const string CONST_STR_EXP_SMD_SGDK_DATA			= "\n\nExport SGDK Data: SGDK compatible '.h' file will be generated. The '.asm' file will be renamed to '.s'. Select ROOT directory of your project and all exported data will be automatically copied to the 'src/inc/data' directories.";
 		
 		public const string CONST_STR_EXP_WARNING				= "\n\nWARNING: To reduce the amount of exported data, please make a global data optimization.";
 		

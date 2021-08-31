@@ -39,6 +39,8 @@ namespace MAPeD
 		
 		private const string	CONST_FILENAME_LEVEL_PREFIX		= "Lev";
 		private const string	CONST_BIN_EXT					= ".bin";
+		
+		private const int CONST_VDC_READY_SCR_DATA_SIZE = utils.CONST_SCREEN_TILES_CNT << 5;
 
 		private int[] m_CHR_offset	= { 64, 128, 256, 128, 256, 512 };
 		private int[] m_BAT_index	= { 0, 1, 3, 4, 5, 7 };
@@ -151,7 +153,7 @@ namespace MAPeD
 			
 			CheckBoxExportMarks.Enabled = true;
 			
-			CheckBoxRLE.Checked = CheckBoxRLE.Enabled = false;
+//!!!		CheckBoxRLE.Checked = CheckBoxRLE.Enabled = false;
 			
 			update_desc();
 		}
@@ -272,7 +274,15 @@ namespace MAPeD
 		
 		private string get_exp_prefix()
 		{
-			return utils.get_exp_prefix( CheckBoxGenerateHFile.Checked );
+			return CheckBoxGenerateHFile.Checked ? "_":"";
+		}
+		
+		public static string skip_exp_pref( string _str )
+		{
+			int offs = _str.IndexOf( "_" );
+			offs = ( offs == 0 ) ? ( offs + 1 ):0;
+			
+			return _str.Substring( offs );
 		}
 		
 		public void ShowDialog( string _full_path )
@@ -473,7 +483,7 @@ namespace MAPeD
 			int max_scr_block		= 0;
 			int max_block_ind		= 0;
 			int start_scr_ind		= 0;
-			int ent_n				= 0;
+			int ents_cnt;
 			
 			int scr_width_blocks_mul2 	= 0;
 			int scr_height_blocks_mul2 	= 0;
@@ -653,7 +663,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( label ) + ";" );
 					}
 					
 					exp_data_size += data_size;
@@ -664,8 +674,8 @@ namespace MAPeD
 				
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( m_filename ) + "_CHRs;" );
-					m_C_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( m_filename ) + "_CHRs_size;" );
+					m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( m_filename ) + "_CHRs;" );
+					m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( m_filename ) + "_CHRs_size;" );
 				}
 				
 				// static screens ( VDC-READY DATA ):
@@ -733,7 +743,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + utils.skip_exp_pref( m_filename ) + label_props + ";" );
+						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + label_props + ";" );
 					}
 					
 					if( RBtnModeBidirScroll.Checked )
@@ -742,7 +752,7 @@ namespace MAPeD
 						
 						if( m_C_writer != null )
 						{
-							m_C_writer.WriteLine( "extern char*\t" + utils.skip_exp_pref( m_filename ) + "_BlocksPropsOffs;" );
+							m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + "_BlocksPropsOffs;" );
 						}
 					}
 					else
@@ -751,7 +761,7 @@ namespace MAPeD
 						
 						if( m_C_writer != null )
 						{
-							m_C_writer.WriteLine( "extern char*\t" + utils.skip_exp_pref( m_filename ) + "_PropsOffs;" );
+							m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + "_PropsOffs;" );
 						}
 					}
 					
@@ -804,7 +814,7 @@ namespace MAPeD
 							
 							if( m_C_writer != null )
 							{
-								m_C_writer.WriteLine( "extern char*\t" + utils.skip_exp_pref( m_filename ) + label + ";" );
+								m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + label + ";" );
 							}
 						}
 						
@@ -814,7 +824,7 @@ namespace MAPeD
 						
 						if( m_C_writer != null )
 						{
-							m_C_writer.WriteLine( "extern char*\t" + utils.skip_exp_pref( m_filename ) + "_TilesOffs;" );
+							m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + "_TilesOffs;" );
 						}
 					}
 				}
@@ -882,22 +892,22 @@ namespace MAPeD
 					
 					exp_data_size += data_size;
 					
-					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") VDC-ready data array for each screen (" + ( utils.CONST_SCREEN_TILES_CNT << 5 ) + " bytes per screen)" );
+					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + data_offset + ( CheckBoxRLE.Checked ? " / " + ( screens.Count * CONST_VDC_READY_SCR_DATA_SIZE ):"" ) + ") VDC-ready data array for each screen (" + CONST_VDC_READY_SCR_DATA_SIZE + " bytes per screen)" );
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( m_filename ) + label + ";" );
+						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( m_filename ) + label + ";\t// " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "VDC-ready data array for each screen" );
 					}
 					
 					if( !CheckBoxRLE.Checked )
 					{
 						if( m_C_writer != null )
 						{
-							m_C_writer.WriteLine( "int ScrGfxDataSize = " + ( utils.CONST_SCREEN_TILES_CNT << 5 ) );
+							m_C_writer.WriteLine( "int ScrGfxDataSize = " + CONST_VDC_READY_SCR_DATA_SIZE + ";" );
 						}
 						else
 						{
-							_sw.WriteLine( "\nScrGfxDataSize = " + ( utils.CONST_SCREEN_TILES_CNT << 5 ) + "\n" );
+							_sw.WriteLine( "\nScrGfxDataSize = " + CONST_VDC_READY_SCR_DATA_SIZE + "\n" );
 						}
 					}
 				}
@@ -938,7 +948,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + utils.skip_exp_pref( m_filename ) + label + ";" );
+						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + label + ";" );
 					}
 				}
 				
@@ -980,7 +990,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + utils.skip_exp_pref( m_filename ) + label + ";" );
+						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + label + ";" );
 					}
 				}
 				
@@ -1011,7 +1021,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( m_filename ) + label + ";" );
+						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( m_filename ) + label + ";" );
 					}
 				}
 			}
@@ -1020,9 +1030,13 @@ namespace MAPeD
 			{
 				enable_comments = true;
 				
-				_sw.WriteLine( "\n; *** " + CONST_FILENAME_LEVEL_PREFIX + level_n + " ***\n" );
-				
 				level_data = m_data_mngr.get_layout_data( level_n );
+				
+				level_prefix_str = m_level_prefix + level_n;
+				
+				check_ent_instances_cnt( level_data, level_prefix_str );
+
+				_sw.WriteLine( "\n; *** " + level_prefix_str + " ***\n" );
 				
 				n_scr_X = level_data.get_width();
 				n_scr_Y = level_data.get_height();
@@ -1033,11 +1047,11 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( m_level_prefix ) + level_n + "_ScrArr;" );
+						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( m_level_prefix ) + level_n + "_ScrArr;" );
 					}
 				}
 				
-				ent_n = 0;
+				ents_cnt = 0;
 				
 				for( int scr_n_Y = 0; scr_n_Y < n_scr_Y; scr_n_Y++ )
 				{
@@ -1068,8 +1082,6 @@ namespace MAPeD
 							{
 								common_scr_ind = scr_n_Y * n_scr_X + scr_n_X;
 								
-								level_prefix_str = m_level_prefix + level_n;
-								
 								if( enable_comments )
 								{
 									start_scr_ind = level_data.get_start_screen_ind();
@@ -1079,23 +1091,29 @@ namespace MAPeD
 										MainForm.message_box( "The start screen wasn't assigned to layout: " + level_n + "\n\nWARNING: A first valid screen will be used as a start one.", "Start Screen Warning", MessageBoxButtons.OK );
 									}
 									
+									start_scr_ind = ( start_scr_ind < 0 ) ? common_scr_ind:start_scr_ind;
+									
 									if( RBtnLayoutMatrix.Checked )
 									{
-										_sw.WriteLine( level_prefix_str + "_StartScr:\t.word " + ( start_scr_ind < 0 ? common_scr_ind:start_scr_ind ) + "\n" );
+										_sw.WriteLine( level_prefix_str + "_StartScr:\t.word " + start_scr_ind + "\n" );
+										
+										level_data.export_asm( _sw, level_prefix_str, null, ".byte", ".word", ".word", "$", false, false, false, false );
+										
+										if( m_C_writer != null )
+										{
+											m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( level_prefix_str ) + "_Layout;\n" );
+											m_C_writer.WriteLine( "int\t" + skip_exp_pref( level_prefix_str ) + "_WScrCnt = " + level_data.get_width() + ";\t// number of screens in width" );
+											m_C_writer.WriteLine( "int\t" + skip_exp_pref( level_prefix_str ) + "_HScrCnt = " + level_data.get_height() + ";\t// number of screens in height" );
+										}
 									}
 									else
 									{
-										_sw.WriteLine( level_prefix_str + "_StartScr:\t.word " + ( start_scr_ind < 0 ? level_prefix_str + "Scr" + common_scr_ind:level_prefix_str + "Scr" + start_scr_ind ) + "\n" );
+										_sw.WriteLine( level_prefix_str + "_StartScr:\t.word " + level_prefix_str + "Scr" + start_scr_ind + "\n" );
 									}
 									
 									if( m_C_writer != null )
 									{
-										m_C_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( level_prefix_str ) + "_StartScr;" );
-									}
-									
-									if( RBtnLayoutMatrix.Checked )
-									{
-										level_data.export_asm( m_C_writer, _sw, m_level_prefix + level_n, null, ".byte", ".word", ".word", "$", false, false, false, false );
+										m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( level_prefix_str ) + "_StartScr;" );
 									}
 								}
 								
@@ -1144,7 +1162,7 @@ namespace MAPeD
 								
 								if( CheckBoxExportEntities.Checked )
 								{
-									scr_data.export_entities_asm( _sw, ref ent_n, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
+									scr_data.export_entities_asm( _sw, ref ents_cnt, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
 									
 									_sw.WriteLine( "" );
 								}
@@ -1174,7 +1192,7 @@ namespace MAPeD
 				
 				if( CheckBoxExportEntities.Checked )
 				{
-					_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_EntInstCnt\t" + ent_n + "\t; number of entities instances\n" );
+					_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_EntInstCnt\t" + level_data.get_ent_instances_cnt() + "\t; number of entities instances\n" );
 				}				
 			}
 			
@@ -1192,7 +1210,7 @@ namespace MAPeD
 			{
 				byte[] rle_data_arr	= null;
 
-				int rle_data_size = utils.RLE( _data, ref rle_data_arr );
+				int rle_data_size = utils.RLE8( _data, ref rle_data_arr );
 				
 				if( rle_data_size < 0 )
 				{
@@ -1219,15 +1237,11 @@ namespace MAPeD
 
 		private bool compress_and_save_ushort( BinaryWriter _bw, ushort[] _data, ref int _data_offset )
 		{
-			byte[] data_copy = new byte[ _data.Length << 1 ];
-			
-			Buffer.BlockCopy( _data, 0, data_copy, 0, data_copy.Length );
-			
 			if( CheckBoxRLE.Checked )
 			{
-				byte[] rle_data_arr	= null;
+				ushort[] rle_data_arr	= null;
 
-				int rle_data_size = utils.RLE( data_copy, ref rle_data_arr );
+				int rle_data_size = utils.RLE16( _data, ref rle_data_arr );
 				
 				if( rle_data_size < 0 )
 				{
@@ -1235,16 +1249,16 @@ namespace MAPeD
 				}
 				else
 				{
-					_bw.Write( rle_data_arr, 0, rle_data_size );
+					utils.write_ushort_arr( _bw, rle_data_arr, rle_data_size );
 					
-					_data_offset += rle_data_size;
+					_data_offset += rle_data_size * sizeof( ushort );
 				}
 				
 				rle_data_arr = null;
 			}
 			else
 			{
-				_bw.Write( data_copy );
+				utils.write_ushort_arr( _bw, _data, _data.Length );
 				
 				_data_offset += _data.Length * sizeof( ushort );
 			}
@@ -1465,6 +1479,10 @@ namespace MAPeD
 			{
 				level_data = m_data_mngr.get_layout_data( level_n );
 				
+				level_prefix_str = CONST_FILENAME_LEVEL_PREFIX + level_n;
+				
+				check_ent_instances_cnt( level_data, level_prefix_str );
+				
 				n_scr_X = level_data.get_width();
 				n_scr_Y = level_data.get_height();
 
@@ -1567,7 +1585,7 @@ namespace MAPeD
 				}
 
 				// write collected data
-				_sw.WriteLine( "\n; *** " + CONST_FILENAME_LEVEL_PREFIX + level_n + " ***\n" );
+				_sw.WriteLine( "\n; *** " + level_prefix_str + " ***\n" );
 				
 				level_prefix_str = m_level_prefix + level_n;
 				
@@ -1588,7 +1606,7 @@ namespace MAPeD
 				
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( label ) + ";" );
+					m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( label ) + ";" );
 				}
 
 				if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
@@ -1619,7 +1637,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + utils.skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( label ) + ";" );
 					}
 				}
 				
@@ -1647,7 +1665,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( label ) + ";" );
 					}
 				}
 				
@@ -1690,7 +1708,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + utils.skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( label ) + ";" );
 					}
 				}
 
@@ -1729,7 +1747,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + utils.skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( label ) + ";" );
 					}
 				}
 				
@@ -1765,7 +1783,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( label ) + ";" );
 					}
 				}
 				
@@ -1773,7 +1791,7 @@ namespace MAPeD
 			
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern int*\t" + utils.skip_exp_pref( level_prefix_str ) + "_Palette;" );
+					m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( level_prefix_str ) + "_Palette;" );
 				}
 				
 				for( int i = 0; i < tiles.palettes_arr.Count; i++ )
@@ -1805,7 +1823,7 @@ namespace MAPeD
 				
 				if( m_C_writer != null )
 				{
-					level_prefix_str 	= utils.skip_exp_pref( level_prefix_str );
+					level_prefix_str 	= skip_exp_pref( level_prefix_str );
 					c_char				= "char\t";
 					c_int				= "int\t";
 					c_code_comm_delim 	= ";\t// ";
@@ -1839,7 +1857,18 @@ namespace MAPeD
 
 				if( CheckBoxExportEntities.Checked )
 				{
-					level_data.export_asm( m_C_writer, _sw, get_exp_prefix() + level_prefix_str, null, ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+					string exp_level_prefix = get_exp_prefix() + level_prefix_str;
+					
+					level_data.export_asm( _sw, exp_level_prefix, null, ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+					
+					if( m_C_writer != null )
+					{
+						m_C_writer.WriteLine( "extern int*\t" + exp_level_prefix + "_Layout;\n" );
+						m_C_writer.WriteLine( "int\t" + exp_level_prefix + "_WScrCnt = " + level_data.get_width() + ";\t// number of screens in width" );
+						m_C_writer.WriteLine( "int\t" + exp_level_prefix + "_HScrCnt = " + level_data.get_height() + ";\t// number of screens in height" );
+						
+						m_C_writer.WriteLine( "int\t" + exp_level_prefix + "_EntInstCnt = " + level_data.get_ent_instances_cnt() + ";\t// number of entities instances" );
+					}
 				}
 				else
 				{
@@ -1885,6 +1914,17 @@ namespace MAPeD
           	byte v3 = ( byte )( _val & 0xff );
 			
           	return unchecked( ( uint )( v3 << 24 | v2 << 16 | v1 << 8 | v0 ) );
+		}
+		
+		void check_ent_instances_cnt( layout_data _layout, string _lev_pref_str )
+		{
+			if( CheckBoxExportEntities.Checked )
+			{
+				if( _layout.get_ent_instances_cnt() > utils.CONST_MAX_ENT_INST_CNT )
+				{
+					throw new Exception( "The number of entity instances is out of range!\nThe maximum number allowed to export: " + utils.CONST_MAX_ENT_INST_CNT + "\n\n[" + _lev_pref_str + "]" );
+				}
+			}
 		}
 #endif	//DEF_PCE
 	}

@@ -13,7 +13,7 @@ DEF_TILE_DRAW_FAST
 DEF_FLIP_BLOCKS_SPR_BY_FLAGS	(SMS/SMD)
 DEF_PALETTE16_PER_CHR			(PCE/SMS/ZX/SMD)
 DEF_FIXED_LEN_PALETTE16_ARR		(PCE/SMS/ZX/SMD)
-DEF_ENT_PROP_16BIT				(SMD)
+DEF_PLATFORM_16BIT				(SMD)
 */
 
 using System;
@@ -398,7 +398,11 @@ namespace MAPeD
 		public const int CONST_BLOCK_SIZE					= 4;	// uints
 		public const int CONST_TILE_SIZE					= 4;	// bytes
 		
-		public const int CONST_MAX_ENT_INST_CNT				= 256;	// max number of entities instances in a level
+#if DEF_PLATFORM_16BIT
+		public const int CONST_MAX_ENT_INST_CNT				= 0xffff;	// max number of entities instances in a map
+#else
+		public const int CONST_MAX_ENT_INST_CNT				= 0xff;		// max number of entities instances in a map
+#endif
 
 		public const int CONST_BLOCKS_UINT_SIZE				= CONST_MAX_BLOCKS_CNT * CONST_BLOCK_SIZE;
 		public const int CONST_TILES_UINT_SIZE				= CONST_MAX_TILES_CNT;
@@ -759,12 +763,14 @@ namespace MAPeD
 		
 		public static void save_prop_asm( StreamWriter _sw, string _db, string _num_pref, string _prop, bool _enable_comments )
 		{
+			int		all_props_cnt	= 0;
+			string	data_str		= "";
+			
 			if( _prop != null && _prop.Length > 0 )
 			{
 				int prop_n;
 				int props_cnt;
 				
-				string		data_str;
 				string[] 	ent_props;
 				uint 		prop_val;
 				
@@ -772,36 +778,40 @@ namespace MAPeD
 				
 				props_cnt = ent_props.Length;
 
-				data_str = "\t" + _db + " " + utils.hex( _num_pref, props_cnt ) + ( _enable_comments ? "\t; properties count\n":"\n" );
-				
 				if( props_cnt > 0 )
 				{
-					data_str += "\t" + _db + " ";
+					data_str = "\t" + _db + " ";
 					
 					for( prop_n = 0; prop_n < props_cnt; prop_n++ )
 					{
 						prop_val = UInt32.Parse( ent_props[ prop_n ], System.Globalization.NumberStyles.HexNumber );	
-#if DEF_ENT_PROP_16BIT
+#if DEF_PLATFORM_16BIT
 						data_str += utils.hex( _num_pref, ( prop_val & 0xffff ) );
+						++all_props_cnt;
 						
 						if( prop_val > 0xffff )
 						{
 							data_str += ", " + utils.hex( _num_pref, ( ( prop_val & 0xffff0000 ) >> 16 ) );
+							++all_props_cnt;
 						}
 #else
 						data_str += utils.hex( _num_pref, ( prop_val & 0xff ) );
+						++all_props_cnt;
 						
 						if( prop_val > 0xff )
 						{
 							data_str += ", " + utils.hex( _num_pref, ( ( prop_val & 0xff00 ) >> 8 ) );
+							++all_props_cnt;
 							
 							if( prop_val > 0xffff )
 							{
 								data_str += ", " + utils.hex( _num_pref, ( ( prop_val & 0xff0000 ) >> 16 ) );
+								++all_props_cnt;
 								
 								if( prop_val > 0xffffff )
 								{
 									data_str += ", " + utils.hex( _num_pref, ( ( prop_val & 0xff000000 ) >> 24 ) );
+									++all_props_cnt;
 								}
 							}
 						}
@@ -809,7 +819,12 @@ namespace MAPeD
 						data_str += ( prop_n < ( props_cnt - 1 ) ? ", ":"" );
 					}
 				}
-				
+			}
+			
+			_sw.WriteLine( "\t" + _db + " " + utils.hex( _num_pref, all_props_cnt ) + ( _enable_comments ? "\t; properties count":"" ) );
+			
+			if( data_str.Length > 0 )
+			{
 				_sw.WriteLine( data_str + ( _enable_comments ? "\t; properties data":"" ) );
 			}
 		}
@@ -859,62 +874,62 @@ namespace MAPeD
 		}
 		
 		// RLE routine from NESst tool by Shiru
-		public static int RLE( byte[] _arr, ref byte[] _rle_arr )
+		public static int RLE8( byte[] _arr, ref byte[] _rle_arr )
 		{
 			_rle_arr = new byte[ _arr.Length ];
 			
-			int[] stat = new int[ 256 ];
+			int[] stat = new int[ byte.MaxValue + 1 ];
 			int i,tag,sym,sym_prev,len,ptr;
 			
 			int size = _arr.Length;
 			
-			Array.Clear( stat, 0, 256 );
+			Array.Clear( stat, 0, stat.Length );
 			
-			for(i=0;i<size;++i) ++stat[_arr[i]];
+			for( i = 0; i < size; ++i ) ++stat[ _arr[ i ] ];
 		
-			tag=-1;
+			tag = -1;
 		
-			for(i=0;i<256;++i)
+			for( i = 0; i < stat.Length; ++i )
 			{
-				if( stat[i] == 0 )
+				if( stat[ i ] == 0 )
 				{
-					tag=i;
+					tag = i;
 					break;
 				}
 			}
 			
-			if(tag<0) return -1;
+			if( tag < 0 ) return -1;
 		
-			ptr=0;
-			len=1;
-			sym_prev=-1;
+			ptr = 0;
+			len = 1;
+			sym_prev = -1;
 		
-			_rle_arr[ptr++]=(byte)tag;
+			_rle_arr[ ptr++ ] = ( byte )tag;
 			
-			for(i=0;i<size;++i)
+			for( i = 0; i < size; ++i )
 			{
-				sym=_arr[i];
+				sym = _arr[ i ];
 		
-				if(sym_prev!=sym||len>=255||i==size-1)
+				if( sym_prev != sym || len >= byte.MaxValue || i == size - 1 )
 				{
-					if(len>1)
+					if( len > 1 )
 					{
-						if(len==2)
+						if( len == 2 )
 						{
-							_rle_arr[ptr++]=(byte)sym_prev;
+							_rle_arr[ ptr++ ] = ( byte )sym_prev;
 						}
 						else
 						{
-							_rle_arr[ptr++]=(byte)tag;
-							_rle_arr[ptr++]=(byte)(len-1);
+							_rle_arr[ ptr++ ] = ( byte )tag;
+							_rle_arr[ ptr++ ] = ( byte )( len - 1 );
 						}
 					}
 		
-					_rle_arr[ptr++]=(byte)sym;
+					_rle_arr[ ptr++ ] = ( byte )sym;
 		
-					sym_prev=sym;
+					sym_prev = sym;
 		
-					len=1;
+					len = 1;
 				}
 				else
 				{
@@ -922,8 +937,77 @@ namespace MAPeD
 				}
 			}
 		
-			_rle_arr[ptr++]=(byte)tag;	//end of file marked with zero length rle
-			_rle_arr[ptr++]=0;
+			_rle_arr[ ptr++ ] = ( byte )tag;	//end of file marked with zero length rle
+			_rle_arr[ ptr++ ] = 0;
+			
+			return ptr;			
+		}
+
+		public static int RLE16( ushort[] _arr, ref ushort[] _rle_arr )
+		{
+			_rle_arr = new ushort[ _arr.Length ];
+			
+			int[] stat = new int[ ushort.MaxValue + 1 ];
+			int i, tag, sym, sym_prev, len, ptr;
+			
+			int size = _arr.Length;
+			
+			Array.Clear( stat, 0, stat.Length );
+			
+			for( i = 0; i < size; ++i ) ++stat[ _arr[ i ] ];
+		
+			tag = -1;
+		
+			for( i = 0; i < stat.Length; ++i )
+			{
+				if( stat[ i ] == 0 )
+				{
+					tag = i;
+					break;
+				}
+			}
+			
+			if( tag < 0 ) return -1;
+		
+			ptr = 0;
+			len = 1;
+			sym_prev = -1;
+		
+			_rle_arr[ ptr++ ] = ( ushort )tag;
+			
+			for( i = 0; i < size; ++i )
+			{
+				sym = _arr[ i ];
+		
+				if( sym_prev != sym || len >= ushort.MaxValue || i == size - 1 )
+				{
+					if( len > 1 )
+					{
+						if( len == 2 )
+						{
+							_rle_arr[ ptr++ ] = ( ushort )sym_prev;
+						}
+						else
+						{
+							_rle_arr[ ptr++ ] = ( ushort )tag;
+							_rle_arr[ ptr++ ] = ( ushort )( len - 1 );
+						}
+					}
+		
+					_rle_arr[ ptr++ ] = ( ushort )sym;
+		
+					sym_prev = sym;
+		
+					len = 1;
+				}
+				else
+				{
+					++len;
+				}
+			}
+		
+			_rle_arr[ ptr++ ] = ( ushort )tag;	//end of file marked with zero length rle
+			_rle_arr[ ptr++ ] = 0;
 			
 			return ptr;			
 		}
@@ -1015,6 +1099,14 @@ namespace MAPeD
 			}
 		}
 		
+		public static void write_ushort_arr( BinaryWriter _bw, ushort[] _arr, int _len )
+		{
+			for( int i = 0; i < _len; i++ )
+			{
+				_bw.Write( _arr[ i ] );
+			}
+		}
+
 		public static int calc_progress_val( ref int _progress_val, int _max_parts, int _part_n )
 		{
 			_progress_val = ( int )( ( 100 / ( float )( _max_parts + 1 ) ) * ( float )( _part_n + 1 ) );

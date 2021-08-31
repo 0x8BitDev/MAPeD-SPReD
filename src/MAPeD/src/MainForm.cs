@@ -334,7 +334,7 @@ namespace MAPeD
 			Project_openFileDialog.DefaultExt = utils.CONST_SMD_FILE_EXT;
 			Project_openFileDialog.Filter = get_all_projects_open_file_filter( utils.EPlatformType.pt_SMD );
 			
-			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "vasm\\SGDK" );
+			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "vasm\\SGDK (*.asm;*.h,*.s)" );
 
 			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp";
 			
@@ -3685,7 +3685,11 @@ namespace MAPeD
 				NumericUpDownEntityPivotX.Value = 0;
 				NumericUpDownEntityPivotY.Value = 0;
 				PBoxColor.BackColor				= utils.CONST_COLOR_ENTITY_PIXBOX_INACTIVE;
-				TextBoxEntityInstanceProp.Text	= TextBoxEntityProperties.Text	= "space separated HEX values: f012 a3 14 etc";
+#if DEF_PLATFORM_16BIT
+				TextBoxEntityInstanceProp.Text	= TextBoxEntityProperties.Text	= "space separated 16-bit HEX values: 20a8 1f00 ...";
+#else
+				TextBoxEntityInstanceProp.Text	= TextBoxEntityProperties.Text	= "space separated 8-bit HEX values: 20 a8 ...";
+#endif
 				LabelEntityName.Text			= "ENTITY NAME";
 			}
 

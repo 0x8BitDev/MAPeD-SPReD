@@ -336,6 +336,9 @@ namespace MAPeD
 				int scr_width_blocks 	= utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
 				int scr_height_blocks 	= utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
 				
+				string level_prefix_str;
+				string level_postfix_str;
+				
 				layout_screen_data scr_data;
 				
 				sw = new StreamWriter( m_path_filename_ext );
@@ -354,12 +357,17 @@ namespace MAPeD
 
 				for( int level_n = 0; level_n < n_levels; level_n++ )
 				{
-					m_tiles_data_filename	= m_filename + CONST_FILENAME_LEVEL_POSTFIX + level_n + "_Tiles.bin";
-					m_tile_props_filename	= m_filename + CONST_FILENAME_LEVEL_POSTFIX + level_n + "_TilePrps.bin";
-					m_tile_colrs_filename	= m_filename + CONST_FILENAME_LEVEL_POSTFIX + level_n + "_TileClrs.bin";			
-					m_map_data_filename		= m_filename + CONST_FILENAME_LEVEL_POSTFIX + level_n + "_Data.bin";
+					level_prefix_str	= CONST_FILENAME_LEVEL_PREFIX + level_n;
+					level_postfix_str	= CONST_FILENAME_LEVEL_POSTFIX + level_n;
+					
+					m_tiles_data_filename	= m_filename + level_postfix_str + "_Tiles.bin";
+					m_tile_props_filename	= m_filename + level_postfix_str + "_TilePrps.bin";
+					m_tile_colrs_filename	= m_filename + level_postfix_str + "_TileClrs.bin";			
+					m_map_data_filename		= m_filename + level_postfix_str + "_Data.bin";
 					
 					level_data = m_data_mngr.get_layout_data( level_n );
+					
+					check_ent_instances_cnt( level_data, level_prefix_str );
 					
 					n_scr_X = level_data.get_width();
 					n_scr_Y = level_data.get_height();
@@ -545,7 +553,7 @@ namespace MAPeD
 					           		tiles_data.vflip( tile_2x2_data_arr, chr_n << 6 );
 					           	}
 #endif					           	
-					           	tile_props_arr[ ( tile_n << 2 ) + chr_n ] = (byte)tiles_data.get_block_flags_obj_id( block_data );
+					           	tile_props_arr[ ( tile_n << 2 ) + chr_n ] = ( byte )tiles_data.get_block_flags_obj_id( block_data );
 #if !DEF_ZX
 					           	// draw ZX tile and get ink&paper colors
 								Array.Clear( ink_clr_weights, 0, ink_clr_weights.Length );
@@ -692,7 +700,7 @@ namespace MAPeD
 										zx_bright_flag = true;
 									}
 #endif //DEF_ZX									
-									tile_colors_arr[ ( tile_n << 2 ) + chr_n ] |= (byte)( ( zx_bright_flag ? 64:0 ) | ( zx_paper_color_index << 3 ) | zx_ink_color_index );
+									tile_colors_arr[ ( tile_n << 2 ) + chr_n ] |= ( byte )( ( zx_bright_flag ? 64:0 ) | ( zx_paper_color_index << 3 ) | zx_ink_color_index );
 									
 									for( pix_n = 0; pix_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; pix_n++ )
 									{
@@ -743,7 +751,7 @@ namespace MAPeD
 
 							if( ExpZXAsmRenderTilesPNG.Checked )
 							{
-								tile_bmp.Save( m_extra_path_filename + CONST_FILENAME_LEVEL_POSTFIX + level_n + "_Tile" + tile_n + ".png", ImageFormat.Png );
+								tile_bmp.Save( m_extra_path_filename + level_postfix_str + "_Tile" + tile_n + ".png", ImageFormat.Png );
 							}
 							tile_bmp.Dispose();
 						}
@@ -776,36 +784,36 @@ namespace MAPeD
 					bw = new BinaryWriter( File.Open( m_path + m_map_data_filename, FileMode.Create ) );
 					for( int map_tile_n = 0; map_tile_n < map_data_size; map_tile_n++ )
 					{
-						bw.Write( (byte)( map_tiles_arr[ map_tile_n ] << 1 ) );	// multiply the index by 2 to speed up lookup process of a tiles gfx in 16-bit address table
+						bw.Write( ( byte )( map_tiles_arr[ map_tile_n ] << 1 ) );	// multiply the index by 2 to speed up lookup process of a tiles gfx in 16-bit address table
 					}
 					level_data_size += bw.BaseStream.Length;
 					bw.Close();
 					
 					// write the data to assembly file
 					{
-						sw.WriteLine( "; *** " + CONST_FILENAME_LEVEL_PREFIX + level_n + " data (incbins: " + level_data_size + " bytes) ***\n" );
+						sw.WriteLine( "; *** " + level_prefix_str + " data (incbins: " + level_data_size + " bytes) ***\n" );
 						
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_wscr\tequ " + n_scr_X + "\t\t; number of map screens in width" );
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_hscr\tequ " + n_scr_Y + "\t\t; number of map screens in height" );
+						sw.WriteLine( level_prefix_str + "_wscr\tequ " + n_scr_X + "\t\t; number of map screens in width" );
+						sw.WriteLine( level_prefix_str + "_hscr\tequ " + n_scr_Y + "\t\t; number of map screens in height" );
 						
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_wchr\tequ " + n_scr_X * ( utils.CONST_SCREEN_NUM_WIDTH_TILES << 2 ) + "\t\t; number of map CHRs in width" );
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_hchr\tequ " + n_scr_Y * ( scr_height_blocks << 1 ) + "\t\t; number of map CHRs in height" );
+						sw.WriteLine( level_prefix_str + "_wchr\tequ " + n_scr_X * ( utils.CONST_SCREEN_NUM_WIDTH_TILES << 2 ) + "\t\t; number of map CHRs in width" );
+						sw.WriteLine( level_prefix_str + "_hchr\tequ " + n_scr_Y * ( scr_height_blocks << 1 ) + "\t\t; number of map CHRs in height" );
 
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_wtls\tequ " + n_scr_X * scr_width_blocks + "\t\t; number of map tiles in width" );
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_htls\tequ " + n_scr_Y * scr_height_blocks + "\t\t; number of map tiles in height" );
+						sw.WriteLine( level_prefix_str + "_wtls\tequ " + n_scr_X * scr_width_blocks + "\t\t; number of map tiles in width" );
+						sw.WriteLine( level_prefix_str + "_htls\tequ " + n_scr_Y * scr_height_blocks + "\t\t; number of map tiles in height" );
 						
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_u_tiles\tequ " + unique_tiles_arr.Count + "\t\t; number of unique tiles" );
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_t_tiles\tequ " + map_tiles_arr.Length + "\t\t; total number of tiles in whole map" );
+						sw.WriteLine( level_prefix_str + "_u_tiles\tequ " + unique_tiles_arr.Count + "\t\t; number of unique tiles" );
+						sw.WriteLine( level_prefix_str + "_t_tiles\tequ " + map_tiles_arr.Length + "\t\t; total number of tiles in whole map" );
 						
 						sw.WriteLine( "" );
 						
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_map" + "\tincbin \"" + m_map_data_filename   + "\"\t;(" + map_tiles_arr.Length + ") array of map tile indices ( multiplied by 2 ), top down left to right" );
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_tl"  + "\t\tincbin \"" + m_tiles_data_filename + "\"\t;(" + ( unique_tiles_arr.Count * 32 ) + ") array of tile images 2x2 (32 bytes per tile)" );
-						sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_tlp" + "\tincbin \"" + m_tile_props_filename + "\"\t;(" + tile_props_arr.Length + ") tile properties array (byte per tile)" );
+						sw.WriteLine( level_prefix_str + "_map" + "\tincbin \"" + m_map_data_filename   + "\"\t;(" + map_tiles_arr.Length + ") array of map tile indices ( multiplied by 2 ), top down left to right" );
+						sw.WriteLine( level_prefix_str + "_tl"  + "\t\tincbin \"" + m_tiles_data_filename + "\"\t;(" + ( unique_tiles_arr.Count * 32 ) + ") array of tile images 2x2 (32 bytes per tile)" );
+						sw.WriteLine( level_prefix_str + "_tlp" + "\tincbin \"" + m_tile_props_filename + "\"\t;(" + tile_props_arr.Length + ") tile properties array (byte per tile)" );
 						
 						if( ExpZXAsmTypeColor.Checked )
 						{
-							sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_tlc" + "\tincbin \"" + m_tile_colrs_filename + "\"\t;(" + tile_colors_arr.Length + ") tile colors array (byte per tile)" );
+							sw.WriteLine( level_prefix_str + "_tlc" + "\tincbin \"" + m_tile_colrs_filename + "\"\t;(" + tile_colors_arr.Length + ") tile colors array (byte per tile)" );
 						}
 						
 						sw.WriteLine( "\n" );
@@ -813,7 +821,7 @@ namespace MAPeD
 					
 					if( ExpZXAsmRenderLevelPNG.Checked )
 					{
-						level_bmp.Save( m_extra_path_filename + CONST_FILENAME_LEVEL_POSTFIX + level_n + ".png", ImageFormat.Png );
+						level_bmp.Save( m_extra_path_filename + level_postfix_str + ".png", ImageFormat.Png );
 						
 						level_bmp.Dispose();
 						level_gfx.Dispose();
@@ -837,8 +845,8 @@ namespace MAPeD
 	
 						// matrix layout by default
 						{
-							sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_StartScr\t = " + ( start_scr_ind < 0 ? 0:start_scr_ind ) + "\n" );
-							level_data.export_asm( null, sw, CONST_FILENAME_LEVEL_PREFIX + level_n, "\tDEFINE", "db", "dw", "dw", "#", true, ExpZXAsmExportMarks.Checked, ExpZXAsmExportEntities.Checked, ExpZXAsmEntScreenCoords.Checked );
+							sw.WriteLine( level_prefix_str + "_StartScr\t = " + ( start_scr_ind < 0 ? 0:start_scr_ind ) + "\n" );
+							level_data.export_asm( sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "#", true, ExpZXAsmExportMarks.Checked, ExpZXAsmExportEntities.Checked, ExpZXAsmEntScreenCoords.Checked );
 						}
 					}
 				}
@@ -971,6 +979,17 @@ namespace MAPeD
 			_sw.WriteLine( "MAP_FLAG_ENTITY_MAP_COORS         = " + utils.hex( "$", 4 ) );
 			_sw.WriteLine( "MAP_FLAG_MARKS                    = " + utils.hex( "$", 8 ) );
 			_sw.WriteLine( "MAP_FLAG_TYPE_COLORED             = " + utils.hex( "$", 16 ) );
+		}
+		
+		void check_ent_instances_cnt( layout_data _layout, string _lev_pref_str )
+		{
+			if( ExpZXAsmExportEntities.Checked )
+			{
+				if( _layout.get_ent_instances_cnt() > utils.CONST_MAX_ENT_INST_CNT )
+				{
+					throw new Exception( "The number of entity instances is out of range!\nThe maximum number allowed to export: " + utils.CONST_MAX_ENT_INST_CNT + "\n\n[" + _lev_pref_str + "]" );
+				}
+			}
 		}
 	}
 }

@@ -15,6 +15,8 @@ namespace MAPeD
 	/// </summary>
 	public class py_api : global::SPSeD.i_py_api
 	{
+		private const ushort CONST_API_VER		= 0x0107;
+		
 		private data_sets_manager	m_data_mngr = null;
 		
 		public const string CONST_PREFIX	= "mpd_"; 
@@ -135,8 +137,11 @@ namespace MAPeD
 			
 			// Miscellaneous
 			
-			// byte[] RLE( byte[] _arr )
-			_py_scope.SetVariable( CONST_PREFIX + "RLE", new Func< byte[], byte[] >( RLE ) );
+			// byte[] RLE8( byte[] _arr )
+			_py_scope.SetVariable( CONST_PREFIX + "RLE8", new Func< byte[], byte[] >( RLE8 ) );
+
+			// ushort[] RLE16( ushort[] _arr )
+			_py_scope.SetVariable( CONST_PREFIX + "RLE16", new Func< ushort[], ushort[] >( RLE16 ) );
 		}
 
 		public void deinit()
@@ -146,7 +151,7 @@ namespace MAPeD
 
 		public ushort api_ver()
 		{
-			return 0x0106;
+			return CONST_API_VER;
 		}
 		
 		public int num_banks()
@@ -555,11 +560,23 @@ namespace MAPeD
 			return null;
 		}
 
-		public byte[] RLE( byte[] _arr )
+		public byte[] RLE8( byte[] _arr )
 		{
 			byte[] res_arr = null;
 			
-			if( utils.RLE( _arr, ref res_arr ) < 0 )
+			if( utils.RLE8( _arr, ref res_arr ) < 0 )
+			{
+				return null;
+			}
+			
+			return res_arr;
+		}
+
+		public ushort[] RLE16( ushort[] _arr )
+		{
+			ushort[] res_arr = null;
+			
+			if( utils.RLE16( _arr, ref res_arr ) < 0 )
 			{
 				return null;
 			}
