@@ -1182,6 +1182,8 @@ namespace MAPeD
 				{
 					scr_arr = level_prefix_str + "_ScrArr:";
 					
+					save_global_data( ref global_data_decl, ( level_prefix_str + "_ScrArr" ), level_data.get_width() * level_data.get_height() );
+					
 					if( m_C_writer != null )
 					{
 						m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_SCR + "\t" + CONST_C_DATA_PREFIX + level_prefix_str + "_ScrArr;\t\t// screens array" );
@@ -1241,6 +1243,8 @@ namespace MAPeD
 											_sw.WriteLine( level_prefix_str + "_StartScr:\tdc.w " + start_scr_ind + "\n" );
 										}
 										
+										save_global_data( ref global_data_decl, ( level_prefix_str + "_Layout" ), ( level_data.get_width() * level_data.get_height() ) ); // screens array
+										
 										level_data.export_asm( _sw, level_prefix_str, null, "dc.w", "dc.l", "dc.w", "$", false, false, false, false );
 										
 										if( m_C_writer != null )
@@ -1298,10 +1302,10 @@ namespace MAPeD
 										_sw.WriteLine( "; use the " + level_prefix_str + "_ScrArr array to get a screen description by adjacent screen index" );
 									}
 									
-									_sw.WriteLine( "\tdc.w " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -1 	 	) + ( enable_comments ? "\t; left adjacent screen index":"" ) );
-									_sw.WriteLine( "\tdc.w " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -n_scr_X	) + ( enable_comments ? "\t; up adjacent screen index":"" ) );
-									_sw.WriteLine( "\tdc.w " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, 1 		) + ( enable_comments ? "\t; right adjacent screen index":"" ) );
-									_sw.WriteLine( "\tdc.w " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, n_scr_X	) + ( enable_comments ? "\t; down adjacent screen index\n":"\n" ) );
+									_sw.WriteLine( "\tdc.b " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -1 	 	) + ( enable_comments ? "\t; left adjacent screen index":"" ) );
+									_sw.WriteLine( "\tdc.b " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -n_scr_X	) + ( enable_comments ? "\t; up adjacent screen index":"" ) );
+									_sw.WriteLine( "\tdc.b " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, 1 		) + ( enable_comments ? "\t; right adjacent screen index":"" ) );
+									_sw.WriteLine( "\tdc.b " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, n_scr_X	) + ( enable_comments ? "\t; down adjacent screen index\n":"\n" ) );
 									
 									scr_arr += "\n\tdc.l " + level_prefix_str + "Scr" + common_scr_ind;
 								}
@@ -1348,7 +1352,7 @@ namespace MAPeD
 				
 				if( CheckBoxExportSGDKData.Checked )
 				{
-					_sw.Write( "\n; Global data exported to the \'" + m_filename + ".h\'\n\n" + global_data_decl );
+					_sw.Write( "\n; Global data exported to the \'" + m_filename + ".h\'\n\n.section\t.rodata\n\n" + global_data_decl );
 				}
 			}
 			
@@ -2037,7 +2041,7 @@ namespace MAPeD
 			
 			if( CheckBoxExportSGDKData.Checked )
 			{
-				_sw.Write( "\n; Global data exported to the \'" + m_filename + ".h\'\n\n" + global_data_decl );
+				_sw.Write( "\n; Global data exported to the \'" + m_filename + ".h\'\n\n.section\t.rodata\n\n" + global_data_decl );
 			}
 		}
 		

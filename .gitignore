@@ -10,3 +10,5 @@
 /src/SPSeD/obj/*
 /samples/samples.sublime-project
 /samples/samples.sublime-workspace
+/samples/smd/tilemap_render/SGDK/exp_data_viewer/data/*
+/samples/smd/tilemap_render/SGDK/exp_data_viewer/out/*
