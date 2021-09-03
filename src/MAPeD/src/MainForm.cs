@@ -2791,7 +2791,11 @@ namespace MAPeD
 
 		void BtnUpdateScreensClick_Event(object sender, EventArgs e)
 		{
-			update_screens( true );
+			progress_bar_show( true, "Updating screens...", false );
+			{
+				update_screens( true );
+			}
+			progress_bar_show( false );
 		}
 		
 		void update_screens( bool _disable_upd_scr_btn, bool _show_status_msg = true )
