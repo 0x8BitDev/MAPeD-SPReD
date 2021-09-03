@@ -2187,37 +2187,40 @@ namespace MAPeD
 			}
 			else
 			{
-				ListViewScreens.BeginUpdate();
+				if( m_optimization_form.ShowDialog() == DialogResult.OK )
 				{
-					m_optimization_form.ShowDialog();
-					
-					if( m_optimization_form.need_update_screen_list )
+					ListViewScreens.BeginUpdate();
 					{
-						progress_bar_show( true, "Updating screens...", false );
-						
-						// update screens images
-						m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, -1 );
-						
-						if( !CheckBoxLayoutEditorAllBanks.Checked )
+						if( m_optimization_form.need_update_screen_list )
 						{
-							m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, CBoxCHRBanks.SelectedIndex );
+							progress_bar_show( true, "Updating screens...", false );
+							
+							// update screens images
+							m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, -1 );
+							
+							if( !CheckBoxLayoutEditorAllBanks.Checked )
+							{
+								m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, CBoxCHRBanks.SelectedIndex );
+							}
+	
+							enable_update_screens_btn( false );
+							
+							m_layout_editor.set_active_screen( -1 );
+							m_layout_editor.update();
+							
+							progress_bar_show( false );
+							
+							m_optimization_form.need_update_screen_list = false;
 						}
-
-						enable_update_screens_btn( false );
 						
-						m_layout_editor.set_active_screen( -1 );
-						m_layout_editor.update();
+						// need to be reset to avoid incorrect tiles array filling
+						// when drawing by blocks 2x2 when the 'Tiles (4x4)' mode is active
+						m_screen_editor.clear_active_tile_img();
 						
-						progress_bar_show( false );
+						m_screen_editor.update_adjacent_screens();
 					}
-					
-					// need to be reset to avoid incorrect tiles array filling
-					// when drawing by blocks 2x2 when the 'Tiles (4x4)' mode is active
-					m_screen_editor.clear_active_tile_img();
-					
-					m_screen_editor.update_adjacent_screens();
+					ListViewScreens.EndUpdate();
 				}
-				ListViewScreens.EndUpdate();
 			}
 		}
 		
