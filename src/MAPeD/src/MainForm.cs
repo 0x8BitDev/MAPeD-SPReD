@@ -640,9 +640,13 @@ namespace MAPeD
 		{
 			if( message_box( "Are you sure?", "Close Project", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
+				progress_bar_show( true, "Project closing...", false );
+				
 				reset();
 				
 				set_status_msg( "Project closed" );
+				
+				progress_bar_show( false, "", false );
 			}
 		}
 
@@ -1395,11 +1399,15 @@ namespace MAPeD
 
 		void BtnUpdateGFXClick_Event(object sender, EventArgs e)
 		{
+			progress_bar_show( true, "GFX updating...", false );
+			
 			update_graphics( false );
 			
 			m_screen_editor.clear_active_tile_img();
 			
 			set_status_msg( "GFX updated" );
+			
+			progress_bar_show( false, "", false );
 		}
 		
 		private void update_graphics( bool _update_tile_processor_gfx )
@@ -1450,6 +1458,11 @@ namespace MAPeD
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
+				if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+				{
+					progress_bar_show( true, "CHR bank copying...", false );
+				}
+				
 				if( m_data_manager.tiles_data_copy() == true )
 				{
 					update_screens_if_needed();
@@ -1481,11 +1494,21 @@ namespace MAPeD
 					
 					message_box( "Can't copy CHR bank!\nThe maximum allowed number of CHR banks - " + utils.CONST_CHR_BANK_MAX_CNT, "Failed to Copy CHR Bank", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
+				
+				if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+				{
+					progress_bar_show( false, "", false );
+				}
 			}
 		}
 		
 		void BtnAddCHRBankClick_Event(object sender, EventArgs e)
 		{
+			if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+			{
+				progress_bar_show( true, "CHR bank initialization...", false );
+			}
+			
 			if( m_data_manager.tiles_data_create() )
 			{
 				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_cnt - 1 );
@@ -1507,12 +1530,22 @@ namespace MAPeD
 				
 				message_box( "Can't create CHR bank!\nThe maximum allowed number of CHR banks - " + utils.CONST_CHR_BANK_MAX_CNT, "Failed to Create CHR Bank", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
+			
+			if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+			{
+				progress_bar_show( false, "", false );
+			}
 		}
 		
 		void BtnDeleteCHRBankClick_Event(object sender, EventArgs e)
 		{
 			if( CBoxCHRBanks.Items.Count > 0 && message_box( "Are you sure?", "Remove CHR Bank", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
+				if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+				{
+					progress_bar_show( true, "CHR bank deletion...", false );
+				}
+				
 				if( m_data_manager.tiles_data_cnt == 1 )
 				{
 					reset();
@@ -1568,6 +1601,11 @@ namespace MAPeD
 					palette_group.Instance.active_palette = 0;
 					
 					set_status_msg( "CHR bank removed" );
+				}
+				
+				if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+				{
+					progress_bar_show( false, "", false );
 				}
 			}
 		}

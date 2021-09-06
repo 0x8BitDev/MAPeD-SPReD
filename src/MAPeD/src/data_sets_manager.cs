@@ -67,6 +67,10 @@ namespace MAPeD
 		private readonly string SMS_block_desc_bits = "[ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [ CHR ind ](9)";
 		[DataMember]
 		private readonly string PCE_block_desc_bits = "[ property_id ](4) [ palette ind ](4) [ CHR ind ](12)";
+		[DataMember]
+		private readonly string ZX_block_desc_bits = "[ property_id ](4) [ palette ind ][1] [CHR ind](11)";
+		[DataMember]
+		private readonly string SMD_block_desc_bits = "[ property_id ](4) [x](1) [ palette ind ](2) [ hv_flip ](2) [CHR ind](11)";
 		
 		public enum EScreenDataType
 		{
