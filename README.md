@@ -214,7 +214,7 @@ https://github.com/leonbloy/pngcs
 The tools sources: 
 https://github.com/0x8BitDev/MAPeD-SPReD
 
-Compiled executables and compiled binaries of the **NES/SMS/ZX** samples you can get in the latest release:
+Compiled executables and compiled samples you can get in the latest release:
 https://github.com/0x8BitDev/MAPeD-SPReD/releases
 
 The latest development build can be found **[here](https://drive.google.com/open?id=1Jopms8ENPrjTktrt_V36TQC2FZT2agId)**.
@@ -224,7 +224,7 @@ The latest development build can be found **[here](https://drive.google.com/open
 - **SMS:** Sega Master System / Sega Corp.
 - **ZX:** ZX-Spectrum / Sinclair Research Ltd
 - **PCE:** PC Engine/TurboGrafx-16 / NEC
-- **SMD:** Sega Megadrive/Genesis / Sega Corp.
+- **SMD:** Sega Mega Drive/Genesis / Sega Corp.
 
 Are trademarks of their respective owners and I am not affiliated with these companies in any way. Therefore, you can use this software at your own risk and without warranty of any kind.
 
