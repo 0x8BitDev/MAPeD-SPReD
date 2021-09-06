@@ -122,27 +122,30 @@ namespace MAPeD
 			Image 		img;
 			Graphics	gfx;
 			
-			for( int i = 0; i < utils.CONST_MAX_TILES_CNT; i++ )
+			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				img = m_imagelist_tiles.Images[ i ];
-				
-				gfx = Graphics.FromImage( img );
-				
-				if( _tiles_data != null )
+				for( int i = 0; i < utils.CONST_MAX_TILES_CNT; i++ )
 				{
-					update_tile( i, _view_type, _tiles_data, gfx, img, _scr_type );
-				}
-				else
-				{
-					gfx.Clear( utils.CONST_COLOR_TILE_CLEAR );
+					img = m_imagelist_tiles.Images[ i ];
+					
+					gfx = Graphics.FromImage( img );
+					
+					if( _tiles_data != null )
+					{
+						update_tile( i, _view_type, _tiles_data, gfx, img, _scr_type );
+					}
+					else
+					{
+						gfx.Clear( utils.CONST_COLOR_TILE_CLEAR );
+					}
+					
+					m_imagelist_tiles.Images[ i ] = img;
+					
+					gfx.Dispose();
 				}
 				
-				m_imagelist_tiles.Images[ i ] = img;
-				
-				gfx.Dispose();
+				m_panel_tiles.Refresh();
 			}
-			
-			m_panel_tiles.Refresh();
 		}
 
 		public void update_tile( int _tile_ind, utils.ETileViewType _view_type, tiles_data _tiles_data, Graphics _gfx, Image _img, data_sets_manager.EScreenDataType _scr_type )
