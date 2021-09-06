@@ -417,11 +417,11 @@ namespace MAPeD
 				
 				if( _global_update )
 				{
-					--layouts_data_pos;	// here is a global data update
+					--layouts_data_pos;		// here is a global data update
 				}
 				else
 				{
-					--m_layouts_data_pos; // just a class's variable decrement ( silent layout deletion )
+					--m_layouts_data_pos;	// just a class's variable decrement ( silent layout deletion )
 				}
 			}
 		}
@@ -574,11 +574,20 @@ namespace MAPeD
 			return false;
 		}
 		
-		public void screen_data_delete()
+		public void screen_data_delete( bool _global_update = true )
 		{
 			if( tiles_data_pos >= 0 && scr_data_pos >= 0 )
 			{
-				get_tiles_data( tiles_data_pos ).delete_screen( scr_data_pos-- );
+				get_tiles_data( tiles_data_pos ).delete_screen( scr_data_pos );
+				
+				if( _global_update )
+				{
+					--scr_data_pos;		// here is a global data update
+				}
+				else
+				{
+					--m_scr_data_pos;	// just a class's variable decrement ( silent screen deletion )
+				}
 			}
 		}
 		

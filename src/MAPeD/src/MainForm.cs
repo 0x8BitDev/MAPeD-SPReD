@@ -1074,14 +1074,24 @@ namespace MAPeD
 			}
 			catch( Exception _err )
 			{
-				if( bmp != null )
-				{
-					bmp.Dispose();
-				}
-
 				set_status_msg( "Data import error" );
 				
 				message_box( _err.Message, "Data Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				
+				if( bmp != null )
+				{
+					bmp.Dispose();
+					
+					// there was an image import, so we need to destroy an invalid layout
+					layout_data layout = m_import_tiles_form.level_layout;
+					
+					if( layout != null )
+					{
+						progress_bar_status( "Invalid layout deletion..." );
+						
+						delete_curr_layout_and_screens();
+					}
+				}
 			}
 			
 			finally
@@ -2606,6 +2616,17 @@ namespace MAPeD
 #endregion		
 // LAYOUT EDITOR *************************************************************************************//		
 #region layout editor
+		void delete_curr_layout_and_screens()
+		{
+			do
+			{
+				m_data_manager.screen_data_delete( false );
+			}
+			while( m_data_manager.scr_data_cnt > 0 );
+			
+			m_data_manager.layout_data_delete( false );
+		}
+		
 		layout_data create_layout_with_empty_screens_beg( int _scr_width, int _scr_height )
 		{
 			if( m_data_manager.layout_data_create() == true )
@@ -2649,20 +2670,7 @@ namespace MAPeD
 							else
 							{
 								// clear all created screens and layout
-								int scr_cnt = ( y * _scr_width ) + x + 1;
-								
-								m_data_manager.scr_data_pos = m_data_manager.scr_data_cnt - 1; 
-								
-								do
-								{
-									m_data_manager.screen_data_delete();
-								}
-								while( --scr_cnt > 0 );
-								
-								// reset screen pointer
-								m_data_manager.scr_data_pos = -1;
-								
-								m_data_manager.layout_data_delete( false );
+								delete_curr_layout_and_screens();
 								
 								throw new Exception( "Can't create screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
 							}
