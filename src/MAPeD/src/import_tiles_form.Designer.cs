@@ -44,6 +44,8 @@ namespace MAPeD
 			this.CheckBoxApplyPalette = new System.Windows.Forms.CheckBox();
 			this.BtnApplyPaletteDesc = new System.Windows.Forms.Button();
 			this.CheckBoxCHRs = new System.Windows.Forms.CheckBox();
+			this.CheckBoxImportPaletteASIS = new System.Windows.Forms.CheckBox();
+			this.BtnImportPaletteASIS = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// CheckBoxBlocks
@@ -70,7 +72,7 @@ namespace MAPeD
 			// 
 			// CheckBoxSkipZeroCHRBlock
 			// 
-			this.CheckBoxSkipZeroCHRBlock.Location = new System.Drawing.Point(34, 164);
+			this.CheckBoxSkipZeroCHRBlock.Location = new System.Drawing.Point(34, 189);
 			this.CheckBoxSkipZeroCHRBlock.Name = "CheckBoxSkipZeroCHRBlock";
 			this.CheckBoxSkipZeroCHRBlock.Size = new System.Drawing.Size(131, 19);
 			this.CheckBoxSkipZeroCHRBlock.TabIndex = 6;
@@ -80,7 +82,7 @@ namespace MAPeD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(22, 197);
+			this.BtnOk.Location = new System.Drawing.Point(22, 227);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 8;
@@ -90,7 +92,7 @@ namespace MAPeD
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(103, 197);
+			this.BtnCancel.Location = new System.Drawing.Point(103, 227);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
 			this.BtnCancel.TabIndex = 9;
@@ -150,16 +152,37 @@ namespace MAPeD
 			this.CheckBoxCHRs.Text = "CHRs";
 			this.CheckBoxCHRs.UseVisualStyleBackColor = true;
 			// 
+			// CheckBoxImportPaletteASIS
+			// 
+			this.CheckBoxImportPaletteASIS.Location = new System.Drawing.Point(34, 164);
+			this.CheckBoxImportPaletteASIS.Name = "CheckBoxImportPaletteASIS";
+			this.CheckBoxImportPaletteASIS.Size = new System.Drawing.Size(131, 19);
+			this.CheckBoxImportPaletteASIS.TabIndex = 6;
+			this.CheckBoxImportPaletteASIS.Text = "Import palette \'AS IS\'";
+			this.CheckBoxImportPaletteASIS.UseVisualStyleBackColor = true;
+			// 
+			// BtnImportPaletteASIS
+			// 
+			this.BtnImportPaletteASIS.Location = new System.Drawing.Point(158, 163);
+			this.BtnImportPaletteASIS.Name = "BtnImportPaletteASIS";
+			this.BtnImportPaletteASIS.Size = new System.Drawing.Size(20, 20);
+			this.BtnImportPaletteASIS.TabIndex = 7;
+			this.BtnImportPaletteASIS.Text = "?";
+			this.BtnImportPaletteASIS.UseVisualStyleBackColor = true;
+			this.BtnImportPaletteASIS.Click += new System.EventHandler(this.BtnImportPaletteASISDescClick_Event);
+			// 
 			// import_tiles_form
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
-			this.ClientSize = new System.Drawing.Size(202, 236);
+			this.ClientSize = new System.Drawing.Size(202, 262);
+			this.Controls.Add(this.BtnImportPaletteASIS);
 			this.Controls.Add(this.BtnApplyPaletteDesc);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
+			this.Controls.Add(this.CheckBoxImportPaletteASIS);
 			this.Controls.Add(this.CheckBoxSkipZeroCHRBlock);
 			this.Controls.Add(this.CheckBoxApplyPalette);
 			this.Controls.Add(this.CheckBoxDeleteEmptyScreens);
@@ -175,6 +198,8 @@ namespace MAPeD
 			this.Text = "Image Import Options";
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button BtnImportPaletteASIS;
+		private System.Windows.Forms.CheckBox CheckBoxImportPaletteASIS;
 		private System.Windows.Forms.CheckBox CheckBoxCHRs;
 		private System.Windows.Forms.Button BtnApplyPaletteDesc;
 		private System.Windows.Forms.CheckBox CheckBoxApplyPalette;

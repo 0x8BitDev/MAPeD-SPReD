@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+06.09.2021 - Added import of indexed images with an ordered 16-color palettes array
 31.08.2021 - SMS/PCE/SMD: added support of RLE16 when exporting static screen data
 31.08.2021 - Updated Python API v1.7 (mpd_RLE renamed to mpd_RLE8; added: mpd_RLE16)
 26.08.2021 - Entity properties changed from decimal to hexadecimal values

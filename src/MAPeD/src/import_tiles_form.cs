@@ -82,6 +82,10 @@ namespace MAPeD
 #if DEF_ZX
 			CheckBoxApplyPalette.Enabled = false;
 #endif
+
+#if !DEF_PALETTE16_PER_CHR || DEF_ZX
+			BtnImportPaletteASIS.Enabled = CheckBoxImportPaletteASIS.Enabled = false;
+#endif
 		}
 		
 		void CheckBoxBlocksChanged_Event(object sender, EventArgs e)
@@ -110,7 +114,12 @@ namespace MAPeD
 #if DEF_NES			
 			CheckBoxSkipZeroCHRBlock.Enabled = !CheckBoxApplyPalette.Checked;
 			CheckBoxSkipZeroCHRBlock.Checked = CheckBoxSkipZeroCHRBlock.Enabled ? CheckBoxSkipZeroCHRBlock.Checked:false;
-#endif			
+#endif
+
+#if DEF_PALETTE16_PER_CHR && !DEF_ZX
+			CheckBoxImportPaletteASIS.Enabled = CheckBoxApplyPalette.Checked;
+			CheckBoxImportPaletteASIS.Checked = !CheckBoxApplyPalette.Checked ? false:CheckBoxImportPaletteASIS.Checked;
+#endif
 		}
 		
 		private int get_local_scr_ind( int _global_scr_ind, data_sets_manager _data_manager )
@@ -153,12 +162,12 @@ namespace MAPeD
 			}
 			else
 			{
-				import_image_data( false, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), null, null, _progress_val, _progress_status );
+				import_image_data( false, _bmp, _data_manager.get_tiles_data( _data_manager.tiles_data_pos ), _data_manager, null, _progress_val, _progress_status );
 			}
 		}
 		
 		public void import_image_data( 	bool 							_import_game_map_as_is,
-										Bitmap							_bmp,		                              
+										Bitmap							_bmp,
 										tiles_data 						_data, 
 										data_sets_manager 				_data_manager, 
 										Func< int, int, layout_data > 	_create_layout,
@@ -639,7 +648,14 @@ namespace MAPeD
 #else
 				if( plt.Length > 16 && fix_broken_blocks( _data, _block_beg_ind, ref _block_end_ind ) == true )
 				{
-					apply_16colors_palettes_arr( plt, _data, _block_beg_ind, _block_end_ind );
+					if( CheckBoxImportPaletteASIS.Checked )
+					{
+						apply_16colors_palettes_arr_as_is( plt, _data, _block_beg_ind, _block_end_ind );
+					}
+					else
+					{
+						apply_16colors_palettes_arr( plt, _data, _block_beg_ind, _block_end_ind );
+					}
 				}
 #endif
 #endif
@@ -1254,6 +1270,104 @@ namespace MAPeD
 			palette_inds.Clear();
 		}
 #else
+		private void apply_16colors_palettes_arr_as_is( Color[] _plt, tiles_data _data, int _block_beg_ind, int _block_end_ind )
+		{
+			int block_n;
+			int CHR_n;
+			int CHR_ind;
+			int ind_n;
+			int plt_n;
+			int plt_ind;
+			int plt_max = -1;
+			int pix_n;
+			int palettes_cnt;
+			
+			byte pix_val;
+			
+			uint block_data;
+
+			palette16_data plt16;
+
+			int[] CHRs_plt = new int[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
+			Array.Clear( CHRs_plt, 0, CHRs_plt.Length );
+			
+			bool[] used_CHRs = new bool[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
+			Array.Clear( used_CHRs, 0, used_CHRs.Length );
+			
+			// run through blocks and CHRs
+			for( block_n = _block_beg_ind; block_n < _block_end_ind; block_n += utils.CONST_BLOCK_SIZE )
+			{
+				for( CHR_n = 0; CHR_n < utils.CONST_BLOCK_SIZE; CHR_n++ )
+				{
+					block_data = _data.blocks[ block_n + CHR_n ];
+					
+					CHR_ind = tiles_data.get_block_CHR_id( block_data );
+					
+					if( used_CHRs[ CHR_ind ] == false )
+					{
+						plt_ind	= -1;
+						pix_n	= 0;
+						
+						_data.CHR_bank_spr8x8_change_proc( CHR_ind, delegate( byte _pix ) 
+						{
+							plt_n = _pix >> 4;
+							
+							pix_val = ( byte )( _pix - ( plt_n << 4 ) );
+
+							if( pix_val != 0 )
+							{
+								if( plt_max < plt_n )
+								{
+									plt_max = plt_n;
+								}
+							
+								if( plt_ind < 0 )
+								{
+									plt_ind = plt_n;
+								}
+								else
+								{
+									if( plt_n != plt_ind )
+									{
+										 throw new Exception( "The input image doesn't contain an array of ordered 16-color palettes!\n\nPlease, uncheck the 'Import palette 'AS IS'' flag and try again." );
+									}
+								}
+							}
+							
+							++pix_n;
+							
+							return pix_val;
+						});
+						
+						plt_ind = ( plt_ind < 0 ) ? 0:plt_ind;
+						
+						CHRs_plt[ CHR_ind ]		= plt_ind;  
+						used_CHRs[ CHR_ind ]	= true;
+					}
+					else
+					{
+						plt_ind = CHRs_plt[ CHR_ind ];
+					}
+					
+					block_data = tiles_data.set_block_flags_palette( Math.Min( utils.CONST_PALETTE16_ARR_LEN, plt_ind ), block_data );
+					_data.blocks[ block_n + CHR_n ] = block_data;
+				}
+			}
+
+			// apply palettes
+			palettes_cnt = Math.Min( utils.CONST_PALETTE16_ARR_LEN, plt_max + 1 );
+			
+			for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
+			{
+				plt16 = _data.palettes_arr[ plt_n ];
+				
+				for( ind_n = 0; ind_n < 16; ind_n++ )
+				{
+					plt16.subpalettes[ ind_n >> 2 ][ ind_n & 0x03 ] = utils.find_nearest_color_ind( _plt[ ( plt_n << 4 ) + ind_n ].ToArgb() );
+				}
+			}
+		}
+		
 		private void apply_16colors_palettes_arr( Color[] _plt, tiles_data _data, int _block_beg_ind, int _block_end_ind )
 		{
 			int block_n;
@@ -1687,6 +1801,11 @@ namespace MAPeD
 #elif DEF_FIXED_LEN_PALETTE16_ARR
 			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- " + utils.CONST_PLATFORM + " compatible graphics\n- colors are not duplicated in a palette\n- tiles aligned", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
 #endif
+		}
+
+		void BtnImportPaletteASISDescClick_Event(object sender, EventArgs e)
+		{
+			MainForm.message_box( "Checked: For indexed images with an ordered palettes array of 16-colors. So prepared palettes will be imported 'AS IS'.\n\nUnchecked: For indexed images with unordered palette colors. The whole palette will be optimized to minimize the number of 16-color palettes and colors, if it's possible.", "Applying of Image Palette", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 		
 		void fix_unremapped_CHRs( tiles_data _data, bool[] _remapped_CHRs )
