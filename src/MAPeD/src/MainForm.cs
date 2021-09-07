@@ -4270,7 +4270,7 @@ namespace MAPeD
 #endif
 		void CBocPalettesAdjustWidthDropDown_Event( object sender, EventArgs e )
 		{
-			( sender as ComboBox ).DropDownWidth = 205;
+			( sender as ComboBox ).DropDownWidth = 240;
 		}
 		
 		void CBoxPalettesDrawItem_Event( object sender, DrawItemEventArgs e )
@@ -4291,7 +4291,7 @@ namespace MAPeD
 				gfx.DrawString( item_txt, e.Font, utils.brush, e.Bounds.X, e.Bounds.Y );
 				
 				int clr;
-				int clr_box_side	= 10;
+				int clr_box_side	= 12;
 				int clr_box_y_offs	= e.Bounds.Y + ( ( e.Bounds.Height - clr_box_side ) >> 1 );
 				int clrs_cnt		= utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS;
 				
