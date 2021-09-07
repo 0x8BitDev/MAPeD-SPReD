@@ -413,6 +413,7 @@ namespace MAPeD
 		public const byte CONST_CHR_ATTR_FLAG_VFLIP			= 0x02;
 		// UNDEFINED: DEF_FLIP_BLOCKS_SPR_BY_FLAGS
 		
+		public static Pen			pen				= new Pen( CONST_COLOR_PEN_DEFAULT );
 		public static SolidBrush 	brush		 	= new SolidBrush( CONST_COLOR_BRUSH_DEFAULT );
 		public static readonly Font fnt8_Arial		= new Font( "Arial", 8, 	FontStyle.Bold );
 		public static readonly Font fnt10_Arial		= new Font( "Arial", 10, 	FontStyle.Bold );
@@ -483,6 +484,7 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_TILE_EDITOR_LOCKED_LINE 			= Color.Red;
 		// other
 		public static readonly Color	CONST_COLOR_BRUSH_DEFAULT						= Color.White;
+		public static readonly Color	CONST_COLOR_PEN_DEFAULT							= Color.Black;
 		public static readonly Color	CONST_COLOR_PIXBOX_INACTIVE_CROSS				= Color.Red;		
 		public static readonly Color	CONST_COLOR_PIXBOX_DEFAULT						= Color.White;
 		public static readonly Color	CONST_COLOR_IMG_PREVIEW_PIVOT_CROSS				= Color.OrangeRed;

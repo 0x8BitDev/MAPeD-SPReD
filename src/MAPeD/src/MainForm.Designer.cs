@@ -79,6 +79,9 @@ namespace MAPeD
 			this.shiftColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
 			this.reserveCHRsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ZXToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+			this.ZXSwapInkPaperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ZXInvertImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.cHRBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -363,9 +366,6 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.ZXToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-			this.ZXSwapInkPaperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ZXInvertImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ContextMenuEntitiesTreeGroup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
@@ -786,6 +786,29 @@ namespace MAPeD
 			this.reserveCHRsToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.reserveCHRsToolStripMenuItem.Text = "Reserve &CHRs";
 			this.reserveCHRsToolStripMenuItem.Click += new System.EventHandler(this.BtnBlockReserveCHRsClick_Event);
+			// 
+			// ZXToolStripSeparator
+			// 
+			this.ZXToolStripSeparator.Name = "ZXToolStripSeparator";
+			this.ZXToolStripSeparator.Size = new System.Drawing.Size(175, 6);
+			this.ZXToolStripSeparator.Visible = false;
+			// 
+			// ZXSwapInkPaperToolStripMenuItem
+			// 
+			this.ZXSwapInkPaperToolStripMenuItem.Name = "ZXSwapInkPaperToolStripMenuItem";
+			this.ZXSwapInkPaperToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.ZXSwapInkPaperToolStripMenuItem.Text = "S&wap Ink to Paper";
+			this.ZXSwapInkPaperToolStripMenuItem.Visible = false;
+			this.ZXSwapInkPaperToolStripMenuItem.Click += new System.EventHandler(this.BtnSwapInkPaperClick_Event);
+			// 
+			// ZXInvertImageToolStripMenuItem
+			// 
+			this.ZXInvertImageToolStripMenuItem.Name = "ZXInvertImageToolStripMenuItem";
+			this.ZXInvertImageToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.I)));
+			this.ZXInvertImageToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.ZXInvertImageToolStripMenuItem.Text = "&Invert Image";
+			this.ZXInvertImageToolStripMenuItem.Visible = false;
+			this.ZXInvertImageToolStripMenuItem.Click += new System.EventHandler(this.BtnInvInkClick_Event);
 			// 
 			// cHRBankToolStripMenuItem
 			// 
@@ -1613,12 +1636,15 @@ namespace MAPeD
 			// 
 			// CBoxPalettes
 			// 
+			this.CBoxPalettes.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.CBoxPalettes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.CBoxPalettes.FormattingEnabled = true;
 			this.CBoxPalettes.Location = new System.Drawing.Point(10, 158);
+			this.CBoxPalettes.MaxDropDownItems = 16;
 			this.CBoxPalettes.Name = "CBoxPalettes";
 			this.CBoxPalettes.Size = new System.Drawing.Size(59, 21);
 			this.CBoxPalettes.TabIndex = 25;
+			this.CBoxPalettes.DropDown += new System.EventHandler(this.CBocPalettesAdjustWidthDropDown_Event);
 			this.CBoxPalettes.SelectedIndexChanged += new System.EventHandler(this.CBoxPalettesChanged_Event);
 			// 
 			// CheckBoxPalettePerCHR
@@ -3581,29 +3607,6 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Filter = "Bitmap (*.bmp)|*.bmp";
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
-			// 
-			// ZXToolStripSeparator
-			// 
-			this.ZXToolStripSeparator.Name = "ZXToolStripSeparator";
-			this.ZXToolStripSeparator.Size = new System.Drawing.Size(175, 6);
-			this.ZXToolStripSeparator.Visible = false;
-			// 
-			// ZXSwapInkPaperToolStripMenuItem
-			// 
-			this.ZXSwapInkPaperToolStripMenuItem.Name = "ZXSwapInkPaperToolStripMenuItem";
-			this.ZXSwapInkPaperToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-			this.ZXSwapInkPaperToolStripMenuItem.Text = "S&wap Ink to Paper";
-			this.ZXSwapInkPaperToolStripMenuItem.Visible = false;
-			this.ZXSwapInkPaperToolStripMenuItem.Click += new System.EventHandler(this.BtnSwapInkPaperClick_Event);
-			// 
-			// ZXInvertImageToolStripMenuItem
-			// 
-			this.ZXInvertImageToolStripMenuItem.Name = "ZXInvertImageToolStripMenuItem";
-			this.ZXInvertImageToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.I)));
-			this.ZXInvertImageToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-			this.ZXInvertImageToolStripMenuItem.Text = "&Invert Image";
-			this.ZXInvertImageToolStripMenuItem.Visible = false;
-			this.ZXInvertImageToolStripMenuItem.Click += new System.EventHandler(this.BtnInvInkClick_Event);
 			// 
 			// MainForm
 			// 

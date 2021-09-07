@@ -190,6 +190,8 @@ namespace MAPeD
 			TabScreenEditor.Tag = new Point( TabTiles.Width,	TabTiles.Height		);
 			TabLayout.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
 			TabMain.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
+			
+			CBoxPalettes.DrawItem += new DrawItemEventHandler( CBoxPalettesDrawItem_Event );
 
 			FormClosing += new FormClosingEventHandler( OnFormClosing );
 
@@ -1376,6 +1378,7 @@ namespace MAPeD
 			{
 				update_palettes_arr( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), false );
 				
+				CBoxPalettes.Tag = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ).palettes_arr;
 				CBoxPalettes.SelectedIndex = 0;
 			}
 			
@@ -4265,6 +4268,46 @@ namespace MAPeD
 			}
 		}
 #endif
+		void CBocPalettesAdjustWidthDropDown_Event( object sender, EventArgs e )
+		{
+			( sender as ComboBox ).DropDownWidth = 205;
+		}
+		
+		void CBoxPalettesDrawItem_Event( object sender, DrawItemEventArgs e )
+		{
+			if( e.Index >= 0 )
+			{
+				Graphics gfx = e.Graphics;
+				e.DrawBackground();
+				
+				ComboBox cb = sender as ComboBox;
+				
+				palette16_data plt	= ( ( List< palette16_data > )cb.Tag )[ e.Index ];
+				string item_txt		= cb.Items[ e.Index ].ToString();
+				SizeF txt_size		= gfx.MeasureString( item_txt, e.Font );
+				int plt_offset		= ( int )txt_size.Width + 7;
+					
+				utils.brush.Color = e.ForeColor;
+				gfx.DrawString( item_txt, e.Font, utils.brush, e.Bounds.X, e.Bounds.Y );
+				
+				int clr;
+				int clr_box_side	= 10;
+				int clr_box_y_offs	= e.Bounds.Y + ( ( e.Bounds.Height - clr_box_side ) >> 1 );
+				int clrs_cnt		= utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS;
+				
+				for( int i = 0; i < clrs_cnt; i++ )
+				{
+					clr = palette_group.Instance.main_palette[ plt.subpalettes[ i >> 2 ][ i & 0x03 ] ];
+					
+					utils.brush.Color = Color.FromArgb( (clr&0xff0000)>>16, (clr&0xff00)>>8, clr&0xff );
+					
+					gfx.FillRectangle( utils.brush, plt_offset + ( i * clr_box_side ), clr_box_y_offs, clr_box_side, clr_box_side );
+				}
+				
+				utils.pen.Color = utils.CONST_COLOR_PEN_DEFAULT;
+				gfx.DrawRectangle( utils.pen, plt_offset - 1, clr_box_y_offs - 1, ( clr_box_side * clrs_cnt ) + 1, clr_box_side + 1 );
+			}
+		}
 #endregion		
 //	SCREEN DATA CONVERTER ****************************************************************************//
 #region screen data converter
