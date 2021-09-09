@@ -350,7 +350,7 @@ namespace MAPeD
 #endif
 			if( utils.CONST_CHR_BANK_PAGES_CNT == 1 )
 			{
-				BtnCHRBankNextPage.Visible = BtnCHRBankPrevPage.Visible = false;
+				CHRBankPageBtnsToolStripSeparator.Visible = BtnCHRBankNextPage.Visible = BtnCHRBankPrevPage.Visible = false;
 				prevPageToolStripMenuItem.Visible = nextPageToolStripMenuItem.Visible = false;
 			}
 			
@@ -934,6 +934,10 @@ namespace MAPeD
 									{
 										progress_bar_show( true, "Image Data Importing..." );
 										
+										// needed to properly remove screens of invalid layout
+										m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
+										m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;										
+										
 										await Task.Run( () => m_import_tiles_form.data_processing( bmp, m_data_manager, create_layout_with_empty_screens_beg, m_progress_val, m_progress_status ) );
 										
 										if( m_import_tiles_form.import_game_map )
@@ -1095,7 +1099,7 @@ namespace MAPeD
 					{
 						progress_bar_status( "Invalid layout deletion..." );
 						
-						delete_curr_layout_and_screens();
+						delete_last_layout_and_screens();
 					}
 				}
 			}
@@ -2657,13 +2661,20 @@ namespace MAPeD
 #endregion		
 // LAYOUT EDITOR *************************************************************************************//		
 #region layout editor
-		void delete_curr_layout_and_screens()
+		void delete_last_layout_and_screens()
 		{
-			do
+			layout_data layout = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
+			
+			for( int y = 0; y < layout.get_height(); y++ )
 			{
-				m_data_manager.screen_data_delete( false );
+				for( int x = 0; x < layout.get_width(); x++ )
+				{
+					if( layout.get_data( x, y ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
+					{
+						m_data_manager.screen_data_delete( false );
+					}
+				}
 			}
-			while( m_data_manager.scr_data_cnt > 0 );
 			
 			m_data_manager.layout_data_delete( false );
 		}
@@ -2711,7 +2722,7 @@ namespace MAPeD
 							else
 							{
 								// clear all created screens and layout
-								delete_curr_layout_and_screens();
+								delete_last_layout_and_screens();
 								
 								throw new Exception( "Can't create screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT );
 							}
@@ -3083,6 +3094,9 @@ namespace MAPeD
 			{
 				if( m_data_manager.tiles_data_pos >= 0 && m_create_layout_form.ShowDialog() == DialogResult.OK )
 				{
+					m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
+					m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;
+					
 					if( create_layout_with_empty_screens_end( create_layout_with_empty_screens_beg( m_create_layout_form.layout_width, m_create_layout_form.layout_height ) ) != false )
 					{
 						reset_entity_instance_preview();

@@ -86,7 +86,7 @@ namespace MAPeD
 			this.addBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+			this.CHRBankPageBtnsToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.prevPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.nextPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
@@ -816,7 +816,7 @@ namespace MAPeD
 									this.addBankToolStripMenuItem,
 									this.deleteBankToolStripMenuItem,
 									this.copyBankToolStripMenuItem,
-									this.toolStripSeparator12,
+									this.CHRBankPageBtnsToolStripSeparator,
 									this.prevPageToolStripMenuItem,
 									this.nextPageToolStripMenuItem,
 									this.toolStripSeparator8,
@@ -846,10 +846,10 @@ namespace MAPeD
 			this.copyBankToolStripMenuItem.Text = "&Copy Bank";
 			this.copyBankToolStripMenuItem.Click += new System.EventHandler(this.BtnCopyCHRBankClick_Event);
 			// 
-			// toolStripSeparator12
+			// CHRBankPageBtnsToolStripSeparator
 			// 
-			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(186, 6);
+			this.CHRBankPageBtnsToolStripSeparator.Name = "CHRBankPageBtnsToolStripSeparator";
+			this.CHRBankPageBtnsToolStripSeparator.Size = new System.Drawing.Size(186, 6);
 			// 
 			// prevPageToolStripMenuItem
 			// 
@@ -3742,7 +3742,7 @@ namespace MAPeD
 		private System.Windows.Forms.Button BtnDeleteEmptyScreens;
 		private System.Windows.Forms.ToolStripMenuItem nextPageToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem prevPageToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+		private System.Windows.Forms.ToolStripSeparator CHRBankPageBtnsToolStripSeparator;
 		private System.Windows.Forms.Button BtnCHRBankPrevPage;
 		private System.Windows.Forms.Button BtnCHRBankNextPage;
 		private System.Windows.Forms.GroupBox GrpBoxActiveTile;

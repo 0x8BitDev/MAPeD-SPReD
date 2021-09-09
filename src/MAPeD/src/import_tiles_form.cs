@@ -209,6 +209,9 @@ namespace MAPeD
 				int dup_block_ind;
 				int dup_tile_ind;
 				
+				int beg_tile_ind	= -1;
+				int tile_ind		= -1;
+				
 				int beg_CHR_ind 	= CHR_ind;
 				int beg_block_ind 	= block_ind;
 				
@@ -216,8 +219,11 @@ namespace MAPeD
 				int scr_block_ind;
 
 				int bmp_width	= _bmp.Width - ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( _bmp.Width % 32 ):( _bmp.Width % 16 ) );
+#if DEF_SCREEN_HEIGHT_7d5_TILES				
+				int bmp_height	= _bmp.Height - ( _bmp.Height % 16 );
+#else
 				int bmp_height	= _bmp.Height - ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( _bmp.Height % 32 ):( _bmp.Height % 16 ) );
-
+#endif
 				int tile_cnt	= ( bmp_width >> 4 ) * ( bmp_height >> 4 );
 				int tile_n		= 0;
 				int progress	= 0;
@@ -235,8 +241,8 @@ namespace MAPeD
 				{
 					uint tile_data = 0;
 					
-					int tile_ind = 0;
-					int beg_tile_ind	= _data.get_first_free_tile_id();
+					tile_ind 		= 0;
+					beg_tile_ind	= _data.get_first_free_tile_id();
 					
 					if( beg_tile_ind < 0 )
 					{
@@ -354,7 +360,7 @@ namespace MAPeD
 											
 											MainForm.message_box( "The CHR Bank is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 											
-											import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
+											import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, beg_tile_ind, tile_ind, _progress_status );
 											
 											return;
 										}
@@ -370,7 +376,7 @@ namespace MAPeD
 												
 												MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 												
-												import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
+												import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, beg_tile_ind, tile_ind, _progress_status );
 												
 												return;
 											}
@@ -405,7 +411,7 @@ namespace MAPeD
 													
 													MainForm.message_box( "The tiles list is full!\n\nTry switching to the Blocks (2x2) mode.", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 													
-													import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
+													import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, beg_tile_ind, tile_ind, _progress_status );
 													
 													return;
 												}
@@ -479,7 +485,7 @@ namespace MAPeD
 									
 									MainForm.message_box( "The CHR Bank is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 									
-									import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
+									import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, beg_tile_ind, tile_ind, _progress_status );
 									
 									return;
 								}
@@ -496,7 +502,7 @@ namespace MAPeD
 										
 										MainForm.message_box( "The blocks list is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 										
-										import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
+										import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, beg_tile_ind, tile_ind, _progress_status );
 										
 										return;
 									}
@@ -517,7 +523,7 @@ namespace MAPeD
 				
 				_bmp.UnlockBits( bmp_data );
 				
-				import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, _progress_status );
+				import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, beg_tile_ind, tile_ind, _progress_status );
 			}
 		}
 		
@@ -615,30 +621,29 @@ namespace MAPeD
 			}
 		}
 		
-		private void import_bmp_palette( tiles_data _data, Bitmap _bmp, int _CHR_beg_ind, int _CHR_end_ind, int _block_beg_ind, int _block_end_ind, IProgress< string > _progress_status )
+		private void import_bmp_palette( tiles_data _data, Bitmap _bmp, int _CHR_beg_ind, int _CHR_end_ind, int _block_beg_ind, int _block_end_ind, int _tile_beg_ind, int _tile_end_ind, IProgress< string > _progress_status )
 		{
 			if( CheckBoxApplyPalette.Checked )
 			{
 				_progress_status.Report( "Palettes applying" );
 				
 				Color[] plt = _bmp.Palette.Entries;
-				
-				List< int[] > palettes = _data.subpalettes;
-#if !DEF_ZX
-				int num_clrs = Math.Min( plt.Length, utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS );
-				
-				for( int i = 0; i < num_clrs; i++ )
-				{
-					palettes[ i >> 2 ][ i & 0x03 ] = utils.find_nearest_color_ind( plt[ i ].ToArgb() );
-				}
-#endif
 #if DEF_NES
 				if( fix_broken_blocks( _data, _block_beg_ind, ref _block_end_ind ) == true )
 				{
+					List< int[] > palettes = _data.subpalettes;
+					
+					int num_clrs = Math.Min( plt.Length, utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS );
+					
+					for( int i = 0; i < num_clrs; i++ )
+					{
+						palettes[ i >> 2 ][ i & 0x03 ] = utils.find_nearest_color_ind( plt[ i ].ToArgb() );
+					}
+					
 					NES_apply_palettes( _data, _block_beg_ind, _block_end_ind );
-				}
-				
-				palettes[ 1 ][ 0 ] = palettes[ 2 ][ 0 ] = palettes[ 3 ][ 0 ] = palettes[ 0 ][ 0 ];
+					
+					palettes[ 1 ][ 0 ] = palettes[ 2 ][ 0 ] = palettes[ 3 ][ 0 ] = palettes[ 0 ][ 0 ];
+				}				
 #elif DEF_FIXED_LEN_PALETTE16_ARR
 #if DEF_ZX
 				if( fix_broken_blocks( _data, _block_beg_ind, ref _block_end_ind ) == true )
@@ -646,11 +651,11 @@ namespace MAPeD
 					ZX_apply_palettes( plt, _data, _block_beg_ind, _block_end_ind );
 				}
 #else
-				if( plt.Length > 16 && fix_broken_blocks( _data, _block_beg_ind, ref _block_end_ind ) == true )
+				if( fix_broken_blocks( _data, _block_beg_ind, ref _block_end_ind ) == true )
 				{
 					if( CheckBoxImportPaletteASIS.Checked )
 					{
-						apply_16colors_palettes_arr_as_is( plt, _data, _block_beg_ind, _block_end_ind );
+						apply_16colors_palettes_arr_as_is( plt, _data, _CHR_beg_ind, _CHR_end_ind, _block_beg_ind, _block_end_ind, _tile_beg_ind, _tile_end_ind );
 					}
 					else
 					{
@@ -1091,7 +1096,6 @@ namespace MAPeD
 		private void ZX_apply_palettes( Color[] _plt, tiles_data _data, int _block_beg_ind, int _block_end_ind )
 		{
 			int				block_n;
-			int				blocks_cnt;
 			uint			block_data;
 			int				chr_id;
 			int				pix_n;
@@ -1126,12 +1130,10 @@ namespace MAPeD
 				palette_inds[ ind_n ] = utils.find_nearest_color_ind( _plt[ ind_n ].ToArgb() );
 			}
 			
-			blocks_cnt = _data.get_first_free_block_id() << 2;
-			
-			chr_id_flags = new byte[ blocks_cnt ];
+			chr_id_flags = new byte[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
 			Array.Clear( chr_id_flags, 0, chr_id_flags.Length );
 			
-			for( block_n = ( skip_zero_CHR_Block ? 4:0 ); block_n < blocks_cnt; block_n++ )
+			for( block_n = _block_beg_ind; block_n < _block_end_ind; block_n++ )
 			{
 				block_data = _data.blocks[ block_n ];
 				
@@ -1270,7 +1272,7 @@ namespace MAPeD
 			palette_inds.Clear();
 		}
 #else
-		private void apply_16colors_palettes_arr_as_is( Color[] _plt, tiles_data _data, int _block_beg_ind, int _block_end_ind )
+		private void apply_16colors_palettes_arr_as_is( Color[] _plt, tiles_data _data, int _CHR_beg_ind, int _CHR_end_ind, int _block_beg_ind, int _block_end_ind, int _tile_beg_ind, int _tile_end_ind )
 		{
 			int block_n;
 			int CHR_n;
@@ -1281,6 +1283,7 @@ namespace MAPeD
 			int plt_max = -1;
 			int pix_n;
 			int palettes_cnt;
+			int clr_ind;
 			
 			byte pix_val;
 			
@@ -1329,7 +1332,9 @@ namespace MAPeD
 								{
 									if( plt_n != plt_ind )
 									{
-										 throw new Exception( "The input image doesn't contain an array of ordered 16-color palettes!\n\nPlease, uncheck the 'Import palette 'AS IS'' flag and try again." );
+										reset_CHRs_tiles_data( _data, _CHR_beg_ind, _CHR_end_ind, _block_beg_ind, _block_end_ind, _tile_beg_ind, _tile_end_ind );
+										
+										throw new Exception( "The input image doesn't contain an array of ordered 16-color palettes!\n\nPlease, uncheck the 'Import palette 'AS IS'' flag and try again." );
 									}
 								}
 							}
@@ -1363,7 +1368,40 @@ namespace MAPeD
 				
 				for( ind_n = 0; ind_n < 16; ind_n++ )
 				{
-					plt16.subpalettes[ ind_n >> 2 ][ ind_n & 0x03 ] = utils.find_nearest_color_ind( _plt[ ( plt_n << 4 ) + ind_n ].ToArgb() );
+					clr_ind = ( plt_n << 4 ) + ind_n;
+					
+					if( clr_ind < _plt.Length )
+					{
+						plt16.subpalettes[ ind_n >> 2 ][ ind_n & 0x03 ] = utils.find_nearest_color_ind( _plt[ clr_ind ].ToArgb() );
+					}
+				}
+			}
+		}
+		
+		private void reset_CHRs_tiles_data( tiles_data _data, int _CHR_beg_ind, int _CHR_end_ind, int _block_beg_ind, int _block_end_ind, int _tile_beg_ind, int _tile_end_ind )
+		{
+			int block_n;
+			int tile_n;
+			int CHR_n;
+			
+			for( block_n = _block_beg_ind; block_n < _block_end_ind; block_n++ )
+			{
+				_data.blocks[ block_n ] = 0;
+			}
+			
+			for( CHR_n = _CHR_beg_ind; CHR_n < _CHR_end_ind; CHR_n++ )
+			{
+				_data.CHR_bank_spr8x8_change_proc( CHR_n, delegate( byte _pix ) 
+				{
+					return 0;
+				});
+			}
+			
+			if( _tile_beg_ind >= 0 )
+			{
+				for( tile_n = _tile_beg_ind; tile_n < _tile_end_ind; tile_n++ )
+				{
+					_data.tiles[ tile_n ] = 0;
 				}
 			}
 		}
