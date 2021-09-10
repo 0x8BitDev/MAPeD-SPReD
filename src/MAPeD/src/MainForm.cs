@@ -411,11 +411,11 @@ namespace MAPeD
 				
 				set_status_msg( "" );
 				
-				Thread.Sleep( 250 );
+				pause( 250 );
 			}
 			else
 			{
-				Thread.Sleep( 250 );
+				pause( 250 );
 				
 				m_progress_form.progress_bar.Visible = false;
 				
@@ -437,6 +437,11 @@ namespace MAPeD
 		{
 			m_progress_form.status_label.Text = _status; 
 			m_progress_form.Update();
+		}
+		
+		async private void pause( int _msec )
+		{
+			await Task.Delay( _msec );
 		}
 		
 		private void OnFormClosing(object sender, FormClosingEventArgs e)
@@ -2721,6 +2726,9 @@ namespace MAPeD
 							}
 							else
 							{
+								// delete the last screen manually, cause it wasn't added to the layout
+								m_data_manager.screen_data_delete( false );
+								
 								// clear all created screens and layout
 								delete_last_layout_and_screens();
 								
