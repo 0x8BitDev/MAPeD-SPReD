@@ -213,7 +213,7 @@ namespace MAPeD
 				else
 				if( _view_type == utils.ETileViewType.tvt_TilesUsage ) // usage
 				{
-					draw_tile_info( String.Format( "{0}", _tiles_data.get_tile_usage( ( byte )_tile_ind, _scr_type ) ), gfx );
+					draw_tile_info( String.Format( "{0}", _tiles_data.get_tile_usage( ( ushort )_tile_ind, _scr_type ) ), gfx );
 				}
 			}
 			
@@ -294,7 +294,7 @@ namespace MAPeD
 					{
 						utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | 0x00ffffff );
 						
-						draw_block_info( String.Format( "{0}", _tiles_data.get_block_usage( ( byte )i, _scr_type ) ), gfx );
+						draw_block_info( String.Format( "{0}", _tiles_data.get_block_usage( ( ushort )i, _scr_type ) ), gfx );
 					}
 					else
 					if( _scr_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
