@@ -52,13 +52,13 @@ namespace MAPeD
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
-			ExpZXAsmColorConversionModes.SelectedIndex = 0;
+			CBoxColorConversionModes.SelectedIndex = 0;
 			
 			zx_palette = platform_data_provider.get_palette_by_file_ext( utils.CONST_ZX_FILE_EXT );
 			
 			update_desc();
 #if DEF_ZX
-			ExpZXAsmGFXDithering.Checked = ExpZXAsmGFXDithering.Enabled = false;
+			CheckBoxGFXDithering.Checked = CheckBoxGFXDithering.Enabled = false;
 			groupBoxColorConversion.Enabled = false;
 #endif
 		}
@@ -75,14 +75,14 @@ namespace MAPeD
 
 		void ExpEntitiesChanged_Event(object sender, EventArgs e)
 		{
-			GrpBoxEntCoords.Enabled = ExpZXAsmExportEntities.Checked;
+			GrpBoxEntCoords.Enabled = CheckBoxExportEntities.Checked;
 			
 			update_desc();
 		}
 		
 		private void update_desc()
 		{
-			if( ExpZXAsmTiles2x2.Checked )
+			if( RBtnTiles2x2.Checked )
 			{
 				RichTextBoxExportDesc.Text = strings.CONST_STR_EXP_TILES_2X2;
 			}
@@ -100,13 +100,13 @@ namespace MAPeD
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE;
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE_MULTIDIR;
 			
-			if( ExpZXAsmExportMarks.Checked || ExpZXAsmExportEntities.Checked )
+			if( CheckBoxExportMarks.Checked || CheckBoxExportEntities.Checked )
 			{
 				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_LAYOUT;
 				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_LAYOUT_MATRIX;
 			}
 			
-			if( ExpZXAsmExportMarks.Checked )
+			if( CheckBoxExportMarks.Checked )
 			{
 				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MARKS;
 			}
@@ -115,13 +115,13 @@ namespace MAPeD
 				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NO_MARKS;
 			}
 			
-			if( ExpZXAsmExportEntities.Checked )
+			if( CheckBoxExportEntities.Checked )
 			{
 				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENTITIES;
 				
 				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_COORDS;
 				
-				if( ExpZXAsmEntScreenCoords.Checked )
+				if( RBtnEntScreenCoords.Checked )
 				{
 					RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_COORDS_SCR;
 				}
@@ -150,13 +150,13 @@ namespace MAPeD
 			
 			if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
 			{
-				ExpZXAsmTiles2x2.Checked = true;
-				ExpZXAsmTiles2x2.Enabled = ExpZXAsmTiles4x4.Enabled = false;
+				RBtnTiles2x2.Checked = true;
+				RBtnTiles2x2.Enabled = RBtnTiles4x4.Enabled = false;
 			}
 			else
 			{
-				ExpZXAsmTiles2x2.Enabled = true;
-				//ExpZXAsmTiles4x4.Enabled = TODO: enable it with support of 4x4 tiles 
+				RBtnTiles2x2.Enabled = true;
+				//RBtnTiles4x4.Enabled = TODO: enable it with support of 4x4 tiles 
 			}
 			
 			ShowDialog();				
@@ -166,7 +166,7 @@ namespace MAPeD
 		{
 			this.Close();
 			
-			if( ExpZXAsmRenderLevelPNG.Checked || ExpZXAsmRenderTilesPNG.Checked )
+			if( CheckBoxRenderLevelPNG.Checked || CheckBoxRenderTilesPNG.Checked )
 			{
 				System.IO.Directory.CreateDirectory( m_path_filename + "_Extra" + Path.DirectorySeparatorChar );
 			}
@@ -312,7 +312,7 @@ namespace MAPeD
 				byte[] ink_clr_weights		= new byte[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 				byte[] paper_clr_weights	= new byte[ utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 
-				double ink_factor	= ( double )( ExpZXAsmInkFactor.Value ) / 10.0;
+				double ink_factor	= ( double )( NumericUpDownInkFactor.Value ) / 10.0;
 				
 				int pix_n;
 				int chr_n;
@@ -347,7 +347,7 @@ namespace MAPeD
 				
 				save_export_options( sw );
 				
-				if( ExpZXAsmExportEntities.Checked )
+				if( CheckBoxExportEntities.Checked )
 				{
 					m_data_mngr.export_entity_asm( sw, "db", "#" );
 				}
@@ -372,7 +372,7 @@ namespace MAPeD
 					n_scr_X = level_data.get_width();
 					n_scr_Y = level_data.get_height();
 
-					if( ExpZXAsmRenderLevelPNG.Checked )
+					if( CheckBoxRenderLevelPNG.Checked )
 					{
 						level_bmp = new Bitmap( n_scr_X * utils.CONST_SCREEN_WIDTH_PIXELS, n_scr_Y * utils.CONST_SCREEN_HEIGHT_PIXELS );
 	
@@ -382,16 +382,16 @@ namespace MAPeD
 					}
 					
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-					n_Y_tiles = n_scr_Y * ( ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * ( ExpZXAsmTiles2x2.Checked ? 2:1 ) ) - ( ExpZXAsmTiles2x2.Checked ? 1:0 ) );
+					n_Y_tiles = n_scr_Y * ( ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * ( RBtnTiles2x2.Checked ? 2:1 ) ) - ( RBtnTiles2x2.Checked ? 1:0 ) );
 #else
-					n_Y_tiles = n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES * ( ExpZXAsmTiles2x2.Checked ? 2:1 );
+					n_Y_tiles = n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES * ( RBtnTiles2x2.Checked ? 2:1 );
 #endif
 					// initialize a tile map of a game level
 					{
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-						map_data_size = n_scr_X * n_scr_Y * ( ( utils.CONST_SCREEN_TILES_CNT * ( ExpZXAsmTiles2x2.Checked ? 4:1 ) ) - ( ExpZXAsmTiles2x2.Checked ? ( utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ):0 ) );
+						map_data_size = n_scr_X * n_scr_Y * ( ( utils.CONST_SCREEN_TILES_CNT * ( RBtnTiles2x2.Checked ? 4:1 ) ) - ( RBtnTiles2x2.Checked ? ( utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ):0 ) );
 #else
-						map_data_size = n_scr_X * n_scr_Y * utils.CONST_SCREEN_TILES_CNT * ( ExpZXAsmTiles2x2.Checked ? 4:1 );
+						map_data_size = n_scr_X * n_scr_Y * utils.CONST_SCREEN_TILES_CNT * ( RBtnTiles2x2.Checked ? 4:1 );
 #endif						
 						
 						map_tiles_arr = new ushort[ map_data_size ];
@@ -433,7 +433,7 @@ namespace MAPeD
 										
 										tile_id = tiles.get_screen_tile( scr_ind, tile_n );
 										
-										if( ExpZXAsmTiles2x2.Checked )
+										if( RBtnTiles2x2.Checked )
 										{
 											tile_offs_x <<= 1;
 											tile_offs_y <<= 1;
@@ -504,8 +504,8 @@ namespace MAPeD
 					tile_colors_arr = new byte[ unique_tiles_arr.Count << 2 ];
 					Array.Clear( tile_colors_arr, 0, unique_tiles_arr.Count << 2 );
 					
-					tile_props_arr = new byte[ unique_tiles_arr.Count * ( ExpZXAsmTiles2x2.Checked ? 4:16 ) ];
-					Array.Clear( tile_props_arr, 0, unique_tiles_arr.Count * ( ExpZXAsmTiles2x2.Checked ? 4:16 ) );
+					tile_props_arr = new byte[ unique_tiles_arr.Count * ( RBtnTiles2x2.Checked ? 4:16 ) ];
+					Array.Clear( tile_props_arr, 0, unique_tiles_arr.Count * ( RBtnTiles2x2.Checked ? 4:16 ) );
 
 					// open file to write data of all unique tiles
 					bw = new BinaryWriter( File.Open( m_path + m_tiles_data_filename, FileMode.Create ) );
@@ -524,7 +524,7 @@ namespace MAPeD
 						}
 						
 						// tiles data processing
-						if( ExpZXAsmTiles2x2.Checked )
+						if( RBtnTiles2x2.Checked )
 						{
 							for( chr_n = 0; chr_n < 4; chr_n++ )
 							{
@@ -591,7 +591,7 @@ namespace MAPeD
 									if( ink_factor <= bright_val )
 									{
 										// paper
-										if( ExpZXAsmGFXDithering.Checked )
+										if( CheckBoxGFXDithering.Checked )
 										{
 											dither_factor = ( bright_val - ink_factor ) / ( 1.0 - ink_factor );
 											
@@ -656,7 +656,7 @@ namespace MAPeD
 							// draw tile into bitmap
 							tile_mem_handle = GCHandle.Alloc( img_buff, GCHandleType.Pinned );
 
-							if( ExpZXAsmTypeColor.Checked )
+							if( RBtnTypeColor.Checked )
 							{
 								for( chr_n = 0; chr_n < 4; chr_n++ )
 								{
@@ -736,7 +736,7 @@ namespace MAPeD
 							
 							tile_bmp = new Bitmap( 16, 16, 16<<2, PixelFormat.Format32bppArgb, tile_mem_handle.AddrOfPinnedObject() );
 							
-							if( ExpZXAsmRenderLevelPNG.Checked )
+							if( CheckBoxRenderLevelPNG.Checked )
 							{
 								for( int map_tile_n = 0; map_tile_n < map_data_size; map_tile_n++ )
 								{
@@ -749,7 +749,7 @@ namespace MAPeD
 
 							tile_mem_handle.Free();
 
-							if( ExpZXAsmRenderTilesPNG.Checked )
+							if( CheckBoxRenderTilesPNG.Checked )
 							{
 								tile_bmp.Save( m_extra_path_filename + level_postfix_str + "_Tile" + tile_n + ".png", ImageFormat.Png );
 							}
@@ -772,7 +772,7 @@ namespace MAPeD
 					bw.Close();
 
 					// write tiles colors
-					if( ExpZXAsmTypeColor.Checked )
+					if( RBtnTypeColor.Checked )
 					{
 						bw = new BinaryWriter( File.Open( m_path + m_tile_colrs_filename, FileMode.Create ) );
 						bw.Write( tile_colors_arr );
@@ -811,7 +811,7 @@ namespace MAPeD
 						sw.WriteLine( level_prefix_str + "_tl"  + "\t\tincbin \"" + m_tiles_data_filename + "\"\t;(" + ( unique_tiles_arr.Count * 32 ) + ") array of tile images 2x2 (32 bytes per tile)" );
 						sw.WriteLine( level_prefix_str + "_tlp" + "\tincbin \"" + m_tile_props_filename + "\"\t;(" + tile_props_arr.Length + ") tile properties array (byte per tile)" );
 						
-						if( ExpZXAsmTypeColor.Checked )
+						if( RBtnTypeColor.Checked )
 						{
 							sw.WriteLine( level_prefix_str + "_tlc" + "\tincbin \"" + m_tile_colrs_filename + "\"\t;(" + tile_colors_arr.Length + ") tile colors array (byte per tile)" );
 						}
@@ -819,7 +819,7 @@ namespace MAPeD
 						sw.WriteLine( "\n" );
 					}
 					
-					if( ExpZXAsmRenderLevelPNG.Checked )
+					if( CheckBoxRenderLevelPNG.Checked )
 					{
 						level_bmp.Save( m_extra_path_filename + level_postfix_str + ".png", ImageFormat.Png );
 						
@@ -834,7 +834,7 @@ namespace MAPeD
 					unique_tiles_arr.Clear();				
 
 					// save layout and screens data
-					if( ExpZXAsmExportMarks.Checked || ExpZXAsmExportEntities.Checked )
+					if( CheckBoxExportMarks.Checked || CheckBoxExportEntities.Checked )
 					{
 						int start_scr_ind = level_data.get_start_screen_ind();
 						
@@ -846,7 +846,7 @@ namespace MAPeD
 						// matrix layout by default
 						{
 							sw.WriteLine( level_prefix_str + "_StartScr\t = " + ( start_scr_ind < 0 ? 0:start_scr_ind ) + "\n" );
-							level_data.export_asm( sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "#", true, ExpZXAsmExportMarks.Checked, ExpZXAsmExportEntities.Checked, ExpZXAsmEntScreenCoords.Checked );
+							level_data.export_asm( sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "#", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntScreenCoords.Checked );
 						}
 					}
 				}
@@ -900,7 +900,7 @@ namespace MAPeD
 				zx_g = ( double )( ( zx_color >> 8 ) & 0xff );
 				zx_b = ( double )( zx_color & 0xff );
 
-				switch( ExpZXAsmColorConversionModes.SelectedIndex )
+				switch( CBoxColorConversionModes.SelectedIndex )
 				{
 					case 0:
 						{
@@ -957,22 +957,22 @@ namespace MAPeD
 			{
 				_sw.WriteLine( "; export options:" );
 
-				_sw.WriteLine( ";\t- tiles " + ( ExpZXAsmTiles4x4.Checked ? "4x4":"2x2" ) + "/(columns)" );
+				_sw.WriteLine( ";\t- tiles " + ( RBtnTiles4x4.Checked ? "4x4":"2x2" ) + "/(columns)" );
 				
 				_sw.WriteLine( ";\t- properties per block" );
 				
 				_sw.WriteLine( ";\t- mode: multidirectional scrolling" );
 				
-				_sw.WriteLine( ";\t- layout: " + "matrix" + ( ExpZXAsmExportMarks.Checked ? " (marks)":" (no marks)" ) );
+				_sw.WriteLine( ";\t- layout: " + "matrix" + ( CheckBoxExportMarks.Checked ? " (marks)":" (no marks)" ) );
 				
-				_sw.WriteLine( ";\t- " + ( ExpZXAsmExportEntities.Checked ? "entities " + ( ExpZXAsmEntScreenCoords.Checked ? "(screen coordinates)":"(map coordinates)" ):"no entities" ) );
+				_sw.WriteLine( ";\t- " + ( CheckBoxExportEntities.Checked ? "entities " + ( RBtnEntScreenCoords.Checked ? "(screen coordinates)":"(map coordinates)" ):"no entities" ) );
 				_sw.WriteLine( "\n" );
 			}
 			
-			_sw.WriteLine( "MAP_DATA_MAGIC = " + utils.hex( "$", ( ExpZXAsmExportEntities.Checked ? 1:0 ) |
-			                                              		 ( ExpZXAsmExportEntities.Checked ? ( ExpZXAsmEntScreenCoords.Checked ? 2:4 ):0 ) |
-			                                              		 ( ExpZXAsmExportMarks.Checked ? 8:0 ) |
-			                                              		 ( ExpZXAsmTypeColor.Checked ? 16:0 ) ) );
+			_sw.WriteLine( "MAP_DATA_MAGIC = " + utils.hex( "$", ( CheckBoxExportEntities.Checked ? 1:0 ) |
+			                                              		 ( CheckBoxExportEntities.Checked ? ( RBtnEntScreenCoords.Checked ? 2:4 ):0 ) |
+			                                              		 ( CheckBoxExportMarks.Checked ? 8:0 ) |
+			                                              		 ( RBtnTypeColor.Checked ? 16:0 ) ) );
 			_sw.WriteLine( "\n; data flags:" );
 			_sw.WriteLine( "MAP_FLAG_ENTITIES                 = " + utils.hex( "$", 1 ) );
 			_sw.WriteLine( "MAP_FLAG_ENTITY_SCREEN_COORDS     = " + utils.hex( "$", 2 ) );
@@ -983,7 +983,7 @@ namespace MAPeD
 		
 		void check_ent_instances_cnt( layout_data _layout, string _lev_pref_str )
 		{
-			if( ExpZXAsmExportEntities.Checked )
+			if( CheckBoxExportEntities.Checked )
 			{
 				if( _layout.get_ent_instances_cnt() > utils.CONST_MAX_ENT_INST_CNT )
 				{
