@@ -26,25 +26,25 @@
 
 typedef struct
 {
-	u32	count;
-	u8**	data;
-} mpd_ARR_PU8;
+	u16	count;
+	u16**	data;
+} mpd_ARR_PU16;
 
 typedef struct
 {
-	u32	count;
+	u16	count;
 	u8*	data;
 } mpd_ARR_U8;
 
 typedef struct
 {
-	u32	count;
+	u16	count;
 	u16*	data;
 } mpd_ARR_U16;
 
 typedef struct
 {
-	u32	count;
+	u16	count;
 	u32*	data;
 } mpd_ARR_U32;
 

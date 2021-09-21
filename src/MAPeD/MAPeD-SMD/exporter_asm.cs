@@ -40,7 +40,7 @@ namespace MAPeD
 		private const string	CONST_DATA_ALIGN				= "\t.align 2";
 		private const string	CONST_C_DATA_PREFIX				= "mpd_";
 		
-		private const string	CONST_C_STRUCT_ARR_PU8			= CONST_C_DATA_PREFIX + "ARR_PU8";
+		private const string	CONST_C_STRUCT_ARR_PU16			= CONST_C_DATA_PREFIX + "ARR_PU16";
 		private const string	CONST_C_STRUCT_ARR_U8			= CONST_C_DATA_PREFIX + "ARR_U8";
 		private const string	CONST_C_STRUCT_ARR_U16			= CONST_C_DATA_PREFIX + "ARR_U16";
 		private const string	CONST_C_STRUCT_ARR_U32			= CONST_C_DATA_PREFIX + "ARR_U32";
@@ -197,7 +197,7 @@ namespace MAPeD
 				_buff += CONST_DATA_ALIGN + "\n";
 				_buff += "\t.global " + CONST_C_DATA_PREFIX + _data_name + "\n";
 				_buff += CONST_C_DATA_PREFIX + _data_name + ":\n";
-				_buff += "\tdc.l " + _data_len + "\n";
+				_buff += "\tdc.w " + _data_len + "\n";
 				_buff += "\tdc.l " + _data_name + "\n\n";
 			}
 		}
@@ -782,7 +782,7 @@ namespace MAPeD
 					_sw.WriteLine( label + ":\tincbin \"" + get_data_subdir() + m_filename + "_" + label + CONST_BIN_EXT + "\"\t\t; (" + data_size + ")\n" );
 					
 					chr_arr	 += "\tdc.l " + label + "\n";
-					chr_size += "\tdc.w " + data_size + "\t\t;(" + label + ")\n";
+					chr_size += "\tdc.w " + ( data_size >> 1 ) + "\t\t;(" + label + ")\n";
 					
 					exp_data_size += data_size;
 				}
@@ -797,8 +797,8 @@ namespace MAPeD
 				
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_PU8 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_CHRs;\t\t// array of pointers to CHRs data of all CHR banks" );
-					m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_CHRs_size;\t\t// array of CHRs data size in bytes for all CHR banks" );
+					m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_PU16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_CHRs;\t\t// array of pointers to CHRs data of all CHR banks" );
+					m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_CHRs_size;\t\t// array of CHRs data size in words for all CHR banks" );
 				}
 				
 				// static screens ( VDP-READY DATA ):
@@ -1015,7 +1015,7 @@ namespace MAPeD
 					data_size = bw.BaseStream.Length;
 					bw.Close();
 					
-					save_global_data( ref global_data_decl, ( m_filename + label ), data_size ); // bytes array
+					save_global_data( ref global_data_decl, ( m_filename + label ), ( data_size >> 1 ) ); // words array
 					
 					exp_data_size += data_size;
 					
@@ -1024,7 +1024,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U8 + "\t\t" + CONST_C_DATA_PREFIX + m_filename + label + ";\t\t// " + ( CheckBoxRLE.Checked ? "[compressed] ":"" ) + "VDP-ready data array for each screen in bytes" );
+						m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t\t" + CONST_C_DATA_PREFIX + m_filename + label + ";\t\t// " + ( CheckBoxRLE.Checked ? "[compressed] ":"" ) + "VDP-ready data array for each screen in words" );
 					}
 					
 					if( !CheckBoxRLE.Checked )
@@ -1738,7 +1738,7 @@ namespace MAPeD
 				long CHR_data_size = data_size = bw.BaseStream.Length;
 				bw.Close();
 				
-				save_global_data( ref global_data_decl, label, CHR_data_size ); // bytes array
+				save_global_data( ref global_data_decl, label, ( CHR_data_size >> 1 ) ); // words array
 				
 				exp_data_size += data_size;
 				
@@ -1747,7 +1747,7 @@ namespace MAPeD
 				
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U8 + "\t\t" + CONST_C_DATA_PREFIX + label + ";\t\t// sprites 8x8 data array; 32 bytes per sprite" );	// bytes array
+					m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t\t" + CONST_C_DATA_PREFIX + label + ";\t\t// sprites 8x8 data array; 32 bytes per sprite" );	// words array
 				}
 
 				if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )

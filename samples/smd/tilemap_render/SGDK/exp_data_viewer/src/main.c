@@ -16,7 +16,7 @@
 // macroses //
 //////////////
 
-#define DUMP_PU8_DATA( _data_arr, _dump_cnt, _x, _y )	dump_pu8_data( #_data_arr, _data_arr.count, _data_arr.data, _dump_cnt, _x, _y )
+#define DUMP_PU16_DATA( _data_arr, _dump_cnt, _x, _y )	dump_pu16_data( #_data_arr, _data_arr.count, _data_arr.data, _dump_cnt, _x, _y )
 #define DUMP_U8_DATA( _data_arr, _dump_cnt, _x, _y )	dump_u8_data( #_data_arr, _data_arr.count, _data_arr.data, _dump_cnt, _x, _y )
 #define DUMP_U16_DATA( _data_arr, _dump_cnt, _x, _y )	dump_u16_data( #_data_arr, _data_arr.count, _data_arr.data, _dump_cnt, _x, _y )
 #define DUMP_U32_DATA( _data_arr, _dump_cnt, _x, _y )	dump_u32_data( #_data_arr, _data_arr.count, _data_arr.data, _dump_cnt, _x, _y )
@@ -33,7 +33,7 @@ void 		dump_screen( mpd_SCREEN* _scr, int* _y_offs );
 mpd_SCREEN*	get_adjacent_screen_data( mpd_SCREEN* _scr, int _dir_ind );
 void		dump_exp_flags( int* _y_offs );
 
-void		dump_pu8_data( const char* _name, int _count, u8** _data, int _elems_cnt, int _x, int _y );
+void		dump_pu16_data( const char* _name, int _count, u16** _data, int _elems_cnt, int _x, int _y );
 void		dump_u8_data( const char* _name, int _count, u8* _data, int _elems_cnt, int _x, int _y );
 void		dump_u16_data( const char* _name, int _count, u16* _data, int _elems_cnt, int _x, int _y );
 void		dump_u32_data( const char* _name, int _count, u32* _data, int _elems_cnt, int _x, int _y );
@@ -167,7 +167,7 @@ mpd_SCREEN* dump_main_data( int* _y_offs )
 
 	VDP_drawText( "Mode: 'bidir scroll'", 1, (*_y_offs)++ );
 
-	DUMP_PU8_DATA( mpd_tilemap_CHRs, 4, 0, (*_y_offs)++ );
+	DUMP_PU16_DATA( mpd_tilemap_CHRs, 4, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_tilemap_CHRs_size, 1, 0, (*_y_offs)++ );
 	DUMP_U8_DATA( mpd_tilemap_Props, 4, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_tilemap_BlocksPropsOffs, 1, 0, (*_y_offs)++ );
@@ -200,7 +200,7 @@ mpd_SCREEN* dump_main_data( int* _y_offs )
 #else
 	VDP_drawText( "Mode: 'static screens'", 1, (*_y_offs)++ );
 
-	DUMP_PU8_DATA( mpd_tilemap_CHRs, 4, 0, (*_y_offs)++ );
+	DUMP_PU16_DATA( mpd_tilemap_CHRs, 4, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_tilemap_CHRs_size, 1, 0, (*_y_offs)++ );
 	DUMP_U8_DATA( mpd_tilemap_Props, 4, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_tilemap_BlocksPropsOffs, 1, 0, (*_y_offs)++ );
@@ -355,7 +355,7 @@ void dump_screen( mpd_SCREEN* _scr, int* _y_offs )
 	}
 	else
 	{
-		VDP_drawText( "No screen data!", 1, (*_y_offs)++ );
+		VDP_drawText( "No screen data!", 1, ++(*_y_offs) );
 	}
 }
 
@@ -513,7 +513,7 @@ void dump_exp_flags( int* _y_offs )
 // data arrays dumping functions //
 ///////////////////////////////////
 
-void dump_pu8_data( const char* _name, int _count, u8** _data, int _dump_cnt, int _x, int _y )
+void dump_pu16_data( const char* _name, int _count, u16** _data, int _dump_cnt, int _x, int _y )
 {
 	sprintf( str_buff, "-%s: %d/[0] ", _name, _count );
 
