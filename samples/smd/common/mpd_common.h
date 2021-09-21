@@ -50,7 +50,7 @@ typedef struct
 
 typedef struct
 {
-	u32			count;
+	u16			count;
 	struct mpd_SCREEN**	data;
 } mpd_ARR_SCREEN;
 
