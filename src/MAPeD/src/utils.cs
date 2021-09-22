@@ -306,7 +306,7 @@ namespace MAPeD
 		public const int CONST_MAX_BLOCKS_CNT				= CONST_ZX_MAX_BLOCKS_CNT;
 		public const int CONST_MAX_TILES_CNT				= 256;
 
-		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 9;	// 8 - CHR data + 1 - color data
+		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 8;	// 8 - CHR data + 1 - color data
 		
 		public const byte CONST_ZX_DEFAULT_PAPER_COLOR		= 15;
 

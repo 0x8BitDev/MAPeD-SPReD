@@ -278,7 +278,6 @@ namespace MAPeD
 
 			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "NES", "SMS" );
 			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "nes", "sms" );
-			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "SMS CHR Bank", "SMS CHR Bank 4bpp" );
 			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "Map 2/4 bpp", "Map 2/4/8 bpp" );
 			
 			CheckBoxPalettePerCHR.Visible = false;
@@ -294,7 +293,7 @@ namespace MAPeD
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "CA65\\PCEAS" );
 
-			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp";
+			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin";
 			
 			CheckBoxPalettePerCHR.Visible = false;
 			
@@ -310,7 +309,7 @@ namespace MAPeD
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Substring( Project_exportFileDialog.Filter.IndexOf( "Z" ) ).Replace( "ZX Asm", "SjASMPlus" );
 			Project_exportFileDialog.DefaultExt = "zxa";
 
-			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp";
+			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin";
 			
 			CheckBoxPalettePerCHR.Visible	= false;
 			BtnSwapColors.Visible			= false;
@@ -338,7 +337,7 @@ namespace MAPeD
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "vasm\\SGDK (*.asm;*.h,*.s)" );
 
-			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp";
+			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin";
 			
 			CheckBoxPalettePerCHR.Visible = false;
 			
@@ -1041,11 +1040,11 @@ namespace MAPeD
 								update_graphics( true );
 							}
 							break;
-
+#endif //DEF_NES || DEF_SMS
 						case ".chr":
 						case ".bin":
 							{
-								int added_CHRs = m_data_manager.merge_CHR_bin( br );
+								int added_CHRs = project_data_converter_provider.get_converter().merge_CHR_bin( br, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
 								
 								if( added_CHRs > 0 )
 								{
@@ -1083,7 +1082,6 @@ namespace MAPeD
 								}
 							}
 							break;
-#endif //DEF_NES || DEF_SMS
 					}
 				}
 			}

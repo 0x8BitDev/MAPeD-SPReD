@@ -41,6 +41,8 @@ namespace MAPeD
 		Rectangle get_prj_scr_rect();
 		
 		void post_load_data_cleanup();
+		
+		int merge_CHR_bin( BinaryReader _br, tiles_data _data );
 	}
 
 	// Base functionality
@@ -370,6 +372,56 @@ namespace MAPeD
 				m_palettes = null;
 			}
 		}
+		
+		public int merge_CHR_bin( BinaryReader _br, tiles_data _data )
+		{
+			byte[] tmp_arr 	= new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
+			
+			int y;
+			
+			if( _br.BaseStream.Length < utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES )
+			{
+				return -1;
+			}
+			
+			int added_CHRs = 0;
+			
+			int chr_id = _data.get_first_free_spr8x8_id();
+			
+			if( chr_id >= 0 )
+			{
+				do
+				{
+					tmp_arr = _br.ReadBytes( utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES );
+					
+					for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
+					{
+						convert_CHR( y, ref tmp_arr, ref utils.tmp_spr8x8_buff );
+					}
+					
+					_data.from_spr8x8_to_CHR_bank( chr_id++, utils.tmp_spr8x8_buff );
+					
+					++added_CHRs;
+					
+					if( chr_id == utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+					{
+						break;
+					}
+				}
+				while( _br.BaseStream.Position + utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES <= _br.BaseStream.Length );
+			}
+			else
+			{
+				throw new Exception( "There is no free space in the active CHR bank!" );				
+			}
+			
+			return added_CHRs;
+		}
+		
+		protected virtual void convert_CHR( int _i, ref byte[] _tmp_data_arr, ref byte[] _CHR_data_arr )
+		{
+			throw new Exception( "Not implemented!" );				
+		}
 	}
 #if DEF_NES
 	// NES data converter
@@ -384,6 +436,21 @@ namespace MAPeD
 		{
 			load_CHR_data( _ver, _br, _prj_platform, ref _CHR_bank, delegate( byte _val ) { return ( byte )( _val & 0x03 ); });
 		}
+		
+		protected override void convert_CHR( int _y, ref byte[] _tmp_data_arr, ref byte[] _CHR_data_arr )
+		{
+			int shift_7_cnt;
+			
+			byte byte_0 = _tmp_data_arr[ _y ];
+			byte byte_1	= _tmp_data_arr[ _y + utils.CONST_SPR8x8_SIDE_PIXELS_CNT ];
+			
+			for( int x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+			{
+				shift_7_cnt = 7 - x;
+				
+				_CHR_data_arr[ x + ( _y << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) ] = ( byte )( ( ( byte_0 & ( 1 << shift_7_cnt ) ) >> shift_7_cnt ) | ( ( ( byte_1 << 1 ) & ( 1 << ( 8 - x ) ) ) >> shift_7_cnt ) );
+			}
+		}
 	}
 #elif DEF_SMS
 	// SMS data converter
@@ -393,6 +460,25 @@ namespace MAPeD
 		{
 			//...
 		}
+		
+		protected override void convert_CHR( int _y, ref byte[] _tmp_data_arr, ref byte[] _CHR_data_arr )
+		{
+			int shift_7_cnt;
+			
+			int ind_offset = _y << 2;
+			
+			byte byte_0	= _tmp_data_arr[ ind_offset ];
+			byte byte_1 = _tmp_data_arr[ ind_offset + 1 ];
+			byte byte_2	= _tmp_data_arr[ ind_offset + 2 ];
+			byte byte_3 = _tmp_data_arr[ ind_offset + 3 ];
+
+			for( int x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+			{
+				shift_7_cnt = 7 - x;
+				
+				_CHR_data_arr[ x + ( _y << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) ] = ( byte )( ( ( byte_0 >> shift_7_cnt ) & 0x01 ) | ( ( ( byte_1 >> shift_7_cnt ) & 0x01 ) << 1 ) | ( ( ( byte_2 >> shift_7_cnt ) & 0x01 ) << 2 ) | ( ( ( byte_3 >> shift_7_cnt ) & 0x01 ) << 3 ) );
+			}
+		}
 	}
 #elif DEF_PCE
 	// PCE data converter
@@ -401,6 +487,25 @@ namespace MAPeD
 		public project_data_converter()
 		{
 			//...
+		}
+		
+		protected override void convert_CHR( int _y, ref byte[] _tmp_data_arr, ref byte[] _CHR_data_arr )
+		{
+			int shift_7_cnt;
+			
+			int ind_offset = _y << 1;
+			
+			byte byte_0	= _tmp_data_arr[ ind_offset ]; 
+			byte byte_1 = _tmp_data_arr[ ind_offset + 1 ];
+			byte byte_2	= _tmp_data_arr[ ind_offset + 16 ];
+			byte byte_3 = _tmp_data_arr[ ind_offset + 17 ];
+
+			for( int x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+			{
+				shift_7_cnt = 7 - x;
+				
+				_CHR_data_arr[ x + ( _y << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) ] = ( byte )( ( ( byte_0 >> shift_7_cnt ) & 0x01 ) | ( ( ( byte_1 >> shift_7_cnt ) & 0x01 ) << 1 ) | ( ( ( byte_2 >> shift_7_cnt ) & 0x01 ) << 2 ) | ( ( ( byte_3 >> shift_7_cnt ) & 0x01 ) << 3 ) );
+			}
 		}
 	}
 #elif DEF_SMD
@@ -616,6 +721,18 @@ namespace MAPeD
 						data.palettes_arr[ plt_n ].subpalettes[ i >> 2 ][ i & 0x03 ] = ( i & 0x07 ) | ( plt_n << 3 );
 					}
 				}
+			}
+		}
+		
+		protected override void convert_CHR( int _y, ref byte[] _tmp_data_arr, ref byte[] _CHR_data_arr )
+		{
+			int shift_7_cnt;
+			
+			for( int x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
+			{
+				shift_7_cnt = 7 - x;
+				
+				_CHR_data_arr[ x + ( _y << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) ] = ( byte )( ( ( _tmp_data_arr[ _y ] >> shift_7_cnt ) & 0x01 ) == 0x01 ? 0:15 );
 			}
 		}
 	}

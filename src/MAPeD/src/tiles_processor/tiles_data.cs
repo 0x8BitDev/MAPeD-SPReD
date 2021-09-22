@@ -1307,6 +1307,7 @@ namespace MAPeD
 			int x;
 			int y;
 			int val;
+			int x_pos;
 
 #if DEF_SMD
 			int _bpp = 4;
@@ -1318,10 +1319,8 @@ namespace MAPeD
 #elif DEF_PCE
 			int j;
 			ushort data;
-			int x_pos;
 #elif DEF_ZX
 			byte data;
-			int x_pos;
 #endif
 #if DEF_SMS || DEF_SMD
 			int max_clr_ind = ( 2 << ( _bpp - 1 ) ) - 1;
@@ -1342,7 +1341,9 @@ namespace MAPeD
 						
 						for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
 						{
-							val = utils.tmp_spr8x8_buff[ ( y << 3 ) + ( 7 - x ) ];
+							x_pos = 7 - x;
+							
+							val = utils.tmp_spr8x8_buff[ ( y << 3 ) + x_pos ];
 							
 							data |= ( byte )( ( ( val >> j ) & 0x01 ) << x );
 						}
@@ -1359,7 +1360,9 @@ namespace MAPeD
 						
 						for( x = 0; x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; x++ )
 						{
-							val = utils.tmp_spr8x8_buff[ ( y << 3 ) + ( 7 - x ) ];
+							x_pos = 7 - x;
+							
+							val = utils.tmp_spr8x8_buff[ ( y << 3 ) + x_pos ];
 							
 							val = ( val > max_clr_ind ) ? 0:val;
 							
