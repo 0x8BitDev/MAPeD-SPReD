@@ -11,9 +11,7 @@
 
 		include "MOD_tilemap2x2_clr_render_settings.asm"
 
-		include "data/tilemap.zxa"
-
-COLORED_MAP	equ MAP_DATA_MAGIC&MAP_FLAG_TYPE_COLORED
+COLORED_MAP	equ MAP_DATA_MAGIC&MAP_FLAG_COLOR_TILES
 
 		IF !COLORED_MAP
 		UNDEFINE DEF_COLOR
@@ -24,25 +22,25 @@ COLORED_MAP	equ MAP_DATA_MAGIC&MAP_FLAG_TYPE_COLORED
 
 max_lev_tiles_w	equ	Lev0_wtls		; max width of a level in tiles
 
-	macro load_wdata data, addr
-	    	ld hl, addr
-		ld a, low data
+	macro load_wdata _data, _addr
+		ld hl, _addr
+		ld a, low _data
 		ld (hl), a
 		inc hl
-		ld a, high data
+		ld a, high _data
 		ld (hl), a
 	endm
 
-	macro load_bdata data, addr
-	    	ld hl, addr
-		ld a, data
+	macro load_bdata _data, _addr
+		ld hl, _addr
+		ld a, _data
 		ld (hl), a
 	endm
 
 main
 		di	
 
-		ld sp, 24576	;!!!!!!!
+		ld sp, 24999	;!!!!!!!
 
 		load_wdata Lev0_map, 	tilemap_render.map_data		; game level tile map address
 		load_wdata Lev0_tl,	tilemap_render.map_tiles_data	; tile graphics data
@@ -161,5 +159,13 @@ main
 
 im_prc		ei
 		reti
+
+		include "data/tilemap.zxa"
+PROG_END
+		DISPLAY "Program end address: ", /D, PROG_END, " (#", /H, PROG_END, ")"
+
+		IF ( PROG_END > #C000 ) && DEF_128K_DBL_BUFFER
+		DISPLAY "WARNING: The program overlaps extended memory address space! Double buffering may cause graphics artefacts!"
+		ENDIF
 
 		savesna "../bin/tilemap_viewer.sna", main

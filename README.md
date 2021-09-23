@@ -180,12 +180,12 @@ coming soon...
 **SMS: WLA-DX assembler v9.10**
 - Github: https://github.com/vhelin/wla-dx
 
-**ZX Spectrum: SjASMPlus - Z80 Assembly Cross-Compiler (v1.07 RC7)**
-- The latest version: https://sourceforge.net/projects/sjasmplus/
+**ZX Spectrum: SjASMPlus - Z80 Assembly Cross-Compiler (v1.18.3)**
+- The latest version: https://github.com/z00m128/sjasmplus
 
-To compile the **NES/SMS/ZX** samples on Windows you can run **'compile.bat'** which contains in all samples directories.
+To compile the samples on Windows you can run **'compile.bat'** which contains in all sample directories.
 
-To compile them on Linux you can run **'makefile'** which also contains in all samples directories ( except of ZX sample ).
+To compile them on Linux you can run **'makefile'** which also contains in all sample directories except of **ZX** samples.
 
 - `make` to compile binaries to the `./samples/<platform>/bin` directory;
 - `make run` to run compiled sample with **FCEUX**/**Mednafen** emulators;

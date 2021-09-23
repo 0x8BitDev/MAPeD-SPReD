@@ -62,10 +62,27 @@ scr_buff_tiles_h	equ scr_h >> 1	; the shadow buffer height in tiles
 _x_tile_addr_tbl	block ( max_lev_tiles_w << 1 ), 0	; address table for X coordinate
 
 			align 256
-tiles_addr_tbl		block 256,0	; tile graphics address table
-tiles_clr_addr_tbl      block 256,0     ; tile colors(attrbutes) address table
+tiles_addr_tbl		block 512,0	; tile graphics address table
+tiles_clr_addr_tbl	block 512,0	; tile colors(attrbutes) address table
+
+		; add 'A *= 2' to an input address
+		; OUT: hl
+
+	macro add_addr_ax2 _addr
+;		ld h, high _addr	<-- optimized version when a tile index is premultiplied by 2
+;		ld l, a			<-- (a) is premultiplied by 2 (max 128 tiles)
+
+		ld h, high _addr
+		add a, a
+		jp nc, .skip
+		inc h 
+.skip		
+		ld l, a
+	endm
 
 DATA_HOLE_START
+
+		; the valid scr_buff addresses are #8000 or #C000
 
 		align 8192
 
@@ -88,6 +105,8 @@ clr_buff	block 768, 0		; color buffer
 clr_buff	block 512, 0		; color buffer
 		ENDIF	//DEF_FULLSCREEN
 		ENDIF	//DEF_COLOR
+
+scr_buff_next_tile_row_offs = -4064
 
 BACK_BUFFER_END
 
@@ -636,7 +655,7 @@ _skip_hlf_tile_drw
 
 		IF	DEF_FULLSCREEN
 		ld hl, scr_buff + #1000 + #20 - 1
-		ld de, #f020
+		ld de, scr_buff_next_tile_row_offs
 		ld b, 4
 .shift_loop2
 		ld c, 16
@@ -689,8 +708,7 @@ _draw_tiles_color_column
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_clr_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_clr_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile color data address from the table
@@ -734,8 +752,7 @@ _draw_tiles_color_column_shifted_up
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_clr_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_clr_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile color data address from the table
@@ -758,8 +775,7 @@ _draw_tiles_color_column_shifted_up
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_clr_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_clr_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile color data address from the table
@@ -791,14 +807,13 @@ _draw_tiles_column
 
 		ld (_temp_sp), sp
 
-		ld bc, #f020
+		ld bc, scr_buff_next_tile_row_offs
 
 .loop		exx
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -838,14 +853,13 @@ _draw_tiles_column_shifted_up_8b
 
 		ld (_temp_sp), sp
 
-		ld bc, #f020
+		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -877,8 +891,7 @@ _draw_tiles_column_shifted_up_8b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -920,14 +933,13 @@ _draw_half_tiles_column
 
 		ld (_temp_sp), sp
 
-		ld bc, #f020
+		ld bc, scr_buff_next_tile_row_offs
 
 .loop		exx
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -963,14 +975,13 @@ _draw_half_tiles_column_shifted_up_4b
 
 		ld (_temp_sp), sp
 
-		ld bc, #f020
+		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -998,8 +1009,7 @@ _draw_half_tiles_column_shifted_up_4b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1035,14 +1045,13 @@ _draw_half_tiles_column_shifted_up_8b
 
 		ld (_temp_sp), sp
 
-		ld bc, #f020
+		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1070,8 +1079,7 @@ _draw_half_tiles_column_shifted_up_8b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1107,14 +1115,13 @@ _draw_half_tiles_column_shifted_up_12b
 
 		ld (_temp_sp), sp
 
-		ld bc, #f020
+		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1142,8 +1149,7 @@ _draw_half_tiles_column_shifted_up_12b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1179,14 +1185,13 @@ _draw_tiles_column_shifted_up_4b
 
 		ld (_temp_sp), sp
 
-		ld bc, #f020
+		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1218,8 +1223,7 @@ _draw_tiles_column_shifted_up_4b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1259,14 +1263,13 @@ _draw_tiles_column_shifted_up_12b
 
 		ld (_temp_sp), sp
 
-		ld bc, #f020
+		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1298,8 +1301,7 @@ _draw_tiles_column_shifted_up_12b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		ld h, high tiles_addr_tbl
-		ld l, a
+		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1596,7 +1598,7 @@ _calc_tile_addr
 ; this bold piece of code must be inlined in two places 
 ; and I didn't want to duplicate it, so I did the macro
 
-	MACRO _128K_DBL_BUFFERING offset, drw_r_u, drw_r_d, drw_clr_r, drw_sthb1, drw_sthb2
+	MACRO _128K_DBL_BUFFERING __offset, __drw_r_u, __drw_r_d, __drw_clr_r, __drw_sthb1
 
 		IF	DEF_128K_DBL_BUFFER
 		ld a, (_scr_trigg)
@@ -1611,42 +1613,25 @@ _calc_tile_addr
 		call _switch_Uscr		; show the main screen and draw on the extended one
 
 		ld a, #c8
-		ld (drw_sthb1), a
-		ld (drw_sthb2), a
+		ld (__drw_sthb1), a
 		
-		; the top left part of the screen
+		; the top part of the screen
 
-		ld hl, #c000 + #10 + offset
+		ld hl, #c000 + #10 + __offset
 		exx
-		ld hl, scr_buff + offset
+		ld hl, scr_buff + __offset
 		exx
-		call _draw_scr_16x16
-
-		; the top right part of the screen
-
-		ld hl, #c000 + #20 - offset
-		exx
-		ld hl, scr_buff + #10 + offset
-		exx
-		call drw_r_u	;_draw_scr_14x16
+		call __drw_r_u
 
 		IF	DEF_FULLSCREEN
 
-		; the bottom left part of the screen
+		; the bottom part of the screen
 
-		ld hl, #d000 + #10 + offset
+		ld hl, #d000 + #10 + __offset
 		exx
-		ld hl, scr_buff + #1000 + offset
+		ld hl, scr_buff + #1000 + __offset
 		exx
-		call _draw_scr_16x8
-
-		; the bottom right part of the screen
-
-		ld hl, #d000 + #20 - offset
-		exx
-		ld hl, scr_buff + #1000 + #10 + offset
-		exx
-		call drw_r_d	;_draw_scr_14x8
+		call __drw_r_d
 
 		ENDIF	//DEF_FULLSCREEN
 
@@ -1654,17 +1639,11 @@ _calc_tile_addr
 
 		; draw color
 
-		ld hl, #d800 + #10 + offset
+		ld hl, #d800 + #10 + __offset
 		exx
-		ld hl, clr_buff + offset
+		ld hl, clr_buff + __offset
 		exx
-		call _draw_clr_16x24
-
-		ld hl, #d800 + #20 - offset
-		exx
-		ld hl, clr_buff + #10 + offset
-		exx
-		call drw_clr_r	;_draw_clr_14x24
+		call __drw_clr_r
 
 		ENDIF	//DEF_COLOR
 
@@ -1674,8 +1653,7 @@ _calc_tile_addr
 		call _switch_Escr		; show the extended screen and draw on the main one
 
 		ld a, #48
-		ld (drw_sthb1), a
-		ld (drw_sthb2), a
+		ld (__drw_sthb1), a
 		
 		ENDIF	//DEF_128K_DBL_BUFFER
 		
@@ -1690,41 +1668,25 @@ show_screen
 
 		di
 
-		_128K_DBL_BUFFERING 0, _draw_scr_16x16, _draw_scr_16x8, _draw_clr_16x24, _drw_sthb1, _drw_sthb1
+		_128K_DBL_BUFFERING 0, _draw_scr_32x16, _draw_scr_32x8, _draw_clr_32x24, _drw_sthb1
 
-		; the top left part of the screen
+		; the top part of the screen
 
 		ld hl, #4000 + #10
 		exx
 		ld hl, scr_buff
 		exx
-		call _draw_scr_16x16
-
-		; the top right part of the screen
-
-		ld hl, #4000 + #20
-		exx
-		ld hl, scr_buff + #10
-		exx
-		call _draw_scr_16x16
+		call _draw_scr_32x16
 
 		IF	DEF_FULLSCREEN
 
-		; the bottom left part of the screen
+		; the bottom part of the screen
 
 		ld hl, #5000 + #10
 		exx
 		ld hl, scr_buff + #1000
 		exx
-		call _draw_scr_16x8
-
-		; the bottom right part of the screen
-
-		ld hl, #5000 + #20
-		exx
-		ld hl, scr_buff + #1000 + #10
-		exx
-		call _draw_scr_16x8
+		call _draw_scr_32x8
 
 		ENDIF	//DEF_FULLSCREEN
 
@@ -1736,20 +1698,14 @@ show_screen
 		exx
 		ld hl, clr_buff
 		exx
-		call _draw_clr_16x24
-
-		ld hl, #5800 + #20
-		exx
-		ld hl, clr_buff + #10
-		exx
-		call _draw_clr_16x24
+		call _draw_clr_32x24
 
 		ENDIF	//DEF_COLOR
 		
 		ret
 
 		IF	DEF_COLOR
-_draw_clr_16x24
+_draw_clr_32x24
 
 		ld (_temp_sp), sp
 
@@ -1757,7 +1713,7 @@ _draw_clr_16x24
 
 		ld sp, hl
 
-		ld bc, 32
+		ld bc, 16
 		add hl, bc
 
 		pop af
@@ -1779,7 +1735,40 @@ _draw_clr_16x24
 		push bc
 		push af
 
-		ld bc, 32
+		ld bc, 16
+		add hl, bc
+
+		exx
+		ex af,af'
+		push de
+		push bc
+		push af
+
+		ld sp, hl
+
+		ld bc, 16
+		add hl, bc
+
+		pop af
+		pop bc
+		pop de
+		exx
+		ex af,af'
+		pop af
+		pop bc
+		pop de
+		pop ix
+		pop iy
+		
+		ld sp, hl
+
+		push iy
+		push ix
+		push de
+		push bc
+		push af
+
+		ld bc, 16
 		add hl, bc
 
 		exx
@@ -1789,9 +1778,7 @@ _draw_clr_16x24
 		push af
 
 		exx
-		dec hl  	; <-- this address correction allows to stop drawing on the right part of the screen correctly
 		ld a, h
-		inc hl          ; <-- this address correction allows to stop drawing on the right part of the screen correctly
 		and #03
 
 		IF	DEF_FULLSCREEN
@@ -1808,10 +1795,169 @@ _draw_clr_16x24
 
 		ENDIF	//DEF_COLOR
 
-_draw_scr_16x16
+_draw_scr_32x16
 		ld (_temp_sp), sp
 
-_loop16x16	exx
+_loop32x16	exx
+		
+		dup 7
+
+		ld sp, hl
+		inc h
+		pop af
+		pop bc
+		pop de
+		exx
+		ex af,af'
+		pop af
+		pop bc
+		pop de
+		pop ix
+		pop iy
+		
+		ld sp, hl
+		push iy
+		push ix
+		push de
+		push bc
+		push af
+		inc h
+		exx
+		ex af,af'
+		push de
+		push bc
+		push af
+
+		edup
+
+		ld sp, hl
+		inc h
+		pop af
+		pop bc
+		pop de
+		exx
+		ex af,af'
+		pop af
+		pop bc
+		pop de
+		pop ix
+		pop iy
+		
+		ld sp, hl
+
+		push iy
+		push ix
+		push de
+		push bc
+		push af
+		exx
+		ex af,af'
+		push de
+		push bc
+		push af
+
+		exx			
+		ld bc, -1776
+		add hl, bc
+		exx
+		ld bc, -2032
+		add hl, bc
+
+		dup 7
+
+		ld sp, hl
+		inc h
+		pop af
+		pop bc
+		pop de
+		exx
+		ex af,af'
+		pop af
+		pop bc
+		pop de
+		pop ix
+		pop iy
+		
+		ld sp, hl
+
+		push iy
+		push ix
+		push de
+		push bc
+		push af
+		inc h
+		exx
+		ex af,af'
+		push de
+		push bc
+		push af
+
+		edup
+
+		ld sp, hl
+		inc h
+
+		bit 4, h
+		jp z, .cont
+
+		ld bc, scr_buff_next_tile_row_offs
+		add hl, bc
+
+.cont		pop af
+		pop bc
+		pop de
+		exx
+		ex af,af'
+		pop af
+		pop bc
+		pop de
+		pop ix
+		pop iy
+		
+		ld sp, hl
+		push iy
+		push ix
+		push de
+		push bc
+		push af
+		exx
+		ex af,af'
+		push de
+		push bc
+		push af
+
+		ld bc, -16
+		add hl, bc
+
+		exx
+		dec hl			
+		ld a, h                 ; go to line below in video memory
+		sub 7
+		ld h, a
+		ld a, l
+		add 16
+		ld l, a
+		inc hl
+
+		jp nc, _loop32x16
+
+		bit 3, h
+		IF	DEF_128K_DBL_BUFFER
+		db #26
+_drw_sthb1	db 0
+		ELSE
+		ld h, #48		; go to the second third
+		ENDIF	//DEF_128K_DBL_BUFFER
+		jp z, _loop32x16
+
+		ld sp, (_temp_sp)		
+
+		ret
+
+_draw_scr_32x8
+		ld (_temp_sp), sp
+
+.loop		exx
 
 		dup 7
 
@@ -1846,13 +1992,7 @@ _loop16x16	exx
 		ld sp, hl
 		inc h
 
-		bit 4, h
-		jr z, .cont
-
-		ld de, #f020
-		add hl, de
-
-.cont		pop af
+		pop af
 		pop bc
 		pop de
 		exx
@@ -1876,34 +2016,11 @@ _loop16x16	exx
 		push af
 
 		exx			
-		dec hl			; <-- this address correction allows to stop drawing on the right part of the screen correctly
-		ld a, h                 ; go to line below in video memory
-		sub 7
-		ld h, a
-		ld a, l
-		add 32
-		ld l, a
-		inc hl			; <-- this address correction allows to stop drawing on the right part of the screen correctly
-
-		jp nc, _loop16x16
-
-		bit 3, h
-		IF	DEF_128K_DBL_BUFFER
-		db #26
-_drw_sthb1	db 0
-		ELSE
-		ld h, #48		; go to the second third
-		ENDIF	//DEF_128K_DBL_BUFFER
-		jp z, _loop16x16
-
-		ld sp, (_temp_sp)		
-
-		ret
-
-_draw_scr_16x8
-		ld (_temp_sp), sp
-
-.loop		exx
+		ld bc, -1776
+		add hl, bc
+		exx
+		ld bc, -2032
+		add hl, bc
 
 		dup 7
 
@@ -1939,10 +2056,10 @@ _draw_scr_16x8
 		inc h
 
 		bit 5, h
-		jr z, .cont
+		jp z, .cont
 
-		ld de, #f020
-		add hl, de
+		ld bc, scr_buff_next_tile_row_offs
+		add hl, bc
 
 .cont		pop af
 		pop bc
@@ -1967,13 +2084,16 @@ _draw_scr_16x8
 		push bc
 		push af
 
+		ld bc, -16
+		add hl, bc
+
 		exx			
 		dec hl			; <-- this address correction allows to stop drawing on the right part of the screen correctly
 		ld a, h                 ; go to line below in video memory
 		sub 7
 		ld h, a
 		ld a, l
-		add 32
+		add 16
 		ld l, a
 		inc hl			; <-- this address correction allows to stop drawing on the right part of the screen correctly
 
@@ -1993,41 +2113,25 @@ show_screen
 
 		di
 
-		_128K_DBL_BUFFERING 1, _draw_scr_14x16, _draw_scr_14x8, _draw_clr_14x24, _drw_sthb1, _drw_sthb2
+		_128K_DBL_BUFFERING 1, _draw_scr_30x16, _draw_scr_30x8, _draw_clr_30x24, _drw_sthb1
 
-		; the top left part of the screen
+		; the top part of the screen
 
 		ld hl, #4000 + #10 + 1
 		exx
 		ld hl, scr_buff + 1
 		exx
-		call _draw_scr_16x16
-
-		; the top right part of the screen
-
-		ld hl, #4000 + #20 - 1
-		exx
-		ld hl, scr_buff + #10 + 1
-		exx
-		call _draw_scr_14x16
+		call _draw_scr_30x16
 
 		IF	DEF_FULLSCREEN
 
-		; the bottom left part of the screen
+		; the bottom part of the screen
 
 		ld hl, #5000 + #10 + 1
 		exx
 		ld hl, scr_buff + #1000 + 1
 		exx
-		call _draw_scr_16x8
-
-		; the bottom right part of the screen
-
-		ld hl, #5000 + #20 - 1
-		exx
-		ld hl, scr_buff + #1000 + #10 + 1
-		exx
-		call _draw_scr_14x8
+		call _draw_scr_30x8
 
 		ENDIF	//DEF_FULLSCREEN
 
@@ -2039,20 +2143,14 @@ show_screen
 		exx
 		ld hl, clr_buff + 1
 		exx
-		call _draw_clr_16x24
-
-		ld hl, #5800 + #20 - 1
-		exx
-		ld hl, clr_buff + #10 + 1
-		exx
-		call _draw_clr_14x24
+		call _draw_clr_30x24
 
 		ENDIF	//DEF_COLOR
 		
 		ret
 
 		IF	DEF_COLOR
-_draw_clr_16x24
+_draw_clr_30x24
 
 		ld (_temp_sp), sp
 
@@ -2060,7 +2158,7 @@ _draw_clr_16x24
 
 		ld sp, hl
 
-		ld bc, 32
+		ld bc, 16
 		add hl, bc
 
 		pop af
@@ -2082,7 +2180,7 @@ _draw_clr_16x24
 		push bc
 		push af
 
-		ld bc, 32
+		ld bc, 14
 		add hl, bc
 
 		exx
@@ -2091,31 +2189,9 @@ _draw_clr_16x24
 		push bc
 		push af
 
-		exx
-		ld a, h
-		and #03
-
-		IF	DEF_FULLSCREEN
-		cp #03
-		ELSE
-		cp #02
-		ENDIF	//DEF_FULLSCREEN
-		
-		jp nz, .loop
-		
-		ld sp, (_temp_sp)		
-
-		ret
-
-_draw_clr_14x24
-
-		ld (_temp_sp), sp
-
-.loop		exx
-
 		ld sp, hl
 
-		ld bc, 32
+		ld bc, 16
 		add hl, bc
 
 		pop af
@@ -2135,7 +2211,7 @@ _draw_clr_14x24
 		push bc
 		push af
 
-		ld bc, 32
+		ld bc, 18
 		add hl, bc
 
 		exx
@@ -2162,11 +2238,11 @@ _draw_clr_14x24
 
 		ENDIF	//DEF_COLOR
 
-_draw_scr_16x16
+_draw_scr_30x16
 		ld (_temp_sp), sp
 
-_loop16x16	exx
-
+_loop30x16	exx
+		
 		dup 7
 
 		ld sp, hl
@@ -2199,14 +2275,7 @@ _loop16x16	exx
 
 		ld sp, hl
 		inc h
-
-		bit 4, h
-		jr z, .cont
-
-		ld de, #f020
-		add hl, de
-
-.cont		pop af
+		pop af
 		pop bc
 		pop de
 		exx
@@ -2218,6 +2287,7 @@ _loop16x16	exx
 		pop iy
 		
 		ld sp, hl
+
 		push iy
 		push ix
 		push de
@@ -2230,119 +2300,100 @@ _loop16x16	exx
 		push af
 
 		exx			
+		ld bc, -1778
+		add hl, bc
+		exx
+		ld bc, -2032
+		add hl, bc
+
+		dup 7
+
+		ld sp, hl
+		inc h
+		pop af
+		pop bc
+		pop de
+		exx
+		ex af,af'
+		pop af
+		pop bc
+		pop de
+		pop ix
+		
+		ld sp, hl
+
+		push ix
+		push de
+		push bc
+		push af
+		inc h
+		exx
+		ex af,af'
+		push de
+		push bc
+		push af
+
+		edup
+
+		ld sp, hl
+		inc h
+
+		bit 4, h
+		jp z, .cont
+
+		ld bc, scr_buff_next_tile_row_offs
+		add hl, bc
+
+.cont		pop af
+		pop bc
+		pop de
+		exx
+		ex af,af'
+		pop af
+		pop bc
+		pop de
+		pop ix
+		
+		ld sp, hl
+		push ix
+		push de
+		push bc
+		push af
+		exx
+		ex af,af'
+		push de
+		push bc
+		push af
+
+		ld bc, -16
+		add hl, bc
+
+		exx
+		dec hl			
 		ld a, h                 ; go to line below in video memory
 		sub 7
 		ld h, a
 		ld a, l
-		add 32
+		add 18
 		ld l, a
+		inc hl
 
-		jp nc, _loop16x16
+		jp nc, _loop30x16
 
 		bit 3, h
-
 		IF	DEF_128K_DBL_BUFFER
 		db #26
 _drw_sthb1	db 0
 		ELSE
 		ld h, #48		; go to the second third
 		ENDIF	//DEF_128K_DBL_BUFFER
-
-		jp z, _loop16x16
-
-		ld sp, (_temp_sp)		
-
-		ret
-
-_draw_scr_14x16
-		ld (_temp_sp), sp
-
-_loop14x16	exx
-
-		dup 7
-
-		ld sp, hl
-		inc h
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		
-		ld sp, hl
-		push ix
-		push de
-		push bc
-		push af
-		inc h
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		edup
-
-		ld sp, hl
-		inc h
-
-		bit 4, h
-		jr z, .cont
-
-		ld de, #f020
-		add hl, de
-
-.cont		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		
-		ld sp, hl
-		push ix
-		push de
-		push bc
-		push af
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		exx			
-		ld a, h                 ; go to line below in video memory
-		sub 7
-		ld h, a
-		ld a, l
-		add 32
-		ld l, a
-
-		jp nc, _loop14x16
-
-		bit 3, h
-
-		IF	DEF_128K_DBL_BUFFER
-		db #26
-_drw_sthb2	db 0
-		ELSE
-		ld h, #48		; go to the second third
-		ENDIF	//DEF_128K_DBL_BUFFER
-
-		jp z, _loop14x16
+		jp z, _loop30x16
 
 		ld sp, (_temp_sp)		
 
 		ret
 
-_draw_scr_16x8
+_draw_scr_30x8
 		ld (_temp_sp), sp
 
 .loop		exx
@@ -2380,13 +2431,7 @@ _draw_scr_16x8
 		ld sp, hl
 		inc h
 
-		bit 5, h
-		jr z, .cont
-
-		ld de, #f020
-		add hl, de
-
-.cont		pop af
+		pop af
 		pop bc
 		pop de
 		exx
@@ -2410,23 +2455,11 @@ _draw_scr_16x8
 		push af
 
 		exx			
-		ld a, h                 ; go to line below in video memory
-		sub 7
-		ld h, a
-		ld a, l
-		add 32
-		ld l, a
-
-		jp nc, .loop		
-
-		ld sp, (_temp_sp)		
-
-		ret
-
-_draw_scr_14x8
-		ld (_temp_sp), sp
-
-.loop		exx
+		ld bc, -1778
+		add hl, bc
+		exx
+		ld bc, -2032
+		add hl, bc
 
 		dup 7
 
@@ -2460,10 +2493,10 @@ _draw_scr_14x8
 		inc h
 
 		bit 5, h
-		jr z, .cont
+		jp z, .cont
 
-		ld de, #f020
-		add hl, de
+		ld bc, scr_buff_next_tile_row_offs
+		add hl, bc
 
 .cont		pop af
 		pop bc
@@ -2486,20 +2519,25 @@ _draw_scr_14x8
 		push bc
 		push af
 
+		ld bc, -16
+		add hl, bc
+
 		exx			
+		dec hl			; <-- this address correction allows to stop drawing on the right part of the screen correctly
 		ld a, h                 ; go to line below in video memory
 		sub 7
 		ld h, a
 		ld a, l
-		add 32
+		add 18
 		ld l, a
+		inc hl			; <-- this address correction allows to stop drawing on the right part of the screen correctly
 
 		jp nc, .loop		
 
 		ld sp, (_temp_sp)		
 
 		ret
-		
+
 		ENDIF	//DEF_MOVE_STEP == MS_16b
 
 		IF	DEF_128K_DBL_BUFFER
