@@ -204,7 +204,7 @@ init
 
 		ld a, c
 		or b
-		jr nz, .loop1
+		jp nz, .loop1
 
 		; fill the tile graphics lookup table
 		
@@ -316,7 +316,7 @@ draw_tiles
 		and #02
 		ENDIF	//DEF_MOVE_STEP == MS_4b
 
-		jr z, .cont1
+		jp z, .cont1
 
 		dec ixh
 		inc iy
@@ -410,10 +410,10 @@ draw_tiles
 		ld a, l
 		and #03
 		cp #03
-		jr nz, .cont2			; if coordinate is not a multiple of 3, skip column drawing
+		jp nz, .cont2			; if coordinate is not a multiple of 3, skip column drawing
 
 		and #01
-		jr z, .cont2			; if coordinate is even, then skip column drawing
+		jp z, .cont2			; if coordinate is even, then skip column drawing
 
 		ld hl, (y_pos)
 
@@ -487,7 +487,7 @@ _hl_mptls_h_mn	dw 0
 		inc l		
 
 		dec ixh
-		jr nz, _drw_loop1
+		jp nz, _drw_loop1
 
 		IF	DEF_FULLSCREEN
 
@@ -532,7 +532,7 @@ _hl_mptls_h_fs	dw 0
 		inc l		
 
 		dec ixh
-		jr nz, _drw_loop2
+		jp nz, _drw_loop2
 
 		ENDIF	//DEF_FULLSCREEN
 
@@ -580,7 +580,7 @@ _hl_mptls_h_cl	dw 0
 		inc l		
 
 		dec ixh
-		jr nz, _drw_clr_loop
+		jp nz, _drw_clr_loop
 
 		ENDIF	//DEF_COLOR
 
@@ -594,7 +594,7 @@ _hl_mptls_h_cl	dw 0
 		ld a, e
 		and #03
 		cp #03
-		jr nz, _skip_hlf_tile_drw
+		jp nz, _skip_hlf_tile_drw
 
 		; draw one CHR wide strip on the right side
 
@@ -681,7 +681,7 @@ _skip_hlf_tile_drw
 		ld h, a		; 30t
 
 		dec c
-		jr nz, .shift_loop3
+		jp nz, .shift_loop3
 
 		add hl, de
 		
@@ -1383,7 +1383,7 @@ _hl_mptls_h_mn	dw 0
 		inc l		
 
 		dec ixh
-		jr nz, _drw_loop1
+		jp nz, _drw_loop1
 
 		IF	DEF_FULLSCREEN
 
@@ -1425,7 +1425,7 @@ _hl_mptls_h_fs	dw 0
 		inc l		
 
 		dec ixh
-		jr nz, _drw_loop2
+		jp nz, _drw_loop2
 
 		ENDIF	//DEF_FULLSCREEN
 
@@ -1470,7 +1470,7 @@ _hl_mptls_h_cl	dw 0
 		inc l		
 
 		dec ixh
-		jr nz, _drw_loop_clr
+		jp nz, _drw_loop_clr
 
 		ENDIF	//DEF_COLOR
 
@@ -1484,10 +1484,10 @@ _fix_x_y
 		ld hl, (x_pos)
 
 		bit 7, h
-		jr z, .cont1
+		jp z, .cont1
 
 		ld hl, 0
-		jr __save_x
+		jp __save_x
 
 .cont1		
 		db #11			; ld de, scr_steps_w
@@ -1501,7 +1501,7 @@ _de_map_st_w	dw 0
 		and a			; reset the carry flag, just in case...
 		sbc hl, de  		; if ( x_pos + scr_w ) < map_chrs_w, then continue
 
-		jr c, __cont2
+		jp c, __cont2
 
 		ld de, (x_pos)
 		ex de, hl
@@ -1513,10 +1513,10 @@ __save_x	ld (x_pos), hl
 __cont2		ld hl, (y_pos)
 
 		bit 7, h
-		jr z, .cont3
+		jp z, .cont3
 
 		ld hl, 0
-		jr __save_y
+		jp __save_y
 		
 .cont3		
 		db #11			; ld de, scr_steps_h
@@ -1595,71 +1595,12 @@ _calc_tile_addr
 
 		ret
 
-; this bold piece of code must be inlined in two places 
-; and I didn't want to duplicate it, so I did the macro
-
-	MACRO _128K_DBL_BUFFERING __offset, __drw_r_u, __drw_r_d, __drw_clr_r, __drw_sthb1
-
-		IF	DEF_128K_DBL_BUFFER
-		ld a, (_scr_trigg)
-
-		xor #01
-		cp #01
-
-		ld (_scr_trigg), a
-
-		jr nz, .draw_scr0
-
-		call _switch_Uscr		; show the main screen and draw on the extended one
-
-		ld a, #c8
-		ld (__drw_sthb1), a
-		
-		; the top part of the screen
-
-		ld hl, #c000 + #10 + __offset
-		exx
-		ld hl, scr_buff + __offset
-		exx
-		call __drw_r_u
-
-		IF	DEF_FULLSCREEN
-
-		; the bottom part of the screen
-
-		ld hl, #d000 + #10 + __offset
-		exx
-		ld hl, scr_buff + #1000 + __offset
-		exx
-		call __drw_r_d
-
-		ENDIF	//DEF_FULLSCREEN
-
-		IF	DEF_COLOR		
-
-		; draw color
-
-		ld hl, #d800 + #10 + __offset
-		exx
-		ld hl, clr_buff + __offset
-		exx
-		call __drw_clr_r
-
-		ENDIF	//DEF_COLOR
-
-		ret
-
-.draw_scr0
-		call _switch_Escr		; show the extended screen and draw on the main one
-
-		ld a, #48
-		ld (__drw_sthb1), a
-		
-		ENDIF	//DEF_128K_DBL_BUFFER
-		
-	ENDM
-
 		IF	DEF_MOVE_STEP == MS_16b
+LR_border_CHRs	= 0
+		ELSE	// SM_8b / SM_4b
+LR_border_CHRs	= 1
+		ENDIF	//DEF_MOVE_STEP == MS_16b
+
 show_screen	
 		IF	DEF_VERT_SYNC
 		ei
@@ -1668,35 +1609,65 @@ show_screen
 
 		di
 
-		_128K_DBL_BUFFERING 0, _draw_scr_32x16, _draw_scr_32x8, _draw_clr_32x24, _drw_sthb1
+		IF	DEF_128K_DBL_BUFFER
 
-		; the top part of the screen
+		ld a, (_scr_trigg)
 
-		ld hl, #4000 + #10
+		xor #01
+		cp #01
+
+		ld (_scr_trigg), a
+
+		jp nz, .draw_scr0
+
+		call _switch_Uscr		; show the main screen and draw on the extended one
+
+		ld a, #80			; OR val to a high byte of a screen address ( the extended screen address )
+		ld (_drw_sthb1), a
+		
+		; draw black/white image
+
+		ld hl, #c000 + #10 + LR_border_CHRs
 		exx
-		ld hl, scr_buff
+		ld hl, scr_buff + LR_border_CHRs
 		exx
-		call _draw_scr_32x16
+		call _draw_scr_32x24
 
-		IF	DEF_FULLSCREEN
-
-		; the bottom part of the screen
-
-		ld hl, #5000 + #10
-		exx
-		ld hl, scr_buff + #1000
-		exx
-		call _draw_scr_32x8
-
-		ENDIF	//DEF_FULLSCREEN
-
-		IF	DEF_COLOR		
-
+		IF	DEF_COLOR
 		; draw color
 
-		ld hl, #5800 + #10
+		ld hl, #d800 + #10 + LR_border_CHRs
 		exx
-		ld hl, clr_buff
+		ld hl, clr_buff + LR_border_CHRs
+		exx
+		call _draw_clr_32x24
+
+		ENDIF	//DEF_COLOR
+
+		ret
+
+.draw_scr0
+		call _switch_Escr		; show the extended screen and draw on the main one
+
+		ld a, #00			; OR val to a high byte of a screen address ( the main screen address )
+		ld (_drw_sthb1), a
+		
+		ENDIF	//DEF_128K_DBL_BUFFER
+
+		; draw black/white image
+
+		ld hl, #4000 + #10 + LR_border_CHRs
+		exx
+		ld hl, scr_buff + LR_border_CHRs
+		exx
+		call _draw_scr_32x24
+
+		IF	DEF_COLOR
+		; draw color
+
+		ld hl, #5800 + #10 + LR_border_CHRs
+		exx
+		ld hl, clr_buff + LR_border_CHRs
 		exx
 		call _draw_clr_32x24
 
@@ -1735,7 +1706,7 @@ _draw_clr_32x24
 		push bc
 		push af
 
-		ld bc, 16
+		ld bc, 16 - ( LR_border_CHRs << 1 )
 		add hl, bc
 
 		exx
@@ -1758,17 +1729,23 @@ _draw_clr_32x24
 		pop bc
 		pop de
 		pop ix
+
+		IF DEF_MOVE_STEP == MS_16b
 		pop iy
+		ENDIF
 		
 		ld sp, hl
 
+		IF DEF_MOVE_STEP == MS_16b
 		push iy
+		ENDIF
+
 		push ix
 		push de
 		push bc
 		push af
 
-		ld bc, 16
+		ld bc, 16 + ( LR_border_CHRs << 1 )
 		add hl, bc
 
 		exx
@@ -1795,10 +1772,13 @@ _draw_clr_32x24
 
 		ENDIF	//DEF_COLOR
 
-_draw_scr_32x16
+_draw_scr_32x24
+		ld a, #64			; bit 4, h
+		ld (_drw_tchk1), a
+
 		ld (_temp_sp), sp
 
-_loop32x16	exx
+_loop32x24	exx
 		
 		dup 7
 
@@ -1857,7 +1837,7 @@ _loop32x16	exx
 		push af
 
 		exx			
-		ld bc, -1776
+		ld bc, -1776 - ( LR_border_CHRs << 1 )
 		add hl, bc
 		exx
 		ld bc, -2032
@@ -1876,11 +1856,17 @@ _loop32x16	exx
 		pop bc
 		pop de
 		pop ix
+
+		IF DEF_MOVE_STEP == MS_16b
 		pop iy
+		ENDIF
 		
 		ld sp, hl
 
+		IF DEF_MOVE_STEP == MS_16b
 		push iy
+		ENDIF
+
 		push ix
 		push de
 		push bc
@@ -1897,7 +1883,8 @@ _loop32x16	exx
 		ld sp, hl
 		inc h
 
-		bit 4, h
+		db #cb
+_drw_tchk1	db 0			; bit 4, h / bit 5, h
 		jp z, .cont
 
 		ld bc, scr_buff_next_tile_row_offs
@@ -1912,10 +1899,17 @@ _loop32x16	exx
 		pop bc
 		pop de
 		pop ix
+
+		IF DEF_MOVE_STEP == MS_16b
 		pop iy
+		ENDIF
 		
 		ld sp, hl
+
+		IF DEF_MOVE_STEP == MS_16b
 		push iy
+		ENDIF
+
 		push ix
 		push de
 		push bc
@@ -1935,610 +1929,63 @@ _loop32x16	exx
 		sub 7
 		ld h, a
 		ld a, l
-		add 16
+		add 16 + ( LR_border_CHRs << 1 )
 		ld l, a
 		inc hl
 
-		jp nc, _loop32x16
+		jp nc, _loop32x24
 
-		bit 3, h
-		IF	DEF_128K_DBL_BUFFER
-		db #26
-_drw_sthb1	db 0
-		ELSE
-		ld h, #48		; go to the second third
-		ENDIF	//DEF_128K_DBL_BUFFER
-		jp z, _loop32x16
-
-		ld sp, (_temp_sp)		
-
-		ret
-
-_draw_scr_32x8
-		ld (_temp_sp), sp
-
-.loop		exx
-
-		dup 7
-
-		ld sp, hl
-		inc h
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-		inc h
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		edup
-
-		ld sp, hl
-		inc h
-
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		exx			
-		ld bc, -1776
-		add hl, bc
-		exx
-		ld bc, -2032
-		add hl, bc
-
-		dup 7
-
-		ld sp, hl
-		inc h
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-		inc h
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		edup
-
-		ld sp, hl
-		inc h
-
-		bit 5, h
-		jp z, .cont
-
-		ld bc, scr_buff_next_tile_row_offs
-		add hl, bc
-
-.cont		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		ld bc, -16
-		add hl, bc
-
-		exx			
-		dec hl			; <-- this address correction allows to stop drawing on the right part of the screen correctly
-		ld a, h                 ; go to line below in video memory
-		sub 7
-		ld h, a
-		ld a, l
-		add 16
-		ld l, a
-		inc hl			; <-- this address correction allows to stop drawing on the right part of the screen correctly
-
-		jp nc, .loop		
-
-		ld sp, (_temp_sp)		
-
-		ret
-		
-		ELSE	// SM_8b / SM_4b
-
-show_screen	
-		IF	DEF_VERT_SYNC
-		ei
-		halt
-		ENDIF	//DEF_VERT_SYNC
-
-		di
-
-		_128K_DBL_BUFFERING 1, _draw_scr_30x16, _draw_scr_30x8, _draw_clr_30x24, _drw_sthb1
-
-		; the top part of the screen
-
-		ld hl, #4000 + #10 + 1
-		exx
-		ld hl, scr_buff + 1
-		exx
-		call _draw_scr_30x16
-
-		IF	DEF_FULLSCREEN
-
-		; the bottom part of the screen
-
-		ld hl, #5000 + #10 + 1
-		exx
-		ld hl, scr_buff + #1000 + 1
-		exx
-		call _draw_scr_30x8
-
-		ENDIF	//DEF_FULLSCREEN
-
-		IF	DEF_COLOR		
-
-		; draw color
-
-		ld hl, #5800 + #10 + 1
-		exx
-		ld hl, clr_buff + 1
-		exx
-		call _draw_clr_30x24
-
-		ENDIF	//DEF_COLOR
-		
-		ret
-
-		IF	DEF_COLOR
-_draw_clr_30x24
-
-		ld (_temp_sp), sp
-
-.loop		exx
-
-		ld sp, hl
-
-		ld bc, 16
-		add hl, bc
-
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-
-		ld bc, 14
-		add hl, bc
-
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		ld sp, hl
-
-		ld bc, 16
-		add hl, bc
-
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		
-		ld sp, hl
-
-		push ix
-		push de
-		push bc
-		push af
-
-		ld bc, 18
-		add hl, bc
-
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		exx
 		ld a, h
-		and #03
+
+		IF	DEF_128K_DBL_BUFFER
+		and #7F			; convert the screen address to the main one - #4000
+		ENDIF	//DEF_128K_DBL_BUFFER
+
+		ld h, #48		; check the second third
+		cp #40
+
+		IF	DEF_128K_DBL_BUFFER
+		jp z, _fix_scr_addr
+		ELSE
+		jp z, _loop32x24
+		ENDIF	//DEF_128K_DBL_BUFFER
 
 		IF	DEF_FULLSCREEN
-		cp #03
-		ELSE
-		cp #02
+		cp #48			; check the third third
+		jp z, _set_3th_data
 		ENDIF	//DEF_FULLSCREEN
-		
-		jp nz, .loop
-		
+
 		ld sp, (_temp_sp)		
 
 		ret
 
-		ENDIF	//DEF_COLOR
-
-_draw_scr_30x16
-		ld (_temp_sp), sp
-
-_loop30x16	exx
-		
-		dup 7
-
-		ld sp, hl
-		inc h
-		pop af
-		pop bc
-		pop de
+		IF	DEF_FULLSCREEN
+_set_3th_data
+		ld hl, #5000 + #10 + LR_border_CHRs
+		ld a, #6C				; bit 5, h
+		ld (_drw_tchk1), a
 		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-		inc h
+		ld hl, scr_buff + #1000 + LR_border_CHRs
 		exx
-		ex af,af'
-		push de
-		push bc
-		push af
 
-		edup
-
-		ld sp, hl
-		inc h
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		exx			
-		ld bc, -1778
-		add hl, bc
-		exx
-		ld bc, -2032
-		add hl, bc
-
-		dup 7
-
-		ld sp, hl
-		inc h
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		
-		ld sp, hl
-
-		push ix
-		push de
-		push bc
-		push af
-		inc h
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		edup
-
-		ld sp, hl
-		inc h
-
-		bit 4, h
-		jp z, .cont
-
-		ld bc, scr_buff_next_tile_row_offs
-		add hl, bc
-
-.cont		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		
-		ld sp, hl
-		push ix
-		push de
-		push bc
-		push af
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		ld bc, -16
-		add hl, bc
-
-		exx
-		dec hl			
-		ld a, h                 ; go to line below in video memory
-		sub 7
-		ld h, a
-		ld a, l
-		add 18
-		ld l, a
-		inc hl
-
-		jp nc, _loop30x16
-
-		bit 3, h
 		IF	DEF_128K_DBL_BUFFER
-		db #26
-_drw_sthb1	db 0
+		jp _fix_scr_addr
 		ELSE
-		ld h, #48		; go to the second third
+		jp _loop32x24
 		ENDIF	//DEF_128K_DBL_BUFFER
-		jp z, _loop30x16
 
-		ld sp, (_temp_sp)		
+		ENDIF	//DEF_FULLSCREEN
 
-		ret
-
-_draw_scr_30x8
-		ld (_temp_sp), sp
-
-.loop		exx
-
-		dup 7
-
-		ld sp, hl
-		inc h
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-		inc h
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		edup
-
-		ld sp, hl
-		inc h
-
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		exx			
-		ld bc, -1778
-		add hl, bc
-		exx
-		ld bc, -2032
-		add hl, bc
-
-		dup 7
-
-		ld sp, hl
-		inc h
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		
-		ld sp, hl
-		push ix
-		push de
-		push bc
-		push af
-		inc h
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		edup
-
-		ld sp, hl
-		inc h
-
-		bit 5, h
-		jp z, .cont
-
-		ld bc, scr_buff_next_tile_row_offs
-		add hl, bc
-
-.cont		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		
-		ld sp, hl
-		push ix
-		push de
-		push bc
-		push af
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		ld bc, -16
-		add hl, bc
-
-		exx			
-		dec hl			; <-- this address correction allows to stop drawing on the right part of the screen correctly
-		ld a, h                 ; go to line below in video memory
-		sub 7
+		IF	DEF_128K_DBL_BUFFER
+_fix_scr_addr
+		ld a, h
+		db #F6
+_drw_sthb1	db 0			; [or #00|#80] switching between the main screen address and the extended one
 		ld h, a
-		ld a, l
-		add 18
-		ld l, a
-		inc hl			; <-- this address correction allows to stop drawing on the right part of the screen correctly
 
-		jp nc, .loop		
+		jp _loop32x24
 
-		ld sp, (_temp_sp)		
-
-		ret
-
-		ENDIF	//DEF_MOVE_STEP == MS_16b
+		ENDIF	//DEF_128K_DBL_BUFFER
 
 		IF	DEF_128K_DBL_BUFFER
 _scr_trigg	db 0	; screen switching trigger
