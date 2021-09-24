@@ -6,11 +6,6 @@
 ;
 ; DESC: Multidirectional scroller example.
 ;
-;###################################################################
-;
-; LIMITATIONS: The maximum number of unique tiles in a level - 128
-;
-;###################################################################
 
 ; Public procs:
 ;
