@@ -11,9 +11,10 @@
 
 		include "MOD_tilemap2x2_clr_render_settings.asm"
 
-COLORED_MAP	equ MAP_DATA_MAGIC&MAP_FLAG_COLOR_TILES
+TR_DATA_TILES4X4	equ MAP_DATA_MAGIC&MAP_FLAG_TILES4X4
+TR_COLORED_MAP		equ MAP_DATA_MAGIC&MAP_FLAG_COLOR_TILES
 
-		IF !COLORED_MAP
+		IF !TR_COLORED_MAP
 		UNDEFINE DEF_COLOR
 		DEFINE DEF_COLOR 0
 		ENDIF
@@ -43,11 +44,15 @@ main
 		ld sp, 24999	;!!!!!!!
 
 		load_wdata Lev0_map, 	tilemap_render.map_data		; game level tile map address
-		load_wdata Lev0_tl,	tilemap_render.map_tiles_data	; tile graphics data
+		load_wdata Lev0_tlg,	tilemap_render.map_tiles_gfx	; tile graphics data
 
-		IF COLORED_MAP
+		IF TR_COLORED_MAP
 		load_wdata Lev0_tlc,	tilemap_render.map_tiles_clr	; tile colors data
-		ENDIF
+		ENDIF //TR_COLORED_MAP
+
+		IF TR_DATA_TILES4X4
+		load_wdata Lev0_tli,	tilemap_render.map_tiles4x4	; tiles 4x4 data
+		ENDIF //TR_DATA_TILES4X4
 
 		load_wdata Lev0_t_tiles,tilemap_render.map_data_cnt	; number of tiles in map
 		load_bdata Lev0_u_tiles,tilemap_render.map_tiles_cnt	; number of unique tiles in map

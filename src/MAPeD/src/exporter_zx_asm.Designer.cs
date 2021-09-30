@@ -38,10 +38,9 @@ namespace MAPeD
 			this.RBtnTypeMonochrome = new System.Windows.Forms.RadioButton();
 			this.RBtnTypeColor = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.CheckBoxRLE = new System.Windows.Forms.CheckBox();
 			this.CheckBoxGFXDithering = new System.Windows.Forms.CheckBox();
+			this.CheckBoxRLE = new System.Windows.Forms.CheckBox();
 			this.RBtnTiles4x4 = new System.Windows.Forms.RadioButton();
-			this.RBtnTiles1x1 = new System.Windows.Forms.RadioButton();
 			this.RBtnTiles2x2 = new System.Windows.Forms.RadioButton();
 			this.BtnOk = new System.Windows.Forms.Button();
 			this.BtnCancel = new System.Windows.Forms.Button();
@@ -49,35 +48,51 @@ namespace MAPeD
 			this.CheckBoxRenderTilesPNG = new System.Windows.Forms.CheckBox();
 			this.CheckBoxRenderLevelPNG = new System.Windows.Forms.CheckBox();
 			this.groupBoxColorConversion = new System.Windows.Forms.GroupBox();
+			this.CBoxColorConversionModes = new System.Windows.Forms.ComboBox();
 			this.NumericUpDownInkFactor = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
-			this.CBoxColorConversionModes = new System.Windows.Forms.ComboBox();
-			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.GrpBoxEntCoords = new System.Windows.Forms.GroupBox();
-			this.RBtnEntMapCoords = new System.Windows.Forms.RadioButton();
-			this.RBtnEntScreenCoords = new System.Windows.Forms.RadioButton();
-			this.CheckBoxExportEntities = new System.Windows.Forms.CheckBox();
-			this.CheckBoxExportMarks = new System.Windows.Forms.CheckBox();
 			this.RichTextBoxExportDesc = new System.Windows.Forms.RichTextBox();
+			this.RBtnPropPerBlock = new System.Windows.Forms.RadioButton();
+			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.RBtnPropPerCHR = new System.Windows.Forms.RadioButton();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.RBtnTilesDirRows = new System.Windows.Forms.RadioButton();
+			this.RBtnTilesDirColumns = new System.Windows.Forms.RadioButton();
+			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.groupBoxEntityCoordinates = new System.Windows.Forms.GroupBox();
+			this.RBtnEntityCoordMap = new System.Windows.Forms.RadioButton();
+			this.RBtnEntityCoordScreen = new System.Windows.Forms.RadioButton();
+			this.CheckBoxExportEntities = new System.Windows.Forms.CheckBox();
+			this.groupBox9 = new System.Windows.Forms.GroupBox();
+			this.RBtnModeMultidirScroll = new System.Windows.Forms.RadioButton();
+			this.RBtnModeBidirScroll = new System.Windows.Forms.RadioButton();
+			this.groupBoxLayout = new System.Windows.Forms.GroupBox();
+			this.RBtnLayoutMatrix = new System.Windows.Forms.RadioButton();
+			this.RBtnLayoutAdjacentScreenIndices = new System.Windows.Forms.RadioButton();
+			this.RBtnLayoutAdjacentScreens = new System.Windows.Forms.RadioButton();
+			this.CheckBoxExportMarks = new System.Windows.Forms.CheckBox();
+			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBoxColorConversion.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownInkFactor)).BeginInit();
+			this.groupBox7.SuspendLayout();
+			this.groupBox4.SuspendLayout();
+			this.groupBox8.SuspendLayout();
+			this.groupBoxEntityCoordinates.SuspendLayout();
+			this.groupBox9.SuspendLayout();
+			this.groupBoxLayout.SuspendLayout();
 			this.groupBox5.SuspendLayout();
-			this.groupBox6.SuspendLayout();
-			this.GrpBoxEntCoords.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.RBtnTypeMonochrome);
 			this.groupBox1.Controls.Add(this.RBtnTypeColor);
-			this.groupBox1.Location = new System.Drawing.Point(5, 36);
+			this.groupBox1.Location = new System.Drawing.Point(167, 14);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(106, 65);
+			this.groupBox1.Size = new System.Drawing.Size(111, 65);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Type";
@@ -95,7 +110,7 @@ namespace MAPeD
 			// RBtnTypeColor
 			// 
 			this.RBtnTypeColor.Checked = true;
-			this.RBtnTypeColor.Location = new System.Drawing.Point(9, 19);
+			this.RBtnTypeColor.Location = new System.Drawing.Point(9, 20);
 			this.RBtnTypeColor.Name = "RBtnTypeColor";
 			this.RBtnTypeColor.Size = new System.Drawing.Size(90, 15);
 			this.RBtnTypeColor.TabIndex = 1;
@@ -105,42 +120,43 @@ namespace MAPeD
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.CheckBoxRLE);
 			this.groupBox2.Controls.Add(this.CheckBoxGFXDithering);
+			this.groupBox2.Controls.Add(this.CheckBoxRLE);
 			this.groupBox2.Controls.Add(this.RBtnTiles4x4);
-			this.groupBox2.Controls.Add(this.RBtnTiles1x1);
 			this.groupBox2.Controls.Add(this.RBtnTiles2x2);
-			this.groupBox2.Location = new System.Drawing.Point(117, 36);
+			this.groupBox2.Location = new System.Drawing.Point(8, 14);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(158, 65);
+			this.groupBox2.Size = new System.Drawing.Size(153, 65);
 			this.groupBox2.TabIndex = 3;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Tiles";
-			// 
-			// CheckBoxRLE
-			// 
-			this.CheckBoxRLE.Location = new System.Drawing.Point(104, 40);
-			this.CheckBoxRLE.Name = "CheckBoxRLE";
-			this.CheckBoxRLE.Size = new System.Drawing.Size(48, 19);
-			this.CheckBoxRLE.TabIndex = 6;
-			this.CheckBoxRLE.Text = "RLE";
-			this.CheckBoxRLE.UseVisualStyleBackColor = true;
 			// 
 			// CheckBoxGFXDithering
 			// 
 			this.CheckBoxGFXDithering.Checked = true;
 			this.CheckBoxGFXDithering.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CheckBoxGFXDithering.Location = new System.Drawing.Point(36, 40);
+			this.CheckBoxGFXDithering.Location = new System.Drawing.Point(72, 40);
 			this.CheckBoxGFXDithering.Name = "CheckBoxGFXDithering";
 			this.CheckBoxGFXDithering.Size = new System.Drawing.Size(76, 19);
 			this.CheckBoxGFXDithering.TabIndex = 6;
 			this.CheckBoxGFXDithering.Text = "Dithering";
 			this.CheckBoxGFXDithering.UseVisualStyleBackColor = true;
+			this.CheckBoxGFXDithering.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			// 
+			// CheckBoxRLE
+			// 
+			this.CheckBoxRLE.Location = new System.Drawing.Point(72, 20);
+			this.CheckBoxRLE.Name = "CheckBoxRLE";
+			this.CheckBoxRLE.Size = new System.Drawing.Size(48, 19);
+			this.CheckBoxRLE.TabIndex = 6;
+			this.CheckBoxRLE.Text = "RLE";
+			this.CheckBoxRLE.UseVisualStyleBackColor = true;
+			this.CheckBoxRLE.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
 			// RBtnTiles4x4
 			// 
 			this.RBtnTiles4x4.Enabled = false;
-			this.RBtnTiles4x4.Location = new System.Drawing.Point(104, 20);
+			this.RBtnTiles4x4.Location = new System.Drawing.Point(14, 40);
 			this.RBtnTiles4x4.Name = "RBtnTiles4x4";
 			this.RBtnTiles4x4.Size = new System.Drawing.Size(42, 15);
 			this.RBtnTiles4x4.TabIndex = 5;
@@ -148,20 +164,10 @@ namespace MAPeD
 			this.RBtnTiles4x4.UseVisualStyleBackColor = true;
 			this.RBtnTiles4x4.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
-			// RBtnTiles1x1
-			// 
-			this.RBtnTiles1x1.Location = new System.Drawing.Point(8, 19);
-			this.RBtnTiles1x1.Name = "RBtnTiles1x1";
-			this.RBtnTiles1x1.Size = new System.Drawing.Size(42, 15);
-			this.RBtnTiles1x1.TabIndex = 4;
-			this.RBtnTiles1x1.Text = "1x1";
-			this.RBtnTiles1x1.UseVisualStyleBackColor = true;
-			this.RBtnTiles1x1.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
-			// 
 			// RBtnTiles2x2
 			// 
 			this.RBtnTiles2x2.Checked = true;
-			this.RBtnTiles2x2.Location = new System.Drawing.Point(56, 20);
+			this.RBtnTiles2x2.Location = new System.Drawing.Point(14, 20);
 			this.RBtnTiles2x2.Name = "RBtnTiles2x2";
 			this.RBtnTiles2x2.Size = new System.Drawing.Size(42, 15);
 			this.RBtnTiles2x2.TabIndex = 4;
@@ -173,7 +179,7 @@ namespace MAPeD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(363, 264);
+			this.BtnOk.Location = new System.Drawing.Point(408, 377);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 21;
@@ -184,7 +190,7 @@ namespace MAPeD
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(444, 264);
+			this.BtnCancel.Location = new System.Drawing.Point(489, 377);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
 			this.BtnCancel.TabIndex = 22;
@@ -196,16 +202,16 @@ namespace MAPeD
 			// 
 			this.groupBox3.Controls.Add(this.CheckBoxRenderTilesPNG);
 			this.groupBox3.Controls.Add(this.CheckBoxRenderLevelPNG);
-			this.groupBox3.Location = new System.Drawing.Point(5, 106);
+			this.groupBox3.Location = new System.Drawing.Point(8, 248);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(106, 67);
+			this.groupBox3.Size = new System.Drawing.Size(132, 93);
 			this.groupBox3.TabIndex = 7;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Extra Output";
 			// 
 			// CheckBoxRenderTilesPNG
 			// 
-			this.CheckBoxRenderTilesPNG.Location = new System.Drawing.Point(8, 40);
+			this.CheckBoxRenderTilesPNG.Location = new System.Drawing.Point(14, 41);
 			this.CheckBoxRenderTilesPNG.Name = "CheckBoxRenderTilesPNG";
 			this.CheckBoxRenderTilesPNG.Size = new System.Drawing.Size(86, 24);
 			this.CheckBoxRenderTilesPNG.TabIndex = 9;
@@ -214,7 +220,7 @@ namespace MAPeD
 			// 
 			// CheckBoxRenderLevelPNG
 			// 
-			this.CheckBoxRenderLevelPNG.Location = new System.Drawing.Point(8, 18);
+			this.CheckBoxRenderLevelPNG.Location = new System.Drawing.Point(14, 19);
 			this.CheckBoxRenderLevelPNG.Name = "CheckBoxRenderLevelPNG";
 			this.CheckBoxRenderLevelPNG.Size = new System.Drawing.Size(86, 24);
 			this.CheckBoxRenderLevelPNG.TabIndex = 8;
@@ -223,19 +229,31 @@ namespace MAPeD
 			// 
 			// groupBoxColorConversion
 			// 
+			this.groupBoxColorConversion.Controls.Add(this.CBoxColorConversionModes);
 			this.groupBoxColorConversion.Controls.Add(this.NumericUpDownInkFactor);
 			this.groupBoxColorConversion.Controls.Add(this.label2);
-			this.groupBoxColorConversion.Controls.Add(this.CBoxColorConversionModes);
-			this.groupBoxColorConversion.Location = new System.Drawing.Point(117, 106);
+			this.groupBoxColorConversion.Location = new System.Drawing.Point(146, 271);
 			this.groupBoxColorConversion.Name = "groupBoxColorConversion";
-			this.groupBoxColorConversion.Size = new System.Drawing.Size(158, 67);
+			this.groupBoxColorConversion.Size = new System.Drawing.Size(132, 70);
 			this.groupBoxColorConversion.TabIndex = 10;
 			this.groupBoxColorConversion.TabStop = false;
 			this.groupBoxColorConversion.Text = "Color Conversion";
 			// 
+			// CBoxColorConversionModes
+			// 
+			this.CBoxColorConversionModes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.CBoxColorConversionModes.FormattingEnabled = true;
+			this.CBoxColorConversionModes.Items.AddRange(new object[] {
+									"Mode 1",
+									"Mode 2"});
+			this.CBoxColorConversionModes.Location = new System.Drawing.Point(11, 42);
+			this.CBoxColorConversionModes.Name = "CBoxColorConversionModes";
+			this.CBoxColorConversionModes.Size = new System.Drawing.Size(111, 21);
+			this.CBoxColorConversionModes.TabIndex = 11;
+			// 
 			// NumericUpDownInkFactor
 			// 
-			this.NumericUpDownInkFactor.Location = new System.Drawing.Point(82, 42);
+			this.NumericUpDownInkFactor.Location = new System.Drawing.Point(74, 18);
 			this.NumericUpDownInkFactor.Maximum = new decimal(new int[] {
 									10,
 									0,
@@ -257,120 +275,250 @@ namespace MAPeD
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(19, 45);
+			this.label2.Location = new System.Drawing.Point(11, 21);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(67, 17);
 			this.label2.TabIndex = 12;
 			this.label2.Text = "Ink Factor:";
 			// 
-			// CBoxColorConversionModes
+			// RichTextBoxExportDesc
 			// 
-			this.CBoxColorConversionModes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.CBoxColorConversionModes.FormattingEnabled = true;
-			this.CBoxColorConversionModes.Items.AddRange(new object[] {
-									"Mode 1",
-									"Mode 2"});
-			this.CBoxColorConversionModes.Location = new System.Drawing.Point(19, 18);
-			this.CBoxColorConversionModes.Name = "CBoxColorConversionModes";
-			this.CBoxColorConversionModes.Size = new System.Drawing.Size(111, 21);
-			this.CBoxColorConversionModes.TabIndex = 11;
+			this.RichTextBoxExportDesc.Location = new System.Drawing.Point(299, 10);
+			this.RichTextBoxExportDesc.MaxLength = 2048;
+			this.RichTextBoxExportDesc.Name = "RichTextBoxExportDesc";
+			this.RichTextBoxExportDesc.ReadOnly = true;
+			this.RichTextBoxExportDesc.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+			this.RichTextBoxExportDesc.Size = new System.Drawing.Size(265, 348);
+			this.RichTextBoxExportDesc.TabIndex = 20;
+			this.RichTextBoxExportDesc.Text = "";
 			// 
-			// groupBox5
+			// RBtnPropPerBlock
 			// 
-			this.groupBox5.Controls.Add(this.label1);
-			this.groupBox5.Location = new System.Drawing.Point(5, 0);
-			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(270, 30);
-			this.groupBox5.TabIndex = 0;
-			this.groupBox5.TabStop = false;
+			this.RBtnPropPerBlock.Checked = true;
+			this.RBtnPropPerBlock.Location = new System.Drawing.Point(14, 16);
+			this.RBtnPropPerBlock.Name = "RBtnPropPerBlock";
+			this.RBtnPropPerBlock.Size = new System.Drawing.Size(61, 17);
+			this.RBtnPropPerBlock.TabIndex = 23;
+			this.RBtnPropPerBlock.TabStop = true;
+			this.RBtnPropPerBlock.Text = "Block";
+			this.RBtnPropPerBlock.UseVisualStyleBackColor = true;
+			this.RBtnPropPerBlock.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
-			// label1
+			// groupBox7
 			// 
-			this.label1.Location = new System.Drawing.Point(7, 12);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(253, 15);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "MODE: MULTIDIRECTIONAL SCROLLING";
+			this.groupBox7.Controls.Add(this.RBtnPropPerCHR);
+			this.groupBox7.Controls.Add(this.RBtnPropPerBlock);
+			this.groupBox7.Location = new System.Drawing.Point(8, 201);
+			this.groupBox7.Name = "groupBox7";
+			this.groupBox7.Size = new System.Drawing.Size(132, 41);
+			this.groupBox7.TabIndex = 27;
+			this.groupBox7.TabStop = false;
+			this.groupBox7.Text = "Property Id per";
 			// 
-			// groupBox6
+			// RBtnPropPerCHR
 			// 
-			this.groupBox6.Controls.Add(this.GrpBoxEntCoords);
-			this.groupBox6.Controls.Add(this.CheckBoxExportEntities);
-			this.groupBox6.Controls.Add(this.CheckBoxExportMarks);
-			this.groupBox6.Location = new System.Drawing.Point(5, 179);
-			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(270, 72);
-			this.groupBox6.TabIndex = 14;
-			this.groupBox6.TabStop = false;
-			this.groupBox6.Text = "Marks / Entities";
+			this.RBtnPropPerCHR.Location = new System.Drawing.Point(72, 16);
+			this.RBtnPropPerCHR.Name = "RBtnPropPerCHR";
+			this.RBtnPropPerCHR.Size = new System.Drawing.Size(54, 17);
+			this.RBtnPropPerCHR.TabIndex = 24;
+			this.RBtnPropPerCHR.Text = "CHR";
+			this.RBtnPropPerCHR.UseVisualStyleBackColor = true;
+			this.RBtnPropPerCHR.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
-			// GrpBoxEntCoords
+			// groupBox4
 			// 
-			this.GrpBoxEntCoords.Controls.Add(this.RBtnEntMapCoords);
-			this.GrpBoxEntCoords.Controls.Add(this.RBtnEntScreenCoords);
-			this.GrpBoxEntCoords.Location = new System.Drawing.Point(112, 14);
-			this.GrpBoxEntCoords.Name = "GrpBoxEntCoords";
-			this.GrpBoxEntCoords.Size = new System.Drawing.Size(148, 49);
-			this.GrpBoxEntCoords.TabIndex = 17;
-			this.GrpBoxEntCoords.TabStop = false;
-			this.GrpBoxEntCoords.Text = "Coordinates";
+			this.groupBox4.Controls.Add(this.RBtnTilesDirRows);
+			this.groupBox4.Controls.Add(this.RBtnTilesDirColumns);
+			this.groupBox4.Location = new System.Drawing.Point(8, 85);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(132, 41);
+			this.groupBox4.TabIndex = 23;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = "Data Order";
 			// 
-			// RBtnEntMapCoords
+			// RBtnTilesDirRows
 			// 
-			this.RBtnEntMapCoords.Location = new System.Drawing.Point(85, 19);
-			this.RBtnEntMapCoords.Name = "RBtnEntMapCoords";
-			this.RBtnEntMapCoords.Size = new System.Drawing.Size(54, 19);
-			this.RBtnEntMapCoords.TabIndex = 19;
-			this.RBtnEntMapCoords.Text = "Map";
-			this.RBtnEntMapCoords.UseVisualStyleBackColor = true;
-			this.RBtnEntMapCoords.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnTilesDirRows.Location = new System.Drawing.Point(80, 17);
+			this.RBtnTilesDirRows.Name = "RBtnTilesDirRows";
+			this.RBtnTilesDirRows.Size = new System.Drawing.Size(48, 17);
+			this.RBtnTilesDirRows.TabIndex = 7;
+			this.RBtnTilesDirRows.Text = "Rows";
+			this.RBtnTilesDirRows.UseVisualStyleBackColor = true;
+			this.RBtnTilesDirRows.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
-			// RBtnEntScreenCoords
+			// RBtnTilesDirColumns
 			// 
-			this.RBtnEntScreenCoords.Checked = true;
-			this.RBtnEntScreenCoords.Location = new System.Drawing.Point(19, 19);
-			this.RBtnEntScreenCoords.Name = "RBtnEntScreenCoords";
-			this.RBtnEntScreenCoords.Size = new System.Drawing.Size(65, 19);
-			this.RBtnEntScreenCoords.TabIndex = 18;
-			this.RBtnEntScreenCoords.TabStop = true;
-			this.RBtnEntScreenCoords.Text = "Screen";
-			this.RBtnEntScreenCoords.UseVisualStyleBackColor = true;
-			this.RBtnEntScreenCoords.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnTilesDirColumns.Checked = true;
+			this.RBtnTilesDirColumns.Location = new System.Drawing.Point(14, 17);
+			this.RBtnTilesDirColumns.Name = "RBtnTilesDirColumns";
+			this.RBtnTilesDirColumns.Size = new System.Drawing.Size(68, 17);
+			this.RBtnTilesDirColumns.TabIndex = 6;
+			this.RBtnTilesDirColumns.TabStop = true;
+			this.RBtnTilesDirColumns.Text = "Columns";
+			this.RBtnTilesDirColumns.UseVisualStyleBackColor = true;
+			this.RBtnTilesDirColumns.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			// 
+			// groupBox8
+			// 
+			this.groupBox8.Controls.Add(this.groupBoxEntityCoordinates);
+			this.groupBox8.Controls.Add(this.CheckBoxExportEntities);
+			this.groupBox8.Location = new System.Drawing.Point(146, 188);
+			this.groupBox8.Name = "groupBox8";
+			this.groupBox8.RightToLeft = System.Windows.Forms.RightToLeft.No;
+			this.groupBox8.Size = new System.Drawing.Size(132, 77);
+			this.groupBox8.TabIndex = 26;
+			this.groupBox8.TabStop = false;
+			this.groupBox8.Text = "Entities";
+			// 
+			// groupBoxEntityCoordinates
+			// 
+			this.groupBoxEntityCoordinates.Controls.Add(this.RBtnEntityCoordMap);
+			this.groupBoxEntityCoordinates.Controls.Add(this.RBtnEntityCoordScreen);
+			this.groupBoxEntityCoordinates.Location = new System.Drawing.Point(7, 33);
+			this.groupBoxEntityCoordinates.Name = "groupBoxEntityCoordinates";
+			this.groupBoxEntityCoordinates.Size = new System.Drawing.Size(118, 38);
+			this.groupBoxEntityCoordinates.TabIndex = 19;
+			this.groupBoxEntityCoordinates.TabStop = false;
+			this.groupBoxEntityCoordinates.Text = "Coordinates";
+			// 
+			// RBtnEntityCoordMap
+			// 
+			this.RBtnEntityCoordMap.Location = new System.Drawing.Point(68, 13);
+			this.RBtnEntityCoordMap.Name = "RBtnEntityCoordMap";
+			this.RBtnEntityCoordMap.Size = new System.Drawing.Size(47, 20);
+			this.RBtnEntityCoordMap.TabIndex = 21;
+			this.RBtnEntityCoordMap.Text = "Map";
+			this.RBtnEntityCoordMap.UseVisualStyleBackColor = true;
+			this.RBtnEntityCoordMap.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			// 
+			// RBtnEntityCoordScreen
+			// 
+			this.RBtnEntityCoordScreen.Checked = true;
+			this.RBtnEntityCoordScreen.Location = new System.Drawing.Point(9, 13);
+			this.RBtnEntityCoordScreen.Name = "RBtnEntityCoordScreen";
+			this.RBtnEntityCoordScreen.Size = new System.Drawing.Size(60, 20);
+			this.RBtnEntityCoordScreen.TabIndex = 20;
+			this.RBtnEntityCoordScreen.TabStop = true;
+			this.RBtnEntityCoordScreen.Text = "Screen";
+			this.RBtnEntityCoordScreen.UseVisualStyleBackColor = true;
+			this.RBtnEntityCoordScreen.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
 			// CheckBoxExportEntities
 			// 
 			this.CheckBoxExportEntities.Checked = true;
 			this.CheckBoxExportEntities.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CheckBoxExportEntities.Location = new System.Drawing.Point(7, 44);
+			this.CheckBoxExportEntities.Location = new System.Drawing.Point(14, 15);
 			this.CheckBoxExportEntities.Name = "CheckBoxExportEntities";
-			this.CheckBoxExportEntities.Size = new System.Drawing.Size(68, 19);
-			this.CheckBoxExportEntities.TabIndex = 16;
-			this.CheckBoxExportEntities.Text = "Entities";
+			this.CheckBoxExportEntities.Size = new System.Drawing.Size(92, 18);
+			this.CheckBoxExportEntities.TabIndex = 18;
+			this.CheckBoxExportEntities.Text = "Export";
 			this.CheckBoxExportEntities.UseVisualStyleBackColor = true;
-			this.CheckBoxExportEntities.CheckedChanged += new System.EventHandler(this.ExpEntitiesChanged_Event);
+			this.CheckBoxExportEntities.CheckedChanged += new System.EventHandler(this.CheckBoxExportEntitiesChanged_Event);
+			// 
+			// groupBox9
+			// 
+			this.groupBox9.Controls.Add(this.RBtnModeMultidirScroll);
+			this.groupBox9.Controls.Add(this.RBtnModeBidirScroll);
+			this.groupBox9.Location = new System.Drawing.Point(8, 132);
+			this.groupBox9.Name = "groupBox9";
+			this.groupBox9.Size = new System.Drawing.Size(132, 63);
+			this.groupBox9.TabIndex = 25;
+			this.groupBox9.TabStop = false;
+			this.groupBox9.Text = "Mode";
+			// 
+			// RBtnModeMultidirScroll
+			// 
+			this.RBtnModeMultidirScroll.Location = new System.Drawing.Point(14, 16);
+			this.RBtnModeMultidirScroll.Name = "RBtnModeMultidirScroll";
+			this.RBtnModeMultidirScroll.Size = new System.Drawing.Size(107, 17);
+			this.RBtnModeMultidirScroll.TabIndex = 14;
+			this.RBtnModeMultidirScroll.Text = "Multidir scrolling";
+			this.RBtnModeMultidirScroll.UseVisualStyleBackColor = true;
+			this.RBtnModeMultidirScroll.CheckedChanged += new System.EventHandler(this.RBtnModeMultidirScrollChanged_Event);
+			// 
+			// RBtnModeBidirScroll
+			// 
+			this.RBtnModeBidirScroll.Location = new System.Drawing.Point(14, 35);
+			this.RBtnModeBidirScroll.Name = "RBtnModeBidirScroll";
+			this.RBtnModeBidirScroll.Size = new System.Drawing.Size(107, 17);
+			this.RBtnModeBidirScroll.TabIndex = 15;
+			this.RBtnModeBidirScroll.Text = "Bidir scrolling";
+			this.RBtnModeBidirScroll.UseVisualStyleBackColor = true;
+			this.RBtnModeBidirScroll.CheckedChanged += new System.EventHandler(this.RBtnModeScreenToScreenChanged_Event);
+			// 
+			// groupBoxLayout
+			// 
+			this.groupBoxLayout.Controls.Add(this.RBtnLayoutMatrix);
+			this.groupBoxLayout.Controls.Add(this.RBtnLayoutAdjacentScreenIndices);
+			this.groupBoxLayout.Controls.Add(this.RBtnLayoutAdjacentScreens);
+			this.groupBoxLayout.Controls.Add(this.CheckBoxExportMarks);
+			this.groupBoxLayout.Location = new System.Drawing.Point(146, 85);
+			this.groupBoxLayout.Name = "groupBoxLayout";
+			this.groupBoxLayout.Size = new System.Drawing.Size(132, 97);
+			this.groupBoxLayout.TabIndex = 24;
+			this.groupBoxLayout.TabStop = false;
+			this.groupBoxLayout.Text = "Layout";
+			// 
+			// RBtnLayoutMatrix
+			// 
+			this.RBtnLayoutMatrix.Checked = true;
+			this.RBtnLayoutMatrix.Location = new System.Drawing.Point(14, 54);
+			this.RBtnLayoutMatrix.Name = "RBtnLayoutMatrix";
+			this.RBtnLayoutMatrix.Size = new System.Drawing.Size(100, 17);
+			this.RBtnLayoutMatrix.TabIndex = 11;
+			this.RBtnLayoutMatrix.TabStop = true;
+			this.RBtnLayoutMatrix.Text = "Layout matrix";
+			this.RBtnLayoutMatrix.UseVisualStyleBackColor = true;
+			this.RBtnLayoutMatrix.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			// 
+			// RBtnLayoutAdjacentScreenIndices
+			// 
+			this.RBtnLayoutAdjacentScreenIndices.Location = new System.Drawing.Point(14, 35);
+			this.RBtnLayoutAdjacentScreenIndices.Name = "RBtnLayoutAdjacentScreenIndices";
+			this.RBtnLayoutAdjacentScreenIndices.Size = new System.Drawing.Size(110, 17);
+			this.RBtnLayoutAdjacentScreenIndices.TabIndex = 10;
+			this.RBtnLayoutAdjacentScreenIndices.Text = "Adjacent scr inds";
+			this.RBtnLayoutAdjacentScreenIndices.UseVisualStyleBackColor = true;
+			this.RBtnLayoutAdjacentScreenIndices.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			// 
+			// RBtnLayoutAdjacentScreens
+			// 
+			this.RBtnLayoutAdjacentScreens.Location = new System.Drawing.Point(14, 16);
+			this.RBtnLayoutAdjacentScreens.Name = "RBtnLayoutAdjacentScreens";
+			this.RBtnLayoutAdjacentScreens.Size = new System.Drawing.Size(110, 17);
+			this.RBtnLayoutAdjacentScreens.TabIndex = 9;
+			this.RBtnLayoutAdjacentScreens.Text = "Adjacent screens";
+			this.RBtnLayoutAdjacentScreens.UseVisualStyleBackColor = true;
+			this.RBtnLayoutAdjacentScreens.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
 			// CheckBoxExportMarks
 			// 
 			this.CheckBoxExportMarks.Checked = true;
 			this.CheckBoxExportMarks.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CheckBoxExportMarks.Location = new System.Drawing.Point(7, 19);
+			this.CheckBoxExportMarks.Location = new System.Drawing.Point(14, 75);
 			this.CheckBoxExportMarks.Name = "CheckBoxExportMarks";
-			this.CheckBoxExportMarks.Size = new System.Drawing.Size(68, 19);
-			this.CheckBoxExportMarks.TabIndex = 15;
-			this.CheckBoxExportMarks.Text = "Marks";
+			this.CheckBoxExportMarks.Size = new System.Drawing.Size(92, 18);
+			this.CheckBoxExportMarks.TabIndex = 12;
+			this.CheckBoxExportMarks.Text = "Export marks";
 			this.CheckBoxExportMarks.UseVisualStyleBackColor = true;
 			this.CheckBoxExportMarks.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
-			// RichTextBoxExportDesc
+			// groupBox5
 			// 
-			this.RichTextBoxExportDesc.Location = new System.Drawing.Point(281, 9);
-			this.RichTextBoxExportDesc.MaxLength = 2048;
-			this.RichTextBoxExportDesc.Name = "RichTextBoxExportDesc";
-			this.RichTextBoxExportDesc.ReadOnly = true;
-			this.RichTextBoxExportDesc.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-			this.RichTextBoxExportDesc.Size = new System.Drawing.Size(238, 242);
-			this.RichTextBoxExportDesc.TabIndex = 20;
-			this.RichTextBoxExportDesc.Text = "";
+			this.groupBox5.Controls.Add(this.groupBox7);
+			this.groupBox5.Controls.Add(this.groupBox2);
+			this.groupBox5.Controls.Add(this.groupBox4);
+			this.groupBox5.Controls.Add(this.groupBox1);
+			this.groupBox5.Controls.Add(this.groupBox8);
+			this.groupBox5.Controls.Add(this.groupBox3);
+			this.groupBox5.Controls.Add(this.groupBox9);
+			this.groupBox5.Controls.Add(this.groupBoxColorConversion);
+			this.groupBox5.Controls.Add(this.groupBoxLayout);
+			this.groupBox5.Location = new System.Drawing.Point(5, 3);
+			this.groupBox5.Name = "groupBox5";
+			this.groupBox5.Size = new System.Drawing.Size(288, 355);
+			this.groupBox5.TabIndex = 28;
+			this.groupBox5.TabStop = false;
 			// 
 			// exporter_zx_sjasm
 			// 
@@ -378,45 +526,55 @@ namespace MAPeD
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
-			this.ClientSize = new System.Drawing.Size(527, 299);
-			this.Controls.Add(this.RichTextBoxExportDesc);
-			this.Controls.Add(this.groupBox6);
-			this.Controls.Add(this.groupBox5);
-			this.Controls.Add(this.groupBoxColorConversion);
-			this.Controls.Add(this.groupBox3);
+			this.ClientSize = new System.Drawing.Size(572, 412);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
-			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.groupBox5);
+			this.Controls.Add(this.RichTextBoxExportDesc);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "exporter_zx_sjasm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "ZX SjASMPlus Export Options";
+			this.Text = "SjASMPlus Export Options";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBoxColorConversion.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownInkFactor)).EndInit();
+			this.groupBox7.ResumeLayout(false);
+			this.groupBox4.ResumeLayout(false);
+			this.groupBox8.ResumeLayout(false);
+			this.groupBoxEntityCoordinates.ResumeLayout(false);
+			this.groupBox9.ResumeLayout(false);
+			this.groupBoxLayout.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
-			this.groupBox6.ResumeLayout(false);
-			this.GrpBoxEntCoords.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.GroupBox groupBox5;
+		private System.Windows.Forms.CheckBox CheckBoxExportMarks;
+		private System.Windows.Forms.RadioButton RBtnLayoutAdjacentScreens;
+		private System.Windows.Forms.RadioButton RBtnLayoutAdjacentScreenIndices;
+		private System.Windows.Forms.RadioButton RBtnLayoutMatrix;
+		private System.Windows.Forms.GroupBox groupBoxLayout;
+		private System.Windows.Forms.RadioButton RBtnModeBidirScroll;
+		private System.Windows.Forms.RadioButton RBtnModeMultidirScroll;
+		private System.Windows.Forms.GroupBox groupBox9;
+		private System.Windows.Forms.CheckBox CheckBoxExportEntities;
+		private System.Windows.Forms.RadioButton RBtnEntityCoordScreen;
+		private System.Windows.Forms.RadioButton RBtnEntityCoordMap;
+		private System.Windows.Forms.GroupBox groupBoxEntityCoordinates;
+		private System.Windows.Forms.GroupBox groupBox8;
+		private System.Windows.Forms.RadioButton RBtnTilesDirColumns;
+		private System.Windows.Forms.RadioButton RBtnTilesDirRows;
+		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.RadioButton RBtnPropPerCHR;
+		private System.Windows.Forms.GroupBox groupBox7;
+		private System.Windows.Forms.RadioButton RBtnPropPerBlock;
 		private System.Windows.Forms.CheckBox CheckBoxRLE;
-		private System.Windows.Forms.RadioButton RBtnTiles1x1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.NumericUpDown NumericUpDownInkFactor;
 		private System.Windows.Forms.RichTextBox RichTextBoxExportDesc;
-		private System.Windows.Forms.CheckBox CheckBoxExportEntities;
-		private System.Windows.Forms.RadioButton RBtnEntScreenCoords;
-		private System.Windows.Forms.RadioButton RBtnEntMapCoords;
-		private System.Windows.Forms.GroupBox GrpBoxEntCoords;
-		private System.Windows.Forms.CheckBox CheckBoxExportMarks;
-		private System.Windows.Forms.GroupBox groupBox6;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.ComboBox CBoxColorConversionModes;
 		private System.Windows.Forms.GroupBox groupBoxColorConversion;
 		private System.Windows.Forms.CheckBox CheckBoxGFXDithering;

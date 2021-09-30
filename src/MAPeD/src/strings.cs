@@ -25,6 +25,8 @@ namespace MAPeD
 		public const string CONST_STR_EXP_SMS_DATA_ORDER_COLS	= "Columns\nAll the map\\screens data are stored in a column order except of VDP-ready data ( static screens mode ).";
 		public const string CONST_STR_EXP_SMD_DATA_ORDER_COLS	= CONST_STR_EXP_SMS_DATA_ORDER_COLS; 
 		public const string CONST_STR_EXP_PCE_DATA_ORDER_COLS	= "Columns\nAll the map\\screens data are stored in a column order except of VDC-ready data ( static screens mode ).";
+		
+		public const string CONST_STR_EXP_DATA_ORDER_COLS		= "Columns\nAll the map\\screens data are stored in a column order.";
 		public const string CONST_STR_EXP_DATA_ORDER_ROWS		= "Rows\nAll the map\\screens data are stored in a row order.";
 		
 		public const string CONST_STR_EXP_ZX_DATA_ORDER_COLS	= "Columns\nAll the map data are stored in a column order.";
@@ -35,6 +37,9 @@ namespace MAPeD
 		
 		public const string CONST_STR_EXP_TILES_2X2				= "TILES: 2x2";
 		public const string CONST_STR_EXP_TILES_4X4				= "TILES: 4x4";
+
+		public const string CONST_STR_EXP_ZX_TILES_2X2			= "TILES: 2x2\nThe CHR graphics is stored as array of tiles 2x2. The color information is stored in a separate file, if the 'Color' option is checked.";
+		public const string CONST_STR_EXP_ZX_TILES_4X4			= "TILES: 4x4\nThe CHR graphics is stored as array of tiles 2x2. The tiles 4x4 data are stored in a separate file as array of indices of tiles 2x2 (left to right, up to down). The color information is stored in a separate file, if the 'Color' option is checked.";
 		
 		public const string CONST_STR_EXP_PROP					= "\n\nPROPERTY Id per "; 
 		public const string CONST_STR_EXP_PROP_PER_BLOCK		= "BLOCK ( 1 byte per block )\nThe top left CHR property of each block will be used.";
@@ -49,6 +54,8 @@ namespace MAPeD
 		public const string CONST_STR_EXP_MODE					= "\n\nMODE: "; 
 		public const string CONST_STR_EXP_MODE_MULTIDIR			= "Multidirectional scrolling\nAll screens data are stored in a common array of tiles. Suitable for map scrolling in any direction.";
 		public const string CONST_STR_EXP_MODE_BIDIR			= "Bidirectional scrolling\nAll screens data are stored sequentially as tiles in a common array. Suitable for [bi/uni]directional scrolling.";
+		
+		public const string CONST_STR_EXP_ZX_MODE_MULTIDIR		= "\nUnlike to other platforms, ZX version can merge screens from different data banks into a single map.";
 		
 		public const string CONST_STR_EXP_NES_MODE_STAT_SCR		= "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are PPU-ready - 1024 bytes per screen ( 960 bytes of CHR data and 64 bytes of attributes ). Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
 		

@@ -16,6 +16,15 @@
 
 		MODULE	tilemap_render
 
+		assert ( MAP_DATA_MAGIC&MAP_FLAG_RLE ) == 0, The sample doesn't support compressed data!
+		assert ( MAP_DATA_MAGIC&MAP_FLAG_DIR_ROWS ) == 0, The sample doesn't support rows ordered data!
+
+TR_DATA_TILES4X4 equ MAP_DATA_MAGIC&MAP_FLAG_TILES4X4
+
+		IF TR_DATA_TILES4X4
+		assert ( DEF_MOVE_STEP == MS_TILE ), The tiles 4x4 mode is only supported when the MS_TILE step mode is active! Please, change the sample settings!
+		ENDIF
+
 ; level drawing data
 
 ; be sure to define in the main code!
@@ -26,10 +35,14 @@
 ; this data must be filled in for each map in the main code
 ;
 map_data	dw 0			; Lev0_map	game level tile map address
-map_tiles_data	dw 0			; Lev0_tl 	tile graphics data
+map_tiles_gfx	dw 0			; Lev0_tlg 	tile graphics data
 map_tiles_clr	dw 0			; Lev0_tlc 	tile colors data
 map_data_cnt	dw 0 			; Lev0_t_tiles 	number of tiles in map
 map_tiles_cnt	db 0			; Lev0_u_tiles 	number of unique tiles in map
+
+		IF TR_DATA_TILES4X4
+map_tiles4x4	dw 0			; Lev0_tli 	tiles 4x4 data
+		ENDIF //TR_DATA_TILES4X4
 
 map_tiles_w	dw 0			; Lev0_wtls number of tiles in map in width
 map_tiles_h	dw 0			; Lev0_htls number of tiles in map in height
@@ -51,8 +64,13 @@ scr_h		equ 24	; vertical screen size in CHRs
 scr_h		equ 16	; vertical screen size in CHRs
 		ENDIF	//DEF_FULLSCREEN
 
+		IF TR_DATA_TILES4X4
+scr_buff_tiles_w	equ scr_w >> 2	; the shadow buffer width in tiles
+scr_buff_tiles_h	equ scr_h >> 2	; the shadow buffer height in tiles
+		ELSE
 scr_buff_tiles_w	equ scr_w >> 1	; the shadow buffer width in tiles
 scr_buff_tiles_h	equ scr_h >> 1	; the shadow buffer height in tiles
+		ENDIF //TR_DATA_TILES4X4
 
 _x_tile_addr_tbl	block ( max_lev_tiles_w << 1 ), 0	; address table for X coordinate
 
@@ -63,7 +81,7 @@ tiles_clr_addr_tbl	block 512,0	; tile colors(attrbutes) address table
 		; add 'A *= 2' to an input address
 		; OUT: hl
 
-	macro add_addr_ax2 _addr
+	macro	add_addr_ax2 _addr
 ;		ld h, high _addr	<-- optimized version when a tile index is premultiplied by 2
 ;		ld l, a			<-- (a) is premultiplied by 2 (max 128 tiles)
 
@@ -74,6 +92,49 @@ tiles_clr_addr_tbl	block 512,0	; tile colors(attrbutes) address table
 .skip		
 		ld l, a
 	endm
+
+	macro	add_hl_a
+		add a, l
+		jp nc, .skip
+		inc h
+.skip
+		ld l, a
+	endm
+
+	macro	scr_buff_put_block2x2
+		dup 8			;<---
+		pop de
+
+		ld (hl), e
+		inc l
+		ld (hl), d
+		inc h
+
+		pop de
+
+		ld (hl), d
+		dec l
+		ld (hl), e
+		inc h
+		edup			;<---
+	endm
+
+	macro	scr_buff_put_block2x2_clr
+		pop de
+
+		ld (hl), e
+		inc l
+		ld (hl), d
+
+		ld a, 31
+		add_hl_a
+
+		pop de
+
+		ld (hl), e
+		inc l
+		ld (hl), d
+	endm	
 
 DATA_HOLE_START
 
@@ -132,22 +193,38 @@ init
 		; depending on the movement step, write the values into 
 		; the procedure for controlling exit of 'camera' beyond a level
 
-		IF	DEF_MOVE_STEP == MS_16b
+		IF	DEF_MOVE_STEP == MS_TILE
 		ld hl, (map_chrs_w)
 		sra h
 		rr l
+		IF TR_DATA_TILES4X4
+		sra h
+		rr l
+		ENDIF //TR_DATA_TILES4X4
 		ld (_de_map_st_w), hl
 		ld hl, (map_chrs_h)
 		sra h
 		rr l
+		IF TR_DATA_TILES4X4
+		sra h
+		rr l
+		ENDIF //TR_DATA_TILES4X4
 		ld (_de_map_st_h), hl
 		ld hl, scr_w
 		sra h
 		rr l
+		IF TR_DATA_TILES4X4
+		sra h
+		rr l
+		ENDIF //TR_DATA_TILES4X4
 		ld (_de_scr_st_w), hl
 		ld hl, scr_h
 		sra h
 		rr l
+		IF TR_DATA_TILES4X4
+		sra h
+		rr l
+		ENDIF //TR_DATA_TILES4X4
 		ld (_de_scr_st_h), hl
 		ENDIF	//DEF_MOVE_STEP == MS_8b
 
@@ -207,7 +284,7 @@ init
 		ld b, a
 
 		ld ix, tiles_addr_tbl
-		ld de, (map_tiles_data)
+		ld de, (map_tiles_gfx)
 
 		xor a
 
@@ -288,7 +365,7 @@ draw_tiles
 		call _fix_x_y
 		call _calc_tile_addr		; HL - tilemap start address
 
-		IF	DEF_MOVE_STEP == MS_16b
+		IF	DEF_MOVE_STEP == MS_TILE
 
 		push hl
 
@@ -687,13 +764,106 @@ _skip_hlf_tile_drw
 
 		ret
 
-		ENDIF	//DEF_MOVE_STEP == MS_16b
+		ENDIF	//DEF_MOVE_STEP == MS_TILE
 
 		IF	DEF_COLOR
-_draw_tiles_color_column
+
 		; in: 	HL - shadow buffer addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
+		; TR_DATA_TILES4X4
+		;	EX DE - tiles 4x4 data addr
+
+		IF TR_DATA_TILES4X4
+
+tile4x4_block1_clr	db 0
+tile4x4_block2_clr	db 0
+tile4x4_block3_clr	db 0
+tile4x4_block4_clr	db 0
+tile4x4_clr_data	db 0
+
+_draw_tiles_color_column
+
+		ld (_temp_sp), sp
+
+.loop		exx
+		ld a, (bc)		; get tile index
+		inc bc
+
+		ld l, a
+		ld h, 0
+		add hl, hl
+		add hl, hl
+		add hl, de		; hl = tiles4x4[ tile_ind * 4 ]
+
+		ld sp, hl
+		pop hl
+		pop af
+		ld sp, tile4x4_clr_data
+		push af
+		push hl
+		
+		; put 1st clr block
+		ld a, l
+		add_addr_ax2 tiles_clr_addr_tbl
+
+		ld sp, hl
+		pop hl			; get tile color data address from the table
+		ld sp, hl
+		exx
+		scr_buff_put_block2x2_clr
+		ld bc, -31
+		add hl, bc
+
+		; put 2nd clr block
+		exx
+		ld a, (tile4x4_block2_clr)
+		add_addr_ax2 tiles_clr_addr_tbl
+
+		ld sp, hl
+		pop hl			; get tile color data address from the table
+		ld sp, hl
+		exx
+		scr_buff_put_block2x2_clr
+		ld a, 31
+		add_hl_a
+
+		; put 4th clr block
+		exx
+		ld a, (tile4x4_block4_clr)
+		add_addr_ax2 tiles_clr_addr_tbl
+
+		ld sp, hl
+		pop hl			; get tile color data address from the table
+		ld sp, hl
+		exx
+		scr_buff_put_block2x2_clr
+		ld bc, -35
+		add hl, bc
+
+		; put 3nd clr block
+		exx
+		ld a, (tile4x4_block3_clr)
+		add_addr_ax2 tiles_clr_addr_tbl
+
+		ld sp, hl
+		pop hl			; get tile color data address from the table
+		ld sp, hl
+		exx
+		scr_buff_put_block2x2_clr
+		ld a, 31
+		add_hl_a
+
+		dec ixl
+		jp nz, .loop		
+
+		ld sp, (_temp_sp)
+
+		ret
+
+		ELSE //TR_DATA_TILES4X4
+
+_draw_tiles_color_column
 
 		ld (_temp_sp), sp
 
@@ -711,19 +881,7 @@ _draw_tiles_color_column
 		ld sp, hl
 		exx
 
-		pop de
-
-		ld (hl), e
-		inc l
-		ld (hl), d
-
-		add hl, bc
-
-		pop de
-
-		ld (hl), e
-		inc l
-		ld (hl), d
+		scr_buff_put_block2x2_clr
 
 		add hl, bc
 
@@ -733,6 +891,8 @@ _draw_tiles_color_column
 		ld sp, (_temp_sp)
 
 		ret
+
+		ENDIF //TR_DATA_TILES4X4
 
 _draw_tiles_color_column_shifted_up
 		; in: 	HL - shadow buffer addr
@@ -795,10 +955,101 @@ _draw_tiles_color_column_shifted_up
 
 		ENDIF	//DEF_COLOR
 
-_draw_tiles_column
 		; in: 	HL - shadow buffer addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
+		; TR_DATA_TILES4X4
+		;	EX DE - tiles 4x4 data addr
+
+		IF TR_DATA_TILES4X4
+
+tile4x4_block1	db 0
+tile4x4_block2	db 0
+tile4x4_block3	db 0
+tile4x4_block4	db 0
+tile4x4_data	db 0
+
+_draw_tiles_column
+
+		ld (_temp_sp), sp
+
+.loop		exx
+		ld a, (bc)		; get tile index
+		inc bc
+
+		ld l, a
+		ld h, 0
+		add hl, hl
+		add hl, hl
+		add hl, de		; hl = tiles4x4[ tile_ind * 4 ]
+
+		ld sp, hl
+		pop hl
+		pop af
+		ld sp, tile4x4_data
+		push af
+		push hl
+
+		; draw 1st block
+		ld a, l
+		add_addr_ax2 tiles_addr_tbl
+
+		ld sp, hl
+		pop hl			; get tile graphics data address from the table
+		ld sp, hl
+		exx
+		scr_buff_put_block2x2
+		ld bc, -4094
+		add hl, bc
+
+		; draw 2nd block
+		exx
+		ld a, (tile4x4_block2)
+		add_addr_ax2 tiles_addr_tbl
+
+		ld sp, hl
+		pop hl			; get tile graphics data address from the table
+		ld sp, hl
+		exx
+		scr_buff_put_block2x2
+		ld bc, -4064
+		add hl, bc
+
+		; draw 4th block
+		exx
+		ld a, (tile4x4_block4)
+		add_addr_ax2 tiles_addr_tbl
+
+		ld sp, hl
+		pop hl			; get tile graphics data address from the table
+		ld sp, hl
+		exx
+		scr_buff_put_block2x2
+		ld bc, -4098
+		add hl, bc
+
+		; draw 3th block
+		exx
+		ld a, (tile4x4_block3)
+		add_addr_ax2 tiles_addr_tbl
+
+		ld sp, hl
+		pop hl			; get tile graphics data address from the table
+		ld sp, hl
+		exx
+		scr_buff_put_block2x2
+		ld bc, -4064
+		add hl, bc
+
+		dec ixl
+		jp nz, .loop		
+
+		ld sp, (_temp_sp)
+		ret
+
+		ELSE //TR_DATA_TILES4X4
+
+_draw_tiles_column
 
 		ld (_temp_sp), sp
 
@@ -807,7 +1058,7 @@ _draw_tiles_column
 .loop		exx
 		ld a, (bc)		; get tile index
 		inc bc
-		
+
 		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
@@ -816,22 +1067,7 @@ _draw_tiles_column
 		ld sp, hl
 		exx
 
-		dup 8			;<---
-		pop de
-
-		ld (hl), e
-		inc l
-		ld (hl), d
-		inc h
-
-		pop de
-
-		ld (hl), d
-		dec l
-		ld (hl), e
-		inc h		
-
-		edup			;<---
+		scr_buff_put_block2x2
 
 		add hl, bc
 
@@ -840,6 +1076,8 @@ _draw_tiles_column
 
 		ld sp, (_temp_sp)
 		ret
+
+		ENDIF //TR_DATA_TILES4X4
 
 _draw_tiles_column_shifted_up_8b
 		; in: 	HL - shadow buffer addr
@@ -1331,7 +1569,7 @@ _draw_tiles_column_shifted_up_12b
 
 		ENDIF	//DEF_MOVE_STEP == MS_4b
 		
-        	IF	DEF_MOVE_STEP == MS_16b
+		IF	DEF_MOVE_STEP == MS_TILE
 
 _draw_tiles_2x2_mode
 
@@ -1352,9 +1590,17 @@ _draw_tiles_2x2_mode
 		push bc			; save to draw color layer
 		ENDIF	//DEF_COLOR
 
+		IF TR_DATA_TILES4X4
+		ld hl, map_tiles4x4
+		ld e, (hl)
+		inc hl
+		ld d, (hl)
 		exx
-
+_drw_loop1	ld ixl, 4		; number of 4x4 tiles in the upper 2 thirds
+		ELSE //TR_DATA_TILES4X4
+		exx
 _drw_loop1	ld ixl, 8		; number of 2x2 tiles in the upper 2 thirds
+		ENDIF //TR_DATA_TILES4X4
 
 		exx
 		push bc
@@ -1374,8 +1620,15 @@ _hl_mptls_h_mn	dw 0
 		ld bc, hl
 		exx
 
+		IF TR_DATA_TILES4X4
 		inc l
 		inc l		
+		inc l
+		inc l		
+		ELSE //TR_DATA_TILES4X4
+		inc l
+		inc l		
+		ENDIF //TR_DATA_TILES4X4
 
 		dec ixh
 		jp nz, _drw_loop1
@@ -1390,13 +1643,26 @@ _hl_mptls_h_mn	dw 0
 		
 		exx
 		pop hl			; BC - tilemap start address for pos_x|pos_y
+		IF TR_DATA_TILES4X4
+		ld de, 4
+		ELSE //TR_DATA_TILES4X4
 		ld de, 8
+		ENDIF //TR_DATA_TILES4X4
 		add hl, de
 		ld c, l
 		ld b, h
-		exx
 
+		IF TR_DATA_TILES4X4
+		ld hl, map_tiles4x4
+		ld e, (hl)
+		inc hl
+		ld d, (hl)
+		exx
+_drw_loop2	ld ixl, 2		; number of 4x4 tiles in the lower third
+		ELSE //TR_DATA_TILES4X4
+		exx
 _drw_loop2	ld ixl, 4		; number of 2x2 tiles in the lower third
+		ENDIF //TR_DATA_TILES4X4
 
 		exx
 		push bc
@@ -1416,8 +1682,15 @@ _hl_mptls_h_fs	dw 0
 		ld bc, hl
 		exx
 
+		IF TR_DATA_TILES4X4
 		inc l
 		inc l		
+		inc l
+		inc l		
+		ELSE //TR_DATA_TILES4X4
+		inc l
+		inc l		
+		ENDIF //TR_DATA_TILES4X4
 
 		dec ixh
 		jp nz, _drw_loop2
@@ -1434,13 +1707,24 @@ _hl_mptls_h_fs	dw 0
 		
 		exx
 		pop bc
-		exx
 
+		IF TR_DATA_TILES4X4
+		ld hl, map_tiles4x4
+		ld e, (hl)
+		inc hl
+		ld d, (hl)
+		ENDIF //TR_DATA_TILES4X4
+
+		exx
 _drw_loop_clr		
 		IF	DEF_FULLSCREEN
 		ld ixl, scr_buff_tiles_h
 		ELSE
+		IF TR_DATA_TILES4X4
+		ld ixl, 4		; for 2/3 of the screen
+		ELSE
 		ld ixl, 8		; for 2/3 of the screen
+		ENDIF //TR_DATA_TILES4X4
 		ENDIF	//DEF_FULLSCREEN
 
 		exx
@@ -1461,8 +1745,15 @@ _hl_mptls_h_cl	dw 0
 		ld bc, hl
 		exx
 
+		IF TR_DATA_TILES4X4
 		inc l
 		inc l		
+		inc l
+		inc l		
+		ELSE //TR_DATA_TILES4X4
+		inc l
+		inc l		
+		ENDIF //TR_DATA_TILES4X4
 
 		dec ixh
 		jp nz, _drw_loop_clr
@@ -1471,7 +1762,7 @@ _hl_mptls_h_cl	dw 0
 
 		ret
 
-		ENDIF	//DEF_MOVE_STEP == MS_16b
+		ENDIF	//DEF_MOVE_STEP == MS_TILE
 
 _fix_x_y	
 		; check coordinates so that the entire screen of tiles is always drawn
@@ -1590,11 +1881,11 @@ _calc_tile_addr
 
 		ret
 
-		IF	DEF_MOVE_STEP == MS_16b
+		IF	DEF_MOVE_STEP == MS_TILE
 LR_border_CHRs	= 0
 		ELSE	// SM_8b / SM_4b
 LR_border_CHRs	= 1
-		ENDIF	//DEF_MOVE_STEP == MS_16b
+		ENDIF	//DEF_MOVE_STEP == MS_TILE
 
 show_screen	
 		IF	DEF_VERT_SYNC
@@ -1725,13 +2016,13 @@ _draw_clr_32x24
 		pop de
 		pop ix
 
-		IF DEF_MOVE_STEP == MS_16b
+		IF DEF_MOVE_STEP == MS_TILE
 		pop iy
 		ENDIF
 		
 		ld sp, hl
 
-		IF DEF_MOVE_STEP == MS_16b
+		IF DEF_MOVE_STEP == MS_TILE
 		push iy
 		ENDIF
 
@@ -1852,13 +2143,13 @@ _loop32x24	exx
 		pop de
 		pop ix
 
-		IF DEF_MOVE_STEP == MS_16b
+		IF DEF_MOVE_STEP == MS_TILE
 		pop iy
 		ENDIF
 		
 		ld sp, hl
 
-		IF DEF_MOVE_STEP == MS_16b
+		IF DEF_MOVE_STEP == MS_TILE
 		push iy
 		ENDIF
 
@@ -1895,13 +2186,13 @@ _drw_tchk1	db 0			; bit 4, h / bit 5, h
 		pop de
 		pop ix
 
-		IF DEF_MOVE_STEP == MS_16b
+		IF DEF_MOVE_STEP == MS_TILE
 		pop iy
 		ENDIF
 		
 		ld sp, hl
 
-		IF DEF_MOVE_STEP == MS_16b
+		IF DEF_MOVE_STEP == MS_TILE
 		push iy
 		ENDIF
 
@@ -1920,7 +2211,7 @@ _drw_tchk1	db 0			; bit 4, h / bit 5, h
 
 		exx
 		dec hl			
-		ld a, h                 ; go to line below in video memory
+		ld a, h			; go to line below in video memory
 		sub 7
 		ld h, a
 		ld a, l
