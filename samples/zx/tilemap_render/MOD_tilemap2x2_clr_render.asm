@@ -360,8 +360,6 @@ drw_hlf_prc_tbl	dw _draw_half_tiles_column, _draw_half_tiles_column_shifted_up_4
 		ENDIF	//DEF_MOVE_STEP == MS_4b
 
 draw_tiles
-		di
-		
 		call _fix_x_y
 		call _calc_tile_addr		; HL - tilemap start address
 
@@ -1891,9 +1889,8 @@ show_screen
 		IF	DEF_VERT_SYNC
 		ei
 		halt
-		ENDIF	//DEF_VERT_SYNC
-
 		di
+		ENDIF	//DEF_VERT_SYNC
 
 		IF	DEF_128K_DBL_BUFFER
 
