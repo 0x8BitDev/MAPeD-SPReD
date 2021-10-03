@@ -4,17 +4,16 @@
 :#
 :################################################
 
-@set File=tilemap_viewer
-@set OutDir=..\bin\
+@set File=multidir_scroll
+@set OutDir=..\..\bin\
 
 @del %OutDir%%File%.sna
 
 @echo compiling...
-sjasmplus %File%.asm 
+sjasmplus main.asm
 @if ERRORLEVEL 1 goto failure
 
-@cd %OutDir%
-%File%.sna
+%OutDir%%File%.sna
 @goto exit
 
 :failure

@@ -173,4 +173,4 @@ PROG_END
 		DISPLAY "WARNING: The program overlaps extended memory address space! Double buffering may cause graphics artefacts!"
 		ENDIF
 
-		savesna "../bin/tilemap_viewer.sna", main
+		savesna "../../bin/multidir_scroll.sna", main
