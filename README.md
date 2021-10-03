@@ -27,14 +27,17 @@ The MAPeD is a tool for building a game levels from scratch.
 	- level topology options
 	- entities
 	- etc...
-- export to **JSON** format
+- export to the **JSON** format
+- export to the **SjASMPlus** (ZX-Spectrum)**
 - built-in **Python** script editor for writing custom data export scripts
-- easy data conversion**
+- easy data conversion***
 - etc...
 
 \* Smart import of images with checking of duplicate CHRs/blocks/tiles and flipped CHRs. Automatic palettes applying is supported for all platforms.
 
-\** You can load any platform project into any MAPeD editor with automatic data conversion. So it's easy to adapt graphics and data when creating a cross-platform project.
+\** Each MAPeD can export data to the **SjASMPlus** with additional options.
+
+\*** You can load any platform project into any MAPeD editor with automatic data conversion. So it's easy to adapt graphics and data when creating a cross-platform project.
 
 **Examples of tiles and maps images:** `./data/tiles-maps`
 
@@ -151,9 +154,9 @@ coming soon...
 
 coming soon...
 
-## MAPeD-ZX (MAPeD-NES/SMS/PCE):**
+## MAPeD-ZX
 
- - `./samples/zx/tilemap_render/` - tilemap renderer with wide variety of settings (see 'MOD_tilemap2x2_clr_render_settings.asm' for details)
+ - `./samples/zx/tilemap_render/multidir_scroll/` - multidirectional tilemap scroller with wide variety of settings (see 'MOD_tilemap2x2_clr_render_settings.asm' for details)
 
 ## SPReD-NES
 
