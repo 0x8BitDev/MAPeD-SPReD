@@ -12,12 +12,14 @@
 ;.ifdef	TR_DATA_TILES4X4
 TR_TILES4x4:
 	dw
-;.endif
-
-TR_BLOCK_ATTRS:
-	dw
 
 TR_TILES_OFFSETS:
+	dw
+;.endif
+TR_BLOCKS_OFFSETS:
+	dw
+
+TR_BLOCK_ATTRS:
 	dw
 
 ;.ifdef	TR_MULTIDIR_SCROLL
@@ -86,6 +88,8 @@ tr_vert_dir_pos:
 tr_CHR_id:
 	db
 tr_tiles_offset:
+	dw
+tr_blocks_offset:
 	dw
 ;.endif
 

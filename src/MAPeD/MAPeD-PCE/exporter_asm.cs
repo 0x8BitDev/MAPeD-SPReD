@@ -11,7 +11,6 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
@@ -517,15 +516,12 @@ namespace MAPeD
 			layout_screen_data	scr_data;
 			tiles_data 			tiles = null;
 			
-			ConcurrentDictionary< int, exp_scr_data >	screens	= null;	// ConcurrentDictionary for changing values in foreach
+			Dictionary< int, exp_scr_data >	screens	= null;
 			
 			List< tiles_data > 	banks 			= new List< tiles_data >( 10 );			
 			List< int >			max_tile_inds	= new List< int >( 10 );
 			List< int >			max_block_inds	= new List< int >( 10 );
 			
-			int[] banks_size_arr	= new int[ m_data_mngr.tiles_data_cnt + 1 ];
-			banks_size_arr[ 0 ] 	= 0;
-
 			scr_width_blocks_mul2	= scr_width_blocks << 1;
 			scr_height_blocks_mul2	= scr_height_blocks << 1;
 			scr_height_blocks_mul4	= scr_height_blocks << 2;
@@ -535,7 +531,7 @@ namespace MAPeD
 			exp_scr_data._tiles_offset  = 0;
 			exp_scr_data._blocks_offset = 0;
 
-			screens = new ConcurrentDictionary< int, exp_scr_data >( 1, 100 );
+			screens = new Dictionary< int, exp_scr_data >( 100 );
 
 			scr_ind = 0;		// global screen index
 			scr_ind_opt = 0;	// optimized screen index
@@ -547,7 +543,7 @@ namespace MAPeD
 				
 				valid_bank = false;
 				
-				max_tile_ind = Int32.MinValue;
+				max_tile_ind = max_block_ind = Int32.MinValue;
 				
 				for( int scr_n = 0; scr_n < tiles.screen_data_cnt(); scr_n++ )
 				{
@@ -631,7 +627,14 @@ namespace MAPeD
 					
 					if( RBtnTiles2x2.Checked )
 					{
-						max_block_inds.Add( ( 1 + max_block_ind ) << 2 );
+						max_block_inds.Add( ( 1 + max_block_ind ) << 3 );
+					}
+					else
+					{
+						max_block_ind = tiles.get_first_free_block_id();
+						max_block_ind = max_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:max_block_ind;
+						
+						max_block_inds.Add( max_block_ind << 3 );
 					}
 				}
 			}
@@ -652,14 +655,14 @@ namespace MAPeD
 					label = get_exp_prefix() + "chr" + bank_n;
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 					{
-						banks_size_arr[ bank_n + 1 ] += banks_size_arr[ bank_n ] + ( int )( data_size = tiles.export_CHR( bw ) );
+						data_size = tiles.export_CHR( bw );
 					}
 					bw.Close();
 					
 					_sw.WriteLine( ";" + label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t\t; (" + data_size + ")" );
 					
 					chr_arr	 += "\t.word " + label + "\n";
-					chr_size += "\t.word " + data_size + "\t\t;(" + label + ")\n";
+					chr_size += "\t.word " + data_size + "\t; (" + label + ")\n";
 					
 					if( m_C_writer != null )
 					{
@@ -772,39 +775,33 @@ namespace MAPeD
 				{
 					if( RBtnModeBidirScroll.Checked )
 					{
-						// write tiles data
-						label = "_Tiles";
-						
 						if( RBtnTiles4x4.Checked )
 						{
+							// write tiles data
+							label = "_Tiles";
+						
 							bw = new BinaryWriter( File.Open( m_path_filename + label + CONST_BIN_EXT, FileMode.Create ) );
-						}
 						
-						data_offset = 0;
-						data_offset_str = "";
-						
-						// tiles
-						for( bank_n = 0; bank_n < banks.Count; bank_n++ )
-						{
-							max_tile_ind = max_tile_inds[ bank_n ];	// one based index
-
-							if( RBtnTiles4x4.Checked )
+							data_offset = 0;
+							data_offset_str = "";
+							
+							// tiles
+							for( bank_n = 0; bank_n < banks.Count; bank_n++ )
 							{
+								max_tile_ind = max_tile_inds[ bank_n ];	// one based index
+	
 								tiles = banks[ bank_n ];
 								
 								for( int i = 0; i < max_tile_ind; i++ )
 								{
 									bw.Write( rearrange_tile( tiles.tiles[ i ] ) );
 								}
+								
+								data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
+								
+								data_offset += max_tile_inds[ bank_n ] << 2;
 							}
 							
-							data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
-							
-							data_offset += max_tile_inds[ bank_n ] << 2;
-						}
-						
-						if( RBtnTiles4x4.Checked )
-						{
 							data_size = bw.BaseStream.Length;
 							bw.Close();
 						
@@ -816,15 +813,33 @@ namespace MAPeD
 							{
 								m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + label + ";" );
 							}
+							
+							_sw.WriteLine( m_filename + "_TilesOffs:" );
+		
+							_sw.WriteLine( data_offset_str );
+							
+							if( m_C_writer != null )
+							{
+								m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + "_TilesOffs;" );
+							}
 						}
 						
-						_sw.WriteLine( m_filename + "_TilesOffs:" );
-	
-						_sw.WriteLine( data_offset_str );
-						
-						if( m_C_writer != null )
+						// save blocks offsets by CHR bank
 						{
-							m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + "_TilesOffs;" );
+							data_offset = 0;
+							data_offset_str = "";
+							
+							// tiles
+							for( bank_n = 0; bank_n < banks.Count; bank_n++ )
+							{
+								data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
+								
+								data_offset += max_block_inds[ bank_n ];
+							}
+							
+							_sw.WriteLine( m_filename + "_BlocksOffs:" );
+		
+							_sw.WriteLine( data_offset_str );
 						}
 					}
 				}
@@ -944,7 +959,7 @@ namespace MAPeD
 					
 					exp_data_size += data_size;
 					
-					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") 2x2 tiles attributes array of all exported data banks ( 2 bytes per attribute ), data offset = tiles offset * 4" );
+					_sw.WriteLine( m_filename + label + ":\t.incbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") 2x2 tiles attributes array of all exported data banks ( 2 bytes per attribute )" );
 					
 					if( m_C_writer != null )
 					{

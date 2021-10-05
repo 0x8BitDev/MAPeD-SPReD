@@ -51,14 +51,17 @@ tilemap_CHRs:
 	.word chr0
 
 tilemap_CHRs_size:
-	.word 3552		;(chr0)
+	.word 3552	; (chr0)
 
 tilemap_Tiles:	.incbin "tilemap_Tiles.bin"	; (1020) 4x4 tiles array of all exported data banks ( 4 bytes per tile )
 
 tilemap_TilesOffs:
 	.word 0		; (chr0)
 
-tilemap_Attrs:	.incbin "tilemap_Attrs.bin"	; (696) 2x2 tiles attributes array of all exported data banks ( 2 bytes per attribute ), data offset = tiles offset * 4
+tilemap_BlocksOffs:
+	.word 0		; (chr0)
+
+tilemap_Attrs:	.incbin "tilemap_Attrs.bin"	; (696) 2x2 tiles attributes array of all exported data banks ( 2 bytes per attribute )
 tilemap_TilesScr:	.incbin "tilemap_TilesScr.bin"	; (576) 4x4 tiles array for each screen ( 48 bytes per screen \ 1 byte per tile )
 tilemap_Plts:	.incbin "tilemap_Plts.bin"	; (32) palettes array of all exported data banks ( data offset = chr_id * 32 )
 
@@ -230,3 +233,4 @@ Lev0_ScrArr:
 	.word $00
 	.word $00
 	.word $00
+

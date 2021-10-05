@@ -520,7 +520,7 @@ namespace MAPeD
 				
 				valid_bank = false;
 				
-				max_tile_ind = Int32.MinValue;
+				max_tile_ind = max_block_ind = Int32.MinValue;
 				
 				for( int scr_n = 0; scr_n < tiles.screen_data_cnt(); scr_n++ )
 				{
@@ -608,6 +608,13 @@ namespace MAPeD
 					if( RBtnTiles2x2.Checked )
 					{
 						max_block_inds.Add( ( 1 + max_block_ind ) << 2 );
+					}
+					else
+					{
+						max_block_ind = tiles.get_first_free_block_id();
+						max_block_ind = max_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:max_block_ind;
+						
+						max_block_inds.Add( max_block_ind << 2 );
 					}
 				}
 			}
@@ -748,7 +755,7 @@ namespace MAPeD
 							bw.Write( rearrange_tile( tiles.tiles[ i ] ) );
 						}
 						
-						data_offset_str += "\t.word " + data_offset + "\t; (chr" + bank_n + ")\n";
+						data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
 						
 						data_offset += max_tile_inds[ bank_n ] << 2;
 					}
@@ -828,6 +835,25 @@ namespace MAPeD
 						}
 					}
 				}
+				
+				// save blocks offsets by CHR bank
+				if( RBtnModeBidirScroll.Checked )
+				{
+					data_offset = 0;
+					data_offset_str = "";
+					
+					// tiles
+					for( bank_n = 0; bank_n < banks.Count; bank_n++ )
+					{
+						data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
+						
+						data_offset += max_block_inds[ bank_n ];
+					}
+					
+					_sw.WriteLine( m_filename + "_BlocksOffs:" );
+
+					_sw.WriteLine( data_offset_str );
+				}				
 				
 				// save PPU-ready data for STATIC SCREENS mode
 				if( RBtnModeStaticScreen.Checked )

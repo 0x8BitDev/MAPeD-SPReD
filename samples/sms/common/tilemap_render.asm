@@ -231,9 +231,8 @@ _tr_tiles_row_routine_tbl:
 
 	add hl, bc
 
-.ifdef	TR_BIDIR_SCROLL
-	ld bc, (tr_tiles_offset)
-	MUL_POW2_BC 2
+.ifdef	TR_BIDIR_STAT_SCR
+	ld bc, (tr_blocks_offset)
 	add hl, bc
 .endif
 
@@ -313,10 +312,10 @@ _tr_tiles_row_routine_tbl:
 	ld hl, (TR_TILES4x4)
 	add hl, de
 
-.ifdef	TR_BIDIR_SCROLL
+.ifdef	TR_BIDIR_STAT_SCR
 	ld de, (tr_tiles_offset)
 	add hl, de
-.endif	
+.endif
 
 .repeat \1
 	inc hl
@@ -354,9 +353,8 @@ _tr_fill_block_CHR\@:
 	ld hl, (TR_BLOCK_ATTRS)
 	add hl, de
 
-.ifdef	TR_BIDIR_SCROLL
-	ld de, (tr_tiles_offset)
-	MUL_POW2_DE 2
+.ifdef	TR_BIDIR_STAT_SCR
+	ld de, (tr_blocks_offset)
 	add hl, de
 .endif
 
@@ -549,7 +547,7 @@ _drw_tiles_col:
 	ld hl, (TR_TILES4x4)
 	add hl, bc
 
-.ifdef	TR_BIDIR_SCROLL
+.ifdef	TR_BIDIR_STAT_SCR
 	ld bc, (tr_tiles_offset)
 	add hl, bc
 .endif	
@@ -787,9 +785,9 @@ _tr_upload_palette_tiles:
 
 	pop bc
 
-.ifndef	TR_STAT_SCR_VDP
+.ifdef	TR_BIDIR_STAT_SCR
 	push bc
-.endif	;!TR_STAT_SCR_VDP
+.endif	;TR_BIDIR_STAT_SCR
 
 	MUL_POW2_C 1
 
@@ -815,13 +813,15 @@ _tr_upload_palette_tiles:
 
 	call VDP_load_tiles
 
-.ifndef	TR_STAT_SCR_VDP
+.ifdef	TR_BIDIR_STAT_SCR
 
 	pop bc
 
-	; calc tiles offset
+	; calc tiles/blocks offset
 
 	MUL_POW2_BC 1
+
+.ifdef	TR_DATA_TILES4X4
 
 	ld hl, (TR_TILES_OFFSETS)
 	add hl, bc
@@ -831,7 +831,19 @@ _tr_upload_palette_tiles:
 	ld d, (hl)
 
 	ld (tr_tiles_offset), de
-.endif	;!TR_STAT_SCR_VDP
+
+.endif	;TR_DATA_TILES4X4
+
+	ld hl, (TR_BLOCKS_OFFSETS)
+	add hl, bc
+
+	ld e, (hl)
+	inc hl
+	ld d, (hl)
+
+	ld (tr_blocks_offset), de
+
+.endif	;TR_BIDIR_STAT_SCR
 
 	pop hl
 

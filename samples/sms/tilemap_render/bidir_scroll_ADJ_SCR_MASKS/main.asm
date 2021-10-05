@@ -238,12 +238,15 @@ init_game_level:
 .ifdef	TR_DATA_TILES4X4
 	ld hl, tilemap_Tiles
 	ld (TR_TILES4x4), hl
-.endif
-	ld hl, tilemap_Attrs
-	ld (TR_BLOCK_ATTRS), hl
 
 	ld hl, tilemap_TilesOffs
 	ld (TR_TILES_OFFSETS), hl
+.endif  
+	ld hl, tilemap_BlocksOffs
+	ld (TR_BLOCKS_OFFSETS), hl
+
+	ld hl, tilemap_Attrs
+	ld (TR_BLOCK_ATTRS), hl
 
 	ld hl, Lev0_StartScr
 	ld (TR_START_SCR), hl
