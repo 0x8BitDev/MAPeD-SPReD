@@ -395,6 +395,11 @@ namespace MAPeD
 
 				if( CheckBoxExportSGDKData.Checked )
 				{
+					// create output directories
+					Directory.CreateDirectory( m_path + get_data_subdir() );
+					Directory.CreateDirectory( m_path + get_h_file_subdir() );
+					Directory.CreateDirectory( m_path + get_s_file_subdir() );
+					
 					m_C_writer = new StreamWriter( m_path + get_h_file_subdir() + Path.GetFileNameWithoutExtension( m_path_filename_ext ) + ".h" );
 					{
 						utils.write_title( m_C_writer, true );
@@ -404,11 +409,6 @@ namespace MAPeD
 					}
 					
 					sw.WriteLine( ".section\t.rodata_binf\t; 'FAR' data are located in the end of the ROM and can require bank switch mechanism if the ROM is larger than 4MB\n" );
-					
-					// create output directories
-					Directory.CreateDirectory( m_path + get_data_subdir() );
-					Directory.CreateDirectory( m_path + get_h_file_subdir() );
-					Directory.CreateDirectory( m_path + get_s_file_subdir() );
 				}
 				
 				// options
@@ -916,7 +916,7 @@ namespace MAPeD
 									bw.Write( rearrange_tile( tiles.tiles[ i ] ) );
 								}
 								
-								data_offset_str += "\tdc.w " + data_offset + "\t\t; (chr" + bank_n + ")\n";
+								data_offset_str += "\tdc.w " + data_offset + "\t; (chr" + bank_n + ")\n";
 								
 								data_offset += max_tile_inds[ bank_n ] << 2;
 							}
@@ -948,24 +948,32 @@ namespace MAPeD
 								m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_TilesOffs;\t\t// array of tile data offsets per CHR banks" );
 							}
 						}
-					}
-					
-					// save blocks offsets by CHR bank
-					{
-						data_offset = 0;
-						data_offset_str = "";
 						
-						// tiles
-						for( bank_n = 0; bank_n < banks.Count; bank_n++ )
+						// save blocks offsets by CHR bank
 						{
-							data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
+							data_offset = 0;
+							data_offset_str = "";
 							
-							data_offset += max_block_inds[ bank_n ];
-						}
-						
-						_sw.WriteLine( m_filename + "_BlocksOffs:" );
+							// tiles
+							for( bank_n = 0; bank_n < banks.Count; bank_n++ )
+							{
+								data_offset_str += "\tdc.w " + data_offset + "\t; (chr" + bank_n + ")\n";
+								
+								data_offset += max_block_inds[ bank_n ];
+							}
+							
+							save_global_data( ref global_data_decl, ( m_filename + "_BlocksOffs" ), banks.Count ); // CHR banks count
 	
-						_sw.WriteLine( data_offset_str );
+							write_alignment_data( _sw );
+							_sw.WriteLine( m_filename + "_BlocksOffs:" );
+		
+							_sw.WriteLine( data_offset_str );
+							
+							if( m_C_writer != null )
+							{
+								m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_BlocksOffs;\t\t// array of block data offsets per CHR banks" );
+							}
+						}
 					}
 				}
 				
