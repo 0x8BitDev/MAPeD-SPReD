@@ -408,8 +408,6 @@ namespace MAPeD
 				progress_bar_value( 0 );
 				progress_bar_status( "Please wait..." );
 				
-				set_status_msg( "" );
-				
 				pause( 250 );
 			}
 			else
@@ -1075,6 +1073,8 @@ namespace MAPeD
 									update_screens( false );
 									
 									m_screen_editor.clear_active_tile_img();
+									
+									set_status_msg( "Palette imported" );
 								}
 								else
 								{
@@ -1284,6 +1284,8 @@ namespace MAPeD
 						}
 						break;
 				}
+				
+				set_status_msg( "Data exported" );
 			}
 			catch( Exception _err )
 			{
