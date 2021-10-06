@@ -797,7 +797,7 @@ namespace MAPeD
 									bw.Write( rearrange_tile( tiles.tiles[ i ] ) );
 								}
 								
-								data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
+								data_offset_str += "\t.word " + data_offset + "\t; (chr" + bank_n + ")\n";
 								
 								data_offset += max_tile_inds[ bank_n ] << 2;
 							}
@@ -832,7 +832,7 @@ namespace MAPeD
 							// tiles
 							for( bank_n = 0; bank_n < banks.Count; bank_n++ )
 							{
-								data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
+								data_offset_str += "\t.word " + data_offset + "\t; (chr" + bank_n + ")\n";
 								
 								data_offset += max_block_inds[ bank_n ];
 							}
@@ -840,6 +840,11 @@ namespace MAPeD
 							_sw.WriteLine( m_filename + "_BlocksOffs:" );
 		
 							_sw.WriteLine( data_offset_str );
+							
+							if( m_C_writer != null )
+							{
+								m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + "_BlocksOffs;" );
+							}
 						}
 					}
 				}
