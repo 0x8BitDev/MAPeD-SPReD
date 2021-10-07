@@ -566,7 +566,8 @@ namespace MAPeD
 				data 		= _data_mngr.get_tiles_data( data_n );
 				inner_data	= m_inner_tiles_data[ data_n ];
 
-				blocks_cnt = data.get_first_free_block_id() << 2;
+				blocks_cnt = data.get_first_free_block_id();
+				blocks_cnt = ( ( blocks_cnt < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:blocks_cnt ) << 2;
 				
 				chr_id_flags = new bool[ blocks_cnt ];
 				Array.Clear( chr_id_flags, 0, chr_id_flags.Length );

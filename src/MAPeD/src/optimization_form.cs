@@ -701,6 +701,7 @@ namespace MAPeD
 				byte[] B_CHR_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
 				
 				int ff_block_id = _data.get_first_free_block_id();
+				ff_block_id = ff_block_id < 0 ? utils.CONST_MAX_BLOCKS_CNT:ff_block_id;
 				
 				for( int blockA_n = 0; blockA_n < ff_block_id; blockA_n++ )
 				{

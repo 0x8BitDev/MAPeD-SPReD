@@ -304,8 +304,8 @@ namespace MAPeD
 					data.blocks[ ( _block_ind << 2 ) + i ] = 0;
 				}
 				
-				int ff_block_ind = data.get_first_free_block_id() << 2;
-				ff_block_ind = ff_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:ff_block_ind;
+				int ff_block_ind = data.get_first_free_block_id();
+				ff_block_ind = ( ff_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:ff_block_ind ) << 2;
 				ff_block_ind = ff_block_ind < 4 ? 4:ff_block_ind;
 				
 				int block_n;
