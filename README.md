@@ -156,7 +156,7 @@ coming soon...
 
 ## MAPeD-ZX
 
- - `./samples/zx/tilemap_render/multidir_scroll/` - multidirectional tilemap scroller with wide variety of settings (see 'MOD_tilemap2x2_clr_render_settings.asm' for details)
+ - `./samples/zx/tilemap_render/multidir_scroll/` - multidirectional tilemap scroller with wide variety of settings (see 'settings.asm' for details)
 
 ## SPReD-NES
 

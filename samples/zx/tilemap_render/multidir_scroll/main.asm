@@ -9,7 +9,7 @@
 
 		org 25000
 
-		include "MOD_tilemap2x2_clr_render_settings.asm"
+		include "settings.asm"
 
 TR_DATA_TILES4X4	equ MAP_DATA_MAGIC&MAP_FLAG_TILES4X4
 TR_COLORED_MAP		equ MAP_DATA_MAGIC&MAP_FLAG_COLOR_TILES
