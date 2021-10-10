@@ -62,7 +62,7 @@ Lev0_Palette:
 .define Lev0_WPixelsCnt	2048	; map width in pixels
 .define Lev0_HPixelsCnt	2112	; map height in pixels
 .define Lev0_TilesCnt	98
-.define Lev0_BlocksCnt	516
+.define Lev0_BlocksCnt	129
 
 .define Lev0_WScrCnt	8	; number of screens in width
 .define Lev0_HScrCnt	11	; number of screens in height
