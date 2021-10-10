@@ -12,7 +12,6 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
@@ -28,7 +27,6 @@ namespace MAPeD
 
 	public partial class exporter_asm : Form
 	{
-#if DEF_NES
 		private readonly data_sets_manager m_data_mngr = null;
 		
 		private string	m_filename			= null;
@@ -442,8 +440,6 @@ namespace MAPeD
 			int common_scr_ind		= 0;
 			int max_scr_tile		= 0;
 			int max_tile_ind		= 0;
-			int max_scr_block		= 0;
-			int max_block_ind		= 0;
 			int start_scr_ind		= 0;
 			int CHR_id				= 0;
 			int ents_cnt;
@@ -490,8 +486,6 @@ namespace MAPeD
 			bool more_than_1_plt_in_bank 	= false;
 #endif
 			
-			ConcurrentDictionary< int, exp_screen_data >	screens	= null;	// ConcurrentDictionary for changing values in foreach
-			
 			List< tiles_data > 	banks 			= new List< tiles_data >( 10 );			
 			List< int >			max_tile_inds	= new List< int >( 10 );
 			List< int >			max_block_inds	= new List< int >( 10 );
@@ -508,7 +502,7 @@ namespace MAPeD
 			exp_screen_data._tiles_offset  = 0;
 			exp_screen_data._blocks_offset = 0;
 
-			screens = new ConcurrentDictionary< int, exp_screen_data >( 1, 100 );
+			Dictionary< int, exp_screen_data > screens = new Dictionary< int, exp_screen_data >( 100 );
 
 			scr_ind = 0;		// global screen index
 			scr_ind_opt = 0;	// optimized screen index
@@ -520,7 +514,7 @@ namespace MAPeD
 				
 				valid_bank = false;
 				
-				max_tile_ind = max_block_ind = Int32.MinValue;
+				max_tile_ind = Int32.MinValue;
 				
 				for( int scr_n = 0; scr_n < tiles.screen_data_cnt(); scr_n++ )
 				{
@@ -584,16 +578,6 @@ namespace MAPeD
 						{
 							max_tile_ind = max_scr_tile;
 						}
-						
-						if( RBtnTiles2x2.Checked )
-						{
-							max_scr_block = exp_scr.m_scr_blocks.max_val();
-							
-							if( max_block_ind < max_scr_block )
-							{
-								max_block_ind = max_scr_block;
-							}
-						}
 					}
 					
 					++scr_ind;
@@ -604,20 +588,11 @@ namespace MAPeD
 					banks.Add( tiles );
 					
 					max_tile_inds.Add( 1 + max_tile_ind );
-					
-					if( RBtnTiles2x2.Checked )
-					{
-						max_block_inds.Add( ( 1 + max_block_ind ) << 2 );
-					}
-					else
-					{
-						max_block_ind = tiles.get_first_free_block_id();
-						max_block_ind = max_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:max_block_ind;
-						
-						max_block_inds.Add( max_block_ind << 2 );
-					}
 				}
 			}
+			
+			var screen_sorted_keys_list = screens.Keys.ToList();
+			screen_sorted_keys_list.Sort();
 
 			// global data writing
 			{
@@ -684,7 +659,7 @@ namespace MAPeD
 						else
 						{
 							blocks_props_size = tiles.get_first_free_block_id();
-							blocks_props_size = ( 1 + ( ( blocks_props_size < 0 ) ? ( utils.CONST_MAX_BLOCKS_CNT - 1 ):blocks_props_size ) ) << 2;
+							blocks_props_size = ( ( blocks_props_size < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:blocks_props_size ) << 2;
 						}						
 						
 						for( block_n = 0; block_n < blocks_props_size; block_n++ )
@@ -704,7 +679,7 @@ namespace MAPeD
 							bw_props.Write( ( byte )tiles_data.get_block_flags_obj_id( block_data ) );
 						}
 						
-						data_offset_str += "\t.word " + data_offset + "\t; (chr" + bank_n + ")\n";
+						data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
 
 						data_offset += blocks_props_size;
 					}
@@ -778,7 +753,7 @@ namespace MAPeD
 						label = "_AttrsScr";
 						bw = new BinaryWriter( File.Open( m_path_filename + label + CONST_BIN_EXT, FileMode.Create ) );
 						
-						foreach( int key in screens.Keys ) 
+						foreach( int key in screen_sorted_keys_list ) 
 						{
 							exp_scr = screens[ key ];
 							
@@ -837,25 +812,6 @@ namespace MAPeD
 					}
 				}
 				
-				// save blocks offsets by CHR bank
-				if( RBtnModeBidirScroll.Checked )
-				{
-					data_offset = 0;
-					data_offset_str = "";
-					
-					// tiles
-					for( bank_n = 0; bank_n < banks.Count; bank_n++ )
-					{
-						data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
-						
-						data_offset += max_block_inds[ bank_n ];
-					}
-					
-					_sw.WriteLine( m_filename + "_BlocksOffs:" );
-
-					_sw.WriteLine( data_offset_str );
-				}				
-				
 				// save PPU-ready data for STATIC SCREENS mode
 				if( RBtnModeStaticScreen.Checked )
 				{
@@ -866,7 +822,7 @@ namespace MAPeD
 
 					data_offset = 0;
 					
-					foreach( var key in screens.Keys )
+					foreach( var key in screen_sorted_keys_list )
 					{
 						exp_scr = screens[ key ];
 						
@@ -977,7 +933,7 @@ namespace MAPeD
 						label = "_AttrsScr";
 						bw = new BinaryWriter( File.Open( m_path_filename + label + CONST_BIN_EXT, FileMode.Create ) );
 						
-						foreach( int key in screens.Keys ) 
+						foreach( int key in screen_sorted_keys_list ) 
 						{
 							exp_scr = screens[ key ];
 							
@@ -1083,7 +1039,7 @@ namespace MAPeD
 					label = "_TilesScr";
 					bw = new BinaryWriter( File.Open( m_path_filename + label + CONST_BIN_EXT, FileMode.Create ) );
 
-					foreach( var key in screens.Keys ) 
+					foreach( var key in screen_sorted_keys_list ) 
 					{ 
 						if( RBtnTiles4x4.Checked )
 						{
@@ -1755,7 +1711,7 @@ namespace MAPeD
 				else
 				{
 					max_tile_ind = tiles.get_first_free_block_id();
-					max_tile_ind = 1 + ( ( max_tile_ind < 0 ) ? ( utils.CONST_MAX_BLOCKS_CNT - 1 ):max_tile_ind );
+					max_tile_ind = ( max_tile_ind < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:max_tile_ind;
 				}
 				
 				if( RBtnTiles4x4.Checked )
@@ -1844,7 +1800,7 @@ namespace MAPeD
 					else
 					{
 						blocks_props_size = tiles.get_first_free_block_id();
-						blocks_props_size = ( 1 + ( ( blocks_props_size < 0 ) ? ( utils.CONST_MAX_BLOCKS_CNT - 1 ):blocks_props_size ) ) << 2;
+						blocks_props_size = ( ( blocks_props_size < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:blocks_props_size ) << 2;
 					}
 					
 					block_props_arr = new byte[ RBtnPropPerBlock.Checked ? ( blocks_props_size >> 2 ):blocks_props_size ];
@@ -2037,6 +1993,5 @@ namespace MAPeD
 				}
 			}
 		}
-#endif	//DEF_NES
 	}
 }
