@@ -19,7 +19,7 @@ TR_COLORED_MAP		equ MAP_DATA_MAGIC&MAP_FLAG_COLOR_TILES
 		DEFINE DEF_COLOR 0
 		ENDIF
 
-		include "MOD_tilemap2x2_clr_render.asm"
+		include "tilemap_multidir_render.asm"
 
 max_lev_tiles_w	equ	Lev0_wtls		; max width of a level in tiles
 

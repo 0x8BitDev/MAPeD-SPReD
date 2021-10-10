@@ -44,7 +44,7 @@ namespace MAPeD
 			this.RBtnTiles2x2 = new System.Windows.Forms.RadioButton();
 			this.BtnOk = new System.Windows.Forms.Button();
 			this.BtnCancel = new System.Windows.Forms.Button();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.GrpBoxExtraOutput = new System.Windows.Forms.GroupBox();
 			this.CheckBoxRenderTilesPNG = new System.Windows.Forms.CheckBox();
 			this.CheckBoxRenderLevelPNG = new System.Windows.Forms.CheckBox();
 			this.groupBoxColorConversion = new System.Windows.Forms.GroupBox();
@@ -74,7 +74,7 @@ namespace MAPeD
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			this.groupBox3.SuspendLayout();
+			this.GrpBoxExtraOutput.SuspendLayout();
 			this.groupBoxColorConversion.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownInkFactor)).BeginInit();
 			this.groupBox7.SuspendLayout();
@@ -198,16 +198,16 @@ namespace MAPeD
 			this.BtnCancel.UseVisualStyleBackColor = true;
 			this.BtnCancel.Click += new System.EventHandler(this.event_cancel);
 			// 
-			// groupBox3
+			// GrpBoxExtraOutput
 			// 
-			this.groupBox3.Controls.Add(this.CheckBoxRenderTilesPNG);
-			this.groupBox3.Controls.Add(this.CheckBoxRenderLevelPNG);
-			this.groupBox3.Location = new System.Drawing.Point(8, 248);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(132, 93);
-			this.groupBox3.TabIndex = 7;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Extra Output";
+			this.GrpBoxExtraOutput.Controls.Add(this.CheckBoxRenderTilesPNG);
+			this.GrpBoxExtraOutput.Controls.Add(this.CheckBoxRenderLevelPNG);
+			this.GrpBoxExtraOutput.Location = new System.Drawing.Point(8, 248);
+			this.GrpBoxExtraOutput.Name = "GrpBoxExtraOutput";
+			this.GrpBoxExtraOutput.Size = new System.Drawing.Size(132, 93);
+			this.GrpBoxExtraOutput.TabIndex = 7;
+			this.GrpBoxExtraOutput.TabStop = false;
+			this.GrpBoxExtraOutput.Text = "Extra Output";
 			// 
 			// CheckBoxRenderTilesPNG
 			// 
@@ -510,7 +510,7 @@ namespace MAPeD
 			this.groupBox5.Controls.Add(this.groupBox4);
 			this.groupBox5.Controls.Add(this.groupBox1);
 			this.groupBox5.Controls.Add(this.groupBox8);
-			this.groupBox5.Controls.Add(this.groupBox3);
+			this.groupBox5.Controls.Add(this.GrpBoxExtraOutput);
 			this.groupBox5.Controls.Add(this.groupBox9);
 			this.groupBox5.Controls.Add(this.groupBoxColorConversion);
 			this.groupBox5.Controls.Add(this.groupBoxLayout);
@@ -539,7 +539,7 @@ namespace MAPeD
 			this.Text = "SjASMPlus Export Options";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
-			this.groupBox3.ResumeLayout(false);
+			this.GrpBoxExtraOutput.ResumeLayout(false);
 			this.groupBoxColorConversion.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownInkFactor)).EndInit();
 			this.groupBox7.ResumeLayout(false);
@@ -580,7 +580,7 @@ namespace MAPeD
 		private System.Windows.Forms.CheckBox CheckBoxGFXDithering;
 		private System.Windows.Forms.CheckBox CheckBoxRenderLevelPNG;
 		private System.Windows.Forms.CheckBox CheckBoxRenderTilesPNG;
-		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.GroupBox GrpBoxExtraOutput;
 		private System.Windows.Forms.Button BtnCancel;
 		private System.Windows.Forms.Button BtnOk;
 		private System.Windows.Forms.RadioButton RBtnTiles2x2;
