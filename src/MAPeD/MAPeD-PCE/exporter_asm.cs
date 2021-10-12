@@ -713,7 +713,7 @@ namespace MAPeD
 
 						if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 						{
-							blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
+							blocks_props_size = ( 1 + utils.get_ulong_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
 						}
 						else
 						{
@@ -783,7 +783,7 @@ namespace MAPeD
 								
 								for( int i = 0; i < max_tile_ind; i++ )
 								{
-									bw.Write( rearrange_tile( tiles.tiles[ i ] ) );
+									bw.Write( tiles_data.tile_convert_ulong_to_uint_reverse( tiles.tiles[ i ] ) );
 								}
 								
 								data_offset_str += "\t.word " + data_offset + "\t; (chr" + bank_n + ")\n";
@@ -933,7 +933,7 @@ namespace MAPeD
 						
 						if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 						{
-							blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
+							blocks_props_size = ( 1 + utils.get_ulong_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
 						}
 						else
 						{
@@ -1637,7 +1637,7 @@ namespace MAPeD
 					
 					for( int i = 0; i < max_tile_ind; i++ )
 					{
-						bw.Write( rearrange_tile( tiles.tiles[ i ] ) );
+						bw.Write( tiles_data.tile_convert_ulong_to_uint_reverse( tiles.tiles[ i ] ) );
 					}
 					data_size = bw.BaseStream.Length;
 					bw.Close();
@@ -1684,7 +1684,7 @@ namespace MAPeD
 				{
 					if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 					{
-						blocks_props_size = ( 1 + utils.get_uint_arr_max_val( tiles.tiles, max_tile_ind ) ) << 2;
+						blocks_props_size = ( 1 + utils.get_ulong_arr_max_val( tiles.tiles, max_tile_ind ) ) << 2;
 					}
 					else
 					{
@@ -1916,16 +1916,6 @@ namespace MAPeD
 			{
 				_str += String.Format( "${0:X2}", _plt[ j ] ) + ( !( _end && j == 3 ) ? ", ":"" );
 			}
-		}
-		
-		private uint rearrange_tile( uint _val )
-		{
-			byte v0 = ( byte )( ( _val >> 24 ) & 0xff );
-			byte v1 = ( byte )( ( _val >> 16 ) & 0xff );
-           	byte v2 = ( byte )( ( _val >> 8 ) & 0xff );
-          	byte v3 = ( byte )( _val & 0xff );
-			
-          	return unchecked( ( uint )( v3 << 24 | v2 << 16 | v1 << 8 | v0 ) );
 		}
 		
 		void check_ent_instances_cnt( layout_data _layout, string _lev_pref_str )

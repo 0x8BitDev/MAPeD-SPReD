@@ -1135,7 +1135,7 @@ namespace MAPeD
 			}
 		}
 
-		void export_tiles_blocks_data( int _max_data_cnt, Func< int, uint > _act_data_sum, int _data_size, ImageList _image_list, string _filename )
+		void export_tiles_blocks_data( int _max_data_cnt, Func< int, ulong > _act_data_sum, int _data_size, ImageList _image_list, string _filename )
 		{
 			update_graphics( false );
 			
@@ -1143,7 +1143,7 @@ namespace MAPeD
 			int num_active_tiles = 0;
 			int i;
 			
-			uint tile_sum;
+			ulong tile_sum;
 			
 			for( i = _max_data_cnt - 1; i > 0; i-- )
 			{
@@ -1206,7 +1206,7 @@ namespace MAPeD
 									                         {
 																tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 									                         		
-									                         	uint block_sum = 0;
+									                         	ulong block_sum = 0;
 									                         	
 																for( int j = 0; j < utils.CONST_BLOCK_SIZE; j++ )
 																{
@@ -2327,7 +2327,7 @@ namespace MAPeD
 		}
 
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-		bool check_empty_screen( uint[] _tiles, screen_data _scr_data )
+		bool check_empty_screen( ulong[] _tiles, screen_data _scr_data )
 #else
 		bool check_empty_screen( screen_data _scr_data )
 #endif
@@ -2336,7 +2336,7 @@ namespace MAPeD
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 			if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				uint tile_ind;
+				ulong tile_ind;
 				
 				int scr_first_tile_ind	= _scr_data.get_tile( 0 );
 				
@@ -2354,14 +2354,14 @@ namespace MAPeD
 				}
 	
 				// check the last upper half of the tiles line
-				int scr_block_ind	= utils.get_byte_from_uint( _tiles[ _scr_data.get_tile( 0 ) ], 0 );
+				int scr_block_ind	= utils.get_ushort_from_ulong( _tiles[ _scr_data.get_tile( 0 ) ], 0 );
 	
 				for( tile_n = utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
 				{
 					tile_ind = _tiles[ _scr_data.get_tile( tile_n ) ];
 					
-					if( ( scr_block_ind != utils.get_byte_from_uint( tile_ind, 0 ) ||
-					    ( scr_block_ind != utils.get_byte_from_uint( tile_ind, 1 ) ) ) )
+					if( ( scr_block_ind != utils.get_ushort_from_ulong( tile_ind, 0 ) ||
+					    ( scr_block_ind != utils.get_ushort_from_ulong( tile_ind, 1 ) ) ) )
 					{
 						break;
 					}
@@ -2408,7 +2408,7 @@ namespace MAPeD
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 				if( check_empty_screen( data.tiles, data.get_screen_data( scr_n ) ) )
 #else
-					if( check_empty_screen( data.get_screen_data( scr_n ) ) )
+				if( check_empty_screen( data.get_screen_data( scr_n ) ) )
 #endif
 				{
 					delete_screen( scr_n );

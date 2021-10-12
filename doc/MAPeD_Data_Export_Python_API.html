@@ -18,7 +18,7 @@
 </P>
 <P LANG="en-US" STYLE="margin-left: 1.19cm; margin-bottom: 0cm; font-style: normal; line-height: 100%; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>MAPeD
-Data Export Python API v1.7</B></FONT></FONT></P>
+Data Export Python API v1.8</B></FONT></FONT></P>
 <HR>
 <P STYLE="margin-left: 1.19cm; margin-bottom: 0cm; line-height: 100%">
 <BR>
@@ -333,7 +333,7 @@ in case of incorrect bank index</SPAN></FONT></FONT></P>
 	<BR>
 	</P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[UInt32]</SPAN>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US">Array[UInt64]</SPAN>
 	<B>mpd_get_tiles</B>( <SPAN LANG="en-US">Int32</SPAN> _bank_ind )</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">
 	<BR>
@@ -366,9 +366,8 @@ graphics bank index</FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN STYLE="font-weight: normal">E</SPAN><SPAN LANG="ru-RU">ach
-tile value (UInt32) consists of block'</SPAN>s <SPAN LANG="ru-RU">indices
-ordered left to right, up to down from low to high byte </SPAN>( 4
-bytes )</FONT></FONT></P>
+tile value (UInt64) consists of block'</SPAN>s <SPAN LANG="ru-RU">indices
+ordered left to right, top to bottom from high to low word</SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -413,6 +412,9 @@ property_id ](4) [ palette ind ](4) [CHR ind](12) ..0 </FONT></FONT>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>ZX:</B> 15.. [
 property_id ](4) [ palette ind ](1) [CHR ind](11) ..0</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; font-weight: normal; line-height: 100%">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>SMD:</B> 19.. [
+property_id ](4) [x](1) [ palette ind ](2) [ hv_flip ](2) [CHR ind](11) ..0</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #ffffff; line-height: 100%">
 <BR>
 </P>
@@ -547,7 +549,7 @@ index</SPAN></FONT></FONT></P>
 	_bank_ind, <SPAN LANG="en-US">String</SPAN> _filename, <SPAN LANG="en-US">Int32</SPAN>
 	_bpp )</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; font-weight: normal; line-height: 100%">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>PCE/</B><SPAN LANG="en-US"><B>ZX</B></SPAN><B>:
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>PCE/</B><SPAN LANG="en-US"><B>ZX/SMD</B></SPAN><B>:
 	</B><SPAN LANG="en-US">Long</SPAN> <B>mpd_export_CHR_data</B>( <SPAN LANG="en-US">Int32</SPAN>
 	_bank_ind, <SPAN LANG="en-US">String</SPAN> _filename )</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="text-indent: 1.27cm; margin-bottom: 0cm; background: #cccc99; line-height: 100%">

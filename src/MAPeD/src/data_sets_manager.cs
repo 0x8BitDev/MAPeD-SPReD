@@ -1101,7 +1101,7 @@ namespace MAPeD
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 							if( y_pos <= 14 )
 #endif
-								new_scr.set_tile( ( y_pos * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) + ( ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 1 ) + ( block_n & 0x01 ), utils.get_byte_from_uint( data.tiles[ data.get_screen_tile( scr_n, tile_n ) ], block_n ) );
+								new_scr.set_tile( ( y_pos * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) + ( ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 1 ) + ( block_n & 0x01 ), utils.get_ushort_from_ulong( data.tiles[ data.get_screen_tile( scr_n, tile_n ) ], block_n ) );
 						}
 					}
 					
@@ -1123,7 +1123,7 @@ namespace MAPeD
 						{
 							for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 							{
-								new_pattern.set_tile( ( ( ( ( tile_n / pattern.width ) << 1 ) + ( ( block_n & 0x02 ) >> 1 ) ) * ( pattern.width << 1 ) ) + ( ( tile_n % pattern.width ) << 1 ) + ( block_n & 0x01 ), utils.get_byte_from_uint( data.tiles[ pattern.data.get_tile( tile_n ) ], block_n ) );
+								new_pattern.set_tile( ( ( ( ( tile_n / pattern.width ) << 1 ) + ( ( block_n & 0x02 ) >> 1 ) ) * ( pattern.width << 1 ) ) + ( ( tile_n % pattern.width ) << 1 ) + ( block_n & 0x01 ), utils.get_ushort_from_ulong( data.tiles[ pattern.data.get_tile( tile_n ) ], block_n ) );
 							}
 						}
 						
@@ -1154,7 +1154,7 @@ namespace MAPeD
 			int tile_x;
 			int tile_y;
 			int tile_offs;
-			uint tile;
+			ulong tile;
 			ushort tile_val0 = 0;
 			ushort tile_val1 = 0;
 			ushort tile_val2 = 0;
@@ -1166,14 +1166,14 @@ namespace MAPeD
 			string ptrn_invalid_tile_str = "";
 			
 			Dictionary< int, List< screen_data > > 	bank_id_screens	= new Dictionary< int, List< screen_data > >( tiles_data_cnt );
-			Dictionary< int, uint[] >			bank_id_tiles	= new Dictionary< int, uint[] >( tiles_data_cnt );
+			Dictionary< int, ulong[] >				bank_id_tiles	= new Dictionary< int, ulong[] >( tiles_data_cnt );
  
 			for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
 			{
 				data = get_tiles_data( data_n );
 				
 				List< screen_data >	screens	= new List< screen_data >( data.screen_data_cnt() );
-				uint[] 				tiles	= new uint[ utils.CONST_MAX_TILES_CNT ];
+				ulong[] 			tiles	= new ulong[ utils.CONST_MAX_TILES_CNT ];
 				Array.Clear( tiles, 0, tiles.Length );
 				
 				ushort tile_ind = 0;
@@ -1206,7 +1206,7 @@ namespace MAPeD
 							tile_val2 = tile_val3 = 0;
 						}
 #endif						
-						tile = unchecked( ( uint )( tile_val0 << 24 | tile_val1 << 16 | tile_val2 << 8 | tile_val3 ) );
+						tile = tiles_data.set_tile_data( tile_val0, tile_val1, tile_val2, tile_val3 );
 
 						// check new tile
 						for( i = 0; i < tile_ind; i++ )
@@ -1273,7 +1273,7 @@ namespace MAPeD
 								tile_val2 = pattern.data.get_tile( tile_offs + pattern.width );
 								tile_val3 = pattern.data.get_tile( tile_offs + pattern.width + 1 );
 								
-								tile = unchecked( ( uint )( tile_val0 << 24 | tile_val1 << 16 | tile_val2 << 8 | tile_val3 ) );
+								tile = tiles_data.set_tile_data( tile_val0, tile_val1, tile_val2, tile_val3 );
 
 								// get tile index
 								for( i = 0; i < tile_ind; i++ )
@@ -1313,7 +1313,7 @@ namespace MAPeD
 				data = get_tiles_data( data_n );
 
 				// update tiles & screens
-				Array.Copy( bank_id_tiles[ data_n ] as uint[], data.tiles, utils.CONST_MAX_TILES_CNT );
+				Array.Copy( bank_id_tiles[ data_n ] as ulong[], data.tiles, utils.CONST_MAX_TILES_CNT );
 				
 				for( scr_n = 0; scr_n < data.screen_data_cnt(); scr_n++ )
 				{

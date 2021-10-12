@@ -370,8 +370,8 @@ namespace MAPeD
 			ushort scr_tile_id;
 			ushort tile_data;
 			
-			uint	tile_ind;
-			byte 	block_ind;			
+			ulong	tile_ind;
+			ushort 	block_ind;			
 			ushort	bank_block;
 			
 			long level_data_size;
@@ -568,23 +568,23 @@ namespace MAPeD
 					{
 						build_and_save_blocks2x2_gfx_and_props( bw, bank_data, tile_data, tile_n, tile_props_arr, 0, tile_colors_arr, 0, img_buff );
 						
-						save_extra_gfx( img_buff, map_tiles_arr, null, tile_n, ( n_scr_Y * scr_height_blocks ), level_gfx, level_postfix_str );
+						save_extra_gfx( img_buff, map_tiles_arr, null, tile_data, ( n_scr_Y * scr_height_blocks ), level_gfx, level_postfix_str );
 					}
 					else
 					if( RBtnTiles4x4.Checked )
 					{
-						tile_ind	= bank_data.tiles[ tile_data & 0x00ff ];
+						tile_ind = bank_data.tiles[ tile_data & 0x00ff ];
 						
 						for( int block_n = 0; block_n < utils.CONST_TILE_SIZE; block_n++ )
 						{
-							block_ind	= utils.get_byte_from_uint( tile_ind, block_n );
+							block_ind	= utils.get_ushort_from_ulong( tile_ind, block_n );
 							bank_block	= ( ushort )( ( tile_data & 0xff00 ) | block_ind );
 							
 							if( blocks_data_dict.ContainsKey( bank_block ) == false )
 							{
 								build_and_save_blocks2x2_gfx_and_props( bw, bank_data, ( ushort )block_ind, blocks_data_dict.Count, tile_props_arr, 0, tile_colors_arr, 0, img_buff );
 								
-								save_extra_gfx( img_buff, map_tiles_arr, bank_data, block_ind, ( ( n_scr_Y * scr_height_blocks ) >> 1 ), level_gfx, level_postfix_str );
+								save_extra_gfx( img_buff, map_tiles_arr, bank_data, bank_block, ( ( n_scr_Y * scr_height_blocks ) >> 1 ), level_gfx, level_postfix_str );
 								
 								blocks_data_dict[ bank_block ] = ( ushort )blocks_data_dict.Count;
 							}
@@ -644,7 +644,7 @@ namespace MAPeD
 						
 						for( int block_n = 0; block_n < utils.CONST_TILE_SIZE; block_n++ )
 						{
-							block_ind	= utils.get_byte_from_uint( tile_ind, block_n );
+							block_ind	= utils.get_ushort_from_ulong( tile_ind, block_n );
 							
 							bw.Write( ( byte )blocks_data_dict[ ( ushort )( ( tile_data & 0xff00 ) | block_ind ) ] );
 						}
@@ -1036,7 +1036,7 @@ namespace MAPeD
 							
 							for( int i = 0; i < max_tile_ind; i++ )
 							{
-								bw.Write( rearrange_tile( tiles.tiles[ i ] ) );
+								bw.Write( tiles_data.tile_convert_ulong_to_uint_reverse( tiles.tiles[ i ] ) );
 							}
 							
 							data_offset_str += "\tdw " + data_offset + "\t\t; (chr" + bank_n + ")\n";
@@ -1638,7 +1638,7 @@ namespace MAPeD
 		private void save_extra_gfx(	int[]		_img_buff,
 										ushort[]	_map_data_arr,
 										tiles_data	_data,
-										int			_tile_n,
+										ushort		_tile_n,
 										int			_map_height_tiles_cnt,
 										Graphics	_level_gfx,
 										string		_level_postfix_str )
@@ -1654,7 +1654,7 @@ namespace MAPeD
 				{
 					for( int map_tile_n = 0; map_tile_n < _map_data_arr.Length; map_tile_n++ )
 					{
-						if( ( _map_data_arr[ map_tile_n ] & 0x00ff ) == _tile_n )
+						if( _map_data_arr[ map_tile_n ] == _tile_n )
 						{
 							_level_gfx.DrawImage( tile_bmp, ( map_tile_n / _map_height_tiles_cnt ) << 4, ( map_tile_n % _map_height_tiles_cnt ) << 4 );
 						}
@@ -1662,17 +1662,20 @@ namespace MAPeD
 				}
 				else
 				{
-					uint tile_ind;
+					ulong tile_ind;
 					
 					for( int map_tile_n = 0; map_tile_n < _map_data_arr.Length; map_tile_n++ )
 					{
-						tile_ind = _data.tiles[ _map_data_arr[ map_tile_n ] & 0x00ff ];
-						
-						for( int block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
+						if( ( _map_data_arr[ map_tile_n ] & 0xff00 ) == ( _tile_n & 0xff00 ) )
 						{
-							if( utils.get_byte_from_uint( tile_ind, block_n ) == ( byte )_tile_n )
+							tile_ind = _data.tiles[ _map_data_arr[ map_tile_n ] & 0x00ff ];
+							
+							for( int block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 							{
-								_level_gfx.DrawImage( tile_bmp, ( ( map_tile_n / _map_height_tiles_cnt ) << 5 ) + ( ( block_n & 0x01 ) == 0x01 ? 16:0 ), ( ( map_tile_n % _map_height_tiles_cnt ) << 5 ) + ( ( block_n & 0x02 ) == 0x02 ? 16:0 ) );
+								if( utils.get_ushort_from_ulong( tile_ind, block_n ) == ( _tile_n & 0x00ff ) )
+								{
+									_level_gfx.DrawImage( tile_bmp, ( ( map_tile_n / _map_height_tiles_cnt ) << 5 ) + ( ( block_n & 0x01 ) == 0x01 ? 16:0 ), ( ( map_tile_n % _map_height_tiles_cnt ) << 5 ) + ( ( block_n & 0x02 ) == 0x02 ? 16:0 ) );
+								}
 							}
 						}
 					}
@@ -1885,16 +1888,6 @@ namespace MAPeD
 					throw new Exception( "The number of entity instances is out of range!\nThe maximum number allowed to export: " + utils.CONST_MAX_ENT_INST_CNT + "\n\n[" + _lev_pref_str + "]" );
 				}
 			}
-		}
-		
-		private uint rearrange_tile( uint _val )
-		{
-			byte v0 = ( byte )( ( _val >> 24 ) & 0xff );
-			byte v1 = ( byte )( ( _val >> 16 ) & 0xff );
-			byte v2 = ( byte )( ( _val >> 8 ) & 0xff );
-			byte v3 = ( byte )( _val & 0xff );
-			
-			return unchecked( ( uint )( v3 << 24 | v2 << 16 | v1 << 8 | v0 ) );
 		}
 	}
 }

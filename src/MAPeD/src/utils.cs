@@ -169,12 +169,13 @@ namespace MAPeD
 		public static readonly string CONST_FULL_APP_NAME	= CONST_FULL_APP_NAMES_ARR[ ( int )platform_data_provider.get_platform_type() ];
 		
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'M';
-		public const byte CONST_PROJECT_FILE_VER	= 5;
+		public const byte CONST_PROJECT_FILE_VER	= 6;
 		// v1: initial data format
 		// v2: added palettes array
 		// v3: blocks data USHORT -> UINT; palette index BYTE -> INT
 		// v4: pre data flags: screen data type ( Tiles4X4 / Blocks2X2 )
 		// v5: screen data -> USHORT
+		// v6: tiles 4x4 data -> ULONG
 
 		public const uint CONST_SPRED_FILE_MAGIC		= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
 		public const uint CONST_SPRED_PROJECT_FILE_VER	= 1;
@@ -704,22 +705,22 @@ namespace MAPeD
 		}
 		// JSON formatter END
 		
-		public static int	get_uint_arr_max_val( uint[] _arr, int _max = 0 )
+		public static int	get_ulong_arr_max_val( ulong[] _arr, int _max = 0 )
 		{
-			uint max_val = 0;
+			ushort max_val = 0;
 			
 			int size = ( _max == 0 ) ? _arr.Length:_max;
 			
 			int i;
 			int j;
 			
-			uint val;
+			ushort val;
 			
 			for( i = 0; i < size; i++ )
 			{
 				for( j = 0; j < 4; j++ )
 				{
-					val = ( _arr[ i ] >> ( ( 4 - j - 1 ) << 3 ) ) & 0xff;
+					val = ( ushort )( ( _arr[ i ] >> ( ( 4 - j - 1 ) << 4 ) ) & 0xffff );
 					
 					if( val > max_val )
 					{
@@ -730,18 +731,18 @@ namespace MAPeD
 			
 			return (int)max_val;
 		}
-		
-		public static byte get_byte_from_uint( uint _uint, int _ind )
+
+		public static ushort get_ushort_from_ulong( ulong _ulong, int _ind )
 		{
-			return ( byte )( ( _uint >> ( ( 4 - _ind - 1 ) << 3 ) ) & 0xff );			
+			return ( ushort )( ( _ulong >> ( ( 4 - _ind - 1 ) << 4 ) ) & 0xffff );
 		}
 		
-		public static uint set_byte_to_uint( uint _uint, int _ind, byte _val )
+		public static ulong set_ushort_to_ulong( ulong _ulong, int _ind, ushort _val )
 		{
-			int byte_ind_shift	= ( int )( ( 4 - _ind - 1 ) << 3 );
-			int byte_mask		= ( int )( 0xff << byte_ind_shift );
+			byte ushort_ind_shift	= ( byte )( ( 4 - _ind - 1 ) << 4 );
+			ulong ushort_mask		= ( ulong )( ( ulong )0xffff << ushort_ind_shift );
 			
-			return ( ( uint )_val << ( byte_ind_shift ) ) | ( uint )( ~( _uint & ( byte_mask ) ) & _uint );
+			return ( ( ulong )_val << ( ushort_ind_shift ) ) | ( ~( _ulong & ( ushort_mask ) ) & _ulong );
 		}
 		
 		public static void write_title( StreamWriter _sw, bool _C_exp = false )

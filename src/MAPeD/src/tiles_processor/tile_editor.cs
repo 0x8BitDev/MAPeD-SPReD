@@ -113,7 +113,7 @@ namespace MAPeD
 			{
 				// draw images...
 				{
-					byte tile_block;
+					ushort tile_block;
 					
 					for( int i = 0; i < utils.CONST_TILE_SIZE; i++ )
 					{

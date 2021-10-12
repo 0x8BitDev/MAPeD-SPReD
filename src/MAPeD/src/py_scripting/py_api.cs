@@ -15,7 +15,7 @@ namespace MAPeD
 	/// </summary>
 	public class py_api : global::SPSeD.i_py_api
 	{
-		private const ushort CONST_API_VER		= 0x0107;
+		private const ushort CONST_API_VER		= 0x0108;
 		
 		private data_sets_manager	m_data_mngr = null;
 		
@@ -53,8 +53,8 @@ namespace MAPeD
 			// int get_CHRs_cnt( int _bank_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "get_CHRs_cnt", new Func< int, int >( get_CHRs_cnt ) );
 
-			// uint[] get_tiles( int _bank_ind )
-			_py_scope.SetVariable( CONST_PREFIX + "get_tiles", new Func< int, uint[] >( get_tiles ) );
+			// ulong[] get_tiles( int _bank_ind )
+			_py_scope.SetVariable( CONST_PREFIX + "get_tiles", new Func< int, ulong[] >( get_tiles ) );
 			
 			// uint[] get_blocks( int _bank_ind ) [ 15-8 -> obj_id(4)|plt(2)|not used(2)| 7-0 -> CHR ind(8) ]
 			_py_scope.SetVariable( CONST_PREFIX + "get_blocks", new Func< int, uint[] >( get_blocks ) );
@@ -65,14 +65,14 @@ namespace MAPeD
 			// byte[] get_CHR( int _bank_ind, int _CHR_ind )
 			_py_scope.SetVariable( CONST_PREFIX + "get_CHR", new Func< int, int, byte[] >( get_CHR ) );
 			
-			// NES:		long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
-			// SMS:		long export_CHR_data( int _bank_ind, string _filename, int _bpp )
-			// PCE/ZX:	long export_CHR_data( int _bank_ind, string _filename )
+			// NES:			long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
+			// SMS:			long export_CHR_data( int _bank_ind, string _filename, int _bpp )
+			// PCE/ZX/SMD:	long export_CHR_data( int _bank_ind, string _filename )
 #if DEF_NES			
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, bool, long >( export_CHR_data ) );
 #elif DEF_SMS
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, int, long >( export_CHR_data ) );
-#elif DEF_PCE || DEF_ZX
+#elif DEF_PCE || DEF_ZX || DEF_SMD
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, long >( export_CHR_data ) );
 #endif			
 			// int get_palette_slots( int _bank_ind )
@@ -407,13 +407,13 @@ namespace MAPeD
 			return null;
 		}
 		
-		public uint[] get_tiles( int _bank_ind )
+		public ulong[] get_tiles( int _bank_ind )
 		{
 			tiles_data data = m_data_mngr.get_tiles_data( _bank_ind );
 			
 			if( data != null )
 			{
-				return copy_arr< uint >( data.tiles );
+				return copy_arr< ulong >( data.tiles );
 			}
 			
 			return null;
@@ -445,9 +445,9 @@ namespace MAPeD
 		
 #if DEF_NES
 		public long export_CHR_data( int _bank_ind, string _filename, bool _save_padding )
-#elif DEF_SMS || DEF_SMD
+#elif DEF_SMS
 		public long export_CHR_data( int _bank_ind, string _filename, int _bpp )
-#elif DEF_PCE || DEF_ZX
+#elif DEF_PCE || DEF_ZX || DEF_SMD
 		public long export_CHR_data( int _bank_ind, string _filename )
 #endif			
 		{

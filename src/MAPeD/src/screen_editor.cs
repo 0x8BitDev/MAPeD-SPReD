@@ -766,7 +766,7 @@ namespace MAPeD
 				
 				if( m_fill_mode == EFillMode.efm_Block )
 				{
-					uint new_tile = build_new_tile( m_tile_x, m_tile_y );
+					ulong new_tile = build_new_tile( m_tile_x, m_tile_y );
 					
 					int tile_ind = check_tile( new_tile );
 					
@@ -824,7 +824,7 @@ namespace MAPeD
 			return true;
 		}
 		
-		private int save_new_tile( uint _tile )
+		private int save_new_tile( ulong _tile )
 		{
 			if( m_last_empty_tile_ind >= 0 )
 			{
@@ -860,7 +860,7 @@ namespace MAPeD
 			return -1;
 		}
 		
-		private int check_tile( uint _tile_data )
+		private int check_tile( ulong _tile_data )
 		{
 			int tile_ind;
 			
@@ -879,13 +879,13 @@ namespace MAPeD
 			return -1;
 		}
 		
-		private uint build_new_tile( int _tile_x, int _tile_y )
+		private ulong build_new_tile( int _tile_x, int _tile_y )
 		{
-			uint old_tile = m_tiles_data.tiles[ m_tiles_data.get_screen_tile( m_scr_ind, ( ( _tile_y >> 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( _tile_x >> 1 ) ) ];
+			ulong old_tile = m_tiles_data.tiles[ m_tiles_data.get_screen_tile( m_scr_ind, ( ( _tile_y >> 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( _tile_x >> 1 ) ) ];
 			
 			int block_ind = ( _tile_x & 0x01 ) + ( ( _tile_y & 0x01 ) << 1 );
 			
-			return utils.set_byte_to_uint( old_tile, block_ind, ( byte )m_active_tile_id );
+			return utils.set_ushort_to_ulong( old_tile, block_ind, ( ushort )m_active_tile_id );
 		}
 		
 		public void set_active_tile( int _tile_ind, EFillMode _fill_mode )
@@ -974,12 +974,12 @@ namespace MAPeD
 			}
 		}
 		
-		private void calc_common_blocks( byte _block_ind )
+		private void calc_common_blocks( ushort _block_ind )
 		{
 			int i;
 			int j;	
 
-			uint tile_data;
+			ulong tile_data;
 			
 			m_last_empty_tile_ind = m_tiles_data.get_first_free_tile_id();
 			m_last_empty_tile_ind = ( m_last_empty_tile_ind < 0 ) ? utils.CONST_MAX_TILES_CNT:m_last_empty_tile_ind;
@@ -993,7 +993,7 @@ namespace MAPeD
 
 				for( j = 0; j < utils.CONST_TILE_SIZE; j++ )
 				{
-					if( utils.get_byte_from_uint( tile_data, j ) == _block_ind )
+					if( utils.get_ushort_from_ulong( tile_data, j ) == _block_ind )
 					{
 						m_block_tiles_cache.Add( i );
 			

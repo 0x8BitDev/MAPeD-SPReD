@@ -122,11 +122,8 @@ namespace MAPeD
 		private List< palette16_data > m_palettes	= null;
 		private int	m_palette_pos					= -1;
 		
-		// NES: [ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)
-		// SMS: [ property_id ](4) [ hv_flip ](2) [ palette_ind ](1) [CHR ind](9)
-		// PCE: [ property_id ](4) [ palette ind ](4) [CHR ind](12)
-		private uint[] m_blocks	= new uint[ utils.CONST_BLOCKS_UINT_SIZE ];
-		private uint[] m_tiles	= new uint[ utils.CONST_TILES_UINT_SIZE ];
+		private uint[]	m_blocks	= new uint[ utils.CONST_BLOCKS_UINT_SIZE ];
+		private ulong[] m_tiles		= new ulong[ utils.CONST_TILES_UINT_SIZE ];
 		
 		[DataMember]
 		private List< screen_data >	m_scr_data	= null;
@@ -212,7 +209,7 @@ namespace MAPeD
 		}
 		
 		[DataMember]
-		public uint[] tiles
+		public ulong[] tiles
 		{
 			get { return m_tiles; }
 			set {}
@@ -424,14 +421,14 @@ namespace MAPeD
 			}
 		}
 		
-		public byte get_tile_block( int _tile_id, int _block_n )
+		public ushort get_tile_block( int _tile_id, int _block_n )
 		{
-			return utils.get_byte_from_uint( m_tiles[ _tile_id ], _block_n );
+			return utils.get_ushort_from_ulong( m_tiles[ _tile_id ], _block_n );
 		}
 		
-		public uint set_tile_block( int _tile_id, int _block_n, byte _val )
+		public ulong set_tile_block( int _tile_id, int _block_n, ushort _val )
 		{
-			uint tile = utils.set_byte_to_uint( m_tiles[ _tile_id ], _block_n, _val );
+			ulong tile = utils.set_ushort_to_ulong( m_tiles[ _tile_id ], _block_n, _val );
 			
 			m_tiles[ _tile_id ] = tile;
 			
@@ -554,9 +551,9 @@ namespace MAPeD
 			}
 		}
 		
-		public void inc_tiles_blocks( byte _start_ind )
+		public void inc_tiles_blocks( ushort _start_ind )
 		{
-			tiles_blocks_proc( delegate( byte _block_ind ) 
+			tiles_blocks_proc( delegate( ushort _block_ind ) 
 			{
 				if( _block_ind >= _start_ind )
 				{
@@ -567,9 +564,9 @@ namespace MAPeD
 			} );
 		}
 		
-		public void dec_tiles_blocks( byte _start_ind )
+		public void dec_tiles_blocks( ushort _start_ind )
 		{
-			tiles_blocks_proc( delegate( byte _block_ind ) 
+			tiles_blocks_proc( delegate( ushort _block_ind ) 
 			{
 				if( _block_ind > _start_ind )
 				{
@@ -580,10 +577,10 @@ namespace MAPeD
 			} );
 		}
 		
-		private void tiles_blocks_proc( Func< byte, byte > _func )
+		private void tiles_blocks_proc( Func< ushort, ushort > _func )
 		{
-			uint tile;
-			byte block_ind;
+			ulong	tile;
+			ushort	block_ind;
 			
 			for( int i = 0; i < m_tiles.Length; i++ )
 			{
@@ -591,11 +588,11 @@ namespace MAPeD
 				
 				for( int j = 0; j < utils.CONST_TILE_SIZE; j++ )
 				{
-					block_ind = utils.get_byte_from_uint( tile, j );
+					block_ind = utils.get_ushort_from_ulong( tile, j );
 					
 					block_ind = _func( block_ind );
 					
-					tile = utils.set_byte_to_uint( tile, j, block_ind );
+					tile = utils.set_ushort_to_ulong( tile, j, block_ind );
 				}
 				
 				m_tiles[ i ] = tile;
@@ -878,9 +875,9 @@ namespace MAPeD
 			return -1;
 		}
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-		public int contains_tile( int _max_tile_ind, uint _tile_data, bool half_tile )
+		public int contains_tile( int _max_tile_ind, ulong _tile_data, bool half_tile )
 #else
-		public int contains_tile( int _max_tile_ind, uint _tile_data )
+		public int contains_tile( int _max_tile_ind, ulong _tile_data )
 #endif
 		{
 			int tile_n;
@@ -892,7 +889,7 @@ namespace MAPeD
 #if DEF_SCREEN_HEIGHT_7d5_TILES				
 				if( half_tile )
 				{
-					if( ( tiles[ tile_n ] & 0xffff0000 ) == ( _tile_data & 0xffff0000 ) )
+					if( ( tiles[ tile_n ] & 0xffffffff00000000 ) == ( _tile_data & 0xffffffff00000000 ) )
 					{
 						return tile_n;
 					}
@@ -1041,11 +1038,11 @@ namespace MAPeD
 		{
 			int sum = 0;
 			
-			uint tile_val = m_tiles[ _tile_id ];
+			ulong tile_val = m_tiles[ _tile_id ];
 			
 			for( int i = 0; i < utils.CONST_TILE_SIZE; i++ )
 			{
-				sum += utils.get_byte_from_uint( tile_val, i );
+				sum += utils.get_ushort_from_ulong( tile_val, i );
 			}
 			
 			return sum;
@@ -1155,7 +1152,7 @@ namespace MAPeD
 				{
 					for( block_n = 0; block_n < utils.CONST_TILE_SIZE; block_n++ )
 					{
-						if( utils.get_byte_from_uint( m_tiles[ tile_n ], block_n ) == _block_ind )
+						if( utils.get_ushort_from_ulong( m_tiles[ tile_n ], block_n ) == _block_ind )
 						{
 							++res;
 						}
@@ -1446,6 +1443,45 @@ namespace MAPeD
 #endif			
 			return _bw.BaseStream.Length;
 		}
+
+		public static ulong tile_ulong_reverse( ulong _tile64 )
+		{
+			ulong tile_rev = 0;
+			
+			for( int i = 0; i < utils.CONST_TILE_SIZE; i++ )
+			{
+				tile_rev = utils.set_ushort_to_ulong( tile_rev, i, ( ushort )( ( _tile64 >> ( 16 * i ) ) & 0xffff ) );
+			}
+			
+			return tile_rev;
+		}
+		
+		public static uint tile_convert_ulong_to_uint_reverse( ulong _tile64 )
+		{
+			byte v0 = ( byte )( ( _tile64 >> 48 ) & 0xff );
+			byte v1 = ( byte )( ( _tile64 >> 32 ) & 0xff );
+			byte v2 = ( byte )( ( _tile64 >> 16 ) & 0xff );
+			byte v3 = ( byte )( _tile64 & 0xff );
+			
+			return unchecked( ( uint )( v3 << 24 | v2 << 16 | v1 << 8 | v0 ) );
+		}
+		
+		public static ulong tile_convert_uint_to_ulong( uint _tile32 )
+		{
+			ulong tile_data = 0;
+			
+			for( int i = 0; i < utils.CONST_TILE_SIZE; i++ )
+			{
+				tile_data = utils.set_ushort_to_ulong( tile_data, utils.CONST_TILE_SIZE - i - 1, ( ushort )( ( _tile32 >> ( 8 * i ) ) & 0xff ) );
+			}
+			
+			return tile_data;
+		}
+		
+		public static ulong set_tile_data( ushort _b0, ushort _b1, ushort _b2, ushort _b3 )
+		{
+			return ( ( ulong )_b0 << 48 | ( ulong )_b1 << 32 | ( ulong )_b2 << 16 | ( ulong )_b3 );
+		}
 		
 		public void save_tiles_patterns( BinaryWriter _bw )
 		{
@@ -1586,9 +1622,18 @@ namespace MAPeD
 			{
 				if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 				{
-					for( i = 0; i < utils.CONST_TILES_UINT_SIZE; i++ )
+					int size = ( _ver <= 5 ) ? 256:utils.CONST_TILES_UINT_SIZE;
+					
+					for( i = 0; i < size; i++ )
 					{
-						m_tiles[ i ] = _br.ReadUInt32();
+						if( _ver <= 5 )
+						{
+							m_tiles[ i ] = tile_convert_uint_to_ulong( _br.ReadUInt32() );
+						}
+						else
+						{
+							m_tiles[ i ] = _br.ReadUInt64();
+						}
 					}
 				}
 			}

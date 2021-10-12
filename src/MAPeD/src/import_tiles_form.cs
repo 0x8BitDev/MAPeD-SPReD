@@ -239,7 +239,7 @@ namespace MAPeD
 				
 				if( import_tiles )
 				{
-					uint tile_data = 0;
+					ulong tile_data = 0;
 					
 					tile_ind 		= 0;
 					beg_tile_ind	= _data.get_first_free_tile_id();
@@ -390,7 +390,7 @@ namespace MAPeD
 									
 									if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 									{
-										tile_data = utils.set_byte_to_uint( tile_data, block_num++, ( dup_block_ind >= 0 ? ( byte )( dup_block_ind >> 2 ):( byte )( ( block_ind - 1 ) >> 2 ) ) );
+										tile_data = utils.set_ushort_to_ulong( tile_data, block_num++, ( dup_block_ind >= 0 ? ( ushort )( dup_block_ind >> 2 ):( ushort )( ( block_ind - 1 ) >> 2 ) ) );
 										
 										if( ( block_num & 0x03 ) == 0x00 )
 										{
