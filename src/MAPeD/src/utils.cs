@@ -232,7 +232,8 @@ namespace MAPeD
 		public const int CONST_SMD_SCREEN_NUM_WIDTH_BLOCKS	= CONST_SMD_SCREEN_NUM_WIDTH_TILES << 1;
 		public const int CONST_SMD_SCREEN_NUM_HEIGHT_BLOCKS	= ( CONST_SMD_SCREEN_NUM_HEIGHT_TILES << 1 ) - 1;	// DEF_SCREEN_HEIGHT_7d5_TILES by default
 //		public const int CONST_SMD_PALETTE_NUM_COLORS		= ...; see CONST_PCE_SMD_PALETTE_NUM_COLORS
-		public const int CONST_SMD_MAX_BLOCKS_CNT			= 4096;
+		public const int CONST_SMD_MAX_BLOCKS_CNT			= 2048;
+		public const int CONST_SMD_MAX_TILES_CNT			= 1024;
 		
 #if DEF_NES		
 		public const int CONST_SCREEN_NUM_WIDTH_TILES		= CONST_NES_SCREEN_NUM_WIDTH_TILES;
@@ -351,7 +352,7 @@ namespace MAPeD
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
 		
 		public const int CONST_MAX_BLOCKS_CNT				= CONST_SMD_MAX_BLOCKS_CNT;
-		public const int CONST_MAX_TILES_CNT				= 256;
+		public const int CONST_MAX_TILES_CNT				= CONST_SMD_MAX_TILES_CNT;
 #endif
 
 		public const int CONST_SCREEN_TILES_SIZE		= 64;	// pixels
@@ -397,7 +398,7 @@ namespace MAPeD
 		public const int CONST_CHR_BANK_MAX_CNT				= 256;
 		
 		public const int CONST_BLOCK_SIZE					= 4;	// uints
-		public const int CONST_TILE_SIZE					= 4;	// bytes
+		public const int CONST_TILE_SIZE					= 4;	// ushorts
 		
 #if DEF_PLATFORM_16BIT
 		public const int CONST_MAX_ENT_INST_CNT				= 0xffff;	// max number of entities instances in a map
