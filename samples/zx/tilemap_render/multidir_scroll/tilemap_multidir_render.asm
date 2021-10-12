@@ -13,6 +13,14 @@
 ; tilemap_render.draw_tiles  	- draw tiles to shadow buffer
 ; tilemap_render.show_screen 	- draw shadow buffer to screen
 ;
+; Additional options (see settings.asm):
+;
+; DEF_128K_DBL_BUFFER	1/0			( 128K dbl buffering or usual 48K rendering )
+; DEF_FULLSCREEN	1/0			( fullscreen or upper 2/3 of the screen )
+; DEF_COLOR		1/0			( BW or CLR )
+; DEF_MOVE_STEP		MS_TILE/MS_8b/MS_4b	( 4/8-bits step or 16/32 depends on exported tile size )
+; DEF_VERT_SYNC		1/0			( rendering begins with HALT or not... )
+;
 
 		MODULE	tilemap_render
 
