@@ -204,7 +204,8 @@ namespace MAPeD
 		public const int CONST_NES_SCREEN_NUM_WIDTH_BLOCKS	= CONST_NES_SCREEN_NUM_WIDTH_TILES << 1;
 		public const int CONST_NES_SCREEN_NUM_HEIGHT_BLOCKS	= ( CONST_NES_SCREEN_NUM_HEIGHT_TILES << 1 ) - 1;	// DEF_SCREEN_HEIGHT_7d5_TILES by default
 		public const int CONST_NES_PALETTE_NUM_COLORS		= 64;
-		public const int CONST_NES_MAX_BLOCKS_CNT			= 256;		
+		public const int CONST_NES_MAX_BLOCKS_CNT			= 256;
+		public const int CONST_NES_MAX_TILES_CNT			= 256;
 
 		public const int CONST_SMS_SCREEN_NUM_WIDTH_TILES	= 8;
 		public const int CONST_SMS_SCREEN_NUM_HEIGHT_TILES	= 6;
@@ -212,6 +213,7 @@ namespace MAPeD
 		public const int CONST_SMS_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_SMS_SCREEN_NUM_HEIGHT_TILES << 1;
 		public const int CONST_SMS_PALETTE_NUM_COLORS		= 64;
 		public const int CONST_SMS_MAX_BLOCKS_CNT			= 256;		
+		public const int CONST_SMS_MAX_TILES_CNT			= 256;
 
 		public const int CONST_PCE_SCREEN_NUM_WIDTH_TILES	= 8;
 		public const int CONST_PCE_SCREEN_NUM_HEIGHT_TILES	= 7;
@@ -219,6 +221,7 @@ namespace MAPeD
 		public const int CONST_PCE_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_PCE_SCREEN_NUM_HEIGHT_TILES << 1;
 		public const int CONST_PCE_SMD_PALETTE_NUM_COLORS	= 512;
 		public const int CONST_PCE_MAX_BLOCKS_CNT			= 256;		
+		public const int CONST_PCE_MAX_TILES_CNT			= 256;
 
 		public const int CONST_ZX_SCREEN_NUM_WIDTH_TILES	= 8;
 		public const int CONST_ZX_SCREEN_NUM_HEIGHT_TILES	= 6;		
@@ -226,6 +229,7 @@ namespace MAPeD
 		public const int CONST_ZX_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_ZX_SCREEN_NUM_HEIGHT_TILES << 1;
 		public const int CONST_ZX_PALETTE_NUM_COLORS		= 16;
 		public const int CONST_ZX_MAX_BLOCKS_CNT			= 256;		
+		public const int CONST_ZX_MAX_TILES_CNT				= 256;
 
 		public const int CONST_SMD_SCREEN_NUM_WIDTH_TILES	= 10;
 		public const int CONST_SMD_SCREEN_NUM_HEIGHT_TILES	= 8;		

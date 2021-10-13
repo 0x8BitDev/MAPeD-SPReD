@@ -27,6 +27,15 @@ namespace MAPeD
 			utils.CONST_ZX_MAX_BLOCKS_CNT,
 			utils.CONST_SMD_MAX_BLOCKS_CNT,
 		};
+
+		private static readonly int[] m_platform_tiles_cnt = new int[]
+		{
+			utils.CONST_NES_MAX_TILES_CNT,
+			utils.CONST_SMS_MAX_TILES_CNT,
+			utils.CONST_PCE_MAX_TILES_CNT,
+			utils.CONST_ZX_MAX_TILES_CNT,
+			utils.CONST_SMD_MAX_TILES_CNT,
+		};
 		
 		private static readonly int[] m_palette_colors_cnt = new int[]
 		{
@@ -121,6 +130,11 @@ namespace MAPeD
 		public static int get_blocks_cnt_by_file_ext( string _file_ext )
 		{
 			return m_platform_blocks_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
+		}
+
+		public static int get_tiles_cnt_by_file_ext( string _file_ext )
+		{
+			return m_platform_tiles_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
 		}
 		
 		public static int get_palette_size_by_file_ext( string _file_ext )

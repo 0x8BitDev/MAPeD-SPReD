@@ -334,12 +334,50 @@ namespace MAPeD
 						{
 							if( tile_x < 0 || tile_x >= native_scr_tiles_width )
 							{
-								skip_tiles( _prj_scr_tiles_width );
+								skip_tiles( 1 );
 							}
 							else
 							{
 								scr.load( _ver, _br, 1, tile_y_offset + tile_x );
 							}
+						}
+					}
+				}
+			}
+			
+			validate_screens( _scr_type, _data );
+		}
+		
+		private void validate_screens(	data_sets_manager.EScreenDataType 	_scr_type, 
+										tiles_data 							_data )
+		{
+			int			scr_n;
+			int			tile_n;
+			ushort		tile_val;
+			screen_data	scr;
+			
+			int blocks_cnt = _data.blocks.Length >> 2;
+			
+			for( scr_n = 0; scr_n < _data.screen_data_cnt(); scr_n++ )
+			{
+				scr = _data.get_screen_data( scr_n );
+				
+				for( tile_n = 0; tile_n < scr.m_arr.Length; tile_n++ )
+				{
+					tile_val = scr.m_arr[ tile_n ];
+					
+					if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					{
+						if( tile_val >= _data.tiles.Length )
+						{
+							scr.m_arr[ tile_n ] = 0;
+						}
+					}
+					else
+					{
+						if( tile_val >= blocks_cnt )
+						{
+							scr.m_arr[ tile_n ] = 0;
 						}
 					}
 				}

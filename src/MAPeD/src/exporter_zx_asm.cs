@@ -1849,15 +1849,15 @@ namespace MAPeD
 			}
 			
 			_sw.WriteLine( "MAP_DATA_MAGIC = " + utils.hex( "$", ( RBtnTiles2x2.Checked ? 1:2 ) | 
-			                                              		( CheckBoxRLE.Checked ? 4:0 ) |
-			                                              		( RBtnTilesDirColumns.Checked ? 8:16 ) |
-			                                              		( RBtnModeMultidirScroll.Checked ? 32:RBtnModeBidirScroll.Checked ? 64:128 ) | 
-			                                              		( CheckBoxExportEntities.Checked ? 256:0 ) |
-			                                              		( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordScreen.Checked ? 512:1024 ):0 ) |
-			                                              		( RBtnLayoutAdjacentScreens.Checked ? 2048:RBtnLayoutAdjacentScreenIndices.Checked ? 4096:8192 ) |
-			                                              		( CheckBoxExportMarks.Checked ? 16384:0 ) |
-				                                              		( RBtnPropPerBlock.Checked ? 32768:65536 ) |
-				                                              		( RBtnTypeColor.Checked ? 131072:0 ) ) );
+																( CheckBoxRLE.Checked ? 4:0 ) |
+																( RBtnTilesDirColumns.Checked ? 8:16 ) |
+																( RBtnModeMultidirScroll.Checked ? 32:RBtnModeBidirScroll.Checked ? 64:128 ) | 
+																( CheckBoxExportEntities.Checked ? 256:0 ) |
+																( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordScreen.Checked ? 512:1024 ):0 ) |
+																( RBtnLayoutAdjacentScreens.Checked ? 2048:RBtnLayoutAdjacentScreenIndices.Checked ? 4096:8192 ) |
+																( CheckBoxExportMarks.Checked ? 16384:0 ) |
+																( RBtnPropPerBlock.Checked ? 32768:65536 ) |
+																( RBtnTypeColor.Checked ? 131072:0 ) ) );
 			_sw.WriteLine( "\n; data flags:" );
 			_sw.WriteLine( "MAP_FLAG_TILES2X2                 = " + utils.hex( "$", 1 ) );
 			_sw.WriteLine( "MAP_FLAG_TILES4X4                 = " + utils.hex( "$", 2 ) );

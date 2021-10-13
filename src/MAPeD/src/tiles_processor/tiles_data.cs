@@ -1529,6 +1529,7 @@ namespace MAPeD
 		public void save( BinaryWriter _bw, data_sets_manager.EScreenDataType _scr_type )
 		{
 			int i;
+			int size;
 			
 			_bw.Write( m_CHR_bank );
 
@@ -1545,14 +1546,20 @@ namespace MAPeD
 				}
 			}
 			
-			for( i = 0; i < utils.CONST_BLOCKS_UINT_SIZE; i++ )
+			size = m_blocks.Length;
+			_bw.Write( ( ushort )size );
+			
+			for( i = 0; i < size; i++ )
 			{
 				_bw.Write( m_blocks[ i ] );
 			}
 
 			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				for( i = 0; i < utils.CONST_TILES_UINT_SIZE; i++ )
+				size = m_tiles.Length;
+				_bw.Write( ( ushort )size );
+				
+				for( i = 0; i < size; i++ )
 				{
 					_bw.Write( m_tiles[ i ] );
 				}
@@ -1584,8 +1591,14 @@ namespace MAPeD
 			{
 				data_converter.pre_load_block_data( prj_platform );
 				
-				int file_blocks_cnt = platform_data_provider.get_blocks_cnt_by_file_ext( _file_ext ) * utils.CONST_BLOCK_SIZE;
-				int read_blocks_cnt = Math.Min( m_blocks.Length, file_blocks_cnt );
+				int blocks_cnt = ( _ver <= 5 ) ? ( platform_data_provider.get_blocks_cnt_by_file_ext( _file_ext ) * utils.CONST_BLOCK_SIZE ):( int )_br.ReadUInt16();
+#if DEF_PLATFORM_16BIT
+				if( blocks_cnt > m_blocks.Length )
+				{
+					Array.Resize( ref m_blocks, blocks_cnt );
+				}
+#endif
+				int read_blocks_cnt	= Math.Min( m_blocks.Length, blocks_cnt );
 				
 				for( i = 0; i < read_blocks_cnt; i++ )
 				{
@@ -1601,7 +1614,7 @@ namespace MAPeD
 					m_blocks[ i ] = data_converter.convert_block_data( _ver, prj_platform, i, val );
 				}
 				
-				int skip_data_size = file_blocks_cnt - m_blocks.Length;
+				int skip_data_size = blocks_cnt - m_blocks.Length;
 				
 				if( skip_data_size > 0 )
 				{
@@ -1611,7 +1624,7 @@ namespace MAPeD
 					}
 					else
 					{
-						_br.ReadBytes( skip_data_size * sizeof( UInt32 ) );
+						_br.ReadBytes( skip_data_size * sizeof( UInt32 ) ); 
 					}
 				}
 				
@@ -1622,9 +1635,26 @@ namespace MAPeD
 			{
 				if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 				{
-					int size = ( _ver <= 5 ) ? 256:utils.CONST_TILES_UINT_SIZE;
+					ulong tile_data;
 					
-					for( i = 0; i < size; i++ )
+					ushort b0;
+					ushort b1;
+					ushort b2;
+					ushort b3;
+					
+					int tiles_cnt = ( _ver <= 5 ) ? ( platform_data_provider.get_tiles_cnt_by_file_ext( _file_ext ) ):( int )_br.ReadUInt16();
+#if DEF_PLATFORM_16BIT
+					if( tiles_cnt > m_tiles.Length )
+					{
+						Array.Resize( ref m_tiles, tiles_cnt );
+					}
+#endif
+					int read_tiles_cnt	= Math.Min( m_tiles.Length, tiles_cnt );
+					read_tiles_cnt		= ( _ver <= 5 ) ? 256:read_tiles_cnt;
+					
+					int blocks_cnt = m_blocks.Length >> 2;
+					
+					for( i = 0; i < read_tiles_cnt; i++ )
 					{
 						if( _ver <= 5 )
 						{
@@ -1632,7 +1662,48 @@ namespace MAPeD
 						}
 						else
 						{
-							m_tiles[ i ] = _br.ReadUInt64();
+							tile_data = _br.ReadUInt64();
+							
+							b0 = ( ushort )( ( tile_data >> 48 ) & 0xffff );
+							b1 = ( ushort )( ( tile_data >> 32 ) & 0xffff );
+							b2 = ( ushort )( ( tile_data >> 16 ) & 0xffff );
+							b3 = ( ushort )( tile_data & 0xffff );
+							
+							if( b0 >= blocks_cnt )
+							{
+								b0 = 0;
+							}
+
+							if( b1 >= blocks_cnt )
+							{
+								b1 = 0;
+							}
+
+							if( b2 >= blocks_cnt )
+							{
+								b2 = 0;
+							}
+
+							if( b3 >= blocks_cnt )
+							{
+								b3 = 0;
+							}
+							
+							m_tiles[ i ] = set_tile_data( b0, b1, b2, b3 ); 
+						}
+					}
+					
+					int skip_data_size = tiles_cnt - m_tiles.Length;
+					
+					if( skip_data_size > 0 )
+					{
+						if( _ver <= 5 )
+						{
+							_br.ReadBytes( skip_data_size * sizeof( UInt32 ) );
+						}
+						else
+						{
+							_br.ReadBytes( skip_data_size * sizeof( UInt64 ) );
 						}
 					}
 				}
