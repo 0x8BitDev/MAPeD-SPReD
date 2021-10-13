@@ -762,9 +762,11 @@ namespace MAPeD
 						throw new Exception( "Invalid file!" );
 					}
 					
-					// update controls
+					// update data
 					{
 						progress_bar_status( "Data updating..." );
+
+						m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type );
 						
 						int tiles_cnt = m_data_manager.tiles_data_cnt;
 						
@@ -778,12 +780,10 @@ namespace MAPeD
 						enable_main_UI( true );
 						
 						update_layouts_list_box();
+					
+						m_layout_editor.update();
+						update_graphics( false );
 					}
-					
-					m_layout_editor.update();
-					update_graphics( false );
-					
-					m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type );
 #if !DEF_NES
 					palette_group.Instance.active_palette = 0;
 #endif
