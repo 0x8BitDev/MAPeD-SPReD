@@ -2376,7 +2376,7 @@ namespace MAPeD
 #endif
 			{
 				int scr_first_tile_ind = _scr_data.get_tile( 0 );
-				int num_tiles = utils.get_screen_tiles_cnt_uni( m_data_manager.screen_data_type );
+				int num_tiles = platform_data_provider.get_screen_tiles_cnt_uni( m_data_manager.screen_data_type );
 				
 				for( tile_n = 1; tile_n < num_tiles; tile_n++ )
 				{

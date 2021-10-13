@@ -176,6 +176,66 @@ namespace MAPeD
 			}
 		}
 		
+		public static int get_screen_tiles_cnt_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return utils.CONST_SCREEN_TILES_CNT;
+			}
+			else
+			{
+				return utils.CONST_SCREEN_BLOCKS_CNT;
+			}
+		}
+		
+		public static int get_screen_num_width_tiles_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return utils.CONST_SCREEN_NUM_WIDTH_TILES;
+			}
+			else
+			{
+				return utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
+			}
+		}
+		
+		public static int get_screen_num_height_tiles_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return utils.CONST_SCREEN_NUM_HEIGHT_TILES;
+			}
+			else
+			{
+				return utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
+			}
+		}
+		
+		public static int get_screen_tiles_size_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return utils.CONST_SCREEN_TILES_SIZE;
+			}
+			else
+			{
+				return utils.CONST_SCREEN_BLOCKS_SIZE;
+			}
+		}
+		
+		public static screen_editor.EFillMode get_screen_fill_mode_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return screen_editor.EFillMode.efm_Tile;
+			}
+			else
+			{
+				return screen_editor.EFillMode.efm_Block;
+			}
+		}
+		
 		public static utils.EPlatformType get_platform_type()
 		{
 			return m_platform;

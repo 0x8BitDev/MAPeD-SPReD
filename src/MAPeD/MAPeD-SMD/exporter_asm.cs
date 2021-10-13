@@ -1501,7 +1501,7 @@ namespace MAPeD
 		
 			if( RBtnTilesDirRows.Checked || _force_swapping )
 			{
-				utils.swap_columns_rows_order_ushort( _attrs_chr, _scr_width_blocks_mul2, _scr_height_blocks_mul2 );
+				utils.swap_columns_rows_order< ushort >( _attrs_chr, _scr_width_blocks_mul2, _scr_height_blocks_mul2 );
 			}
 		}
 		

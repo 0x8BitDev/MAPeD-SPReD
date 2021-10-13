@@ -131,7 +131,7 @@ namespace MAPeD
 				m_plt_arr[ i ].ActivePalette += new EventHandler( update_palettes );
 			}
 			
-			m_pix_box.MouseClick += new MouseEventHandler( this.Layout_MouseClick );
+			m_pix_box.MouseClick += new MouseEventHandler( this.Palette_MouseClick );
 			
 			m_main_palette = platform_data_provider.get_palette_by_file_ext( utils.CONST_FILE_EXT );
 			
@@ -242,7 +242,7 @@ namespace MAPeD
 			invalidate();
 		}
 		
-		private void Layout_MouseClick(object sender, MouseEventArgs e)
+		private void Palette_MouseClick(object sender, MouseEventArgs e)
 		{
 #if !DEF_ZX
 		

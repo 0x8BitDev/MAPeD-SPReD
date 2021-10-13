@@ -290,7 +290,7 @@ namespace MAPeD
 				return;
 			}
 
-			m_tile_ghost_img_rect.Height = m_tile_ghost_img_rect.Width = utils.get_screen_tiles_size_uni( m_screen_data_type );
+			m_tile_ghost_img_rect.Height = m_tile_ghost_img_rect.Width = platform_data_provider.get_screen_tiles_size_uni( m_screen_data_type );
 			
 			clear_active_tile_img();
 			
@@ -301,14 +301,14 @@ namespace MAPeD
 			m_tile_x = int.MinValue;
 			m_tile_y = int.MinValue;
 			
-			m_fill_mode = utils.get_screen_fill_mode_uni( m_screen_data_type );
+			m_fill_mode = platform_data_provider.get_screen_fill_mode_uni( m_screen_data_type );
 			
 			update();
 		}
 		
 		private void create_pattern_begin( object sender, EventArgs e )
 		{
-			m_tile_ghost_img_rect.Height = m_tile_ghost_img_rect.Width = utils.get_screen_tiles_size_uni( m_screen_data_type );
+			m_tile_ghost_img_rect.Height = m_tile_ghost_img_rect.Width = platform_data_provider.get_screen_tiles_size_uni( m_screen_data_type );
 			
 			clear_active_tile_img();
 			
@@ -343,7 +343,7 @@ namespace MAPeD
 											ref int _dx, 
 											ref int _dy )
 		{
-			int scr_tiles_size = utils.get_screen_tiles_size_uni( m_screen_data_type );
+			int scr_tiles_size = platform_data_provider.get_screen_tiles_size_uni( m_screen_data_type );
 			
 			_min_x = Math.Max( get_scr_offs_x(), Math.Min( m_sel_rect_beg.X, m_sel_rect_end.X ) );
 			_min_y = Math.Max( get_scr_offs_y(), Math.Min( m_sel_rect_beg.Y, m_sel_rect_end.Y ) );
@@ -360,8 +360,8 @@ namespace MAPeD
 			_tiles_width	= ( ( max_x - get_scr_offs_x() ) / scr_tiles_size ) - _tile_pos_x + 1;
 			_tiles_height	= ( ( max_y - get_scr_offs_y() ) / scr_tiles_size ) - _tile_pos_y + 1;
 			
-			_tiles_width	= Math.Min( utils.get_screen_num_width_tiles_uni( m_screen_data_type ) - _tile_pos_x, _tiles_width );
-			_tiles_height	= Math.Min( utils.get_screen_num_height_tiles_uni( m_screen_data_type ) - _tile_pos_y, _tiles_height );
+			_tiles_width	= Math.Min( platform_data_provider.get_screen_num_width_tiles_uni( m_screen_data_type ) - _tile_pos_x, _tiles_width );
+			_tiles_height	= Math.Min( platform_data_provider.get_screen_num_height_tiles_uni( m_screen_data_type ) - _tile_pos_y, _tiles_height );
 		}
 		
 		public void subscribe_event( data_sets_manager _data_mngr )
@@ -474,7 +474,7 @@ namespace MAPeD
 						
 						int pos = -1;
 						
-						int num_width_tiles = utils.get_screen_num_width_tiles_uni( m_screen_data_type );
+						int num_width_tiles = platform_data_provider.get_screen_num_width_tiles_uni( m_screen_data_type );
 						
 						screen_data pttrn_data = new screen_data( tiles_width, tiles_height );
 						
@@ -502,7 +502,7 @@ namespace MAPeD
 					{
 						if( m_mode == EMode.em_Single )
 						{
-							int num_width_tiles = utils.get_screen_num_width_tiles_uni( m_screen_data_type );
+							int num_width_tiles = platform_data_provider.get_screen_num_width_tiles_uni( m_screen_data_type );
 							
 							int y_pos = 0;
 							
@@ -667,8 +667,8 @@ namespace MAPeD
 						m_tile_x = m_tile_x - half_width < 0 ? 0:m_tile_x - half_width;
 						m_tile_y = m_tile_y - half_height < 0 ? 0:m_tile_y - half_height;
 
-						int num_width_tiles		= utils.get_screen_num_width_tiles_uni( m_screen_data_type );
-						int num_height_tiles	= utils.get_screen_num_height_tiles_uni( m_screen_data_type );
+						int num_width_tiles		= platform_data_provider.get_screen_num_width_tiles_uni( m_screen_data_type );
+						int num_height_tiles	= platform_data_provider.get_screen_num_height_tiles_uni( m_screen_data_type );
 
 						m_tile_x = m_tile_x + m_active_pattern.width > num_width_tiles - 1 ? num_width_tiles - m_active_pattern.width:m_tile_x;
 						m_tile_y = m_tile_y + m_active_pattern.height > num_height_tiles - 1 ? num_height_tiles - m_active_pattern.height:m_tile_y;
@@ -1129,7 +1129,7 @@ namespace MAPeD
 							int dx		= 0;
 							int dy		= 0;
 							
-							int scr_tiles_size = utils.get_screen_tiles_size_uni( m_screen_data_type );
+							int scr_tiles_size = platform_data_provider.get_screen_tiles_size_uni( m_screen_data_type );
 							
 							calc_pattern_params( ref tile_pos_x, ref tile_pos_y, ref tiles_width, ref tiles_height, ref min_x, ref min_y, ref dx, ref dy );
 							
@@ -1159,7 +1159,7 @@ namespace MAPeD
 					{
 						if( ( m_tile_x != int.MinValue && m_tile_y != int.MinValue ) && ( m_active_pattern != null && m_active_pattern.data != null ) )
 						{
-							int 		tile_size	= utils.get_screen_tiles_size_uni( m_screen_data_type );
+							int 		tile_size	= platform_data_provider.get_screen_tiles_size_uni( m_screen_data_type );
 							ImageList 	img_list	= ( m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? m_tiles_imagelist:m_blocks_imagelist;
 							
 							for( int tile_y = 0; tile_y < m_active_pattern.height; tile_y++ )

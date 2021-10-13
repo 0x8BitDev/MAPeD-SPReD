@@ -39,7 +39,7 @@ namespace MAPeD
 
 		public screen_data( data_sets_manager.EScreenDataType _type )
 		{
-			alloc( utils.get_screen_num_width_tiles_uni( _type ), utils.get_screen_num_height_tiles_uni( _type ) );
+			alloc( platform_data_provider.get_screen_num_width_tiles_uni( _type ), platform_data_provider.get_screen_num_height_tiles_uni( _type ) );
 		}
 
 		public screen_data( int _width, int _height )

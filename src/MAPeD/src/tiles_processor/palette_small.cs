@@ -78,7 +78,7 @@ namespace MAPeD
 		{
 			m_id = _id;
 			
-			m_pix_box.MouseClick += new MouseEventHandler( this.Layout_MouseClick );
+			m_pix_box.MouseClick += new MouseEventHandler( this.Palette_MouseClick );
 			
 			update();
 		}
@@ -122,7 +122,7 @@ namespace MAPeD
 			invalidate();
 		}
 		
-		private void Layout_MouseClick(object sender, MouseEventArgs e)
+		private void Palette_MouseClick(object sender, MouseEventArgs e)
 		{
 			active = true;
 			

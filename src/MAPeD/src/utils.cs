@@ -859,28 +859,6 @@ namespace MAPeD
 			Array.Copy( tmp_arr, _arr, _arr.Length );
 		}
 
-		public static void swap_columns_rows_order_ushort( ushort[] _arr, int _width, int _height )
-		{	
-			if( _arr.Length != _width * _height )
-			{
-				throw new Exception( "utils.swap_columns_rows_ushort( ushort[] _arr, int _width, int _height )\n Invalid input arguments!" );
-			}
-			
-			ushort[] tmp_arr = new ushort[ _arr.Length ];
-			
-			int ind = 0;
-			
-			for( int y = 0; y < _height; y++ )
-			{
-				for( int x = 0; x < _width; x++ )
-				{
-					tmp_arr[ ind++ ] = _arr[ x * _height + y ];
-				}
-			}
-
-			Array.Copy( tmp_arr, _arr, _arr.Length );
-		}
-		
 		// RLE routine from NESst tool by Shiru
 		public static int RLE8( byte[] _arr, ref byte[] _rle_arr )
 		{
@@ -1127,66 +1105,6 @@ namespace MAPeD
 			_progress_val += ( 100 - _progress_val ) >> 1;
 			
 			return _progress_val;
-		}
-		
-		public static int get_screen_tiles_cnt_uni( data_sets_manager.EScreenDataType _type )
-		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return CONST_SCREEN_TILES_CNT;
-			}
-			else
-			{
-				return CONST_SCREEN_BLOCKS_CNT;
-			}
-		}
-		
-		public static int get_screen_num_width_tiles_uni( data_sets_manager.EScreenDataType _type )
-		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return CONST_SCREEN_NUM_WIDTH_TILES;
-			}
-			else
-			{
-				return CONST_SCREEN_NUM_WIDTH_BLOCKS;
-			}
-		}
-		
-		public static int get_screen_num_height_tiles_uni( data_sets_manager.EScreenDataType _type )
-		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return CONST_SCREEN_NUM_HEIGHT_TILES;
-			}
-			else
-			{
-				return CONST_SCREEN_NUM_HEIGHT_BLOCKS;
-			}
-		}
-		
-		public static int get_screen_tiles_size_uni( data_sets_manager.EScreenDataType _type )
-		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return CONST_SCREEN_TILES_SIZE;
-			}
-			else
-			{
-				return CONST_SCREEN_BLOCKS_SIZE;
-			}
-		}
-		
-		public static screen_editor.EFillMode get_screen_fill_mode_uni( data_sets_manager.EScreenDataType _type )
-		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return screen_editor.EFillMode.efm_Tile;
-			}
-			else
-			{
-				return screen_editor.EFillMode.efm_Block;
-			}
 		}
 	}
 }

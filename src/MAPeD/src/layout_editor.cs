@@ -267,8 +267,8 @@ namespace MAPeD
 			{
 				if( CHR_bank_id == _CHR_bank_id )
 				{
-					int num_width_tiles		= utils.get_screen_num_width_tiles_uni( m_screen_data_type );
-					int num_height_tiles	= utils.get_screen_num_height_tiles_uni( m_screen_data_type );
+					int num_width_tiles		= platform_data_provider.get_screen_num_width_tiles_uni( m_screen_data_type );
+					int num_height_tiles	= platform_data_provider.get_screen_num_height_tiles_uni( m_screen_data_type );
 					
 					int scr_x = ( _scr_ind % get_width() );
 					int scr_y = ( _scr_ind / get_width() );
