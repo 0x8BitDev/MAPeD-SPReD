@@ -4255,11 +4255,11 @@ namespace MAPeD
 			plt_grp.set_palette( _data );
 			plt_grp.update_selected_color();
 			
-			enable_update_gfx_btn( true );
-			enable_update_screens_btn( true );
-			
 #if DEF_PALETTE16_PER_CHR
 			m_tiles_processor.block_editor_update_sel_CHR_palette();
+#else
+			enable_update_gfx_btn( true );
+			enable_update_screens_btn( true );
 #endif
 			m_tiles_processor.update_graphics();
 		}

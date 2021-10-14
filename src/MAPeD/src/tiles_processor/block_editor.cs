@@ -308,7 +308,12 @@ namespace MAPeD
 			{
 				int block_data_ind = ( m_sel_block_id << 2 ) + m_sel_quad_ind;
 				
-				m_data.blocks[ block_data_ind ] = tiles_data.set_block_flags_palette( m_data.palette_pos, m_data.blocks[ block_data_ind ] );
+				if( tiles_data.get_block_flags_palette( m_data.blocks[ block_data_ind ] ) != m_data.palette_pos )
+				{
+					m_data.blocks[ block_data_ind ] = tiles_data.set_block_flags_palette( m_data.palette_pos, m_data.blocks[ block_data_ind ] );
+					
+					dispatch_event_need_gfx_update();
+				}
 			}
 		}
 #endif
