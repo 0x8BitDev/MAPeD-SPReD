@@ -363,7 +363,7 @@ namespace MAPeD
 					if( m_sel_ind >= 0 )
 					{
 #if DEF_NES					
-						m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.get_palettes_arr()[ plt.active_palette ].color_slot );
+						m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.get_palettes_arr()[ plt.active_palette ].get_color_slot() );
 #else
 						m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.active_palette * utils.CONST_NUM_SMALL_PALETTES + plt.get_palettes_arr()[ plt.active_palette ].get_color_slot() );
 #endif

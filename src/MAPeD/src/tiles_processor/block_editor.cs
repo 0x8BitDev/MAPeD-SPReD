@@ -182,7 +182,7 @@ namespace MAPeD
 					
 					palette_group plt = palette_group.Instance;					
 #if DEF_NES
-					byte clr_slot = (byte)plt.get_palettes_arr()[ plt.active_palette ].color_slot;
+					byte clr_slot = (byte)plt.get_palettes_arr()[ plt.active_palette ].get_color_slot();
 #else
 					byte clr_slot = (byte)( ( plt.active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.active_palette ].get_color_slot() );
 #endif

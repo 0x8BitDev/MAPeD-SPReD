@@ -71,7 +71,7 @@ namespace MAPeD
 						plt = m_plt_arr[ i ]; 
 						plt.active = true;
 #if !DEF_ZX
-						m_sel_clr_ind = plt.get_color_inds()[ plt.color_slot ];
+						m_sel_clr_ind = plt.get_color_inds()[ plt.get_color_slot() ];
 #endif
 						update();
 					}
@@ -272,7 +272,7 @@ namespace MAPeD
 			{
 				palette_small plt = m_plt_arr[ m_active_plt_id ];
 #if DEF_NES				
-				if( plt.color_slot == 0 )
+				if( plt.get_color_slot() == 0 )
 				{
 					// if active slot is a zero number, fill zero slot of the all palettes by a selected color
 					for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
@@ -393,7 +393,7 @@ namespace MAPeD
 #if DEF_ZX
 					m_plt_arr[ paper_active_palette ].set_color_slot( m_plt_arr[ paper_active_palette ].get_color_slot() );
 #else
-					m_plt_arr[ active_palette ].color_slot = m_plt_arr[ active_palette ].color_slot;
+					m_plt_arr[ active_palette ].set_color_slot( m_plt_arr[ active_palette ].get_color_slot() );
 #endif
 				}
 				else
@@ -403,7 +403,7 @@ namespace MAPeD
 #if DEF_ZX
 					m_plt_arr[ paper_active_palette ].set_color_slot( m_plt_arr[ paper_active_palette ].get_color_slot() );
 #else
-					m_plt_arr[ active_palette ].color_slot = m_plt_arr[ active_palette ].color_slot;
+					m_plt_arr[ active_palette ].set_color_slot( m_plt_arr[ active_palette ].get_color_slot() );
 #endif
 				}
 			}
