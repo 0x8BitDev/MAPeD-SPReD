@@ -56,24 +56,6 @@ namespace MAPeD
 		private int m_sel_clr_ind 	= -1;
 		private int[] m_clr_inds 	= null;
 		
-		public int color_slot
-		{
-			get { return m_sel_clr_ind; }
-			set
-			{
-				if( value >= 0 && value < utils.CONST_PALETTE_SMALL_NUM_COLORS )
-				{
-					active = true;
-					
-					m_sel_clr_ind = value;
-					
-					dispatch_event_active_palette();
-					
-					update();
-				}
-			}
-		}
-		
 		public palette_small( int _id, PictureBox _pbox ) : base( _pbox )
 		{
 			m_id = _id;
@@ -81,6 +63,28 @@ namespace MAPeD
 			m_pix_box.MouseClick += new MouseEventHandler( this.Palette_MouseClick );
 			
 			update();
+		}
+
+		public int get_color_slot()
+		{ 
+			return m_sel_clr_ind; 
+		}
+		
+		public void set_color_slot( int _val, bool _dispatch_event = true )
+		{
+			if( _val >= 0 && _val < utils.CONST_PALETTE_SMALL_NUM_COLORS )
+			{
+				active = true;
+				
+				m_sel_clr_ind = _val;
+				
+				if( _dispatch_event )
+				{
+					dispatch_event_active_palette();
+				}
+				
+				update();
+			}
 		}
 		
 		public override void update()

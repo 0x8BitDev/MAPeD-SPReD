@@ -184,12 +184,12 @@ namespace MAPeD
 #if DEF_NES
 					byte clr_slot = (byte)plt.get_palettes_arr()[ plt.active_palette ].color_slot;
 #else
-					byte clr_slot = (byte)( ( plt.active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
+					byte clr_slot = (byte)( ( plt.active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.active_palette ].get_color_slot() );
 #endif
 
 #if DEF_ZX
 					// paper color
-					byte paper_clr_slot = (byte)( ( plt.paper_active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.paper_active_palette ].color_slot );
+					byte paper_clr_slot = (byte)( ( plt.paper_active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.paper_active_palette ].get_color_slot() );
 					
 					// apply paper/ink color
 					m_data.update_ink_paper_colors( get_selected_quad_CHR_id(), clr_slot, paper_clr_slot );
@@ -272,13 +272,13 @@ namespace MAPeD
 				if( ink_clr != 0xff )
 				{
 					plt.active_palette = ink_clr >> 2;
-					plt.get_palettes_arr()[ plt.active_palette ].color_slot = ink_clr & 0x03; 
+					plt.get_palettes_arr()[ plt.active_palette ].set_color_slot( ink_clr & 0x03, false );
 				}
 				
 				if( paper_clr != 0xff )
 				{
 					plt.active_palette = paper_clr >> 2;
-					plt.get_palettes_arr()[ plt.paper_active_palette ].color_slot = paper_clr & 0x03; 
+					plt.get_palettes_arr()[ plt.paper_active_palette ].set_color_slot( paper_clr & 0x03, false );
 				}
 #endif
 			}
@@ -395,8 +395,8 @@ namespace MAPeD
 #elif DEF_ZX
 				palette_group plt = palette_group.Instance;
 				
-				byte ink_clr_slot	= ( byte )( ( plt.active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
-				byte paper_clr_slot	= ( byte )( ( plt.paper_active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.paper_active_palette ].color_slot );
+				byte ink_clr_slot	= ( byte )( ( plt.active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.active_palette ].get_color_slot() );
+				byte paper_clr_slot	= ( byte )( ( plt.paper_active_palette * utils.CONST_PALETTE_SMALL_NUM_COLORS ) + plt.get_palettes_arr()[ plt.paper_active_palette ].get_color_slot() );
 
 				// apply paper/ink color
 				m_data.update_ink_paper_colors( get_selected_quad_CHR_id(), ink_clr_slot, paper_clr_slot );

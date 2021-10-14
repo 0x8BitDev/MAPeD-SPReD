@@ -365,10 +365,10 @@ namespace MAPeD
 #if DEF_NES					
 						m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.get_palettes_arr()[ plt.active_palette ].color_slot );
 #else
-						m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.active_palette * utils.CONST_NUM_SMALL_PALETTES + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
+						m_data.fill_CHR_bank_spr8x8_by_color_ind( m_sel_ind, plt.active_palette * utils.CONST_NUM_SMALL_PALETTES + plt.get_palettes_arr()[ plt.active_palette ].get_color_slot() );
 #endif
 					
-						MainForm.set_status_msg( String.Format( "CHR Bank: Sprite #{0:X2} is filled with a palette slot index: {1}", m_sel_ind, plt.get_palettes_arr()[ plt.active_palette ].color_slot ) );
+						MainForm.set_status_msg( String.Format( "CHR Bank: Sprite #{0:X2} is filled with a palette slot index: {1}", m_sel_ind, plt.get_palettes_arr()[ plt.active_palette ].get_color_slot() ) );
 					
 						update();
 					}

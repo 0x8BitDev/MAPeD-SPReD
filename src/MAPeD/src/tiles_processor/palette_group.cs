@@ -51,7 +51,7 @@ namespace MAPeD
 					if( value >= 0 && m_paper_active_plt_id < 0 )
 					{
 						m_paper_active_plt_id = utils.CONST_ZX_DEFAULT_PAPER_COLOR >> 2;
-						m_plt_arr[ m_paper_active_plt_id ].color_slot = utils.CONST_ZX_DEFAULT_PAPER_COLOR & 0x03;
+						m_plt_arr[ m_paper_active_plt_id ].set_color_slot( utils.CONST_ZX_DEFAULT_PAPER_COLOR & 0x03 );
 					}
 				}
 				else
@@ -337,7 +337,7 @@ namespace MAPeD
 			
 			active_palette = plt.active ? plt.id:-1;
 			
-			m_sel_clr_ind = plt.get_color_inds()[ plt.color_slot ];
+			m_sel_clr_ind = plt.get_color_inds()[ plt.get_color_slot() ];
 			
 			update();
 		}
@@ -378,20 +378,20 @@ namespace MAPeD
 				if( e.KeyCode == Keys.D1 )
 				{
 					active_palette = 0;
-					m_plt_arr[ active_palette ].color_slot = m_plt_arr[ active_palette ].color_slot;
+					m_plt_arr[ active_palette ].set_color_slot( m_plt_arr[ active_palette ].get_color_slot() );
 				}
 				else
 				if( e.KeyCode == Keys.D2 )
 				{
 					active_palette = 1;
-					m_plt_arr[ active_palette ].color_slot = m_plt_arr[ active_palette ].color_slot;
+					m_plt_arr[ active_palette ].set_color_slot( m_plt_arr[ active_palette ].get_color_slot() );
 				}
 				else
 				if( e.KeyCode == Keys.D3 )
 				{
 					active_palette = 2;
 #if DEF_ZX
-					m_plt_arr[ paper_active_palette ].color_slot = m_plt_arr[ paper_active_palette ].color_slot;
+					m_plt_arr[ paper_active_palette ].set_color_slot( m_plt_arr[ paper_active_palette ].get_color_slot() );
 #else
 					m_plt_arr[ active_palette ].color_slot = m_plt_arr[ active_palette ].color_slot;
 #endif
@@ -401,7 +401,7 @@ namespace MAPeD
 				{
 					active_palette = 3;
 #if DEF_ZX
-					m_plt_arr[ paper_active_palette ].color_slot = m_plt_arr[ paper_active_palette ].color_slot;
+					m_plt_arr[ paper_active_palette ].set_color_slot( m_plt_arr[ paper_active_palette ].get_color_slot() );
 #else
 					m_plt_arr[ active_palette ].color_slot = m_plt_arr[ active_palette ].color_slot;
 #endif
@@ -414,22 +414,22 @@ namespace MAPeD
 				{
 					if( e.KeyCode == Keys.D1 )
 					{
-						this.m_plt_arr[ active_palette ].color_slot = 0;
+						this.m_plt_arr[ active_palette ].set_color_slot( 0 );
 					}
 					else
 					if( e.KeyCode == Keys.D2 )
 					{
-						this.m_plt_arr[ active_palette ].color_slot = 1;
+						this.m_plt_arr[ active_palette ].set_color_slot( 1 );
 					}
 					else
 					if( e.KeyCode == Keys.D3 )
 					{
-						this.m_plt_arr[ active_palette ].color_slot = 2;
+						this.m_plt_arr[ active_palette ].set_color_slot( 2 );
 					}
 					else
 					if( e.KeyCode == Keys.D4 )
 					{
-						this.m_plt_arr[ active_palette ].color_slot = 3;
+						this.m_plt_arr[ active_palette ].set_color_slot( 3 );
 					}
 				}
 			}
