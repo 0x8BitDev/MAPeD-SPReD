@@ -537,7 +537,7 @@ namespace MAPeD
 				tile_colors_arr = new byte[ ( unique_tiles_arr.Count << 2 ) * ( RBtnTiles2x2.Checked ? 1:4 ) ];
 				Array.Clear( tile_colors_arr, 0, tile_colors_arr.Length );
 				
-				tile_props_arr = new byte[ unique_tiles_arr.Count * ( RBtnPropPerBlock.Checked ? 1:4 ) ];
+				tile_props_arr = new byte[ unique_tiles_arr.Count * ( RBtnPropPerBlock.Checked ? 1:4 ) * ( RBtnTiles4x4.Checked ? 4:1 ) ];
 				Array.Clear( tile_props_arr, 0, tile_props_arr.Length );
 
 				// sort unique tileas array by bank number
@@ -692,7 +692,7 @@ namespace MAPeD
 					_sw.WriteLine( level_prefix_str + "_wtls\tequ " + map_tiles_width + "\t\t; number of map tiles in width" );
 					_sw.WriteLine( level_prefix_str + "_htls\tequ " + map_tiles_height + "\t\t; number of map tiles in height" );
 					
-					_sw.WriteLine( level_prefix_str + "_u_tiles\tequ " + unique_tiles_arr.Count + "\t\t; number of unique tiles" );
+					_sw.WriteLine( level_prefix_str + "_u_tiles\tequ " + ( RBtnTiles4x4.Checked ? blocks_data_dict.Count:unique_tiles_arr.Count ) + "\t\t; number of unique tiles 2x2 (!)" );
 					_sw.WriteLine( level_prefix_str + "_t_tiles\tequ " + map_tiles_arr.Length + "\t\t; total number of tiles in whole map" );
 					
 					_sw.WriteLine( "" );
