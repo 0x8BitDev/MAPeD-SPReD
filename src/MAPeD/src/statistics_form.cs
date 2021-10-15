@@ -47,7 +47,7 @@ namespace MAPeD
 			richTextBox.Text += "\nScreen: " + utils.CONST_SCREEN_WIDTH_PIXELS + "x" + utils.CONST_SCREEN_HEIGHT_PIXELS + " pix\nScreen Tiles (2x2): " + ( utils.CONST_SCREEN_WIDTH_PIXELS / 16.0f ) + "x" + ( utils.CONST_SCREEN_HEIGHT_PIXELS / 16.0f ) + "\nScreen Tiles (4x4): " + ( utils.CONST_SCREEN_WIDTH_PIXELS / 32.0f ) + "x" + ( utils.CONST_SCREEN_HEIGHT_PIXELS / 32.0f );
 			richTextBox.Text += "\n\nCHR bank: " + ( utils.CONST_CHR_BANK_MAX_SPRITES_CNT * utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES ) / 1024 + " KB (Max: " + utils.CONST_CHR_BANK_MAX_SPRITES_CNT + " CHRs)";  
 			richTextBox.Text += "\nCHR size: " + utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES + " Bytes";
-			richTextBox.Text += "\nTiles (4x4): " + utils.CONST_MAX_TILES_CNT;
+			richTextBox.Text += "\n\nTiles (4x4): " + utils.CONST_MAX_TILES_CNT;
 			richTextBox.Text += "\nBlocks (2x2): " + utils.CONST_MAX_BLOCKS_CNT;
 			
 			richTextBox.Text += "\n---------------------------\nProject:";

@@ -126,6 +126,11 @@ namespace MAPeD
 		{
 			return m_platform_name_platform_type_dict[ _name ];
 		}
+		
+		public static string get_platform_name_by_type( utils.EPlatformType _type )
+		{
+			return utils.CONST_PLATFORM_NAMES_ARR[ ( int )_type ];
+		}
 
 		public static int get_blocks_cnt_by_file_ext( string _file_ext )
 		{
@@ -173,6 +178,30 @@ namespace MAPeD
 			else
 			{
 				return m_platform_screen_height_blocks_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
+			}
+		}
+
+		public static int get_screen_tiles_width_by_platform_type_uni( utils.EPlatformType _platform_type, data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return m_platform_screen_width_tiles_cnt[ ( int )_platform_type ];
+			}
+			else
+			{
+				return m_platform_screen_width_blocks_cnt[ ( int )_platform_type ];
+			}
+		}
+
+		public static int get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType _platform_type, data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return m_platform_screen_height_tiles_cnt[ ( int )_platform_type ];
+			}
+			else
+			{
+				return m_platform_screen_height_blocks_cnt[ ( int )_platform_type ];
 			}
 		}
 		

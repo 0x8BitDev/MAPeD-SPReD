@@ -63,8 +63,8 @@ namespace MAPeD
 				
 				m_tiles 		= _tiles;
 				
-				m_scr_tiles		= new screen_data( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
-				m_scr_blocks	= new screen_data( data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+				m_scr_tiles		= new screen_data( platform_data_provider.get_screen_tiles_width_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Tiles4x4 ), platform_data_provider.get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) );
+				m_scr_blocks	= new screen_data( platform_data_provider.get_screen_tiles_width_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 ), platform_data_provider.get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) );
 				
 				m_tiles_offset	= _tiles_offset;
 				m_blocks_offset	= _blocks_offset;
@@ -782,12 +782,9 @@ namespace MAPeD
 			int start_scr_ind;
 			int ents_cnt;
 			
-			int scr_width_blocks_mul2;
-			int scr_height_blocks_mul2;
-			int scr_height_blocks_mul4;
-			
-			int scr_width_blocks 	= utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
-			int scr_height_blocks 	= utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
+			int scr_width_blocks	= platform_data_provider.get_screen_tiles_width_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+			int scr_height_blocks	= platform_data_provider.get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+			int scr_height_tiles	= platform_data_provider.get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
 
 			ushort tile_id;
 			ushort block_id;
@@ -821,20 +818,33 @@ namespace MAPeD
 			List< tiles_data > 	banks 			= new List< tiles_data >( 10 );			
 			List< int >			max_tile_inds	= new List< int >( 10 );
 			
-			scr_width_blocks_mul2	= scr_width_blocks << 1;
-			scr_height_blocks_mul2	= scr_height_blocks << 1;
-			scr_height_blocks_mul4	= scr_height_blocks << 2;
-
-			ushort[] attrs_chr = new ushort[ ( scr_width_blocks * scr_height_blocks ) << 2 ];
-						
 			exp_screen_data._tiles_offset  = 0;
 			exp_screen_data._blocks_offset = 0;
 
 			SortedDictionary< int, exp_screen_data > screens = new SortedDictionary< int, exp_screen_data >();
 
 			scr_ind = 0;		// global screen index
-			scr_ind_opt = 0;	// optimized screen index
+			scr_ind_opt = 0;	// optimized screen index			
+#if !DEF_ZX
+			utils.EPlatformType platform_type = platform_data_provider.get_platform_type();
 			
+			int prj_scr_tiles_width		= platform_data_provider.get_screen_num_width_tiles_uni( m_data_mngr.screen_data_type );
+			int prj_scr_tiles_height	= platform_data_provider.get_screen_num_height_tiles_uni( m_data_mngr.screen_data_type );
+			
+			int zx_scr_tiles_width		= platform_data_provider.get_screen_tiles_width_by_platform_type_uni( utils.EPlatformType.pt_ZX, m_data_mngr.screen_data_type );
+			int zx_scr_tiles_height		= platform_data_provider.get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType.pt_ZX, m_data_mngr.screen_data_type );
+			
+			bool crop_scr = false;
+			
+			if( ( zx_scr_tiles_width != prj_scr_tiles_width ) || ( zx_scr_tiles_height != prj_scr_tiles_height ) )
+			{
+				crop_scr = true;
+				
+				MainForm.message_box( "The " + platform_data_provider.get_platform_name_by_type( platform_type ) + " screen resolution differs from the ZX one. Thus, the exported screens will be cropped to ZX resolution and aligned to the upper left corner.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+			}
+			
+			Func< int, int, bool > invalid_tile = ( int _x_pos, int _y_pos ) => ( crop_scr && ( ( _x_pos >= zx_scr_tiles_width ) || ( _y_pos >= zx_scr_tiles_height ) ) );
+#endif
 			// collect all banks & screens data in a project
 			for( bank_n = 0; bank_n < m_data_mngr.tiles_data_cnt; bank_n++ )
 			{
@@ -865,10 +875,15 @@ namespace MAPeD
 							{
 								tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES );
 								tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES );
-								
+#if !DEF_ZX
+								if( invalid_tile( tile_offs_x, tile_offs_y ) )
+								{
+									continue;
+								}
+#endif
 								tile_id = exp_scr.m_tiles.get_screen_tile( scr_n, tile_n );
 		
-								exp_scr.m_scr_tiles.set_tile( tile_offs_x * utils.CONST_SCREEN_NUM_HEIGHT_TILES + tile_offs_y, tile_id );
+								exp_scr.m_scr_tiles.set_tile( tile_offs_x * scr_height_tiles + tile_offs_y, tile_id );
 								
 								if( RBtnTiles2x2.Checked )
 								{
@@ -895,7 +910,12 @@ namespace MAPeD
 							{
 								tile_offs_x = ( block_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
 								tile_offs_y = ( block_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
-								
+#if !DEF_ZX
+								if( invalid_tile( tile_offs_x, tile_offs_y ) )
+								{
+									continue;
+								}
+#endif								
 								exp_scr.m_scr_blocks.set_tile( ( tile_offs_x * scr_height_blocks ) + tile_offs_y, tiles.get_screen_tile( scr_n, block_n ) );
 							}
 						}

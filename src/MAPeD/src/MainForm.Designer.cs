@@ -3569,7 +3569,7 @@ namespace MAPeD
 			// Project_exportFileDialog
 			// 
 			this.Project_exportFileDialog.DefaultExt = "asm";
-			this.Project_exportFileDialog.Filter = "CA65\\NESasm (*.asm)|*.asm|ZX Asm (*.zxa)|*.zxa|Active Tile\\Block Set (*.bmp)|*.bm" +
+			this.Project_exportFileDialog.Filter = "CA65\\NESasm (*.asm)|*.asm|ZX SjASMPlus (*.zxa)|*.zxa|Active Tile\\Block Set (*.bmp)|*.bm" +
 			"p|Active Layout (*.png)|*.png|Text (*.json)|*.json";
 			this.Project_exportFileDialog.Title = "Export Project";
 			this.Project_exportFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectExportOk_Event);

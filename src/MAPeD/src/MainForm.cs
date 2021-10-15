@@ -306,7 +306,7 @@ namespace MAPeD
 			Project_openFileDialog.DefaultExt = utils.CONST_ZX_FILE_EXT;
 			Project_openFileDialog.Filter = get_all_projects_open_file_filter( utils.EPlatformType.pt_ZX );
 			
-			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Substring( Project_exportFileDialog.Filter.IndexOf( "Z" ) ).Replace( "ZX Asm", "SjASMPlus" );
+			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Substring( Project_exportFileDialog.Filter.IndexOf( "Z" ) );
 			Project_exportFileDialog.DefaultExt = "zxa";
 
 			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin";
