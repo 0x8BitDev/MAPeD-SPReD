@@ -38,86 +38,17 @@ namespace MAPeD
 		private const bool CONST_DEV_BUILD_FLAG	= true;
 		private const bool CONST_BETA_FLAG		= true; 
 
-		public const string CONST_APP_NAME			= "MAPeD";
-		
-		public const string CONST_PLATFORM_NES		= "NES";
-		public const string CONST_PLATFORM_NES_DESC	= "Nintendo Intertainment System";
-		
-		public const string CONST_PLATFORM_SMS		= "SMS";
-		public const string CONST_PLATFORM_SMS_DESC	= "Sega Master System";
-		
-		public const string CONST_PLATFORM_PCE		= "PCE";
-		public const string CONST_PLATFORM_PCE_DESC	= "PC-Engine / TurboGrafx-16";
-
-		public const string CONST_PLATFORM_ZX		= "ZX";
-		public const string CONST_PLATFORM_ZX_DESC	= "ZX Spectrum";
-
-		public const string CONST_PLATFORM_SMD		= "SMD";
-		public const string CONST_PLATFORM_SMD_DESC	= "Sega Mega Drive / Genesis";
-		
-		public const string CONST_NES_FILE_EXT	= "mapednes";
-		public const string CONST_SMS_FILE_EXT	= "mapedsms";
-		public const string CONST_PCE_FILE_EXT	= "mapedpce";
-		public const string CONST_ZX_FILE_EXT	= "mapedzx";
-		public const string CONST_SMD_FILE_EXT	= "mapedsmd";
-
-		public static readonly string[] CONST_PLATFORM_NAMES_ARR = new string[]
-		{
-			CONST_PLATFORM_NES,
-			CONST_PLATFORM_SMS,
-			CONST_PLATFORM_PCE,
-			CONST_PLATFORM_ZX,
-			CONST_PLATFORM_SMD,
-		};
-		
-		public static readonly string[] CONST_PLATFORMS_FILE_EXT_ARR = new string[]
-		{
-			CONST_NES_FILE_EXT,
-			CONST_SMS_FILE_EXT,
-			CONST_PCE_FILE_EXT,
-			CONST_ZX_FILE_EXT,
-			CONST_SMD_FILE_EXT,
-		};
+		public const string CONST_APP_NAME		= "MAPeD";
 		
 		public static readonly string[] CONST_FULL_APP_NAMES_ARR = new string[]
 		{
-			CONST_APP_NAME + "-" + CONST_PLATFORM_NES,
-			CONST_APP_NAME + "-" + CONST_PLATFORM_SMS,
-			CONST_APP_NAME + "-" + CONST_PLATFORM_PCE,
-			CONST_APP_NAME + "-" + CONST_PLATFORM_ZX,
-			CONST_APP_NAME + "-" + CONST_PLATFORM_SMD,
+			utils.CONST_APP_NAME + "-" + platform_data.CONST_PLATFORM_NES,
+			utils.CONST_APP_NAME + "-" + platform_data.CONST_PLATFORM_SMS,
+			utils.CONST_APP_NAME + "-" + platform_data.CONST_PLATFORM_PCE,
+			utils.CONST_APP_NAME + "-" + platform_data.CONST_PLATFORM_ZX,
+			utils.CONST_APP_NAME + "-" + platform_data.CONST_PLATFORM_SMD,
 		};
 		
-		public enum EPlatformType
-		{
-			pt_NES = 0,
-			pt_SMS,
-			pt_PCE,
-			pt_ZX,
-			pt_SMD,
-			pt_UNKNOWN
-		}
-		
-#if DEF_NES
-		public const string	CONST_PLATFORM		= CONST_PLATFORM_NES;
-		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_NES_DESC;
-#elif DEF_SMS
-		public const string	CONST_PLATFORM		= CONST_PLATFORM_SMS;
-		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_SMS_DESC;
-#elif DEF_PCE
-		public const string	CONST_PLATFORM		= CONST_PLATFORM_PCE;
-		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_PCE_DESC;
-#elif DEF_ZX
-		public const string	CONST_PLATFORM		= CONST_PLATFORM_ZX;
-		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_ZX_DESC;
-#elif DEF_SMD
-		public const string	CONST_PLATFORM		= CONST_PLATFORM_SMD;
-		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_SMD_DESC;
-#else
-		public const string	CONST_PLATFORM		= "UNKNOWN";
-		public const string	CONST_PLATFORM_DESC	= "UNKNOWN";
-#endif
-
 #if	DEBUG
 		public const string	CONST_BUILD_CFG	= " [DEBUG]";
 #else
@@ -166,7 +97,7 @@ namespace MAPeD
 		public static readonly DateTime build_date 	= new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
 
 		public static readonly string CONST_APP_VER		= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev":"" ) + CONST_BUILD_CFG;
-		public static readonly string CONST_FULL_APP_NAME	= CONST_FULL_APP_NAMES_ARR[ ( int )platform_data_provider.get_platform_type() ];
+		public static readonly string CONST_FULL_APP_NAME	= CONST_FULL_APP_NAMES_ARR[ ( int )platform_data.get_platform_type() ];
 		
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'M';
 		public const byte CONST_PROJECT_FILE_VER	= 6;
@@ -250,7 +181,7 @@ namespace MAPeD
 		
 		public const int CONST_PALETTE_MAIN_NUM_COLORS		= CONST_NES_PALETTE_NUM_COLORS;
 		
-		public const string CONST_FILE_EXT					= CONST_NES_FILE_EXT;
+		public const string CONST_FILE_EXT					= platform_data.CONST_NES_FILE_EXT;
 		
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 16;
 		
@@ -269,7 +200,7 @@ namespace MAPeD
 
 		public const int CONST_PALETTE16_ARR_LEN			= 2;	//DEF_FIXED_LEN_PALETTE16_ARR
 		
-		public const string CONST_FILE_EXT					= CONST_SMS_FILE_EXT;
+		public const string CONST_FILE_EXT					= platform_data.CONST_SMS_FILE_EXT;
 
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
 
@@ -288,7 +219,7 @@ namespace MAPeD
 		
 		public const int CONST_PALETTE16_ARR_LEN			= 16;	//DEF_FIXED_LEN_PALETTE16_ARR
 		
-		public const string CONST_FILE_EXT					= CONST_PCE_FILE_EXT;
+		public const string CONST_FILE_EXT					= platform_data.CONST_PCE_FILE_EXT;
 
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
 
@@ -307,7 +238,7 @@ namespace MAPeD
 		
 		public const int CONST_PALETTE16_ARR_LEN			= 2;	//DEF_FIXED_LEN_PALETTE16_ARR
 		
-		public const string CONST_FILE_EXT					= CONST_ZX_FILE_EXT;
+		public const string CONST_FILE_EXT					= platform_data.CONST_ZX_FILE_EXT;
 
 		public const int CONST_MAX_BLOCKS_CNT				= CONST_ZX_MAX_BLOCKS_CNT;
 		public const int CONST_MAX_TILES_CNT				= 256;
@@ -351,7 +282,7 @@ namespace MAPeD
 		
 		public const int CONST_PALETTE16_ARR_LEN		= 4;	//DEF_FIXED_LEN_PALETTE16_ARR
 		
-		public const string CONST_FILE_EXT				= CONST_SMD_FILE_EXT;
+		public const string CONST_FILE_EXT				= platform_data.CONST_SMD_FILE_EXT;
 
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
 		
@@ -413,11 +344,8 @@ namespace MAPeD
 		public const int CONST_BLOCKS_UINT_SIZE				= CONST_MAX_BLOCKS_CNT * CONST_BLOCK_SIZE;
 		public const int CONST_TILES_UINT_SIZE				= CONST_MAX_TILES_CNT;
 		
-		// the NES hardware doesn't support flipping of a background on per CHR's basis
-		// so I left it just in case for using in other versions of the application for other platforms (SMS)
 		public const byte CONST_CHR_ATTR_FLAG_HFLIP			= 0x01;
 		public const byte CONST_CHR_ATTR_FLAG_VFLIP			= 0x02;
-		// UNDEFINED: DEF_FLIP_BLOCKS_SPR_BY_FLAGS
 		
 		public static Pen			pen				= new Pen( CONST_COLOR_PEN_DEFAULT );
 		public static SolidBrush 	brush		 	= new SolidBrush( CONST_COLOR_BRUSH_DEFAULT );
@@ -841,7 +769,7 @@ namespace MAPeD
 		{	
 			if( _arr.Length != _width * _height )
 			{
-				throw new Exception( "utils.swap_columns_rows_byte( byte[] _arr, int _width, int _height )\n Invalid input arguments!" );
+				throw new Exception( "utils.swap_columns_rows< T >( T[] _arr, int _width, int _height )\n Invalid input arguments!" );
 			}
 			
 			T[] tmp_arr = new T[ _arr.Length ];

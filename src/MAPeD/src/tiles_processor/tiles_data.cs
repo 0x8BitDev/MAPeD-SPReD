@@ -1579,7 +1579,7 @@ namespace MAPeD
 			int i;
 			uint val;
 
-			utils.EPlatformType			prj_platform	= platform_data_provider.get_platform_type_by_file_ext( _file_ext );
+			platform_data.EPlatformType			prj_platform	= platform_data.get_platform_type_by_file_ext( _file_ext );
 			i_project_data_converter	data_converter	= project_data_converter_provider.get_converter();
 			
 			data_converter.load_CHR_bank( _ver, _br, prj_platform, ref m_CHR_bank );
@@ -1591,7 +1591,7 @@ namespace MAPeD
 			{
 				data_converter.pre_load_block_data( prj_platform );
 				
-				int blocks_cnt = ( _ver <= 5 ) ? ( platform_data_provider.get_blocks_cnt_by_file_ext( _file_ext ) * utils.CONST_BLOCK_SIZE ):( int )_br.ReadUInt16();
+				int blocks_cnt = ( _ver <= 5 ) ? ( platform_data.get_blocks_cnt_by_file_ext( _file_ext ) * utils.CONST_BLOCK_SIZE ):( int )_br.ReadUInt16();
 #if DEF_PLATFORM_16BIT
 				if( blocks_cnt > m_blocks.Length )
 				{
@@ -1642,7 +1642,7 @@ namespace MAPeD
 					ushort b2;
 					ushort b3;
 					
-					int tiles_cnt = ( _ver <= 5 ) ? ( platform_data_provider.get_tiles_cnt_by_file_ext( _file_ext ) ):( int )_br.ReadUInt16();
+					int tiles_cnt = ( _ver <= 5 ) ? ( platform_data.get_tiles_cnt_by_file_ext( _file_ext ) ):( int )_br.ReadUInt16();
 #if DEF_PLATFORM_16BIT
 					if( tiles_cnt > m_tiles.Length )
 					{
@@ -1711,8 +1711,8 @@ namespace MAPeD
 			
 			// load screens data
 			{
-				int prj_scr_tiles_width		= platform_data_provider.get_screen_tiles_width_by_file_ext_uni( _file_ext, _scr_type );
-				int prj_scr_tiles_height	= platform_data_provider.get_screen_tiles_height_by_file_ext_uni( _file_ext, _scr_type );
+				int prj_scr_tiles_width		= platform_data.get_screen_tiles_width_by_file_ext_uni( _file_ext, _scr_type );
+				int prj_scr_tiles_height	= platform_data.get_screen_tiles_height_by_file_ext_uni( _file_ext, _scr_type );
 				
 				data_converter.load_screens( _ver, _br, _scr_type, _scr_align_mode, prj_scr_tiles_width, prj_scr_tiles_height, this );
 			}

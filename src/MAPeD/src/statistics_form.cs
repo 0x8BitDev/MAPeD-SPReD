@@ -41,7 +41,7 @@ namespace MAPeD
 		{
 			int CHR_bank_n;
 			
-			richTextBox.Text = "Platform: " + utils.CONST_PLATFORM_DESC;
+			richTextBox.Text = "Platform: " + platform_data.CONST_PLATFORM_DESC;
 			richTextBox.Text += "\n---------------------------";
 			
 			richTextBox.Text += "\nScreen: " + utils.CONST_SCREEN_WIDTH_PIXELS + "x" + utils.CONST_SCREEN_HEIGHT_PIXELS + " pix\nScreen Tiles (2x2): " + ( utils.CONST_SCREEN_WIDTH_PIXELS / 16.0f ) + "x" + ( utils.CONST_SCREEN_HEIGHT_PIXELS / 16.0f ) + "\nScreen Tiles (4x4): " + ( utils.CONST_SCREEN_WIDTH_PIXELS / 32.0f ) + "x" + ( utils.CONST_SCREEN_HEIGHT_PIXELS / 32.0f );

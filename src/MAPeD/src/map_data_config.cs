@@ -74,14 +74,14 @@ namespace MAPeD
 		
 		private bit_field[] m_data = null;
 		
-		protected utils.EPlatformType m_platform = utils.EPlatformType.pt_UNKNOWN;
+		protected platform_data.EPlatformType m_platform = platform_data.EPlatformType.pt_UNKNOWN;
 		
 		protected map_data_config_base()
 		{
 			//...
 		}
 		
-		public utils.EPlatformType platform()
+		public platform_data.EPlatformType platform()
 		{
 			return m_platform;
 		}
@@ -150,7 +150,7 @@ namespace MAPeD
 	{
 		public map_data_app_NES()
 		{
-			m_platform = utils.EPlatformType.pt_NES;
+			m_platform = platform_data.EPlatformType.pt_NES;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 8, 0 ), 		// CHR id
@@ -165,7 +165,7 @@ namespace MAPeD
 	{
 		public map_data_native_NES()
 		{
-			m_platform = utils.EPlatformType.pt_NES;
+			m_platform = platform_data.EPlatformType.pt_NES;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 8, 0 ), 		// CHR id
@@ -182,7 +182,7 @@ namespace MAPeD
 	{
 		public map_data_app_SMS()
 		{
-			m_platform = utils.EPlatformType.pt_SMS;
+			m_platform = platform_data.EPlatformType.pt_SMS;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 9, 0 ), 		// CHR id
@@ -197,7 +197,7 @@ namespace MAPeD
 	{
 		public map_data_native_SMS()
 		{
-			m_platform = utils.EPlatformType.pt_SMS;
+			m_platform = platform_data.EPlatformType.pt_SMS;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 9, 0 ), 		// CHR id
@@ -212,7 +212,7 @@ namespace MAPeD
 	{
 		public map_data_app_PCE()
 		{
-			m_platform = utils.EPlatformType.pt_PCE;
+			m_platform = platform_data.EPlatformType.pt_PCE;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 12, 0 ), 	// CHR id
@@ -227,7 +227,7 @@ namespace MAPeD
 	{
 		public map_data_native_PCE()
 		{
-			m_platform = utils.EPlatformType.pt_PCE;
+			m_platform = platform_data.EPlatformType.pt_PCE;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 12, 0 ), 	// CHR id
@@ -242,7 +242,7 @@ namespace MAPeD
 	{
 		public map_data_app_ZX()
 		{
-			m_platform = utils.EPlatformType.pt_ZX;
+			m_platform = platform_data.EPlatformType.pt_ZX;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 11, 0 ), 	// CHR id
@@ -257,7 +257,7 @@ namespace MAPeD
 	{
 		public map_data_native_ZX()
 		{
-			m_platform = utils.EPlatformType.pt_ZX;
+			m_platform = platform_data.EPlatformType.pt_ZX;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 11, 0 ), 	// CHR id
@@ -272,7 +272,7 @@ namespace MAPeD
 	{
 		public map_data_app_SMD()
 		{
-			m_platform = utils.EPlatformType.pt_SMD;
+			m_platform = platform_data.EPlatformType.pt_SMD;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 11, 0 ), 	// CHR id
@@ -287,7 +287,7 @@ namespace MAPeD
 	{
 		public map_data_native_SMD()
 		{
-			m_platform = utils.EPlatformType.pt_SMD;
+			m_platform = platform_data.EPlatformType.pt_SMD;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 11, 0 ), 	// CHR id
@@ -305,7 +305,7 @@ namespace MAPeD
 		private static readonly map_data_app_ZX	 m_map_data_app_ZX	= new map_data_app_ZX();
 		private static readonly map_data_app_SMD m_map_data_app_SMD	= new map_data_app_SMD();
 		
-		private static readonly Dictionary< utils.EPlatformType, map_data_config_base > m_map_data_app_dict = new Dictionary< utils.EPlatformType, map_data_config_base >();
+		private static readonly Dictionary< platform_data.EPlatformType, map_data_config_base > m_map_data_app_dict = new Dictionary< platform_data.EPlatformType, map_data_config_base >();
 
 		private static readonly map_data_native_NES m_map_data_native_NES	= new map_data_native_NES();
 		private static readonly map_data_native_SMS m_map_data_native_SMS	= new map_data_native_SMS();
@@ -313,7 +313,7 @@ namespace MAPeD
 		private static readonly map_data_native_ZX	m_map_data_native_ZX	= new map_data_native_ZX();
 		private static readonly map_data_native_SMD	m_map_data_native_SMD	= new map_data_native_SMD();
 		
-		private static readonly Dictionary< utils.EPlatformType, map_data_config_base > m_map_data_native_dict = new Dictionary< utils.EPlatformType, map_data_config_base >();
+		private static readonly Dictionary< platform_data.EPlatformType, map_data_config_base > m_map_data_native_dict = new Dictionary< platform_data.EPlatformType, map_data_config_base >();
 		
 		static map_data_config_provider()
 		{
@@ -332,17 +332,17 @@ namespace MAPeD
 		
 		public static map_data_config_base config_app()
 		{
-			return m_map_data_app_dict[ platform_data_provider.get_platform_type() ];
+			return m_map_data_app_dict[ platform_data.get_platform_type() ];
 		}
 
-		public static map_data_config_base config_app( utils.EPlatformType _platform )
+		public static map_data_config_base config_app( platform_data.EPlatformType _platform )
 		{
 			return m_map_data_app_dict[ _platform ];
 		}
 		
 		public static map_data_config_base config_native()
 		{
-			return m_map_data_native_dict[ platform_data_provider.get_platform_type() ];
+			return m_map_data_native_dict[ platform_data.get_platform_type() ];
 		}
 	}	
 }

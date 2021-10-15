@@ -262,17 +262,17 @@ namespace MAPeD
 			}
 			
 #if DEF_NES
-			Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( utils.EPlatformType.pt_NES );
+			Project_openFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
+			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_NES );
 			
 			BtnSwapColors.Visible = false;
 #elif DEF_SMS
-			Project_saveFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
+			Project_saveFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "SMS" );
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "sms" );
 
-			Project_openFileDialog.DefaultExt = utils.CONST_SMS_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( utils.EPlatformType.pt_SMS );
+			Project_openFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
+			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_SMS );
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "WLA-DX" );
 
@@ -284,12 +284,12 @@ namespace MAPeD
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false; 
 #elif DEF_PCE
-			Project_saveFileDialog.DefaultExt = utils.CONST_PCE_FILE_EXT;
+			Project_saveFileDialog.DefaultExt = platform_data.CONST_PCE_FILE_EXT;
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "PCE" );
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "pce" );
 
-			Project_openFileDialog.DefaultExt = utils.CONST_PCE_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( utils.EPlatformType.pt_PCE );
+			Project_openFileDialog.DefaultExt = platform_data.CONST_PCE_FILE_EXT;
+			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_PCE );
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "CA65\\PCEAS" );
 
@@ -299,12 +299,12 @@ namespace MAPeD
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false;
 #elif DEF_ZX
-			Project_saveFileDialog.DefaultExt = utils.CONST_ZX_FILE_EXT;
+			Project_saveFileDialog.DefaultExt = platform_data.CONST_ZX_FILE_EXT;
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "ZX" );
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "zx" );
 
-			Project_openFileDialog.DefaultExt = utils.CONST_ZX_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( utils.EPlatformType.pt_ZX );
+			Project_openFileDialog.DefaultExt = platform_data.CONST_ZX_FILE_EXT;
+			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_ZX );
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Substring( Project_exportFileDialog.Filter.IndexOf( "Z" ) );
 			Project_exportFileDialog.DefaultExt = "zxa";
@@ -328,12 +328,12 @@ namespace MAPeD
 			CBoxTileViewType.Items.Add( "B/W" );
 			CBoxTileViewType.Items.Add( "Inv B/W" );
 #elif DEF_SMD
-			Project_saveFileDialog.DefaultExt = utils.CONST_SMD_FILE_EXT;
+			Project_saveFileDialog.DefaultExt = platform_data.CONST_SMD_FILE_EXT;
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "SMD" );
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "smd" );
 
-			Project_openFileDialog.DefaultExt = utils.CONST_SMD_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( utils.EPlatformType.pt_SMD );
+			Project_openFileDialog.DefaultExt = platform_data.CONST_SMD_FILE_EXT;
+			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_SMD );
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "vasm\\SGDK (*.asm;*.h,*.s)" );
 
@@ -364,20 +364,20 @@ namespace MAPeD
 			}
 		}
 
-		private string get_all_projects_open_file_filter( utils.EPlatformType _type )
+		private string get_all_projects_open_file_filter( platform_data.EPlatformType _type )
 		{
 			string filter_str = "";
 			string platform_file_ext;
 			
 			int ind;
 			int i 		= ( int )_type;
-			int size 	= utils.CONST_PLATFORMS_FILE_EXT_ARR.Length + i;
+			int size 	= platform_data.CONST_PLATFORMS_FILE_EXT_ARR.Length + i;
 
 			for( ; i < size; i++ )
 			{
-				ind = i % utils.CONST_PLATFORMS_FILE_EXT_ARR.Length;
+				ind = i % platform_data.CONST_PLATFORMS_FILE_EXT_ARR.Length;
 				
-				platform_file_ext = utils.CONST_PLATFORMS_FILE_EXT_ARR[ ind ];
+				platform_file_ext = platform_data.CONST_PLATFORMS_FILE_EXT_ARR[ ind ];
 				
 				filter_str += utils.CONST_FULL_APP_NAMES_ARR[ ind ] + " (*." + platform_file_ext + ")|*." + platform_file_ext;
 				
@@ -701,7 +701,7 @@ namespace MAPeD
 			{
 				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
 				
-				int load_scr_data_len 	= platform_data_provider.get_screen_tiles_cnt_by_file_ext( file_ext );
+				int load_scr_data_len 	= platform_data.get_screen_tiles_cnt_by_file_ext( file_ext );
 				int scr_data_len 		= utils.CONST_SCREEN_TILES_CNT;
 
 				if( load_scr_data_len != scr_data_len )
@@ -1306,7 +1306,7 @@ namespace MAPeD
 		
 		void AboutToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			message_box( "Game Maps Editor (" + utils.CONST_PLATFORM + ")\n" + utils.CONST_PLATFORM_DESC + "\n\n" + utils.CONST_APP_VER + " " + utils.build_str + " pfv" + utils.CONST_PROJECT_FILE_VER + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
+			message_box( "Game Maps Editor (" + platform_data.CONST_PLATFORM + ")\n" + platform_data.CONST_PLATFORM_DESC + "\n\n" + utils.CONST_APP_VER + " " + utils.build_str + " pfv" + utils.CONST_PROJECT_FILE_VER + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 
 		void MenuHelpQuickGuideClick_Event(object sender, EventArgs e)
@@ -2376,7 +2376,7 @@ namespace MAPeD
 #endif
 			{
 				int scr_first_tile_ind = _scr_data.get_tile( 0 );
-				int num_tiles = platform_data_provider.get_screen_tiles_cnt_uni( m_data_manager.screen_data_type );
+				int num_tiles = platform_data.get_screen_tiles_cnt_uni( m_data_manager.screen_data_type );
 				
 				for( tile_n = 1; tile_n < num_tiles; tile_n++ )
 				{

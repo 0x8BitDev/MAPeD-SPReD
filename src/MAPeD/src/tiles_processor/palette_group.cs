@@ -133,7 +133,7 @@ namespace MAPeD
 			
 			m_pix_box.MouseClick += new MouseEventHandler( this.Palette_MouseClick );
 			
-			m_main_palette = platform_data_provider.get_palette_by_file_ext( utils.CONST_FILE_EXT );
+			m_main_palette = platform_data.get_palette_by_file_ext( utils.CONST_FILE_EXT );
 			
 			update();
 		}

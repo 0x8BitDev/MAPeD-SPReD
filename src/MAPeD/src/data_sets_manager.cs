@@ -866,7 +866,7 @@ namespace MAPeD
 					
 					int i;
 					
-					int plt_len 	= platform_data_provider.get_palette_size_by_file_ext( _file_ext );
+					int plt_len 	= platform_data.get_palette_size_by_file_ext( _file_ext );
 					int[] plt_main	= null;
 					
 					bool ignore_palette = ( _file_ext != utils.CONST_FILE_EXT );
@@ -875,9 +875,9 @@ namespace MAPeD
 					{
 						if( _convert_colors )
 						{
-							plt_main = platform_data_provider.get_palette_by_file_ext( _file_ext );
+							plt_main = platform_data.get_palette_by_file_ext( _file_ext );
 							
-							if( _file_ext == utils.CONST_NES_FILE_EXT || _file_ext == utils.CONST_SMS_FILE_EXT )
+							if( _file_ext == platform_data.CONST_NES_FILE_EXT || _file_ext == platform_data.CONST_SMS_FILE_EXT )
 							{
 								// load main palette from the project file
 								int data_pos = 0;
@@ -890,7 +890,7 @@ namespace MAPeD
 							}
 						}
 							
-						project_data_converter_provider.get_converter().palettes_processing( _ver, platform_data_provider.get_platform_type_by_file_ext( _file_ext ), _convert_colors, this, plt_main );
+						project_data_converter_provider.get_converter().palettes_processing( _ver, platform_data.get_platform_type_by_file_ext( _file_ext ), _convert_colors, this, plt_main );
 							
 						if( _convert_colors )
 						{
@@ -901,7 +901,7 @@ namespace MAPeD
 						}
 						else
 						{
-							if( _file_ext == utils.CONST_NES_FILE_EXT || _file_ext == utils.CONST_SMS_FILE_EXT )
+							if( _file_ext == platform_data.CONST_NES_FILE_EXT || _file_ext == platform_data.CONST_SMS_FILE_EXT )
 							{
 								// skip palette
 								_br.ReadBytes( plt_len * 3 );

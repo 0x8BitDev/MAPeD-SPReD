@@ -195,8 +195,8 @@
     <Compile Include="..\src\pattern_data.cs">
       <Link>pattern_data.cs</Link>
     </Compile>
-    <Compile Include="..\src\platform_data_provider.cs">
-      <Link>platform_data_provider.cs</Link>
+    <Compile Include="..\src\platform_data.cs">
+      <Link>platform_data.cs</Link>
     </Compile>
     <Compile Include="..\src\Program.cs">
       <Link>Program.cs</Link>

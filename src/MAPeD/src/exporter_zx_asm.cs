@@ -63,8 +63,8 @@ namespace MAPeD
 				
 				m_tiles 		= _tiles;
 				
-				m_scr_tiles		= new screen_data( platform_data_provider.get_screen_tiles_width_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Tiles4x4 ), platform_data_provider.get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) );
-				m_scr_blocks	= new screen_data( platform_data_provider.get_screen_tiles_width_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 ), platform_data_provider.get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) );
+				m_scr_tiles		= new screen_data( platform_data.get_screen_tiles_width_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Tiles4x4 ), platform_data.get_screen_tiles_height_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) );
+				m_scr_blocks	= new screen_data( platform_data.get_screen_tiles_width_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 ), platform_data.get_screen_tiles_height_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) );
 				
 				m_tiles_offset	= _tiles_offset;
 				m_blocks_offset	= _blocks_offset;
@@ -96,7 +96,7 @@ namespace MAPeD
 			//
 			CBoxColorConversionModes.SelectedIndex = 0;
 			
-			zx_palette = platform_data_provider.get_palette_by_file_ext( utils.CONST_ZX_FILE_EXT );
+			zx_palette = platform_data.get_palette_by_file_ext( platform_data.CONST_ZX_FILE_EXT );
 			
 #if DEF_ZX
 			CheckBoxGFXDithering.Checked = CheckBoxGFXDithering.Enabled = false;
@@ -782,9 +782,9 @@ namespace MAPeD
 			int start_scr_ind;
 			int ents_cnt;
 			
-			int scr_width_blocks	= platform_data_provider.get_screen_tiles_width_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
-			int scr_height_blocks	= platform_data_provider.get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
-			int scr_height_tiles	= platform_data_provider.get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
+			int scr_width_blocks	= platform_data.get_screen_tiles_width_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+			int scr_height_blocks	= platform_data.get_screen_tiles_height_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+			int scr_height_tiles	= platform_data.get_screen_tiles_height_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
 
 			ushort tile_id;
 			ushort block_id;
@@ -826,13 +826,13 @@ namespace MAPeD
 			scr_ind = 0;		// global screen index
 			scr_ind_opt = 0;	// optimized screen index			
 #if !DEF_ZX
-			utils.EPlatformType platform_type = platform_data_provider.get_platform_type();
+			platform_data.EPlatformType platform_type = platform_data.get_platform_type();
 			
-			int prj_scr_tiles_width		= platform_data_provider.get_screen_num_width_tiles_uni( m_data_mngr.screen_data_type );
-			int prj_scr_tiles_height	= platform_data_provider.get_screen_num_height_tiles_uni( m_data_mngr.screen_data_type );
+			int prj_scr_tiles_width		= platform_data.get_screen_num_width_tiles_uni( m_data_mngr.screen_data_type );
+			int prj_scr_tiles_height	= platform_data.get_screen_num_height_tiles_uni( m_data_mngr.screen_data_type );
 			
-			int zx_scr_tiles_width		= platform_data_provider.get_screen_tiles_width_by_platform_type_uni( utils.EPlatformType.pt_ZX, m_data_mngr.screen_data_type );
-			int zx_scr_tiles_height		= platform_data_provider.get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType.pt_ZX, m_data_mngr.screen_data_type );
+			int zx_scr_tiles_width		= platform_data.get_screen_tiles_width_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, m_data_mngr.screen_data_type );
+			int zx_scr_tiles_height		= platform_data.get_screen_tiles_height_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, m_data_mngr.screen_data_type );
 			
 			bool crop_scr = false;
 			
@@ -840,7 +840,7 @@ namespace MAPeD
 			{
 				crop_scr = true;
 				
-				MainForm.message_box( "The " + platform_data_provider.get_platform_name_by_type( platform_type ) + " screen resolution differs from the ZX one. Thus, the exported screens will be cropped to ZX resolution and aligned to the upper left corner.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				MainForm.message_box( "The " + platform_data.get_platform_name_by_type( platform_type ) + " screen resolution differs from the ZX one. Thus, the exported screens will be cropped to ZX resolution and aligned to the upper left corner.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 			}
 			
 			Func< int, int, bool > invalid_tile = ( int _x_pos, int _y_pos ) => ( crop_scr && ( ( _x_pos >= zx_scr_tiles_width ) || ( _y_pos >= zx_scr_tiles_height ) ) );

@@ -19,15 +19,15 @@ namespace MAPeD
 	
 	public interface i_project_data_converter
 	{
-		void load_CHR_bank( byte _ver, BinaryReader _br, utils.EPlatformType _prj_platform, ref byte[] _CHR_bank );
+		void load_CHR_bank( byte _ver, BinaryReader _br, platform_data.EPlatformType _prj_platform, ref byte[] _CHR_bank );
 
-		void load_palettes( byte _ver, BinaryReader _br, utils.EPlatformType _prj_platform, string _file_ext, tiles_data _data );
+		void load_palettes( byte _ver, BinaryReader _br, platform_data.EPlatformType _prj_platform, string _file_ext, tiles_data _data );
 		
-		void pre_load_block_data( utils.EPlatformType _prj_platform );
+		void pre_load_block_data( platform_data.EPlatformType _prj_platform );
 		void post_load_block_data( tiles_data _data );
-		uint convert_block_data( byte _ver, utils.EPlatformType _prj_platform, int _ind, uint _data );
+		uint convert_block_data( byte _ver, platform_data.EPlatformType _prj_platform, int _ind, uint _data );
 		
-		void palettes_processing( byte _ver, utils.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main );
+		void palettes_processing( byte _ver, platform_data.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main );
 		
 		void load_screens(	byte 											_ver, 
                          	BinaryReader 									_br, 
@@ -59,15 +59,15 @@ namespace MAPeD
 		private Rectangle m_native_scr_rect	= new Rectangle( 0, 0, 0, 0 );
 		private Rectangle m_prj_scr_rect	= new Rectangle( 0, 0, 0, 0 );
 		
-		public virtual void load_CHR_bank( byte _ver, BinaryReader _br, utils.EPlatformType _prj_platform, ref byte[] _CHR_bank )
+		public virtual void load_CHR_bank( byte _ver, BinaryReader _br, platform_data.EPlatformType _prj_platform, ref byte[] _CHR_bank )
 		{
 			load_CHR_data( _ver, _br, _prj_platform, ref _CHR_bank, delegate( byte _val ) { return _val; });
 		}
 		
-		protected void load_CHR_data( byte _ver, BinaryReader _br, utils.EPlatformType _prj_platform, ref byte[] _CHR_bank, Func< byte, byte > _func )
+		protected void load_CHR_data( byte _ver, BinaryReader _br, platform_data.EPlatformType _prj_platform, ref byte[] _CHR_bank, Func< byte, byte > _func )
 		{
-			int app_data_len = platform_data_provider.get_CHR_bank_pages_cnt_by_platform_type( platform_data_provider.get_platform_type() ) * utils.CONST_CHR_BANK_PAGE_SIZE;
-			int prj_data_len = platform_data_provider.get_CHR_bank_pages_cnt_by_platform_type( _prj_platform ) * utils.CONST_CHR_BANK_PAGE_SIZE;
+			int app_data_len = platform_data.get_CHR_bank_pages_cnt_by_platform_type( platform_data.get_platform_type() ) * utils.CONST_CHR_BANK_PAGE_SIZE;
+			int prj_data_len = platform_data.get_CHR_bank_pages_cnt_by_platform_type( _prj_platform ) * utils.CONST_CHR_BANK_PAGE_SIZE;
 			
 			int load_data_len = Math.Min( app_data_len, prj_data_len );
 			
@@ -83,11 +83,11 @@ namespace MAPeD
 			}
 		}
 
-		public virtual void load_palettes( byte _ver, BinaryReader _br, utils.EPlatformType _prj_platform, string _file_ext, tiles_data _data )
+		public virtual void load_palettes( byte _ver, BinaryReader _br, platform_data.EPlatformType _prj_platform, string _file_ext, tiles_data _data )
 		{
 			int i;
 #if DEF_NES
-			bool nes_file = ( _file_ext == utils.CONST_NES_FILE_EXT );
+			bool nes_file = ( _file_ext == platform_data.CONST_NES_FILE_EXT );
 #endif
 			int palettes_cnt = ( _ver == 1 ) ? 1: _br.ReadInt32();
 
@@ -134,15 +134,15 @@ namespace MAPeD
 			}
 		}
 
-		public void pre_load_block_data( utils.EPlatformType _prj_platform )
+		public void pre_load_block_data( platform_data.EPlatformType _prj_platform )
 		{
-			if( _prj_platform == utils.EPlatformType.pt_NES && platform_data_provider.get_platform_type() != utils.EPlatformType.pt_NES )
+			if( _prj_platform == platform_data.EPlatformType.pt_NES && platform_data.get_platform_type() != platform_data.EPlatformType.pt_NES )
 			{
 				m_dict_CHR_palette_ind = new Dictionary<int, int>( utils.CONST_BLOCKS_UINT_SIZE );
 			}
 			
 			m_map_data_app_src = map_data_config_provider.config_app( _prj_platform );
-			m_map_data_app_dst = map_data_config_provider.config_app( platform_data_provider.get_platform_type() );
+			m_map_data_app_dst = map_data_config_provider.config_app( platform_data.get_platform_type() );
 
 			if( m_inner_tiles_data == null )
 			{
@@ -180,11 +180,11 @@ namespace MAPeD
 			}
 		}
 		
-		public uint convert_block_data( byte _ver, utils.EPlatformType _prj_platform, int _ind, uint _data )
+		public uint convert_block_data( byte _ver, platform_data.EPlatformType _prj_platform, int _ind, uint _data )
 		{
 			tiles_data inner_data = get_last_tiles_data();
 
-			if( _ver <= 2 && _prj_platform == utils.EPlatformType.pt_SMS )
+			if( _ver <= 2 && _prj_platform == platform_data.EPlatformType.pt_SMS )
 			{
 				// OLD SMS: [ property_id ](4) [ CHR bank ](2) [ hv_flip ](2) [CHR ind](8)
 				// NEW SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
@@ -215,7 +215,7 @@ namespace MAPeD
 			return m_map_data_app_dst.repack( m_map_data_app_src, _data );
 		}
 
-		public virtual void palettes_processing( byte _ver, utils.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main )
+		public virtual void palettes_processing( byte _ver, platform_data.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main )
 		{
 			int				i;
 			int 			plt_n;
@@ -265,9 +265,9 @@ namespace MAPeD
 			int tile_y;
 			int tile_y_offset;
 			
-			int scr_data_len			= platform_data_provider.get_screen_tiles_cnt_uni( _scr_type );
-			int native_scr_tiles_width	= platform_data_provider.get_screen_num_width_tiles_uni( _scr_type );
-			int native_scr_tiles_height	= platform_data_provider.get_screen_num_height_tiles_uni( _scr_type );
+			int scr_data_len			= platform_data.get_screen_tiles_cnt_uni( _scr_type );
+			int native_scr_tiles_width	= platform_data.get_screen_num_width_tiles_uni( _scr_type );
+			int native_scr_tiles_height	= platform_data.get_screen_num_height_tiles_uni( _scr_type );
 
 			m_native_scr_rect.X			= 0;
 			m_native_scr_rect.Y			= 0;
@@ -470,7 +470,7 @@ namespace MAPeD
 			//...
 		}
 		
-		public override void load_CHR_bank( byte _ver, BinaryReader _br, utils.EPlatformType _prj_platform, ref byte[] _CHR_bank )
+		public override void load_CHR_bank( byte _ver, BinaryReader _br, platform_data.EPlatformType _prj_platform, ref byte[] _CHR_bank )
 		{
 			load_CHR_data( _ver, _br, _prj_platform, ref _CHR_bank, delegate( byte _val ) { return ( byte )( _val & 0x03 ); });
 		}
@@ -564,7 +564,7 @@ namespace MAPeD
 			//...
 		}
 		
-		public override void palettes_processing( byte _ver, utils.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main )
+		public override void palettes_processing( byte _ver, platform_data.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main )
 		{
 			int				i;
 			int 			plt_n;

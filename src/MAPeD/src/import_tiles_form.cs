@@ -1837,7 +1837,7 @@ namespace MAPeD
 #if DEF_NES
 			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- NES compatible graphics\n- no more than 13 colors\n- one CHR bank data\n- static palette\n- tiles aligned", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
 #elif DEF_FIXED_LEN_PALETTE16_ARR
-			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- " + utils.CONST_PLATFORM + " compatible graphics\n- colors are not duplicated in a palette\n- tiles aligned", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
+			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- " + platform_data.CONST_PLATFORM + " compatible graphics\n- colors are not duplicated in a palette\n- tiles aligned", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
 #endif
 		}
 

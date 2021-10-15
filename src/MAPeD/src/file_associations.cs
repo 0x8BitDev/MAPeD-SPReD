@@ -39,8 +39,8 @@ namespace MAPeD
 	            new FileAssociation
 	            {
 	            	Extension = "." + utils.CONST_FILE_EXT,
-	                ProgId = utils.CONST_PLATFORM + "_GameMapsEditor",
-	                FileTypeDescription = utils.CONST_PLATFORM + " Game Maps Editor File",
+	                ProgId = platform_data.CONST_PLATFORM + "_GameMapsEditor",
+	                FileTypeDescription = platform_data.CONST_PLATFORM + " Game Maps Editor File",
 	                ExecutableFilePath = filePath
 	            });
 	    }

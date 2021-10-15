@@ -10,14 +10,83 @@ using System.Collections.Generic;
 namespace MAPeD
 {
 	/// <summary>
-	/// Description of platform_data_provider.
+	/// Description of platform_data.
 	/// </summary>
-	public static class platform_data_provider
+	public static class platform_data
 	{
-		private static readonly utils.EPlatformType	m_platform = utils.EPlatformType.pt_UNKNOWN;
+		public const string CONST_PLATFORM_NES		= "NES";
+		public const string CONST_PLATFORM_NES_DESC	= "Nintendo Intertainment System";
 		
-		private static readonly Dictionary< string, utils.EPlatformType > 	m_file_ext_platform_type_dict		= new Dictionary< string, utils.EPlatformType >();
-		private static readonly Dictionary< string, utils.EPlatformType >	m_platform_name_platform_type_dict	= new Dictionary< string, utils.EPlatformType >();
+		public const string CONST_PLATFORM_SMS		= "SMS";
+		public const string CONST_PLATFORM_SMS_DESC	= "Sega Master System";
+		
+		public const string CONST_PLATFORM_PCE		= "PCE";
+		public const string CONST_PLATFORM_PCE_DESC	= "PC-Engine / TurboGrafx-16";
+
+		public const string CONST_PLATFORM_ZX		= "ZX";
+		public const string CONST_PLATFORM_ZX_DESC	= "ZX Spectrum";
+
+		public const string CONST_PLATFORM_SMD		= "SMD";
+		public const string CONST_PLATFORM_SMD_DESC	= "Sega Mega Drive / Genesis";
+		
+		public const string CONST_NES_FILE_EXT	= "mapednes";
+		public const string CONST_SMS_FILE_EXT	= "mapedsms";
+		public const string CONST_PCE_FILE_EXT	= "mapedpce";
+		public const string CONST_ZX_FILE_EXT	= "mapedzx";
+		public const string CONST_SMD_FILE_EXT	= "mapedsmd";
+
+		public enum EPlatformType
+		{
+			pt_NES = 0,
+			pt_SMS,
+			pt_PCE,
+			pt_ZX,
+			pt_SMD,
+			pt_UNKNOWN
+		}
+		
+		private static readonly string[] CONST_PLATFORM_NAMES_ARR = new string[]
+		{
+			CONST_PLATFORM_NES,
+			CONST_PLATFORM_SMS,
+			CONST_PLATFORM_PCE,
+			CONST_PLATFORM_ZX,
+			CONST_PLATFORM_SMD,
+		};
+		
+		public static readonly string[] CONST_PLATFORMS_FILE_EXT_ARR = new string[]
+		{
+			CONST_NES_FILE_EXT,
+			CONST_SMS_FILE_EXT,
+			CONST_PCE_FILE_EXT,
+			CONST_ZX_FILE_EXT,
+			CONST_SMD_FILE_EXT,
+		};
+		
+#if DEF_NES
+		public const string	CONST_PLATFORM		= CONST_PLATFORM_NES;
+		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_NES_DESC;
+#elif DEF_SMS
+		public const string	CONST_PLATFORM		= CONST_PLATFORM_SMS;
+		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_SMS_DESC;
+#elif DEF_PCE
+		public const string	CONST_PLATFORM		= CONST_PLATFORM_PCE;
+		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_PCE_DESC;
+#elif DEF_ZX
+		public const string	CONST_PLATFORM		= CONST_PLATFORM_ZX;
+		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_ZX_DESC;
+#elif DEF_SMD
+		public const string	CONST_PLATFORM		= CONST_PLATFORM_SMD;
+		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_SMD_DESC;
+#else
+		public const string	CONST_PLATFORM		= "UNKNOWN";
+		public const string	CONST_PLATFORM_DESC	= "UNKNOWN";
+#endif
+		
+		private static readonly EPlatformType	m_platform = EPlatformType.pt_UNKNOWN;
+		
+		private static readonly Dictionary< string, EPlatformType >	m_file_ext_platform_type_dict		= new Dictionary< string, EPlatformType >();
+		private static readonly Dictionary< string, EPlatformType >	m_platform_name_platform_type_dict	= new Dictionary< string, EPlatformType >();
 		
 		private static readonly int[] m_platform_blocks_cnt = new int[]
 		{
@@ -100,36 +169,36 @@ namespace MAPeD
 			utils.CONST_SMD_SCREEN_NUM_HEIGHT_BLOCKS,
 		};
 		
-		static platform_data_provider()
+		static platform_data()
 		{
 			int	i;
 			
-			for( i = 0; i < utils.CONST_PLATFORM_NAMES_ARR.Length; i++ )
+			for( i = 0; i < CONST_PLATFORM_NAMES_ARR.Length; i++ )
 			{
-				m_platform_name_platform_type_dict[ utils.CONST_PLATFORM_NAMES_ARR[ i ] ] = ( utils.EPlatformType )i;
+				m_platform_name_platform_type_dict[ CONST_PLATFORM_NAMES_ARR[ i ] ] = ( EPlatformType )i;
 			}
 			
-			m_platform = m_platform_name_platform_type_dict[ utils.CONST_PLATFORM ];
+			m_platform = m_platform_name_platform_type_dict[ CONST_PLATFORM ];
 			
-			for( i = 0; i < utils.CONST_PLATFORMS_FILE_EXT_ARR.Length; i++ )
+			for( i = 0; i < CONST_PLATFORMS_FILE_EXT_ARR.Length; i++ )
 			{
-				m_file_ext_platform_type_dict[ utils.CONST_PLATFORMS_FILE_EXT_ARR[ i ] ] = ( utils.EPlatformType )i;
+				m_file_ext_platform_type_dict[ CONST_PLATFORMS_FILE_EXT_ARR[ i ] ] = ( EPlatformType )i;
 			}
 		}
 		
-		public static utils.EPlatformType get_platform_type_by_file_ext( string _file_ext )
+		public static EPlatformType get_platform_type_by_file_ext( string _file_ext )
 		{
 			return m_file_ext_platform_type_dict[ _file_ext ];
 		}
 
-		public static utils.EPlatformType get_platform_type_by_name( string _name )
+		public static EPlatformType get_platform_type_by_name( string _name )
 		{
 			return m_platform_name_platform_type_dict[ _name ];
 		}
 		
-		public static string get_platform_name_by_type( utils.EPlatformType _type )
+		public static string get_platform_name_by_type( EPlatformType _type )
 		{
-			return utils.CONST_PLATFORM_NAMES_ARR[ ( int )_type ];
+			return CONST_PLATFORM_NAMES_ARR[ ( int )_type ];
 		}
 
 		public static int get_blocks_cnt_by_file_ext( string _file_ext )
@@ -152,7 +221,7 @@ namespace MAPeD
 			return m_screen_tiles_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
 		}
 
-		public static int get_CHR_bank_pages_cnt_by_platform_type( utils.EPlatformType _type )
+		public static int get_CHR_bank_pages_cnt_by_platform_type( EPlatformType _type )
 		{
 			return m_CHR_bank_pages_cnt[ ( int )_type ];
 		}
@@ -181,7 +250,7 @@ namespace MAPeD
 			}
 		}
 
-		public static int get_screen_tiles_width_by_platform_type_uni( utils.EPlatformType _platform_type, data_sets_manager.EScreenDataType _type )
+		public static int get_screen_tiles_width_by_platform_type_uni( EPlatformType _platform_type, data_sets_manager.EScreenDataType _type )
 		{
 			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
@@ -193,7 +262,7 @@ namespace MAPeD
 			}
 		}
 
-		public static int get_screen_tiles_height_by_platform_type_uni( utils.EPlatformType _platform_type, data_sets_manager.EScreenDataType _type )
+		public static int get_screen_tiles_height_by_platform_type_uni( EPlatformType _platform_type, data_sets_manager.EScreenDataType _type )
 		{
 			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
@@ -265,7 +334,7 @@ namespace MAPeD
 			}
 		}
 		
-		public static utils.EPlatformType get_platform_type()
+		public static EPlatformType get_platform_type()
 		{
 			return m_platform;
 		}
@@ -298,20 +367,20 @@ namespace MAPeD
 		{
 			switch( _file_ext )
 			{
-				case utils.CONST_NES_FILE_EXT:
+				case CONST_NES_FILE_EXT:
 					{
 						return NES_palette;
 					}
 					break;
 					
-				case utils.CONST_SMS_FILE_EXT:
+				case CONST_SMS_FILE_EXT:
 					{
 						return SMS_palette;
 					}
 					break;
 					
-				case utils.CONST_SMD_FILE_EXT:
-				case utils.CONST_PCE_FILE_EXT:
+				case CONST_SMD_FILE_EXT:
+				case CONST_PCE_FILE_EXT:
 					{
 						if( PCE_SMD_palette == null )
 						{
@@ -333,14 +402,14 @@ namespace MAPeD
 					}
 					break;
 					
-				case utils.CONST_ZX_FILE_EXT:
+				case CONST_ZX_FILE_EXT:
 					{
 						return ZX_palette;
 					}
 					break;
 			}
 			
-			throw new Exception( "platform_data_provider.get_palette_by_file_ext(...) : invalid parameter!" );
+			throw new Exception( "platform_data.get_palette_by_file_ext(...) : invalid parameter!" );
 		}
 	}
 }
