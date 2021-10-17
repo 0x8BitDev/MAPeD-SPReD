@@ -45,24 +45,6 @@ namespace MAPeD
 			pt_UNKNOWN
 		}
 		
-		private static readonly string[] CONST_PLATFORM_NAMES_ARR = new string[]
-		{
-			CONST_PLATFORM_NES,
-			CONST_PLATFORM_SMS,
-			CONST_PLATFORM_PCE,
-			CONST_PLATFORM_ZX,
-			CONST_PLATFORM_SMD,
-		};
-		
-		public static readonly string[] CONST_PLATFORMS_FILE_EXT_ARR = new string[]
-		{
-			CONST_NES_FILE_EXT,
-			CONST_SMS_FILE_EXT,
-			CONST_PCE_FILE_EXT,
-			CONST_ZX_FILE_EXT,
-			CONST_SMD_FILE_EXT,
-		};
-		
 #if DEF_NES
 		public const string	CONST_PLATFORM		= CONST_PLATFORM_NES;
 		public const string	CONST_PLATFORM_DESC	= CONST_PLATFORM_NES_DESC;
@@ -83,10 +65,40 @@ namespace MAPeD
 		public const string	CONST_PLATFORM_DESC	= "UNKNOWN";
 #endif
 		
+		// 1 page = 16x16 CHRs
+		private const int CONST_NES_CHR_BANK_NUM_PAGES	= 1;	// 1x4K (native)
+		private const int CONST_SMS_CHR_BANK_NUM_PAGES	= 2;	// 2x8K (native)
+		private const int CONST_PCE_CHR_BANK_NUM_PAGES	= 8;	// 8x8K (native)
+		private const int CONST_ZX_CHR_BANK_NUM_PAGES	= 4;	// 4x2K
+		private const int CONST_SMD_CHR_BANK_NUM_PAGES	= 8;	// 8x8K (native)
+		
+		private const int CONST_NES_PALETTE_NUM_COLORS		= 64;
+		private const int CONST_SMS_PALETTE_NUM_COLORS		= 64;
+		private const int CONST_PCE_SMD_PALETTE_NUM_COLORS	= 512;
+		private const int CONST_ZX_PALETTE_NUM_COLORS		= 16;
+		
 		private static readonly EPlatformType	m_platform = EPlatformType.pt_UNKNOWN;
 		
 		private static readonly Dictionary< string, EPlatformType >	m_file_ext_platform_type_dict		= new Dictionary< string, EPlatformType >();
 		private static readonly Dictionary< string, EPlatformType >	m_platform_name_platform_type_dict	= new Dictionary< string, EPlatformType >();
+
+		private static readonly string[] m_platform_names_arr = new string[]
+		{
+			CONST_PLATFORM_NES,
+			CONST_PLATFORM_SMS,
+			CONST_PLATFORM_PCE,
+			CONST_PLATFORM_ZX,
+			CONST_PLATFORM_SMD,
+		};
+		
+		private static readonly string[] m_platform_file_ext_arr = new string[]
+		{
+			CONST_NES_FILE_EXT,
+			CONST_SMS_FILE_EXT,
+			CONST_PCE_FILE_EXT,
+			CONST_ZX_FILE_EXT,
+			CONST_SMD_FILE_EXT,
+		};
 		
 		private static readonly int[] m_platform_blocks_cnt = new int[]
 		{
@@ -108,29 +120,20 @@ namespace MAPeD
 		
 		private static readonly int[] m_palette_colors_cnt = new int[]
 		{
-			utils.CONST_NES_PALETTE_NUM_COLORS,
-			utils.CONST_SMS_PALETTE_NUM_COLORS,
-			utils.CONST_PCE_SMD_PALETTE_NUM_COLORS,
-			utils.CONST_ZX_PALETTE_NUM_COLORS,
-			utils.CONST_PCE_SMD_PALETTE_NUM_COLORS,
-		};
-		
-		private static readonly int[] m_screen_tiles_cnt = new int[]
-		{
-			utils.CONST_NES_SCREEN_NUM_WIDTH_TILES * utils.CONST_NES_SCREEN_NUM_HEIGHT_TILES,
-			utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES,
-			utils.CONST_PCE_SCREEN_NUM_WIDTH_TILES * utils.CONST_PCE_SCREEN_NUM_HEIGHT_TILES,
-			utils.CONST_ZX_SCREEN_NUM_WIDTH_TILES * utils.CONST_ZX_SCREEN_NUM_HEIGHT_TILES,
-			utils.CONST_SMD_SCREEN_NUM_WIDTH_TILES * utils.CONST_SMD_SCREEN_NUM_HEIGHT_TILES,
+			CONST_NES_PALETTE_NUM_COLORS,
+			CONST_SMS_PALETTE_NUM_COLORS,
+			CONST_PCE_SMD_PALETTE_NUM_COLORS,
+			CONST_ZX_PALETTE_NUM_COLORS,
+			CONST_PCE_SMD_PALETTE_NUM_COLORS,
 		};
 		
 		private static readonly int[] m_CHR_bank_pages_cnt = new int[]
 		{
-			utils.CONST_NES_CHR_BANK_NUM_PAGES,
-			utils.CONST_SMS_CHR_BANK_NUM_PAGES,
-			utils.CONST_PCE_CHR_BANK_NUM_PAGES,
-			utils.CONST_ZX_CHR_BANK_NUM_PAGES,
-			utils.CONST_SMD_CHR_BANK_NUM_PAGES,
+			CONST_NES_CHR_BANK_NUM_PAGES,
+			CONST_SMS_CHR_BANK_NUM_PAGES,
+			CONST_PCE_CHR_BANK_NUM_PAGES,
+			CONST_ZX_CHR_BANK_NUM_PAGES,
+			CONST_SMD_CHR_BANK_NUM_PAGES,
 		};
 
 		private static readonly int[] m_platform_screen_width_tiles_cnt = new int[]
@@ -173,17 +176,27 @@ namespace MAPeD
 		{
 			int	i;
 			
-			for( i = 0; i < CONST_PLATFORM_NAMES_ARR.Length; i++ )
+			for( i = 0; i < m_platform_names_arr.Length; i++ )
 			{
-				m_platform_name_platform_type_dict[ CONST_PLATFORM_NAMES_ARR[ i ] ] = ( EPlatformType )i;
+				m_platform_name_platform_type_dict[ m_platform_names_arr[ i ] ] = ( EPlatformType )i;
 			}
 			
 			m_platform = m_platform_name_platform_type_dict[ CONST_PLATFORM ];
 			
-			for( i = 0; i < CONST_PLATFORMS_FILE_EXT_ARR.Length; i++ )
+			for( i = 0; i < m_platform_file_ext_arr.Length; i++ )
 			{
-				m_file_ext_platform_type_dict[ CONST_PLATFORMS_FILE_EXT_ARR[ i ] ] = ( EPlatformType )i;
+				m_file_ext_platform_type_dict[ m_platform_file_ext_arr[ i ] ] = ( EPlatformType )i;
 			}
+		}
+		
+		public static int get_CHR_bank_max_sprites_cnt()
+		{
+			return utils.CONST_CHR_BANK_PAGE_SPRITES_CNT * platform_data.get_CHR_bank_pages_cnt();
+		}
+		
+		public static int get_platforms_cnt()
+		{
+			return m_platform_names_arr.Length;
 		}
 		
 		public static EPlatformType get_platform_type_by_file_ext( string _file_ext )
@@ -195,10 +208,15 @@ namespace MAPeD
 		{
 			return m_platform_name_platform_type_dict[ _name ];
 		}
-		
-		public static string get_platform_name_by_type( EPlatformType _type )
+
+		public static string get_platform_file_ext( EPlatformType _type )
 		{
-			return CONST_PLATFORM_NAMES_ARR[ ( int )_type ];
+			return m_platform_file_ext_arr[ ( int )_type ];
+		}
+		
+		public static string get_platform_name( EPlatformType _type )
+		{
+			return m_platform_names_arr[ ( int )_type ];
 		}
 
 		public static int get_blocks_cnt_by_file_ext( string _file_ext )
@@ -211,19 +229,31 @@ namespace MAPeD
 			return m_platform_tiles_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
 		}
 		
-		public static int get_palette_size_by_file_ext( string _file_ext )
+		public static int get_main_palette_colors_cnt( string _file_ext )
 		{
 			return m_palette_colors_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
 		}
-		
-		public static int get_screen_tiles_cnt_by_file_ext( string _file_ext )
+
+		public static int get_main_palette_colors_cnt()
 		{
-			return m_screen_tiles_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
+			return m_palette_colors_cnt[ ( int )get_platform_type() ];
+		}
+		
+		public static int get_screen_tiles_cnt( string _file_ext )
+		{
+			int platform_ind = ( int )get_platform_type_by_file_ext( _file_ext );
+			
+			return m_platform_screen_width_tiles_cnt[ platform_ind ] * m_platform_screen_height_tiles_cnt[ platform_ind ];
 		}
 
-		public static int get_CHR_bank_pages_cnt_by_platform_type( EPlatformType _type )
+		public static int get_CHR_bank_pages_cnt( EPlatformType _type )
 		{
 			return m_CHR_bank_pages_cnt[ ( int )_type ];
+		}
+		
+		public static int get_CHR_bank_pages_cnt()
+		{
+			return m_CHR_bank_pages_cnt[ ( int )get_platform_type() ];
 		}
 		
 		public static int get_screen_tiles_width_by_file_ext_uni( string _file_ext, data_sets_manager.EScreenDataType _type )
@@ -362,33 +392,38 @@ namespace MAPeD
 		// 7: flashing, 6: brightness, 3-5: paper color, 0-2: ink color
 		private static int[] ZX_palette = new int[]{  0x000000, 0x0022c7, 0xd62816, 0xd433c7, 0x00c525, 0x00c7c9, 0xccc82a, 0xcacaca,	// not bright
 													  0x000000, 0x002bfb, 0xff331c, 0xff40fc, 0x00f92f, 0x00fbfe, 0xfffc36, 0xffffff };	// bright
-		
+
 		public static int[] get_palette_by_file_ext( string _file_ext )
 		{
-			switch( _file_ext )
+			return get_palette_by_platform_type( get_platform_type_by_file_ext( _file_ext ) );
+		}
+		
+		public static int[] get_palette_by_platform_type( EPlatformType _type )
+		{
+			switch( _type )
 			{
-				case CONST_NES_FILE_EXT:
+				case EPlatformType.pt_NES:
 					{
 						return NES_palette;
 					}
 					break;
 					
-				case CONST_SMS_FILE_EXT:
+				case EPlatformType.pt_SMS:
 					{
 						return SMS_palette;
 					}
 					break;
 					
-				case CONST_SMD_FILE_EXT:
-				case CONST_PCE_FILE_EXT:
+				case EPlatformType.pt_SMD:
+				case EPlatformType.pt_PCE:
 					{
 						if( PCE_SMD_palette == null )
 						{
-							PCE_SMD_palette = new int[ utils.CONST_PCE_SMD_PALETTE_NUM_COLORS ];
+							PCE_SMD_palette = new int[ CONST_PCE_SMD_PALETTE_NUM_COLORS ];
 							
 							int r, g, b;
 				
-							for( int i = 0; i < utils.CONST_PCE_SMD_PALETTE_NUM_COLORS; i++ )
+							for( int i = 0; i < CONST_PCE_SMD_PALETTE_NUM_COLORS; i++ )
 							{
 							   b = 36 * ( i & 0x007 );
 							   r = 36 * ( ( i & 0x038 ) >> 3 );
@@ -402,14 +437,14 @@ namespace MAPeD
 					}
 					break;
 					
-				case CONST_ZX_FILE_EXT:
+				case EPlatformType.pt_ZX:
 					{
 						return ZX_palette;
 					}
 					break;
 			}
 			
-			throw new Exception( "platform_data.get_palette_by_file_ext(...) : invalid parameter!" );
+			throw new Exception( "platform_data.get_palette_by_platform_type(...) : invalid parameter!" );
 		}
 	}
 }

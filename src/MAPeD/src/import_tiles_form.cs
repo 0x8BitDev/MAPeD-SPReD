@@ -577,7 +577,7 @@ namespace MAPeD
 						}
 						else
 						{
-							if( _CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+							if( _CHR_ind >= platform_data.get_CHR_bank_max_sprites_cnt() )
 							{			
 								return false;
 							}
@@ -592,7 +592,7 @@ namespace MAPeD
 					}
 				}
 #else
-				if( _CHR_ind >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+				if( _CHR_ind >= platform_data.get_CHR_bank_max_sprites_cnt() )
 				{			
 					return false;
 				}
@@ -811,7 +811,7 @@ namespace MAPeD
 			
 			List< SortedSet< int > > palettes = new List< SortedSet< int > >( 100 );
 			
-			bool[] remapped_CHRs = new bool[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
+			bool[] remapped_CHRs = new bool[ platform_data.get_CHR_bank_max_sprites_cnt() ];
 			Array.Clear( remapped_CHRs, 0, remapped_CHRs.Length );
 			
 			string invalid_data_msg = "";
@@ -1117,8 +1117,8 @@ namespace MAPeD
 												1,0,1,0,1,0,1,0 };
 			
 			
-			Dictionary< int, int >	palette_inds	= new Dictionary< int, int >( utils.CONST_PALETTE_MAIN_NUM_COLORS );
-			Dictionary< byte, int >	pix_value		= new Dictionary< byte, int >( utils.CONST_PALETTE_MAIN_NUM_COLORS );
+			Dictionary< int, int >	palette_inds	= new Dictionary< int, int >( platform_data.get_main_palette_colors_cnt() );
+			Dictionary< byte, int >	pix_value		= new Dictionary< byte, int >( platform_data.get_main_palette_colors_cnt() );
 			byte[]					chr_id_flags	= null;
 			
 			const byte CONST_FLAG_USED_CHR	= 0x01;
@@ -1130,7 +1130,7 @@ namespace MAPeD
 				palette_inds[ ind_n ] = utils.find_nearest_color_ind( _plt[ ind_n ].ToArgb() );
 			}
 			
-			chr_id_flags = new byte[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
+			chr_id_flags = new byte[ platform_data.get_CHR_bank_max_sprites_cnt() ];
 			Array.Clear( chr_id_flags, 0, chr_id_flags.Length );
 			
 			for( block_n = _block_beg_ind; block_n < _block_end_ind; block_n++ )
@@ -1291,10 +1291,10 @@ namespace MAPeD
 
 			palette16_data plt16;
 
-			int[] CHRs_plt = new int[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
+			int[] CHRs_plt = new int[ platform_data.get_CHR_bank_max_sprites_cnt() ];
 			Array.Clear( CHRs_plt, 0, CHRs_plt.Length );
 			
-			bool[] used_CHRs = new bool[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
+			bool[] used_CHRs = new bool[ platform_data.get_CHR_bank_max_sprites_cnt() ];
 			Array.Clear( used_CHRs, 0, used_CHRs.Length );
 			
 			// run through blocks and CHRs
@@ -1434,7 +1434,7 @@ namespace MAPeD
 			int n_CHRs		= _block_end_ind - _block_beg_ind;
 			int n_blocks	= n_CHRs >> 2;
 			
-			int[] clr_inds = new int[ utils.CONST_PALETTE_MAIN_NUM_COLORS ];
+			int[] clr_inds = new int[ platform_data.get_main_palette_colors_cnt() ];
 			Array.Clear( clr_inds, 0, clr_inds.Length );
 
 			List< byte > CHR_plt_inds = new List< byte >( n_CHRs );
@@ -1442,7 +1442,7 @@ namespace MAPeD
 			
 			List< SortedSet< int > > palettes = new List< SortedSet< int > >( 256 );
 			
-			bool[] remapped_CHRs = new bool[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
+			bool[] remapped_CHRs = new bool[ platform_data.get_CHR_bank_max_sprites_cnt() ];
 			Array.Clear( remapped_CHRs, 0, remapped_CHRs.Length );
 			
 			string invalid_data_msg = "";
@@ -1850,7 +1850,7 @@ namespace MAPeD
 		{
 			// fix unremapped CHR's to avoid errors
 			int max_CHRs_cnt = _data.get_first_free_spr8x8_id();			
-			max_CHRs_cnt = ( max_CHRs_cnt < 0 ) ? utils.CONST_CHR_BANK_MAX_SPRITES_CNT:max_CHRs_cnt;
+			max_CHRs_cnt = ( max_CHRs_cnt < 0 ) ? platform_data.get_CHR_bank_max_sprites_cnt():max_CHRs_cnt;
 			
 			for( int CHR_n = 0; CHR_n < max_CHRs_cnt; CHR_n++ )
 			{

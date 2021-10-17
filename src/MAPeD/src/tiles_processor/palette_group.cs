@@ -133,7 +133,7 @@ namespace MAPeD
 			
 			m_pix_box.MouseClick += new MouseEventHandler( this.Palette_MouseClick );
 			
-			m_main_palette = platform_data.get_palette_by_file_ext( utils.CONST_FILE_EXT );
+			m_main_palette = platform_data.get_palette_by_platform_type( platform_data.get_platform_type() );
 			
 			update();
 		}
@@ -178,7 +178,9 @@ namespace MAPeD
 		{
 			int clr;
 			
-			for( int i = 0; i < utils.CONST_PALETTE_MAIN_NUM_COLORS; i++ )
+			int plt_clrs_cnt = platform_data.get_main_palette_colors_cnt();
+			
+			for( int i = 0; i < plt_clrs_cnt; i++ )
 			{
 				clr = main_palette[ i ];
 				
@@ -313,7 +315,9 @@ namespace MAPeD
 		{
 			int clr;
 			
-			for( int i = 0; i < utils.CONST_PALETTE_MAIN_NUM_COLORS; i++ )
+			int plt_clrs_cnt = platform_data.get_main_palette_colors_cnt();
+			
+			for( int i = 0; i < plt_clrs_cnt; i++ )
 			{
 				clr = m_main_palette[ i ];
 				
@@ -325,7 +329,9 @@ namespace MAPeD
 		
 		public void load_main_palette( BinaryReader _br )
 		{
-			for( int i = 0; i < utils.CONST_PALETTE_MAIN_NUM_COLORS; i++ )
+			int plt_clrs_cnt = platform_data.get_main_palette_colors_cnt();
+			
+			for( int i = 0; i < plt_clrs_cnt; i++ )
 			{
 				m_main_palette[ i ] = _br.ReadByte() << 16 | _br.ReadByte() << 8 | _br.ReadByte();
 			}

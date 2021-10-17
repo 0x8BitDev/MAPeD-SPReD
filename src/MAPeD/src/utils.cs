@@ -123,18 +123,11 @@ namespace MAPeD
 		public const uint	CONST_IO_DATA_POST_FLAG_MMC5			= 0x01;
 		public const uint	CONST_IO_DATA_POST_FLAG_PROP_PER_CHR	= 0x02;
 		
-		// 1 page = 16x16 CHRs
-		public const int CONST_NES_CHR_BANK_NUM_PAGES	= 1;	// 1x4K (native)
-		public const int CONST_SMS_CHR_BANK_NUM_PAGES	= 2;	// 2x8K (native)
-		public const int CONST_PCE_CHR_BANK_NUM_PAGES	= 8;	// 8x8K (native)
-		public const int CONST_ZX_CHR_BANK_NUM_PAGES	= 4;	// 4x2K
-		public const int CONST_SMD_CHR_BANK_NUM_PAGES	= 8;	// 8x8K (native)
-		
 		public const int CONST_NES_SCREEN_NUM_WIDTH_TILES	= 8;
 		public const int CONST_NES_SCREEN_NUM_HEIGHT_TILES	= 8;
 		public const int CONST_NES_SCREEN_NUM_WIDTH_BLOCKS	= CONST_NES_SCREEN_NUM_WIDTH_TILES << 1;
 		public const int CONST_NES_SCREEN_NUM_HEIGHT_BLOCKS	= ( CONST_NES_SCREEN_NUM_HEIGHT_TILES << 1 ) - 1;	// DEF_SCREEN_HEIGHT_7d5_TILES by default
-		public const int CONST_NES_PALETTE_NUM_COLORS		= 64;
+//		public const int CONST_NES_PALETTE_NUM_COLORS		= 64;
 		public const int CONST_NES_MAX_BLOCKS_CNT			= 256;
 		public const int CONST_NES_MAX_TILES_CNT			= 256;
 
@@ -142,7 +135,7 @@ namespace MAPeD
 		public const int CONST_SMS_SCREEN_NUM_HEIGHT_TILES	= 6;
 		public const int CONST_SMS_SCREEN_NUM_WIDTH_BLOCKS	= CONST_SMS_SCREEN_NUM_WIDTH_TILES << 1;
 		public const int CONST_SMS_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_SMS_SCREEN_NUM_HEIGHT_TILES << 1;
-		public const int CONST_SMS_PALETTE_NUM_COLORS		= 64;
+//		public const int CONST_SMS_PALETTE_NUM_COLORS		= 64;
 		public const int CONST_SMS_MAX_BLOCKS_CNT			= 256;		
 		public const int CONST_SMS_MAX_TILES_CNT			= 256;
 
@@ -150,7 +143,7 @@ namespace MAPeD
 		public const int CONST_PCE_SCREEN_NUM_HEIGHT_TILES	= 7;
 		public const int CONST_PCE_SCREEN_NUM_WIDTH_BLOCKS	= CONST_PCE_SCREEN_NUM_WIDTH_TILES << 1;
 		public const int CONST_PCE_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_PCE_SCREEN_NUM_HEIGHT_TILES << 1;
-		public const int CONST_PCE_SMD_PALETTE_NUM_COLORS	= 512;
+//		public const int CONST_PCE_SMD_PALETTE_NUM_COLORS	= 512;
 		public const int CONST_PCE_MAX_BLOCKS_CNT			= 256;		
 		public const int CONST_PCE_MAX_TILES_CNT			= 256;
 
@@ -158,7 +151,7 @@ namespace MAPeD
 		public const int CONST_ZX_SCREEN_NUM_HEIGHT_TILES	= 6;		
 		public const int CONST_ZX_SCREEN_NUM_WIDTH_BLOCKS	= CONST_ZX_SCREEN_NUM_WIDTH_TILES << 1;
 		public const int CONST_ZX_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_ZX_SCREEN_NUM_HEIGHT_TILES << 1;
-		public const int CONST_ZX_PALETTE_NUM_COLORS		= 16;
+//		public const int CONST_ZX_PALETTE_NUM_COLORS		= 16;
 		public const int CONST_ZX_MAX_BLOCKS_CNT			= 256;		
 		public const int CONST_ZX_MAX_TILES_CNT				= 256;
 
@@ -177,11 +170,11 @@ namespace MAPeD
 		public const int CONST_SCREEN_NUM_WIDTH_BLOCKS		= CONST_NES_SCREEN_NUM_WIDTH_BLOCKS;
 		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS		= CONST_NES_SCREEN_NUM_HEIGHT_BLOCKS;
 		
-		public const int CONST_CHR_BANK_PAGES_CNT			= CONST_NES_CHR_BANK_NUM_PAGES;
+//		public const int CONST_CHR_BANK_PAGES_CNT			= CONST_NES_CHR_BANK_NUM_PAGES;
 		
-		public const int CONST_PALETTE_MAIN_NUM_COLORS		= CONST_NES_PALETTE_NUM_COLORS;
+//		public const int CONST_PALETTE_MAIN_NUM_COLORS		= CONST_NES_PALETTE_NUM_COLORS;
 		
-		public const string CONST_FILE_EXT					= platform_data.CONST_NES_FILE_EXT;
+//		public const string CONST_FILE_EXT					= platform_data.CONST_NES_FILE_EXT;
 		
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 16;
 		
@@ -194,13 +187,13 @@ namespace MAPeD
 		public const int CONST_SCREEN_NUM_WIDTH_BLOCKS		= CONST_SMS_SCREEN_NUM_WIDTH_BLOCKS;
 		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS		= CONST_SMS_SCREEN_NUM_HEIGHT_BLOCKS;
 		
-		public const int CONST_CHR_BANK_PAGES_CNT			= CONST_SMS_CHR_BANK_NUM_PAGES;
+//		public const int CONST_CHR_BANK_PAGES_CNT			= CONST_SMS_CHR_BANK_NUM_PAGES;
 		
-		public const int CONST_PALETTE_MAIN_NUM_COLORS		= CONST_SMS_PALETTE_NUM_COLORS;
+//		public const int CONST_PALETTE_MAIN_NUM_COLORS		= CONST_SMS_PALETTE_NUM_COLORS;
 
 		public const int CONST_PALETTE16_ARR_LEN			= 2;	//DEF_FIXED_LEN_PALETTE16_ARR
 		
-		public const string CONST_FILE_EXT					= platform_data.CONST_SMS_FILE_EXT;
+//		public const string CONST_FILE_EXT					= platform_data.CONST_SMS_FILE_EXT;
 
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
 
@@ -213,13 +206,13 @@ namespace MAPeD
 		public const int CONST_SCREEN_NUM_WIDTH_BLOCKS		= CONST_PCE_SCREEN_NUM_WIDTH_BLOCKS;
 		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS		= CONST_PCE_SCREEN_NUM_HEIGHT_BLOCKS;
 		
-		public const int CONST_CHR_BANK_PAGES_CNT			= CONST_PCE_CHR_BANK_NUM_PAGES;
+//		public const int CONST_CHR_BANK_PAGES_CNT			= CONST_PCE_CHR_BANK_NUM_PAGES;
 		
-		public const int CONST_PALETTE_MAIN_NUM_COLORS		= CONST_PCE_SMD_PALETTE_NUM_COLORS;
+//		public const int CONST_PALETTE_MAIN_NUM_COLORS		= CONST_PCE_SMD_PALETTE_NUM_COLORS;
 		
 		public const int CONST_PALETTE16_ARR_LEN			= 16;	//DEF_FIXED_LEN_PALETTE16_ARR
 		
-		public const string CONST_FILE_EXT					= platform_data.CONST_PCE_FILE_EXT;
+//		public const string CONST_FILE_EXT					= platform_data.CONST_PCE_FILE_EXT;
 
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
 
@@ -232,13 +225,13 @@ namespace MAPeD
 		public const int CONST_SCREEN_NUM_WIDTH_BLOCKS		= CONST_ZX_SCREEN_NUM_WIDTH_BLOCKS;
 		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS		= CONST_ZX_SCREEN_NUM_HEIGHT_BLOCKS;
 		
-		public const int CONST_CHR_BANK_PAGES_CNT			= CONST_ZX_CHR_BANK_NUM_PAGES;
+//		public const int CONST_CHR_BANK_PAGES_CNT			= CONST_ZX_CHR_BANK_NUM_PAGES;
 		
-		public const int CONST_PALETTE_MAIN_NUM_COLORS		= CONST_ZX_PALETTE_NUM_COLORS;
+//		public const int CONST_PALETTE_MAIN_NUM_COLORS		= CONST_ZX_PALETTE_NUM_COLORS;
 		
 		public const int CONST_PALETTE16_ARR_LEN			= 2;	//DEF_FIXED_LEN_PALETTE16_ARR
 		
-		public const string CONST_FILE_EXT					= platform_data.CONST_ZX_FILE_EXT;
+//		public const string CONST_FILE_EXT					= platform_data.CONST_ZX_FILE_EXT;
 
 		public const int CONST_MAX_BLOCKS_CNT				= CONST_ZX_MAX_BLOCKS_CNT;
 		public const int CONST_MAX_TILES_CNT				= 256;
@@ -276,13 +269,13 @@ namespace MAPeD
 		public const int CONST_SCREEN_NUM_WIDTH_BLOCKS	= CONST_SMD_SCREEN_NUM_WIDTH_BLOCKS;
 		public const int CONST_SCREEN_NUM_HEIGHT_BLOCKS	= CONST_SMD_SCREEN_NUM_HEIGHT_BLOCKS;
 		
-		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_SMD_CHR_BANK_NUM_PAGES;
+//		public const int CONST_CHR_BANK_PAGES_CNT		= CONST_SMD_CHR_BANK_NUM_PAGES;
 		
-		public const int CONST_PALETTE_MAIN_NUM_COLORS	= CONST_PCE_SMD_PALETTE_NUM_COLORS;
+//		public const int CONST_PALETTE_MAIN_NUM_COLORS	= CONST_PCE_SMD_PALETTE_NUM_COLORS;
 		
 		public const int CONST_PALETTE16_ARR_LEN		= 4;	//DEF_FIXED_LEN_PALETTE16_ARR
 		
-		public const string CONST_FILE_EXT				= platform_data.CONST_SMD_FILE_EXT;
+//		public const string CONST_FILE_EXT				= platform_data.CONST_SMD_FILE_EXT;
 
 		public const int CONST_SPR8x8_NATIVE_SIZE_IN_BYTES	= 32;
 		
@@ -329,7 +322,7 @@ namespace MAPeD
 		public const int CONST_CHR_BANK_PAGE_SIDE			= 128;
 		public const int CONST_CHR_BANK_PAGE_SIZE			= CONST_CHR_BANK_PAGE_SIDE * CONST_CHR_BANK_PAGE_SIDE;
 		public const int CONST_CHR_BANK_PAGE_SPRITES_CNT	= 256;
-		public const int CONST_CHR_BANK_MAX_SPRITES_CNT		= CONST_CHR_BANK_PAGE_SPRITES_CNT * CONST_CHR_BANK_PAGES_CNT;
+//		public const int CONST_CHR_BANK_MAX_SPRITES_CNT		= CONST_CHR_BANK_PAGE_SPRITES_CNT * CONST_CHR_BANK_PAGES_CNT;
 		public const int CONST_CHR_BANK_MAX_CNT				= 256;
 		
 		public const int CONST_BLOCK_SIZE					= 4;	// uints

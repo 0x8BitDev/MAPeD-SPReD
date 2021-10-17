@@ -310,7 +310,7 @@ namespace MAPeD
 				
 				int block_n;
 				
-				for( int CHR_n = 1; CHR_n < utils.CONST_CHR_BANK_MAX_SPRITES_CNT; CHR_n++ )
+				for( int CHR_n = 1; CHR_n < platform_data.get_CHR_bank_max_sprites_cnt(); CHR_n++ )
 				{
 					if( data.spr8x8_sum( CHR_n ) == 0 )
 					{

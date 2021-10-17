@@ -66,8 +66,8 @@ namespace MAPeD
 		
 		protected void load_CHR_data( byte _ver, BinaryReader _br, platform_data.EPlatformType _prj_platform, ref byte[] _CHR_bank, Func< byte, byte > _func )
 		{
-			int app_data_len = platform_data.get_CHR_bank_pages_cnt_by_platform_type( platform_data.get_platform_type() ) * utils.CONST_CHR_BANK_PAGE_SIZE;
-			int prj_data_len = platform_data.get_CHR_bank_pages_cnt_by_platform_type( _prj_platform ) * utils.CONST_CHR_BANK_PAGE_SIZE;
+			int app_data_len = platform_data.get_CHR_bank_pages_cnt() * utils.CONST_CHR_BANK_PAGE_SIZE;
+			int prj_data_len = platform_data.get_CHR_bank_pages_cnt( _prj_platform ) * utils.CONST_CHR_BANK_PAGE_SIZE;
 			
 			int load_data_len = Math.Min( app_data_len, prj_data_len );
 			
@@ -223,6 +223,8 @@ namespace MAPeD
 			tiles_data 		data;
 			List< int[] > 	palettes = null;
 			
+			int plt_clrs_cnt = platform_data.get_main_palette_colors_cnt();
+			
 			for( data_n = 0; data_n < _data_mngr.tiles_data_cnt; data_n++ )
 			{
 				data = _data_mngr.get_tiles_data( data_n );
@@ -239,7 +241,7 @@ namespace MAPeD
 						}
 						else
 						{
-							palettes[ i >> 2 ][ i & 0x03 ] = palettes[ i >> 2 ][ i & 0x03 ] & ( utils.CONST_PALETTE_MAIN_NUM_COLORS - 1 );
+							palettes[ i >> 2 ][ i & 0x03 ] = palettes[ i >> 2 ][ i & 0x03 ] & ( plt_clrs_cnt - 1 );
 						}
 					}
 				}
@@ -441,7 +443,7 @@ namespace MAPeD
 					
 					++added_CHRs;
 					
-					if( chr_id == utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+					if( chr_id == platform_data.get_CHR_bank_max_sprites_cnt() )
 					{
 						break;
 					}
@@ -594,9 +596,10 @@ namespace MAPeD
 												0,1,0,1,0,1,0,1,
 												1,0,1,0,1,0,1,0 };
 			
+			int plt_clrs_cnt = platform_data.get_main_palette_colors_cnt();
 			
-			Dictionary< int, int >	palette_inds	= new Dictionary< int, int >( utils.CONST_PALETTE_MAIN_NUM_COLORS );
-			Dictionary< byte, int >	pix_value		= new Dictionary< byte, int >( utils.CONST_PALETTE_MAIN_NUM_COLORS );
+			Dictionary< int, int >	palette_inds	= new Dictionary< int, int >( plt_clrs_cnt );
+			Dictionary< byte, int >	pix_value		= new Dictionary< byte, int >( plt_clrs_cnt );
 			bool[]					chr_id_flags	= null;
 			
 			for( data_n = 0; data_n < _data_mngr.tiles_data_cnt; data_n++ )

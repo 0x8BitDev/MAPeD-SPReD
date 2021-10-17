@@ -38,7 +38,7 @@ namespace MAPeD
 	        EnsureAssociationsSet(
 	            new FileAssociation
 	            {
-	            	Extension = "." + utils.CONST_FILE_EXT,
+	            	Extension = "." + platform_data.get_platform_file_ext( platform_data.get_platform_type() ),
 	                ProgId = platform_data.CONST_PLATFORM + "_GameMapsEditor",
 	                FileTypeDescription = platform_data.CONST_PLATFORM + " Game Maps Editor File",
 	                ExecutableFilePath = filePath

@@ -182,7 +182,7 @@ namespace MAPeD
 				int CHR_n;
 				int block_n;
 				
-				bool[] CHR_flags = new bool[ utils.CONST_CHR_BANK_MAX_SPRITES_CNT ];
+				bool[] CHR_flags = new bool[ platform_data.get_CHR_bank_max_sprites_cnt() ];
 				Array.Clear( CHR_flags, 0, CHR_flags.Length );
 
 				uint block_data;

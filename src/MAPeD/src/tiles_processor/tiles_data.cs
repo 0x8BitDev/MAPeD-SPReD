@@ -116,7 +116,7 @@ namespace MAPeD
 		
 		private string m_name	= null;
 		
-		private byte[] m_CHR_bank	= new byte[ utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ];
+		private byte[] m_CHR_bank	= new byte[ utils.CONST_CHR_BANK_PAGE_SIZE * platform_data.get_CHR_bank_pages_cnt() ];
 		
 		[DataMember]
 		private List< palette16_data > m_palettes	= null;
@@ -1052,13 +1052,13 @@ namespace MAPeD
 		{
 			int chr_id = 0;
 			
-			for( int k = utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1; k >= 0; k-- )
+			for( int k = platform_data.get_CHR_bank_max_sprites_cnt() - 1; k >= 0; k-- )
 			{
 				if( spr8x8_sum( k ) > 0 )
 				{
 					chr_id = k + 1;
 					
-					if( chr_id > utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1 )
+					if( chr_id > platform_data.get_CHR_bank_max_sprites_cnt() - 1 )
 					{
 						return -1;
 					}
@@ -1324,7 +1324,7 @@ namespace MAPeD
 #endif			
 			int num_CHR_sprites = get_first_free_spr8x8_id();
 			
-			num_CHR_sprites = num_CHR_sprites < 0 ? utils.CONST_CHR_BANK_MAX_SPRITES_CNT:num_CHR_sprites;
+			num_CHR_sprites = num_CHR_sprites < 0 ? platform_data.get_CHR_bank_max_sprites_cnt():num_CHR_sprites;
 			
 			for( i = 0; i < num_CHR_sprites; i++ )
 			{

@@ -347,7 +347,7 @@ namespace MAPeD
 #if DEF_FIXED_LEN_PALETTE16_ARR
 			BtnPltDelete.Enabled = false;
 #endif
-			if( utils.CONST_CHR_BANK_PAGES_CNT == 1 )
+			if( platform_data.get_CHR_bank_pages_cnt() == 1 )
 			{
 				CHRBankPageBtnsToolStripSeparator.Visible = BtnCHRBankNextPage.Visible = BtnCHRBankPrevPage.Visible = false;
 				prevPageToolStripMenuItem.Visible = nextPageToolStripMenuItem.Visible = false;
@@ -371,13 +371,13 @@ namespace MAPeD
 			
 			int ind;
 			int i 		= ( int )_type;
-			int size 	= platform_data.CONST_PLATFORMS_FILE_EXT_ARR.Length + i;
+			int size 	= platform_data.get_platforms_cnt() + i;
 
 			for( ; i < size; i++ )
 			{
-				ind = i % platform_data.CONST_PLATFORMS_FILE_EXT_ARR.Length;
+				ind = i % platform_data.get_platforms_cnt();
 				
-				platform_file_ext = platform_data.CONST_PLATFORMS_FILE_EXT_ARR[ ind ];
+				platform_file_ext = platform_data.get_platform_file_ext( ( platform_data.EPlatformType )ind );
 				
 				filter_str += utils.CONST_FULL_APP_NAMES_ARR[ ind ] + " (*." + platform_file_ext + ")|*." + platform_file_ext;
 				
@@ -531,7 +531,7 @@ namespace MAPeD
 
 		private void enable_main_UI( bool _on )
 		{
-			if( utils.CONST_CHR_BANK_PAGES_CNT > 1 )
+			if( platform_data.get_CHR_bank_pages_cnt() > 1 )
 			{
 				BtnCHRBankNextPage.Enabled = BtnCHRBankPrevPage.Enabled = _on;
 				prevPageToolStripMenuItem.Enabled = nextPageToolStripMenuItem.Enabled = _on;
@@ -701,7 +701,7 @@ namespace MAPeD
 			{
 				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
 				
-				int load_scr_data_len 	= platform_data.get_screen_tiles_cnt_by_file_ext( file_ext );
+				int load_scr_data_len 	= platform_data.get_screen_tiles_cnt( file_ext );
 				int scr_data_len 		= utils.CONST_SCREEN_TILES_CNT;
 
 				if( load_scr_data_len != scr_data_len )
@@ -1452,7 +1452,7 @@ namespace MAPeD
 		
 		void BtnCHRBankNextPageClick_Event(object sender, EventArgs e)
 		{
-			if( utils.CONST_CHR_BANK_PAGES_CNT > 1 )
+			if( platform_data.get_CHR_bank_pages_cnt() > 1 )
 			{
 				m_tiles_processor.CHR_bank_next_page();
 			}
@@ -1460,7 +1460,7 @@ namespace MAPeD
 		
 		void BtnCHRBankPrevPageClick_Event(object sender, EventArgs e)
 		{
-			if( utils.CONST_CHR_BANK_PAGES_CNT > 1 )
+			if( platform_data.get_CHR_bank_pages_cnt() > 1 )
 			{
 				m_tiles_processor.CHR_bank_prev_page();
 			}
@@ -1818,7 +1818,7 @@ namespace MAPeD
 				
 				if( sel_ind >= 0 )
 				{
-					for( int i = utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1; i > sel_ind; i-- )
+					for( int i = platform_data.get_CHR_bank_max_sprites_cnt() - 1; i > sel_ind; i-- )
 					{
 						data.from_CHR_bank_to_spr8x8( i - 1, utils.tmp_spr8x8_buff );
 						data.from_spr8x8_to_CHR_bank( i, utils.tmp_spr8x8_buff );
@@ -1851,14 +1851,14 @@ namespace MAPeD
 				{
 					if( message_box( "Are you sure?", "Delete CHR", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
-						for( int i = sel_ind; i < utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1; i++ )
+						for( int i = sel_ind; i < platform_data.get_CHR_bank_max_sprites_cnt() - 1; i++ )
 						{
 							data.from_CHR_bank_to_spr8x8( i + 1, utils.tmp_spr8x8_buff );
 							data.from_spr8x8_to_CHR_bank( i, utils.tmp_spr8x8_buff );
 						}
 						
 						Array.Clear( utils.tmp_spr8x8_buff, 0, utils.tmp_spr8x8_buff.Length );
-						data.from_spr8x8_to_CHR_bank( utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1, utils.tmp_spr8x8_buff );
+						data.from_spr8x8_to_CHR_bank( platform_data.get_CHR_bank_max_sprites_cnt() - 1, utils.tmp_spr8x8_buff );
 						
 						data.dec_blocks_CHRs( sel_ind );
 						
@@ -1917,7 +1917,7 @@ namespace MAPeD
 				{
 					free_chr_ind = data.get_first_free_spr8x8_id();
 	
-					if( free_chr_ind + utils.CONST_BLOCK_SIZE > utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+					if( free_chr_ind + utils.CONST_BLOCK_SIZE > platform_data.get_CHR_bank_max_sprites_cnt() )
 					{
 						message_box( "There is no free space in the CHR bank!", "Paste Block", MessageBoxButtons.OK );
 						return;

@@ -840,7 +840,7 @@ namespace MAPeD
 			{
 				crop_scr = true;
 				
-				MainForm.message_box( "The " + platform_data.get_platform_name_by_type( platform_type ) + " screen resolution differs from the ZX one. Thus, the exported screens will be cropped to ZX resolution and aligned to the upper left corner.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				MainForm.message_box( "The " + platform_data.get_platform_name( platform_type ) + " screen resolution differs from the ZX one. Thus, the exported screens will be cropped to ZX resolution and aligned to the upper left corner.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 			}
 			
 			Func< int, int, bool > invalid_tile = ( int _x_pos, int _y_pos ) => ( crop_scr && ( ( _x_pos >= zx_scr_tiles_width ) || ( _y_pos >= zx_scr_tiles_height ) ) );

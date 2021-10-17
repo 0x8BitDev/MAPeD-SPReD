@@ -378,7 +378,7 @@ namespace MAPeD
 			{
 				int cnt = data.get_first_free_spr8x8_id();
 				
-				return cnt >= 0 ? cnt:utils.CONST_CHR_BANK_MAX_SPRITES_CNT;
+				return cnt >= 0 ? cnt:platform_data.get_CHR_bank_max_sprites_cnt();
 			}
 			
 			return -1;
@@ -390,7 +390,7 @@ namespace MAPeD
 			
 			if( data != null )
 			{
-				if( _CHR_ind >= 0 && _CHR_ind < utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+				if( _CHR_ind >= 0 && _CHR_ind < platform_data.get_CHR_bank_max_sprites_cnt() )
 				{
 					byte[] CHR_data = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
 					

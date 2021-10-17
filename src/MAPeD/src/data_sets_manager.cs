@@ -60,7 +60,7 @@ namespace MAPeD
 		public event ReturnBoolEvent DeleteGroup;
 
 		[DataMember]
-		private readonly string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * utils.CONST_CHR_BANK_PAGES_CNT ) + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_UINT_SIZE + " | Screen Data (Tiles4x4): " + utils.CONST_SCREEN_TILES_CNT + " | Screen Data (Blocks2x2): " + utils.CONST_SCREEN_BLOCKS_CNT;
+		private readonly string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * platform_data.get_CHR_bank_pages_cnt() ) + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_UINT_SIZE + " | Screen Data (Tiles4x4): " + utils.CONST_SCREEN_TILES_CNT + " | Screen Data (Blocks2x2): " + utils.CONST_SCREEN_BLOCKS_CNT;
 		[DataMember]
 		private readonly string NES_block_desc_bits = "[ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)";
 		[DataMember]
@@ -866,10 +866,10 @@ namespace MAPeD
 					
 					int i;
 					
-					int plt_len 	= platform_data.get_palette_size_by_file_ext( _file_ext );
+					int plt_len 	= platform_data.get_main_palette_colors_cnt( _file_ext );
 					int[] plt_main	= null;
 					
-					bool ignore_palette = ( _file_ext != utils.CONST_FILE_EXT );
+					bool ignore_palette = ( _file_ext != platform_data.get_platform_file_ext( platform_data.get_platform_type() ) );
 					
 					if( ignore_palette )
 					{
@@ -1004,7 +1004,7 @@ namespace MAPeD
 				
 				spr8x8_cnt = _br.ReadInt32();
 				
-				if( chr_id + spr8x8_cnt > utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+				if( chr_id + spr8x8_cnt > platform_data.get_CHR_bank_max_sprites_cnt() )
 				{
 					MainForm.set_status_msg( String.Format( "Merged: {0} of {1} CHR banks", i, CHR_cnt ) );
 					

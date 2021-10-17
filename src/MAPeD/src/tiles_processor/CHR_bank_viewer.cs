@@ -132,7 +132,7 @@ namespace MAPeD
 			
 			if( m_data != null )
 			{
-				if( utils.CONST_CHR_BANK_PAGES_CNT > 1 )
+				if( platform_data.get_CHR_bank_pages_cnt() > 1 )
 				{
 					update_active_page_text();
 				}
@@ -389,7 +389,7 @@ namespace MAPeD
 
 		public void next_page()
 		{
-			if( m_active_page + 1 < utils.CONST_CHR_BANK_PAGES_CNT )
+			if( m_active_page + 1 < platform_data.get_CHR_bank_pages_cnt() )
 			{
 				++m_active_page;
 				
@@ -413,7 +413,7 @@ namespace MAPeD
 		
 		private void update_active_page_text()
 		{
-			m_CHR_bank_grp_box.Text = "CHR Bank: " + "[" + ( m_active_page + 1 ) + "/" + utils.CONST_CHR_BANK_PAGES_CNT + "]";
+			m_CHR_bank_grp_box.Text = "CHR Bank: " + "[" + ( m_active_page + 1 ) + "/" + platform_data.get_CHR_bank_pages_cnt() + "]";
 		}
 	}
 }

@@ -181,7 +181,7 @@ namespace MAPeD
 			
 			int size_offs;			
 			int size = _data.get_first_free_spr8x8_id();
-			size = size < 0 ? utils.CONST_CHR_BANK_MAX_SPRITES_CNT:size;
+			size = size < 0 ? platform_data.get_CHR_bank_max_sprites_cnt():size;
 			
 			for( int CHR_n = 0; CHR_n < size; CHR_n++ )
 			{
@@ -201,7 +201,7 @@ namespace MAPeD
 					
 					// delete useless CHR
 					{
-						size_offs = utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1;
+						size_offs = platform_data.get_CHR_bank_max_sprites_cnt() - 1;
 						
 						for( int i = CHR_n; i < size_offs; i++ )
 						{
@@ -220,7 +220,7 @@ namespace MAPeD
 #else
 						Array.Clear( img_buff, 0, utils.CONST_SPR8x8_TOTAL_PIXELS_CNT );
 #endif						
-						_data.from_spr8x8_to_CHR_bank( utils.CONST_CHR_BANK_MAX_SPRITES_CNT - 1, img_buff  );
+						_data.from_spr8x8_to_CHR_bank( platform_data.get_CHR_bank_max_sprites_cnt() - 1, img_buff  );
 					}
 					
 					shift_CHRs_data( CHR_n, _data );
