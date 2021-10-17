@@ -370,7 +370,7 @@ namespace MAPeD
 									{
 										if( ( dup_block_ind = _data.contains_block( block_data, block_ind ) ) < 0 )
 										{
-											if( ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+											if( ( block_ind >> 2 ) >= platform_data.get_max_blocks_cnt() )
 											{
 												MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 												
@@ -405,7 +405,7 @@ namespace MAPeD
 											}
 											else
 											{
-												if( tile_ind >= utils.CONST_MAX_TILES_CNT )
+												if( tile_ind >= platform_data.get_max_tiles_cnt() )
 												{
 													MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 													
@@ -496,7 +496,7 @@ namespace MAPeD
 							{
 								if( ( dup_block_ind = _data.contains_block( block_data, block_ind ) ) < 0 )
 								{
-									if( ( block_ind >> 2 ) >= utils.CONST_MAX_BLOCKS_CNT )
+									if( ( block_ind >> 2 ) >= platform_data.get_max_blocks_cnt() )
 									{
 										MainForm.set_status_msg( string.Format( "Merged: Blocks: {0} \\ CHRs: {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 										
@@ -1354,13 +1354,13 @@ namespace MAPeD
 						plt_ind = CHRs_plt[ CHR_ind ];
 					}
 					
-					block_data = tiles_data.set_block_flags_palette( Math.Min( utils.CONST_PALETTE16_ARR_LEN, plt_ind ), block_data );
+					block_data = tiles_data.set_block_flags_palette( Math.Min( platform_data.get_fixed_palette16_cnt(), plt_ind ), block_data );
 					_data.blocks[ block_n + CHR_n ] = block_data;
 				}
 			}
 
 			// apply palettes
-			palettes_cnt = Math.Min( utils.CONST_PALETTE16_ARR_LEN, plt_max + 1 );
+			palettes_cnt = Math.Min( platform_data.get_fixed_palette16_cnt(), plt_max + 1 );
 			
 			for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
 			{
@@ -1647,7 +1647,7 @@ namespace MAPeD
 				}
 			}
 			
-			more_than_max_palettes = ( palettes.Count > utils.CONST_PALETTE16_ARR_LEN );
+			more_than_max_palettes = ( palettes.Count > platform_data.get_fixed_palette16_cnt() );
 			
 			// check colors overflow
 			for( plt_n = 0; plt_n < palettes.Count; plt_n++ )
@@ -1688,7 +1688,7 @@ namespace MAPeD
 			}
 			
 			// CHRs remapping and palettes applying
-			palettes_cnt = Math.Min( palettes.Count, utils.CONST_PALETTE16_ARR_LEN );
+			palettes_cnt = Math.Min( palettes.Count, platform_data.get_fixed_palette16_cnt() );
 			
 			for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
 			{
@@ -1747,7 +1747,7 @@ namespace MAPeD
 			fix_unremapped_CHRs( _data, remapped_CHRs );
 
 			// apply final palettes
-			palettes_cnt = Math.Min( palettes.Count, utils.CONST_PALETTE16_ARR_LEN );
+			palettes_cnt = Math.Min( palettes.Count, platform_data.get_fixed_palette16_cnt() );
 			
 			for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
 			{
@@ -1781,7 +1781,7 @@ namespace MAPeD
 			
 			if( more_than_16_colors_in_palette || more_than_max_palettes )
 			{
-				string reason_str = ( more_than_max_palettes ? "\n- more than " + utils.CONST_PALETTE16_ARR_LEN + " palettes":"" ) + ( more_than_16_colors_in_palette ? "\n- more than 16 colors in a palette":"" );
+				string reason_str = ( more_than_max_palettes ? "\n- more than " + platform_data.get_fixed_palette16_cnt() + " palettes":"" ) + ( more_than_16_colors_in_palette ? "\n- more than 16 colors in a palette":"" );
 				
 				MainForm.message_box( "The imported image doesn't meet the requirements!\nSome color information will be lost!\n\nREASON: " + reason_str, "Palettes Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 				

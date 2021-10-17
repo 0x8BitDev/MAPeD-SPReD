@@ -961,7 +961,7 @@ namespace MAPeD
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 					{
 						n_blocks = tiles.get_first_free_block_id();
-						n_blocks = n_blocks < 0 ? utils.CONST_MAX_BLOCKS_CNT:n_blocks;
+						n_blocks = n_blocks < 0 ? platform_data.get_max_blocks_cnt():n_blocks;
 						
 						clr_size	= n_blocks << 2;
 						props_size	= n_blocks * ( RBtnPropPerBlock.Checked ? 1:4 );

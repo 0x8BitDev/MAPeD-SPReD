@@ -752,7 +752,7 @@ namespace MAPeD
 					else
 					{
 						max_block_ind = tiles.get_first_free_block_id();
-						max_block_ind = max_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:max_block_ind;
+						max_block_ind = max_block_ind < 0 ? platform_data.get_max_blocks_cnt():max_block_ind;
 						
 						max_block_inds.Add( max_block_ind << 3 );
 					}
@@ -842,7 +842,7 @@ namespace MAPeD
 						else
 						{
 							blocks_props_size = tiles.get_first_free_block_id();
-							blocks_props_size = ( ( blocks_props_size < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:blocks_props_size ) << 2;
+							blocks_props_size = ( ( blocks_props_size < 0 ) ? platform_data.get_max_blocks_cnt():blocks_props_size ) << 2;
 						}
 						
 						for( block_n = 0; block_n < blocks_props_size; block_n++ )
@@ -1082,7 +1082,7 @@ namespace MAPeD
 						else
 						{
 							blocks_props_size = tiles.get_first_free_block_id();
-							blocks_props_size = ( ( blocks_props_size < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:blocks_props_size ) << 2;
+							blocks_props_size = ( ( blocks_props_size < 0 ) ? platform_data.get_max_blocks_cnt():blocks_props_size ) << 2;
 						}
 							
 						for( block_n = 0; block_n < blocks_props_size; block_n++ )
@@ -1180,11 +1180,11 @@ namespace MAPeD
 					exp_data_size += data_size;
 					
 					write_alignment_data( _sw );
-					_sw.WriteLine( m_filename + label + ":\tincbin \"" + get_data_subdir() + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") palettes array of all exported data banks ( data offset = chr_id * " + ( ( utils.CONST_PALETTE16_ARR_LEN << 4 ) << 1 ) + " )" );
+					_sw.WriteLine( m_filename + label + ":\tincbin \"" + get_data_subdir() + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") palettes array of all exported data banks ( data offset = chr_id * " + ( ( platform_data.get_fixed_palette16_cnt() << 4 ) << 1 ) + " )" );
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + label + ";\t\t// palettes array of all exported data banks ( data offset = chr_id * " + ( ( utils.CONST_PALETTE16_ARR_LEN << 4 ) << 1 ) + " )" );
+						m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + label + ";\t\t// palettes array of all exported data banks ( data offset = chr_id * " + ( ( platform_data.get_fixed_palette16_cnt() << 4 ) << 1 ) + " )" );
 					}
 				}
 			}
@@ -1783,7 +1783,7 @@ namespace MAPeD
 				else
 				{
 					max_tile_ind = tiles.get_first_free_block_id();
-					max_tile_ind = ( max_tile_ind < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:max_tile_ind;
+					max_tile_ind = ( max_tile_ind < 0 ) ? platform_data.get_max_blocks_cnt():max_tile_ind;
 				}
 				
 				if( RBtnTiles4x4.Checked )
@@ -1815,7 +1815,7 @@ namespace MAPeD
 				// tiles 2x2
 				{
 					max_block_ind = tiles.get_first_free_block_id();
-					max_block_ind = ( max_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:max_block_ind ) << 2;	// 4 ushorts per block
+					max_block_ind = ( max_block_ind < 0 ? platform_data.get_max_blocks_cnt():max_block_ind ) << 2;	// 4 ushorts per block
 					
 					label = level_prefix_str + "_Attrs";
 					bw = new BinaryWriter( File.Open( m_data_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
@@ -1852,7 +1852,7 @@ namespace MAPeD
 					else
 					{
 						blocks_props_size = tiles.get_first_free_block_id();
-						blocks_props_size = ( ( blocks_props_size < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:blocks_props_size ) << 2;
+						blocks_props_size = ( ( blocks_props_size < 0 ) ? platform_data.get_max_blocks_cnt():blocks_props_size ) << 2;
 					}
 					
 					block_props_arr = new byte[ RBtnPropPerBlock.Checked ? ( blocks_props_size >> 2 ):blocks_props_size ];

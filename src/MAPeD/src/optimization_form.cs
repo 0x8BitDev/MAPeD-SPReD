@@ -252,7 +252,7 @@ namespace MAPeD
 				if( System.Linq.Enumerable.SequenceEqual( img_buff, utils.tmp_spr8x8_buff ) == true )
 				{
 					// remove duplicate(s)
-					for( block_n = 0; block_n < utils.CONST_BLOCKS_UINT_SIZE; block_n += utils.CONST_BLOCK_SIZE )
+					for( block_n = 0; block_n < platform_data.get_max_blocks_UINT_cnt(); block_n += utils.CONST_BLOCK_SIZE )
 					{
 						for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
 						{
@@ -267,7 +267,7 @@ namespace MAPeD
 				}
 			}
 			
-			for( block_n = 0; block_n < utils.CONST_BLOCKS_UINT_SIZE; block_n += utils.CONST_BLOCK_SIZE )
+			for( block_n = 0; block_n < platform_data.get_max_blocks_UINT_cnt(); block_n += utils.CONST_BLOCK_SIZE )
 			{
 				for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
 				{
@@ -288,7 +288,7 @@ namespace MAPeD
 			uint	raw_block_data;
 			int 	CHR_offset;
 			
-			for( int block_n = 0; block_n < utils.CONST_BLOCKS_UINT_SIZE; block_n += utils.CONST_BLOCK_SIZE )
+			for( int block_n = 0; block_n < platform_data.get_max_blocks_UINT_cnt(); block_n += utils.CONST_BLOCK_SIZE )
 			{
 				for( int i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
 				{
@@ -314,7 +314,7 @@ namespace MAPeD
 			int block_offset;
 			
 			int size = _data.get_first_free_block_id();
-			size = size < 0 ? utils.CONST_MAX_BLOCKS_CNT:size;
+			size = size < 0 ? platform_data.get_max_blocks_cnt():size;
 			
 			for( int block_n = 0; block_n < size; block_n++ )
 			{
@@ -341,12 +341,12 @@ namespace MAPeD
 					
 					// delete the useless block
 					{
-						Array.Copy( _data.blocks, block_offset + utils.CONST_BLOCK_SIZE, _data.blocks, block_offset, ( utils.CONST_MAX_BLOCKS_CNT << 2 )/* * utils.CONST_BLOCK_SIZE*/ - ( block_offset + utils.CONST_BLOCK_SIZE ) );
+						Array.Copy( _data.blocks, block_offset + utils.CONST_BLOCK_SIZE, _data.blocks, block_offset, ( platform_data.get_max_blocks_cnt() << 2 )/* * utils.CONST_BLOCK_SIZE*/ - ( block_offset + utils.CONST_BLOCK_SIZE ) );
 					}
 					
 					// the last block is an empty space
 					{
-						int  last_block_ind = utils.CONST_MAX_BLOCKS_CNT << 2;
+						int  last_block_ind = platform_data.get_max_blocks_cnt() << 2;
 						
 						_data.blocks[ last_block_ind - 1 ] = 0;
 						_data.blocks[ last_block_ind - 2 ] = 0;
@@ -398,7 +398,7 @@ namespace MAPeD
 					if( i == utils.CONST_BLOCK_SIZE )
 					{
 						// duplicate found
-						for( tile_n = 0; tile_n < utils.CONST_TILES_UINT_SIZE; tile_n++ )
+						for( tile_n = 0; tile_n < platform_data.get_max_tiles_cnt(); tile_n++ )
 						{
 							for( i = 0; i < utils.CONST_TILE_SIZE; i++ )
 							{
@@ -412,7 +412,7 @@ namespace MAPeD
 					}
 				}
 				
-				for( tile_n = 0; tile_n < utils.CONST_TILES_UINT_SIZE; tile_n++ )
+				for( tile_n = 0; tile_n < platform_data.get_max_tiles_cnt(); tile_n++ )
 				{
 					for( i = 0; i < utils.CONST_TILE_SIZE; i++ )
 					{
@@ -480,7 +480,7 @@ namespace MAPeD
 		{
 			int tile_block_id;
 			
-			for( int tile_n = 0; tile_n < utils.CONST_TILES_UINT_SIZE; tile_n++ )
+			for( int tile_n = 0; tile_n < platform_data.get_max_tiles_cnt(); tile_n++ )
 			{
 				for( int i = 0; i < utils.CONST_TILE_SIZE; i++ )
 				{
@@ -499,7 +499,7 @@ namespace MAPeD
 			int deleted_tiles_cnt = 0;
 			
 			int size = _data.get_first_free_tile_id();
-			size = size < 0 ? utils.CONST_MAX_TILES_CNT:size;
+			size = size < 0 ? platform_data.get_max_tiles_cnt():size;
 			
 			for( int tile_n = 0; tile_n < size; tile_n++ )
 			{
@@ -516,10 +516,10 @@ namespace MAPeD
 					}
 					
 					// delete the useless tile
-					Array.Copy( _data.tiles, tile_n + 1, _data.tiles, tile_n, utils.CONST_TILES_UINT_SIZE - tile_n - 1 );
+					Array.Copy( _data.tiles, tile_n + 1, _data.tiles, tile_n, platform_data.get_max_tiles_cnt() - tile_n - 1 );
 					
 					// the last tile is an empty space
-					_data.tiles[ utils.CONST_TILES_UINT_SIZE - 1 ] = 0;
+					_data.tiles[ platform_data.get_max_tiles_cnt() - 1 ] = 0;
 					
 					_data.dec_screen_tiles( ( byte )tile_n );
 					_data.dec_patterns_tiles( ( byte )tile_n );
@@ -701,7 +701,7 @@ namespace MAPeD
 				byte[] B_CHR_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
 				
 				int ff_block_id = _data.get_first_free_block_id();
-				ff_block_id = ff_block_id < 0 ? utils.CONST_MAX_BLOCKS_CNT:ff_block_id;
+				ff_block_id = ff_block_id < 0 ? platform_data.get_max_blocks_cnt():ff_block_id;
 				
 				for( int blockA_n = 0; blockA_n < ff_block_id; blockA_n++ )
 				{

@@ -350,7 +350,7 @@ namespace MAPeD
 			{
 				int cnt = data.get_first_free_tile_id();
 				
-				return cnt >= 0 ? cnt:utils.CONST_MAX_TILES_CNT;
+				return cnt >= 0 ? cnt:platform_data.get_max_tiles_cnt();
 			}
 			
 			return -1;
@@ -364,7 +364,7 @@ namespace MAPeD
 			{
 				int cnt = data.get_first_free_block_id();
 				
-				return cnt >= 0 ? cnt:utils.CONST_MAX_BLOCKS_CNT;
+				return cnt >= 0 ? cnt:platform_data.get_max_blocks_cnt();
 			}
 			
 			return -1;

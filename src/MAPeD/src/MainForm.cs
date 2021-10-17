@@ -1195,14 +1195,14 @@ namespace MAPeD
 							{
 								if( m_export_active_tile_block_set_form.export_tiles )
 								{
-									export_tiles_blocks_data( utils.CONST_MAX_TILES_CNT, delegate( int _data_n ) 
+									export_tiles_blocks_data( platform_data.get_max_tiles_cnt(), delegate( int _data_n ) 
 									                         {
 																return m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ).tiles[ _data_n ];
 									                         }, 32, m_imagelist_manager.get_tiles_image_list(), filename );
 								}
 								else
 								{
-									export_tiles_blocks_data( utils.CONST_MAX_BLOCKS_CNT, delegate( int _data_n ) 
+									export_tiles_blocks_data( platform_data.get_max_blocks_cnt(), delegate( int _data_n ) 
 									                         {
 																tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 									                         		
@@ -1470,7 +1470,7 @@ namespace MAPeD
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
-				if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+				if( platform_data.get_max_blocks_cnt() > 256 )
 				{
 					progress_bar_show( true, "CHR bank copying...", false );
 				}
@@ -1507,7 +1507,7 @@ namespace MAPeD
 					message_box( "Can't copy CHR bank!\nThe maximum allowed number of CHR banks - " + utils.CONST_CHR_BANK_MAX_CNT, "Failed to Copy CHR Bank", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 				
-				if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+				if( platform_data.get_max_blocks_cnt() > 256 )
 				{
 					progress_bar_show( false, "", false );
 				}
@@ -1516,7 +1516,7 @@ namespace MAPeD
 		
 		void BtnAddCHRBankClick_Event(object sender, EventArgs e)
 		{
-			if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+			if( platform_data.get_max_blocks_cnt() > 256 )
 			{
 				progress_bar_show( true, "CHR bank initialization...", false );
 			}
@@ -1543,7 +1543,7 @@ namespace MAPeD
 				message_box( "Can't create CHR bank!\nThe maximum allowed number of CHR banks - " + utils.CONST_CHR_BANK_MAX_CNT, "Failed to Create CHR Bank", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
-			if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+			if( platform_data.get_max_blocks_cnt() > 256 )
 			{
 				progress_bar_show( false, "", false );
 			}
@@ -1553,7 +1553,7 @@ namespace MAPeD
 		{
 			if( CBoxCHRBanks.Items.Count > 0 && message_box( "Are you sure?", "Remove CHR Bank", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
-				if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+				if( platform_data.get_max_blocks_cnt() > 256 )
 				{
 					progress_bar_show( true, "CHR bank deletion...", false );
 				}
@@ -1615,7 +1615,7 @@ namespace MAPeD
 					set_status_msg( "CHR bank removed" );
 				}
 				
-				if( utils.CONST_MAX_BLOCKS_CNT > 256 )
+				if( platform_data.get_max_blocks_cnt() > 256 )
 				{
 					progress_bar_show( false, "", false );
 				}

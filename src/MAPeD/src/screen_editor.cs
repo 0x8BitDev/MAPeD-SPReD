@@ -212,7 +212,7 @@ namespace MAPeD
 			m_tile_ghost_img_rect	= new Rectangle( 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE );
 			m_border_tile_img_rect	= new Rectangle( 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE );
 			
-			m_block_tiles_cache = new List< int >( utils.CONST_TILES_UINT_SIZE );
+			m_block_tiles_cache = new List< int >( platform_data.get_max_tiles_cnt() );
 			
 			m_sel_area_tile = new Bitmap( utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE, PixelFormat.Format24bppRgb );
 			Graphics.FromImage( m_sel_area_tile ).Clear( utils.CONST_COLOR_SCREEN_SELECTION_TILE );
@@ -828,7 +828,7 @@ namespace MAPeD
 		{
 			if( m_last_empty_tile_ind >= 0 )
 			{
-				for( int i = m_last_empty_tile_ind; i < utils.CONST_TILES_UINT_SIZE; i++ )
+				for( int i = m_last_empty_tile_ind; i < platform_data.get_max_tiles_cnt(); i++ )
 				{
 					if( m_tiles_data.tiles[ i ] == 0 )
 					{
@@ -982,12 +982,12 @@ namespace MAPeD
 			ulong tile_data;
 			
 			m_last_empty_tile_ind = m_tiles_data.get_first_free_tile_id();
-			m_last_empty_tile_ind = ( m_last_empty_tile_ind < 0 ) ? utils.CONST_MAX_TILES_CNT:m_last_empty_tile_ind;
+			m_last_empty_tile_ind = ( m_last_empty_tile_ind < 0 ) ? platform_data.get_max_tiles_cnt():m_last_empty_tile_ind;
 			m_last_empty_tile_ind = ( m_last_empty_tile_ind == 0 ) ? 1:m_last_empty_tile_ind;	// skip zero tile as reserved for an empty space
 			
 			m_block_tiles_cache.Clear();
 			
-			for( i = 0; i < utils.CONST_TILES_UINT_SIZE; i++ )
+			for( i = 0; i < platform_data.get_max_tiles_cnt(); i++ )
 			{
 				tile_data = m_tiles_data.tiles[ i ];
 

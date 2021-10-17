@@ -659,7 +659,7 @@ namespace MAPeD
 						else
 						{
 							blocks_props_size = tiles.get_first_free_block_id();
-							blocks_props_size = ( ( blocks_props_size < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:blocks_props_size ) << 2;
+							blocks_props_size = ( ( blocks_props_size < 0 ) ? platform_data.get_max_blocks_cnt():blocks_props_size ) << 2;
 						}						
 						
 						for( block_n = 0; block_n < blocks_props_size; block_n++ )
@@ -1711,7 +1711,7 @@ namespace MAPeD
 				else
 				{
 					max_tile_ind = tiles.get_first_free_block_id();
-					max_tile_ind = ( max_tile_ind < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:max_tile_ind;
+					max_tile_ind = ( max_tile_ind < 0 ) ? platform_data.get_max_blocks_cnt():max_tile_ind;
 				}
 				
 				if( RBtnTiles4x4.Checked )
@@ -1800,7 +1800,7 @@ namespace MAPeD
 					else
 					{
 						blocks_props_size = tiles.get_first_free_block_id();
-						blocks_props_size = ( ( blocks_props_size < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:blocks_props_size ) << 2;
+						blocks_props_size = ( ( blocks_props_size < 0 ) ? platform_data.get_max_blocks_cnt():blocks_props_size ) << 2;
 					}
 					
 					block_props_arr = new byte[ RBtnPropPerBlock.Checked ? ( blocks_props_size >> 2 ):blocks_props_size ];

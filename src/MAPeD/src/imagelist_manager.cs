@@ -54,8 +54,8 @@ namespace MAPeD
 			
 			m_listview_screens	= _listview_screens;
 			
-			m_imagelist_tiles 	= imagelist_init( utils.CONST_MAX_TILES_CNT, utils.CONST_TILES_IMG_SIZE );
-			m_imagelist_blocks 	= imagelist_init( utils.CONST_MAX_BLOCKS_CNT, utils.CONST_BLOCKS_IMG_SIZE );
+			m_imagelist_tiles 	= imagelist_init( platform_data.get_max_tiles_cnt(), utils.CONST_TILES_IMG_SIZE );
+			m_imagelist_blocks 	= imagelist_init( platform_data.get_max_blocks_cnt(), utils.CONST_BLOCKS_IMG_SIZE );
 			
 			m_tile_list		= new tile_list( tile_list.EType.t_Tiles, m_panel_tiles, m_imagelist_tiles, _tiles_e, _tiles_cm, _tl_cntnr );
 			m_block_list	= new tile_list( tile_list.EType.t_Blocks, m_panel_blocks, m_imagelist_blocks, _blocks_e, _blocks_cm, _tl_cntnr );
@@ -124,7 +124,7 @@ namespace MAPeD
 			
 			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				for( int i = 0; i < utils.CONST_MAX_TILES_CNT; i++ )
+				for( int i = 0; i < platform_data.get_max_tiles_cnt(); i++ )
 				{
 					img = m_imagelist_tiles.Images[ i ];
 					
@@ -249,7 +249,7 @@ namespace MAPeD
 
 			m_block_rect.Width = m_block_rect.Height = ( _view_type == utils.ETileViewType.tvt_ObjectId && !_prop_per_block ) ? ( utils.CONST_BLOCKS_IMG_SIZE >> 1 ):utils.CONST_BLOCKS_IMG_SIZE;
 			
-			for( int i = 0; i < utils.CONST_MAX_BLOCKS_CNT; i++ )
+			for( int i = 0; i < platform_data.get_max_blocks_cnt(); i++ )
 			{
 				img = m_imagelist_blocks.Images[ i ];
 				

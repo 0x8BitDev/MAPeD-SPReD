@@ -125,7 +125,7 @@ namespace MAPeD
 				}
 #endif
 #if DEF_FIXED_LEN_PALETTE16_ARR
-				if( i >= utils.CONST_PALETTE16_ARR_LEN )
+				if( i >= platform_data.get_fixed_palette16_cnt() )
 				{
 					continue;
 				}
@@ -138,7 +138,7 @@ namespace MAPeD
 		{
 			if( _prj_platform == platform_data.EPlatformType.pt_NES && platform_data.get_platform_type() != platform_data.EPlatformType.pt_NES )
 			{
-				m_dict_CHR_palette_ind = new Dictionary<int, int>( utils.CONST_BLOCKS_UINT_SIZE );
+				m_dict_CHR_palette_ind = new Dictionary<int, int>( platform_data.get_max_blocks_UINT_cnt() );
 			}
 			
 			m_map_data_app_src = map_data_config_provider.config_app( _prj_platform );
@@ -419,7 +419,7 @@ namespace MAPeD
 			
 			int y;
 			
-			if( _br.BaseStream.Length < utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES )
+			if( _br.BaseStream.Length < platform_data.get_native_CHR_size_bytes() )
 			{
 				return -1;
 			}
@@ -432,7 +432,7 @@ namespace MAPeD
 			{
 				do
 				{
-					tmp_arr = _br.ReadBytes( utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES );
+					tmp_arr = _br.ReadBytes( platform_data.get_native_CHR_size_bytes() );
 					
 					for( y = 0; y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT; y++ )
 					{
@@ -448,7 +448,7 @@ namespace MAPeD
 						break;
 					}
 				}
-				while( _br.BaseStream.Position + utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES <= _br.BaseStream.Length );
+				while( _br.BaseStream.Position + platform_data.get_native_CHR_size_bytes() <= _br.BaseStream.Length );
 			}
 			else
 			{
@@ -608,7 +608,7 @@ namespace MAPeD
 				inner_data	= m_inner_tiles_data[ data_n ];
 
 				blocks_cnt = data.get_first_free_block_id();
-				blocks_cnt = ( ( blocks_cnt < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:blocks_cnt ) << 2;
+				blocks_cnt = ( ( blocks_cnt < 0 ) ? platform_data.get_max_blocks_cnt():blocks_cnt ) << 2;
 				
 				chr_id_flags = new bool[ blocks_cnt ];
 				Array.Clear( chr_id_flags, 0, chr_id_flags.Length );
@@ -750,13 +750,13 @@ namespace MAPeD
 				chr_id_flags = null;
 
 				// add missing palette
-				if( data.palettes_arr.Count < utils.CONST_PALETTE16_ARR_LEN )
+				if( data.palettes_arr.Count < platform_data.get_fixed_palette16_cnt() )
 				{
 					data.palettes_arr.Add( new palette16_data() );
 				}
 				
 				// restore original fixed ZX palette
-				for( plt_n = 0; plt_n < utils.CONST_PALETTE16_ARR_LEN; plt_n++ )
+				for( plt_n = 0; plt_n < platform_data.get_fixed_palette16_cnt(); plt_n++ )
 				{
 					for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS; i++ )
 					{

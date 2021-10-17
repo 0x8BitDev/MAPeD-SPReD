@@ -122,8 +122,8 @@ namespace MAPeD
 		private List< palette16_data > m_palettes	= null;
 		private int	m_palette_pos					= -1;
 		
-		private uint[]	m_blocks	= new uint[ utils.CONST_BLOCKS_UINT_SIZE ];
-		private ulong[] m_tiles		= new ulong[ utils.CONST_TILES_UINT_SIZE ];
+		private uint[]	m_blocks	= new uint[ platform_data.get_max_blocks_UINT_cnt() ];
+		private ulong[] m_tiles		= new ulong[ platform_data.get_max_tiles_cnt() ];
 		
 		[DataMember]
 		private List< screen_data >	m_scr_data	= null;
@@ -273,9 +273,9 @@ namespace MAPeD
 #if DEF_FIXED_LEN_PALETTE16_ARR
 		private void palettes_create_fixed_arr()
 		{
-			m_palettes = new List< palette16_data >( utils.CONST_PALETTE16_ARR_LEN );
+			m_palettes = new List< palette16_data >( platform_data.get_fixed_palette16_cnt() );
 			
-			for( int i = 0; i < utils.CONST_PALETTE16_ARR_LEN; i++ )
+			for( int i = 0; i < platform_data.get_fixed_palette16_cnt(); i++ )
 			{
 				m_palettes.Add( new palette16_data() );
 			}
@@ -400,7 +400,7 @@ namespace MAPeD
 		
 		public void clear_tiles()
 		{
-			Array.Clear( m_tiles, 0, utils.CONST_TILES_UINT_SIZE );
+			Array.Clear( m_tiles, 0, platform_data.get_max_tiles_cnt() );
 		}
 		
 		public void clear_tile( int _ind )
@@ -453,8 +453,8 @@ namespace MAPeD
 				data.m_palettes.Add( m_palettes[ i ].copy() );
 			}
 			
-			Array.Copy( m_blocks,	data.m_blocks,	utils.CONST_BLOCKS_UINT_SIZE );
-			Array.Copy( m_tiles,	data.m_tiles,	utils.CONST_TILES_UINT_SIZE );
+			Array.Copy( m_blocks,	data.m_blocks,	platform_data.get_max_blocks_UINT_cnt() );
+			Array.Copy( m_tiles,	data.m_tiles,	platform_data.get_max_tiles_cnt() );
 
 			// COPY SCREENS
 			{
@@ -1074,13 +1074,13 @@ namespace MAPeD
 		{
 			int block_id = 0;
 			
-			for( int k = utils.CONST_MAX_BLOCKS_CNT - 1; k >= 0; k-- )
+			for( int k = platform_data.get_max_blocks_cnt() - 1; k >= 0; k-- )
 			{
 				if( block_sum( k ) > 0 )
 				{
 					block_id = k + 1;
 					
-					if( block_id > utils.CONST_MAX_BLOCKS_CNT - 1 )
+					if( block_id > platform_data.get_max_blocks_cnt() - 1 )
 					{
 						return -1;
 					}
@@ -1096,13 +1096,13 @@ namespace MAPeD
 		{
 			int tile_id = 0;
 			
-			for( int k = utils.CONST_MAX_TILES_CNT - 1; k >= 0; k-- )
+			for( int k = platform_data.get_max_tiles_cnt() - 1; k >= 0; k-- )
 			{
 				if( m_tiles[ k ] > 0 )
 				{
 					tile_id = k + 1;
 					
-					if( tile_id > utils.CONST_MAX_TILES_CNT - 1 )
+					if( tile_id > platform_data.get_max_tiles_cnt() - 1 )
 					{
 						return -1;
 					}
@@ -1148,7 +1148,7 @@ namespace MAPeD
 			
 			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				for( tile_n = 0; tile_n < utils.CONST_MAX_TILES_CNT; tile_n++ )
+				for( tile_n = 0; tile_n < platform_data.get_max_tiles_cnt(); tile_n++ )
 				{
 					for( block_n = 0; block_n < utils.CONST_TILE_SIZE; block_n++ )
 					{
@@ -1591,7 +1591,7 @@ namespace MAPeD
 			{
 				data_converter.pre_load_block_data( prj_platform );
 				
-				int blocks_cnt = ( _ver <= 5 ) ? ( platform_data.get_blocks_cnt_by_file_ext( _file_ext ) * utils.CONST_BLOCK_SIZE ):( int )_br.ReadUInt16();
+				int blocks_cnt = ( _ver <= 5 ) ? ( platform_data.get_max_blocks_cnt_by_file_ext( _file_ext ) * utils.CONST_BLOCK_SIZE ):( int )_br.ReadUInt16();
 #if DEF_PLATFORM_16BIT
 				if( blocks_cnt > m_blocks.Length )
 				{
@@ -1642,7 +1642,7 @@ namespace MAPeD
 					ushort b2;
 					ushort b3;
 					
-					int tiles_cnt = ( _ver <= 5 ) ? ( platform_data.get_tiles_cnt_by_file_ext( _file_ext ) ):( int )_br.ReadUInt16();
+					int tiles_cnt = ( _ver <= 5 ) ? ( platform_data.get_max_tiles_cnt_by_file_ext( _file_ext ) ):( int )_br.ReadUInt16();
 #if DEF_PLATFORM_16BIT
 					if( tiles_cnt > m_tiles.Length )
 					{

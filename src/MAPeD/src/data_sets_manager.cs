@@ -60,7 +60,7 @@ namespace MAPeD
 		public event ReturnBoolEvent DeleteGroup;
 
 		[DataMember]
-		private readonly string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * platform_data.get_CHR_bank_pages_cnt() ) + " | Tiles Data Size: " + utils.CONST_TILES_UINT_SIZE + " | Blocks Data Size: " + utils.CONST_BLOCKS_UINT_SIZE + " | Screen Data (Tiles4x4): " + utils.CONST_SCREEN_TILES_CNT + " | Screen Data (Blocks2x2): " + utils.CONST_SCREEN_BLOCKS_CNT;
+		private readonly string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * platform_data.get_CHR_bank_pages_cnt() ) + " | Tiles Data Size: " + platform_data.get_max_tiles_cnt() + " | Blocks Data Size: " + platform_data.get_max_blocks_UINT_cnt() + " | Screen Data (Tiles4x4): " + utils.CONST_SCREEN_TILES_CNT + " | Screen Data (Blocks2x2): " + utils.CONST_SCREEN_BLOCKS_CNT;
 		[DataMember]
 		private readonly string NES_block_desc_bits = "[ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)";
 		[DataMember]
@@ -923,7 +923,7 @@ namespace MAPeD
 						{
 							data = get_tiles_data( data_n );
 							
-							for( i = data.palettes_arr.Count; i < utils.CONST_PALETTE16_ARR_LEN; i++ )
+							for( i = data.palettes_arr.Count; i < platform_data.get_fixed_palette16_cnt(); i++ )
 							{
 								data.palettes_arr.Add( new palette16_data() );
 							}
@@ -1173,7 +1173,7 @@ namespace MAPeD
 				data = get_tiles_data( data_n );
 				
 				List< screen_data >	screens	= new List< screen_data >( data.screen_data_cnt() );
-				ulong[] 			tiles	= new ulong[ utils.CONST_MAX_TILES_CNT ];
+				ulong[] 			tiles	= new ulong[ platform_data.get_max_tiles_cnt() ];
 				Array.Clear( tiles, 0, tiles.Length );
 				
 				ushort tile_ind = 0;
@@ -1219,7 +1219,7 @@ namespace MAPeD
 						
 						if( i == tile_ind )
 						{
-							if( tile_ind == utils.CONST_MAX_TILES_CNT )
+							if( tile_ind == platform_data.get_max_tiles_cnt() )
 							{
 								tiles_arr_overflow = true;
 								goto free_data;
@@ -1313,7 +1313,7 @@ namespace MAPeD
 				data = get_tiles_data( data_n );
 
 				// update tiles & screens
-				Array.Copy( bank_id_tiles[ data_n ] as ulong[], data.tiles, utils.CONST_MAX_TILES_CNT );
+				Array.Copy( bank_id_tiles[ data_n ] as ulong[], data.tiles, platform_data.get_max_tiles_cnt() );
 				
 				for( scr_n = 0; scr_n < data.screen_data_cnt(); scr_n++ )
 				{

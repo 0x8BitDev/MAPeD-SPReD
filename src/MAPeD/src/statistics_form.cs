@@ -45,10 +45,10 @@ namespace MAPeD
 			richTextBox.Text += "\n---------------------------";
 			
 			richTextBox.Text += "\nScreen: " + utils.CONST_SCREEN_WIDTH_PIXELS + "x" + utils.CONST_SCREEN_HEIGHT_PIXELS + " pix\nScreen Tiles (2x2): " + ( utils.CONST_SCREEN_WIDTH_PIXELS / 16.0f ) + "x" + ( utils.CONST_SCREEN_HEIGHT_PIXELS / 16.0f ) + "\nScreen Tiles (4x4): " + ( utils.CONST_SCREEN_WIDTH_PIXELS / 32.0f ) + "x" + ( utils.CONST_SCREEN_HEIGHT_PIXELS / 32.0f );
-			richTextBox.Text += "\n\nCHR bank: " + ( platform_data.get_CHR_bank_max_sprites_cnt() * utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES ) / 1024 + " KB (Max: " + platform_data.get_CHR_bank_max_sprites_cnt() + " CHRs)";  
-			richTextBox.Text += "\nCHR size: " + utils.CONST_SPR8x8_NATIVE_SIZE_IN_BYTES + " Bytes";
-			richTextBox.Text += "\n\nTiles (4x4): " + utils.CONST_MAX_TILES_CNT;
-			richTextBox.Text += "\nBlocks (2x2): " + utils.CONST_MAX_BLOCKS_CNT;
+			richTextBox.Text += "\n\nCHR bank: " + ( platform_data.get_CHR_bank_max_sprites_cnt() * platform_data.get_native_CHR_size_bytes() ) / 1024 + " KB (Max: " + platform_data.get_CHR_bank_max_sprites_cnt() + " CHRs)";  
+			richTextBox.Text += "\nCHR size: " + platform_data.get_native_CHR_size_bytes() + " Bytes";
+			richTextBox.Text += "\n\nTiles (4x4): " + platform_data.get_max_tiles_cnt();
+			richTextBox.Text += "\nBlocks (2x2): " + platform_data.get_max_blocks_cnt();
 			
 			richTextBox.Text += "\n---------------------------\nProject:";
 			richTextBox.Text += "\nLayouts: " + m_data_manager.layouts_data_cnt + " (Max: " + utils.CONST_LAYOUT_MAX_CNT + ")";
@@ -86,8 +86,8 @@ namespace MAPeD
 					ff_tile		= data.get_first_free_tile_id();
 					
 					ff_CHR		= ff_CHR < 0 ? platform_data.get_CHR_bank_max_sprites_cnt():ff_CHR;
-					ff_block	= ff_block < 0 ? utils.CONST_MAX_BLOCKS_CNT:ff_block;
-					ff_tile		= ff_tile < 0 ? utils.CONST_MAX_TILES_CNT:ff_tile;
+					ff_block	= ff_block < 0 ? platform_data.get_max_blocks_cnt():ff_block;
+					ff_tile		= ff_tile < 0 ? platform_data.get_max_tiles_cnt():ff_tile;
 					
 					richTextBox.Text += "\nCHRs: " + ff_CHR + " / Blocks(2x2): " + ff_block + " / Tiles(4x4): " + ff_tile;
 					richTextBox.Text += "\nScreens: " + data.screen_data_cnt();

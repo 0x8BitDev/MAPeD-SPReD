@@ -187,7 +187,7 @@ namespace MAPeD
 
 				uint block_data;
 				int ff_block_n = m_tiles_data.get_first_free_block_id();
-				ff_block_n = ( ff_block_n < 0 ) ? utils.CONST_MAX_BLOCKS_CNT:ff_block_n;
+				ff_block_n = ( ff_block_n < 0 ) ? platform_data.get_max_blocks_cnt():ff_block_n;
 
 				for( block_n = 0; block_n < ff_block_n; block_n++ )
 				{

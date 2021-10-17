@@ -225,11 +225,11 @@ namespace MAPeD
 				data.tiles[ sel_tile ] = 0;
 				
 				int ff_tile_ind = data.get_first_free_tile_id();
-				ff_tile_ind = ff_tile_ind < 0 ? utils.CONST_MAX_TILES_CNT:ff_tile_ind;
+				ff_tile_ind = ff_tile_ind < 0 ? platform_data.get_max_tiles_cnt():ff_tile_ind;
 				int tile_n;
 				int block_pos_n;
 				
-				for( int block_n = 1; block_n < utils.CONST_MAX_BLOCKS_CNT; block_n++ )
+				for( int block_n = 1; block_n < platform_data.get_max_blocks_cnt(); block_n++ )
 				{
 					if( data.block_sum( block_n ) == 0 )
 					{
@@ -305,7 +305,7 @@ namespace MAPeD
 				}
 				
 				int ff_block_ind = data.get_first_free_block_id();
-				ff_block_ind = ( ff_block_ind < 0 ? utils.CONST_MAX_BLOCKS_CNT:ff_block_ind ) << 2;
+				ff_block_ind = ( ff_block_ind < 0 ? platform_data.get_max_blocks_cnt():ff_block_ind ) << 2;
 				ff_block_ind = ff_block_ind < 4 ? 4:ff_block_ind;
 				
 				int block_n;

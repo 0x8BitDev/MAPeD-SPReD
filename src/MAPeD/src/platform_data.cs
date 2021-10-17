@@ -75,7 +75,31 @@ namespace MAPeD
 		private const int CONST_NES_PALETTE_NUM_COLORS		= 64;
 		private const int CONST_SMS_PALETTE_NUM_COLORS		= 64;
 		private const int CONST_PCE_SMD_PALETTE_NUM_COLORS	= 512;
-		private const int CONST_ZX_PALETTE_NUM_COLORS		= 16;
+		private const int CONST_ZX_PALETTE_NUM_COLORS		= 16;		
+#if DEF_FIXED_LEN_PALETTE16_ARR
+		private const int CONST_NES_PALETTE16_ARR_LEN		= -1;
+		private const int CONST_SMS_PALETTE16_ARR_LEN		= 2;
+		private const int CONST_PCE_PALETTE16_ARR_LEN		= 16;
+		private const int CONST_ZX_PALETTE16_ARR_LEN		= 2;
+		private const int CONST_SMD_PALETTE16_ARR_LEN		= 4;
+#endif //DEF_FIXED_LEN_PALETTE16_ARR
+		private const int CONST_NES_CHR_NATIVE_SIZE_IN_BYTES	= 16;
+		private const int CONST_SMS_CHR_NATIVE_SIZE_IN_BYTES	= 32;
+		private const int CONST_PCE_CHR_NATIVE_SIZE_IN_BYTES	= 32;
+		private const int CONST_ZX_CHR_NATIVE_SIZE_IN_BYTES	= 8;	// 8 - CHR data + 1 - color data
+		private const int CONST_SMD_CHR_NATIVE_SIZE_IN_BYTES	= 32;
+		
+		private const int CONST_NES_MAX_BLOCKS_CNT			= 256;
+		private const int CONST_SMS_MAX_BLOCKS_CNT			= 256;
+		private const int CONST_PCE_MAX_BLOCKS_CNT			= 256;
+		private const int CONST_ZX_MAX_BLOCKS_CNT			= 256;
+		private const int CONST_SMD_MAX_BLOCKS_CNT			= 2048;
+
+		private const int CONST_NES_MAX_TILES_CNT			= 256;
+		private const int CONST_SMS_MAX_TILES_CNT			= 256;
+		private const int CONST_PCE_MAX_TILES_CNT			= 256;
+		private const int CONST_ZX_MAX_TILES_CNT			= 256;
+		private const int CONST_SMD_MAX_TILES_CNT			= 1024;
 		
 		private static readonly EPlatformType	m_platform = EPlatformType.pt_UNKNOWN;
 		
@@ -100,22 +124,22 @@ namespace MAPeD
 			CONST_SMD_FILE_EXT,
 		};
 		
-		private static readonly int[] m_platform_blocks_cnt = new int[]
+		private static readonly int[] m_platform_max_blocks_cnt = new int[]
 		{
-			utils.CONST_NES_MAX_BLOCKS_CNT,
-			utils.CONST_SMS_MAX_BLOCKS_CNT,
-			utils.CONST_PCE_MAX_BLOCKS_CNT,
-			utils.CONST_ZX_MAX_BLOCKS_CNT,
-			utils.CONST_SMD_MAX_BLOCKS_CNT,
+			CONST_NES_MAX_BLOCKS_CNT,
+			CONST_SMS_MAX_BLOCKS_CNT,
+			CONST_PCE_MAX_BLOCKS_CNT,
+			CONST_ZX_MAX_BLOCKS_CNT,
+			CONST_SMD_MAX_BLOCKS_CNT,
 		};
 
-		private static readonly int[] m_platform_tiles_cnt = new int[]
+		private static readonly int[] m_platform_max_tiles_cnt = new int[]
 		{
-			utils.CONST_NES_MAX_TILES_CNT,
-			utils.CONST_SMS_MAX_TILES_CNT,
-			utils.CONST_PCE_MAX_TILES_CNT,
-			utils.CONST_ZX_MAX_TILES_CNT,
-			utils.CONST_SMD_MAX_TILES_CNT,
+			CONST_NES_MAX_TILES_CNT,
+			CONST_SMS_MAX_TILES_CNT,
+			CONST_PCE_MAX_TILES_CNT,
+			CONST_ZX_MAX_TILES_CNT,
+			CONST_SMD_MAX_TILES_CNT,
 		};
 		
 		private static readonly int[] m_palette_colors_cnt = new int[]
@@ -171,7 +195,25 @@ namespace MAPeD
 			utils.CONST_ZX_SCREEN_NUM_HEIGHT_BLOCKS,
 			utils.CONST_SMD_SCREEN_NUM_HEIGHT_BLOCKS,
 		};
-		
+#if DEF_FIXED_LEN_PALETTE16_ARR
+		private static readonly int[] m_platform_fixed_palette16_cnt = new int[]
+		{
+			CONST_NES_PALETTE16_ARR_LEN,
+			CONST_SMS_PALETTE16_ARR_LEN,
+			CONST_PCE_PALETTE16_ARR_LEN,
+			CONST_ZX_PALETTE16_ARR_LEN,
+			CONST_SMD_PALETTE16_ARR_LEN,
+		};
+#endif //DEF_FIXED_LEN_PALETTE16_ARR
+		private static readonly int[] m_platform_CHR_native_size_bytes = new int[]
+		{
+			CONST_NES_CHR_NATIVE_SIZE_IN_BYTES,
+			CONST_SMS_CHR_NATIVE_SIZE_IN_BYTES,
+			CONST_PCE_CHR_NATIVE_SIZE_IN_BYTES,
+			CONST_ZX_CHR_NATIVE_SIZE_IN_BYTES,
+			CONST_SMD_CHR_NATIVE_SIZE_IN_BYTES,
+		};
+
 		static platform_data()
 		{
 			int	i;
@@ -189,6 +231,17 @@ namespace MAPeD
 			}
 		}
 		
+#if DEF_FIXED_LEN_PALETTE16_ARR
+		public static int get_fixed_palette16_cnt()
+		{
+			return m_platform_fixed_palette16_cnt[ ( int )get_platform_type() ];
+		}
+#endif //DEF_FIXED_LEN_PALETTE16_ARR
+		public static int get_native_CHR_size_bytes()
+		{
+			return m_platform_CHR_native_size_bytes[ ( int )get_platform_type() ];
+		}
+
 		public static int get_CHR_bank_max_sprites_cnt()
 		{
 			return utils.CONST_CHR_BANK_PAGE_SPRITES_CNT * platform_data.get_CHR_bank_pages_cnt();
@@ -219,16 +272,31 @@ namespace MAPeD
 			return m_platform_names_arr[ ( int )_type ];
 		}
 
-		public static int get_blocks_cnt_by_file_ext( string _file_ext )
+		public static int get_max_blocks_cnt_by_file_ext( string _file_ext )
 		{
-			return m_platform_blocks_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
+			return m_platform_max_blocks_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
 		}
 
-		public static int get_tiles_cnt_by_file_ext( string _file_ext )
+		public static int get_max_blocks_cnt()
 		{
-			return m_platform_tiles_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
+			return m_platform_max_blocks_cnt[ ( int )get_platform_type() ];
 		}
-		
+
+		public static int get_max_blocks_UINT_cnt()
+		{
+			return m_platform_max_blocks_cnt[ ( int )get_platform_type() ] * utils.CONST_BLOCK_SIZE;
+		}
+
+		public static int get_max_tiles_cnt_by_file_ext( string _file_ext )
+		{
+			return m_platform_max_tiles_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
+		}
+
+		public static int get_max_tiles_cnt()
+		{
+			return m_platform_max_tiles_cnt[ ( int )get_platform_type() ];
+		}
+
 		public static int get_main_palette_colors_cnt( string _file_ext )
 		{
 			return m_palette_colors_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
