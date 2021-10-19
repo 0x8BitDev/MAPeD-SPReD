@@ -267,8 +267,8 @@ namespace MAPeD
 			{
 				if( CHR_bank_id == _CHR_bank_id )
 				{
-					int num_width_tiles		= platform_data.get_screen_num_width_tiles_uni( m_screen_data_type );
-					int num_height_tiles	= platform_data.get_screen_num_height_tiles_uni( m_screen_data_type );
+					int num_width_tiles		= platform_data.get_screen_tiles_width_uni( m_screen_data_type );
+					int num_height_tiles	= platform_data.get_screen_tiles_height_uni( m_screen_data_type );
 					
 					int scr_x = ( _scr_ind % get_width() );
 					int scr_y = ( _scr_ind / get_width() );
@@ -345,11 +345,11 @@ namespace MAPeD
 		
 		private void centering_sel_screen()
 		{
-			int scr_x = utils.CONST_SCREEN_WIDTH_PIXELS * ( m_dispatch_mode_sel_screen_slot_id % get_width() );
-			int scr_y = utils.CONST_SCREEN_HEIGHT_PIXELS * ( m_dispatch_mode_sel_screen_slot_id / get_width() );
+			int scr_x = platform_data.get_screen_width_pixels() * ( m_dispatch_mode_sel_screen_slot_id % get_width() );
+			int scr_y = platform_data.get_screen_height_pixels() * ( m_dispatch_mode_sel_screen_slot_id / get_width() );
 
-			m_offset_x	= m_scr_half_width - ( scr_x + ( utils.CONST_SCREEN_WIDTH_PIXELS >> 1 ) );
-			m_offset_y	= m_scr_half_height - ( scr_y + ( utils.CONST_SCREEN_HEIGHT_PIXELS >> 1 ) );
+			m_offset_x	= m_scr_half_width - ( scr_x + ( platform_data.get_screen_width_pixels() >> 1 ) );
+			m_offset_y	= m_scr_half_height - ( scr_y + ( platform_data.get_screen_height_pixels() >> 1 ) );
 			
 			clamp_offsets();
 		}
@@ -408,12 +408,12 @@ namespace MAPeD
 							
 							int arr_ind = 0;
 							
-							if( mouse_scr_pos_x > utils.CONST_SCREEN_WIDTH_PIXELS >> 1 )
+							if( mouse_scr_pos_x > platform_data.get_screen_width_pixels() >> 1 )
 							{
 								arr_ind |= 0x01;
 							}
 							
-							if( mouse_scr_pos_y > utils.CONST_SCREEN_HEIGHT_PIXELS >> 1 )
+							if( mouse_scr_pos_y > platform_data.get_screen_height_pixels() >> 1 )
 							{
 								arr_ind |= 0x02;
 								
@@ -496,8 +496,8 @@ namespace MAPeD
 					m_last_mouse_x	 = e.X;
 					m_last_mouse_y	 = e.Y;
 					
-					int width_scaled	= ( int )( m_scale * get_width() * utils.CONST_SCREEN_WIDTH_PIXELS );
-					int height_scaled	= ( int )( m_scale * get_height() * utils.CONST_SCREEN_HEIGHT_PIXELS );
+					int width_scaled	= ( int )( m_scale * get_width() * platform_data.get_screen_width_pixels() );
+					int height_scaled	= ( int )( m_scale * get_height() * platform_data.get_screen_height_pixels() );
 					
 					if( width_scaled > m_pix_box.Width || height_scaled > m_pix_box.Height )
 					{
@@ -744,12 +744,12 @@ namespace MAPeD
 				int x = transform_to_img_pos( m_mouse_x, m_offset_x, m_scr_half_width );
 				int y = transform_to_img_pos( m_mouse_y, m_offset_y, m_scr_half_height );
 				
-				int layout_width	= get_width() * utils.CONST_SCREEN_WIDTH_PIXELS;
-				int layout_height	= get_height() * utils.CONST_SCREEN_HEIGHT_PIXELS;
+				int layout_width	= get_width() * platform_data.get_screen_width_pixels();
+				int layout_height	= get_height() * platform_data.get_screen_height_pixels();
 				
 				if( x > 0 && x < layout_width && y > 0 && y < layout_height )
 				{
-					m_sel_screen_slot_id = ( x / utils.CONST_SCREEN_WIDTH_PIXELS ) + ( y / utils.CONST_SCREEN_HEIGHT_PIXELS ) * get_width();
+					m_sel_screen_slot_id = ( x / platform_data.get_screen_width_pixels() ) + ( y / platform_data.get_screen_height_pixels() ) * get_width();
 					
 					m_pix_box.Cursor = can_dispatch_selection() ? Cursors.Hand:Cursors.Arrow;
 					
@@ -850,8 +850,8 @@ namespace MAPeD
 		
 		private void clamp_offsets()
 		{
-			int width	= get_width() * utils.CONST_SCREEN_WIDTH_PIXELS;
-			int height	= get_height() * utils.CONST_SCREEN_HEIGHT_PIXELS;
+			int width	= get_width() * platform_data.get_screen_width_pixels();
+			int height	= get_height() * platform_data.get_screen_height_pixels();
 			
 			int width_scaled	= ( int )( m_scale * width );
 			int height_scaled	= ( int )( m_scale * height );
@@ -994,8 +994,8 @@ namespace MAPeD
 		{
 			bool valid_pos = true;
 			
-			int layout_width 	= (int)( get_width() * utils.CONST_SCREEN_WIDTH_PIXELS );
-			int layout_height 	= (int)( get_height() * utils.CONST_SCREEN_HEIGHT_PIXELS );
+			int layout_width 	= (int)( get_width() * platform_data.get_screen_width_pixels() );
+			int layout_height 	= (int)( get_height() * platform_data.get_screen_height_pixels() );
 			
 			int ent_img_pos_x = transform_to_img_pos( _ent_pos_x, m_offset_x, m_scr_half_width );
 			int ent_img_pos_y = transform_to_img_pos( _ent_pos_y, m_offset_y, m_scr_half_height );
@@ -1051,8 +1051,8 @@ namespace MAPeD
 				int width	= get_width();
 				int height	= get_height();
 				
-				int scr_size_width 	= (int)( utils.CONST_SCREEN_WIDTH_PIXELS * m_scale );
-				int scr_size_height = (int)( utils.CONST_SCREEN_HEIGHT_PIXELS * m_scale );
+				int scr_size_width 	= (int)( platform_data.get_screen_width_pixels() * m_scale );
+				int scr_size_height = (int)( platform_data.get_screen_height_pixels() * m_scale );
 				
 				layout_screen_data scr_data = null;
 				int x;
@@ -1110,7 +1110,7 @@ namespace MAPeD
          		            	
          		            	m_pen.Color = utils.CONST_COLOR_PIXBOX_DEFAULT;
          		            	{
-         		            		int img_center 	= utils.CONST_SCREEN_MARK_IMAGE_SIZE >> 1;
+         		            		int img_center 	= platform_data.get_screen_mark_image_size() >> 1;
          		            		int radius		= 12;
          		            		int arrow_len	= 45;
          		            		
@@ -1193,7 +1193,7 @@ namespace MAPeD
 							m_scr_img_rect.Width	= scr_size_width;
 							m_scr_img_rect.Height 	= scr_size_height;
 							
-							m_gfx.DrawImage( m_scr_list.get( m_active_screen_index ), m_scr_img_rect, 0, 0, utils.CONST_SCREEN_WIDTH_PIXELS, utils.CONST_SCREEN_HEIGHT_PIXELS, GraphicsUnit.Pixel, m_scr_img_attr );
+							m_gfx.DrawImage( m_scr_list.get( m_active_screen_index ), m_scr_img_rect, 0, 0, platform_data.get_screen_width_pixels(), platform_data.get_screen_height_pixels(), GraphicsUnit.Pixel, m_scr_img_attr );
 						}
 					}
 					
@@ -1347,7 +1347,7 @@ namespace MAPeD
 										
 										if( show_coords )
 										{
-											show_pivot_coords( ( scr_pos_x * utils.CONST_SCREEN_WIDTH_PIXELS ) + m_ent_inst.x + m_ent_inst.base_entity.pivot_x, ( scr_pos_y * utils.CONST_SCREEN_HEIGHT_PIXELS ) + m_ent_inst.y + m_ent_inst.base_entity.pivot_y, ent_scr_pos_x, ent_scr_pos_y );
+											show_pivot_coords( ( scr_pos_x * platform_data.get_screen_width_pixels() ) + m_ent_inst.x + m_ent_inst.base_entity.pivot_x, ( scr_pos_y * platform_data.get_screen_height_pixels() ) + m_ent_inst.y + m_ent_inst.base_entity.pivot_y, ent_scr_pos_x, ent_scr_pos_y );
 										}
 									}
 								}
@@ -1417,12 +1417,12 @@ namespace MAPeD
 
 		private int screen_pos_x_by_slot_id( int _slot_id )
 		{
-			return transform_to_scr_pos( _slot_id * utils.CONST_SCREEN_WIDTH_PIXELS + m_offset_x, m_scr_half_width );
+			return transform_to_scr_pos( _slot_id * platform_data.get_screen_width_pixels() + m_offset_x, m_scr_half_width );
 		}
 		
 		private int screen_pos_y_by_slot_id( int _slot_id )
 		{
-			return transform_to_scr_pos( _slot_id * utils.CONST_SCREEN_HEIGHT_PIXELS + m_offset_y, m_scr_half_height );
+			return transform_to_scr_pos( _slot_id * platform_data.get_screen_height_pixels() + m_offset_y, m_scr_half_height );
 		}
 		
 		private int get_sel_scr_pos_x()
@@ -1745,7 +1745,7 @@ namespace MAPeD
 		{
 			if( m_scr_mark_img == null )
 			{
-				m_scr_mark_img = new Bitmap( utils.CONST_SCREEN_MARK_IMAGE_SIZE, utils.CONST_SCREEN_MARK_IMAGE_SIZE, PixelFormat.Format32bppArgb );
+				m_scr_mark_img = new Bitmap( platform_data.get_screen_mark_image_size(), platform_data.get_screen_mark_image_size(), PixelFormat.Format32bppArgb );
 				m_scr_mark_gfx = Graphics.FromImage( m_scr_mark_img );
 				
 				m_scr_mark_gfx.SmoothingMode 		= SmoothingMode.HighSpeed;

@@ -1125,7 +1125,7 @@ namespace MAPeD
 				
 				for( scr_n = 0; scr_n < screen_data_cnt(); scr_n++ )
 				{
-					for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+					for( tile_n = 0; tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 					{
 						if( m_scr_data[ scr_n ].get_tile( tile_n ) == _tile_ind )
 						{
@@ -1163,7 +1163,7 @@ namespace MAPeD
 			{
 				for( scr_n = 0; scr_n < screen_data_cnt(); scr_n++ )
 				{
-					for( block_n = 0; block_n < utils.CONST_SCREEN_BLOCKS_CNT; block_n++ )
+					for( block_n = 0; block_n < platform_data.get_screen_blocks_cnt(); block_n++ )
 					{
 						if( m_scr_data[ scr_n ].get_tile( block_n ) == _block_ind )
 						{

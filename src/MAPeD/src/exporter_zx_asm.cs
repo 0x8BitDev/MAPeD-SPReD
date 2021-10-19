@@ -383,8 +383,8 @@ namespace MAPeD
 			
 			layout_screen_data scr_data;
 			
-			int scr_width_blocks 	= utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
-			int scr_height_blocks 	= utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
+			int scr_width_blocks 	= platform_data.get_screen_blocks_width();
+			int scr_height_blocks 	= platform_data.get_screen_blocks_height();
 			
 			_sw.WriteLine( "\nscr_2x2tiles_w\tequ " + scr_width_blocks + "\t\t; number of screen tiles 2x2 in width" );
 			_sw.WriteLine( "scr_2x2tiles_h\tequ " + scr_height_blocks + "\t\t; number of screen tiles 2x2 in height\n" );
@@ -409,7 +409,7 @@ namespace MAPeD
 
 				if( CheckBoxRenderLevelPNG.Checked )
 				{
-					level_bmp = new Bitmap( n_scr_X * utils.CONST_SCREEN_WIDTH_PIXELS, n_scr_Y * utils.CONST_SCREEN_HEIGHT_PIXELS );
+					level_bmp = new Bitmap( n_scr_X * platform_data.get_screen_width_pixels(), n_scr_Y * platform_data.get_screen_height_pixels() );
 
 					level_gfx 					= Graphics.FromImage( level_bmp );
 					level_gfx.InterpolationMode = InterpolationMode.NearestNeighbor;
@@ -417,16 +417,16 @@ namespace MAPeD
 				}
 				
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-				n_Y_tiles = n_scr_Y * ( ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * ( RBtnTiles2x2.Checked ? 2:1 ) ) - ( RBtnTiles2x2.Checked ? 1:0 ) );
+				n_Y_tiles = n_scr_Y * ( ( platform_data.get_screen_tiles_height() * ( RBtnTiles2x2.Checked ? 2:1 ) ) - ( RBtnTiles2x2.Checked ? 1:0 ) );
 #else
-				n_Y_tiles = n_scr_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES * ( RBtnTiles2x2.Checked ? 2:1 );
+				n_Y_tiles = n_scr_Y * platform_data.get_screen_tiles_height() * ( RBtnTiles2x2.Checked ? 2:1 );
 #endif
 				// initialize a tile map of a game level
 				{
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-					map_data_size = n_scr_X * n_scr_Y * ( ( utils.CONST_SCREEN_TILES_CNT * ( RBtnTiles2x2.Checked ? 4:1 ) ) - ( RBtnTiles2x2.Checked ? ( utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ):0 ) );
+					map_data_size = n_scr_X * n_scr_Y * ( ( platform_data.get_screen_tiles_cnt() * ( RBtnTiles2x2.Checked ? 4:1 ) ) - ( RBtnTiles2x2.Checked ? ( platform_data.get_screen_blocks_width() ):0 ) );
 #else
-					map_data_size = n_scr_X * n_scr_Y * utils.CONST_SCREEN_TILES_CNT * ( RBtnTiles2x2.Checked ? 4:1 );
+					map_data_size = n_scr_X * n_scr_Y * platform_data.get_screen_tiles_cnt() * ( RBtnTiles2x2.Checked ? 4:1 );
 #endif					
 					map_tiles_arr = new ushort[ map_data_size ];					
 					Array.Clear( map_tiles_arr, 0, map_data_size );
@@ -462,10 +462,10 @@ namespace MAPeD
 							
 							if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 							{
-								for( int tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+								for( int tile_n = 0; tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 								{
-									tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES );
-									tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES );
+									tile_offs_x = ( tile_n % platform_data.get_screen_tiles_width() );
+									tile_offs_y = ( tile_n / platform_data.get_screen_tiles_width() );
 									
 									scr_tile_id = bank_data.get_screen_tile( scr_ind, tile_n );
 									
@@ -501,16 +501,16 @@ namespace MAPeD
 											unique_tiles_arr.Add( tile_data );
 										}
 										
-										map_tiles_arr[ scr_n_X * ( n_Y_tiles * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( scr_n_Y * utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_data;
+										map_tiles_arr[ scr_n_X * ( n_Y_tiles * platform_data.get_screen_tiles_width() ) + ( scr_n_Y * platform_data.get_screen_tiles_height() ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_data;
 									}
 								}
 							}
 							else
 							{
-								for( int block_n = 0; block_n < utils.CONST_SCREEN_BLOCKS_CNT; block_n++ )
+								for( int block_n = 0; block_n < platform_data.get_screen_blocks_cnt(); block_n++ )
 								{
-									tile_offs_x = ( block_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
-									tile_offs_y = ( block_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
+									tile_offs_x = ( block_n % platform_data.get_screen_blocks_width() );
+									tile_offs_y = ( block_n / platform_data.get_screen_blocks_width() );
 									
 									scr_tile_id = bank_data.get_screen_tile( scr_ind, block_n );
 									
@@ -683,7 +683,7 @@ namespace MAPeD
 					_sw.WriteLine( level_prefix_str + "_wscr\tequ " + n_scr_X + "\t\t; number of map screens in width" );
 					_sw.WriteLine( level_prefix_str + "_hscr\tequ " + n_scr_Y + "\t\t; number of map screens in height" );
 					
-					_sw.WriteLine( level_prefix_str + "_wchr\tequ " + n_scr_X * ( utils.CONST_SCREEN_NUM_WIDTH_TILES << 2 ) + "\t\t; number of map CHRs in width" );
+					_sw.WriteLine( level_prefix_str + "_wchr\tequ " + n_scr_X * ( platform_data.get_screen_tiles_width() << 2 ) + "\t\t; number of map CHRs in width" );
 					_sw.WriteLine( level_prefix_str + "_hchr\tequ " + n_scr_Y * ( scr_height_blocks << 1 ) + "\t\t; number of map CHRs in height" );
 
 					int map_tiles_width		= RBtnTiles2x2.Checked ? ( n_scr_X * scr_width_blocks ):( n_scr_X * ( scr_width_blocks >> 1 ) );
@@ -828,8 +828,8 @@ namespace MAPeD
 #if !DEF_ZX
 			platform_data.EPlatformType platform_type = platform_data.get_platform_type();
 			
-			int prj_scr_tiles_width		= platform_data.get_screen_num_width_tiles_uni( m_data_mngr.screen_data_type );
-			int prj_scr_tiles_height	= platform_data.get_screen_num_height_tiles_uni( m_data_mngr.screen_data_type );
+			int prj_scr_tiles_width		= platform_data.get_screen_tiles_width_uni( m_data_mngr.screen_data_type );
+			int prj_scr_tiles_height	= platform_data.get_screen_tiles_height_uni( m_data_mngr.screen_data_type );
 			
 			int zx_scr_tiles_width		= platform_data.get_screen_tiles_width_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, m_data_mngr.screen_data_type );
 			int zx_scr_tiles_height		= platform_data.get_screen_tiles_height_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, m_data_mngr.screen_data_type );
@@ -871,10 +871,10 @@ namespace MAPeD
 						
 						if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 						{
-							for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+							for( tile_n = 0; tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 							{
-								tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES );
-								tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES );
+								tile_offs_x = ( tile_n % platform_data.get_screen_tiles_width() );
+								tile_offs_y = ( tile_n / platform_data.get_screen_tiles_width() );
 #if !DEF_ZX
 								if( invalid_tile( tile_offs_x, tile_offs_y ) )
 								{
@@ -906,10 +906,10 @@ namespace MAPeD
 						}
 						else
 						{
-							for( block_n = 0; block_n < utils.CONST_SCREEN_BLOCKS_CNT; block_n++ )
+							for( block_n = 0; block_n < platform_data.get_screen_blocks_cnt(); block_n++ )
 							{
-								tile_offs_x = ( block_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
-								tile_offs_y = ( block_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
+								tile_offs_x = ( block_n % platform_data.get_screen_blocks_width() );
+								tile_offs_y = ( block_n / platform_data.get_screen_blocks_width() );
 #if !DEF_ZX
 								if( invalid_tile( tile_offs_x, tile_offs_y ) )
 								{
@@ -1106,7 +1106,7 @@ namespace MAPeD
 					data_size = bw.BaseStream.Length;
 					bw.Close();
 					
-					_sw.WriteLine( m_filename + label + ":\tincbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") " + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + " tiles array for each screen ( " + ( RBtnTiles2x2.Checked ? ( scr_width_blocks * scr_height_blocks ):utils.CONST_SCREEN_TILES_CNT ) + " bytes per screen \\ 1 byte per tile )" );
+					_sw.WriteLine( m_filename + label + ":\tincbin \"" + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") " + ( RBtnTiles2x2.Checked ? "2x2":"4x4" ) + " tiles array for each screen ( " + ( RBtnTiles2x2.Checked ? ( scr_width_blocks * scr_height_blocks ):platform_data.get_screen_tiles_cnt() ) + " bytes per screen \\ 1 byte per tile )" );
 				}
 			}
 
@@ -1835,12 +1835,12 @@ namespace MAPeD
 		
 		private int get_tiles_cnt_width( int _scr_cnt_x )
 		{
-			return RBtnTiles2x2.Checked ? _scr_cnt_x * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS:_scr_cnt_x * utils.CONST_SCREEN_NUM_WIDTH_TILES;
+			return RBtnTiles2x2.Checked ? _scr_cnt_x * platform_data.get_screen_blocks_width():_scr_cnt_x * platform_data.get_screen_tiles_width();
 		}
 
 		private int get_tiles_cnt_height( int _scr_cnt_y )
 		{
-			return RBtnTiles2x2.Checked ? _scr_cnt_y * utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS:_scr_cnt_y * utils.CONST_SCREEN_NUM_HEIGHT_TILES;
+			return RBtnTiles2x2.Checked ? _scr_cnt_y * platform_data.get_screen_blocks_height():_scr_cnt_y * platform_data.get_screen_tiles_height();
 		}
 		
 		private void save_export_options( StreamWriter _sw )

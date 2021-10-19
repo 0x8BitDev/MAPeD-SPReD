@@ -268,8 +268,8 @@ namespace MAPeD
 			int tile_y_offset;
 			
 			int scr_data_len			= platform_data.get_screen_tiles_cnt_uni( _scr_type );
-			int native_scr_tiles_width	= platform_data.get_screen_num_width_tiles_uni( _scr_type );
-			int native_scr_tiles_height	= platform_data.get_screen_num_height_tiles_uni( _scr_type );
+			int native_scr_tiles_width	= platform_data.get_screen_tiles_width_uni( _scr_type );
+			int native_scr_tiles_height	= platform_data.get_screen_tiles_height_uni( _scr_type );
 
 			m_native_scr_rect.X			= 0;
 			m_native_scr_rect.Y			= 0;

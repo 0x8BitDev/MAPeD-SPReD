@@ -145,7 +145,7 @@ namespace MAPeD
 			{
 				if( import_game_map )
 				{
-					if( ( _bmp.Width > 0 && ( _bmp.Width % utils.CONST_SCREEN_WIDTH_PIXELS ) != 0 ) || ( _bmp.Height > 0 && ( _bmp.Height % utils.CONST_SCREEN_HEIGHT_PIXELS ) != 0 ) )
+					if( ( _bmp.Width > 0 && ( _bmp.Width % platform_data.get_screen_width_pixels() ) != 0 ) || ( _bmp.Height > 0 && ( _bmp.Height % platform_data.get_screen_height_pixels() ) != 0 ) )
 					{
 						DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nCrop the imported game map or leave it 'as is'?\n\n[Yes] Crop the game map to fully filled screens\n[No] Import the game map 'as is'", "Game map Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
 						
@@ -256,8 +256,8 @@ namespace MAPeD
 					
 					tile_ind = beg_tile_ind;
 					
-					bmp_width	= ( import_game_map && !_import_game_map_as_is ) ? ( ( bmp_width / utils.CONST_SCREEN_WIDTH_PIXELS ) * utils.CONST_SCREEN_WIDTH_PIXELS ):bmp_width;
-					bmp_height	= ( import_game_map && !_import_game_map_as_is ) ? ( ( bmp_height / utils.CONST_SCREEN_HEIGHT_PIXELS ) * utils.CONST_SCREEN_HEIGHT_PIXELS ):bmp_height;
+					bmp_width	= ( import_game_map && !_import_game_map_as_is ) ? ( ( bmp_width / platform_data.get_screen_width_pixels() ) * platform_data.get_screen_width_pixels() ):bmp_width;
+					bmp_height	= ( import_game_map && !_import_game_map_as_is ) ? ( ( bmp_height / platform_data.get_screen_height_pixels() ) * platform_data.get_screen_height_pixels() ):bmp_height;
 					
 					int scr_x_cnt = 0;
 					int scr_y_cnt = 0;
@@ -269,11 +269,11 @@ namespace MAPeD
 #endif
 					if( import_game_map )
 					{
-						bmp_width	= ( bmp_width == 0 ) ? utils.CONST_SCREEN_WIDTH_PIXELS:bmp_width;
-						bmp_height	= ( bmp_height == 0 ) ? utils.CONST_SCREEN_HEIGHT_PIXELS:bmp_height;
+						bmp_width	= ( bmp_width == 0 ) ? platform_data.get_screen_width_pixels():bmp_width;
+						bmp_height	= ( bmp_height == 0 ) ? platform_data.get_screen_height_pixels():bmp_height;
 
-						scr_x_cnt = ( ( bmp_width % utils.CONST_SCREEN_WIDTH_PIXELS ) == 0 ) ? ( bmp_width / utils.CONST_SCREEN_WIDTH_PIXELS ):( bmp_width / utils.CONST_SCREEN_WIDTH_PIXELS ) + 1;
-						scr_y_cnt = ( ( bmp_height % utils.CONST_SCREEN_HEIGHT_PIXELS ) == 0 ) ? ( bmp_height / utils.CONST_SCREEN_HEIGHT_PIXELS ):( bmp_height / utils.CONST_SCREEN_HEIGHT_PIXELS ) + 1;
+						scr_x_cnt = ( ( bmp_width % platform_data.get_screen_width_pixels() ) == 0 ) ? ( bmp_width / platform_data.get_screen_width_pixels() ):( bmp_width / platform_data.get_screen_width_pixels() ) + 1;
+						scr_y_cnt = ( ( bmp_height % platform_data.get_screen_height_pixels() ) == 0 ) ? ( bmp_height / platform_data.get_screen_height_pixels() ):( bmp_height / platform_data.get_screen_height_pixels() ) + 1;
 						
 						m_level_layout = _create_layout( scr_x_cnt, scr_y_cnt );
 						
@@ -291,7 +291,7 @@ namespace MAPeD
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 					if( import_game_map )
 					{
-						bmp_height += ( ( bmp_height / utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 1 ) << 5;
+						bmp_height += ( ( bmp_height / platform_data.get_screen_height_pixels() ) >> 1 ) << 5;
 					}
 #endif
 					// tiles/blocks/CHRs
@@ -314,10 +314,7 @@ namespace MAPeD
 								
 								block_offset_y = tile_y + block_y;
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-								if( import_game_map )
-								{
-									block_offset_y -= ( ( ( tile_y & 0xff00 ) >> 8 ) << 4 );
-								}
+								block_offset_y -= ( ( ( tile_y & 0xff00 ) >> 8 ) << 4 );
 #endif
 								for( int block_x = 0; block_x < 32; block_x += 16 )
 								{
@@ -337,7 +334,7 @@ namespace MAPeD
 										if( import_game_map )
 										{
 											// extract a CHR if it's not an invisible part of a tile ( the bottom blocks of the eigth tiles row ) 
-											if( !( ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) == 7 && block_y > 0 ) )
+											if( !( ( ( ( block_offset_y - block_y ) % platform_data.get_screen_height_pixels() ) >> 5 ) == 7 && block_y > 0 ) )
 											{
 												extract_CHR( _bmp.PixelFormat, CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 											}
@@ -423,15 +420,15 @@ namespace MAPeD
 	
 											if( import_game_map )
 											{
-												scr_x = tile_x / utils.CONST_SCREEN_WIDTH_PIXELS;											
+												scr_x = tile_x / platform_data.get_screen_width_pixels();											
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-												scr_y = ( block_offset_y - block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
+												scr_y = ( block_offset_y - block_y ) / platform_data.get_screen_height_pixels();
 	
-												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( ( block_offset_y - block_y ) % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 5 ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ), ( ushort )scr_tile_ind );
+												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), platform_data.get_screen_tiles_width() * ( ( ( block_offset_y - block_y ) % platform_data.get_screen_height_pixels() ) >> 5 ) + ( ( tile_x >> 5 ) % platform_data.get_screen_tiles_width() ), ( ushort )scr_tile_ind );
 #else
-												scr_y = tile_y / utils.CONST_SCREEN_HEIGHT_PIXELS;
+												scr_y = tile_y / platform_data.get_screen_height_pixels();
 												
-												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), utils.CONST_SCREEN_NUM_WIDTH_TILES * ( ( tile_y >> 5 ) % utils.CONST_SCREEN_NUM_HEIGHT_TILES ) + ( ( tile_x >> 5 ) % utils.CONST_SCREEN_NUM_WIDTH_TILES ), ( ushort )scr_tile_ind );
+												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), platform_data.get_screen_tiles_width() * ( ( tile_y >> 5 ) % platform_data.get_screen_tiles_height() ) + ( ( tile_x >> 5 ) % platform_data.get_screen_tiles_width() ), ( ushort )scr_tile_ind );
 #endif
 											}
 										}
@@ -442,18 +439,18 @@ namespace MAPeD
 										{
 											scr_block_ind = ( dup_block_ind >= 0 ? ( dup_block_ind >> 2 ):( ( block_ind - 1 ) >> 2 ) );
 											
-											scr_x = ( tile_x + block_x ) / utils.CONST_SCREEN_WIDTH_PIXELS;
+											scr_x = ( tile_x + block_x ) / platform_data.get_screen_width_pixels();
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 											if( !half_tile )
 											{
-												scr_y = ( block_offset_y - block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
+												scr_y = ( block_offset_y - block_y ) / platform_data.get_screen_height_pixels();
 	
-												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( block_offset_y % utils.CONST_SCREEN_HEIGHT_PIXELS ) >> 4 ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ), ( ushort )scr_block_ind );
+												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), platform_data.get_screen_blocks_width() * ( ( block_offset_y % platform_data.get_screen_height_pixels() ) >> 4 ) + ( ( ( tile_x + block_x ) >> 4 ) % platform_data.get_screen_blocks_width() ), ( ushort )scr_block_ind );
 											}
 #else
-											scr_y = ( tile_y + block_y ) / utils.CONST_SCREEN_HEIGHT_PIXELS;
+											scr_y = ( tile_y + block_y ) / platform_data.get_screen_height_pixels();
 											
-											_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * ( ( ( tile_y + block_y ) >> 4 ) % utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS ) + ( ( ( tile_x + block_x ) >> 4 ) % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ), ( ushort )scr_block_ind );
+											_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), platform_data.get_screen_blocks_width() * ( ( ( tile_y + block_y ) >> 4 ) % platform_data.get_screen_blocks_height() ) + ( ( ( tile_x + block_x ) >> 4 ) % platform_data.get_screen_blocks_width() ), ( ushort )scr_block_ind );
 #endif
 										}
 									}

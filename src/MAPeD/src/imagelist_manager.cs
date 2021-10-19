@@ -65,14 +65,14 @@ namespace MAPeD
 		
 		private void listview_init_screens()
 		{
-			float	k		= ( 256 / ( float )utils.CONST_SCREEN_WIDTH_PIXELS );
-			int		height	= ( int )( k * ( float )utils.CONST_SCREEN_HEIGHT_PIXELS );
+			float	k		= ( 256 / ( float )platform_data.get_screen_width_pixels() );
+			int		height	= ( int )( k * ( float )platform_data.get_screen_height_pixels() );
 			
 			ImageList il = new ImageList();
-			il.ImageSize = new Size( Math.Min( 256, utils.CONST_SCREEN_WIDTH_PIXELS ), height );
+			il.ImageSize = new Size( Math.Min( 256, platform_data.get_screen_width_pixels() ), height );
 			il.ColorDepth = ColorDepth.Depth24Bit;// 32bit - way too slow rendering... I don't know why...
 
-			if( utils.CONST_SCREEN_WIDTH_PIXELS > 256 )
+			if( platform_data.get_screen_width_pixels() > 256 )
 			{
 				m_scr_list = new screen_list_oversize( il );
 			}
@@ -476,7 +476,7 @@ namespace MAPeD
 			
 			palette_group.Instance.set_palette( _data );
 
-			Bitmap bmp = new Bitmap( utils.CONST_SCREEN_WIDTH_PIXELS, utils.CONST_SCREEN_HEIGHT_PIXELS, PixelFormat.Format32bppArgb );
+			Bitmap bmp = new Bitmap( platform_data.get_screen_width_pixels(), platform_data.get_screen_height_pixels(), PixelFormat.Format32bppArgb );
 			
 			Graphics gfx = Graphics.FromImage( bmp );
 			
@@ -487,12 +487,12 @@ namespace MAPeD
 			
 			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+				for( tile_n = 0; tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 				{
 					tile_id = _data.get_screen_tile( _screen_n, tile_n );
 					
-					tile_offs_x = ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 5;
-					tile_offs_y = ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 5;
+					tile_offs_x = ( tile_n % platform_data.get_screen_tiles_width() ) << 5;
+					tile_offs_y = ( tile_n / platform_data.get_screen_tiles_width() ) << 5;
 					
 					for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 					{
@@ -512,17 +512,17 @@ namespace MAPeD
 			}
 			else
 			{
-				for( tile_n = 0; tile_n < utils.CONST_SCREEN_BLOCKS_CNT; tile_n++ )
+				for( tile_n = 0; tile_n < platform_data.get_screen_blocks_cnt(); tile_n++ )
 				{
 #if DEF_SCREEN_DRAW_FAST
 					block_img = m_imagelist_blocks.Images[ _data.get_screen_tile( _screen_n, tile_n ) ];
 					
-					gfx.DrawImage( block_img, ( ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) << 4 ), ( ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) << 4 ), block_img.Width >> 1, block_img.Height >> 1 );
+					gfx.DrawImage( block_img, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 4 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 4 ), block_img.Width >> 1, block_img.Height >> 1 );
 #else
 #if DEF_ZX
-					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 8, 8, ( ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) << 4 ), ( ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) << 4 ), utils.get_draw_block_flags_by_view_type( _view_type ) );
+					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 8, 8, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 4 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 4 ), utils.get_draw_block_flags_by_view_type( _view_type ) );
 #else
-					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 8, 8, ( ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) << 4 ), ( ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) << 4 ) );
+					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 8, 8, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 4 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 4 ) );
 #endif
 #endif
 				}

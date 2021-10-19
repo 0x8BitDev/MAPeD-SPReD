@@ -120,8 +120,8 @@ namespace MAPeD
 				_sw.WriteLine( "\t" + _def_num + " " + utils.hex( _num_pref, _ent_id++ ) + ( _enable_comments ? "\t; entity instance number (0..n)":"" ) );
 				_sw.WriteLine( "\t" + _def_addr + " " + ent_inst.base_entity.name + ( _enable_comments ? "\t; base entity":"" ) );
 				_sw.WriteLine( "\t" + _def_addr + " " + ( ent_inst.target_uid >= 0 ? ( "Instance" + ent_inst.target_uid.ToString() ):( utils.hex( _num_pref, 0 ) ) ) + ( _enable_comments ? "\t; target entity":"" ) );
-				_sw.WriteLine( "\t" + _def_coord + " " + utils.hex( _num_pref, ent_inst.x + ent_inst.base_entity.pivot_x + ( _ent_coords_scr ? 0:_x * utils.CONST_SCREEN_WIDTH_PIXELS ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " X" ):"" ) );
-				_sw.WriteLine( "\t" + _def_coord + " " + utils.hex( _num_pref, ent_inst.y + ent_inst.base_entity.pivot_y + ( _ent_coords_scr ? 0:_y * utils.CONST_SCREEN_HEIGHT_PIXELS ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " Y" ):"" ) );
+				_sw.WriteLine( "\t" + _def_coord + " " + utils.hex( _num_pref, ent_inst.x + ent_inst.base_entity.pivot_x + ( _ent_coords_scr ? 0:_x * platform_data.get_screen_width_pixels() ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " X" ):"" ) );
+				_sw.WriteLine( "\t" + _def_coord + " " + utils.hex( _num_pref, ent_inst.y + ent_inst.base_entity.pivot_y + ( _ent_coords_scr ? 0:_y * platform_data.get_screen_height_pixels() ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " Y" ):"" ) );
 					
 				utils.save_prop_asm( _sw, _def_num, _num_pref, ent_inst.properties, _enable_comments );
 			}

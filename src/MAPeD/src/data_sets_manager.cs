@@ -60,7 +60,7 @@ namespace MAPeD
 		public event ReturnBoolEvent DeleteGroup;
 
 		[DataMember]
-		private readonly string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * platform_data.get_CHR_bank_pages_cnt() ) + " | Tiles Data Size: " + platform_data.get_max_tiles_cnt() + " | Blocks Data Size: " + platform_data.get_max_blocks_UINT_cnt() + " | Screen Data (Tiles4x4): " + utils.CONST_SCREEN_TILES_CNT + " | Screen Data (Blocks2x2): " + utils.CONST_SCREEN_BLOCKS_CNT;
+		private readonly string data_desc = "CHR Data Size: " + ( utils.CONST_CHR_BANK_PAGE_SIZE * platform_data.get_CHR_bank_pages_cnt() ) + " | Tiles Data Size: " + platform_data.get_max_tiles_cnt() + " | Blocks Data Size: " + platform_data.get_max_blocks_UINT_cnt() + " | Screen Data (Tiles4x4): " + platform_data.get_screen_tiles_cnt() + " | Screen Data (Blocks2x2): " + platform_data.get_screen_blocks_cnt();
 		[DataMember]
 		private readonly string NES_block_desc_bits = "[ property_id ](4) [ palette ind ](2) [X](2) [ CHR ind ](8)";
 		[DataMember]
@@ -1092,16 +1092,16 @@ namespace MAPeD
 				{
 					new_scr = new screen_data( EScreenDataType.sdt_Blocks2x2 );
 					
-					for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+					for( tile_n = 0; tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 					{
 						for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 						{
-							y_pos = ( ( tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 1 ) + ( ( block_n & 0x02 ) >> 1 );
+							y_pos = ( ( tile_n / platform_data.get_screen_tiles_width() ) << 1 ) + ( ( block_n & 0x02 ) >> 1 );
 							
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 							if( y_pos <= 14 )
 #endif
-								new_scr.set_tile( ( y_pos * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) + ( ( tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES ) << 1 ) + ( block_n & 0x01 ), utils.get_ushort_from_ulong( data.tiles[ data.get_screen_tile( scr_n, tile_n ) ], block_n ) );
+								new_scr.set_tile( ( y_pos * platform_data.get_screen_blocks_width() ) + ( ( tile_n % platform_data.get_screen_tiles_width() ) << 1 ) + ( block_n & 0x01 ), utils.get_ushort_from_ulong( data.tiles[ data.get_screen_tile( scr_n, tile_n ) ], block_n ) );
 						}
 					}
 					
@@ -1183,12 +1183,12 @@ namespace MAPeD
 				{
 					new_scr = new screen_data( EScreenDataType.sdt_Tiles4x4 );
 					
-					for( tile_n = 0; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+					for( tile_n = 0; tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 					{
-						tile_x = tile_n % utils.CONST_SCREEN_NUM_WIDTH_TILES;
-						tile_y = tile_n / utils.CONST_SCREEN_NUM_WIDTH_TILES;
+						tile_x = tile_n % platform_data.get_screen_tiles_width();
+						tile_y = tile_n / platform_data.get_screen_tiles_width();
 						
-						tile_offs = ( tile_x << 1 ) + ( ( tile_y << 1 ) * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
+						tile_offs = ( tile_x << 1 ) + ( ( tile_y << 1 ) * platform_data.get_screen_blocks_width() );
 						
 						tile_val0 = data.get_screen_tile( scr_n, tile_offs );
 						tile_val1 = data.get_screen_tile( scr_n, tile_offs + 1 );
@@ -1197,8 +1197,8 @@ namespace MAPeD
 						if( tile_y < 7 )
 #endif
 						{
-							tile_val2 = data.get_screen_tile( scr_n, tile_offs + utils.CONST_SCREEN_NUM_WIDTH_BLOCKS );
-							tile_val3 = data.get_screen_tile( scr_n, tile_offs + utils.CONST_SCREEN_NUM_WIDTH_BLOCKS + 1 );
+							tile_val2 = data.get_screen_tile( scr_n, tile_offs + platform_data.get_screen_blocks_width() );
+							tile_val3 = data.get_screen_tile( scr_n, tile_offs + platform_data.get_screen_blocks_width() + 1 );
 						}
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 						else
@@ -1225,12 +1225,12 @@ namespace MAPeD
 								goto free_data;
 							}
 							
-							new_scr.set_tile( tile_x + tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES, tile_ind );
+							new_scr.set_tile( tile_x + tile_y * platform_data.get_screen_tiles_width(), tile_ind );
 							tiles[ tile_ind++ ] = tile;
 						}
 						else
 						{
-							new_scr.set_tile( tile_x + tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES, ( ushort )i );
+							new_scr.set_tile( tile_x + tile_y * platform_data.get_screen_tiles_width(), ( ushort )i );
 						}
 					}
 					

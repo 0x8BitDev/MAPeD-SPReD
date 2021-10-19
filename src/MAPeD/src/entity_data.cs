@@ -159,10 +159,10 @@ namespace MAPeD
 				x += prj_scr_rect.X * CHRs_in_tile;
 				
 				y = y < 0 ? 0:y;
-				y = ( y >= utils.CONST_SCREEN_HEIGHT_PIXELS ) ? ( utils.CONST_SCREEN_HEIGHT_PIXELS - 1 ):y;
+				y = ( y >= platform_data.get_screen_height_pixels() ) ? ( platform_data.get_screen_height_pixels() - 1 ):y;
 				
 				x = x < 0 ? 0:x;
-				x = ( x >= utils.CONST_SCREEN_WIDTH_PIXELS ) ? ( utils.CONST_SCREEN_WIDTH_PIXELS - 1 ):x;
+				x = ( x >= platform_data.get_screen_width_pixels() ) ? ( platform_data.get_screen_width_pixels() - 1 ):x;
 			}
 			
 			// extra data ( reserved for future purposes )

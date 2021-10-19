@@ -348,8 +348,8 @@ namespace MAPeD
 			_min_x = Math.Max( get_scr_offs_x(), Math.Min( m_sel_rect_beg.X, m_sel_rect_end.X ) );
 			_min_y = Math.Max( get_scr_offs_y(), Math.Min( m_sel_rect_beg.Y, m_sel_rect_end.Y ) );
 
-			int max_x = Math.Min( get_scr_offs_x() + ( utils.CONST_SCREEN_WIDTH_PIXELS << 1 ), Math.Max( m_sel_rect_beg.X, m_sel_rect_end.X ) );
-			int max_y = Math.Min( get_scr_offs_y() + ( utils.CONST_SCREEN_HEIGHT_PIXELS << 1 ), Math.Max( m_sel_rect_beg.Y, m_sel_rect_end.Y ) );
+			int max_x = Math.Min( get_scr_offs_x() + ( platform_data.get_screen_width_pixels() << 1 ), Math.Max( m_sel_rect_beg.X, m_sel_rect_end.X ) );
+			int max_y = Math.Min( get_scr_offs_y() + ( platform_data.get_screen_height_pixels() << 1 ), Math.Max( m_sel_rect_beg.Y, m_sel_rect_end.Y ) );
 
 			_dx = max_x - _min_x;
 			_dy = max_y - _min_y;
@@ -360,8 +360,8 @@ namespace MAPeD
 			_tiles_width	= ( ( max_x - get_scr_offs_x() ) / scr_tiles_size ) - _tile_pos_x + 1;
 			_tiles_height	= ( ( max_y - get_scr_offs_y() ) / scr_tiles_size ) - _tile_pos_y + 1;
 			
-			_tiles_width	= Math.Min( platform_data.get_screen_num_width_tiles_uni( m_screen_data_type ) - _tile_pos_x, _tiles_width );
-			_tiles_height	= Math.Min( platform_data.get_screen_num_height_tiles_uni( m_screen_data_type ) - _tile_pos_y, _tiles_height );
+			_tiles_width	= Math.Min( platform_data.get_screen_tiles_width_uni( m_screen_data_type ) - _tile_pos_x, _tiles_width );
+			_tiles_height	= Math.Min( platform_data.get_screen_tiles_height_uni( m_screen_data_type ) - _tile_pos_y, _tiles_height );
 		}
 		
 		public void subscribe_event( data_sets_manager _data_mngr )
@@ -474,7 +474,7 @@ namespace MAPeD
 						
 						int pos = -1;
 						
-						int num_width_tiles = platform_data.get_screen_num_width_tiles_uni( m_screen_data_type );
+						int num_width_tiles = platform_data.get_screen_tiles_width_uni( m_screen_data_type );
 						
 						screen_data pttrn_data = new screen_data( tiles_width, tiles_height );
 						
@@ -502,7 +502,7 @@ namespace MAPeD
 					{
 						if( m_mode == EMode.em_Single )
 						{
-							int num_width_tiles = platform_data.get_screen_num_width_tiles_uni( m_screen_data_type );
+							int num_width_tiles = platform_data.get_screen_tiles_width_uni( m_screen_data_type );
 							
 							int y_pos = 0;
 							
@@ -555,9 +555,9 @@ namespace MAPeD
 				}
 				else
 #if DEF_SCREEN_HEIGHT_7d5_TILES
-				if( e.Y > get_scr_offs_y() + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) )
+				if( e.Y > get_scr_offs_y() + ( platform_data.get_screen_tiles_height() * utils.CONST_SCREEN_TILES_SIZE ) - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) )
 #else
-				if( e.Y > get_scr_offs_y() + ( utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
+				if( e.Y > get_scr_offs_y() + ( platform_data.get_screen_tiles_height() * utils.CONST_SCREEN_TILES_SIZE ) )
 #endif //DEF_SCREEN_HEIGHT_7d5_TILES						
 				{
 					if( RequestDownScreen != null )
@@ -574,7 +574,7 @@ namespace MAPeD
 					}
 				}
 				else
-				if( e.X > get_scr_offs_x() + ( utils.CONST_SCREEN_NUM_WIDTH_TILES * utils.CONST_SCREEN_TILES_SIZE ) )
+				if( e.X > get_scr_offs_x() + ( platform_data.get_screen_tiles_width() * utils.CONST_SCREEN_TILES_SIZE ) )
 				{
 					if( RequestRightScreen != null )
 					{
@@ -667,8 +667,8 @@ namespace MAPeD
 						m_tile_x = m_tile_x - half_width < 0 ? 0:m_tile_x - half_width;
 						m_tile_y = m_tile_y - half_height < 0 ? 0:m_tile_y - half_height;
 
-						int num_width_tiles		= platform_data.get_screen_num_width_tiles_uni( m_screen_data_type );
-						int num_height_tiles	= platform_data.get_screen_num_height_tiles_uni( m_screen_data_type );
+						int num_width_tiles		= platform_data.get_screen_tiles_width_uni( m_screen_data_type );
+						int num_height_tiles	= platform_data.get_screen_tiles_height_uni( m_screen_data_type );
 
 						m_tile_x = m_tile_x + m_active_pattern.width > num_width_tiles - 1 ? num_width_tiles - m_active_pattern.width:m_tile_x;
 						m_tile_y = m_tile_y + m_active_pattern.height > num_height_tiles - 1 ? num_height_tiles - m_active_pattern.height:m_tile_y;
@@ -720,8 +720,8 @@ namespace MAPeD
 			
 			int tile_size 			= ( m_fill_mode == EFillMode.efm_Tile ) ? utils.CONST_SCREEN_TILES_SIZE:utils.CONST_SCREEN_BLOCKS_SIZE;
 			
-			int scr_width_tiles		= ( m_fill_mode == EFillMode.efm_Tile ) ? utils.CONST_SCREEN_NUM_WIDTH_TILES:utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
-			int scr_height_tiles 	= ( m_fill_mode == EFillMode.efm_Tile ) ? utils.CONST_SCREEN_NUM_HEIGHT_TILES:utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS; 
+			int scr_width_tiles		= ( m_fill_mode == EFillMode.efm_Tile ) ? platform_data.get_screen_tiles_width():platform_data.get_screen_blocks_width();
+			int scr_height_tiles 	= ( m_fill_mode == EFillMode.efm_Tile ) ? platform_data.get_screen_tiles_height():platform_data.get_screen_blocks_height(); 
 			
 			int x = offs_x / tile_size;
 			
@@ -788,7 +788,7 @@ namespace MAPeD
 					m_tile_x >>= 1;
 				}
 				
-				m_tiles_data.set_screen_tile( m_scr_ind, ( m_tile_y * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + m_tile_x, ( ushort )tile_id );
+				m_tiles_data.set_screen_tile( m_scr_ind, ( m_tile_y * platform_data.get_screen_tiles_width() ) + m_tile_x, ( ushort )tile_id );
 				
 				draw_tile( m_tile_x, m_tile_y, tile_id );
 
@@ -800,7 +800,7 @@ namespace MAPeD
 			}
 			else
 			{
-				m_tiles_data.set_screen_tile( m_scr_ind, ( m_tile_y * utils.CONST_SCREEN_NUM_WIDTH_BLOCKS ) + m_tile_x, ( ushort )m_active_tile_id );
+				m_tiles_data.set_screen_tile( m_scr_ind, ( m_tile_y * platform_data.get_screen_blocks_width() ) + m_tile_x, ( ushort )m_active_tile_id );
 				
 				draw_block( m_tile_x, m_tile_y, m_active_tile_id );
 				
@@ -881,7 +881,7 @@ namespace MAPeD
 		
 		private ulong build_new_tile( int _tile_x, int _tile_y )
 		{
-			ulong old_tile = m_tiles_data.tiles[ m_tiles_data.get_screen_tile( m_scr_ind, ( ( _tile_y >> 1 ) * utils.CONST_SCREEN_NUM_WIDTH_TILES ) + ( _tile_x >> 1 ) ) ];
+			ulong old_tile = m_tiles_data.tiles[ m_tiles_data.get_screen_tile( m_scr_ind, ( ( _tile_y >> 1 ) * platform_data.get_screen_tiles_width() ) + ( _tile_x >> 1 ) ) ];
 			
 			int block_ind = ( _tile_x & 0x01 ) + ( ( _tile_y & 0x01 ) << 1 );
 			
@@ -1018,8 +1018,8 @@ namespace MAPeD
 					
 					short	tile_data;
 					
-					int scr_width	= utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE;
-					int scr_height	= utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE;
+					int scr_width	= platform_data.get_screen_blocks_width() * utils.CONST_SCREEN_BLOCKS_SIZE;
+					int scr_height	= platform_data.get_screen_blocks_height() * utils.CONST_SCREEN_BLOCKS_SIZE;
 					
 					for( int scr_n = 0; scr_n < 8; scr_n++ )
 					{
@@ -1033,10 +1033,10 @@ namespace MAPeD
 								
 								if( m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 								{
-									for( i = 0; i < utils.CONST_SCREEN_TILES_CNT; i++ )
+									for( i = 0; i < platform_data.get_screen_tiles_cnt(); i++ )
 									{
-										draw_tile( 	i % utils.CONST_SCREEN_NUM_WIDTH_TILES,
-										          	i / utils.CONST_SCREEN_NUM_WIDTH_TILES,
+										draw_tile( 	i % platform_data.get_screen_tiles_width(),
+										          	i / platform_data.get_screen_tiles_width(),
 										          	scr.get_tile( i ),
 										          	scr_width * layout_data.adj_scr_slots[ ( scr_n << 1 ) ],
 										          	scr_height * layout_data.adj_scr_slots[ ( scr_n << 1 ) + 1 ] );
@@ -1044,10 +1044,10 @@ namespace MAPeD
 								}
 								else
 								{
-									for( i = 0; i < utils.CONST_SCREEN_BLOCKS_CNT; i++ )
+									for( i = 0; i < platform_data.get_screen_blocks_cnt(); i++ )
 									{
-										draw_block(	i % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS,
-										          	i / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS,
+										draw_block(	i % platform_data.get_screen_blocks_width(),
+										          	i / platform_data.get_screen_blocks_width(),
 										          	scr.get_tile( i ),
 										          	scr_width * layout_data.adj_scr_slots[ ( scr_n << 1 ) ],
 										          	scr_height * layout_data.adj_scr_slots[ ( scr_n << 1 ) + 1 ] );
@@ -1069,16 +1069,16 @@ namespace MAPeD
 					
 					if( m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 					{
-						for( i = 0; i < utils.CONST_SCREEN_TILES_CNT; i++ )
+						for( i = 0; i < platform_data.get_screen_tiles_cnt(); i++ )
 						{
-							draw_tile( i % utils.CONST_SCREEN_NUM_WIDTH_TILES, i / utils.CONST_SCREEN_NUM_WIDTH_TILES, scr.get_tile( i ) );
+							draw_tile( i % platform_data.get_screen_tiles_width(), i / platform_data.get_screen_tiles_width(), scr.get_tile( i ) );
 						}
 					}
 					else
 					{
-						for( i = 0; i < utils.CONST_SCREEN_BLOCKS_CNT; i++ )
+						for( i = 0; i < platform_data.get_screen_blocks_cnt(); i++ )
 						{
-							draw_block( i % utils.CONST_SCREEN_NUM_WIDTH_BLOCKS, i / utils.CONST_SCREEN_NUM_WIDTH_BLOCKS, scr.get_tile( i ) );
+							draw_block( i % platform_data.get_screen_blocks_width(), i / platform_data.get_screen_blocks_width(), scr.get_tile( i ) );
 						}
 					}
 					
@@ -1235,12 +1235,12 @@ namespace MAPeD
 		
 		private int get_scr_offs_x()
 		{
-			return ( m_pix_box.Width - ( utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE ) ) >> 1;
+			return ( m_pix_box.Width - ( platform_data.get_screen_blocks_width() * utils.CONST_SCREEN_BLOCKS_SIZE ) ) >> 1;
 		}
 		
 		private int get_scr_offs_y()
 		{
-			return ( m_pix_box.Height - ( utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE ) ) >> 1;
+			return ( m_pix_box.Height - ( platform_data.get_screen_blocks_height() * utils.CONST_SCREEN_BLOCKS_SIZE ) ) >> 1;
 		}
 
 		private void draw_grid_and_border()
@@ -1255,8 +1255,8 @@ namespace MAPeD
 				int scr_offs_x = get_scr_offs_x();
 				int scr_offs_y = get_scr_offs_y();
 
-				int scr_end_x = scr_offs_x + ( utils.CONST_SCREEN_NUM_WIDTH_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE );
-				int scr_end_y = scr_offs_y + ( utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS * utils.CONST_SCREEN_BLOCKS_SIZE );
+				int scr_end_x = scr_offs_x + ( platform_data.get_screen_blocks_width() * utils.CONST_SCREEN_BLOCKS_SIZE );
+				int scr_end_y = scr_offs_y + ( platform_data.get_screen_blocks_height() * utils.CONST_SCREEN_BLOCKS_SIZE );
 				
 				// blocks grid
 				{
@@ -1265,13 +1265,13 @@ namespace MAPeD
 					int start_offs_x = ( scr_offs_x + ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
 					int start_offs_y = ( scr_offs_y + ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
 					
-					for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES; i++ )
+					for( i = 0; i < platform_data.get_screen_tiles_width(); i++ )
 					{
 						offs_x = start_offs_x + ( i * utils.CONST_SCREEN_TILES_SIZE );
 						m_gfx.DrawLine( m_pen, offs_x, scr_offs_y, offs_x, scr_end_y );
 					}
 					
-					for( i = 0; i < utils.CONST_SCREEN_NUM_HEIGHT_TILES; i++ )
+					for( i = 0; i < platform_data.get_screen_tiles_height(); i++ )
 					{
 						offs_y = start_offs_y + ( i * utils.CONST_SCREEN_TILES_SIZE );
 						m_gfx.DrawLine( m_pen, scr_offs_x, offs_y, scr_end_x, offs_y );
@@ -1282,13 +1282,13 @@ namespace MAPeD
 				{
 					m_pen.Color = ( m_fill_mode == EFillMode.efm_Tile ) ? utils.CONST_COLOR_SCREEN_GRID_THICK_TILE_MODE:utils.CONST_COLOR_SCREEN_GRID_THICK_BLOCK_MODE;
 					
-					for( i = 0; i < utils.CONST_SCREEN_NUM_WIDTH_TILES; i++ )
+					for( i = 0; i < platform_data.get_screen_tiles_width(); i++ )
 					{
 						offs_x = get_scr_offs_x() + ( i * utils.CONST_SCREEN_TILES_SIZE );
 						m_gfx.DrawLine( m_pen, offs_x, scr_offs_y, offs_x, scr_end_y );
 					}
 					
-					for( i = 0; i < utils.CONST_SCREEN_NUM_HEIGHT_TILES; i++ )
+					for( i = 0; i < platform_data.get_screen_tiles_height(); i++ )
 					{
 						offs_y = ( get_scr_offs_y() + ( i * utils.CONST_SCREEN_TILES_SIZE ) );
 						
@@ -1306,8 +1306,8 @@ namespace MAPeD
 				m_pen.Color = Color.Red;
 				m_pen.Width = 2.0f;
 				
-				int width 	= utils.CONST_SCREEN_NUM_WIDTH_TILES * utils.CONST_SCREEN_TILES_SIZE;
-				int height	= utils.CONST_SCREEN_NUM_HEIGHT_TILES * utils.CONST_SCREEN_TILES_SIZE;
+				int width 	= platform_data.get_screen_tiles_width() * utils.CONST_SCREEN_TILES_SIZE;
+				int height	= platform_data.get_screen_tiles_height() * utils.CONST_SCREEN_TILES_SIZE;
 				
 #if DEF_SCREEN_HEIGHT_7d5_TILES
 				m_gfx.DrawRectangle( m_pen, get_scr_offs_x(), get_scr_offs_y(), width, height - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );

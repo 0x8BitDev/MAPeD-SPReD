@@ -86,7 +86,7 @@ namespace MAPeD
 		private const int CONST_NES_CHR_NATIVE_SIZE_IN_BYTES	= 16;
 		private const int CONST_SMS_CHR_NATIVE_SIZE_IN_BYTES	= 32;
 		private const int CONST_PCE_CHR_NATIVE_SIZE_IN_BYTES	= 32;
-		private const int CONST_ZX_CHR_NATIVE_SIZE_IN_BYTES	= 8;	// 8 - CHR data + 1 - color data
+		private const int CONST_ZX_CHR_NATIVE_SIZE_IN_BYTES		= 8;	// 8 - CHR data + 1 - color data
 		private const int CONST_SMD_CHR_NATIVE_SIZE_IN_BYTES	= 32;
 		
 		private const int CONST_NES_MAX_BLOCKS_CNT			= 256;
@@ -101,11 +101,30 @@ namespace MAPeD
 		private const int CONST_ZX_MAX_TILES_CNT			= 256;
 		private const int CONST_SMD_MAX_TILES_CNT			= 1024;
 		
-		private static readonly EPlatformType	m_platform = EPlatformType.pt_UNKNOWN;
+		private const int CONST_NES_SCREEN_NUM_TILES_WIDTH	= 8;
+		private const int CONST_SMS_SCREEN_NUM_TILES_WIDTH	= 8;
+		private const int CONST_PCE_SCREEN_NUM_TILES_WIDTH	= 8;
+		private const int CONST_ZX_SCREEN_NUM_TILES_WIDTH	= 8;
+		private const int CONST_SMD_SCREEN_NUM_TILES_WIDTH	= 10;
 		
-		private static readonly Dictionary< string, EPlatformType >	m_file_ext_platform_type_dict		= new Dictionary< string, EPlatformType >();
-		private static readonly Dictionary< string, EPlatformType >	m_platform_name_platform_type_dict	= new Dictionary< string, EPlatformType >();
-
+		private const int CONST_NES_SCREEN_NUM_TILES_HEIGHT	= 8;
+		private const int CONST_SMS_SCREEN_NUM_TILES_HEIGHT	= 6;
+		private const int CONST_PCE_SCREEN_NUM_TILES_HEIGHT	= 7;
+		private const int CONST_ZX_SCREEN_NUM_TILES_HEIGHT	= 6;		
+		private const int CONST_SMD_SCREEN_NUM_TILES_HEIGHT	= 8;		
+		
+		private const int CONST_NES_SCREEN_NUM_BLOCKS_WIDTH	= CONST_NES_SCREEN_NUM_TILES_WIDTH << 1;
+		private const int CONST_SMS_SCREEN_NUM_BLOCKS_WIDTH	= CONST_SMS_SCREEN_NUM_TILES_WIDTH << 1;
+		private const int CONST_PCE_SCREEN_NUM_BLOCKS_WIDTH	= CONST_PCE_SCREEN_NUM_TILES_WIDTH << 1;
+		private const int CONST_ZX_SCREEN_NUM_BLOCKS_WIDTH	= CONST_ZX_SCREEN_NUM_TILES_WIDTH << 1;
+		private const int CONST_SMD_SCREEN_NUM_BLOCKS_WIDTH	= CONST_SMD_SCREEN_NUM_TILES_WIDTH << 1;
+		
+		private const int CONST_NES_SCREEN_NUM_BLOCKS_HEIGHT	= ( CONST_NES_SCREEN_NUM_TILES_HEIGHT << 1 ) - 1;	// DEF_SCREEN_HEIGHT_7d5_TILES by default
+		private const int CONST_SMS_SCREEN_NUM_BLOCKS_HEIGHT	= CONST_SMS_SCREEN_NUM_TILES_HEIGHT << 1;
+		private const int CONST_PCE_SCREEN_NUM_BLOCKS_HEIGHT	= CONST_PCE_SCREEN_NUM_TILES_HEIGHT << 1;
+		private const int CONST_ZX_SCREEN_NUM_BLOCKS_HEIGHT		= CONST_ZX_SCREEN_NUM_TILES_HEIGHT << 1;
+		private const int CONST_SMD_SCREEN_NUM_BLOCKS_HEIGHT	= ( CONST_SMD_SCREEN_NUM_TILES_HEIGHT << 1 ) - 1;	// DEF_SCREEN_HEIGHT_7d5_TILES by default
+		
 		private static readonly string[] m_platform_names_arr = new string[]
 		{
 			CONST_PLATFORM_NES,
@@ -160,40 +179,40 @@ namespace MAPeD
 			CONST_SMD_CHR_BANK_NUM_PAGES,
 		};
 
-		private static readonly int[] m_platform_screen_width_tiles_cnt = new int[]
+		private static readonly int[] m_platform_screen_tiles_width_cnt = new int[]
 		{
-			utils.CONST_NES_SCREEN_NUM_WIDTH_TILES,
-			utils.CONST_SMS_SCREEN_NUM_WIDTH_TILES,
-			utils.CONST_PCE_SCREEN_NUM_WIDTH_TILES,
-			utils.CONST_ZX_SCREEN_NUM_WIDTH_TILES,
-			utils.CONST_SMD_SCREEN_NUM_WIDTH_TILES,
+			CONST_NES_SCREEN_NUM_TILES_WIDTH,
+			CONST_SMS_SCREEN_NUM_TILES_WIDTH,
+			CONST_PCE_SCREEN_NUM_TILES_WIDTH,
+			CONST_ZX_SCREEN_NUM_TILES_WIDTH,
+			CONST_SMD_SCREEN_NUM_TILES_WIDTH,
 		};
 
-		private static readonly int[] m_platform_screen_height_tiles_cnt = new int[]
+		private static readonly int[] m_platform_screen_tiles_height_cnt = new int[]
 		{
-			utils.CONST_NES_SCREEN_NUM_HEIGHT_TILES,
-			utils.CONST_SMS_SCREEN_NUM_HEIGHT_TILES,
-			utils.CONST_PCE_SCREEN_NUM_HEIGHT_TILES,
-			utils.CONST_ZX_SCREEN_NUM_HEIGHT_TILES,
-			utils.CONST_SMD_SCREEN_NUM_HEIGHT_TILES,
+			CONST_NES_SCREEN_NUM_TILES_HEIGHT,
+			CONST_SMS_SCREEN_NUM_TILES_HEIGHT,
+			CONST_PCE_SCREEN_NUM_TILES_HEIGHT,
+			CONST_ZX_SCREEN_NUM_TILES_HEIGHT,
+			CONST_SMD_SCREEN_NUM_TILES_HEIGHT,
 		};
 
-		private static readonly int[] m_platform_screen_width_blocks_cnt = new int[]
+		private static readonly int[] m_platform_screen_blocks_width_cnt = new int[]
 		{
-			utils.CONST_NES_SCREEN_NUM_WIDTH_BLOCKS,
-			utils.CONST_SMS_SCREEN_NUM_WIDTH_BLOCKS,
-			utils.CONST_PCE_SCREEN_NUM_WIDTH_BLOCKS,
-			utils.CONST_ZX_SCREEN_NUM_WIDTH_BLOCKS,
-			utils.CONST_SMD_SCREEN_NUM_WIDTH_BLOCKS,
+			CONST_NES_SCREEN_NUM_BLOCKS_WIDTH,
+			CONST_SMS_SCREEN_NUM_BLOCKS_WIDTH,
+			CONST_PCE_SCREEN_NUM_BLOCKS_WIDTH,
+			CONST_ZX_SCREEN_NUM_BLOCKS_WIDTH,
+			CONST_SMD_SCREEN_NUM_BLOCKS_WIDTH,
 		};
 
-		private static readonly int[] m_platform_screen_height_blocks_cnt = new int[]
+		private static readonly int[] m_platform_screen_blocks_height_cnt = new int[]
 		{
-			utils.CONST_NES_SCREEN_NUM_HEIGHT_BLOCKS,
-			utils.CONST_SMS_SCREEN_NUM_HEIGHT_BLOCKS,
-			utils.CONST_PCE_SCREEN_NUM_HEIGHT_BLOCKS,
-			utils.CONST_ZX_SCREEN_NUM_HEIGHT_BLOCKS,
-			utils.CONST_SMD_SCREEN_NUM_HEIGHT_BLOCKS,
+			CONST_NES_SCREEN_NUM_BLOCKS_HEIGHT,
+			CONST_SMS_SCREEN_NUM_BLOCKS_HEIGHT,
+			CONST_PCE_SCREEN_NUM_BLOCKS_HEIGHT,
+			CONST_ZX_SCREEN_NUM_BLOCKS_HEIGHT,
+			CONST_SMD_SCREEN_NUM_BLOCKS_HEIGHT,
 		};
 #if DEF_FIXED_LEN_PALETTE16_ARR
 		private static readonly int[] m_platform_fixed_palette16_cnt = new int[]
@@ -214,6 +233,17 @@ namespace MAPeD
 			CONST_SMD_CHR_NATIVE_SIZE_IN_BYTES,
 		};
 
+		// current platform native screen size in tiles\blocks
+		private static readonly int m_scr_tiles_width	= -1;
+		private static readonly int m_scr_tiles_height	= -1;
+		private static readonly int m_scr_blocks_width	= -1;
+		private static readonly int m_scr_blocks_height	= -1;
+
+		private static readonly EPlatformType	m_platform = EPlatformType.pt_UNKNOWN;
+		
+		private static readonly Dictionary< string, EPlatformType >	m_file_ext_platform_type_dict		= new Dictionary< string, EPlatformType >();
+		private static readonly Dictionary< string, EPlatformType >	m_platform_name_platform_type_dict	= new Dictionary< string, EPlatformType >();
+		
 		static platform_data()
 		{
 			int	i;
@@ -229,27 +259,21 @@ namespace MAPeD
 			{
 				m_file_ext_platform_type_dict[ m_platform_file_ext_arr[ i ] ] = ( EPlatformType )i;
 			}
+			
+			m_scr_tiles_width	= m_platform_screen_tiles_width_cnt[ ( int )m_platform ];
+			m_scr_tiles_height	= m_platform_screen_tiles_height_cnt[ ( int )m_platform ];
+			m_scr_blocks_width	= m_platform_screen_blocks_width_cnt[ ( int )m_platform ];
+			m_scr_blocks_height	= m_platform_screen_blocks_height_cnt[ ( int )m_platform ];
 		}
-		
-#if DEF_FIXED_LEN_PALETTE16_ARR
-		public static int get_fixed_palette16_cnt()
-		{
-			return m_platform_fixed_palette16_cnt[ ( int )get_platform_type() ];
-		}
-#endif //DEF_FIXED_LEN_PALETTE16_ARR
-		public static int get_native_CHR_size_bytes()
-		{
-			return m_platform_CHR_native_size_bytes[ ( int )get_platform_type() ];
-		}
-
-		public static int get_CHR_bank_max_sprites_cnt()
-		{
-			return utils.CONST_CHR_BANK_PAGE_SPRITES_CNT * platform_data.get_CHR_bank_pages_cnt();
-		}
-		
+// PLATFORM FUNCS
 		public static int get_platforms_cnt()
 		{
 			return m_platform_names_arr.Length;
+		}
+		
+		public static EPlatformType get_platform_type()
+		{
+			return m_platform;
 		}
 		
 		public static EPlatformType get_platform_type_by_file_ext( string _file_ext )
@@ -271,7 +295,7 @@ namespace MAPeD
 		{
 			return m_platform_names_arr[ ( int )_type ];
 		}
-
+// APP MAX TILES \ BLOCKS COUNT
 		public static int get_max_blocks_cnt_by_file_ext( string _file_ext )
 		{
 			return m_platform_max_blocks_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
@@ -296,22 +320,67 @@ namespace MAPeD
 		{
 			return m_platform_max_tiles_cnt[ ( int )get_platform_type() ];
 		}
-
-		public static int get_main_palette_colors_cnt( string _file_ext )
-		{
-			return m_palette_colors_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
-		}
-
-		public static int get_main_palette_colors_cnt()
-		{
-			return m_palette_colors_cnt[ ( int )get_platform_type() ];
-		}
-		
+// SCREEN TILES \ BLOCKS COUNT
 		public static int get_screen_tiles_cnt( string _file_ext )
 		{
-			int platform_ind = ( int )get_platform_type_by_file_ext( _file_ext );
-			
-			return m_platform_screen_width_tiles_cnt[ platform_ind ] * m_platform_screen_height_tiles_cnt[ platform_ind ];
+			return get_screen_tiles_cnt( get_platform_type_by_file_ext( _file_ext ) );
+		}
+
+		public static int get_screen_tiles_cnt()
+		{
+			return get_screen_tiles_cnt( get_platform_type() );
+		}
+		
+		public static int get_screen_tiles_cnt( EPlatformType _type )
+		{
+			return get_screen_tiles_width( _type ) * get_screen_tiles_height( _type );
+		}
+
+		public static int get_screen_blocks_cnt( string _file_ext )
+		{
+			return get_screen_blocks_cnt( get_platform_type_by_file_ext( _file_ext ) );
+		}
+
+		public static int get_screen_blocks_cnt()
+		{
+			return get_screen_blocks_cnt( get_platform_type() );
+		}
+		
+		private static int get_screen_blocks_cnt( EPlatformType _type )
+		{
+			return get_screen_blocks_width( _type ) * get_screen_blocks_height( _type );
+		}
+
+		public static int get_screen_tiles_cnt_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return get_screen_tiles_cnt( get_platform_type() );
+			}
+			else
+			{
+				return get_screen_blocks_cnt( get_platform_type() );
+			}
+		}
+// SCREEN DIMENSIONS IN PIXELS
+		public static int get_screen_width_pixels()
+		{
+			return get_screen_blocks_width( get_platform_type() ) << 4;
+		}
+		
+		public static int get_screen_height_pixels()
+		{
+			return get_screen_blocks_height( get_platform_type() ) << 4;
+		}
+		
+		public static int get_screen_mark_image_size()
+		{
+			return get_screen_width_pixels() >> 1;
+		}
+// CHR BANK
+		public static int get_CHR_bank_max_sprites_cnt()
+		{
+			return utils.CONST_CHR_BANK_PAGE_SPRITES_CNT * platform_data.get_CHR_bank_pages_cnt();
 		}
 
 		public static int get_CHR_bank_pages_cnt( EPlatformType _type )
@@ -324,117 +393,103 @@ namespace MAPeD
 			return m_CHR_bank_pages_cnt[ ( int )get_platform_type() ];
 		}
 		
-		public static int get_screen_tiles_width_by_file_ext_uni( string _file_ext, data_sets_manager.EScreenDataType _type )
+		public static int get_native_CHR_size_bytes()
 		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return m_platform_screen_width_tiles_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
-			}
-			else
-			{
-				return m_platform_screen_width_blocks_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
-			}
+			return m_platform_CHR_native_size_bytes[ ( int )get_platform_type() ];
+		}
+// SCREEN WIDTH TILES \ BLOCKS
+		public static int get_screen_tiles_width_uni( data_sets_manager.EScreenDataType _scr_type )
+		{
+			return get_screen_tiles_width_by_platform_type_uni( get_platform_type(), _scr_type );
 		}
 
-		public static int get_screen_tiles_height_by_file_ext_uni( string _file_ext, data_sets_manager.EScreenDataType _type )
+		public static int get_screen_tiles_width_by_file_ext_uni( string _file_ext, data_sets_manager.EScreenDataType _scr_type )
 		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return m_platform_screen_height_tiles_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
-			}
-			else
-			{
-				return m_platform_screen_height_blocks_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
-			}
+			return get_screen_tiles_width_by_platform_type_uni( get_platform_type_by_file_ext( _file_ext ), _scr_type );
 		}
-
+		
 		public static int get_screen_tiles_width_by_platform_type_uni( EPlatformType _platform_type, data_sets_manager.EScreenDataType _type )
 		{
 			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				return m_platform_screen_width_tiles_cnt[ ( int )_platform_type ];
+				return get_screen_tiles_width( _platform_type );
 			}
 			else
 			{
-				return m_platform_screen_width_blocks_cnt[ ( int )_platform_type ];
+				return get_screen_blocks_width( _platform_type );
 			}
 		}
+		
+		public static int get_screen_tiles_width()
+		{
+			return get_screen_tiles_width( get_platform_type() );
+		}
+		
+		public static int get_screen_tiles_width( EPlatformType _platform_type )
+		{
+			return m_platform_screen_tiles_width_cnt[ ( int )_platform_type ];
+		}
 
+		public static int get_screen_blocks_width()
+		{
+			return get_screen_blocks_width( get_platform_type() );
+		}
+		
+		public static int get_screen_blocks_width( EPlatformType _platform_type )
+		{
+			return m_platform_screen_blocks_width_cnt[ ( int )_platform_type ];
+		}		
+// SCREEN HEIGHT TILES \ BLOCKS
+		public static int get_screen_tiles_height_uni( data_sets_manager.EScreenDataType _scr_type )
+		{
+			return get_screen_tiles_height_by_platform_type_uni( get_platform_type(), _scr_type );
+		}
+
+		public static int get_screen_tiles_height_by_file_ext_uni( string _file_ext, data_sets_manager.EScreenDataType _scr_type )
+		{
+			return get_screen_tiles_height_by_platform_type_uni( get_platform_type_by_file_ext( _file_ext ), _scr_type );
+		}
+		
 		public static int get_screen_tiles_height_by_platform_type_uni( EPlatformType _platform_type, data_sets_manager.EScreenDataType _type )
 		{
 			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				return m_platform_screen_height_tiles_cnt[ ( int )_platform_type ];
+				return get_screen_tiles_height( _platform_type );
 			}
 			else
 			{
-				return m_platform_screen_height_blocks_cnt[ ( int )_platform_type ];
+				return get_screen_blocks_height( _platform_type );
 			}
 		}
 		
-		public static int get_screen_tiles_cnt_uni( data_sets_manager.EScreenDataType _type )
+		public static int get_screen_tiles_height()
 		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return utils.CONST_SCREEN_TILES_CNT;
-			}
-			else
-			{
-				return utils.CONST_SCREEN_BLOCKS_CNT;
-			}
+			return get_screen_tiles_height( get_platform_type() );
 		}
 		
-		public static int get_screen_num_width_tiles_uni( data_sets_manager.EScreenDataType _type )
+		public static int get_screen_tiles_height( EPlatformType _platform_type )
 		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return utils.CONST_SCREEN_NUM_WIDTH_TILES;
-			}
-			else
-			{
-				return utils.CONST_SCREEN_NUM_WIDTH_BLOCKS;
-			}
+			return m_platform_screen_tiles_height_cnt[ ( int )_platform_type ];
+		}
+
+		public static int get_screen_blocks_height()
+		{
+			return get_screen_blocks_height( get_platform_type() );
 		}
 		
-		public static int get_screen_num_height_tiles_uni( data_sets_manager.EScreenDataType _type )
+		public static int get_screen_blocks_height( EPlatformType _platform_type )
 		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return utils.CONST_SCREEN_NUM_HEIGHT_TILES;
-			}
-			else
-			{
-				return utils.CONST_SCREEN_NUM_HEIGHT_BLOCKS;
-			}
+			return m_platform_screen_blocks_height_cnt[ ( int )_platform_type ];
+		}		
+// PALETTE
+		public static int get_main_palette_colors_cnt( string _file_ext )
+		{
+			return m_palette_colors_cnt[ ( int )get_platform_type_by_file_ext( _file_ext ) ];
 		}
-		
-		public static int get_screen_tiles_size_uni( data_sets_manager.EScreenDataType _type )
+
+		public static int get_main_palette_colors_cnt()
 		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return utils.CONST_SCREEN_TILES_SIZE;
-			}
-			else
-			{
-				return utils.CONST_SCREEN_BLOCKS_SIZE;
-			}
-		}
-		
-		public static screen_editor.EFillMode get_screen_fill_mode_uni( data_sets_manager.EScreenDataType _type )
-		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return screen_editor.EFillMode.efm_Tile;
-			}
-			else
-			{
-				return screen_editor.EFillMode.efm_Block;
-			}
-		}
-		
-		public static EPlatformType get_platform_type()
-		{
-			return m_platform;
+			return m_palette_colors_cnt[ ( int )get_platform_type() ];
 		}
 		
 		private readonly static int[] NES_palette = new int[]{ 	0x7C7C7C, 0x0000FC, 0x0000BC, 0x4428BC, 0x940084, 0xA80020, 0xA81000, 0x881400,
@@ -474,13 +529,11 @@ namespace MAPeD
 					{
 						return NES_palette;
 					}
-					break;
 					
 				case EPlatformType.pt_SMS:
 					{
 						return SMS_palette;
 					}
-					break;
 					
 				case EPlatformType.pt_SMD:
 				case EPlatformType.pt_PCE:
@@ -503,16 +556,44 @@ namespace MAPeD
 						
 						return PCE_SMD_palette;
 					}
-					break;
 					
 				case EPlatformType.pt_ZX:
 					{
 						return ZX_palette;
 					}
-					break;
 			}
 			
 			throw new Exception( "platform_data.get_palette_by_platform_type(...) : invalid parameter!" );
+		}
+#if DEF_FIXED_LEN_PALETTE16_ARR
+		public static int get_fixed_palette16_cnt()
+		{
+			return m_platform_fixed_palette16_cnt[ ( int )get_platform_type() ];
+		}
+#endif //DEF_FIXED_LEN_PALETTE16_ARR
+// MISC
+		public static int get_screen_tiles_size_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return utils.CONST_SCREEN_TILES_SIZE;
+			}
+			else
+			{
+				return utils.CONST_SCREEN_BLOCKS_SIZE;
+			}
+		}
+		
+		public static screen_editor.EFillMode get_screen_fill_mode_uni( data_sets_manager.EScreenDataType _type )
+		{
+			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			{
+				return screen_editor.EFillMode.efm_Tile;
+			}
+			else
+			{
+				return screen_editor.EFillMode.efm_Block;
+			}
 		}
 	}
 }

@@ -702,7 +702,7 @@ namespace MAPeD
 				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
 				
 				int load_scr_data_len 	= platform_data.get_screen_tiles_cnt( file_ext );
-				int scr_data_len 		= utils.CONST_SCREEN_TILES_CNT;
+				int scr_data_len 		= platform_data.get_screen_tiles_cnt();
 
 				if( load_scr_data_len != scr_data_len )
 				{
@@ -1232,7 +1232,7 @@ namespace MAPeD
 								int scr_ind;
 								
 								// draw images into bitmap
-								Bitmap bmp = new Bitmap( layout_width * utils.CONST_SCREEN_WIDTH_PIXELS, layout_height * utils.CONST_SCREEN_HEIGHT_PIXELS );
+								Bitmap bmp = new Bitmap( layout_width * platform_data.get_screen_width_pixels(), layout_height * platform_data.get_screen_height_pixels() );
 
 								Graphics gfx = Graphics.FromImage( bmp );
 								gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
@@ -1246,7 +1246,7 @@ namespace MAPeD
 										
 										if( scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 										{
-											gfx.DrawImage( ListViewScreens.LargeImageList.Images[ scr_ind ], j * utils.CONST_SCREEN_WIDTH_PIXELS, i * utils.CONST_SCREEN_HEIGHT_PIXELS, utils.CONST_SCREEN_WIDTH_PIXELS, utils.CONST_SCREEN_HEIGHT_PIXELS );
+											gfx.DrawImage( ListViewScreens.LargeImageList.Images[ scr_ind ], j * platform_data.get_screen_width_pixels(), i * platform_data.get_screen_height_pixels(), platform_data.get_screen_width_pixels(), platform_data.get_screen_height_pixels() );
 										}
 									}
 								}
@@ -2340,7 +2340,7 @@ namespace MAPeD
 				
 				int scr_first_tile_ind	= _scr_data.get_tile( 0 );
 				
-				for( tile_n = 1; tile_n < utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES; tile_n++ )
+				for( tile_n = 1; tile_n < platform_data.get_screen_tiles_cnt() - platform_data.get_screen_tiles_width(); tile_n++ )
 				{
 					if( scr_first_tile_ind != _scr_data.get_tile( tile_n ) )
 					{
@@ -2348,7 +2348,7 @@ namespace MAPeD
 					}
 				}
 				
-				if( tile_n != utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES )
+				if( tile_n != platform_data.get_screen_tiles_cnt() - platform_data.get_screen_tiles_width() )
 				{
 					return false;
 				}
@@ -2356,7 +2356,7 @@ namespace MAPeD
 				// check the last upper half of the tiles line
 				int scr_block_ind	= utils.get_ushort_from_ulong( _tiles[ _scr_data.get_tile( 0 ) ], 0 );
 	
-				for( tile_n = utils.CONST_SCREEN_TILES_CNT - utils.CONST_SCREEN_NUM_WIDTH_TILES; tile_n < utils.CONST_SCREEN_TILES_CNT; tile_n++ )
+				for( tile_n = platform_data.get_screen_tiles_cnt() - platform_data.get_screen_tiles_width(); tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 				{
 					tile_ind = _tiles[ _scr_data.get_tile( tile_n ) ];
 					
@@ -2367,7 +2367,7 @@ namespace MAPeD
 					}
 				}
 				
-				if( tile_n == utils.CONST_SCREEN_TILES_CNT )
+				if( tile_n == platform_data.get_screen_tiles_cnt() )
 				{
 					return true;
 				}
