@@ -44,7 +44,7 @@ namespace MAPeD
 			richTextBox.Text = "Platform: " + platform_data.CONST_PLATFORM_DESC;
 			richTextBox.Text += "\n---------------------------";
 			
-			richTextBox.Text += "\nScreen: " + platform_data.get_screen_width_pixels() + "x" + platform_data.get_screen_height_pixels() + " pix\nScreen Tiles (2x2): " + ( platform_data.get_screen_width_pixels() / 16.0f ) + "x" + ( platform_data.get_screen_height_pixels() / 16.0f ) + "\nScreen Tiles (4x4): " + ( platform_data.get_screen_width_pixels() / 32.0f ) + "x" + ( platform_data.get_screen_height_pixels() / 32.0f );
+			richTextBox.Text += "\nScreen: " + platform_data.get_screen_width_pixels() + "x" + platform_data.get_screen_height_pixels() + " pix / Native: " + platform_data.get_screen_width_pixels( true ) + "x" + platform_data.get_screen_height_pixels( true ) + " pix\nScreen Tiles (2x2): " + ( platform_data.get_screen_width_pixels() / 16.0f ) + "x" + ( platform_data.get_screen_height_pixels() / 16.0f ) + "\nScreen Tiles (4x4): " + ( platform_data.get_screen_width_pixels() / 32.0f ) + "x" + ( platform_data.get_screen_height_pixels() / 32.0f );
 			richTextBox.Text += "\n\nCHR bank: " + ( platform_data.get_CHR_bank_max_sprites_cnt() * platform_data.get_native_CHR_size_bytes() ) / 1024 + " KB (Max: " + platform_data.get_CHR_bank_max_sprites_cnt() + " CHRs)";  
 			richTextBox.Text += "\nCHR size: " + platform_data.get_native_CHR_size_bytes() + " Bytes";
 			richTextBox.Text += "\n\nTiles (4x4): " + platform_data.get_max_tiles_cnt();

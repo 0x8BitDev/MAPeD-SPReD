@@ -35,18 +35,19 @@ namespace MAPeD
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.RBtnScrAlignLeftBottom = new System.Windows.Forms.RadioButton();
+			this.RBtnScrAlignRightBottom = new System.Windows.Forms.RadioButton();
 			this.RBtnScrAlignMidBottom = new System.Windows.Forms.RadioButton();
+			this.RBtnScrAlignLeftCenter = new System.Windows.Forms.RadioButton();
+			this.RBtnScrAlignRightCenter = new System.Windows.Forms.RadioButton();
 			this.RBtnScrAlignMidCenter = new System.Windows.Forms.RadioButton();
+			this.RBtnScrAlignLeftTop = new System.Windows.Forms.RadioButton();
+			this.RBtnScrAlignRightTop = new System.Windows.Forms.RadioButton();
 			this.RBtnScrAlignMidTop = new System.Windows.Forms.RadioButton();
 			this.CBoxConvertColors = new System.Windows.Forms.CheckBox();
 			this.BtnOk = new System.Windows.Forms.Button();
 			this.button1 = new System.Windows.Forms.Button();
-			this.RBtnScrAlignRightTop = new System.Windows.Forms.RadioButton();
-			this.RBtnScrAlignRightCenter = new System.Windows.Forms.RadioButton();
-			this.RBtnScrAlignRightBottom = new System.Windows.Forms.RadioButton();
-			this.RBtnScrAlignLeftTop = new System.Windows.Forms.RadioButton();
-			this.RBtnScrAlignLeftCenter = new System.Windows.Forms.RadioButton();
-			this.RBtnScrAlignLeftBottom = new System.Windows.Forms.RadioButton();
+			this.CBoxUseFileScreenResolution = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -66,7 +67,27 @@ namespace MAPeD
 			this.groupBox1.Size = new System.Drawing.Size(156, 100);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Screens Align:";
+			this.groupBox1.Text = "Screen Align:";
+			// 
+			// RBtnScrAlignLeftBottom
+			// 
+			this.RBtnScrAlignLeftBottom.Appearance = System.Windows.Forms.Appearance.Button;
+			this.RBtnScrAlignLeftBottom.Location = new System.Drawing.Point(12, 71);
+			this.RBtnScrAlignLeftBottom.Name = "RBtnScrAlignLeftBottom";
+			this.RBtnScrAlignLeftBottom.Size = new System.Drawing.Size(40, 20);
+			this.RBtnScrAlignLeftBottom.TabIndex = 7;
+			this.RBtnScrAlignLeftBottom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.RBtnScrAlignLeftBottom.UseVisualStyleBackColor = true;
+			// 
+			// RBtnScrAlignRightBottom
+			// 
+			this.RBtnScrAlignRightBottom.Appearance = System.Windows.Forms.Appearance.Button;
+			this.RBtnScrAlignRightBottom.Location = new System.Drawing.Point(104, 71);
+			this.RBtnScrAlignRightBottom.Name = "RBtnScrAlignRightBottom";
+			this.RBtnScrAlignRightBottom.Size = new System.Drawing.Size(40, 20);
+			this.RBtnScrAlignRightBottom.TabIndex = 9;
+			this.RBtnScrAlignRightBottom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.RBtnScrAlignRightBottom.UseVisualStyleBackColor = true;
 			// 
 			// RBtnScrAlignMidBottom
 			// 
@@ -77,6 +98,26 @@ namespace MAPeD
 			this.RBtnScrAlignMidBottom.TabIndex = 8;
 			this.RBtnScrAlignMidBottom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.RBtnScrAlignMidBottom.UseVisualStyleBackColor = true;
+			// 
+			// RBtnScrAlignLeftCenter
+			// 
+			this.RBtnScrAlignLeftCenter.Appearance = System.Windows.Forms.Appearance.Button;
+			this.RBtnScrAlignLeftCenter.Location = new System.Drawing.Point(12, 45);
+			this.RBtnScrAlignLeftCenter.Name = "RBtnScrAlignLeftCenter";
+			this.RBtnScrAlignLeftCenter.Size = new System.Drawing.Size(40, 20);
+			this.RBtnScrAlignLeftCenter.TabIndex = 4;
+			this.RBtnScrAlignLeftCenter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.RBtnScrAlignLeftCenter.UseVisualStyleBackColor = true;
+			// 
+			// RBtnScrAlignRightCenter
+			// 
+			this.RBtnScrAlignRightCenter.Appearance = System.Windows.Forms.Appearance.Button;
+			this.RBtnScrAlignRightCenter.Location = new System.Drawing.Point(104, 45);
+			this.RBtnScrAlignRightCenter.Name = "RBtnScrAlignRightCenter";
+			this.RBtnScrAlignRightCenter.Size = new System.Drawing.Size(40, 20);
+			this.RBtnScrAlignRightCenter.TabIndex = 6;
+			this.RBtnScrAlignRightCenter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.RBtnScrAlignRightCenter.UseVisualStyleBackColor = true;
 			// 
 			// RBtnScrAlignMidCenter
 			// 
@@ -89,6 +130,26 @@ namespace MAPeD
 			this.RBtnScrAlignMidCenter.TabStop = true;
 			this.RBtnScrAlignMidCenter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.RBtnScrAlignMidCenter.UseVisualStyleBackColor = true;
+			// 
+			// RBtnScrAlignLeftTop
+			// 
+			this.RBtnScrAlignLeftTop.Appearance = System.Windows.Forms.Appearance.Button;
+			this.RBtnScrAlignLeftTop.Location = new System.Drawing.Point(12, 19);
+			this.RBtnScrAlignLeftTop.Name = "RBtnScrAlignLeftTop";
+			this.RBtnScrAlignLeftTop.Size = new System.Drawing.Size(40, 20);
+			this.RBtnScrAlignLeftTop.TabIndex = 1;
+			this.RBtnScrAlignLeftTop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.RBtnScrAlignLeftTop.UseVisualStyleBackColor = true;
+			// 
+			// RBtnScrAlignRightTop
+			// 
+			this.RBtnScrAlignRightTop.Appearance = System.Windows.Forms.Appearance.Button;
+			this.RBtnScrAlignRightTop.Location = new System.Drawing.Point(104, 19);
+			this.RBtnScrAlignRightTop.Name = "RBtnScrAlignRightTop";
+			this.RBtnScrAlignRightTop.Size = new System.Drawing.Size(40, 20);
+			this.RBtnScrAlignRightTop.TabIndex = 3;
+			this.RBtnScrAlignRightTop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.RBtnScrAlignRightTop.UseVisualStyleBackColor = true;
 			// 
 			// RBtnScrAlignMidTop
 			// 
@@ -104,9 +165,9 @@ namespace MAPeD
 			// 
 			this.CBoxConvertColors.Checked = true;
 			this.CBoxConvertColors.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CBoxConvertColors.Location = new System.Drawing.Point(42, 118);
+			this.CBoxConvertColors.Location = new System.Drawing.Point(16, 118);
 			this.CBoxConvertColors.Name = "CBoxConvertColors";
-			this.CBoxConvertColors.Size = new System.Drawing.Size(104, 24);
+			this.CBoxConvertColors.Size = new System.Drawing.Size(104, 20);
 			this.CBoxConvertColors.TabIndex = 10;
 			this.CBoxConvertColors.Text = "Convert Colors";
 			this.CBoxConvertColors.UseVisualStyleBackColor = true;
@@ -114,91 +175,43 @@ namespace MAPeD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(16, 155);
+			this.BtnOk.Location = new System.Drawing.Point(16, 177);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 11;
+			this.BtnOk.TabIndex = 12;
 			this.BtnOk.Text = "&Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			// 
 			// button1
 			// 
 			this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.button1.Location = new System.Drawing.Point(97, 155);
+			this.button1.Location = new System.Drawing.Point(97, 177);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 12;
+			this.button1.TabIndex = 13;
 			this.button1.Text = "&Cancel";
 			this.button1.UseVisualStyleBackColor = true;
 			// 
-			// RBtnScrAlignRightTop
+			// CBoxUseFileScreenResolution
 			// 
-			this.RBtnScrAlignRightTop.Appearance = System.Windows.Forms.Appearance.Button;
-			this.RBtnScrAlignRightTop.Location = new System.Drawing.Point(104, 19);
-			this.RBtnScrAlignRightTop.Name = "RBtnScrAlignRightTop";
-			this.RBtnScrAlignRightTop.Size = new System.Drawing.Size(40, 20);
-			this.RBtnScrAlignRightTop.TabIndex = 3;
-			this.RBtnScrAlignRightTop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.RBtnScrAlignRightTop.UseVisualStyleBackColor = true;
-			// 
-			// RBtnScrAlignRightCenter
-			// 
-			this.RBtnScrAlignRightCenter.Appearance = System.Windows.Forms.Appearance.Button;
-			this.RBtnScrAlignRightCenter.Location = new System.Drawing.Point(104, 45);
-			this.RBtnScrAlignRightCenter.Name = "RBtnScrAlignRightCenter";
-			this.RBtnScrAlignRightCenter.Size = new System.Drawing.Size(40, 20);
-			this.RBtnScrAlignRightCenter.TabIndex = 6;
-			this.RBtnScrAlignRightCenter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.RBtnScrAlignRightCenter.UseVisualStyleBackColor = true;
-			// 
-			// RBtnScrAlignRightBottom
-			// 
-			this.RBtnScrAlignRightBottom.Appearance = System.Windows.Forms.Appearance.Button;
-			this.RBtnScrAlignRightBottom.Location = new System.Drawing.Point(104, 71);
-			this.RBtnScrAlignRightBottom.Name = "RBtnScrAlignRightBottom";
-			this.RBtnScrAlignRightBottom.Size = new System.Drawing.Size(40, 20);
-			this.RBtnScrAlignRightBottom.TabIndex = 9;
-			this.RBtnScrAlignRightBottom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.RBtnScrAlignRightBottom.UseVisualStyleBackColor = true;
-			// 
-			// RBtnScrAlignLeftTop
-			// 
-			this.RBtnScrAlignLeftTop.Appearance = System.Windows.Forms.Appearance.Button;
-			this.RBtnScrAlignLeftTop.Location = new System.Drawing.Point(12, 19);
-			this.RBtnScrAlignLeftTop.Name = "RBtnScrAlignLeftTop";
-			this.RBtnScrAlignLeftTop.Size = new System.Drawing.Size(40, 20);
-			this.RBtnScrAlignLeftTop.TabIndex = 1;
-			this.RBtnScrAlignLeftTop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.RBtnScrAlignLeftTop.UseVisualStyleBackColor = true;
-			// 
-			// RBtnScrAlignLeftCenter
-			// 
-			this.RBtnScrAlignLeftCenter.Appearance = System.Windows.Forms.Appearance.Button;
-			this.RBtnScrAlignLeftCenter.Location = new System.Drawing.Point(12, 45);
-			this.RBtnScrAlignLeftCenter.Name = "RBtnScrAlignLeftCenter";
-			this.RBtnScrAlignLeftCenter.Size = new System.Drawing.Size(40, 20);
-			this.RBtnScrAlignLeftCenter.TabIndex = 4;
-			this.RBtnScrAlignLeftCenter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.RBtnScrAlignLeftCenter.UseVisualStyleBackColor = true;
-			// 
-			// RBtnScrAlignLeftBottom
-			// 
-			this.RBtnScrAlignLeftBottom.Appearance = System.Windows.Forms.Appearance.Button;
-			this.RBtnScrAlignLeftBottom.Location = new System.Drawing.Point(12, 71);
-			this.RBtnScrAlignLeftBottom.Name = "RBtnScrAlignLeftBottom";
-			this.RBtnScrAlignLeftBottom.Size = new System.Drawing.Size(40, 20);
-			this.RBtnScrAlignLeftBottom.TabIndex = 7;
-			this.RBtnScrAlignLeftBottom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.RBtnScrAlignLeftBottom.UseVisualStyleBackColor = true;
+			this.CBoxUseFileScreenResolution.Checked = true;
+			this.CBoxUseFileScreenResolution.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.CBoxUseFileScreenResolution.Location = new System.Drawing.Point(16, 142);
+			this.CBoxUseFileScreenResolution.Name = "CBoxUseFileScreenResolution";
+			this.CBoxUseFileScreenResolution.Size = new System.Drawing.Size(156, 20);
+			this.CBoxUseFileScreenResolution.TabIndex = 11;
+			this.CBoxUseFileScreenResolution.Text = "Use File Screen Resolution";
+			this.CBoxUseFileScreenResolution.UseVisualStyleBackColor = true;
 			// 
 			// data_conversion_options_form
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(188, 190);
+			this.ClientSize = new System.Drawing.Size(188, 213);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.BtnOk);
+			this.Controls.Add(this.CBoxUseFileScreenResolution);
 			this.Controls.Add(this.CBoxConvertColors);
 			this.Controls.Add(this.groupBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -210,6 +223,7 @@ namespace MAPeD
 			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox CBoxUseFileScreenResolution;
 		private System.Windows.Forms.RadioButton RBtnScrAlignRightTop;
 		private System.Windows.Forms.RadioButton RBtnScrAlignLeftTop;
 		private System.Windows.Forms.RadioButton RBtnScrAlignRightCenter;

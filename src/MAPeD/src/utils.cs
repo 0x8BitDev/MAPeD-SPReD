@@ -119,6 +119,7 @@ namespace MAPeD
 		public const byte	CONST_IO_DATA_END				= 0xff;
 
 		public const uint	CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4		= 0x01;
+		public const uint	CONST_IO_DATA_PRE_FLAG_SCR_BLOCKS_WH	= 0x02;
 		
 		public const uint	CONST_IO_DATA_POST_FLAG_MMC5			= 0x01;
 		public const uint	CONST_IO_DATA_POST_FLAG_PROP_PER_CHR	= 0x02;

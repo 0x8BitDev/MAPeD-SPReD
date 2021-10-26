@@ -113,7 +113,7 @@ namespace MAPeD
 			}
 		}
 		
-		public static screen_data load( int _ver, BinaryReader _br )
+		public static screen_data load( BinaryReader _br, byte _ver )
 		{
 			int width;
 			int height;
@@ -130,12 +130,12 @@ namespace MAPeD
 			}
 				
 			screen_data data = new screen_data( width, height );
-			data.load( _ver, _br, -1, -1 );
+			data.load( _br, _ver, -1, -1 );
 			
 			return data;
 		}
 		
-		public void load( int _ver, BinaryReader _br, int _size, int _offset )
+		public void load( BinaryReader _br, byte _ver, int _size, int _offset )
 		{
 			int i;
 			

@@ -21,8 +21,9 @@ namespace MAPeD
 	/// </summary>
 	public class imagelist_manager
 	{
-		private readonly ListView m_listview_screens	= null;
+		private readonly ListView	m_listview_screens	= null;
 		private i_screen_list		m_scr_list			= null;
+		private Size				m_scr_img_size		= new Size( 0, 0 );
 		
 		private readonly FlowLayoutPanel m_panel_tiles	= null;
 		private readonly FlowLayoutPanel m_panel_blocks	= null;
@@ -65,23 +66,29 @@ namespace MAPeD
 		
 		private void listview_init_screens()
 		{
-			float	k		= ( 256 / ( float )platform_data.get_screen_width_pixels() );
-			int		height	= ( int )( k * ( float )platform_data.get_screen_height_pixels() );
+			ImageList il	= new ImageList();
 			
-			ImageList il = new ImageList();
-			il.ImageSize = new Size( Math.Min( 256, platform_data.get_screen_width_pixels() ), height );
-			il.ColorDepth = ColorDepth.Depth24Bit;// 32bit - way too slow rendering... I don't know why...
+			update_screen_image_size();
+			
+			il.ImageSize	= m_scr_img_size; 
+			il.ColorDepth	= ColorDepth.Depth24Bit;// 32bit - way too slow rendering... I don't know why...
 
-			if( platform_data.get_screen_width_pixels() > 256 )
-			{
-				m_scr_list = new screen_list_oversize( il );
-			}
-			else
-			{
-				m_scr_list = new screen_list_normal( il );
-			}
-
+			m_scr_list = new screen_list_scaled( il );
+			
 			m_listview_screens.LargeImageList = il;
+		}
+	
+		public void update_screen_image_size()
+		{
+			float ratio	= platform_data.get_screen_height_pixels() / ( float )platform_data.get_screen_width_pixels();
+			
+			m_scr_img_size.Width	= 256;
+			m_scr_img_size.Height	= ( int )( 256 * ratio );
+			
+			if( m_scr_list != null )
+			{
+				m_scr_list.set_image_list_size( m_scr_img_size );
+			}
 		}
 		
 		private ImageList imagelist_init( int _cnt, int _size )

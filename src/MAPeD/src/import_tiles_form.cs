@@ -131,11 +131,8 @@ namespace MAPeD
 		{
 			bool import_game_map_as_is = true;
 
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-			int tile_size = 16;
-#else
-			int tile_size = _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 32:16;
-#endif
+			int tile_size = ( ( platform_data.get_half_tile_x() < 0 ) && ( platform_data.get_half_tile_y() < 0 ) ) ? ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 32:16 ):16;
+
 			if( ( _bmp.Width % tile_size ) != 0 || ( _bmp.Height % tile_size ) != 0 )
 			{
 				MainForm.message_box( "The imported image isn't multiple to a tile size: " + tile_size + "\n\nThe imported data will be trimmed.", "Image Import Warning", MessageBoxButtons.OK, MessageBoxIcon.Information );
@@ -217,13 +214,14 @@ namespace MAPeD
 				
 				int scr_tile_ind;
 				int scr_block_ind;
+				
+				int half_tile_x_ind = platform_data.get_half_tile_x();
+				int half_tile_y_ind = platform_data.get_half_tile_y();
 
-				int bmp_width	= _bmp.Width - ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( _bmp.Width % 32 ):( _bmp.Width % 16 ) );
-#if DEF_SCREEN_HEIGHT_7d5_TILES				
-				int bmp_height	= _bmp.Height - ( _bmp.Height % 16 );
-#else
-				int bmp_height	= _bmp.Height - ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( _bmp.Height % 32 ):( _bmp.Height % 16 ) );
-#endif
+				// clamp image to nearest tile/block multiple size
+				int bmp_width	= ( half_tile_x_ind < 0 ) ? ( _bmp.Width - ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( _bmp.Width % 32 ):( _bmp.Width % 16 ) ) ):( _bmp.Width - ( _bmp.Width % 16 ) );
+				int bmp_height	= ( half_tile_y_ind < 0 ) ? ( _bmp.Height - ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( _bmp.Height % 32 ):( _bmp.Height % 16 ) ) ):( _bmp.Height - ( _bmp.Height % 16 ) );
+
 				int tile_cnt	= ( bmp_width >> 4 ) * ( bmp_height >> 4 );
 				int tile_n		= 0;
 				int progress	= 0;
@@ -254,6 +252,9 @@ namespace MAPeD
 					
 					int block_num = 0;
 					
+					bool	valid_block;
+					ulong	tile_mask;
+					
 					tile_ind = beg_tile_ind;
 					
 					bmp_width	= ( import_game_map && !_import_game_map_as_is ) ? ( ( bmp_width / platform_data.get_screen_width_pixels() ) * platform_data.get_screen_width_pixels() ):bmp_width;
@@ -264,9 +265,7 @@ namespace MAPeD
 
 					int scr_x;
 					int scr_y;
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-					bool half_tile = false;
-#endif
+					
 					if( import_game_map )
 					{
 						bmp_width	= ( bmp_width == 0 ) ? platform_data.get_screen_width_pixels():bmp_width;
@@ -288,20 +287,28 @@ namespace MAPeD
 					{
 						_progress_status.Report( "Tiles data" );
 					}
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-					if( import_game_map )
+
+					if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 && import_game_map )
 					{
-						bmp_height += ( ( bmp_height / platform_data.get_screen_height_pixels() ) >> 1 ) << 5;
+						if( half_tile_x_ind >= 0 )
+						{
+							bmp_width += ( _bmp.Width / platform_data.get_screen_width_pixels() ) << 4;
+						}
+	
+						if( half_tile_y_ind >= 0 )
+						{
+							bmp_height += ( _bmp.Height / platform_data.get_screen_height_pixels() ) << 4;
+						}
 					}
-#endif
+					
 					// tiles/blocks/CHRs
 					for( int tile_y = 0; tile_y < bmp_height; tile_y += 32 )
 					{
 						for( int tile_x = 0; tile_x < bmp_width; tile_x += 32 )
 						{
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-							half_tile = false;
-#endif
+							tile_mask	= 0xffffffffffffffff;
+							tile_data	= 0;
+							
 							for( int block_y = 0; block_y < 32; block_y += 16 )
 							{
 								if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
@@ -313,11 +320,16 @@ namespace MAPeD
 								}
 								
 								block_offset_y = tile_y + block_y;
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-								block_offset_y -= ( ( ( tile_y & 0xff00 ) >> 8 ) << 4 );
-#endif
+
+								if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 && ( half_tile_y_ind >= 0 ) )
+								{
+									block_offset_y -= ( tile_y / ( platform_data.get_screen_tiles_height() << 5 ) ) << 4;
+								}
+								
 								for( int block_x = 0; block_x < 32; block_x += 16 )
 								{
+									valid_block	= true;
+									
 									if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
 									{
 										if( tile_x + block_x >= bmp_width )
@@ -327,39 +339,39 @@ namespace MAPeD
 									}
 									
 									block_offset_x = tile_x + block_x;
-									
-									for( int CHR_n = 0; CHR_n < 4; CHR_n++ )
+
+									if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 && ( half_tile_x_ind >= 0 ) )
 									{
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-										if( import_game_map )
+										block_offset_x -= ( tile_x / ( platform_data.get_screen_tiles_width() << 5 ) ) << 4;
+									}
+									
+									if( ( block_offset_x < _bmp.Width ) && ( block_offset_y < _bmp.Height ) )
+									{
+										if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 && (
+											( ( ( ( block_offset_x - block_x ) % platform_data.get_screen_width_pixels() ) >> 5 ) == platform_data.get_half_tile_x() && block_x > 0 ) ||
+											( ( ( ( block_offset_y - block_y ) % platform_data.get_screen_height_pixels() ) >> 5 ) == platform_data.get_half_tile_y() && block_y > 0 ) ) )
 										{
-											// extract a CHR if it's not an invisible part of a tile ( the bottom blocks of the eigth tiles row ) 
-											if( !( ( ( ( block_offset_y - block_y ) % platform_data.get_screen_height_pixels() ) >> 5 ) == 7 && block_y > 0 ) )
-											{
-												extract_CHR( _bmp.PixelFormat, CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
-											}
-											else
-											{
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-												half_tile = true;
-#endif
-												// clear an invisible part of a tile
-												Array.Clear( utils.tmp_spr8x8_buff, 0, utils.tmp_spr8x8_buff.Length );
-											}
+											valid_block = false;
+											
+											tile_mask &= ~( ( ulong )0xffff << ( ( 3 - ( ( block_x >> 4 ) | ( ( block_y >> 4 ) << 1 ) ) ) << 4 ) );
 										}
 										else
-#endif											
-										extract_CHR( _bmp.PixelFormat, CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
-										
-										if( !check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, block_data, CHR_n, _data ) )
 										{
-											MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
-											
-											MainForm.message_box( "The CHR Bank is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-											
-											import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, beg_tile_ind, tile_ind, _progress_status );
-											
-											return;
+											for( int CHR_n = 0; CHR_n < utils.CONST_BLOCK_SIZE; CHR_n++ )
+											{
+												extract_CHR( _bmp.PixelFormat, CHR_n, block_offset_x, block_offset_y, stride, utils.tmp_spr8x8_buff, data_ptr );
+												
+												if( !check_CHR_and_build_block( ref CHR_ind, CHR_buff, block_data, CHR_n, _data ) )
+												{
+													MainForm.set_status_msg( string.Format( "Merged: Tiles: {0} \\ Blocks: {1} \\ CHRs: {2}", tile_ind - beg_tile_ind, ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
+													
+													MainForm.message_box( "The CHR Bank is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+													
+													import_bmp_palette( _data, _bmp, beg_CHR_ind, CHR_ind, beg_block_ind, block_ind, beg_tile_ind, tile_ind, _progress_status );
+													
+													return;
+												}
+											}
 										}
 									}
 									
@@ -387,16 +399,20 @@ namespace MAPeD
 									
 									if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 									{
-										tile_data = utils.set_ushort_to_ulong( tile_data, block_num++, ( dup_block_ind >= 0 ? ( ushort )( dup_block_ind >> 2 ):( ushort )( ( block_ind - 1 ) >> 2 ) ) );
+										if( valid_block )
+										{
+											tile_data = utils.set_ushort_to_ulong( tile_data, block_num++, ( dup_block_ind >= 0 ? ( ushort )( dup_block_ind >> 2 ):( ushort )( ( block_ind - 1 ) >> 2 ) ) );
+										}
+										else
+										{
+											block_num++;
+										}
 										
 										if( ( block_num & 0x03 ) == 0x00 )
 										{
 											scr_tile_ind = tile_ind;
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-											if( ( dup_tile_ind = _data.contains_tile( tile_ind, tile_data, half_tile ) ) >= 0 )
-#else
-											if( ( dup_tile_ind = _data.contains_tile( tile_ind, tile_data ) ) >= 0 )
-#endif											
+
+											if( ( dup_tile_ind = _data.contains_tile( tile_ind, tile_data, tile_mask ) ) >= 0 )
 											{
 												scr_tile_ind = dup_tile_ind; 
 											}
@@ -420,16 +436,10 @@ namespace MAPeD
 	
 											if( import_game_map )
 											{
-												scr_x = tile_x / platform_data.get_screen_width_pixels();											
-#if DEF_SCREEN_HEIGHT_7d5_TILES
+												scr_x = ( block_offset_x - block_x ) / platform_data.get_screen_width_pixels();
 												scr_y = ( block_offset_y - block_y ) / platform_data.get_screen_height_pixels();
-	
-												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), platform_data.get_screen_tiles_width() * ( ( ( block_offset_y - block_y ) % platform_data.get_screen_height_pixels() ) >> 5 ) + ( ( tile_x >> 5 ) % platform_data.get_screen_tiles_width() ), ( ushort )scr_tile_ind );
-#else
-												scr_y = tile_y / platform_data.get_screen_height_pixels();
 												
-												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), platform_data.get_screen_tiles_width() * ( ( tile_y >> 5 ) % platform_data.get_screen_tiles_height() ) + ( ( tile_x >> 5 ) % platform_data.get_screen_tiles_width() ), ( ushort )scr_tile_ind );
-#endif
+												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), ( platform_data.get_screen_tiles_width() * ( ( block_offset_y - block_y ) % platform_data.get_screen_height_pixels() ) >> 5 ) + ( ( ( block_offset_x - block_x ) % platform_data.get_screen_width_pixels() ) >> 5 ), ( ushort )scr_tile_ind );
 											}
 										}
 									}
@@ -439,19 +449,10 @@ namespace MAPeD
 										{
 											scr_block_ind = ( dup_block_ind >= 0 ? ( dup_block_ind >> 2 ):( ( block_ind - 1 ) >> 2 ) );
 											
-											scr_x = ( tile_x + block_x ) / platform_data.get_screen_width_pixels();
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-											if( !half_tile )
-											{
-												scr_y = ( block_offset_y - block_y ) / platform_data.get_screen_height_pixels();
-	
-												_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), platform_data.get_screen_blocks_width() * ( ( block_offset_y % platform_data.get_screen_height_pixels() ) >> 4 ) + ( ( ( tile_x + block_x ) >> 4 ) % platform_data.get_screen_blocks_width() ), ( ushort )scr_block_ind );
-											}
-#else
-											scr_y = ( tile_y + block_y ) / platform_data.get_screen_height_pixels();
+											scr_x = block_offset_x / platform_data.get_screen_width_pixels();
+											scr_y = block_offset_y / platform_data.get_screen_height_pixels();
 											
-											_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), platform_data.get_screen_blocks_width() * ( ( ( tile_y + block_y ) >> 4 ) % platform_data.get_screen_blocks_height() ) + ( ( ( tile_x + block_x ) >> 4 ) % platform_data.get_screen_blocks_width() ), ( ushort )scr_block_ind );
-#endif
+											_data.set_screen_tile( get_local_scr_ind( m_level_layout.get_data( scr_x, scr_y ).m_scr_ind, _data_manager ), ( ( platform_data.get_screen_blocks_width() * ( block_offset_y % platform_data.get_screen_height_pixels() ) ) >> 4 ) + ( ( block_offset_x % platform_data.get_screen_width_pixels() ) >> 4 ), ( ushort )scr_block_ind );
 										}
 									}
 
@@ -476,7 +477,7 @@ namespace MAPeD
 							{
 								extract_CHR( _bmp.PixelFormat, CHR_n, block_x, block_y, stride, utils.tmp_spr8x8_buff, data_ptr );
 								
-								if( !check_CHR_and_build_block( ref CHR_ind, ref block_ind, CHR_buff, block_data, CHR_n, _data ) )
+								if( !check_CHR_and_build_block( ref CHR_ind, CHR_buff, block_data, CHR_n, _data ) )
 								{
 									MainForm.set_status_msg( string.Format( "Merged: Blocks: {0} \\ CHRs: {1}", ( block_ind - beg_block_ind ) >> 2, CHR_ind - beg_CHR_ind ) );
 									
@@ -524,7 +525,7 @@ namespace MAPeD
 			}
 		}
 		
-		private bool check_CHR_and_build_block( ref int _CHR_ind, ref int _block_ind, byte[] _CHR_buff, uint[] _block_data, int _CHR_n, tiles_data _data )
+		private bool check_CHR_and_build_block( ref int _CHR_ind, byte[] _CHR_buff, uint[] _block_data, int _CHR_n, tiles_data _data )
 		{
 			int dup_CHR_ind;
 			

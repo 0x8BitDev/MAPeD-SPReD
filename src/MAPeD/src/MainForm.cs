@@ -549,7 +549,21 @@ namespace MAPeD
 			
 			tabControlScreensEntities.Enabled = _on;
 			
-			GrpBoxScreenData.Enabled = _on;
+			RBtnScreenDataTiles.Enabled = RBtnScreenDataBlocks.Enabled = _on;
+			
+			NumericUpDownScrBlocksWidth.Enabled = NumericUpDownScrBlocksHeight.Enabled = !_on;
+		}
+
+		private void update_screen_size( int _blocks_width = -1, int _blocks_height = -1 )
+		{
+			if( _blocks_width >= 0 && _blocks_height >= 0 )
+			{
+				NumericUpDownScrBlocksWidth.Value	= Math.Min( _blocks_width, NumericUpDownScrBlocksWidth.Maximum );
+				NumericUpDownScrBlocksHeight.Value	= Math.Min( _blocks_height, NumericUpDownScrBlocksHeight.Maximum );
+			}
+			
+			platform_data.set_screen_blocks_size( ( int )NumericUpDownScrBlocksWidth.Value, ( int )NumericUpDownScrBlocksHeight.Value );
+			m_imagelist_manager.update_screen_image_size();
 		}
 		
 		private void reset()
@@ -573,6 +587,12 @@ namespace MAPeD
 #else
 			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
 #endif
+			NumericUpDownScrBlocksWidth.Maximum		= ( decimal )platform_data.get_screen_blocks_width( true );
+			NumericUpDownScrBlocksHeight.Maximum	= ( decimal )platform_data.get_screen_blocks_height( true );
+
+			NumericUpDownScrBlocksWidth.Value	= ( decimal )platform_data.get_screen_blocks_width();
+			NumericUpDownScrBlocksHeight.Value	= ( decimal )platform_data.get_screen_blocks_height();
+
 			enable_main_UI( false );
 			
 			CheckBoxScreenShowGrid.Checked = true;
@@ -699,19 +719,17 @@ namespace MAPeD
 			
 			try
 			{
-				string file_ext = Path.GetExtension( _filename ).Substring( 1 );
+				load_project_data prj_data = new load_project_data();
 				
-				int load_scr_data_len 	= platform_data.get_screen_tiles_cnt( file_ext );
+				// confirm the current screen size
+				update_screen_size();
+
+				prj_data.m_file_ext						= Path.GetExtension( _filename ).Substring( 1 );
+				prj_data.m_use_file_screen_resolution	= platform_data.get_platform_type() == platform_data.get_platform_type_by_file_ext( prj_data.m_file_ext );
+
+				int load_scr_data_len 	= platform_data.get_screen_tiles_cnt( prj_data.m_file_ext, true );
 				int scr_data_len 		= platform_data.get_screen_tiles_cnt();
-
-				if( load_scr_data_len != scr_data_len )
-				{
-					if( m_data_conversion_options_form.ShowDialog() == DialogResult.Cancel )
-					{
-						return;
-					}
-				}
-
+				
 				progress_bar_show( true, "Project loading..." );
 
 				reset();
@@ -721,25 +739,53 @@ namespace MAPeD
 					br = new BinaryReader( fs );
 					if( br.ReadUInt32() == utils.CONST_PROJECT_FILE_MAGIC )
 					{
-						byte ver = br.ReadByte();
+						prj_data.m_ver = br.ReadByte();
 						
-						if( ver <= utils.CONST_PROJECT_FILE_VER )
+						if( prj_data.m_ver <= utils.CONST_PROJECT_FILE_VER )
 						{
-							if( ver >= 4 )
+							if( prj_data.m_ver >= 4 )
 							{
 								uint pre_flags = br.ReadUInt32();
 								
-								bool scr_data_tiles4x4 = ( ( pre_flags & utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 ) == utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 );
+								prj_data.m_scr_data_tiles4x4 = ( ( pre_flags & utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 ) == utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 );
 								
-								set_screen_data_type( scr_data_tiles4x4 ? data_sets_manager.EScreenDataType.sdt_Tiles4x4:data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+								set_screen_data_type( prj_data.m_scr_data_tiles4x4 ? data_sets_manager.EScreenDataType.sdt_Tiles4x4:data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+								
+								if( ( pre_flags & utils.CONST_IO_DATA_PRE_FLAG_SCR_BLOCKS_WH ) == utils.CONST_IO_DATA_PRE_FLAG_SCR_BLOCKS_WH )
+								{
+									prj_data.m_scr_blocks_width		= br.ReadByte();
+									prj_data.m_scr_blocks_height	= br.ReadByte();
+									
+									load_scr_data_len = ( ( prj_data.m_scr_blocks_width + 1 ) >> 1 ) * ( ( prj_data.m_scr_blocks_height + 1 ) >> 1 );
+								}
 							}
 							else
 							{
 								// early versions always work in the Tiles4x4 mode
 								set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
 							}
+
+							// check screen resolutions
+							{
+								if( load_scr_data_len != scr_data_len )
+								{
+									if( m_data_conversion_options_form.ShowDialog( prj_data ) == DialogResult.Cancel )
+									{
+										return;
+									}
+									
+									prj_data.m_scr_align					= m_data_conversion_options_form.screens_align_mode;
+									prj_data.m_convert_colors				= m_data_conversion_options_form.convert_colors;
+									prj_data.m_use_file_screen_resolution	= m_data_conversion_options_form.use_file_screen_resolution;
+								}
+								
+								if( prj_data.m_use_file_screen_resolution && ( ( prj_data.m_scr_blocks_width != 0xff ) && ( prj_data.m_scr_blocks_height != 0xff ) ) )
+								{
+									update_screen_size( prj_data.m_scr_blocks_width, prj_data.m_scr_blocks_height );
+								}
+							}
 							
-							m_data_manager.tiles_data_pos = await Task.Run( () => m_data_manager.load( ver, br, file_ext, m_data_conversion_options_form.screens_align_mode, m_data_conversion_options_form.convert_colors, m_progress_val, m_progress_status ) );
+							m_data_manager.tiles_data_pos = await Task.Run( () => m_data_manager.load( br, prj_data, m_progress_val, m_progress_status ) );
 							
 							m_data_manager.post_load_update();
 							
@@ -754,7 +800,7 @@ namespace MAPeD
 						}
 						else
 						{
-							throw new Exception( "Invalid file version (" + ver + ")!" );
+							throw new Exception( "Invalid file version (" + prj_data.m_ver + ")!" );
 						}
 					}
 					else
@@ -854,8 +900,13 @@ namespace MAPeD
 					bw.Write( utils.CONST_PROJECT_FILE_VER );
 
 					uint pre_flags = ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4:0;
+					pre_flags |= utils.CONST_IO_DATA_PRE_FLAG_SCR_BLOCKS_WH;
+					
 					bw.Write( pre_flags );
 
+					bw.Write( ( byte )platform_data.get_screen_blocks_width() );
+					bw.Write( ( byte )platform_data.get_screen_blocks_height() );
+					
 					m_data_manager.save( bw );
 					
 					uint post_flags = ( uint )( CheckBoxPalettePerCHR.Checked ? utils.CONST_IO_DATA_POST_FLAG_MMC5:0 );
@@ -1523,15 +1574,16 @@ namespace MAPeD
 			
 			if( m_data_manager.tiles_data_create() )
 			{
-				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_cnt - 1 );
+				enable_main_UI( true );
+				update_screen_size();
 				
+				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_cnt - 1 );
+
 				CBoxCHRBanks.Items.Add( data );
 				CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_cnt - 1;
 	
 				palette_group.Instance.active_palette = 0;
 	
-				enable_main_UI( true );
-				
 				enable_copy_paste_action( false, ECopyPasteType.cpt_All );
 				
 				set_status_msg( "Added CHR bank" );
@@ -2326,54 +2378,61 @@ namespace MAPeD
 			}
 		}
 
-#if DEF_SCREEN_HEIGHT_7d5_TILES
 		bool check_empty_screen( ulong[] _tiles, screen_data _scr_data )
-#else
-		bool check_empty_screen( screen_data _scr_data )
-#endif
 		{
 			int tile_n;
-#if DEF_SCREEN_HEIGHT_7d5_TILES
+
 			if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				ulong tile_ind;
+				int block_n;
+				int tile_offs_x;
+				int tile_offs_y;
+				int block_offs_x;
+				int block_offs_y;
+				int block_x;
+				int block_y;
 				
-				int scr_first_tile_ind	= _scr_data.get_tile( 0 );
+				int half_tile_x = platform_data.get_half_tile_x();
+				int half_tile_y = platform_data.get_half_tile_y();
 				
-				for( tile_n = 1; tile_n < platform_data.get_screen_tiles_cnt() - platform_data.get_screen_tiles_width(); tile_n++ )
-				{
-					if( scr_first_tile_ind != _scr_data.get_tile( tile_n ) )
-					{
-						break;
-					}
-				}
+				ulong	tile_ind		= _tiles[ _scr_data.get_tile( 0 ) ];
+				ushort	first_block_ind	= utils.get_ushort_from_ulong( tile_ind, 0 );
 				
-				if( tile_n != platform_data.get_screen_tiles_cnt() - platform_data.get_screen_tiles_width() )
+				for( tile_n = 0; tile_n < _scr_data.m_arr.Length; tile_n++ )
 				{
-					return false;
-				}
-	
-				// check the last upper half of the tiles line
-				int scr_block_ind	= utils.get_ushort_from_ulong( _tiles[ _scr_data.get_tile( 0 ) ], 0 );
-	
-				for( tile_n = platform_data.get_screen_tiles_cnt() - platform_data.get_screen_tiles_width(); tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
-				{
-					tile_ind = _tiles[ _scr_data.get_tile( tile_n ) ];
+					tile_ind	= _tiles[ _scr_data.get_tile( tile_n ) ];
 					
-					if( ( scr_block_ind != utils.get_ushort_from_ulong( tile_ind, 0 ) ||
-					    ( scr_block_ind != utils.get_ushort_from_ulong( tile_ind, 1 ) ) ) )
+					tile_offs_x = ( tile_n % platform_data.get_screen_tiles_width() );
+					tile_offs_y = ( tile_n / platform_data.get_screen_tiles_width() );
+
+					block_offs_x = tile_offs_x << 1;
+					block_offs_y = tile_offs_y << 1;						
+					
+					for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 					{
-						break;
+						block_x = block_offs_x + ( ( ( block_n & 0x01 ) != 0 ) ? 1:0 );
+						block_y = block_offs_y + ( ( ( block_n & 0x02 ) != 0 ) ? 1:0 );
+						
+						if( ( half_tile_x == tile_offs_x ) && ( block_n & 0x01 ) != 0 )
+						{
+							continue;
+						}
+						
+						if( ( half_tile_y == tile_offs_y ) && ( block_n & 0x02 ) != 0 )
+						{
+							continue;
+						}
+						
+						if( utils.get_ushort_from_ulong( tile_ind, block_n ) != first_block_ind )
+						{
+							return false;
+						}
 					}
 				}
 				
-				if( tile_n == platform_data.get_screen_tiles_cnt() )
-				{
-					return true;
-				}
+				return true;
 			}
 			else
-#endif
 			{
 				int scr_first_tile_ind = _scr_data.get_tile( 0 );
 				int num_tiles = platform_data.get_screen_tiles_cnt_uni( m_data_manager.screen_data_type );
@@ -2405,11 +2464,7 @@ namespace MAPeD
 			
 			for( scr_n = 0; scr_n < m_data_manager.scr_data_cnt; scr_n++ )
 			{
-#if DEF_SCREEN_HEIGHT_7d5_TILES
 				if( check_empty_screen( data.tiles, data.get_screen_data( scr_n ) ) )
-#else
-				if( check_empty_screen( data.get_screen_data( scr_n ) ) )
-#endif
 				{
 					delete_screen( scr_n );
 

@@ -18,6 +18,7 @@ namespace MAPeD
 	/// </summary>
 	public interface i_screen_list
 	{
+		void	set_image_list_size( Size _size );
 		void 	add( Image _img );
 		bool	replace( int _ind, Image _img );
 		Image	get( int _ind );
@@ -33,6 +34,11 @@ namespace MAPeD
 		public screen_list_normal( ImageList _img_list )
 		{
 			m_img_list = _img_list;
+		}
+		
+		public virtual void	set_image_list_size( Size _size )
+		{
+			m_img_list.ImageSize = _size;
 		}
 		
 		public virtual void	add( Image _img )
@@ -87,11 +93,11 @@ namespace MAPeD
 		}
 	}
 	
-	public class screen_list_oversize : screen_list_normal
+	public class screen_list_scaled : screen_list_normal
 	{
 		private List< Image >	m_os_img_list = new List<Image>();
 			
-		public screen_list_oversize( ImageList _img_list ) : base( _img_list )
+		public screen_list_scaled( ImageList _img_list ) : base( _img_list )
 		{
 			//...
 		}

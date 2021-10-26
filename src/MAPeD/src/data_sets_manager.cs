@@ -777,7 +777,7 @@ namespace MAPeD
 			_bw.Write( utils.CONST_IO_DATA_END );
 		}
 		
-		public int load( byte _ver, BinaryReader _br, string _file_ext, data_conversion_options_form.EScreensAlignMode _scr_align_mode, bool _convert_colors, IProgress< int > _progress, IProgress< string > _status )
+		public int load( BinaryReader _br, load_project_data _prj_data, IProgress< int > _progress, IProgress< string > _status )
 		{
 			int load_progress = 0;
 			
@@ -797,7 +797,7 @@ namespace MAPeD
 					for( int i = 0; i < data_cnt; i++ )
 					{
 						tiles_data_create();
-						get_tiles_data( tiles_data_pos ).load( _ver, _br, _file_ext, _scr_align_mode, screen_data_type );
+						get_tiles_data( tiles_data_pos ).load( _br, _prj_data, screen_data_type );
 						
 						_progress.Report( utils.calc_progress_val( ref load_progress, data_cnt, i ) );
 					}
@@ -832,7 +832,7 @@ namespace MAPeD
 						for( int ent_n = 0; ent_n < ents_cnt; ent_n++ )
 						{
 							ent = new entity_data();
-							ent.load( _ver, _br );
+							ent.load( _br, _prj_data.m_ver );
 							
 							ent_list.Add( ent );
 						}
@@ -852,7 +852,7 @@ namespace MAPeD
 					for( int i = 0; i < layouts_data_cnt; i++ )
 					{
 						layout_data_create();
-						get_layout_data( layouts_data_pos ).load( _ver, _br, get_entity_by_name, _file_ext, _scr_align_mode, screen_data_type );
+						get_layout_data( layouts_data_pos ).load( _br, _prj_data.m_ver, get_entity_by_name, screen_data_type );
 					}
 					
 					entity_instance.load_instances_counter( _br );
@@ -866,18 +866,18 @@ namespace MAPeD
 					
 					int i;
 					
-					int plt_len 	= platform_data.get_main_palette_colors_cnt( _file_ext );
+					int plt_len 	= platform_data.get_main_palette_colors_cnt( _prj_data.m_file_ext );
 					int[] plt_main	= null;
 					
-					bool ignore_palette = ( _file_ext != platform_data.get_platform_file_ext( platform_data.get_platform_type() ) );
+					bool ignore_palette = ( _prj_data.m_file_ext != platform_data.get_platform_file_ext( platform_data.get_platform_type() ) );
 					
 					if( ignore_palette )
 					{
-						if( _convert_colors )
+						if( _prj_data.m_convert_colors )
 						{
-							plt_main = platform_data.get_palette_by_file_ext( _file_ext );
+							plt_main = platform_data.get_palette_by_file_ext( _prj_data.m_file_ext );
 							
-							if( _file_ext == platform_data.CONST_NES_FILE_EXT || _file_ext == platform_data.CONST_SMS_FILE_EXT )
+							if( _prj_data.m_file_ext == platform_data.CONST_NES_FILE_EXT || _prj_data.m_file_ext == platform_data.CONST_SMS_FILE_EXT )
 							{
 								// load main palette from the project file
 								int data_pos = 0;
@@ -890,9 +890,9 @@ namespace MAPeD
 							}
 						}
 							
-						project_data_converter_provider.get_converter().palettes_processing( _ver, platform_data.get_platform_type_by_file_ext( _file_ext ), _convert_colors, this, plt_main );
+						project_data_converter_provider.get_converter().palettes_processing( _prj_data.m_ver, platform_data.get_platform_type_by_file_ext( _prj_data.m_file_ext ), _prj_data.m_convert_colors, this, plt_main );
 							
-						if( _convert_colors )
+						if( _prj_data.m_convert_colors )
 						{
 							for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
 							{
@@ -901,7 +901,7 @@ namespace MAPeD
 						}
 						else
 						{
-							if( _file_ext == platform_data.CONST_NES_FILE_EXT || _file_ext == platform_data.CONST_SMS_FILE_EXT )
+							if( _prj_data.m_file_ext == platform_data.CONST_NES_FILE_EXT || _prj_data.m_file_ext == platform_data.CONST_SMS_FILE_EXT )
 							{
 								// skip palette
 								_br.ReadBytes( plt_len * 3 );
@@ -941,7 +941,7 @@ namespace MAPeD
 					
 					for( int i = 0; i < data_cnt; i++ )
 					{
-						m_tiles_data[ i ].load_tiles_patterns( _ver, _br );
+						m_tiles_data[ i ].load_tiles_patterns( _br, _prj_data.m_ver );
 					}
 
 					_progress.Report( utils.calc_progress_val_half( ref load_progress ) );
@@ -1081,6 +1081,7 @@ namespace MAPeD
 			int scr_n;
 			int tile_n;
 			int block_n;
+			int x_pos;
 			int y_pos;
 			
 			for( data_n = 0; data_n < tiles_data_cnt; data_n++ )
@@ -1096,12 +1097,13 @@ namespace MAPeD
 					{
 						for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 						{
+							x_pos = ( ( tile_n % platform_data.get_screen_tiles_width() ) << 1 ) + ( block_n & 0x01 );
 							y_pos = ( ( tile_n / platform_data.get_screen_tiles_width() ) << 1 ) + ( ( block_n & 0x02 ) >> 1 );
 							
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-							if( y_pos <= 14 )
-#endif
-								new_scr.set_tile( ( y_pos * platform_data.get_screen_blocks_width() ) + ( ( tile_n % platform_data.get_screen_tiles_width() ) << 1 ) + ( block_n & 0x01 ), utils.get_ushort_from_ulong( data.tiles[ data.get_screen_tile( scr_n, tile_n ) ], block_n ) );
+							if( ( y_pos < platform_data.get_screen_blocks_height() ) && ( x_pos < platform_data.get_screen_blocks_width() ) )
+							{
+								new_scr.set_tile( ( y_pos * platform_data.get_screen_blocks_width() ) + x_pos, utils.get_ushort_from_ulong( data.tiles[ data.get_screen_tile( scr_n, tile_n ) ], block_n ) );
+							}
 						}
 					}
 					
@@ -1155,15 +1157,24 @@ namespace MAPeD
 			int tile_y;
 			int tile_offs;
 			ulong tile;
-			ushort tile_val0 = 0;
-			ushort tile_val1 = 0;
-			ushort tile_val2 = 0;
-			ushort tile_val3 = 0;
+			ulong tile_mask;
+			ushort tile_ind;
+			ushort tile_val0;
+			ushort tile_val1;
+			ushort tile_val2;
+			ushort tile_val3;
 			
 			bool tiles_arr_overflow	= false;
+			bool valid_x_pos;
 
 			string ptrn_invalid_size_str = "";
 			string ptrn_invalid_tile_str = "";
+			
+			List< screen_data >	screens;
+			ulong[] 			tiles;
+			
+			int half_tile_x = platform_data.get_half_tile_x();
+			int half_tile_y = platform_data.get_half_tile_y();
 			
 			Dictionary< int, List< screen_data > > 	bank_id_screens	= new Dictionary< int, List< screen_data > >( tiles_data_cnt );
 			Dictionary< int, ulong[] >				bank_id_tiles	= new Dictionary< int, ulong[] >( tiles_data_cnt );
@@ -1172,11 +1183,11 @@ namespace MAPeD
 			{
 				data = get_tiles_data( data_n );
 				
-				List< screen_data >	screens	= new List< screen_data >( data.screen_data_cnt() );
-				ulong[] 			tiles	= new ulong[ platform_data.get_max_tiles_cnt() ];
+				screens	= new List< screen_data >( data.screen_data_cnt() );
+				tiles	= new ulong[ platform_data.get_max_tiles_cnt() ];
 				Array.Clear( tiles, 0, tiles.Length );
 				
-				ushort tile_ind = 0;
+				tile_ind = 0;
 				
 				// convert screens and fill tile arrays
 				for( scr_n = 0; scr_n < data.screen_data_cnt(); scr_n++ )
@@ -1185,33 +1196,44 @@ namespace MAPeD
 					
 					for( tile_n = 0; tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 					{
+						tile_mask = 0xffffffffffffffff;
+						
 						tile_x = tile_n % platform_data.get_screen_tiles_width();
 						tile_y = tile_n / platform_data.get_screen_tiles_width();
 						
 						tile_offs = ( tile_x << 1 ) + ( ( tile_y << 1 ) * platform_data.get_screen_blocks_width() );
 						
 						tile_val0 = data.get_screen_tile( scr_n, tile_offs );
-						tile_val1 = data.get_screen_tile( scr_n, tile_offs + 1 );
 						
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-						if( tile_y < 7 )
-#endif
+						valid_x_pos = ( ( tile_x << 1 ) + 1 ) < platform_data.get_screen_blocks_width();
+						
+						tile_val1 = valid_x_pos ? data.get_screen_tile( scr_n, tile_offs + 1 ):( ushort )0;
+						
+						if( ( ( half_tile_y >= 0 ) && ( tile_y < half_tile_y ) ) || ( half_tile_y < 0 ) )
 						{
-							tile_val2 = data.get_screen_tile( scr_n, tile_offs + platform_data.get_screen_blocks_width() );
-							tile_val3 = data.get_screen_tile( scr_n, tile_offs + platform_data.get_screen_blocks_width() + 1 );
+							tile_val2 = data.get_screen_tile( scr_n, tile_offs + platform_data.get_screen_blocks_width() );							
+							tile_val3 = valid_x_pos ? data.get_screen_tile( scr_n, tile_offs + platform_data.get_screen_blocks_width() + 1 ):( ushort )0;
 						}
-#if DEF_SCREEN_HEIGHT_7d5_TILES
 						else
 						{
 							tile_val2 = tile_val3 = 0;
+							
+							tile_mask &= 0xffffffff00000000;
 						}
-#endif						
+						
+						if( tile_x == platform_data.get_half_tile_x() )
+						{
+							tile_val1 = tile_val3 = 0;
+							
+							tile_mask &= 0xffff0000ffff0000;
+						}
+						
 						tile = tiles_data.set_tile_data( tile_val0, tile_val1, tile_val2, tile_val3 );
 
 						// check new tile
 						for( i = 0; i < tile_ind; i++ )
 						{
-							if( tiles[ i ] == tile )
+							if( ( tiles[ i ] & tile_mask ) == ( tile & tile_mask ) )
 							{
 								break;
 							}

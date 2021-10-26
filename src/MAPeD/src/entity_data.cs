@@ -128,12 +128,10 @@ namespace MAPeD
 			_bw.Write( extra_data_size );
 		}
 		
-		public void load(	byte 											_ver, 
-		                 	BinaryReader 									_br, 
-		                 	Func< string, entity_data > 					_get_ent, 
-		                 	string 											_file_ext, 
-		                 	data_conversion_options_form.EScreensAlignMode 	_scr_align_mode, 
-		                 	data_sets_manager.EScreenDataType 				_scr_type )
+		public void load(	BinaryReader 						_br,
+							byte								_ver,
+							Func< string, entity_data > 		_get_ent, 
+							data_sets_manager.EScreenDataType 	_scr_type )
 		{
 			string base_ent_name;
 			
@@ -378,7 +376,7 @@ namespace MAPeD
 			_bw.Write( extra_data_size );
 		}
 		
-		public void load( byte _ver, BinaryReader _br )
+		public void load( BinaryReader _br, byte _ver )
 		{
 			m_name 				= _br.ReadString();
 			m_properties 		= _br.ReadString();

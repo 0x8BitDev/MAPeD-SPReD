@@ -79,7 +79,7 @@ namespace MAPeD
 		{
 			string name	= _br.ReadString();
 
-			return new pattern_data( name, screen_data.load( _ver, _br ) );
+			return new pattern_data( name, screen_data.load( _br, _ver ) );
 		}
 	}
 }

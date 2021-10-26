@@ -1306,14 +1306,11 @@ namespace MAPeD
 				m_pen.Color = Color.Red;
 				m_pen.Width = 2.0f;
 				
-				int width 	= platform_data.get_screen_tiles_width() * utils.CONST_SCREEN_TILES_SIZE;
-				int height	= platform_data.get_screen_tiles_height() * utils.CONST_SCREEN_TILES_SIZE;
+				int width 	= platform_data.get_screen_blocks_width() * utils.CONST_SCREEN_BLOCKS_SIZE;
+				int height	= platform_data.get_screen_blocks_height() * utils.CONST_SCREEN_BLOCKS_SIZE;
 				
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-				m_gfx.DrawRectangle( m_pen, get_scr_offs_x(), get_scr_offs_y(), width, height - ( utils.CONST_SCREEN_TILES_SIZE >> 1 ) );
-#else
 				m_gfx.DrawRectangle( m_pen, get_scr_offs_x(), get_scr_offs_y(), width, height );
-#endif					
+				
 				m_pen.Width = 1.0f;
 			}
 			

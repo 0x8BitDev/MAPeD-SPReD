@@ -119,11 +119,11 @@ namespace MAPeD
 		private const int CONST_ZX_SCREEN_NUM_BLOCKS_WIDTH	= CONST_ZX_SCREEN_NUM_TILES_WIDTH << 1;
 		private const int CONST_SMD_SCREEN_NUM_BLOCKS_WIDTH	= CONST_SMD_SCREEN_NUM_TILES_WIDTH << 1;
 		
-		private const int CONST_NES_SCREEN_NUM_BLOCKS_HEIGHT	= ( CONST_NES_SCREEN_NUM_TILES_HEIGHT << 1 ) - 1;	// DEF_SCREEN_HEIGHT_7d5_TILES by default
+		private const int CONST_NES_SCREEN_NUM_BLOCKS_HEIGHT	= ( CONST_NES_SCREEN_NUM_TILES_HEIGHT << 1 ) - 1;
 		private const int CONST_SMS_SCREEN_NUM_BLOCKS_HEIGHT	= CONST_SMS_SCREEN_NUM_TILES_HEIGHT << 1;
 		private const int CONST_PCE_SCREEN_NUM_BLOCKS_HEIGHT	= CONST_PCE_SCREEN_NUM_TILES_HEIGHT << 1;
 		private const int CONST_ZX_SCREEN_NUM_BLOCKS_HEIGHT		= CONST_ZX_SCREEN_NUM_TILES_HEIGHT << 1;
-		private const int CONST_SMD_SCREEN_NUM_BLOCKS_HEIGHT	= ( CONST_SMD_SCREEN_NUM_TILES_HEIGHT << 1 ) - 1;	// DEF_SCREEN_HEIGHT_7d5_TILES by default
+		private const int CONST_SMD_SCREEN_NUM_BLOCKS_HEIGHT	= ( CONST_SMD_SCREEN_NUM_TILES_HEIGHT << 1 ) - 1;
 		
 		private static readonly string[] m_platform_names_arr = new string[]
 		{
@@ -234,10 +234,10 @@ namespace MAPeD
 		};
 
 		// current platform native screen size in tiles\blocks
-		private static readonly int m_scr_tiles_width	= -1;
-		private static readonly int m_scr_tiles_height	= -1;
-		private static readonly int m_scr_blocks_width	= -1;
-		private static readonly int m_scr_blocks_height	= -1;
+		private static int m_scr_tiles_width	= -1;
+		private static int m_scr_tiles_height	= -1;
+		private static int m_scr_blocks_width	= -1;
+		private static int m_scr_blocks_height	= -1;
 
 		private static readonly EPlatformType	m_platform = EPlatformType.pt_UNKNOWN;
 		
@@ -265,6 +265,39 @@ namespace MAPeD
 			m_scr_blocks_width	= m_platform_screen_blocks_width_cnt[ ( int )m_platform ];
 			m_scr_blocks_height	= m_platform_screen_blocks_height_cnt[ ( int )m_platform ];
 		}
+		
+		public static void set_screen_blocks_size( int _blocks_w, int _blocks_h )
+		{
+			m_scr_blocks_width	= _blocks_w;
+			m_scr_blocks_height	= _blocks_h;
+
+			m_scr_tiles_width	= ( _blocks_w + 1 ) >> 1;
+			m_scr_tiles_height	= ( _blocks_h + 1 ) >> 1; 
+		}
+		
+		public static int get_half_tile_y()
+		{
+			int blocks_h = get_screen_blocks_height();
+			
+			if( ( blocks_h & 0x01 ) == 0x01 )
+			{
+				return ( blocks_h >> 1 );
+			}
+			
+			return -1;
+		}
+
+		public static int get_half_tile_x()
+		{
+			int blocks_w = get_screen_blocks_width();
+			
+			if( ( blocks_w & 0x01 ) == 0x01 )
+			{
+				return ( blocks_w >> 1 );
+			}
+			
+			return -1;
+		}		
 // PLATFORM FUNCS
 		public static int get_platforms_cnt()
 		{
@@ -321,9 +354,9 @@ namespace MAPeD
 			return m_platform_max_tiles_cnt[ ( int )get_platform_type() ];
 		}
 // SCREEN TILES \ BLOCKS COUNT
-		public static int get_screen_tiles_cnt( string _file_ext )
+		public static int get_screen_tiles_cnt( string _file_ext, bool _native = false )
 		{
-			return get_screen_tiles_cnt( get_platform_type_by_file_ext( _file_ext ) );
+			return get_screen_tiles_cnt( get_platform_type_by_file_ext( _file_ext ), _native );
 		}
 
 		public static int get_screen_tiles_cnt()
@@ -331,9 +364,9 @@ namespace MAPeD
 			return get_screen_tiles_cnt( get_platform_type() );
 		}
 		
-		public static int get_screen_tiles_cnt( EPlatformType _type )
+		public static int get_screen_tiles_cnt( EPlatformType _type, bool _native = false )
 		{
-			return get_screen_tiles_width( _type ) * get_screen_tiles_height( _type );
+			return get_screen_tiles_width( _type, _native ) * get_screen_tiles_height( _type, _native );
 		}
 
 		public static int get_screen_blocks_cnt( string _file_ext )
@@ -363,14 +396,14 @@ namespace MAPeD
 			}
 		}
 // SCREEN DIMENSIONS IN PIXELS
-		public static int get_screen_width_pixels()
+		public static int get_screen_width_pixels( bool _native = false )
 		{
-			return get_screen_blocks_width( get_platform_type() ) << 4;
+			return get_screen_blocks_width( get_platform_type(), _native ) << 4;
 		}
 		
-		public static int get_screen_height_pixels()
+		public static int get_screen_height_pixels( bool _native = false )
 		{
-			return get_screen_blocks_height( get_platform_type() ) << 4;
+			return get_screen_blocks_height( get_platform_type(), _native ) << 4;
 		}
 		
 		public static int get_screen_mark_image_size()
@@ -403,20 +436,20 @@ namespace MAPeD
 			return get_screen_tiles_width_by_platform_type_uni( get_platform_type(), _scr_type );
 		}
 
-		public static int get_screen_tiles_width_by_file_ext_uni( string _file_ext, data_sets_manager.EScreenDataType _scr_type )
+		public static int get_screen_tiles_width_by_file_ext_uni( string _file_ext, data_sets_manager.EScreenDataType _scr_type, bool _native = false )
 		{
-			return get_screen_tiles_width_by_platform_type_uni( get_platform_type_by_file_ext( _file_ext ), _scr_type );
+			return get_screen_tiles_width_by_platform_type_uni( get_platform_type_by_file_ext( _file_ext ), _scr_type, _native );
 		}
 		
-		public static int get_screen_tiles_width_by_platform_type_uni( EPlatformType _platform_type, data_sets_manager.EScreenDataType _type )
+		public static int get_screen_tiles_width_by_platform_type_uni( EPlatformType _platform_type, data_sets_manager.EScreenDataType _type, bool _native = false )
 		{
 			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				return get_screen_tiles_width( _platform_type );
+				return get_screen_tiles_width( _platform_type, _native );
 			}
 			else
 			{
-				return get_screen_blocks_width( _platform_type );
+				return get_screen_blocks_width( _platform_type, _native );
 			}
 		}
 		
@@ -425,19 +458,19 @@ namespace MAPeD
 			return get_screen_tiles_width( get_platform_type() );
 		}
 		
-		public static int get_screen_tiles_width( EPlatformType _platform_type )
+		public static int get_screen_tiles_width( EPlatformType _platform_type, bool _native = false )
 		{
-			return m_platform_screen_tiles_width_cnt[ ( int )_platform_type ];
+			return _native ? m_platform_screen_tiles_width_cnt[ ( int )_platform_type ]:m_scr_tiles_width;
 		}
 
-		public static int get_screen_blocks_width()
+		public static int get_screen_blocks_width( bool _native = false )
 		{
-			return get_screen_blocks_width( get_platform_type() );
+			return get_screen_blocks_width( get_platform_type(), _native );
 		}
 		
-		public static int get_screen_blocks_width( EPlatformType _platform_type )
+		public static int get_screen_blocks_width( EPlatformType _platform_type, bool _native = false )
 		{
-			return m_platform_screen_blocks_width_cnt[ ( int )_platform_type ];
+			return _native ? m_platform_screen_blocks_width_cnt[ ( int )_platform_type ]:m_scr_blocks_width;
 		}		
 // SCREEN HEIGHT TILES \ BLOCKS
 		public static int get_screen_tiles_height_uni( data_sets_manager.EScreenDataType _scr_type )
@@ -445,20 +478,20 @@ namespace MAPeD
 			return get_screen_tiles_height_by_platform_type_uni( get_platform_type(), _scr_type );
 		}
 
-		public static int get_screen_tiles_height_by_file_ext_uni( string _file_ext, data_sets_manager.EScreenDataType _scr_type )
+		public static int get_screen_tiles_height_by_file_ext_uni( string _file_ext, data_sets_manager.EScreenDataType _scr_type, bool _native = false )
 		{
-			return get_screen_tiles_height_by_platform_type_uni( get_platform_type_by_file_ext( _file_ext ), _scr_type );
+			return get_screen_tiles_height_by_platform_type_uni( get_platform_type_by_file_ext( _file_ext ), _scr_type, _native );
 		}
 		
-		public static int get_screen_tiles_height_by_platform_type_uni( EPlatformType _platform_type, data_sets_manager.EScreenDataType _type )
+		public static int get_screen_tiles_height_by_platform_type_uni( EPlatformType _platform_type, data_sets_manager.EScreenDataType _type, bool _native = false )
 		{
 			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				return get_screen_tiles_height( _platform_type );
+				return get_screen_tiles_height( _platform_type, _native );
 			}
 			else
 			{
-				return get_screen_blocks_height( _platform_type );
+				return get_screen_blocks_height( _platform_type, _native );
 			}
 		}
 		
@@ -467,19 +500,19 @@ namespace MAPeD
 			return get_screen_tiles_height( get_platform_type() );
 		}
 		
-		public static int get_screen_tiles_height( EPlatformType _platform_type )
+		public static int get_screen_tiles_height( EPlatformType _platform_type, bool _native = false )
 		{
-			return m_platform_screen_tiles_height_cnt[ ( int )_platform_type ];
+			return _native ? m_platform_screen_tiles_height_cnt[ ( int )_platform_type ]:m_scr_tiles_height;
 		}
 
-		public static int get_screen_blocks_height()
+		public static int get_screen_blocks_height( bool _native = false )
 		{
-			return get_screen_blocks_height( get_platform_type() );
+			return get_screen_blocks_height( get_platform_type(), _native );
 		}
 		
-		public static int get_screen_blocks_height( EPlatformType _platform_type )
+		public static int get_screen_blocks_height( EPlatformType _platform_type, bool _native = false )
 		{
-			return m_platform_screen_blocks_height_cnt[ ( int )_platform_type ];
+			return _native ? m_platform_screen_blocks_height_cnt[ ( int )_platform_type ]:m_scr_blocks_height;
 		}		
 // PALETTE
 		public static int get_main_palette_colors_cnt( string _file_ext )

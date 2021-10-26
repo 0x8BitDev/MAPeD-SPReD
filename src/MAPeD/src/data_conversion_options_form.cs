@@ -96,6 +96,12 @@ namespace MAPeD
 			get { return CBoxConvertColors.Checked; }
 			set {}
 		}
+
+		public bool use_file_screen_resolution
+		{
+			get { return CBoxUseFileScreenResolution.Checked; }
+			set {}
+		}
 		
 		public data_conversion_options_form()
 		{
@@ -110,6 +116,20 @@ namespace MAPeD
 #if DEF_ZX
 			CBoxConvertColors.Enabled = false;
 #endif
+		}
+		
+		public DialogResult ShowDialog( load_project_data _prj_data )
+		{
+			if( _prj_data.m_scr_blocks_width == 0xff && _prj_data.m_scr_blocks_height == 0xff )
+			{
+				CBoxUseFileScreenResolution.Checked = CBoxUseFileScreenResolution.Enabled = false;
+			}
+			else
+			{
+				CBoxUseFileScreenResolution.Enabled = true;
+			}
+			
+			return ShowDialog();
 		}
 	}
 }
