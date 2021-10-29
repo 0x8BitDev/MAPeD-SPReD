@@ -32,8 +32,20 @@
 ; disable bidirectional scrolling and use static screens switching
 ;.define	TR_BIDIR_STAT_SCR
 
+.if	SCR_BLOCKS2x2_WIDTH != 16
+.define	ERR_SCR_SIZE
+.endif
 
-.if MAP_DATA_MAGIC&MAP_FLAG_DIR_ROWS == MAP_FLAG_DIR_ROWS
+.if	SCR_BLOCKS2x2_HEIGHT != 12
+.define	ERR_SCR_SIZE
+.endif
+
+.ifdef	ERR_SCR_SIZE
+	.printt "*** ERROR: The sample requires full screen data (blocks 2x2: 16x15)! ***\n"
+	.fail
+.endif
+
+.if 	MAP_DATA_MAGIC&MAP_FLAG_DIR_ROWS == MAP_FLAG_DIR_ROWS
 	.printt "*** ERROR: The sample doesn't support row ordered data! ***\n"
 	.fail
 .endif

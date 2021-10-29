@@ -37,7 +37,7 @@
     <DebugType>Full</DebugType>
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <DefineConstants>DEBUG;TRACE;DEF_SCREEN_HEIGHT_7d5_TILES;DEF_TILE_DRAW_FAST;DEF_NES</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;DEF_TILE_DRAW_FAST;DEF_NES</DefineConstants>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <StartAction>Project</StartAction>
   </PropertyGroup>
@@ -47,7 +47,7 @@
     <DebugType>None</DebugType>
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-    <DefineConstants>TRACE;DEF_SCREEN_HEIGHT_7d5_TILES;DEF_TILE_DRAW_FAST;DEF_NES</DefineConstants>
+    <DefineConstants>TRACE;DEF_TILE_DRAW_FAST;DEF_NES</DefineConstants>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>

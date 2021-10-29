@@ -34,8 +34,8 @@ MAP_FLAG_PROP_ID_PER_BLOCK        = $8000
 MAP_FLAG_PROP_ID_PER_CHR          = $10000
 MAP_FLAG_COLOR_TILES              = $20000
 
-scr_2x2tiles_w	equ 16		; number of screen tiles 2x2 in width
-scr_2x2tiles_h	equ 12		; number of screen tiles 2x2 in height
+SCR_BLOCKS2x2_WIDTH	equ 16		; number of screen blocks (2x2) in width
+SCR_BLOCKS2x2_HEIGHT	equ 12		; number of screen blocks (2x2) in height
 
 ; *** Lev0 data (incbins: 4663 bytes) ***
 
@@ -45,7 +45,7 @@ Lev0_wchr	equ 128		; number of map CHRs in width
 Lev0_hchr	equ 96		; number of map CHRs in height
 Lev0_wtls	equ 64		; number of map tiles in width
 Lev0_htls	equ 48		; number of map tiles in height
-Lev0_u_tiles	equ 43		; number of unique tiles
+Lev0_u_tiles	equ 43		; number of unique tiles 2x2 (!)
 Lev0_t_tiles	equ 3072		; total number of tiles in whole map
 
 Lev0_map	incbin "tilemap_Lev0_Data.bin"		;(3072) game level blocks (2x2) array

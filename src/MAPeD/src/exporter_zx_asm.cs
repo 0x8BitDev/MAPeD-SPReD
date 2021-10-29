@@ -386,9 +386,6 @@ namespace MAPeD
 			int scr_width_blocks 	= platform_data.get_screen_blocks_width();
 			int scr_height_blocks 	= platform_data.get_screen_blocks_height();
 			
-			_sw.WriteLine( "\nscr_2x2tiles_w\tequ " + scr_width_blocks + "\t\t; number of screen tiles 2x2 in width" );
-			_sw.WriteLine( "scr_2x2tiles_h\tequ " + scr_height_blocks + "\t\t; number of screen tiles 2x2 in height\n" );
-			
 			for( int level_n = 0; level_n < n_levels; level_n++ )
 			{
 				level_prefix_str	= CONST_FILENAME_LEVEL_PREFIX + level_n;
@@ -416,18 +413,12 @@ namespace MAPeD
 					level_gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;
 				}
 				
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-				n_Y_tiles = n_scr_Y * ( ( platform_data.get_screen_tiles_height() * ( RBtnTiles2x2.Checked ? 2:1 ) ) - ( RBtnTiles2x2.Checked ? 1:0 ) );
-#else
-				n_Y_tiles = n_scr_Y * platform_data.get_screen_tiles_height() * ( RBtnTiles2x2.Checked ? 2:1 );
-#endif
+				n_Y_tiles = n_scr_Y * ( RBtnTiles2x2.Checked ? platform_data.get_screen_blocks_height():platform_data.get_screen_tiles_height() );
+				
 				// initialize a tile map of a game level
 				{
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-					map_data_size = n_scr_X * n_scr_Y * ( ( platform_data.get_screen_tiles_cnt() * ( RBtnTiles2x2.Checked ? 4:1 ) ) - ( RBtnTiles2x2.Checked ? ( platform_data.get_screen_blocks_width() ):0 ) );
-#else
-					map_data_size = n_scr_X * n_scr_Y * platform_data.get_screen_tiles_cnt() * ( RBtnTiles2x2.Checked ? 4:1 );
-#endif					
+					map_data_size = n_scr_X * n_scr_Y * ( RBtnTiles2x2.Checked ? platform_data.get_screen_blocks_cnt():platform_data.get_screen_tiles_cnt() );
+
 					map_tiles_arr = new ushort[ map_data_size ];					
 					Array.Clear( map_tiles_arr, 0, map_data_size );
 					
@@ -475,7 +466,7 @@ namespace MAPeD
 										tile_offs_y <<= 1;
 										
 										// make a list of unique 2x2 tiles in the map
-										for( int block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
+										for( int block_n = 0; block_n < utils.CONST_TILE_SIZE; block_n++ )
 										{
 											tile_data = ( ushort )( bank_data.get_tile_block( scr_tile_id, block_n ) | ( bank_ind << 8 ) );
 											
@@ -483,9 +474,8 @@ namespace MAPeD
 											{
 												unique_tiles_arr.Add( tile_data );
 											}
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-											if( tile_offs_y < 14 || ( tile_offs_y >= 14 && block_n < 2 ) )
-#endif
+											
+											if( ( tile_offs_x + ( block_n & 0x01 ) ) < platform_data.get_screen_blocks_width() && ( tile_offs_y + ( ( block_n & 0x02 ) >> 1 ) ) < platform_data.get_screen_blocks_height() )
 											{
 												map_tiles_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + ( ( block_n & 0x01 ) == 0x01 ? n_Y_tiles:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ) ] = tile_data;
 											}
@@ -683,8 +673,8 @@ namespace MAPeD
 					_sw.WriteLine( level_prefix_str + "_wscr\tequ " + n_scr_X + "\t\t; number of map screens in width" );
 					_sw.WriteLine( level_prefix_str + "_hscr\tequ " + n_scr_Y + "\t\t; number of map screens in height" );
 					
-					_sw.WriteLine( level_prefix_str + "_wchr\tequ " + n_scr_X * ( platform_data.get_screen_tiles_width() << 2 ) + "\t\t; number of map CHRs in width" );
-					_sw.WriteLine( level_prefix_str + "_hchr\tequ " + n_scr_Y * ( scr_height_blocks << 1 ) + "\t\t; number of map CHRs in height" );
+					_sw.WriteLine( level_prefix_str + "_wchr\tequ " + n_scr_X * ( platform_data.get_screen_blocks_width() << 1 ) + "\t\t; number of map CHRs in width" );
+					_sw.WriteLine( level_prefix_str + "_hchr\tequ " + n_scr_Y * ( platform_data.get_screen_blocks_height() << 1 ) + "\t\t; number of map CHRs in height" );
 
 					int map_tiles_width		= RBtnTiles2x2.Checked ? ( n_scr_X * scr_width_blocks ):( n_scr_X * ( scr_width_blocks >> 1 ) );
 					int map_tiles_height	= RBtnTiles2x2.Checked ? ( n_scr_Y * scr_height_blocks ):( n_scr_Y * ( scr_height_blocks >> 1 ) );
@@ -742,7 +732,7 @@ namespace MAPeD
 					// matrix layout by default
 					{
 						_sw.WriteLine( level_prefix_str + "_StartScr\t = " + ( start_scr_ind < 0 ? 0:start_scr_ind ) + "\n" );
-						level_data.export_asm( _sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+						level_data.export_asm( _sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
 					}
 				}
 			}
@@ -894,9 +884,8 @@ namespace MAPeD
 									for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 									{
 										block_id = ( byte )tiles.get_tile_block( tile_id, block_n );
-#if DEF_SCREEN_HEIGHT_7d5_TILES
-										if( tile_offs_y < 14 || ( tile_offs_y >= 14 && block_n < 2 ) )
-#endif											
+										
+										if( ( tile_offs_x + ( block_n & 0x01 ) ) < platform_data.get_screen_blocks_width() && ( tile_offs_y + ( ( block_n & 0x02 ) >> 1 ) ) < platform_data.get_screen_blocks_height() )
 										{
 											exp_scr.m_scr_blocks.set_tile( ( tile_offs_x * scr_height_blocks ) + ( ( block_n & 0x01 ) == 0x01 ? scr_height_blocks:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ), block_id );
 										}
@@ -1897,6 +1886,9 @@ namespace MAPeD
 			_sw.WriteLine( "MAP_FLAG_PROP_ID_PER_BLOCK        = " + utils.hex( "$", 32768 ) );
 			_sw.WriteLine( "MAP_FLAG_PROP_ID_PER_CHR          = " + utils.hex( "$", 65536 ) );
 			_sw.WriteLine( "MAP_FLAG_COLOR_TILES              = " + utils.hex( "$", 131072 ) );
+			
+			_sw.WriteLine( "\nSCR_BLOCKS2x2_WIDTH\tequ " + platform_data.get_screen_blocks_width() + "\t\t; number of screen blocks (2x2) in width" );
+			_sw.WriteLine( "SCR_BLOCKS2x2_HEIGHT\tequ " + platform_data.get_screen_blocks_height() + "\t\t; number of screen blocks (2x2) in height\n" );
 		}
 		
 		private void check_ent_instances_cnt( layout_data _layout, string _lev_pref_str )

@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+29.10.2021 - Added support for custom screen size
 12.10.2021 - Changed project file format (v6): tiles 4x4 data UINT -> ULONG; Updated Python API v1.8
 06.09.2021 - Added import of indexed images with an ordered 16-color palettes array
 31.08.2021 - SMS/PCE/SMD: added support of RLE16 when exporting static screen data

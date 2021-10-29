@@ -37,6 +37,9 @@
 .define	MAP_CHR_BPP	4
 .define	MAP_CHRS_OFFSET	0	; first CHR index in CHR bank
 
+.define SCR_BLOCKS2x2_WIDTH	16	; number of screen blocks (2x2) in width
+.define SCR_BLOCKS2x2_HEIGHT	12	; number of screen blocks (2x2) in height
+
 .define ScrTilesWidth	8	; number of screen tiles (4x4) in width
 .define ScrTilesHeight	6	; number of screen tiles (4x4) in height
 
@@ -55,9 +58,9 @@ tilemap_CHRs:
 	.word chr2
 
 tilemap_CHRs_size:
-	.word 3072		;(chr0)
-	.word 7072		;(chr1)
-	.word 7424		;(chr2)
+	.word 3072	; (chr0)
+	.word 7072	; (chr1)
+	.word 7424	; (chr2)
 
 tilemap_VDPScr:	.incbin "tilemap_VDPScr.bin"	; (4608) VDP-ready data array for each screen (1536 bytes per screen)
 
@@ -72,7 +75,7 @@ tilemap_Plts:	.incbin "tilemap_Plts.bin"	; (96) palettes array of all exported d
 Lev0Scr0:
 	.byte 1	; chr_id
 
-	.word 3072	; tilemap_VDPScr offset
+	.word 1536	; tilemap_VDPScr offset
 
 	.byte 1	; screen index
 
@@ -96,7 +99,7 @@ Lev0Scr1:
 Lev0Scr2:
 	.byte 2
 
-	.word 1536
+	.word 3072
 
 	.byte 2
 

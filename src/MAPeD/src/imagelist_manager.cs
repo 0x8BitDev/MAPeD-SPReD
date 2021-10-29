@@ -85,6 +85,14 @@ namespace MAPeD
 			m_scr_img_size.Width	= 256;
 			m_scr_img_size.Height	= ( int )( 256 * ratio );
 			
+			if( m_scr_img_size.Height > 256 )
+			{
+				ratio = platform_data.get_screen_width_pixels() / ( float )platform_data.get_screen_height_pixels();
+				
+				m_scr_img_size.Width	= ( int )( 256 * ratio );
+				m_scr_img_size.Height	= 256;
+			}
+			
 			if( m_scr_list != null )
 			{
 				m_scr_list.set_image_list_size( m_scr_img_size );

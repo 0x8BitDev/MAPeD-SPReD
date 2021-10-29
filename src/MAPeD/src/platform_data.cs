@@ -453,9 +453,9 @@ namespace MAPeD
 			}
 		}
 		
-		public static int get_screen_tiles_width()
+		public static int get_screen_tiles_width( bool _native = false )
 		{
-			return get_screen_tiles_width( get_platform_type() );
+			return get_screen_tiles_width( get_platform_type(), _native );
 		}
 		
 		public static int get_screen_tiles_width( EPlatformType _platform_type, bool _native = false )
@@ -495,9 +495,9 @@ namespace MAPeD
 			}
 		}
 		
-		public static int get_screen_tiles_height()
+		public static int get_screen_tiles_height( bool _native = false )
 		{
-			return get_screen_tiles_height( get_platform_type() );
+			return get_screen_tiles_height( get_platform_type(), _native );
 		}
 		
 		public static int get_screen_tiles_height( EPlatformType _platform_type, bool _native = false )

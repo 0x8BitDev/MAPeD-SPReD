@@ -36,6 +36,9 @@ MAP_FLAG_ATTRS_PER_CHR            = $10000
 MAP_FLAG_PROP_ID_PER_BLOCK        = $20000
 MAP_FLAG_PROP_ID_PER_CHR          = $40000
 
+SCR_BLOCKS2x2_WIDTH	= 16	; number of screen blocks (2x2) in width
+SCR_BLOCKS2x2_HEIGHT	= 15	; number of screen blocks (2x2) in height
+
 ; *** BASE ENTITIES ***
 
 
@@ -48,16 +51,16 @@ MAP_FLAG_PROP_ID_PER_CHR          = $40000
 tilemap_Props:	.incbin "tilemap_Props.bin"	; (82) block properties array of all exported data banks ( 1 byte per block; data offset = props offset / 4 )
 
 tilemap_PropsOffs:
-	.word 0	; (chr0)
-	.word 132	; (chr1)
-	.word 212	; (chr2)
+	.word 0		; (chr0)
+	.word 132		; (chr1)
+	.word 212		; (chr2)
 
 tilemap_Tiles:	.incbin "tilemap_Tiles.bin"	; (792) tiles (4x4) array of all exported data banks ( 4 bytes per tile )
 
 tilemap_TilesOffs:
-	.word 0	; (chr0)
-	.word 252	; (chr1)
-	.word 484	; (chr2)
+	.word 0		; (chr0)
+	.word 252		; (chr1)
+	.word 484		; (chr2)
 
 tilemap_PPUScr:	.incbin "tilemap_PPUScr.bin"	; compressed (5196 / 5760) PPU-ready data array for each screen ( 960 bytes per screen )
 tilemap_AttrsScr:	.incbin "tilemap_AttrsScr.bin"	; compressed (1704 / 5760) MMC5-ready attributes array for each screen ( 960 bytes per screen )
@@ -72,8 +75,8 @@ Lev0Scr1:
 	.byte 2	; chr_id
 	.byte $C0	; (marks) bits: 7-4 - bit mask of user defined adjacent screens ( Down(7)-Right(6)-Up(5)-Left(4) ); 3-0 - screen property
 
-	.word 1759	; tilemap_PPUScr offset
-	.word 519	; tilemap_AttrsScr offset
+	.word 3483	; tilemap_PPUScr offset
+	.word 1184	; tilemap_AttrsScr offset
 
 	.byte 4	; screen index
 
@@ -123,8 +126,8 @@ Lev0Scr5:
 	.byte 1
 	.byte $30
 
-	.word 4311
-	.word 1361
+	.word 2598
+	.word 841
 
 	.byte 3
 
@@ -140,8 +143,8 @@ Lev0Scr6:
 	.byte 1
 	.byte $60
 
-	.word 3472
-	.word 1039
+	.word 1759
+	.word 519
 
 	.byte 2
 
@@ -157,8 +160,8 @@ Lev0Scr7:
 	.byte 2
 	.byte $10
 
-	.word 2621
-	.word 785
+	.word 4345
+	.word 1450
 
 	.byte 5
 

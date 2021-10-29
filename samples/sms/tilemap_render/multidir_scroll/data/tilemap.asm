@@ -37,6 +37,9 @@
 .define	MAP_CHR_BPP	4
 .define	MAP_CHRS_OFFSET	64	; first CHR index in CHR bank
 
+.define SCR_BLOCKS2x2_WIDTH	16	; number of screen blocks (2x2) in width
+.define SCR_BLOCKS2x2_HEIGHT	12	; number of screen blocks (2x2) in height
+
 .define ScrTilesWidth	8	; number of screen tiles (4x4) in width
 .define ScrTilesHeight	6	; number of screen tiles (4x4) in height
 

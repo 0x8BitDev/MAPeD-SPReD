@@ -27,10 +27,15 @@
 		assert ( MAP_DATA_MAGIC&MAP_FLAG_RLE ) == 0, The sample doesn't support compressed data!
 		assert ( MAP_DATA_MAGIC&MAP_FLAG_DIR_ROWS ) == 0, The sample doesn't support rows ordered data!
 
+		assert SCR_BLOCKS2x2_WIDTH == 16, "This sample requires full screen data (blocks 2x2: 16x15)!"
+		assert SCR_BLOCKS2x2_HEIGHT == 12, "This sample requires full screen data (blocks 2x2: 16x15)!"
+
 TR_DATA_TILES4X4 equ MAP_DATA_MAGIC&MAP_FLAG_TILES4X4
 
 		IF TR_DATA_TILES4X4
 		assert ( DEF_MOVE_STEP == MS_TILE ), The tiles 4x4 mode is only supported when the MS_TILE step mode is active! Please, change the sample settings!
+		assert ( SCR_BLOCKS2x2_WIDTH & $01 ) == 0, The tiles 4x4 mode is only supported even number of blocks on a map screen!
+		assert ( SCR_BLOCKS2x2_HEIGHT & $01 ) == 0, The tiles 4x4 mode is only supported even number of blocks on a map screen!
 		ENDIF
 
 ; level drawing data

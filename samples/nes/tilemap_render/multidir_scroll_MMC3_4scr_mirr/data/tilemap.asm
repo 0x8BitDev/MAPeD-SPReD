@@ -36,6 +36,9 @@ MAP_FLAG_ATTRS_PER_CHR            = $10000
 MAP_FLAG_PROP_ID_PER_BLOCK        = $20000
 MAP_FLAG_PROP_ID_PER_CHR          = $40000
 
+SCR_BLOCKS2x2_WIDTH	= 16	; number of screen blocks (2x2) in width
+SCR_BLOCKS2x2_HEIGHT	= 15	; number of screen blocks (2x2) in height
+
 ; *** BASE ENTITIES ***
 
 bobik_zdoh:
