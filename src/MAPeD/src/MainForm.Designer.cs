@@ -216,10 +216,14 @@ namespace MAPeD
 			this.CheckBoxTileEditorLock = new System.Windows.Forms.CheckBox();
 			this.PBoxTilePreview = new System.Windows.Forms.PictureBox();
 			this.GrpBoxScreenData = new System.Windows.Forms.GroupBox();
+			this.LabelScreenResolution = new System.Windows.Forms.Label();
+			this.NumericUpDownScrBlocksHeight = new System.Windows.Forms.NumericUpDown();
 			this.NumericUpDownScrBlocksWidth = new System.Windows.Forms.NumericUpDown();
 			this.BtnScreenDataInfo = new System.Windows.Forms.Button();
 			this.RBtnScreenDataBlocks = new System.Windows.Forms.RadioButton();
 			this.RBtnScreenDataTiles = new System.Windows.Forms.RadioButton();
+			this.label13 = new System.Windows.Forms.Label();
+			this.label12 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.PanelBlocks = new System.Windows.Forms.FlowLayoutPanel();
 			this.TabScreenEditor = new System.Windows.Forms.TabPage();
@@ -367,9 +371,6 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.label12 = new System.Windows.Forms.Label();
-			this.NumericUpDownScrBlocksHeight = new System.Windows.Forms.NumericUpDown();
-			this.label13 = new System.Windows.Forms.Label();
 			this.ContextMenuEntitiesTreeGroup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
@@ -403,6 +404,7 @@ namespace MAPeD
 			this.GrpBoxTileEditor.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBoxTilePreview)).BeginInit();
 			this.GrpBoxScreenData.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownScrBlocksHeight)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownScrBlocksWidth)).BeginInit();
 			this.groupBox2.SuspendLayout();
 			this.TabScreenEditor.SuspendLayout();
@@ -449,7 +451,6 @@ namespace MAPeD
 			this.ContextMenuBlocksList.SuspendLayout();
 			this.StatusBar.SuspendLayout();
 			this.ContextMenuEntitiesTreeEntity.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownScrBlocksHeight)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// ContextMenuEntitiesTreeGroup
@@ -2084,6 +2085,7 @@ namespace MAPeD
 			// 
 			// GrpBoxScreenData
 			// 
+			this.GrpBoxScreenData.Controls.Add(this.LabelScreenResolution);
 			this.GrpBoxScreenData.Controls.Add(this.NumericUpDownScrBlocksHeight);
 			this.GrpBoxScreenData.Controls.Add(this.NumericUpDownScrBlocksWidth);
 			this.GrpBoxScreenData.Controls.Add(this.BtnScreenDataInfo);
@@ -2093,10 +2095,37 @@ namespace MAPeD
 			this.GrpBoxScreenData.Controls.Add(this.label12);
 			this.GrpBoxScreenData.Location = new System.Drawing.Point(439, 376);
 			this.GrpBoxScreenData.Name = "GrpBoxScreenData";
-			this.GrpBoxScreenData.Size = new System.Drawing.Size(122, 122);
+			this.GrpBoxScreenData.Size = new System.Drawing.Size(122, 140);
 			this.GrpBoxScreenData.TabIndex = 33;
 			this.GrpBoxScreenData.TabStop = false;
 			this.GrpBoxScreenData.Text = "Screen Data";
+			// 
+			// LabelScreenResolution
+			// 
+			this.LabelScreenResolution.Location = new System.Drawing.Point(14, 118);
+			this.LabelScreenResolution.Name = "LabelScreenResolution";
+			this.LabelScreenResolution.Size = new System.Drawing.Size(94, 18);
+			this.LabelScreenResolution.TabIndex = 41;
+			this.LabelScreenResolution.Text = "[WxH]";
+			this.LabelScreenResolution.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			// 
+			// NumericUpDownScrBlocksHeight
+			// 
+			this.NumericUpDownScrBlocksHeight.Location = new System.Drawing.Point(67, 93);
+			this.NumericUpDownScrBlocksHeight.Minimum = new decimal(new int[] {
+									4,
+									0,
+									0,
+									0});
+			this.NumericUpDownScrBlocksHeight.Name = "NumericUpDownScrBlocksHeight";
+			this.NumericUpDownScrBlocksHeight.Size = new System.Drawing.Size(45, 20);
+			this.NumericUpDownScrBlocksHeight.TabIndex = 39;
+			this.NumericUpDownScrBlocksHeight.Value = new decimal(new int[] {
+									4,
+									0,
+									0,
+									0});
+			this.NumericUpDownScrBlocksHeight.ValueChanged += new System.EventHandler(this.NumericUpDownScrBlocksChanged_Event);
 			// 
 			// NumericUpDownScrBlocksWidth
 			// 
@@ -2114,6 +2143,7 @@ namespace MAPeD
 									0,
 									0,
 									0});
+			this.NumericUpDownScrBlocksWidth.ValueChanged += new System.EventHandler(this.NumericUpDownScrBlocksChanged_Event);
 			// 
 			// BtnScreenDataInfo
 			// 
@@ -2149,6 +2179,24 @@ namespace MAPeD
 			this.RBtnScreenDataTiles.UseVisualStyleBackColor = true;
 			this.RBtnScreenDataTiles.Click += new System.EventHandler(this.RBtnScreenDataTilesClick_Event);
 			// 
+			// label13
+			// 
+			this.label13.Location = new System.Drawing.Point(9, 93);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(58, 20);
+			this.label13.TabIndex = 40;
+			this.label13.Text = "Blocks H:";
+			this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// label12
+			// 
+			this.label12.Location = new System.Drawing.Point(9, 69);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(58, 20);
+			this.label12.TabIndex = 38;
+			this.label12.Text = "Blocks W:";
+			this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.PanelBlocks);
@@ -2157,7 +2205,7 @@ namespace MAPeD
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Padding = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.groupBox2.Size = new System.Drawing.Size(191, 583);
-			this.groupBox2.TabIndex = 41;
+			this.groupBox2.TabIndex = 42;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Blocks:";
 			// 
@@ -2171,7 +2219,7 @@ namespace MAPeD
 			this.PanelBlocks.Location = new System.Drawing.Point(6, 16);
 			this.PanelBlocks.Name = "PanelBlocks";
 			this.PanelBlocks.Size = new System.Drawing.Size(179, 561);
-			this.PanelBlocks.TabIndex = 42;
+			this.PanelBlocks.TabIndex = 43;
 			// 
 			// TabScreenEditor
 			// 
@@ -3635,41 +3683,6 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
 			// 
-			// label12
-			// 
-			this.label12.Location = new System.Drawing.Point(9, 69);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(58, 20);
-			this.label12.TabIndex = 38;
-			this.label12.Text = "Blocks W:";
-			this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// NumericUpDownScrBlocksHeight
-			// 
-			this.NumericUpDownScrBlocksHeight.Location = new System.Drawing.Point(67, 93);
-			this.NumericUpDownScrBlocksHeight.Minimum = new decimal(new int[] {
-									4,
-									0,
-									0,
-									0});
-			this.NumericUpDownScrBlocksHeight.Name = "NumericUpDownScrBlocksHeight";
-			this.NumericUpDownScrBlocksHeight.Size = new System.Drawing.Size(45, 20);
-			this.NumericUpDownScrBlocksHeight.TabIndex = 39;
-			this.NumericUpDownScrBlocksHeight.Value = new decimal(new int[] {
-									4,
-									0,
-									0,
-									0});
-			// 
-			// label13
-			// 
-			this.label13.Location = new System.Drawing.Point(9, 93);
-			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(58, 20);
-			this.label13.TabIndex = 40;
-			this.label13.Text = "Blocks H:";
-			this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3720,6 +3733,7 @@ namespace MAPeD
 			this.GrpBoxTileEditor.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PBoxTilePreview)).EndInit();
 			this.GrpBoxScreenData.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownScrBlocksHeight)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownScrBlocksWidth)).EndInit();
 			this.groupBox2.ResumeLayout(false);
 			this.TabScreenEditor.ResumeLayout(false);
@@ -3770,10 +3784,10 @@ namespace MAPeD
 			this.StatusBar.ResumeLayout(false);
 			this.StatusBar.PerformLayout();
 			this.ContextMenuEntitiesTreeEntity.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownScrBlocksHeight)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Label LabelScreenResolution;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.NumericUpDown NumericUpDownScrBlocksHeight;

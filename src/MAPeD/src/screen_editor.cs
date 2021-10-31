@@ -110,7 +110,6 @@ namespace MAPeD
 				m_mode = value;
 				
 				m_layout_mode_adj_scr	= null;
-				m_tiles_data 			= null;
 				m_scr_ind				= -1;
 
 				if( ModeChanged != null )
@@ -263,8 +262,6 @@ namespace MAPeD
 				{
 					m_scr_ind = -1;
 				}
-				
-				m_tiles_data = data;
 				
 				update();
 			}
@@ -997,8 +994,20 @@ namespace MAPeD
 				int half_tile_x = platform_data.get_half_tile_x();
 				int half_tile_y = platform_data.get_half_tile_y();
 			
-				if( mode == EMode.em_Layout && m_layout_mode_adj_scr != null )
+				if( mode == EMode.em_Layout )
 				{
+					if( m_layout_mode_adj_scr == null )
+					{
+						disable( true );
+						
+						utils.brush.Color = utils.CONST_COLOR_STRING_DEFAULT;
+						m_gfx.DrawString( "[ Select an active layout and click on the layout's screen to edit it ]", utils.fnt10_Arial, utils.brush, 0, 0 );
+						
+						invalidate();
+						
+						return;
+					}
+					
 					const short zero_scr = unchecked( (short)0xffff );
 					
 					short	tile_data;
@@ -1202,12 +1211,6 @@ namespace MAPeD
 			else
 			{
 				disable( true );
-				
-				if( mode == EMode.em_Layout )
-				{
-					utils.brush.Color = utils.CONST_COLOR_STRING_DEFAULT;
-					m_gfx.DrawString( "[ Select an active layout and click on the layout's screen to edit it ]", utils.fnt10_Arial, utils.brush, 0, 0 );
-				}
 			}
 			
 			invalidate();

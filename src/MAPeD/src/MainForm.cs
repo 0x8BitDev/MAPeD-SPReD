@@ -261,6 +261,8 @@ namespace MAPeD
 				}			
 			}
 			
+			update_screen_size_label();
+			
 #if DEF_NES
 			Project_openFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
 			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_NES );
@@ -564,6 +566,16 @@ namespace MAPeD
 			
 			platform_data.set_screen_blocks_size( ( int )NumericUpDownScrBlocksWidth.Value, ( int )NumericUpDownScrBlocksHeight.Value );
 			m_imagelist_manager.update_screen_image_size();
+		}
+		
+		void NumericUpDownScrBlocksChanged_Event(object sender, EventArgs e)
+		{
+			 update_screen_size_label();
+		}
+		
+		void update_screen_size_label()
+		{
+			LabelScreenResolution.Text = "[" + ( ( int )NumericUpDownScrBlocksWidth.Value << 4 ).ToString() + "x" + ( ( int )NumericUpDownScrBlocksHeight.Value << 4 ).ToString() + "]";
 		}
 		
 		private void reset()
