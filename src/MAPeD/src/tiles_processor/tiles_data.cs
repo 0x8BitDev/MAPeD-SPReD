@@ -1697,12 +1697,7 @@ namespace MAPeD
 			}
 			
 			// load screens data
-			{
-				int prj_scr_tiles_width		= ( _prj_data.m_scr_blocks_width == 0xff ) ? platform_data.get_screen_tiles_width_by_file_ext_uni( _prj_data.m_file_ext, _scr_type, true ):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_width + 1 ) >> 1 ):_prj_data.m_scr_blocks_width );
-				int prj_scr_tiles_height	= ( _prj_data.m_scr_blocks_height == 0xff ) ? platform_data.get_screen_tiles_height_by_file_ext_uni( _prj_data.m_file_ext, _scr_type, true ):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_height + 1 ) >> 1 ):_prj_data.m_scr_blocks_height );
-				
-				data_converter.load_screens( _br, _prj_data.m_ver, _scr_type, _prj_data.m_scr_align, prj_scr_tiles_width, prj_scr_tiles_height, this );
-			}
+			data_converter.load_screens( _br, _prj_data, _scr_type, this );
 		}
 	}
 }

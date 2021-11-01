@@ -261,8 +261,6 @@ namespace MAPeD
 				}			
 			}
 			
-			update_screen_size_label();
-			
 #if DEF_NES
 			Project_openFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
 			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_NES );
@@ -354,6 +352,8 @@ namespace MAPeD
 				CHRBankPageBtnsToolStripSeparator.Visible = BtnCHRBankNextPage.Visible = BtnCHRBankPrevPage.Visible = false;
 				prevPageToolStripMenuItem.Visible = nextPageToolStripMenuItem.Visible = false;
 			}
+
+			reset();
 			
 			if( _args.Length > 0 )
 			{
@@ -361,7 +361,6 @@ namespace MAPeD
 			}
 			else
 			{
-				reset();
 				set_status_msg( "Add a new CHR bank to begin. Press the \"Bank+\" button! <F1> - Quick Guide" );
 			}
 		}
@@ -604,6 +603,8 @@ namespace MAPeD
 
 			NumericUpDownScrBlocksWidth.Value	= ( decimal )platform_data.get_screen_blocks_width();
 			NumericUpDownScrBlocksHeight.Value	= ( decimal )platform_data.get_screen_blocks_height();
+
+			update_screen_size_label();
 
 			enable_main_UI( false );
 			

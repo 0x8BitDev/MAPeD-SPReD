@@ -29,13 +29,10 @@ namespace MAPeD
 		
 		void palettes_processing( byte _ver, platform_data.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main );
 		
-		void load_screens(	BinaryReader 									_br, 
-                         	byte 											_ver, 
-                         	data_sets_manager.EScreenDataType 				_scr_type, 
-                         	data_conversion_options_form.EScreensAlignMode 	_scr_align_mode, 
-                         	int 											_prj_scr_tiles_width, 
-                         	int 											_prj_scr_tiles_height, 
-                         	tiles_data 										_data );
+		void load_screens(	BinaryReader 						_br, 
+							load_project_data 					_prj_data, 
+							data_sets_manager.EScreenDataType 	_scr_type, 
+							tiles_data 							_data );
 		
 		Rectangle get_native_scr_rect();
 		Rectangle get_prj_scr_rect();
@@ -253,13 +250,24 @@ namespace MAPeD
 			return m_inner_tiles_data[ m_inner_tiles_data.Count - 1 ];
 		}
 		
-		public void load_screens(	BinaryReader 									_br, 
-		                         	byte 											_ver, 
-		                         	data_sets_manager.EScreenDataType 				_scr_type, 
-		                         	data_conversion_options_form.EScreensAlignMode 	_scr_align_mode, 
-		                         	int 											_prj_scr_tiles_width, 
-		                         	int 											_prj_scr_tiles_height, 
-		                         	tiles_data 										_data )
+		public virtual void load_screens(	BinaryReader 						_br, 
+											load_project_data 					_prj_data, 
+											data_sets_manager.EScreenDataType 	_scr_type, 
+											tiles_data 							_data )
+		{
+			int prj_scr_tiles_width		= ( _prj_data.m_scr_blocks_width == 0xff ) ? platform_data.get_screen_tiles_width_by_file_ext_uni( _prj_data.m_file_ext, _scr_type, true ):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_width + 1 ) >> 1 ):_prj_data.m_scr_blocks_width );
+			int prj_scr_tiles_height	= ( _prj_data.m_scr_blocks_height == 0xff ) ? platform_data.get_screen_tiles_height_by_file_ext_uni( _prj_data.m_file_ext, _scr_type, true ):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_height + 1 ) >> 1 ):_prj_data.m_scr_blocks_height );
+			
+			load_screens( _br, _prj_data.m_ver, _scr_type, _prj_data.m_scr_align, prj_scr_tiles_width, prj_scr_tiles_height, _data );
+		}
+		
+		protected void load_screens(	BinaryReader 									_br, 
+										byte 											_ver, 
+										data_sets_manager.EScreenDataType 				_scr_type, 
+										data_conversion_options_form.EScreensAlignMode 	_scr_align_mode, 
+										int 											_prj_scr_tiles_width, 
+										int 											_prj_scr_tiles_height, 
+										tiles_data 										_data )
 		{
 			screen_data scr;
 			
@@ -546,6 +554,17 @@ namespace MAPeD
 				
 				_CHR_data_arr[ x + ( _y << utils.CONST_SPR8x8_SIDE_PIXELS_CNT_POW_BITS ) ] = ( byte )( ( ( byte_0 >> shift_7_cnt ) & 0x01 ) | ( ( ( byte_1 >> shift_7_cnt ) & 0x01 ) << 1 ) | ( ( ( byte_2 >> shift_7_cnt ) & 0x01 ) << 2 ) | ( ( ( byte_3 >> shift_7_cnt ) & 0x01 ) << 3 ) );
 			}
+		}
+		
+		public override void load_screens(	BinaryReader 						_br, 
+											load_project_data					_prj_data, 
+											data_sets_manager.EScreenDataType	_scr_type, 
+											tiles_data 							_data )
+		{
+			int prj_scr_tiles_width		= ( _prj_data.m_scr_blocks_width == 0xff ) ? (_scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 8:16):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_width + 1 ) >> 1 ):_prj_data.m_scr_blocks_width );
+			int prj_scr_tiles_height	= ( _prj_data.m_scr_blocks_height == 0xff ) ? (_scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 7:14):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_height + 1 ) >> 1 ):_prj_data.m_scr_blocks_height );
+			
+			load_screens( _br, _prj_data.m_ver, _scr_type, _prj_data.m_scr_align, prj_scr_tiles_width, prj_scr_tiles_height, _data );
 		}
 	}
 #elif DEF_SMD
