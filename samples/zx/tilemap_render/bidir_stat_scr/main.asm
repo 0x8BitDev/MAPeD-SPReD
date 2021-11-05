@@ -4,7 +4,7 @@
 ;
 ;###################################################################
 ;
-; Bidirectional scroller test.
+; Bidirectional static screens switching test.
 ; Keys: Q, A, O, P
 ;
 

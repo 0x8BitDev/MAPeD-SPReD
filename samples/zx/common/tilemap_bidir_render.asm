@@ -4,19 +4,35 @@
 ;
 ;###################################################################
 ;
-; DESC: Bidirectional scroller example.
+; DESC: Bidirectional static screens switching test.
 ;
 ; Public procs:
 ;
-; tilemap_render.init		- render init
-; tilemap_render.draw_screen  	- draw tiles to screen
+; tilemap_render.init			- render init
+; tilemap_render.draw_screen		- draw tiles to screen
+; tilemap_render.check_up_screen	- check adjacent screen
+; tilemap_render.check_down_screen	- check adjacent screen
+; tilemap_render.check_left_screen	- check adjacent screen
+; tilemap_render.check_right_screen	- check adjacent screen
 ;
+; Supported options:
+;
+; MAP_FLAG_TILES2X2
+; MAP_FLAG_TILES4X4
+; MAP_FLAG_DIR_COLUMNS
+; MAP_FLAG_MODE_BIDIR_SCROLL
+; MAP_FLAG_LAYOUT_ADJACENT_SCREENS
+; MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS
+; MAP_FLAG_COLOR_TILES
+;
+
 
 		MODULE	tilemap_render
 
 		include "common.asm"
 
 		assert ( MAP_DATA_MAGIC&MAP_FLAG_LAYOUT_MATRIX ) == 0, The sample doesn't support matrix layout data!
+		assert ( MAP_DATA_MAGIC&MAP_FLAG_MODE_MULTIDIR_SCROLL ) == 0, The sample doesn't support data for multidirectional scroller!
 		assert ( MAP_DATA_MAGIC&MAP_FLAG_RLE ) == 0, The sample doesn't support compressed data!
 		assert ( MAP_DATA_MAGIC&MAP_FLAG_DIR_ROWS ) == 0, The sample doesn't support rows ordered data!
 
@@ -25,8 +41,8 @@ TR_DATA_MARKS		equ MAP_DATA_MAGIC&MAP_FLAG_MARKS
 TR_COLORED_MAP		equ MAP_DATA_MAGIC&MAP_FLAG_COLOR_TILES
 TR_ADJ_SCREENS		equ MAP_DATA_MAGIC&MAP_FLAG_LAYOUT_ADJACENT_SCREENS
 
-SCR_CHR_WIDTH	equ SCR_BLOCKS2x2_WIDTH << 1
-SCR_CHR_HEIGHT	equ SCR_BLOCKS2x2_HEIGHT << 1
+SCR_CHR_WIDTH		equ SCR_BLOCKS2x2_WIDTH << 1
+SCR_CHR_HEIGHT		equ SCR_BLOCKS2x2_HEIGHT << 1
 
 ; this data must be filled in for each map in the main code
 ;
@@ -181,7 +197,7 @@ _adj_scr_down	= %10000000
 init
 		; fill the tile graphics lookup table
 		
-		ld b, 255
+		ld b, 0
 
 		ld ix, tiles_addr_tbl
 
@@ -208,7 +224,7 @@ init
 
 		; fill the tile colors lookup table
 		
-		ld b, 255
+		ld b, 0
 
 		ld ix, tiles_clr_addr_tbl
 
@@ -383,6 +399,8 @@ draw_screen
 
 		ret
 
+		IF TR_COLORED_MAP
+		
 _draw_clrs_buff
 		ld de, #5800
 		ld hl, scr_clrs_arr
@@ -433,6 +451,8 @@ _draw_black_screen
 		ld sp, (_tmp_sp)
 
 		ret
+
+		ENDIF //TR_COLORED_MAP
 
 ; draw colors column
 ; IN: 	bc' - clrs data
