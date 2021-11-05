@@ -48,9 +48,11 @@ Lev0_htls	equ 48		; number of map tiles in height
 Lev0_u_tiles	equ 43		; number of unique tiles 2x2 (!)
 Lev0_t_tiles	equ 3072		; total number of tiles in whole map
 
-Lev0_map	incbin "tilemap_Lev0_Data.bin"		;(3072) game level blocks (2x2) array
-Lev0_tlg	incbin "tilemap_Lev0_GFX.bin"		;(1376) array of tile images 2x2 (32 bytes per tile)
-Lev0_tlp	incbin "tilemap_Lev0_TilePrps.bin"	;(43) tile properties array (byte per tile)
-Lev0_tlc	incbin "tilemap_Lev0_TileClrs.bin"	;(172) tile colors array (byte per tile)
+Lev0_Map	incbin "tilemap_Lev0_Data.bin"		;(3072) game level blocks (2x2) array
+Lev0_Gfx	incbin "tilemap_Lev0_GFX.bin"		;(1376) array of tile images 2x2 (32 bytes per tile)
+Lev0_Props	incbin "tilemap_Lev0_TilePrps.bin"	;(43) tile properties array (byte per tile)
+Lev0_Clrs	incbin "tilemap_Lev0_TileClrs.bin"	;(172) tile colors array (byte per tile)
 
+
+Lev0_StartScr	equ	0
 

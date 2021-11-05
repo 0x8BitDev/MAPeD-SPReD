@@ -1,6 +1,6 @@
 ;###################################################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2021 0x8BitDev ( MIT license )
 ;
 ;###################################################################
 ;
@@ -13,6 +13,15 @@
 ; tilemap_render.draw_tiles  	- draw tiles to shadow buffer
 ; tilemap_render.show_screen 	- draw shadow buffer to screen
 ;
+; Supported options:
+;
+; MAP_FLAG_TILES2X2
+; MAP_FLAG_TILES4X4
+; MAP_FLAG_DIR_COLUMNS
+; MAP_FLAG_MODE_MULTIDIR_SCROLL
+; MAP_FLAG_LAYOUT_MATRIX
+; MAP_FLAG_COLOR_TILES
+;
 ; Additional options (see settings.asm):
 ;
 ; DEF_128K_DBL_BUFFER	1/0			( 128K dbl buffering or usual 48K rendering )
@@ -22,7 +31,10 @@
 ; DEF_VERT_SYNC		1/0			( rendering begins with HALT or not... )
 ;
 
+
 		MODULE	tilemap_render
+
+		include "common.asm"
 
 		assert ( MAP_DATA_MAGIC&MAP_FLAG_RLE ) == 0, The sample doesn't support compressed data!
 		assert ( MAP_DATA_MAGIC&MAP_FLAG_DIR_ROWS ) == 0, The sample doesn't support rows ordered data!
@@ -47,14 +59,14 @@ TR_DATA_TILES4X4 equ MAP_DATA_MAGIC&MAP_FLAG_TILES4X4
 
 ; this data must be filled in for each map in the main code
 ;
-map_data	dw 0			; Lev0_map	game level tile map address
-map_tiles_gfx	dw 0			; Lev0_tlg 	tile graphics data
-map_tiles_clr	dw 0			; Lev0_tlc 	tile colors data
+map_data	dw 0			; Lev0_Map	game level tile map address
+map_tiles_gfx	dw 0			; Lev0_Gfx 	tile graphics data
+map_tiles_clr	dw 0			; Lev0_Clrs 	tile colors data
 map_data_cnt	dw 0 			; Lev0_t_tiles 	number of tiles in map
 map_tiles_cnt	db 0			; Lev0_u_tiles 	number of unique tiles in map
 
 		IF TR_DATA_TILES4X4
-map_tiles4x4	dw 0			; Lev0_tli 	tiles 4x4 data
+map_tiles4x4	dw 0			; Lev0_Tiles	tiles 4x4 data
 		ENDIF //TR_DATA_TILES4X4
 
 map_tiles_w	dw 0			; Lev0_wtls number of tiles in map in width
@@ -91,28 +103,6 @@ _x_tile_addr_tbl	block ( max_lev_tiles_w << 1 ), 0	; address table for X coordin
 tiles_addr_tbl		block 512,0	; tile graphics address table
 tiles_clr_addr_tbl	block 512,0	; tile colors(attrbutes) address table
 
-		; add 'A *= 2' to an input address
-		; OUT: hl
-
-	macro	add_addr_ax2 _addr
-;		ld h, high _addr	<-- optimized version when a tile index is premultiplied by 2
-;		ld l, a			<-- (a) is premultiplied by 2 (max 128 tiles)
-
-		ld h, high _addr
-		add a, a
-		jp nc, .skip
-		inc h 
-.skip		
-		ld l, a
-	endm
-
-	macro	add_hl_a
-		add a, l
-		jp nc, .skip
-		inc h
-.skip
-		ld l, a
-	endm
 
 	macro	scr_buff_put_block2x2
 		dup 8			;<---

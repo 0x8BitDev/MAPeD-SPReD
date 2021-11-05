@@ -1,10 +1,11 @@
 ;###################################################################
 ;
-; Copyright 2018-2020 0x8BitDev ( MIT license )
+; Copyright 2018-2021 0x8BitDev ( MIT license )
 ;
 ;###################################################################
 ;
 ; Multidirectional scroller test.
+; Keys: Q, A, O, P
 ;
 
 		org 25000
@@ -19,39 +20,24 @@ TR_COLORED_MAP		equ MAP_DATA_MAGIC&MAP_FLAG_COLOR_TILES
 		DEFINE DEF_COLOR 0
 		ENDIF
 
-		include "tilemap_multidir_render.asm"
+		include "../../common/tilemap_multidir_render.asm"
 
 max_lev_tiles_w	equ	Lev0_wtls		; max width of a level in tiles
-
-	macro load_wdata _data, _addr
-		ld hl, _addr
-		ld a, low _data
-		ld (hl), a
-		inc hl
-		ld a, high _data
-		ld (hl), a
-	endm
-
-	macro load_bdata _data, _addr
-		ld hl, _addr
-		ld a, _data
-		ld (hl), a
-	endm
 
 main
 		di	
 
 		ld sp, 24999	;!!!!!!!
 
-		load_wdata Lev0_map, 	tilemap_render.map_data		; game level tile map address
-		load_wdata Lev0_tlg,	tilemap_render.map_tiles_gfx	; tile graphics data
+		load_wdata Lev0_Map, 	tilemap_render.map_data		; game level tile map address
+		load_wdata Lev0_Gfx,	tilemap_render.map_tiles_gfx	; tile graphics data
 
 		IF TR_COLORED_MAP
-		load_wdata Lev0_tlc,	tilemap_render.map_tiles_clr	; tile colors data
+		load_wdata Lev0_Clrs,	tilemap_render.map_tiles_clr	; tile colors data
 		ENDIF //TR_COLORED_MAP
 
 		IF TR_DATA_TILES4X4
-		load_wdata Lev0_tli,	tilemap_render.map_tiles4x4	; tiles 4x4 data
+		load_wdata Lev0_Tiles,	tilemap_render.map_tiles4x4	; tiles 4x4 data
 		ENDIF //TR_DATA_TILES4X4
 
 		load_wdata Lev0_t_tiles,tilemap_render.map_data_cnt	; number of tiles in map
