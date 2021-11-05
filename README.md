@@ -150,13 +150,14 @@ As mentioned before, you need to install Mono on your computer. To run the tools
 
 coming soon...
 
+## MAPeD-ZX
+
+ - `./samples/zx/tilemap_render/multidir_scroll/` - multidirectional tilemap scroller with wide variety of settings (see 'settings.asm' for details); Keys: Q,A,O,P
+ - `./samples/zx/tilemap_render/bidir_stat_scr/` - static tiled screens switching sample; a big map with a complex topology; Keys: Q,A,O,P
+
 ## MAPeD-SMD
 
 coming soon...
-
-## MAPeD-ZX
-
- - `./samples/zx/tilemap_render/multidir_scroll/` - multidirectional tilemap scroller with wide variety of settings (see 'settings.asm' for details)
 
 ## SPReD-NES
 
@@ -225,8 +226,8 @@ The latest development build can be found **[here](https://drive.google.com/open
 ---
 - **NES:** Nintendo Entertainment System / Nintendo
 - **SMS:** Sega Master System / Sega Corp.
-- **ZX:** ZX-Spectrum / Sinclair Research Ltd
 - **PCE:** PC Engine/TurboGrafx-16 / NEC
+- **ZX:** ZX-Spectrum / Sinclair Research Ltd
 - **SMD:** Sega Mega Drive/Genesis / Sega Corp.
 
 Are trademarks of their respective owners and I am not affiliated with these companies in any way. Therefore, you can use this software at your own risk and without warranty of any kind.

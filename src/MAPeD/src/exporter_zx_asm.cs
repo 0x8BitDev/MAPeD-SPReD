@@ -687,19 +687,19 @@ namespace MAPeD
 					
 					_sw.WriteLine( "" );
 					
-					_sw.WriteLine( level_prefix_str + "_map" + "\tincbin \"" + m_map_data_filename + "\"\t\t;" + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + map_size + ( CheckBoxRLE.Checked ? " / " + map_data_arr.Length:"" ) + ") game level " + ( RBtnTiles4x4.Checked ? "tiles (4x4)":"blocks (2x2)" ) + " array" );
+					_sw.WriteLine( level_prefix_str + "_Map" + "\tincbin \"" + m_map_data_filename + "\"\t\t;" + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + map_size + ( CheckBoxRLE.Checked ? " / " + map_data_arr.Length:"" ) + ") game level " + ( RBtnTiles4x4.Checked ? "tiles (4x4)":"blocks (2x2)" ) + " array" );
 					
-					_sw.WriteLine( level_prefix_str + "_tlg"  + "\tincbin \"" + m_gfx_data_filename + "\"\t\t;(" + gfx_data_size + ") array of tile images 2x2 (32 bytes per tile)" );
-					_sw.WriteLine( level_prefix_str + "_tlp" + "\tincbin \"" + m_tile_props_filename + "\"\t;(" + tile_props_arr.Length + ") tile properties array (byte per tile)" );
+					_sw.WriteLine( level_prefix_str + "_Gfx"  + "\tincbin \"" + m_gfx_data_filename + "\"\t\t;(" + gfx_data_size + ") array of tile images 2x2 (32 bytes per tile)" );
+					_sw.WriteLine( level_prefix_str + "_Props" + "\tincbin \"" + m_tile_props_filename + "\"\t;(" + tile_props_arr.Length + ") tile properties array (byte per tile)" );
 					
 					if( RBtnTypeColor.Checked )
 					{
-						_sw.WriteLine( level_prefix_str + "_tlc" + "\tincbin \"" + m_tile_colrs_filename + "\"\t;(" + tile_colors_arr.Length + ") tile colors array (byte per tile)" );
+						_sw.WriteLine( level_prefix_str + "_Clrs" + "\tincbin \"" + m_tile_colrs_filename + "\"\t;(" + tile_colors_arr.Length + ") tile colors array (byte per tile)" );
 					}
 					
 					if( RBtnTiles4x4.Checked )
 					{
-						_sw.WriteLine( level_prefix_str + "_tli" + "\tincbin \"" + m_tiles_data_filename + "\"\t\t;(" + ( unique_tiles_arr.Count << 2 ) + ") tiles 4x4 array (4 bytes per tile)" );
+						_sw.WriteLine( level_prefix_str + "_Tiles" + "\tincbin \"" + m_tiles_data_filename + "\"\t\t;(" + ( unique_tiles_arr.Count << 2 ) + ") (4x4) 4 block indices per tile ( left to right, up to down )" );
 					}
 					
 					_sw.WriteLine( "\n" );
@@ -720,7 +720,6 @@ namespace MAPeD
 				unique_tiles_arr.Clear();				
 
 				// save layout and screens data
-				if( CheckBoxExportMarks.Checked || CheckBoxExportEntities.Checked )
 				{
 					int start_scr_ind = level_data.get_start_screen_ind();
 					
@@ -731,8 +730,12 @@ namespace MAPeD
 
 					// matrix layout by default
 					{
-						_sw.WriteLine( level_prefix_str + "_StartScr\t = " + ( start_scr_ind < 0 ? 0:start_scr_ind ) + "\n" );
-						level_data.export_asm( _sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+						_sw.WriteLine( level_prefix_str + "_StartScr\tequ\t" + ( start_scr_ind < 0 ? 0:start_scr_ind ) + "\n" );
+						
+						if( CheckBoxExportMarks.Checked || CheckBoxExportEntities.Checked )
+						{
+							level_data.export_asm( _sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+						}
 					}
 				}
 			}
@@ -769,7 +772,7 @@ namespace MAPeD
 			int common_scr_ind;
 			int max_scr_tile;
 			int max_tile_ind;
-			int start_scr_ind;
+			int start_scr_ind = -1;
 			int ents_cnt;
 			
 			int scr_width_blocks	= platform_data.get_screen_tiles_width_by_platform_type_uni( platform_data.EPlatformType.pt_ZX, data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
@@ -946,7 +949,7 @@ namespace MAPeD
 					tiles = banks[ bank_n ];
 					
 					// write CHR bank data
-					label = "chr" + bank_n;
+					label = "gfx" + bank_n;
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 					{
 						n_blocks = tiles.get_first_free_block_id();
@@ -988,12 +991,12 @@ namespace MAPeD
 					}
 					bw.Close();
 					
-					_sw.WriteLine( label + ":\tincbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t\t; (" + data_size + ")" );
+					_sw.WriteLine( label + ":\tincbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t\t; (" + data_size + ") blocks 2x2  bank" + bank_n );
 					
 					chr_arr	 += "\tdw " + label + "\n";
 				}
 
-				_sw.WriteLine( "\n" + m_filename + "_CHRs:\n" + chr_arr );
+				_sw.WriteLine( "\n" + m_filename + "_Gfx:\n" + chr_arr );
 
 				// blocks props
 				{
@@ -1048,7 +1051,7 @@ namespace MAPeD
 								bw.Write( tiles_data.tile_convert_ulong_to_uint_reverse( tiles.tiles[ i ] ) );
 							}
 							
-							data_offset_str += "\tdw " + data_offset + "\t\t; (chr" + bank_n + ")\n";
+							data_offset_str += "\tdw " + data_offset + "\t\t; (gfx" + bank_n + ")\n";
 							
 							data_offset += max_tile_inds[ bank_n ] << 2;
 						}
@@ -1160,17 +1163,6 @@ namespace MAPeD
 									}
 									
 									start_scr_ind = ( start_scr_ind < 0 ) ? common_scr_ind:start_scr_ind;
-									
-									if( RBtnLayoutMatrix.Checked )
-									{
-										_sw.WriteLine( "\tDEFINE " + level_prefix_str + "_StartScr\t" + start_scr_ind + "\n" );
-										
-										level_data.export_asm( _sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "$", false, false, false, false );
-									}
-									else
-									{
-										_sw.WriteLine( "\tDEFINE " + level_prefix_str + "_StartScr\t" + level_prefix_str + "Scr" + start_scr_ind + "\n" );
-									}
 								}
 								
 								exp_scr = screens[ scr_key ];
@@ -1244,7 +1236,21 @@ namespace MAPeD
 				if( CheckBoxExportEntities.Checked )
 				{
 					_sw.WriteLine( "\tDEFINE " + level_prefix_str + "_EntInstCnt\t" + level_data.get_ent_instances_cnt() + "\t; number of entities instances\n" );
-				}				
+				}
+
+				// set up start screen
+				{
+					if( RBtnLayoutMatrix.Checked )
+					{
+						_sw.WriteLine( level_prefix_str + "_StartScr\tequ\t" + start_scr_ind + "\n" );
+						
+						level_data.export_asm( _sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "$", false, false, false, false );
+					}
+					else
+					{
+						_sw.WriteLine( level_prefix_str + "_StartScr\t= " + level_prefix_str + "Scr" + start_scr_ind + "\n" );
+					}
+				}
 			}
 			
 			foreach( var key in screens.Keys ) { screens[ key ].destroy(); }
