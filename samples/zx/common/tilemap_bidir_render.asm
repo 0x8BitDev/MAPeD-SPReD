@@ -20,6 +20,7 @@
 ; MAP_FLAG_TILES2X2
 ; MAP_FLAG_TILES4X4
 ; MAP_FLAG_DIR_COLUMNS
+; MAP_FLAG_DIR_ROWS
 ; MAP_FLAG_MODE_BIDIR_SCROLL
 ; MAP_FLAG_LAYOUT_ADJACENT_SCREENS
 ; MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS
@@ -34,15 +35,23 @@
 		assert ( MAP_DATA_MAGIC&MAP_FLAG_LAYOUT_MATRIX ) == 0, The sample doesn't support matrix layout data!
 		assert ( MAP_DATA_MAGIC&MAP_FLAG_MODE_MULTIDIR_SCROLL ) == 0, The sample doesn't support data for multidirectional scroller!
 		assert ( MAP_DATA_MAGIC&MAP_FLAG_RLE ) == 0, The sample doesn't support compressed data!
-		assert ( MAP_DATA_MAGIC&MAP_FLAG_DIR_ROWS ) == 0, The sample doesn't support rows ordered data!
 
 TR_DATA_TILES4X4	equ MAP_DATA_MAGIC&MAP_FLAG_TILES4X4
 TR_DATA_MARKS		equ MAP_DATA_MAGIC&MAP_FLAG_MARKS
 TR_COLORED_MAP		equ MAP_DATA_MAGIC&MAP_FLAG_COLOR_TILES
 TR_ADJ_SCREENS		equ MAP_DATA_MAGIC&MAP_FLAG_LAYOUT_ADJACENT_SCREENS
+TR_DIR_ROWS		equ MAP_DATA_MAGIC&MAP_FLAG_DIR_ROWS
 
 SCR_CHR_WIDTH		equ SCR_BLOCKS2x2_WIDTH << 1
 SCR_CHR_HEIGHT		equ SCR_BLOCKS2x2_HEIGHT << 1
+
+		IF TR_DIR_ROWS
+SCR_UNI2x2_WIDTH	equ SCR_BLOCKS2x2_HEIGHT
+SCR_UNI2x2_HEIGHT	equ SCR_BLOCKS2x2_WIDTH
+		ELSE
+SCR_UNI2x2_WIDTH	equ SCR_BLOCKS2x2_WIDTH
+SCR_UNI2x2_HEIGHT	equ SCR_BLOCKS2x2_HEIGHT
+		ENDIF //TR_DIR_ROWS
 
 ; this data must be filled in for each map in the main code
 ;
@@ -79,7 +88,7 @@ _adj_scr_right	= %01000000
 _adj_scr_down	= %10000000
 
 	macro	scr_put_block2x2
-		ld a, l		;4 save hl
+		ld c, l		;4 save hl
 		ld b, h		;4
 
 		dup 4			;<---
@@ -99,9 +108,10 @@ _adj_scr_down	= %10000000
 		edup			;<---
 
 		; next CHR line
+		ld a, c		;4
 		add #20		;7
 		ld l, a		;4
-		ld h, b		;4 = 23
+		ld h, b		;4 = 27
 
 		dup 4			;<---
 		pop de
@@ -127,8 +137,7 @@ _adj_scr_down	= %10000000
 		inc l
 		ld (hl), d
 
-		ld a, 31
-		add_hl_a
+		add_hl_val 31
 
 		pop de
 
@@ -271,15 +280,9 @@ check_right_screen
 ;
 draw_screen
 		IF TR_COLORED_MAP
-		ei
-		halt
-		di
-
+		vsync
 		call _draw_black_screen
-
-		ei
-		halt
-		di
+		vsync
 		ENDIF //TR_COLORED_MAP
 
 		ld de, (map_curr_scr)
@@ -334,14 +337,24 @@ draw_screen
 
 		ld hl, #4000
 
-		ld hx, SCR_BLOCKS2x2_WIDTH
+		ld hx, SCR_UNI2x2_WIDTH
 .loop1
 		push hl
 		call _draw_tiles_col
 		pop hl
 
+		IF TR_DIR_ROWS
+		add_hl_val 64
+		jp nc, .skip
+		ld a, h
+		add 8
+		and %11111000
+		ld h, a
+.skip
+		ELSE
 		inc l
 		inc l
+		ENDIF //TR_DIR_ROWS
 
 		dec hx
 		jp nz, .loop1
@@ -373,27 +386,25 @@ draw_screen
 
 		ld hl, scr_clrs_arr
 
-		ld hx, SCR_BLOCKS2x2_WIDTH
+		ld hx, SCR_UNI2x2_WIDTH
 .loop2
 		push hl
 		call _draw_clrs_col
 		pop hl
 
+		IF TR_DIR_ROWS
+		add_hl_val 64
+		ELSE
 		inc l
 		inc l
+		ENDIF //TR_DIR_ROWS
 
 		dec hx
 		jp nz, .loop2
 
-		ei
-		halt
-		di
-
+		vsync
 		call _draw_clrs_buff
-
-		ei
-		halt
-		di
+		vsync
 
 		ENDIF //TR_COLORED_MAP
 
@@ -462,7 +473,7 @@ _draw_black_screen
 _draw_clrs_col
 		ld (_tmp_sp), sp
 
-		ld lx, SCR_BLOCKS2x2_HEIGHT
+		ld lx, SCR_UNI2x2_HEIGHT
 .loop
 		exx
 		ld a, (de)			; get tile index
@@ -478,8 +489,11 @@ _draw_clrs_col
 
 		scr_put_clr_block2x2
 
-		ld a, 31
-		add_hl_a
+		IF TR_DIR_ROWS
+		sub_hl_val 31
+		ELSE
+		add_hl_val 31
+		ENDIF //TR_DIR_ROWS
 
 		dec lx
 		jp nz, .loop
@@ -496,7 +510,7 @@ _draw_clrs_col
 _draw_tiles_col
 		ld (_tmp_sp), sp
 
-		ld lx, SCR_BLOCKS2x2_HEIGHT
+		ld lx, SCR_UNI2x2_HEIGHT
 .loop
 		exx
 		ld a, (de)			; get tile index
@@ -512,15 +526,15 @@ _draw_tiles_col
 
 		scr_put_block2x2
 
-		; check the next third
-		ld a, l
-		add #20
-		ld l, a
-		jp c, .next
-		ld a, h
-		sub 8
-		ld h, a
-.next
+		IF TR_DIR_ROWS
+		inc c
+		inc c
+		ld l, c
+		ld h, b
+		ELSE
+		check_next_third_hl
+		ENDIF //TR_DIR_ROWS
+
 		dec lx
 		jp nz, .loop
 

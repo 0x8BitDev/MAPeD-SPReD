@@ -129,8 +129,7 @@ tiles_clr_addr_tbl	block 512,0	; tile colors(attrbutes) address table
 		inc l
 		ld (hl), d
 
-		ld a, 31
-		add_hl_a
+		add_hl_val 31
 
 		pop de
 
@@ -826,8 +825,7 @@ _draw_tiles_color_column
 		ld sp, hl
 		exx
 		scr_buff_put_block2x2_clr
-		ld a, 31
-		add_hl_a
+		add_hl_val 31
 
 		; put 4th clr block
 		exx
@@ -852,9 +850,8 @@ _draw_tiles_color_column
 		ld sp, hl
 		exx
 		scr_buff_put_block2x2_clr
-		ld a, 31
-		add_hl_a
-
+		add_hl_val 31
+		
 		dec ixl
 		jp nz, .loop		
 
@@ -1890,9 +1887,7 @@ LR_border_CHRs	= 1
 
 show_screen	
 		IF	DEF_VERT_SYNC
-		ei
-		halt
-		di
+		vsync
 		ENDIF	//DEF_VERT_SYNC
 
 		IF	DEF_128K_DBL_BUFFER

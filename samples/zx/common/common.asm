@@ -6,7 +6,6 @@
 
 		; add 'A *= 2' to an input address
 		; OUT: hl
-
 	macro	add_addr_ax2 _addr
 ;		ld h, high _addr	<-- optimized version when a tile index is premultiplied by 2
 ;		ld l, a			<-- (a) is premultiplied by 2 (max 128 tiles)
@@ -19,12 +18,22 @@
 		ld l, a
 	endm
 
-	macro	add_hl_a
+	macro	add_hl_val _val
+		ld a, _val
 		add a, l
+		ld l, a
 		jp nc, .skip
 		inc h
 .skip
+	endm
+
+	macro	sub_hl_val _val
+		ld a, l
+		sub _val
 		ld l, a
+		jp nc, .skip
+		dec h
+.skip
 	endm
 
 	macro	MUL_POW2_BC _cnt
@@ -47,6 +56,25 @@
 		ld a, _data
 		ld (hl), a
 	endm
+
+		; IN: hl - screen address
+	macro	check_next_third_hl
+		ld a, l
+		add #20
+		ld l, a
+		jp c, .next
+		ld a, h
+		sub 8
+		ld h, a
+.next
+	endm
+
+	macro	vsync
+		ei
+		halt
+		di
+	endm	
+
 
 ; http://z80-heaven.wikidot.com/math#toc6
 ; *** D mul C ***
