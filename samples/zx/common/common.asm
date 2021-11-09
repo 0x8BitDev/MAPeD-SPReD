@@ -58,7 +58,7 @@
 	endm
 
 		; IN: hl - screen address
-	macro	check_next_third_hl
+	macro	check_next_third_line_hl
 		ld a, l
 		add #20
 		ld l, a
@@ -68,6 +68,16 @@
 		ld h, a
 .next
 	endm
+
+	macro	check_next_third_CHR_line_hl
+		jp nc, .next		; check next CHR line
+		ld a, h
+		add 8
+		and -8
+		ld h, a
+.next
+	endm
+
 
 	macro	vsync
 		ei

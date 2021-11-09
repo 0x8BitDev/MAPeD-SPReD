@@ -45,19 +45,27 @@ TR_DIR_ROWS		equ MAP_DATA_MAGIC&MAP_FLAG_DIR_ROWS
 SCR_CHR_WIDTH		equ SCR_BLOCKS2x2_WIDTH << 1
 SCR_CHR_HEIGHT		equ SCR_BLOCKS2x2_HEIGHT << 1
 
+SCR_CENTER_OFFS_X	equ ( 32 - SCR_CHR_WIDTH ) >> 1
+
 		IF TR_DIR_ROWS
-SCR_UNI2x2_WIDTH	equ SCR_BLOCKS2x2_HEIGHT
-SCR_UNI2x2_HEIGHT	equ SCR_BLOCKS2x2_WIDTH
+SCR_UNI_WIDTH	equ SCR_BLOCKS2x2_HEIGHT
+SCR_UNI_HEIGHT	equ SCR_BLOCKS2x2_WIDTH
 		ELSE
-SCR_UNI2x2_WIDTH	equ SCR_BLOCKS2x2_WIDTH
-SCR_UNI2x2_HEIGHT	equ SCR_BLOCKS2x2_HEIGHT
+SCR_UNI_WIDTH	equ SCR_BLOCKS2x2_WIDTH
+SCR_UNI_HEIGHT	equ SCR_BLOCKS2x2_HEIGHT
 		ENDIF //TR_DIR_ROWS
+
+		IF TR_DATA_TILES4X4
+SCR_UNI_WIDTH	equ SCR_UNI_WIDTH >> 1
+SCR_UNI_HEIGHT	equ SCR_UNI_HEIGHT >> 1
+		ENDIF //TR_DATA_TILES4X4
 
 ; this data must be filled in for each map in the main code
 ;
 map_screens	dw 0			; tilemap_TilesScr screen tiles aray for each screen
-map_tiles_offs	dw 0			; Tiles(4x4)-tilemap_TilesOffs / Blocks(2x2)-tilemap_BlocksPropsOffs
 map_gfx_arr	dw 0			; tilemap_Gfx exported graphics array
+
+map_props_arr	dw 0			; tilemap_BlocksPropsOffs
 
 map_curr_scr	dw 0
 
@@ -69,8 +77,9 @@ map_scr_arr	dw 0			; Lev0_ScrArr
 
 		IF TR_DATA_TILES4X4
 map_tiles4x4	dw 0			; tilemap_Tiles	tiles 4x4 data
-		ELSE
-map_props_arr	dw 0			; tilemap_BlocksPropsOffs
+map_tiles_offs	dw 0			; Tiles(4x4)-tilemap_TilesOffs
+map_tiles4x4_data
+		dw 0
 		ENDIF //TR_DATA_TILES4X4
 
 		IF TR_COLORED_MAP
@@ -137,7 +146,7 @@ _adj_scr_down	= %10000000
 		inc l
 		ld (hl), d
 
-		add_hl_val 31
+		add_hl_val SCR_CHR_WIDTH - 1
 
 		pop de
 
@@ -303,6 +312,20 @@ draw_screen
 		inc hl
 		ld d, (hl)		
 		ex de, hl		; hl' - tiles gfx
+
+		IF TR_DATA_TILES4X4
+		push hl
+		ld hl, (map_tiles_offs)
+		add hl, bc
+		ld e, (hl)
+		inc hl
+		ld d, (hl)
+		ld hl, (map_tiles4x4)
+		add hl, de
+		ld (map_tiles4x4_data), hl
+		pop hl
+		ENDIF //TR_DATA_TILES4X4
+
 		exx
 
 		inc de
@@ -335,26 +358,33 @@ draw_screen
 
 		; draw screen tiles
 
-		ld hl, #4000
+		ld hl, #4000 + SCR_CENTER_OFFS_X
 
-		ld hx, SCR_UNI2x2_WIDTH
+		ld hx, SCR_UNI_WIDTH
 .loop1
 		push hl
-		call _draw_tiles_col
+		ld lx, SCR_UNI_HEIGHT
+		call _draw_tiles_line
 		pop hl
 
+		IF TR_DATA_TILES4X4
+		IF TR_DIR_ROWS
+		add_hl_val 128
+		check_next_third_CHR_line_hl
+		ELSE
+		ld a, l
+		add 4
+		ld l, a
+		ENDIF //TR_DIR_ROWS
+		ELSE //TR_DATA_TILES4X4
 		IF TR_DIR_ROWS
 		add_hl_val 64
-		jp nc, .skip
-		ld a, h
-		add 8
-		and %11111000
-		ld h, a
-.skip
+		check_next_third_CHR_line_hl
 		ELSE
 		inc l
 		inc l
 		ENDIF //TR_DIR_ROWS
+		ENDIF //TR_DATA_TILES4X4
 
 		dec hx
 		jp nz, .loop1
@@ -386,18 +416,29 @@ draw_screen
 
 		ld hl, scr_clrs_arr
 
-		ld hx, SCR_UNI2x2_WIDTH
+		ld hx, SCR_UNI_WIDTH
 .loop2
 		push hl
-		call _draw_clrs_col
+		ld lx, SCR_UNI_HEIGHT
+		call _draw_clrs_line
 		pop hl
 
+		IF TR_DATA_TILES4X4
 		IF TR_DIR_ROWS
-		add_hl_val 64
+		add_hl_val SCR_CHR_WIDTH << 2
+		ELSE
+		ld a, l
+		add 4
+		ld l, a
+		ENDIF //TR_DIR_ROWS
+		ELSE
+		IF TR_DIR_ROWS
+		add_hl_val SCR_CHR_WIDTH << 1
 		ELSE
 		inc l
 		inc l
 		ENDIF //TR_DIR_ROWS
+		ENDIF //TR_DATA_TILES4X4
 
 		dec hx
 		jp nz, .loop2
@@ -413,14 +454,14 @@ draw_screen
 		IF TR_COLORED_MAP
 		
 _draw_clrs_buff
-		ld de, #5800
+		ld de, #5800 + SCR_CENTER_OFFS_X
 		ld hl, scr_clrs_arr
 
-		ld lx, SCR_BLOCKS2x2_HEIGHT << 1
+		ld lx, SCR_CHR_HEIGHT
 .loop1
 		push de
 
-		ld bc, SCR_BLOCKS2x2_WIDTH << 1
+		ld bc, SCR_CHR_WIDTH
 
 		dup SCR_CHR_WIDTH
 		ldi
@@ -442,14 +483,14 @@ _draw_clrs_buff
 _draw_black_screen
 		ld (_tmp_sp), sp
 		
-		ld hl, #5800 + ( SCR_BLOCKS2x2_WIDTH << 1 )
+		ld hl, #5800 + SCR_CHR_WIDTH + SCR_CENTER_OFFS_X
 
-		ld lx, SCR_BLOCKS2x2_HEIGHT << 1
+		ld lx, SCR_CHR_HEIGHT
 .loop1
 		ld de, 0
 		ld sp, hl
 
-		dup SCR_CHR_WIDTH
+		dup SCR_BLOCKS2x2_WIDTH
 		push de
 		edup
 
@@ -465,15 +506,222 @@ _draw_black_screen
 
 		ENDIF //TR_COLORED_MAP
 
+		IF TR_DATA_TILES4X4
 ; draw colors column
 ; IN: 	bc' - clrs data
 ;	de' - screen tiles
 ;	hl - screen address
+;	lx - num tiles
 ;
-_draw_clrs_col
+_draw_clrs_line
 		ld (_tmp_sp), sp
+.loop
+		exx
+		ld a, (de)			; get tile index
+		inc de
+		exx
 
-		ld lx, SCR_UNI2x2_HEIGHT
+		ld c, a
+		ld b, 0
+		MUL_POW2_BC 2
+
+		ex de, hl
+
+		ld hl, (map_tiles4x4_data)
+		add hl, bc
+
+		ld sp, hl		;6
+		pop bc			;10
+		pop iy			;14
+		ld a, b			;4
+		ld (._2nd_block_val), a	;13
+
+		ex de, hl
+
+	; draw 1st block
+		ld a, c
+		exx
+		add_addr_ax2 tiles_clr_addr_tbl
+		ld sp, hl
+		pop hl
+		add hl, bc			; hl - tile gfx
+		ld sp, hl
+		exx
+
+		scr_put_clr_block2x2
+		sub_hl_val SCR_CHR_WIDTH - 1
+
+	; daw 2nd block
+		db $3e			;ld a, N
+._2nd_block_val	db 0			;7
+		exx
+		add_addr_ax2 tiles_clr_addr_tbl
+		ld sp, hl
+		pop hl
+		add hl, bc			; hl - tile gfx
+		ld sp, hl
+		exx
+
+		scr_put_clr_block2x2
+		add_hl_val SCR_CHR_WIDTH - 3
+
+	; draw 3st block
+		ld a, ly
+		exx
+		add_addr_ax2 tiles_clr_addr_tbl
+		ld sp, hl
+		pop hl
+		add hl, bc			; hl - tile gfx
+		ld sp, hl
+		exx
+
+		scr_put_clr_block2x2
+		sub_hl_val SCR_CHR_WIDTH - 1
+
+	; draw 4st block
+		ld a, hy
+		exx
+		add_addr_ax2 tiles_clr_addr_tbl
+		ld sp, hl
+		pop hl
+		add hl, bc			; hl - tile gfx
+		ld sp, hl
+		exx
+
+		scr_put_clr_block2x2
+
+		IF TR_DIR_ROWS
+		sub_hl_val ( SCR_CHR_WIDTH * 3 ) - 1
+		ELSE
+		add_hl_val SCR_CHR_WIDTH - 3
+		ENDIF //TR_DIR_ROWS
+
+		dec lx
+		jp nz, .loop
+
+		ld sp, (_tmp_sp)
+
+		ret
+
+; draw tiles column
+; IN: 	bc' - tiles gfx
+;	de' - screen tiles
+;	hl - screen address
+;	lx - num tiles
+;
+_draw_tiles_line
+		ld (_tmp_sp), sp
+.loop
+		exx
+		ld a, (de)			; get tile index
+		inc de
+		exx
+
+		ld c, a
+		ld b, 0
+		MUL_POW2_BC 2
+
+		ex de, hl
+
+		ld hl, (map_tiles4x4_data)
+		add hl, bc
+
+		ld sp, hl		;6
+		pop bc			;10
+		pop iy			;14
+		ld a, b			;4
+		ld (._2nd_block_val), a	;13
+
+	; draw 1st block
+		ld a, c
+		add_addr_ax2 tiles_addr_tbl
+		ld sp, hl
+		ex de, hl
+		exx
+		pop hl
+		add hl, bc			; hl - tile gfx
+		ld sp, hl
+		exx
+
+		scr_put_block2x2
+
+		inc c
+		inc c
+		ld l, c
+		ld h, b
+
+	; draw 2st block
+		exx
+		db $3e			;ld a, N
+._2nd_block_val	db 0			;7
+		add_addr_ax2 tiles_addr_tbl
+		ld sp, hl
+		pop hl
+		add hl, bc			; hl - tile gfx
+		ld sp, hl
+		exx
+
+		scr_put_block2x2
+
+		ld l, c
+		ld h, b
+		add_hl_val 62
+
+	; draw 3st block
+		exx
+		ld a, ly
+		add_addr_ax2 tiles_addr_tbl
+		ld sp, hl
+		pop hl
+		add hl, bc			; hl - tile gfx
+		ld sp, hl
+		exx
+
+		scr_put_block2x2
+
+		inc c
+		inc c
+		ld l, c
+		ld h, b
+
+	; draw 4st block
+		exx
+		ld a, hy
+		add_addr_ax2 tiles_addr_tbl
+		ld sp, hl
+		pop hl
+		add hl, bc			; hl - tile gfx
+		ld sp, hl
+		exx
+
+		scr_put_block2x2
+
+		ld l, c
+		ld h, b
+
+		IF TR_DIR_ROWS
+		sub_hl_val 62
+		ELSE
+		add_hl_val 62
+		check_next_third_CHR_line_hl
+		ENDIF //TR_DIR_ROWS
+
+		dec lx
+		jp nz, .loop
+
+		ld sp, (_tmp_sp)
+
+		ret
+
+		ELSE //TR_DATA_TILES4X4
+; draw colors column
+; IN: 	bc' - clrs data
+;	de' - screen tiles
+;	hl - screen address
+;	lx - num tiles
+;
+_draw_clrs_line
+		ld (_tmp_sp), sp
 .loop
 		exx
 		ld a, (de)			; get tile index
@@ -490,9 +738,9 @@ _draw_clrs_col
 		scr_put_clr_block2x2
 
 		IF TR_DIR_ROWS
-		sub_hl_val 31
+		sub_hl_val SCR_CHR_WIDTH - 1
 		ELSE
-		add_hl_val 31
+		add_hl_val SCR_CHR_WIDTH - 1
 		ENDIF //TR_DIR_ROWS
 
 		dec lx
@@ -506,11 +754,10 @@ _draw_clrs_col
 ; IN: 	bc' - tiles gfx
 ;	de' - screen tiles
 ;	hl - screen address
+;	lx - num tiles
 ;
-_draw_tiles_col
+_draw_tiles_line
 		ld (_tmp_sp), sp
-
-		ld lx, SCR_UNI2x2_HEIGHT
 .loop
 		exx
 		ld a, (de)			; get tile index
@@ -532,7 +779,7 @@ _draw_tiles_col
 		ld l, c
 		ld h, b
 		ELSE
-		check_next_third_hl
+		check_next_third_line_hl
 		ENDIF //TR_DIR_ROWS
 
 		dec lx
@@ -541,6 +788,8 @@ _draw_tiles_col
 		ld sp, (_tmp_sp)
 
 		ret
+
+		ENDIF //TR_DATA_TILES4X4
 
 _tmp_sp		dw 0
 

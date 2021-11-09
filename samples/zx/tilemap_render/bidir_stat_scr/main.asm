@@ -24,18 +24,37 @@ main
 
 		ld sp, 24999
 
+		; interrupt handler
+
+		ld a,24			; JR code
+		ld (65535),a
+		ld a,195		; JP code
+		ld (65524),a
+		ld hl,im_prc		; handler address
+		ld (65525),hl
+		ld hl,#FE00
+		ld de,#FE01
+		ld bc,#0100
+		ld (hl),#FF
+		ld a,h
+		ldir
+		ld i,a
+		im 2
+
+		; setup map data
+
 		load_wdata tilemap_TilesScr,	tilemap_render.map_screens
 		load_wdata tilemap_Gfx,		tilemap_render.map_gfx_arr
 
 		IF TR_DATA_TILES4X4
 		load_wdata tilemap_Tiles,					tilemap_render.map_tiles4x4	; tiles 4x4 data
 		load_wdata tilemap_TilesOffs,					tilemap_render.map_tiles_offs
-		load_bdata ( SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT ) >> 1,	tilemap_render.map_scr_size
+		load_bdata ( SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT ) >> 2,	tilemap_render.map_scr_size
 		ELSE
-		load_wdata tilemap_BlocksPropsOffs,				tilemap_render.map_tiles_offs
 		load_bdata SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT,		tilemap_render.map_scr_size
-		load_wdata tilemap_BlocksPropsOffs,				tilemap_render.map_props_arr
 		ENDIF //TR_DATA_TILES4X4
+
+		load_wdata tilemap_BlocksPropsOffs,				tilemap_render.map_props_arr
 
 		IF TR_COLORED_MAP
 		load_wdata tilemap_Clrs,	tilemap_render.map_clrs
@@ -47,11 +66,13 @@ main
 
 		load_wdata Lev0_StartScr,	tilemap_render.map_curr_scr
 
-		xor a
-		ld (kb_state), a
+		; data init
 
 		call tilemap_render.init
 		call tilemap_render.draw_screen
+
+		xor a
+		ld (kb_state), a
 loop		
 		; keyboard handler QAOP
 		; Q
@@ -125,6 +146,9 @@ res_kb_state
 		ld (kb_state), a
 		jp loop
 
+im_prc		ei
+		reti
+
 kb_flag_up	= %00000001
 kb_flag_down	= %00000010
 kb_flag_left	= %00000100
@@ -132,10 +156,13 @@ kb_flag_right	= %00001000
 
 kb_state	db 0
 
+DATA_START
 		include "data/tilemap.zxa"
+DATA_END
 PROG_END
 		DISPLAY "Program start address: ", /D, PROG_START, " (#", /H, PROG_START, ")"
 		DISPLAY "Program end address: ", /D, PROG_END, " (#", /H, PROG_END, ")"
 		DISPLAY "Program size: ", /D, PROG_END-PROG_START, " (#", /H, PROG_END-PROG_START, ")"
+		DISPLAY "Data size: ", /D, DATA_END-DATA_START, " (#", /H, DATA_END-DATA_START, ")"
 
 		savesna "../../bin/bidir_stat_scr.sna", main
