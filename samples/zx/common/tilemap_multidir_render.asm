@@ -776,12 +776,6 @@ _skip_hlf_tile_drw
 
 		IF TR_DATA_TILES4X4
 
-tile4x4_block1_clr	db 0
-tile4x4_block2_clr	db 0
-tile4x4_block3_clr	db 0
-tile4x4_block4_clr	db 0
-tile4x4_clr_data	db 0
-
 _draw_tiles_color_column
 
 		ld (_temp_sp), sp
@@ -796,12 +790,11 @@ _draw_tiles_color_column
 		add hl, hl
 		add hl, de		; hl = tiles4x4[ tile_ind * 4 ]
 
-		ld sp, hl
-		pop hl
-		pop af
-		ld sp, tile4x4_clr_data
-		push af
-		push hl
+		ld sp, hl		;6
+		pop hl			;10
+		pop iy			;14
+		ld a, h			;4
+		ld (._2nd_block_val), a	;13
 		
 		; put 1st clr block
 		ld a, l
@@ -817,7 +810,8 @@ _draw_tiles_color_column
 
 		; put 2nd clr block
 		exx
-		ld a, (tile4x4_block2_clr)
+		db $3e			;ld a, N
+._2nd_block_val	db 0			;7
 		add_addr_ax2 tiles_clr_addr_tbl
 
 		ld sp, hl
@@ -829,7 +823,7 @@ _draw_tiles_color_column
 
 		; put 4th clr block
 		exx
-		ld a, (tile4x4_block4_clr)
+		ld a, hy
 		add_addr_ax2 tiles_clr_addr_tbl
 
 		ld sp, hl
@@ -842,7 +836,7 @@ _draw_tiles_color_column
 
 		; put 3nd clr block
 		exx
-		ld a, (tile4x4_block3_clr)
+		ld a, ly
 		add_addr_ax2 tiles_clr_addr_tbl
 
 		ld sp, hl
@@ -851,7 +845,7 @@ _draw_tiles_color_column
 		exx
 		scr_buff_put_block2x2_clr
 		add_hl_val 31
-		
+
 		dec ixl
 		jp nz, .loop		
 
@@ -961,12 +955,6 @@ _draw_tiles_color_column_shifted_up
 
 		IF TR_DATA_TILES4X4
 
-tile4x4_block1	db 0
-tile4x4_block2	db 0
-tile4x4_block3	db 0
-tile4x4_block4	db 0
-tile4x4_data	db 0
-
 _draw_tiles_column
 
 		ld (_temp_sp), sp
@@ -981,12 +969,11 @@ _draw_tiles_column
 		add hl, hl
 		add hl, de		; hl = tiles4x4[ tile_ind * 4 ]
 
-		ld sp, hl
-		pop hl
-		pop af
-		ld sp, tile4x4_data
-		push af
-		push hl
+		ld sp, hl		;6
+		pop hl			;10
+		pop iy			;14
+		ld a, h			;4
+		ld (._2nd_block_val), a	;13
 
 		; draw 1st block
 		ld a, l
@@ -1002,7 +989,8 @@ _draw_tiles_column
 
 		; draw 2nd block
 		exx
-		ld a, (tile4x4_block2)
+		db $3e			;ld a, N
+._2nd_block_val	db 0			;7
 		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
@@ -1015,7 +1003,7 @@ _draw_tiles_column
 
 		; draw 4th block
 		exx
-		ld a, (tile4x4_block4)
+		ld a, hy
 		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
@@ -1028,7 +1016,7 @@ _draw_tiles_column
 
 		; draw 3th block
 		exx
-		ld a, (tile4x4_block3)
+		ld a, ly
 		add_addr_ax2 tiles_addr_tbl
 
 		ld sp, hl
@@ -1619,10 +1607,9 @@ _hl_mptls_h_mn	dw 0
 		exx
 
 		IF TR_DATA_TILES4X4
-		inc l
-		inc l		
-		inc l
-		inc l		
+		ld a, l
+		add 4
+		ld l, a
 		ELSE //TR_DATA_TILES4X4
 		inc l
 		inc l		
@@ -1681,10 +1668,9 @@ _hl_mptls_h_fs	dw 0
 		exx
 
 		IF TR_DATA_TILES4X4
-		inc l
-		inc l		
-		inc l
-		inc l		
+		ld a, l
+		add 4
+		ld l, a
 		ELSE //TR_DATA_TILES4X4
 		inc l
 		inc l		
@@ -1744,10 +1730,9 @@ _hl_mptls_h_cl	dw 0
 		exx
 
 		IF TR_DATA_TILES4X4
-		inc l
-		inc l		
-		inc l
-		inc l		
+		ld a, l
+		add 4
+		ld l, a
 		ELSE //TR_DATA_TILES4X4
 		inc l
 		inc l		
