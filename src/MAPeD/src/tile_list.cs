@@ -81,6 +81,17 @@ namespace MAPeD
 				}
 			}
 		}
+		
+		public void reset( tile_list.EType _type )
+		{
+			foreach( var obj in m_objs )
+			{
+				if( obj.type == _type )
+				{
+					obj.reset();
+				}
+			}
+		}
 	}
 	
 	public class tile_list : drawable_base
@@ -287,6 +298,15 @@ namespace MAPeD
 			invalidate();
 		}
 		
+		public void reset()
+		{
+			clear_background( utils.CONST_COLOR_TILE_LIST_BACKGROUND );
+			
+			draw_grid();
+			
+			invalidate();
+		}
+		
 		public override void update()
 		{
 			if( m_pix_box.Visible == false )
@@ -298,37 +318,14 @@ namespace MAPeD
 			
 			clear_background( utils.CONST_COLOR_TILE_LIST_BACKGROUND );
 			
-			int i;
-			
-			// draw grid
-			{
-				int x;
-				int y;
-				
-				m_pen.Width = 1;
-				m_pen.Color = utils.CONST_COLOR_TILE_LIST_GRID;
-				
-				for( i = 0; i < m_tiles_width_cnt + 1; i++ )
-				{
-					x = i * ( m_img_list.ImageSize.Width + 1 ) + 1;
-					
-					m_gfx.DrawLine( m_pen, x, 0, x, m_pix_box.Height );
-				}
-				
-				for( i = 0; i < m_tiles_height_cnt + 1; i++ )
-				{
-					y = i * ( m_img_list.ImageSize.Height + 1 ) + 1;
-					
-					m_gfx.DrawLine( m_pen, 0, y, m_pix_box.Width, y );
-				}
-			}
+			draw_grid();
 			
 			// draw tiles
 			{
 				int step_x = m_img_list.ImageSize.Width + 1;
 				int step_y = m_img_list.ImageSize.Height + 1;
 				
-				for( i = 0; i < m_img_list.Images.Count; i++ )
+				for( int i = 0; i < m_img_list.Images.Count; i++ )
 				{
 					m_gfx.DrawImage( 	m_img_list.Images[ i ], 
 					                	( ( i % m_tiles_width_cnt ) * ( step_x ) ) + 1,
@@ -339,6 +336,30 @@ namespace MAPeD
 			}
 			
 			invalidate();
+		}
+
+		private void draw_grid()
+		{
+			int i;
+			int x;
+			int y;
+			
+			m_pen.Width = 1;
+			m_pen.Color = utils.CONST_COLOR_TILE_LIST_GRID;
+			
+			for( i = 0; i < m_tiles_width_cnt + 1; i++ )
+			{
+				x = i * ( m_img_list.ImageSize.Width + 1 ) + 1;
+				
+				m_gfx.DrawLine( m_pen, x, 0, x, m_pix_box.Height );
+			}
+			
+			for( i = 0; i < m_tiles_height_cnt + 1; i++ )
+			{
+				y = i * ( m_img_list.ImageSize.Height + 1 ) + 1;
+				
+				m_gfx.DrawLine( m_pen, 0, y, m_pix_box.Width, y );
+			}
 		}
 	}
 }

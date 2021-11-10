@@ -4480,6 +4480,7 @@ namespace MAPeD
 						ScreenDataTypeLabel.Text = "Tiles4x4";
 						
 						m_tile_list_manager.visible( tile_list.EType.t_Tiles, true );
+						m_tile_list_manager.reset( tile_list.EType.t_Tiles );
 					}
 					break;
 
