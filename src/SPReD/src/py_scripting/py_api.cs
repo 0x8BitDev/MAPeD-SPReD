@@ -14,7 +14,7 @@ namespace SPReD
 	/// <summary>
 	/// Description of py_api.
 	/// </summary>
-	public class py_api : global::SPSeD.py_api_i
+	public class py_api : global::SPSeD.i_py_api
 	{
 		private ListBox		m_spr_list	= null;
 		private CheckBox	m_8x16_mode	= null;
