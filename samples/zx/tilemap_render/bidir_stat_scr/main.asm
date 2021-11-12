@@ -43,28 +43,28 @@ main
 
 		; setup map data
 
-		load_wdata tilemap_TilesScr,	tilemap_render.map_screens
-		load_wdata tilemap_Gfx,		tilemap_render.map_gfx_arr
+		LOAD_WDATA tilemap_TilesScr,	tilemap_render.map_screens
+		LOAD_WDATA tilemap_Gfx,		tilemap_render.map_gfx_arr
 
 		IF TR_DATA_TILES4X4
-		load_wdata tilemap_Tiles,					tilemap_render.map_tiles4x4	; tiles 4x4 data
-		load_wdata tilemap_TilesOffs,					tilemap_render.map_tiles_offs
-		load_bdata ( SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT ) >> 2,	tilemap_render.map_scr_size
+		LOAD_WDATA tilemap_Tiles,					tilemap_render.map_tiles4x4	; tiles 4x4 data
+		LOAD_WDATA tilemap_TilesOffs,					tilemap_render.map_tiles_offs
+		LOAD_BDATA ( SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT ) >> 2,	tilemap_render.map_scr_size
 		ELSE
-		load_bdata SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT,		tilemap_render.map_scr_size
+		LOAD_BDATA SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT,		tilemap_render.map_scr_size
 		ENDIF //TR_DATA_TILES4X4
 
-		load_wdata tilemap_BlocksPropsOffs,				tilemap_render.map_props_arr
+		LOAD_WDATA tilemap_BlocksPropsOffs,				tilemap_render.map_props_arr
 
 		IF TR_COLORED_MAP
-		load_wdata tilemap_Clrs,	tilemap_render.map_clrs
+		LOAD_WDATA tilemap_Clrs,	tilemap_render.map_clrs
 		ENDIF //TR_COLORED_MAP
 
 		IF !TR_ADJ_SCREENS
-		load_wdata  Lev0_ScrArr,	tilemap_render.map_scr_arr
+		LOAD_WDATA  Lev0_ScrArr,	tilemap_render.map_scr_arr
 		ENDIF //!TR_ADJ_SCREENS
 
-		load_wdata Lev0_StartScr,	tilemap_render.map_curr_scr
+		LOAD_WDATA Lev0_StartScr,	tilemap_render.map_curr_scr
 
 		; data init
 

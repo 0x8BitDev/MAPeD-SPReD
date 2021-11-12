@@ -3,31 +3,34 @@
 ; Copyright 2018-2021 0x8BitDev ( MIT license )
 ;
 ;###################################################################
+;
+; DESC: Some useful macroses / routines.
+;
 
 		; add 'A *= 2' to an input address
 		; OUT: hl
-	macro	add_addr_ax2 _addr
+	macro	ADD_ADDR_AX2 _addr
 ;		ld h, high _addr	<-- optimized version when a tile index is premultiplied by 2
 ;		ld l, a			<-- (a) is premultiplied by 2 (max 128 tiles)
 
 		ld h, high _addr
-		add a, a
+		add a
 		jp nc, .skip
 		inc h 
 .skip		
 		ld l, a
 	endm
 
-	macro	add_hl_val _val
+	macro	ADD_HL_VAL _val
 		ld a, _val
-		add a, l
+		add l
 		ld l, a
 		jp nc, .skip
 		inc h
 .skip
 	endm
 
-	macro	sub_hl_val _val
+	macro	SUB_HL_VAL _val
 		ld a, l
 		sub _val
 		ld l, a
@@ -43,22 +46,18 @@
 		edup
 	endm
 
-	macro load_wdata _data, _addr
-		ld hl, _addr
-		ld de, _data
-		ld (hl), e
-		inc hl
-		ld (hl), d
+	macro	LOAD_WDATA _data, _addr
+		ld hl, _data
+		ld (_addr), hl
 	endm
 
-	macro load_bdata _data, _addr
-		ld hl, _addr
+	macro	LOAD_BDATA _data, _addr
 		ld a, _data
-		ld (hl), a
+		ld (_addr), a
 	endm
 
 		; IN: hl - screen address
-	macro	check_next_third_line_hl
+	macro	CHECK_NEXT_THIRD_LINE_HL
 		ld a, l
 		add #20
 		ld l, a
@@ -69,7 +68,7 @@
 .next
 	endm
 
-	macro	check_next_third_CHR_line_hl
+	macro	CHECK_NEXT_THIRD_CHR_LINE_HL
 		jp nc, .next		; check next CHR line
 		ld a, h
 		add 8
@@ -78,8 +77,7 @@
 .next
 	endm
 
-
-	macro	vsync
+	macro	VSYNC
 		ei
 		halt
 		di

@@ -104,7 +104,7 @@ tiles_addr_tbl		block 512,0	; tile graphics address table
 tiles_clr_addr_tbl	block 512,0	; tile colors(attrbutes) address table
 
 
-	macro	scr_buff_put_block2x2
+	macro	SCR_BUFF_PUT_BLOCK2X2
 		dup 8			;<---
 		pop de
 
@@ -122,14 +122,14 @@ tiles_clr_addr_tbl	block 512,0	; tile colors(attrbutes) address table
 		edup			;<---
 	endm
 
-	macro	scr_buff_put_block2x2_clr
+	macro	SCR_BUFF_PUT_BLOCK2X2_CLR
 		pop de
 
 		ld (hl), e
 		inc l
 		ld (hl), d
 
-		add_hl_val 31
+		ADD_HL_VAL 31
 
 		pop de
 
@@ -452,7 +452,7 @@ draw_tiles
 		ld (_scr_buff_ptr), a
 
 		ld a, iyh
-		add a, #10
+		add #10
 		ld (_scr_buff_ptr + 1 ), a
 		ENDIF	//DEF_FULLSCREEN
 
@@ -466,9 +466,9 @@ draw_tiles
 		ld a, iyh
 
 		IF	DEF_FULLSCREEN
-		add a, #20
+		add #20
 		ELSE
-		add a, #10
+		add #10
 		ENDIF	//DEF_FULLSCREEN
 
 		ld (_clr_buff_ptr + 1 ), a
@@ -745,11 +745,11 @@ _skip_hlf_tile_drw
 		inc h
 
 		ld a, l		; <--
-		add a, #20
+		add #20
 		ld l, a
 
 		ld a, 0
-		adc a, h
+		adc h
 		ld h, a		; 30t
 
 		dec c
@@ -798,13 +798,13 @@ _draw_tiles_color_column
 		
 		; put 1st clr block
 		ld a, l
-		add_addr_ax2 tiles_clr_addr_tbl
+		ADD_ADDR_AX2 tiles_clr_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile color data address from the table
 		ld sp, hl
 		exx
-		scr_buff_put_block2x2_clr
+		SCR_BUFF_PUT_BLOCK2X2_CLR
 		ld bc, -31
 		add hl, bc
 
@@ -812,39 +812,39 @@ _draw_tiles_color_column
 		exx
 		db $3e			;ld a, N
 ._2nd_block_val	db 0			;7
-		add_addr_ax2 tiles_clr_addr_tbl
+		ADD_ADDR_AX2 tiles_clr_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile color data address from the table
 		ld sp, hl
 		exx
-		scr_buff_put_block2x2_clr
-		add_hl_val 31
+		SCR_BUFF_PUT_BLOCK2X2_CLR
+		ADD_HL_VAL 31
 
 		; put 4th clr block
 		exx
 		ld a, hy
-		add_addr_ax2 tiles_clr_addr_tbl
+		ADD_ADDR_AX2 tiles_clr_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile color data address from the table
 		ld sp, hl
 		exx
-		scr_buff_put_block2x2_clr
+		SCR_BUFF_PUT_BLOCK2X2_CLR
 		ld bc, -35
 		add hl, bc
 
 		; put 3nd clr block
 		exx
 		ld a, ly
-		add_addr_ax2 tiles_clr_addr_tbl
+		ADD_ADDR_AX2 tiles_clr_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile color data address from the table
 		ld sp, hl
 		exx
-		scr_buff_put_block2x2_clr
-		add_hl_val 31
+		SCR_BUFF_PUT_BLOCK2X2_CLR
+		ADD_HL_VAL 31
 
 		dec ixl
 		jp nz, .loop		
@@ -865,7 +865,7 @@ _draw_tiles_color_column
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_clr_addr_tbl
+		ADD_ADDR_AX2 tiles_clr_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile color data address from the table
@@ -873,7 +873,7 @@ _draw_tiles_color_column
 		ld sp, hl
 		exx
 
-		scr_buff_put_block2x2_clr
+		SCR_BUFF_PUT_BLOCK2X2_CLR
 
 		add hl, bc
 
@@ -899,7 +899,7 @@ _draw_tiles_color_column_shifted_up
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_clr_addr_tbl
+		ADD_ADDR_AX2 tiles_clr_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile color data address from the table
@@ -922,7 +922,7 @@ _draw_tiles_color_column_shifted_up
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_clr_addr_tbl
+		ADD_ADDR_AX2 tiles_clr_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile color data address from the table
@@ -977,13 +977,13 @@ _draw_tiles_column
 
 		; draw 1st block
 		ld a, l
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
 		ld sp, hl
 		exx
-		scr_buff_put_block2x2
+		SCR_BUFF_PUT_BLOCK2X2
 		ld bc, -4094
 		add hl, bc
 
@@ -991,39 +991,39 @@ _draw_tiles_column
 		exx
 		db $3e			;ld a, N
 ._2nd_block_val	db 0			;7
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
 		ld sp, hl
 		exx
-		scr_buff_put_block2x2
+		SCR_BUFF_PUT_BLOCK2X2
 		ld bc, -4064
 		add hl, bc
 
 		; draw 4th block
 		exx
 		ld a, hy
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
 		ld sp, hl
 		exx
-		scr_buff_put_block2x2
+		SCR_BUFF_PUT_BLOCK2X2
 		ld bc, -4098
 		add hl, bc
 
 		; draw 3th block
 		exx
 		ld a, ly
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
 		ld sp, hl
 		exx
-		scr_buff_put_block2x2
+		SCR_BUFF_PUT_BLOCK2X2
 		ld bc, -4064
 		add hl, bc
 
@@ -1045,7 +1045,7 @@ _draw_tiles_column
 		ld a, (bc)		; get tile index
 		inc bc
 
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1053,7 +1053,7 @@ _draw_tiles_column
 		ld sp, hl
 		exx
 
-		scr_buff_put_block2x2
+		SCR_BUFF_PUT_BLOCK2X2
 
 		add hl, bc
 
@@ -1078,7 +1078,7 @@ _draw_tiles_column_shifted_up_8b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1110,7 +1110,7 @@ _draw_tiles_column_shifted_up_8b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1158,7 +1158,7 @@ _draw_half_tiles_column
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1200,7 +1200,7 @@ _draw_half_tiles_column_shifted_up_4b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1228,7 +1228,7 @@ _draw_half_tiles_column_shifted_up_4b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1270,7 +1270,7 @@ _draw_half_tiles_column_shifted_up_8b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1298,7 +1298,7 @@ _draw_half_tiles_column_shifted_up_8b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1340,7 +1340,7 @@ _draw_half_tiles_column_shifted_up_12b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1368,7 +1368,7 @@ _draw_half_tiles_column_shifted_up_12b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1410,7 +1410,7 @@ _draw_tiles_column_shifted_up_4b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1442,7 +1442,7 @@ _draw_tiles_column_shifted_up_4b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1488,7 +1488,7 @@ _draw_tiles_column_shifted_up_12b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1520,7 +1520,7 @@ _draw_tiles_column_shifted_up_12b
 		ld a, (bc)		; get tile index
 		inc bc
 		
-		add_addr_ax2 tiles_addr_tbl
+		ADD_ADDR_AX2 tiles_addr_tbl
 
 		ld sp, hl
 		pop hl			; get tile graphics data address from the table
@@ -1872,7 +1872,7 @@ LR_border_CHRs	= 1
 
 show_screen	
 		IF	DEF_VERT_SYNC
-		vsync
+		VSYNC
 		ENDIF	//DEF_VERT_SYNC
 
 		IF	DEF_128K_DBL_BUFFER

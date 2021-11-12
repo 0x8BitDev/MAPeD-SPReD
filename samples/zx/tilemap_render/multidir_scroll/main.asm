@@ -27,26 +27,26 @@ max_lev_tiles_w	equ	Lev0_wtls		; max width of a level in tiles
 main
 		di	
 
-		ld sp, 24999	;!!!!!!!
+		ld sp, 24999
 
-		load_wdata Lev0_Map, 	tilemap_render.map_data		; game level tile map address
-		load_wdata Lev0_Gfx,	tilemap_render.map_tiles_gfx	; tile graphics data
+		LOAD_WDATA Lev0_Map, 	tilemap_render.map_data		; game level tile map address
+		LOAD_WDATA Lev0_Gfx,	tilemap_render.map_tiles_gfx	; tile graphics data
 
 		IF TR_COLORED_MAP
-		load_wdata Lev0_Clrs,	tilemap_render.map_tiles_clr	; tile colors data
+		LOAD_WDATA Lev0_Clrs,	tilemap_render.map_tiles_clr	; tile colors data
 		ENDIF //TR_COLORED_MAP
 
 		IF TR_DATA_TILES4X4
-		load_wdata Lev0_Tiles,	tilemap_render.map_tiles4x4	; tiles 4x4 data
+		LOAD_WDATA Lev0_Tiles,	tilemap_render.map_tiles4x4	; tiles 4x4 data
 		ENDIF //TR_DATA_TILES4X4
 
-		load_wdata Lev0_t_tiles,tilemap_render.map_data_cnt	; number of tiles in map
-		load_bdata Lev0_u_tiles,tilemap_render.map_tiles_cnt	; number of unique tiles in map
+		LOAD_WDATA Lev0_t_tiles,tilemap_render.map_data_cnt	; number of tiles in map
+		LOAD_BDATA Lev0_u_tiles,tilemap_render.map_tiles_cnt	; number of unique tiles in map
 		                                                                                               
-		load_wdata Lev0_wtls,	tilemap_render.map_tiles_w	; number of tiles in map in width
-		load_wdata Lev0_htls,	tilemap_render.map_tiles_h	; number of tiles in map in height
-		load_wdata Lev0_wchr, 	tilemap_render.map_chrs_w	; number of CHRs in map in width
-		load_wdata Lev0_hchr,	tilemap_render.map_chrs_h	; number of CHRs in map in height
+		LOAD_WDATA Lev0_wtls,	tilemap_render.map_tiles_w	; number of tiles in map in width
+		LOAD_WDATA Lev0_htls,	tilemap_render.map_tiles_h	; number of tiles in map in height
+		LOAD_WDATA Lev0_wchr, 	tilemap_render.map_chrs_w	; number of CHRs in map in width
+		LOAD_WDATA Lev0_hchr,	tilemap_render.map_chrs_h	; number of CHRs in map in height
 
 		IF	DEF_128K_DBL_BUFFER
 
