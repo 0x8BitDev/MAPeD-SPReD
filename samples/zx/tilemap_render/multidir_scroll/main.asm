@@ -48,6 +48,13 @@ main
 		LOAD_WDATA Lev0_wchr, 	tilemap_render.map_chrs_w	; number of CHRs in map in width
 		LOAD_WDATA Lev0_hchr,	tilemap_render.map_chrs_h	; number of CHRs in map in height
 
+		LOAD_BDATA Lev0_StartScr,	tilemap_render.map_start_scr
+		LOAD_BDATA Lev0_wscr,		tilemap_render.map_scr_width	; number of map screens in width
+		LOAD_BDATA Lev0_hscr,		tilemap_render.map_scr_height	; number of map screens in height
+
+		LOAD_BDATA SCR_BLOCKS2x2_WIDTH,		tilemap_render.map_scr_blocks_w	; number of screen blocks (2x2) in width
+		LOAD_BDATA SCR_BLOCKS2x2_HEIGHT,	tilemap_render.map_scr_blocks_h ; number of screen blocks (2x2) in height
+
 		IF	DEF_128K_DBL_BUFFER
 
 		; interrupt init in used memory banks

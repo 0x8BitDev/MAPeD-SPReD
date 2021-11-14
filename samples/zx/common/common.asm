@@ -83,6 +83,38 @@
 		di
 	endm	
 
+; http://z80-heaven.wikidot.com/math#toc14
+; *** C div D ***
+;
+; IN:
+;     C is the numerator
+;     D is the denominator
+; OUT:
+;     A is the remainder
+;     B is 0
+;     C is the result of C/D
+;     D,E,H,L are not changed
+;
+
+c_div_d:
+
+		ld b,8
+
+		xor a
+._div_loop
+		sla c
+		rla
+		
+		cp d
+
+		jr c, ._skip;$+2
+
+		inc c
+		sub d
+._skip
+		djnz ._div_loop;$-10
+
+		ret
 
 ; http://z80-heaven.wikidot.com/math#toc6
 ; *** D mul C ***
@@ -102,17 +134,17 @@ d_mul_c
 
 		xor a		;This is an optimised way to set A to zero. 4 cycles, 1 byte.
 		ld b,8		;Number of bits in E, so number of times we will cycle through
-_mul_loop
+._mul_loop
 		add a,a		;We double A, so we shift it left. Overflow goes into the c flag.
 		rl c		;Rotate overflow in and get the next bit of C in the c flag
 
-		jr nc, _skip	;If it is 0, we don't need to add anything to A
+		jr nc, ._skip	;If it is 0, we don't need to add anything to A
 
 		add a,d		;Since it was 1, we do A+1*D
 
-		jr nc, _skip	;Check if there was overflow
+		jr nc, ._skip	;Check if there was overflow
 		inc c		;If there was overflow, we need to increment E
-_skip
-		djnz _mul_loop	;Decrements B, if it isn't zero yet, jump back to _mul_loop:
+._skip
+		djnz ._mul_loop	;Decrements B, if it isn't zero yet, jump back to _mul_loop:
 
 		ret

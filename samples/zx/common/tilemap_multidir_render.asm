@@ -74,6 +74,14 @@ map_tiles_h	dw 0			; Lev0_htls number of tiles in map in height
 map_chrs_w	dw 0 			; Lev0_wchr number of CHRs in map in width
 map_chrs_h	dw 0 			; Lev0_hchr number of CHRs in map in height
 
+map_start_scr	db 0			; Lev0_StartScr
+map_scr_width	db 0			; Lev0_wscr number of map screens in width
+map_scr_height	db 0			; Lev0_hscr number of map screens in height
+map_scr_blocks_w
+		db 0			; number of screen blocks (2x2) in width
+map_scr_blocks_h
+		db 0			; number of screen blocks (2x2) in height
+
 ; start screen coordinates (upper left corner) in map coordinate system
 
 x_pos		dw 0
@@ -340,6 +348,75 @@ init
 		djnz .loop3
 
 		ENDIF	//DEF_COLOR
+
+		; calc X/Y coordinates by start screen index
+
+		; x_pos = map_scr_blocks_w * ( map_start_scr % map_scr_width )
+
+		ld a, (map_start_scr)
+		ld c, a
+
+		ld a, (map_scr_width)
+		ld d, a
+
+		call c_div_d
+
+		ld c, a				; a - remainder
+		ld a, (map_scr_blocks_w)
+
+		IF TR_DATA_TILES4X4
+		srl a
+		ENDIF
+
+		ld d, a
+
+		call d_mul_c
+
+		ld b, c
+		ld c, a				; bc - product
+
+		IF DEF_MOVE_STEP == MS_8b
+		MUL_POW2_BC 1
+		ELSE
+		IF DEF_MOVE_STEP == MS_4b
+		MUL_POW2_BC 2
+		ENDIF //DEF_MOVE_STEP == MS_4b
+		ENDIF //DEF_MOVE_STEP == MS_8b
+
+		ld (x_pos), bc
+
+		; y_pos = map_scr_blocks_h * ( map_start_scr / map_scr_height )
+
+		ld a, (map_start_scr)
+		ld c, a
+
+		ld a, (map_scr_height)
+		ld d, a
+
+		call c_div_d			; c - result
+
+		ld a, (map_scr_blocks_h)
+
+		IF TR_DATA_TILES4X4
+		srl a
+		ENDIF
+		
+		ld d, a
+
+		call d_mul_c
+
+		ld b, c
+		ld c, a				; bc - product
+
+		IF DEF_MOVE_STEP == MS_8b
+		MUL_POW2_BC 1
+		ELSE
+		IF DEF_MOVE_STEP == MS_4b
+		MUL_POW2_BC 2
+		ENDIF //DEF_MOVE_STEP == MS_4b
+		ENDIF //DEF_MOVE_STEP == MS_8b
+
+		ld (y_pos), bc
 
 		ret
 
