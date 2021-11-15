@@ -33,9 +33,6 @@ main
 		IF TR_DATA_TILES4X4
 		LOAD_WDATA tilemap_Tiles,					tilemap_render.map_tiles4x4	; tiles 4x4 data
 		LOAD_WDATA tilemap_TilesOffs,					tilemap_render.map_tiles_offs
-		LOAD_BDATA ( SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT ) >> 2,	tilemap_render.map_scr_size
-		ELSE
-		LOAD_BDATA SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT,		tilemap_render.map_scr_size
 		ENDIF //TR_DATA_TILES4X4
 
 		LOAD_WDATA tilemap_BlocksPropsOffs,				tilemap_render.map_props_arr

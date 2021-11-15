@@ -66,6 +66,10 @@ SCR_UNI_HEIGHT	equ SCR_BLOCKS2x2_HEIGHT
 		IF TR_DATA_TILES4X4
 SCR_UNI_WIDTH	equ SCR_UNI_WIDTH >> 1
 SCR_UNI_HEIGHT	equ SCR_UNI_HEIGHT >> 1
+
+SCR_SIZE	equ ( SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT ) >> 2
+		ELSE
+SCR_SIZE	equ SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT
 		ENDIF //TR_DATA_TILES4X4
 
 		IF TR_DATA_TILES4X4
@@ -81,8 +85,6 @@ map_gfx_arr	dw 0			; tilemap_Gfx exported graphics array
 map_props_arr	dw 0			; tilemap_BlocksPropsOffs
 
 map_curr_scr	dw 0
-
-map_scr_size	db 0
 
 		IF !TR_ADJ_SCREENS
 map_scr_arr	dw 0			; Lev0_ScrArr
@@ -115,6 +117,11 @@ scr_tiles_width		db 0
 scr_tiles_height	db 0
 
 map_new_scr		dw 0
+
+		IF DEF_128K_DBL_BUFFER
+dbl_buff_scr_addr	dw 0
+dbl_buff_attr_addr	dw 0
+		ENDIF //DEF_128K_DBL_BUFFER
 		ENDIF //DEF_SCR_SCROLL
 
 			align 256
@@ -173,7 +180,7 @@ _adj_scr_down	= %10000000
 		pop de
 
 		ld (hl), e
-		inc l
+		inc hl
 		ld (hl), d
 
 		ADD_HL_VAL SCR_CHR_WIDTH - 1
@@ -181,7 +188,7 @@ _adj_scr_down	= %10000000
 		pop de
 
 		ld (hl), e
-		inc l
+		inc hl
 		ld (hl), d
 	endm
 
@@ -275,6 +282,22 @@ _adj_scr_down	= %10000000
 		ENDIF //DEF_SCR_SCROLL
 	endm
 
+	macro	GET_SCR_ADDR_HL
+		IF DEF_128K_DBL_BUFFER
+		ld hl, (dbl_buff_scr_addr)
+		ELSE
+		ld hl, #4000 + SCR_CENTER_OFFS_X
+		ENDIF //DEF_128K_DBL_BUFFER
+	endm
+
+	macro	GET_ATTR_ADDR_DE
+		IF DEF_128K_DBL_BUFFER
+		ld de, (dbl_buff_attr_addr)
+		ELSE
+		ld de, #5800 + SCR_CENTER_OFFS_X
+		ENDIF //DEF_128K_DBL_BUFFER
+	endm
+
 init
 		; fill the tile graphics lookup table
 		
@@ -329,6 +352,13 @@ init
 
 		ENDIF //TR_COLORED_MAP
 
+		IF DEF_128K_DBL_BUFFER
+
+		xor a
+		ld (_scr_trigg), a
+
+		ENDIF //DEF_128K_DBL_BUFFER
+
 		ret
 
 check_up_screen
@@ -363,6 +393,13 @@ _scr_scroll_left
 		ENDIF //TR_DIR_ROWS
 .loop
 		push af
+
+		IF DEF_128K_DBL_BUFFER
+		call _check_active_screen
+		ENDIF //DEF_128K_DBL_BUFF
+
+		pop af
+		push af		
 
 	; draw new screen
 
@@ -399,8 +436,8 @@ _scr_scroll_left
 
 		ENDIF //TR_DIR_ROWS
 
-		ld de, #4000 + SCR_CENTER_OFFS_X
-		ld (scr_scr_addr), de
+		GET_SCR_ADDR_HL
+		ld (scr_scr_addr), hl
 
 		IF TR_COLORED_MAP
 		ld de, scr_clrs_arr
@@ -445,16 +482,17 @@ _scr_scroll_left
 		add a
 		ENDIF //TR_DATA_TILES4X4
 
-		ld de, #4000 + SCR_CENTER_OFFS_X
-		add e
-		ld e, a
-		ld (scr_scr_addr), de
+		ld c, a
+
+		GET_SCR_ADDR_HL
+		ADD_HL_A
+		ld (scr_scr_addr), hl
 
 		IF TR_COLORED_MAP
-		ld de, scr_clrs_arr
-		add e
-		ld e, a
-		ld (scr_attr_addr), de
+		ld hl, scr_clrs_arr
+		ld a, c
+		ADD_HL_A
+		ld (scr_attr_addr), hl
 		ENDIF //TR_COLORED_MAP
 
 		ld hl, 0
@@ -489,6 +527,13 @@ _scr_scroll_up
 		ENDIF //TR_DIR_ROWS
 .loop
 		push af
+
+		IF DEF_128K_DBL_BUFFER
+		call _check_active_screen
+		ENDIF //DEF_128K_DBL_BUFF
+
+		pop af
+		push af		
 
 	; draw new screen
 
@@ -525,8 +570,8 @@ _scr_scroll_up
 
 		ENDIF //TR_DIR_ROWS
 
-		ld de, #4000 + SCR_CENTER_OFFS_X
-		ld (scr_scr_addr), de
+		GET_SCR_ADDR_HL
+		ld (scr_scr_addr), hl
 
 		IF TR_COLORED_MAP
 		ld de, scr_clrs_arr
@@ -579,7 +624,7 @@ _scr_scroll_up
 		sla b
 		sla b
 
-		ld hl, #4000 + SCR_CENTER_OFFS_X
+		GET_SCR_ADDR_HL
 		add hl, bc
 
 		ld (scr_scr_addr), hl
@@ -628,6 +673,13 @@ _scr_scroll_right
 .loop
 		push af
 
+		IF DEF_128K_DBL_BUFFER
+		call _check_active_screen
+		ENDIF //DEF_128K_DBL_BUFF
+
+		pop af
+		push af		
+
 	; draw current screen
 
 		IF TR_DIR_ROWS
@@ -674,8 +726,8 @@ _scr_scroll_right
 		add a
 		ENDIF //TR_DATA_TILES4X4
 
-		ld de, #4000 + SCR_CENTER_OFFS_X
-		ld (scr_scr_addr), de
+		GET_SCR_ADDR_HL
+		ld (scr_scr_addr), hl
 
 		IF TR_COLORED_MAP
 		ld de, scr_clrs_arr
@@ -724,16 +776,17 @@ _scr_scroll_right
 		add a
 		ENDIF //TR_DATA_TILES4X4
 
-		ld de, #4000 + SCR_CENTER_OFFS_X
-		add e
-		ld e, a
-		ld (scr_scr_addr), de
+		ld c, a
+
+		GET_SCR_ADDR_HL
+		ADD_HL_A
+		ld (scr_scr_addr), hl
 
 		IF TR_COLORED_MAP
-		ld de, scr_clrs_arr
-		add e
-		ld e, a
-		ld (scr_attr_addr), de
+		ld hl, scr_clrs_arr
+		ld a, c
+		ADD_HL_A
+		ld (scr_attr_addr), hl
 		ENDIF //TR_COLORED_MAP
 
 		ld hl, 0
@@ -768,6 +821,13 @@ _scr_scroll_down
 		ENDIF //TR_DIR_ROWS
 .loop
 		push af
+
+		IF DEF_128K_DBL_BUFFER
+		call _check_active_screen
+		ENDIF //DEF_128K_DBL_BUFF
+
+		pop af
+		push af		
 
 	; draw current screen
 
@@ -809,8 +869,8 @@ _scr_scroll_down
 
 		ENDIF //TR_DIR_ROWS
 
-		ld de, #4000 + SCR_CENTER_OFFS_X
-		ld (scr_scr_addr), de
+		GET_SCR_ADDR_HL
+		ld (scr_scr_addr), hl
 
 		IF TR_COLORED_MAP
 		ld de, scr_clrs_arr
@@ -867,7 +927,7 @@ _scr_scroll_down
 		sla b
 		sla b
 
-		ld hl, #4000 + SCR_CENTER_OFFS_X
+		GET_SCR_ADDR_HL
 		add hl, bc
 
 		ld (scr_scr_addr), hl
@@ -902,7 +962,11 @@ _scr_scroll_down
 
 _draw_curr_screen
 
-		ld hl, #4000 + SCR_CENTER_OFFS_X
+		IF DEF_128K_DBL_BUFFER
+		call _check_active_screen
+		ENDIF //DEF_128K_DBL_BUFF
+
+		GET_SCR_ADDR_HL
 		ld (scr_scr_addr), hl
 
 		IF TR_COLORED_MAP
@@ -923,7 +987,13 @@ _draw_curr_screen
 
 		ld de, (map_curr_scr)
 
-		jp _draw_screen_part
+		call _draw_screen_part
+
+		IF DEF_128K_DBL_BUFFER
+		call _show_drawn_screen
+		ENDIF //DEF_128K_DBL_BUFF		
+
+		ret
 
 		ENDIF //DEF_SCR_SCROLL
 
@@ -932,6 +1002,7 @@ _draw_curr_screen
 ;
 draw_screen
 		IF DEF_SCR_SCROLL
+
 		ld hl, (map_new_scr)
 		ld a, h
 		or l
@@ -1008,7 +1079,7 @@ _draw_screen_part
 
 		exx
 		ld c, a
-		ld a, (map_scr_size)
+		ld a, SCR_SIZE
 		ld d, a
 		call d_mul_c
 		ld d, c
@@ -1137,8 +1208,7 @@ _draw_screen_part
 		IF TR_DIR_ROWS
 		ADD_HL_VAL SCR_CHR_WIDTH << 1
 		ELSE
-		inc hl
-		inc hl
+		ADD_HL_VAL 2
 		ENDIF //TR_DIR_ROWS
 		ENDIF //TR_DATA_TILES4X4
 
@@ -1160,7 +1230,7 @@ _draw_screen_part
 		IF TR_COLORED_MAP
 		
 _draw_clrs_buff
-		ld de, #5800 + SCR_CENTER_OFFS_X
+		GET_ATTR_ADDR_DE
 		ld hl, scr_clrs_arr
 
 		ld lx, SCR_CHR_HEIGHT
@@ -1498,5 +1568,66 @@ _draw_tiles_line
 		ENDIF //TR_DATA_TILES4X4
 
 _tmp_sp		dw 0
+
+		IF DEF_128K_DBL_BUFFER
+
+_check_active_screen
+
+		VSYNC
+
+		ld a, (_scr_trigg)
+
+		xor #01
+		cp #01
+
+		ld (_scr_trigg), a
+
+		jp nz, .draw_scr0
+
+		; show the main screen and draw on the extended one
+
+		call _switch_Uscr
+
+		ld hl, #c000 + SCR_CENTER_OFFS_X
+		ld (dbl_buff_scr_addr), hl
+
+		ld hl, #d800 + SCR_CENTER_OFFS_X
+		ld (dbl_buff_attr_addr), hl
+
+		ret
+
+.draw_scr0
+		; show the extended screen and draw on the main one
+
+		call _switch_Escr
+
+		ld hl, #4000 + SCR_CENTER_OFFS_X
+		ld (dbl_buff_scr_addr), hl
+
+		ld hl, #5800 + SCR_CENTER_OFFS_X
+		ld (dbl_buff_attr_addr), hl
+
+		ret
+
+_show_drawn_screen
+
+		ld a, (_scr_trigg)
+		cp #01
+		ld (_scr_trigg), a
+
+		jp nz, .show_scr0
+
+		; show the extended screen and draw on the main one
+
+		jp _switch_Escr
+
+.show_scr0
+		; show the main screen and draw on the extended one
+
+		jp _switch_Uscr
+
+
+
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		ENDMODULE

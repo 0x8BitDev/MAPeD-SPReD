@@ -21,13 +21,23 @@
 		ld l, a
 	endm
 
-	macro	ADD_HL_VAL _val
-		ld a, _val
+	macro	ADD_HL_A
 		add l
 		ld l, a
 		jp nc, .skip
 		inc h
 .skip
+	endm
+
+	macro	ADD_HL_VAL _val
+		IF _val < 5
+		dup _val
+		inc hl
+		edup
+		ELSE
+		ld a, _val
+		ADD_HL_A
+		ENDIF
 	endm
 
 	macro	SUB_HL_VAL _val
