@@ -55,52 +55,13 @@ main
 		LOAD_BDATA SCR_BLOCKS2x2_WIDTH,		tilemap_render.map_scr_blocks_w	; number of screen blocks (2x2) in width
 		LOAD_BDATA SCR_BLOCKS2x2_HEIGHT,	tilemap_render.map_scr_blocks_h ; number of screen blocks (2x2) in height
 
-		IF	DEF_128K_DBL_BUFFER
+		; data init
 
-		; interrupt init in used memory banks
+		call tilemap_render.im2_init
 
-		call tilemap_render._switch_Uscr
-
-		; clear attributes of extended screen
-
-		ld hl, #d800
-		ld a, 7<<3
-		ld (hl), a
-		ld de, #d801
-		ld bc, #300
-		ldir
-
-		ld   a,24      		; JR code
-	        ld   (65535),a
-	        ld   a,195     		; JP code
-	        ld   (65524),a
-	        ld   hl,im_prc    	; handler address
-	        ld   (65525),hl
-	        ld   hl,#FE00
-	        ld   de,#FE01
-	        ld   bc,#0100
-	        ld   (hl),#FF
-	        ld   a,h
-	        ldir
-	        ld   i,a
-	        im   2
-
-		call tilemap_render._switch_Escr
-
-		ld   a,24      		; JR code
-	        ld   (65535),a
-	        ld   a,195     		; JP code
-	        ld   (65524),a
-	        ld   hl,im_prc    	; handler address
-	        ld   (65525),hl
-	        ld   hl,#FE00
-	        ld   de,#FE01
-	        ld   bc,#0100
-	        ld   (hl),#FF
-	        ld   a,h
-	        ldir
-
-		ENDIF	//DEF_128K_DBL_BUFFER
+		IF DEF_128K_DBL_BUFFER
+		call tilemap_render.clear_ext_scr_attrs
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		call tilemap_render.init
 
@@ -154,9 +115,6 @@ main
 
 .next4		jr .loop
 
-
-im_prc		ei
-		reti
 
 		include "data/tilemap.zxa"
 PROG_END

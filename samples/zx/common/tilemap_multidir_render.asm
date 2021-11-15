@@ -1948,9 +1948,7 @@ LR_border_CHRs	= 1
 		ENDIF	//DEF_MOVE_STEP == MS_TILE
 
 show_screen	
-		IF	DEF_VERT_SYNC
 		VSYNC
-		ENDIF	//DEF_VERT_SYNC
 
 		IF	DEF_128K_DBL_BUFFER
 
@@ -2327,31 +2325,6 @@ _drw_sthb1	db 0			; [or #00|#80] switching between the main screen address and t
 		ld h, a
 
 		jp _loop32x24
-
-		ENDIF	//DEF_128K_DBL_BUFFER
-
-		IF	DEF_128K_DBL_BUFFER
-_scr_trigg	db 0	; screen switching trigger
-
-_switch_Uscr	; show the main screen and switch to the 7th bank to draw the shadow buffer
-
-		ld bc, #7ffd
-		ld a, (23388)
-		ld a, %00000111
-		ld (23388), a
-		out (c), a
-
-		ret
-
-_switch_Escr	; show the extended screen to draw on the main one
-
-		ld bc, #7ffd
-		ld a, (23388)
-		ld a, %00001000
-		ld (23388), a
-		out (c), a
-
-		ret
 
 		ENDIF	//DEF_128K_DBL_BUFFER
 

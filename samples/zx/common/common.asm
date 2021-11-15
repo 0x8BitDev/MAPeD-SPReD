@@ -78,9 +78,11 @@
 	endm
 
 	macro	VSYNC
+		IF DEF_VERT_SYNC
 		ei
 		halt
 		di
+		ENDIF
 	endm	
 
 ; http://z80-heaven.wikidot.com/math#toc14
@@ -148,3 +150,124 @@ d_mul_c
 		djnz ._mul_loop	;Decrements B, if it isn't zero yet, jump back to _mul_loop:
 
 		ret
+
+		IF	DEF_128K_DBL_BUFFER
+_scr_trigg	db 0	; screen switching trigger
+
+		; show the main screen and switch off the 7th bank
+
+_switch_Uscr_7bank_off
+
+		ld bc, #7ffd
+		ld a, (23388)
+		ld a, %00000000
+		ld (23388), a
+		out (c), a
+
+		ret
+
+		; show the main screen and switch to the 7th bank to draw image
+
+_switch_Uscr
+
+		ld bc, #7ffd
+		ld a, (23388)
+		ld a, %00000111
+		ld (23388), a
+		out (c), a
+
+		ret
+
+		; show the extended screen to draw on the main one
+		
+_switch_Escr
+
+		ld bc, #7ffd
+		ld a, (23388)
+		ld a, %00001000
+		ld (23388), a
+		out (c), a
+
+		ret
+
+		ENDIF	//DEF_128K_DBL_BUFFER
+
+im2_init
+		IF DEF_128K_DBL_BUFFER
+
+		; interrupt init
+
+		ld a,24      		; JR code
+		ld (65535),a
+		ld a,195     		; JP code
+		ld (65524),a
+		ld hl,im_prc    	; handler address
+		ld (65525),hl
+		ld hl,#FE00
+		ld de,#FE01
+		ld bc,#0100
+		ld (hl),#FF
+		ld a,h
+		ldir
+		ld i,a
+		im 2
+
+		call tilemap_render._switch_Uscr
+
+		ld a,24      		; JR code
+		ld (65535),a
+		ld a,195     		; JP code
+		ld (65524),a
+		ld hl,im_prc    	; handler address
+		ld (65525),hl
+		ld hl,#FE00
+		ld de,#FE01
+		ld bc,#0100
+		ld (hl),#FF
+		ld a,h
+		ldir
+
+		jp tilemap_render._switch_Uscr_7bank_off
+
+		ELSE
+		
+		ld a,24			; JR code
+		ld (65535),a
+		ld a,195		; JP code
+		ld (65524),a
+		ld hl,im_prc		; handler address
+		ld (65525),hl
+		ld hl,#FE00
+		ld de,#FE01
+		ld bc,#0100
+		ld (hl),#FF
+		ld a,h
+		ldir
+		ld i,a
+		im 2
+
+		ret
+
+		ENDIF	//DEF_128K_DBL_BUFFER
+
+im_prc		ei
+		reti
+
+		IF DEF_128K_DBL_BUFFER
+
+clear_ext_scr_attrs
+
+		call tilemap_render._switch_Uscr
+
+		; clear attributes of extended screen
+
+		ld hl, #d800
+		ld a, 7<<3
+		ld (hl), a
+		ld de, #d801
+		ld bc, #300
+		ldir
+
+		jp tilemap_render._switch_Uscr_7bank_off
+
+		ENDIF //DEF_128K_DBL_BUFFER

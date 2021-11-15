@@ -29,9 +29,9 @@
 ; Additional options
 ;
 ; DEF_SCR_SCROLL	1/0
+; DEF_VERT_SYNC		1/0
 ;
 
-DEF_SCR_SCROLL	equ 0
 
 		MODULE	tilemap_render
 

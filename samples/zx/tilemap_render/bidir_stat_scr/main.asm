@@ -8,9 +8,10 @@
 ; Keys: Q, A, O, P
 ;
 
-		device zxspectrum48
-
 		org 25000
+
+		include "settings.asm"
+
 PROG_START
 
 TR_DATA_TILES4X4	equ MAP_DATA_MAGIC&MAP_FLAG_TILES4X4
@@ -23,23 +24,6 @@ main
 		di	
 
 		ld sp, 24999
-
-		; interrupt handler
-
-		ld a,24			; JR code
-		ld (65535),a
-		ld a,195		; JP code
-		ld (65524),a
-		ld hl,im_prc		; handler address
-		ld (65525),hl
-		ld hl,#FE00
-		ld de,#FE01
-		ld bc,#0100
-		ld (hl),#FF
-		ld a,h
-		ldir
-		ld i,a
-		im 2
 
 		; setup map data
 
@@ -67,6 +51,12 @@ main
 		LOAD_WDATA Lev0_StartScr,	tilemap_render.map_curr_scr
 
 		; data init
+
+		call tilemap_render.im2_init
+
+		IF DEF_128K_DBL_BUFFER
+		call tilemap_render.clear_ext_scr_attrs
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		call tilemap_render.init
 		call tilemap_render.draw_screen
@@ -145,9 +135,6 @@ res_kb_state
 		xor a
 		ld (kb_state), a
 		jp loop
-
-im_prc		ei
-		reti
 
 kb_flag_up	= %00000001
 kb_flag_down	= %00000010
