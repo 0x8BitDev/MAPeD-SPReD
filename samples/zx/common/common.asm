@@ -56,6 +56,13 @@
 		edup
 	endm
 
+	macro	DIV_POW2_BC _cnt
+		dup _cnt
+		srl b
+		rr c
+		edup
+	endm
+
 	macro	LOAD_WDATA _data, _addr
 		ld hl, _data
 		ld (_addr), hl
@@ -163,18 +170,8 @@ d_mul_c
 
 		IF	DEF_128K_DBL_BUFFER
 _scr_trigg	db 0	; screen switching trigger
+_last_port_data	db 0	; last #7ffd port data
 
-		; show the main screen and switch off the 7th bank
-
-_switch_Uscr_7bank_off
-
-		ld bc, #7ffd
-		ld a, (23388)
-		ld a, %00000000
-		ld (23388), a
-		out (c), a
-
-		ret
 
 		; show the main screen and switch to the 7th bank to draw image
 
@@ -183,6 +180,7 @@ _switch_Uscr
 		ld bc, #7ffd
 		ld a, (23388)
 		ld a, %00000111
+		ld (_last_port_data), a
 		ld (23388), a
 		out (c), a
 
@@ -195,6 +193,28 @@ _switch_Escr
 		ld bc, #7ffd
 		ld a, (23388)
 		ld a, %00001000
+		ld (_last_port_data), a
+		ld (23388), a
+		out (c), a
+
+		ret
+
+_restore_Xscr
+
+		ld bc, #7ffd
+		ld a, (23388)
+		ld a, (_last_port_data)
+		ld (23388), a
+		out (c), a
+
+		ret
+
+_hide_7th_bank
+
+		ld bc, #7ffd
+		ld a, (23388)
+		ld a, (_last_port_data)
+		and %11111000
 		ld (23388), a
 		out (c), a
 
@@ -222,7 +242,7 @@ im2_init
 		ld i,a
 		im 2
 
-		call tilemap_render._switch_Uscr
+		call _switch_Uscr
 
 		ld a,24      		; JR code
 		ld (65535),a
@@ -237,7 +257,7 @@ im2_init
 		ld a,h
 		ldir
 
-		jp tilemap_render._switch_Uscr_7bank_off
+		jp _hide_7th_bank
 
 		ELSE
 		
@@ -267,7 +287,7 @@ im_prc		ei
 
 clear_ext_scr_attrs
 
-		call tilemap_render._switch_Uscr
+		call _switch_Uscr
 
 		; clear attributes of extended screen
 
@@ -278,6 +298,6 @@ clear_ext_scr_attrs
 		ld bc, #300
 		ldir
 
-		jp tilemap_render._switch_Uscr_7bank_off
+		jp _hide_7th_bank
 
 		ENDIF //DEF_128K_DBL_BUFFER

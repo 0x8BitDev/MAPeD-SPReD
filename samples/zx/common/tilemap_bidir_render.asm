@@ -121,6 +121,15 @@ map_new_scr		dw 0
 		IF DEF_128K_DBL_BUFFER
 dbl_buff_scr_addr	dw 0
 dbl_buff_attr_addr	dw 0
+
+; screen data cache allowing usage of big data that overlaps #C000
+
+active_scr_data_pos	db 0
+scr_data_pos		db 0
+scr_data0_chr_id	db 0
+scr_data0		block SCR_SIZE, 0
+scr_data1_chr_id	db 0
+scr_data1		block SCR_SIZE, 0
 		ENDIF //DEF_128K_DBL_BUFFER
 		ENDIF //DEF_SCR_SCROLL
 
@@ -192,70 +201,6 @@ _adj_scr_down	= %10000000
 		ld (hl), d
 	endm
 
-		; OUT: Carry flag - 1-new screen; 0-no screen
-		;
-	macro	CHECK_ADJACENT_SCREEN _adj_scr_flag, _offset
-		xor a			; reset carry flag
-		ld hl, (map_curr_scr)
-		inc hl
-
-		IF TR_DATA_MARKS
-		ld a, (hl)		; get adjacent screens mark
-		and _adj_scr_flag
-		ret z
-		inc hl			; skip mark
-		ENDIF //TR_DATA_MARKS
-
-		inc hl			; skip screen id
-
-		IF TR_ADJ_SCREENS
-
-		IF _offset > 0
-		ld bc, _offset
-		add hl, bc
-		ENDIF
-
-		ELSE
-
-		IF _offset > 0
-		ld bc, _offset >> 1
-		add hl, bc
-		ENDIF
-
-		ld a, (hl)
-		cp #ff
-		ret z
-
-		add a
-		ld c, a
-		ld b, 0
-		ld hl, (map_scr_arr)		
-		add hl, bc
-
-		ENDIF //TR_ADJ_SCREENS
-
-		ld e, (hl)
-		inc hl
-		ld d, (hl)
-
-		IF !TR_DATA_MARKS
-		ld a, e
-		or d
-		ret z
-		ENDIF //TR_DATA_MARKS
-
-		IF DEF_SCR_SCROLL
-		ld (map_new_scr), de
-
-		ld a, _offset >> 1
-		ld (scr_scroll_dir), a
-		ELSE
-		ld (map_curr_scr), de
-		ENDIF //DEF_SCR_SCROLL
-
-		scf			; set the carry as sign of a new screen
-	endm
-
 	macro	LD_IXH _val, _alt_val
 		IF DEF_SCR_SCROLL
 		ld a, (_alt_val)
@@ -296,6 +241,17 @@ _adj_scr_down	= %10000000
 		ELSE
 		ld de, #5800 + SCR_CENTER_OFFS_X
 		ENDIF //DEF_128K_DBL_BUFFER
+	endm
+
+	macro	SET_CURR_SCR_DATA_POS
+		ld a, (scr_data_pos)
+		ld (active_scr_data_pos), a
+	endm
+
+	macro	SET_PREV_SCR_DATA_POS
+		ld a, (scr_data_pos)
+		xor #01
+		ld (active_scr_data_pos), a
 	endm
 
 init
@@ -357,24 +313,142 @@ init
 		xor a
 		ld (_scr_trigg), a
 
+		call _set_active_screen
+
+		ld de, (map_curr_scr)
+		jp _save_scr_data
+
+		ELSE
+		ret
 		ENDIF //DEF_128K_DBL_BUFFER
 
-		ret
-
 check_up_screen
-		CHECK_ADJACENT_SCREEN _adj_scr_up, 2
-		ret
+
+		ld bc, 2
+		ld e, _adj_scr_up
+
+		IF DEF_128K_DBL_BUFFER
+		call _check_adjacent_screen
+		jp _restore_Xscr
+		ELSE
+		jp _check_adjacent_screen
+		ENDIF //DEF_128K_DBL_BUFFER
 
 check_down_screen
-		CHECK_ADJACENT_SCREEN _adj_scr_down, 6
-		ret
+
+		ld bc, 6
+		ld e, _adj_scr_down
+
+		IF DEF_128K_DBL_BUFFER
+		call _check_adjacent_screen
+		jp _restore_Xscr
+		ELSE
+		jp _check_adjacent_screen
+		ENDIF //DEF_128K_DBL_BUFFER
 
 check_left_screen
-		CHECK_ADJACENT_SCREEN _adj_scr_left, 0
-		ret
+
+		ld bc, 0
+		ld e, _adj_scr_left
+
+		IF DEF_128K_DBL_BUFFER
+		call _check_adjacent_screen
+		jp _restore_Xscr
+		ELSE
+		jp _check_adjacent_screen
+		ENDIF //DEF_128K_DBL_BUFFER
 
 check_right_screen
-		CHECK_ADJACENT_SCREEN _adj_scr_right, 4
+
+		ld bc, 4
+		ld e, _adj_scr_right
+
+		IF DEF_128K_DBL_BUFFER
+		call _check_adjacent_screen
+		jp _restore_Xscr
+		ELSE
+		jp _check_adjacent_screen
+		ENDIF //DEF_128K_DBL_BUFFER
+
+; check adjacent screen
+;
+; IN:	map_curr_scr
+;	bc - adjacent screena data offset
+;	e - adjacent screen flag
+;
+; OUT: Carry flag - 1-new screen; 0-no screen
+;
+_check_adjacent_screen
+
+		IF DEF_128K_DBL_BUFFER
+		exx
+		call _hide_7th_bank
+		exx
+		ENDIF //DEF_128K_DBL_BUFFER
+
+		ld hl, (map_curr_scr)
+		inc hl
+
+		IF TR_DATA_MARKS
+		ld a, (hl)		; get adjacent screens mark
+		and e
+		ret z
+		inc hl			; skip mark
+		ENDIF //TR_DATA_MARKS
+
+		inc hl			; skip screen id
+
+		IF DEF_SCR_SCROLL
+		ld a, c
+		srl a
+		ld (scr_scroll_dir), a
+		ENDIF //DEF_SCR_SCROLL
+
+		IF TR_ADJ_SCREENS
+
+		add hl, bc
+
+		ELSE
+
+		DIV_POW2_BC 1
+		add hl, bc
+
+		ld a, (hl)
+		cp #ff
+		ret z
+
+		add a
+		ld c, a
+		ld b, 0
+		ld hl, (map_scr_arr)		
+		add hl, bc
+
+		ENDIF //TR_ADJ_SCREENS
+
+		ld e, (hl)
+		inc hl
+		ld d, (hl)
+
+		IF !TR_DATA_MARKS
+		ld a, e
+		or d
+		ret z
+		ENDIF //TR_DATA_MARKS
+
+		IF DEF_SCR_SCROLL
+		ld (map_new_scr), de
+
+		IF DEF_128K_DBL_BUFFER
+		call _inc_scr_data_pos
+		call _save_scr_data
+		ENDIF //DEF_128K_DBL_BUFFER
+
+		ELSE
+		ld (map_curr_scr), de
+		ENDIF //DEF_SCR_SCROLL
+
+		scf			; set the carry as sign of a new screen
+
 		ret
 
 		IF DEF_SCR_SCROLL
@@ -395,11 +469,10 @@ _scr_scroll_left
 		push af
 
 		IF DEF_128K_DBL_BUFFER
-		call _check_active_screen
-		ENDIF //DEF_128K_DBL_BUFF
-
+		call _switch_active_screen
 		pop af
 		push af		
+		ENDIF //DEF_128K_DBL_BUFF
 
 	; draw new screen
 
@@ -444,7 +517,11 @@ _scr_scroll_left
 		ld (scr_attr_addr), de
 		ENDIF //TR_COLORED_MAP
 
+		IF DEF_128K_DBL_BUFFER
+		SET_CURR_SCR_DATA_POS
+		ELSE
 		ld de, (map_new_scr)
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		call _draw_screen_part
 
@@ -498,7 +575,11 @@ _scr_scroll_left
 		ld hl, 0
 		ld (scr_tile_data_offset), hl
 
+		IF DEF_128K_DBL_BUFFER
+		SET_PREV_SCR_DATA_POS
+		ELSE
 		ld de, (map_curr_scr)
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		call _draw_screen_part
 
@@ -529,11 +610,10 @@ _scr_scroll_up
 		push af
 
 		IF DEF_128K_DBL_BUFFER
-		call _check_active_screen
-		ENDIF //DEF_128K_DBL_BUFF
-
+		call _switch_active_screen
 		pop af
 		push af		
+		ENDIF //DEF_128K_DBL_BUFF
 
 	; draw new screen
 
@@ -578,7 +658,11 @@ _scr_scroll_up
 		ld (scr_attr_addr), de
 		ENDIF //TR_COLORED_MAP
 
+		IF DEF_128K_DBL_BUFFER
+		SET_CURR_SCR_DATA_POS
+		ELSE
 		ld de, (map_new_scr)
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		call _draw_screen_part
 
@@ -643,7 +727,11 @@ _scr_scroll_up
 		ld (scr_attr_addr), hl
 		ENDIF //TR_COLORED_MAP
 
+		IF DEF_128K_DBL_BUFFER
+		SET_PREV_SCR_DATA_POS
+		ELSE
 		ld de, (map_curr_scr)
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		call _draw_screen_part
 
@@ -674,11 +762,10 @@ _scr_scroll_right
 		push af
 
 		IF DEF_128K_DBL_BUFFER
-		call _check_active_screen
-		ENDIF //DEF_128K_DBL_BUFF
-
+		call _switch_active_screen
 		pop af
 		push af		
+		ENDIF //DEF_128K_DBL_BUFF
 
 	; draw current screen
 
@@ -734,7 +821,11 @@ _scr_scroll_right
 		ld (scr_attr_addr), de
 		ENDIF //TR_COLORED_MAP
 
+		IF DEF_128K_DBL_BUFFER
+		SET_PREV_SCR_DATA_POS
+		ELSE
 		ld de, (map_curr_scr)
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		call _draw_screen_part
 
@@ -792,7 +883,11 @@ _scr_scroll_right
 		ld hl, 0
 		ld (scr_tile_data_offset), hl
 
+		IF DEF_128K_DBL_BUFFER
+		SET_CURR_SCR_DATA_POS
+		ELSE
 		ld de, (map_new_scr)
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		call _draw_screen_part
 
@@ -823,11 +918,10 @@ _scr_scroll_down
 		push af
 
 		IF DEF_128K_DBL_BUFFER
-		call _check_active_screen
-		ENDIF //DEF_128K_DBL_BUFF
-
+		call _switch_active_screen
 		pop af
 		push af		
+		ENDIF //DEF_128K_DBL_BUFF
 
 	; draw current screen
 
@@ -877,7 +971,11 @@ _scr_scroll_down
 		ld (scr_attr_addr), de
 		ENDIF //TR_COLORED_MAP
 
+		IF DEF_128K_DBL_BUFFER
+		SET_PREV_SCR_DATA_POS
+		ELSE
 		ld de, (map_curr_scr)
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		call _draw_screen_part
 
@@ -946,7 +1044,11 @@ _scr_scroll_down
 		ld (scr_attr_addr), hl
 		ENDIF //TR_COLORED_MAP
 
+		IF DEF_128K_DBL_BUFFER
+		SET_CURR_SCR_DATA_POS
+		ELSE
 		ld de, (map_new_scr)
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		call _draw_screen_part
 
@@ -963,7 +1065,7 @@ _scr_scroll_down
 _draw_curr_screen
 
 		IF DEF_128K_DBL_BUFFER
-		call _check_active_screen
+		call _switch_active_screen
 		ENDIF //DEF_128K_DBL_BUFF
 
 		GET_SCR_ADDR_HL
@@ -985,15 +1087,19 @@ _draw_curr_screen
 		ld hl, 0
 		ld (scr_tile_data_offset), hl
 
+		IF DEF_128K_DBL_BUFFER
+		SET_CURR_SCR_DATA_POS
+		ELSE
 		ld de, (map_curr_scr)
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		call _draw_screen_part
 
 		IF DEF_128K_DBL_BUFFER
-		call _show_drawn_screen
-		ENDIF //DEF_128K_DBL_BUFF		
-
+		jp _show_drawn_screen
+		ELSE
 		ret
+		ENDIF //DEF_128K_DBL_BUFF		
 
 		ENDIF //DEF_SCR_SCROLL
 
@@ -1036,7 +1142,11 @@ _draw_screen_part
 		ld de, (map_curr_scr)
 		ENDIF //DEF_SCR_SCROLL
 
+		IF DEF_128K_DBL_BUFFER
+		call _get_scr_data_chr_id
+		ELSE
 		ld a, (de)		; chr id
+		ENDIF //DEF_128K_DBL_BUFFER
 
 		IF TR_COLORED_MAP
 		push af			; save chr id
@@ -1075,6 +1185,14 @@ _draw_screen_part
 		inc de
 		ENDIF //TR_DATA_MARKS
 
+		IF DEF_128K_DBL_BUFFER
+
+		exx
+		ld c, l
+		ld b, h			; bc' - tiles gfx
+		call _get_scr_tiles	; de' - screen tiles
+
+		ELSE
 		ld a, (de)		; screen index
 
 		exx
@@ -1091,6 +1209,8 @@ _draw_screen_part
 		ex de, hl		
 		ld bc, hl		; bc' - tiles gfx
 					; de' - screen tiles
+		ENDIF //DEF_128K_DBL_BUFFER
+
 		IF DEF_SCR_SCROLL
 		ex de, hl
 		ld de, (scr_tile_data_offset)
@@ -1571,22 +1691,19 @@ _tmp_sp		dw 0
 
 		IF DEF_128K_DBL_BUFFER
 
-_check_active_screen
+_switch_active_screen
 
-		VSYNC
+		ld a, (_scr_trigg)
+		xor #01
+		ld (_scr_trigg), a
+
+_set_active_screen
 
 		ld a, (_scr_trigg)
 
-		xor #01
 		cp #01
 
-		ld (_scr_trigg), a
-
 		jp nz, .draw_scr0
-
-		; show the main screen and draw on the extended one
-
-		call _switch_Uscr
 
 		ld hl, #c000 + SCR_CENTER_OFFS_X
 		ld (dbl_buff_scr_addr), hl
@@ -1594,12 +1711,13 @@ _check_active_screen
 		ld hl, #d800 + SCR_CENTER_OFFS_X
 		ld (dbl_buff_attr_addr), hl
 
-		ret
+		VSYNC
+
+		; show the main screen and draw on the extended one
+
+		jp _switch_Uscr
 
 .draw_scr0
-		; show the extended screen and draw on the main one
-
-		call _switch_Escr
 
 		ld hl, #4000 + SCR_CENTER_OFFS_X
 		ld (dbl_buff_scr_addr), hl
@@ -1607,7 +1725,11 @@ _check_active_screen
 		ld hl, #5800 + SCR_CENTER_OFFS_X
 		ld (dbl_buff_attr_addr), hl
 
-		ret
+		VSYNC
+
+		; show the extended screen and draw on the main one
+
+		jp _switch_Escr
 
 _show_drawn_screen
 
@@ -1626,7 +1748,122 @@ _show_drawn_screen
 
 		jp _switch_Uscr
 
+_inc_scr_data_pos
 
+		ld a, (scr_data_pos)
+		xor #01
+		ld (scr_data_pos), a
+
+		ret
+
+;
+; IN: a - chr_id
+;
+_set_scr_data_chr_id
+
+		ld b, a
+
+		ld a, (scr_data_pos)
+		and a
+		jp z, ._set_at_pos0
+
+		ld a, b
+		ld (scr_data1_chr_id), a
+
+		ret
+
+._set_at_pos0
+		ld a, b
+		ld (scr_data0_chr_id), a
+
+		ret
+
+;
+; IN: hl - screen data addr
+;
+_set_scr_tiles
+
+		ld a, (scr_data_pos)
+		and a
+		jp z, ._set_at_pos0
+
+		ld de, scr_data1
+		ld bc, SCR_SIZE
+		ldir
+
+		ret
+
+._set_at_pos0
+		ld de, scr_data0
+		ld bc, SCR_SIZE
+		ldir
+
+		ret
+
+;
+; OUT: a - chr_id
+;
+_get_scr_data_chr_id
+
+		ld a, (active_scr_data_pos)
+		and a
+		jp z, ._get_at_pos0
+
+		ld a, (scr_data1_chr_id)
+
+		ret
+
+._get_at_pos0
+		ld a, (scr_data0_chr_id)
+
+		ret
+
+;
+; OUT: de - screen tiles data
+;
+_get_scr_tiles
+
+		ld a, (active_scr_data_pos)
+		and a
+		jp z, ._get_at_pos0
+
+		ld de, scr_data1
+
+		ret
+
+._get_at_pos0
+		ld de, scr_data0
+
+		ret
+
+; get and save chr id and screen data
+;
+; IN: de - screen data
+;
+_save_scr_data
+		ld a, (de)		; chr_id
+
+		call _set_scr_data_chr_id
+
+		inc de
+
+		IF TR_DATA_MARKS
+		inc de			; skip mark
+		ENDIF //TR_DATA_MARKS
+
+		ld a, (de)		; screen index
+
+		ld c, a
+		ld a, SCR_SIZE
+		ld d, a
+		call d_mul_c
+		ld d, c
+		ld e, a			; de' - screen tiles offset
+
+		ld hl, (map_screens)
+		add hl, de
+
+		jp _set_scr_tiles
 
 		ENDIF //DEF_128K_DBL_BUFFER
 
