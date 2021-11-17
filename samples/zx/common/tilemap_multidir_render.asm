@@ -4,9 +4,8 @@
 ;
 ;###################################################################
 ;
-; DESC: Multidirectional scroller example.
+; DESC: Multidirectional scroller example [shadow buffer -> screen].
 ;
-
 ; Public procs:
 ;
 ; tilemap_render.init		- render init
@@ -46,8 +45,8 @@ TR_DATA_TILES4X4 equ MAP_DATA_MAGIC&MAP_FLAG_TILES4X4
 
 		IF TR_DATA_TILES4X4
 		assert ( DEF_MOVE_STEP == MS_TILE ), The tiles 4x4 mode is only supported when the MS_TILE step mode is active! Please, change the sample settings!
-		assert ( SCR_BLOCKS2x2_WIDTH & $01 ) == 0, The tiles 4x4 mode is only supported even number of blocks on a map screen!
-		assert ( SCR_BLOCKS2x2_HEIGHT & $01 ) == 0, The tiles 4x4 mode is only supported even number of blocks on a map screen!
+		assert ( SCR_BLOCKS2x2_WIDTH & #01 ) == 0, The tiles 4x4 mode is only supported even number of blocks on a map screen!
+		assert ( SCR_BLOCKS2x2_HEIGHT & #01 ) == 0, The tiles 4x4 mode is only supported even number of blocks on a map screen!
 		ENDIF
 
 ; level drawing data
@@ -887,7 +886,7 @@ _draw_tiles_color_column
 
 		; put 2nd clr block
 		exx
-		db $3e			;ld a, N
+		db #3e			;ld a, N
 ._2nd_block_val	db 0			;7
 		ADD_ADDR_AX2 tiles_clr_addr_tbl
 
@@ -1066,7 +1065,7 @@ _draw_tiles_column
 
 		; draw 2nd block
 		exx
-		db $3e			;ld a, N
+		db #3e			;ld a, N
 ._2nd_block_val	db 0			;7
 		ADD_ADDR_AX2 tiles_addr_tbl
 

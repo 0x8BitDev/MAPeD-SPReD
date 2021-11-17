@@ -4,7 +4,7 @@
 ;
 ;###################################################################
 ;
-; DESC: Bidirectional scroller example.
+; DESC: Bidirectional scroller example [direct on-screen drawing].
 ;
 ; Public procs:
 ;
@@ -26,7 +26,7 @@
 ; MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS
 ; MAP_FLAG_COLOR_TILES
 ;
-; Additional options
+; Additional options (see settings.asm):
 ;
 ; DEF_SCR_SCROLL	1/0
 ; DEF_VERT_SYNC		1/0
@@ -84,7 +84,7 @@ map_gfx_arr	dw 0			; tilemap_Gfx exported graphics array
 
 map_props_arr	dw 0			; tilemap_BlocksPropsOffs
 
-map_curr_scr	dw 0
+map_curr_scr	dw 0			; current screen data address
 
 		IF !TR_ADJ_SCREENS
 map_scr_arr	dw 0			; Lev0_ScrArr
@@ -103,33 +103,33 @@ scr_clrs_arr	block ( SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT ) << 2, 0
 		ENDIF //TR_COLORED_MAP
 
 		IF DEF_SCR_SCROLL
-scr_scroll_dir		db 0	; 0-left; 1-up; 2-right; 3-down
+scr_scroll_dir		db 0		; 0-left; 1-up; 2-right; 3-down
 
-scr_scr_addr		dw 0
-scr_tile_data_offset	dw 0
-scr_skip_tiles		db 0
+scr_scr_addr		dw 0		; main or extended ( if DEF_128K_DBL_BUFFER is enabled ) screen address to draw from
+scr_tile_data_offset	dw 0		; offset from the beginning of a screen tiles data
+scr_skip_tiles		db 0		; number of tiles to skip to get the next column/row of tiles
 
 			IF TR_COLORED_MAP
-scr_attr_addr		dw 0
+scr_attr_addr		dw 0		; main or extended screen address to draw from
 			ENDIF //TR_COLORED_MAP
 
 scr_tiles_width		db 0
 scr_tiles_height	db 0
 
-map_new_scr		dw 0
+map_new_scr		dw 0		; transition screen address
 
 		IF DEF_128K_DBL_BUFFER
-dbl_buff_scr_addr	dw 0
-dbl_buff_attr_addr	dw 0
+dbl_buff_scr_addr	dw 0		; screen address that switches from the main to extended screen
+dbl_buff_attr_addr	dw 0		; attributes address that switches from the main to extended screen
 
 ; screen data cache allowing usage of big data that overlaps #C000
 
-active_scr_data_pos	db 0
-scr_data_pos		db 0
+active_scr_data_pos	db 0		; for drawing
+scr_data_pos		db 0		; for caching
 scr_data0_chr_id	db 0
-scr_data0		block SCR_SIZE, 0
+scr_data0_tiles		block SCR_SIZE, 0
 scr_data1_chr_id	db 0
-scr_data1		block SCR_SIZE, 0
+scr_data1_tiles		block SCR_SIZE, 0
 		ENDIF //DEF_128K_DBL_BUFFER
 		ENDIF //DEF_SCR_SCROLL
 
@@ -1448,7 +1448,7 @@ _draw_clrs_line
 		SUB_HL_VAL SCR_CHR_WIDTH - 1
 
 	; daw 2nd block
-		db $3e			;ld a, N
+		db #3e			;ld a, N
 ._2nd_block_val	db 0			;7
 		exx
 		ADD_ADDR_AX2 tiles_clr_addr_tbl
@@ -1548,7 +1548,7 @@ _draw_tiles_line
 
 	; draw 2st block
 		exx
-		db $3e			;ld a, N
+		db #3e			;ld a, N
 ._2nd_block_val	db 0			;7
 		ADD_ADDR_AX2 tiles_addr_tbl
 		ld sp, hl
@@ -1787,14 +1787,14 @@ _set_scr_tiles
 		and a
 		jp z, ._set_at_pos0
 
-		ld de, scr_data1
+		ld de, scr_data1_tiles
 		ld bc, SCR_SIZE
 		ldir
 
 		ret
 
 ._set_at_pos0
-		ld de, scr_data0
+		ld de, scr_data0_tiles
 		ld bc, SCR_SIZE
 		ldir
 
@@ -1827,12 +1827,12 @@ _get_scr_tiles
 		and a
 		jp z, ._get_at_pos0
 
-		ld de, scr_data1
+		ld de, scr_data1_tiles
 
 		ret
 
 ._get_at_pos0
-		ld de, scr_data0
+		ld de, scr_data0_tiles
 
 		ret
 
