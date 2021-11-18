@@ -9,7 +9,7 @@
 ; Public procs:
 ;
 ; tilemap_render.init			- render init
-; tilemap_render.draw_screen		- draw tiles to screen
+; tilemap_render.draw_screen		- draw tiles on the screen
 ; tilemap_render.check_up_screen	- check adjacent screen
 ; tilemap_render.check_down_screen	- check adjacent screen
 ; tilemap_render.check_left_screen	- check adjacent screen
@@ -1563,7 +1563,7 @@ _draw_tiles_line
 		ld h, b
 		ADD_HL_VAL 62
 
-	; draw 3st block
+	; draw 3rd block
 		exx
 		ld a, ly
 		ADD_ADDR_AX2 tiles_addr_tbl
@@ -1701,9 +1701,9 @@ _set_active_screen
 
 		ld a, (_scr_trigg)
 
-		cp #01
+		and a
 
-		jp nz, .draw_scr0
+		jp z, .draw_scr0
 
 		ld hl, #c000 + SCR_CENTER_OFFS_X
 		ld (dbl_buff_scr_addr), hl

@@ -4,13 +4,13 @@
 ;
 ;###################################################################
 ;
-; DESC: Multidirectional scroller example [shadow buffer -> screen].
+; DESC: Multidirectional scroller example [direct on-screen drawing].
 ;
 ; Public procs:
 ;
 ; tilemap_render.init		- render init
-; tilemap_render.draw_tiles  	- draw tiles to shadow buffer
-; tilemap_render.show_screen 	- draw shadow buffer on the screen
+; tilemap_render.draw_tiles  	- draw tiles on the screen
+; tilemap_render.show_screen 	- ...
 ;
 ; Supported options:
 ;
@@ -49,6 +49,9 @@ TR_DATA_TILES4X4 equ MAP_DATA_MAGIC&MAP_FLAG_TILES4X4
 		assert ( SCR_BLOCKS2x2_HEIGHT & #01 ) == 0, The tiles 4x4 mode is only supported even number of blocks on a map screen!
 		ENDIF
 
+SCR_CHR_WIDTH	equ SCR_BLOCKS2x2_WIDTH << 1
+SCR_CHR_HEIGHT	equ SCR_BLOCKS2x2_HEIGHT << 1
+
 MAX_LEV_TILES_W	equ Lev0_wtls		; max width of a level in tiles (!)
 
 ; level drawing data
@@ -83,7 +86,7 @@ map_scr_blocks_h
 x_pos		dw 0
 y_pos		dw 0
 
-; shadow buffer parameters and visible screen area
+; parameters of visible screen area
 
 scr_w		equ 32	; horizontal screen size in CHRs
 		
@@ -94,11 +97,11 @@ scr_h		equ 16	; vertical screen size in CHRs
 		ENDIF	//DEF_FULLSCREEN
 
 		IF TR_DATA_TILES4X4
-scr_buff_tiles_w	equ scr_w >> 2	; shadow buffer width in tiles
-scr_buff_tiles_h	equ scr_h >> 2	; shadow buffer height in tiles
+scr_buff_tiles_w	equ scr_w >> 2	; screen width in tiles
+scr_buff_tiles_h	equ scr_h >> 2	; screen height in tiles
 		ELSE
-scr_buff_tiles_w	equ scr_w >> 1	; shadow buffer width in tiles
-scr_buff_tiles_h	equ scr_h >> 1	; shadow buffer height in tiles
+scr_buff_tiles_w	equ scr_w >> 1	; screen width in tiles
+scr_buff_tiles_h	equ scr_h >> 1	; screen height in tiles
 		ENDIF //TR_DATA_TILES4X4
 
 _x_tile_addr_tbl	block ( MAX_LEV_TILES_W << 1 ), 0	; address table for X coordinate
@@ -108,18 +111,29 @@ tiles_addr_tbl		block 512,0	; tile graphics address table
 tiles_clr_addr_tbl	block 512,0	; tile colors(attrbutes) address table
 
 
-	macro	SCR_BUFF_PUT_BLOCK2X2
-		SCR_BUFF_PUT_BLOCK2XN 8
+	macro	SCR_PUT_BLOCK2X2
+		ld c, l		;4 save hl
+		ld b, h		;4
+
+		SCR_PUT_BLOCK2XN 4
+
+		; next CHR line
+		ld a, c		;4
+		add #20		;7
+		ld l, a		;4
+		ld h, b		;4 = 27
+
+		SCR_PUT_BLOCK2XN 4
 	endm
 
-	macro	SCR_BUFF_PUT_BLOCK2X2_CLR
+	macro	SCR_PUT_BLOCK2X2_CLR
 		pop de
 
 		ld (hl), e
 		inc l
 		ld (hl), d
 
-		ADD_HL_VAL 31
+		ADD_HL_VAL SCR_CHR_WIDTH - 1
 
 		pop de
 
@@ -128,7 +142,7 @@ tiles_clr_addr_tbl	block 512,0	; tile colors(attrbutes) address table
 		ld (hl), d
 	endm
 
-	macro	SCR_BUFF_PUT_BLOCK2XN _cnt
+	macro	SCR_PUT_BLOCK2XN _cnt
 		dup _cnt
 		pop de
 
@@ -146,7 +160,7 @@ tiles_clr_addr_tbl	block 512,0	; tile colors(attrbutes) address table
 		edup
 	endm
 
-	macro	SCR_BUFF_PUT_HALF_BLOCK2XN _cnt
+	macro	SCR_PUT_HALF_BLOCK2XN _cnt
 		dup _cnt
 		pop de
 
@@ -156,41 +170,21 @@ tiles_clr_addr_tbl	block 512,0	; tile colors(attrbutes) address table
 		pop de
 
 		ld (hl), e
-		inc h
+		inc h		
 
 		edup
 	endm
 
+	macro	FIX_SCR_ADDR_HL
+		ld a, (_scr_trigg)
+		and a
+		jp z, .skip
 
-DATA_HOLE_START
-
-		; the valid scr_buff addresses are #8000 or #C000
-
-		align 8192
-
-DATA_HOLE_END
-
-BACK_BUFFER_START
-
-; B/W and color buffers must go one after the other
-;
-scr_buff	block 4096, 0		; graphics buffer of the first 2 thirds
-
-		IF DEF_FULLSCREEN
-		block 4096, 0		; graphics buffer of the lower third
-		ENDIF	//DEF_FULLSCREEN
-
-		IF	DEF_COLOR
-		IF	DEF_FULLSCREEN
-clr_buff	block 768, 0		; color buffer
-		ELSE
-clr_buff	block 512, 0		; color buffer
-		ENDIF	//DEF_FULLSCREEN
-		ENDIF	//DEF_COLOR
-
-scr_buff_next_tile_row_offs = -4064
-
-BACK_BUFFER_END
+		ld a, h
+		or #80
+		ld h, a
+.skip
+	endm
 
 CODE_START
 
@@ -455,6 +449,10 @@ drw_hlf_prc_tbl	dw _draw_half_tiles_column, _draw_half_tiles_column_shifted_up_4
 		ENDIF	//DEF_MOVE_STEP == MS_4b
 
 draw_tiles
+		IF	DEF_128K_DBL_BUFFER
+		call _switch_active_screen
+		ENDIF	//DEF_128K_DBL_BUFFER
+
 		call _fix_x_y
 		call _calc_tile_addr		; HL - tilemap start address
 
@@ -466,8 +464,15 @@ draw_tiles
 
 		ELSE				; MS_8b / MS_4b
 
+		ex de, hl
 		ld ixh, scr_buff_tiles_w
-		ld iy, scr_buff
+		ld hl, #4000
+		FIX_SCR_ADDR_HL
+		ld a, l
+		ld iyl, a
+		ld a, h
+		ld iyh, a
+		ex de, hl
 
 		ld de, (x_pos)
 
@@ -557,12 +562,7 @@ draw_tiles
 		ld (_clr_buff_ptr), a
 
 		ld a, iyh
-
-		IF	DEF_FULLSCREEN
-		add #20
-		ELSE
-		add #10
-		ENDIF	//DEF_FULLSCREEN
+		add #18
 
 		ld (_clr_buff_ptr + 1 ), a
 		ENDIF   //DEF_COLOR
@@ -749,6 +749,8 @@ _hl_mptls_h_cl	dw 0
 
 		ENDIF	//DEF_COLOR
 
+		call _draw_border
+
 		IF	DEF_MOVE_STEP == MS_4b
 		ld de, (x_pos)
 
@@ -763,7 +765,8 @@ _hl_mptls_h_cl	dw 0
 
 		; draw one CHR wide strip on the right side
 
-		ld hl, scr_buff + #20 - 1
+		ld hl, #4000 + #20 - 1
+		FIX_SCR_ADDR_HL
 		ld ixl, 8
 
 		IF	DEF_FULLSCREEN
@@ -786,7 +789,8 @@ _drw_hlf_prc1	dw 0
 
 		IF	DEF_FULLSCREEN
 
-		ld hl, scr_buff + #1000 + #20 - 1
+		ld hl, #4000 + #1000 + #20 - 1
+		FIX_SCR_ADDR_HL
 		ld ixl, 4
 
 		exx
@@ -804,8 +808,15 @@ _drw_hlf_prc2	dw 0
 		
 _skip_hlf_tile_drw
 
-		ld hl, scr_buff + #1000 - 1
+		IF	DEF_FULLSCREEN
+		ld hl, #4000 + #1800 - 1
+		ld b, 192
+		ELSE
+		ld hl, #4000 + #1000 - 1
 		ld b, 128
+		ENDIF //DEF_FULLSCREEN
+
+		FIX_SCR_ADDR_HL
 .shift_loop1
 		xor a
 
@@ -818,42 +829,32 @@ _skip_hlf_tile_drw
 		
 		djnz .shift_loop1	
 
+		ENDIF	//DEF_MOVE_STEP == MS_4b
+
+		ret
+
+		; draw two white lines (left/right) to hide drawing artefacts
+_draw_border
+		ld hl, #5800
+		FIX_SCR_ADDR_HL
+
 		IF	DEF_FULLSCREEN
-		ld hl, scr_buff + #1000 + #20 - 1
-		ld de, scr_buff_next_tile_row_offs
-		ld b, 4
-.shift_loop2
-		ld c, 16
-
-.shift_loop3
-		xor a
-
-                dup 32
-
-		rld
-		dec hl
-
-		edup
-
-		inc h
-
-		ld a, l		; <--
-		add #20
-		ld l, a
-
-		ld a, 0
-		adc h
-		ld h, a		; 30t
-
-		dec c
-		jp nz, .shift_loop3
-
-		add hl, de
-		
-		djnz .shift_loop2
+		ld b, 24
+		ELSE
+		ld b, 16
 		ENDIF	//DEF_FULLSCREEN
 
-		ENDIF	//DEF_MOVE_STEP == MS_4b
+		ld de, 31
+		ld a, 63
+.brd_loop
+		ld (hl), a
+
+		add hl, de
+		ld (hl), a
+
+		inc hl
+
+		djnz .brd_loop
 
 		ret
 
@@ -861,7 +862,7 @@ _skip_hlf_tile_drw
 
 		IF	DEF_COLOR
 
-		; in: 	HL - shadow buffer addr
+		; in: 	HL - screen addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
 		; TR_DATA_TILES4X4
@@ -897,9 +898,9 @@ _draw_tiles_color_column
 		pop hl			; get tile color data address from the table
 		ld sp, hl
 		exx
-		SCR_BUFF_PUT_BLOCK2X2_CLR
-		ld bc, -31
-		add hl, bc
+		SCR_PUT_BLOCK2X2_CLR
+
+		SUB_HL_VAL SCR_CHR_WIDTH - 1
 
 		; put 2nd clr block
 		exx
@@ -911,8 +912,9 @@ _draw_tiles_color_column
 		pop hl			; get tile color data address from the table
 		ld sp, hl
 		exx
-		SCR_BUFF_PUT_BLOCK2X2_CLR
-		ADD_HL_VAL 31
+		SCR_PUT_BLOCK2X2_CLR
+
+		ADD_HL_VAL SCR_CHR_WIDTH - 1
 
 		; put 4th clr block
 		exx
@@ -923,11 +925,11 @@ _draw_tiles_color_column
 		pop hl			; get tile color data address from the table
 		ld sp, hl
 		exx
-		SCR_BUFF_PUT_BLOCK2X2_CLR
-		ld bc, -35
-		add hl, bc
+		SCR_PUT_BLOCK2X2_CLR
 
-		; put 3nd clr block
+		SUB_HL_VAL SCR_CHR_WIDTH + 3
+
+		; put 3rd clr block
 		exx
 		ld a, ly
 		ADD_ADDR_AX2 tiles_clr_addr_tbl
@@ -936,8 +938,9 @@ _draw_tiles_color_column
 		pop hl			; get tile color data address from the table
 		ld sp, hl
 		exx
-		SCR_BUFF_PUT_BLOCK2X2_CLR
-		ADD_HL_VAL 31
+		SCR_PUT_BLOCK2X2_CLR
+		
+		ADD_HL_VAL SCR_CHR_WIDTH - 1
 
 		dec ixl
 		jp nz, .loop		
@@ -949,11 +952,9 @@ _draw_tiles_color_column
 		ELSE //TR_DATA_TILES4X4
 
 _draw_tiles_color_column
-
+	
 		ld (_temp_sp), sp
 
-		ld bc, 31
-		
 .loop		exx
 		ld a, (bc)		; get tile index
 		inc bc
@@ -966,9 +967,9 @@ _draw_tiles_color_column
 		ld sp, hl
 		exx
 
-		SCR_BUFF_PUT_BLOCK2X2_CLR
+		SCR_PUT_BLOCK2X2_CLR
 
-		add hl, bc
+		ADD_HL_VAL SCR_CHR_WIDTH - 1
 
 		dec ixl
 		jp nz, .loop		
@@ -980,7 +981,7 @@ _draw_tiles_color_column
 		ENDIF //TR_DATA_TILES4X4
 
 _draw_tiles_color_column_shifted_up
-		; in: 	HL - shadow buffer addr
+		; in: 	HL - screen addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
 
@@ -1040,7 +1041,7 @@ _draw_tiles_color_column_shifted_up
 
 		ENDIF	//DEF_COLOR
 
-		; in: 	HL - shadow buffer addr
+		; in: 	HL - screen addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
 		; TR_DATA_TILES4X4
@@ -1076,9 +1077,12 @@ _draw_tiles_column
 		pop hl			; get tile graphics data address from the table
 		ld sp, hl
 		exx
-		SCR_BUFF_PUT_BLOCK2X2
-		ld bc, -4094
-		add hl, bc
+		SCR_PUT_BLOCK2X2
+
+		inc c
+		inc c
+		ld l, c
+		ld h, b
 
 		; draw 2nd block
 		exx
@@ -1090,9 +1094,11 @@ _draw_tiles_column
 		pop hl			; get tile graphics data address from the table
 		ld sp, hl
 		exx
-		SCR_BUFF_PUT_BLOCK2X2
-		ld bc, -4064
-		add hl, bc
+		SCR_PUT_BLOCK2X2
+
+		ld l, c
+		ld h, b
+		ADD_HL_VAL 64
 
 		; draw 4th block
 		exx
@@ -1103,9 +1109,12 @@ _draw_tiles_column
 		pop hl			; get tile graphics data address from the table
 		ld sp, hl
 		exx
-		SCR_BUFF_PUT_BLOCK2X2
-		ld bc, -4098
-		add hl, bc
+		SCR_PUT_BLOCK2X2
+
+		dec c
+		dec c
+		ld l, c
+		ld h, b
 
 		; draw 3th block
 		exx
@@ -1116,9 +1125,13 @@ _draw_tiles_column
 		pop hl			; get tile graphics data address from the table
 		ld sp, hl
 		exx
-		SCR_BUFF_PUT_BLOCK2X2
-		ld bc, -4064
-		add hl, bc
+		SCR_PUT_BLOCK2X2
+
+		ld l, c
+		ld h, b
+
+		ADD_HL_VAL 64
+		CHECK_NEXT_THIRD_CHR_LINE_HL
 
 		dec ixl
 		jp nz, .loop		
@@ -1132,8 +1145,6 @@ _draw_tiles_column
 
 		ld (_temp_sp), sp
 
-		ld bc, scr_buff_next_tile_row_offs
-
 .loop		exx
 		ld a, (bc)		; get tile index
 		inc bc
@@ -1146,9 +1157,9 @@ _draw_tiles_column
 		ld sp, hl
 		exx
 
-		SCR_BUFF_PUT_BLOCK2X2
+		SCR_PUT_BLOCK2X2
 
-		add hl, bc
+		CHECK_NEXT_THIRD_LINE_HL
 
 		dec ixl
 		jp nz, .loop		
@@ -1159,13 +1170,11 @@ _draw_tiles_column
 		ENDIF //TR_DATA_TILES4X4
 
 _draw_tiles_column_shifted_up_8b
-		; in: 	HL - shadow buffer addr
+		; in: 	HL - screen addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
 
 		ld (_temp_sp), sp
-
-		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1182,7 +1191,16 @@ _draw_tiles_column_shifted_up_8b
 		ld sp, hl
 		exx
 .loop
-		SCR_BUFF_PUT_BLOCK2XN 4
+		ld c, l		;4 save hl
+		ld b, h		;4
+
+		SCR_PUT_BLOCK2XN 4
+
+		; next CHR line
+		ld a, c		;4
+		add #20		;7
+		ld l, a		;4
+		ld h, b		;4 = 27
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1196,9 +1214,9 @@ _draw_tiles_column_shifted_up_8b
 		ld sp, hl
 		exx
 
-		SCR_BUFF_PUT_BLOCK2XN 4
+		SCR_PUT_BLOCK2XN 4
 
-		add hl, bc
+		CHECK_NEXT_THIRD_LINE_HL
 
 		dec ixl
 		jp nz, .loop		
@@ -1209,13 +1227,11 @@ _draw_tiles_column_shifted_up_8b
 		IF	DEF_MOVE_STEP == MS_4b
 
 _draw_half_tiles_column
-		; in: 	HL - shadow buffer addr
+		; in: 	HL - screen addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
 
 		ld (_temp_sp), sp
-
-		ld bc, scr_buff_next_tile_row_offs
 
 .loop		exx
 		ld a, (bc)		; get tile index
@@ -1229,9 +1245,20 @@ _draw_half_tiles_column
 		ld sp, hl
 		exx
 
-		SCR_BUFF_PUT_HALF_BLOCK2XN 8
+		ld c, l		;4 save hl
+		ld b, h		;4
 
-		add hl, bc
+		SCR_PUT_HALF_BLOCK2XN 4
+
+		; next CHR line
+		ld a, c		;4
+		add #20		;7
+		ld l, a		;4
+		ld h, b		;4 = 27
+
+		SCR_PUT_HALF_BLOCK2XN 4
+
+		CHECK_NEXT_THIRD_LINE_HL
 
 		dec ixl
 		jp nz, .loop		
@@ -1240,13 +1267,11 @@ _draw_half_tiles_column
 		ret
 
 _draw_half_tiles_column_shifted_up_4b
-		; in: 	HL - shadow buffer addr
+		; in: 	HL - screen addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
 
 		ld (_temp_sp), sp
-
-		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1263,7 +1288,18 @@ _draw_half_tiles_column_shifted_up_4b
 		ld sp, hl
 		exx
 .loop
-		SCR_BUFF_PUT_HALF_BLOCK2XN 6
+		ld c, l		;4 save hl
+		ld b, h		;4
+
+		SCR_PUT_HALF_BLOCK2XN 4
+
+		; next CHR line
+		ld a, c		;4
+		add #20		;7
+		ld l, a		;4
+		ld h, b		;4 = 27
+
+		SCR_PUT_HALF_BLOCK2XN 2
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1277,9 +1313,9 @@ _draw_half_tiles_column_shifted_up_4b
 		ld sp, hl
 		exx
 
-		SCR_BUFF_PUT_HALF_BLOCK2XN 2
+		SCR_PUT_HALF_BLOCK2XN 2
 
-		add hl, bc
+		CHECK_NEXT_THIRD_LINE_HL
 
 		dec ixl
 		jp nz, .loop		
@@ -1288,13 +1324,11 @@ _draw_half_tiles_column_shifted_up_4b
 		ret
 
 _draw_half_tiles_column_shifted_up_8b
-		; in: 	HL - shadow buffer addr
+		; in: 	HL - screen addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
 
 		ld (_temp_sp), sp
-
-		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1311,7 +1345,16 @@ _draw_half_tiles_column_shifted_up_8b
 		ld sp, hl
 		exx
 .loop
-		SCR_BUFF_PUT_HALF_BLOCK2XN 4
+		ld c, l		;4 save hl
+		ld b, h		;4
+
+		SCR_PUT_HALF_BLOCK2XN 4
+
+		; next CHR line
+		ld a, c		;4
+		add #20		;7
+		ld l, a		;4
+		ld h, b		;4 = 27
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1325,9 +1368,9 @@ _draw_half_tiles_column_shifted_up_8b
 		ld sp, hl
 		exx
 
-		SCR_BUFF_PUT_HALF_BLOCK2XN 4
+		SCR_PUT_HALF_BLOCK2XN 4
 
-		add hl, bc
+		CHECK_NEXT_THIRD_LINE_HL
 
 		dec ixl
 		jp nz, .loop		
@@ -1336,13 +1379,11 @@ _draw_half_tiles_column_shifted_up_8b
 		ret
 
 _draw_half_tiles_column_shifted_up_12b
-		; in: 	HL - shadow buffer addr
+		; in: 	HL - screen addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
 
 		ld (_temp_sp), sp
-
-		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1359,7 +1400,10 @@ _draw_half_tiles_column_shifted_up_12b
 		ld sp, hl
 		exx
 .loop
-		SCR_BUFF_PUT_HALF_BLOCK2XN 2
+		ld c, l		;4 save hl
+		ld b, h		;4
+
+		SCR_PUT_HALF_BLOCK2XN 2
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1373,9 +1417,17 @@ _draw_half_tiles_column_shifted_up_12b
 		ld sp, hl
 		exx
 
-		SCR_BUFF_PUT_HALF_BLOCK2XN 6
+		SCR_PUT_HALF_BLOCK2XN 2
 
-		add hl, bc
+		; next CHR line
+		ld a, c		;4
+		add #20		;7
+		ld l, a		;4
+		ld h, b		;4 = 27
+
+		SCR_PUT_HALF_BLOCK2XN 4
+
+		CHECK_NEXT_THIRD_LINE_HL
 
 		dec ixl
 		jp nz, .loop		
@@ -1384,13 +1436,11 @@ _draw_half_tiles_column_shifted_up_12b
 		ret
 
 _draw_tiles_column_shifted_up_4b
-		; in: 	HL - shadow buffer addr
+		; in: 	HL - screen addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
 
 		ld (_temp_sp), sp
-
-		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1407,7 +1457,18 @@ _draw_tiles_column_shifted_up_4b
 		ld sp, hl
 		exx
 .loop
-		SCR_BUFF_PUT_BLOCK2XN 6
+		ld c, l		;4 save hl
+		ld b, h		;4
+
+		SCR_PUT_BLOCK2XN 4
+
+		; next CHR line
+		ld a, c		;4
+		add #20		;7
+		ld l, a		;4
+		ld h, b		;4 = 27
+
+		SCR_PUT_BLOCK2XN 2
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1421,9 +1482,9 @@ _draw_tiles_column_shifted_up_4b
 		ld sp, hl
 		exx
 
-		SCR_BUFF_PUT_BLOCK2XN 2
+		SCR_PUT_BLOCK2XN 2
 
-		add hl, bc
+		CHECK_NEXT_THIRD_LINE_HL
 
 		dec ixl
 		jp nz, .loop		
@@ -1432,13 +1493,11 @@ _draw_tiles_column_shifted_up_4b
 		ret
 
 _draw_tiles_column_shifted_up_12b
-		; in: 	HL - shadow buffer addr
+		; in: 	HL - screen addr
 		;	IXL - number of tiles
 		;	EX BC - tiles map addr
 
 		ld (_temp_sp), sp
-
-		ld bc, scr_buff_next_tile_row_offs
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1455,7 +1514,10 @@ _draw_tiles_column_shifted_up_12b
 		ld sp, hl
 		exx
 .loop
-		SCR_BUFF_PUT_BLOCK2XN 2
+		ld c, l		;4 save hl
+		ld b, h		;4
+
+		SCR_PUT_BLOCK2XN 2
 
 		exx
 		ld a, (bc)		; get tile index
@@ -1469,9 +1531,17 @@ _draw_tiles_column_shifted_up_12b
 		ld sp, hl
 		exx
 
-		SCR_BUFF_PUT_BLOCK2XN 6
+		SCR_PUT_BLOCK2XN 2
 
-		add hl, bc
+		; next CHR line
+		ld a, c		;4
+		add #20		;7
+		ld l, a		;4
+		ld h, b		;4 = 27
+
+		SCR_PUT_BLOCK2XN 4
+
+		CHECK_NEXT_THIRD_LINE_HL
 
 		dec ixl
 		jp nz, .loop		
@@ -1489,7 +1559,8 @@ _draw_tiles_2x2_mode
 
 		ld ixh, scr_buff_tiles_w
 
-		ld hl, scr_buff
+		ld hl, #4000
+		FIX_SCR_ADDR_HL
 		
 		exx
 		pop bc			; BC - tilemap start address for pos_x|pos_y
@@ -1550,7 +1621,8 @@ _hl_mptls_h_mn	dw 0
 
 		ld ixh, scr_buff_tiles_w
 
-		ld hl, scr_buff + 4096
+		ld hl, #5000
+		FIX_SCR_ADDR_HL
 		
 		exx
 		pop hl			; BC - tilemap start address for pos_x|pos_y
@@ -1613,7 +1685,8 @@ _hl_mptls_h_fs	dw 0
 
 		ld ixh, scr_buff_tiles_w
 
-		ld hl, clr_buff
+		ld hl, #5800
+		FIX_SCR_ADDR_HL
 		
 		exx
 		pop bc
@@ -1790,399 +1863,40 @@ _calc_tile_addr
 
 		ret
 
-		IF	DEF_MOVE_STEP == MS_TILE
-LR_border_CHRs	= 0
-		ELSE	// SM_8b / SM_4b
-LR_border_CHRs	= 1
-		ENDIF	//DEF_MOVE_STEP == MS_TILE
-
 show_screen	
-		VSYNC
-
-		IF	DEF_128K_DBL_BUFFER
-
-		ld a, (_scr_trigg)
-
-		xor #01
-		cp #01
-
-		ld (_scr_trigg), a
-
-		jp nz, .draw_scr0
-
-		call _switch_Uscr		; show the main screen and draw on the extended one
-
-		ld a, #80			; OR val to a high byte of a screen address ( the extended screen address )
-		ld (_drw_sthb1), a
-		
-		; draw black/white image
-
-		ld hl, #c000 + #10 + LR_border_CHRs
-		exx
-		ld hl, scr_buff + LR_border_CHRs
-		exx
-		call _draw_scr_32x24
-
-		IF	DEF_COLOR
-		; draw color
-
-		ld hl, #d800 + #10 + LR_border_CHRs
-		exx
-		ld hl, clr_buff + LR_border_CHRs
-		exx
-		call _draw_clr_32x24
-
-		ENDIF	//DEF_COLOR
-
 		ret
-
-.draw_scr0
-		call _switch_Escr		; show the extended screen and draw on the main one
-
-		ld a, #00			; OR val to a high byte of a screen address ( the main screen address )
-		ld (_drw_sthb1), a
-		
-		ENDIF	//DEF_128K_DBL_BUFFER
-
-		; draw black/white image
-
-		ld hl, #4000 + #10 + LR_border_CHRs
-		exx
-		ld hl, scr_buff + LR_border_CHRs
-		exx
-		call _draw_scr_32x24
-
-		IF	DEF_COLOR
-		; draw color
-
-		ld hl, #5800 + #10 + LR_border_CHRs
-		exx
-		ld hl, clr_buff + LR_border_CHRs
-		exx
-		call _draw_clr_32x24
-
-		ENDIF	//DEF_COLOR
-		
-		ret
-
-		IF	DEF_COLOR
-_draw_clr_32x24
-
-		ld (_temp_sp), sp
-
-.loop		exx
-
-		ld sp, hl
-
-		ld bc, 16
-		add hl, bc
-
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-
-		ld bc, 16 - ( LR_border_CHRs << 1 )
-		add hl, bc
-
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		ld sp, hl
-
-		ld bc, 16
-		add hl, bc
-
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-
-		IF DEF_MOVE_STEP == MS_TILE
-		pop iy
-		ENDIF
-		
-		ld sp, hl
-
-		IF DEF_MOVE_STEP == MS_TILE
-		push iy
-		ENDIF
-
-		push ix
-		push de
-		push bc
-		push af
-
-		ld bc, 16 + ( LR_border_CHRs << 1 )
-		add hl, bc
-
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		exx
-		ld a, h
-		and #03
-
-		IF	DEF_FULLSCREEN
-		cp #03
-		ELSE
-		cp #02
-		ENDIF	//DEF_FULLSCREEN
-		
-		jp nz, .loop
-		
-		ld sp, (_temp_sp)		
-
-		ret
-
-		ENDIF	//DEF_COLOR
-
-_draw_scr_32x24
-		ld a, #64			; bit 4, h
-		ld (_drw_tchk1), a
-
-		ld (_temp_sp), sp
-
-_loop32x24	exx
-		
-		dup 7
-
-		ld sp, hl
-		inc h
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-		inc h
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		edup
-
-		ld sp, hl
-		inc h
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-		pop iy
-		
-		ld sp, hl
-
-		push iy
-		push ix
-		push de
-		push bc
-		push af
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		exx			
-		ld bc, -1776 - ( LR_border_CHRs << 1 )
-		add hl, bc
-		exx
-		ld bc, -2032
-		add hl, bc
-
-		dup 7
-
-		ld sp, hl
-		inc h
-		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-
-		IF DEF_MOVE_STEP == MS_TILE
-		pop iy
-		ENDIF
-		
-		ld sp, hl
-
-		IF DEF_MOVE_STEP == MS_TILE
-		push iy
-		ENDIF
-
-		push ix
-		push de
-		push bc
-		push af
-		inc h
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		edup
-
-		ld sp, hl
-		inc h
-
-		db #cb
-_drw_tchk1	db 0			; bit 4, h / bit 5, h
-		jp z, .cont
-
-		ld bc, scr_buff_next_tile_row_offs
-		add hl, bc
-
-.cont		pop af
-		pop bc
-		pop de
-		exx
-		ex af,af'
-		pop af
-		pop bc
-		pop de
-		pop ix
-
-		IF DEF_MOVE_STEP == MS_TILE
-		pop iy
-		ENDIF
-		
-		ld sp, hl
-
-		IF DEF_MOVE_STEP == MS_TILE
-		push iy
-		ENDIF
-
-		push ix
-		push de
-		push bc
-		push af
-		exx
-		ex af,af'
-		push de
-		push bc
-		push af
-
-		ld bc, -16
-		add hl, bc
-
-		exx
-		dec hl			
-		ld a, h			; go to line below in video memory
-		sub 7
-		ld h, a
-		ld a, l
-		add 16 + ( LR_border_CHRs << 1 )
-		ld l, a
-		inc hl
-
-		jp nc, _loop32x24
-
-		ld a, h
-
-		IF	DEF_128K_DBL_BUFFER
-		and #7F			; convert the screen address to the main one - #4000
-		ENDIF	//DEF_128K_DBL_BUFFER
-
-		ld h, #48		; check the second third
-		cp #40
-
-		IF	DEF_128K_DBL_BUFFER
-		jp z, _fix_scr_addr
-		ELSE
-		jp z, _loop32x24
-		ENDIF	//DEF_128K_DBL_BUFFER
-
-		IF	DEF_FULLSCREEN
-		cp #48			; check the third third
-		jp z, _set_3th_data
-		ENDIF	//DEF_FULLSCREEN
-
-		ld sp, (_temp_sp)		
-
-		ret
-
-		IF	DEF_FULLSCREEN
-_set_3th_data
-		ld hl, #5000 + #10 + LR_border_CHRs
-		ld a, #6C				; bit 5, h
-		ld (_drw_tchk1), a
-		exx
-		ld hl, scr_buff + #1000 + LR_border_CHRs
-		exx
-
-		IF	DEF_128K_DBL_BUFFER
-		jp _fix_scr_addr
-		ELSE
-		jp _loop32x24
-		ENDIF	//DEF_128K_DBL_BUFFER
-
-		ENDIF	//DEF_FULLSCREEN
-
-		IF	DEF_128K_DBL_BUFFER
-_fix_scr_addr
-		ld a, h
-		db #F6
-_drw_sthb1	db 0			; [or #00|#80] switching between the main screen address and the extended one
-		ld h, a
-
-		jp _loop32x24
-
-		ENDIF	//DEF_128K_DBL_BUFFER
 
 _temp_sp	dw 0				; the stack pointer temporary variable
 
+		IF	DEF_128K_DBL_BUFFER
+
+_switch_active_screen
+
+		ld a, (_scr_trigg)
+		xor #01
+		ld (_scr_trigg), a
+
+		and a
+
+		jp z, .draw_scr0
+
+		VSYNC
+
+		; show the main screen and draw on the extended one
+
+		jp _switch_Uscr
+
+.draw_scr0
+
+		VSYNC
+
+		; show the extended screen and draw on the main one
+
+		jp _switch_Escr
+
+		ENDIF	//DEF_128K_DBL_BUFFER
 CODE_END
 
-		DISPLAY "Data hole size: ", /D, DATA_HOLE_END - DATA_HOLE_START, " org: ", /H, DATA_HOLE_START, " (", /D, DATA_HOLE_START, ")"
-		DISPLAY "Generated BACK BUFFER size: ", /D, BACK_BUFFER_END - BACK_BUFFER_START, " org: ", /H, BACK_BUFFER_START, " (", /D, BACK_BUFFER_START, ")"
 		DISPLAY "Generated CODE size: ", /D, CODE_END - CODE_START, " org: ", /H, CODE_START, " (", /D, CODE_START, ")"
 
 		ENDMODULE

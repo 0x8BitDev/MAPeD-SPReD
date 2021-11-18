@@ -7,7 +7,7 @@
 ; DESC: Some useful macroses / routines.
 ;
 
-		; add 'A *= 2' to an input address
+		; add 'A *= 2' to an input address (256-bytes aligned)
 		; OUT: hl
 	macro	ADD_ADDR_AX2 _addr
 ;		ld h, high _addr	<-- optimized version when a tile index is premultiplied by 2

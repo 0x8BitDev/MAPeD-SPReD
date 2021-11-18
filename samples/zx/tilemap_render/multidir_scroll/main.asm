@@ -12,6 +12,8 @@
 
 		include "settings.asm"
 
+PROG_START
+
 TR_DATA_TILES4X4	equ MAP_DATA_MAGIC&MAP_FLAG_TILES4X4
 TR_COLORED_MAP		equ MAP_DATA_MAGIC&MAP_FLAG_COLOR_TILES
 
@@ -20,9 +22,11 @@ TR_COLORED_MAP		equ MAP_DATA_MAGIC&MAP_FLAG_COLOR_TILES
 		DEFINE DEF_COLOR 0
 		ENDIF
 
+		IF DEF_128K_DBL_BUFFER
+		include "../../common/tilemap_multidir_render_128k_dbl_buff.asm"
+		ELSE
 		include "../../common/tilemap_multidir_render.asm"
-
-max_lev_tiles_w	equ	Lev0_wtls		; max width of a level in tiles
+		ENDIF //DEF_128K_DBL_BUFFER
 
 main
 		di	
@@ -115,13 +119,18 @@ main
 
 .next4		jr .loop
 
-
+DATA_START
 		include "data/tilemap.zxa"
+DATA_END
 PROG_END
+		DISPLAY "Program start address: ", /D, PROG_START, " (#", /H, PROG_START, ")"
 		DISPLAY "Program end address: ", /D, PROG_END, " (#", /H, PROG_END, ")"
+		DISPLAY "Program size: ", /D, PROG_END-PROG_START, " (#", /H, PROG_END-PROG_START, ")"
 
 		IF ( PROG_END > #C000 ) && DEF_128K_DBL_BUFFER
 		DISPLAY "WARNING: The program overlaps extended memory address space! Double buffering may cause graphics artefacts!"
 		ENDIF
+
+		DISPLAY "Data size: ", /D, DATA_END-DATA_START, " (#", /H, DATA_END-DATA_START, ")"
 
 		savesna "../../bin/multidir_scroll.sna", main
