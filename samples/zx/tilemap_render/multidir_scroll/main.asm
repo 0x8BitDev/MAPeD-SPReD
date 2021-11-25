@@ -133,4 +133,4 @@ PROG_END
 
 		DISPLAY "Data size: ", /D, DATA_END-DATA_START, " (#", /H, DATA_END-DATA_START, ")"
 
-		savesna "../../bin/multidir_scroll.sna", main
+		savesna "../../bin/tilemap_render_multidir_scroll.sna", main

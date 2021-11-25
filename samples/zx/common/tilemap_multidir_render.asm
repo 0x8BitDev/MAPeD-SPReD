@@ -401,12 +401,12 @@ init
 
 		ld (x_pos), bc
 
-		; y_pos = map_scr_blocks_h * ( map_start_scr / map_scr_height )
+		; y_pos = map_scr_blocks_h * ( map_start_scr / map_scr_width )
 
 		ld a, (map_start_scr)
 		ld c, a
 
-		ld a, (map_scr_height)
+		ld a, (map_scr_width)
 		ld d, a
 
 		call c_div_d			; c - result

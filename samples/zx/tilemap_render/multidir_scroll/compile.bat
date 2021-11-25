@@ -4,7 +4,7 @@
 :#
 :################################################
 
-@set File=multidir_scroll
+@set File=tilemap_render_multidir_scroll
 @set OutDir=..\..\bin\
 
 @del %OutDir%%File%.sna

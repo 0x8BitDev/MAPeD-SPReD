@@ -5,14 +5,14 @@
 ;#######################################################
 
 ; export options:
-;	- tiles 2x2/(columns)/color
+;	- tiles 4x4/(rows)/color
 ;	- properties per block
 ;	- mode: bidirectional scrolling
-;	- layout: adjacent screens (marks)
+;	- layout: adjacent screen indices (no marks)
 ;	- no entities
 
 
-MAP_DATA_MAGIC = $2C849
+MAP_DATA_MAGIC = $29052
 
 ; data flags:
 MAP_FLAG_TILES2X2                 = $01
@@ -52,1252 +52,1373 @@ tilemap_Clrs:	incbin "tilemap_Clrs.bin"		; (956) blocks 2x2 color data of all ex
 tilemap_BlocksPropsOffs:
 	dw 0		; (gfx0)
 
-tilemap_TilesScr:	incbin "tilemap_TilesScr.bin"	; (18080) 2x2 tiles array for each screen ( 160 bytes per screen \ 1 byte per tile )
+tilemap_Tiles:	incbin "tilemap_Tiles.bin"		; (456) 4x4 tiles array of all exported data banks ( 4 bytes per tile )
+
+tilemap_TilesOffs:
+	dw 0		; (gfx0)
+
+tilemap_TilesScr:	incbin "tilemap_TilesScr.bin"	; (4520) 4x4 tiles array for each screen ( 40 bytes per screen \ 1 byte per tile )
 
 ; *** Lev0 ***
 
 Lev0Scr3:
 	db 0	; chr_id
-	db $C0	; (marks) bits: 7-4 - bit mask of user defined adjacent screens ( Down(7)-Right(6)-Up(5)-Left(4) ); 3-0 - screen property
 
 	db 0	; screen index
 
-	dw 0	; left adjacent screen
-	dw 0	; up adjacent screen
-	dw Lev0Scr4	; right adjacent screen
-	dw Lev0Scr19	; down adjacent screen
+; adjacent screen indices ( the valid values are 0x00 - 0xFE, 0xFF - means no screen )
+; use the Lev0_ScrArr array to get a screen description by adjacent screen index
+	db $FF	; left adjacent screen index
+	db $FF	; up adjacent screen index
+	db $04	; right adjacent screen index
+	db $13	; down adjacent screen index
 
 Lev0Scr4:
 	db 0
-	db $50
 
 	db 1
 
-	dw Lev0Scr3
-	dw 0
-	dw Lev0Scr5
-	dw Lev0Scr20
+	db $03
+	db $FF
+	db $05
+	db $14
 
 Lev0Scr5:
 	db 0
-	db $10
 
 	db 2
 
-	dw Lev0Scr4
-	dw 0
-	dw 0
-	dw Lev0Scr21
+	db $04
+	db $FF
+	db $FF
+	db $15
 
 Lev0Scr19:
 	db 0
-	db $60
 
 	db 3
 
-	dw 0
-	dw Lev0Scr3
-	dw Lev0Scr20
-	dw 0
+	db $FF
+	db $03
+	db $14
+	db $FF
 
 Lev0Scr20:
 	db 0
-	db $50
 
 	db 4
 
-	dw Lev0Scr19
-	dw Lev0Scr4
-	dw Lev0Scr21
-	dw Lev0Scr36
+	db $13
+	db $04
+	db $15
+	db $24
 
 Lev0Scr21:
 	db 0
-	db $90
 
 	db 5
 
-	dw Lev0Scr20
-	dw Lev0Scr5
-	dw 0
-	dw Lev0Scr37
+	db $14
+	db $05
+	db $FF
+	db $25
 
 Lev0Scr36:
 	db 0
-	db $C0
 
 	db 6
 
-	dw 0
-	dw Lev0Scr20
-	dw Lev0Scr37
-	dw Lev0Scr52
+	db $FF
+	db $14
+	db $25
+	db $34
 
 Lev0Scr37:
 	db 0
-	db $30
 
 	db 7
 
-	dw Lev0Scr36
-	dw Lev0Scr21
-	dw Lev0Scr38
-	dw Lev0Scr53
+	db $24
+	db $15
+	db $26
+	db $35
 
 Lev0Scr38:
 	db 0
-	db $C0
 
 	db 8
 
-	dw Lev0Scr37
-	dw 0
-	dw Lev0Scr39
-	dw Lev0Scr54
+	db $25
+	db $FF
+	db $27
+	db $36
 
 Lev0Scr39:
 	db 0
-	db $D0
 
 	db 9
 
-	dw Lev0Scr38
-	dw 0
-	dw Lev0Scr40
-	dw Lev0Scr55
+	db $26
+	db $FF
+	db $28
+	db $37
 
 Lev0Scr40:
 	db 0
-	db $90
 
 	db 10
 
-	dw Lev0Scr39
-	dw 0
-	dw 0
-	dw Lev0Scr56
+	db $27
+	db $FF
+	db $FF
+	db $38
 
 Lev0Scr45:
 	db 0
-	db $40
 
 	db 11
 
-	dw 0
-	dw 0
-	dw Lev0Scr46
-	dw Lev0Scr61
+	db $FF
+	db $FF
+	db $2E
+	db $3D
 
 Lev0Scr46:
 	db 0
-	db $D0
 
 	db 12
 
-	dw Lev0Scr45
-	dw 0
-	dw Lev0Scr47
-	dw Lev0Scr62
+	db $2D
+	db $FF
+	db $2F
+	db $3E
 
 Lev0Scr47:
 	db 0
-	db $10
 
 	db 13
 
-	dw Lev0Scr46
-	dw 0
-	dw 0
-	dw 0
+	db $2E
+	db $FF
+	db $FF
+	db $FF
 
 Lev0Scr52:
 	db 0
-	db $60
 
 	db 14
 
-	dw 0
-	dw Lev0Scr36
-	dw Lev0Scr53
-	dw Lev0Scr68
+	db $FF
+	db $24
+	db $35
+	db $44
 
 Lev0Scr53:
 	db 0
-	db $90
 
 	db 15
 
-	dw Lev0Scr52
-	dw Lev0Scr37
-	dw Lev0Scr54
-	dw Lev0Scr69
+	db $34
+	db $25
+	db $36
+	db $45
 
 Lev0Scr54:
 	db 0
-	db $E0
 
 	db 16
 
-	dw Lev0Scr53
-	dw Lev0Scr38
-	dw Lev0Scr55
-	dw Lev0Scr70
+	db $35
+	db $26
+	db $37
+	db $46
 
 Lev0Scr55:
 	db 0
-	db $F0
 
 	db 17
 
-	dw Lev0Scr54
-	dw Lev0Scr39
-	dw Lev0Scr56
-	dw Lev0Scr71
+	db $36
+	db $27
+	db $38
+	db $47
 
 Lev0Scr56:
 	db 0
-	db $70
 
 	db 18
 
-	dw Lev0Scr55
-	dw Lev0Scr40
-	dw Lev0Scr57
-	dw Lev0Scr72
+	db $37
+	db $28
+	db $39
+	db $48
 
 Lev0Scr57:
 	db 0
-	db $50
 
 	db 19
 
-	dw Lev0Scr56
-	dw 0
-	dw Lev0Scr58
-	dw Lev0Scr73
+	db $38
+	db $FF
+	db $3A
+	db $49
 
 Lev0Scr58:
 	db 0
-	db $50
 
 	db 20
 
-	dw Lev0Scr57
-	dw 0
-	dw Lev0Scr59
-	dw Lev0Scr74
+	db $39
+	db $FF
+	db $3B
+	db $4A
 
 Lev0Scr59:
 	db 0
-	db $D0
 
 	db 21
 
-	dw Lev0Scr58
-	dw 0
-	dw Lev0Scr60
-	dw Lev0Scr75
+	db $3A
+	db $FF
+	db $3C
+	db $4B
 
 Lev0Scr60:
 	db 0
-	db $D0
 
 	db 22
 
-	dw Lev0Scr59
-	dw 0
-	dw Lev0Scr61
-	dw Lev0Scr76
+	db $3B
+	db $FF
+	db $3D
+	db $4C
 
 Lev0Scr61:
 	db 0
-	db $10
 
 	db 23
 
-	dw Lev0Scr60
-	dw Lev0Scr45
-	dw Lev0Scr62
-	dw Lev0Scr77
+	db $3C
+	db $2D
+	db $3E
+	db $4D
 
 Lev0Scr62:
 	db 0
-	db $A0
 
 	db 24
 
-	dw Lev0Scr61
-	dw Lev0Scr46
-	dw 0
-	dw Lev0Scr78
+	db $3D
+	db $2E
+	db $FF
+	db $4E
 
 Lev0Scr68:
 	db 0
-	db $C0
 
 	db 25
 
-	dw 0
-	dw Lev0Scr52
-	dw Lev0Scr69
-	dw Lev0Scr84
+	db $FF
+	db $34
+	db $45
+	db $54
 
 Lev0Scr69:
 	db 0
-	db $B0
 
 	db 26
 
-	dw Lev0Scr68
-	dw Lev0Scr53
-	dw Lev0Scr70
-	dw Lev0Scr85
+	db $44
+	db $35
+	db $46
+	db $55
 
 Lev0Scr70:
 	db 0
-	db $60
 
 	db 27
 
-	dw Lev0Scr69
-	dw Lev0Scr54
-	dw Lev0Scr71
-	dw Lev0Scr86
+	db $45
+	db $36
+	db $47
+	db $56
 
 Lev0Scr71:
 	db 0
-	db $F0
 
 	db 28
 
-	dw Lev0Scr70
-	dw Lev0Scr55
-	dw Lev0Scr72
-	dw Lev0Scr87
+	db $46
+	db $37
+	db $48
+	db $57
 
 Lev0Scr72:
 	db 0
-	db $D0
 
 	db 29
 
-	dw Lev0Scr71
-	dw Lev0Scr56
-	dw Lev0Scr73
-	dw Lev0Scr88
+	db $47
+	db $38
+	db $49
+	db $58
 
 Lev0Scr73:
 	db 0
-	db $50
 
 	db 30
 
-	dw Lev0Scr72
-	dw Lev0Scr57
-	dw Lev0Scr74
-	dw Lev0Scr89
+	db $48
+	db $39
+	db $4A
+	db $59
 
 Lev0Scr74:
 	db 0
-	db $50
 
 	db 31
 
-	dw Lev0Scr73
-	dw Lev0Scr58
-	dw Lev0Scr75
-	dw Lev0Scr90
+	db $49
+	db $3A
+	db $4B
+	db $5A
 
 Lev0Scr75:
 	db 0
-	db $30
 
 	db 32
 
-	dw Lev0Scr74
-	dw Lev0Scr59
-	dw Lev0Scr76
-	dw Lev0Scr91
+	db $4A
+	db $3B
+	db $4C
+	db $5B
 
 Lev0Scr76:
 	db 0
-	db $60
 
 	db 33
 
-	dw Lev0Scr75
-	dw Lev0Scr60
-	dw Lev0Scr77
-	dw Lev0Scr92
+	db $4B
+	db $3C
+	db $4D
+	db $5C
 
 Lev0Scr77:
 	db 0
-	db $D0
 
 	db 34
 
-	dw Lev0Scr76
-	dw Lev0Scr61
-	dw Lev0Scr78
-	dw Lev0Scr93
+	db $4C
+	db $3D
+	db $4E
+	db $5D
 
 Lev0Scr78:
 	db 0
-	db $B0
 
 	db 35
 
-	dw Lev0Scr77
-	dw Lev0Scr62
-	dw 0
-	dw Lev0Scr94
+	db $4D
+	db $3E
+	db $FF
+	db $5E
 
 Lev0Scr84:
 	db 0
-	db $E0
 
 	db 36
 
-	dw 0
-	dw Lev0Scr68
-	dw Lev0Scr85
-	dw Lev0Scr100
+	db $FF
+	db $44
+	db $55
+	db $64
 
 Lev0Scr85:
 	db 0
-	db $70
 
 	db 37
 
-	dw Lev0Scr84
-	dw Lev0Scr69
-	dw Lev0Scr86
-	dw Lev0Scr101
+	db $54
+	db $45
+	db $56
+	db $65
 
 Lev0Scr86:
 	db 0
-	db $50
 
 	db 38
 
-	dw Lev0Scr85
-	dw Lev0Scr70
-	dw Lev0Scr87
-	dw Lev0Scr102
+	db $55
+	db $46
+	db $57
+	db $66
 
 Lev0Scr87:
 	db 0
-	db $70
 
 	db 39
 
-	dw Lev0Scr86
-	dw Lev0Scr71
-	dw Lev0Scr88
-	dw Lev0Scr103
+	db $56
+	db $47
+	db $58
+	db $67
 
 Lev0Scr88:
 	db 0
-	db $70
 
 	db 40
 
-	dw Lev0Scr87
-	dw Lev0Scr72
-	dw Lev0Scr89
-	dw Lev0Scr104
+	db $57
+	db $48
+	db $59
+	db $68
 
 Lev0Scr89:
 	db 0
-	db $50
 
 	db 41
 
-	dw Lev0Scr88
-	dw Lev0Scr73
-	dw Lev0Scr90
-	dw Lev0Scr105
+	db $58
+	db $49
+	db $5A
+	db $69
 
 Lev0Scr90:
 	db 0
-	db $90
 
 	db 42
 
-	dw Lev0Scr89
-	dw Lev0Scr74
-	dw Lev0Scr91
-	dw Lev0Scr106
+	db $59
+	db $4A
+	db $5B
+	db $6A
 
 Lev0Scr91:
 	db 0
-	db $40
 
 	db 43
 
-	dw Lev0Scr90
-	dw Lev0Scr75
-	dw Lev0Scr92
-	dw Lev0Scr107
+	db $5A
+	db $4B
+	db $5C
+	db $6B
 
 Lev0Scr92:
 	db 0
-	db $90
 
 	db 44
 
-	dw Lev0Scr91
-	dw Lev0Scr76
-	dw Lev0Scr93
-	dw Lev0Scr108
+	db $5B
+	db $4C
+	db $5D
+	db $6C
 
 Lev0Scr93:
 	db 0
-	db $A0
 
 	db 45
 
-	dw Lev0Scr92
-	dw Lev0Scr77
-	dw Lev0Scr94
-	dw Lev0Scr109
+	db $5C
+	db $4D
+	db $5E
+	db $6D
 
 Lev0Scr94:
 	db 0
-	db $A0
 
 	db 46
 
-	dw Lev0Scr93
-	dw Lev0Scr78
-	dw 0
-	dw Lev0Scr110
+	db $5D
+	db $4E
+	db $FF
+	db $6E
 
 Lev0Scr100:
 	db 0
-	db $60
 
 	db 47
 
-	dw 0
-	dw Lev0Scr84
-	dw Lev0Scr101
-	dw Lev0Scr116
+	db $FF
+	db $54
+	db $65
+	db $74
 
 Lev0Scr101:
 	db 0
-	db $50
 
 	db 48
 
-	dw Lev0Scr100
-	dw Lev0Scr85
-	dw Lev0Scr102
-	dw Lev0Scr117
+	db $64
+	db $55
+	db $66
+	db $75
 
 Lev0Scr102:
 	db 0
-	db $D0
 
 	db 49
 
-	dw Lev0Scr101
-	dw Lev0Scr86
-	dw Lev0Scr103
-	dw Lev0Scr118
+	db $65
+	db $56
+	db $67
+	db $76
 
 Lev0Scr103:
 	db 0
-	db $D0
 
 	db 50
 
-	dw Lev0Scr102
-	dw Lev0Scr87
-	dw Lev0Scr104
-	dw Lev0Scr119
+	db $66
+	db $57
+	db $68
+	db $77
 
 Lev0Scr104:
 	db 0
-	db $90
 
 	db 51
 
-	dw Lev0Scr103
-	dw Lev0Scr88
-	dw Lev0Scr105
-	dw Lev0Scr120
+	db $67
+	db $58
+	db $69
+	db $78
 
 Lev0Scr105:
 	db 0
-	db $C0
 
 	db 52
 
-	dw Lev0Scr104
-	dw Lev0Scr89
-	dw Lev0Scr106
-	dw Lev0Scr121
+	db $68
+	db $59
+	db $6A
+	db $79
 
 Lev0Scr106:
 	db 0
-	db $70
 
 	db 53
 
-	dw Lev0Scr105
-	dw Lev0Scr90
-	dw Lev0Scr107
-	dw Lev0Scr122
+	db $69
+	db $5A
+	db $6B
+	db $7A
 
 Lev0Scr107:
 	db 0
-	db $50
 
 	db 54
 
-	dw Lev0Scr106
-	dw Lev0Scr91
-	dw Lev0Scr108
-	dw Lev0Scr123
+	db $6A
+	db $5B
+	db $6C
+	db $7B
 
 Lev0Scr108:
 	db 0
-	db $B0
 
 	db 55
 
-	dw Lev0Scr107
-	dw Lev0Scr92
-	dw Lev0Scr109
-	dw Lev0Scr124
+	db $6B
+	db $5C
+	db $6D
+	db $7C
 
 Lev0Scr109:
 	db 0
-	db $A0
 
 	db 56
 
-	dw Lev0Scr108
-	dw Lev0Scr93
-	dw Lev0Scr110
-	dw Lev0Scr125
+	db $6C
+	db $5D
+	db $6E
+	db $7D
 
 Lev0Scr110:
 	db 0
-	db $E0
 
 	db 57
 
-	dw Lev0Scr109
-	dw Lev0Scr94
-	dw Lev0Scr111
-	dw Lev0Scr126
+	db $6D
+	db $5E
+	db $6F
+	db $7E
 
 Lev0Scr111:
 	db 0
-	db $10
 
 	db 58
 
-	dw Lev0Scr110
-	dw 0
-	dw 0
-	dw Lev0Scr127
+	db $6E
+	db $FF
+	db $FF
+	db $7F
 
 Lev0Scr112:
 	db 0
-	db $80
 
 	db 59
 
-	dw 0
-	dw 0
-	dw Lev0Scr113
-	dw Lev0Scr128
+	db $FF
+	db $FF
+	db $71
+	db $80
 
 Lev0Scr113:
 	db 0
-	db $40
 
 	db 60
 
-	dw Lev0Scr112
-	dw 0
-	dw Lev0Scr114
-	dw Lev0Scr129
+	db $70
+	db $FF
+	db $72
+	db $81
 
 Lev0Scr114:
 	db 0
-	db $D0
 
 	db 61
 
-	dw Lev0Scr113
-	dw 0
-	dw Lev0Scr115
-	dw Lev0Scr130
+	db $71
+	db $FF
+	db $73
+	db $82
 
 Lev0Scr115:
 	db 0
-	db $50
 
 	db 62
 
-	dw Lev0Scr114
-	dw 0
-	dw Lev0Scr116
-	dw 0
+	db $72
+	db $FF
+	db $74
+	db $FF
 
 Lev0Scr116:
 	db 0
-	db $50
 
 	db 63
 
-	dw Lev0Scr115
-	dw Lev0Scr100
-	dw Lev0Scr117
-	dw 0
+	db $73
+	db $64
+	db $75
+	db $FF
 
 Lev0Scr117:
 	db 0
-	db $50
 
 	db 64
 
-	dw Lev0Scr116
-	dw Lev0Scr101
-	dw Lev0Scr118
-	dw 0
+	db $74
+	db $65
+	db $76
+	db $FF
 
 Lev0Scr118:
 	db 0
-	db $70
 
 	db 65
 
-	dw Lev0Scr117
-	dw Lev0Scr102
-	dw Lev0Scr119
-	dw Lev0Scr134
+	db $75
+	db $66
+	db $77
+	db $86
 
 Lev0Scr119:
 	db 0
-	db $70
 
 	db 66
 
-	dw Lev0Scr118
-	dw Lev0Scr103
-	dw Lev0Scr120
-	dw Lev0Scr135
+	db $76
+	db $67
+	db $78
+	db $87
 
 Lev0Scr120:
 	db 0
-	db $B0
 
 	db 67
 
-	dw Lev0Scr119
-	dw Lev0Scr104
-	dw Lev0Scr121
-	dw Lev0Scr136
+	db $77
+	db $68
+	db $79
+	db $88
 
 Lev0Scr121:
 	db 0
-	db $60
 
 	db 68
 
-	dw Lev0Scr120
-	dw Lev0Scr105
-	dw Lev0Scr122
-	dw Lev0Scr137
+	db $78
+	db $69
+	db $7A
+	db $89
 
 Lev0Scr122:
 	db 0
-	db $50
 
 	db 69
 
-	dw Lev0Scr121
-	dw Lev0Scr106
-	dw Lev0Scr123
-	dw Lev0Scr138
+	db $79
+	db $6A
+	db $7B
+	db $8A
 
 Lev0Scr123:
 	db 0
-	db $50
 
 	db 70
 
-	dw Lev0Scr122
-	dw Lev0Scr107
-	dw Lev0Scr124
-	dw Lev0Scr139
+	db $7A
+	db $6B
+	db $7C
+	db $8B
 
 Lev0Scr124:
 	db 0
-	db $30
 
 	db 71
 
-	dw Lev0Scr123
-	dw Lev0Scr108
-	dw Lev0Scr125
-	dw Lev0Scr140
+	db $7B
+	db $6C
+	db $7D
+	db $8C
 
 Lev0Scr125:
 	db 0
-	db $A0
 
 	db 72
 
-	dw Lev0Scr124
-	dw Lev0Scr109
-	dw Lev0Scr126
-	dw Lev0Scr141
+	db $7C
+	db $6D
+	db $7E
+	db $8D
 
 Lev0Scr126:
 	db 0
-	db $60
 
 	db 73
 
-	dw Lev0Scr125
-	dw Lev0Scr110
-	dw Lev0Scr127
-	dw Lev0Scr142
+	db $7D
+	db $6E
+	db $7F
+	db $8E
 
 Lev0Scr127:
 	db 0
-	db $10
 
 	db 74
 
-	dw Lev0Scr126
-	dw Lev0Scr111
-	dw 0
-	dw Lev0Scr143
+	db $7E
+	db $6F
+	db $FF
+	db $8F
 
 Lev0Scr128:
 	db 0
-	db $E0
 
 	db 75
 
-	dw 0
-	dw Lev0Scr112
-	dw Lev0Scr129
-	dw Lev0Scr144
+	db $FF
+	db $70
+	db $81
+	db $90
 
 Lev0Scr129:
 	db 0
-	db $50
 
 	db 76
 
-	dw Lev0Scr128
-	dw Lev0Scr113
-	dw Lev0Scr130
-	dw Lev0Scr145
+	db $80
+	db $71
+	db $82
+	db $91
 
 Lev0Scr130:
 	db 0
-	db $B0
 
 	db 77
 
-	dw Lev0Scr129
-	dw Lev0Scr114
-	dw 0
-	dw Lev0Scr146
+	db $81
+	db $72
+	db $FF
+	db $92
 
 Lev0Scr134:
 	db 0
-	db $C0
 
 	db 78
 
-	dw 0
-	dw Lev0Scr118
-	dw Lev0Scr135
-	dw Lev0Scr150
+	db $FF
+	db $76
+	db $87
+	db $96
 
 Lev0Scr135:
 	db 0
-	db $50
 
 	db 79
 
-	dw Lev0Scr134
-	dw Lev0Scr119
-	dw Lev0Scr136
-	dw Lev0Scr151
+	db $86
+	db $77
+	db $88
+	db $97
 
 Lev0Scr136:
 	db 0
-	db $B0
 
 	db 80
 
-	dw Lev0Scr135
-	dw Lev0Scr120
-	dw Lev0Scr137
-	dw Lev0Scr152
+	db $87
+	db $78
+	db $89
+	db $98
 
 Lev0Scr137:
 	db 0
-	db $C0
 
 	db 81
 
-	dw Lev0Scr136
-	dw Lev0Scr121
-	dw Lev0Scr138
-	dw Lev0Scr153
+	db $88
+	db $79
+	db $8A
+	db $99
 
 Lev0Scr138:
 	db 0
-	db $D0
 
 	db 82
 
-	dw Lev0Scr137
-	dw Lev0Scr122
-	dw Lev0Scr139
-	dw Lev0Scr154
+	db $89
+	db $7A
+	db $8B
+	db $9A
 
 Lev0Scr139:
 	db 0
-	db $D0
 
 	db 83
 
-	dw Lev0Scr138
-	dw Lev0Scr123
-	dw Lev0Scr140
-	dw Lev0Scr155
+	db $8A
+	db $7B
+	db $8C
+	db $9B
 
 Lev0Scr140:
 	db 0
-	db $D0
 
 	db 84
 
-	dw Lev0Scr139
-	dw Lev0Scr124
-	dw Lev0Scr141
-	dw Lev0Scr156
+	db $8B
+	db $7C
+	db $8D
+	db $9C
 
 Lev0Scr141:
 	db 0
-	db $F0
 
 	db 85
 
-	dw Lev0Scr140
-	dw Lev0Scr125
-	dw Lev0Scr142
-	dw Lev0Scr157
+	db $8C
+	db $7D
+	db $8E
+	db $9D
 
 Lev0Scr142:
 	db 0
-	db $50
 
 	db 86
 
-	dw Lev0Scr141
-	dw Lev0Scr126
-	dw Lev0Scr143
-	dw Lev0Scr158
+	db $8D
+	db $7E
+	db $8F
+	db $9E
 
 Lev0Scr143:
 	db 0
-	db $10
 
 	db 87
 
-	dw Lev0Scr142
-	dw Lev0Scr127
-	dw 0
-	dw Lev0Scr159
+	db $8E
+	db $7F
+	db $FF
+	db $9F
 
 Lev0Scr144:
 	db 0
-	db $60
 
 	db 88
 
-	dw 0
-	dw Lev0Scr128
-	dw Lev0Scr145
-	dw Lev0Scr160
+	db $FF
+	db $80
+	db $91
+	db $A0
 
 Lev0Scr145:
 	db 0
-	db $90
 
 	db 89
 
-	dw Lev0Scr144
-	dw Lev0Scr129
-	dw Lev0Scr146
-	dw Lev0Scr161
+	db $90
+	db $81
+	db $92
+	db $A1
 
 Lev0Scr146:
 	db 0
-	db $A0
 
 	db 90
 
-	dw Lev0Scr145
-	dw Lev0Scr130
-	dw 0
-	dw Lev0Scr162
+	db $91
+	db $82
+	db $FF
+	db $A2
 
 Lev0Scr150:
 	db 0
-	db $60
 
 	db 91
 
-	dw 0
-	dw Lev0Scr134
-	dw Lev0Scr151
-	dw 0
+	db $FF
+	db $86
+	db $97
+	db $FF
 
 Lev0Scr151:
 	db 0
-	db $50
 
 	db 92
 
-	dw Lev0Scr150
-	dw Lev0Scr135
-	dw Lev0Scr152
-	dw 0
+	db $96
+	db $87
+	db $98
+	db $FF
 
 Lev0Scr152:
 	db 0
-	db $30
 
 	db 93
 
-	dw Lev0Scr151
-	dw Lev0Scr136
-	dw Lev0Scr153
-	dw 0
+	db $97
+	db $88
+	db $99
+	db $FF
 
 Lev0Scr153:
 	db 0
-	db $A0
 
 	db 94
 
-	dw Lev0Scr152
-	dw Lev0Scr137
-	dw Lev0Scr154
-	dw Lev0Scr169
+	db $98
+	db $89
+	db $9A
+	db $A9
 
 Lev0Scr154:
 	db 0
-	db $60
 
 	db 95
 
-	dw Lev0Scr153
-	dw Lev0Scr138
-	dw Lev0Scr155
-	dw Lev0Scr170
+	db $99
+	db $8A
+	db $9B
+	db $AA
 
 Lev0Scr155:
 	db 0
-	db $30
 
 	db 96
 
-	dw Lev0Scr154
-	dw Lev0Scr139
-	dw Lev0Scr156
-	dw Lev0Scr171
+	db $9A
+	db $8B
+	db $9C
+	db $AB
 
 Lev0Scr156:
 	db 0
-	db $A0
 
 	db 97
 
-	dw Lev0Scr155
-	dw Lev0Scr140
-	dw Lev0Scr157
-	dw Lev0Scr172
+	db $9B
+	db $8C
+	db $9D
+	db $AC
 
 Lev0Scr157:
 	db 0
-	db $60
 
 	db 98
 
-	dw Lev0Scr156
-	dw Lev0Scr141
-	dw Lev0Scr158
-	dw 0
+	db $9C
+	db $8D
+	db $9E
+	db $FF
 
 Lev0Scr158:
 	db 0
-	db $50
 
 	db 99
 
-	dw Lev0Scr157
-	dw Lev0Scr142
-	dw Lev0Scr159
-	dw 0
+	db $9D
+	db $8E
+	db $9F
+	db $FF
 
 Lev0Scr159:
 	db 0
-	db $10
 
 	db 100
 
-	dw Lev0Scr158
-	dw Lev0Scr143
-	dw 0
-	dw 0
+	db $9E
+	db $8F
+	db $FF
+	db $FF
 
 Lev0Scr160:
 	db 0
-	db $40
 
 	db 101
 
-	dw 0
-	dw Lev0Scr144
-	dw Lev0Scr161
-	dw 0
+	db $FF
+	db $90
+	db $A1
+	db $FF
 
 Lev0Scr161:
 	db 0
-	db $30
 
 	db 102
 
-	dw Lev0Scr160
-	dw Lev0Scr145
-	dw Lev0Scr162
-	dw 0
+	db $A0
+	db $91
+	db $A2
+	db $FF
 
 Lev0Scr162:
 	db 0
-	db $60
 
 	db 103
 
-	dw Lev0Scr161
-	dw Lev0Scr146
-	dw Lev0Scr163
-	dw 0
+	db $A1
+	db $92
+	db $A3
+	db $FF
 
 Lev0Scr163:
 	db 0
-	db $90
 
 	db 104
 
-	dw Lev0Scr162
-	dw 0
-	dw 0
-	dw Lev0Scr179
+	db $A2
+	db $FF
+	db $FF
+	db $B3
 
 Lev0Scr169:
 	db 0
-	db $60
 
 	db 105
 
-	dw 0
-	dw Lev0Scr153
-	dw Lev0Scr170
-	dw 0
+	db $FF
+	db $99
+	db $AA
+	db $FF
 
 Lev0Scr170:
 	db 0
-	db $50
 
 	db 106
 
-	dw Lev0Scr169
-	dw Lev0Scr154
-	dw Lev0Scr171
-	dw 0
+	db $A9
+	db $9A
+	db $AB
+	db $FF
 
 Lev0Scr171:
 	db 0
-	db $50
 
 	db 107
 
-	dw Lev0Scr170
-	dw Lev0Scr155
-	dw Lev0Scr172
-	dw 0
+	db $AA
+	db $9B
+	db $AC
+	db $FF
 
 Lev0Scr172:
 	db 0
-	db $30
 
 	db 108
 
-	dw Lev0Scr171
-	dw Lev0Scr156
-	dw 0
-	dw 0
+	db $AB
+	db $9C
+	db $FF
+	db $FF
 
 Lev0Scr179:
 	db 0
-	db $A0
 
 	db 109
 
-	dw 0
-	dw Lev0Scr163
-	dw 0
-	dw Lev0Scr195
+	db $FF
+	db $A3
+	db $FF
+	db $C3
 
 Lev0Scr195:
 	db 0
-	db $A0
 
 	db 110
 
-	dw 0
-	dw Lev0Scr179
-	dw 0
-	dw Lev0Scr211
+	db $FF
+	db $B3
+	db $FF
+	db $D3
 
 Lev0Scr210:
 	db 0
-	db $40
 
 	db 111
 
-	dw 0
-	dw 0
-	dw Lev0Scr211
-	dw 0
+	db $FF
+	db $FF
+	db $D3
+	db $FF
 
 Lev0Scr211:
 	db 0
-	db $30
 
 	db 112
 
-	dw Lev0Scr210
+	db $D2
+	db $C3
+	db $FF
+	db $FF
+
+; screens array
+Lev0_ScrArr:
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr3
+	dw Lev0Scr4
+	dw Lev0Scr5
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr19
+	dw Lev0Scr20
+	dw Lev0Scr21
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr36
+	dw Lev0Scr37
+	dw Lev0Scr38
+	dw Lev0Scr39
+	dw Lev0Scr40
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr45
+	dw Lev0Scr46
+	dw Lev0Scr47
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr52
+	dw Lev0Scr53
+	dw Lev0Scr54
+	dw Lev0Scr55
+	dw Lev0Scr56
+	dw Lev0Scr57
+	dw Lev0Scr58
+	dw Lev0Scr59
+	dw Lev0Scr60
+	dw Lev0Scr61
+	dw Lev0Scr62
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr68
+	dw Lev0Scr69
+	dw Lev0Scr70
+	dw Lev0Scr71
+	dw Lev0Scr72
+	dw Lev0Scr73
+	dw Lev0Scr74
+	dw Lev0Scr75
+	dw Lev0Scr76
+	dw Lev0Scr77
+	dw Lev0Scr78
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr84
+	dw Lev0Scr85
+	dw Lev0Scr86
+	dw Lev0Scr87
+	dw Lev0Scr88
+	dw Lev0Scr89
+	dw Lev0Scr90
+	dw Lev0Scr91
+	dw Lev0Scr92
+	dw Lev0Scr93
+	dw Lev0Scr94
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr100
+	dw Lev0Scr101
+	dw Lev0Scr102
+	dw Lev0Scr103
+	dw Lev0Scr104
+	dw Lev0Scr105
+	dw Lev0Scr106
+	dw Lev0Scr107
+	dw Lev0Scr108
+	dw Lev0Scr109
+	dw Lev0Scr110
+	dw Lev0Scr111
+	dw Lev0Scr112
+	dw Lev0Scr113
+	dw Lev0Scr114
+	dw Lev0Scr115
+	dw Lev0Scr116
+	dw Lev0Scr117
+	dw Lev0Scr118
+	dw Lev0Scr119
+	dw Lev0Scr120
+	dw Lev0Scr121
+	dw Lev0Scr122
+	dw Lev0Scr123
+	dw Lev0Scr124
+	dw Lev0Scr125
+	dw Lev0Scr126
+	dw Lev0Scr127
+	dw Lev0Scr128
+	dw Lev0Scr129
+	dw Lev0Scr130
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr134
+	dw Lev0Scr135
+	dw Lev0Scr136
+	dw Lev0Scr137
+	dw Lev0Scr138
+	dw Lev0Scr139
+	dw Lev0Scr140
+	dw Lev0Scr141
+	dw Lev0Scr142
+	dw Lev0Scr143
+	dw Lev0Scr144
+	dw Lev0Scr145
+	dw Lev0Scr146
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr150
+	dw Lev0Scr151
+	dw Lev0Scr152
+	dw Lev0Scr153
+	dw Lev0Scr154
+	dw Lev0Scr155
+	dw Lev0Scr156
+	dw Lev0Scr157
+	dw Lev0Scr158
+	dw Lev0Scr159
+	dw Lev0Scr160
+	dw Lev0Scr161
+	dw Lev0Scr162
+	dw Lev0Scr163
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr169
+	dw Lev0Scr170
+	dw Lev0Scr171
+	dw Lev0Scr172
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr179
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
 	dw Lev0Scr195
-	dw 0
-	dw 0
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw Lev0Scr210
+	dw Lev0Scr211
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
+	dw 0x00
 
 Lev0_StartScr	= Lev0Scr5
 

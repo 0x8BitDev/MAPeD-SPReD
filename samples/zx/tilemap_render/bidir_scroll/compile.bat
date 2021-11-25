@@ -4,7 +4,7 @@
 :#
 :################################################
 
-@set File=tilemap_render_bidir_stat_scr
+@set File=tilemap_render_bidir_scroll
 @set OutDir=..\..\bin\
 
 @del %OutDir%%File%.sna

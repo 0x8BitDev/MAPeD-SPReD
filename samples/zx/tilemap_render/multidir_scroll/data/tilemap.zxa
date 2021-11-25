@@ -5,14 +5,14 @@
 ;#######################################################
 
 ; export options:
-;	- tiles 2x2/(columns)/color
+;	- tiles 4x4/(columns)/color
 ;	- properties per block
 ;	- mode: multidirectional scrolling
 ;	- layout: matrix (no marks)
 ;	- no entities
 
 
-MAP_DATA_MAGIC = $2A029
+MAP_DATA_MAGIC = $2A02A
 
 ; data flags:
 MAP_FLAG_TILES2X2                 = $01
@@ -37,22 +37,23 @@ MAP_FLAG_COLOR_TILES              = $20000
 SCR_BLOCKS2x2_WIDTH	equ 16		; number of screen blocks (2x2) in width
 SCR_BLOCKS2x2_HEIGHT	equ 12		; number of screen blocks (2x2) in height
 
-; *** Lev0 data (incbins: 4663 bytes) ***
+; *** Lev0 data (incbins: 8785 bytes) ***
 
-Lev0_wscr	equ 4		; number of map screens in width
-Lev0_hscr	equ 4		; number of map screens in height
-Lev0_wchr	equ 128		; number of map CHRs in width
-Lev0_hchr	equ 96		; number of map CHRs in height
+Lev0_wscr	equ 8		; number of map screens in width
+Lev0_hscr	equ 11		; number of map screens in height
+Lev0_wchr	equ 256		; number of map CHRs in width
+Lev0_hchr	equ 264		; number of map CHRs in height
 Lev0_wtls	equ 64		; number of map tiles in width
-Lev0_htls	equ 48		; number of map tiles in height
-Lev0_u_tiles	equ 43		; number of unique tiles 2x2 (!)
-Lev0_t_tiles	equ 3072		; total number of tiles in whole map
+Lev0_htls	equ 66		; number of map tiles in height
+Lev0_u_tiles	equ 113		; number of unique tiles 2x2 (!)
+Lev0_t_tiles	equ 4224		; total number of tiles in whole map
 
-Lev0_Map	incbin "tilemap_Lev0_Data.bin"		;(3072) game level blocks (2x2) array
-Lev0_Gfx	incbin "tilemap_Lev0_GFX.bin"		;(1376) array of tile images 2x2 (32 bytes per tile)
-Lev0_Props	incbin "tilemap_Lev0_TilePrps.bin"	;(43) tile properties array (byte per tile)
-Lev0_Clrs	incbin "tilemap_Lev0_TileClrs.bin"	;(172) tile colors array (byte per tile)
+Lev0_Map	incbin "tilemap_Lev0_Data.bin"		;(4224) game level tiles (4x4) array
+Lev0_Gfx	incbin "tilemap_Lev0_GFX.bin"		;(3616) array of tile images 2x2 (32 bytes per tile)
+Lev0_Props	incbin "tilemap_Lev0_TilePrps.bin"	;(113) tile properties array (byte per tile)
+Lev0_Clrs	incbin "tilemap_Lev0_TileClrs.bin"	;(452) tile colors array (byte per tile)
+Lev0_Tiles	incbin "tilemap_Lev0_Tiles.bin"		;(380) (4x4) 4 block indices per tile ( left to right, up to down )
 
 
-Lev0_StartScr	equ	0
+Lev0_StartScr	equ	8
 

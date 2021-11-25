@@ -4,7 +4,7 @@
 ;
 ;###################################################################
 ;
-; Bidirectional static screens switching test.
+; Bidirectional scrolling test.
 ; Keys: Q, A, O, P
 ;
 
@@ -149,4 +149,4 @@ PROG_END
 		DISPLAY "Program size: ", /D, PROG_END-PROG_START, " (#", /H, PROG_END-PROG_START, ")"
 		DISPLAY "Data size: ", /D, DATA_END-DATA_START, " (#", /H, DATA_END-DATA_START, ")"
 
-		savesna "../../bin/tilemap_render_bidir_stat_scr.sna", main
+		savesna "../../bin/tilemap_render_bidir_scroll.sna", main

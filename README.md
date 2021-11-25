@@ -153,7 +153,8 @@ coming soon...
 ## MAPeD-ZX
 
  - `./samples/zx/tilemap_render/multidir_scroll/` - multidirectional tilemap scroller with wide variety of settings (see 'settings.asm' for details); Keys: Q,A,O,P
- - `./samples/zx/tilemap_render/bidir_stat_scr/` - static tiled screens switching sample; a big map with a complex topology; Keys: Q,A,O,P
+ - `./samples/zx/tilemap_render/bidir_scroll/` - bidirectional scroller; Keys: Q,A,O,P
+ - `./samples/zx/tilemap_render/bidir_stat_scr/` - static screens switching; Keys: Q,A,O,P
 
 ## MAPeD-SMD
 
@@ -189,10 +190,10 @@ coming soon...
 
 To compile the samples on Windows you can run **'compile.bat'** which contains in all sample directories.
 
-To compile them on Linux you can run **'makefile'** which also contains in all sample directories except of **ZX** samples.
+To compile them on Linux you can use **'makefile'** which also contains in all sample directories.
 
 - `make` to compile binaries to the `./samples/<platform>/bin` directory;
-- `make run` to run compiled sample with **FCEUX**/**Mednafen** emulators;
+- `make run` to run compiled sample with **FCEUX**/**Mednafen**/**Fuse** emulators;
 - `make clean` to remove compiled binaries;
 
 ---
