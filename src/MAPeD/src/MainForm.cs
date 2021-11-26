@@ -395,7 +395,10 @@ namespace MAPeD
 				m_progress_form.Left	= this.Left + ( this.Width >> 1 ) - ( m_progress_form.Width >> 1 );
 				m_progress_form.Top		= this.Top + ( this.Height >> 1 ) - ( m_progress_form.Height >> 1 );
 
-				this.Enabled = false;
+				if( _show_progress_bar )
+				{
+					this.Enabled = false;
+				}
 				
 				m_progress_form.progress_bar.Visible = _show_progress_bar;
 				
@@ -415,7 +418,11 @@ namespace MAPeD
 				m_progress_form.progress_bar.Visible = false;
 				
 				m_progress_form.Hide();
-				this.Enabled = true;
+				
+				if( !this.Enabled )
+				{
+					this.Enabled = true;
+				}
 			}
 		}
 		
@@ -2348,7 +2355,9 @@ namespace MAPeD
 		
 		void ShiftColorsToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
+#if DEF_NES
 			m_tiles_processor.block_shift_colors( shiftTransparencyToolStripMenuItem.Checked );
+#endif
 		}
 
 		void BtnBlockReserveCHRsClick_Event(object sender, EventArgs e)
