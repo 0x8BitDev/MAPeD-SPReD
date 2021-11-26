@@ -166,12 +166,12 @@ namespace MAPeD
 			
 			m_CHR_bank_viewer.selection_color = ( _mode == block_editor.EMode.bem_CHR_select ) ? utils.CONST_COLOR_CHR_BANK_SELECTED_INNER_BORDER_SELECT_MODE:utils.CONST_COLOR_CHR_BANK_SELECTED_INNER_BORDER_DRAW_MODE;
 		}
-		
+#if DEF_NES
 		public void set_block_editor_palette_per_CHR_mode( bool _on )
 		{
 			m_block_editor.palette_per_CHR_mode = _on;
 		}
-		
+#endif
 		public void tile_editor_locked( bool _on )
 		{
 			m_tile_editor.locked( _on );

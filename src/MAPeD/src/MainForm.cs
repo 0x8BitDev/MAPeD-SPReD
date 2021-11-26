@@ -260,7 +260,11 @@ namespace MAPeD
 					( new ToolTip(components) ).SetToolTip( data.m_cntrl, data.m_desc );
 				}			
 			}
-			
+
+#if !DEF_NES
+			CheckBoxPalettePerCHR.Visible = false; // NES:MMC5 feature
+#endif
+
 #if DEF_NES
 			Project_openFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
 			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_NES );
@@ -280,8 +284,6 @@ namespace MAPeD
 			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "nes", "sms" );
 			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "Map 2/4 bpp", "Map 2/4/8 bpp" );
 			
-			CheckBoxPalettePerCHR.Visible = false;
-			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false; 
 #elif DEF_PCE
 			Project_saveFileDialog.DefaultExt = platform_data.CONST_PCE_FILE_EXT;
@@ -294,8 +296,6 @@ namespace MAPeD
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "CA65\\PCEAS" );
 
 			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin";
-			
-			CheckBoxPalettePerCHR.Visible = false;
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false;
 #elif DEF_ZX
@@ -311,7 +311,6 @@ namespace MAPeD
 
 			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin";
 			
-			CheckBoxPalettePerCHR.Visible	= false;
 			BtnSwapColors.Visible			= false;
 			
 			BtnPltCopy.Enabled = BtnPltDelete.Enabled = BtnSwapColors.Enabled = false;
@@ -338,8 +337,6 @@ namespace MAPeD
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "vasm\\SGDK (*.asm;*.h,*.s)" );
 
 			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin";
-			
-			CheckBoxPalettePerCHR.Visible = false;
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false;
 #endif
@@ -4227,7 +4224,9 @@ namespace MAPeD
 #region palette
 		void CheckBoxPalettePerCHRChecked_Event(object sender, EventArgs e)
 		{
+#if DEF_NES
 			m_tiles_processor.set_block_editor_palette_per_CHR_mode( ( sender as CheckBox ).Checked );
+#endif
 		}
 		
 		void BtnSwapColorsClick_Event(object sender, EventArgs e)

@@ -92,7 +92,7 @@ namespace MAPeD
 		private static int clr_ind_remap_arr_pos = 0;
 		
 		private readonly List< int > m_CHR_ids = null;		
-		
+#if DEF_NES
 		private bool m_palette_per_CHR_mode	= false;
 		
 		public bool palette_per_CHR_mode
@@ -100,7 +100,7 @@ namespace MAPeD
 			get { return m_palette_per_CHR_mode; }
 			set { m_palette_per_CHR_mode = value; }
 		}
-		
+#endif
 		public block_editor( PictureBox _pbox ) : base( _pbox )
 		{
 			m_pix_box.MouseDown 	+= new MouseEventHandler( this.BlockEditor_MouseDown );
@@ -152,8 +152,9 @@ namespace MAPeD
 			int last_sel_quad_ind = m_sel_quad_ind;
 			
 			m_sel_quad_ind = ( _x >> 7 ) + ( ( _y >> 7 ) << 1 );
-
+#if DEF_NES
 			if( palette_per_CHR_mode )
+#endif
 			{
 				if( last_sel_quad_ind != m_sel_quad_ind )
 				{
@@ -236,14 +237,6 @@ namespace MAPeD
 			if( _need_draw )
 			{
 				update_sel_CHR_palette();
-			}
-			else
-			{
-#if DEF_ZX
-				set_active_palette();
-#else
-				update_palette_list_pos();
-#endif
 			}
 #endif			
 			update();
