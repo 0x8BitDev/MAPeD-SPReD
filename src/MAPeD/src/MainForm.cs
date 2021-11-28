@@ -90,8 +90,17 @@ namespace MAPeD
 			}
 		};
 		
+		private static Form m_form = null;
+		
+		private static Form form()
+		{
+			return m_form;
+		}
+		
 		public MainForm( string[] _args )
 		{
+			m_form = this;
+			
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
@@ -358,7 +367,7 @@ namespace MAPeD
 			}
 			else
 			{
-				set_status_msg( "Add a new CHR bank to begin. Press the \"Bank+\" button! <F1> - Quick Guide" );
+				set_status_msg( "Set up screen dimensions and click the \"Bank+\" button to add a new CHR bank to begin! <F1> - Quick Guide" );
 			}
 		}
 
@@ -400,9 +409,8 @@ namespace MAPeD
 					this.Enabled = false;
 				}
 				
-				m_progress_form.progress_bar.Visible = _show_progress_bar;
-				
-				m_progress_form.operation_label.Text = _operation;
+				m_progress_form.show_progress_bar	= _show_progress_bar;
+				m_progress_form.operation_msg		= _operation;
 
 				m_progress_form.Show( this );
 
@@ -415,7 +423,7 @@ namespace MAPeD
 			{
 				pause( 250 );
 				
-				m_progress_form.progress_bar.Visible = false;
+				m_progress_form.show_progress_bar = false;
 				
 				m_progress_form.Hide();
 				
@@ -428,16 +436,12 @@ namespace MAPeD
 		
 		private void progress_bar_value( int _val )
 		{
-			int val = Math.Min( _val, m_progress_form.progress_bar.Maximum );
-			
-			m_progress_form.progress_bar.Value = val;
-			m_progress_form.progress_bar.Increment( val );
-			m_progress_form.progress_bar.Refresh();
+			m_progress_form.progress_value = _val;
 		}
 		
 		private void progress_bar_status( string _status )
 		{
-			m_progress_form.status_label.Text = _status; 
+			m_progress_form.status_msg = _status; 
 			m_progress_form.Update();
 		}
 		
@@ -487,7 +491,7 @@ namespace MAPeD
 		
 		public static DialogResult message_box( string _msg, string _caption, MessageBoxButtons _buttons, MessageBoxIcon _icon = MessageBoxIcon.Warning )
 		{
-			return MessageBox.Show( _msg, _caption, _buttons, _icon );
+			return MessageBox.Show( MainForm.form(), _msg, _caption, _buttons, _icon );
 		}
 
 		void DescriptionToolStripMenuItemClick_Event(object sender, EventArgs e)

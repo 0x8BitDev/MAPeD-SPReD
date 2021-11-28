@@ -15,22 +15,34 @@ namespace MAPeD
 	/// </summary>
 	public partial class progress_form : Form
 	{
-		public Label operation_label
+		public string operation_msg
 		{
-			get { return OperationLabel; }
-			set {}
+			set { OperationLabel.Text = value; }
 		}
 		
-		public Label status_label
+		public string status_msg
 		{
-			get { return StatusLabel; }
-			set {}
+			set { StatusLabel.Text = value; }
 		}
 		
-		public ProgressBar progress_bar
+		public int progress_value
 		{
-			get { return ProgressBar; }
-			set {}
+			set 
+			{
+				int val = Math.Min( value, ProgressBar.Maximum );
+				
+				ProgressBar.Value = val;
+				ProgressBar.Increment( val );
+				ProgressBar.Refresh();
+			}
+		}
+		
+		public bool show_progress_bar
+		{
+			set
+			{
+				ProgressBar.Visible = value;
+			}
 		}
 		
 		public progress_form()

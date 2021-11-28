@@ -144,7 +144,7 @@ namespace MAPeD
 				{
 					if( ( _bmp.Width > 0 && ( _bmp.Width % platform_data.get_screen_width_pixels() ) != 0 ) || ( _bmp.Height > 0 && ( _bmp.Height % platform_data.get_screen_height_pixels() ) != 0 ) )
 					{
-						DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nCrop the imported game map or leave it 'as is'?\n\n[Yes] Crop the game map to fully filled screens\n[No] Import the game map 'as is'", "Game map Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
+						DialogResult dlg_res = MainForm.message_box( "To get the best result, it's recommended that an imported image size must be a multiple of the game screen size.\n\nCrop the imported game map or leave it 'as is'?\n\n[Yes] Crop the game map to fully filled screens\n[No] Import the game map 'as is'", "Image Import Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
 						
 						if( dlg_res == DialogResult.Cancel )
 						{
