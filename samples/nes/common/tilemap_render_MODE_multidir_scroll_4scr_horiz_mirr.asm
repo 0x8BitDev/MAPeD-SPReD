@@ -810,15 +810,6 @@ _tr_drw_up_row:
 	jsr _get_tile_addr_tbl_val
 
 	; select data from the table to search for blocks/CHR
-;	lda inner_vars::_tr_pos_y
-;	.IF ::TR_DATA_TILES4X4
-;	and #%00011111
-;	.ELSE
-;	and #%00001111
-;	.ENDIF ;TR_DATA_TILES4X4
-;	lsr a
-;	lsr a
-;	lsr a
 
 	lda _tmp_val4				; _tr_pos_y /= 8
 	.IF ::TR_DATA_TILES4X4
@@ -887,10 +878,6 @@ _tr_drw_up_row_attrs:
 	sta data_addr + 1
 
 	; add X
-;	lda inner_vars::_tr_pos_x
-;	lsr a
-;	lsr a
-;	lsr a
 
 	lda _tmp_val4 + 1				; _tr_pos_x /= 8
 
@@ -1026,15 +1013,6 @@ _tr_drw_down_row:
 	add_a_to_word _tmp_val
 
 	; select data from the table to search for blocks / CHR
-;	lda inner_vars::_tr_pos_y
-;	.IF ::TR_DATA_TILES4X4
-;	and #%00011111
-;	.ELSE
-;	and #%00001111
-;	.ENDIF ;TR_DATA_TILES4X4
-;	lsr a
-;	lsr a
-;	lsr a
 
 	lda _tmp_val4					; _tr_pos_y /= 8
 	.IF ::TR_DATA_TILES4X4
@@ -1083,10 +1061,6 @@ _tr_drw_down_row_attrs:
 	sta data_addr + 1
 
 	; add X
-;	lda inner_vars::_tr_pos_x
-;	lsr a
-;	lsr a
-;	lsr a
 
 	lda _tmp_val4 + 1				; _tr_pos_x /= 8
 
@@ -1240,15 +1214,6 @@ _tr_drw_left_col:
 	jsr _get_tile_addr_tbl_val
 
 	; select data from the table to search for blocks / CHR
-;	lda inner_vars::_tr_pos_x
-;	.IF ::TR_DATA_TILES4X4
-;	and #%00011111
-;	.ELSE
-;	and #%00001111
-;	.ENDIF ;TR_DATA_TILES4X4
-;	lsr a
-;	lsr a
-;	lsr a
 
 	lda _tmp_val4					; _tr_pos_x /= 8
 	.IF ::TR_DATA_TILES4X4
@@ -1304,10 +1269,6 @@ _tr_drw_left_col_attrs:
 	.ENDIF ;TR_MIRRORING_HORIZONTAL
 
 	; calculate the PPU address
-;	lda inner_vars::_tr_pos_x
-;	lsr a
-;	lsr a
-;	lsr a
 
 	lda _tmp_val4					; _tr_pos_x /= 8
 
@@ -1325,10 +1286,6 @@ _tr_drw_left_col_attrs:
 	sta data_addr + 1
 
 	; add Y
-;	lda inner_vars::_tr_pos_y
-;	lsr a
-;	lsr a
-;	lsr a
 
 	lda _tmp_val4 + 1				; _tr_pos_y /= 8
 
@@ -1478,15 +1435,6 @@ _tr_drw_right_col:
 	jsr _get_tile_addr_tbl_val
 
 	; select data from the table to search for blocks / CHR
-;	lda inner_vars::_tr_pos_x
-;	.IF ::TR_DATA_TILES4X4
-;	and #%00011111
-;	.ELSE
-;	and #%00001111
-;	.ENDIF ;TR_DATA_TILES4X4
-;	lsr a
-;	lsr a
-;	lsr a
 
 	lda _tmp_val4					; _tr_pos_x /= 8
 	.IF ::TR_DATA_TILES4X4
@@ -1532,10 +1480,6 @@ _tr_drw_right_col_attrs:
 	.ENDIF ;TR_MIRRORING_HORIZONTAL
 
 	; calculate PPU address
-;	lda inner_vars::_tr_pos_x
-;	lsr a
-;	lsr a
-;	lsr a
 
 	lda _tmp_val4					; _tr_pos_x /= 8
 
@@ -1554,10 +1498,6 @@ _tr_drw_right_col_attrs:
 	sta data_addr + 1
 
 	; add Y
-;	lda inner_vars::_tr_pos_y
-;	lsr a
-;	lsr a
-;	lsr a
 
 	lda _tmp_val4 + 1				; _tr_pos_y /= 8
 
@@ -1700,7 +1640,6 @@ _drw_attrs_row_dyn_and_fix_half_attr:
 
 	lda _tmp_val4 + 1				; _tr_pos_x /= 8
 	and #$03
-;	cmp #$00
 	beq @exit
 
 	cmp #$03
@@ -1734,12 +1673,6 @@ _drw_attrs_row_dyn_and_fix_half_attr:
 half_attrs_fix_left_right:
 
 	pha
-
-;	lda inner_vars::_tr_pos_x
-;	lsr a
-;	lsr a
-;	lsr a
-;	tay
 
 	ldy _tmp_val4 + 1		; _tr_pos_x /= 8
 
