@@ -40,7 +40,7 @@ namespace MAPeD
 		
 		private int  m_VDP_ready_scr_data_size = -1;
 
-		private int[] m_CHR_offset	= { 64, 128, 256, 128, 256, 512 };
+		private int[] m_CHR_offset	= { 32, 64, 128, 64, 128, 256 };
 		private int[] m_BAT_index	= { 0, 1, 3, 4, 5, 7 };
 		
 		private StreamWriter	m_C_writer	= null;
@@ -321,7 +321,7 @@ namespace MAPeD
 					{
 						utils.write_title( m_C_writer, true );
 						
-						m_C_writer.WriteLine( "\n//#incasm( \"" + Path.GetFileName( m_path_filename_ext ) + "\" )\n\n" );
+						m_C_writer.WriteLine( "\n#incasm( \"" + Path.GetFileName( m_path_filename_ext ) + "\" )\n" );
 					}
 				}
 				
@@ -329,40 +329,7 @@ namespace MAPeD
 				
 				utils.write_title( sw );
 
-				// options
-				{
-					sw.WriteLine( "; export options:" );
-
-					sw.WriteLine( ";\t- tiles " + ( RBtnTiles4x4.Checked ? "4x4":"2x2" ) + ( CheckBoxRLE.Checked ? " (RLE)":"" ) + ( RBtnTilesDirColumns.Checked ? "/(columns)":"/(rows)" ) );
-					
-					sw.WriteLine( ";\t- properties per " + ( RBtnPropPerBlock.Checked ? "block":"CHR" ) );
-					
-					if( RBtnModeMultidirScroll.Checked )
-					{
-						sw.WriteLine( ";\t- mode: multidirectional scrolling" );
-					}
-					else
-					if( RBtnModeBidirScroll.Checked )
-					{
-						sw.WriteLine( ";\t- mode: bidirectional scrolling" );
-					}
-					else
-					if( RBtnModeStaticScreen.Checked )
-					{
-						sw.WriteLine( ";\t- mode: static screens" );
-					}
-					
-					sw.WriteLine( ";\t- layout: " + ( RBtnLayoutAdjacentScreens.Checked ? "adjacent screens":RBtnLayoutAdjacentScreenIndices.Checked ? "adjacent screen indices":"matrix" ) + ( CheckBoxExportMarks.Checked ? " (marks)":" (no marks)" ) );
-					
-					sw.WriteLine( ";\t- " + ( CheckBoxExportEntities.Checked ? "entities " + ( RBtnEntityCoordScreen.Checked ? "(screen coordinates)":"(map coordinates)" ):"no entities" ) );
-					
-					if( m_C_writer != null )
-					{
-						sw.WriteLine( ";\t- generate C header file" );
-					}
-					
-					sw.WriteLine( "\n" );
-				}
+				write_options( ( m_C_writer != null ) ? m_C_writer:sw );
 				
 				write_map_flags( CheckBoxGenerateHFile.Checked ? m_C_writer:sw );
 				
@@ -405,6 +372,38 @@ namespace MAPeD
 			}
 		}
 
+		void write_options( StreamWriter _sw )
+		{
+			string comment = ( m_C_writer != null ) ? "//":";";
+			
+			_sw.WriteLine( comment + " export options:" );
+
+			_sw.WriteLine( comment + "\t- tiles " + ( RBtnTiles4x4.Checked ? "4x4":"2x2" ) + ( CheckBoxRLE.Checked ? " (RLE)":"" ) + ( RBtnTilesDirColumns.Checked ? "/(columns)":"/(rows)" ) );
+			
+			_sw.WriteLine( comment + "\t- properties per " + ( RBtnPropPerBlock.Checked ? "block":"CHR" ) );
+			
+			if( RBtnModeMultidirScroll.Checked )
+			{
+				_sw.WriteLine( comment + "\t- mode: multidirectional scrolling" );
+			}
+			else
+			if( RBtnModeBidirScroll.Checked )
+			{
+				_sw.WriteLine( comment + "\t- mode: bidirectional scrolling" );
+			}
+			else
+			if( RBtnModeStaticScreen.Checked )
+			{
+				_sw.WriteLine( comment + "\t- mode: static screens" );
+			}
+			
+			_sw.WriteLine( comment + "\t- layout: " + ( RBtnLayoutAdjacentScreens.Checked ? "adjacent screens":RBtnLayoutAdjacentScreenIndices.Checked ? "adjacent screen indices":"matrix" ) + ( CheckBoxExportMarks.Checked ? " (marks)":" (no marks)" ) );
+			
+			_sw.WriteLine( comment + "\t- " + ( CheckBoxExportEntities.Checked ? "entities " + ( RBtnEntityCoordScreen.Checked ? "(screen coordinates)":"(map coordinates)" ):"no entities" ) );
+			
+			_sw.WriteLine( "\n" );
+		}
+		
 		void write_map_flags( StreamWriter _sw )
 		{
 			string c_def 		= CheckBoxGenerateHFile.Checked ? "#define ":"";
@@ -441,7 +440,7 @@ namespace MAPeD
 			_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_CHR          " + c_def_eq + utils.hex( c_hex_pref, 65536 ) );
 			
 			_sw.WriteLine( "\n" + c_def + "BAT_INDEX\t" + c_def_eq + m_BAT_index[ ComboBoxBAT.SelectedIndex ] );
-			_sw.WriteLine( c_def + "CHRS_OFFSET\t" + c_def_eq + get_CHR_offset() + "\t" + c_comment + " first CHR index from the begining of VRAM" );
+			_sw.WriteLine( c_def + "CHRS_OFFSET\t" + c_def_eq + get_CHR_offset() + "\t" + c_comment + " first CHR index from the beginning of VRAM" );
 
 			_sw.WriteLine( "\n" + c_def + "SCR_BLOCKS2x2_WIDTH\t" + c_def_eq + platform_data.get_screen_blocks_width() + "\t" + c_comment + " number of screen blocks (2x2) in width" );
 			_sw.WriteLine( c_def + "SCR_BLOCKS2x2_HEIGHT\t" + c_def_eq + platform_data.get_screen_blocks_height() + "\t" + c_comment + " number of screen blocks (2x2) in height" );
@@ -1390,7 +1389,7 @@ namespace MAPeD
 		
 		private ushort get_screen_attribute( uint _block_data )
 		{
-			return ( ushort )tiles_data.block_data_repack_to_native( _block_data, get_CHR_offset() );
+			return ( ushort )tiles_data.block_data_repack_to_native( _block_data, get_CHR_offset() << 1 );
 		}
 		
 		private string get_adjacent_screen_index( int _level_n, layout_data _data, int _scr_ind, int _offset )
