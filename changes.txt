@@ -81,6 +81,8 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+24.12.2020 v0.61b
+
 06.01.2021 - SMS: added column ordered palette
 
 24.12.2020 v0.60b
