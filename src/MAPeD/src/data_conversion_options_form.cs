@@ -128,9 +128,9 @@ namespace MAPeD
 			{
 				CBoxUseFileScreenResolution.Enabled = true;
 			}
-			
+#if !DEF_ZX
 			CBoxConvertColors.Enabled = ( platform_data.get_platform_type() == platform_data.get_platform_type_by_file_ext( _prj_data.m_file_ext ) ) ? false:true;
-			
+#endif			
 			return ShowDialog();
 		}
 	}
