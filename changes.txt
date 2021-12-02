@@ -1,6 +1,8 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+02.12.2021 v0.67b
+
 25.11.2021 - ZX: added native samples (SjASMPlus)
 29.10.2021 - Added support for custom screen size
 12.10.2021 - Changed project file format (v6): tiles 4x4 data UINT -> ULONG; Updated Python API v1.8
