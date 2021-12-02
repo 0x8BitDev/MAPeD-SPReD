@@ -129,6 +129,8 @@ namespace MAPeD
 				CBoxUseFileScreenResolution.Enabled = true;
 			}
 			
+			CBoxConvertColors.Enabled = ( platform_data.get_platform_type() == platform_data.get_platform_type_by_file_ext( _prj_data.m_file_ext ) ) ? false:true;
+			
 			return ShowDialog();
 		}
 	}
