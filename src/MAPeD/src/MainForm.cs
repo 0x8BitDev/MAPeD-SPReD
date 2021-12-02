@@ -792,6 +792,7 @@ namespace MAPeD
 								{
 									if( m_data_conversion_options_form.ShowDialog( prj_data ) == DialogResult.Cancel )
 									{
+										reset();
 										return;
 									}
 									
