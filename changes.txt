@@ -1,6 +1,8 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+03.12.2021 - Import of raw CHR data with automatic addition of new CHR banks when data overflows
+
 02.12.2021 v0.67b
 
 25.11.2021 - ZX: added native samples (SjASMPlus)

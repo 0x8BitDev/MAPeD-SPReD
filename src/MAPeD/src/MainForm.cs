@@ -1115,16 +1115,36 @@ namespace MAPeD
 						case ".chr":
 						case ".bin":
 							{
-								int added_CHRs = project_data_converter_provider.get_converter().merge_CHR_bin( br, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
-								
-								if( added_CHRs > 0 )
-								{
-									set_status_msg( string.Format( "Merged: {0} CHRs", added_CHRs ) );
-								}
-								else
-								if( added_CHRs < 0 )
+								if( br.BaseStream.Length < platform_data.get_native_CHR_size_bytes() )
 								{
 									throw new Exception( "Invalid file!" );
+								}
+						
+								int CHR_banks	= 1;
+								int added_CHRs	= 0;
+								
+								while( true )
+								{
+									added_CHRs += project_data_converter_provider.get_converter().merge_CHR_bin( br, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+
+									if( br.BaseStream.Position + platform_data.get_native_CHR_size_bytes() <= br.BaseStream.Length )
+									{
+										if( add_CHR_bank() == false )
+										{
+											throw new Exception( "Operation aborted!" );
+										}
+										
+										++CHR_banks;
+									}
+									else
+									{
+										break;
+									}
+								}
+
+								if( added_CHRs > 0 )
+								{
+									set_status_msg( string.Format( "Merged: {0} CHRs / {1} CHR bank(s)", added_CHRs, CHR_banks ) );
 								}
 								
 								update_graphics( true );
@@ -1589,6 +1609,11 @@ namespace MAPeD
 		
 		void BtnAddCHRBankClick_Event(object sender, EventArgs e)
 		{
+			add_CHR_bank();
+		}
+		
+		bool add_CHR_bank()
+		{
 			if( platform_data.get_max_blocks_cnt() > 256 )
 			{
 				progress_bar_show( true, "CHR bank initialization...", false );
@@ -1615,12 +1640,16 @@ namespace MAPeD
 				set_status_msg( "Failed to create CHR bank" );
 				
 				message_box( "Can't create CHR bank!\nThe maximum allowed number of CHR banks - " + utils.CONST_CHR_BANK_MAX_CNT, "Failed to Create CHR Bank", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				
+				return false;
 			}
 			
 			if( platform_data.get_max_blocks_cnt() > 256 )
 			{
 				progress_bar_show( false, "", false );
 			}
+			
+			return true;
 		}
 		
 		void BtnDeleteCHRBankClick_Event(object sender, EventArgs e)

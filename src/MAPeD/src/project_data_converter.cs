@@ -427,11 +427,6 @@ namespace MAPeD
 			
 			int y;
 			
-			if( _br.BaseStream.Length < platform_data.get_native_CHR_size_bytes() )
-			{
-				return -1;
-			}
-			
 			int added_CHRs = 0;
 			
 			int chr_id = _data.get_first_free_spr8x8_id();
