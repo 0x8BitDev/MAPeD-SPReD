@@ -556,10 +556,17 @@ namespace MAPeD
 											data_sets_manager.EScreenDataType	_scr_type, 
 											tiles_data 							_data )
 		{
-			int prj_scr_tiles_width		= ( _prj_data.m_scr_blocks_width == 0xff ) ? (_scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 8:16):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_width + 1 ) >> 1 ):_prj_data.m_scr_blocks_width );
-			int prj_scr_tiles_height	= ( _prj_data.m_scr_blocks_height == 0xff ) ? (_scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 7:14):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_height + 1 ) >> 1 ):_prj_data.m_scr_blocks_height );
-			
-			load_screens( _br, _prj_data.m_ver, _scr_type, _prj_data.m_scr_align, prj_scr_tiles_width, prj_scr_tiles_height, _data );
+			if( platform_data.get_platform_type_by_file_ext( _prj_data.m_file_ext ) == platform_data.get_platform_type() )
+			{
+				int prj_scr_tiles_width		= ( _prj_data.m_scr_blocks_width == 0xff ) ? (_scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 8:16):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_width + 1 ) >> 1 ):_prj_data.m_scr_blocks_width );
+				int prj_scr_tiles_height	= ( _prj_data.m_scr_blocks_height == 0xff ) ? (_scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 7:14):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_height + 1 ) >> 1 ):_prj_data.m_scr_blocks_height );
+				
+				load_screens( _br, _prj_data.m_ver, _scr_type, _prj_data.m_scr_align, prj_scr_tiles_width, prj_scr_tiles_height, _data );
+			}
+			else
+			{
+				base.load_screens( _br, _prj_data, _scr_type, _data );
+			}
 		}
 	}
 #elif DEF_SMD
