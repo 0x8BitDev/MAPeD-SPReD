@@ -1460,9 +1460,12 @@ namespace MAPeD
 					
 					m_layout.delete_screen_by_pos( scr_pos_x, scr_pos_y );
 
-					if( m_dispatch_selection_mode && m_dispatch_mode_sel_screen_slot_id == m_sel_screen_slot_id )
+					if( m_dispatch_selection_mode )
 					{
-						m_dispatch_mode_sel_screen_slot_id = -1;
+						if( m_dispatch_mode_sel_screen_slot_id == m_sel_screen_slot_id )
+						{
+							m_dispatch_mode_sel_screen_slot_id = -1;
+						}
 						
 						dispatch_event_screen_selected();
 					}
@@ -1551,6 +1554,20 @@ namespace MAPeD
 			
 			m_layout = data_mngr.get_layout_data( data_mngr.layouts_data_pos );
 			
+			update_adj_scr_offsets();
+			
+			if( m_dispatch_selection_mode && m_dispatch_mode_sel_screen_slot_id >= 0 )
+			{
+				m_dispatch_mode_sel_screen_slot_id = -1;
+				
+				dispatch_event_screen_selected();
+			}
+			
+			update_dimension_changes();
+		}
+		
+		private void update_adj_scr_offsets()
+		{
 			if( m_layout != null )
 			{
 				m_adj_scr_offs[ 0 ] = -get_width() - 1;
@@ -1562,15 +1579,6 @@ namespace MAPeD
 				m_adj_scr_offs[ 6 ] = -1;
 				m_adj_scr_offs[ 7 ] =  1;
 			}
-			
-			if( m_dispatch_selection_mode && m_dispatch_mode_sel_screen_slot_id >= 0 )
-			{
-				m_dispatch_mode_sel_screen_slot_id = -1;
-				
-				dispatch_event_screen_selected();
-			}
-			
-			update_dimension_changes();
 		}
 		
 		private void update_tiles_data( object sender, EventArgs e )
@@ -1599,9 +1607,20 @@ namespace MAPeD
 			if( m_layout != null )
 			{
 				clamp_offsets();
+				update_adj_scr_offsets();
 			}
 			update();
 			update_label();
+		}
+		
+		public void reset_selected_screen()
+		{
+			if( m_dispatch_selection_mode )
+			{
+				m_dispatch_mode_sel_screen_slot_id = -1;
+				
+				dispatch_event_screen_selected();
+			}
 		}
 
 		private void dispatch_event_screen_selected()

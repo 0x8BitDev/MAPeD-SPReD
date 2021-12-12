@@ -2989,13 +2989,17 @@ namespace MAPeD
 		
 		void BtnLayoutAddUpRowClick_Event(object sender, EventArgs e)
 		{
-			layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
-			
-			if( data != null )
+			if( ListBoxLayouts.SelectedIndex >= 0 )
 			{
-				data.add_up();
+				layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
 				
-				m_layout_editor.update_dimension_changes();
+				if( data != null )
+				{
+					data.add_up();
+					
+					m_layout_editor.reset_selected_screen();
+					m_layout_editor.update_dimension_changes();
+				}
 			}
 		}
 		
@@ -3006,13 +3010,17 @@ namespace MAPeD
 		
 		void BtnLayoutAddDownRowClick_Event(object sender, EventArgs e)
 		{
-			layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
-			
-			if( data != null )
+			if( ListBoxLayouts.SelectedIndex >= 0 )
 			{
-				data.add_down();
-			
-				m_layout_editor.update_dimension_changes();
+				layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
+				
+				if( data != null )
+				{
+					data.add_down();
+				
+					m_layout_editor.reset_selected_screen();
+					m_layout_editor.update_dimension_changes();
+				}
 			}
 		}
 		
@@ -3023,13 +3031,17 @@ namespace MAPeD
 		
 		void BtnLayoutAddLeftColumnClick_Event(object sender, EventArgs e)
 		{
-			layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
-			
-			if( data != null )
+			if( ListBoxLayouts.SelectedIndex >= 0 )
 			{
-				data.add_left();
+				layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
 				
-				m_layout_editor.update_dimension_changes();
+				if( data != null )
+				{
+					data.add_left();
+					
+					m_layout_editor.reset_selected_screen();
+					m_layout_editor.update_dimension_changes();
+				}
 			}
 		}
 		
@@ -3040,13 +3052,17 @@ namespace MAPeD
 		
 		void BtnLayoutAddRightColumnClick_Event(object sender, EventArgs e)
 		{
-			layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
-			
-			if( data != null )
+			if( ListBoxLayouts.SelectedIndex >= 0 )
 			{
-				data.add_right();
+				layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
 				
-				m_layout_editor.update_dimension_changes();
+				if( data != null )
+				{
+					data.add_right();
+					
+					m_layout_editor.reset_selected_screen();
+					m_layout_editor.update_dimension_changes();
+				}
 			}
 		}
 	
@@ -3057,15 +3073,19 @@ namespace MAPeD
 
 		void delete_layout_row_column( Func< layout_data, bool > _condition, Func< layout_data, bool > _act, string _caption_msg )
 		{
-			layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
-			
-			if( data != null && _condition( data ) && message_box( "Are you sure?", _caption_msg, MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( ListBoxLayouts.SelectedIndex >= 0 )
 			{
-				if( _act( data ) )
+				layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
+				
+				if( data != null && _condition( data ) && message_box( "Are you sure?", _caption_msg, MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
-					reset_entity_instance_preview();
-					
-					m_layout_editor.update_dimension_changes();
+					if( _act( data ) )
+					{
+						reset_entity_instance_preview();
+						
+						m_layout_editor.reset_selected_screen();
+						m_layout_editor.update_dimension_changes();
+					}
 				}
 			}
 		}
