@@ -302,7 +302,7 @@ namespace MAPeD
 			Project_openFileDialog.DefaultExt = platform_data.CONST_PCE_FILE_EXT;
 			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_PCE );
 			
-			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "CA65\\PCEAS" );
+			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "CA65\\PCEAS\\HuC (*.asm;*.h)" );
 
 			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin";
 			

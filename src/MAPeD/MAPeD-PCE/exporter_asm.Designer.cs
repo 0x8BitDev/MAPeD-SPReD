@@ -461,7 +461,7 @@ namespace MAPeD
 			this.RichTextBoxExportDesc.TabIndex = 35;
 			this.RichTextBoxExportDesc.Text = "";
 			// 
-			// exporter_pce_asm
+			// exporter_asm
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -475,9 +475,9 @@ namespace MAPeD
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "exporter_pce_asm";
+			this.Name = "exporter_asm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "CA65\\PCEAS Export Options";
+			this.Text = "CA65\\PCEAS\\HuC Export Options";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);

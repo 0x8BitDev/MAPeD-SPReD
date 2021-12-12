@@ -335,12 +335,22 @@ namespace MAPeD
 				
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "\n// see .asm file for details" );
+					save_screen_struct();
 				}
 				
 				if( CheckBoxExportEntities.Checked )
 				{
-					m_data_mngr.export_entity_asm( sw, ".byte", "$" );
+					if( m_C_writer != null )
+					{
+						m_C_writer.WriteLine( "\n#asm" );
+					}
+					
+					m_data_mngr.export_entity_asm( ( ( m_C_writer != null ) ? m_C_writer:sw ), ".byte", "$" );
+					
+					if( m_C_writer != null )
+					{
+						m_C_writer.WriteLine( "#endasm" );
+					}
 				}
 				
 				if( RBtnModeMultidirScroll.Checked )
@@ -370,6 +380,42 @@ namespace MAPeD
 					m_C_writer = null;
 				}
 			}
+		}
+		
+		void save_screen_struct()
+		{
+			m_C_writer.WriteLine( "\n/* screen data */\n\ntypedef struct\n{" );
+			m_C_writer.WriteLine( "#if\tFLAG_MODE_BIDIR_SCROLL + FLAG_MODE_STAT_SCR" );
+			m_C_writer.WriteLine( "\tunsigned char\tchr_id;" );
+			m_C_writer.WriteLine( "#endif" );
+			m_C_writer.WriteLine( "#if\tFLAG_MARKS" );
+			m_C_writer.WriteLine( "\t//bits: 7-4 - bit mask of user defined adjacent screens ( Down(7)-Right(6)-Up(5)-Left(4) ); 3-0 - screen property" );
+			m_C_writer.WriteLine( "\tunsigned char\tmarks;" );
+			m_C_writer.WriteLine( "#endif" );
+			m_C_writer.WriteLine( "#if\tFLAG_MODE_STAT_SCR" );
+			m_C_writer.WriteLine( "\tunsigned int\tVDC_data_offset;" );
+			m_C_writer.WriteLine( "#endif" );
+			m_C_writer.WriteLine( "#if\tFLAG_MODE_BIDIR_SCROLL + FLAG_MODE_STAT_SCR" );
+			m_C_writer.WriteLine( "\tunsigned char\tscr_ind;" );
+			m_C_writer.WriteLine( "#endif" );
+			m_C_writer.WriteLine( "#if\tFLAG_LAYOUT_ADJ_SCR" );
+			m_C_writer.WriteLine( "\t// adjacent screen pointers" );
+			m_C_writer.WriteLine( "\tvoid*\tscr_left;" );
+			m_C_writer.WriteLine( "\tvoid*\tscr_up;" );
+			m_C_writer.WriteLine( "\tvoid*\tscr_right;" );
+			m_C_writer.WriteLine( "\tvoid*\tscr_down;" );
+			m_C_writer.WriteLine( "#endif" );
+			m_C_writer.WriteLine( "#if\tFLAG_LAYOUT_ADJ_SCR_INDS" );
+			m_C_writer.WriteLine( "\tunsigned char\tscr_left;" );
+			m_C_writer.WriteLine( "\tunsigned char\tscr_up;" );
+			m_C_writer.WriteLine( "\tunsigned char\tscr_right;" );
+			m_C_writer.WriteLine( "\tunsigned char\tscr_down;" );
+			m_C_writer.WriteLine( "#endif" );
+			m_C_writer.WriteLine( "#if\tFLAG_ENTITIES" );
+			m_C_writer.WriteLine( "\tunsigned char\tents_cnt;" );
+			m_C_writer.WriteLine( "\tmpd_ENTITY_INSTANCE*\tents[];" );
+			m_C_writer.WriteLine( "#endif" );
+			m_C_writer.WriteLine( "} mpd_SCREEN;" );
 		}
 
 		void write_options( StreamWriter _sw )
@@ -411,33 +457,57 @@ namespace MAPeD
 			string c_hex_pref	= CheckBoxGenerateHFile.Checked ? "0x":"$";
 			string c_def_eq		= CheckBoxGenerateHFile.Checked ? "":"= ";
 			
-			_sw.WriteLine( c_def + "MAP_DATA_MAGIC " + c_def_eq + utils.hex( c_hex_pref, ( RBtnTiles2x2.Checked ? 1:2 ) |
-			                                              		( CheckBoxRLE.Checked ? 4:0 ) |
-			                                              		( RBtnTilesDirColumns.Checked ? 8:16 ) |
-			                                              		( RBtnModeMultidirScroll.Checked ? 32:RBtnModeBidirScroll.Checked ? 64:128 ) | 
-			                                              		( CheckBoxExportEntities.Checked ? 256:0 ) |
-			                                              		( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordScreen.Checked ? 512:1024 ):0 ) |
-			                                              		( RBtnLayoutAdjacentScreens.Checked ? 2048:RBtnLayoutAdjacentScreenIndices.Checked ? 4096:8192 ) |
-			                                              		( CheckBoxExportMarks.Checked ? 16384:0 ) |
-			                                              		( RBtnPropPerBlock.Checked ? 32768:65536 ) ) );
-			_sw.WriteLine( "\n" + c_comment + " data flags:" );
-			_sw.WriteLine( c_def + "MAP_FLAG_TILES2X2                 " + c_def_eq + utils.hex( c_hex_pref, 1 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_TILES4X4                 " + c_def_eq + utils.hex( c_hex_pref, 2 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_RLE                      " + c_def_eq + utils.hex( c_hex_pref, 4 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_DIR_COLUMNS              " + c_def_eq + utils.hex( c_hex_pref, 8 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_DIR_ROWS                 " + c_def_eq + utils.hex( c_hex_pref, 16 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_MODE_MULTIDIR_SCROLL     " + c_def_eq + utils.hex( c_hex_pref, 32 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_MODE_BIDIR_SCROLL        " + c_def_eq + utils.hex( c_hex_pref, 64 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_MODE_STATIC_SCREENS      " + c_def_eq + utils.hex( c_hex_pref, 128 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_ENTITIES                 " + c_def_eq + utils.hex( c_hex_pref, 256 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_ENTITY_SCREEN_COORDS     " + c_def_eq + utils.hex( c_hex_pref, 512 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_ENTITY_MAP_COORS         " + c_def_eq + utils.hex( c_hex_pref, 1024 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_LAYOUT_ADJACENT_SCREENS  " + c_def_eq + utils.hex( c_hex_pref, 2048 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS " + c_def_eq + utils.hex( c_hex_pref, 4096 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_LAYOUT_MATRIX            " + c_def_eq + utils.hex( c_hex_pref, 8192 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_MARKS                    " + c_def_eq + utils.hex( c_hex_pref, 16384 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_BLOCK        " + c_def_eq + utils.hex( c_hex_pref, 32768 ) );
-			_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_CHR          " + c_def_eq + utils.hex( c_hex_pref, 65536 ) );
+			if( m_C_writer != null )
+			{
+				_sw.WriteLine( "/* exported data flags: */\n" );
+				_sw.WriteLine( c_def + "FLAG_TILES2X2                 " + c_def_eq + ( RBtnTiles2x2.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_TILES4X4                 " + c_def_eq + ( RBtnTiles4x4.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_RLE                      " + c_def_eq + ( CheckBoxRLE.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_DIR_COLUMNS              " + c_def_eq + ( RBtnTilesDirColumns.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_DIR_ROWS                 " + c_def_eq + ( RBtnTilesDirRows.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_MODE_MULTIDIR_SCROLL     " + c_def_eq + ( RBtnModeMultidirScroll.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_MODE_BIDIR_SCROLL        " + c_def_eq + ( RBtnModeBidirScroll.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_MODE_STAT_SCR            " + c_def_eq + ( RBtnModeStaticScreen.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_ENTITIES                 " + c_def_eq + ( CheckBoxExportEntities.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_ENTITY_SCR_COORDS        " + c_def_eq + ( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordScreen.Checked ? "1":"0" ):"0" ) );
+				_sw.WriteLine( c_def + "FLAG_ENTITY_MAP_COORS         " + c_def_eq + ( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordMap.Checked ? "1":"0" ):"0" ) );
+				_sw.WriteLine( c_def + "FLAG_LAYOUT_ADJ_SCR           " + c_def_eq + ( RBtnLayoutAdjacentScreens.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_LAYOUT_ADJ_SCR_INDS      " + c_def_eq + ( RBtnLayoutAdjacentScreenIndices.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_LAYOUT_MATRIX            " + c_def_eq + ( RBtnLayoutMatrix.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_MARKS                    " + c_def_eq + ( CheckBoxExportMarks.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_PROP_ID_PER_BLOCK        " + c_def_eq + ( RBtnPropPerBlock.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_PROP_ID_PER_CHR          " + c_def_eq + ( RBtnPropPerCHR.Checked ? "1":"0" ) );
+			}
+			else
+			{
+				_sw.WriteLine( c_def + "MAP_DATA_MAGIC " + c_def_eq + utils.hex( c_hex_pref, ( RBtnTiles2x2.Checked ? 1:2 ) |
+				                                              		( CheckBoxRLE.Checked ? 4:0 ) |
+				                                              		( RBtnTilesDirColumns.Checked ? 8:16 ) |
+				                                              		( RBtnModeMultidirScroll.Checked ? 32:RBtnModeBidirScroll.Checked ? 64:128 ) | 
+				                                              		( CheckBoxExportEntities.Checked ? 256:0 ) |
+				                                              		( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordScreen.Checked ? 512:1024 ):0 ) |
+				                                              		( RBtnLayoutAdjacentScreens.Checked ? 2048:RBtnLayoutAdjacentScreenIndices.Checked ? 4096:8192 ) |
+				                                              		( CheckBoxExportMarks.Checked ? 16384:0 ) |
+				                                              		( RBtnPropPerBlock.Checked ? 32768:65536 ) ) );
+				_sw.WriteLine( "\n" + c_comment + " data flags:" );
+				_sw.WriteLine( c_def + "MAP_FLAG_TILES2X2                 " + c_def_eq + utils.hex( c_hex_pref, 1 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_TILES4X4                 " + c_def_eq + utils.hex( c_hex_pref, 2 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_RLE                      " + c_def_eq + utils.hex( c_hex_pref, 4 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_DIR_COLUMNS              " + c_def_eq + utils.hex( c_hex_pref, 8 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_DIR_ROWS                 " + c_def_eq + utils.hex( c_hex_pref, 16 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_MODE_MULTIDIR_SCROLL     " + c_def_eq + utils.hex( c_hex_pref, 32 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_MODE_BIDIR_SCROLL        " + c_def_eq + utils.hex( c_hex_pref, 64 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_MODE_STATIC_SCREENS      " + c_def_eq + utils.hex( c_hex_pref, 128 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_ENTITIES                 " + c_def_eq + utils.hex( c_hex_pref, 256 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_ENTITY_SCREEN_COORDS     " + c_def_eq + utils.hex( c_hex_pref, 512 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_ENTITY_MAP_COORS         " + c_def_eq + utils.hex( c_hex_pref, 1024 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_LAYOUT_ADJACENT_SCREENS  " + c_def_eq + utils.hex( c_hex_pref, 2048 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS " + c_def_eq + utils.hex( c_hex_pref, 4096 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_LAYOUT_MATRIX            " + c_def_eq + utils.hex( c_hex_pref, 8192 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_MARKS                    " + c_def_eq + utils.hex( c_hex_pref, 16384 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_BLOCK        " + c_def_eq + utils.hex( c_hex_pref, 32768 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_CHR          " + c_def_eq + utils.hex( c_hex_pref, 65536 ) );
+			}
 			
 			_sw.WriteLine( "\n" + c_def + "BAT_INDEX\t" + c_def_eq + m_BAT_index[ ComboBoxBAT.SelectedIndex ] );
 			_sw.WriteLine( c_def + "CHRS_OFFSET\t" + c_def_eq + get_CHR_offset() + "\t" + c_comment + " first CHR index from the beginning of VRAM" );
@@ -456,6 +526,8 @@ namespace MAPeD
 		{
 			BinaryWriter 	bw 			= null;
 			BinaryWriter	bw_props	= null;
+			
+			StreamWriter	uni_stream	= ( m_C_writer != null ) ? m_C_writer:_sw;
 			
 			layout_data level_data = null;
 
@@ -513,6 +585,8 @@ namespace MAPeD
 			string label_props		= null;
 			string scr_arr			= null;
 			string data_offset_str	= null;
+			
+			string c_comment	= CheckBoxGenerateHFile.Checked ? "//":";";
 			
 			exp_scr_data		exp_scr;
 			layout_screen_data	scr_data;
@@ -647,6 +721,11 @@ namespace MAPeD
 			// global data writing
 			{
 				_sw.WriteLine( "\n; *** GLOBAL DATA ***\n" );
+
+				if( m_C_writer != null )
+				{
+					m_C_writer.WriteLine( "\n" );
+				}
 				
 				string chr_arr	= null;
 				string chr_size	= null;
@@ -664,27 +743,37 @@ namespace MAPeD
 					}
 					bw.Close();
 					
-					_sw.WriteLine( ";" + label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t\t; (" + data_size + ")" );
+					_sw.WriteLine( ( ( m_C_writer != null ) ? "":";" ) + label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t\t; (" + data_size + ")" );
+					
+					if( m_C_writer != null )
+					{
+						chr_arr	 += "\t.word bank(" + label + ")\n";
+					}
 					
 					chr_arr	 += "\t.word " + label + "\n";
 					chr_size += "\t.word " + data_size + "\t; (" + label + ")\n";
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern unsigned int*\t" + skip_exp_pref( label ) + ";" );
 					}
 					
 					exp_data_size += data_size;
 				}
-				
-				_sw.WriteLine( "\n" + m_filename + "_CHRs:\n" + chr_arr );
-				_sw.WriteLine( m_filename + "_CHRs_size:\n" + chr_size );
-				
+
+				_sw.WriteLine( "\n" );
+
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( m_filename ) + "_CHRs;" );
-					m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( m_filename ) + "_CHRs_size;" );
+					m_C_writer.WriteLine( "\n#asm\n" + m_filename + "_CHRs:\n" + chr_arr + "#endasm\n\nextern unsigned int\t" + skip_exp_pref( m_filename ) + "_CHRs[];" );
+					m_C_writer.WriteLine( "extern unsigned int*\t" + skip_exp_pref( m_filename ) + "_CHRs_size;" );
 				}
+				else
+				{
+					_sw.WriteLine( m_filename + "_CHRs:\n" + chr_arr );
+				}
+				
+				_sw.WriteLine( m_filename + "_CHRs_size:\n" + chr_size );
 				
 				// static screens ( VDC-READY DATA ):
 				// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -752,14 +841,14 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + label_props + ";" );
+						m_C_writer.WriteLine( "extern unsigned char*\t" + skip_exp_pref( m_filename ) + label_props + ";" );
 					}
 					
 					_sw.WriteLine( m_filename + "_PropsOffs:" );
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + "_PropsOffs;" );
+						m_C_writer.WriteLine( "extern unsigned int*\t" + skip_exp_pref( m_filename ) + "_PropsOffs;" );
 					}
 					
 					_sw.WriteLine( data_offset_str );
@@ -805,7 +894,7 @@ namespace MAPeD
 							
 							if( m_C_writer != null )
 							{
-								m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + label + ";" );
+								m_C_writer.WriteLine( "extern unsigned char*\t" + skip_exp_pref( m_filename ) + label + ";" );
 							}
 							
 							_sw.WriteLine( m_filename + "_TilesOffs:" );
@@ -814,7 +903,7 @@ namespace MAPeD
 							
 							if( m_C_writer != null )
 							{
-								m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + "_TilesOffs;" );
+								m_C_writer.WriteLine( "extern unsigned int*\t" + skip_exp_pref( m_filename ) + "_TilesOffs;" );
 							}
 						}
 						
@@ -837,7 +926,7 @@ namespace MAPeD
 							
 							if( m_C_writer != null )
 							{
-								m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + "_BlocksOffs;" );
+								m_C_writer.WriteLine( "extern unsigned int*\t" + skip_exp_pref( m_filename ) + "_BlocksOffs;" );
 							}
 						}
 					}
@@ -910,14 +999,14 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( m_filename ) + label + ";\t// " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "VDC-ready data array for each screen" );
+						m_C_writer.WriteLine( "extern unsigned int*\t" + skip_exp_pref( m_filename ) + label + ";\t// " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "VDC-ready data array for each screen" );
 					}
 					
 					if( !CheckBoxRLE.Checked )
 					{
 						if( m_C_writer != null )
 						{
-							m_C_writer.WriteLine( "int ScrGfxDataSize = " + m_VDP_ready_scr_data_size + ";" );
+							m_C_writer.WriteLine( "const unsigned int ScrGfxDataSize = " + m_VDP_ready_scr_data_size + ";" );
 						}
 						else
 						{
@@ -963,7 +1052,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + label + ";" );
+						m_C_writer.WriteLine( "extern unsigned int*\t" + skip_exp_pref( m_filename ) + label + ";" );
 					}
 				}
 				
@@ -1005,7 +1094,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( m_filename ) + label + ";" );
+						m_C_writer.WriteLine( "extern unsigned char*\t" + skip_exp_pref( m_filename ) + label + ";" );
 					}
 				}
 				
@@ -1036,7 +1125,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( m_filename ) + label + ";" );
+						m_C_writer.WriteLine( "extern unsigned int*\t" + skip_exp_pref( m_filename ) + label + ";" );
 					}
 				}
 			}
@@ -1051,7 +1140,7 @@ namespace MAPeD
 				
 				check_ent_instances_cnt( level_data, level_prefix_str );
 
-				_sw.WriteLine( "\n; *** " + level_prefix_str + " ***\n" );
+				uni_stream.WriteLine( "\n" + c_comment + " *** " + level_prefix_str + " ***\n" );
 				
 				n_scr_X = level_data.get_width();
 				n_scr_Y = level_data.get_height();
@@ -1062,7 +1151,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( m_level_prefix ) + level_n + "_ScrArr;" );
+						m_C_writer.WriteLine( "extern mpd_SCREEN*\t" + skip_exp_pref( m_level_prefix ) + level_n + "_ScrArr[];" );
 					}
 				}
 				
@@ -1107,77 +1196,84 @@ namespace MAPeD
 									}
 									
 									start_scr_ind = ( start_scr_ind < 0 ) ? common_scr_ind:start_scr_ind;
-									
+
 									if( RBtnLayoutMatrix.Checked )
 									{
-										_sw.WriteLine( level_prefix_str + "_StartScr:\t.word " + start_scr_ind + "\n" );
-										
-										level_data.export_asm( _sw, level_prefix_str, null, ".byte", ".word", ".word", "$", false, false, false, false );
+										if( m_C_writer != null )
+										{
+											m_C_writer.WriteLine( "extern mpd_SCREEN*\t" + skip_exp_pref( level_prefix_str ) + "_Layout[];\n" );
+											m_C_writer.WriteLine( "extern unsigned char\t" + skip_exp_pref( level_prefix_str ) + "_WScrCnt = " + level_data.get_width() + ";\t// number of screens in width" );
+											m_C_writer.WriteLine( "extern unsigned char\t" + skip_exp_pref( level_prefix_str ) + "_HScrCnt = " + level_data.get_height() + ";\t// number of screens in height" );
+										}
 										
 										if( m_C_writer != null )
 										{
-											m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( level_prefix_str ) + "_Layout;\n" );
-											m_C_writer.WriteLine( "int\t" + skip_exp_pref( level_prefix_str ) + "_WScrCnt = " + level_data.get_width() + ";\t// number of screens in width" );
-											m_C_writer.WriteLine( "int\t" + skip_exp_pref( level_prefix_str ) + "_HScrCnt = " + level_data.get_height() + ";\t// number of screens in height" );
+											m_C_writer.WriteLine( "extern unsigned char\t" + skip_exp_pref( level_prefix_str ) + "_StartScr;" );
+											m_C_writer.WriteLine( "\n#asm" );
 										}
+
+										uni_stream.WriteLine( level_prefix_str + "_StartScr:\t.byte " + start_scr_ind + "\n" );
+										
+										level_data.export_asm( uni_stream, level_prefix_str, null, ".byte", ".word", ".word", "$", false, false, false, false );
 									}
 									else
 									{
-										_sw.WriteLine( level_prefix_str + "_StartScr:\t.word " + level_prefix_str + "Scr" + start_scr_ind + "\n" );
-									}
-									
-									if( m_C_writer != null )
-									{
-										m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( level_prefix_str ) + "_StartScr;" );
+										if( m_C_writer != null )
+										{
+											m_C_writer.WriteLine( "extern mpd_SCREEN*\t" + skip_exp_pref( level_prefix_str ) + "_StartScr;" );
+											m_C_writer.WriteLine( "\n#asm" );
+										}
+										
+										uni_stream.WriteLine( level_prefix_str + "_StartScr:\t.word " + level_prefix_str + "Scr" + start_scr_ind + "\n" );
 									}
 								}
 								
 								exp_scr = screens[ scr_key ];
 								
-								_sw.WriteLine( level_prefix_str + "Scr" + common_scr_ind + ":" );
-								_sw.WriteLine( "\t.byte " + banks.IndexOf( exp_scr.m_tiles ) + ( enable_comments ? "\t; chr_id":"" ) );
+								uni_stream.WriteLine( level_prefix_str + "Scr" + common_scr_ind + ":" );
+								uni_stream.WriteLine( "\t.byte " + banks.IndexOf( exp_scr.m_tiles ) + ( enable_comments ? "\t; chr_id":"" ) );
 								
 								if( CheckBoxExportMarks.Checked )
 								{
-									_sw.WriteLine( "\t.byte " + utils.hex( "$", scr_data.mark_adj_scr_mask ) + ( enable_comments ? "\t; (marks) bits: 7-4 - bit mask of user defined adjacent screens ( Down(7)-Right(6)-Up(5)-Left(4) ); 3-0 - screen property":"" ) );
+									uni_stream.WriteLine( "\t.byte " + utils.hex( "$", scr_data.mark_adj_scr_mask ) + ( enable_comments ? "\t; (marks) bits: 7-4 - bit mask of user defined adjacent screens ( Down(7)-Right(6)-Up(5)-Left(4) ); 3-0 - screen property":"" ) );
 								}
 								
 								if( RBtnModeStaticScreen.Checked )
 								{
-									_sw.WriteLine( "\n\t.word " + exp_scr.m_VDC_scr_offset + ( enable_comments ? "\t; " + m_filename + "_VDCScr offset":"" ) );
+									uni_stream.WriteLine( "\n\t.word " + exp_scr.m_VDC_scr_offset + ( enable_comments ? "\t; " + m_filename + "_VDCScr offset":"" ) );
 								}
 								
-								_sw.WriteLine( "\n\t.byte " + exp_scr.m_scr_ind + ( enable_comments ? "\t; screen index":"" ) );
+								uni_stream.WriteLine( "\n\t.byte " + exp_scr.m_scr_ind + ( enable_comments ? "\t; screen index":"" ) );
 								
-								_sw.WriteLine( "" );
+								uni_stream.WriteLine( "" );
 								
 								if( RBtnLayoutAdjacentScreens.Checked )
 								{
-									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, -1 	 	) + ( enable_comments ? "\t; left adjacent screen":"" ) );
-									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, -n_scr_X	) + ( enable_comments ? "\t; up adjacent screen":"" ) );
-									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, 1 		) + ( enable_comments ? "\t; right adjacent screen":"" ) );
-									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, n_scr_X	) + ( enable_comments ? "\t; down adjacent screen\n":"\n" ) );
+									uni_stream.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, -1 	 	) + ( enable_comments ? "\t; left adjacent screen":"" ) );
+									uni_stream.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, -n_scr_X	) + ( enable_comments ? "\t; up adjacent screen":"" ) );
+									uni_stream.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, 1 		) + ( enable_comments ? "\t; right adjacent screen":"" ) );
+									uni_stream.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, n_scr_X	) + ( enable_comments ? "\t; down adjacent screen\n":"\n" ) );
 								}
 								else
 								if( RBtnLayoutAdjacentScreenIndices.Checked )
 								{
 									if( enable_comments )
 									{
-										_sw.WriteLine( "; adjacent screen indices ( the valid values are $00 - $FE, $FF - means no screen )" );
-										_sw.WriteLine( "; use the " + m_level_prefix + level_n + "_ScrArr array to get a screen description by adjacent screen index" );
+										uni_stream.WriteLine( "; adjacent screen indices ( the valid values are $00 - $FE, $FF - means no screen )" );
+										uni_stream.WriteLine( "; use the " + m_level_prefix + level_n + "_ScrArr array to get a screen description by adjacent screen index" );
 									}
 									
-									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -1 	 	) + ( enable_comments ? "\t; left adjacent screen index":"" ) );
-									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -n_scr_X	) + ( enable_comments ? "\t; up adjacent screen index":"" ) );
-									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, 1 		) + ( enable_comments ? "\t; right adjacent screen index":"" ) );
-									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, n_scr_X	) + ( enable_comments ? "\t; down adjacent screen index\n":"\n" ) );
+									uni_stream.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -1 	 	) + ( enable_comments ? "\t; left adjacent screen index":"" ) );
+									uni_stream.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -n_scr_X	) + ( enable_comments ? "\t; up adjacent screen index":"" ) );
+									uni_stream.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, 1		) + ( enable_comments ? "\t; right adjacent screen index":"" ) );
+									uni_stream.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, n_scr_X	) + ( enable_comments ? "\t; down adjacent screen index\n":"\n" ) );
 									
 									scr_arr += "\n\t.word " + m_level_prefix + level_n + "Scr" + common_scr_ind;
 								}
 								
 								if( CheckBoxExportEntities.Checked )
 								{
-									scr_data.export_entities_asm( _sw, ref ents_cnt, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
+									scr_data.export_entities_asm( uni_stream, ref ents_cnt, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
 									
 									_sw.WriteLine( "" );
 								}
@@ -1201,14 +1297,29 @@ namespace MAPeD
 				
 				if( RBtnLayoutAdjacentScreenIndices.Checked )
 				{
-					_sw.WriteLine( "; screens array" );
-					_sw.WriteLine( scr_arr + "\n" );
+					uni_stream.WriteLine( "; screens array" );
+					uni_stream.WriteLine( scr_arr + "\n" );
 				}
 				
 				if( CheckBoxExportEntities.Checked )
 				{
-					_sw.WriteLine( ".define " + CONST_FILENAME_LEVEL_PREFIX + level_n + "_EntInstCnt\t" + level_data.get_ent_instances_cnt() + "\t; number of entities instances\n" );
-				}				
+					if( m_C_writer != null )
+					{
+						m_C_writer.WriteLine( "#endasm" );
+						m_C_writer.WriteLine( "\nconst unsigned char\t" + CONST_FILENAME_LEVEL_PREFIX + level_n + "_EntInstCnt = " + level_data.get_ent_instances_cnt() + ";\t// number of entities instances\n" );
+					}
+					else
+					{
+						_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_EntInstCnt\t = " + level_data.get_ent_instances_cnt() + "\t; number of entities instances\n" );
+					}
+				}
+				else
+				{
+					if( m_C_writer != null )
+					{
+						m_C_writer.WriteLine( "#endasm" );
+					}
+				}
 			}
 			
 			foreach( var key in screens.Keys ) { screens[ key ].destroy(); }
@@ -1449,6 +1560,8 @@ namespace MAPeD
 		{
 			BinaryWriter 	bw = null;
 			
+			StreamWriter	uni_stream	= ( m_C_writer != null ) ? m_C_writer:_sw;
+			
 			layout_data level_data = null;
 			
 			byte[]	map_data_arr		= null;
@@ -1626,7 +1739,7 @@ namespace MAPeD
 				
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( label ) + ";" );
+					m_C_writer.WriteLine( "\nextern unsigned int*\t" + skip_exp_pref( label ) + ";" );
 				}
 
 				if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
@@ -1658,7 +1771,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern unsigned char*\t" + skip_exp_pref( label ) + ";" );
 					}
 				}
 				
@@ -1686,7 +1799,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern unsigned int*\t" + skip_exp_pref( label ) + ";" );
 					}
 				}
 				
@@ -1730,7 +1843,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern unsigned char*\t" + skip_exp_pref( label ) + ";" );
 					}
 				}
 
@@ -1769,7 +1882,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern char*\t" + skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern unsigned char*\t" + skip_exp_pref( label ) + ";" );
 					}
 				}
 				
@@ -1805,7 +1918,7 @@ namespace MAPeD
 					
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( label ) + ";" );
+						m_C_writer.WriteLine( "extern unsigned int*\t" + skip_exp_pref( label ) + ";" );
 					}
 				}
 				
@@ -1813,7 +1926,7 @@ namespace MAPeD
 			
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern int*\t" + skip_exp_pref( level_prefix_str ) + "_Palette;" );
+					m_C_writer.WriteLine( "extern unsigned int*\t" + skip_exp_pref( level_prefix_str ) + "_Palette;" );
 				}
 				
 				for( int i = 0; i < tiles.palettes_arr.Count; i++ )
@@ -1846,8 +1959,8 @@ namespace MAPeD
 				if( m_C_writer != null )
 				{
 					level_prefix_str 	= skip_exp_pref( level_prefix_str );
-					c_char				= "char\t";
-					c_int				= "int\t";
+					c_char				= "const unsigned char\t";
+					c_int				= "const unsigned int\t";
 					c_code_comm_delim 	= ";\t// ";
 					
 					def_sw	= m_C_writer;
@@ -1855,7 +1968,7 @@ namespace MAPeD
 
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( c_char + level_prefix_str + "_StartScr\t= " + start_scr_ind + c_code_comm_delim + "start screen" );
+					m_C_writer.WriteLine( "\n" + c_char + level_prefix_str + "_StartScr\t= " + start_scr_ind + c_code_comm_delim + "start screen" );
 				}
 				else
 				{
@@ -1877,25 +1990,24 @@ namespace MAPeD
 				
 				def_sw.WriteLine( c_char + level_prefix_str + "_BlocksCnt\t= " + ( max_block_ind >> 2 ) + c_code_comm_delim + "map blocks count\n" );
 
-				if( CheckBoxExportEntities.Checked )
+				if( m_C_writer != null )
 				{
-					string exp_level_prefix = get_exp_prefix() + level_prefix_str;
-					
-					level_data.export_asm( _sw, exp_level_prefix, null, ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
-					
-					if( m_C_writer != null )
-					{
-						m_C_writer.WriteLine( "extern int*\t" + exp_level_prefix + "_Layout;\n" );
-						m_C_writer.WriteLine( "int\t" + exp_level_prefix + "_WScrCnt = " + level_data.get_width() + ";\t// number of screens in width" );
-						m_C_writer.WriteLine( "int\t" + exp_level_prefix + "_HScrCnt = " + level_data.get_height() + ";\t// number of screens in height" );
-						
-						m_C_writer.WriteLine( "int\t" + exp_level_prefix + "_EntInstCnt = " + level_data.get_ent_instances_cnt() + ";\t// number of entities instances" );
-					}
+					m_C_writer.WriteLine( "\n#asm" );
 				}
-				else
+				
+				level_data.export_asm( uni_stream, ( get_exp_prefix() + level_prefix_str ), null, ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+				
+				if( m_C_writer != null )
 				{
-					def_sw.WriteLine( c_char + level_prefix_str + "_WScrCnt\t= " + n_scr_X + c_code_comm_delim + "number of screens in width" );
-					def_sw.WriteLine( c_char + level_prefix_str + "_HScrCnt\t= " + n_scr_Y + c_code_comm_delim + "number of screens in height\n" );
+					m_C_writer.WriteLine( "#endasm\n" );
+					m_C_writer.WriteLine( "extern unsigned int\t" + level_prefix_str + "_EntInstCnt;\t// number of entities instances" );
+				}
+				
+				if( m_C_writer != null )
+				{
+					m_C_writer.WriteLine( "extern mpd_SCREEN*\t" + level_prefix_str + "_Layout[];\n" );
+					m_C_writer.WriteLine( "extern unsigned char\t" + level_prefix_str + "_WScrCnt;\t// number of screens in width" );
+					m_C_writer.WriteLine( "extern unsigned char\t" + level_prefix_str + "_HScrCnt;\t// number of screens in height" );
 				}
 				
 				map_data_arr 	= null;
