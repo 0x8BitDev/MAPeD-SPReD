@@ -1025,10 +1025,10 @@ namespace MAPeD
 								
 								if( RBtnLayoutAdjacentScreens.Checked )
 								{
-									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, -1 	 	) + ( enable_comments ? "\t; left adjacent screen":"" ) );
-									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, -n_scr_X	) + ( enable_comments ? "\t; up adjacent screen":"" ) );
-									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, 1 		) + ( enable_comments ? "\t; right adjacent screen":"" ) );
-									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, n_scr_X	) + ( enable_comments ? "\t; down adjacent screen\n":"\n" ) );
+									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind, -1,	 0	) + ( enable_comments ? "\t; left adjacent screen":"" ) );
+									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind,  0,	-1	) + ( enable_comments ? "\t; up adjacent screen":"" ) );
+									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind,  1,	 0	) + ( enable_comments ? "\t; right adjacent screen":"" ) );
+									_sw.WriteLine( "\t.word " + get_adjacent_screen_label( level_n, level_data, common_scr_ind,  0,  1	) + ( enable_comments ? "\t; down adjacent screen\n":"\n" ) );
 								}
 								else
 								if( RBtnLayoutAdjacentScreenIndices.Checked )
@@ -1039,10 +1039,10 @@ namespace MAPeD
 										_sw.WriteLine( "; use the " + level_prefix_str + "_ScrArr array to get a screen description by adjacent screen index" );
 									}
 									
-									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -1 	 	) + ( enable_comments ? "\t; left adjacent screen index":"" ) );
-									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -n_scr_X	) + ( enable_comments ? "\t; up adjacent screen index":"" ) );
-									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, 1 		) + ( enable_comments ? "\t; right adjacent screen index":"" ) );
-									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, n_scr_X	) + ( enable_comments ? "\t; down adjacent screen index\n":"\n" ) );
+									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind, -1,	 0	) + ( enable_comments ? "\t; left adjacent screen index":"" ) );
+									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind,  0,	-1	) + ( enable_comments ? "\t; up adjacent screen index":"" ) );
+									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind,  1,	 0	) + ( enable_comments ? "\t; right adjacent screen index":"" ) );
+									_sw.WriteLine( "\t.byte " + get_adjacent_screen_index( level_n, level_data, common_scr_ind,  0,  1	) + ( enable_comments ? "\t; down adjacent screen index\n":"\n" ) );
 									
 									scr_arr += "\n\t.word " + level_prefix_str + "Scr" + common_scr_ind;
 								}
@@ -1276,9 +1276,9 @@ namespace MAPeD
 			return res;
 		}
 		
-		private string get_adjacent_screen_index( int _level_n, layout_data _data, int _scr_ind, int _offset )
+		private string get_adjacent_screen_index( int _level_n, layout_data _data, int _scr_ind, int _x_offset, int _y_offset )
 		{
-			int adj_scr_ind = _data.get_adjacent_screen_index( _scr_ind, _offset );
+			int adj_scr_ind = _data.get_adjacent_screen_index( _scr_ind, _x_offset, _y_offset );
 			
 			if( adj_scr_ind > 255 )
 			{
@@ -1288,9 +1288,9 @@ namespace MAPeD
 			return utils.hex( "$", ( adj_scr_ind >= 0 ? adj_scr_ind:255 ) );
 		}
 		
-		private string get_adjacent_screen_label( int _level_n, layout_data _data, int _scr_ind, int _offset )
+		private string get_adjacent_screen_label( int _level_n, layout_data _data, int _scr_ind, int _x_offset, int _y_offset )
 		{
-			int adj_scr_ind = _data.get_adjacent_screen_index( _scr_ind, _offset );
+			int adj_scr_ind = _data.get_adjacent_screen_index( _scr_ind, _x_offset, _y_offset );
 			
 			return ( adj_scr_ind >= 0 ? CONST_FILENAME_LEVEL_PREFIX + _level_n + "Scr" + adj_scr_ind:"0" );
 		}

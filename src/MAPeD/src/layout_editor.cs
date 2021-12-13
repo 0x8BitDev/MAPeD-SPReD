@@ -32,7 +32,6 @@ namespace MAPeD
 
 		private readonly short[]	m_adj_scr_data_arr	= null;
 		private readonly int[] 		m_adj_scr_ind_arr	= null;
-		private readonly int[] 		m_adj_scr_offs 		= new int[ layout_data.adj_scr_slots.Length >> 1 ];
 
 		private int 	m_offset_x 		= 0;
 		private int 	m_offset_y 		= 0;
@@ -250,7 +249,7 @@ namespace MAPeD
 			// run through adjacent screens
 			for( int n = 0; n < 8; n++ )
 			{
-				put_tiles_pattern_on_screen( m_layout.get_adjacent_screen_index( scr_ind, m_adj_scr_offs[ n ] ), CHR_bank_id, data, pos_x, pos_y );
+				put_tiles_pattern_on_screen( m_layout.get_adjacent_screen_index( scr_ind, layout_data.adj_scr_slots[ n << 1 ], layout_data.adj_scr_slots[ ( n << 1 ) + 1 ] ), CHR_bank_id, data, pos_x, pos_y );
 			}
 			
 			// update border tiles
@@ -1554,8 +1553,6 @@ namespace MAPeD
 			
 			m_layout = data_mngr.get_layout_data( data_mngr.layouts_data_pos );
 			
-			update_adj_scr_offsets();
-			
 			if( m_dispatch_selection_mode && m_dispatch_mode_sel_screen_slot_id >= 0 )
 			{
 				m_dispatch_mode_sel_screen_slot_id = -1;
@@ -1564,21 +1561,6 @@ namespace MAPeD
 			}
 			
 			update_dimension_changes();
-		}
-		
-		private void update_adj_scr_offsets()
-		{
-			if( m_layout != null )
-			{
-				m_adj_scr_offs[ 0 ] = -get_width() - 1;
-				m_adj_scr_offs[ 1 ] = -get_width();
-				m_adj_scr_offs[ 2 ] = -get_width() + 1;
-				m_adj_scr_offs[ 3 ] =  get_width() - 1;
-				m_adj_scr_offs[ 4 ] =  get_width();
-				m_adj_scr_offs[ 5 ] =  get_width() + 1;
-				m_adj_scr_offs[ 6 ] = -1;
-				m_adj_scr_offs[ 7 ] =  1;
-			}
 		}
 		
 		private void update_tiles_data( object sender, EventArgs e )
@@ -1607,7 +1589,6 @@ namespace MAPeD
 			if( m_layout != null )
 			{
 				clamp_offsets();
-				update_adj_scr_offsets();
 			}
 			update();
 			update_label();
@@ -1660,9 +1641,9 @@ namespace MAPeD
 					int sel_scr_pos_x = m_dispatch_mode_sel_screen_slot_id % get_width();
 					int sel_scr_pos_y = m_dispatch_mode_sel_screen_slot_id / get_width();
 					
-					for( i = 0; i < m_adj_scr_offs.Length; i++ )
+					for( i = 0; i < ( layout_data.adj_scr_slots.Length >> 1 ); i++ )
 					{
-						bscr_ind = m_dispatch_mode_sel_screen_slot_id + m_adj_scr_offs[ i ];
+						bscr_ind = m_dispatch_mode_sel_screen_slot_id + layout_data.adj_scr_slots[ i << 1 ] + ( layout_data.adj_scr_slots[ ( i << 1 ) + 1 ] * get_width() );
 						
 						if( has_screen( bscr_ind ) && valid_screen_slot( sel_scr_pos_x + layout_data.adj_scr_slots[ i << 1 ], sel_scr_pos_y + layout_data.adj_scr_slots[ ( i << 1 ) + 1 ] ) )
 						{

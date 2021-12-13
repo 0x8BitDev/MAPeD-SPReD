@@ -824,12 +824,12 @@ namespace MAPeD
 			}
 		}
 
-		public int get_adjacent_screen_index( int _scr_ind, int _offset )
+		public int get_adjacent_screen_index( int _scr_ind, int _x_offset, int _y_offset )
 		{
-			int scr_ind = _scr_ind + _offset;
-			
 			int scr_cnt_x = get_width();
 			int scr_cnt_y = get_height();
+			
+			int scr_ind = _scr_ind + _x_offset + ( _y_offset * scr_cnt_x );
 			
 			if( scr_ind < 0 || scr_ind >= ( scr_cnt_x * scr_cnt_y ) )
 			{
@@ -841,6 +841,11 @@ namespace MAPeD
 			
 			int scr_mod_x_ind = scr_ind % scr_cnt_x;
 			int scr_mod_y_ind = scr_ind / scr_cnt_x;
+
+			if( ( ( _x_offset == 1 && ( base_scr_mod_x_ind + _x_offset ) == scr_cnt_x ) || ( _x_offset == -1 && ( base_scr_mod_x_ind + _x_offset ) < 0 ) ) )
+			{
+				return -1;
+			}
 			
 			if( scr_mod_x_ind == ( base_scr_mod_x_ind - 1 ) || scr_mod_x_ind == base_scr_mod_x_ind || scr_mod_x_ind == ( base_scr_mod_x_ind + 1 ) )
 			{
