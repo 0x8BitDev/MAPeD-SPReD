@@ -417,9 +417,10 @@ _check_adjacent_screen
 		cp #ff
 		ret z
 
-		add a
 		ld c, a
 		ld b, 0
+		MUL_POW2_BC 1
+
 		ld hl, (map_scr_arr)		
 		add hl, bc
 
