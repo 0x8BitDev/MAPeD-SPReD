@@ -1,6 +1,6 @@
 //######################################################################################################
 //
-// This file is a part of the MAPeD-SMD Copyright 2017-2021 0x8BitDev ( MIT license. See LICENSE.txt )
+// This file is a part of the MAPeD-PCE Copyright 2017-2021 0x8BitDev ( MIT license. See LICENSE.txt )
 // Desc: It contains some HuC helper functions, structures and a tilemap rendering implementation
 //
 //######################################################################################################
@@ -19,9 +19,6 @@
 /* void mpd_load_bat( unsigned int _vaddr, far void* _addr, unsigned int _offset, unsigned char _width, unsigned char _height ) */
 #pragma fastcall mpd_load_bat( word __di, farptr __bl:__si, word __ax, byte __cl, byte __ch )
 
-/* void mpd_set_tile_data( unsigned char _bank, unsigned int addr, unsigned int _num_tiles, unsigned char _type )*/
-#pragma fastcall mpd_set_tile_data( byte __al, word __bx, word __cx, byte __dl )
-
 /* int mpd_farpeekw( far void* _addr, unsigned int _offset )*/
 #pragma fastcall mpd_farpeekw( farptr __fbank:__fptr, word __ax )
 
@@ -35,23 +32,21 @@
 	;
 	; IN:
 	;
-	; __bl - bank number
-	; __si - address
 	; \1 - offset
-	;
-	; __bl:__si += \1
+	; \2 - bank number
+	; \3 - address
 	;
 
-	.macro farptr_add_offset  ; \1 - offset
+	.macro farptr_add_offset  ; \1 - offset, \2 - bank number, \3 - address
 
 	; add an offset
 
 	clc     
 	lda <\1
-	adc <__si
-	sta <__si
+	adc <\3
+	sta <\3
 	lda <\1+1
-	adc <__si+1
+	adc <\3+1
 
 	tay
 
@@ -63,14 +58,14 @@
 	lsr a
 	lsr a
 	clc
-	adc <__bl
-	sta <__bl	
+	adc <\2
+	sta <\2
 
 	; save high byte of a bank address
 
 	tya
 	and #$9f
-	sta <__si+1	
+	sta <\3+1	
 	.endm
 #endasm
 
@@ -79,7 +74,7 @@
 #asm
 _mpd_load_palette.4
 
-	farptr_add_offset __dx
+	farptr_add_offset __dx, __bl, __si
 
 	maplibfunc	lib2_load_palette
 	rts
@@ -93,7 +88,7 @@ _mpd_load_vram2.4:
 #asm
 _mpd_load_vram.4:
 
-	farptr_add_offset __ax
+	farptr_add_offset __ax, __bl, __si
 
 	jmp _load_vram.3
 #endasm
@@ -101,18 +96,9 @@ _mpd_load_vram.4:
 #asm
 _mpd_load_bat.5:
 
-	farptr_add_offset __ax
+	farptr_add_offset __ax, __bl, __si
 
 	maplibfunc	lib2_load_bat
-	rts
-#endasm
-
-#asm
-_mpd_set_tile_data.4:
-	stb	<__al,maptilebank
-	stw	<__bx,maptileaddr
-	stw	<__cx,mapnbtile
-	stb	<__dl,maptiletype
 	rts
 #endasm
 
@@ -121,25 +107,16 @@ _mpd_farpeekw.2:
 	asl <__al
 	rol <__ah	
 
-	clc
-	lda <__al
-	adc <__fptr
-	sta <__fptr
-	lda <__ah
-	adc <__fptr+1
-	sta <__fptr+1
+	farptr_add_offset __ax, __fbank, __fptr
+
 	jmp _farpeekw.1
 #endasm
 
 #asm
 _mpd_farpeekb.2:
-	clc
-	lda <__al
-	adc <__fptr
-	sta <__fptr
-	lda <__ah
-	adc <__fptr+1
-	sta <__fptr+1
+
+	farptr_add_offset __ax, __fbank, __fptr
+
 	jmp _farpeekb.1
 #endasm
 
@@ -182,11 +159,7 @@ const unsigned char ADJ_SCR_DOWN	= 3;
 
 /* constants */
 
-#if	FLAG_TILES2X2
-const unsigned int __c_scr_blocks2x2_size	= SCR_BLOCKS2x2_WIDTH * SCR_BLOCKS2x2_HEIGHT;
-#elif	FLAG_TILES4X4
-const unsigned int __c_scr_tiles4x4_size	= ScrTilesWidth * ScrTilesHeight;
-#endif	//FLAG_TILES4X4
+const unsigned int __c_scr_tiles_size	= ScrTilesWidth * ScrTilesHeight;
 
 /* variables */
 
@@ -232,6 +205,7 @@ void mpd_init( mpd_SCREEN* _start_scr )
 	set_screen_size( BAT_INDEX );
 }
 
+#if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 void __mpd_draw_block2x2( unsigned int _vaddr, unsigned int _offset )
 {
 	mpd_load_vram( _vaddr, tilemap_Attrs, _offset, 2 );
@@ -250,7 +224,8 @@ void __mpd_draw_tile4x4( unsigned int _vaddr, unsigned int _offset )
 	offset_div2 = _offset >> 1;
 
 	tiles12 = mpd_farpeekw( tilemap_Tiles, offset_div2 );
-	tiles34 = mpd_farpeekw( tilemap_Tiles, offset_div2 + 1 );
+	++offset_div2;
+	tiles34 = mpd_farpeekw( tilemap_Tiles, offset_div2 );
 
 	blocks_offset = mpd_farpeekw( tilemap_BlocksOffs, __curr_scr->chr_id );
 
@@ -263,6 +238,7 @@ void __mpd_draw_tile4x4( unsigned int _vaddr, unsigned int _offset )
 	__mpd_draw_block2x2( _vaddr, blocks_offset + ( ( tiles34 & 0xff00 ) >> 5 ) );
 }
 #endif	//FLAG_TILES4X4
+#endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 
 #if	FLAG_MODE_BIDIR_SCROLL
 void __mpd_draw_tiled_screen()
@@ -270,29 +246,20 @@ void __mpd_draw_tiled_screen()
 	unsigned char	scr_tile;
 	unsigned int	scr_offset;
 	unsigned int	w, h;
-	unsigned int	w_max, h_max;
 	unsigned int	h_acc;
 	unsigned int	n;
 
 	n = 0;
 
-#if	FLAG_TILES2X2
-	scr_offset	= __curr_scr->scr_ind * __c_scr_blocks2x2_size;
-	w_max		= SCR_BLOCKS2x2_WIDTH;
-	h_max		= SCR_BLOCKS2x2_HEIGHT;
-#elif	FLAG_TILES4X4
-	scr_offset	= __curr_scr->scr_ind * __c_scr_tiles4x4_size;
-	w_max		= ScrTilesWidth;
-	h_max		= ScrTilesHeight;
-#endif
+	scr_offset = __curr_scr->scr_ind * __c_scr_tiles_size;
 
 #if	FLAG_DIR_COLUMNS
 
-	for( w = 0; w < w_max; w++ )
+	for( w = 0; w < ScrTilesWidth; w++ )
 	{
 		h_acc = 0;
 
-		for( h = 0; h < h_max; h++ )
+		for( h = 0; h < ScrTilesHeight; h++ )
 		{
 			scr_tile = mpd_farpeekb( tilemap_TilesScr, scr_offset + n );
 #if	FLAG_TILES2X2
@@ -308,9 +275,9 @@ void __mpd_draw_tiled_screen()
 
 	h_acc = 0;
 
-	for( h = 0; h < h_max; h++ )
+	for( h = 0; h < ScrTilesHeight; h++ )
 	{
-		for( w = 0; w < w_max; w++ )
+		for( w = 0; w < ScrTilesWidth; w++ )
 		{
 			scr_tile = mpd_farpeekb( tilemap_TilesScr, scr_offset + n );
 #if	FLAG_TILES2X2
