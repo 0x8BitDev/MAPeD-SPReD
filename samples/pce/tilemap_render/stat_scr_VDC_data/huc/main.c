@@ -1,3 +1,17 @@
+//################################################################
+//
+// Copyright 2021 0x8BitDev ( MIT license. See LICENSE.txt )
+// Desc: Static screens switching sample (raw BAT data)
+//
+// Supported flags:
+//
+// - FLAG_MODE_STAT_SCR
+// - FLAG_LAYOUT_ADJ_SCR
+// - FLAG_LAYOUT_ADJ_SCR_INDS
+// - FLAG_MARKS
+//
+//################################################################
+
 #include <huc.h>
 #include "tilemap.h"
 #include "../../../common/mpd.h"
