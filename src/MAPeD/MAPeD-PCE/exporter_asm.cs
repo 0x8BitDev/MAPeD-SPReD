@@ -400,16 +400,10 @@ namespace MAPeD
 			m_C_writer.WriteLine( "#endif" );
 			m_C_writer.WriteLine( "#if\tFLAG_LAYOUT_ADJ_SCR" );
 			m_C_writer.WriteLine( "\t// adjacent screen pointers" );
-			m_C_writer.WriteLine( "\tvoid*\tscr_left;" );
-			m_C_writer.WriteLine( "\tvoid*\tscr_up;" );
-			m_C_writer.WriteLine( "\tvoid*\tscr_right;" );
-			m_C_writer.WriteLine( "\tvoid*\tscr_down;" );
+			m_C_writer.WriteLine( "\tvoid*\tadj_scr[4];" );
 			m_C_writer.WriteLine( "#endif" );
 			m_C_writer.WriteLine( "#if\tFLAG_LAYOUT_ADJ_SCR_INDS" );
-			m_C_writer.WriteLine( "\tunsigned char\tscr_left;" );
-			m_C_writer.WriteLine( "\tunsigned char\tscr_up;" );
-			m_C_writer.WriteLine( "\tunsigned char\tscr_right;" );
-			m_C_writer.WriteLine( "\tunsigned char\tscr_down;" );
+			m_C_writer.WriteLine( "\tunsigned char\tadj_scr[4];" );
 			m_C_writer.WriteLine( "#endif" );
 			m_C_writer.WriteLine( "#if\tFLAG_ENTITIES" );
 			m_C_writer.WriteLine( "\tunsigned char\tents_cnt;" );

@@ -139,7 +139,7 @@ _tr_draw_screen:
 	stw $0000, _bdst
 	stw #ScrGfxDataSize, _blen	
 
-	jsr vdc_copy_to_VRAM	
-
-.endif
+	jmp vdc_copy_to_VRAM	
+.else
 	rts
+.endif

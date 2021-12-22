@@ -1,0 +1,81 @@
+#include <huc.h>
+#include "tilemap.h"
+#include "../../../common/mpd.h"
+
+
+main()
+{
+	unsigned char adj_scr_res;
+	unsigned char btn_pressed;
+
+	/*  disable display */
+	disp_off();
+
+	mpd_init( Lev0_StartScr );
+
+	/*  clear display */
+	cls();
+
+	mpd_draw_screen();
+
+	/*  enable display */
+	disp_on();
+
+	btn_pressed = FALSE;
+
+	/*  demo main loop */
+	for (;;)
+	{
+		adj_scr_res = 0;
+
+		if( joy(0) & JOY_LEFT )
+		{
+			if( !btn_pressed )
+			{
+				adj_scr_res = mpd_check_adj_screen( ADJ_SCR_LEFT );
+			}
+		}
+		else
+		if( joy(0) & JOY_RIGHT )
+		{
+			if( !btn_pressed )
+			{
+				adj_scr_res = mpd_check_adj_screen( ADJ_SCR_RIGHT );
+			}
+		}
+		else
+		if( joy(0) & JOY_UP )
+		{
+			if( !btn_pressed )
+			{
+				adj_scr_res = mpd_check_adj_screen( ADJ_SCR_UP );
+			}
+		}
+		else
+		if( joy(0) & JOY_DOWN )
+		{
+			if( !btn_pressed )
+			{
+				adj_scr_res = mpd_check_adj_screen( ADJ_SCR_DOWN );
+			}
+		}
+		else
+		{
+			btn_pressed = FALSE;
+		}
+
+		if( adj_scr_res )
+		{
+			disp_off();
+			vsync();
+
+			mpd_draw_screen();
+
+			disp_on();
+
+			btn_pressed = TRUE;
+		}
+
+		vsync();
+	}
+}
