@@ -8,7 +8,19 @@
 //
 // public functions:
 //
+// #if		FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+// typedef enum
+// {
+// 	ms_1px = 1,
+// 	ms_2px = 2,
+// 	ms_4px = 4 
+// } mpd_move_step;
+//
+// void		mpd_init( mpd_SCREEN* _start_scr, mpd_move_step _step )
+// #else
 // void		mpd_init( mpd_SCREEN* _start_scr )
+// #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+//
 // void		mpd_draw_screen()
 // u8		mpd_check_adj_screen( u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN; result: 0/1
 // u8		mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; result: property id
@@ -308,13 +320,18 @@ u8		__BAT_width_pow2;
 u16		__BAT_size_dec1;	// ( BAT_width * BAT_height ) - 1
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-#define	SCROLL_STEP		2
-
 #define	UPD_FLAG_DRAW_LEFT	0x01
 #define	UPD_FLAG_DRAW_RIGHT	0x02
 #define	UPD_FLAG_DRAW_UP	0x04
 #define	UPD_FLAG_DRAW_DOWN	0x08
 #define	UPD_FLAG_DRAW_MASK	UPD_FLAG_DRAW_LEFT|UPD_FLAG_DRAW_RIGHT|UPD_FLAG_DRAW_UP|UPD_FLAG_DRAW_DOWN
+
+typedef enum
+{
+	ms_1px = 1,
+	ms_2px = 2,
+	ms_4px = 4 
+} mpd_move_step;
 
 u8	__scroll_step;
 u16	__horiz_dir_pos;
@@ -364,7 +381,11 @@ void	__mpd_get_BAT_params()
 	__BAT_size_dec1		= ( __BAT_width * BAT_height ) - 1;
 }
 
+#if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+void	mpd_init( mpd_SCREEN* _start_scr, mpd_move_step _step )
+#else
 void	mpd_init( mpd_SCREEN* _start_scr )
+#endif
 {
 	__curr_scr	= _start_scr;
 	__curr_chr_id	= 0xff;
@@ -374,7 +395,7 @@ void	mpd_init( mpd_SCREEN* _start_scr )
 	set_screen_size( BAT_INDEX );
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-	__scroll_step	= SCROLL_STEP;
+	__scroll_step	= _step;
 	__scroll_x	= 0;
 	__scroll_y	= 0;
 	__horiz_dir_pos	= 0;
