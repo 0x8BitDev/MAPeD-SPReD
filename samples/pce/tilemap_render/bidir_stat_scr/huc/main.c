@@ -23,8 +23,8 @@
 
 main()
 {
-	unsigned char adj_scr_res;
-	unsigned char btn_pressed;
+	u8 adj_scr_res;
+	u8 btn_pressed;
 
 	/*  disable display */
 	disp_off();
@@ -34,6 +34,7 @@ main()
 	/*  clear display */
 	cls();
 
+	/* draw start screen */
 	mpd_draw_screen();
 
 	/*  enable display */
