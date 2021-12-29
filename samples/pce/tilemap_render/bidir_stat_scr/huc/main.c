@@ -18,6 +18,12 @@
 
 #include <huc.h>
 #include "tilemap.h"
+
+#undef	FLAG_MODE_BIDIR_STAT_SCR
+#define	FLAG_MODE_BIDIR_STAT_SCR	1
+#undef	FLAG_MODE_BIDIR_SCROLL
+#define	FLAG_MODE_BIDIR_SCROLL		0
+
 #include "../../../common/mpd.h"
 
 
@@ -29,6 +35,7 @@ main()
 	/*  disable display */
 	disp_off();
 
+	/* init tilemap renderer data */
 	mpd_init( Lev0_StartScr );
 
 	/*  clear display */

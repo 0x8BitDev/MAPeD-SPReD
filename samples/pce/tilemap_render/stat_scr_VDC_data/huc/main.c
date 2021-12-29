@@ -25,6 +25,7 @@ main()
 	/*  disable display */
 	disp_off();
 
+	/* init tilemap renderer data */
 	mpd_init( Lev0_StartScr );
 
 	/*  clear display */

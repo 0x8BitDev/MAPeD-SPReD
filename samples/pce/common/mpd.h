@@ -341,6 +341,11 @@ u16	__scroll_y;
 u8	__upd_flags;
 #endif
 
+#if	FLAG_MODE_BIDIR_SCROLL
+u16	__scr_tiles_width_tbl[ ScrTilesHeight ];
+u16	__scr_tiles_height_tbl[ ScrTilesWidth ];
+#endif	//FLAG_MODE_BIDIR_SCROLL
+
 void	__mpd_get_BAT_params()
 {
 	u16 BAT_height;
@@ -387,6 +392,25 @@ void	mpd_init( mpd_SCREEN* _start_scr, mpd_move_step _step )
 void	mpd_init( mpd_SCREEN* _start_scr )
 #endif
 {
+#if	FLAG_MODE_BIDIR_SCROLL
+	u16	n;
+	u16	data_acc;
+
+	data_acc = 0;
+	for( n = 0; n < ScrTilesHeight; n++ )
+	{
+		__scr_tiles_width_tbl[ n ] = data_acc;
+		data_acc += ScrTilesWidth;
+	}
+
+	data_acc = 0;
+	for( n = 0; n < ScrTilesWidth; n++ )
+	{
+		__scr_tiles_height_tbl[ n ] = data_acc;
+		data_acc += ScrTilesHeight;
+	}
+#endif	//FLAG_MODE_BIDIR_SCROLL
+
 	__curr_scr	= _start_scr;
 	__curr_chr_id	= 0xff;
 
@@ -407,7 +431,7 @@ void	mpd_init( mpd_SCREEN* _start_scr )
 #endif
 }
 
-#if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+#if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 void	__mpd_draw_block2x2( u16 _vaddr, u16 _offset )
 {
 	mpd_load_vram( _vaddr, tilemap_Attrs, _offset, 2 );
@@ -436,9 +460,9 @@ void	__mpd_draw_tile4x4( u16 _vaddr, u16 _offset )
 	__mpd_draw_block2x2( _vaddr, blocks_offset + ( ( tiles34 & 0xff00 ) >> 5 ) );
 }
 #endif	//FLAG_TILES4X4
-#endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+#endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
-#if	FLAG_MODE_BIDIR_SCROLL
+#if	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 void	__mpd_draw_tiled_screen()
 {
 	u8	scr_tile;
@@ -493,7 +517,7 @@ void	__mpd_draw_tiled_screen()
 
 #endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
 }
-#endif	//FLAG_MODE_BIDIR_SCROLL
+#endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
 void	__mpd_draw_tiled_screen()
@@ -515,7 +539,7 @@ void	mpd_draw_screen()
 
 #if	FLAG_MODE_STAT_SCR
 	mpd_load_bat( 0, tilemap_VDCScr, __curr_scr->VDC_data_offset, SCR_BLOCKS2x2_WIDTH << 1, SCR_BLOCKS2x2_HEIGHT << 1 );
-#elif	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+#elif	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 	__mpd_draw_tiled_screen();
 #endif
 
@@ -858,7 +882,7 @@ void	__mpd_draw_left_tiles_column()
 #endif
 	// tiles column offset
 #if	FLAG_DIR_COLUMNS
-	tiles_offset *= ScrTilesHeight;
+	tiles_offset = __scr_tiles_height_tbl[ tiles_offset ];		// tiles_offset *= ScrTilesHeight;
 #endif
 	tiles_offset += ( tmp_scr->scr_ind * __c_scr_tiles_size );
 
@@ -888,7 +912,7 @@ void	__mpd_draw_right_tiles_column()
 #endif
 	// tiles column offset
 #if	FLAG_DIR_COLUMNS
-	tiles_offset *= ScrTilesHeight;
+	tiles_offset = __scr_tiles_height_tbl[ tiles_offset ];		// tiles_offset *= ScrTilesHeight;
 #endif
 	tiles_offset += ( tmp_scr->scr_ind * __c_scr_tiles_size );
 
@@ -918,7 +942,7 @@ void	__mpd_draw_up_tiles_column()
 #endif
 	// tiles column offset
 #if	FLAG_DIR_ROWS
-	tiles_offset *= ScrTilesWidth;
+	tiles_offset = __scr_tiles_width_tbl[ tiles_offset ];		// tiles_offset *= ScrTilesWidth;
 #endif
 	tiles_offset += ( tmp_scr->scr_ind * __c_scr_tiles_size );
 
@@ -948,7 +972,7 @@ void	__mpd_draw_down_tiles_column()
 #endif
 	// tiles column offset
 #if	FLAG_DIR_ROWS
-	tiles_offset *= ScrTilesWidth;
+	tiles_offset = __scr_tiles_width_tbl[ tiles_offset ];		// tiles_offset *= ScrTilesWidth;
 #endif
 	tiles_offset += ( tmp_scr->scr_ind * __c_scr_tiles_size );
 
@@ -970,7 +994,7 @@ void	__mpd_fill_column_data( u16 _vaddr, u16 _tiles_offset )
 	u8	CHR_y_pos;
 
 	u16	BAT_size;
-	u16	data_size;
+	u16	last_data_addr;
 	u8	data_part1;
 	u8	data_part2;
 
@@ -984,11 +1008,11 @@ void	__mpd_fill_column_data( u16 _vaddr, u16 _tiles_offset )
 
 	data_part1	= ScrTilesHeight << 1;
 	BAT_size	= __BAT_size_dec1 + 1;
-	data_size	= _vaddr + ( data_part1 << __BAT_width_pow2 );
+	last_data_addr	= _vaddr + ( data_part1 << __BAT_width_pow2 );
 
-	if( data_size > BAT_size )
+	if( last_data_addr > BAT_size )
 	{
-		data_part2 = ( ( data_size - BAT_size ) & ~__BAT_width_dec1 ) >> __BAT_width_pow2;
+		data_part2 = ( ( last_data_addr - BAT_size ) & ~__BAT_width_dec1 ) >> __BAT_width_pow2;
 		data_part1 -= data_part2;
 	}
 	else

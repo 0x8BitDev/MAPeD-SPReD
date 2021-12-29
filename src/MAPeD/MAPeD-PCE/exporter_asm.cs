@@ -461,6 +461,7 @@ namespace MAPeD
 				_sw.WriteLine( c_def + "FLAG_DIR_ROWS                 " + c_def_eq + ( RBtnTilesDirRows.Checked ? "1":"0" ) );
 				_sw.WriteLine( c_def + "FLAG_MODE_MULTIDIR_SCROLL     " + c_def_eq + ( RBtnModeMultidirScroll.Checked ? "1":"0" ) );
 				_sw.WriteLine( c_def + "FLAG_MODE_BIDIR_SCROLL        " + c_def_eq + ( RBtnModeBidirScroll.Checked ? "1":"0" ) );
+				_sw.WriteLine( c_def + "FLAG_MODE_BIDIR_STAT_SCR      0" );
 				_sw.WriteLine( c_def + "FLAG_MODE_STAT_SCR            " + c_def_eq + ( RBtnModeStaticScreen.Checked ? "1":"0" ) );
 				_sw.WriteLine( c_def + "FLAG_ENTITIES                 " + c_def_eq + ( CheckBoxExportEntities.Checked ? "1":"0" ) );
 				_sw.WriteLine( c_def + "FLAG_ENTITY_SCR_COORDS        " + c_def_eq + ( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordScreen.Checked ? "1":"0" ):"0" ) );
