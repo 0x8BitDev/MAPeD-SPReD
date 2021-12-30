@@ -504,6 +504,8 @@ namespace MAPeD
 				_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_CHR          " + c_def_eq + utils.hex( c_hex_pref, 65536 ) );
 			}
 			
+			_sw.WriteLine( "\n" + c_def + "MAPS_CNT\t" + c_def_eq + m_data_mngr.layouts_data_cnt );
+
 			_sw.WriteLine( "\n" + c_def + "BAT_INDEX\t" + c_def_eq + m_BAT_index[ ComboBoxBAT.SelectedIndex ] );
 			_sw.WriteLine( c_def + "CHRS_OFFSET\t" + c_def_eq + get_CHR_offset() + "\t" + c_comment + " first CHR index from the beginning of VRAM" );
 
