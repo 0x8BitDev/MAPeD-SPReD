@@ -103,7 +103,8 @@ namespace MAPeD
 			//
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = false;
 			
-			ComboBoxBAT.SelectedIndex = 0;
+			// 64x32 by default, cause its more suitable for scrolling maps
+			ComboBoxBAT.SelectedIndex = 1;
 		}
 
 		void CheckBoxExportEntitiesChanged_Event(object sender, EventArgs e)
@@ -919,7 +920,7 @@ namespace MAPeD
 							{
 								data_offset_str += "\t.word " + data_offset + "\t; (chr" + bank_n + ")\n";
 								
-								data_offset += max_block_inds[ bank_n ];
+								data_offset += ( 1 + utils.get_ulong_arr_max_val( banks[ bank_n ].tiles, max_tile_inds[ bank_n ] ) ) << 3;
 							}
 							
 							_sw.WriteLine( m_filename + "_BlocksOffs:" );

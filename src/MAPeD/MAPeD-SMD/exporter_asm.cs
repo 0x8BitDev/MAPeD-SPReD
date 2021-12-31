@@ -964,7 +964,7 @@ namespace MAPeD
 							{
 								data_offset_str += "\tdc.w " + data_offset + "\t; (chr" + bank_n + ")\n";
 								
-								data_offset += max_block_inds[ bank_n ];
+								data_offset += ( 1 + utils.get_ulong_arr_max_val( banks[ bank_n ].tiles, max_tile_inds[ bank_n ] ) ) << 3;
 							}
 							
 							save_global_data( ref global_data_decl, ( m_filename + "_BlocksOffs" ), banks.Count ); // CHR banks count
