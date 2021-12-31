@@ -1030,14 +1030,15 @@ void	__mpd_fill_column_data( u16 _vaddr, u16 _tiles_offset )
 
 	__mpd_disp_list_push_hdr( DL_FLAG_DATA_INC_VERT, data_part1, _vaddr );
 
+#if	MAPS_CNT != 1
 	blocks_offset_by_chr_id	= mpd_farpeekw( tilemap_BlocksOffs, chr_id_mul2 );
-	
+#endif
 	tile_y = 0;
 
 #if	FLAG_TILES4X4
-
+#if	MAPS_CNT != 1
 	tile4x4_offset_by_chr_id = mpd_farpeekw( tilemap_TilesOffs, chr_id_mul2 );
-
+#endif
 	for( tile_n = 0; tile_n < ScrTilesHeight; tile_n++ )
 	{
 #if	FLAG_DIR_COLUMNS
@@ -1124,14 +1125,15 @@ void	__mpd_fill_row_data( u16 _vaddr, u16 _tiles_offset )
 
 	CHR_y_pos	= ( ( __vert_dir_pos >> 3 ) & 0x01 ) << 2;
 
+#if	MAPS_CNT != 1
 	blocks_offset_by_chr_id	= mpd_farpeekw( tilemap_BlocksOffs, chr_id_mul2 );
-
+#endif
 	tile_x = 0;
 
 #if	FLAG_TILES4X4
-
+#if	MAPS_CNT != 1
 	tile4x4_offset_by_chr_id = mpd_farpeekw( tilemap_TilesOffs, chr_id_mul2 );
-
+#endif
 	for( tile_n = 0; tile_n < ScrTilesWidth; tile_n++ )
 	{
 #if	FLAG_DIR_COLUMNS

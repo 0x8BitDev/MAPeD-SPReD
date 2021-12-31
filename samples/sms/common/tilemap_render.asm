@@ -243,7 +243,7 @@ _tr_tiles_row_routine_tbl:
 
 	add hl, bc
 
-.ifdef	TR_BIDIR_STAT_SCR
+.ifdef	TR_BIDIR
 	ld bc, (tr_blocks_offset)
 	add hl, bc
 .endif
@@ -324,7 +324,7 @@ _tr_tiles_row_routine_tbl:
 	ld hl, (TR_TILES4x4)
 	add hl, de
 
-.ifdef	TR_BIDIR_STAT_SCR
+.ifdef	TR_BIDIR
 	ld de, (tr_tiles_offset)
 	add hl, de
 .endif
@@ -365,7 +365,7 @@ _tr_fill_block_CHR\@:
 	ld hl, (TR_BLOCK_ATTRS)
 	add hl, de
 
-.ifdef	TR_BIDIR_STAT_SCR
+.ifdef	TR_BIDIR
 	ld de, (tr_blocks_offset)
 	add hl, de
 .endif
@@ -559,7 +559,7 @@ _drw_tiles_col:
 	ld hl, (TR_TILES4x4)
 	add hl, bc
 
-.ifdef	TR_BIDIR_STAT_SCR
+.ifdef	TR_BIDIR
 	ld bc, (tr_tiles_offset)
 	add hl, bc
 .endif	
@@ -797,11 +797,11 @@ _tr_upload_palette_tiles:
 
 	pop bc
 
-.ifdef	TR_BIDIR_STAT_SCR
-	push bc
-.endif	;TR_BIDIR_STAT_SCR
-
 	MUL_POW2_C 1
+
+.ifdef	TR_BIDIR
+	push bc
+.endif	;TR_BIDIR
 
 	ld hl, (TR_CHR_ARR)
 	add hl, bc
@@ -825,13 +825,11 @@ _tr_upload_palette_tiles:
 
 	call VDP_load_tiles
 
-.ifdef	TR_BIDIR_STAT_SCR
+.ifdef	TR_BIDIR
 
 	pop bc
 
 	; calc tiles/blocks offset
-
-	MUL_POW2_BC 1
 
 .ifdef	TR_DATA_TILES4X4
 
@@ -855,7 +853,7 @@ _tr_upload_palette_tiles:
 
 	ld (tr_blocks_offset), de
 
-.endif	;TR_BIDIR_STAT_SCR
+.endif	;TR_BIDIR
 
 	pop hl
 
