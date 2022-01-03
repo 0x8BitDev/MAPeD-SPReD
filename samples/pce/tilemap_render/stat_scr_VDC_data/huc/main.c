@@ -1,7 +1,7 @@
 //################################################################
 //
-// Copyright 2021 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: Static screens switching sample (raw BAT data)
+// Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
+// Desc: Static screens switching demo (raw BAT data)
 //
 // Supported flags:
 //
@@ -13,6 +13,8 @@
 //################################################################
 
 #include <huc.h>
+
+#include "../../../common/mpd_def.h"
 #include "tilemap.h"
 #include "../../../common/mpd.h"
 

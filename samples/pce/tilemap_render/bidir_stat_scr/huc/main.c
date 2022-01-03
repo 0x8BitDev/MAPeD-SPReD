@@ -1,7 +1,7 @@
 //################################################################
 //
-// Copyright 2021 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: Static screens switching sample
+// Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
+// Desc: Static screens switching demo
 //
 // Supported flags:
 //
@@ -17,6 +17,8 @@
 //################################################################
 
 #include <huc.h>
+
+#include "../../../common/mpd_def.h"
 #include "tilemap.h"
 
 #undef	FLAG_MODE_BIDIR_STAT_SCR
