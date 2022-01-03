@@ -598,6 +598,7 @@ namespace MAPeD
 			int block_n				= 0;
 			int bank_n				= 0;
 			int blocks_props_size	= 0;
+			int blocks_size			= 0;
 			int data_offset 		= 0;
 			int common_scr_ind		= 0;
 			int max_scr_tile		= 0;
@@ -965,9 +966,19 @@ namespace MAPeD
 							// tiles
 							for( bank_n = 0; bank_n < banks.Count; bank_n++ )
 							{
+								tiles = banks[ bank_n ];
+								
 								data_offset_str += "\tdc.w " + data_offset + "\t; (chr" + bank_n + ")\n";
 								
-								data_offset += ( 1 + utils.get_ulong_arr_max_val( banks[ bank_n ].tiles, max_tile_inds[ bank_n ] ) ) << 3;
+								if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+								{
+									data_offset += ( 1 + utils.get_ulong_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 3;
+								}
+								else
+								{
+									blocks_size = tiles.get_first_free_block_id();
+									data_offset += ( ( blocks_size < 0 ) ? platform_data.get_max_blocks_cnt():blocks_size ) << 3;
+								}
 							}
 							
 							save_global_data( ref global_data_decl, ( m_filename + "_BlocksOffs" ), banks.Count ); // CHR banks count
