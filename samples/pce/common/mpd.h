@@ -1,6 +1,6 @@
 //######################################################################################################
 //
-// This file is a part of the MAPeD-PCE Copyright 2017-2021 0x8BitDev ( MIT license. See LICENSE.txt )
+// This file is a part of the MAPeD-PCE Copyright 2017-2022 0x8BitDev ( MIT license. See LICENSE.txt )
 // Desc: It contains some HuC helper functions, structures and a tilemap rendering implementation
 //
 //######################################################################################################
@@ -14,9 +14,9 @@
 // 	ms_1px = 1,
 // 	ms_2px = 2,
 // 	ms_4px = 4 
-// } mpd_move_step;
+// } mpd_scroll_step;
 //
-// void		mpd_init( mpd_SCREEN* _start_scr, mpd_move_step _step )
+// void		mpd_init( mpd_SCREEN* _start_scr, mpd_scroll_step _step )
 // #else
 // void		mpd_init( mpd_SCREEN* _start_scr )
 // #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
@@ -163,36 +163,6 @@ _mpd_farpeekb.2:
 	jmp _farpeekb.1
 #endasm
 
-/* entities */
-
-typedef struct
-{
-	u8	id;
-	u8	width;
-	u8	height;
-	u8	pivot_x;
-	u8	pivot_y;
-	u8	props_cnt;
-	u8	props[];
-} mpd_BASE_ENTITY;
-
-typedef struct
-{
-	u8		id;
-	mpd_BASE_ENTITY*	base_ent;
-	void*			target_ent;	//mpd_ENTITY_INSTANCE
-	u16		x_pos;
-	u16		y_pos;
-	u8		props_cnt;
-	u8		props[];
-} mpd_ENTITY_INSTANCE;
-
-/* some useful definitions */
-
-#define TRUE	1
-#define FALSE	0
-#define NULL	0
-
 /****************/
 /*		*/
 /* display list	*/
@@ -331,7 +301,7 @@ typedef enum
 	ms_1px = 1,
 	ms_2px = 2,
 	ms_4px = 4 
-} mpd_move_step;
+} mpd_scroll_step;
 
 u8	__scroll_step;
 u16	__horiz_dir_pos;
@@ -387,7 +357,7 @@ void	__mpd_get_BAT_params()
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-void	mpd_init( mpd_SCREEN* _start_scr, mpd_move_step _step )
+void	mpd_init( mpd_SCREEN* _start_scr, mpd_scroll_step _step )
 #else
 void	mpd_init( mpd_SCREEN* _start_scr )
 #endif

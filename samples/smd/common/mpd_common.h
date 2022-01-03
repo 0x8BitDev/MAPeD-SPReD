@@ -1,6 +1,6 @@
 //######################################################################################################
 //
-// This file is a part of the MAPeD-SMD Copyright 2017-2021 0x8BitDev ( MIT license. See LICENSE.txt )
+// This file is a part of the MAPeD-SMD Copyright 2017-2022 0x8BitDev ( MIT license. See LICENSE.txt )
 // Desc: It contains the main data structures for use in SGDK projects
 //
 //######################################################################################################
@@ -53,6 +53,12 @@ typedef struct
 	u16			count;
 	struct mpd_SCREEN**	data;
 } mpd_ARR_SCREEN;
+
+typedef struct
+{
+	u16			count;
+	struct mpd_SCREEN***	data;
+} mpd_ARR_MAP;
 
 //////////////
 // entities //

@@ -1,6 +1,6 @@
 //######################################################################################################
 //
-// This file is a part of the MAPeD-SMD Copyright 2017-2021 0x8BitDev ( MIT license. See LICENSE.txt )
+// This file is a part of the MAPeD-SMD Copyright 2017-2022 0x8BitDev ( MIT license. See LICENSE.txt )
 // Desc: This sample demonstrates working with exported data.
 // (exported data checking, working with screen data and data arrays)
 //
@@ -170,7 +170,7 @@ mpd_SCREEN* dump_main_data( int* _y_offs )
 	DUMP_PU16_DATA( mpd_tilemap_CHRs, 4, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_tilemap_CHRs_size, 1, 0, (*_y_offs)++ );
 	DUMP_U8_DATA( mpd_tilemap_Props, 4, 0, (*_y_offs)++ );
-	DUMP_U16_DATA( mpd_tilemap_BlocksPropsOffs, 1, 0, (*_y_offs)++ );
+	DUMP_U16_DATA( mpd_tilemap_PropsOffs, 1, 0, (*_y_offs)++ );
 
 #if CHECK_MAP_FLAG( MAP_FLAG_TILES4X4 )
 
@@ -185,11 +185,11 @@ mpd_SCREEN* dump_main_data( int* _y_offs )
 
 #if CHECK_MAP_FLAG( MAP_FLAG_LAYOUT_ADJACENT_SCREENS )
 
-	start_scr = mpd_Lev0_StartScr.data[ 0 ];
+	start_scr = mpd_Lev0_StartScr.data[ 0 ];	//*mpd_MapsArr.data[ 0 ];
 
 #elif CHECK_MAP_FLAG( MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS )
 
-	start_scr = mpd_Lev0_StartScr.data[ 0 ];
+	start_scr = mpd_Lev0_StartScr.data[ 0 ];	//*mpd_MapsArr.data[ 0 ];
 
 #elif CHECK_MAP_FLAG( MAP_FLAG_LAYOUT_MATRIX )
 
@@ -203,7 +203,7 @@ mpd_SCREEN* dump_main_data( int* _y_offs )
 	DUMP_PU16_DATA( mpd_tilemap_CHRs, 4, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_tilemap_CHRs_size, 1, 0, (*_y_offs)++ );
 	DUMP_U8_DATA( mpd_tilemap_Props, 4, 0, (*_y_offs)++ );
-	DUMP_U16_DATA( mpd_tilemap_BlocksPropsOffs, 1, 0, (*_y_offs)++ );
+	DUMP_U16_DATA( mpd_tilemap_PropsOffs, 1, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_tilemap_Plts, 4, 0, (*_y_offs)++ );
 	DUMP_U8_DATA( mpd_tilemap_VDPScr, 4, 0, (*_y_offs)++ );
 

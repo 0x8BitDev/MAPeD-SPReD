@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 13.09.2018
  * Time: 17:59
  */
@@ -518,11 +518,6 @@ namespace MAPeD
 
 			_sw.WriteLine( "\n" + c_def + "ScrPixelsWidth\t" + c_def_eq + get_tiles_cnt_width( 1 ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t" + c_comment + " screen width in pixels" );
 			_sw.WriteLine( c_def + "ScrPixelsHeight\t" + c_def_eq + get_tiles_cnt_height( 1 ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t" + c_comment + " screen height in pixels" );
-			
-			if( m_C_writer != null )
-			{
-				_sw.WriteLine( "\n#define u8\tunsigned char\n#define u16\tunsigned int\n#define s8\tchar\n#define s16\tint" );
-			}
 		}
 		
 		private void save_single_screen_mode( StreamWriter _sw )
@@ -588,6 +583,7 @@ namespace MAPeD
 			string label_props		= null;
 			string scr_arr			= null;
 			string data_offset_str	= null;
+			string maps_arr			= null;
 			
 			string c_comment	= CheckBoxGenerateHFile.Checked ? "//":";";
 			
@@ -836,6 +832,7 @@ namespace MAPeD
 					}
 
 					data_size = bw_props.BaseStream.Length;
+					align_word( bw_props );
 					bw_props.Close();
 					
 					exp_data_size += data_size;
@@ -1132,6 +1129,8 @@ namespace MAPeD
 					}
 				}
 			}
+			
+			maps_arr = get_exp_prefix() + "MapsArr:\n";
 
 			for( int level_n = 0; level_n < n_levels; level_n++ )
 			{
@@ -1140,6 +1139,8 @@ namespace MAPeD
 				level_data = m_data_mngr.get_layout_data( level_n );
 				
 				level_prefix_str = m_level_prefix + level_n;
+				
+				maps_arr += "\t.word " + level_prefix_str + "_StartScr\n";
 				
 				check_ent_instances_cnt( level_data, level_prefix_str );
 
@@ -1324,6 +1325,22 @@ namespace MAPeD
 					}
 				}
 			}
+
+			// save MapsArr
+			{
+				if( m_C_writer != null )
+				{
+					m_C_writer.WriteLine( "\nextern mpd_SCREEN** MapsArr[];" );
+					m_C_writer.WriteLine( "\n#asm" );
+				}
+				
+				uni_stream.WriteLine( maps_arr );
+				
+				if( m_C_writer != null )
+				{
+					m_C_writer.WriteLine( "#endasm" );
+				}
+			}
 			
 			foreach( var key in screens.Keys ) { screens[ key ].destroy(); }
 			
@@ -1333,6 +1350,14 @@ namespace MAPeD
 			}
 		}
 
+		private void align_word( BinaryWriter _br )
+		{
+			if( ( _br.BaseStream.Length & 0x01 ) != 0 )
+			{
+				_br.Write( ( byte )0 );
+			}
+		}
+	
 		private bool compress_and_save_byte( BinaryWriter _bw, byte[] _data, ref int _data_offset )
 		{
 			if( CheckBoxRLE.Checked )

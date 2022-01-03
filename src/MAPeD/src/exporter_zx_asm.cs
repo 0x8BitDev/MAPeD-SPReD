@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 29.08.2018
  * Time: 15:20
  */
@@ -803,6 +803,7 @@ namespace MAPeD
 			string level_prefix_str	= null;
 			string scr_arr			= null;
 			string data_offset_str	= null;
+			string maps_arr			= null;
 			
 			exp_screen_data			exp_scr;
 			layout_screen_data		scr_data;
@@ -1102,6 +1103,8 @@ namespace MAPeD
 				}
 			}
 
+			maps_arr = "\nMapsArr:\n";
+			
 			for( int level_n = 0; level_n < n_levels; level_n++ )
 			{
 				enable_comments = true;
@@ -1109,6 +1112,8 @@ namespace MAPeD
 				level_data = m_data_mngr.get_layout_data( level_n );
 				
 				level_prefix_str = CONST_FILENAME_LEVEL_PREFIX + level_n;
+				
+				maps_arr += "\tdw " + level_prefix_str + "_StartScr\n";
 				
 				check_ent_instances_cnt( level_data, level_prefix_str );
 
@@ -1251,6 +1256,11 @@ namespace MAPeD
 						_sw.WriteLine( level_prefix_str + "_StartScr\t= " + level_prefix_str + "Scr" + start_scr_ind + "\n" );
 					}
 				}
+			}
+			
+			// save MapsArr
+			{
+				_sw.WriteLine( maps_arr );
 			}
 			
 			foreach( var key in screens.Keys ) { screens[ key ].destroy(); }

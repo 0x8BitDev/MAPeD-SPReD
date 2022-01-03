@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 13.09.2018
  * Time: 17:59
  */
@@ -559,6 +559,8 @@ namespace MAPeD
 			_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_BLOCK        " + c_def_eq + utils.hex( c_hex_pref, 32768 ) );
 			_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_CHR          " + c_def_eq + utils.hex( c_hex_pref, 65536 ) );
 			
+			_sw.WriteLine( "\n" + c_def + "MAPS_CNT\t" + c_def_eq + m_data_mngr.layouts_data_cnt );
+			
 			_sw.WriteLine( "\n" + c_def + "CHRS_OFFSET\t" + c_def_eq + get_CHR_offset() + "\t" + c_comment + " first CHR index from the begining of VRAM" );
 
 			_sw.WriteLine( "\n" + c_def + "SCR_BLOCKS2x2_WIDTH\t" + c_def_eq + platform_data.get_screen_blocks_width() + "\t" + c_comment + " number of screen blocks (2x2) in width" );
@@ -632,6 +634,7 @@ namespace MAPeD
 			string label_props		= null;
 			string scr_arr			= null;
 			string data_offset_str	= null;
+			string maps_arr			= null;
 			
 			string global_data_decl = "";
 			
@@ -884,11 +887,11 @@ namespace MAPeD
 					{
 						_sw.WriteLine( m_filename + "_PropsOffs:" );
 						
-						save_global_data( ref global_data_decl, ( m_filename + "_BlocksPropsOffs" ), banks.Count ); // CHR banks count
+						save_global_data( ref global_data_decl, ( m_filename + "_PropsOffs" ), banks.Count ); // CHR banks count
 						
 						if( m_C_writer != null )
 						{
-							m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_BlocksPropsOffs;\t// array of block properties data offsets per CHR banks" );
+							m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_PropsOffs;\t// array of block properties data offsets per CHR banks" );
 						}
 					}
 					
@@ -1192,6 +1195,8 @@ namespace MAPeD
 				}
 			}
 
+			maps_arr = "\nMapsArr:\n";
+			
 			for( int level_n = 0; level_n < n_levels; level_n++ )
 			{
 				enable_comments = true;
@@ -1199,6 +1204,8 @@ namespace MAPeD
 				level_data = m_data_mngr.get_layout_data( level_n );
 				
 				level_prefix_str = CONST_FILENAME_LEVEL_PREFIX + level_n;
+				
+				maps_arr += "\tdc.l " + level_prefix_str + "_StartScr\n";
 
 				_sw.WriteLine( "\n; *** " + level_prefix_str + " ***\n" );
 				
@@ -1378,10 +1385,22 @@ namespace MAPeD
 						m_C_writer.WriteLine( "\nconst u16\t" + level_prefix_str + "_EntInstCnt = " + ents_cnt + ";\t// number of entities instances" );
 					}
 				}
+			}
+			
+			// save MapsArr and global exported data
+			{
+				_sw.WriteLine( maps_arr );
 				
 				if( CheckBoxExportSGDKData.Checked )
 				{
+					save_global_data( ref global_data_decl, "MapsArr", n_levels );
+
 					_sw.Write( "\n; Global data exported to the \'" + m_filename + ".h\'\n\n.section\t.rodata\n\n" + global_data_decl );
+				}
+				
+				if( m_C_writer != null )
+				{
+					m_C_writer.WriteLine( "extern const mpd_ARR_MAP\tmpd_MapsArr;\t\t\t// array of all exported maps" );
 				}
 			}
 			
