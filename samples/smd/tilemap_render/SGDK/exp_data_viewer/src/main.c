@@ -175,21 +175,22 @@ mpd_SCREEN* dump_main_data( int* _y_offs )
 #if CHECK_MAP_FLAG( MAP_FLAG_TILES4X4 )
 
 	DUMP_U32_DATA( mpd_tilemap_Tiles, 4, 0, (*_y_offs)++ );
+	DUMP_U16_DATA( mpd_tilemap_TilesOffs, 1, 0, (*_y_offs)++ );
 
 #endif
 
-	DUMP_U16_DATA( mpd_tilemap_TilesOffs, 1, 0, (*_y_offs)++ );
+	DUMP_U16_DATA( mpd_tilemap_BlocksOffs, 1, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_tilemap_Attrs, 4, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_tilemap_TilesScr, 4, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_tilemap_Plts, 4, 0, (*_y_offs)++ );
 
 #if CHECK_MAP_FLAG( MAP_FLAG_LAYOUT_ADJACENT_SCREENS )
 
-	start_scr = mpd_Lev0_StartScr.data[ 0 ];	//*mpd_MapsArr.data[ 0 ];
+	start_scr = mpd_Lev0_StartScr.data[ 0 ];	//*mpd_tilemap_MapsArr.data[ 0 ];
 
 #elif CHECK_MAP_FLAG( MAP_FLAG_LAYOUT_ADJACENT_SCR_INDS )
 
-	start_scr = mpd_Lev0_StartScr.data[ 0 ];	//*mpd_MapsArr.data[ 0 ];
+	start_scr = mpd_Lev0_StartScr.data[ 0 ];	//*mpd_tilemap_MapsArr.data[ 0 ];
 
 #elif CHECK_MAP_FLAG( MAP_FLAG_LAYOUT_MATRIX )
 

@@ -892,7 +892,7 @@ namespace MAPeD
 						
 						if( m_C_writer != null )
 						{
-							m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_PropsOffs;\t// array of block properties data offsets per CHR banks" );
+							m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_PropsOffs;\t\t// array of block properties data offsets per CHR banks" );
 						}
 					}
 					
@@ -1206,7 +1206,7 @@ namespace MAPeD
 				}
 			}
 
-			maps_arr = "\nMapsArr:\n";
+			maps_arr = "\n" + m_filename + "_MapsArr:\n";
 			
 			for( int level_n = 0; level_n < n_levels; level_n++ )
 			{
@@ -1404,14 +1404,14 @@ namespace MAPeD
 				
 				if( CheckBoxExportSGDKData.Checked )
 				{
-					save_global_data( ref global_data_decl, "MapsArr", n_levels );
+					save_global_data( ref global_data_decl, m_filename + "_MapsArr", n_levels );
 
 					_sw.Write( "\n; Global data exported to the \'" + m_filename + ".h\'\n\n.section\t.rodata\n\n" + global_data_decl );
 				}
 				
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern const mpd_ARR_MAP\tmpd_MapsArr;\t\t\t// array of all exported maps" );
+					m_C_writer.WriteLine( "extern const mpd_ARR_MAP\tmpd_" + m_filename + "_MapsArr;\t\t// array of all exported maps" );
 				}
 			}
 			

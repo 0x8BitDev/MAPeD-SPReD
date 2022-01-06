@@ -42,7 +42,12 @@ void	display_next_map()
 
 	/* init tilemap renderer data */
 	map_ind = ++map_ind % MAPS_CNT;
-	mpd_init( *MapsArr[ map_ind ], ms_2px );
+
+#if	FLAG_LAYOUT_ADJ_SCR_INDS
+	mpd_init( *tilemap_MapsArr[ map_ind ], tilemap_MapsScrArr[ map_ind ], ms_2px );
+#else
+	mpd_init( *tilemap_MapsArr[ map_ind ], NULL, ms_2px );
+#endif
 
 	/* draw start screen */
 	mpd_draw_screen();

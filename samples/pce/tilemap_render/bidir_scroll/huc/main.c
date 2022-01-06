@@ -29,7 +29,12 @@ main()
 	disp_off();
 
 	/* init tilemap renderer data */
-	mpd_init( Lev0_StartScr, ms_2px );
+
+#if	FLAG_LAYOUT_ADJ_SCR_INDS
+	mpd_init( Lev0_StartScr, Lev0_ScrArr, ms_2px );
+#else
+	mpd_init( Lev0_StartScr, NULL, ms_2px );
+#endif
 
 	/*  clear display */
 	cls();

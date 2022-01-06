@@ -1,6 +1,6 @@
 :################################################
 :#
-:# Copyright 2019-2021 0x8BitDev ( MIT license )
+:# Copyright 2019-2022 0x8BitDev ( MIT license )
 :#
 :################################################
 
@@ -16,8 +16,7 @@ pceas -S main.asm
 
 copy main.pce %OutDir%%OutFile%.pce
 
-@del main.pce
-@del main.sym
+@del *.pce *.sym
 
 %OutDir%%OutFile%.pce
 @goto exit
