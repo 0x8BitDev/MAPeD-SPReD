@@ -1228,7 +1228,7 @@ namespace MAPeD
 			}
 		}
 
-		void export_tiles_blocks_data( int _max_data_cnt, Func< int > _tiles_cnt, int _data_size, ImageList _image_list, string _filename, export_active_tile_block_set_form.EImgForm _img_form )
+		void export_tiles_blocks_data( int _max_data_cnt, Func< int > _tiles_cnt, int _data_size, ImageList _image_list, string _filename, export_active_tile_block_set_form.EDataOrder _data_order )
 		{
 			update_graphics( false );
 			
@@ -1244,7 +1244,7 @@ namespace MAPeD
 			Bitmap		bmp;
 			Graphics	gfx;
 			
-			if( _img_form == export_active_tile_block_set_form.EImgForm.img_Rect16xN )
+			if( _data_order == export_active_tile_block_set_form.EDataOrder.do_Rect16xN )
 			{
 				// draw images into bitmap as rectangle 16xN ( suggested by codediy )
 				bmp = new Bitmap( _data_size << 4, ( int )Math.Ceiling( ( float )num_active_tiles / 16 ) * _data_size );
@@ -1304,7 +1304,7 @@ namespace MAPeD
 																int ff_tile_id = data.get_first_free_tile_id();
 																return ( ff_tile_id < 0 ) ? platform_data.get_max_tiles_cnt():ff_tile_id;
 									                         }, 
-									                         32, m_imagelist_manager.get_tiles_image_list(), filename, m_export_active_tile_block_set_form.image_form() );
+									                         32, m_imagelist_manager.get_tiles_image_list(), filename, m_export_active_tile_block_set_form.data_order() );
 								}
 								else
 								{
@@ -1315,7 +1315,7 @@ namespace MAPeD
 																int ff_block_id = data.get_first_free_block_id();
 																return ( ff_block_id < 0 ) ? platform_data.get_max_blocks_cnt():ff_block_id;
 									                         }, 
-									                         16, m_imagelist_manager.get_blocks_image_list(), filename, m_export_active_tile_block_set_form.image_form() );
+									                         16, m_imagelist_manager.get_blocks_image_list(), filename, m_export_active_tile_block_set_form.data_order() );
 								}
 							}
 						}

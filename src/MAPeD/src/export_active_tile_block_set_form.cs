@@ -21,15 +21,15 @@ namespace MAPeD
 			set {}
 		}
 		
-		public enum EImgForm
+		public enum EDataOrder
 		{
-			img_Rect16xN,
-			img_Line,
+			do_Rect16xN,
+			do_Line,
 		}
 		
-		public EImgForm image_form()
+		public EDataOrder data_order()
 		{
-			return RBtnImgFormRect16xN.Checked ? EImgForm.img_Rect16xN:EImgForm.img_Line;
+			return RBtnTilesOrderRect16xN.Checked ? EDataOrder.do_Rect16xN:EDataOrder.do_Line;
 		}
 		
 		public export_active_tile_block_set_form()
