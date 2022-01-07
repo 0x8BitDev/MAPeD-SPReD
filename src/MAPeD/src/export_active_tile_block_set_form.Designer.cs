@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 28.12.2018
  * Time: 16:46
  */
@@ -36,16 +36,20 @@ namespace MAPeD
 		{
 			this.BtnOk = new System.Windows.Forms.Button();
 			this.BtnCancel = new System.Windows.Forms.Button();
-			this.RradioButtonTiles = new System.Windows.Forms.RadioButton();
-			this.RadioButtonBlocks = new System.Windows.Forms.RadioButton();
+			this.RBtnTiles = new System.Windows.Forms.RadioButton();
+			this.RBtnBlocks = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.RBtnImgFormLine = new System.Windows.Forms.RadioButton();
+			this.RBtnImgFormRect16xN = new System.Windows.Forms.RadioButton();
 			this.groupBox1.SuspendLayout();
+			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(14, 90);
+			this.BtnOk.Location = new System.Drawing.Point(40, 97);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 3;
@@ -55,49 +59,81 @@ namespace MAPeD
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(99, 90);
+			this.BtnCancel.Location = new System.Drawing.Point(125, 97);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
 			this.BtnCancel.TabIndex = 4;
 			this.BtnCancel.Text = "Cancel";
 			this.BtnCancel.UseVisualStyleBackColor = true;
 			// 
-			// RradioButtonTiles
+			// RBtnTiles
 			// 
-			this.RradioButtonTiles.Checked = true;
-			this.RradioButtonTiles.Location = new System.Drawing.Point(29, 19);
-			this.RradioButtonTiles.Name = "RradioButtonTiles";
-			this.RradioButtonTiles.Size = new System.Drawing.Size(70, 24);
-			this.RradioButtonTiles.TabIndex = 1;
-			this.RradioButtonTiles.TabStop = true;
-			this.RradioButtonTiles.Text = "Tiles";
-			this.RradioButtonTiles.UseVisualStyleBackColor = true;
+			this.RBtnTiles.Checked = true;
+			this.RBtnTiles.Location = new System.Drawing.Point(15, 19);
+			this.RBtnTiles.Name = "RBtnTiles";
+			this.RBtnTiles.Size = new System.Drawing.Size(70, 24);
+			this.RBtnTiles.TabIndex = 1;
+			this.RBtnTiles.TabStop = true;
+			this.RBtnTiles.Text = "Tiles";
+			this.RBtnTiles.UseVisualStyleBackColor = true;
 			// 
-			// RadioButtonBlocks
+			// RBtnBlocks
 			// 
-			this.RadioButtonBlocks.Location = new System.Drawing.Point(29, 42);
-			this.RadioButtonBlocks.Name = "RadioButtonBlocks";
-			this.RadioButtonBlocks.Size = new System.Drawing.Size(70, 24);
-			this.RadioButtonBlocks.TabIndex = 2;
-			this.RadioButtonBlocks.Text = "Blocks";
-			this.RadioButtonBlocks.UseVisualStyleBackColor = true;
+			this.RBtnBlocks.Location = new System.Drawing.Point(15, 42);
+			this.RBtnBlocks.Name = "RBtnBlocks";
+			this.RBtnBlocks.Size = new System.Drawing.Size(70, 24);
+			this.RBtnBlocks.TabIndex = 2;
+			this.RBtnBlocks.Text = "Blocks";
+			this.RBtnBlocks.UseVisualStyleBackColor = true;
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Controls.Add(this.RradioButtonTiles);
-			this.groupBox1.Controls.Add(this.RadioButtonBlocks);
-			this.groupBox1.Location = new System.Drawing.Point(34, 2);
+			this.groupBox1.Controls.Add(this.RBtnTiles);
+			this.groupBox1.Controls.Add(this.RBtnBlocks);
+			this.groupBox1.Location = new System.Drawing.Point(7, 6);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(120, 76);
+			this.groupBox1.Size = new System.Drawing.Size(96, 76);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Export Data:";
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.RBtnImgFormLine);
+			this.groupBox2.Controls.Add(this.RBtnImgFormRect16xN);
+			this.groupBox2.Location = new System.Drawing.Point(110, 6);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(116, 76);
+			this.groupBox2.TabIndex = 5;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Output Image Form:";
+			// 
+			// RBtnImgFormLine
+			// 
+			this.RBtnImgFormLine.Location = new System.Drawing.Point(15, 42);
+			this.RBtnImgFormLine.Name = "RBtnImgFormLine";
+			this.RBtnImgFormLine.Size = new System.Drawing.Size(95, 24);
+			this.RBtnImgFormLine.TabIndex = 0;
+			this.RBtnImgFormLine.Text = "Line";
+			this.RBtnImgFormLine.UseVisualStyleBackColor = true;
+			// 
+			// RBtnImgFormRect16xN
+			// 
+			this.RBtnImgFormRect16xN.Checked = true;
+			this.RBtnImgFormRect16xN.Location = new System.Drawing.Point(15, 19);
+			this.RBtnImgFormRect16xN.Name = "RBtnImgFormRect16xN";
+			this.RBtnImgFormRect16xN.Size = new System.Drawing.Size(95, 24);
+			this.RBtnImgFormRect16xN.TabIndex = 0;
+			this.RBtnImgFormRect16xN.TabStop = true;
+			this.RBtnImgFormRect16xN.Text = "Rect (16 x N)";
+			this.RBtnImgFormRect16xN.UseVisualStyleBackColor = true;
 			// 
 			// export_active_tile_block_set_form
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(187, 122);
+			this.ClientSize = new System.Drawing.Size(233, 128);
+			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
 			this.Controls.Add(this.groupBox1);
@@ -108,11 +144,15 @@ namespace MAPeD
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Options";
 			this.groupBox1.ResumeLayout(false);
+			this.groupBox2.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.RadioButton RBtnImgFormRect16xN;
+		private System.Windows.Forms.RadioButton RBtnImgFormLine;
+		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.RadioButton RadioButtonBlocks;
-		private System.Windows.Forms.RadioButton RradioButtonTiles;
+		private System.Windows.Forms.RadioButton RBtnBlocks;
+		private System.Windows.Forms.RadioButton RBtnTiles;
 		private System.Windows.Forms.Button BtnCancel;
 		private System.Windows.Forms.Button BtnOk;
 	}
