@@ -1150,11 +1150,11 @@ namespace MAPeD
 				}
 			}
 			
-			maps_arr = m_filename + "_MapsArr:\n";
+			maps_arr = c_data_prefix + "MapsArr:\n";
 
 			if( RBtnLayoutAdjacentScreenIndices.Checked )
 			{
-				maps_scr_arr = m_filename + "_MapsScrArr:\n";
+				maps_scr_arr = c_data_prefix + "MapsScrArr:\n";
 			}
 
 			for( int level_n = 0; level_n < n_levels; level_n++ )
@@ -1358,7 +1358,7 @@ namespace MAPeD
 			{
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "\nextern mpd_SCREEN** " + skip_exp_pref( m_filename ) + "_MapsArr[];" );
+					m_C_writer.WriteLine( "\nextern mpd_SCREEN** " + c_data_prefix_no_exp + "MapsArr[];" );
 					m_C_writer.WriteLine( "\n#asm" );
 				}
 				
@@ -1375,7 +1375,7 @@ namespace MAPeD
 			{
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "\nextern mpd_SCREEN** " + skip_exp_pref( m_filename ) + "_MapsScrArr[];" );
+					m_C_writer.WriteLine( "\nextern mpd_SCREEN** " + c_data_prefix_no_exp + "MapsScrArr[];" );
 					m_C_writer.WriteLine( "\n#asm" );
 				}
 				
@@ -1694,7 +1694,7 @@ namespace MAPeD
 			string CHR_bank_ids		= c_data_prefix + "CHRBankIds:\n";
 			string maps_arr			= c_data_prefix + "MapsArr:\n";
 			string start_scr_arr	= c_data_prefix + "StartScrArr:\n";
-			string map_dim_arr		= c_data_prefix + "MapDimArr:\n";
+			string map_dim_arr		= c_data_prefix + "MapsDimArr:\n";
 			
 			int scr_width_blocks 	= platform_data.get_screen_blocks_width();
 			int scr_height_blocks 	= platform_data.get_screen_blocks_height();
@@ -2277,7 +2277,7 @@ namespace MAPeD
 			{
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "\nextern u8 " + c_data_prefix_no_exp + "MapDimArr[];" );
+					m_C_writer.WriteLine( "\nextern u8 " + c_data_prefix_no_exp + "MapsDimArr[];" );
 					m_C_writer.WriteLine( "\n#asm" );
 				}
 				

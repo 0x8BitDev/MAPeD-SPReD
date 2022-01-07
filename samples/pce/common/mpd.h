@@ -363,14 +363,10 @@ void	__mpd_get_BAT_params()
 	__BAT_size_dec1		= ( __BAT_width * BAT_height ) - 1;
 }
 
-#if	FLAG_MODE_MULTIDIR_SCROLL
-void	mpd_init( u8 _start_scr, mpd_scroll_step _step )
+#if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+void	mpd_init( u8 _map_ind, mpd_scroll_step _step )
 #else
-#if	FLAG_MODE_BIDIR_SCROLL
-void	mpd_init( mpd_SCREEN* _start_scr, mpd_SCREEN** _scr_arr, mpd_scroll_step _step )
-#else
-void	mpd_init( mpd_SCREEN* _start_scr, mpd_SCREEN** _scr_arr )
-#endif
+void	mpd_init( u8 _map_ind )
 #endif
 {
 #if	FLAG_MODE_BIDIR_SCROLL
@@ -393,13 +389,13 @@ void	mpd_init( mpd_SCREEN* _start_scr, mpd_SCREEN** _scr_arr )
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 
-#if	FLAG_LAYOUT_ADJ_SCR_INDS
-	__scr_arr	= _scr_arr;
-#endif	//FLAG_LAYOUT_ADJ_SCR_INDS
-
 #if	!FLAG_MODE_MULTIDIR_SCROLL
-	__curr_scr	= _start_scr;
+	__curr_scr	= *mpd_MapsArr[ _map_ind ];
 #endif	//!FLAG_MODE_MULTIDIR_SCROLL
+
+#if	FLAG_LAYOUT_ADJ_SCR_INDS
+	__scr_arr	= mpd_MapsScrArr[ _map_ind ];
+#endif	//FLAG_LAYOUT_ADJ_SCR_INDS
 
 	__mpd_get_BAT_params();
 
