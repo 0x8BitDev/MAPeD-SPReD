@@ -1228,44 +1228,6 @@ namespace MAPeD
 			}
 		}
 
-		void export_tiles_blocks_data( int _max_data_cnt, Func< int > _tiles_cnt, int _data_size, ImageList _image_list, string _filename, int _tiles_cnt_width )
-		{
-			update_graphics( false );
-			
-			// get a number of non zero tiles
-			int num_active_tiles;
-			int i;
-			int x, y;
-			
-			if( ( num_active_tiles = _tiles_cnt() ) == 0 )
-			{
-				throw new Exception( "There is no data to export!" );
-			}
-			
-			Bitmap		bmp;
-			Graphics	gfx;
-			
-			// draw images into bitmap as rectangle MxN ( suggested by codediy )
-			bmp = new Bitmap( _data_size * _tiles_cnt_width, ( int )Math.Ceiling( ( float )num_active_tiles / _tiles_cnt_width ) * _data_size );
-			gfx = Graphics.FromImage( bmp );
-			
-			gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
-			gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;
-			
-			for( i = 0; i < num_active_tiles; i++ )
-			{
-				x = i % _tiles_cnt_width;
-				y = ( int )Math.Floor( ( float )i / _tiles_cnt_width );
-				
-				gfx.DrawImage( _image_list.Images[ i ], x * _data_size, y * _data_size, _data_size, _data_size );
-			}
-			
-			bmp.Save( _filename, ImageFormat.Bmp );							
-			
-			bmp.Dispose();
-			gfx.Dispose();
-		}
-		
 		void ProjectExportOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			// EXPORT PROJECT...
@@ -1279,28 +1241,9 @@ namespace MAPeD
 						{
 							if( m_export_active_tile_block_set_form.ShowDialog() == DialogResult.OK )
 							{
-								if( m_export_active_tile_block_set_form.export_tiles )
-								{
-									export_tiles_blocks_data( platform_data.get_max_tiles_cnt(), delegate()
-									                         {
-																tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
-									                         		
-																int ff_tile_id = data.get_first_free_tile_id();
-																return ( ff_tile_id < 0 ) ? platform_data.get_max_tiles_cnt():ff_tile_id;
-									                         }, 
-									                         32, m_imagelist_manager.get_tiles_image_list(), filename, m_export_active_tile_block_set_form.tiles_cnt_width() );
-								}
-								else
-								{
-									export_tiles_blocks_data( platform_data.get_max_blocks_cnt(), delegate() 
-									                         {
-																tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
-									                         		
-																int ff_block_id = data.get_first_free_block_id();
-																return ( ff_block_id < 0 ) ? platform_data.get_max_blocks_cnt():ff_block_id;
-									                         }, 
-									                         16, m_imagelist_manager.get_blocks_image_list(), filename, m_export_active_tile_block_set_form.tiles_cnt_width() );
-								}
+								update_graphics( false );
+
+								m_export_active_tile_block_set_form.export( filename, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list() );
 							}
 						}
 						break;
@@ -1313,11 +1256,13 @@ namespace MAPeD
 								
 								int layout_width	= layout.get_width();
 								int layout_height	= layout.get_height();
+								int scr_width_pix	= platform_data.get_screen_width_pixels();
+								int scr_height_pix	= platform_data.get_screen_height_pixels();
 								
 								int scr_ind;
 								
 								// draw images into bitmap
-								Bitmap bmp = new Bitmap( layout_width * platform_data.get_screen_width_pixels(), layout_height * platform_data.get_screen_height_pixels() );
+								Bitmap bmp = new Bitmap( layout_width * scr_width_pix, layout_height * scr_height_pix );
 
 								Graphics gfx = Graphics.FromImage( bmp );
 								gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
@@ -1331,7 +1276,7 @@ namespace MAPeD
 										
 										if( scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 										{
-											gfx.DrawImage( ListViewScreens.LargeImageList.Images[ scr_ind ], j * platform_data.get_screen_width_pixels(), i * platform_data.get_screen_height_pixels(), platform_data.get_screen_width_pixels(), platform_data.get_screen_height_pixels() );
+											gfx.DrawImage( ListViewScreens.LargeImageList.Images[ scr_ind ], j * scr_width_pix, i * scr_height_pix, scr_width_pix, scr_height_pix );
 										}
 									}
 								}
