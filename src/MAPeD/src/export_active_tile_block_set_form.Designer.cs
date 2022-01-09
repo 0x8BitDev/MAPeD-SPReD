@@ -40,16 +40,18 @@ namespace MAPeD
 			this.RBtnBlocks = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.RBtnTilesOrderLine = new System.Windows.Forms.RadioButton();
-			this.RBtnTilesOrderRect16xN = new System.Windows.Forms.RadioButton();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.NumericUpDownImgsCntWidth = new System.Windows.Forms.NumericUpDown();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownImgsCntWidth)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(40, 97);
+			this.BtnOk.Location = new System.Drawing.Point(26, 103);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 3;
@@ -59,7 +61,7 @@ namespace MAPeD
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(125, 97);
+			this.BtnCancel.Location = new System.Drawing.Point(111, 103);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
 			this.BtnCancel.TabIndex = 4;
@@ -99,40 +101,59 @@ namespace MAPeD
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.RBtnTilesOrderLine);
-			this.groupBox2.Controls.Add(this.RBtnTilesOrderRect16xN);
-			this.groupBox2.Location = new System.Drawing.Point(110, 6);
+			this.groupBox2.Controls.Add(this.label2);
+			this.groupBox2.Controls.Add(this.label1);
+			this.groupBox2.Controls.Add(this.NumericUpDownImgsCntWidth);
+			this.groupBox2.Location = new System.Drawing.Point(109, 6);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(116, 76);
+			this.groupBox2.Size = new System.Drawing.Size(96, 76);
 			this.groupBox2.TabIndex = 5;
 			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Data Order:";
+			this.groupBox2.Text = "Output Data:";
 			// 
-			// RBtnTilesOrderLine
+			// label2
 			// 
-			this.RBtnTilesOrderLine.Location = new System.Drawing.Point(15, 42);
-			this.RBtnTilesOrderLine.Name = "RBtnTilesOrderLine";
-			this.RBtnTilesOrderLine.Size = new System.Drawing.Size(95, 24);
-			this.RBtnTilesOrderLine.TabIndex = 0;
-			this.RBtnTilesOrderLine.Text = "Line";
-			this.RBtnTilesOrderLine.UseVisualStyleBackColor = true;
+			this.label2.Location = new System.Drawing.Point(13, 23);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(60, 16);
+			this.label2.TabIndex = 2;
+			this.label2.Text = "Rectangle:";
 			// 
-			// RBtnTilesOrderRect16xN
+			// label1
 			// 
-			this.RBtnTilesOrderRect16xN.Checked = true;
-			this.RBtnTilesOrderRect16xN.Location = new System.Drawing.Point(15, 19);
-			this.RBtnTilesOrderRect16xN.Name = "RBtnTilesOrderRect16xN";
-			this.RBtnTilesOrderRect16xN.Size = new System.Drawing.Size(95, 24);
-			this.RBtnTilesOrderRect16xN.TabIndex = 0;
-			this.RBtnTilesOrderRect16xN.TabStop = true;
-			this.RBtnTilesOrderRect16xN.Text = "Rect (16 x N)";
-			this.RBtnTilesOrderRect16xN.UseVisualStyleBackColor = true;
+			this.label1.Location = new System.Drawing.Point(62, 43);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(25, 18);
+			this.label1.TabIndex = 1;
+			this.label1.Text = "x N";
+			// 
+			// NumericUpDownImgsCntWidth
+			// 
+			this.NumericUpDownImgsCntWidth.Location = new System.Drawing.Point(15, 41);
+			this.NumericUpDownImgsCntWidth.Maximum = new decimal(new int[] {
+									256,
+									0,
+									0,
+									0});
+			this.NumericUpDownImgsCntWidth.Minimum = new decimal(new int[] {
+									1,
+									0,
+									0,
+									0});
+			this.NumericUpDownImgsCntWidth.Name = "NumericUpDownImgsCntWidth";
+			this.NumericUpDownImgsCntWidth.Size = new System.Drawing.Size(45, 20);
+			this.NumericUpDownImgsCntWidth.TabIndex = 0;
+			this.NumericUpDownImgsCntWidth.Value = new decimal(new int[] {
+									16,
+									0,
+									0,
+									0});
 			// 
 			// export_active_tile_block_set_form
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(233, 128);
+			this.ClientSize = new System.Drawing.Size(212, 135);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
@@ -145,10 +166,12 @@ namespace MAPeD
 			this.Text = "Options";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownImgsCntWidth)).EndInit();
 			this.ResumeLayout(false);
 		}
-		private System.Windows.Forms.RadioButton RBtnTilesOrderRect16xN;
-		private System.Windows.Forms.RadioButton RBtnTilesOrderLine;
+		private System.Windows.Forms.NumericUpDown NumericUpDownImgsCntWidth;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.RadioButton RBtnBlocks;

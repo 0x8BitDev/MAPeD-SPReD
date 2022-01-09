@@ -1228,13 +1228,14 @@ namespace MAPeD
 			}
 		}
 
-		void export_tiles_blocks_data( int _max_data_cnt, Func< int > _tiles_cnt, int _data_size, ImageList _image_list, string _filename, export_active_tile_block_set_form.EDataOrder _data_order )
+		void export_tiles_blocks_data( int _max_data_cnt, Func< int > _tiles_cnt, int _data_size, ImageList _image_list, string _filename, int _tiles_cnt_width )
 		{
 			update_graphics( false );
 			
 			// get a number of non zero tiles
 			int num_active_tiles;
 			int i;
+			int x, y;
 			
 			if( ( num_active_tiles = _tiles_cnt() ) == 0 )
 			{
@@ -1244,36 +1245,19 @@ namespace MAPeD
 			Bitmap		bmp;
 			Graphics	gfx;
 			
-			if( _data_order == export_active_tile_block_set_form.EDataOrder.do_Rect16xN )
+			// draw images into bitmap as rectangle MxN ( suggested by codediy )
+			bmp = new Bitmap( _data_size * _tiles_cnt_width, ( int )Math.Ceiling( ( float )num_active_tiles / _tiles_cnt_width ) * _data_size );
+			gfx = Graphics.FromImage( bmp );
+			
+			gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
+			gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;
+			
+			for( i = 0; i < num_active_tiles; i++ )
 			{
-				// draw images into bitmap as rectangle 16xN ( suggested by codediy )
-				bmp = new Bitmap( _data_size << 4, ( int )Math.Ceiling( ( float )num_active_tiles / 16 ) * _data_size );
-				gfx = Graphics.FromImage( bmp );
+				x = i % _tiles_cnt_width;
+				y = ( int )Math.Floor( ( float )i / _tiles_cnt_width );
 				
-				gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
-				gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;
-				
-				for( i = 0; i < num_active_tiles; i++ )
-				{
-					var x = i % 16;
-					var y = ( int )Math.Floor( ( float )i / 16 );
-					
-					gfx.DrawImage( _image_list.Images[ i ], x * _data_size, y * _data_size, _data_size, _data_size );
-				}
-			}
-			else
-			{
-				// draw images into bitmap in a line order
-				bmp = new Bitmap( _data_size * num_active_tiles, _data_size );
-				gfx = Graphics.FromImage( bmp );
-				
-				gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
-				gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;
-				
-				for( i = 0; i < num_active_tiles; i++ )
-				{
-					gfx.DrawImage( _image_list.Images[ i ], i * _data_size, 0, _data_size, _data_size );
-				}
+				gfx.DrawImage( _image_list.Images[ i ], x * _data_size, y * _data_size, _data_size, _data_size );
 			}
 			
 			bmp.Save( _filename, ImageFormat.Bmp );							
@@ -1304,7 +1288,7 @@ namespace MAPeD
 																int ff_tile_id = data.get_first_free_tile_id();
 																return ( ff_tile_id < 0 ) ? platform_data.get_max_tiles_cnt():ff_tile_id;
 									                         }, 
-									                         32, m_imagelist_manager.get_tiles_image_list(), filename, m_export_active_tile_block_set_form.data_order() );
+									                         32, m_imagelist_manager.get_tiles_image_list(), filename, m_export_active_tile_block_set_form.tiles_cnt_width() );
 								}
 								else
 								{
@@ -1315,7 +1299,7 @@ namespace MAPeD
 																int ff_block_id = data.get_first_free_block_id();
 																return ( ff_block_id < 0 ) ? platform_data.get_max_blocks_cnt():ff_block_id;
 									                         }, 
-									                         16, m_imagelist_manager.get_blocks_image_list(), filename, m_export_active_tile_block_set_form.data_order() );
+									                         16, m_imagelist_manager.get_blocks_image_list(), filename, m_export_active_tile_block_set_form.tiles_cnt_width() );
 								}
 							}
 						}

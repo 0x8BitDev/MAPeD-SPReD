@@ -21,15 +21,9 @@ namespace MAPeD
 			set {}
 		}
 		
-		public enum EDataOrder
+		public int tiles_cnt_width()
 		{
-			do_Rect16xN,
-			do_Line,
-		}
-		
-		public EDataOrder data_order()
-		{
-			return RBtnTilesOrderRect16xN.Checked ? EDataOrder.do_Rect16xN:EDataOrder.do_Line;
+			return ( int )NumericUpDownImgsCntWidth.Value;
 		}
 		
 		public export_active_tile_block_set_form()
