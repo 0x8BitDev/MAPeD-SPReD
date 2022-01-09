@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 28.05.2017
  * Time: 15:12
  */
@@ -704,8 +704,8 @@ namespace MAPeD
 				}
 				else
 				{
-					_sw.WriteLine( _data_mark + "_WScrCnt = " + width + "\t; number of screens in width" );
-					_sw.WriteLine( _data_mark + "_HScrCnt = " + height + "\t; number of screens in height" );
+					_sw.WriteLine( _data_mark + "_WScrCnt\t= " + width + "\t; number of screens in width" );
+					_sw.WriteLine( _data_mark + "_HScrCnt\t= " + height + "\t; number of screens in height" );
 				}
 				
 				_sw.WriteLine( "\n" + _data_mark + "_Layout:\t" );

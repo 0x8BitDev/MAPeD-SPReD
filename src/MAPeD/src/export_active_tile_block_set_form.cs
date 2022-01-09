@@ -33,8 +33,7 @@ namespace MAPeD
 		{
 			if( RBtnTiles.Checked )
 			{
-				export_tiles_blocks_data(	platform_data.get_max_tiles_cnt(), 
-											delegate()
+				export_tiles_blocks_data(	delegate()
 											{
 												int ff_tile_id = _data.get_first_free_tile_id();
 												return ( ff_tile_id < 0 ) ? platform_data.get_max_tiles_cnt():ff_tile_id;
@@ -43,8 +42,7 @@ namespace MAPeD
 			}
 			else
 			{
-				export_tiles_blocks_data(	platform_data.get_max_blocks_cnt(),
-											delegate()
+				export_tiles_blocks_data(	delegate()
 											{
 												int ff_block_id = _data.get_first_free_block_id();
 												return ( ff_block_id < 0 ) ? platform_data.get_max_blocks_cnt():ff_block_id;
@@ -53,7 +51,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void export_tiles_blocks_data( int _max_data_cnt, Func< int > _tiles_cnt, int _data_size, ImageList _image_list, string _filename )
+		private void export_tiles_blocks_data( Func< int > _tiles_cnt, int _data_size, ImageList _image_list, string _filename )
 		{
 			int num_active_tiles;
 			int tiles_width;
@@ -66,14 +64,11 @@ namespace MAPeD
 				throw new Exception( "There is no data to export!" );
 			}
 			
-			Bitmap		bmp;
-			Graphics	gfx;
-			
 			// draw images into bitmap as rectangle MxN ( suggested by codediy )
 			tiles_width = ( int )NumericUpDownImgsCntWidth.Value;
 			
-			bmp = new Bitmap( _data_size * tiles_width, ( int )Math.Ceiling( ( float )num_active_tiles / tiles_width ) * _data_size );
-			gfx = Graphics.FromImage( bmp );
+			Bitmap bmp		= new Bitmap( _data_size * tiles_width, ( int )Math.Ceiling( ( float )num_active_tiles / tiles_width ) * _data_size );
+			Graphics gfx	= Graphics.FromImage( bmp );
 			
 			gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
 			gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;

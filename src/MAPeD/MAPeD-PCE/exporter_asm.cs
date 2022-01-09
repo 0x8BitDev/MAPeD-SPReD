@@ -2076,12 +2076,10 @@ namespace MAPeD
 
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "\n" + c_char + level_prefix_str + "_StartScr\t= " + start_scr_ind + c_code_comm_delim + "start screen" );
+					m_C_writer.WriteLine( "extern u8\t" + level_prefix_str + "_StartScr" + c_code_comm_delim + "start screen" );
 				}
 				else
 				{
-					_sw.WriteLine( level_prefix_str + "_StartScr:\t.word " + start_scr_ind + "\t; start screen\n" );
-					
 					def_sw.WriteLine( c_int + level_prefix_str + "_CHR_data_size\t= " + CHR_data_size + c_code_comm_delim + "map CHRs size in bytes" );
 					
 					def_sw.WriteLine( c_int + level_prefix_str + "_WTilesCnt\t= " + get_tiles_cnt_width( n_scr_X ) + c_code_comm_delim + "number of level tiles in width" );
@@ -2089,6 +2087,7 @@ namespace MAPeD
 					
 					def_sw.WriteLine( c_int + level_prefix_str + "_WPixelsCnt\t= " + get_tiles_cnt_width( n_scr_X ) * ( RBtnTiles2x2.Checked ? 16:32 ) + c_code_comm_delim + "map width in pixels" );
 					def_sw.WriteLine( c_int + level_prefix_str + "_HPixelsCnt\t= " + get_tiles_cnt_height( n_scr_Y ) * ( RBtnTiles2x2.Checked ? 16:32 ) + c_code_comm_delim + "map height in pixels" );
+					def_sw.WriteLine( c_char + level_prefix_str + "_BlocksCnt\t= " + ( max_block_ind >> 2 ) + c_code_comm_delim + "map blocks count\n" );
 				}
 				
 				if( RBtnTiles4x4.Checked )
@@ -2096,12 +2095,12 @@ namespace MAPeD
 					def_sw.WriteLine( c_char + level_prefix_str + "_TilesCnt\t= " + max_tile_ind + c_code_comm_delim + "map tiles count" );
 				}
 				
-				def_sw.WriteLine( c_char + level_prefix_str + "_BlocksCnt\t= " + ( max_block_ind >> 2 ) + c_code_comm_delim + "map blocks count\n" );
-
 				if( m_C_writer != null )
 				{
 					m_C_writer.WriteLine( "\n#asm" );
 				}
+
+				def_sw.WriteLine( get_exp_prefix() + level_prefix_str + "_StartScr\t= " + start_scr_ind + "\t; start screen" );
 				
 				level_data.export_asm( uni_stream, ( get_exp_prefix() + level_prefix_str ), null, ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
 				
@@ -2168,6 +2167,7 @@ namespace MAPeD
 				if( m_C_writer != null )
 				{
 					m_C_writer.WriteLine( "extern u8*\t" + c_data_prefix_no_exp + "Tiles" + ";" );
+					m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "TilesOffs" + ";" );
 				}
 				
 				bw_Tiles.Dispose();
@@ -2182,6 +2182,7 @@ namespace MAPeD
 				if( m_C_writer != null )
 				{
 					m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "Attrs" + ";" );
+					m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "BlocksOffs" + ";" );
 				}
 				
 				bw_Attrs.Dispose();
@@ -2196,6 +2197,7 @@ namespace MAPeD
 				if( m_C_writer != null )
 				{
 					m_C_writer.WriteLine( "extern u8*\t" + c_data_prefix_no_exp + "Props" + ";" );
+					m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "PropsOffs" + ";" );
 				}
 				
 				bw_Props.Dispose();
@@ -2210,6 +2212,7 @@ namespace MAPeD
 				if( m_C_writer != null )
 				{
 					m_C_writer.WriteLine( "extern u8*\t" + c_data_prefix_no_exp + "Maps" + ";" );
+					m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "MapsOffs" + ";" );
 				}
 				
 				bw_Maps.Dispose();
@@ -2224,6 +2227,7 @@ namespace MAPeD
 				if( m_C_writer != null )
 				{
 					m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "MapsTbl" + ";" );
+					m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "MapsTblOffs" + ";" );
 				}
 				
 				bw_MapsTbl.Dispose();
