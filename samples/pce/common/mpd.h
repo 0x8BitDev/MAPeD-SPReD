@@ -1343,19 +1343,18 @@ void	__mpd_fill_column_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
 #endif
 	while( TRUE )
 	{
-#if	FLAG_DIR_COLUMNS
 #if	FLAG_MODE_BIDIR_SCROLL
 		tile4x4_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 2 ) + block_x_pos;
 #else
 		tile4x4_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 2 ) + block_x_pos;
 #endif	//FLAG_MODE_BIDIR_SCROLL
+
+#if	FLAG_DIR_COLUMNS
 		++tile_n;
 #else	//FLAG_DIR_ROWS
 #if	FLAG_MODE_BIDIR_SCROLL
-		tile4x4_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 2 ) + block_x_pos;
 		tile_n += ScrTilesWidth;
 #else
-		tile4x4_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 2 ) + block_x_pos;
 		tile_n += __map_tiles_width;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 #endif	//FLAG_DIR_COLUMNS
@@ -1422,19 +1421,18 @@ void	__mpd_fill_column_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
 #else	//FLAG_TILES2X2
 	while( TRUE )
 	{
-#if	FLAG_DIR_COLUMNS
 #if	FLAG_MODE_BIDIR_SCROLL
 		CHR_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 3 ) + CHR_x_pos;
 #else
 		CHR_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 3 ) + CHR_x_pos;
 #endif	//FLAG_MODE_BIDIR_SCROLL
+
+#if	FLAG_DIR_COLUMNS
 		++tile_n;
 #else	//FLAG_DIR_ROWS
 #if	FLAG_MODE_BIDIR_SCROLL
-		CHR_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 3 ) + CHR_x_pos;
 		tile_n += ScrTilesWidth;
 #else
-		CHR_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 3 ) + CHR_x_pos;
 		tile_n += __map_tiles_width;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 #endif	//FLAG_DIR_COLUMNS
@@ -1527,20 +1525,19 @@ void	__mpd_fill_row_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
 #endif
 	while( TRUE )
 	{
-#if	FLAG_DIR_COLUMNS
-#if	FLAG_MODE_BIDIR_SCROLL
-		tile4x4_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 2 ) + block_y_pos;
-		tile_n += ScrTilesHeight;
-#else
-		tile4x4_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 2 ) + block_y_pos;
-		tile_n += __map_tiles_height;
-#endif	//FLAG_MODE_BIDIR_SCROLL
-#else	//FLAG_DIR_ROWS
 #if	FLAG_MODE_BIDIR_SCROLL		
 		tile4x4_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 2 ) + block_y_pos;
 #else
 		tile4x4_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 2 ) + block_y_pos;
 #endif	//FLAG_MODE_BIDIR_SCROLL
+
+#if	FLAG_DIR_COLUMNS
+#if	FLAG_MODE_BIDIR_SCROLL
+		tile_n += ScrTilesHeight;
+#else
+		tile_n += __map_tiles_height;
+#endif	//FLAG_MODE_BIDIR_SCROLL
+#else	//FLAG_DIR_ROWS
 		++tile_n;
 #endif	//FLAG_DIR_COLUMNS
 #if	MAPS_CNT != 1
@@ -1607,20 +1604,19 @@ void	__mpd_fill_row_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
 #else	//FLAG_TILES2X2
 	while( TRUE )
 	{
-#if	FLAG_DIR_COLUMNS
 #if	FLAG_MODE_BIDIR_SCROLL
 		CHR_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 3 ) + CHR_y_pos;
-		tile_n += ScrTilesHeight;
 #else
 		CHR_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 3 ) + CHR_y_pos;
+#endif	//FLAG_MODE_BIDIR_SCROLL
+
+#if	FLAG_DIR_COLUMNS
+#if	FLAG_MODE_BIDIR_SCROLL
+		tile_n += ScrTilesHeight;
+#else
 		tile_n += __map_tiles_height;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 #else	//FLAG_DIR_ROWS
-#if	FLAG_MODE_BIDIR_SCROLL
-		CHR_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 3 ) + CHR_y_pos;
-#else
-		CHR_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 3 ) + CHR_y_pos;
-#endif	//FLAG_MODE_BIDIR_SCROLL
 		++tile_n;
 #endif	//FLAG_DIR_COLUMNS
 #if	MAPS_CNT != 1
