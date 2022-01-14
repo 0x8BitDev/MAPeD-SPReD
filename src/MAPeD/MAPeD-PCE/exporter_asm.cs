@@ -1691,7 +1691,6 @@ namespace MAPeD
 			string props_offs		= c_data_prefix + "PropsOffs:\n";
 			string maps_offs		= c_data_prefix + "MapsOffs:\n";
 			string mapstbl_offs		= c_data_prefix + "MapsTblOffs:\n";
-			string CHR_bank_ids		= c_data_prefix + "CHRBankIds:\n";
 			string maps_arr			= c_data_prefix + "MapsArr:\n";
 			string start_scr_arr	= c_data_prefix + "StartScrArr:\n";
 			string map_dim_arr		= c_data_prefix + "MapsDimArr:\n";
@@ -1821,8 +1820,6 @@ namespace MAPeD
 				
 				tiles = scr_tiles_data[ chk_bank_ind ];
 
-				CHR_bank_ids += "\t.byte " + chk_bank_ind + "\n";
-				
 				// write CHR banks data
 				label = get_exp_prefix() + "chr" + level_n;
 				bw = new BinaryWriter( File.Open( m_path + m_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
@@ -2148,16 +2145,6 @@ namespace MAPeD
 				_sw.WriteLine( m_filename + "_CHRs:\n" + CHRs_arr );
 			}
 			
-			// CHR bank ids
-			{
-				_sw.WriteLine( CHR_bank_ids );
-				
-				if( m_C_writer != null )
-				{
-					m_C_writer.WriteLine( "extern u8*\t" + c_data_prefix_no_exp + "CHRBankIds" + ";" );
-				}
-			}
-			
 			if( bw_Tiles != null )
 			{
 				_sw.WriteLine( c_data_prefix + "Tiles" + ":\t.incbin \"" + m_filename + "_Tiles" + CONST_BIN_EXT + "\"\t; (" + bw_Tiles.BaseStream.Length + ") (4x4) 4 block indices per tile ( left to right, up to down ) of all exported data banks\n" );
@@ -2200,6 +2187,7 @@ namespace MAPeD
 					m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "PropsOffs" + ";" );
 				}
 				
+				align_word( bw_Props );
 				bw_Props.Dispose();
 			}
 
