@@ -1105,11 +1105,7 @@ void	__mpd_draw_left_tiles_column()
 #endif
 	tiles_offset	+= mpd_farpeekw( mpd_MapsOffs, __curr_chr_id_mul2 );
 
-#if	FLAG_TILES4X4
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), tiles_offset, COLUMN_CHRS_CNT, ( ( ( u8_pos_y >> 4 ) & 0x01 ) << 1 ) + ( ( u8_pos_y >> 3 ) & 0x01 ) );
-#else
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), tiles_offset, COLUMN_CHRS_CNT, ( ( u8_pos_y >> 3 ) & 0x01 ) );
-#endif
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), tiles_offset, COLUMN_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -1163,11 +1159,7 @@ void	__mpd_draw_right_tiles_column()
 #endif
 	tiles_offset	+= mpd_farpeekw( mpd_MapsOffs, __curr_chr_id_mul2 );
 
-#if	FLAG_TILES4X4
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x + ScrPixelsWidth, __scroll_y ), tiles_offset, COLUMN_CHRS_CNT, ( ( ( u8_pos_y >> 4 ) & 0x01 ) << 1 ) + ( ( u8_pos_y >> 3 ) & 0x01 ) );
-#else
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x + ScrPixelsWidth, __scroll_y ), tiles_offset, COLUMN_CHRS_CNT, ( ( u8_pos_y >> 3 ) & 0x01 ) );
-#endif
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x + ScrPixelsWidth, __scroll_y ), tiles_offset, COLUMN_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -1221,11 +1213,7 @@ void	__mpd_draw_up_tiles_row()
 #endif
 	tiles_offset	+= mpd_farpeekw( mpd_MapsOffs, __curr_chr_id_mul2 );
 
-#if	FLAG_TILES4X4
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), tiles_offset, ROW_CHRS_CNT, ( ( ( u8_pos_x >> 4 ) & 0x01 ) << 1 ) + ( ( u8_pos_x >> 3 ) & 0x01 ) );
-#else
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), tiles_offset, ROW_CHRS_CNT, ( ( u8_pos_x >> 3 ) & 0x01 ) );
-#endif
+	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), tiles_offset, ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_x ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -1279,16 +1267,21 @@ void	__mpd_draw_down_tiles_row()
 #endif
 	tiles_offset	+= mpd_farpeekw( mpd_MapsOffs, __curr_chr_id_mul2 );
 
-#if	FLAG_TILES4X4
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y + ScrPixelsHeight ), tiles_offset, ROW_CHRS_CNT, ( ( ( u8_pos_x >> 4 ) & 0x01 ) << 1 ) + ( ( u8_pos_x >> 3 ) & 0x01 ) );
-#else
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y + ScrPixelsHeight ), tiles_offset, ROW_CHRS_CNT, ( ( u8_pos_x >> 3 ) & 0x01 ) );
-#endif
+	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y + ScrPixelsHeight ), tiles_offset, ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_x ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
+u8	__mpd_calc_skip_CHRs_cnt( u8 _pos )
+{
+#if	FLAG_TILES4X4
+	return ( ( ( _pos >> 4 ) & 0x01 ) << 1 ) + ( ( _pos >> 3 ) & 0x01 );
+#else
+	return ( ( _pos >> 3 ) & 0x01 );
+#endif
+}
+
 void	__mpd_fill_column_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt, u8 _skip_CHRs_cnt )
 #else
 void	__mpd_fill_column_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
