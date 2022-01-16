@@ -1,19 +1,23 @@
 //######################################################################################################
 //
 // This file is a part of the MAPeD-PCE Copyright 2017-2022 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: It contains some useful defines and structures
+// Desc: It contains some useful definitions and structures
 //
 //######################################################################################################
 
-/* some useful defines */
+/* some useful definitions */
 
-#define u8	unsigned char
-#define u16	unsigned int
-#define s8	char
-#define s16	int
+typedef unsigned char	u8;
+typedef unsigned int	u16;
+typedef char		s8;
+typedef int		s16;
 
-#define TRUE	1
-#define FALSE	0
+typedef enum
+{
+	TRUE = 1,
+	FALSE = 0
+} bool;
+
 #define NULL	0
 
 /* entities */

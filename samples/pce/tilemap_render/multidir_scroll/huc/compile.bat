@@ -23,5 +23,5 @@ copy main.pce %OutDir%%OutFile%.pce
 @goto exit
 
 :failure
-@echo Build error!tiles_offset
+@echo Build error!
 :exit

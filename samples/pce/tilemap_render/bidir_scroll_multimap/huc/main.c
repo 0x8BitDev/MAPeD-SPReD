@@ -107,7 +107,7 @@ main()
 				mpd_move_down();
 			}
 
-			mpd_update_screen();
+			mpd_update_screen( TRUE );
 		}
 	}
 }

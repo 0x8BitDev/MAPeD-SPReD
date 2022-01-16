@@ -28,8 +28,6 @@ main()
 	/*  disable display */
 	disp_off();
 
-	load_default_font( 0, 8192 );//!!!
-
 	/* init tilemap renderer data */
 	mpd_init( 0, ms_2px );
 
@@ -64,6 +62,6 @@ main()
 			mpd_move_down();
 		}
 
-		mpd_update_screen();
+		mpd_update_screen( TRUE );
 	}
 }

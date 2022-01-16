@@ -35,7 +35,7 @@
 // void		mpd_move_right()
 // void		mpd_move_up()
 // void		mpd_move_down()
-// void		mpd_update_screen()
+// void		mpd_update_screen( bool _vsync )
 // u16		mpd_scroll_x()
 // u16		mpd_scroll_y()
 // #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
@@ -261,7 +261,7 @@ void	__mpd_disp_list_flush()
 	}
 }
 
-u8	__mpd_disp_list_empty()
+bool	__mpd_disp_list_empty()
 {
 	return __dl_pos != 0 ? FALSE:TRUE;
 }
@@ -496,7 +496,7 @@ void	mpd_init( u8 _map_ind )
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-	__mpd_update_scroll();
+	__mpd_update_scroll( TRUE );
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 }
 
@@ -719,7 +719,7 @@ mpd_SCREEN*	__mpd_get_adj_screen( u8 _ind )
 	return NULL;
 }
 
-u8	mpd_check_adj_screen( u8 _ind )
+bool	mpd_check_adj_screen( u8 _ind )
 {
 	mpd_SCREEN* adj_scr;
 
@@ -943,7 +943,7 @@ void	mpd_clear_update_flags()
 	__upd_flags &= ~(UPD_FLAG_DRAW_MASK);
 }
 
-void	mpd_update_screen()
+void	mpd_update_screen( bool _vsync )
 {
 	if( __upd_flags & UPD_FLAG_DRAW_MASK )
 	{
@@ -968,13 +968,13 @@ void	mpd_update_screen()
 		}
 
 		__mpd_disp_list_flush();
-		__mpd_update_scroll();
+		__mpd_update_scroll( _vsync );
 	}
 }
 
 void	__mpd_upd_scroll_left()
 {
-	u8 need_column;
+	bool need_column;
 
 	need_column = FALSE;
 
@@ -995,7 +995,7 @@ void	__mpd_upd_scroll_left()
 
 void	__mpd_upd_scroll_right()
 {
-	u8 need_column;
+	bool need_column;
 
 	need_column = FALSE;
 
@@ -1016,7 +1016,7 @@ void	__mpd_upd_scroll_right()
 
 void	__mpd_upd_scroll_up()
 {
-	u8 need_column;
+	bool need_column;
 
 	need_column = FALSE;
 
@@ -1037,7 +1037,7 @@ void	__mpd_upd_scroll_up()
 
 void	__mpd_upd_scroll_down()
 {
-	u8 need_column;
+	bool need_column;
 
 	need_column = FALSE;
 
@@ -1314,6 +1314,7 @@ void	__mpd_fill_column_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
 
 	CHR_x_pos	= ( ( __horiz_dir_pos >> 3 ) & 0x01 ) << 1;
 
+	// loop the _vaddr vertically
 	BAT_size	= __BAT_size_dec1 + 1;
 	last_data_addr	= _vaddr + ( data_part1 << __BAT_width_pow2 );
 
@@ -1489,8 +1490,9 @@ void	__mpd_fill_row_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
 	data_part1	= _CHRs_cnt;
 	data_part2	= 0;
 
-	if( FLAG_MODE_MULTIDIR_SCROLL || ( FLAG_MODE_BIDIR_SCROLL && ( SCR_BLOCKS2x2_WIDTH != 16 ) ) )
+#if	FLAG_MODE_MULTIDIR_SCROLL + ( FLAG_MODE_BIDIR_SCROLL * ( SCR_BLOCKS2x2_WIDTH != 16 ) )
 	{
+		// loop the _vaddr horizontally
 		last_data_addr	= _vaddr + _CHRs_cnt;
 
 		BAT_width_dec1_inv	= __BAT_width_dec1;
@@ -1502,7 +1504,7 @@ void	__mpd_fill_row_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
 			data_part1 -= data_part2;
 		}
 	}
-
+#endif
 	__mpd_disp_list_push_hdr( DL_FLAG_DATA_INC1, data_part1, _vaddr );
 
 	CHR_y_pos	= ( ( __vert_dir_pos >> 3 ) & 0x01 ) << 2;
@@ -1646,9 +1648,12 @@ u16	__mpd_get_VRAM_addr( u16 _x, u16 _y )
 	return ( ( ( _x >> 3 ) & __BAT_width_dec1 ) + ( ( ( _y >> 3 ) & __BAT_height_dec1 ) << __BAT_width_pow2 ) ) & __BAT_size_dec1;
 }
 
-void	__mpd_update_scroll()
+void	__mpd_update_scroll( bool _vsync )
 {
-	vsync();
+	if( _vsync )
+	{
+		vsync();
+	}
 
 	vreg( 7, __scroll_x );
 	vreg( 8, __scroll_y );
