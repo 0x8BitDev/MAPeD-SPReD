@@ -14,6 +14,8 @@
 // - FLAG_LAYOUT_ADJ_SCR_INDS
 // - FLAG_MARKS
 //
+// RECOMMENDED BAT SIZE: 64x32
+//
 //################################################################
 
 #include <huc.h>
@@ -21,7 +23,7 @@
 #include "../../../common/mpd_def.h"
 #include "tilemap.h"
 #include "../../../common/mpd.h"
-
+#include "../../../common/mpd_tile_prop_demo.h"
 
 u8	map_ind = -1;
 
@@ -30,7 +32,7 @@ void	show_info()
 	/* clear display */
 	cls();
 
-	put_string( "Bidirectional scroller demo", 3, 6 );
+	put_string( "Bidirectional scroller demo", 3, 7 );
 	put_string( "<SEL> - show the next map", 3, 13 );
 	put_string( "<L/U/R/D> - camera movement", 3, 14 );
 }
@@ -53,10 +55,16 @@ void	display_next_map()
 
 main()
 {
-	u8 sel_btn_pressed;
+	bool sel_btn_pressed;
 
 	/*  disable display */
 	disp_off();
+
+	/* init a tile properties demo */
+	mpd_tile_prop_demo_init();
+
+	/* the tile properties demo canceled, so the 
+	/* demo continues as simple tilemap renderer */
 
 	/* show startup info */
 	show_info();

@@ -17,7 +17,7 @@
 #include "../../../common/mpd_def.h"
 #include "tilemap.h"
 #include "../../../common/mpd.h"
-
+#include "../../../common/mpd_tile_prop_demo.h"
 
 main()
 {
@@ -26,6 +26,12 @@ main()
 
 	/*  disable display */
 	disp_off();
+
+	/* init a tile properties demo */
+	mpd_tile_prop_demo_init();
+
+	/* the tile properties demo canceled, so the 
+	/* demo continues as simple tilemap renderer */
 
 	/* init tilemap renderer data */
 	mpd_init( 0 );
@@ -90,7 +96,9 @@ main()
 
 			btn_pressed = TRUE;
 		}
-
-		vsync();
+		else
+		{
+			vsync();
+		}
 	}
 }

@@ -27,15 +27,22 @@
 #define	FLAG_MODE_BIDIR_SCROLL		0
 
 #include "../../../common/mpd.h"
+#include "../../../common/mpd_tile_prop_demo.h"
 
 
 main()
 {
-	u8 adj_scr_res;
-	u8 btn_pressed;
+	bool	adj_scr_res;
+	bool	btn_pressed;
 
 	/*  disable display */
 	disp_off();
+
+	/* init a tile properties demo */
+	mpd_tile_prop_demo_init();
+
+	/* the tile properties demo canceled, so the 
+	/* demo continues as simple tilemap renderer */
 
 	/* init tilemap renderer data */
 	mpd_init( 0 );
@@ -51,7 +58,7 @@ main()
 	/*  demo main loop */
 	for (;;)
 	{
-		adj_scr_res = 0;
+		adj_scr_res = FALSE;
 
 		if( joy(0) & JOY_LEFT )
 		{
@@ -100,7 +107,9 @@ main()
 
 			btn_pressed = TRUE;
 		}
-
-		vsync();
+		else
+		{
+			vsync();
+		}
 	}
 }

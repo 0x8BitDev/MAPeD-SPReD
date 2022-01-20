@@ -14,6 +14,8 @@
 // - FLAG_LAYOUT_ADJ_SCR_INDS
 // - FLAG_MARKS
 //
+// RECOMMENDED BAT SIZE: 64x32
+//
 //################################################################
 
 #include <huc.h>
@@ -21,12 +23,19 @@
 #include "../../../common/mpd_def.h"
 #include "tilemap.h"
 #include "../../../common/mpd.h"
+#include "../../../common/mpd_tile_prop_demo.h"
 
 
 main()
 {
 	/*  disable display */
 	disp_off();
+
+	/* init a tile properties demo */
+	mpd_tile_prop_demo_init();
+
+	/* the tile properties demo canceled, so the 
+	/* demo continues as simple tilemap renderer */
 
 	/* init tilemap renderer data */
 	mpd_init( 0, ms_2px );
