@@ -901,97 +901,94 @@ namespace MAPeD
 				
 				// tiles
 				{
-					if( RBtnModeBidirScroll.Checked )
+					if( RBtnTiles4x4.Checked )
 					{
-						if( RBtnTiles4x4.Checked )
-						{
-							// write tiles data
-							label = "_Tiles";
+						// write tiles data
+						label = "_Tiles";
 
-							bw = new BinaryWriter( File.Open( m_data_path_filename + label + CONST_BIN_EXT, FileMode.Create ) );
+						bw = new BinaryWriter( File.Open( m_data_path_filename + label + CONST_BIN_EXT, FileMode.Create ) );
+					
+						data_offset = 0;
+						data_offset_str = "";
 						
-							data_offset = 0;
-							data_offset_str = "";
+						// tiles
+						for( bank_n = 0; bank_n < banks.Count; bank_n++ )
+						{
+							max_tile_ind = max_tile_inds[ bank_n ];	// one based index
+
+							tiles = banks[ bank_n ];
 							
-							// tiles
-							for( bank_n = 0; bank_n < banks.Count; bank_n++ )
+							for( int i = 0; i < max_tile_ind; i++ )
 							{
-								max_tile_ind = max_tile_inds[ bank_n ];	// one based index
+								bw.Write( tiles_data.tile_convert_ulong_to_uint_reverse( tiles.tiles[ i ] ) );
+							}
+							
+							data_offset_str += "\tdc.w " + data_offset + "\t; (chr" + bank_n + ")\n";
+							
+							data_offset += max_tile_inds[ bank_n ] << 2;
+						}
+						
+						data_size = bw.BaseStream.Length;
+						bw.Close();
+						
+						save_global_data( ref global_data_decl, ( m_filename + label ), data_size >> 2 ); // dwords array
+					
+						exp_data_size += data_size;
+						
+						write_alignment_data( _sw );
+						_sw.WriteLine( m_filename + label + ":\tincbin \"" + get_data_subdir() + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") 4x4 tiles array of all exported data banks ( 4 bytes per tile )\n" );
+						
+						if( m_C_writer != null )
+						{
+							m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U32 + "\t" + CONST_C_DATA_PREFIX + m_filename + label + ";\t\t// (4x4) 4 block indices per tile, 1 byte per index ( left to right, up to down )" );
+						}
+						
+						save_global_data( ref global_data_decl, ( m_filename + "_TilesOffs" ), banks.Count ); // CHR banks count
+						
+						write_alignment_data( _sw );
+						_sw.WriteLine( m_filename + "_TilesOffs:" );
 	
-								tiles = banks[ bank_n ];
-								
-								for( int i = 0; i < max_tile_ind; i++ )
-								{
-									bw.Write( tiles_data.tile_convert_ulong_to_uint_reverse( tiles.tiles[ i ] ) );
-								}
-								
-								data_offset_str += "\tdc.w " + data_offset + "\t; (chr" + bank_n + ")\n";
-								
-								data_offset += max_tile_inds[ bank_n ] << 2;
-							}
-							
-							data_size = bw.BaseStream.Length;
-							bw.Close();
-							
-							save_global_data( ref global_data_decl, ( m_filename + label ), data_size >> 2 ); // dwords array
+						_sw.WriteLine( data_offset_str );
 						
-							exp_data_size += data_size;
+						if( m_C_writer != null )
+						{
+							m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_TilesOffs;\t\t// array of tile data offsets per CHR banks" );
+						}
+					}
+					
+					// save blocks offsets by CHR bank
+					{
+						data_offset = 0;
+						data_offset_str = "";
+						
+						// tiles
+						for( bank_n = 0; bank_n < banks.Count; bank_n++ )
+						{
+							tiles = banks[ bank_n ];
 							
-							write_alignment_data( _sw );
-							_sw.WriteLine( m_filename + label + ":\tincbin \"" + get_data_subdir() + m_filename + label + CONST_BIN_EXT + "\"\t; (" + data_size + ") 4x4 tiles array of all exported data banks ( 4 bytes per tile )\n" );
+							data_offset_str += "\tdc.w " + data_offset + "\t; (chr" + bank_n + ")\n";
 							
-							if( m_C_writer != null )
+							if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 							{
-								m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U32 + "\t" + CONST_C_DATA_PREFIX + m_filename + label + ";\t\t// (4x4) 4 block indices per tile, 1 byte per index ( left to right, up to down )" );
+								data_offset += ( 1 + utils.get_ulong_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 3;
 							}
-							
-							save_global_data( ref global_data_decl, ( m_filename + "_TilesOffs" ), banks.Count ); // CHR banks count
-							
-							write_alignment_data( _sw );
-							_sw.WriteLine( m_filename + "_TilesOffs:" );
-		
-							_sw.WriteLine( data_offset_str );
-							
-							if( m_C_writer != null )
+							else
 							{
-								m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_TilesOffs;\t\t// array of tile data offsets per CHR banks" );
+								blocks_size = tiles.get_first_free_block_id();
+								data_offset += ( ( blocks_size < 0 ) ? platform_data.get_max_blocks_cnt():blocks_size ) << 3;
 							}
 						}
 						
-						// save blocks offsets by CHR bank
-						{
-							data_offset = 0;
-							data_offset_str = "";
-							
-							// tiles
-							for( bank_n = 0; bank_n < banks.Count; bank_n++ )
-							{
-								tiles = banks[ bank_n ];
-								
-								data_offset_str += "\tdc.w " + data_offset + "\t; (chr" + bank_n + ")\n";
-								
-								if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-								{
-									data_offset += ( 1 + utils.get_ulong_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 3;
-								}
-								else
-								{
-									blocks_size = tiles.get_first_free_block_id();
-									data_offset += ( ( blocks_size < 0 ) ? platform_data.get_max_blocks_cnt():blocks_size ) << 3;
-								}
-							}
-							
-							save_global_data( ref global_data_decl, ( m_filename + "_BlocksOffs" ), banks.Count ); // CHR banks count
+						save_global_data( ref global_data_decl, ( m_filename + "_BlocksOffs" ), banks.Count ); // CHR banks count
+
+						write_alignment_data( _sw );
+						_sw.WriteLine( m_filename + "_BlocksOffs:" );
 	
-							write_alignment_data( _sw );
-							_sw.WriteLine( m_filename + "_BlocksOffs:" );
-		
-							_sw.WriteLine( data_offset_str );
-							
-							if( m_C_writer != null )
-							{
-								m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_BlocksOffs;\t\t// array of block data offsets per CHR banks" );
-							}
+						_sw.WriteLine( data_offset_str );
+						
+						if( m_C_writer != null )
+						{
+							m_C_writer.WriteLine( "extern const " + CONST_C_STRUCT_ARR_U16 + "\t" + CONST_C_DATA_PREFIX + m_filename + "_BlocksOffs;\t\t// array of block data offsets per CHR banks" );
 						}
 					}
 				}
@@ -1127,7 +1124,6 @@ namespace MAPeD
 				}
 				
 				// map
-				if( RBtnModeBidirScroll.Checked )
 				{
 					// tiles indices array for each screen
 					label = "_TilesScr";
