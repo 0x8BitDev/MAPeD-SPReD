@@ -860,6 +860,8 @@ namespace MAPeD
 					if( m_C_writer != null )
 					{
 						m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "PropsOffs;" );
+						
+						data_offset_str += "\t.word " + ( data_offset / ( RBtnPropPerBlock.Checked ? 4:1 ) ) + "\t; data end\n";
 					}
 					
 					_sw.WriteLine( data_offset_str );
@@ -2176,13 +2178,15 @@ namespace MAPeD
 			{
 				_sw.WriteLine( c_data_prefix + "Props" + ":\t.incbin \"" + m_filename + "_Props" + CONST_BIN_EXT + "\"\t; (" + bw_Props.BaseStream.Length + ") blocks properties array ( " + ( RBtnPropPerCHR.Checked ? "4 bytes":"1 byte" ) + " per block ) of all exported data banks\n" );
 				
-				_sw.WriteLine( props_offs );
-
 				if( m_C_writer != null )
 				{
+					props_offs += "\t.word " + bw_Props.BaseStream.Length + "\t; data end\n";
+					
 					m_C_writer.WriteLine( "extern u8*\t" + c_data_prefix_no_exp + "Props" + ";" );
 					m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "PropsOffs" + ";" );
 				}
+
+				_sw.WriteLine( props_offs );
 				
 				align_word( bw_Props );
 				bw_Props.Dispose();
