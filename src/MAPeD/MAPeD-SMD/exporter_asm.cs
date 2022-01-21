@@ -154,6 +154,7 @@ namespace MAPeD
 		void RBtnModeStaticScreensChanged_Event(object sender, EventArgs e)
 		{
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = true;
+			RBtnLayoutAdjacentScreens.Checked	= true;
 			
 			CheckBoxExportMarks.Enabled = true;
 			
