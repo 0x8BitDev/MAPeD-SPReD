@@ -13,6 +13,10 @@
 // - FLAG_LAYOUT_ADJ_SCR
 // - FLAG_LAYOUT_ADJ_SCR_INDS
 // - FLAG_MARKS
+// - FLAG_PROP_ID_PER_BLOCK
+// - FLAG_PROP_ID_PER_CHR
+//
+// RECOMMENDED BAT SIZE: 32x32
 //
 //################################################################
 
@@ -30,34 +34,81 @@
 #include "../../../common/mpd_tile_prop_demo.h"
 
 
-main()
-{
-	bool	adj_scr_res;
-	bool	btn_pressed;
+u8	map_ind = -1;
 
+void	show_info( bool _prop_demo_res )
+{
+	/* clear display */
+	cls();
+
+	put_string( "Bi-dir static screens", 3, 7 );
+	put_string( "<SEL> - show the next map", 3, 13 );
+	put_string( "<L/U/R/D> - camera movement", 3, 14 );
+
+	if( !_prop_demo_res )
+	{
+		put_string( "*No properties found!", 3, 17 );
+	}
+}
+
+void	display_next_map()
+{
 	/*  disable display */
 	disp_off();
 
-	/* init a tile properties demo */
-	mpd_tile_prop_demo_init();
-
-	/* the tile properties demo canceled, so the 
-	/* demo continues as simple tilemap renderer */
-
 	/* init tilemap renderer data */
-	mpd_init( 0 );
+	map_ind = ++map_ind % MAPS_CNT;
+	mpd_init( map_ind );
 
 	/* draw start screen */
 	mpd_draw_screen();
 
 	/*  enable display */
 	disp_on();
+}
 
-	btn_pressed = FALSE;
+main()
+{
+	bool	adj_scr_res;
+	bool	btn_pressed;
+	bool	sel_btn_pressed;
+	bool	prop_demo_res;
+
+	/*  disable display */
+	disp_off();
+
+	/* init a tile properties demo */
+	prop_demo_res = mpd_tile_prop_demo_init();
+
+	/* the tile properties demo canceled, so the 
+	/* demo continues as simple tilemap renderer */
+
+	/* show startup info */
+	show_info( prop_demo_res );
+
+	/*  enable display */
+	disp_on();
+
+	sel_btn_pressed	= FALSE;
+	btn_pressed	= FALSE;
 
 	/*  demo main loop */
 	for (;;)
 	{
+		if( joy(0) & JOY_SEL )
+		{
+			if( !sel_btn_pressed )
+			{
+				display_next_map();
+
+				sel_btn_pressed = TRUE;
+			}
+		}
+		else
+		{
+			sel_btn_pressed = FALSE;
+		}
+
 		adj_scr_res = FALSE;
 
 		if( joy(0) & JOY_LEFT )

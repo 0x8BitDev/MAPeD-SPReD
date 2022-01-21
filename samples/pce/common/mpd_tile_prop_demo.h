@@ -13,6 +13,8 @@
 // - FLAG_MODE_BIDIR_SCROLL
 // - FLAG_MODE_BIDIR_STAT_SCR
 // - FLAG_MODE_STAT_SCR
+// - FLAG_PROP_ID_PER_BLOCK
+// - FLAG_PROP_ID_PER_CHR
 //
 //######################################################################################################
 
@@ -68,8 +70,14 @@ void	__update_property()
 #endif
 }
 
-void	mpd_tile_prop_demo_init()
+bool	mpd_tile_prop_demo_init()
 {
+	if( !__check_properties() )
+	{
+		/* there are no properties, so return to the main program */
+		return FALSE;
+	}
+
 	/*  enable display */
 	disp_on();
 
@@ -81,7 +89,7 @@ void	mpd_tile_prop_demo_init()
 #elif	FLAG_MODE_BIDIR_STAT_SCR
 	put_string( "MODE: bi-dir static screens", 3, 7 );
 #elif	FLAG_MODE_STAT_SCR
-	put_string( "MODE: bi-dir VDC-ready screens", 3, 7 );
+	put_string( "MODE: bi-dir VDC-ready data", 3, 7 );
 #else
 	put_string( "Unknown layout mode detected!", 2, 12 );
 	put_string( "Try to re-export your data!", 2, 13 );
@@ -90,13 +98,16 @@ void	mpd_tile_prop_demo_init()
 #endif
 	put_string( "<A> - tile properties demo", 3, 12 );
 	put_string( "<B> - tilemap render", 3, 13 );
-	put_string( "<SEL> - show the next map", 3, 14 );
+	put_string( "<SEL> - show the next map*", 3, 14 );
 
 #if	FLAG_PROP_ID_PER_BLOCK
-	put_string( "*Property Id per: Block", 3, 18 );
+	put_string( "Property Id per: Block", 3, 18 );
 #else
-	put_string( "*Property Id per: CHR", 3, 18 );
+	put_string( "Property Id per: CHR", 3, 18 );
 #endif
+	put_string( "*Maps without properties", 3, 20 );
+	put_string( " will be skipped!", 3, 21 );
+
 	for( ;; )
 	{
 		if( joy(0) & JOY_A )
@@ -108,9 +119,44 @@ void	mpd_tile_prop_demo_init()
 		{
 			disp_off();
 
-			return;
+			return TRUE;
 		}
 	}
+}
+
+bool	__check_map_properties( u8 _map_ind_mul2 )
+{
+	u16	i;
+	u16	beg_offset;
+	u16	end_offset;
+
+	beg_offset = mpd_farpeekw( mpd_PropsOffs, _map_ind_mul2 );
+	end_offset = mpd_farpeekw( mpd_PropsOffs, _map_ind_mul2 + 2 );
+
+	for( i = beg_offset; i < end_offset; i++ )
+	{
+		if( mpd_farpeekb( mpd_Props, i ) )
+		{
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+bool	__check_properties()
+{
+	u8	i;
+	bool	res;
+
+	res = FALSE;
+
+	for( i = 0; i < MAPS_CNT; i++ )
+	{
+		res |= __check_map_properties( i << 1 );
+	}
+
+	return res;
 }
 
 void	__display_next_map()
@@ -118,9 +164,14 @@ void	__display_next_map()
 	/* disable display */
 	disp_off();
 
-	/* init tilemap renderer data */
-	__map_ind = ++__map_ind % MAPS_CNT;
+	/* get a map with properties */
+	do
+	{
+		__map_ind = ++__map_ind % MAPS_CNT;
+	}
+	while( !__check_map_properties( __map_ind << 1 ) );
 
+	/* init tilemap renderer data */
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 	mpd_init( __map_ind, ms_2px );
 #else

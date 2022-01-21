@@ -4,7 +4,7 @@
 :#
 :################################################
 
-@set OutFile=tilemap_render_bidir_scroll
+@set OutFile=tilemap_render_stat_scr_VDC_data_multimap
 @set OutDir=..\..\..\bin\
 
 @del %OutDir%%OutFile%.pce
