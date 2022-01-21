@@ -2674,13 +2674,8 @@ namespace MAPeD
 		
 		void MainForm_BlockQuadSelected(object sender, EventArgs e)
 		{
-			int sel_block_ind = m_tiles_processor.get_selected_block();
-			
-			if( PropertyPerCHRToolStripMenuItem.Checked && BlockEditorModeSelectToolStripMenuItem.Checked )
-			{
-				// show property
-				select_block( sel_block_ind, false, false );
-			}
+			// show property
+			select_block( m_tiles_processor.get_selected_block(), false, true );
 		}
 		
 		private void update_tile_image( object sender, EventArgs e )
