@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 13:12
  */
@@ -585,30 +585,14 @@ namespace MAPeD
 			}
 		}
 #endif
-		public void set_block_flags_obj_id( int _id, bool _per_block )
+		public void set_block_flags_obj_id( int _prop_id, bool _per_block )
 		{
-			if( m_sel_block_id >= 0 )
+			if( m_data != null )
 			{
-				int chr_data_ind;
-				
-				if( _per_block )
-				{
-					for( int i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
-					{
-						chr_data_ind = ( m_sel_block_id << 2 ) + i;
-					
-						m_data.blocks[ chr_data_ind ] = tiles_data.set_block_flags_obj_id( _id, m_data.blocks[ chr_data_ind ] );
-					}
-				}
-				else
-				{
-					chr_data_ind = ( m_sel_block_id << 2 ) + m_sel_quad_ind;
-				
-					m_data.blocks[ chr_data_ind ] = tiles_data.set_block_flags_obj_id( _id, m_data.blocks[ chr_data_ind ] );
-				}
+				m_data.set_block_flags_obj_id( m_sel_block_id, m_sel_quad_ind, _prop_id, _per_block );
 			}
 		}
-		
+
 		public int get_block_flags_obj_id()
 		{
 			if( m_data != null && m_sel_block_id >= 0 )

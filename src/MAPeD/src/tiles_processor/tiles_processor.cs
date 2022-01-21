@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 12:36
  */
@@ -120,9 +120,9 @@ namespace MAPeD
 			m_block_editor.set_CHR_flag_hflip();
 		}
 #endif
-		public void set_block_flags_obj_id( int _id, bool _per_block )
+		public void set_block_flags_obj_id( int _prop_id, bool _per_block )
 		{
-			m_block_editor.set_block_flags_obj_id( _id, _per_block );
+			m_block_editor.set_block_flags_obj_id( _prop_id, _per_block );
 		}
 		
 		public int get_block_flags_obj_id()

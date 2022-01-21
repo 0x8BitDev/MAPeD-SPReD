@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 03.05.2017
  * Time: 17:18
  */
@@ -627,6 +627,30 @@ namespace MAPeD
 		public static uint set_block_flags_obj_id( int _obj_id, uint _block_chr_data )
 		{
 			return m_map_data_config_app.pack_data( map_data_config_base.EData.ed_Obj_id, _obj_id, _block_chr_data );
+		}
+
+		public void set_block_flags_obj_id( int _block_id, int _CHR_id, int _prop_id, bool _per_block )
+		{
+			if( _block_id >= 0 )
+			{
+				int chr_data_ind;
+				
+				if( _per_block )
+				{
+					for( int i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
+					{
+						chr_data_ind = ( _block_id << 2 ) + i;
+					
+						blocks[ chr_data_ind ] = set_block_flags_obj_id( _prop_id, blocks[ chr_data_ind ] );
+					}
+				}
+				else
+				{
+					chr_data_ind = ( _block_id << 2 ) + _CHR_id;
+				
+					blocks[ chr_data_ind ] = set_block_flags_obj_id( _prop_id, blocks[ chr_data_ind ] );
+				}
+			}
 		}
 		
 		public static int get_block_CHR_id( uint _block_chr_data )

@@ -2075,6 +2075,30 @@ namespace MAPeD
 			}
 		}
 		
+		void clearPropertiesToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			if( m_data_manager.tiles_data_pos >= 0 )
+			{
+				if( message_box( "Are you sure?\n\nWARNING: ALL the blocks properties will be set to zero!", "Clear Blocks Properties", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+				{
+					tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+					
+					int ff_block = data.get_first_free_block_id();
+					ff_block = ( ff_block < 0 ) ? platform_data.get_max_blocks_cnt():ff_block;
+					
+					for( int block_n = 0; block_n < ff_block; block_n++ )
+					{
+						data.set_block_flags_obj_id( block_n, -1, 0, true );
+					}
+					
+					if( CBoxTileViewType.SelectedIndex == ( int )utils.ETileViewType.tvt_ObjectId )
+					{
+						update_graphics( true );
+					}
+				}
+			}
+		}		
+		
 		void InsertLeftBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
@@ -4514,6 +4538,6 @@ namespace MAPeD
 			return true;
 		}
 		
-#endregion		
+#endregion				
 	}
 }

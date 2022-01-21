@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 01.05.2017
  * Time: 15:24
  */
@@ -77,6 +77,7 @@ namespace MAPeD
 			this.propertyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PropertyPerBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PropertyPerCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.clearPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
 			this.verticalFlipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.horizontalFlipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -357,6 +358,8 @@ namespace MAPeD
 			this.separatorToolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
 			this.clearCHRsBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.clearRefsBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+			this.clearPropertiesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
 			this.insertLeftBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -712,6 +715,7 @@ namespace MAPeD
 									this.BlockEditorModeDrawToolStripMenuItem,
 									this.toolStripSeparator11,
 									this.propertyToolStripMenuItem,
+									this.clearPropertiesToolStripMenuItem,
 									this.toolStripSeparator13,
 									this.verticalFlipToolStripMenuItem,
 									this.horizontalFlipToolStripMenuItem,
@@ -786,6 +790,13 @@ namespace MAPeD
 			this.PropertyPerCHRToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.PropertyPerCHRToolStripMenuItem.Text = "&CHR";
 			this.PropertyPerCHRToolStripMenuItem.Click += new System.EventHandler(this.PropertyPerCHRToolStripMenuItemClick_Event);
+			// 
+			// clearPropertiesToolStripMenuItem
+			// 
+			this.clearPropertiesToolStripMenuItem.Name = "clearPropertiesToolStripMenuItem";
+			this.clearPropertiesToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.clearPropertiesToolStripMenuItem.Text = "C&lear Properties";
+			this.clearPropertiesToolStripMenuItem.Click += new System.EventHandler(this.clearPropertiesToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator13
 			// 
@@ -3537,68 +3548,82 @@ namespace MAPeD
 									this.separatorToolStripMenuItem3,
 									this.clearCHRsBlockToolStripMenuItem,
 									this.clearRefsBlockToolStripMenuItem,
+									this.toolStripSeparator12,
+									this.clearPropertiesToolStripMenuItem1,
 									this.toolStripSeparator22,
 									this.insertLeftBlockToolStripMenuItem,
 									this.deleteBlockToolStripMenuItem});
 			this.ContextMenuBlocksList.Name = "contextMenuStripBlocksList";
-			this.ContextMenuBlocksList.Size = new System.Drawing.Size(137, 170);
+			this.ContextMenuBlocksList.Size = new System.Drawing.Size(158, 220);
 			// 
 			// copyBlockToolStripMenuItem
 			// 
 			this.copyBlockToolStripMenuItem.Name = "copyBlockToolStripMenuItem";
-			this.copyBlockToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.copyBlockToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.copyBlockToolStripMenuItem.Text = "Copy";
 			this.copyBlockToolStripMenuItem.Click += new System.EventHandler(this.CopyBlockToolStripMenuItemClick_Event);
 			// 
 			// pasteBlockCloneToolStripMenuItem
 			// 
 			this.pasteBlockCloneToolStripMenuItem.Name = "pasteBlockCloneToolStripMenuItem";
-			this.pasteBlockCloneToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.pasteBlockCloneToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.pasteBlockCloneToolStripMenuItem.Text = "Paste Clone";
 			this.pasteBlockCloneToolStripMenuItem.Click += new System.EventHandler(this.PasteBlockCloneToolStripMenuItemClick_Event);
 			// 
 			// pasteBlockRefsToolStripMenuItem
 			// 
 			this.pasteBlockRefsToolStripMenuItem.Name = "pasteBlockRefsToolStripMenuItem";
-			this.pasteBlockRefsToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.pasteBlockRefsToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.pasteBlockRefsToolStripMenuItem.Text = "Paste Refs";
 			this.pasteBlockRefsToolStripMenuItem.Click += new System.EventHandler(this.PasteBlockRefsToolStripMenuItemClickEvent);
 			// 
 			// separatorToolStripMenuItem3
 			// 
 			this.separatorToolStripMenuItem3.Name = "separatorToolStripMenuItem3";
-			this.separatorToolStripMenuItem3.Size = new System.Drawing.Size(133, 6);
+			this.separatorToolStripMenuItem3.Size = new System.Drawing.Size(154, 6);
 			// 
 			// clearCHRsBlockToolStripMenuItem
 			// 
 			this.clearCHRsBlockToolStripMenuItem.Name = "clearCHRsBlockToolStripMenuItem";
-			this.clearCHRsBlockToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.clearCHRsBlockToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.clearCHRsBlockToolStripMenuItem.Text = "Clear CHRs";
 			this.clearCHRsBlockToolStripMenuItem.Click += new System.EventHandler(this.ClearCHRsBlockToolStripMenuItemClick_Event);
 			// 
 			// clearRefsBlockToolStripMenuItem
 			// 
 			this.clearRefsBlockToolStripMenuItem.Name = "clearRefsBlockToolStripMenuItem";
-			this.clearRefsBlockToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.clearRefsBlockToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.clearRefsBlockToolStripMenuItem.Text = "Clear Refs";
 			this.clearRefsBlockToolStripMenuItem.Click += new System.EventHandler(this.ClearRefsBlockToolStripMenuItemClick_Event);
+			// 
+			// toolStripSeparator12
+			// 
+			this.toolStripSeparator12.Name = "toolStripSeparator12";
+			this.toolStripSeparator12.Size = new System.Drawing.Size(154, 6);
+			// 
+			// clearPropertiesToolStripMenuItem1
+			// 
+			this.clearPropertiesToolStripMenuItem1.Name = "clearPropertiesToolStripMenuItem1";
+			this.clearPropertiesToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
+			this.clearPropertiesToolStripMenuItem1.Text = "Clear Properties";
+			this.clearPropertiesToolStripMenuItem1.Click += new System.EventHandler(this.clearPropertiesToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator22
 			// 
 			this.toolStripSeparator22.Name = "toolStripSeparator22";
-			this.toolStripSeparator22.Size = new System.Drawing.Size(133, 6);
+			this.toolStripSeparator22.Size = new System.Drawing.Size(154, 6);
 			// 
 			// insertLeftBlockToolStripMenuItem
 			// 
 			this.insertLeftBlockToolStripMenuItem.Name = "insertLeftBlockToolStripMenuItem";
-			this.insertLeftBlockToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.insertLeftBlockToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.insertLeftBlockToolStripMenuItem.Text = "Insert Left";
 			this.insertLeftBlockToolStripMenuItem.Click += new System.EventHandler(this.InsertLeftBlockToolStripMenuItemClick_Event);
 			// 
 			// deleteBlockToolStripMenuItem
 			// 
 			this.deleteBlockToolStripMenuItem.Name = "deleteBlockToolStripMenuItem";
-			this.deleteBlockToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+			this.deleteBlockToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.deleteBlockToolStripMenuItem.Text = "Delete";
 			this.deleteBlockToolStripMenuItem.Click += new System.EventHandler(this.DeleteBlockToolStripMenuItemClick_Event);
 			// 
@@ -3787,6 +3812,9 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem clearPropertiesToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+		private System.Windows.Forms.ToolStripMenuItem clearPropertiesToolStripMenuItem;
 		private System.Windows.Forms.Label LabelScreenResolution;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label13;

@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("0x8BitDev")]
 [assembly: AssemblyProduct("MAPeD-SMD")]
-[assembly: AssemblyCopyright("Copyright © 2017-2021 by 0x8BitDev ( MIT license. See LICENSE.txt )")]
+[assembly: AssemblyCopyright("Copyright © 2017-2022 by 0x8BitDev ( MIT license. See LICENSE.txt )")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -28,4 +28,4 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can use the default the Revision and 
 // Build Numbers by using the '*' as shown below:
-[assembly: AssemblyVersion("0.67.*")]
+[assembly: AssemblyVersion("0.68.*")]
