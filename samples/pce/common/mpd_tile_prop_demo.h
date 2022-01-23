@@ -35,7 +35,7 @@
 #incspr(cursor, "../../../common/digits_cursor.pcx", 0, 64, 1, 1)
 #incpal(cursor_pal, "../../../common/digits_cursor.pcx", 15, 1)
 
-#define	CURSOR_VRAM	0x4000
+#define	CURSOR_VRAM	0x5000
 #define	CURSOR_PAL	16
 #define	CURSOR_SPR	17
 
@@ -45,9 +45,10 @@ u8	__cursor_y	= 0;
 u8	__step;
 
 /* property digits */
+
 #incspr(digits, "../../../common/digits_cursor.pcx", 0, 0, 4, 4)
 
-#define DIGITS_VRAM	0x4040
+#define DIGITS_VRAM	0x5040
 #define	DIGITS_PAL	16
 #define	DIGITS_CNT	16
 
@@ -72,14 +73,20 @@ void	__update_property()
 
 bool	mpd_tile_prop_demo_init()
 {
-	if( !__check_properties() )
+	u8	valid_maps_cnt;
+
+	if( !( valid_maps_cnt = __check_properties() ) )
 	{
 		/* there are no properties, so return to the main program */
 		return FALSE;
 	}
 
-	/*  enable display */
-	disp_on();
+	/* clear display */
+	cls();
+
+	put_string( "Maps:  /", 0, 0 );
+	put_number( MAPS_CNT, 2, 5, 0 );
+	put_number( valid_maps_cnt, 2, 8, 0 );
 
 #if	0	// it's strange, but such way FLAG_MODE_MULTIDIR_SCROLL works...
 #elif	FLAG_MODE_MULTIDIR_SCROLL
@@ -107,6 +114,9 @@ bool	mpd_tile_prop_demo_init()
 #endif
 	put_string( "*Maps without properties", 3, 20 );
 	put_string( " will be skipped!", 3, 21 );
+
+	/*  enable display */
+	disp_on();
 
 	for( ;; )
 	{
@@ -144,19 +154,22 @@ bool	__check_map_properties( u8 _map_ind_mul2 )
 	return FALSE;
 }
 
-bool	__check_properties()
+u8	__check_properties()
 {
 	u8	i;
-	bool	res;
+	u8	valid_maps_cnt;
 
-	res = FALSE;
+	valid_maps_cnt = 0;
 
 	for( i = 0; i < MAPS_CNT; i++ )
 	{
-		res |= __check_map_properties( i << 1 );
+		if( __check_map_properties( i << 1 ) )
+		{
+			++valid_maps_cnt;
+		}
 	}
 
-	return res;
+	return valid_maps_cnt;
 }
 
 void	__display_next_map()

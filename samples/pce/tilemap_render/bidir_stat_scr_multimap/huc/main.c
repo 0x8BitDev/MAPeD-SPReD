@@ -1,7 +1,7 @@
 //################################################################
 //
 // Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: Static screens switching demo
+// Desc: Static screens switching demo with multiple maps support
 //
 // Supported flags:
 //
@@ -38,8 +38,8 @@ u8	map_ind = -1;
 
 void	show_info( bool _prop_demo_res )
 {
-	/* clear display */
-	cls();
+	put_string( "Maps:", 0, 0 );
+	put_number( MAPS_CNT, 2, 5, 0 );
 
 	put_string( "Bi-dir static screens", 3, 7 );
 	put_string( "<SEL> - show the next map", 3, 13 );
@@ -82,6 +82,9 @@ main()
 
 	/* the tile properties demo canceled, so the 
 	/* demo continues as simple tilemap renderer */
+
+	/* clear display */
+	cls();
 
 	/* show startup info */
 	show_info( prop_demo_res );
