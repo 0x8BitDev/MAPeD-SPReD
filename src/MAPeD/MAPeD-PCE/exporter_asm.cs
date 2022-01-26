@@ -1245,7 +1245,7 @@ namespace MAPeD
 
 										uni_stream.WriteLine( level_prefix_str + "_StartScr:\t.byte " + start_scr_ind + "\n" );
 										
-										level_data.export_asm( uni_stream, level_prefix_str, null, ".byte", ".word", ".word", "$", false, false, false, false );
+										level_data.export_asm( uni_stream, level_prefix_str, null, ".byte", ".word", ".word", "$", false, false, false, false, ( m_C_writer != null ? false:true ) );
 									}
 									else
 									{
@@ -2098,7 +2098,7 @@ namespace MAPeD
 
 				def_sw.WriteLine( get_exp_prefix() + level_prefix_str + "_StartScr\t= " + start_scr_ind + "\t; start screen" );
 				
-				level_data.export_asm( uni_stream, ( get_exp_prefix() + level_prefix_str ), null, ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+				level_data.export_asm( uni_stream, ( get_exp_prefix() + level_prefix_str ), null, ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked, ( m_C_writer != null ? false:true ) );
 				
 				if( m_C_writer != null )
 				{

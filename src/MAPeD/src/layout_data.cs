@@ -685,7 +685,7 @@ namespace MAPeD
 			return ent_cnt;
 		}
 		
-		public void export_asm( StreamWriter _sw, string _data_mark, string _define, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr )
+		public void export_asm( StreamWriter _sw, string _data_mark, string _define, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr, bool _compact_layout = true )
 		{
 			int x;
 			int y;
@@ -714,12 +714,22 @@ namespace MAPeD
 				{
 					data_str = "\t" + _def_addr + " ";
 					
-					for( x = 0; x < width; x++ )
+					if( _compact_layout )
 					{
-						data_str += ( get_data( x, y ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID ? _data_mark + "Scr" + ( y * width + x ):"0" ) + ( x < ( width - 1 ) ? ", ":"" );
+						for( x = 0; x < width; x++ )
+						{
+							data_str += ( get_data( x, y ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID ? _data_mark + "Scr" + ( y * width + x ):"0" ) + ( x < ( width - 1 ) ? ", ":"" );
+						}
+						
+						_sw.WriteLine( data_str );
 					}
-					
-					_sw.WriteLine( data_str );
+					else
+					{
+						for( x = 0; x < width; x++ )
+						{
+							_sw.WriteLine( data_str + ( get_data( x, y ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID ? _data_mark + "Scr" + ( y * width + x ):"0" ) );
+						}
+					}
 				}
 				
 				_sw.WriteLine( "" );
