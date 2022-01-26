@@ -61,6 +61,30 @@ void	display_next_map()
 	disp_on();
 }
 
+void	check_data()
+{
+#if	FLAG_MODE_MULTIDIR_SCROLL == 0
+	put_string( "MULTI-DIR data not found!", 1, 12 );
+	put_string( "Please, re-export!", 1, 13 );
+	
+	disp_on(); for(;;) { vsync(); }
+#endif
+
+#if	FLAG_MARKS
+	put_string( "MARKS aren't supported!", 1, 12 );
+	put_string( "Please, re-export!", 1, 13 );
+	
+	disp_on(); for(;;) { vsync(); }
+#endif
+
+#if	FLAG_RLE
+	put_string( "RLE isn't supported!", 1, 12 );
+	put_string( "Please, re-export!", 1, 13 );
+	
+	disp_on(); for(;;) { vsync(); }
+#endif
+}
+
 main()
 {
 	bool	sel_btn_pressed;
@@ -68,6 +92,9 @@ main()
 
 	/*  disable display */
 	disp_off();
+
+	/* check exported data */
+	check_data();
 
 	/* init a tile properties demo */
 	prop_demo_res = mpd_tile_prop_demo_init();

@@ -1,25 +1,25 @@
-//###############################################################################
+//################################################################
 //
 // Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: Static screens switching demo (raw BAT data) with multiple maps support
+// Desc: Bidirectional scroller demo with adjacent screen masks
+//	 with multiple maps support
 //
 // Supported flags:
-//
-// - FLAG_MODE_STAT_SCR
-// - FLAG_LAYOUT_ADJ_SCR
-// - FLAG_LAYOUT_ADJ_SCR_INDS
-// - FLAG_MARKS
 //
 // - FLAG_TILES2X2
 // - FLAG_TILES4X4
 // - FLAG_DIR_COLUMNS
 // - FLAG_DIR_ROWS
+// - FLAG_MODE_BIDIR_SCROLL
+// - FLAG_LAYOUT_ADJ_SCR
+// - FLAG_LAYOUT_ADJ_SCR_INDS
+// - FLAG_MARKS
 // - FLAG_PROP_ID_PER_BLOCK
 // - FLAG_PROP_ID_PER_CHR
 //
-// RECOMMENDED BAT SIZE: 32x32
+// RECOMMENDED BAT SIZE: 64x32
 //
-//###############################################################################
+//################################################################
 
 #include <huc.h>
 
@@ -34,9 +34,10 @@ u8	map_ind = -1;
 void	show_info( bool _prop_demo_res )
 {
 	put_string( "Maps:", 0, 0 );
-	put_number( MAPS_CNT, 2, 5, 0 );	
+	put_number( MAPS_CNT, 2, 5, 0 );
 
-	put_string( "Static screens demo", 3, 7 );
+	put_string( "Bidirectional scroller demo", 3, 7 );
+	put_string( "[adjacent screen masks]", 3, 8 );
 	put_string( "<SEL> - show the next map", 3, 13 );
 	put_string( "<L/U/R/D> - camera movement", 3, 14 );
 
@@ -53,7 +54,7 @@ void	display_next_map()
 
 	/* init tilemap renderer data */
 	map_ind = ++map_ind % MAPS_CNT;
-	mpd_init( map_ind );
+	mpd_init( map_ind, ms_2px );
 
 	/* draw start screen */
 	mpd_draw_screen();
@@ -64,15 +65,15 @@ void	display_next_map()
 
 void	check_data()
 {
-#if	FLAG_MODE_STAT_SCR == 0
-	put_string( "STATIC SCREENS data not found!", 1, 12 );
+#if	FLAG_MODE_BIDIR_SCROLL == 0
+	put_string( "BI-DIR SCROLLER data not found!", 1, 12 );
 	put_string( "Please, re-export!", 1, 13 );
 	
 	disp_on(); for(;;) { vsync(); }
 #endif
 
-#if	FLAG_MARKS
-	put_string( "MARKS aren't supported!", 1, 12 );
+#if	FLAG_MARKS == 0
+	put_string( "MARKS data required!", 1, 12 );
 	put_string( "Please, re-export!", 1, 13 );
 	
 	disp_on(); for(;;) { vsync(); }
@@ -88,8 +89,6 @@ void	check_data()
 
 main()
 {
-	bool	adj_scr_res;
-	bool	btn_pressed;
 	bool	sel_btn_pressed;
 	bool	prop_demo_res;
 
@@ -114,8 +113,7 @@ main()
 	/*  enable display */
 	disp_on();
 
-	sel_btn_pressed	= FALSE;
-	btn_pressed	= FALSE;
+	sel_btn_pressed = FALSE;
 
 	/*  demo main loop */
 	for (;;)
@@ -134,58 +132,31 @@ main()
 			sel_btn_pressed = FALSE;
 		}
 	
-		adj_scr_res = 0;
-
-		if( joy(0) & JOY_LEFT )
+		if( map_ind >= 0 )
 		{
-			if( !btn_pressed )
+			mpd_clear_update_flags();
+
+			if( joy(0) & JOY_LEFT )
 			{
-				adj_scr_res = mpd_check_adj_screen( ADJ_SCR_LEFT );
+				mpd_move_left();
 			}
-		}
-		else
-		if( joy(0) & JOY_RIGHT )
-		{
-			if( !btn_pressed )
+
+			if( joy(0) & JOY_RIGHT )
 			{
-				adj_scr_res = mpd_check_adj_screen( ADJ_SCR_RIGHT );
+				mpd_move_right();
 			}
-		}
-		else
-		if( joy(0) & JOY_UP )
-		{
-			if( !btn_pressed )
+
+			if( joy(0) & JOY_UP )
 			{
-				adj_scr_res = mpd_check_adj_screen( ADJ_SCR_UP );
+				mpd_move_up();
 			}
-		}
-		else
-		if( joy(0) & JOY_DOWN )
-		{
-			if( !btn_pressed )
+
+			if( joy(0) & JOY_DOWN )
 			{
-				adj_scr_res = mpd_check_adj_screen( ADJ_SCR_DOWN );
+				mpd_move_down();
 			}
-		}
-		else
-		{
-			btn_pressed = FALSE;
-		}
 
-		if( adj_scr_res )
-		{
-			disp_off();
-			vsync();
-
-			mpd_draw_screen();
-
-			disp_on();
-
-			btn_pressed = TRUE;
-		}
-		else
-		{
-			vsync();
+			mpd_update_screen( TRUE );
 		}
 	}
 }
