@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 29.11.2018
  * Time: 16:49
  */
@@ -360,8 +360,8 @@ namespace MAPeD
 					}
 					else
 					{					
-						_data.dec_screen_tiles( ( byte )block_n );
-						_data.dec_patterns_tiles( ( byte )block_n );
+						_data.dec_screen_tiles( ( ushort )block_n );
+						_data.dec_patterns_tiles( ( ushort )block_n );
 					}
 					
 					--block_n;
@@ -405,7 +405,7 @@ namespace MAPeD
 								if( _block_id == _data.get_tile_block( tile_n, i ) )
 								{
 									// replace _block_id with block_n
-									_data.set_tile_block( tile_n, i, ( byte )block_n );
+									_data.set_tile_block( tile_n, i, ( ushort )block_n );
 								}
 							}
 						}
@@ -488,7 +488,7 @@ namespace MAPeD
 					
 					if( tile_block_id >= _block_id )
 					{
-						_data.set_tile_block( tile_n, i, ( byte )( tile_block_id - 1 ) );
+						_data.set_tile_block( tile_n, i, ( ushort )( tile_block_id - 1 ) );
 					}
 				}
 			}
@@ -521,8 +521,8 @@ namespace MAPeD
 					// the last tile is an empty space
 					_data.tiles[ platform_data.get_max_tiles_cnt() - 1 ] = 0;
 					
-					_data.dec_screen_tiles( ( byte )tile_n );
-					_data.dec_patterns_tiles( ( byte )tile_n );
+					_data.dec_screen_tiles( ( ushort )tile_n );
+					_data.dec_patterns_tiles( ( ushort )tile_n );
 					
 					--tile_n;
 					--size;

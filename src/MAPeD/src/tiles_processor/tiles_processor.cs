@@ -255,7 +255,7 @@ namespace MAPeD
 						// 'zero' block isn't in use OR tiles list is empty
 						if( tile_n == ff_tile_ind || ff_tile_ind == 0 )
 						{
-							data.set_tile_block( sel_tile, block_pos++, ( byte )block_n );
+							data.set_tile_block( sel_tile, block_pos++, ( ushort )block_n );
 							
 							if( reserve_blocks_CHRs )
 							{

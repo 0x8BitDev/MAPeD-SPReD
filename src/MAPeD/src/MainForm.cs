@@ -2117,12 +2117,12 @@ namespace MAPeD
 					
 					if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 					{
-						data.inc_tiles_blocks( ( byte )sel_ind );
+						data.inc_tiles_blocks( ( ushort )sel_ind );
 					}
 					else
 					{
-						data.inc_screen_blocks( ( byte )sel_ind );
-						data.inc_patterns_tiles( ( byte )sel_ind );
+						data.inc_screen_blocks( ( ushort )sel_ind );
+						data.inc_patterns_tiles( ( ushort )sel_ind );
 					}
 					
 					m_screen_editor.clear_active_tile_img();
@@ -2151,12 +2151,12 @@ namespace MAPeD
 						
 						if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 						{
-							data.dec_tiles_blocks( ( byte )sel_ind );
+							data.dec_tiles_blocks( ( ushort )sel_ind );
 						}
 						else
 						{
-							data.dec_screen_blocks( ( byte )sel_ind );
-							data.dec_patterns_tiles( ( byte )sel_ind );
+							data.dec_screen_blocks( ( ushort )sel_ind );
+							data.dec_patterns_tiles( ( ushort )sel_ind );
 						}
 						data.clear_block( data.tiles.Length - 1 );
 						
@@ -2265,8 +2265,8 @@ namespace MAPeD
 					Array.Copy( data.tiles, sel_ind, data.tiles, sel_ind + 1, data.tiles.Length - sel_ind - 1 );
 					
 					data.clear_tile( sel_ind );
-					data.inc_screen_tiles( ( byte )sel_ind );
-					data.inc_patterns_tiles( ( byte )sel_ind );
+					data.inc_screen_tiles( ( ushort )sel_ind );
+					data.inc_patterns_tiles( ( ushort )sel_ind );
 					
 					m_screen_editor.clear_active_tile_img();
 					
@@ -2290,8 +2290,8 @@ namespace MAPeD
 					{
 						Array.Copy( data.tiles, sel_ind + 1, data.tiles, sel_ind, data.tiles.Length - sel_ind - 1 );
 						
-						data.dec_screen_tiles( ( byte )sel_ind );
-						data.dec_patterns_tiles( ( byte )sel_ind );
+						data.dec_screen_tiles( ( ushort )sel_ind );
+						data.dec_patterns_tiles( ( ushort )sel_ind );
 						data.clear_tile( data.tiles.Length - 1 );
 						
 						m_screen_editor.clear_active_tile_img();

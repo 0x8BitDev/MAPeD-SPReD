@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 13:12
  */
@@ -214,7 +214,7 @@ namespace MAPeD
 			{
 				m_selected_tile_id = -1;
 
-				m_tiles_data = null;				
+				m_tiles_data = null;
 			}
 			
 			update();
@@ -224,13 +224,13 @@ namespace MAPeD
 		{
 			if( m_locked == false && _data != null && m_selected_tile_id >= 0 )
 			{
-				_data.set_tile_block( m_selected_tile_id, m_selected_quad_ind, (byte)_block_id );
+				_data.set_tile_block( m_selected_tile_id, m_selected_quad_ind, ( ushort )_block_id );
 
 				dispatch_event_need_gfx_update();
 				
 				update_status_bar();
 				
-				update();				
+				update();
 			}
 		}
 		
