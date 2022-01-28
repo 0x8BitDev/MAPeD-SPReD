@@ -105,7 +105,7 @@ bool	mpd_tile_prop_demo_init()
 #endif
 	put_string( "<A> - tile properties demo", 3, 12 );
 	put_string( "<B> - tilemap render", 3, 13 );
-	put_string( "<SEL> - show the next map*", 3, 14 );
+	put_string( "<SEL> - show the next map*", 3, 15 );
 
 #if	FLAG_PROP_ID_PER_BLOCK
 	put_string( "Property Id per: Block", 3, 18 );
