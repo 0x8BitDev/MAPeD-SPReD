@@ -141,14 +141,20 @@ As mentioned before, you need to install Mono on your computer. To run the tools
 
  - `./samples/sms/tilemap_render/multidir_scroll/`	- multidirectional scroller 
  - `./samples/sms/tilemap_render/bidir_scroll/`		- bidirectional scroller 
- - `./samples/sms/tilemap_render/bidir_scroll_ADJ_SCR_MASKS/`	- bidirectional scroller with complex topology of a map
+ - `./samples/sms/tilemap_render/bidir_scroll_ADJ_SCR_MASKS/`	- bidirectional scroller with a complex map topology
  - `./samples/sms/tilemap_render/bidir_stat_scr/`		- the same as above, but with static screens switching
  - `./samples/sms/tilemap_render/bidir_stat_scr_ADJ_SCR_MASKS/`	- the same as above, but with static screens switching
  - `./samples/sms/tilemap_render/stat_scr_VDP_data/`	- static screens switching using VDP-ready screens data
 
 ## MAPeD-PCE
 
-coming soon...
+ - `./samples/pce/tilemap_render/bidir_scroll_multimap/huc/`	- bidirectional scroller
+ - `./samples/pce/tilemap_render/bidir_stat_scr_multimap/huc/`	- the same as above, but with static screens switching
+ - `./samples/pce/tilemap_render/bidir_scroll_ADJ_SCR_MASKS_multimap/huc/`	- bidirectional scroller with a complex map topology
+ - `./samples/pce/tilemap_render/multidir_scroll_multimap/huc/`	- multidirectional scroller
+ - `./samples/pce/tilemap_render/stat_scr_VDC_data_multimap/huc/`- static screens switching using VDC-ready data (raw BAT data)
+
+* All samples are written in C and support all export options
 
 ## MAPeD-ZX
 
@@ -184,6 +190,9 @@ coming soon...
 
 **SMS: WLA-DX assembler v9.10**
 - Github: https://github.com/vhelin/wla-dx
+
+**PCE: HuC - PC Engine C development toolkit (v3.99-c266d57)**
+- Github: https://github.com/jbrandwood/huc
 
 **ZX Spectrum: SjASMPlus - Z80 Assembly Cross-Compiler (v1.18.3)**
 - The latest version: https://github.com/z00m128/sjasmplus
@@ -234,7 +243,7 @@ The latest development build can be found **[here](https://drive.google.com/open
 Are trademarks of their respective owners and I am not affiliated with these companies in any way. Therefore, you can use this software at your own risk and without warranty of any kind.
 
 ---
-Developed by 0x8BitDev Copyright © 2017-2021
+Developed by 0x8BitDev Copyright © 2017-2022
 
 Released under the MIT license. See LICENSE.txt
 
