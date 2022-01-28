@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 13:11
  */
@@ -116,14 +116,7 @@ namespace MAPeD
 			
 			tiles_data data = data_mngr.get_tiles_data( data_mngr.tiles_data_pos );
 
-			if( data != null )
-			{
-				m_data = data;
-			}
-			else
-			{
-				m_data = null;
-			}
+			m_data = data;
 			
 			m_sel_ind 			= -1;
 			m_sel_block_CHRs 	= 0;

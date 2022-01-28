@@ -1669,7 +1669,7 @@ namespace MAPeD
 		
 		void select_block( int _id, bool _send_event, bool _update_active_tile )
 		{
-			if( _send_event )
+			if( _send_event && _id >= 0 )
 			{
 				m_tiles_processor.block_select_event( _id, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
 			}
