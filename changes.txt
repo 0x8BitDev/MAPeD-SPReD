@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+30.01.2022 - PCE: added native samples (HuC)
 21.01.2022 - Added option to clear blocks properties
 07.01.2022 - Added export of tiles/blocks images as MxN rectangular image (suggested by codediy)
 13.12.2021 - Fixed a bug in the calculation of adjacent screens that affects exported data and the screen editor functionality
