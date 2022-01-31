@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 16:20
  */
@@ -260,8 +260,6 @@ namespace MAPeD
 			Image 		img;
 			Graphics	gfx;
 			
-			int 		obj_id;
-
 			m_block_rect.Width = m_block_rect.Height = ( _view_type == utils.ETileViewType.tvt_ObjectId && !_prop_per_block ) ? ( utils.CONST_BLOCKS_IMG_SIZE >> 1 ):utils.CONST_BLOCKS_IMG_SIZE;
 			
 			for( int i = 0; i < platform_data.get_max_blocks_cnt(); i++ )
@@ -272,55 +270,7 @@ namespace MAPeD
 				
 				if( _tiles_data != null )
 				{
-					gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
-					gfx.PixelOffsetMode 	= PixelOffsetMode.Half;
-#if DEF_ZX
-					utils.update_block_gfx( i, _tiles_data, gfx, img.Width >> 1, img.Height >> 1, 0, 0, utils.get_draw_block_flags_by_view_type( _view_type ) );
-#else
-					utils.update_block_gfx( i, _tiles_data, gfx, img.Width >> 1, img.Height >> 1 );
-#endif
-					if( _view_type == utils.ETileViewType.tvt_ObjectId ) // obj id
-					{
-						if( _prop_per_block )
-						{
-							obj_id = tiles_data.get_block_flags_obj_id( _tiles_data.blocks[ i << 2 ] );
-							
-							utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | m_clrs_arr[ obj_id ] );
-							
-							draw_block_info( String.Format( "{0}", obj_id ), gfx );
-						}
-						else
-						{
-							for( int chr_n = 0; chr_n < utils.CONST_BLOCK_SIZE; chr_n++ )
-							{
-								obj_id = tiles_data.get_block_flags_obj_id( _tiles_data.blocks[ ( i << 2 ) + chr_n ] );
-								
-								utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | m_clrs_arr[ obj_id ] );
-								
-								m_block_rect.X 	= ( ( chr_n&0x01 ) == 0x01 ) ? m_block_rect.Width:0;
-								m_block_rect.Y 	= ( ( chr_n&0x02 ) == 0x02 ) ? m_block_rect.Height:0;
-								
-								gfx.FillRectangle( utils.brush, m_block_rect );
-							}
-						}
-					}
-					else
-					if( _view_type == utils.ETileViewType.tvt_BlocksUsage ) // usage
-					{
-						utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | 0x00ffffff );
-						
-						draw_block_info( String.Format( "{0}", _tiles_data.get_block_usage( ( ushort )i, _scr_type ) ), gfx );
-					}
-					else
-					if( _scr_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
-					{
-						if( _view_type == utils.ETileViewType.tvt_Number ) // block id
-						{
-							utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | 0x00ffffff );
-							
-							draw_block_info( String.Format( "{0:X2}", i ), gfx );
-						}
-					}
+					update_block( i, _view_type, _tiles_data, _prop_per_block, gfx, img, _scr_type );
 				}
 				else
 				{
@@ -333,6 +283,94 @@ namespace MAPeD
 			}
 			
 			m_panel_blocks.Refresh();
+		}
+
+		public void update_block( int _block_ind, utils.ETileViewType _view_type, tiles_data _tiles_data, bool _prop_per_block, Graphics _gfx, Image _img, data_sets_manager.EScreenDataType _scr_type )
+		{
+			int obj_id;
+			
+			Image img;
+			
+			if( _img != null )
+			{
+				img = _img;
+			}
+			else
+			{
+				img = m_imagelist_blocks.Images[ _block_ind ];
+			}
+			
+			Graphics gfx;
+			
+			if( _gfx != null )
+			{
+				gfx = _gfx;
+			}
+			else
+			{
+				gfx = Graphics.FromImage( img );
+			}
+			
+			gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
+			gfx.PixelOffsetMode 	= PixelOffsetMode.Half;
+			
+#if DEF_ZX
+			utils.update_block_gfx( _block_ind, _tiles_data, gfx, img.Width >> 1, img.Height >> 1, 0, 0, utils.get_draw_block_flags_by_view_type( _view_type ) );
+#else
+			utils.update_block_gfx( _block_ind, _tiles_data, gfx, img.Width >> 1, img.Height >> 1 );
+#endif
+			if( _view_type == utils.ETileViewType.tvt_ObjectId ) // obj id
+			{
+				if( _prop_per_block )
+				{
+					obj_id = tiles_data.get_block_flags_obj_id( _tiles_data.blocks[ _block_ind << 2 ] );
+					
+					utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | m_clrs_arr[ obj_id ] );
+					
+					draw_block_info( String.Format( "{0}", obj_id ), gfx );
+				}
+				else
+				{
+					for( int chr_n = 0; chr_n < utils.CONST_BLOCK_SIZE; chr_n++ )
+					{
+						obj_id = tiles_data.get_block_flags_obj_id( _tiles_data.blocks[ ( _block_ind << 2 ) + chr_n ] );
+						
+						utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | m_clrs_arr[ obj_id ] );
+						
+						m_block_rect.X 	= ( ( chr_n&0x01 ) == 0x01 ) ? m_block_rect.Width:0;
+						m_block_rect.Y 	= ( ( chr_n&0x02 ) == 0x02 ) ? m_block_rect.Height:0;
+						
+						gfx.FillRectangle( utils.brush, m_block_rect );
+					}
+				}
+			}
+			else
+			if( _view_type == utils.ETileViewType.tvt_BlocksUsage ) // usage
+			{
+				utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | 0x00ffffff );
+				
+				draw_block_info( String.Format( "{0}", _tiles_data.get_block_usage( ( ushort )_block_ind, _scr_type ) ), gfx );
+			}
+			else
+			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
+			{
+				if( _view_type == utils.ETileViewType.tvt_Number ) // block id
+				{
+					utils.brush.Color = Color.FromArgb( ( CONST_ALPHA << 24 ) | 0x00ffffff );
+					
+					draw_block_info( String.Format( "{0:X2}", _block_ind ), gfx );
+				}
+			}
+			
+			if( _img == null )
+			{
+				m_imagelist_blocks.Images[ _block_ind ] = img;
+			}
+			
+			if( _gfx == null )
+			{
+				gfx.Dispose();
+			}
 		}
 
 		private void draw_block_info( string _info, Graphics _gfx )

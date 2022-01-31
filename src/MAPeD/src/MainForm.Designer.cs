@@ -2109,7 +2109,7 @@ namespace MAPeD
 			this.GrpBoxScreenData.Size = new System.Drawing.Size(122, 140);
 			this.GrpBoxScreenData.TabIndex = 33;
 			this.GrpBoxScreenData.TabStop = false;
-			this.GrpBoxScreenData.Text = "Screen Data";
+			this.GrpBoxScreenData.Text = "Screen Data:";
 			// 
 			// LabelScreenResolution
 			// 
@@ -3554,7 +3554,7 @@ namespace MAPeD
 									this.insertLeftBlockToolStripMenuItem,
 									this.deleteBlockToolStripMenuItem});
 			this.ContextMenuBlocksList.Name = "contextMenuStripBlocksList";
-			this.ContextMenuBlocksList.Size = new System.Drawing.Size(158, 220);
+			this.ContextMenuBlocksList.Size = new System.Drawing.Size(158, 198);
 			// 
 			// copyBlockToolStripMenuItem
 			// 
