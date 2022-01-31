@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 03.09.2020
  * Time: 16:34
  */
@@ -180,7 +180,7 @@ namespace MAPeD
 							update_pattern_image( node.Name );
 							m_pattern_preview.update( m_pattern_image, m_pattern_image.Width, m_pattern_image.Height, 0, 0, ( int )Math.Pow( 2.0, ( double )m_scale_pow ), false, false );
 							
-							m_pattern_preview.draw_string( "Put the <" + node.Name + "> on a game screen.", 0, 0 );
+							m_pattern_preview.draw_string( "Put the <" + node.Name + "> on a game screen.\nRMB - cancel.", 0, 0 );
 						}
 					}
 				}
@@ -274,7 +274,8 @@ namespace MAPeD
 
 		public void subscribe_event( screen_editor _scr_editor )
 		{
-			_scr_editor.CreatePatternEnd += new EventHandler( create_pattern_end );
+			_scr_editor.CreatePatternEnd		+= new EventHandler( create_pattern_end );
+			_scr_editor.CancelPatternPlacing	+= new EventHandler( cancel_pattern_placing );
 		}
 		
 		private void create_pattern_end(object sender, EventArgs e)
@@ -303,6 +304,24 @@ namespace MAPeD
 					
 					Focus();
 				}
+				else
+				{
+					reset_state();
+				}
+			}
+		}
+		
+		private void cancel_pattern_placing(object sender, EventArgs e)
+		{
+			screen_editor_switch_to_build_mode();
+			reset_active_pattern();
+		}
+		
+		private void screen_editor_switch_to_build_mode()
+		{
+			if( ScreenEditorSwitchToBuildMode != null )
+			{
+				ScreenEditorSwitchToBuildMode( this, null );
 			}
 		}
 		
@@ -335,10 +354,7 @@ namespace MAPeD
 			enable( true );
 			CheckBoxAddPattern.Checked = false;
 			
-			if( ScreenEditorSwitchToBuildMode != null )
-			{
-				ScreenEditorSwitchToBuildMode( this, null );
-			}
+			screen_editor_switch_to_build_mode();
 		}
 		
 		void BtnGroupAddClick_Event(object sender, EventArgs e)
@@ -407,11 +423,7 @@ namespace MAPeD
 			}
 			else
 			{
-				if( ScreenEditorSwitchToBuildMode != null )
-				{
-					ScreenEditorSwitchToBuildMode( this, null );
-				}
-				
+				screen_editor_switch_to_build_mode();
 				create_pattern_end( this, null );
 			}
 			
@@ -494,10 +506,7 @@ namespace MAPeD
 		{
 			if( TreeViewPatterns.SelectedNode.Parent == null )
 			{
-				if( ScreenEditorSwitchToBuildMode != null )
-				{
-					ScreenEditorSwitchToBuildMode( this, null );
-				}
+				screen_editor_switch_to_build_mode();
 			}
 			else
 			{

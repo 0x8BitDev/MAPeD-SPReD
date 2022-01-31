@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 09.05.2017
  * Time: 17:34
  */
@@ -93,6 +93,7 @@ namespace MAPeD
 		public event EventHandler UpdateTileImage;
 		public event EventHandler CreatePatternEnd;
 		public event EventHandler PutTilesPattern;
+		public event EventHandler CancelPatternPlacing;
 		
 		public enum EMode
 		{
@@ -331,6 +332,14 @@ namespace MAPeD
 			update();
 		}
 
+		private void cancel_pattern_placing()
+		{
+			if( CancelPatternPlacing != null )
+			{
+				CancelPatternPlacing( this, null );
+			}
+		}
+		
 		private void calc_pattern_params(	ref int _tile_pos_x, 
 											ref int _tile_pos_y, 
 											ref int _tiles_width, 
@@ -493,6 +502,11 @@ namespace MAPeD
 			else
 			if( m_state == EState.es_PlacePattern )
 			{
+				if( e.Button == MouseButtons.Right )
+				{
+					cancel_pattern_placing();
+				}
+				else
 				if( m_tile_x != int.MinValue && m_tile_y != int.MinValue )
 				{
 					if( m_scr_ind >= 0 )
