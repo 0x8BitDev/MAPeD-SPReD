@@ -1343,11 +1343,11 @@ namespace MAPeD
 		
 		private void draw_block( int _x, int _y, int _tile_id, int _offs_x = 0, int _offs_y = 0 )
 		{
-			m_gfx.DrawImage( 	m_blocks_imagelist.Images[ _tile_id ], 
-								_offs_x + get_scr_offs_x() + ( _x * utils.CONST_SCREEN_BLOCKS_SIZE ),
-								_offs_y + get_scr_offs_y() + ( _y * utils.CONST_SCREEN_BLOCKS_SIZE ),
-								utils.CONST_SCREEN_BLOCKS_SIZE, 
-								utils.CONST_SCREEN_BLOCKS_SIZE );
+			m_gfx.DrawImageUnscaled( 	m_blocks_imagelist.Images[ _tile_id ], 
+										_offs_x + get_scr_offs_x() + ( _x * utils.CONST_SCREEN_BLOCKS_SIZE ),
+										_offs_y + get_scr_offs_y() + ( _y * utils.CONST_SCREEN_BLOCKS_SIZE ),
+										utils.CONST_SCREEN_BLOCKS_SIZE, 
+										utils.CONST_SCREEN_BLOCKS_SIZE );
 		}
 	}
 }
