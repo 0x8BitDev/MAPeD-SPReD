@@ -68,6 +68,7 @@ namespace MAPeD
 		private int m_sel_block_id	= -1;
 		
 		private bool m_drawing_state	= false;
+		private bool m_need_data_update	= false;
 
 		private int m_CHR_pix_offset = -1;
 		
@@ -118,7 +119,8 @@ namespace MAPeD
 		{
 			if( e.Button == MouseButtons.Left && edit_mode == EMode.bem_draw )
 			{
-				m_drawing_state = true;
+				m_drawing_state		= true;
+				m_need_data_update	= false;
 				
 				sel_quad_and_draw( e.X, e.Y, true );
 			}
@@ -131,6 +133,15 @@ namespace MAPeD
 				m_drawing_state = false;
 				
 				m_CHR_pix_offset = -1;
+				
+				if( m_need_data_update )
+				{
+					dispatch_event_pixel_changed();
+					dispatch_event_data_changed();
+					dispatch_event_need_gfx_update();
+					
+					m_need_data_update = false;
+				}
 			}
 		}
 
@@ -162,8 +173,11 @@ namespace MAPeD
 				}
 			}
 
-			dispatch_event_quad_selected();
-			
+			if( last_sel_quad_ind != m_sel_quad_ind )
+			{
+				dispatch_event_quad_selected();
+			}
+
 			if( _need_draw && m_data != null && palette_group.Instance.active_palette != -1 )
 			{
 				int x = _x >> 4;
@@ -175,13 +189,13 @@ namespace MAPeD
 				if( local_x >= 0 && local_y >= 0 && local_x < utils.CONST_SPR8x8_SIDE_PIXELS_CNT && local_y < utils.CONST_SPR8x8_SIDE_PIXELS_CNT )
 				{
 					uint block_data = m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ];
-					                               
+					
 					int chr_id	= tiles_data.get_block_CHR_id( block_data );
 					
 					int chr_x = chr_id % 16;
 					int chr_y = chr_id >> 4;
 					
-					palette_group plt = palette_group.Instance;					
+					palette_group plt = palette_group.Instance;
 #if DEF_NES
 					byte clr_slot = (byte)plt.get_palettes_arr()[ plt.active_palette ].get_color_slot();
 #else
@@ -227,9 +241,7 @@ namespace MAPeD
 						m_CHR_pix_offset = pix_offset;
 					}
 					
-					dispatch_event_pixel_changed();
-					dispatch_event_data_changed();
-					dispatch_event_need_gfx_update();
+					m_need_data_update = true;
 				}
 			}
 

@@ -1393,9 +1393,16 @@ namespace MAPeD
 #region tiles editor
 		private void enable_update_gfx_btn( bool _on )
 		{
-			BtnUpdateGFX.Enabled = _on;
-
-			BtnUpdateGFX.UseVisualStyleBackColor = !_on;
+			if( _on && ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) )
+			{
+				update_selected_block();
+			}
+			else
+			{
+				BtnUpdateGFX.Enabled = _on;
+			
+				BtnUpdateGFX.UseVisualStyleBackColor = !_on;
+			}
 		}
 		
 		void CHRBankChanged_Event(object sender, EventArgs e)
@@ -1718,26 +1725,26 @@ namespace MAPeD
 			}
 		}
 		
+		private void update_selected_block()
+		{
+			// update selected block image
+			int sel_block_id = m_tiles_processor.get_selected_block();
+			
+			if( sel_block_id >= 0 )
+			{
+				m_imagelist_manager.update_block( sel_block_id, m_view_type, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), PropertyPerBlockToolStripMenuItem.Checked, null, null, m_data_manager.screen_data_type );
+				m_tile_list_manager.update_tile( tile_list.EType.t_Blocks, sel_block_id );
+				
+				update_active_block_img( sel_block_id );
+				m_screen_editor.update();
+				m_patterns_manager_form.update();
+			}
+		}
+		
 		void CBoxBlockObjIdChanged_Event(object sender, EventArgs e)
 		{
 			m_tiles_processor.set_block_flags_obj_id( CBoxBlockObjId.SelectedIndex, PropertyPerBlockToolStripMenuItem.Checked );
 			
-			if( ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) && ( m_view_type == utils.ETileViewType.tvt_ObjectId ) )
-			{
-				// update selected block image
-				int sel_block_id = m_tiles_processor.get_selected_block();
-				
-				if( sel_block_id >= 0 )
-				{
-					m_imagelist_manager.update_block( sel_block_id, m_view_type, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), PropertyPerBlockToolStripMenuItem.Checked, null, null, m_data_manager.screen_data_type );
-					m_tile_list_manager.update_tiles( tile_list.EType.t_Blocks );
-					
-					update_active_block_img( sel_block_id );
-					m_screen_editor.update();
-					m_patterns_manager_form.update();
-				}
-			}
-			else
 			if( CBoxBlockObjId.Tag == null && m_view_type == utils.ETileViewType.tvt_ObjectId )
 			{
 				enable_update_gfx_btn( true );

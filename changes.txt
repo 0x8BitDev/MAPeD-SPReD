@@ -1,8 +1,8 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+01.02.2022 - Added automatic update of selected block data (Blocks (2x2):ON)
 31.01.2022 - Added canceling of a tile pattern creation and placement on the screen (by the RMB)
-31.01.2022 - Added quick update of a selected block when property is changed (View Type: Property Id; Blocks (2x2):ON)
 30.01.2022 - PCE: added native samples (HuC)
 21.01.2022 - Added option to clear blocks properties
 07.01.2022 - Added export of tiles/blocks images as MxN rectangular image (suggested by codediy)
