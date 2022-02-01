@@ -1397,12 +1397,10 @@ namespace MAPeD
 			{
 				update_selected_block();
 			}
-			else
-			{
-				BtnUpdateGFX.Enabled = _on;
 			
-				BtnUpdateGFX.UseVisualStyleBackColor = !_on;
-			}
+			BtnUpdateGFX.Enabled = _on;
+		
+			BtnUpdateGFX.UseVisualStyleBackColor = !_on;
 		}
 		
 		void CHRBankChanged_Event(object sender, EventArgs e)
