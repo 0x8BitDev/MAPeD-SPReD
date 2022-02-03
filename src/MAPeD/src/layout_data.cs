@@ -834,7 +834,7 @@ namespace MAPeD
 			}
 		}
 
-		public int get_adjacent_screen_index( int _scr_ind, int _x_offset, int _y_offset )
+		public int get_adjacent_screen_index( int _scr_ind, int _x_offset, int _y_offset, bool _optimized_ind = false )
 		{
 			int scr_cnt_x = get_width();
 			int scr_cnt_y = get_height();
@@ -863,7 +863,44 @@ namespace MAPeD
 				{
 					if( get_data( scr_mod_x_ind, scr_mod_y_ind ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 					{
-						return scr_mod_y_ind * scr_cnt_x + scr_mod_x_ind;  
+						if( _optimized_ind )
+						{
+							// get optimized screen index without 'holes'
+							return get_screen_index_opt( scr_mod_y_ind * scr_cnt_x + scr_mod_x_ind );
+						}
+						else
+						{
+							return scr_mod_y_ind * scr_cnt_x + scr_mod_x_ind;
+						}
+					}
+				}
+			}
+			
+			return -1;
+		}
+		
+		private int get_screen_index_opt( int _scr_ind )
+		{
+			int i;
+			int j;
+			
+			int opt_scr_ind = -1;
+			
+			int width	= get_width();
+			int height	= get_height();
+			
+			for( i = 0; i < height; i++ )
+			{
+				for( j = 0; j < width; j++ )
+				{
+					if( m_layout[ i ][ j ].m_scr_ind != CONST_EMPTY_CELL_ID )
+					{
+						++opt_scr_ind;
+
+						if( ( ( i * width ) + j ) == _scr_ind )
+						{
+							return opt_scr_ind; 
+						}
 					}
 				}
 			}

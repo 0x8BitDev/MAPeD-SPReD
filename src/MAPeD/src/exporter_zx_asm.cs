@@ -1222,13 +1222,6 @@ namespace MAPeD
 								throw new Exception( "Unexpected error! Can't find a screen data!" );
 							}
 						}
-						else
-						{
-							if( RBtnLayoutAdjacentScreenIndices.Checked )
-							{
-								scr_arr += "\n\tdw 0x00";
-							}
-						}
 					}
 				}
 				
@@ -1268,7 +1261,7 @@ namespace MAPeD
 
 		private string get_adjacent_screen_index( int _level_n, layout_data _data, int _scr_ind, int _x_offset, int _y_offset )
 		{
-			int adj_scr_ind = _data.get_adjacent_screen_index( _scr_ind, _x_offset, _y_offset );
+			int adj_scr_ind = _data.get_adjacent_screen_index( _scr_ind, _x_offset, _y_offset, true );
 			
 			if( adj_scr_ind > 255 )
 			{

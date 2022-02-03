@@ -117,7 +117,7 @@ _Lev0Scr0:
 	.byte $FF	; left adjacent screen index
 	.byte $FF	; up adjacent screen index
 	.byte $01	; right adjacent screen index
-	.byte $08	; down adjacent screen index
+	.byte $04	; down adjacent screen index
 
 _Lev0Scr1:
 	.byte 0
@@ -128,7 +128,7 @@ _Lev0Scr1:
 	.byte $00
 	.byte $FF
 	.byte $02
-	.byte $09
+	.byte $05
 
 _Lev0Scr2:
 	.byte 0
@@ -139,7 +139,7 @@ _Lev0Scr2:
 	.byte $01
 	.byte $FF
 	.byte $03
-	.byte $0A
+	.byte $06
 
 _Lev0Scr3:
 	.byte 0
@@ -150,7 +150,7 @@ _Lev0Scr3:
 	.byte $02
 	.byte $FF
 	.byte $FF
-	.byte $0B
+	.byte $07
 
 _Lev0Scr8:
 	.byte 0
@@ -160,7 +160,7 @@ _Lev0Scr8:
 
 	.byte $FF
 	.byte $00
-	.byte $09
+	.byte $05
 	.byte $FF
 
 _Lev0Scr9:
@@ -169,9 +169,9 @@ _Lev0Scr9:
 
 	.byte 5
 
-	.byte $08
+	.byte $04
 	.byte $01
-	.byte $0A
+	.byte $06
 	.byte $FF
 
 _Lev0Scr10:
@@ -180,9 +180,9 @@ _Lev0Scr10:
 
 	.byte 6
 
-	.byte $09
+	.byte $05
 	.byte $02
-	.byte $0B
+	.byte $07
 	.byte $FF
 
 _Lev0Scr11:
@@ -191,9 +191,9 @@ _Lev0Scr11:
 
 	.byte 7
 
-	.byte $0A
+	.byte $06
 	.byte $03
-	.byte $0C
+	.byte $08
 	.byte $FF
 
 _Lev0Scr12:
@@ -202,9 +202,9 @@ _Lev0Scr12:
 
 	.byte 8
 
-	.byte $0B
+	.byte $07
 	.byte $FF
-	.byte $0D
+	.byte $09
 	.byte $FF
 
 _Lev0Scr13:
@@ -213,9 +213,9 @@ _Lev0Scr13:
 
 	.byte 9
 
-	.byte $0C
+	.byte $08
 	.byte $FF
-	.byte $0E
+	.byte $0A
 	.byte $FF
 
 _Lev0Scr14:
@@ -224,9 +224,9 @@ _Lev0Scr14:
 
 	.byte 10
 
-	.byte $0D
+	.byte $09
 	.byte $FF
-	.byte $0F
+	.byte $0B
 	.byte $FF
 
 _Lev0Scr15:
@@ -235,10 +235,10 @@ _Lev0Scr15:
 
 	.byte 11
 
-	.byte $0E
+	.byte $0A
 	.byte $FF
 	.byte $FF
-	.byte $17
+	.byte $0C
 
 _Lev0Scr23:
 	.byte 0
@@ -247,9 +247,9 @@ _Lev0Scr23:
 	.byte 12
 
 	.byte $FF
-	.byte $0F
+	.byte $0B
 	.byte $FF
-	.byte $1F
+	.byte $0F
 
 _Lev0Scr29:
 	.byte 0
@@ -259,7 +259,7 @@ _Lev0Scr29:
 
 	.byte $FF
 	.byte $FF
-	.byte $1E
+	.byte $0E
 	.byte $FF
 
 _Lev0Scr30:
@@ -268,9 +268,9 @@ _Lev0Scr30:
 
 	.byte 14
 
-	.byte $1D
+	.byte $0D
 	.byte $FF
-	.byte $1F
+	.byte $0F
 	.byte $FF
 
 _Lev0Scr31:
@@ -279,8 +279,8 @@ _Lev0Scr31:
 
 	.byte 15
 
-	.byte $1E
-	.byte $17
+	.byte $0E
+	.byte $0C
 	.byte $FF
 	.byte $FF
 
@@ -290,10 +290,6 @@ _Lev0_ScrArr:
 	.word _Lev0Scr1
 	.word _Lev0Scr2
 	.word _Lev0Scr3
-	.word $00
-	.word $00
-	.word $00
-	.word $00
 	.word _Lev0Scr8
 	.word _Lev0Scr9
 	.word _Lev0Scr10
@@ -302,19 +298,7 @@ _Lev0_ScrArr:
 	.word _Lev0Scr13
 	.word _Lev0Scr14
 	.word _Lev0Scr15
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
 	.word _Lev0Scr23
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
 	.word _Lev0Scr29
 	.word _Lev0Scr30
 	.word _Lev0Scr31

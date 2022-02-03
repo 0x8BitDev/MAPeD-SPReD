@@ -121,17 +121,17 @@ _Lev0Scr2:
 ; use the _Lev0_ScrArr array to get a screen description by adjacent screen index
 	.byte $FF	; left adjacent screen index
 	.byte $FF	; up adjacent screen index
-	.byte $03	; right adjacent screen index
-	.byte $0B	; down adjacent screen index
+	.byte $01	; right adjacent screen index
+	.byte $05	; down adjacent screen index
 
 _Lev0Scr3:
 	.byte 0
 
 	.byte 1
 
-	.byte $02
+	.byte $00
 	.byte $FF
-	.byte $04
+	.byte $02
 	.byte $FF
 
 _Lev0Scr4:
@@ -139,7 +139,7 @@ _Lev0Scr4:
 
 	.byte 2
 
-	.byte $03
+	.byte $01
 	.byte $FF
 	.byte $FF
 	.byte $FF
@@ -151,17 +151,17 @@ _Lev0Scr9:
 
 	.byte $FF
 	.byte $FF
-	.byte $0A
-	.byte $12
+	.byte $04
+	.byte $06
 
 _Lev0Scr10:
 	.byte 0
 
 	.byte 4
 
-	.byte $09
+	.byte $03
 	.byte $FF
-	.byte $0B
+	.byte $05
 	.byte $FF
 
 _Lev0Scr11:
@@ -169,8 +169,8 @@ _Lev0Scr11:
 
 	.byte 5
 
-	.byte $0A
-	.byte $02
+	.byte $04
+	.byte $00
 	.byte $FF
 	.byte $FF
 
@@ -180,9 +180,9 @@ _Lev0Scr18:
 	.byte 6
 
 	.byte $FF
-	.byte $09
+	.byte $03
 	.byte $FF
-	.byte $1B
+	.byte $07
 
 _Lev0Scr27:
 	.byte 0
@@ -190,8 +190,8 @@ _Lev0Scr27:
 	.byte 7
 
 	.byte $FF
-	.byte $12
-	.byte $1C
+	.byte $06
+	.byte $08
 	.byte $FF
 
 _Lev0Scr28:
@@ -199,9 +199,9 @@ _Lev0Scr28:
 
 	.byte 8
 
-	.byte $1B
+	.byte $07
 	.byte $FF
-	.byte $1D
+	.byte $09
 	.byte $FF
 
 _Lev0Scr29:
@@ -209,9 +209,9 @@ _Lev0Scr29:
 
 	.byte 9
 
-	.byte $1C
+	.byte $08
 	.byte $FF
-	.byte $1E
+	.byte $0A
 	.byte $FF
 
 _Lev0Scr30:
@@ -219,10 +219,10 @@ _Lev0Scr30:
 
 	.byte 10
 
-	.byte $1D
+	.byte $09
 	.byte $FF
 	.byte $FF
-	.byte $27
+	.byte $0B
 
 _Lev0Scr39:
 	.byte 0
@@ -230,8 +230,8 @@ _Lev0Scr39:
 	.byte 11
 
 	.byte $FF
-	.byte $1E
-	.byte $28
+	.byte $0A
+	.byte $0C
 	.byte $FF
 
 _Lev0Scr40:
@@ -239,9 +239,9 @@ _Lev0Scr40:
 
 	.byte 12
 
-	.byte $27
+	.byte $0B
 	.byte $FF
-	.byte $29
+	.byte $0D
 	.byte $FF
 
 _Lev0Scr41:
@@ -249,9 +249,9 @@ _Lev0Scr41:
 
 	.byte 13
 
-	.byte $28
+	.byte $0C
 	.byte $FF
-	.byte $2A
+	.byte $0E
 	.byte $FF
 
 _Lev0Scr42:
@@ -259,9 +259,9 @@ _Lev0Scr42:
 
 	.byte 14
 
-	.byte $29
+	.byte $0D
 	.byte $FF
-	.byte $2B
+	.byte $0F
 	.byte $FF
 
 _Lev0Scr43:
@@ -269,9 +269,9 @@ _Lev0Scr43:
 
 	.byte 15
 
-	.byte $2A
+	.byte $0E
 	.byte $FF
-	.byte $2C
+	.byte $10
 	.byte $FF
 
 _Lev0Scr44:
@@ -279,52 +279,24 @@ _Lev0Scr44:
 
 	.byte 16
 
-	.byte $2B
+	.byte $0F
 	.byte $FF
 	.byte $FF
 	.byte $FF
 
 ; screens array
 _Lev0_ScrArr:
-	.word $00
-	.word $00
 	.word _Lev0Scr2
 	.word _Lev0Scr3
 	.word _Lev0Scr4
-	.word $00
-	.word $00
-	.word $00
-	.word $00
 	.word _Lev0Scr9
 	.word _Lev0Scr10
 	.word _Lev0Scr11
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
 	.word _Lev0Scr18
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
 	.word _Lev0Scr27
 	.word _Lev0Scr28
 	.word _Lev0Scr29
 	.word _Lev0Scr30
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
 	.word _Lev0Scr39
 	.word _Lev0Scr40
 	.word _Lev0Scr41
@@ -351,17 +323,17 @@ _Lev1Scr7:
 ; use the _Lev1_ScrArr array to get a screen description by adjacent screen index
 	.byte $FF	; left adjacent screen index
 	.byte $FF	; up adjacent screen index
-	.byte $08	; right adjacent screen index
-	.byte $11	; down adjacent screen index
+	.byte $01	; right adjacent screen index
+	.byte $07	; down adjacent screen index
 
 _Lev1Scr8:
 	.byte 1
 
 	.byte 18
 
-	.byte $07
+	.byte $00
 	.byte $FF
-	.byte $09
+	.byte $02
 	.byte $FF
 
 _Lev1Scr9:
@@ -369,7 +341,7 @@ _Lev1Scr9:
 
 	.byte 19
 
-	.byte $08
+	.byte $01
 	.byte $FF
 	.byte $FF
 	.byte $FF
@@ -381,17 +353,17 @@ _Lev1Scr13:
 
 	.byte $FF
 	.byte $FF
-	.byte $0E
-	.byte $17
+	.byte $04
+	.byte $0B
 
 _Lev1Scr14:
 	.byte 1
 
 	.byte 21
 
-	.byte $0D
+	.byte $03
 	.byte $FF
-	.byte $0F
+	.byte $05
 	.byte $FF
 
 _Lev1Scr15:
@@ -399,9 +371,9 @@ _Lev1Scr15:
 
 	.byte 22
 
-	.byte $0E
+	.byte $04
 	.byte $FF
-	.byte $10
+	.byte $06
 	.byte $FF
 
 _Lev1Scr16:
@@ -409,9 +381,9 @@ _Lev1Scr16:
 
 	.byte 23
 
-	.byte $0F
+	.byte $05
 	.byte $FF
-	.byte $11
+	.byte $07
 	.byte $FF
 
 _Lev1Scr17:
@@ -419,8 +391,8 @@ _Lev1Scr17:
 
 	.byte 24
 
-	.byte $10
-	.byte $07
+	.byte $06
+	.byte $00
 	.byte $FF
 	.byte $FF
 
@@ -431,17 +403,17 @@ _Lev1Scr20:
 
 	.byte $FF
 	.byte $FF
-	.byte $15
-	.byte $1E
+	.byte $09
+	.byte $0C
 
 _Lev1Scr21:
 	.byte 1
 
 	.byte 26
 
-	.byte $14
+	.byte $08
 	.byte $FF
-	.byte $16
+	.byte $0A
 	.byte $FF
 
 _Lev1Scr22:
@@ -449,9 +421,9 @@ _Lev1Scr22:
 
 	.byte 27
 
-	.byte $15
+	.byte $09
 	.byte $FF
-	.byte $17
+	.byte $0B
 	.byte $FF
 
 _Lev1Scr23:
@@ -459,8 +431,8 @@ _Lev1Scr23:
 
 	.byte 28
 
-	.byte $16
-	.byte $0D
+	.byte $0A
+	.byte $03
 	.byte $FF
 	.byte $FF
 
@@ -470,52 +442,25 @@ _Lev1Scr30:
 	.byte 29
 
 	.byte $FF
-	.byte $14
+	.byte $08
 	.byte $FF
 	.byte $FF
 
 ; screens array
 _Lev1_ScrArr:
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
 	.word _Lev1Scr7
 	.word _Lev1Scr8
 	.word _Lev1Scr9
-	.word $00
-	.word $00
-	.word $00
 	.word _Lev1Scr13
 	.word _Lev1Scr14
 	.word _Lev1Scr15
 	.word _Lev1Scr16
 	.word _Lev1Scr17
-	.word $00
-	.word $00
 	.word _Lev1Scr20
 	.word _Lev1Scr21
 	.word _Lev1Scr22
 	.word _Lev1Scr23
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
 	.word _Lev1Scr30
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
-	.word $00
 
 #endasm
 
