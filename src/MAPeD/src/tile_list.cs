@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 02.04.2021
  * Time: 18:24
  */
@@ -92,6 +92,17 @@ namespace MAPeD
 				}
 			}
 		}
+
+		public void select( tile_list.EType _type, int _id )
+		{
+			foreach( var obj in m_objs )
+			{
+				if( obj.type == _type )
+				{
+					obj.select( _id );
+				}
+			}
+		}
 	}
 	
 	public class tile_list : drawable_base
@@ -116,7 +127,8 @@ namespace MAPeD
 		
 		private readonly Label			m_label;
 
-		private int m_sel_tile_ind		= -1;
+		private int m_cursor_tile_ind		= -1;
+		private int m_sel_tile_ind			= -1;
 		
 		private int m_tiles_width_cnt	= -1;
 		private int m_tiles_height_cnt	= -1;
@@ -149,6 +161,7 @@ namespace MAPeD
 
 			pbox.MouseUp	+= TileList_MouseUp;
 			pbox.MouseMove	+= TileList_MouseMove;
+			pbox.MouseLeave	+= TileList_MouseLeave;
 
 			pbox.VisibleChanged	+= VisibleChanged_Event;
 			
@@ -188,9 +201,22 @@ namespace MAPeD
 			base.prepare_pix_box();
 		}
 		
-		public int selected_tile_ind()
+		public int cursor_tile_ind()
 		{
-			return m_sel_tile_ind;
+			return m_cursor_tile_ind;
+		}
+		
+		public void select( int _id )
+		{
+			if( m_sel_tile_ind >= 0 )
+			{
+				// reset selection
+				update_tile( m_sel_tile_ind, false );
+			}
+			
+			m_sel_tile_ind = _id;
+			
+			draw_selection();
 		}
 		
 		public void visible( bool _on )
@@ -213,20 +239,31 @@ namespace MAPeD
 			int pos_x = Math.Min( e.X, m_pix_box.Width - 2 );
 			int pos_y = Math.Min( e.Y, m_pix_box.Height - 2 );
 			
-			if( m_sel_tile_ind >= 0 )
+			if( ( m_cursor_tile_ind >= 0 ) && ( m_sel_tile_ind != m_cursor_tile_ind ) )
 			{
 				// draw tile to remove selection border
-				update_tile( m_sel_tile_ind );
+				update_tile( m_cursor_tile_ind, false );
 			}
 			
-			m_sel_tile_ind = ( pos_x / ( m_img_list.ImageSize.Width + 1 ) ) + ( pos_y / ( ( m_img_list.ImageSize.Height + 1 ) ) ) * m_tiles_width_cnt;
+			m_cursor_tile_ind = ( pos_x / ( m_img_list.ImageSize.Width + 1 ) ) + ( pos_y / ( ( m_img_list.ImageSize.Height + 1 ) ) ) * m_tiles_width_cnt;
 			
-			m_sel_tile_ind = ( m_sel_tile_ind > m_img_list.Images.Count - 1 ) ? -1:m_sel_tile_ind;
+			m_cursor_tile_ind = ( m_cursor_tile_ind > m_img_list.Images.Count - 1 ) ? -1:m_cursor_tile_ind;
 
-			if( m_sel_tile_ind >= 0 )
+			if( ( m_cursor_tile_ind >= 0 ) && ( m_sel_tile_ind != m_cursor_tile_ind ) )
 			{
 				// draw selection border
-				draw_tile_border( m_sel_tile_ind );
+				draw_tile_border( m_cursor_tile_ind );
+			}
+		}
+		
+		private void TileList_MouseLeave(object sender, System.EventArgs e)
+		{
+			if( ( m_cursor_tile_ind >= 0 ) && ( m_sel_tile_ind != m_cursor_tile_ind ) )
+			{
+				// remove selection border
+				update_tile( m_cursor_tile_ind );
+				
+				m_cursor_tile_ind = -1;
 			}
 		}
 
@@ -257,7 +294,7 @@ namespace MAPeD
 			{
 				int str_pos_y = pos_y + m_img_list.ImageSize.Height - utils.fnt10_Arial.Height;
 				
-				string info = String.Format( "{0:X2}", m_sel_tile_ind );
+				string info = String.Format( "{0:X2}", _ind );
 				
 				utils.brush.Color = Color.FromArgb( unchecked( (int)0xff000000 ) );
 				m_gfx.DrawString( info, utils.fnt10_Arial, utils.brush, pos_x + 2, str_pos_y + 1 );
@@ -285,7 +322,7 @@ namespace MAPeD
 			invalidate();
 		}
 
-		public void update_tile( int _ind )
+		public void update_tile( int _ind, bool _draw_selection = true )
 		{
 			int tile_width	= m_img_list.ImageSize.Width;
 			int tile_height	= m_img_list.ImageSize.Height;
@@ -295,7 +332,20 @@ namespace MAPeD
 			
 			m_gfx.DrawImageUnscaled( m_img_list.Images[ _ind ], pos_x + 1, pos_y + 1 );
 			
+			if( _draw_selection )
+			{
+				draw_selection();
+			}
+			
 			invalidate();
+		}
+		
+		private void draw_selection()
+		{
+			if( m_sel_tile_ind >= 0 )
+			{
+				draw_tile_border( m_sel_tile_ind );
+			}
 		}
 		
 		public void reset()
@@ -328,11 +378,13 @@ namespace MAPeD
 				for( int i = 0; i < m_img_list.Images.Count; i++ )
 				{
 					m_gfx.DrawImage( 	m_img_list.Images[ i ], 
-					                	( ( i % m_tiles_width_cnt ) * ( step_x ) ) + 1,
-					                	( ( i / m_tiles_width_cnt ) * ( step_y ) ) + 1,
+										( ( i % m_tiles_width_cnt ) * ( step_x ) ) + 1,
+										( ( i / m_tiles_width_cnt ) * ( step_y ) ) + 1,
 										m_img_list.ImageSize.Width, 
 										m_img_list.ImageSize.Height );
 				}
+
+				draw_selection();
 			}
 			
 			invalidate();

@@ -590,6 +590,9 @@ namespace MAPeD
 			m_data_manager.reset();
 			fill_entity_data( null );
 
+			m_tile_list_manager.select( tile_list.EType.t_Tiles, -1 );
+			m_tile_list_manager.select( tile_list.EType.t_Blocks, -1 );
+			
 			entity_instance.reset_instances_counter();
 			
 			CBoxTileViewType.SelectedIndex = ( int )utils.ETileViewType.tvt_Graphics;
@@ -1688,6 +1691,8 @@ namespace MAPeD
 			{
 				update_active_block_img( _id );
 			}
+			
+			m_tile_list_manager.select( tile_list.EType.t_Blocks, _id );
 		}
 		
 		void PanelTilesClick_Event(object sender, EventArgs e)
@@ -1699,12 +1704,12 @@ namespace MAPeD
 		{
 			if( _id >= 0 )
 			{
-				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
-				
-				m_tiles_processor.tile_select_event( _id, data );
-				
+				m_tiles_processor.tile_select_event( _id, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+			
 				update_active_tile_img( _id );
 			}
+			
+			m_tile_list_manager.select( tile_list.EType.t_Tiles, _id );
 		}
 
 		private void update_active_tile_img( int _ind )
@@ -1938,12 +1943,12 @@ namespace MAPeD
 		{
 			Control cntrl = ( ( sender as ToolStripDropDownItem ).Owner as ContextMenuStrip ).SourceControl;
 			
-			return ( cntrl.Tag as tile_list ).selected_tile_ind();
+			return ( cntrl.Tag as tile_list ).cursor_tile_ind();
 		}
 
 		int get_sender_index( object sender )
 		{
-			return ( sender as tile_list ).selected_tile_ind();
+			return ( sender as tile_list ).cursor_tile_ind();
 		}
 		
 		void CopyBlockToolStripMenuItemClick_Event(object sender, EventArgs e)

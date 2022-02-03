@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 26.11.2018
  * Time: 17:38
  */
@@ -100,7 +100,7 @@ namespace MAPeD
 		
 		private void BtnItemClick( object sender, EventArgs e )
 		{
-			m_active_item_id = ( sender as tile_list ).selected_tile_ind();
+			m_active_item_id = ( sender as tile_list ).cursor_tile_ind();
 			
 			if( BtnBlocks.Enabled )
 			{
