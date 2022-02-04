@@ -148,7 +148,8 @@ namespace MAPeD
 			m_layout_editor = new layout_editor( PBoxLayout, LayoutLabel, m_data_manager.get_tiles_data(), m_imagelist_manager.get_screen_list() );
 			m_layout_editor.subscribe_event( m_data_manager );
 			m_layout_editor.subscribe_event( m_screen_editor );
-			m_layout_editor.EntityInstanceSelected += new EventHandler( MainForm_EntityInstanceSelected );
+			m_layout_editor.EntityInstanceSelected	+= new EventHandler( MainForm_EntityInstanceSelected );
+			m_layout_editor.ResetSelectedScreen		+= new EventHandler( MainForm_ResetSelectedScreen );
 			
 			m_data_manager.SetEntitiesData += new EventHandler( TreeViewEntities_update_data );
 			m_data_manager.AddEntity 	+= TreeViewEntities_add_entity;
@@ -3182,6 +3183,16 @@ namespace MAPeD
 			}
 			
 			m_layout_editor.update();
+		}
+		
+		void MainForm_ResetSelectedScreen(object sender, EventArgs e)
+		{
+			ListViewScreens.SelectedItems.Clear();
+		
+			m_layout_editor.set_active_screen( layout_data.CONST_EMPTY_CELL_ID );
+			m_layout_editor.update();
+
+			set_status_msg( "" );
 		}
 		
 		void BtnCreateLayoutClick_Event(object sender, EventArgs e)

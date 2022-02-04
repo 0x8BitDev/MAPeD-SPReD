@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 24.05.2017
  * Time: 16:40
  */
@@ -26,6 +26,7 @@ namespace MAPeD
 	{
 		public event EventHandler ScreenSelected;
 		public event EventHandler EntityInstanceSelected;
+		public event EventHandler ResetSelectedScreen;
 
 		private bool 	m_dispatch_selection_mode			= false;
 		private int		m_dispatch_mode_sel_screen_slot_id	= -1;
@@ -574,6 +575,17 @@ namespace MAPeD
 						layout_screen_data scr_data = m_layout.get_data( get_sel_scr_pos_x(), get_sel_scr_pos_y() );
 						
 						scr_data.m_scr_ind = m_active_screen_index;
+					}
+				}
+				else
+				{
+					// reset selection
+					if( ResetSelectedScreen != null )
+					{
+						ResetSelectedScreen( this, null );
+						
+						set_high_quality_render_mode( true );
+						return;
 					}
 				}
 					
