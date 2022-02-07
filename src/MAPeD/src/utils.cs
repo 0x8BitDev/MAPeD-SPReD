@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 16.03.2017
  * Time: 16:35
  */
@@ -665,6 +665,11 @@ namespace MAPeD
 		
 				if( sym_prev != sym || len >= byte.MaxValue || i == size - 1 )
 				{
+					if( ptr >= _arr.Length )
+					{
+						throw new Exception( "Negative compression warning!\nThe data can't be compressed!" );
+					}
+					
 					if( len > 1 )
 					{
 						if( len == 2 )
@@ -734,6 +739,11 @@ namespace MAPeD
 		
 				if( sym_prev != sym || len >= ushort.MaxValue || i == size - 1 )
 				{
+					if( ptr >= _arr.Length )
+					{
+						throw new Exception( "Negative compression warning!\nThe data can't be compressed!" );
+					}
+					
 					if( len > 1 )
 					{
 						if( len == 2 )
