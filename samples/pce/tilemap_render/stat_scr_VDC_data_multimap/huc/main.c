@@ -70,20 +70,6 @@ void	check_data()
 	
 	disp_on(); for(;;) { vsync(); }
 #endif
-
-#if	FLAG_MARKS
-	put_string( "MARKS aren't supported!", 1, 12 );
-	put_string( "Please, re-export!", 1, 13 );
-	
-	disp_on(); for(;;) { vsync(); }
-#endif
-
-#if	FLAG_RLE
-	put_string( "RLE isn't supported!", 1, 12 );
-	put_string( "Please, re-export!", 1, 13 );
-	
-	disp_on(); for(;;) { vsync(); }
-#endif
 }
 
 main()

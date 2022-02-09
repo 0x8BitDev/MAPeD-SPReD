@@ -268,6 +268,60 @@ bool	__mpd_disp_list_empty()
 
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 
+/*****************/
+/*		 */
+/* RLE functions */
+/*		 */
+/*****************/
+#if	FLAG_RLE * FLAG_MODE_STAT_SCR
+u16	__stat_scr_buff[ ScrGfxDataSize >> 1 ];
+
+void	__mpd_UNRLE_stat_scr( u16 _offset )
+{
+	u16	src;
+	u16	dst;
+	u16 	val1;
+	u16 	val2;
+	u16	val3;
+	u16	cnt;
+
+	src = _offset;
+	dst = 0;
+
+	val1 = mpd_farpeekw( mpd_VDCScr, src );
+	src += 2;
+
+	for(;;)
+	{
+		val2 = mpd_farpeekw( mpd_VDCScr, src );
+		src += 2;
+
+		if( val1 != val2 )
+		{
+			__stat_scr_buff[ dst++ ] = val2;
+
+			val3 = val2;
+
+			continue;
+		}
+
+		cnt = mpd_farpeekw( mpd_VDCScr, src );
+		src += 2;
+
+		if( !cnt )
+		{
+			return;
+		}
+
+		do
+		{
+			__stat_scr_buff[ dst++ ] = val3;
+		}
+		while( --cnt );
+	}
+}
+#endif	//FLAG_RLE * FLAG_MODE_STAT_SCR
+
 /********************************/
 /*				*/
 /* tilemap rendering functions	*/
@@ -322,10 +376,10 @@ u16		__blocks_offset;
 u16		__tiles_offset;
 #endif
 
-#if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 #define	SCR_CHRS_WIDTH	( SCR_BLOCKS2x2_WIDTH << 1 )
 #define	SCR_CHRS_HEIGHT	( SCR_BLOCKS2x2_HEIGHT << 1 )
 
+#if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 #if	FLAG_MODE_MULTIDIR_SCROLL
 #define	COLUMN_CHRS_CNT	SCR_CHRS_HEIGHT + 1
 #define	ROW_CHRS_CNT	SCR_CHRS_WIDTH + 1
@@ -698,7 +752,12 @@ void	mpd_draw_screen()
 	// load BAT
 
 #if	FLAG_MODE_STAT_SCR
-	mpd_load_bat( 0, mpd_VDCScr, __curr_scr->VDC_data_offset, SCR_BLOCKS2x2_WIDTH << 1, SCR_BLOCKS2x2_HEIGHT << 1 );
+#if	FLAG_RLE
+	__mpd_UNRLE_stat_scr( __curr_scr->VDC_data_offset );
+	mpd_load_bat( 0, __stat_scr_buff, 0, SCR_CHRS_WIDTH, SCR_CHRS_HEIGHT );
+#else
+	mpd_load_bat( 0, mpd_VDCScr, __curr_scr->VDC_data_offset, SCR_CHRS_WIDTH, SCR_CHRS_HEIGHT );
+#endif	//FLAG_RLE
 #elif	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 	__mpd_draw_tiled_screen();
 #endif
