@@ -30,7 +30,7 @@ _L1:
 
 	ld b, a
 
-	jr nz, _L1
+	jr _L1
 _L2:
 	ld a, (de)
 	inc de
