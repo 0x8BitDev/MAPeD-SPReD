@@ -519,6 +519,18 @@ namespace MAPeD
 
 			_sw.WriteLine( "\n" + c_def + "ScrPixelsWidth\t" + c_def_eq + get_tiles_cnt_width( 1 ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t" + c_comment + " screen width in pixels" );
 			_sw.WriteLine( c_def + "ScrPixelsHeight\t" + c_def_eq + get_tiles_cnt_height( 1 ) * ( RBtnTiles2x2.Checked ? 16:32 ) + "\t" + c_comment + " screen height in pixels" );
+			
+			if( RBtnModeStaticScreen.Checked )
+			{
+				if( m_C_writer != null )
+				{
+					_sw.WriteLine( "\n" + c_def + "ScrGfxDataSize\t" + m_VDP_ready_scr_data_size + "\t// static screen data size in bytes\n" );
+				}
+				else
+				{
+					_sw.WriteLine( "\nScrGfxDataSize = " + m_VDP_ready_scr_data_size + "\t; static screen data size in bytes\n" );
+				}
+			}
 		}
 		
 		private string get_C_data_prefix()
@@ -1020,18 +1032,6 @@ namespace MAPeD
 					if( m_C_writer != null )
 					{
 						m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + label + ";\t// " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "VDC-ready data array for each screen" );
-					}
-					
-					if( !CheckBoxRLE.Checked )
-					{
-						if( m_C_writer != null )
-						{
-							m_C_writer.WriteLine( "const u16 ScrGfxDataSize = " + m_VDP_ready_scr_data_size + ";" );
-						}
-						else
-						{
-							_sw.WriteLine( "\nScrGfxDataSize = " + m_VDP_ready_scr_data_size + "\n" );
-						}
 					}
 				}
 				
