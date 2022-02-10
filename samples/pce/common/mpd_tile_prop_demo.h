@@ -134,14 +134,21 @@ bool	mpd_tile_prop_demo_init()
 	}
 }
 
-bool	__check_map_properties( u8 _map_ind_mul2 )
+bool	__check_map_properties( u8 _map_ind )
 {
+	u8	chr_id_mul2;
 	u16	i;
 	u16	beg_offset;
 	u16	end_offset;
 
-	beg_offset = mpd_farpeekw( mpd_PropsOffs, _map_ind_mul2 );
-	end_offset = mpd_farpeekw( mpd_PropsOffs, _map_ind_mul2 + 2 );
+#if	FLAG_MODE_MULTIDIR_SCROLL
+	chr_id_mul2	= _map_ind << 1;
+#else
+	chr_id_mul2	= ( *mpd_MapsArr[ _map_ind ] )->chr_id << 1;
+#endif
+
+	beg_offset = mpd_farpeekw( mpd_PropsOffs, chr_id_mul2 );
+	end_offset = mpd_farpeekw( mpd_PropsOffs, chr_id_mul2 + 2 );
 
 	for( i = beg_offset; i < end_offset; i++ )
 	{
@@ -163,7 +170,7 @@ u8	__check_properties()
 
 	for( i = 0; i < MAPS_CNT; i++ )
 	{
-		if( __check_map_properties( i << 1 ) )
+		if( __check_map_properties( i ) )
 		{
 			++valid_maps_cnt;
 		}
@@ -182,7 +189,7 @@ void	__display_next_map()
 	{
 		__map_ind = ++__map_ind % MAPS_CNT;
 	}
-	while( !__check_map_properties( __map_ind << 1 ) );
+	while( !__check_map_properties( __map_ind ) );
 
 	/* init tilemap renderer data */
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
