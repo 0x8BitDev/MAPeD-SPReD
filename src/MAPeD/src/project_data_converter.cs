@@ -552,7 +552,7 @@ namespace MAPeD
 		}
 		
 		public override void load_screens(	BinaryReader 						_br, 
-											load_project_data					_prj_data, 
+											project_data_desc					_prj_data, 
 											data_sets_manager.EScreenDataType	_scr_type, 
 											tiles_data 							_data )
 		{
