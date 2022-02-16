@@ -2,7 +2,7 @@
 ;
 ; Multidirectional scroller demo
 ;
-; Copyright 2019-2020 0x8BitDev ( MIT license )
+; Copyright 2019-2022 0x8BitDev ( MIT license )
 ;
 ;########################################################################
 
@@ -230,21 +230,21 @@ init_game_level:
 	; load palette into the first colors group
 
 	VDP_WRITE_CLR_CMD $0000
-	VDP_WRITE_DATA_ARRAY Lev0_Palette 32
+	VDP_WRITE_DATA_ARRAY Bank0_Palette 32
 
 	; load CHR data
 
-	ld hl, Lev0_CHR
-	ld bc, Lev0_CHR_data_size
+	ld hl, Bank0_CHR
+	ld bc, Bank0_CHR_data_size
 	ld de, $0000 + ( $20 * MAP_CHRS_OFFSET )	; VRAM addr (the first CHR bank)
 
 	call VDP_load_tiles
 
 .ifdef	TR_DATA_TILES4X4
-	ld hl, Lev0_Tiles
+	ld hl, Bank0_Tiles
 	ld (TR_TILES4x4), hl
 .endif
-	ld hl, Lev0_Attrs
+	ld hl, Bank0_Attrs
 	ld (TR_BLOCK_ATTRS), hl
 
 .ifdef	TR_DATA_RLE

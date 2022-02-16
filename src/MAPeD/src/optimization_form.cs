@@ -180,8 +180,7 @@ namespace MAPeD
 			byte[] img_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
 			
 			int size_offs;			
-			int size = _data.get_first_free_spr8x8_id();
-			size = size < 0 ? platform_data.get_CHR_bank_max_sprites_cnt():size;
+			int size = _data.get_first_free_spr8x8_id( false );
 			
 			for( int CHR_n = 0; CHR_n < size; CHR_n++ )
 			{
@@ -313,8 +312,7 @@ namespace MAPeD
 			uint sum;
 			int block_offset;
 			
-			int size = _data.get_first_free_block_id();
-			size = size < 0 ? platform_data.get_max_blocks_cnt():size;
+			int size = _data.get_first_free_block_id( false );
 			
 			for( int block_n = 0; block_n < size; block_n++ )
 			{
@@ -498,8 +496,7 @@ namespace MAPeD
 		{
 			int deleted_tiles_cnt = 0;
 			
-			int size = _data.get_first_free_tile_id();
-			size = size < 0 ? platform_data.get_max_tiles_cnt():size;
+			int size = _data.get_first_free_tile_id( false );
 			
 			for( int tile_n = 0; tile_n < size; tile_n++ )
 			{
@@ -677,7 +674,7 @@ namespace MAPeD
 							return;
 						}
 					});
-				                             	
+					
                  	if( res )
                  	{
                  		return;
@@ -700,8 +697,7 @@ namespace MAPeD
 				byte[] A_CHR_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
 				byte[] B_CHR_buff = new byte[ utils.CONST_SPR8x8_TOTAL_PIXELS_CNT ];
 				
-				int ff_block_id = _data.get_first_free_block_id();
-				ff_block_id = ff_block_id < 0 ? platform_data.get_max_blocks_cnt():ff_block_id;
+				int ff_block_id = _data.get_first_free_block_id( false );
 				
 				for( int blockA_n = 0; blockA_n < ff_block_id; blockA_n++ )
 				{

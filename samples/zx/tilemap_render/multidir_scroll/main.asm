@@ -1,6 +1,6 @@
 ;###################################################################
 ;
-; Copyright 2018-2021 0x8BitDev ( MIT license )
+; Copyright 2018-2022 0x8BitDev ( MIT license )
 ;
 ;###################################################################
 ;
@@ -34,14 +34,14 @@ main
 		ld sp, 24999
 
 		LOAD_WDATA Lev0_Map, 	tilemap_render.map_data		; game level tile map address
-		LOAD_WDATA Lev0_Gfx,	tilemap_render.map_tiles_gfx	; tile graphics data
+		LOAD_WDATA Bank0_Gfx,	tilemap_render.map_tiles_gfx	; tile graphics data
 
 		IF TR_COLORED_MAP
-		LOAD_WDATA Lev0_Clrs,	tilemap_render.map_tiles_clr	; tile colors data
+		LOAD_WDATA Bank0_Clrs,	tilemap_render.map_tiles_clr	; tile colors data
 		ENDIF //TR_COLORED_MAP
 
 		IF TR_DATA_TILES4X4
-		LOAD_WDATA Lev0_Tiles,	tilemap_render.map_tiles4x4	; tiles 4x4 data
+		LOAD_WDATA Bank0_Tiles,	tilemap_render.map_tiles4x4	; tiles 4x4 data
 		ENDIF //TR_DATA_TILES4X4
 
 		LOAD_WDATA Lev0_t_tiles,tilemap_render.map_data_cnt	; number of tiles in map

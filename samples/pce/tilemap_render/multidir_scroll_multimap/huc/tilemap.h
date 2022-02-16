@@ -80,10 +80,12 @@ typedef struct
 #endif
 } mpd_SCREEN;
 
-// *** Lev0 ***
-
 extern u16*	chr0;
+extern u16*	chr1;
+
+// *** Lev0 ***
 extern u8	Lev0_StartScr;	// start screen
+const u8	Lev0_TilesCnt	= 246;	// map tiles count
 
 #asm
 _Lev0_StartScr	= 3	; start screen
@@ -160,9 +162,8 @@ extern u8	Lev0_WScrCnt;	// number of screens in width
 extern u8	Lev0_HScrCnt;	// number of screens in height
 
 // *** Lev1 ***
-
-extern u16*	chr1;
 extern u8	Lev1_StartScr;	// start screen
+const u8	Lev1_TilesCnt	= 174;	// map tiles count
 
 #asm
 _Lev1_StartScr	= 36	; start screen
@@ -325,6 +326,7 @@ extern u16*	mpd_MapsOffs;
 extern u16*	mpd_MapsTbl;
 extern u16*	mpd_MapsTblOffs;
 extern u16*	mpd_Plts;
+extern u8*	mpd_MapsCHRBanks;
 
 extern mpd_SCREEN** mpd_MapsArr[];
 

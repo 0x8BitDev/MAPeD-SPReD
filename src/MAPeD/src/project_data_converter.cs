@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 26.03.2021
  * Time: 13:05
  */
@@ -30,7 +30,7 @@ namespace MAPeD
 		void palettes_processing( byte _ver, platform_data.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main );
 		
 		void load_screens(	BinaryReader 						_br, 
-							load_project_data 					_prj_data, 
+							project_data_desc					_prj_data, 
 							data_sets_manager.EScreenDataType 	_scr_type, 
 							tiles_data 							_data );
 		
@@ -251,7 +251,7 @@ namespace MAPeD
 		}
 		
 		public virtual void load_screens(	BinaryReader 						_br, 
-											load_project_data 					_prj_data, 
+											project_data_desc					_prj_data, 
 											data_sets_manager.EScreenDataType 	_scr_type, 
 											tiles_data 							_data )
 		{
@@ -429,7 +429,7 @@ namespace MAPeD
 			
 			int added_CHRs = 0;
 			
-			int chr_id = _data.get_first_free_spr8x8_id();
+			int chr_id = _data.get_first_free_spr8x8_id( true );
 			
 			if( chr_id >= 0 )
 			{
@@ -628,8 +628,7 @@ namespace MAPeD
 				data 		= _data_mngr.get_tiles_data( data_n );
 				inner_data	= m_inner_tiles_data[ data_n ];
 
-				blocks_cnt = data.get_first_free_block_id();
-				blocks_cnt = ( ( blocks_cnt < 0 ) ? platform_data.get_max_blocks_cnt():blocks_cnt ) << 2;
+				blocks_cnt = data.get_first_free_block_id( false ) << 2;
 				
 				chr_id_flags = new bool[ blocks_cnt ];
 				Array.Clear( chr_id_flags, 0, chr_id_flags.Length );
@@ -815,7 +814,7 @@ namespace MAPeD
 		}
 	}
 	
-	public class load_project_data
+	public class project_data_desc
 	{
 		public byte		m_ver;
 		public string	m_file_ext;
@@ -829,7 +828,7 @@ namespace MAPeD
 		
 		public bool		m_scr_data_tiles4x4;
 		
-		public load_project_data()
+		public project_data_desc()
 		{
 			m_ver				= 0;
 			m_file_ext			= null;

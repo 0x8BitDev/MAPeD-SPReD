@@ -974,8 +974,7 @@ namespace MAPeD
 
 			ulong tile_data;
 			
-			m_last_empty_tile_ind = m_tiles_data.get_first_free_tile_id();
-			m_last_empty_tile_ind = ( m_last_empty_tile_ind < 0 ) ? platform_data.get_max_tiles_cnt():m_last_empty_tile_ind;
+			m_last_empty_tile_ind = m_tiles_data.get_first_free_tile_id( false );
 			m_last_empty_tile_ind = ( m_last_empty_tile_ind == 0 ) ? 1:m_last_empty_tile_ind;	// skip zero tile as reserved for an empty space
 			
 			m_block_tiles_cache.Clear();

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 24.07.2020
  * Time: 10:25
  */
@@ -118,7 +118,7 @@ namespace MAPeD
 #endif
 		}
 		
-		public DialogResult ShowDialog( load_project_data _prj_data )
+		public DialogResult ShowDialog( project_data_desc _prj_data )
 		{
 			if( _prj_data.m_scr_blocks_width == 0xff && _prj_data.m_scr_blocks_height == 0xff )
 			{

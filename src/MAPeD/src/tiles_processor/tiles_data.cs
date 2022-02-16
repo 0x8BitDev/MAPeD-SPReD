@@ -1059,7 +1059,7 @@ namespace MAPeD
 			return sum;
 		}
 		
-		public int get_first_free_spr8x8_id()
+		public int get_first_free_spr8x8_id( bool _neg_overflow )
 		{
 			int chr_id = 0;
 			
@@ -1071,7 +1071,7 @@ namespace MAPeD
 					
 					if( chr_id > platform_data.get_CHR_bank_max_sprites_cnt() - 1 )
 					{
-						return -1;
+						return _neg_overflow ? -1:platform_data.get_CHR_bank_max_sprites_cnt();
 					}
 					
 					break;
@@ -1081,7 +1081,7 @@ namespace MAPeD
 			return chr_id;
 		}
 
-		public int get_first_free_block_id()
+		public int get_first_free_block_id( bool _neg_overflow )
 		{
 			int block_id = 0;
 			
@@ -1093,7 +1093,7 @@ namespace MAPeD
 					
 					if( block_id > platform_data.get_max_blocks_cnt() - 1 )
 					{
-						return -1;
+						return _neg_overflow ? -1:platform_data.get_max_blocks_cnt();
 					}
 					
 					break;
@@ -1103,7 +1103,7 @@ namespace MAPeD
 			return block_id;
 		}
 
-		public int get_first_free_tile_id()
+		public int get_first_free_tile_id( bool _neg_overflow )
 		{
 			int tile_id = 0;
 			
@@ -1115,7 +1115,7 @@ namespace MAPeD
 					
 					if( tile_id > platform_data.get_max_tiles_cnt() - 1 )
 					{
-						return -1;
+						return _neg_overflow ? -1:platform_data.get_max_tiles_cnt();
 					}
 					
 					break;
@@ -1333,9 +1333,7 @@ namespace MAPeD
 #if DEF_SMS || DEF_SMD
 			int max_clr_ind = ( 2 << ( _bpp - 1 ) ) - 1;
 #endif			
-			int num_CHR_sprites = get_first_free_spr8x8_id();
-			
-			num_CHR_sprites = num_CHR_sprites < 0 ? platform_data.get_CHR_bank_max_sprites_cnt():num_CHR_sprites;
+			int num_CHR_sprites = get_first_free_spr8x8_id( false );
 			
 			for( i = 0; i < num_CHR_sprites; i++ )
 			{
@@ -1585,7 +1583,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void load( BinaryReader _br, load_project_data _prj_data, data_sets_manager.EScreenDataType _scr_type )
+		public void load( BinaryReader _br, project_data_desc _prj_data, data_sets_manager.EScreenDataType _scr_type )
 		{
 			int i;
 			uint val;

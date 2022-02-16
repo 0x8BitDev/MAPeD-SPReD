@@ -143,19 +143,19 @@ mpd_SCREEN* dump_main_data( int* _y_offs )
 
 	VDP_drawText( "Mode: 'multidir scroll'", 1, (*_y_offs)++ );
 
-	DUMP_U8_DATA( mpd_Lev0_CHR, 4, 0, (*_y_offs)++ );
+	DUMP_U16_DATA( mpd_Bank0_CHR, 4, 0, (*_y_offs)++ );
 
 #if CHECK_MAP_FLAG( MAP_FLAG_TILES4X4 )
 
-	DUMP_U32_DATA( mpd_Lev0_Tiles, 4, 0, (*_y_offs)++ );
+	DUMP_U32_DATA( mpd_Bank0_Tiles, 4, 0, (*_y_offs)++ );
 
 #endif
 
-	DUMP_U16_DATA( mpd_Lev0_Attrs, 8, 0, (*_y_offs)++ );
-	DUMP_U8_DATA( mpd_Lev0_Props, 8, 0, (*_y_offs)++ );
+	DUMP_U16_DATA( mpd_Bank0_Attrs, 8, 0, (*_y_offs)++ );
+	DUMP_U8_DATA( mpd_Bank0_Props, 8, 0, (*_y_offs)++ );
+	DUMP_U16_DATA( mpd_Bank0_Palette, 4, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_Lev0_Map, 8, 0, (*_y_offs)++ );
 	DUMP_U16_DATA( mpd_Lev0_MapTbl, 4, 0, (*_y_offs)++ );
-	DUMP_U16_DATA( mpd_Lev0_Palette, 4, 0, (*_y_offs)++ );
 
 #if CHECK_MAP_FLAG( MAP_FLAG_ENTITIES )
 

@@ -142,7 +142,7 @@ bool	__check_map_properties( u8 _map_ind )
 	u16	end_offset;
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-	chr_id_mul2	= _map_ind << 1;
+	chr_id_mul2	= mpd_farpeekb( mpd_MapsCHRBanks, _map_ind ) << 1;
 #else
 	chr_id_mul2	= ( *mpd_MapsArr[ _map_ind ] )->chr_id << 1;
 #endif

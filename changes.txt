@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+16.02.2022 - Fixed exported data for maps that share the same CHR bank
 03.02.2022 - Added highlight to selected tile/block
 03.02.2022 - Fixed adjacent screen indices data, removed null data holes
 01.02.2022 - Added automatic update of selected block data (Blocks (2x2):ON)

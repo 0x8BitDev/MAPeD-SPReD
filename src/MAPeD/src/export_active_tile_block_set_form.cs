@@ -35,8 +35,7 @@ namespace MAPeD
 			{
 				export_tiles_blocks_data(	delegate()
 											{
-												int ff_tile_id = _data.get_first_free_tile_id();
-												return ( ff_tile_id < 0 ) ? platform_data.get_max_tiles_cnt():ff_tile_id;
+												return _data.get_first_free_tile_id( false );
 											}, 
 											32, _tiles_imgs, _filename );
 			}
@@ -44,8 +43,7 @@ namespace MAPeD
 			{
 				export_tiles_blocks_data(	delegate()
 											{
-												int ff_block_id = _data.get_first_free_block_id();
-												return ( ff_block_id < 0 ) ? platform_data.get_max_blocks_cnt():ff_block_id;
+												return _data.get_first_free_block_id( false );
 											}, 
 											16, _blocks_imgs, _filename );
 			}

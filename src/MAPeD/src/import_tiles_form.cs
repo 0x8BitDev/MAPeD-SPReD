@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 14.12.2018
  * Time: 19:38
  */
@@ -179,14 +179,14 @@ namespace MAPeD
 				
 				int stride = bmp_data.Stride;
 				
-				int CHR_ind 	= _data.get_first_free_spr8x8_id();
+				int CHR_ind 	= _data.get_first_free_spr8x8_id( true );
 				
 				if( CHR_ind < 0 )
 				{
 					throw new Exception( "There is no free space in the active CHR bank!" );
 				}
 				
-				int block_ind 	= _data.get_first_free_block_id();
+				int block_ind 	= _data.get_first_free_block_id( true );
 				
 				if( block_ind < 0 )
 				{
@@ -240,7 +240,7 @@ namespace MAPeD
 					ulong tile_data = 0;
 					
 					tile_ind 		= 0;
-					beg_tile_ind	= _data.get_first_free_tile_id();
+					beg_tile_ind	= _data.get_first_free_tile_id( true );
 					
 					if( beg_tile_ind < 0 )
 					{
@@ -1847,8 +1847,7 @@ namespace MAPeD
 		void fix_unremapped_CHRs( tiles_data _data, bool[] _remapped_CHRs )
 		{
 			// fix unremapped CHR's to avoid errors
-			int max_CHRs_cnt = _data.get_first_free_spr8x8_id();			
-			max_CHRs_cnt = ( max_CHRs_cnt < 0 ) ? platform_data.get_CHR_bank_max_sprites_cnt():max_CHRs_cnt;
+			int max_CHRs_cnt = _data.get_first_free_spr8x8_id( false );
 			
 			for( int CHR_n = 0; CHR_n < max_CHRs_cnt; CHR_n++ )
 			{

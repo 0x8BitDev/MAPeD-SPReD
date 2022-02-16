@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 12:17
  */
@@ -777,7 +777,7 @@ namespace MAPeD
 			_bw.Write( utils.CONST_IO_DATA_END );
 		}
 		
-		public int load( BinaryReader _br, load_project_data _prj_data, IProgress< int > _progress, IProgress< string > _status )
+		public int load( BinaryReader _br, project_data_desc _prj_data, IProgress< int > _progress, IProgress< string > _status )
 		{
 			int load_progress = 0;
 			
@@ -989,7 +989,7 @@ namespace MAPeD
 			
 			// get a first free spr8x8 position
 			{
-				chr_id = data.get_first_free_spr8x8_id();
+				chr_id = data.get_first_free_spr8x8_id( true );
 				
 				if( chr_id < 0 )
 				{

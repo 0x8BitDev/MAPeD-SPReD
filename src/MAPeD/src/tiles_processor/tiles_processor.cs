@@ -224,8 +224,7 @@ namespace MAPeD
 				
 				data.tiles[ sel_tile ] = 0;
 				
-				int ff_tile_ind = data.get_first_free_tile_id();
-				ff_tile_ind = ff_tile_ind < 0 ? platform_data.get_max_tiles_cnt():ff_tile_ind;
+				int ff_tile_ind = data.get_first_free_tile_id( false );
 				int tile_n;
 				int block_pos_n;
 				
@@ -304,8 +303,7 @@ namespace MAPeD
 					data.blocks[ ( _block_ind << 2 ) + i ] = 0;
 				}
 				
-				int ff_block_ind = data.get_first_free_block_id();
-				ff_block_ind = ( ff_block_ind < 0 ? platform_data.get_max_blocks_cnt():ff_block_ind ) << 2;
+				int ff_block_ind = data.get_first_free_block_id( false ) << 2;
 				ff_block_ind = ff_block_ind < 4 ? 4:ff_block_ind;
 				
 				int block_n;

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 14.08.2020
  * Time: 16:25
  */
@@ -81,13 +81,9 @@ namespace MAPeD
 					
 					richTextBox.Text += "\n\n*** CHR bank " + CHR_bank_n + ": ***";
 					
-					ff_CHR		= data.get_first_free_spr8x8_id();
-					ff_block	= data.get_first_free_block_id();
-					ff_tile		= data.get_first_free_tile_id();
-					
-					ff_CHR		= ff_CHR < 0 ? platform_data.get_CHR_bank_max_sprites_cnt():ff_CHR;
-					ff_block	= ff_block < 0 ? platform_data.get_max_blocks_cnt():ff_block;
-					ff_tile		= ff_tile < 0 ? platform_data.get_max_tiles_cnt():ff_tile;
+					ff_CHR		= data.get_first_free_spr8x8_id( false );
+					ff_block	= data.get_first_free_block_id( false );
+					ff_tile		= data.get_first_free_tile_id( false );
 					
 					richTextBox.Text += "\nCHRs: " + ff_CHR + " / Blocks(2x2): " + ff_block + " / Tiles(4x4): " + ff_tile;
 					richTextBox.Text += "\nScreens: " + data.screen_data_cnt();

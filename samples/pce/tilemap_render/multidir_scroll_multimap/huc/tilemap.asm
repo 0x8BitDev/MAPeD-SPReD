@@ -41,3 +41,7 @@ _mpd_MapsTblOffs:
 
 _mpd_Plts:	.incbin "_tilemap_Plts.bin"	; (1024) palettes array of all exported data banks ( data offset = chr_id * 512 )
 
+_mpd_MapsCHRBanks:
+	.byte 0
+	.byte 1
+

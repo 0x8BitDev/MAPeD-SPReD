@@ -1,6 +1,6 @@
 ;###############################################
 ;
-; Copyright 2018-2020 0x8BitDev ( MIT license )
+; Copyright 2018-2022 0x8BitDev ( MIT license )
 ;
 ;###############################################
 ;
@@ -103,8 +103,8 @@ RESET:
 
 	.IF ::TR_DATA_TILES4X4
 
-	load_data_ptr Lev0_Tiles, 	TR_ms::tr_tiles
-	load_data_ptr Lev0_Attrs, 	TR_ms::tr_attrs
+	load_data_ptr Bank0_Tiles, 	TR_ms::tr_tiles
+	load_data_ptr Bank0_Attrs, 	TR_ms::tr_attrs
 
 	.ELSE
 
@@ -115,11 +115,11 @@ RESET:
 
 	.ENDIF; TR_DATA_TILES4X4
 
-	load_data_ptr Lev0_Blocks, 	TR_ms::tr_blocks
-	load_data_ptr Lev0_Props, 	TR_ms::tr_props
+	load_data_ptr Bank0_Blocks, 	TR_ms::tr_blocks
+	load_data_ptr Bank0_Props, 	TR_ms::tr_props
 	load_data_ptr Lev0_Map, 	TR_ms::tr_map
 	load_data_ptr Lev0_MapTbl,	TR_ms::tr_map_tbl
-	load_data_ptr Lev0_Palette, 	TR_ms::tr_palette
+	load_data_ptr Bank0_Palette, 	TR_ms::tr_palette
 
 	lda #Lev0_WScrCnt
 	sta TR_ms::tr_wscr_cnt
@@ -292,6 +292,6 @@ update_scroll_reg_shift_y_8pix:
 ; *** CHR BANKS ***
 
 	; banks: 0, 1, 2, 3, 4, 5, 6, 7
-	.incbin "../multidir_scroll_MMC3_4scr_mirr/data/tilemap_Lev0_CHR.bin"
+	.incbin "../multidir_scroll_MMC3_4scr_mirr/data/tilemap_Bank0_CHR.bin"
 
 ; *** END OF CHR BANKS ***

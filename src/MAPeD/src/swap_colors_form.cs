@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 24.08.2020
  * Time: 18:09
  */
@@ -186,8 +186,7 @@ namespace MAPeD
 				Array.Clear( CHR_flags, 0, CHR_flags.Length );
 
 				uint block_data;
-				int ff_block_n = m_tiles_data.get_first_free_block_id();
-				ff_block_n = ( ff_block_n < 0 ) ? platform_data.get_max_blocks_cnt():ff_block_n;
+				int ff_block_n = m_tiles_data.get_first_free_block_id( false );
 
 				for( block_n = 0; block_n < ff_block_n; block_n++ )
 				{

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 22.05.2019
  * Time: 10:30
  */
@@ -348,9 +348,7 @@ namespace MAPeD
 			
 			if( data != null )
 			{
-				int cnt = data.get_first_free_tile_id();
-				
-				return cnt >= 0 ? cnt:platform_data.get_max_tiles_cnt();
+				return data.get_first_free_tile_id( false );
 			}
 			
 			return -1;
@@ -362,9 +360,7 @@ namespace MAPeD
 			
 			if( data != null )
 			{
-				int cnt = data.get_first_free_block_id();
-				
-				return cnt >= 0 ? cnt:platform_data.get_max_blocks_cnt();
+				return data.get_first_free_block_id( false );
 			}
 			
 			return -1;
@@ -376,9 +372,7 @@ namespace MAPeD
 			
 			if( data != null )
 			{
-				int cnt = data.get_first_free_spr8x8_id();
-				
-				return cnt >= 0 ? cnt:platform_data.get_CHR_bank_max_sprites_cnt();
+				return data.get_first_free_spr8x8_id( false );
 			}
 			
 			return -1;

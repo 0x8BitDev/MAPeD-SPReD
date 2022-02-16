@@ -744,7 +744,7 @@ namespace MAPeD
 			
 			try
 			{
-				load_project_data prj_data = new load_project_data();
+				project_data_desc prj_data = new project_data_desc();
 				
 				// confirm the current screen size
 				update_screen_size();
@@ -1113,6 +1113,8 @@ namespace MAPeD
 								}
 			
 								update_graphics( true );
+								
+								enable_update_screens_btn( true );
 							}
 							break;
 #endif //DEF_NES || DEF_SMS
@@ -1982,7 +1984,7 @@ namespace MAPeD
 				
 				if( _paste_clone )
 				{
-					free_chr_ind = data.get_first_free_spr8x8_id();
+					free_chr_ind = data.get_first_free_spr8x8_id( false );
 	
 					if( free_chr_ind + utils.CONST_BLOCK_SIZE > platform_data.get_CHR_bank_max_sprites_cnt() )
 					{
@@ -2110,8 +2112,7 @@ namespace MAPeD
 				{
 					tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 					
-					int ff_block = data.get_first_free_block_id();
-					ff_block = ( ff_block < 0 ) ? platform_data.get_max_blocks_cnt():ff_block;
+					int ff_block = data.get_first_free_block_id( false );
 					
 					for( int block_n = 0; block_n < ff_block; block_n++ )
 					{

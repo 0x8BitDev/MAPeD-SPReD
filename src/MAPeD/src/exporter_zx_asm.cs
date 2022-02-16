@@ -29,6 +29,8 @@ namespace MAPeD
 		
 		private const string	CONST_FILENAME_LEVEL_POSTFIX	= "_Lev";
 		private const string	CONST_FILENAME_LEVEL_PREFIX		= "Lev";
+		private const string	CONST_FILENAME_BANK_POSTFIX		= "_Bank";
+		private const string	CONST_FILENAME_BANK_PREFIX		= "Bank";
 		private const string	CONST_BIN_EXT					= ".bin";
 		
 		private string	m_gfx_data_filename		= null;
@@ -336,20 +338,16 @@ namespace MAPeD
 			
 			BinaryWriter 	bw = null;
 			
-			Dictionary< ushort, ushort > blocks_data_dict = new Dictionary< ushort, ushort >( 256 << 2 );
-
-			List< ushort >	unique_tiles_arr	= new List< ushort >();
-			ushort[]		map_tiles_arr		= null;
-			byte[]			map_data_arr		= null;
-			byte[]			tile_props_arr		= null;
-			byte[]			tile_colors_arr		= null;
+			byte[]	map_tiles_arr	= null;
+			byte[]	tile_props_arr	= null;
+			byte[]	tile_colors_arr	= null;
 			
-			int[] 			img_buff 			= new int[ 64*4 ];
+			int[] 	img_buff 		= new int[ 64*4 ];
 
-			layout_data level_data = null;
+			layout_data level_data	= null;
 			
-			Bitmap 		level_bmp 		= null;
-			Graphics 	level_gfx		= null;
+			Bitmap 		level_bmp 	= null;
+			Graphics 	level_gfx	= null;
 			
 			int n_levels = m_data_mngr.layouts_data_cnt;
 			int n_scr_X;
@@ -361,41 +359,127 @@ namespace MAPeD
 			tiles_data bank_data = null;
 			
 			int n_banks	= scr_tiles_data.Count;
+			int bank_n;
 			int	map_data_size;
 			int tile_offs_x;
 			int tile_offs_y;
 			int n_Y_tiles;
 			int bank_ind;
+			int chk_bank_ind;
 			int n_screens;
+			int	max_tile_ind;
+			int	blocks_cnt;
 			ushort scr_tile_id;
 			ushort tile_data;
 			
-			ulong	tile_ind;
-			ushort 	block_ind;			
-			ushort	bank_block;
-			
-			long level_data_size;
 			long gfx_data_size;
 			long map_size;
 			
 			string level_prefix_str;
 			string level_postfix_str;
+			string bank_prefix_str;
+			string bank_postfix_str;
+			string maps_CHRs_arr	= "\nMapsCHRBanks:\n";
 			
 			layout_screen_data scr_data;
 			
 			int scr_width_blocks 	= platform_data.get_screen_blocks_width();
 			int scr_height_blocks 	= platform_data.get_screen_blocks_height();
+
+			_sw.WriteLine( "\n; *** GLOBAL DATA ***\n" );
+			
+			for( bank_n = 0; bank_n < n_banks; bank_n++ )
+			{
+				bank_data = scr_tiles_data[ bank_n ];
+				
+				bank_postfix_str	= CONST_FILENAME_BANK_POSTFIX + bank_n;
+				bank_prefix_str		= CONST_FILENAME_BANK_PREFIX + bank_n;
+				
+				m_gfx_data_filename		= m_filename + bank_postfix_str + "_GFX" + CONST_BIN_EXT;
+				m_tile_props_filename	= m_filename + bank_postfix_str + "_TilePrps" + CONST_BIN_EXT;
+				m_tile_colrs_filename	= m_filename + bank_postfix_str + "_TileClrs" + CONST_BIN_EXT;
+				m_tiles_data_filename	= m_filename + bank_postfix_str + "_Tiles" + CONST_BIN_EXT;
+				
+				blocks_cnt = bank_data.get_first_free_block_id( false );
+				
+				tile_colors_arr = new byte[ blocks_cnt << 2 ];
+				Array.Clear( tile_colors_arr, 0, tile_colors_arr.Length );
+				
+				tile_props_arr = new byte[ blocks_cnt * ( RBtnPropPerBlock.Checked ? 1:4 ) ];
+				Array.Clear( tile_props_arr, 0, tile_props_arr.Length );
+
+				if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+				{
+					max_tile_ind = bank_data.get_first_free_tile_id( false );
+				}
+				else
+				{
+					max_tile_ind = bank_data.get_first_free_block_id( false );
+				}
+
+				// save tiles gfx
+				{
+					bw = new BinaryWriter( File.Open( m_path + m_gfx_data_filename, FileMode.Create ) );
+					
+					for( int block_n = 0; block_n < blocks_cnt; block_n++ )
+					{
+						build_and_save_blocks2x2_gfx_and_props( bw, bank_data, block_n, tile_props_arr, 0, tile_colors_arr, 0, img_buff );
+					}
+					
+					gfx_data_size = bw.BaseStream.Length;
+					bw.Close();
+				}
+				
+				// write tiles properties
+				{
+					bw = new BinaryWriter( File.Open( m_path + m_tile_props_filename, FileMode.Create ) );
+					bw.Write( tile_props_arr );
+					bw.Close();
+				}
+
+				// write tiles colors
+				if( RBtnTypeColor.Checked )
+				{
+					bw = new BinaryWriter( File.Open( m_path + m_tile_colrs_filename, FileMode.Create ) );
+					bw.Write( tile_colors_arr );
+					bw.Close();
+				}
+				
+				if( RBtnTiles4x4.Checked )
+				{
+					// save tiles 4x4 data
+					bw = new BinaryWriter( File.Open( m_path + m_tiles_data_filename, FileMode.Create ) );
+					
+					for( int tile_n = 0; tile_n < max_tile_ind; tile_n++ )
+					{
+						bw.Write( tiles_data.tile_convert_ulong_to_uint_reverse( bank_data.tiles[ tile_n ] ) );
+					}
+					
+					bw.Close();
+				}
+				
+				_sw.WriteLine( bank_prefix_str + "_Gfx"  + "\tincbin \"" + m_gfx_data_filename + "\"\t\t;(" + gfx_data_size + ") array of tile images 2x2 (32 bytes per tile)" );
+				_sw.WriteLine( bank_prefix_str + "_Props" + "\tincbin \"" + m_tile_props_filename + "\"\t;(" + tile_props_arr.Length + ") tile properties array (byte per tile)" );
+				
+				if( RBtnTypeColor.Checked )
+				{
+					_sw.WriteLine( bank_prefix_str + "_Clrs" + "\tincbin \"" + m_tile_colrs_filename + "\"\t;(" + tile_colors_arr.Length + ") tile colors array (byte per tile)" );
+				}
+				
+				if( RBtnTiles4x4.Checked )
+				{
+					_sw.WriteLine( bank_prefix_str + "_Tiles" + "\tincbin \"" + m_tiles_data_filename + "\"\t;(" + max_tile_ind + ") (4x4) 4 block indices per tile ( left to right, up to down )" );
+				}
+				
+				_sw.WriteLine( "" );
+			}
 			
 			for( int level_n = 0; level_n < n_levels; level_n++ )
 			{
 				level_prefix_str	= CONST_FILENAME_LEVEL_PREFIX + level_n;
 				level_postfix_str	= CONST_FILENAME_LEVEL_POSTFIX + level_n;
 				
-				m_gfx_data_filename		= m_filename + level_postfix_str + "_GFX" + CONST_BIN_EXT;
-				m_tile_props_filename	= m_filename + level_postfix_str + "_TilePrps" + CONST_BIN_EXT;
-				m_tile_colrs_filename	= m_filename + level_postfix_str + "_TileClrs" + CONST_BIN_EXT;
-				m_map_data_filename		= m_filename + level_postfix_str + "_Data" + CONST_BIN_EXT;
-				m_tiles_data_filename	= m_filename + level_postfix_str + "_Tiles" + CONST_BIN_EXT;
+				m_map_data_filename	= m_filename + level_postfix_str + "_Data" + CONST_BIN_EXT;
 				
 				level_data = m_data_mngr.get_layout_data( level_n );
 				
@@ -404,27 +488,17 @@ namespace MAPeD
 				n_scr_X = level_data.get_width();
 				n_scr_Y = level_data.get_height();
 
-				if( CheckBoxRenderLevelPNG.Checked )
-				{
-					level_bmp = new Bitmap( n_scr_X * platform_data.get_screen_width_pixels(), n_scr_Y * platform_data.get_screen_height_pixels() );
-
-					level_gfx 					= Graphics.FromImage( level_bmp );
-					level_gfx.InterpolationMode = InterpolationMode.NearestNeighbor;
-					level_gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;
-				}
-				
 				n_Y_tiles = n_scr_Y * ( RBtnTiles2x2.Checked ? platform_data.get_screen_blocks_height():platform_data.get_screen_tiles_height() );
 				
 				// initialize a tile map of a game level
 				{
 					map_data_size = n_scr_X * n_scr_Y * ( RBtnTiles2x2.Checked ? platform_data.get_screen_blocks_cnt():platform_data.get_screen_tiles_cnt() );
 
-					map_tiles_arr = new ushort[ map_data_size ];					
+					map_tiles_arr = new byte[ map_data_size ];
 					Array.Clear( map_tiles_arr, 0, map_data_size );
-					
-					map_data_arr = new byte[ map_data_size ];
-					Array.Clear( map_data_arr, 0, map_data_size );
 				}
+				
+				chk_bank_ind = -1;
 				
 				for( int scr_n_X = 0; scr_n_X < n_scr_X; scr_n_X++ )
 				{
@@ -445,6 +519,14 @@ namespace MAPeD
 									break;
 								}
 							}
+				
+							if( chk_bank_ind >= 0 && bank_ind != chk_bank_ind )
+							{
+								_sw.Close();
+								throw new System.Exception( String.Format( "Each level must use ONLY one CHR bank in the 'Multidirectional scrolling' mode!\n\nThe level_{0} export failed!", level_n ) );
+							}
+							
+							chk_bank_ind = bank_ind;
 							
 							// convert screen index to local bank index
 							scr_ind = scr_data.m_scr_ind - ( n_screens - scr_tiles_data[ bank_ind ].screen_data_cnt() );
@@ -465,33 +547,19 @@ namespace MAPeD
 										tile_offs_x <<= 1;
 										tile_offs_y <<= 1;
 										
-										// make a list of unique 2x2 tiles in the map
 										for( int block_n = 0; block_n < utils.CONST_TILE_SIZE; block_n++ )
 										{
-											tile_data = ( ushort )( bank_data.get_tile_block( scr_tile_id, block_n ) | ( bank_ind << 8 ) );
-											
-											if( unique_tiles_arr.Contains( tile_data ) == false )
-											{
-												unique_tiles_arr.Add( tile_data );
-											}
+											tile_data = bank_data.get_tile_block( scr_tile_id, block_n );
 											
 											if( ( tile_offs_x + ( block_n & 0x01 ) ) < platform_data.get_screen_blocks_width() && ( tile_offs_y + ( ( block_n & 0x02 ) >> 1 ) ) < platform_data.get_screen_blocks_height() )
 											{
-												map_tiles_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + ( ( block_n & 0x01 ) == 0x01 ? n_Y_tiles:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ) ] = tile_data;
+												map_tiles_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + ( ( block_n & 0x01 ) == 0x01 ? n_Y_tiles:0 ) + tile_offs_y + ( ( block_n & 0x02 ) == 0x02 ? 1:0 ) ] = ( byte )tile_data;
 											}
 										}
 									}
 									else
 									{
-										// make a list of unique 4x4 tiles in the map
-										tile_data = ( ushort )( scr_tile_id | ( bank_ind << 8 ) );
-										
-										if( unique_tiles_arr.Contains( tile_data ) == false )
-										{
-											unique_tiles_arr.Add( tile_data );
-										}
-										
-										map_tiles_arr[ scr_n_X * ( n_Y_tiles * platform_data.get_screen_tiles_width() ) + ( scr_n_Y * platform_data.get_screen_tiles_height() ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_data;
+										map_tiles_arr[ scr_n_X * ( n_Y_tiles * platform_data.get_screen_tiles_width() ) + ( scr_n_Y * platform_data.get_screen_tiles_height() ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = ( byte )scr_tile_id;
 									}
 								}
 							}
@@ -504,145 +572,40 @@ namespace MAPeD
 									
 									scr_tile_id = bank_data.get_screen_tile( scr_ind, block_n );
 									
-									// make a list of unique 2x2 tiles in the map
-									tile_data = ( ushort )( scr_tile_id | ( bank_ind << 8 ) );
-									
-									if( unique_tiles_arr.Contains( tile_data ) == false )
-									{
-										unique_tiles_arr.Add( tile_data );
-									}
-									
-									map_tiles_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = tile_data;
+									map_tiles_arr[ scr_n_X * ( n_Y_tiles * scr_width_blocks ) + ( scr_n_Y * scr_height_blocks ) + ( tile_offs_x * n_Y_tiles ) + tile_offs_y ] = ( byte )scr_tile_id;
 								}
 							}
 						}
 					}
 				}
-				
-				if( unique_tiles_arr.Count > 256 )
-				{
-					throw new System.Exception( String.Format( "The level{0} has more than 256 tiles!", level_n ) );
-				}
-				
-				tile_colors_arr = new byte[ ( unique_tiles_arr.Count << 2 ) * ( RBtnTiles2x2.Checked ? 1:4 ) ];
-				Array.Clear( tile_colors_arr, 0, tile_colors_arr.Length );
-				
-				tile_props_arr = new byte[ unique_tiles_arr.Count * ( RBtnPropPerBlock.Checked ? 1:4 ) * ( RBtnTiles4x4.Checked ? 4:1 ) ];
-				Array.Clear( tile_props_arr, 0, tile_props_arr.Length );
 
-				// sort unique tileas array by bank number
-				unique_tiles_arr.Sort();
-				
-				// open file to write data of all unique tiles
-				bw = new BinaryWriter( File.Open( m_path + m_gfx_data_filename, FileMode.Create ) );
-				
-				blocks_data_dict.Clear();
-				
-				// convert tiles data into indices
-				for( int tile_n = 0; tile_n < unique_tiles_arr.Count; tile_n++ )
-				{
-					tile_data = unique_tiles_arr[ tile_n ];
-					
-					for( int map_tile_n = 0; map_tile_n < map_data_size; map_tile_n++ )
-					{
-						if( map_tiles_arr[ map_tile_n ] == tile_data )
-						{
-							map_data_arr[ map_tile_n ] = ( byte )tile_n;
-						}
-					}
+				bank_data = scr_tiles_data[ chk_bank_ind ];
 
-					bank_data = scr_tiles_data[ ( tile_data & 0xff00 ) >> 8 ];
+				// render map image
+				if( CheckBoxRenderLevelPNG.Checked )
+				{
+					level_bmp = new Bitmap( n_scr_X * platform_data.get_screen_width_pixels(), n_scr_Y * platform_data.get_screen_height_pixels() );
+
+					level_gfx 					= Graphics.FromImage( level_bmp );
+					level_gfx.InterpolationMode = InterpolationMode.NearestNeighbor;
+					level_gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;
 					
-					// tiles data processing
-					if( RBtnTiles2x2.Checked )
+					for( int block_n = 0; block_n < bank_data.get_first_free_block_id( false ); block_n++ )
 					{
-						build_and_save_blocks2x2_gfx_and_props( bw, bank_data, tile_data, tile_n, tile_props_arr, 0, tile_colors_arr, 0, img_buff );
-						
-						save_extra_gfx( img_buff, map_tiles_arr, null, tile_data, ( n_scr_Y * scr_height_blocks ), level_gfx, level_postfix_str );
-					}
-					else
-					if( RBtnTiles4x4.Checked )
-					{
-						tile_ind = bank_data.tiles[ tile_data & 0x00ff ];
-						
-						for( int block_n = 0; block_n < utils.CONST_TILE_SIZE; block_n++ )
-						{
-							block_ind	= utils.get_ushort_from_ulong( tile_ind, block_n );
-							bank_block	= ( ushort )( ( tile_data & 0xff00 ) | block_ind );
+						build_and_save_blocks2x2_gfx_and_props( null, bank_data, block_n, null, 0, null, 0, img_buff );
 							
-							if( blocks_data_dict.ContainsKey( bank_block ) == false )
-							{
-								build_and_save_blocks2x2_gfx_and_props( bw, bank_data, ( ushort )block_ind, blocks_data_dict.Count, tile_props_arr, 0, tile_colors_arr, 0, img_buff );
-								
-								save_extra_gfx( img_buff, map_tiles_arr, bank_data, bank_block, ( ( n_scr_Y * scr_height_blocks ) >> 1 ), level_gfx, level_postfix_str );
-								
-								blocks_data_dict[ bank_block ] = ( ushort )blocks_data_dict.Count;
-							}
-						}
-					}
-				}
-				
-				// close tiles gfx data file
-				gfx_data_size = level_data_size = bw.BaseStream.Length;
-				bw.Close();
-				
-				// write tiles properties
-				{
-					if( RBtnTiles4x4.Checked )
-					{
-						if( blocks_data_dict.Count > 256 )
-						{
-							throw new System.Exception( String.Format( "The level{0} has more than 256 blocks 2x2!", level_n ) );
-						}
-						
-						// get actual data size for tiles 4x4 mode
-						Array.Resize( ref tile_props_arr, blocks_data_dict.Count * ( RBtnPropPerBlock.Checked ? 1:4 ) );
+						save_extra_gfx( img_buff, map_tiles_arr, bank_data, ( ushort )block_n, ( n_scr_Y * scr_height_blocks ), level_gfx, level_postfix_str );
 					}
 					
-					bw = new BinaryWriter( File.Open( m_path + m_tile_props_filename, FileMode.Create ) );
-					bw.Write( tile_props_arr );
-					level_data_size += bw.BaseStream.Length;
-					bw.Close();
+					level_bmp.Save( m_extra_path_filename + level_postfix_str + ".png", ImageFormat.Png );
+					
+					level_bmp.Dispose();
+					level_gfx.Dispose();
 				}
 
-				// write tiles colors
-				if( RBtnTypeColor.Checked )
-				{
-					if( RBtnTiles4x4.Checked )
-					{
-						// get actual data size for tiles 4x4 mode
-						Array.Resize( ref tile_colors_arr, blocks_data_dict.Count << 2 );
-					}
-					
-					bw = new BinaryWriter( File.Open( m_path + m_tile_colrs_filename, FileMode.Create ) );
-					bw.Write( tile_colors_arr );
-					level_data_size += bw.BaseStream.Length;
-					bw.Close();
-				}
+				// write collected data
 				
-				if( RBtnTiles4x4.Checked )
-				{
-					// save tiles 4x4 data
-					bw = new BinaryWriter( File.Open( m_path + m_tiles_data_filename, FileMode.Create ) );
-					
-					for( int tile_n = 0; tile_n < unique_tiles_arr.Count; tile_n++ )
-					{
-						tile_data	= unique_tiles_arr[ tile_n ];
-						bank_data	= scr_tiles_data[ ( tile_data & 0xff00 ) >> 8 ];
-						
-						tile_ind	= bank_data.tiles[ tile_data & 0x00ff ];
-						
-						for( int block_n = 0; block_n < utils.CONST_TILE_SIZE; block_n++ )
-						{
-							block_ind	= utils.get_ushort_from_ulong( tile_ind, block_n );
-							
-							bw.Write( ( byte )blocks_data_dict[ ( ushort )( ( tile_data & 0xff00 ) | block_ind ) ] );
-						}
-					}
-					
-					level_data_size += bw.BaseStream.Length;
-					bw.Close();
-				}
+				maps_CHRs_arr += "\t.byte " + chk_bank_ind + "\n";				
 				
 				// write level map
 				{
@@ -650,10 +613,10 @@ namespace MAPeD
 					
 					if( RBtnTilesDirRows.Checked )
 					{
-						utils.swap_columns_rows_order<byte>( map_data_arr, get_tiles_cnt_width( n_scr_X ), get_tiles_cnt_height( n_scr_Y ) );
+						utils.swap_columns_rows_order<byte>( map_tiles_arr, get_tiles_cnt_width( n_scr_X ), get_tiles_cnt_height( n_scr_Y ) );
 					}
 					
-					if( compress_and_save_byte( bw, map_data_arr ) == false )
+					if( compress_and_save_byte( bw, map_tiles_arr ) == false )
 					{
 						_sw.Close();
 						bw.Close();
@@ -662,13 +625,12 @@ namespace MAPeD
 					
 					map_size = bw.BaseStream.Length;
 					
-					level_data_size += map_size;
 					bw.Close();
 				}
 				
-				// write the data to assembly file
+				// write data to assembly file
 				{
-					_sw.WriteLine( "; *** " + level_prefix_str + " data (incbins: " + level_data_size + " bytes) ***\n" );
+					_sw.WriteLine( "; *** " + level_prefix_str + " ***\n" );
 					
 					_sw.WriteLine( level_prefix_str + "_wscr\tequ " + n_scr_X + "\t\t; number of map screens in width" );
 					_sw.WriteLine( level_prefix_str + "_hscr\tequ " + n_scr_Y + "\t\t; number of map screens in height" );
@@ -682,43 +644,14 @@ namespace MAPeD
 					_sw.WriteLine( level_prefix_str + "_wtls\tequ " + map_tiles_width + "\t\t; number of map tiles in width" );
 					_sw.WriteLine( level_prefix_str + "_htls\tequ " + map_tiles_height + "\t\t; number of map tiles in height" );
 					
-					_sw.WriteLine( level_prefix_str + "_u_tiles\tequ " + ( RBtnTiles4x4.Checked ? blocks_data_dict.Count:unique_tiles_arr.Count ) + "\t\t; number of unique tiles 2x2 (!)" );
+					_sw.WriteLine( level_prefix_str + "_u_tiles\tequ " + bank_data.get_first_free_block_id( false ) + "\t\t; number of unique tiles 2x2 (!)" );
 					_sw.WriteLine( level_prefix_str + "_t_tiles\tequ " + map_tiles_arr.Length + "\t\t; total number of tiles in whole map" );
 					
 					_sw.WriteLine( "" );
 					
-					_sw.WriteLine( level_prefix_str + "_Map" + "\tincbin \"" + m_map_data_filename + "\"\t\t;" + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + map_size + ( CheckBoxRLE.Checked ? " / " + map_data_arr.Length:"" ) + ") game level " + ( RBtnTiles4x4.Checked ? "tiles (4x4)":"blocks (2x2)" ) + " array" );
-					
-					_sw.WriteLine( level_prefix_str + "_Gfx"  + "\tincbin \"" + m_gfx_data_filename + "\"\t\t;(" + gfx_data_size + ") array of tile images 2x2 (32 bytes per tile)" );
-					_sw.WriteLine( level_prefix_str + "_Props" + "\tincbin \"" + m_tile_props_filename + "\"\t;(" + tile_props_arr.Length + ") tile properties array (byte per tile)" );
-					
-					if( RBtnTypeColor.Checked )
-					{
-						_sw.WriteLine( level_prefix_str + "_Clrs" + "\tincbin \"" + m_tile_colrs_filename + "\"\t;(" + tile_colors_arr.Length + ") tile colors array (byte per tile)" );
-					}
-					
-					if( RBtnTiles4x4.Checked )
-					{
-						_sw.WriteLine( level_prefix_str + "_Tiles" + "\tincbin \"" + m_tiles_data_filename + "\"\t\t;(" + ( unique_tiles_arr.Count << 2 ) + ") (4x4) 4 block indices per tile ( left to right, up to down )" );
-					}
-					
-					_sw.WriteLine( "\n" );
+					_sw.WriteLine( level_prefix_str + "_Map" + "\tincbin \"" + m_map_data_filename + "\"\t\t;" + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + map_size + ( CheckBoxRLE.Checked ? " / " + map_tiles_arr.Length:"" ) + ") game level " + ( RBtnTiles4x4.Checked ? "tiles (4x4)":"blocks (2x2)" ) + " array\n" );
 				}
 				
-				if( CheckBoxRenderLevelPNG.Checked )
-				{
-					level_bmp.Save( m_extra_path_filename + level_postfix_str + ".png", ImageFormat.Png );
-					
-					level_bmp.Dispose();
-					level_gfx.Dispose();
-				}
-				
-				tile_colors_arr = null;
-				tile_props_arr 	= null;
-				map_tiles_arr 	= null;
-				
-				unique_tiles_arr.Clear();				
-
 				// save layout and screens data
 				{
 					int start_scr_ind = level_data.get_start_screen_ind();
@@ -739,8 +672,11 @@ namespace MAPeD
 					}
 				}
 			}
-
-			unique_tiles_arr = null;
+			
+			// maps -> CHR bank
+			{
+				_sw.WriteLine( maps_CHRs_arr );
+			}			
 		}
 		
 		private void save_single_screen_mode( StreamWriter _sw )
@@ -953,8 +889,7 @@ namespace MAPeD
 					label = "gfx" + bank_n;
 					bw = new BinaryWriter( File.Open( m_path_filename + "_" + label + CONST_BIN_EXT, FileMode.Create ) );
 					{
-						n_blocks = tiles.get_first_free_block_id();
-						n_blocks = n_blocks < 0 ? platform_data.get_max_blocks_cnt():n_blocks;
+						n_blocks = tiles.get_first_free_block_id( false );
 						
 						clr_size	= n_blocks << 2;
 						props_size	= n_blocks * ( RBtnPropPerBlock.Checked ? 1:4 );
@@ -983,7 +918,7 @@ namespace MAPeD
 						
 						for( block_n = 0; block_n < n_blocks; block_n++ )
 						{
-							build_and_save_blocks2x2_gfx_and_props( bw, tiles, ( ushort )block_n, block_n, props_arr, props_arr_offset, clrs_arr, clrs_arr_offset, img_buff );
+							build_and_save_blocks2x2_gfx_and_props( bw, tiles, block_n, props_arr, props_arr_offset, clrs_arr, clrs_arr_offset, img_buff );
 						}
 						
 						data_size = n_blocks << 5;
@@ -1309,7 +1244,6 @@ namespace MAPeD
 
 		private void build_and_save_blocks2x2_gfx_and_props(	BinaryWriter	_bw,
 																tiles_data		_data,
-																ushort			_tile_data,
 																int				_tile_n,
 																byte[]			_tile_props_arr,
 																int				_props_arr_offset,
@@ -1437,7 +1371,7 @@ namespace MAPeD
 			
 			for( chr_n = 0; chr_n < 4; chr_n++ )
 			{
-				block_data 	= _data.blocks[ ( ( _tile_data&0xff ) << 2 ) + chr_n ];
+				block_data 	= _data.blocks[ ( _tile_n << 2 ) + chr_n ];
 				
 				_data.from_CHR_bank_to_spr8x8( tiles_data.get_block_CHR_id( block_data ), tile_2x2_data_arr, chr_n << 6 );
 #if DEF_ZX
@@ -1572,7 +1506,10 @@ namespace MAPeD
 			}
 			
 			// convert tile into speccy format and write it to a file
-			save_tiles_gfx( _bw, tile_2x2_data_arr );
+			if( _bw != null )
+			{
+				save_tiles_gfx( _bw, tile_2x2_data_arr );
+			}
 			
 			if( RBtnTypeColor.Checked )
 			{
@@ -1618,7 +1555,10 @@ namespace MAPeD
 						zx_bright_flag = true;
 					}
 #endif //DEF_ZX
-					_tile_colors_arr[ ( _tile_n << 2 ) + chr_n + _clrs_arr_offset ] |= ( byte )( ( zx_bright_flag ? 64:0 ) | ( zx_paper_color_index << 3 ) | zx_ink_color_index );
+					if( _tile_colors_arr != null )
+					{
+						_tile_colors_arr[ ( _tile_n << 2 ) + chr_n + _clrs_arr_offset ] |= ( byte )( ( zx_bright_flag ? 64:0 ) | ( zx_paper_color_index << 3 ) | zx_ink_color_index );
+					}
 					
 					for( pix_n = 0; pix_n < utils.CONST_SPR8x8_TOTAL_PIXELS_CNT; pix_n++ )
 					{
@@ -1654,7 +1594,7 @@ namespace MAPeD
 		}
 
 		private void save_extra_gfx(	int[]		_img_buff,
-										ushort[]	_map_data_arr,
+										byte[]		_map_data_arr,
 										tiles_data	_data,
 										ushort		_tile_n,
 										int			_map_height_tiles_cnt,
@@ -1672,7 +1612,7 @@ namespace MAPeD
 				{
 					for( int map_tile_n = 0; map_tile_n < _map_data_arr.Length; map_tile_n++ )
 					{
-						if( _map_data_arr[ map_tile_n ] == _tile_n )
+						if( _map_data_arr[ map_tile_n ] == ( _tile_n & 0x00ff ) )
 						{
 							_level_gfx.DrawImage( tile_bmp, ( map_tile_n / _map_height_tiles_cnt ) << 4, ( map_tile_n % _map_height_tiles_cnt ) << 4 );
 						}
@@ -1682,18 +1622,17 @@ namespace MAPeD
 				{
 					ulong tile_ind;
 					
+					_map_height_tiles_cnt >>= 1;
+					
 					for( int map_tile_n = 0; map_tile_n < _map_data_arr.Length; map_tile_n++ )
 					{
-						if( ( _map_data_arr[ map_tile_n ] & 0xff00 ) == ( _tile_n & 0xff00 ) )
+						tile_ind = _data.tiles[ _map_data_arr[ map_tile_n ] & 0x00ff ];
+						
+						for( int block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 						{
-							tile_ind = _data.tiles[ _map_data_arr[ map_tile_n ] & 0x00ff ];
-							
-							for( int block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
+							if( utils.get_ushort_from_ulong( tile_ind, block_n ) == ( _tile_n & 0x00ff ) )
 							{
-								if( utils.get_ushort_from_ulong( tile_ind, block_n ) == ( _tile_n & 0x00ff ) )
-								{
-									_level_gfx.DrawImage( tile_bmp, ( ( map_tile_n / _map_height_tiles_cnt ) << 5 ) + ( ( block_n & 0x01 ) == 0x01 ? 16:0 ), ( ( map_tile_n % _map_height_tiles_cnt ) << 5 ) + ( ( block_n & 0x02 ) == 0x02 ? 16:0 ) );
-								}
+								_level_gfx.DrawImage( tile_bmp, ( ( map_tile_n / _map_height_tiles_cnt ) << 5 ) + ( ( block_n & 0x01 ) == 0x01 ? 16:0 ), ( ( map_tile_n % _map_height_tiles_cnt ) << 5 ) + ( ( block_n & 0x02 ) == 0x02 ? 16:0 ) );
 							}
 						}
 					}

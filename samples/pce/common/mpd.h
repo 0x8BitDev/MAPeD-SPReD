@@ -358,6 +358,8 @@ u16		__init_tiles_offset;	// to draw a start screen
 u16		__maps_offset;
 u16		__maps_tbl_offset;
 
+u16		__map_ind_mul2;
+
 #if	FLAG_DIR_ROWS
 u16		__height_scr_step;
 #endif	//FLAG_DIR_ROWS
@@ -512,13 +514,15 @@ void	mpd_init( u8 _map_ind )
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
 
-	__curr_chr_id_mul2	= _map_ind << 1;
+	__map_ind_mul2		= _map_ind << 1;
 
-	__maps_offset		= mpd_farpeekw( mpd_MapsOffs,	__curr_chr_id_mul2 );
-	__maps_tbl_offset	= mpd_farpeekw( mpd_MapsTblOffs,__curr_chr_id_mul2 );
+	__curr_chr_id_mul2	= mpd_farpeekb( mpd_MapsCHRBanks, _map_ind ) << 1;
 
-	map_scr_width	= mpd_MapsDimArr[ __curr_chr_id_mul2 ];
-	map_scr_height	= mpd_MapsDimArr[ __curr_chr_id_mul2 + 1 ];
+	__maps_offset		= mpd_farpeekw( mpd_MapsOffs,	__map_ind_mul2 );
+	__maps_tbl_offset	= mpd_farpeekw( mpd_MapsTblOffs,__map_ind_mul2 );
+
+	map_scr_width	= mpd_MapsDimArr[ __map_ind_mul2 ];
+	map_scr_height	= mpd_MapsDimArr[ __map_ind_mul2 + 1 ];
 
 	__map_tiles_width	= map_scr_width * ScrTilesWidth;
 	__map_tiles_height	= map_scr_height * ScrTilesHeight;
@@ -673,7 +677,7 @@ void	__mpd_draw_tiled_screen()
 
 #if	FLAG_DIR_COLUMNS
 
-	side_step	= ScrTilesHeight * mpd_MapsDimArr[ __curr_chr_id_mul2 + 1 ];
+	side_step	= ScrTilesHeight * mpd_MapsDimArr[ __map_ind_mul2 + 1 ];
 
 	for( w = 0; w < ScrTilesWidth; w++ )
 	{
@@ -695,7 +699,7 @@ void	__mpd_draw_tiled_screen()
 	}
 #elif	FLAG_DIR_ROWS
 
-	side_step	= ScrTilesWidth * mpd_MapsDimArr[ __curr_chr_id_mul2 ];
+	side_step	= ScrTilesWidth * mpd_MapsDimArr[ __map_ind_mul2 ];
 
 	h_acc = 0;
 

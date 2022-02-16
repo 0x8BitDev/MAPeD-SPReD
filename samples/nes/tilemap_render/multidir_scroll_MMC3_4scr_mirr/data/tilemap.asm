@@ -171,23 +171,26 @@ Platform:
 	.byte $00
 
 
+; *** GLOBAL DATA ***
+
+; Bank0_CHR:	.incbin "tilemap_Bank0_CHR.bin"		; (3264)
+Bank0_Blocks:	.incbin "tilemap_Bank0_Blocks.bin"	; (516) blocks data ( 4 CHR indices per block; left to right, up to down )
+Bank0_Props:	.incbin "tilemap_Bank0_Props.bin"	; (516) block properties array ( 4 bytes per block )
+
+Bank0_Palette:
+		.byte $0D, $39, $28, $18, $0D, $0C, $31, $1C, $0D, $1B, $2A, $00, $0D, $05, $14, $20
+
+
 ; *** Lev0 ***
 
-; Lev0_CHR:	.incbin "tilemap_Lev0_CHR.bin"		; (3264)
-Lev0_AttrsMap:	.incbin "tilemap_Lev0_AttrsMap.bin"	; (4096) map of attributes ( 1 byte per attribute )
-Lev0_Blocks:	.incbin "tilemap_Lev0_Blocks.bin"	; (516) blocks data ( 4 CHR indices per block; left to right, up to down )
-Lev0_Props:	.incbin "tilemap_Lev0_Props.bin"	; (516) block properties array ( 4 bytes per block )
 Lev0_Map:	.incbin "tilemap_Lev0_Map.bin"		; (15360) game level blocks (2x2) array
 Lev0_MapTbl:	.incbin "tilemap_Lev0_MapTbl.bin"	; (256) lookup table for fast calculation of tile addresses columns by X coordinate ( 16 bit offset per column of tiles )
-
-Lev0_Palette:
-		.byte $0D, $39, $28, $18, $0D, $0C, $31, $1C, $0D, $1B, $2A, $00, $0D, $05, $14, $20
+Lev0_AttrsMap:	.incbin "tilemap_Lev0_AttrsMap.bin"	; (4096) map of attributes ( 1 byte per attribute )
 
 Lev0_StartScr	=	10	; start screen
 Lev0_WTilesCnt	=	128	; number of level tiles in width
 Lev0_HTilesCnt	=	120	; number of level tiles in height
-Lev0_BlocksCnt	=	129
-
+Lev0_TilesCnt	=	129	; map tiles count
 .define Lev0_WScrCnt	8	; number of screens in width
 .define Lev0_HScrCnt	8	; number of screens in height
 
@@ -1399,3 +1402,7 @@ Instance118:
 	.byte $00, $E0, $01
 
 .define Lev0_EntInstCnt	117	; number of entities instances
+
+MapsCHRBanks:
+	.byte 0
+
