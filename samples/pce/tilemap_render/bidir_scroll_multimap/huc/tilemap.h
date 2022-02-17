@@ -80,7 +80,6 @@ typedef struct
 #endif
 } mpd_SCREEN;
 
-
 extern u16*	chr0;
 extern u16*	chr1;
 extern u16*	chr2;

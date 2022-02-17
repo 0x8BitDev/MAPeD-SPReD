@@ -50,6 +50,9 @@
 #define ScrPixelsWidth	256	// screen width in pixels
 #define ScrPixelsHeight	224	// screen height in pixels
 
+#define ScrGfxDataSize	1792	// static screen data size in bytes
+
+
 /* screen data */
 
 typedef struct
@@ -80,7 +83,6 @@ typedef struct
 #endif
 } mpd_SCREEN;
 
-
 extern u16*	chr0;
 extern u16*	chr1;
 extern u16*	chr2;
@@ -106,7 +108,6 @@ extern u8*	mpd_Tiles;
 extern u16*	mpd_TilesOffs;
 extern u16*	mpd_BlocksOffs;
 extern u16*	mpd_VDCScr;	// VDC-ready data array for each screen
-const u16 ScrGfxDataSize = 1792;
 extern u8*	mpd_TilesScr;
 extern u16*	mpd_Plts;
 
