@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 15.03.2017
  * Time: 16:45
  */
@@ -27,7 +27,7 @@ namespace SPReD
 		
 		private palette_group	m_palette_group	= null;
 		
-		private List< CHR8x8_data > m_data_list = null;
+		private List< CHR_data > m_data_list = null;
 		
 		private int m_selected_ind	= -1;
 		
@@ -38,7 +38,7 @@ namespace SPReD
 		private Point m_mouse_down_start;
 		
 		// local clipboard data
-		private CHR8x8_data[] 	m_cb_data		= new CHR8x8_data[ 2 ]{ new CHR8x8_data(), new CHR8x8_data() };
+		private CHR_data[] 	m_cb_data		= new CHR_data[ 2 ]{ new CHR_data(), new CHR_data() };
 		private int 			m_cb_data_cnt	= -1;
 		
 		public CHR_bank_viewer( PictureBox _pix_box, Label _label ) : base( _pix_box )
@@ -86,7 +86,7 @@ namespace SPReD
 		{
 			if( m_data_list != null )
 			{
-				int sel_ind = ( e.X >> 4 ) + 16 * ( e.Y >> 4 );
+				int sel_ind	= ( e.X / utils.CONST_CHR_IMG_SIZE ) + utils.CONST_CHR_BANK_SIDE_SPRITES_CNT * ( e.Y / utils.CONST_CHR_IMG_SIZE );
 				
 				m_selected_ind = ( sel_ind >= m_data_list.Count ) ? -1:sel_ind;
 				
@@ -101,7 +101,7 @@ namespace SPReD
 			}
 		}
 		
-		public void init( List< CHR8x8_data > _data_list, int _bank_id, int _link_cnt, int _total_banks )
+		public void init( List< CHR_data > _data_list, int _bank_id, int _link_cnt, int _total_banks )
 		{
 			m_data_list = _data_list;
 			
@@ -119,7 +119,7 @@ namespace SPReD
 			{
 				if( m_data_list != null )
 				{
-					m_label.Text = "Tiles: " + _data_list.Count + " / Bytes: " + _data_list.Count * utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES + " [BANK: " + _bank_id + "(" + _link_cnt + ") of " + _total_banks + "]";
+					m_label.Text = "Tiles: " + _data_list.Count + " / Bytes: " + _data_list.Count * utils.CONST_CHR_NATIVE_SIZE_IN_BYTES + " [BANK: " + _bank_id + "(" + _link_cnt + ") of " + _total_banks + "]";
 					
 					return;
 				}
@@ -138,7 +138,7 @@ namespace SPReD
 			{
 				disable( false );
 				
-				CHR8x8_data 	chr_data;
+				CHR_data 	chr_data;
 				Bitmap 			bmp;
 			
 				m_pen.Color = Color.White;
@@ -153,14 +153,14 @@ namespace SPReD
 					
 					if( draw_colored == true )
 					{
-						bmp = utils.create_bitmap8x8( chr_data, 0, false, m_palette_group.active_palette, m_palette_group.get_palettes_arr() );
+						bmp = utils.create_CHR_bitmap( chr_data, 0, false, m_palette_group.active_palette, m_palette_group.get_palettes_arr() );
 					}
 					else
 					{
-						bmp = utils.create_bitmap8x8( chr_data, 0, false, -1 );
+						bmp = utils.create_CHR_bitmap( chr_data, 0, false, -1 );
 					}
 					
-					m_gfx.DrawImage( bmp, ( i<<4 ) % m_pix_box.Width, ( i>>4 ) << 4, 16, 16 );
+					m_gfx.DrawImage( bmp, ( i * utils.CONST_CHR_IMG_SIZE ) % m_pix_box.Width, ( i / utils.CONST_CHR_BANK_SIDE_SPRITES_CNT ) * utils.CONST_CHR_IMG_SIZE, utils.CONST_CHR_IMG_SIZE, utils.CONST_CHR_IMG_SIZE );
 					
 					bmp.Dispose();
 				}
@@ -190,12 +190,12 @@ namespace SPReD
 				// draw grid
 				m_pen.Color = Color.FromArgb( 0x78808080 );
 				
-				int n_lines 	= m_pix_box.Width >> 4;
+				int n_lines = m_pix_box.Width / utils.CONST_CHR_IMG_SIZE;
 				int pos;
 				
 				for( int i = 0; i < n_lines; i++ )
 				{
-					pos = i << 4;
+					pos = i * utils.CONST_CHR_IMG_SIZE;
 					
 					m_gfx.DrawLine( m_pen, pos, 0, pos, m_pix_box.Width );
 					m_gfx.DrawLine( m_pen, 0, pos, m_pix_box.Height, pos );
@@ -214,21 +214,21 @@ namespace SPReD
 				return;
 			}
 			
-			int x = ( ( _ind % 16 ) << 4 );
-			int y = ( ( _ind >> 4 ) << 4 );
+			int x = ( ( _ind % utils.CONST_CHR_BANK_SIDE_SPRITES_CNT ) * utils.CONST_CHR_IMG_SIZE );
+			int y = ( ( _ind / utils.CONST_CHR_BANK_SIDE_SPRITES_CNT ) * utils.CONST_CHR_IMG_SIZE );
 			
 			m_pen.Color = Color.White;
-			m_gfx.DrawRectangle( m_pen, x+2, y+2, 13, 13 );
+			m_gfx.DrawRectangle( m_pen, x+2, y+2, utils.CONST_CHR_IMG_SIZE - 3, utils.CONST_CHR_IMG_SIZE - 3 );
 			
 			if( _ind >= get_data().Count )
 			{
 				utils.brush.Color = Color.Red;
-				m_gfx.FillRectangle( utils.brush, x+1, y+1, 15, 15 );
+				m_gfx.FillRectangle( utils.brush, x+1, y+1, utils.CONST_CHR_IMG_SIZE - 1, utils.CONST_CHR_IMG_SIZE - 1 );
 			}
 			else
 			{
 				m_pen.Color = Color.Black;
-				m_gfx.DrawRectangle( m_pen, x+1, y+1, 15, 15 );
+				m_gfx.DrawRectangle( m_pen, x+1, y+1, utils.CONST_CHR_IMG_SIZE - 1, utils.CONST_CHR_IMG_SIZE - 1 );
 			}
 		}
 		
@@ -288,16 +288,16 @@ namespace SPReD
 #elif DEF_SMS
 					byte color_slot = ( byte )( m_palette_group.active_palette * utils.CONST_NUM_SMALL_PALETTES + m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot );
 #endif						
-					if( m_mode8x16 && ( spr_viewer.changed_pix_y > utils.CONST_CHR8x8_SIDE_PIXELS_CNT - 1 ) )
+					if( m_mode8x16 && ( spr_viewer.changed_pix_y > utils.CONST_CHR_SIDE_PIXELS_CNT - 1 ) )
 					{
 						if( ( m_selected_ind + 1 ) < m_data_list.Count )
 						{
-							m_data_list[ m_selected_ind + 1 ].get_data()[ spr_viewer.changed_pix_x + ( spr_viewer.changed_pix_y - utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) * utils.CONST_CHR8x8_SIDE_PIXELS_CNT ] = color_slot;
+							m_data_list[ m_selected_ind + 1 ].get_data()[ spr_viewer.changed_pix_x + ( spr_viewer.changed_pix_y - utils.CONST_CHR_SIDE_PIXELS_CNT ) * utils.CONST_CHR_SIDE_PIXELS_CNT ] = color_slot;
 						}
 					}
 					else
 					{
-						m_data_list[ m_selected_ind ].get_data()[ spr_viewer.changed_pix_x + spr_viewer.changed_pix_y * utils.CONST_CHR8x8_SIDE_PIXELS_CNT ] = color_slot;
+						m_data_list[ m_selected_ind ].get_data()[ spr_viewer.changed_pix_x + spr_viewer.changed_pix_y * utils.CONST_CHR_SIDE_PIXELS_CNT ] = color_slot;
 					}
 	
 					update();
@@ -319,12 +319,12 @@ namespace SPReD
 			return m_selected_ind;
 		}
 		
-		public List< CHR8x8_data > get_data()
+		public List< CHR_data > get_data()
 		{
 			return m_data_list;
 		}
 		
-		public void transform_CHR( CHR8x8_data.ETransform _type )
+		public void transform_CHR( CHR_data.ETransform _type )
 		{
 			if( m_selected_ind >= 0 )
 			{
@@ -393,13 +393,13 @@ namespace SPReD
 			{
 				m_cb_data_cnt = 0;
 				
-				Array.Copy( get_data()[ m_selected_ind ].get_data(), m_cb_data[ m_cb_data_cnt++ ].get_data(), utils.CONST_CHR8x8_TOTAL_PIXELS_CNT );
+				Array.Copy( get_data()[ m_selected_ind ].get_data(), m_cb_data[ m_cb_data_cnt++ ].get_data(), utils.CONST_CHR_TOTAL_PIXELS_CNT );
 				
 				if( m_mode8x16 )
 				{
 					if( m_mode8x16 && m_selected_ind + 1 < get_data().Count )
 					{
-						Array.Copy( get_data()[ m_selected_ind + 1 ].get_data(), m_cb_data[ m_cb_data_cnt++ ].get_data(), utils.CONST_CHR8x8_TOTAL_PIXELS_CNT );
+						Array.Copy( get_data()[ m_selected_ind + 1 ].get_data(), m_cb_data[ m_cb_data_cnt++ ].get_data(), utils.CONST_CHR_TOTAL_PIXELS_CNT );
 					}
 				}
 				
@@ -417,7 +417,7 @@ namespace SPReD
 				
 				for( int i = 0; i < CHR_cnt; i++ )
 				{
-					Array.Copy( m_cb_data[ i ].get_data(), get_data()[ m_selected_ind + i ].get_data(), utils.CONST_CHR8x8_TOTAL_PIXELS_CNT );
+					Array.Copy( m_cb_data[ i ].get_data(), get_data()[ m_selected_ind + i ].get_data(), utils.CONST_CHR_TOTAL_PIXELS_CNT );
 				}
 
 				update();
@@ -447,7 +447,7 @@ namespace SPReD
 					}
 					else
 					{
-						m_selected_ind -= 16;
+						m_selected_ind -= utils.CONST_CHR_BANK_SIDE_SPRITES_CNT;
 					}
 					
 					pressed = true;
@@ -461,7 +461,7 @@ namespace SPReD
 					}
 					else
 					{
-						m_selected_ind += 16;
+						m_selected_ind += utils.CONST_CHR_BANK_SIDE_SPRITES_CNT;
 					}
 					
 					pressed = true;

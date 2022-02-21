@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 13.03.2017
  * Time: 16:51
  */
@@ -172,7 +172,7 @@ namespace SPReD
 		{
 			CHR_data_group chr_data = ( _spr != null ) ? _spr.get_CHR_data():null;
 			
-			List< CHR8x8_data > sprite_chr_data = ( chr_data != null ) ? chr_data.get_data():null;
+			List< CHR_data > sprite_chr_data = ( chr_data != null ) ? chr_data.get_data():null;
 			
 			m_sprite_layout_viewer.init( _spr );
 			
@@ -258,7 +258,7 @@ namespace SPReD
 		{
 			CHR_data_group chr_data = new CHR_data_group();
 			
-			List< CHR8x8_data > data = _spr.get_CHR_data().get_data();
+			List< CHR_data > data = _spr.get_CHR_data().get_data();
 			
 			int CHR_id;
 			
@@ -382,8 +382,8 @@ namespace SPReD
 			bool CHR_used;
 			
 			int nCHR_n;
-			CHR8x8_data CHR_a = null;
-			CHR8x8_data CHR_b = null;
+			CHR_data CHR_a = null;
+			CHR_data CHR_b = null;
 			
 			// remove not empty duplicates
 			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )
@@ -550,7 +550,7 @@ namespace SPReD
 			{
 				m_opt_stats_total_CHRs = m_opt_stats_empty_CHRs + m_opt_stats_unused_CHRs + m_opt_stats_duplicate_CHRs;
 			
-				MainForm.message_box( String.Format( "Deleted tiles:\n\nEmpty:\t{0}\nUnused:\t{1}\nDuplicate:\t{2}\n----------------------\nTotal:\t{3} / {4} Bytes", m_opt_stats_empty_CHRs, m_opt_stats_unused_CHRs, m_opt_stats_duplicate_CHRs, ( m_opt_stats_total_CHRs > 0 ? -m_opt_stats_total_CHRs:m_opt_stats_total_CHRs ), m_opt_stats_total_CHRs * utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES ), _wnd_title_msg, MessageBoxButtons.OK, MessageBoxIcon.Information );
+				MainForm.message_box( String.Format( "Deleted tiles:\n\nEmpty:\t{0}\nUnused:\t{1}\nDuplicate:\t{2}\n----------------------\nTotal:\t{3} / {4} Bytes", m_opt_stats_empty_CHRs, m_opt_stats_unused_CHRs, m_opt_stats_duplicate_CHRs, ( m_opt_stats_total_CHRs > 0 ? -m_opt_stats_total_CHRs:m_opt_stats_total_CHRs ), m_opt_stats_total_CHRs * utils.CONST_CHR_NATIVE_SIZE_IN_BYTES ), _wnd_title_msg, MessageBoxButtons.OK, MessageBoxIcon.Information );
 			}
 		}
 		
@@ -583,15 +583,15 @@ namespace SPReD
 				{
 					for( x = 0; x < _width; x++ )
 					{
-						attr = new CHR_data_attr( x << utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS, y << utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS );
+						attr = new CHR_data_attr( x << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS, y << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS );
 						attr.CHR_ind 		= ( x << 1 ) + ( y * _width );
 						attr.palette_ind 	= palette_group.Instance.active_palette;
 						attr.palette_ind 	= attr.palette_ind < 0 ? 0:attr.palette_ind;
 						
 						spr.get_CHR_attr().Add( attr );
 						
-						chr_data.get_data().Add( new CHR8x8_data() );
-						chr_data.get_data().Add( new CHR8x8_data() );
+						chr_data.get_data().Add( new CHR_data() );
+						chr_data.get_data().Add( new CHR_data() );
 					}
 				}
 			}
@@ -601,14 +601,14 @@ namespace SPReD
 				{
 					for( x = 0; x < _width; x++ )
 					{
-						attr = new CHR_data_attr( x << utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS, y << utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS );
+						attr = new CHR_data_attr( x << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS, y << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS );
 						attr.CHR_ind 		= x + ( y * _width );
 						attr.palette_ind 	= palette_group.Instance.active_palette;
 						attr.palette_ind 	= attr.palette_ind < 0 ? 0:attr.palette_ind;
 						
 						spr.get_CHR_attr().Add( attr );
 						
-						chr_data.get_data().Add( new CHR8x8_data() );
+						chr_data.get_data().Add( new CHR_data() );
 					}
 				}
 			}
@@ -633,9 +633,9 @@ namespace SPReD
 			// convert 4 colors palette indices to 16 colors palette
 			sprite_data 	spr 	= null;
 			CHR_data_attr 	attr	= null;
-			CHR8x8_data		CHR8x8	= null;
+			CHR_data		CHR		= null;
 			
-			HashSet< CHR8x8_data >	CHR_set = new HashSet<CHR8x8_data>();
+			HashSet< CHR_data >	CHR_set = new HashSet<CHR_data>();
 													
 			for( int spr_n = 0; spr_n < _sprite_list.Items.Count; spr_n++ )
 			{
@@ -643,7 +643,7 @@ namespace SPReD
 				
 				for( int attr_n = 0; attr_n < spr.get_CHR_attr().Count; attr_n++ )
 				{
-					attr = spr.get_CHR_attr()[ attr_n ];					
+					attr = spr.get_CHR_attr()[ attr_n ];
 #if DEF_NES					
 					if( attr.palette_ind >= 0 )
 #elif DEF_SMS
@@ -652,28 +652,28 @@ namespace SPReD
 					if( attr.palette_ind > 0 )
 #endif						
 					{
-						CHR8x8 = spr.get_CHR_data().get_data()[ attr.CHR_ind ];
+						CHR = spr.get_CHR_data().get_data()[ attr.CHR_ind ];
 						
-						if( !CHR_set.Contains( CHR8x8 ) )
+						if( !CHR_set.Contains( CHR ) )
 						{
-							for( int val_n = 0; val_n < utils.CONST_CHR8x8_TOTAL_PIXELS_CNT; val_n++ )
+							for( int val_n = 0; val_n < utils.CONST_CHR_TOTAL_PIXELS_CNT; val_n++ )
 							{
 #if DEF_NES					
-								CHR8x8.get_data()[ val_n ] = ( byte )( CHR8x8.get_data()[ val_n ] & 0x03 );
+								CHR.get_data()[ val_n ] = ( byte )( CHR.get_data()[ val_n ] & 0x03 );
 #elif DEF_SMS
-								CHR8x8.get_data()[ val_n ] = ( byte )( CHR8x8.get_data()[ val_n ] + ( attr.palette_ind * 4 ) );
+								CHR.get_data()[ val_n ] = ( byte )( CHR.get_data()[ val_n ] + ( attr.palette_ind * 4 ) );
 #endif
 							}
 							
-							CHR_set.Add( CHR8x8 );
+							CHR_set.Add( CHR );
 #if DEF_SMS
 							if( _8x16_mode && attr.CHR_ind + 1 < spr.get_CHR_data().get_data().Count )
 							{
-								CHR8x8 = spr.get_CHR_data().get_data()[ attr.CHR_ind + 1 ];
+								CHR = spr.get_CHR_data().get_data()[ attr.CHR_ind + 1 ];
 								
-								for( int val_n = 0; val_n < utils.CONST_CHR8x8_TOTAL_PIXELS_CNT; val_n++ )
+								for( int val_n = 0; val_n < utils.CONST_CHR_TOTAL_PIXELS_CNT; val_n++ )
 								{
-									CHR8x8.get_data()[ val_n ] = ( byte )( CHR8x8.get_data()[ val_n ] + ( attr.palette_ind * 4 ) );
+									CHR.get_data()[ val_n ] = ( byte )( CHR.get_data()[ val_n ] + ( attr.palette_ind * 4 ) );
 								}
 							}
 #endif							
@@ -690,11 +690,11 @@ namespace SPReD
 		
 		public void add_last_CHR( sprite_data _spr )
 		{
-			List< CHR8x8_data > chr_list = _spr.get_CHR_data().get_data();
+			List< CHR_data > chr_list = _spr.get_CHR_data().get_data();
 			
 			if( chr_list.Count < utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
 			{
-				_spr.get_CHR_data().get_data().Add( new CHR8x8_data() );
+				_spr.get_CHR_data().get_data().Add( new CHR_data() );
 				
 				update_sprite( _spr );
 			}
@@ -702,7 +702,7 @@ namespace SPReD
 		
 		public void delete_last_CHR( sprite_data _spr )
 		{
-			List< CHR8x8_data > 	chr_list 	= _spr.get_CHR_data().get_data();
+			List< CHR_data > 	chr_list 	= _spr.get_CHR_data().get_data();
 			List< CHR_data_attr > 	attr_list 	= _spr.get_CHR_attr();
 			
 			if( chr_list.Count > 0 )
@@ -744,7 +744,7 @@ namespace SPReD
 			m_CHR_bank_viewer.set_mode8x16( _on );
 		}
 		
-		public void chr_transform( CHR8x8_data.ETransform _type )
+		public void chr_transform( CHR_data.ETransform _type )
 		{
 			m_CHR_bank_viewer.transform_CHR( _type );
 		}
@@ -845,7 +845,7 @@ namespace SPReD
 			int num_ref_sprites = 0;
 			int num_CHR_banks 	= m_CHR_data_storage.get_banks_cnt();
 			int num_tiles 		= m_CHR_data_storage.get_num_tiles();
-			int tiles_bytes 	= num_tiles * utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES;
+			int tiles_bytes 	= num_tiles * utils.CONST_CHR_NATIVE_SIZE_IN_BYTES;
 			
 			int i;
 			sprite_data spr;

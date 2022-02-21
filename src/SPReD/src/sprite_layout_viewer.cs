@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 16.03.2017
  * Time: 12:32
  */
@@ -253,8 +253,8 @@ namespace SPReD
 					{
 						CHR_data_attr chr_attr = m_spr_data.get_CHR_attr()[ m_selected_CHR ];
 						
-						int x_pos = chr_attr.x + m_spr_data.offset_x + ( ( snap == true ) ? ( utils.CONST_CHR8x8_SIDE_PIXELS_CNT >> 1 ):0 );
-						int y_pos = chr_attr.y + m_spr_data.offset_y + ( ( snap == true ) ? ( utils.CONST_CHR8x8_SIDE_PIXELS_CNT >> 1 ):0 );
+						int x_pos = chr_attr.x + m_spr_data.offset_x + ( ( snap == true ) ? ( utils.CONST_CHR_SIDE_PIXELS_CNT >> 1 ):0 );
+						int y_pos = chr_attr.y + m_spr_data.offset_y + ( ( snap == true ) ? ( utils.CONST_CHR_SIDE_PIXELS_CNT >> 1 ):0 );
 						
 						get_snapped_pos( x_pos, y_pos, out x_pos, out y_pos );
 						
@@ -381,19 +381,19 @@ namespace SPReD
 	           	
 	           	CHR_data_attr chr_attr = m_spr_data.get_CHR_attr()[ m_selected_CHR ];
 	           	
-	           	int spr_height = m_mode8x16 ? utils.CONST_CHR8x8_SIDE_PIXELS_CNT << 1:utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+	           	int spr_height = m_mode8x16 ? utils.CONST_CHR_SIDE_PIXELS_CNT << 1:utils.CONST_CHR_SIDE_PIXELS_CNT;
 	           	
-	           	m_changed_pixel_x = ( img_x_pos - ( m_spr_data.offset_x + chr_attr.x ) ) % utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+	           	m_changed_pixel_x = ( img_x_pos - ( m_spr_data.offset_x + chr_attr.x ) ) % utils.CONST_CHR_SIDE_PIXELS_CNT;
 	           	m_changed_pixel_y = ( img_y_pos - ( m_spr_data.offset_y + chr_attr.y ) ) % spr_height;
 	           	
 	           	if( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) > 0 )
 	           	{
-	           		m_changed_pixel_x = utils.CONST_CHR8x8_SIDE_PIXELS_CNT - m_changed_pixel_x - 1;
+	           		m_changed_pixel_x = utils.CONST_CHR_SIDE_PIXELS_CNT - m_changed_pixel_x - 1;
 	           	}
 
 	           	if( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) > 0 )
 	           	{
-           			m_changed_pixel_y = ( m_mode8x16 ? ( utils.CONST_CHR8x8_SIDE_PIXELS_CNT << 1 ):utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) - m_changed_pixel_y - 1;
+           			m_changed_pixel_y = ( m_mode8x16 ? ( utils.CONST_CHR_SIDE_PIXELS_CNT << 1 ):utils.CONST_CHR_SIDE_PIXELS_CNT ) - m_changed_pixel_y - 1;
 	           	}
 	           	
 				if( UpdatePixel != null )
@@ -472,7 +472,7 @@ namespace SPReD
 				{
 					// draw a frame of the selected CHR
 					CHR_data_attr 	chr_attr = m_spr_data.get_CHR_attr()[ m_selected_CHR ];
-					CHR8x8_data 	chr_data = m_spr_data.get_CHR_data().get_data()[ chr_attr.CHR_ind ];
+					CHR_data 	chr_data = m_spr_data.get_CHR_data().get_data()[ chr_attr.CHR_ind ];
 					
 					float chr_scr_pos_x = transform_to_scr_pos( chr_attr.x + m_offset_x + m_spr_data.offset_x, m_scr_half_width );
 					float chr_scr_pos_y = transform_to_scr_pos( chr_attr.y + m_offset_y + m_spr_data.offset_y, m_scr_half_height );
@@ -493,7 +493,7 @@ namespace SPReD
 				}
 				else
 				{
-					m_label.Text = " Size: " + m_spr_data.size_x + "x" + ( m_spr_data.size_y + ( m_mode8x16 ? utils.CONST_CHR8x8_SIDE_PIXELS_CNT:0 ) ) + " / Offset: " + m_spr_data.offset_x + "x" + m_spr_data.offset_y + " / Tiles: " + m_spr_data.get_CHR_attr().Count;
+					m_label.Text = " Size: " + m_spr_data.size_x + "x" + ( m_spr_data.size_y + ( m_mode8x16 ? utils.CONST_CHR_SIDE_PIXELS_CNT:0 ) ) + " / Offset: " + m_spr_data.offset_x + "x" + m_spr_data.offset_y + " / Tiles: " + m_spr_data.get_CHR_attr().Count;
 				}
 				
 				calc_CHR_size_and_draw_grid( m_show_grid );
@@ -531,8 +531,8 @@ namespace SPReD
 
 		private void calc_CHR_size_and_draw_grid( bool _draw_grid )
 		{
-			// the grid with the step of 8 pixels
-			int step = ( m_scale < 5.0f ) ? 8:1;
+			// the grid with the step of utils.CONST_CHR_SIDE_PIXELS_CNT pixels
+			int step = ( m_scale < 5.0f ) ? utils.CONST_CHR_SIDE_PIXELS_CNT:1;
 			
 			int x_max = m_pix_box.Width - m_offset_x;
 			int x_min = x_max - m_pix_box.Width;
@@ -570,12 +570,12 @@ namespace SPReD
 
 				if( _draw_grid )
 				{
-					if( step < 8 )
+					if( step < utils.CONST_CHR_SIDE_PIXELS_CNT )
 					{
 						// highlight lines that are multiples of 8 by more brighter color
 						// to highlight CHRs aligned by sprite's offset.
 						// draw the main grid by a more darker color
-						if( ( ( x_pos - spr_offs_x ) % 8 ) == 0 )
+						if( ( ( x_pos - spr_offs_x ) % utils.CONST_CHR_SIDE_PIXELS_CNT ) == 0 )
 						{
 							m_pen.Color = Color.FromArgb( unchecked( (int)0xa0f0f0f0 ) );
 						}
@@ -589,7 +589,7 @@ namespace SPReD
 				}
 				else
 				{
-					m_CHR_size = ( 8 / step ) * ( offs_x - last_offs_x );
+					m_CHR_size = ( utils.CONST_CHR_SIDE_PIXELS_CNT / step ) * ( offs_x - last_offs_x );
 					
 					if( i > 1 )
 					{
@@ -609,12 +609,12 @@ namespace SPReD
 					
 					offs_y = transform_to_scr_pos( y_pos, m_scr_half_height ) - 0.5f;
 					
-					if( step < 8 )
+					if( step < utils.CONST_CHR_SIDE_PIXELS_CNT )
 					{
 						// highlight lines that are multiples of 8 by more brighter color
 						// to highlight CHRs aligned by sprite's offset.
 						// draw the main grid by a more darker color
-						if( ( ( y_pos - spr_offs_y ) % 8 ) == 0 )
+						if( ( ( y_pos - spr_offs_y ) % utils.CONST_CHR_SIDE_PIXELS_CNT ) == 0 )
 						{
 							m_pen.Color = Color.FromArgb( unchecked( (int)0xa0f0f0f0 ) );
 						}
@@ -649,7 +649,7 @@ namespace SPReD
 				{
 					if( m_mode8x16 )
 					{
-						rect.Height += utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+						rect.Height += utils.CONST_CHR_SIDE_PIXELS_CNT;
 					}
 					
 					int spr_center_x = rect.X + ( rect.Width >> 1 );
@@ -725,19 +725,19 @@ namespace SPReD
 		
 		private Bitmap create_bitmap( CHR_data_attr _chr_attr )
 		{
-			CHR8x8_data chr_data = m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind ];
+			CHR_data chr_data = m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind ];
 			
 			if( m_mode8x16 )
 			{
 				return utils.create_bitmap8x16( chr_data, ( _chr_attr.CHR_ind + 1 ) >= m_spr_data.get_CHR_data().get_data().Count ? null:m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind + 1 ], _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
 			}
 			
-			return utils.create_bitmap8x8( chr_data, _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
+			return utils.create_CHR_bitmap( chr_data, _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
 		}
 		
 		private void update_bitmap( CHR_data_attr _chr_attr, Bitmap _bmp )
 		{
-			CHR8x8_data chr_data = m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind ];
+			CHR_data chr_data = m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind ];
 			
 			if( m_mode8x16 )
 			{
@@ -745,7 +745,7 @@ namespace SPReD
 			}
 			else
 			{
-				utils.update_bitmap8x8( chr_data, _bmp, _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
+				utils.update_CHR_bitmap( chr_data, _bmp, _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
 			}
 		}
 
@@ -934,20 +934,20 @@ namespace SPReD
            	{
            		if( m_spr_data != null )
            		{
-           			_res_x_pos -= m_spr_data.offset_x % utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
-					_res_y_pos -= m_spr_data.offset_y % utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+           			_res_x_pos -= m_spr_data.offset_x % utils.CONST_CHR_SIDE_PIXELS_CNT;
+					_res_y_pos -= m_spr_data.offset_y % utils.CONST_CHR_SIDE_PIXELS_CNT;
            		}
            		
-           		int xo = Math.Abs( _res_x_pos ) % utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
-           		int yo = Math.Abs( _res_y_pos ) % utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+           		int xo = Math.Abs( _res_x_pos ) % utils.CONST_CHR_SIDE_PIXELS_CNT;
+           		int yo = Math.Abs( _res_y_pos ) % utils.CONST_CHR_SIDE_PIXELS_CNT;
            		
-           		_res_x_pos -= ( ( _res_x_pos < 0.0 ) ? -xo + utils.CONST_CHR8x8_SIDE_PIXELS_CNT:xo );
-           		_res_y_pos -= ( ( _res_y_pos < 0.0 ) ? -yo + utils.CONST_CHR8x8_SIDE_PIXELS_CNT:yo );
+           		_res_x_pos -= ( ( _res_x_pos < 0.0 ) ? -xo + utils.CONST_CHR_SIDE_PIXELS_CNT:xo );
+           		_res_y_pos -= ( ( _res_y_pos < 0.0 ) ? -yo + utils.CONST_CHR_SIDE_PIXELS_CNT:yo );
            		
            		if( m_spr_data != null )
            		{
-           			_res_x_pos += m_spr_data.offset_x % utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
-					_res_y_pos += m_spr_data.offset_y % utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+           			_res_x_pos += m_spr_data.offset_x % utils.CONST_CHR_SIDE_PIXELS_CNT;
+					_res_y_pos += m_spr_data.offset_y % utils.CONST_CHR_SIDE_PIXELS_CNT;
            		}
            	}
 	    }

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 16.03.2017
  * Time: 16:35
  */
@@ -82,22 +82,34 @@ namespace SPReD
 		public const byte CONST_PROJECT_FILE_VER			= 1;
 		public const int  CONST_PROJECT_FILE_PALETTE_FLAG	= 8;
 		
-		public const int CONST_CHR8x8_SIDE_PIXELS_CNT			= 8;
-		public const int CONST_CHR8x16_SIDE_PIXELS_CNT			= CONST_CHR8x8_SIDE_PIXELS_CNT << 1;
-		public const int CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS	= 3;
-		public const int CONST_CHR8x8_TOTAL_PIXELS_CNT	= CONST_CHR8x8_SIDE_PIXELS_CNT * CONST_CHR8x8_SIDE_PIXELS_CNT;
+		public const int CONST_CHR_BANK_SIDE				= 256;
+		
+#if DEF_NES || DEF_SMS
+		public const int CONST_CHR_SIDE_PIXELS_CNT			= 8;
+		public const int CONST_CHR_SIDE_PIXELS_CNT_POW_BITS	= 3;
+		
+		public const int CONST_CHR_IMG_SIZE					= CONST_CHR_SIDE_PIXELS_CNT << 1;
+		public const int CONST_CHR_BANK_SIDE_SPRITES_CNT	= CONST_CHR_BANK_SIDE / CONST_CHR_IMG_SIZE;
+#elif DEF_PCE
+		public const int CONST_CHR_SIDE_PIXELS_CNT			= 16;
+		public const int CONST_CHR_SIDE_PIXELS_CNT_POW_BITS	= 4;
+		
+		public const int CONST_CHR_IMG_SIZE					= CONST_CHR_SIDE_PIXELS_CNT;
+		public const int CONST_CHR_BANK_SIDE_SPRITES_CNT	= CONST_CHR_BANK_SIDE / CONST_CHR_IMG_SIZE;
+#endif
+		public const int CONST_CHR8x16_SIDE_PIXELS_CNT		= CONST_CHR_SIDE_PIXELS_CNT;
+		public const int CONST_CHR_TOTAL_PIXELS_CNT			= CONST_CHR_SIDE_PIXELS_CNT * CONST_CHR_SIDE_PIXELS_CNT;
+
+		public const int CONST_CHR_BANK_MAX_SPRITES_CNT		= CONST_CHR_BANK_SIDE_SPRITES_CNT * CONST_CHR_BANK_SIDE_SPRITES_CNT;
 
 #if DEF_NES		
-		public const int CONST_CHR8x8_NATIVE_SIZE_IN_BYTES	= 16;
+		public const int CONST_CHR_NATIVE_SIZE_IN_BYTES	= 16;
 #elif DEF_SMS
-		public const int CONST_CHR8x8_NATIVE_SIZE_IN_BYTES	= 32;
-#endif		
-		
+		public const int CONST_CHR_NATIVE_SIZE_IN_BYTES	= 32;
+#endif
 		public const int CONST_NUM_SMALL_PALETTES 			= 4;
 		public const int CONST_PALETTE_SMALL_NUM_COLORS		= 4;
 		public const int CONST_PALETTE_MAIN_NUM_COLORS		= 64;
-		
-		public const int CONST_CHR_BANK_MAX_SPRITES_CNT		= 256;
 		
 		public const int CONST_LAYOUT_WORKSPACE_HALF_SIDE	= 256;
 		
@@ -119,22 +131,22 @@ namespace SPReD
 			}
 		}
 
-		public static Bitmap create_bitmap8x8( CHR8x8_data _chr_data, int _flags, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null )
+		public static Bitmap create_CHR_bitmap( CHR_data _chr_data, int _flags, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null )
 		{
-			Bitmap bmp = new Bitmap( 8, 8, PixelFormat.Format32bppArgb );
+			Bitmap bmp = new Bitmap( CONST_CHR_SIDE_PIXELS_CNT, CONST_CHR_SIDE_PIXELS_CNT, PixelFormat.Format32bppArgb );
 			
-			update_bitmap8x8( _chr_data, bmp, _flags, _alpha, _plt_ind, _plt_arr );
+			update_CHR_bitmap( _chr_data, bmp, _flags, _alpha, _plt_ind, _plt_arr );
 			
 			return bmp;
 		}
 		
-		public static void update_bitmap8x8( CHR8x8_data _chr_data, Bitmap _bmp, int _flags, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
+		public static void update_CHR_bitmap( CHR_data _chr_data, Bitmap _bmp, int _flags, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
 		{
 			BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, _bmp.Width, _bmp.Height ), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb );
 			
 			if( bmp_data != null )
 			{
-				fill_bmp_data8x8( bmp_data.Scan0, 0, _chr_data, _alpha, _plt_ind, _plt_arr );
+				fill_CHR_bmp_data( bmp_data.Scan0, 0, _chr_data, _alpha, _plt_ind, _plt_arr );
 				
 				_bmp.UnlockBits( bmp_data );
 				
@@ -142,7 +154,7 @@ namespace SPReD
 			}
 		}
 
-		public static Bitmap create_bitmap8x16( CHR8x8_data _chr_data1, CHR8x8_data _chr_data2, int _flags, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null )
+		public static Bitmap create_bitmap8x16( CHR_data _chr_data1, CHR_data _chr_data2, int _flags, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null )
 		{
 			Bitmap bmp = new Bitmap( 8, 16, PixelFormat.Format32bppArgb );
 			
@@ -151,17 +163,17 @@ namespace SPReD
 			return bmp;
 		}
 		
-		public static void update_bitmap8x16( CHR8x8_data _chr_data1, CHR8x8_data _chr_data2, Bitmap _bmp, int _flags, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
+		public static void update_bitmap8x16( CHR_data _chr_data1, CHR_data _chr_data2, Bitmap _bmp, int _flags, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
 		{
 			BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, _bmp.Width, _bmp.Height ), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb );
 			
 			if( bmp_data != null )
 			{
-				fill_bmp_data8x8( bmp_data.Scan0, 0, _chr_data1, _alpha, _plt_ind, _plt_arr );
+				fill_CHR_bmp_data( bmp_data.Scan0, 0, _chr_data1, _alpha, _plt_ind, _plt_arr );
 				
 				if( _chr_data2 != null )
 				{
-					fill_bmp_data8x8( bmp_data.Scan0, ( 8 * bmp_data.Stride ), _chr_data2, _alpha, _plt_ind, _plt_arr );
+					fill_CHR_bmp_data( bmp_data.Scan0, ( 8 * bmp_data.Stride ), _chr_data2, _alpha, _plt_ind, _plt_arr );
 					
 					_bmp.UnlockBits( bmp_data );
 				}
@@ -181,7 +193,7 @@ namespace SPReD
 			}
 		}
 		
-		private static void fill_bmp_data8x8( IntPtr _data_ptr, int _data_offset, CHR8x8_data _chr_data, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
+		private static void fill_CHR_bmp_data( IntPtr _data_ptr, int _data_offset, CHR_data _chr_data, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
 		{
 			unsafe
 			{
@@ -189,13 +201,13 @@ namespace SPReD
 				
 #if DEF_NES
 				bool apply_palette 	= ( _plt_arr != null && _plt_ind >= 0 );
-				int[] clr_inds 		= apply_palette ? _plt_arr[ _plt_ind ].get_color_inds():null;					
+				int[] clr_inds 		= apply_palette ? _plt_arr[ _plt_ind ].get_color_inds():null;
 				int alpha;
 #endif
 				int clr = 0;
 				int pix_ind;
 				
-				for( int p = 0; p < CONST_CHR8x8_TOTAL_PIXELS_CNT; p++ )
+				for( int p = 0; p < CONST_CHR_TOTAL_PIXELS_CNT; p++ )
 				{
 					pix_ind = _chr_data.get_data()[ p ];
 					
@@ -218,7 +230,7 @@ namespace SPReD
 					{
 						alpha = ( pix_ind == 0 ) ? ( _alpha ? 0x00:0xFF ):0xFF;
 						
-						pix_ind <<= 6;							
+						pix_ind <<= 6;
 						clr = alpha << 24 | pix_ind << 16 | pix_ind << 8 | pix_ind;
 					}
 #endif					

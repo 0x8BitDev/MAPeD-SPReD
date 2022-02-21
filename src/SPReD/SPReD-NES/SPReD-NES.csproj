@@ -85,8 +85,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\src\CHR8x8_data.cs">
-      <Link>CHR8x8_data.cs</Link>
+    <Compile Include="..\src\CHR_data.cs">
+      <Link>CHR_data.cs</Link>
     </Compile>
     <Compile Include="..\src\CHR_bank_viewer.cs">
       <Link>CHR_bank_viewer.cs</Link>

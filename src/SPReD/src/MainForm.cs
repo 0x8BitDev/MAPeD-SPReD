@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 13.03.2017
  * Time: 11:24
  */
@@ -744,7 +744,7 @@ namespace SPReD
 			
 			string new_sprite_name = m_create_sprite_form.edit_str;
 			
-			if(!check_duplicate( new_sprite_name ) )
+			if( !check_duplicate( new_sprite_name ) )
 			{
 				SpriteList.Items.Add( m_sprites_proc.create_sprite( new_sprite_name, m_create_sprite_form.sprite_width, m_create_sprite_form.sprite_height, CBoxMode8x16.Checked ) );
 				
@@ -1186,17 +1186,17 @@ namespace SPReD
 		
 		void BtnCHREditorVFlipClick_Event(object sender, EventArgs e)
 		{
-			m_sprites_proc.chr_transform( CHR8x8_data.ETransform.t_vflip );
+			m_sprites_proc.chr_transform( CHR_data.ETransform.t_vflip );
 		}
 		
 		void BtnCHREditorHFlipClick_Event(object sender, EventArgs e)
 		{
-			m_sprites_proc.chr_transform( CHR8x8_data.ETransform.t_hflip );
+			m_sprites_proc.chr_transform( CHR_data.ETransform.t_hflip );
 		}
 		
 		void BtnCHREditorRotateClick_Event(object sender, EventArgs e)
 		{
-			m_sprites_proc.chr_transform( CHR8x8_data.ETransform.t_rotate );
+			m_sprites_proc.chr_transform( CHR_data.ETransform.t_rotate );
 		}
 		
 		void FillWithColorToolStripMenuItemClick_Event(object sender, EventArgs e)

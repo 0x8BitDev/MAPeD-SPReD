@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 03.06.2019
  * Time: 15:55
  */
@@ -239,10 +239,10 @@ namespace SPReD
 	{
 		public byte[] data	= null;
 		
-		public spd_CHR_data( CHR8x8_data _data )
+		public spd_CHR_data( CHR_data _data )
 		{
-			data = new byte[ utils.CONST_CHR8x8_TOTAL_PIXELS_CNT ];			
-			Array.Copy( _data.get_data(), data, utils.CONST_CHR8x8_TOTAL_PIXELS_CNT );
+			data = new byte[ utils.CONST_CHR_TOTAL_PIXELS_CNT ];			
+			Array.Copy( _data.get_data(), data, utils.CONST_CHR_TOTAL_PIXELS_CNT );
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 21.03.2017
  * Time: 11:07
  */
@@ -57,7 +57,7 @@ namespace SPReD
 #endif
 		};
 		
-		private List< CHR8x8_data > m_CHR_arr	= null;
+		private List< CHR_data > m_CHR_arr	= null;
 	
 		private static int m_num_ids	= -1;
 		
@@ -79,14 +79,14 @@ namespace SPReD
 		
 		public CHR_data_group()
 		{
-			m_CHR_arr = new List< CHR8x8_data >( 100 );
+			m_CHR_arr = new List< CHR_data >( 100 );
 			
 			id = ++m_num_ids;
 		}
 		
 		public void reset()
 		{
-			m_CHR_arr.ForEach( delegate( CHR8x8_data _obj ) { _obj.reset(); } );
+			m_CHR_arr.ForEach( delegate( CHR_data _obj ) { _obj.reset(); } );
 			m_CHR_arr.Clear();
 		}
 		
@@ -97,7 +97,7 @@ namespace SPReD
 		
 		public int get_size_bytes()
 		{
-			return m_CHR_arr.Count * utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES;
+			return m_CHR_arr.Count * utils.CONST_CHR_NATIVE_SIZE_IN_BYTES;
 		}
 		
 		public string get_filename()
@@ -105,7 +105,7 @@ namespace SPReD
 			return name + ".bin";
 		}
 		
-		public List< CHR8x8_data > get_data()
+		public List< CHR_data > get_data()
 		{
 			return m_CHR_arr;
 		}
@@ -130,7 +130,7 @@ namespace SPReD
 		{
 			if( _ind1 >= 0 && _ind1 < get_data().Count && _ind2 >= 0 && _ind2 < get_data().Count )
 			{
-				CHR8x8_data data = get_data()[ _ind1 ];
+				CHR_data data = get_data()[ _ind1 ];
 				get_data()[ _ind1 ] = get_data()[ _ind2 ];
 				get_data()[ _ind2 ] = data;
 				
@@ -378,8 +378,8 @@ namespace SPReD
 				int dx_incr = _max_x - _min_x + 1;
 				int dy_incr = _max_y - _min_y + 1;
 				
-				_spr_params.m_size_x = ( ( dx_incr%utils.CONST_CHR8x8_SIDE_PIXELS_CNT != 0 ) ? ( ( ( dx_incr ) + utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) & -utils.CONST_CHR8x8_SIDE_PIXELS_CNT ):dx_incr ) >> utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS;
-				_spr_params.m_size_y = ( ( dy_incr%utils.CONST_CHR8x8_SIDE_PIXELS_CNT != 0 ) ? ( ( ( dy_incr ) + utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) & -utils.CONST_CHR8x8_SIDE_PIXELS_CNT ):dy_incr ) >> utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS;
+				_spr_params.m_size_x = ( ( dx_incr % utils.CONST_CHR_SIDE_PIXELS_CNT != 0 ) ? ( ( ( dx_incr ) + utils.CONST_CHR_SIDE_PIXELS_CNT ) & -utils.CONST_CHR_SIDE_PIXELS_CNT ):dx_incr ) >> utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS;
+				_spr_params.m_size_y = ( ( dy_incr % utils.CONST_CHR_SIDE_PIXELS_CNT != 0 ) ? ( ( ( dy_incr ) + utils.CONST_CHR_SIDE_PIXELS_CNT ) & -utils.CONST_CHR_SIDE_PIXELS_CNT ):dy_incr ) >> utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS;
 				
 				int x;
 				int y;
@@ -388,11 +388,11 @@ namespace SPReD
 				
 				byte[] pixels_line  = null;
 				
-				byte[] pixels_row  = new byte[ utils.CONST_CHR8x8_SIDE_PIXELS_CNT ];
+				byte[] pixels_row  = new byte[ utils.CONST_CHR_SIDE_PIXELS_CNT ];
 				
 				int n_lines = _lines_arr.Count;
 				
-				CHR8x8_data 	chr_data = null;
+				CHR_data 	chr_data = null;
 				CHR_data_attr 	chr_attr = null;
 				
 				int chr_pos_x = 0;
@@ -413,12 +413,12 @@ namespace SPReD
 					
 					for( x = 0; x < _spr_params.m_size_x; x++ )
 					{
-						chr_pos_x = x*utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
-						chr_pos_y = y*utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+						chr_pos_x = x*utils.CONST_CHR_SIDE_PIXELS_CNT;
+						chr_pos_y = y*utils.CONST_CHR_SIDE_PIXELS_CNT;
 						
 						pix_acc = 0;
 						
-						chr_data = new CHR8x8_data();
+						chr_data = new CHR_data();
 						chr_attr = new CHR_data_attr( chr_pos_x, chr_pos_y );
 						
 						chr_pos_x += _min_x;
@@ -431,9 +431,9 @@ namespace SPReD
 							
 							chr_pos_x += x_offset;
 							
-							for( col_n = 0; col_n < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; col_n++ )
+							for( col_n = 0; col_n < utils.CONST_CHR_SIDE_PIXELS_CNT; col_n++ )
 							{
-								for( row_n = 0; row_n < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; row_n++ )
+								for( row_n = 0; row_n < utils.CONST_CHR_SIDE_PIXELS_CNT; row_n++ )
 								{
 									pixels_line = ( chr_pos_y + row_n < _lines_arr.Count ) ? _lines_arr[ chr_pos_y + row_n ]:null;
 									
@@ -456,13 +456,13 @@ namespace SPReD
 								}
 							}
 							
-							if( col_n == utils.CONST_CHR8x8_SIDE_PIXELS_CNT )
+							if( col_n == utils.CONST_CHR_SIDE_PIXELS_CNT )
 							{
 								continue;
 							}
 						}
 						
-						for( i = 0; i < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; i++ )
+						for( i = 0; i < utils.CONST_CHR_SIDE_PIXELS_CNT; i++ )
 						{
 							pixels_line = ( chr_pos_y + i < _lines_arr.Count ) ? _lines_arr[ chr_pos_y + i ]:null;
 							
@@ -485,7 +485,7 @@ namespace SPReD
 								
 								pixels_row[ num_row_pixs ] = pix_ind;
 							}
-							while( ++num_row_pixs < utils.CONST_CHR8x8_SIDE_PIXELS_CNT );
+							while( ++num_row_pixs < utils.CONST_CHR_SIDE_PIXELS_CNT );
 							
 							chr_data.push_line( pixels_row );
 						}
@@ -514,8 +514,8 @@ namespace SPReD
 			}
 			
 			// convert tiles into pixels
-			_spr_params.m_size_x <<= utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS;
-			_spr_params.m_size_y <<= utils.CONST_CHR8x8_SIDE_PIXELS_CNT_POW_BITS;
+			_spr_params.m_size_x <<= utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS;
+			_spr_params.m_size_y <<= utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS;
 			
 			return _spr_params;
 		}
@@ -572,8 +572,8 @@ namespace SPReD
 		
 		public void import( BinaryReader _br )
 		{
-			byte[] pix_arr = new byte[ utils.CONST_CHR8x8_SIDE_PIXELS_CNT ];
-			byte[] tmp_arr = new byte[ utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES ];
+			byte[] pix_arr = new byte[ utils.CONST_CHR_SIDE_PIXELS_CNT ];
+			byte[] tmp_arr = new byte[ utils.CONST_CHR_NATIVE_SIZE_IN_BYTES ];
 			
 			int i;
 			int j;
@@ -587,11 +587,11 @@ namespace SPReD
 			int ind_offset;
 #endif
 			
-			int shift_7_cnt;
+			int shift_dec1_cnt;
 			
-			CHR8x8_data chr_data;
+			CHR_data chr_data;
 			
-			if( _br.BaseStream.Length < utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES )
+			if( _br.BaseStream.Length < utils.CONST_CHR_NATIVE_SIZE_IN_BYTES )
 			{
 				_br.BaseStream.Position = _br.BaseStream.Length;
 				
@@ -600,15 +600,15 @@ namespace SPReD
 			
 			do
 			{
-				chr_data = new CHR8x8_data();
+				chr_data = new CHR_data();
 				
-				tmp_arr = _br.ReadBytes( utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES );
+				tmp_arr = _br.ReadBytes( utils.CONST_CHR_NATIVE_SIZE_IN_BYTES );
 				
-				for( i = 0; i < 8; i++ )
+				for( i = 0; i < utils.CONST_CHR_SIDE_PIXELS_CNT; i++ )
 				{
 #if DEF_NES
 					byte_0	= tmp_arr[ i ];
-					byte_1	= tmp_arr[ i + 8 ];
+					byte_1	= tmp_arr[ i + utils.CONST_CHR_SIDE_PIXELS_CNT ];
 #elif DEF_SMS
 					ind_offset = i << 2;
 					
@@ -617,13 +617,13 @@ namespace SPReD
 					byte_2	= tmp_arr[ ind_offset + 2 ];
 					byte_3 	= tmp_arr[ ind_offset + 3 ];
 #endif
-					for( j = 0; j < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; j++ )
+					for( j = 0; j < utils.CONST_CHR_SIDE_PIXELS_CNT; j++ )
 					{
-						shift_7_cnt = 7 - j;
+						shift_dec1_cnt = utils.CONST_CHR_SIDE_PIXELS_CNT - 1 - j;
 #if DEF_NES						
-						pix_arr[ j ] = ( byte )( ( ( byte_0 & ( 1 << shift_7_cnt ) ) >> shift_7_cnt ) | ( ( ( byte_1 << 1 ) & ( 1 << ( 8 - j ) ) ) >> shift_7_cnt ) );
+						pix_arr[ j ] = ( byte )( ( ( byte_0 & ( 1 << shift_dec1_cnt ) ) >> shift_dec1_cnt ) | ( ( ( byte_1 << 1 ) & ( 1 << ( utils.CONST_CHR_SIDE_PIXELS_CNT - j ) ) ) >> shift_dec1_cnt ) );
 #elif DEF_SMS						
-						pix_arr[ j ] = ( byte )( ( ( byte_0 >> shift_7_cnt & 0x01 ) ) | ( ( ( byte_1 >> shift_7_cnt & 0x01 ) ) << 1 ) | ( ( ( byte_2 >> shift_7_cnt & 0x01 ) ) << 2 ) | ( ( ( byte_3 >> shift_7_cnt & 0x01 ) ) << 3 ) );
+						pix_arr[ j ] = ( byte )( ( ( byte_0 >> shift_dec1_cnt & 0x01 ) ) | ( ( ( byte_1 >> shift_dec1_cnt & 0x01 ) ) << 1 ) | ( ( ( byte_2 >> shift_dec1_cnt & 0x01 ) ) << 2 ) | ( ( ( byte_3 >> shift_dec1_cnt & 0x01 ) ) << 3 ) );
 #endif						
 					}
 					
@@ -637,7 +637,7 @@ namespace SPReD
 					break;
 				}
 			}
-			while( _br.BaseStream.Position + utils.CONST_CHR8x8_NATIVE_SIZE_IN_BYTES <= _br.BaseStream.Length );
+			while( _br.BaseStream.Position + utils.CONST_CHR_NATIVE_SIZE_IN_BYTES <= _br.BaseStream.Length );
 			
 			if( m_CHR_arr.Count < utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
 			{
@@ -658,7 +658,7 @@ namespace SPReD
 		{
 			BinaryWriter bw = new BinaryWriter( File.Open( _filename, FileMode.Create ) );
 			
-			CHR8x8_data chr_data;
+			CHR_data chr_data;
 			
 			int i;
 			int j;
@@ -678,11 +678,11 @@ namespace SPReD
 #if DEF_NES
 				for( j = 0; j < 2; j++ )
 				{
-					for( y = 0; y < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; y++ )
+					for( y = 0; y < utils.CONST_CHR_SIDE_PIXELS_CNT; y++ )
 					{
 						data = 0;
 						
-						for( x = 0; x < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; x++ )
+						for( x = 0; x < utils.CONST_CHR_SIDE_PIXELS_CNT; x++ )
 						{
 							val = chr_data.get_data()[ ( y << 3 ) + ( 7 - x ) ];
 							
@@ -693,13 +693,13 @@ namespace SPReD
 					}
 				}
 #elif DEF_SMS
-				for( y = 0; y < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; y++ )
+				for( y = 0; y < utils.CONST_CHR_SIDE_PIXELS_CNT; y++ )
 				{
 					for( j = 0; j < bpp; j++ )
 					{
 						data = 0;
 						
-						for( x = 0; x < utils.CONST_CHR8x8_SIDE_PIXELS_CNT; x++ )
+						for( x = 0; x < utils.CONST_CHR_SIDE_PIXELS_CNT; x++ )
 						{
 							val = chr_data.get_data()[ ( y << 3 ) + ( 7 - x ) ];
 							
@@ -765,13 +765,13 @@ namespace SPReD
 			m_id 			= _br.ReadInt32();
 			m_link_cnt 		= _br.ReadInt32();
 
-			CHR8x8_data chr_data;
+			CHR_data chr_data;
 			
 			int chrs_size = _br.ReadInt32();
 			
 			for( int i = 0; i < chrs_size; i++ )
 			{
-				chr_data = new CHR8x8_data();
+				chr_data = new CHR_data();
 				chr_data.load( _br );
 				
 				m_CHR_arr.Add( chr_data );

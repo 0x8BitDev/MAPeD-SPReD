@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 14.03.2017
  * Time: 11:35
  */
@@ -205,11 +205,11 @@ namespace SPReD
 #if DEF_NES		
 				_attr.vflip();			                   	
 #elif DEF_SMS
-				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR8x8_data.ETransform.t_vflip );
+				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR_data.ETransform.t_vflip );
 				
 				if( _8x16_mode && _attr.CHR_ind + 1 < m_CHR_data.get_data().Count )
 				{
-					m_CHR_data.get_data()[ _attr.CHR_ind + 1 ].transform( CHR8x8_data.ETransform.t_vflip );
+					m_CHR_data.get_data()[ _attr.CHR_ind + 1 ].transform( CHR_data.ETransform.t_vflip );
 					
 					m_CHR_data.swap_CHRs( _attr.CHR_ind, _attr.CHR_ind + 1 );
 				}
@@ -222,17 +222,17 @@ namespace SPReD
 						case sprite_data.EAxesFlipType.aft_LOCAL_AXES:
 							{
 								int center = m_size_y >> 1;
-								_attr.y = center - ( _attr.y - center ) - utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+								_attr.y = center - ( _attr.y - center ) - utils.CONST_CHR_SIDE_PIXELS_CNT;
 							}
 							break;
 							
 						case sprite_data.EAxesFlipType.aft_GLOABL_AXES:
 							{
-								_attr.y = ( -_attr.y - utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) - m_offset_y;
+								_attr.y = ( -_attr.y - utils.CONST_CHR_SIDE_PIXELS_CNT ) - m_offset_y;
 								
 							 	if( _8x16_mode )
 							 	{
-							 		_attr.y -= utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+							 		_attr.y -= utils.CONST_CHR_SIDE_PIXELS_CNT;
 							 	}
 							}
 							break;
@@ -279,11 +279,11 @@ namespace SPReD
 #if DEF_NES		
                	_attr.hflip();
 #elif DEF_SMS
-				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR8x8_data.ETransform.t_hflip );
+				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR_data.ETransform.t_hflip );
 
 				if( _8x16_mode && _attr.CHR_ind + 1 < m_CHR_data.get_data().Count )
 				{
-					m_CHR_data.get_data()[ _attr.CHR_ind + 1 ].transform( CHR8x8_data.ETransform.t_hflip );
+					m_CHR_data.get_data()[ _attr.CHR_ind + 1 ].transform( CHR_data.ETransform.t_hflip );
 				}
 				
 				if( _transform_pos )
@@ -294,13 +294,13 @@ namespace SPReD
 						case sprite_data.EAxesFlipType.aft_LOCAL_AXES:
 							{
 								int center = m_size_x >> 1;
-								_attr.x = center - ( _attr.x - center ) - utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+								_attr.x = center - ( _attr.x - center ) - utils.CONST_CHR_SIDE_PIXELS_CNT;
 							}
 							break;
 							
 						case sprite_data.EAxesFlipType.aft_GLOABL_AXES:
 							{
-								_attr.x = ( -_attr.x - utils.CONST_CHR8x8_SIDE_PIXELS_CNT ) - m_offset_x;
+								_attr.x = ( -_attr.x - utils.CONST_CHR_SIDE_PIXELS_CNT ) - m_offset_x;
 							}
 							break;
 					}
@@ -362,12 +362,12 @@ namespace SPReD
 			}
 		}
 		
-		private void remap_color_inds( CHR8x8_data _chr_data, int _start_clr_ind, byte[] _remap_arr )
+		private void remap_color_inds( CHR_data _chr_data, int _start_clr_ind, byte[] _remap_arr )
 		{
 			int 	j;
 			byte 	clr_ind;
 			
-			for( j = 0; j < utils.CONST_CHR8x8_TOTAL_PIXELS_CNT; j++ )
+			for( j = 0; j < utils.CONST_CHR_TOTAL_PIXELS_CNT; j++ )
 			{
 				clr_ind = _chr_data.get_data()[ j ];
 				
@@ -581,11 +581,11 @@ namespace SPReD
 				
 				rect_src.X = chr_attr.x + offset_x;
 				rect_src.Y = chr_attr.y + offset_y;
-				rect_src.Width	= utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
-				rect_src.Height = utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+				rect_src.Width	= utils.CONST_CHR_SIDE_PIXELS_CNT;
+				rect_src.Height = utils.CONST_CHR_SIDE_PIXELS_CNT;
 	
-				rect_dst.Width 	= utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
-				rect_dst.Height = utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+				rect_dst.Width 	= utils.CONST_CHR_SIDE_PIXELS_CNT;
+				rect_dst.Height = utils.CONST_CHR_SIDE_PIXELS_CNT;
 				
 				int size = get_CHR_attr().Count;
 				
@@ -629,7 +629,7 @@ namespace SPReD
 			Graphics	gfx;
 			
 			CHR_data_attr 	chr_attr;
-			CHR8x8_data		chr_data;
+			CHR_data		chr_data;
 			
 			int x;
 			int y;
@@ -638,7 +638,7 @@ namespace SPReD
 			
 			if( _mode8x16 )
 			{
-				rect.Height += utils.CONST_CHR8x8_SIDE_PIXELS_CNT;
+				rect.Height += utils.CONST_CHR_SIDE_PIXELS_CNT;
 			}
 			
 			Color opacity_color = Color.FromArgb( ( 0xff << 24 ) | palette_group.Instance.main_palette[ _plt_arr[ 0 ].get_color_inds()[ 0 ] ] );
@@ -660,13 +660,13 @@ namespace SPReD
 				}
 				else
 				{
-					bmp = utils.create_bitmap8x8( chr_data, chr_attr.flip_flag, false, chr_attr.palette_ind, _plt_arr );
+					bmp = utils.create_CHR_bitmap( chr_data, chr_attr.flip_flag, false, chr_attr.palette_ind, _plt_arr );
 				}
 				
 				x = chr_attr.x - rect.X + offset_x;
 				y = chr_attr.y - rect.Y + offset_y;
 				
-				gfx.DrawImage( bmp, x, y, utils.CONST_CHR8x8_SIDE_PIXELS_CNT, _mode8x16 ? ( utils.CONST_CHR8x8_SIDE_PIXELS_CNT << 1 ):utils.CONST_CHR8x8_SIDE_PIXELS_CNT );
+				gfx.DrawImage( bmp, x, y, utils.CONST_CHR_SIDE_PIXELS_CNT, _mode8x16 ? ( utils.CONST_CHR_SIDE_PIXELS_CNT << 1 ):utils.CONST_CHR_SIDE_PIXELS_CNT );
 				
 				bmp.Dispose();
 			}
