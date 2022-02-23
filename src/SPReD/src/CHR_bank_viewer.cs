@@ -285,7 +285,8 @@ namespace SPReD
 				{
 #if DEF_NES
 					byte color_slot = ( byte )m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot;
-#elif DEF_SMS
+#elif DEF_SMS || DEF_PCE
+					// TODO: PCE - update_pixel
 					byte color_slot = ( byte )( m_palette_group.active_palette * utils.CONST_NUM_SMALL_PALETTES + m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot );
 #endif						
 					if( m_mode8x16 && ( spr_viewer.changed_pix_y > utils.CONST_CHR_SIDE_PIXELS_CNT - 1 ) )
@@ -363,7 +364,8 @@ namespace SPReD
 				{
 #if DEF_NES					
 					byte color_ind = ( byte )plt.get_palettes_arr()[ plt.active_palette ].color_slot;
-#elif DEF_SMS
+#elif DEF_SMS || DEF_PCE
+					// TODO: PCE - CHR_fill_with_color
 					byte color_ind = ( byte )( plt.active_palette * utils.CONST_NUM_SMALL_PALETTES + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
 #endif					
 					get_data()[ m_selected_ind ].fill( color_ind );

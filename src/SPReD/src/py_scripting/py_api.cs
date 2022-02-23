@@ -111,6 +111,8 @@ namespace SPReD
 		public long export_CHR_data( int _spr_ind, string _filename, bool _save_padding )
 #elif DEF_SMS
 		public long export_CHR_data( int _spr_ind, string _filename, int _bpp )
+#elif DEF_PCE
+		public long export_CHR_data( int _spr_ind, string _filename )
 #endif			
 		{
 			long data_size = -1;
@@ -129,6 +131,8 @@ namespace SPReD
 					}
 					
 					data_size = data.get_CHR_data().export( _filename, false, _bpp );
+#elif DEF_PCE
+					data_size = data.get_CHR_data().export( _filename );
 #endif
 				}
 				else

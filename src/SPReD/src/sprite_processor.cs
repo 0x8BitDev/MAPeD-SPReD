@@ -300,7 +300,7 @@ namespace SPReD
 			return chr_attrs;
 		}
 		
-#if DEF_NES
+#if DEF_NES || DEF_PCE
 		public void export_CHR( StreamWriter _sw, string _filename, bool _commented, bool _need_padding )
 		{
 			m_CHR_data_storage.export( _sw, _filename, _commented, _need_padding );
@@ -860,7 +860,7 @@ namespace SPReD
 				}
 			}
 			
-			MainForm.message_box( String.Format( "Sprites:\t\t{0}\nRef Sprites:\t{1}\nCHR Banks:\t{2}\nTiles:\t\t{3} / {4} Bytes", num_sprites, num_ref_sprites, num_CHR_banks, num_tiles, tiles_bytes ), "Statistics", MessageBoxButtons.OK, MessageBoxIcon.Information );
+			MainForm.message_box( String.Format( "Sprites:\t\t{0}\nRef Sprites:\t{1}\nCHR Banks:\t{2}\nTiles:\t\t{3} / {4} Bytes\n------------------------------------\nNative CHR:\t{5} Bytes", num_sprites, num_ref_sprites, num_CHR_banks, num_tiles, tiles_bytes, utils.CONST_CHR_NATIVE_SIZE_IN_BYTES ), "Statistics", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 	}
 }

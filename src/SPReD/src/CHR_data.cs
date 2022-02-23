@@ -187,7 +187,7 @@ namespace SPReD
 			{
 				this.m_data[ i ] = ( byte )( _br.ReadByte() & 0x03 );
 			}
-#elif DEF_SMS			
+#elif DEF_SMS || DEF_PCE
 			_br.Read( this.m_data, 0, utils.CONST_CHR_TOTAL_PIXELS_CNT );
 #endif
 		}

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 13.03.2017
  * Time: 11:24
  */
@@ -22,7 +22,7 @@ namespace SPReD
 		{
 			try
 			{
-#if !DEF_NES && !DEF_SMS 
+#if !DEF_NES && !DEF_SMS && !DEF_PCE
 				throw new Exception( "Invalid platform!" );
 #endif
 				if( utils.is_win )

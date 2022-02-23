@@ -24,6 +24,8 @@ namespace SPReD
 		public const string	CONST_PLATFORM	= "NES";
 #elif DEF_SMS
 		public const string	CONST_PLATFORM	= "SMS";
+#elif DEF_PCE
+		public const string	CONST_PLATFORM	= "PCE";
 #else
 		public const string	CONST_PLATFORM	= "UNKNOWN";
 #endif
@@ -90,14 +92,23 @@ namespace SPReD
 		
 		public const int CONST_CHR_IMG_SIZE					= CONST_CHR_SIDE_PIXELS_CNT << 1;
 		public const int CONST_CHR_BANK_SIDE_SPRITES_CNT	= CONST_CHR_BANK_SIDE / CONST_CHR_IMG_SIZE;
+
+		public const int CONST_PALETTE_MAIN_NUM_COLORS		= 64;
+		
+		public const int CONST_SPRITE_MAX_NUM_ATTRS			= 64;	// the max number of attributes in a sprite
+
+		public const int CONST_CHR8x16_SIDE_PIXELS_CNT		= CONST_CHR_SIDE_PIXELS_CNT;
 #elif DEF_PCE
 		public const int CONST_CHR_SIDE_PIXELS_CNT			= 16;
 		public const int CONST_CHR_SIDE_PIXELS_CNT_POW_BITS	= 4;
 		
 		public const int CONST_CHR_IMG_SIZE					= CONST_CHR_SIDE_PIXELS_CNT;
 		public const int CONST_CHR_BANK_SIDE_SPRITES_CNT	= CONST_CHR_BANK_SIDE / CONST_CHR_IMG_SIZE;
+		
+		public const int CONST_PALETTE_MAIN_NUM_COLORS		= 512;
+
+		public const int CONST_SPRITE_MAX_NUM_ATTRS			= 64;	// the max number of attributes in a sprite
 #endif
-		public const int CONST_CHR8x16_SIDE_PIXELS_CNT		= CONST_CHR_SIDE_PIXELS_CNT;
 		public const int CONST_CHR_TOTAL_PIXELS_CNT			= CONST_CHR_SIDE_PIXELS_CNT * CONST_CHR_SIDE_PIXELS_CNT;
 
 		public const int CONST_CHR_BANK_MAX_SPRITES_CNT		= CONST_CHR_BANK_SIDE_SPRITES_CNT * CONST_CHR_BANK_SIDE_SPRITES_CNT;
@@ -106,14 +117,14 @@ namespace SPReD
 		public const int CONST_CHR_NATIVE_SIZE_IN_BYTES	= 16;
 #elif DEF_SMS
 		public const int CONST_CHR_NATIVE_SIZE_IN_BYTES	= 32;
+#elif DEF_PCE
+		public const int CONST_CHR_NATIVE_SIZE_IN_BYTES	= 128;
 #endif
+
 		public const int CONST_NUM_SMALL_PALETTES 			= 4;
 		public const int CONST_PALETTE_SMALL_NUM_COLORS		= 4;
-		public const int CONST_PALETTE_MAIN_NUM_COLORS		= 64;
 		
 		public const int CONST_LAYOUT_WORKSPACE_HALF_SIDE	= 256;
-		
-		public const int CONST_SPRITE_MAX_NUM_ATTRS			= 64;	// the max number of attributes in a sprite
 		
 		public static SolidBrush 	brush		 	= new SolidBrush( Color.White );
 		public static Font 			fnt10_Arial		= new Font( "Arial", 10, FontStyle.Bold );
@@ -217,7 +228,8 @@ namespace SPReD
 					{
 #if DEF_NES
 						clr = palette_group.Instance.main_palette[ clr_inds[ pix_ind ] ];
-#elif DEF_SMS
+#elif DEF_SMS || DEF_PCE
+						// TODO: PCE - fill_CHR_bmp_data
 						clr = palette_group.Instance.main_palette[ palette_group.Instance.get_palettes_arr()[ pix_ind / CONST_NUM_SMALL_PALETTES ].get_color_inds()[ pix_ind % CONST_NUM_SMALL_PALETTES ] ];
 #endif						
 						if( ( pix_ind != 0 && _alpha == true ) || _alpha == false )

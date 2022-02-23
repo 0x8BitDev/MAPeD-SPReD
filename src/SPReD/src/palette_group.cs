@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 14:57
  */
@@ -24,7 +24,7 @@ namespace SPReD
 		
 #if DEF_NES		
 		private int m_sel_clr_ind		= 13;
-#elif DEF_SMS		
+#elif DEF_SMS || DEF_PCE
 		private int m_sel_clr_ind		= 0;
 #endif		
 		private int m_active_plt_id		= -1;
@@ -64,6 +64,8 @@ namespace SPReD
 															0x00aaaa, 0x55aaaa,	0xaaaaaa, 0xffaaaa,	0x00ffaa, 0x55ffaa,	0xaaffaa, 0xffffaa,
 															0x0000ff, 0x5500ff,	0xaa00ff, 0xff00ff,	0x0055ff, 0x5555ff,	0xaa55ff, 0xff55ff,
 															0x00aaff, 0x55aaff,	0xaaaaff, 0xffaaff,	0x00ffff, 0x55ffff, 0xaaffff, 0xffffff };
+#elif DEF_PCE
+		private static int[] m_main_palette = null;
 #endif
 		public int[] main_palette
 		{
@@ -88,7 +90,20 @@ namespace SPReD
 								PictureBox _plt3 ) : base( _main_plt )
 		{
 			instance = this;
+#if DEF_PCE
+			m_main_palette = new int[ utils.CONST_PALETTE_MAIN_NUM_COLORS ];
 			
+			int r, g, b;
+			
+			for( int i = 0; i < utils.CONST_PALETTE_MAIN_NUM_COLORS; i++ )
+			{
+				b = 36 * ( i & 0x007 );
+				r = 36 * ( ( i & 0x038 ) >> 3 );
+				g = 36 * ( ( i & 0x1c0 ) >> 6 );
+				
+				m_main_palette[ i ] = ( r << 16 ) | ( g << 8 ) | b;
+			}
+#endif
 			m_plt_arr = new palette_small[ utils.CONST_NUM_SMALL_PALETTES ] { 	new palette_small( 0, _plt0, 1 ), 
 																				new palette_small( 1, _plt1, 4 ),
 																			 	new palette_small( 2, _plt2, 7 ),
@@ -117,6 +132,8 @@ namespace SPReD
 				m_gfx.FillRectangle( utils.brush, ( i << 4 )%256, ( i>>4 ) << 4, 16, 16 );
 #elif DEF_SMS	// column ordered data
 				m_gfx.FillRectangle( utils.brush, ( i >> 2 ) << 4, ( i & 0x03 ) << 4, 16, 16 );
+#elif DEF_PCE	// column ordered data
+				m_gfx.FillRectangle( utils.brush, ( i >> 3 ) << 2, ( i & 0x07 ) << 3, 4, 8 );
 #endif
 			}
 			
@@ -128,13 +145,20 @@ namespace SPReD
 #elif DEF_SMS	// column ordered data
 				int x = ( ( m_sel_clr_ind >> 2 ) << 4 );
 				int y = ( ( m_sel_clr_ind % 4  ) << 4 );
+#elif DEF_PCE	// column ordered data
+				int x = ( ( m_sel_clr_ind >> 3 ) << 2 );
+				int y = ( ( m_sel_clr_ind % 8  ) << 3 );
 #endif			
 				
 				m_pen.Color = Color.White;
+#if DEF_NES || DEF_SMS
 				m_gfx.DrawRectangle( m_pen, x+2, y+2, 13, 13 );
 				
 				m_pen.Color = Color.Black;
 				m_gfx.DrawRectangle( m_pen, x+1, y+1, 15, 15 );
+#elif DEF_PCE
+				m_gfx.DrawRectangle( m_pen, x+1, y+1, 3, 7 );
+#endif
 			}
 			
 			invalidate();
@@ -146,6 +170,8 @@ namespace SPReD
 			m_sel_clr_ind = ( e.X >> 4 ) + ( ( e.Y >> 4 ) << 4 );
 #elif DEF_SMS	// column ordered data
 			m_sel_clr_ind = ( ( e.X >> 4 ) << 2 ) + ( e.Y >> 4 );
+#elif DEF_PCE	// column ordered data
+			m_sel_clr_ind = ( ( e.X >> 2 ) << 3 ) + ( e.Y >> 3 );
 #endif			
 			update();
 			
@@ -178,7 +204,7 @@ namespace SPReD
 			
 			active_palette = plt.active ? plt.id:-1;
 			
-			m_sel_clr_ind = (byte)plt.get_color_inds()[ plt.color_slot ];
+			m_sel_clr_ind = plt.get_color_inds()[ plt.color_slot ];
 			
 			update();
 		}

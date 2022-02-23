@@ -58,10 +58,10 @@ namespace SPReD
 			//
 			m_sprites_proc = new sprite_processor(	SpriteLayout,
 													SpriteLayoutLabel,
-													LayoutGroupBox,												
-			                                       	CHRBank,
-			                                       	CHRBankLabel,
-			                                       	PaletteMain,
+													LayoutGroupBox,
+													CHRBank,
+													CHRBankLabel,
+													PaletteMain,
 													Palette0,
 													Palette1,
 													Palette2,
@@ -101,7 +101,7 @@ namespace SPReD
 															new SToolTipData( BtnSpriteHFlip, "Horizontal flipping of all selected sprites" ),
 															new SToolTipData( CBoxAxesLayout, "Show X/Y axes" ),
 															new SToolTipData( CBoxGridLayout, "Show grid" ),
-															new SToolTipData( CBoxSnapLayout, "Snap CHRs to 8x8 grid" ),
+															new SToolTipData( CBoxSnapLayout, "Snap CHRs to " + utils.CONST_CHR_SIDE_PIXELS_CNT + "x" + utils.CONST_CHR_SIDE_PIXELS_CNT + " grid" ),
 															new SToolTipData( CBoxMode8x16, "8x16 sprite mode" ),
 														};
 			SToolTipData data;
@@ -148,6 +148,27 @@ namespace SPReD
 			m_SMS_export_form		= new SMS_export_form();
 			
 			CBoxCHRPackingType.Items.Add( "8KB" );
+#elif DEF_PCE
+			this.Project_saveFileDialog.DefaultExt = "spredpce";
+			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "NES", "PCE" );
+			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "nes", "pce" );
+
+			this.Project_openFileDialog.DefaultExt = "spredpce";
+			this.Project_openFileDialog.Filter = "SPReD-PCE (*.spredpce)|*.spredpce";//|" + this.Project_openFileDialog.Filter;
+
+			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "4 colors", "16/4 colors" );
+			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "|Palette (192 bytes) (*.pal)|*.pal", "" );
+			
+			this.ExportASMToolStripMenuItem.Text = "&CA65/PCEAS/HuC";
+			this.ExportASM_saveFileDialog.Filter = "CA65/PCEAS/HuC (*.asm;*.h)|*.asm";
+			
+			BtnApplyDefaultPalette.Enabled = applyPaletteToolStripMenuItem.Enabled = false;
+			BtnShiftColors.Enabled = shiftColorsToolStripMenuItem.Enabled = CBoxShiftTransp.Enabled = false;
+
+			CBoxMode8x16.Visible	= false;
+			
+			CBoxCHRPackingType.Items.Add( "8KB" );
+			CBoxCHRPackingType.Items.Add( "16KB" );
 #endif
 			palette_group.Instance.active_palette = 0;
 			
@@ -807,23 +828,25 @@ namespace SPReD
 		
 		void BtnSpriteVFlip_Event(object sender, EventArgs e)
 		{
-#if DEF_NES			
+#if DEF_NES
 			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_vert( ( sprite_data.EAxesFlipType )( CBoxFlipType.SelectedIndex ), CBoxMode8x16.Checked ); } );
 #elif DEF_SMS
 			flip_sprites( "Vertical Flipping", true );
+#elif DEF_PCE
+			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_vert( ( sprite_data.EAxesFlipType )( CBoxFlipType.SelectedIndex ) ); } );
 #endif
 		}
 		
 		void BtnSpriteHFlip_Event(object sender, EventArgs e)
 		{
-#if DEF_NES			
+#if DEF_NES || DEF_PCE
 			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_horiz( ( sprite_data.EAxesFlipType )( CBoxFlipType.SelectedIndex ) ); } );
 #elif DEF_SMS
 			flip_sprites( "Horizontal Flipping", false );
 #endif
 		}
 
-#if DEF_NES		
+#if DEF_NES || DEF_PCE
 		private void flip_sprites( Action< sprite_data > _act )
 		{
 			if( SpriteList.SelectedIndices.Count > 0 )
@@ -1350,6 +1373,8 @@ namespace SPReD
 							bool ignore_palette = ( Path.GetExtension( _filename ) == ".spredsms" ) ? true:false;
 #elif DEF_SMS
 							bool ignore_palette = ( Path.GetExtension( _filename ) == ".sprednes" ) ? true:false;
+#elif DEF_PCE
+							bool ignore_palette = ( Path.GetExtension( _filename ) == ".spredpce" ) ? true:false;
 #endif								
 							m_sprites_proc.load_CHR_storage_and_palette( br, ignore_palette );
 							
@@ -1495,6 +1520,10 @@ namespace SPReD
 				
 				if( ext == ".bmp" || ext == ".png" )
 				{
+#if DEF_PCE
+					// TODO: PCE - image import
+					MainForm.message_box( "Only 16-color images are supported at the moment!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
+#endif
 					if( CBoxMode8x16.Checked )
 					{
 						throw new Exception( "At the moment, data import is only supported for 8x8 sprites!\n\nSwitch to 8x8 mode and try again!" );
@@ -1602,7 +1631,7 @@ namespace SPReD
 											}
 											else
 											{
-												if(!check_duplicate( spr_name ) )
+												if( !check_duplicate( spr_name ) )
 												{
 													SpriteList.Items.Add( m_sprites_proc.import_CHR_bank( br, spr_name ) );
 												}
@@ -1709,11 +1738,15 @@ namespace SPReD
 		
 		private void data_export( string _filename, int _spr_cnt, Func< int, sprite_data > _get_spr )
 		{
+#if DEF_PCE
+			MainForm.message_box( "NOT IMPLEMENTED!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
+			return;
+#endif
 			StreamWriter sw = null;
 			
 			try
 			{
-				//FIXME: padding data on the SMS ???
+				//FIXME: padding data on the SMS/PCE ???
 				bool save_padding_data = false;
 #if DEF_NES				
 				if( message_box( "Save padding data aligned to 1/2/4 KB?", "Export CHR Bank(s)", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
@@ -1749,7 +1782,7 @@ namespace SPReD
 					// CHR incbins 
 					m_sprites_proc.rearrange_CHR_data_ids();
 					
-#if DEF_NES					
+#if DEF_NES || DEF_PCE
 					m_sprites_proc.export_CHR( sw, filename, true, save_padding_data );
 #elif DEF_SMS
 					m_sprites_proc.export_CHR( sw, filename, true, save_padding_data, m_SMS_export_form.bpp << 3 );

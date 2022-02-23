@@ -54,6 +54,9 @@ namespace SPReD
 			pt_4KB,
 #if DEF_SMS
 			pt_8KB,
+#elif DEF_PCE
+			pt_8KB,
+			pt_16KB,
 #endif
 		};
 		
@@ -169,7 +172,7 @@ namespace SPReD
 			int index_clamp_val = 3;
 			
 			int clrs_cnt = utils.CONST_PALETTE_SMALL_NUM_COLORS;
-#elif DEF_SMS
+#elif DEF_SMS || DEF_PCE
 			int index_clamp_val = 15;
 			
 			int clrs_cnt = Math.Min( utils.CONST_PALETTE_SMALL_NUM_COLORS*utils.CONST_NUM_SMALL_PALETTES, plte.Length );
@@ -184,15 +187,15 @@ namespace SPReD
 					if( _apply_palette )// && plte.Length <= 16 ) <-- there are 256 colors palette on Linux here... why?!..
 					{
 						// find nearest colors
-#if DEF_NES							
+#if DEF_NES
 						for( i = 0; i < clrs_cnt; i++ )
 						{
 							palette_group.Instance.get_palettes_arr()[ 0 ].get_color_inds()[ i ] = utils.find_nearest_color_ind( plte[ i % 4 ].ToArgb() );
-						}						
+						}
 						
-						palette_group.Instance.get_palettes_arr()[ 0 ].update();							
+						palette_group.Instance.get_palettes_arr()[ 0 ].update();
 						palette_group.Instance.active_palette = 0;
-#elif DEF_SMS
+#elif DEF_SMS || DEF_PCE
 						for( i = 0; i < clrs_cnt; i++ )
 						{
 							palette_group.Instance.get_palettes_arr()[ i / utils.CONST_NUM_SMALL_PALETTES ].get_color_inds()[ i % utils.CONST_NUM_SMALL_PALETTES ] = utils.find_nearest_color_ind( plte[ i % 16 ].ToArgb() );
@@ -560,18 +563,35 @@ namespace SPReD
 						max_size = 8192;
 					}
 					break;
-#endif					
+#elif DEF_PCE
+				case CHR_data_group.ECHRPackingType.pt_8KB:
+					{
+						max_size = 8192;
+					}
+					break;
+					
+				case CHR_data_group.ECHRPackingType.pt_16KB:
+					{
+						max_size = 16384;
+					}
+					break;
+#endif
 				default:
 					{
 						return false;
 					}
 			}
 			
-			return total_size <= max_size ? true:false;;
+			return total_size <= max_size ? true:false;
 		}
 		
 		public void import( BinaryReader _br )
 		{
+#if DEF_PCE
+			// TODO: PCE - CHR data import
+			MainForm.message_box( "NOT IMPLEMENTED!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
+			return;
+#endif
 			byte[] pix_arr = new byte[ utils.CONST_CHR_SIDE_PIXELS_CNT ];
 			byte[] tmp_arr = new byte[ utils.CONST_CHR_NATIVE_SIZE_IN_BYTES ];
 			
@@ -650,12 +670,19 @@ namespace SPReD
 			}
 		}
 		
-#if DEF_NES		
+#if DEF_NES
 		public long export( string _filename, bool _save_padding )
 #elif DEF_SMS
 		public long export( string _filename, bool _save_padding, int bpp )
-#endif			
+#elif DEF_PCE
+		public long export( string _filename )
+#endif
 		{
+#if DEF_PCE
+			// TODO: PCE - CHR data export
+			MainForm.message_box( "NOT IMPLEMENTED!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
+			return 0;
+#else
 			BinaryWriter bw = new BinaryWriter( File.Open( _filename, FileMode.Create ) );
 			
 			CHR_data chr_data;
@@ -736,6 +763,7 @@ namespace SPReD
 			bw.Close();
 			
 			return data_size;
+#endif
 		}
 		
 		public void save( BinaryWriter _bw )

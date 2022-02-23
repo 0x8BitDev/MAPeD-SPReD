@@ -9,11 +9,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NES Sprites Editor")]
-[assembly: AssemblyDescription("NES Sprites Editor")]
+[assembly: AssemblyTitle("PCE Sprites Editor")]
+[assembly: AssemblyDescription("PCE Sprites Editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("0x8BitDev")]
-[assembly: AssemblyProduct("SPReD-NES")]
+[assembly: AssemblyProduct("SPReD-PCE")]
 [assembly: AssemblyCopyright("Copyright © 2017-2022 by 0x8BitDev ( MIT license. See LICENSE.txt )")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

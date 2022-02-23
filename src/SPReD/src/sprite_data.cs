@@ -198,12 +198,14 @@ namespace SPReD
 		public void flip_vert( EAxesFlipType _ft, bool _8x16_mode )
 #elif DEF_SMS
 		public void flip_vert( EAxesFlipType _ft, bool _transform_pos, bool _8x16_mode )
+#elif DEF_PCE
+		public void flip_vert( EAxesFlipType _ft )
 #endif			
 		{
 			m_CHR_attr.ForEach( delegate( CHR_data_attr _attr ) 
 			{
-#if DEF_NES		
-				_attr.vflip();			                   	
+#if DEF_NES	|| DEF_PCE
+				_attr.vflip();
 #elif DEF_SMS
 				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR_data.ETransform.t_vflip );
 				
@@ -215,7 +217,7 @@ namespace SPReD
 				}
 
 				if( _transform_pos )
-#endif			
+#endif
 				{
 					switch( _ft )
 					{
@@ -229,11 +231,12 @@ namespace SPReD
 						case sprite_data.EAxesFlipType.aft_GLOABL_AXES:
 							{
 								_attr.y = ( -_attr.y - utils.CONST_CHR_SIDE_PIXELS_CNT ) - m_offset_y;
-								
+#if !DEF_PCE
 							 	if( _8x16_mode )
 							 	{
 							 		_attr.y -= utils.CONST_CHR_SIDE_PIXELS_CNT;
 							 	}
+#endif
 							}
 							break;
 					}
@@ -272,12 +275,14 @@ namespace SPReD
 		public void flip_horiz( EAxesFlipType _ft )
 #elif DEF_SMS
 		public void flip_horiz( EAxesFlipType _ft, bool _transform_pos, bool _8x16_mode )
+#elif DEF_PCE
+		public void flip_horiz( EAxesFlipType _ft )
 #endif			
 		{
 			m_CHR_attr.ForEach( delegate( CHR_data_attr _attr ) 
 			{
-#if DEF_NES		
-               	_attr.hflip();
+#if DEF_NES || DEF_PCE
+				_attr.hflip();
 #elif DEF_SMS
 				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR_data.ETransform.t_hflip );
 
@@ -485,7 +490,7 @@ namespace SPReD
 			{
 				set_CHR_data( _chr_data );
 				
-				return true;				
+				return true;
 			}
 			
 			return false;
@@ -527,9 +532,15 @@ namespace SPReD
 		public void export( StreamWriter _sw )
 #elif DEF_SMS
 		public void export( StreamWriter _sw, int _CHRs_offset )
-#endif			
-			
+#elif DEF_PCE
+		public void export( StreamWriter _sw, int _CHRs_offset )
+#endif
 		{
+#if DEF_PCE
+			// TODO: PCE - sprite data export
+			MainForm.message_box( "NOT IMPLEMENTED!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
+			return;
+#endif
 			int size = this.m_CHR_attr.Count;
 			
 			CHR_data_attr chr_attr;
