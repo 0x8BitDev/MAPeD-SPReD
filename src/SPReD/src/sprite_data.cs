@@ -667,11 +667,11 @@ namespace SPReD
 				
 				if( _mode8x16 )
 				{
-					bmp = utils.create_bitmap8x16( chr_data, ( chr_attr.CHR_ind + 1 ) >= get_CHR_data().get_data().Count ? null:get_CHR_data().get_data()[ chr_attr.CHR_ind + 1 ], chr_attr.flip_flag, false, chr_attr.palette_ind, _plt_arr );
+					bmp = utils.create_bitmap8x16( chr_data, ( chr_attr.CHR_ind + 1 ) >= get_CHR_data().get_data().Count ? null:get_CHR_data().get_data()[ chr_attr.CHR_ind + 1 ], chr_attr, false, chr_attr.palette_ind, _plt_arr );
 				}
 				else
 				{
-					bmp = utils.create_CHR_bitmap( chr_data, chr_attr.flip_flag, false, chr_attr.palette_ind, _plt_arr );
+					bmp = utils.create_CHR_bitmap( chr_data, chr_attr, false, chr_attr.palette_ind, _plt_arr );
 				}
 				
 				x = chr_attr.x - rect.X + offset_x;

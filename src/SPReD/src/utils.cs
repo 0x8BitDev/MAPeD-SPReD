@@ -4,6 +4,13 @@
  * Date: 16.03.2017
  * Time: 16:35
  */
+ 
+/*
+defines:
+~~~~~~~~
+DEF_FIXED_LEN_PALETTE16_ARR		(PCE)
+*/
+
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -108,6 +115,8 @@ namespace SPReD
 		public const int CONST_PALETTE_MAIN_NUM_COLORS		= 512;
 
 		public const int CONST_SPRITE_MAX_NUM_ATTRS			= 64;	// the max number of attributes in a sprite
+		
+		public const int CONST_PALETTE16_ARR_LEN			= 16;
 #endif
 		public const int CONST_CHR_TOTAL_PIXELS_CNT			= CONST_CHR_SIDE_PIXELS_CNT * CONST_CHR_SIDE_PIXELS_CNT;
 
@@ -126,6 +135,7 @@ namespace SPReD
 		
 		public const int CONST_LAYOUT_WORKSPACE_HALF_SIDE	= 256;
 		
+		public static Pen			pen				= new Pen( Color.Black );
 		public static SolidBrush 	brush		 	= new SolidBrush( Color.White );
 		public static Font 			fnt10_Arial		= new Font( "Arial", 10, FontStyle.Bold );
 
@@ -142,49 +152,49 @@ namespace SPReD
 			}
 		}
 
-		public static Bitmap create_CHR_bitmap( CHR_data _chr_data, int _flags, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null )
+		public static Bitmap create_CHR_bitmap( CHR_data _chr_data, CHR_data_attr _attr, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null )
 		{
 			Bitmap bmp = new Bitmap( CONST_CHR_SIDE_PIXELS_CNT, CONST_CHR_SIDE_PIXELS_CNT, PixelFormat.Format32bppArgb );
 			
-			update_CHR_bitmap( _chr_data, bmp, _flags, _alpha, _plt_ind, _plt_arr );
+			update_CHR_bitmap( _chr_data, bmp, _attr, _alpha, _plt_ind, _plt_arr );
 			
 			return bmp;
 		}
 		
-		public static void update_CHR_bitmap( CHR_data _chr_data, Bitmap _bmp, int _flags, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
+		public static void update_CHR_bitmap( CHR_data _chr_data, Bitmap _bmp, CHR_data_attr _attr, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
 		{
 			BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, _bmp.Width, _bmp.Height ), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb );
 			
 			if( bmp_data != null )
 			{
-				fill_CHR_bmp_data( bmp_data.Scan0, 0, _chr_data, _alpha, _plt_ind, _plt_arr );
+				fill_CHR_bmp_data( bmp_data.Scan0, 0, _chr_data, _attr, _alpha, _plt_ind, _plt_arr );
 				
 				_bmp.UnlockBits( bmp_data );
 				
-				flip_bmp( _bmp, _flags );
+				flip_bmp( _bmp, ( _attr != null ? _attr.flip_flag:0 ) );
 			}
 		}
 
-		public static Bitmap create_bitmap8x16( CHR_data _chr_data1, CHR_data _chr_data2, int _flags, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null )
+		public static Bitmap create_bitmap8x16( CHR_data _chr_data1, CHR_data _chr_data2, CHR_data_attr _attr, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null )
 		{
 			Bitmap bmp = new Bitmap( 8, 16, PixelFormat.Format32bppArgb );
 			
-			update_bitmap8x16( _chr_data1, _chr_data2, bmp, _flags, _alpha, _plt_ind, _plt_arr );
+			update_bitmap8x16( _chr_data1, _chr_data2, bmp, _attr, _alpha, _plt_ind, _plt_arr );
 			
 			return bmp;
 		}
 		
-		public static void update_bitmap8x16( CHR_data _chr_data1, CHR_data _chr_data2, Bitmap _bmp, int _flags, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
+		public static void update_bitmap8x16( CHR_data _chr_data1, CHR_data _chr_data2, Bitmap _bmp, CHR_data_attr _attr, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
 		{
 			BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, _bmp.Width, _bmp.Height ), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb );
 			
 			if( bmp_data != null )
 			{
-				fill_CHR_bmp_data( bmp_data.Scan0, 0, _chr_data1, _alpha, _plt_ind, _plt_arr );
+				fill_CHR_bmp_data( bmp_data.Scan0, 0, _chr_data1, _attr, _alpha, _plt_ind, _plt_arr );
 				
 				if( _chr_data2 != null )
 				{
-					fill_CHR_bmp_data( bmp_data.Scan0, ( 8 * bmp_data.Stride ), _chr_data2, _alpha, _plt_ind, _plt_arr );
+					fill_CHR_bmp_data( bmp_data.Scan0, ( 8 * bmp_data.Stride ), _chr_data2, _attr, _alpha, _plt_ind, _plt_arr );
 					
 					_bmp.UnlockBits( bmp_data );
 				}
@@ -200,11 +210,11 @@ namespace SPReD
 					gfx.Flush();
 				}
 				
-				flip_bmp( _bmp, _flags );
+				flip_bmp( _bmp, ( _attr != null ? _attr.flip_flag:0 ) );
 			}
 		}
 		
-		private static void fill_CHR_bmp_data( IntPtr _data_ptr, int _data_offset, CHR_data _chr_data, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
+		private static void fill_CHR_bmp_data( IntPtr _data_ptr, int _data_offset, CHR_data _chr_data, CHR_data_attr _attr, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
 		{
 			unsafe
 			{
@@ -228,10 +238,20 @@ namespace SPReD
 					{
 #if DEF_NES
 						clr = palette_group.Instance.main_palette[ clr_inds[ pix_ind ] ];
-#elif DEF_SMS || DEF_PCE
-						// TODO: PCE - fill_CHR_bmp_data
+#elif DEF_SMS
 						clr = palette_group.Instance.main_palette[ palette_group.Instance.get_palettes_arr()[ pix_ind / CONST_NUM_SMALL_PALETTES ].get_color_inds()[ pix_ind % CONST_NUM_SMALL_PALETTES ] ];
-#endif						
+#endif
+
+#if DEF_FIXED_LEN_PALETTE16_ARR
+						if( _attr != null )
+						{
+							clr = palette_group.Instance.main_palette[ palettes_array.Instance.get_color( _attr.palette_ind, pix_ind ) ];
+						}
+						else
+						{
+							clr = palette_group.Instance.main_palette[ palette_group.Instance.get_palettes_arr()[ pix_ind / CONST_NUM_SMALL_PALETTES ].get_color_inds()[ pix_ind % CONST_NUM_SMALL_PALETTES ] ];
+						}
+#endif
 						if( ( pix_ind != 0 && _alpha == true ) || _alpha == false )
 						{
 							 clr |= 0xFF << 24;

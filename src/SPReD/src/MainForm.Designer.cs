@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 13.03.2017
  * Time: 11:24
  */
@@ -154,14 +154,15 @@ namespace SPReD
 			this.BtnCHRVFlip = new System.Windows.Forms.Button();
 			this.CHRBankLabel = new System.Windows.Forms.Label();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.CBoxPalettes = new System.Windows.Forms.ComboBox();
 			this.Palette3 = new System.Windows.Forms.PictureBox();
 			this.Palette2 = new System.Windows.Forms.PictureBox();
 			this.Palette1 = new System.Windows.Forms.PictureBox();
 			this.Palette0 = new System.Windows.Forms.PictureBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
+			this.Palette3Label = new System.Windows.Forms.Label();
+			this.Palette1Label = new System.Windows.Forms.Label();
+			this.Palette2Label = new System.Windows.Forms.Label();
+			this.Palette0Label = new System.Windows.Forms.Label();
 			this.ExportASM_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.Project_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.Project_openFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -1305,21 +1306,35 @@ namespace SPReD
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.CBoxPalettes);
 			this.groupBox4.Controls.Add(this.Palette3);
 			this.groupBox4.Controls.Add(this.Palette2);
 			this.groupBox4.Controls.Add(this.Palette1);
 			this.groupBox4.Controls.Add(this.Palette0);
 			this.groupBox4.Controls.Add(this.PaletteMain);
-			this.groupBox4.Controls.Add(this.label4);
-			this.groupBox4.Controls.Add(this.label3);
-			this.groupBox4.Controls.Add(this.label2);
-			this.groupBox4.Controls.Add(this.label1);
+			this.groupBox4.Controls.Add(this.Palette3Label);
+			this.groupBox4.Controls.Add(this.Palette1Label);
+			this.groupBox4.Controls.Add(this.Palette2Label);
+			this.groupBox4.Controls.Add(this.Palette0Label);
 			this.groupBox4.Location = new System.Drawing.Point(487, 364);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(276, 155);
 			this.groupBox4.TabIndex = 10;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Palettes:";
+			// 
+			// CBoxPalettes
+			// 
+			this.CBoxPalettes.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+			this.CBoxPalettes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.CBoxPalettes.FormattingEnabled = true;
+			this.CBoxPalettes.Location = new System.Drawing.Point(216, 47);
+			this.CBoxPalettes.MaxDropDownItems = 16;
+			this.CBoxPalettes.Name = "CBoxPalettes";
+			this.CBoxPalettes.Size = new System.Drawing.Size(50, 21);
+			this.CBoxPalettes.TabIndex = 36;
+			this.CBoxPalettes.DropDown += new System.EventHandler(this.CBoxPalettesAdjustWidthDropDown_Event);
+			this.CBoxPalettes.SelectedIndexChanged += new System.EventHandler(this.CBoxPalettesChanged_Event);
 			// 
 			// Palette3
 			// 
@@ -1357,41 +1372,41 @@ namespace SPReD
 			this.Palette0.TabIndex = 7;
 			this.Palette0.TabStop = false;
 			// 
-			// label4
+			// Palette3Label
 			// 
-			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label4.Location = new System.Drawing.Point(152, 48);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(26, 20);
-			this.label4.TabIndex = 8;
-			this.label4.Text = "4:";
+			this.Palette3Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.Palette3Label.Location = new System.Drawing.Point(152, 48);
+			this.Palette3Label.Name = "Palette3Label";
+			this.Palette3Label.Size = new System.Drawing.Size(26, 20);
+			this.Palette3Label.TabIndex = 8;
+			this.Palette3Label.Text = "4:";
 			// 
-			// label3
+			// Palette1Label
 			// 
-			this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label3.Location = new System.Drawing.Point(152, 23);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(26, 20);
-			this.label3.TabIndex = 8;
-			this.label3.Text = "2:";
+			this.Palette1Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.Palette1Label.Location = new System.Drawing.Point(152, 23);
+			this.Palette1Label.Name = "Palette1Label";
+			this.Palette1Label.Size = new System.Drawing.Size(26, 20);
+			this.Palette1Label.TabIndex = 8;
+			this.Palette1Label.Text = "2:";
 			// 
-			// label2
+			// Palette2Label
 			// 
-			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label2.Location = new System.Drawing.Point(21, 48);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(26, 20);
-			this.label2.TabIndex = 8;
-			this.label2.Text = "3:";
+			this.Palette2Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.Palette2Label.Location = new System.Drawing.Point(21, 48);
+			this.Palette2Label.Name = "Palette2Label";
+			this.Palette2Label.Size = new System.Drawing.Size(26, 20);
+			this.Palette2Label.TabIndex = 8;
+			this.Palette2Label.Text = "3:";
 			// 
-			// label1
+			// Palette0Label
 			// 
-			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label1.Location = new System.Drawing.Point(21, 23);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(26, 20);
-			this.label1.TabIndex = 8;
-			this.label1.Text = "1:";
+			this.Palette0Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.Palette0Label.Location = new System.Drawing.Point(21, 23);
+			this.Palette0Label.Name = "Palette0Label";
+			this.Palette0Label.Size = new System.Drawing.Size(26, 20);
+			this.Palette0Label.TabIndex = 8;
+			this.Palette0Label.Text = "1:";
 			// 
 			// ExportASM_saveFileDialog
 			// 
@@ -1565,6 +1580,7 @@ namespace SPReD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ComboBox CBoxPalettes;
 		private System.Windows.Forms.ToolStripMenuItem statisticsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem quickGuideToolStripMenuItem;
@@ -1684,10 +1700,10 @@ namespace SPReD
 		private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.Label CHRBankLabel;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label Palette0Label;
+		private System.Windows.Forms.Label Palette2Label;
+		private System.Windows.Forms.Label Palette1Label;
+		private System.Windows.Forms.Label Palette3Label;
 		private System.Windows.Forms.PictureBox Palette0;
 		private System.Windows.Forms.PictureBox Palette1;
 		private System.Windows.Forms.PictureBox Palette2;

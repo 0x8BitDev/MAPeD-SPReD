@@ -51,7 +51,13 @@ namespace SPReD
 			m_sprite_layout_viewer.subscribe_event( m_palette_grp );
 			m_sprite_layout_viewer.subscribe_event( m_CHR_bank_viewer );
 		}
-		
+#if DEF_FIXED_LEN_PALETTE16_ARR
+		public void subscribe_event( MainForm _mf )
+		{
+			m_sprite_layout_viewer.SetCHRPalette		+= _mf.SetCHRPalette_Event;
+			m_sprite_layout_viewer.ApplyPaletteToCHR	+= _mf.ApplyPaletteToCHR_Event;
+		}
+#endif
 		public void reset()
 		{
 			{
@@ -210,7 +216,13 @@ namespace SPReD
 			
 			return false;
 		}
-		
+#if DEF_FIXED_LEN_PALETTE16_ARR
+		public void apply_palette_to_selected_CHR( int _plt_ind )
+		{
+			m_sprite_layout_viewer.apply_palette_to_selected_CHR( _plt_ind );
+			m_CHR_bank_viewer.update();
+		}
+#endif
 		public void set_sprite_layout_viewer_flags( bool _show_axis, bool _show_grid )
 		{
 			m_sprite_layout_viewer.set_flags( _show_axis, _show_grid );

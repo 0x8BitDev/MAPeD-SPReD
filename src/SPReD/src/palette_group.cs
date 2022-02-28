@@ -192,6 +192,9 @@ namespace SPReD
 #endif					
 				{
 					m_plt_arr[ m_active_plt_id ].update_color( m_sel_clr_ind );
+#if DEF_FIXED_LEN_PALETTE16_ARR
+					palettes_array.Instance.update_color( ( m_active_plt_id << 2 ) + m_plt_arr[ m_active_plt_id ].color_slot, m_sel_clr_ind );
+#endif
 				}
 				
 				dispatch_event_update_color();

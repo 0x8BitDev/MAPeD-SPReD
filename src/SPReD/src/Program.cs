@@ -22,9 +22,6 @@ namespace SPReD
 		{
 			try
 			{
-#if !DEF_NES && !DEF_SMS && !DEF_PCE
-				throw new Exception( "Invalid platform!" );
-#endif
 				if( utils.is_win )
 				{
 					FileAssociations.EnsureAssociationsSet();

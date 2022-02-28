@@ -22,7 +22,10 @@ namespace SPReD
 	{
 		public event EventHandler SetSelectedCHR;
 		public event EventHandler UpdatePixel;
-		
+#if DEF_FIXED_LEN_PALETTE16_ARR
+		public event EventHandler SetCHRPalette;
+		public event EventHandler ApplyPaletteToCHR;
+#endif
 		private EMode	m_mode = EMode.m_unknown;
 		
 		public EMode mode
@@ -429,20 +432,28 @@ namespace SPReD
 				{
 					m_selected_CHR = i;
 					
+#if DEF_FIXED_LEN_PALETTE16_ARR
+					if( SetCHRPalette != null )
+					{
+						SetCHRPalette( this, null );
+					}
+#endif
+
+#if DEF_NES
 					// highlight the palette
 					if( m_palette_group.active_palette != chr_attr.palette_ind )
 					{
 						int color_slot = ( m_palette_group.active_palette >= 0 ) ? m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot:-1;
-#if DEF_NES						
+						
 						m_palette_group.active_palette = chr_attr.palette_ind;
-#endif						
+						
 						if( m_palette_group.active_palette >= 0 )
 						{
 							// set the same color slot that was in the last palette
 							m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot = color_slot;
 						}
 					}
-					
+#endif
 					break;
 				}
 			}
@@ -485,10 +496,12 @@ namespace SPReD
 					m_pen.Color = Color.White;
 					m_gfx.DrawRectangle( m_pen, chr_scr_pos_x-1, chr_scr_pos_y-1, m_CHR_size + 2, CHR_height + 2 );
 					
-#if DEF_NES					
+#if DEF_NES
 					m_label.Text = "Pos: " + chr_attr.x + ";" + chr_attr.y + " / Palette: " + ( chr_attr.palette_ind + 1 ) + " / Id: " + chr_attr.CHR_ind + " / Tiles: " + m_spr_data.get_CHR_attr().Count;
-#elif DEF_SMS
+#elif DEF_SMS || DEF_PCE
 					m_label.Text = "Pos: " + chr_attr.x + ";" + chr_attr.y + " / Id: " + chr_attr.CHR_ind + " / Tiles: " + m_spr_data.get_CHR_attr().Count;
+#else
+...
 #endif
 				}
 				else
@@ -729,10 +742,10 @@ namespace SPReD
 			
 			if( m_mode8x16 )
 			{
-				return utils.create_bitmap8x16( chr_data, ( _chr_attr.CHR_ind + 1 ) >= m_spr_data.get_CHR_data().get_data().Count ? null:m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind + 1 ], _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
+				return utils.create_bitmap8x16( chr_data, ( _chr_attr.CHR_ind + 1 ) >= m_spr_data.get_CHR_data().get_data().Count ? null:m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind + 1 ], _chr_attr, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
 			}
 			
-			return utils.create_CHR_bitmap( chr_data, _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
+			return utils.create_CHR_bitmap( chr_data, _chr_attr, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
 		}
 		
 		private void update_bitmap( CHR_data_attr _chr_attr, Bitmap _bmp )
@@ -741,11 +754,11 @@ namespace SPReD
 			
 			if( m_mode8x16 )
 			{
-				utils.update_bitmap8x16( chr_data, ( _chr_attr.CHR_ind + 1 ) >= m_spr_data.get_CHR_data().get_data().Count ? null:m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind + 1 ], _bmp, _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
+				utils.update_bitmap8x16( chr_data, ( _chr_attr.CHR_ind + 1 ) >= m_spr_data.get_CHR_data().get_data().Count ? null:m_spr_data.get_CHR_data().get_data()[ _chr_attr.CHR_ind + 1 ], _bmp, _chr_attr, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
 			}
 			else
 			{
-				utils.update_CHR_bitmap( chr_data, _bmp, _chr_attr.flip_flag, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
+				utils.update_CHR_bitmap( chr_data, _bmp, _chr_attr, false, _chr_attr.palette_ind, m_palette_group.get_palettes_arr() );
 			}
 		}
 
@@ -760,7 +773,7 @@ namespace SPReD
 			plt_arr[ 0 ].ActivePalette += new EventHandler( update_palette );
 			plt_arr[ 1 ].ActivePalette += new EventHandler( update_palette );
 			plt_arr[ 2 ].ActivePalette += new EventHandler( update_palette );
-			plt_arr[ 3 ].ActivePalette += new EventHandler( update_palette );			
+			plt_arr[ 3 ].ActivePalette += new EventHandler( update_palette );
 		}
 		
 		public void subscribe_event( CHR_bank_viewer _chr_bank )
@@ -783,9 +796,9 @@ namespace SPReD
 			if( m_selected_CHR >= 0 )
 			{
 				CHR_data_attr chr_attr = m_spr_data.get_CHR_attr()[ m_selected_CHR ];
-
+#if DEF_NES
 				chr_attr.palette_ind = ( sender as palette_small ).id;
-
+#endif
 				update_bitmap( chr_attr, m_bmp_list[ m_selected_CHR ] );
 				
 				update();
@@ -811,7 +824,16 @@ namespace SPReD
 					if( m_spr_data.get_CHR_attr()[ i ].CHR_ind == sel_CHR_ind )
 					{
 						m_selected_CHR = i;
+#if DEF_NES
+						m_palette_group.active_palette = m_spr_data.get_CHR_attr()[ m_selected_CHR ].palette_ind;
+#endif
 						
+#if DEF_FIXED_LEN_PALETTE16_ARR
+						if( SetCHRPalette != null )
+						{
+							SetCHRPalette( this, null );
+						}
+#endif
 						break;
 					}
 				}
@@ -899,9 +921,11 @@ namespace SPReD
 		    		
 		    		CHR_data_attr chr_attr = new CHR_data_attr( x_pos, y_pos );
 		    		chr_attr.CHR_ind = chr_ind;
-		    		
-		    		chr_attr.palette_ind = m_palette_group.active_palette; 
-					
+#if DEF_NES
+		    		chr_attr.palette_ind = m_palette_group.active_palette;
+#else
+					chr_attr.palette_ind = 0;
+#endif
 					m_bmp_list.Add( create_bitmap( chr_attr ) );
 	
 		    		m_spr_data.get_CHR_attr().Add( chr_attr );
@@ -909,7 +933,13 @@ namespace SPReD
 		    		m_spr_data.update_dimensions();
 					
 		    		m_selected_CHR = m_spr_data.get_CHR_attr().Count - 1;
-		    		
+
+#if DEF_FIXED_LEN_PALETTE16_ARR
+					if( ApplyPaletteToCHR != null )
+					{
+						ApplyPaletteToCHR( this, null );
+					}
+#endif
 		    		update();
 		    	}
 	    	}
@@ -986,5 +1016,25 @@ namespace SPReD
 				m_pix_box.Cursor = Cursors.Arrow;
 			}
 		}
+		
+#if DEF_FIXED_LEN_PALETTE16_ARR
+		public void apply_palette_to_selected_CHR( int _plt_ind )
+		{
+			if( m_selected_CHR >= 0 )
+			{
+				m_spr_data.get_CHR_attr()[ m_selected_CHR ].palette_ind = _plt_ind;
+				
+				m_bmp_list[ m_selected_CHR ].Dispose();
+				m_bmp_list[ m_selected_CHR ] = create_bitmap( m_spr_data.get_CHR_attr()[ m_selected_CHR ] );
+				
+				update();
+			}
+		}
+
+		public CHR_data_attr get_selected_CHR_attr()
+		{
+			return ( m_selected_CHR >= 0 ) ? m_spr_data.get_CHR_attr()[ m_selected_CHR ]:null;
+		}
+#endif
 	}
 }

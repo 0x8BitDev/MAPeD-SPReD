@@ -6,6 +6,7 @@
  */
 using System;
 using System.IO;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -30,6 +31,9 @@ namespace SPReD
 		private SMS_export_form				m_SMS_export_form			= null;
 #endif
 
+#if DEF_FIXED_LEN_PALETTE16_ARR
+		private palettes_array				m_palettes_arr				= null;
+#endif
 		private SPSeD.py_editor	m_py_editor	= null;
 		
 		private bool m_project_loaded	= false;
@@ -66,7 +70,9 @@ namespace SPReD
 													Palette1,
 													Palette2,
 													Palette3 );
-			
+#if DEF_FIXED_LEN_PALETTE16_ARR
+			m_sprites_proc.subscribe_event( this );
+#endif
 			CBoxCHRPackingType.SelectedIndex = 0;
 			CBoxFlipType.SelectedIndex = 0;
 			
@@ -103,6 +109,9 @@ namespace SPReD
 															new SToolTipData( CBoxGridLayout, "Show grid" ),
 															new SToolTipData( CBoxSnapLayout, "Snap CHRs to " + utils.CONST_CHR_SIDE_PIXELS_CNT + "x" + utils.CONST_CHR_SIDE_PIXELS_CNT + " grid" ),
 															new SToolTipData( CBoxMode8x16, "8x16 sprite mode" ),
+#if DEF_FIXED_LEN_PALETTE16_ARR
+															new SToolTipData( CBoxPalettes, "Palettes array" ),
+#endif
 														};
 			SToolTipData data;
 			
@@ -123,6 +132,24 @@ namespace SPReD
 			
 			set_title_name( null );
 			
+#if DEF_FIXED_LEN_PALETTE16_ARR
+			CBoxPalettes.Visible	= true;
+
+			m_palettes_arr			= new palettes_array( CBoxPalettes );
+			
+			Palette0Label.Location	= new Point( Palette0Label.Location.X - 13, Palette0Label.Location.Y );
+			Palette0.Location		= new Point( Palette0.Location.X - 14,		Palette0.Location.Y );
+			Palette2Label.Location	= new Point( Palette2Label.Location.X - 13, Palette2Label.Location.Y );
+			Palette2.Location		= new Point( Palette2.Location.X - 14,		Palette2.Location.Y );
+
+			Palette1Label.Location	= new Point( Palette1Label.Location.X - 42, Palette1Label.Location.Y );
+			Palette1.Location		= new Point( Palette1.Location.X - 42,		Palette1.Location.Y );
+			Palette3Label.Location	= new Point( Palette3Label.Location.X - 42, Palette3Label.Location.Y );
+			Palette3.Location		= new Point( Palette3.Location.X - 42,		Palette3.Location.Y );
+#else
+			CBoxPalettes.Visible	= false;
+#endif
+
 #if DEF_NES
 			this.Project_openFileDialog.DefaultExt = "spredsms";
 			this.Project_openFileDialog.Filter = this.Project_openFileDialog.Filter + "|SPReD-SMS (*.spredsms)|*.spredsms";
@@ -175,6 +202,10 @@ namespace SPReD
 			if( _args.Length > 0 )
 			{
 				project_load( _args[0] );
+			}
+			else
+			{
+				reset();
 			}
 		}
 		
@@ -239,6 +270,11 @@ namespace SPReD
 			OffsetY.Value = 0;
 			
 			CBoxMode8x16.Checked = false;
+			
+#if DEF_FIXED_LEN_PALETTE16_ARR
+			CBoxPalettes.Enabled = false;
+			CBoxPalettes.SelectedIndex = 0;
+#endif
 		}
 		
 		void ExitToolStripMenuItemClick(object sender, System.EventArgs e)
@@ -726,6 +762,9 @@ namespace SPReD
 			if( SpriteList.SelectedIndex >= 0 )
 			{
 				update_selected_sprite( true );
+#if DEF_FIXED_LEN_PALETTE16_ARR
+				CBoxPalettes.Enabled = true;
+#endif
 			}
 			else
 			{
@@ -734,13 +773,19 @@ namespace SPReD
 				
 				OffsetX.Value = 0;
 				OffsetY.Value = 0;
+#if DEF_FIXED_LEN_PALETTE16_ARR
+				CBoxPalettes.Enabled = false;
+#endif
 			}
 		}
 		
 		void BtnCreate_Event(object sender, EventArgs e)
 		{
+#if DEF_PCE
+			m_create_sprite_form.Text = "Create Sprite";
+#elif DEF_NES || DEF_SMS
 			m_create_sprite_form.Text = "Create Sprite [ mode: " + ( CBoxMode8x16.Checked ? "8x16":"8x8" ) + " ]";
-			
+#endif
 			if( !check_all_sprites_data( m_create_sprite_form.Text ) )
 			{
 				return;
@@ -1289,7 +1334,6 @@ namespace SPReD
 			}
 		}
 		
-
 		void ProjectSave_OK(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			// SAVE PROJECT...
@@ -1320,7 +1364,9 @@ namespace SPReD
 					}
 					
 					palette_group.Instance.save_main_palette( bw );
-					
+#if DEF_FIXED_LEN_PALETTE16_ARR
+					palettes_array.Instance.save( bw );
+#endif					
 					// save description
 					bw.Write( m_description_form.edit_text );
 				}
@@ -1374,7 +1420,7 @@ namespace SPReD
 #elif DEF_SMS
 							bool ignore_palette = ( Path.GetExtension( _filename ) == ".sprednes" ) ? true:false;
 #elif DEF_PCE
-							bool ignore_palette = ( Path.GetExtension( _filename ) == ".spredpce" ) ? true:false;
+							bool ignore_palette = false;
 #endif								
 							m_sprites_proc.load_CHR_storage_and_palette( br, ignore_palette );
 							
@@ -1430,6 +1476,12 @@ namespace SPReD
 								else
 								{
 									palette_group.Instance.load_main_palette( br );
+#if DEF_FIXED_LEN_PALETTE16_ARR
+									palettes_array plt_arr = palettes_array.Instance;
+									
+									plt_arr.load( br );
+									plt_arr.update_palette();
+#endif
 								}
 							}
 							
@@ -1862,6 +1914,36 @@ namespace SPReD
 			SPSeD.py_editor.set_focus();
 		}
 #endregion
+//		PALETTES ARRAY		*********************************************************************************//
+#region	palettes array
+		void CBoxPalettesChanged_Event(object sender, EventArgs e)
+		{
+#if DEF_FIXED_LEN_PALETTE16_ARR
+			m_palettes_arr.update_palette();
+			m_sprites_proc.apply_palette_to_selected_CHR( m_palettes_arr.palette_index );
+#endif
+		}
+		
+		void CBoxPalettesAdjustWidthDropDown_Event(object sender, EventArgs e)
+		{
+#if DEF_FIXED_LEN_PALETTE16_ARR
+			( sender as ComboBox ).DropDownWidth = 230;
+#endif
+		}
+		
+#if DEF_FIXED_LEN_PALETTE16_ARR
+		public void SetCHRPalette_Event(object sender, EventArgs e)
+		{
+			m_palettes_arr.palette_index = ( sender as sprite_layout_viewer ).get_selected_CHR_attr().palette_ind;
+		}
+		
+		public void ApplyPaletteToCHR_Event(object sender, EventArgs e)
+		{
+			m_sprites_proc.apply_palette_to_selected_CHR( m_palettes_arr.palette_index );
+		}
+#endif
+#endregion
+
 		void KeyUp_Event(object sender, KeyEventArgs e)
 		{
 			m_sprites_proc.key_event( sender, e );

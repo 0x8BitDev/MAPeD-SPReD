@@ -128,7 +128,7 @@ namespace SPReD
 			m_label.Text = "...";
 		}
 
-		private bool update()
+		public bool update()
 		{
 			bool res = false;
 			
@@ -153,11 +153,11 @@ namespace SPReD
 					
 					if( draw_colored == true )
 					{
-						bmp = utils.create_CHR_bitmap( chr_data, 0, false, m_palette_group.active_palette, m_palette_group.get_palettes_arr() );
+						bmp = utils.create_CHR_bitmap( chr_data, null, false, m_palette_group.active_palette, m_palette_group.get_palettes_arr() );
 					}
 					else
 					{
-						bmp = utils.create_CHR_bitmap( chr_data, 0, false, -1 );
+						bmp = utils.create_CHR_bitmap( chr_data, null, false, -1 );
 					}
 					
 					m_gfx.DrawImage( bmp, ( i * utils.CONST_CHR_IMG_SIZE ) % m_pix_box.Width, ( i / utils.CONST_CHR_BANK_SIDE_SPRITES_CNT ) * utils.CONST_CHR_IMG_SIZE, utils.CONST_CHR_IMG_SIZE, utils.CONST_CHR_IMG_SIZE );
@@ -286,7 +286,6 @@ namespace SPReD
 #if DEF_NES
 					byte color_slot = ( byte )m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot;
 #elif DEF_SMS || DEF_PCE
-					// TODO: PCE - update_pixel
 					byte color_slot = ( byte )( m_palette_group.active_palette * utils.CONST_NUM_SMALL_PALETTES + m_palette_group.get_palettes_arr()[ m_palette_group.active_palette ].color_slot );
 #endif						
 					if( m_mode8x16 && ( spr_viewer.changed_pix_y > utils.CONST_CHR_SIDE_PIXELS_CNT - 1 ) )
@@ -365,7 +364,6 @@ namespace SPReD
 #if DEF_NES					
 					byte color_ind = ( byte )plt.get_palettes_arr()[ plt.active_palette ].color_slot;
 #elif DEF_SMS || DEF_PCE
-					// TODO: PCE - CHR_fill_with_color
 					byte color_ind = ( byte )( plt.active_palette * utils.CONST_NUM_SMALL_PALETTES + plt.get_palettes_arr()[ plt.active_palette ].color_slot );
 #endif					
 					get_data()[ m_selected_ind ].fill( color_ind );
