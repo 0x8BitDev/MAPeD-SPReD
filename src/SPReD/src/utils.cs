@@ -245,7 +245,7 @@ namespace SPReD
 #if DEF_FIXED_LEN_PALETTE16_ARR
 						if( _attr != null )
 						{
-							clr = palette_group.Instance.main_palette[ palettes_array.Instance.get_color( _attr.palette_ind, pix_ind ) ];
+							clr = palette_group.Instance.main_palette[ palettes_array.Instance.get_color( ( _attr.palette_ind < 0 ? 0:_attr.palette_ind ), pix_ind ) ];
 						}
 						else
 						{

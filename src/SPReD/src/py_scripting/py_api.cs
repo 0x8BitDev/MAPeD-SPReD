@@ -51,6 +51,10 @@ namespace SPReD
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, bool, long >( export_CHR_data ) );
 #elif DEF_SMS
 			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, int, long >( export_CHR_data ) );
+#elif DEF_PCE
+			_py_scope.SetVariable( CONST_PREFIX + "export_CHR_data", new Func< int, string, long >( export_CHR_data ) );
+#else
+...
 #endif			
 			// some sprite related data structures
 			_py_scope.SetVariable( CONST_PREFIX + "sprite_data", 	typeof( spd_sprite_data ) );
@@ -130,7 +134,7 @@ namespace SPReD
 						throw new Exception( "Invalid CHRs bpp value! The valid range is 1-4." );
 					}
 					
-					data_size = data.get_CHR_data().export( _filename, false, _bpp );
+					data_size = data.get_CHR_data().export( _filename, _bpp );
 #elif DEF_PCE
 					data_size = data.get_CHR_data().export( _filename );
 #endif

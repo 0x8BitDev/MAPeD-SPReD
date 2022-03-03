@@ -123,34 +123,47 @@ namespace SPReD
 			return null;
 		}
 		
-#if DEF_NES || DEF_PCE
+#if DEF_NES
 		public void export( StreamWriter _sw, string _filename, bool _commented, bool _need_padding )
 #elif DEF_SMS
-		public void export( StreamWriter _sw, string _filename, bool _commented, bool _need_padding, int _CHR_size )
+		public void export( StreamWriter _sw, string _filename, bool _commented, int _CHR_size )
+#elif DEF_PCE
+		public void export( StreamWriter _sw, string _filename, bool _commented )
+#else
+...
 #endif
 		{
 			int CHR_data_size;
 			
 			int size = m_data.Count;
 			
-#if DEF_SMS
-			string CHR_data_arr = ";" + _filename + "_CHR_arr:\t";
+#if DEF_SMS || DEF_PCE
+			string CHR_data_arr = ( _commented ? ";":"" ) + _filename + "_CHR_arr:\t";
 #endif
-
 			for( int i = 0; i < size; i++ )
 			{
 #if DEF_NES || DEF_PCE
 				CHR_data_size = m_data[ i ].get_size_bytes();
 #elif DEF_SMS
 				CHR_data_size = m_data[ i ].get_data().Count * _CHR_size;
+#else
+...
 #endif
-				_sw.WriteLine( ( _commented ? ";":"" ) + m_data[ i ].name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );				
-#if DEF_SMS
-				CHR_data_arr += "\n;\t.word " + ( _need_padding ? ( CHR_data_size + utils.get_padding( CHR_data_size ) ):CHR_data_size ) + ", " + m_data[ i ].name;
+
+#if DEF_NES
+				_sw.WriteLine( ( _commented ? ";":"" ) + m_data[ i ].name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );
+#elif DEF_SMS || DEF_PCE
+				_sw.WriteLine( ( _commented ? ";":"" ) + m_data[ i ].name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + " bytes" );
+#else
+...
+#endif
+
+#if DEF_SMS || DEF_PCE
+				CHR_data_arr += "\n" + ( _commented ? ";":"" ) + "\t.word " + CHR_data_size + ", " + m_data[ i ].name;
 #endif
 			}
 			
-#if DEF_SMS
+#if DEF_SMS || DEF_PCE
 			_sw.WriteLine( CHR_data_arr );
 #endif
 		}

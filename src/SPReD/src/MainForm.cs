@@ -29,6 +29,8 @@ namespace SPReD
 #if DEF_SMS
 		private SMS_sprite_flipping_form	m_SMS_sprite_flip_form		= null;
 		private SMS_export_form				m_SMS_export_form			= null;
+#elif DEF_PCE
+		private PCE_export_form				m_PCE_export_form			= null;
 #endif
 
 #if DEF_FIXED_LEN_PALETTE16_ARR
@@ -193,6 +195,8 @@ namespace SPReD
 			BtnShiftColors.Enabled = shiftColorsToolStripMenuItem.Enabled = CBoxShiftTransp.Enabled = false;
 
 			CBoxMode8x16.Visible	= false;
+			
+			m_PCE_export_form		= new PCE_export_form();
 			
 			CBoxCHRPackingType.Items.Add( "8KB" );
 			CBoxCHRPackingType.Items.Add( "16KB" );
@@ -1654,22 +1658,17 @@ namespace SPReD
 									case ".chr":
 									case ".bin":
 										{
-#if DEF_NES || DEF_SMS
 											fs = new FileStream( filename, FileMode.Open, FileAccess.Read );
 											
 											br = new BinaryReader( fs );
 					
-#if DEF_NES											
-											if( br.BaseStream.Length > 4096 )
-#elif DEF_SMS
-											if( br.BaseStream.Length > 8192 )
-#endif	// DEF_NES												
+											if( br.BaseStream.Length > ( utils.CONST_CHR_NATIVE_SIZE_IN_BYTES * utils.CONST_CHR_BANK_MAX_SPRITES_CNT ) )
 											{
 												j = 0;
 												
 												while( br.BaseStream.Position < br.BaseStream.Length - 1 )
 												{
-													if(!check_duplicate( spr_name + "_" + j ) )
+													if( !check_duplicate( spr_name + "_" + j ) )
 													{
 														SpriteList.Items.Add( m_sprites_proc.import_CHR_bank( br, spr_name + "_" + j ) );
 														
@@ -1692,9 +1691,6 @@ namespace SPReD
 													throw new Exception( spr_name + " already exists in the sprite list! Ignored!" );
 												}
 											}
-#else
-											message_box( "Raw tiles data loading is not implemented for this platform!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error );
-#endif	// DEF_NES
 										}
 										break;
 								}
@@ -1790,27 +1786,29 @@ namespace SPReD
 		
 		private void data_export( string _filename, int _spr_cnt, Func< int, sprite_data > _get_spr )
 		{
-#if DEF_PCE
-			MainForm.message_box( "NOT IMPLEMENTED!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
-			return;
-#endif
 			StreamWriter sw = null;
 			
 			try
 			{
-				//FIXME: padding data on the SMS/PCE ???
+#if DEF_NES
 				bool save_padding_data = false;
-#if DEF_NES				
+				
 				if( message_box( "Save padding data aligned to 1/2/4 KB?", "Export CHR Bank(s)", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
 					save_padding_data = true;
 				}
-				
 #elif DEF_SMS
 				if( m_SMS_export_form.ShowDialog() == DialogResult.Cancel )
 				{
 					return;
 				}
+#elif DEF_PCE
+				if( m_PCE_export_form.ShowDialog() == DialogResult.Cancel )
+				{
+					return;
+				}
+#else
+...
 #endif				
 				sprite_data spr;
 				
@@ -1829,21 +1827,31 @@ namespace SPReD
 					sw.WriteLine( ".define\tSPR_MODE_8X16\t" + ( CBoxMode8x16.Checked ? "1":"0" ) );
 					sw.WriteLine( ".define\tSPR_CHR_BPP\t" + m_SMS_export_form.bpp );
 					sw.WriteLine( ".define\tSPR_CHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t; first CHR index in a CHR bank\n\n" );
+#elif DEF_PCE
+					sw.WriteLine( "SPR_VADDR\t= " + m_PCE_export_form.VADDR + "\n\n" );
+#else
+...
 #endif
 					
 					// CHR incbins 
 					m_sprites_proc.rearrange_CHR_data_ids();
 					
-#if DEF_NES || DEF_PCE
+#if DEF_NES
 					m_sprites_proc.export_CHR( sw, filename, true, save_padding_data );
 #elif DEF_SMS
-					m_sprites_proc.export_CHR( sw, filename, true, save_padding_data, m_SMS_export_form.bpp << 3 );
+					m_sprites_proc.export_CHR( sw, filename, true, m_SMS_export_form.bpp << 3 );
+#elif DEF_PCE
+					m_sprites_proc.export_CHR( sw, filename, false );
+#else
+...
 #endif
-					
 					sw.WriteLine( "\n" );
 					
+#if DEF_FIXED_LEN_PALETTE16_ARR
+					palettes_array.Instance.export( sw, filename );
+#else
 					m_sprites_proc.export_palette( sw, filename );
-					
+#endif
 					// save common sprites data
 					{
 						// sprites array
@@ -1857,16 +1865,23 @@ namespace SPReD
 							
 							sw.WriteLine( spr.name + "_frame:" );
 							sw.WriteLine( "\t.word " + spr.name );
+#if DEF_NES || DEF_SMS
 							sw.WriteLine( "\t.byte " + spr.name + "_end - " + spr.name + ( enable_comments ? "\t; data size":"" ) );
-							
+#elif DEF_PCE
+							sw.WriteLine( "\t.word " + spr.name + "_end - " + spr.name + ( enable_comments ? "\t; data size":"" ) );
+#else
+...
+#endif
 							sw.WriteLine( "\t.byte " + spr.get_CHR_data().id + ( enable_comments ? "\t\t; CHR bank index (" + spr.get_CHR_data().name + ")":"" ) );
-							
-#if DEF_NES							
+#if DEF_NES
 							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + filename + "_" + spr.get_CHR_data().get_filename(), save_padding_data );
 #elif DEF_SMS
-							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + filename + "_" + spr.get_CHR_data().get_filename(), save_padding_data, m_SMS_export_form.bpp );
+							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + filename + "_" + spr.get_CHR_data().get_filename(), m_SMS_export_form.bpp );
+#elif DEF_PCE
+							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + filename + "_" + spr.get_CHR_data().get_filename() );
+#else
+...
 #endif
-							
 							enable_comments = false;
 						}
 					}
@@ -1889,6 +1904,16 @@ namespace SPReD
 					{
 						_get_spr( i ).export( sw, m_SMS_export_form.CHRs_offset );
 					}
+#elif DEF_PCE
+					sw.WriteLine( "\t; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc\n" );
+					
+					// save the sprites data
+					for( int i = 0; i < _spr_cnt; i++ )
+					{
+						_get_spr( i ).export( sw, m_PCE_export_form.CHRs_offset );
+					}
+#else
+...
 #endif					
 				}
 			}

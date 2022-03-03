@@ -195,7 +195,7 @@ namespace SPReD
 						
 						palette_group.Instance.get_palettes_arr()[ 0 ].update();
 						palette_group.Instance.active_palette = 0;
-#elif DEF_SMS || DEF_PCE
+#elif DEF_SMS
 						for( i = 0; i < clrs_cnt; i++ )
 						{
 							palette_group.Instance.get_palettes_arr()[ i / utils.CONST_NUM_SMALL_PALETTES ].get_color_inds()[ i % utils.CONST_NUM_SMALL_PALETTES ] = utils.find_nearest_color_ind( plte[ i % 16 ].ToArgb() );
@@ -205,6 +205,16 @@ namespace SPReD
 						{
 							palette_group.Instance.get_palettes_arr()[ i ].update();
 						}
+#elif DEF_FIXED_LEN_PALETTE16_ARR
+						palettes_array plt_arr = palettes_array.Instance;
+						plt_arr.palette_index = 0;
+						
+						for( i = 0; i < clrs_cnt; i++ )
+						{
+							plt_arr.update_color( i, utils.find_nearest_color_ind( plte[ i % 16 ].ToArgb() ) );
+						}
+						
+						plt_arr.update_palette();
 #endif
 					}
 					
@@ -339,15 +349,27 @@ namespace SPReD
 				// find nearest colors
 				if( _apply_palette )
 				{
+#if DEF_FIXED_LEN_PALETTE16_ARR
+					palettes_array plt_arr = palettes_array.Instance;
+					plt_arr.palette_index = 0;
+#endif
 					for( i = 0; i < plte.GetNentries(); i++ )
 					{
+#if DEF_FIXED_LEN_PALETTE16_ARR
+						plt_arr.update_color( i, utils.find_nearest_color_ind( plte.GetEntry( ( trns != null ) ? ( i + alpha_ind ) % num_colors:i ) ) );
+#else
 						palette_group.Instance.get_palettes_arr()[ i / utils.CONST_NUM_SMALL_PALETTES ].get_color_inds()[ i % utils.CONST_NUM_SMALL_PALETTES ] = utils.find_nearest_color_ind( plte.GetEntry( ( trns != null ) ? ( i + alpha_ind ) % num_colors:i ) );
+#endif
 					}
 					
+#if DEF_FIXED_LEN_PALETTE16_ARR
+					plt_arr.update_palette();
+#else
 					for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
 					{
 						palette_group.Instance.get_palettes_arr()[ i ].update();
 					}
+#endif
 #if DEF_NES							
 					palette_group.Instance.active_palette = 0;
 #endif
@@ -395,7 +417,7 @@ namespace SPReD
 				
 				int n_lines = _lines_arr.Count;
 				
-				CHR_data 	chr_data = null;
+				CHR_data 		chr_data = null;
 				CHR_data_attr 	chr_attr = null;
 				
 				int chr_pos_x = 0;
@@ -423,7 +445,9 @@ namespace SPReD
 						
 						chr_data = new CHR_data();
 						chr_attr = new CHR_data_attr( chr_pos_x, chr_pos_y );
-						
+#if DEF_FIXED_LEN_PALETTE16_ARR
+						chr_attr.palette_ind = 0;
+#endif
 						chr_pos_x += _min_x;
 						chr_pos_y += _min_y;
 						
@@ -587,26 +611,17 @@ namespace SPReD
 		
 		public void import( BinaryReader _br )
 		{
-#if DEF_PCE
-			// TODO: PCE - CHR data import
-			MainForm.message_box( "NOT IMPLEMENTED!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
-			return;
-#endif
 			byte[] pix_arr = new byte[ utils.CONST_CHR_SIDE_PIXELS_CNT ];
 			byte[] tmp_arr = new byte[ utils.CONST_CHR_NATIVE_SIZE_IN_BYTES ];
 			
 			int i;
 			int j;
 			
-			byte byte_0;
-			byte byte_1;
-#if DEF_SMS
-			byte byte_2;
-			byte byte_3;
+			byte[] data_arr = new byte[ utils.CONST_CHR_NATIVE_SIZE_IN_BYTES >> 3 ];
 			
+#if DEF_SMS || DEF_PCE
 			int ind_offset;
 #endif
-			
 			int shift_dec1_cnt;
 			
 			CHR_data chr_data;
@@ -627,24 +642,55 @@ namespace SPReD
 				for( i = 0; i < utils.CONST_CHR_SIDE_PIXELS_CNT; i++ )
 				{
 #if DEF_NES
-					byte_0	= tmp_arr[ i ];
-					byte_1	= tmp_arr[ i + utils.CONST_CHR_SIDE_PIXELS_CNT ];
+					data_arr[ 0 ]	= tmp_arr[ i ];
+					data_arr[ 1 ]	= tmp_arr[ i + utils.CONST_CHR_SIDE_PIXELS_CNT ];
 #elif DEF_SMS
 					ind_offset = i << 2;
 					
-					byte_0	= tmp_arr[ ind_offset ];
-					byte_1 	= tmp_arr[ ind_offset + 1 ];
-					byte_2	= tmp_arr[ ind_offset + 2 ];
-					byte_3 	= tmp_arr[ ind_offset + 3 ];
+					data_arr[ 0 ]	= tmp_arr[ ind_offset ];
+					data_arr[ 1 ]	= tmp_arr[ ind_offset + 1 ];
+					data_arr[ 2 ]	= tmp_arr[ ind_offset + 2 ];
+					data_arr[ 3 ]	= tmp_arr[ ind_offset + 3 ];
+#elif DEF_PCE
+					ind_offset = i << 1;
+					
+					data_arr[ 0 ]	= tmp_arr[ ind_offset ];
+					data_arr[ 1 ]	= tmp_arr[ ind_offset + 32 ];
+					data_arr[ 2 ]	= tmp_arr[ ind_offset + 64 ];
+					data_arr[ 3 ]	= tmp_arr[ ind_offset + 96 ];
+					
+					++ind_offset;
+					
+					data_arr[ 4 ]	= tmp_arr[ ind_offset ];
+					data_arr[ 5 ]	= tmp_arr[ ind_offset + 32 ];
+					data_arr[ 6 ]	= tmp_arr[ ind_offset + 64 ];
+					data_arr[ 7 ]	= tmp_arr[ ind_offset + 96 ];
+#else
+...
 #endif
 					for( j = 0; j < utils.CONST_CHR_SIDE_PIXELS_CNT; j++ )
 					{
+#if DEF_NES || DEF_SMS
 						shift_dec1_cnt = utils.CONST_CHR_SIDE_PIXELS_CNT - 1 - j;
-#if DEF_NES						
-						pix_arr[ j ] = ( byte )( ( ( byte_0 & ( 1 << shift_dec1_cnt ) ) >> shift_dec1_cnt ) | ( ( ( byte_1 << 1 ) & ( 1 << ( utils.CONST_CHR_SIDE_PIXELS_CNT - j ) ) ) >> shift_dec1_cnt ) );
-#elif DEF_SMS						
-						pix_arr[ j ] = ( byte )( ( ( byte_0 >> shift_dec1_cnt & 0x01 ) ) | ( ( ( byte_1 >> shift_dec1_cnt & 0x01 ) ) << 1 ) | ( ( ( byte_2 >> shift_dec1_cnt & 0x01 ) ) << 2 ) | ( ( ( byte_3 >> shift_dec1_cnt & 0x01 ) ) << 3 ) );
-#endif						
+#endif
+#if DEF_NES
+						pix_arr[ j ] = ( byte )( ( ( data_arr[ 0 ] & ( 1 << shift_dec1_cnt ) ) >> shift_dec1_cnt ) | ( ( ( data_arr[ 1 ] << 1 ) & ( 1 << ( utils.CONST_CHR_SIDE_PIXELS_CNT - j ) ) ) >> shift_dec1_cnt ) );
+#elif DEF_SMS
+						pix_arr[ j ] = ( byte )( ( ( data_arr[ 0 ] >> shift_dec1_cnt & 0x01 ) ) | ( ( ( data_arr[ 1 ] >> shift_dec1_cnt & 0x01 ) ) << 1 ) | ( ( ( data_arr[ 2 ] >> shift_dec1_cnt & 0x01 ) ) << 2 ) | ( ( ( data_arr[ 3 ] >> shift_dec1_cnt & 0x01 ) ) << 3 ) );
+#elif DEF_PCE
+						if( j < 8 )
+						{
+							shift_dec1_cnt = 7 - j;
+							pix_arr[ j ] = ( byte )( ( ( data_arr[ 4 ] >> shift_dec1_cnt & 0x01 ) ) | ( ( ( data_arr[ 5 ] >> shift_dec1_cnt & 0x01 ) ) << 1 ) | ( ( ( data_arr[ 6 ] >> shift_dec1_cnt & 0x01 ) ) << 2 ) | ( ( ( data_arr[ 7 ] >> shift_dec1_cnt & 0x01 ) ) << 3 ) );
+						}
+						else
+						{
+							shift_dec1_cnt = 7 - ( j - 8 );
+							pix_arr[ j ] = ( byte )( ( ( data_arr[ 0 ] >> shift_dec1_cnt & 0x01 ) ) | ( ( ( data_arr[ 1 ] >> shift_dec1_cnt & 0x01 ) ) << 1 ) | ( ( ( data_arr[ 2 ] >> shift_dec1_cnt & 0x01 ) ) << 2 ) | ( ( ( data_arr[ 3 ] >> shift_dec1_cnt & 0x01 ) ) << 3 ) );
+						}
+#else
+...
+#endif
 					}
 					
 					chr_data.push_line( pix_arr );
@@ -673,16 +719,11 @@ namespace SPReD
 #if DEF_NES
 		public long export( string _filename, bool _save_padding )
 #elif DEF_SMS
-		public long export( string _filename, bool _save_padding, int bpp )
+		public long export( string _filename, int _bpp )
 #elif DEF_PCE
 		public long export( string _filename )
 #endif
 		{
-#if DEF_PCE
-			// TODO: PCE - CHR data export
-			MainForm.message_box( "NOT IMPLEMENTED!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
-			return 0;
-#else
 			BinaryWriter bw = new BinaryWriter( File.Open( _filename, FileMode.Create ) );
 			
 			CHR_data chr_data;
@@ -693,10 +734,9 @@ namespace SPReD
 			int y;
 			
 			int val;
-			byte data;
-#if DEF_SMS			
-			int max_clr_ind = ( 2 << ( bpp - 1 ) ) - 1;
-#endif			
+#if DEF_SMS
+			int max_clr_ind = ( 2 << ( _bpp - 1 ) ) - 1;
+#endif
 			int size = m_CHR_arr.Count;
 			
 			for( i = 0; i < size; i++ )
@@ -707,11 +747,11 @@ namespace SPReD
 				{
 					for( y = 0; y < utils.CONST_CHR_SIDE_PIXELS_CNT; y++ )
 					{
-						data = 0;
+						byte data = 0;
 						
 						for( x = 0; x < utils.CONST_CHR_SIDE_PIXELS_CNT; x++ )
 						{
-							val = chr_data.get_data()[ ( y << 3 ) + ( 7 - x ) ];
+							val = chr_data.get_data()[ ( y << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS ) + ( ( utils.CONST_CHR_SIDE_PIXELS_CNT - 1 ) - x ) ];
 							
 							data |= ( byte )( ( ( val >> j ) & 0x01 ) << x );
 						}
@@ -722,13 +762,13 @@ namespace SPReD
 #elif DEF_SMS
 				for( y = 0; y < utils.CONST_CHR_SIDE_PIXELS_CNT; y++ )
 				{
-					for( j = 0; j < bpp; j++ )
+					for( j = 0; j < _bpp; j++ )
 					{
-						data = 0;
+						byte data = 0;
 						
 						for( x = 0; x < utils.CONST_CHR_SIDE_PIXELS_CNT; x++ )
 						{
-							val = chr_data.get_data()[ ( y << 3 ) + ( 7 - x ) ];
+							val = chr_data.get_data()[ ( y << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS ) + ( ( utils.CONST_CHR_SIDE_PIXELS_CNT - 1 ) - x ) ];
 							
 							val = ( val > max_clr_ind ) ? 0:val;
 							
@@ -738,9 +778,28 @@ namespace SPReD
 						bw.Write( data );
 					}
 				}
+#elif DEF_PCE
+				for( j = 0; j < 4; j++ )
+				{
+					for( y = 0; y < utils.CONST_CHR_SIDE_PIXELS_CNT; y++ )
+					{
+						ushort data = 0;
+						
+						for( x = 0; x < utils.CONST_CHR_SIDE_PIXELS_CNT; x++ )
+						{
+							val = chr_data.get_data()[ ( y << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS ) + ( ( utils.CONST_CHR_SIDE_PIXELS_CNT - 1 ) - x ) ];
+							
+							data |= ( ushort )( ( ( val >> j ) & 0x01 ) << x );
+						}
+						
+						bw.Write( data );
+					}
+				}
+#else
+...
 #endif				
 			}
-			
+#if DEF_NES
 			// save padding data aligned to 1/2/4 KB
 			if( _save_padding == true )
 			{
@@ -750,7 +809,7 @@ namespace SPReD
 				
 				if( padding != 0 )
 				{
-					data = 0;
+					byte data = 0;
 					
 					while( padding-- != 0 )
 					{
@@ -758,12 +817,11 @@ namespace SPReD
 					}
 				}
 			}
-
+#endif
 			long data_size = bw.BaseStream.Length;
 			bw.Close();
 			
 			return data_size;
-#endif
 		}
 		
 		public void save( BinaryWriter _bw )

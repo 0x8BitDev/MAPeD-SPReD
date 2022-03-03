@@ -534,13 +534,10 @@ namespace SPReD
 		public void export( StreamWriter _sw, int _CHRs_offset )
 #elif DEF_PCE
 		public void export( StreamWriter _sw, int _CHRs_offset )
+#else
+...
 #endif
 		{
-#if DEF_PCE
-			// TODO: PCE - sprite data export
-			MainForm.message_box( "NOT IMPLEMENTED!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
-			return;
-#endif
 			int size = this.m_CHR_attr.Count;
 			
 			CHR_data_attr chr_attr;
@@ -573,11 +570,19 @@ namespace SPReD
 				}
 
 				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}", unchecked( ( byte )( offset_y + chr_attr.y ) ), unchecked( ( byte )( offset_x + chr_attr.x ) ), unchecked( ( byte )( chr_attr.CHR_ind + _CHRs_offset ) ) ) );
-#endif				
+#elif DEF_PCE
+				if( chr_attr.CHR_ind + _CHRs_offset >= 1024 )
+				{
+					throw new Exception( "CHRs indices overflow! Invalid CHRs offset value!" );
+				}
+
+				_sw.WriteLine( "\t.word " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( ushort )( offset_y + chr_attr.y ) ), unchecked( ( ushort )( offset_x + chr_attr.x ) ), unchecked( ( ushort )( chr_attr.CHR_ind + _CHRs_offset ) ), /*!!!*/chr_attr.palette_ind/*!!!*/ ) );
+#else
+...
+#endif
 			}
 			
 			_sw.WriteLine( name + "_end:\n" );
-			
 		}
 		
 		public Rectangle get_rect()

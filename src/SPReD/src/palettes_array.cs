@@ -151,10 +151,22 @@ namespace SPReD
 				}
 			}
 		}
+
+		public void export( StreamWriter _sw, string _prefix )
+		{
+			_sw.WriteLine( _prefix + "_palette:" );
+			
+			for( int i = 0; i < utils.CONST_PALETTE16_ARR_LEN; i++ )
+			{
+				m_plts[ i ].export( _sw );
+			}
+		}
 	}
 
 	public class palette16_data
 	{
+		private const int CONST_DATA_SIZE	= 16;
+		
 		private int[] m_data;
 		
 		public int[] data
@@ -165,7 +177,7 @@ namespace SPReD
 		
 		public palette16_data()
 		{
-			m_data	= new int[ 16 ];
+			m_data	= new int[ CONST_DATA_SIZE ];
 			
 			Array.Clear( m_data, 0, m_data.Length );
 		}
@@ -181,7 +193,7 @@ namespace SPReD
 		
 		public void save( BinaryWriter _bw )
 		{
-			for( int i = 0; i < 16; i++ )
+			for( int i = 0; i < CONST_DATA_SIZE; i++ )
 			{
 				_bw.Write( m_data[ i ] );
 			}
@@ -189,10 +201,22 @@ namespace SPReD
 		
 		public void load( BinaryReader _br )
 		{
-			for( int i = 0; i < 16; i++ )
+			for( int i = 0; i < CONST_DATA_SIZE; i++ )
 			{
 				 m_data[ i ] = _br.ReadInt32();
 			}
+		}
+		
+		public void export( StreamWriter _sw ) 
+		{
+			string plt_asm_data = "\t.word ";
+				
+			for( int i = 0; i < CONST_DATA_SIZE; i++ )
+			{
+				plt_asm_data += String.Format( "${0:X2}", data[ i ] ) + ( ( i != CONST_DATA_SIZE - 1 ) ? ", ":"" );
+			}
+			
+			_sw.WriteLine( plt_asm_data );
 		}
 	}
 }

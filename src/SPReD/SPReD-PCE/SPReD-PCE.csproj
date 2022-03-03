@@ -150,6 +150,13 @@
     <Compile Include="..\src\palette_small.cs">
       <Link>palette_small.cs</Link>
     </Compile>
+    <Compile Include="..\src\PCE_export_form.cs">
+      <Link>PCE_export_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\PCE_export_form.Designer.cs">
+      <Link>PCE_export_form.Designer.cs</Link>
+      <DependentUpon>PCE_export_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
@@ -212,6 +219,10 @@
     <EmbeddedResource Include="..\src\MainForm.resx">
       <Link>MainForm.resx</Link>
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\PCE_export_form.resx">
+      <Link>PCE_export_form.resx</Link>
+      <DependentUpon>PCE_export_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\rename_sprite_form.resx">
       <Link>rename_sprite_form.resx</Link>
