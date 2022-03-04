@@ -571,12 +571,12 @@ namespace SPReD
 
 				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}", unchecked( ( byte )( offset_y + chr_attr.y ) ), unchecked( ( byte )( offset_x + chr_attr.x ) ), unchecked( ( byte )( chr_attr.CHR_ind + _CHRs_offset ) ) ) );
 #elif DEF_PCE
-				if( chr_attr.CHR_ind + _CHRs_offset >= 1024 )
+				if( chr_attr.CHR_ind + _CHRs_offset >= utils.CONST_PCE_MAX_SPRITES_CNT )
 				{
 					throw new Exception( "CHRs indices overflow! Invalid CHRs offset value!" );
 				}
 
-				_sw.WriteLine( "\t.word " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( ushort )( offset_y + chr_attr.y ) ), unchecked( ( ushort )( offset_x + chr_attr.x ) ), unchecked( ( ushort )( chr_attr.CHR_ind + _CHRs_offset ) ), /*!!!*/chr_attr.palette_ind/*!!!*/ ) );
+				_sw.WriteLine( "\t.word " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( ushort )( offset_y + chr_attr.y ) ), unchecked( ( ushort )( offset_x + chr_attr.x ) ), unchecked( ( ushort )( chr_attr.CHR_ind + _CHRs_offset ) ), PCE_get_spr_attr( chr_attr ) ) );
 #else
 ...
 #endif
@@ -584,7 +584,17 @@ namespace SPReD
 			
 			_sw.WriteLine( name + "_end:\n" );
 		}
-		
+#if DEF_PCE
+		private ushort PCE_get_spr_attr( CHR_data_attr _attr )
+		{
+			ushort res = ( ushort )_attr.palette_ind;
+			
+			res |= ( ushort )( ( ( _attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) != 0 ) ? ( 1 << 11 ):0 );
+			res |= ( ushort )( ( ( _attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) != 0 ) ? ( 1 << 15 ):0 );
+			
+			return res;
+		}
+#endif
 		public Rectangle get_rect()
 		{
 			Rectangle rect_src = new Rectangle( 0, 0, 0, 0 );

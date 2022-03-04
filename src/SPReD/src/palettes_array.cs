@@ -152,14 +152,16 @@ namespace SPReD
 			}
 		}
 
-		public void export( StreamWriter _sw, string _prefix )
+		public void export( StreamWriter _sw, string _prefix, int _max_plts )
 		{
 			_sw.WriteLine( _prefix + "_palette:" );
 			
-			for( int i = 0; i < utils.CONST_PALETTE16_ARR_LEN; i++ )
+			for( int i = 0; i < _max_plts; i++ )
 			{
 				m_plts[ i ].export( _sw );
 			}
+			
+			_sw.WriteLine( _prefix + "_palette_end:" );
 		}
 	}
 

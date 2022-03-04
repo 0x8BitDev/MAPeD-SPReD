@@ -1848,7 +1848,20 @@ namespace SPReD
 					sw.WriteLine( "\n" );
 					
 #if DEF_FIXED_LEN_PALETTE16_ARR
-					palettes_array.Instance.export( sw, filename );
+					int max_palettes = -1;
+					
+					for( int i = 0; i < _spr_cnt; i++ )
+					{
+						foreach( var attr in _get_spr( i ).get_CHR_attr() )
+						{
+							if( max_palettes < attr.palette_ind )
+							{
+								max_palettes = attr.palette_ind;
+							}
+						}
+					}
+					
+					palettes_array.Instance.export( sw, filename, max_palettes + 1 );
 #else
 					m_sprites_proc.export_palette( sw, filename );
 #endif

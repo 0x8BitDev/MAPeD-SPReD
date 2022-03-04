@@ -117,6 +117,8 @@ namespace SPReD
 		public const int CONST_SPRITE_MAX_NUM_ATTRS			= 64;	// the max number of attributes in a sprite
 		
 		public const int CONST_PALETTE16_ARR_LEN			= 16;
+		
+		public const int CONST_PCE_MAX_SPRITES_CNT			= 1024;
 #endif
 		public const int CONST_CHR_TOTAL_PIXELS_CNT			= CONST_CHR_SIDE_PIXELS_CNT * CONST_CHR_SIDE_PIXELS_CNT;
 

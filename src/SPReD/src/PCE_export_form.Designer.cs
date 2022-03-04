@@ -39,13 +39,14 @@ namespace SPReD
 			this.NumCHRsOffset = new System.Windows.Forms.NumericUpDown();
 			this.LabelVADDR = new System.Windows.Forms.Label();
 			this.BtnTilesOffsetInfo = new System.Windows.Forms.Button();
+			this.label2 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.NumCHRsOffset)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(103, 64);
+			this.BtnOk.Location = new System.Drawing.Point(103, 82);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 3;
@@ -92,12 +93,23 @@ namespace SPReD
 			this.BtnTilesOffsetInfo.UseVisualStyleBackColor = true;
 			this.BtnTilesOffsetInfo.Click += new System.EventHandler(this.BtnCHRsOffsetInfoClick);
 			// 
+			// label2
+			// 
+			this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.label2.Location = new System.Drawing.Point(12, 50);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(251, 23);
+			this.label2.TabIndex = 4;
+			this.label2.Text = "CGX/CGY aren\'t supported!";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// PCE_export_form
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(278, 99);
+			this.ClientSize = new System.Drawing.Size(278, 117);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.BtnTilesOffsetInfo);
 			this.Controls.Add(this.LabelVADDR);
 			this.Controls.Add(this.NumCHRsOffset);
@@ -112,6 +124,7 @@ namespace SPReD
 			((System.ComponentModel.ISupportInitialize)(this.NumCHRsOffset)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button BtnTilesOffsetInfo;
 		private System.Windows.Forms.Label LabelVADDR;
 		private System.Windows.Forms.NumericUpDown NumCHRsOffset;
