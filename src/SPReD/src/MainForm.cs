@@ -188,10 +188,9 @@ namespace SPReD
 			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "4 colors", "16/4 colors" );
 			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "|Palette (192 bytes) (*.pal)|*.pal", "" );
 			
-			this.ExportASMToolStripMenuItem.Text = "&CA65/PCEAS/HuC";
-			this.ExportASM_saveFileDialog.Filter = "CA65/PCEAS/HuC (*.asm;*.h)|*.asm";
+			this.ExportASMToolStripMenuItem.Text = "&CA65/PCEAS";
+			this.ExportASM_saveFileDialog.Filter = "CA65/PCEAS (*.asm)|*.asm";
 			
-			BtnApplyDefaultPalette.Enabled = applyPaletteToolStripMenuItem.Enabled = false;
 			BtnShiftColors.Enabled = shiftColorsToolStripMenuItem.Enabled = CBoxShiftTransp.Enabled = false;
 
 			CBoxMode8x16.Visible	= false;
@@ -1753,8 +1752,15 @@ namespace SPReD
 						for( int i = 0; i < size; i++ )
 						{
 							spr = SpriteList.Items[ i ] as sprite_data;
-								
-							spr.save_image( ExportImages_folderBrowserDialog.SelectedPath, m_img_export_options_form.alpha_channel, m_sprites_proc.get_palette_group().get_palettes_arr(), m_img_export_options_form.format, CBoxMode8x16.Checked );
+							
+							if( m_img_export_options_form.format == image_export_options_form.EImgFormat.PCX )
+							{
+								spr.save_image_PCX( ExportImages_folderBrowserDialog.SelectedPath, m_sprites_proc.get_palette_group().get_palettes_arr(), CBoxMode8x16.Checked );
+							}
+							else
+							{
+								spr.save_image_BMP_PNG( ExportImages_folderBrowserDialog.SelectedPath, m_img_export_options_form.alpha_channel, m_sprites_proc.get_palette_group().get_palettes_arr(), m_img_export_options_form.format, CBoxMode8x16.Checked );
+							}
 						}
 					}
 					catch( Exception _err )

@@ -559,8 +559,8 @@ namespace SPReD
 				}
 		
 				int attr  = chr_attr.palette_ind; 
-				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) == CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) ? 0x40:0;
-				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) == CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) ? 0x80:0;
+				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) != 0 ) ? 0x40:0;
+				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) != 0 ) ? 0x80:0;
 				
 				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( byte )( offset_y + chr_attr.y ) ), unchecked( ( byte )( chr_attr.CHR_ind ) ), unchecked( ( byte )( attr ) ), unchecked( ( byte )( offset_x + chr_attr.x ) ) ) );
 #elif DEF_SMS	
@@ -575,8 +575,12 @@ namespace SPReD
 				{
 					throw new Exception( "CHRs indices overflow! Invalid CHRs offset value!" );
 				}
+				
+				int attr = chr_attr.palette_ind;				
+				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) != 0 ) ? ( 1 << 11 ):0;
+				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) != 0 ) ? ( 1 << 15 ):0;
 
-				_sw.WriteLine( "\t.word " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( ushort )( offset_y + chr_attr.y ) ), unchecked( ( ushort )( offset_x + chr_attr.x ) ), unchecked( ( ushort )( chr_attr.CHR_ind + _CHRs_offset ) ), PCE_get_spr_attr( chr_attr ) ) );
+				_sw.WriteLine( "\t.word " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( ushort )( offset_y + chr_attr.y ) ), unchecked( ( ushort )( offset_x + chr_attr.x ) ), unchecked( ( ushort )( chr_attr.CHR_ind + _CHRs_offset ) ), ( ushort )attr ) );
 #else
 ...
 #endif
@@ -584,17 +588,7 @@ namespace SPReD
 			
 			_sw.WriteLine( name + "_end:\n" );
 		}
-#if DEF_PCE
-		private ushort PCE_get_spr_attr( CHR_data_attr _attr )
-		{
-			ushort res = ( ushort )_attr.palette_ind;
-			
-			res |= ( ushort )( ( ( _attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) != 0 ) ? ( 1 << 11 ):0 );
-			res |= ( ushort )( ( ( _attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) != 0 ) ? ( 1 << 15 ):0 );
-			
-			return res;
-		}
-#endif
+		
 		public Rectangle get_rect()
 		{
 			Rectangle rect_src = new Rectangle( 0, 0, 0, 0 );
@@ -648,7 +642,7 @@ namespace SPReD
 			m_size_y = 0;
 		}
 		
-		public void save_image( string _path, bool _save_alpha, palette_small[] _plt_arr, ImageFormat _fmt, bool _mode8x16 )
+		public void save_image_BMP_PNG( string _path, bool _save_alpha, palette_small[] _plt_arr, image_export_options_form.EImgFormat _fmt, bool _mode8x16 )
 		{
 			Bitmap 		bmp;
 			Bitmap 		draw_img;
@@ -713,12 +707,12 @@ namespace SPReD
 				}
 			}
 			
-			if( _fmt == ImageFormat.Bmp )
+			if( _fmt == image_export_options_form.EImgFormat.BMP )
 			{
 				draw_img.Save( _path + Path.DirectorySeparatorChar + name + ".bmp", ImageFormat.Bmp );
 			}
 			else
-			if( _fmt == ImageFormat.Png )
+			if( _fmt == image_export_options_form.EImgFormat.PNG )
 			{
 				draw_img.Save( _path + Path.DirectorySeparatorChar + name + ".png", ImageFormat.Png );
 			}
@@ -732,6 +726,224 @@ namespace SPReD
 			draw_img.Dispose();
 		}
 		
+		public void save_image_PCX( string _path, palette_small[] _plt_arr, bool _mode8x16 )
+		{
+			CHR_data_attr 	chr_attr;
+			CHR_data		chr_data;
+			
+			int x;
+			int y;
+			
+			Rectangle rect = get_rect();
+			
+			if( _mode8x16 )
+			{
+				rect.Height += utils.CONST_CHR_SIDE_PIXELS_CNT;
+			}
+			
+			byte[] img_data = new byte[ rect.Width * rect.Height ];
+			Array.Clear( img_data, 0, img_data.Length );
+			
+			int size = get_CHR_attr().Count;
+			
+			for( int i = 0; i < size; i++ )
+			{
+				chr_attr = get_CHR_attr()[ i ];
+				chr_data = get_CHR_data().get_data()[ chr_attr.CHR_ind ];
+				
+				x = chr_attr.x - rect.X + offset_x;
+				y = chr_attr.y - rect.Y + offset_y;
+				
+				PCX_fill_CHR_area( x, y, chr_attr, chr_data, ref img_data, rect.Width );
+				
+				if( _mode8x16 )
+				{
+					if( ( chr_attr.CHR_ind + 1 ) < get_CHR_data().get_data().Count )
+					{
+						PCX_fill_CHR_area( x, y + utils.CONST_CHR_SIDE_PIXELS_CNT, chr_attr, get_CHR_data().get_data()[ chr_attr.CHR_ind + 1 ], ref img_data, rect.Width );
+					}
+				}
+			}
+			
+			// save data
+			{
+				FileStream		fs = new FileStream( _path + Path.DirectorySeparatorChar + name + ".pcx", FileMode.Create, FileAccess.Write );
+				BinaryWriter	bw = new BinaryWriter( fs );
+				
+				int plt_clr;
+				
+				int img_width	= rect.Width - 1;
+				int img_height	= rect.Height - 1;
+				
+				byte[] PCX_header =
+				{
+					0x0A,			// "PCX File"
+					0x05,			// "Version 5"
+					0x01,			// RLE Encoding
+					0x08,			// 8 bit per pixel
+					0x00, 0x00,		// XStart at 0
+					0x00, 0x00,		// YStart at 0
+					( byte )( img_width & 0xFF ), ( byte )( ( img_width >> 8 ) & 0xFF ),	// Xend
+					( byte )( img_height & 0xFF ), ( byte )( ( img_height >> 8 ) & 0xFF ),	// Yend
+					0x48, 0,		// Horizontal DPI
+					0x48, 0,		// Vertical DPI
+					0x0F, 0x0F, 0x0F, 0x0E, 0x0E, 0x0E, 0x0D, 0x0D, 0x0D, 0x0C, 0x0C, 0x0C,	//48-byte EGA palette info
+					0x0B, 0x0B, 0x0B, 0x0A, 0x0A, 0x0A, 0x09, 0x09, 0x09, 0x08, 0x08, 0x08,
+					0x07, 0x07, 0x07, 0x06, 0x06, 0x06, 0x05, 0x05, 0x05, 0x04, 0x04, 0x04,
+					0x03, 0x03, 0x03, 0x02, 0x02, 0x02, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00,
+					0x00,			// Reserved byte, always x00
+					0x01,			// 1 bit plane
+					( byte )( rect.Width & 0xFF ), ( byte )( ( rect.Width >> 8 ) & 0xFF ),	// Bytes per scan line: rect.Width
+					0x01, 0x00,		// Palette type: 1 means color or monochrome
+					0x00, 0x00,		// Horizontal screen size (not used)
+					0x00, 0x00		// Vertical screen size (not used)
+				};
+				
+				// 128 bytes header data
+				bw.Write( PCX_header );
+				bw.Write( new byte[ 54 ] );
+				
+				if( PCX_header[ 2 ] != 0 )
+				{
+					// compress and save image data
+					for( int i = 0; i < rect.Height; i++ )
+					{
+						PCX_encode_and_save_line( img_data, i * rect.Width, rect.Width, bw );
+					}
+					bw.Write( img_data );
+				}
+				else
+				{
+					// uncompressed image data
+					bw.Write( img_data );
+				}
+				
+				// palette data flag
+				bw.Write( ( byte )0x0c );
+				
+#if DEF_FIXED_LEN_PALETTE16_ARR
+				palettes_array plts_arr = palettes_array.Instance;
+				
+				for( int plt_n = 0; plt_n < utils.CONST_PALETTE16_ARR_LEN; plt_n++ )
+				{
+					for( int clr_n = 0; clr_n < 16; clr_n++ )
+					{
+						plt_clr = palette_group.Instance.main_palette[ plts_arr.get_color( plt_n, clr_n ) ];
+						
+						bw.Write( ( byte )( ( plt_clr >> 16 ) & 0xff ) );
+						bw.Write( ( byte )( ( plt_clr >> 8 ) & 0xff ) );
+						bw.Write( ( byte )( plt_clr & 0xff ) );
+					}
+				}
+#else
+				for( int clr_n = 0; clr_n < ( utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ); clr_n++ )
+				{
+					plt_clr = palette_group.Instance.main_palette[ _plt_arr[ clr_n >> 2 ].get_color_inds()[ clr_n & 0x03 ] ];
+					
+					bw.Write( ( byte )( ( plt_clr >> 16 ) & 0xff ) );
+					bw.Write( ( byte )( ( plt_clr >> 8 ) & 0xff ) );
+					bw.Write( ( byte )( plt_clr & 0xff ) );
+				}
+				
+				bw.Write( new byte[ 16 * 3 * 15 ] );
+#endif
+				bw.Dispose();
+				fs.Dispose();
+			}
+		}
+
+		private void PCX_fill_CHR_area( int _x, int _y, CHR_data_attr _chr_attr, CHR_data _chr_data, ref byte[] _img_buff, int _img_width )
+		{
+			int pix_x_pos;
+			int pix_y_pos;
+			
+			for( int pix_h = 0; pix_h < utils.CONST_CHR_SIDE_PIXELS_CNT; pix_h++ )
+			{
+				for( int pix_w = 0; pix_w < utils.CONST_CHR_SIDE_PIXELS_CNT; pix_w++ )
+				{
+					pix_x_pos = pix_w;
+					pix_y_pos = pix_h;
+					
+					if( ( _chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) != 0 )
+					{
+						pix_x_pos = utils.CONST_CHR_SIDE_PIXELS_CNT - pix_x_pos - 1;
+					}
+					
+					if( ( _chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) != 0 )
+					{
+						pix_y_pos = utils.CONST_CHR_SIDE_PIXELS_CNT - pix_y_pos - 1;
+					}
+#if DEF_FIXED_LEN_PALETTE16_ARR
+					_img_buff[ ( _x + pix_w ) + ( _y + pix_h ) * _img_width ] = ( byte )( _chr_data.get_data()[ pix_x_pos + ( pix_y_pos * utils.CONST_CHR_SIDE_PIXELS_CNT ) ] + ( _chr_attr.palette_ind << 4 ) );
+#else
+					_img_buff[ ( _x + pix_w ) + ( _y + pix_h ) * _img_width ] = ( byte )( _chr_data.get_data()[ pix_x_pos + ( pix_y_pos * utils.CONST_CHR_SIDE_PIXELS_CNT ) ] + ( _chr_attr.palette_ind << 2 ) );
+#endif
+				}
+			}
+		}
+		
+		private void PCX_encode_and_save_line( byte[] _img_buff, int _buff_pos, int _img_width, BinaryWriter _bw )
+		{
+			byte	curr, last;
+			byte	run_cnt;	// max value 63
+			
+			last	= _img_buff[ _buff_pos ];
+			run_cnt	= 1;
+			
+			for( int src_ind = 1; src_ind < _img_width; src_ind++ )
+			{
+				curr = _img_buff[ ++_buff_pos ];
+				
+				if( curr == last )
+				{
+					run_cnt++;
+					
+					if( run_cnt == 63 )
+					{
+						PCX_save_encoded_data( last, run_cnt, _bw );
+						run_cnt = 0;
+					}
+				}
+				else
+				{
+					if( run_cnt != 0 )
+					{
+						PCX_save_encoded_data( last, run_cnt, _bw );
+					}
+					
+					last = curr;
+					run_cnt = 1;
+				}
+			}
+			
+			if( run_cnt != 0 )
+			{
+				PCX_save_encoded_data( last, run_cnt, _bw );
+			}
+		}
+		
+		private int PCX_save_encoded_data( byte _data, byte _cnt, BinaryWriter _bw )
+		{
+			if( _cnt != 0 )
+			{
+				if( ( _cnt == 1 ) && ( 0xc0 != ( 0xc0 & _data ) ) )
+				{
+					_bw.Write( _data );
+					
+					return 1;
+				}
+				else
+				{
+					_bw.Write( ( byte )( 0xC0 | _cnt ) );
+					_bw.Write( _data );
+					
+					return 2;
+				}
+			}
+			
+			throw new Exception( "PCX image encoding error!" );
+		}
+
 		public void save( BinaryWriter _bw )
 		{
 			update_dimensions();

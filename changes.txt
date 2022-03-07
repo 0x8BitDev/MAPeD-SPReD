@@ -92,6 +92,8 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS:
 ~~~~~~~~~~~~~~~
 
+07.03.2022 - Added support of export indexed PCX images
+
 24.12.2020 v0.61b
 
 06.01.2021 - SMS: added column ordered palette

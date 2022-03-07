@@ -208,7 +208,11 @@ namespace SPReD
 				
 				for( int i = 0; i < size; i++ )
 				{
+#if DEF_FIXED_LEN_PALETTE16_ARR
+					chr_attr[ i ].palette_ind = palettes_array.Instance.palette_index;
+#else
 					chr_attr[ i ].palette_ind = m_palette_grp.active_palette;
+#endif
 				}
 				
 				return true;
