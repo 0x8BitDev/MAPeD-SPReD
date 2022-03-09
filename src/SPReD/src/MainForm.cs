@@ -29,8 +29,10 @@ namespace SPReD
 #if DEF_SMS
 		private SMS_sprite_flipping_form	m_SMS_sprite_flip_form		= null;
 		private SMS_export_form				m_SMS_export_form			= null;
+		private swap_colors_form			m_swap_colors_form			= new swap_colors_form();
 #elif DEF_PCE
 		private PCE_export_form				m_PCE_export_form			= null;
+		private swap_colors_form			m_swap_colors_form			= new swap_colors_form();
 #endif
 
 #if DEF_FIXED_LEN_PALETTE16_ARR
@@ -113,6 +115,7 @@ namespace SPReD
 															new SToolTipData( CBoxMode8x16, "8x16 sprite mode" ),
 #if DEF_FIXED_LEN_PALETTE16_ARR
 															new SToolTipData( CBoxPalettes, "Palettes array" ),
+															new SToolTipData( BtnSwapColors, "Swap two selected colors without changing graphics" ),
 #endif
 														};
 			SToolTipData data;
@@ -135,8 +138,6 @@ namespace SPReD
 			set_title_name( null );
 			
 #if DEF_FIXED_LEN_PALETTE16_ARR
-			CBoxPalettes.Visible	= true;
-
 			m_palettes_arr			= new palettes_array( CBoxPalettes );
 			
 			Palette0Label.Location	= new Point( Palette0Label.Location.X - 13, Palette0Label.Location.Y );
@@ -150,11 +151,14 @@ namespace SPReD
 			Palette3.Location		= new Point( Palette3.Location.X - 42,		Palette3.Location.Y );
 #else
 			CBoxPalettes.Visible	= false;
+			BtnSwapColors.Visible	= false;
 #endif
 
 #if DEF_NES
 			this.Project_openFileDialog.DefaultExt = "spredsms";
 			this.Project_openFileDialog.Filter = this.Project_openFileDialog.Filter + "|SPReD-SMS (*.spredsms)|*.spredsms";
+			
+			paletteToolStripMenuItem.Visible = false;
 #elif DEF_SMS
 			this.Project_saveFileDialog.DefaultExt = "spredsms";
 			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "NES", "SMS" );
@@ -949,6 +953,7 @@ namespace SPReD
 #endif
 		void BtnShiftColors_Event(object sender, EventArgs e)
 		{
+#if DEF_NES
 			if( SpriteList.SelectedIndex >= 0 )
 			{
 				sprite_data spr = SpriteList.Items[ SpriteList.SelectedIndex ] as sprite_data;
@@ -956,6 +961,7 @@ namespace SPReD
 				spr.shift_colors( CBoxShiftTransp.Checked, CBoxMode8x16.Checked );
 				m_sprites_proc.update_sprite( spr, false );
 			}
+#endif
 		}
 
 		void BtnModeBuild_Event(object sender, EventArgs e)
@@ -1986,6 +1992,17 @@ namespace SPReD
 			m_sprites_proc.apply_palette_to_selected_CHR( m_palettes_arr.palette_index );
 		}
 #endif
+		void BtnSwapColorsClick_Event(object sender, EventArgs e)
+		{
+#if DEF_SMS || DEF_PCE
+			if( SpriteList.Items.Count > 0 )
+			{
+				m_swap_colors_form.ShowDialog( SpriteList.Items );
+				update_selected_sprite();
+			}
+#endif
+		}
+
 #endregion
 
 		void KeyUp_Event(object sender, KeyEventArgs e)

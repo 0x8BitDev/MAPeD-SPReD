@@ -179,6 +179,13 @@
     <Compile Include="..\src\sprite_processor.cs">
       <Link>sprite_processor.cs</Link>
     </Compile>
+    <Compile Include="..\src\swap_colors_form.cs">
+      <Link>swap_colors_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\swap_colors_form.Designer.cs">
+      <Link>swap_colors_form.Designer.cs</Link>
+      <DependentUpon>swap_colors_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\utils.cs">
       <Link>utils.cs</Link>
     </Compile>
@@ -227,6 +234,10 @@
     <EmbeddedResource Include="..\src\rename_sprite_form.resx">
       <Link>rename_sprite_form.resx</Link>
       <DependentUpon>rename_sprite_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\swap_colors_form.resx">
+      <Link>swap_colors_form.resx</Link>
+      <DependentUpon>swap_colors_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

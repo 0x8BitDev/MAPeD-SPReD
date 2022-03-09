@@ -4,7 +4,7 @@
  * Date: 24.08.2020
  * Time: 18:09
  */
-namespace MAPeD
+namespace SPReD
 {
 	partial class swap_colors_form
 	{

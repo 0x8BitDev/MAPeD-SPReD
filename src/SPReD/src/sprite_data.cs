@@ -23,7 +23,7 @@ namespace SPReD
 			aft_LOCAL_AXES = 0,
 			aft_GLOABL_AXES,
 		};
-		
+#if DEF_NES
 		private static readonly byte[] clr_ind_remap_arr = new byte[]
 		{
 			0,1,2,3,
@@ -43,7 +43,7 @@ namespace SPReD
 		};
 		
 		private static int clr_ind_remap_arr_pos = 0;
-		
+#endif
 		private string 					m_name 				= null;
 		private int						m_offset_x			= 0;
 		private int						m_offset_y			= 0;
@@ -339,7 +339,7 @@ namespace SPReD
 				}
 			}
 		}
-		
+#if DEF_NES
 		public void shift_colors( bool _shift_transp, bool _mode8x16 )
 		{
 			int i;
@@ -381,7 +381,7 @@ namespace SPReD
 				_chr_data.get_data()[ j ] = clr_ind;
 			}
 		}
-		
+#endif
 		public void validate()
 		{
 			// all attributes must refer to existing CHRs

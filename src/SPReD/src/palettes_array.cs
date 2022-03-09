@@ -94,6 +94,15 @@ namespace SPReD
 			}
 		}
 		
+		public void swap_colors( int _clr_A, int _clr_B )
+		{
+			int ind_A = m_plts[ palette_index ].data[ _clr_A ];
+			int ind_B = m_plts[ palette_index ].data[ _clr_B ];
+			
+			m_plts[ palette_index ].data[ _clr_A ] = ind_B;
+			m_plts[ palette_index ].data[ _clr_B ] = ind_A;
+		}
+		
 		public void update_palette()
 		{
 			if( m_cbox.SelectedIndex >= 0 )

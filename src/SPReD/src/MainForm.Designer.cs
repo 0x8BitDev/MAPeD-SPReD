@@ -99,6 +99,8 @@ namespace SPReD
 			this.flipVerticalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.flipHorizontalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.swapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.quickGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -156,6 +158,7 @@ namespace SPReD
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.CBoxPalettes = new System.Windows.Forms.ComboBox();
 			this.Palette3 = new System.Windows.Forms.PictureBox();
+			this.BtnSwapColors = new System.Windows.Forms.Button();
 			this.Palette2 = new System.Windows.Forms.PictureBox();
 			this.Palette1 = new System.Windows.Forms.PictureBox();
 			this.Palette0 = new System.Windows.Forms.PictureBox();
@@ -342,6 +345,7 @@ namespace SPReD
 									this.spriteToolStripMenuItem,
 									this.layoutToolStripMenuItem,
 									this.cHRBankToolStripMenuItem,
+									this.paletteToolStripMenuItem,
 									this.helpToolStripMenuItem});
 			this.MenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.MenuStrip.Name = "MenuStrip";
@@ -716,6 +720,23 @@ namespace SPReD
 			this.rotateToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.rotateToolStripMenuItem.Text = "&Rotate";
 			this.rotateToolStripMenuItem.Click += new System.EventHandler(this.BtnCHREditorRotateClick_Event);
+			// 
+			// paletteToolStripMenuItem
+			// 
+			this.paletteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.swapToolStripMenuItem});
+			this.paletteToolStripMenuItem.Name = "paletteToolStripMenuItem";
+			this.paletteToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
+			this.paletteToolStripMenuItem.Text = "&Palette";
+			// 
+			// swapToolStripMenuItem
+			// 
+			this.swapToolStripMenuItem.Name = "swapToolStripMenuItem";
+			this.swapToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+									| System.Windows.Forms.Keys.S)));
+			this.swapToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+			this.swapToolStripMenuItem.Text = "&Swap Colors";
+			this.swapToolStripMenuItem.Click += new System.EventHandler(this.BtnSwapColorsClick_Event);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -1308,6 +1329,7 @@ namespace SPReD
 			// 
 			this.groupBox4.Controls.Add(this.CBoxPalettes);
 			this.groupBox4.Controls.Add(this.Palette3);
+			this.groupBox4.Controls.Add(this.BtnSwapColors);
 			this.groupBox4.Controls.Add(this.Palette2);
 			this.groupBox4.Controls.Add(this.Palette1);
 			this.groupBox4.Controls.Add(this.Palette0);
@@ -1344,6 +1366,16 @@ namespace SPReD
 			this.Palette3.Size = new System.Drawing.Size(80, 20);
 			this.Palette3.TabIndex = 7;
 			this.Palette3.TabStop = false;
+			// 
+			// BtnSwapColors
+			// 
+			this.BtnSwapColors.Location = new System.Drawing.Point(216, 20);
+			this.BtnSwapColors.Name = "BtnSwapColors";
+			this.BtnSwapColors.Size = new System.Drawing.Size(50, 23);
+			this.BtnSwapColors.TabIndex = 35;
+			this.BtnSwapColors.Text = "Swap";
+			this.BtnSwapColors.UseVisualStyleBackColor = true;
+			this.BtnSwapColors.Click += new System.EventHandler(this.BtnSwapColorsClick_Event);
 			// 
 			// Palette2
 			// 
@@ -1580,6 +1612,9 @@ namespace SPReD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem swapToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;
+		private System.Windows.Forms.Button BtnSwapColors;
 		private System.Windows.Forms.ComboBox CBoxPalettes;
 		private System.Windows.Forms.ToolStripMenuItem statisticsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

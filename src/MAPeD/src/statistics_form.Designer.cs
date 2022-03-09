@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: sutr
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 14.08.2020
  * Time: 16:25
  */

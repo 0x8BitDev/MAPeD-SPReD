@@ -89,9 +89,10 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 01.05.2019 v0.50b - Initial release
 
 
-SPReD-NES/SMS:
-~~~~~~~~~~~~~~~
+SPReD-NES/SMS/PCE:
+~~~~~~~~~~~~~~~~~~~
 
+09.03.2022 - SMS/PCE: Added ability to swap two selected colors without changing graphics
 07.03.2022 - Added support of export indexed PCX images
 
 24.12.2020 v0.61b
