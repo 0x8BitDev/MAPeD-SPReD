@@ -79,99 +79,114 @@ namespace SPReD
 		{
 			PngReader png_reader = FileHelper.CreatePngReader( _filename );
 			
-			if(!png_reader.ImgInfo.Indexed )
+			try
 			{
-				png_reader.End();
-				throw new Exception( _filename + "\n\nNot indexed image!" );
-			}
-			
-			if( png_reader.IsInterlaced() )
-			{
-				png_reader.End();
-				throw new Exception( _filename + "\n\nOnly non interlaced .PNG images are supported!" );
-			}
-
-//			if( ( png_reader.ImgInfo.Cols & 0x07 ) != 0 || ( png_reader.ImgInfo.Rows & 0x07 ) != 0 )
-//			{
-//				png_reader.End();
-//				throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
-//			}
+				if(!png_reader.ImgInfo.Indexed )
+				{
+					throw new Exception( _filename + "\n\nNot indexed image!" );
+				}
+				
+				if( png_reader.IsInterlaced() )
+				{
+					throw new Exception( _filename + "\n\nOnly non interlaced .PNG images are supported!" );
+				}
 	
-//			if( ( ( png_reader.ImgInfo.Cols >> 3 ) * ( png_reader.ImgInfo.Rows >> 3 ) ) > utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
-//			{
-//				png_reader.End();
-//				throw new Exception( _filename + "\n\nThe imported image contains more than " + utils.CONST_CHR_BANK_MAX_SPRITES_CNT + " CHRs!" );
-//			}
-			
+//				if( ( png_reader.ImgInfo.Cols & 0x07 ) != 0 || ( png_reader.ImgInfo.Rows & 0x07 ) != 0 )
+//				{
+//					png_reader.End();
+//					throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
+//				}
+	
+//				if( ( ( png_reader.ImgInfo.Cols >> 3 ) * ( png_reader.ImgInfo.Rows >> 3 ) ) > utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+//				{
+//					png_reader.End();
+//					throw new Exception( _filename + "\n\nThe imported image contains more than " + utils.CONST_CHR_BANK_MAX_SPRITES_CNT + " CHRs!" );
+//				}
+				
 #if DEF_NES
-			if( png_reader.GetMetadata().GetPLTE().MinBitDepth() != 2 )
-			{
-				png_reader.End();
-				throw new Exception( _filename + "\n\nThe image must have a 4 colors palette!" );
-			}
-#elif DEF_SMS
-			int img_bit_depth = png_reader.GetMetadata().GetPLTE().MinBitDepth();
-
-			if( img_bit_depth != 4 && img_bit_depth != 2 )
-			{
-				png_reader.End();
-				throw new Exception( _filename + "\n\nThe image must have a 4 or 2 bpp color depth!" );
-			}
-			
-			if( png_reader.GetMetadata().GetPLTE().GetNentries() > 16 )
-			{
-				png_reader.End();
-				throw new Exception( _filename + "\n\nThe image must have a 16 or 4 colors palette!" );
-			}
+				if( png_reader.GetMetadata().GetPLTE().MinBitDepth() != 2 )
+				{
+					throw new Exception( _filename + "\n\nThe PNG image must have a 4 colors palette!" );
+				}
+#elif DEF_SMS || DEF_PCE
+				int img_bit_depth = png_reader.GetMetadata().GetPLTE().MinBitDepth();
+	
+				if( img_bit_depth != 4 && img_bit_depth != 2 )
+				{
+					throw new Exception( _filename + "\n\nThe PNG image must have a 4 or 2 bpp color depth!" );
+				}
+				
+				if( png_reader.GetMetadata().GetPLTE().GetNentries() > 16 )
+				{
+					throw new Exception( _filename + "\n\nThe PNG image must have a 16 or 4 colors palette!" );
+				}
+#else
+...
 #endif
-			sprite_params spr_params = m_CHR_data_storage.create( png_reader, _apply_palette, _crop_image );
-			
-			sprite_data spr = new sprite_data( _name );
-			spr.setup( spr_params );
-			
-			spr.update_dimensions();
-			
-			png_reader.End();
-			
-			return spr;
+				sprite_params spr_params = m_CHR_data_storage.create( png_reader, _apply_palette, _crop_image );
+				
+				sprite_data spr = new sprite_data( _name );
+				spr.setup( spr_params );
+				
+				spr.update_dimensions();
+				
+				png_reader.End();
+				
+				return spr;
+			}
+			catch( System.Exception _err )
+			{
+				png_reader.End();
+				throw _err;
+			}
 		}
 		
 		public sprite_data load_sprite_bmp( string _filename, string _name, bool _apply_palette )
 		{	
 			Bitmap bmp = new Bitmap( _filename );
 			
-			if( bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
+			try
+			{
+				if( bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
+				{
+					bmp.Dispose();
+#if DEF_NES			
+					throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe BMP image must have a 4 bpp color depth \\ 4 colors palette (not RLE encoded)!" );
+#elif DEF_SMS || DEF_PCE
+					throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe BMP image must have a 4 bpp color depth \\ 16 or 4 colors palette (not RLE encoded)!" );
+#else
+...
+#endif
+				}
+				
+//				if( ( bmp.Width & 0x07 ) != 0 || ( bmp.Height & 0x07 ) != 0 )
+//				{
+//					bmp.Dispose();
+//					throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
+//				}
+				
+//				if( ( ( bmp.Width >> 3 ) * ( bmp.Height >> 3 ) ) > utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
+//				{
+//					bmp.Dispose();
+//					throw new Exception( _filename + "\n\nThe imported image contains more than " + utils.CONST_CHR_BANK_MAX_SPRITES_CNT + " CHRs!" );
+//				}
+				
+				sprite_params spr_params = m_CHR_data_storage.create( bmp., _apply_palette );
+				
+				sprite_data spr = new sprite_data( _name );
+				spr.setup( spr_params );
+				
+				spr.update_dimensions();
+				
+				bmp.Dispose();
+				
+				return spr;
+			}
+			catch( System.Exception _err )
 			{
 				bmp.Dispose();
-#if DEF_NES			
-				throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe image must have a 4 bpp color depth \\ 4 colors palette (not RLE encoded)!" );
-#elif DEF_SMS
-				throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe image must have a 4 bpp color depth \\ 16 or 4 colors palette (not RLE encoded)!" );
-#endif
+				throw _err;
 			}
-			
-//			if( ( bmp.Width & 0x07 ) != 0 || ( bmp.Height & 0x07 ) != 0 )
-//			{
-//				bmp.Dispose();
-//				throw new Exception( _filename + "\n\nThe image size must be a multiple of 8 !" );
-//			}
-			
-//			if( ( ( bmp.Width >> 3 ) * ( bmp.Height >> 3 ) ) > utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
-//			{
-//				bmp.Dispose();
-//				throw new Exception( _filename + "\n\nThe imported image contains more than " + utils.CONST_CHR_BANK_MAX_SPRITES_CNT + " CHRs!" );
-//			}
-			
-			sprite_params spr_params = m_CHR_data_storage.create( bmp, _apply_palette );
-			
-			sprite_data spr = new sprite_data( _name );
-			spr.setup( spr_params );
-			
-			spr.update_dimensions();
-			
-			bmp.Dispose();
-			
-			return spr;
 		}
 		
 		public void update_sprite( sprite_data _spr, bool _new_sprite = false )

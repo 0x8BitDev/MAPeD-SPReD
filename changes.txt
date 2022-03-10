@@ -92,8 +92,10 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+10.03.2022 - Added support for importing of compressed PNG images
+10.03.2022 - Fixed import of PNG images with an index of a transparent color
 09.03.2022 - SMS/PCE: Added ability to swap two selected colors without changing graphics
-07.03.2022 - Added support of export indexed PCX images
+07.03.2022 - Added support for exporting of indexed PCX images
 
 24.12.2020 v0.61b
 

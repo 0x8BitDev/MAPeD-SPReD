@@ -277,7 +277,7 @@ namespace SPReD
 			int alpha_ind	= -1;
 			int num_colors	= plte.GetNentries();
 			
-			// detect useful borders of an image
+			// detect useful image borders
 			{
 				if( trns != null )
 				{
@@ -301,6 +301,12 @@ namespace SPReD
 					for( i = 0; i < img_height; i++ )
 					{
 						line 		= _png_reader.ReadRowByte( i );
+						
+						if( line.ImgInfo.Packed )
+						{
+							line = line.unpackToNewImageLine();
+						}
+						
 						pixels_line = new byte[ img_width ];
 						
 						Array.Copy( line.GetScanlineByte(), pixels_line, img_width );
@@ -314,7 +320,7 @@ namespace SPReD
 						for( j = 0; j < size; j++ )
 						{
 							// if pixel is not transparent 
-							if( _crop_image && plte_alpha[ pixels_line[ j ] ] > 0 )
+							if( _crop_image && ( ( ( alpha_ind == 0 ) && ( pixels_line[ j ] != plte_alpha[ alpha_ind ] ) ) || ( plte_alpha[ pixels_line[ j ] ] > 0 ) ) )
 							{
 								if( min_x > j )
 								{
@@ -381,6 +387,12 @@ namespace SPReD
 					for( i = 0; i < img_height; i++ )
 					{
 						line 		= _png_reader.ReadRowByte( i );
+						
+						if( line.ImgInfo.Packed )
+						{
+							line = line.unpackToNewImageLine();
+						}
+						
 						pixels_line = new byte[ img_width ];
 						
 						Array.Copy( line.GetScanlineByte(), pixels_line, img_width );
@@ -466,8 +478,11 @@ namespace SPReD
 									
 									pix_ind = ( chr_pos_x + col_n <= _max_x ) ? ( pixels_line != null ? pixels_line[ chr_pos_x + col_n ]:( _alpha ? (byte)_alpha_ind:(byte)0 ) ):( _alpha ? (byte)_alpha_ind:(byte)0 );
 									
-									++pix_ind;
-									pix_ind %= (byte)_num_colors;
+									if( _alpha_ind != 0 )
+									{
+										++pix_ind;
+										pix_ind %= (byte)_num_colors;
+									}
 									
 									pix_acc += pix_ind;
 								}
@@ -502,7 +517,7 @@ namespace SPReD
 
 								// increment the index if pixel has transparency,
 								// so that the first one will be transparency index ( it last by default in 4bpp PNG\BMP )
-								if( _alpha )
+								if( _alpha && ( _alpha_ind != 0 ) )
 								{
 									++pix_ind;
 									pix_ind %= (byte)_num_colors;

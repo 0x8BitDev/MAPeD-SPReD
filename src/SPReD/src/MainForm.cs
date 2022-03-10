@@ -1581,10 +1581,6 @@ namespace SPReD
 				
 				if( ext == ".bmp" || ext == ".png" )
 				{
-#if DEF_PCE
-					// TODO: PCE - image import
-					MainForm.message_box( "Only 16-color images are supported at the moment!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
-#endif
 					if( CBoxMode8x16.Checked )
 					{
 						throw new Exception( "At the moment, data import is only supported for 8x8 sprites!\n\nSwitch to 8x8 mode and try again!" );
@@ -1733,7 +1729,7 @@ namespace SPReD
 			
 			if( fs != null )
 			{
-				br.Close();
+				fs.Close();
 			}
 			
 			SpriteList.EndUpdate();
