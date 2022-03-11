@@ -40,16 +40,19 @@ namespace SPReD
 			this.LabelVADDR = new System.Windows.Forms.Label();
 			this.BtnTilesOffsetInfo = new System.Windows.Forms.Button();
 			this.label2 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.NumPaletteSlot = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.NumCHRsOffset)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.NumPaletteSlot)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(103, 82);
+			this.BtnOk.Location = new System.Drawing.Point(103, 111);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 3;
+			this.BtnOk.TabIndex = 4;
 			this.BtnOk.Text = "&Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			// 
@@ -96,22 +99,46 @@ namespace SPReD
 			// label2
 			// 
 			this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.label2.Location = new System.Drawing.Point(12, 50);
+			this.label2.Location = new System.Drawing.Point(12, 75);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(251, 23);
 			this.label2.TabIndex = 4;
 			this.label2.Text = "CGX/CGY aren\'t supported!";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
+			// label3
+			// 
+			this.label3.Location = new System.Drawing.Point(12, 48);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(69, 23);
+			this.label3.TabIndex = 1;
+			this.label3.Text = "Palette slot:";
+			// 
+			// NumPaletteSlot
+			// 
+			this.NumPaletteSlot.Location = new System.Drawing.Point(81, 46);
+			this.NumPaletteSlot.Maximum = new decimal(new int[] {
+									15,
+									0,
+									0,
+									0});
+			this.NumPaletteSlot.Name = "NumPaletteSlot";
+			this.NumPaletteSlot.Size = new System.Drawing.Size(61, 20);
+			this.NumPaletteSlot.TabIndex = 3;
+			this.NumPaletteSlot.ValueChanged += new System.EventHandler(this.NumCHRsOffsetChanged_Event);
+			this.NumPaletteSlot.KeyUp += new System.Windows.Forms.KeyEventHandler(this.NumCHRsOffsetChanged_Event);
+			// 
 			// PCE_export_form
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(278, 117);
+			this.ClientSize = new System.Drawing.Size(278, 144);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.BtnTilesOffsetInfo);
 			this.Controls.Add(this.LabelVADDR);
+			this.Controls.Add(this.NumPaletteSlot);
+			this.Controls.Add(this.label3);
 			this.Controls.Add(this.NumCHRsOffset);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.BtnOk);
@@ -122,8 +149,11 @@ namespace SPReD
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Export Options";
 			((System.ComponentModel.ISupportInitialize)(this.NumCHRsOffset)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.NumPaletteSlot)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.NumericUpDown NumPaletteSlot;
+		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button BtnTilesOffsetInfo;
 		private System.Windows.Forms.Label LabelVADDR;

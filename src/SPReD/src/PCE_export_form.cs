@@ -27,6 +27,11 @@ namespace SPReD
 			set {}
 		}
 		
+		public int palette_slot
+		{
+			get { return (int)NumPaletteSlot.Value; }
+		}
+		
 		public PCE_export_form()
 		{
 			//

@@ -533,7 +533,7 @@ namespace SPReD
 #elif DEF_SMS
 		public void export( StreamWriter _sw, int _CHRs_offset )
 #elif DEF_PCE
-		public void export( StreamWriter _sw, int _CHRs_offset )
+		public void export( StreamWriter _sw, int _CHRs_offset, int _palette_slot )
 #else
 ...
 #endif
@@ -576,7 +576,7 @@ namespace SPReD
 					throw new Exception( "CHRs indices overflow! Invalid CHRs offset value!" );
 				}
 				
-				int attr = chr_attr.palette_ind;				
+				int attr = ( chr_attr.palette_ind + _palette_slot ) & 0x0f;
 				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) != 0 ) ? ( 1 << 11 ):0;
 				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) != 0 ) ? ( 1 << 15 ):0;
 

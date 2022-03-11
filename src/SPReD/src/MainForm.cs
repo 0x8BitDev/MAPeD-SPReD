@@ -1837,11 +1837,11 @@ namespace SPReD
 					sw.WriteLine( ".define\tSPR_CHR_BPP\t" + m_SMS_export_form.bpp );
 					sw.WriteLine( ".define\tSPR_CHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t; first CHR index in a CHR bank\n\n" );
 #elif DEF_PCE
-					sw.WriteLine( "SPR_VADDR\t= " + m_PCE_export_form.VADDR + "\n\n" );
+					sw.WriteLine( filename.ToUpper() + "_SPR_VADDR\t= " + m_PCE_export_form.VADDR );
+					sw.WriteLine( filename.ToUpper() + "_PALETTE_SLOT\t= " + m_PCE_export_form.palette_slot + "\n\n" );
 #else
 ...
 #endif
-					
 					// CHR incbins 
 					m_sprites_proc.rearrange_CHR_data_ids();
 					
@@ -1868,6 +1868,11 @@ namespace SPReD
 								max_palettes = attr.palette_ind;
 							}
 						}
+					}
+					
+					if( ( max_palettes + m_PCE_export_form.palette_slot ) >= utils.CONST_PALETTE16_ARR_LEN )
+					{
+						throw new Exception( "The palette data doesn't fit into" + utils.CONST_PALETTE16_ARR_LEN + "slots!" );
 					}
 					
 					palettes_array.Instance.export( sw, filename, max_palettes + 1 );
@@ -1932,11 +1937,11 @@ namespace SPReD
 					// save the sprites data
 					for( int i = 0; i < _spr_cnt; i++ )
 					{
-						_get_spr( i ).export( sw, m_PCE_export_form.CHRs_offset );
+						_get_spr( i ).export( sw, m_PCE_export_form.CHRs_offset, m_PCE_export_form.palette_slot );
 					}
 #else
 ...
-#endif					
+#endif
 				}
 			}
 			catch( Exception _err )
