@@ -57,6 +57,9 @@ namespace SPReD
 #elif DEF_PCE
 			pt_8KB,
 			pt_16KB,
+			pt_32KB,
+#else
+...
 #endif
 		};
 		
@@ -614,6 +617,14 @@ namespace SPReD
 						max_size = 16384;
 					}
 					break;
+					
+				case CHR_data_group.ECHRPackingType.pt_32KB:
+					{
+						max_size = 32768;
+					}
+					break;
+#else
+...
 #endif
 				default:
 					{

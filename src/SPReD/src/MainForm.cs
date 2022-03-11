@@ -203,6 +203,7 @@ namespace SPReD
 			
 			CBoxCHRPackingType.Items.Add( "8KB" );
 			CBoxCHRPackingType.Items.Add( "16KB" );
+			CBoxCHRPackingType.Items.Add( "32KB" );
 #endif
 			palette_group.Instance.active_palette = 0;
 			
