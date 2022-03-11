@@ -46,24 +46,24 @@ The MAPeD is a tool for building a game levels from scratch.
 **Quick Guide:** `./doc/MAPeD/Quick_Guide.html`
 
 
-# SPReD-NES/SMS - Sprites editor
-The SPReD is a tool for converting prepared sprite images into a NES/SMS compatible format. Drawing mode is also available.
+# SPReD-NES/SMS/PCE - Sprites editor
+The SPReD is a tool for converting prepared sprite images into a NES/SMS/PCE compatible format. Drawing mode is also available.
 
 **Some features are:**
 
 - handy drawing mode
 - group operations on sprites
-- sprites data packing ( 1/2/4/8 KB ) and optimization
+- sprites data packing and optimization
 - 8x16 mode support
 - images import/export
-- export to **NES: CA65/NESasm** / **SMS: WLA-DX**
+- export to **NES: CA65/NESasm** / **SMS: WLA-DX** / **PCE: CA65/PCEAS/HuC(PCX)**
 - built-in **Python** script editor for writing custom data export scripts
 - **NES <=> SMS** data conversion*
 - etc...
 
 \* You can load a **NES** project into **SMS** editor and vice versa.
 
-**Example projects (.sprednes/.spredsms):** `./data`
+**Example projects:** `./data`
 
 **Quick Guide:** `./doc/SPReD/Quick_Guide.html`
 
@@ -179,6 +179,10 @@ coming soon...
 - `./samples/sms/player_cntrl_marco`	- the same as previous, but using big sprites 
 ( +shooting and ducking animations )
 - `./samples/sms/diff_bpp_test`		- test program for testing the same image with different exported BPP values
+
+## SPReD-PCE
+
+coming soon...
 
 ---
 **Used tools:**

@@ -62,8 +62,8 @@
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">The <B>SPReD</B> is a tool for
-converting prepared sprite images into a <B>NES</B> <SPAN STYLE="font-weight: normal">/
-</SPAN><B>SMS</B> compatible format. Drawing mode is also available.</FONT></P>
+converting prepared sprite images into a <B>NES</B>/<B>SMS</B>/<B>PCE</B>
+compatible format. Drawing mode is also available.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -74,13 +74,13 @@ converting prepared sprite images into a <B>NES</B> <SPAN STYLE="font-weight: no
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">group
 	operations on sprites</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">sprites
-	data packing ( 1/2/4/8 KB ) and optimization</FONT></P>
+	data packing and optimization</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">8x16
 	mode support</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">images
 	import/export</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">export
-	to <B>NES:</B> CA65/NESasm / <B>SMS:</B> WLA-DX</FONT></P>
+	to <B>NES:</B> CA65/NESasm / <B>SMS:</B> WLA-DX / <B>PCE:</B> CA65/PCEAS/HuC(PCX)</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">built-in
 	<B>Python</B> script editor for writing custom data export scripts</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES</B>
@@ -94,7 +94,7 @@ into <B>SMS</B> editor and vice versa.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">CHR - 1x1 tile ( 8x8 pixels ).</FONT></P>
+<FONT FACE="Arial, sans-serif">CHR - 1x1 tile ( <B>NES/SMS:</B> 8x8; <B>PCE:</B> 16x16 pixels ).</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -175,7 +175,7 @@ Copy&rdquo; / &rdquo;Create Ref&rdquo;</B>.</FONT></P>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Apply
 Palette:</B></FONT></P>
-<P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES:</B></SPAN></FONT>
+<P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES/PCE:</B></SPAN></FONT>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">You
 can apply a <A HREF="#Palette|region">palette</A> to a group of
 selected sprites. Select sprites, select an active <A HREF="#Palette|region">palette</A>
@@ -187,7 +187,7 @@ and press the &ldquo;Apply Palette&rdquo; button.</SPAN></SPAN></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Transformations:</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Flipping</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">You can flip selected sprites around
+<FONT FACE="Arial, sans-serif">You can flip selected sprites around the
 local or global axes. Select sprites, select the &ldquo;LOCAL AXIS&rdquo;
 or &ldquo;GLOBAL AXIS&rdquo; mode and press the &ldquo;VFlip&rdquo; /
 &ldquo;HFlip&rdquo; button.</FONT></P>
@@ -216,8 +216,7 @@ button to remove all unused/empty/duplicate CHRs in all CHR banks.</FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Packing</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN STYLE="font-weight: normal">In
 some cases you may need to pack all your sprites data into a set of
-1/2/4 or 8 KB ( </SPAN><B>SMS</B> <SPAN STYLE="font-weight: normal">).
-Select sprites, select data block size and press the &ldquo;Packing&rdquo;
+1-32 KB. Select sprites, select data block size and press the &ldquo;Packing&rdquo;
 button. This operation performs iterative optimization after adding a
 data of each sprite to a CHR bank. Thus, it deletes all
 unused/empty/duplicate CHRs.</SPAN></FONT></P>
@@ -277,7 +276,7 @@ CHR you must click it and press the &ldquo;Delete&rdquo; button.</SPAN></FONT></
 </SPAN><SPAN LANG="en-US"><B>move</B></SPAN> <SPAN LANG="en-US">a
 selected CHR inside the layout viewport to another position you
 should drag and drop it using a RIGHT mouse button.</SPAN></FONT></P>
-<P STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES:
+<P STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES/PCE:
 </B></SPAN><SPAN LANG="en-US">To </SPAN><SPAN LANG="en-US"><B>flip</B></SPAN>
 <SPAN LANG="en-US">a CHR you must click it and press the &ldquo;VFlip&rdquo;
 / &ldquo;HFlip&rdquo; button ( the </SPAN><SPAN LANG="en-US"><B>SMS</B></SPAN>
@@ -297,7 +296,7 @@ draw mode:</B></FONT></P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">In the &ldquo;Draw mode&rdquo; you can
 draw your sprite image. Just select a color and draw! :)</FONT></P>
-<P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES:</B></SPAN></FONT>
+<P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES/PCE:</B></SPAN></FONT>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Also
 you can change a CHR <A HREF="#Palette|region">palette</A>. When you
 draw pixels, you also see an active palette assigned to the current
@@ -393,7 +392,7 @@ color of each palette is a transparent color. So if you fill out a
 CHR with a color from the leftmost color slot of any of 4 palettes,
 then drag and drop it to an active sprite and make optimization, that
 CHR will be deleted as empty.</SPAN></SPAN></FONT></P>
-<P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMS:</B></SPAN></FONT>
+<P STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMS/PCE:</B></SPAN></FONT>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">The
 leftmost color slot of the first palette is reserved for a
 transparent color. For example, when you <A HREF="#Import|region">import</A>
@@ -446,9 +445,16 @@ color on the main palette.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES:</B></SPAN>
 <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">As mentioned
 before, the leftmost color of each palette is a transparent color.</SPAN></SPAN></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMS:</B></SPAN>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMS/PCE:</B></SPAN>
 <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">The leftmost
 color of the first palette is reserved for a transparent color.</SPAN></SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMS/PCE:</B></SPAN>
+<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Sometimes you may need to change colors order without changing graphics.
+For example, after importing graphics from images, you may need to back
+in place a transparent color. Press <B>Ctrl+Shift+S</B> or click the <B>Main Menu</B> &rarr; <B>Palette</B> &rarr; <B>Swap Colors</B>.
+Select two colors in the opened dialog and press the 'Ok' button.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -468,11 +474,15 @@ color of the first palette is reserved for a transparent color.</SPAN></SPAN></F
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES</B></SPAN>
-<SPAN LANG="en-US">project file has a </SPAN><SPAN LANG="en-US"><B>.sprednes</B></SPAN>
+<SPAN LANG="en-US">project file - </SPAN><SPAN LANG="en-US"><B>.sprednes</B></SPAN>
 <SPAN LANG="en-US">extension.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMS</B></SPAN>
-<SPAN LANG="en-US">project file has a </SPAN><SPAN LANG="en-US"><B>.spredsms</B></SPAN>
+<SPAN LANG="en-US">project file - </SPAN><SPAN LANG="en-US"><B>.spredsms</B></SPAN>
+<SPAN LANG="en-US">extension.</SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>PCE</B></SPAN>
+<SPAN LANG="en-US">project file - </SPAN><SPAN LANG="en-US"><B>.spredpce</B></SPAN>
 <SPAN LANG="en-US">extension.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -504,13 +514,13 @@ for import:</FONT></P>
 </P>
 <UL>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>NES:</B></SPAN>
-	<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">4 colors images
-	/ </SPAN></SPAN><SPAN LANG="en-US"><B>SMS:</B></SPAN> <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">16/4
-	colors images ( .png or .bmp )</SPAN></SPAN></FONT></P>
+	<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">4 color images
+	/ </SPAN></SPAN><SPAN LANG="en-US"><B>SMS/PCE:</B></SPAN> <SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">16/4
+	color images ( .png or .bmp )</SPAN></SPAN></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif">CHR banks ( .chr or .bin )</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
-	<FONT FACE="Arial, sans-serif">Palette ( 192 bytes ) ( .plt )</FONT></P>
+	<FONT FACE="Arial, sans-serif"><B>NES/SMS:</B> Palette ( 192 bytes ) ( .plt )</FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -542,7 +552,8 @@ for export:</FONT></P>
 <UL>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif"><B>NES:</B> CA65/NESasm / <B>SMS:</B>
-	WLA-DX ( 1/2/3/4 bpp CHRs data is also supported )</FONT></P>
+	WLA-DX (VRAM offset, 1/2/3/4 bpp CHRs data) / <B>PCE:</B> CA65/PCEAS
+	(VRAM offset, Palette slot)</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif">Images ( .png, .bmp or indexed .pcx )</FONT></P>
 </UL>
