@@ -49,10 +49,11 @@ namespace SPReD
 		public enum ECHRPackingType
 		{
 			pt_NO_PACKING = 0,
+#if DEF_NES
 			pt_1KB,
 			pt_2KB,
 			pt_4KB,
-#if DEF_SMS
+#elif DEF_SMS
 			pt_8KB,
 #elif DEF_PCE
 			pt_8KB,
@@ -582,6 +583,7 @@ namespace SPReD
 			
 			switch( _packing_type )
 			{
+#if DEF_NES
 				case CHR_data_group.ECHRPackingType.pt_1KB:
 					{
 						max_size = 1024;
@@ -599,7 +601,7 @@ namespace SPReD
 						max_size = 4096;
 					}
 					break;
-#if DEF_SMS
+#elif DEF_SMS
 				case CHR_data_group.ECHRPackingType.pt_8KB:
 					{
 						max_size = 8192;
