@@ -171,7 +171,7 @@ namespace SPReD
 //					throw new Exception( _filename + "\n\nThe imported image contains more than " + utils.CONST_CHR_BANK_MAX_SPRITES_CNT + " CHRs!" );
 //				}
 				
-				sprite_params spr_params = m_CHR_data_storage.create( bmp., _apply_palette );
+				sprite_params spr_params = m_CHR_data_storage.create( bmp, _apply_palette );
 				
 				sprite_data spr = new sprite_data( _name );
 				spr.setup( spr_params );
