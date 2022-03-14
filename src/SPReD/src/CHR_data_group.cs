@@ -49,18 +49,15 @@ namespace SPReD
 		public enum ECHRPackingType
 		{
 			pt_NO_PACKING = 0,
-#if DEF_NES
 			pt_1KB,
 			pt_2KB,
 			pt_4KB,
-#elif DEF_SMS
+#if DEF_SMS
 			pt_8KB,
 #elif DEF_PCE
 			pt_8KB,
 			pt_16KB,
 			pt_32KB,
-#else
-...
 #endif
 		};
 		
@@ -291,6 +288,9 @@ namespace SPReD
 					
 					alpha_ind = plte_alpha.Length - 1;
 					
+					num_colors = plte_alpha.Length;
+					num_colors = ( num_colors == 1 ) ? plte.GetNentries():num_colors;
+					
 					if( _crop_image )
 					{
 						min_x = img_width + 1;
@@ -324,7 +324,7 @@ namespace SPReD
 						for( j = 0; j < size; j++ )
 						{
 							// if pixel is not transparent 
-							if( _crop_image && ( ( ( alpha_ind == 0 ) && ( pixels_line[ j ] != plte_alpha[ alpha_ind ] ) ) || ( plte_alpha[ pixels_line[ j ] ] > 0 ) ) )
+							if( _crop_image && ( ( ( alpha_ind == 0 ) && ( pixels_line[ j ] != plte_alpha[ alpha_ind ] ) ) || ( plte_alpha[ Math.Min( pixels_line[ j ], alpha_ind ) ] > 0 ) ) )
 							{
 								if( min_x > j )
 								{
@@ -406,7 +406,7 @@ namespace SPReD
 				}
 			}
 
-			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, ( trns != null ), alpha_ind, num_colors, _crop_image );
+			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, ( trns != null ), alpha_ind, plte.GetNentries(), _crop_image );
 		}		
 		
 		private sprite_params cut_CHRs( sprite_params _spr_params, int _min_x, int _max_x, int _min_y, int _max_y, List< byte[] > _lines_arr, bool _alpha, int _alpha_ind, int _num_colors, bool _crop_image )
@@ -583,7 +583,6 @@ namespace SPReD
 			
 			switch( _packing_type )
 			{
-#if DEF_NES
 				case CHR_data_group.ECHRPackingType.pt_1KB:
 					{
 						max_size = 1024;
@@ -601,7 +600,7 @@ namespace SPReD
 						max_size = 4096;
 					}
 					break;
-#elif DEF_SMS
+#if DEF_SMS
 				case CHR_data_group.ECHRPackingType.pt_8KB:
 					{
 						max_size = 8192;
@@ -625,12 +624,10 @@ namespace SPReD
 						max_size = 32768;
 					}
 					break;
-#else
-...
 #endif
 				default:
 					{
-						return false;
+						throw new Exception( "Unexpected data packing type detected!" );
 					}
 			}
 			
