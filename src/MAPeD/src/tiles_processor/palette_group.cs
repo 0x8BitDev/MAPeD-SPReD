@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 14:57
  */
@@ -23,7 +23,9 @@ namespace MAPeD
 		public event EventHandler UpdateColor;
 #endif
 		
-#if DEF_NES		
+		private bool m_mouse_capt		= false;
+		
+#if DEF_NES
 		private int m_sel_clr_ind		= 13;
 #else
 		private int m_sel_clr_ind		= 0;
@@ -131,7 +133,10 @@ namespace MAPeD
 				m_plt_arr[ i ].ActivePalette += new EventHandler( update_palettes );
 			}
 			
-			m_pix_box.MouseClick += new MouseEventHandler( this.Palette_MouseClick );
+			m_pix_box.MouseDown		+= new MouseEventHandler( this.Palette_MouseDown );
+			m_pix_box.MouseMove		+= new MouseEventHandler( this.Palette_MouseMove );
+			m_pix_box.MouseUp		+= new MouseEventHandler( this.Palette_MouseUp );
+			m_pix_box.MouseClick	+= new MouseEventHandler( this.Palette_MouseClick );
 			
 			m_main_palette = platform_data.get_palette_by_platform_type( platform_data.get_platform_type() );
 			
@@ -244,19 +249,47 @@ namespace MAPeD
 			invalidate();
 		}
 		
+		private void Palette_MouseDown(object sender, MouseEventArgs e)
+		{
+			m_mouse_capt = true;
+		}
+		
+		private void Palette_MouseUp(object sender, MouseEventArgs e)
+		{
+			m_mouse_capt = false;
+		}
+		
+		private void Palette_MouseMove(object sender, MouseEventArgs e)
+		{
+			if( m_mouse_capt )
+			{
+				check_color( e.X, e.Y );
+			}
+		}
+		
 		private void Palette_MouseClick(object sender, MouseEventArgs e)
 		{
+			check_color( e.X, e.Y );
+		}
+		
+		private void check_color( int _x, int _y )
+		{
+			if( _x < 0 || _y < 0 || _x >= m_pix_box.Width || _y >= m_pix_box.Height )
+			{
+				return;
+			}
+			
 #if !DEF_ZX
 		
 #if DEF_NES	
 			// row ordered data
-			int sel_clr_ind = ( e.X >> 4 ) + ( ( e.Y >> 4 ) << 4 );
+			int sel_clr_ind = ( _x >> 4 ) + ( ( _y >> 4 ) << 4 );
 #elif DEF_SMS
 			// column ordered data
-			int sel_clr_ind = (( e.X >> 4 ) << 2 ) + ( e.Y >> 4 );
+			int sel_clr_ind = (( _x >> 4 ) << 2 ) + ( _y >> 4 );
 #elif DEF_PCE || DEF_SMD
 			// column ordered data
-			int sel_clr_ind = (( e.X >> 2 ) << 3 ) + ( e.Y >> 3 );
+			int sel_clr_ind = (( _x >> 2 ) << 3 ) + ( _y >> 3 );
 #endif
 			MainForm.set_status_msg( utils.hex( "Selected color: #", sel_clr_ind ) );
 
@@ -287,7 +320,7 @@ namespace MAPeD
 				{
 					m_plt_arr[ m_active_plt_id ].update_color( m_sel_clr_ind );
 				}
-				dispatch_event_update_color();				
+				dispatch_event_update_color();
 			}
 #endif //!DEF_ZX
 		}

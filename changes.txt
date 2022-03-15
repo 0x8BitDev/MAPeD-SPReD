@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+15.03.2022 - Added color selection with mouse move
 15.03.2022 - Screen editor: speeding up drawing of tiles
 16.02.2022 - Fixed exported data for maps that share the same CHR bank
 03.02.2022 - Added highlight to selected tile/block
@@ -93,6 +94,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+15.03.2022 - Added color selection with mouse move
 11.03.2022 - Added SPReD-PCE
 10.03.2022 - Added support for importing of compressed PNG images
 10.03.2022 - Fixed import of PNG images with an index of a transparent color

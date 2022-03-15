@@ -22,6 +22,8 @@ namespace SPReD
 	{
 		public event EventHandler UpdateColor;
 		
+		private bool m_mouse_capt		= false;
+		
 #if DEF_NES		
 		private int m_sel_clr_ind		= 13;
 #elif DEF_SMS || DEF_PCE
@@ -114,7 +116,10 @@ namespace SPReD
 				m_plt_arr[ i ].ActivePalette += new EventHandler( update_palettes );
 			}
 			
-			m_pix_box.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Layout_MouseClick);
+			m_pix_box.MouseDown		+= new MouseEventHandler(this.Palette_MouseDown);
+			m_pix_box.MouseMove		+= new MouseEventHandler(this.Palette_MouseMove);
+			m_pix_box.MouseUp		+= new MouseEventHandler(this.Palette_MouseUp);
+			m_pix_box.MouseClick	+= new MouseEventHandler(this.Palette_MouseClick);
 			
 			update();
 		}
@@ -164,22 +169,50 @@ namespace SPReD
 			invalidate();
 		}
 		
-		private void Layout_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void Palette_MouseDown(object sender, MouseEventArgs e)
 		{
+			m_mouse_capt = true;
+		}
+		
+		private void Palette_MouseUp(object sender, MouseEventArgs e)
+		{
+			m_mouse_capt = false;
+		}
+		
+		private void Palette_MouseMove(object sender, MouseEventArgs e)
+		{
+			if( m_mouse_capt )
+			{
+				check_color( e.X, e.Y );
+			}
+		}
+		
+		private void Palette_MouseClick(object sender, MouseEventArgs e)
+		{
+			check_color( e.X, e.Y );
+		}
+		
+		private void check_color( int _x, int _y )
+		{
+			if( _x < 0 || _y < 0 || _x >= m_pix_box.Width || _y >= m_pix_box.Height )
+			{
+				return;
+			}
+			
 #if DEF_NES		// row ordered data				
-			m_sel_clr_ind = ( e.X >> 4 ) + ( ( e.Y >> 4 ) << 4 );
+			m_sel_clr_ind = ( _x >> 4 ) + ( ( _y >> 4 ) << 4 );
 #elif DEF_SMS	// column ordered data
-			m_sel_clr_ind = ( ( e.X >> 4 ) << 2 ) + ( e.Y >> 4 );
+			m_sel_clr_ind = ( ( _x >> 4 ) << 2 ) + ( _y >> 4 );
 #elif DEF_PCE	// column ordered data
-			m_sel_clr_ind = ( ( e.X >> 2 ) << 3 ) + ( e.Y >> 3 );
-#endif			
+			m_sel_clr_ind = ( ( _x >> 2 ) << 3 ) + ( _y >> 3 );
+#endif
 			update();
 			
 			// dispatch an index of a selected color to the active palette
 			if( m_active_plt_id >= 0 )
 			{
 				palette_small plt = m_plt_arr[ m_active_plt_id ];
-#if DEF_NES				
+#if DEF_NES
 				if( plt.color_slot == 0 )
 				{
 					// if active slot is a zero number, fill zero slot of the all palettes by a selected color
@@ -189,7 +222,7 @@ namespace SPReD
 					}
 				}
 				else
-#endif					
+#endif
 				{
 					m_plt_arr[ m_active_plt_id ].update_color( m_sel_clr_ind );
 #if DEF_FIXED_LEN_PALETTE16_ARR
