@@ -166,7 +166,7 @@ namespace MAPeD
 		private int				m_tile_x				= -1;
 		private int				m_tile_y				= -1;
 		private Rectangle		m_tile_ghost_img_rect;
-		private Rectangle		m_border_tile_img_rect;
+		private Rectangle		m_tile_img_rect;
 		private readonly 		ImageAttributes m_tile_img_attr	= null;
 		
 		private readonly ImageList m_tiles_imagelist	= null;
@@ -210,7 +210,7 @@ namespace MAPeD
 			m_tile_img_attr.SetColorMatrix( clr_mtx, ColorMatrixFlag.Default, ColorAdjustType.Bitmap );
 			
 			m_tile_ghost_img_rect	= new Rectangle( 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE );
-			m_border_tile_img_rect	= new Rectangle( 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE );
+			m_tile_img_rect			= new Rectangle( 0, 0, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE );
 			
 			m_block_tiles_cache = new List< int >( platform_data.get_max_tiles_cnt() );
 			
@@ -783,7 +783,7 @@ namespace MAPeD
 				
 				m_tiles_data.set_screen_tile( m_scr_ind, ( m_tile_y * platform_data.get_screen_tiles_width() ) + m_tile_x, ( ushort )tile_id );
 				
-				draw_tile( m_tile_x, m_tile_y, tile_id );
+				draw_tile( m_tile_x, m_tile_y, tile_id, false );
 
 				m_rect_tile.X = get_scr_offs_x() + ( m_tile_x * utils.CONST_SCREEN_TILES_SIZE );
 				m_rect_tile.Y = get_scr_offs_y() + ( m_tile_y * utils.CONST_SCREEN_TILES_SIZE );
@@ -795,7 +795,7 @@ namespace MAPeD
 			{
 				m_tiles_data.set_screen_tile( m_scr_ind, ( m_tile_y * platform_data.get_screen_blocks_width() ) + m_tile_x, ( ushort )m_active_tile_id );
 				
-				draw_block( m_tile_x, m_tile_y, m_active_tile_id );
+				draw_block( m_tile_x, m_tile_y, m_active_tile_id, false );
 				
 				m_rect_tile.X = get_scr_offs_x() + ( m_tile_x * utils.CONST_SCREEN_BLOCKS_SIZE );
 				m_rect_tile.Y = get_scr_offs_y() + ( m_tile_y * utils.CONST_SCREEN_BLOCKS_SIZE );
@@ -1042,11 +1042,12 @@ namespace MAPeD
 								{
 									for( i = 0; i < platform_data.get_screen_tiles_cnt(); i++ )
 									{
-										draw_tile( 	i % platform_data.get_screen_tiles_width(),
-										          	i / platform_data.get_screen_tiles_width(),
-										          	scr.get_tile( i ),
-										          	scr_width * layout_data.adj_scr_slots[ ( scr_n << 1 ) ],
-										          	scr_height * layout_data.adj_scr_slots[ ( scr_n << 1 ) + 1 ] );
+										draw_tile(	i % platform_data.get_screen_tiles_width(),
+													i / platform_data.get_screen_tiles_width(),
+													scr.get_tile( i ),
+													true,
+													scr_width * layout_data.adj_scr_slots[ ( scr_n << 1 ) ],
+													scr_height * layout_data.adj_scr_slots[ ( scr_n << 1 ) + 1 ] );
 									}
 								}
 								else
@@ -1054,10 +1055,11 @@ namespace MAPeD
 									for( i = 0; i < platform_data.get_screen_blocks_cnt(); i++ )
 									{
 										draw_block(	i % platform_data.get_screen_blocks_width(),
-										          	i / platform_data.get_screen_blocks_width(),
-										          	scr.get_tile( i ),
-										          	scr_width * layout_data.adj_scr_slots[ ( scr_n << 1 ) ],
-										          	scr_height * layout_data.adj_scr_slots[ ( scr_n << 1 ) + 1 ] );
+													i / platform_data.get_screen_blocks_width(),
+													scr.get_tile( i ),
+													true,
+													scr_width * layout_data.adj_scr_slots[ ( scr_n << 1 ) ],
+													scr_height * layout_data.adj_scr_slots[ ( scr_n << 1 ) + 1 ] );
 									}
 								}
 							}
@@ -1078,14 +1080,14 @@ namespace MAPeD
 					{
 						for( i = 0; i < platform_data.get_screen_tiles_cnt(); i++ )
 						{
-							draw_tile( i % platform_data.get_screen_tiles_width(), i / platform_data.get_screen_tiles_width(), scr.get_tile( i ) );
+							draw_tile( i % platform_data.get_screen_tiles_width(), i / platform_data.get_screen_tiles_width(), scr.get_tile( i ), false );
 						}
 					}
 					else
 					{
 						for( i = 0; i < platform_data.get_screen_blocks_cnt(); i++ )
 						{
-							draw_block( i % platform_data.get_screen_blocks_width(), i / platform_data.get_screen_blocks_width(), scr.get_tile( i ) );
+							draw_block( i % platform_data.get_screen_blocks_width(), i / platform_data.get_screen_blocks_width(), scr.get_tile( i ), false );
 						}
 					}
 					
@@ -1326,27 +1328,59 @@ namespace MAPeD
 			disable( false );
 		}
 
-		private void draw_tile( int _x, int _y, int _tile_id, int _offs_x = 0, int _offs_y = 0 )
+		private void draw_tile( int _x, int _y, int _tile_id, bool _check_box, int _offs_x = 0, int _offs_y = 0 )
 		{
-			m_border_tile_img_rect.X		= 0;
-			m_border_tile_img_rect.Y		= 0;
-			m_border_tile_img_rect.Width	= ( _x == platform_data.get_half_tile_x() ) ? ( utils.CONST_SCREEN_TILES_SIZE >> 1 ):utils.CONST_SCREEN_TILES_SIZE;
-			m_border_tile_img_rect.Height	= ( _y == platform_data.get_half_tile_y() ) ? ( utils.CONST_SCREEN_TILES_SIZE >> 1 ):utils.CONST_SCREEN_TILES_SIZE;
+			int pos_x = _offs_x + get_scr_offs_x() + ( _x * utils.CONST_SCREEN_TILES_SIZE );
+			int pos_y = _offs_y + get_scr_offs_y() + ( _y * utils.CONST_SCREEN_TILES_SIZE );
 			
-			m_gfx.DrawImage( 	m_tiles_imagelist.Images[ _tile_id ],
-								_offs_x + get_scr_offs_x() + ( _x * utils.CONST_SCREEN_TILES_SIZE ),
-								_offs_y + get_scr_offs_y() + ( _y * utils.CONST_SCREEN_TILES_SIZE ),
-								m_border_tile_img_rect,
+			m_tile_img_rect.Width	= ( _x == platform_data.get_half_tile_x() ) ? ( utils.CONST_SCREEN_TILES_SIZE >> 1 ):utils.CONST_SCREEN_TILES_SIZE;
+			m_tile_img_rect.Height	= ( _y == platform_data.get_half_tile_y() ) ? ( utils.CONST_SCREEN_TILES_SIZE >> 1 ):utils.CONST_SCREEN_TILES_SIZE;
+			
+			if( _check_box )
+			{
+				m_tile_img_rect.X	= pos_x;
+				m_tile_img_rect.Y	= pos_y;
+				
+				if( !m_pbox_rect.IntersectsWith( m_tile_img_rect ) )
+				{
+					return;
+				}
+			}
+
+			m_tile_img_rect.X	= 0;
+			m_tile_img_rect.Y	= 0;
+			
+			m_gfx.DrawImage(	m_tiles_imagelist.Images[ _tile_id ],
+								pos_x,
+								pos_y,
+								m_tile_img_rect,
 								GraphicsUnit.Pixel );
 		}
 		
-		private void draw_block( int _x, int _y, int _tile_id, int _offs_x = 0, int _offs_y = 0 )
+		private void draw_block( int _x, int _y, int _tile_id, bool _check_box, int _offs_x = 0, int _offs_y = 0 )
 		{
-			m_gfx.DrawImageUnscaled( 	m_blocks_imagelist.Images[ _tile_id ], 
-										_offs_x + get_scr_offs_x() + ( _x * utils.CONST_SCREEN_BLOCKS_SIZE ),
-										_offs_y + get_scr_offs_y() + ( _y * utils.CONST_SCREEN_BLOCKS_SIZE ),
-										utils.CONST_SCREEN_BLOCKS_SIZE, 
-										utils.CONST_SCREEN_BLOCKS_SIZE );
+			int pos_x	= _offs_x + get_scr_offs_x() + ( _x * utils.CONST_SCREEN_BLOCKS_SIZE );
+			int pos_y	= _offs_y + get_scr_offs_y() + ( _y * utils.CONST_SCREEN_BLOCKS_SIZE );
+			int size	= utils.CONST_SCREEN_BLOCKS_SIZE;
+			
+			if( _check_box )
+			{
+				m_tile_img_rect.X		= pos_x;
+				m_tile_img_rect.Y		= pos_y;
+				m_tile_img_rect.Width	= size;
+				m_tile_img_rect.Height	= size;
+				
+				if( !m_pbox_rect.IntersectsWith( m_tile_img_rect ) )
+				{
+					return;
+				}
+			}
+			
+			m_gfx.DrawImageUnscaled(	m_blocks_imagelist.Images[ _tile_id ],
+										pos_x,
+										pos_y,
+										size,
+										size );
 		}
 	}
 }

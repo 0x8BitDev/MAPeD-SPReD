@@ -54,8 +54,6 @@ namespace MAPeD
 		private readonly ImageAttributes m_scr_img_attr	= null;
 		private Rectangle 			m_scr_img_rect;
 		
-		private Rectangle			m_pbox_rect;
-		
 		private layout_data			m_layout = null;
 		
 		private readonly List< tiles_data > 	m_tiles_data	= null;
@@ -157,8 +155,6 @@ namespace MAPeD
 			
 			m_scr_half_width  = m_pix_box.Width >> 1;
 			m_scr_half_height = m_pix_box.Height >> 1;
-			
-			m_pbox_rect = new Rectangle( 0, 0, m_pix_box.Width, m_pix_box.Height );
 			
 			float[][] pts_arr = {	new float[] {1, 0, 0, 0, 0},
 									new float[] {0, 1, 0, 0, 0},

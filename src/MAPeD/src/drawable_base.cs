@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 15:20
  */
@@ -21,6 +21,8 @@ namespace MAPeD
 		protected Bitmap		m_main_bmp	= null;
 		protected Graphics 		m_gfx		= null;
 		protected Pen			m_pen		= null;
+		
+		protected Rectangle		m_pbox_rect	= new Rectangle();
 		
 		protected const int	CONST_BACKGROUND_COLOR	= 0x78505050;
 		
@@ -70,6 +72,11 @@ namespace MAPeD
 			{
 				m_gfx.Dispose();
 			}
+			
+			m_pbox_rect.X		= 0;
+			m_pbox_rect.Y		= 0;
+			m_pbox_rect.Width	= m_pix_box.Width;
+			m_pbox_rect.Height	= m_pix_box.Height;
 			
 			m_main_bmp = new Bitmap( m_pix_box.Width, m_pix_box.Height, PixelFormat.Format32bppArgb );
 			

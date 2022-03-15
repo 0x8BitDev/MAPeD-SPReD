@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+15.03.2022 - Screen editor: speeding up drawing of tiles
 16.02.2022 - Fixed exported data for maps that share the same CHR bank
 03.02.2022 - Added highlight to selected tile/block
 03.02.2022 - Fixed adjacent screen indices data, removed null data holes
