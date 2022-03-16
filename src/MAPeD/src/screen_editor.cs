@@ -202,7 +202,7 @@ namespace MAPeD
 			float[][] pts_arr = {	new float[] {1, 0, 0, 0, 0},
 									new float[] {0, 1, 0, 0, 0},
 									new float[] {0, 0, 1, 0, 0},
-									new float[] {0, 0, 0, 0.5f, 0}, 
+									new float[] {0, 0, 0, 0.8f, 0}, 
 									new float[] {0, 0, 0, 0, 1} };
 			
 			ColorMatrix clr_mtx = new ColorMatrix( pts_arr );
@@ -1206,17 +1206,27 @@ namespace MAPeD
 											m_tile_ghost_img_rect.Width = ( ( m_tile_x + tile_x ) == half_tile_x ) ? tile_size >> 1:tile_size;
 										}
 									}
+
+//									m_gfx.DrawImageUnscaled( img_list.Images[ m_active_pattern.data.get_tile( tile_y * m_active_pattern.width + tile_x ) ], m_tile_ghost_img_rect );
 									
-									m_gfx.DrawImage( img_list.Images[ m_active_pattern.data.get_tile( tile_y * m_active_pattern.width + tile_x ) ],
-                									 m_tile_ghost_img_rect, 
-                									 0, 
-                									 0, 
-                									 m_tile_ghost_img_rect.Width, 
-                									 m_tile_ghost_img_rect.Height, 
-                									 GraphicsUnit.Pixel, 
-                									 m_tile_img_attr );
+									m_gfx.DrawImage(	img_list.Images[ m_active_pattern.data.get_tile( tile_y * m_active_pattern.width + tile_x ) ],
+														m_tile_ghost_img_rect,
+														0,
+														0,
+														m_tile_ghost_img_rect.Width,
+														m_tile_ghost_img_rect.Height,
+														GraphicsUnit.Pixel,
+														m_tile_img_attr );
 								}
 							}
+							
+							// draw pattern's border
+							draw_rectangle( utils.CONST_COLOR_SCREEN_PATTERN_BORDER,
+											2.0f,
+											get_scr_offs_x() + m_tile_x * tile_size,
+											get_scr_offs_y() + m_tile_y * tile_size,
+											m_active_pattern.width * tile_size,
+											m_active_pattern.height * tile_size );
 						}
 					}
 				}
@@ -1314,18 +1324,25 @@ namespace MAPeD
 
 			// red rectangle
 			{
-				m_pen.Color = Color.Red;
-				m_pen.Width = 2.0f;
-				
-				int width 	= platform_data.get_screen_blocks_width() * utils.CONST_SCREEN_BLOCKS_SIZE;
-				int height	= platform_data.get_screen_blocks_height() * utils.CONST_SCREEN_BLOCKS_SIZE;
-				
-				m_gfx.DrawRectangle( m_pen, get_scr_offs_x(), get_scr_offs_y(), width, height );
-				
-				m_pen.Width = 1.0f;
+				draw_rectangle( utils.CONST_COLOR_SCREEN_BORDER,
+								2.0f,
+								get_scr_offs_x(),
+								get_scr_offs_y(),
+								platform_data.get_screen_blocks_width() * utils.CONST_SCREEN_BLOCKS_SIZE,
+								platform_data.get_screen_blocks_height() * utils.CONST_SCREEN_BLOCKS_SIZE );
 			}
 			
 			disable( false );
+		}
+
+		private void draw_rectangle( Color _clr, float _line_width, int _x, int _y, int _width, int _height )
+		{
+			m_pen.Color = _clr;
+			m_pen.Width = _line_width;
+			
+			m_gfx.DrawRectangle( m_pen, _x, _y, _width, _height );
+			
+			m_pen.Width = 1.0f;
 		}
 
 		private void draw_tile( int _x, int _y, int _tile_id, bool _check_box, int _offs_x = 0, int _offs_y = 0 )

@@ -33,23 +33,15 @@ namespace MAPeD
 		{
 			if( RBtnTiles.Checked )
 			{
-				export_tiles_blocks_data(	delegate()
-											{
-												return _data.get_first_free_tile_id( false );
-											}, 
-											32, _tiles_imgs, _filename );
+				export_tiles_blocks_data( _data.get_first_free_tile_id( false ), 32, _tiles_imgs, _filename );
 			}
 			else
 			{
-				export_tiles_blocks_data(	delegate()
-											{
-												return _data.get_first_free_block_id( false );
-											}, 
-											16, _blocks_imgs, _filename );
+				export_tiles_blocks_data( _data.get_first_free_block_id( false ), 16, _blocks_imgs, _filename );
 			}
 		}
 		
-		private void export_tiles_blocks_data( Func< int > _tiles_cnt, int _data_size, ImageList _image_list, string _filename )
+		private void export_tiles_blocks_data( int _tiles_cnt, int _data_size, ImageList _image_list, string _filename )
 		{
 			int num_active_tiles;
 			int tiles_width;
@@ -57,7 +49,7 @@ namespace MAPeD
 			int x, y;
 			
 			// get a number of non zero tiles
-			if( ( num_active_tiles = _tiles_cnt() ) == 0 )
+			if( ( num_active_tiles = _tiles_cnt ) == 0 )
 			{
 				throw new Exception( "There is no data to export!" );
 			}
