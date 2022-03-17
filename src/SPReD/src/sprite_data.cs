@@ -580,7 +580,7 @@ namespace SPReD
 				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) != 0 ) ? ( 1 << 11 ):0;
 				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) != 0 ) ? ( 1 << 15 ):0;
 
-				_sw.WriteLine( "\t.word " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( ushort )( offset_y + chr_attr.y ) ), unchecked( ( ushort )( offset_x + chr_attr.x ) ), unchecked( ( ushort )( chr_attr.CHR_ind + _CHRs_offset ) ), ( ushort )attr ) );
+				_sw.WriteLine( "\t.word " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( ushort )( offset_y + chr_attr.y ) ), unchecked( ( ushort )( offset_x + chr_attr.x ) ), unchecked( ( ushort )( ( chr_attr.CHR_ind + _CHRs_offset ) << 1 ) ), ( ushort )attr ) );
 #else
 ...
 #endif
