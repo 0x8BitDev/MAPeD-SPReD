@@ -1495,10 +1495,7 @@ namespace SPReD
 								}
 							}
 							
-							// update selected ( active ) color in the main palette
-							{
-								palette_group.Instance.get_palettes_arr()[ palette_group.Instance.active_palette ].color_slot = palette_group.Instance.get_palettes_arr()[ palette_group.Instance.active_palette ].color_slot;
-							}
+							update_selected_color();
 							
 							// Load description
 							m_description_form.edit_text = br.ReadString();
@@ -1632,7 +1629,7 @@ namespace SPReD
 									case ".bmp":
 									case ".png":
 										{
-											if(!check_duplicate( spr_name ) )
+											if( !check_duplicate( spr_name ) )
 											{
 												if( ext == ".png" )
 												{
@@ -1968,11 +1965,19 @@ namespace SPReD
 #endregion
 //		PALETTES ARRAY		*********************************************************************************//
 #region	palettes array
+		void update_selected_color()
+		{
+			palette_group plt_grp = palette_group.Instance;
+			
+			plt_grp.get_palettes_arr()[ plt_grp.active_palette ].color_slot = plt_grp.get_palettes_arr()[ plt_grp.active_palette ].color_slot;
+		}
+
 		void CBoxPalettesChanged_Event(object sender, EventArgs e)
 		{
 #if DEF_FIXED_LEN_PALETTE16_ARR
 			m_palettes_arr.update_palette();
 			m_sprites_proc.apply_palette_to_selected_CHR( m_palettes_arr.palette_index );
+			update_selected_color();
 #endif
 		}
 		
