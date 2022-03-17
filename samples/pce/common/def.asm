@@ -7,6 +7,8 @@
 ; Hardware ports & useful memory addresses
 ;
 
+VDC_VRAM_DEFAULT_SAT_ADDR	= $7f00
+
 ;--- VDC
 
 VDC_REG 	= $0000

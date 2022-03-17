@@ -88,7 +88,7 @@ reset:
 	vdc_reg_data VDC_R0D_VDR,	$00df
 	vdc_reg_data VDC_R0E_VCR,	$000c
 	vdc_reg_data VDC_R0F_DCR,	$0000
-	vdc_reg_data VDC_R13_DVSSR,	$7f00	
+	vdc_reg_data VDC_R13_DVSSR,	#VDC_VRAM_DEFAULT_SAT_ADDR
 
 	; init TIA
 
