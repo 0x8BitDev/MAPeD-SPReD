@@ -75,7 +75,7 @@ namespace SPReD
 			CHR_data_group.reset_ids_cnt();
 		}
 		
-		public sprite_data load_sprite_png( string _filename, string _name, bool _apply_palette, bool _crop_image )
+		public sprite_data load_sprite_png( string _filename, string _name, bool _apply_palette, bool _crop_image, int _palette_slot )
 		{
 			PngReader png_reader = FileHelper.CreatePngReader( _filename );
 			
@@ -123,7 +123,7 @@ namespace SPReD
 #else
 ...
 #endif
-				sprite_params spr_params = m_CHR_data_storage.create( png_reader, _apply_palette, _crop_image );
+				sprite_params spr_params = m_CHR_data_storage.create( png_reader, _apply_palette, _crop_image, _palette_slot );
 				
 				sprite_data spr = new sprite_data( _name );
 				spr.setup( spr_params );
@@ -141,7 +141,7 @@ namespace SPReD
 			}
 		}
 		
-		public sprite_data load_sprite_bmp( string _filename, string _name, bool _apply_palette )
+		public sprite_data load_sprite_bmp( string _filename, string _name, bool _apply_palette, int _palette_slot )
 		{	
 			Bitmap bmp = new Bitmap( _filename );
 			
@@ -171,7 +171,7 @@ namespace SPReD
 //					throw new Exception( _filename + "\n\nThe imported image contains more than " + utils.CONST_CHR_BANK_MAX_SPRITES_CNT + " CHRs!" );
 //				}
 				
-				sprite_params spr_params = m_CHR_data_storage.create( bmp, _apply_palette );
+				sprite_params spr_params = m_CHR_data_storage.create( bmp, _apply_palette, _palette_slot );
 				
 				sprite_data spr = new sprite_data( _name );
 				spr.setup( spr_params );

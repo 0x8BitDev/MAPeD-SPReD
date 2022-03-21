@@ -127,9 +127,14 @@ namespace SPReD
 		
 		public void update_color( int _clr_pos, int _clr_ind )
 		{
-			if( m_cbox.SelectedIndex >= 0 )
+			update_color( m_cbox.SelectedIndex, _clr_pos, _clr_ind );
+		}
+
+		public void update_color( int _plt_ind, int _clr_pos, int _clr_ind )
+		{
+			if( _plt_ind >= 0 && _plt_ind < utils.CONST_PALETTE16_ARR_LEN )
 			{
-				m_plts[ m_cbox.SelectedIndex ].data[ _clr_pos ] = _clr_ind;
+				m_plts[ _plt_ind ].data[ _clr_pos ] = _clr_ind;
 			}
 		}
 		

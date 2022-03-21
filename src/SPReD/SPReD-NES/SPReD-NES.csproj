@@ -134,6 +134,13 @@
       <Link>image_export_options_form.Designer.cs</Link>
       <DependentUpon>image_export_options_form.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\image_import_options_form.cs">
+      <Link>image_import_options_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\image_import_options_form.Designer.cs">
+      <Link>image_import_options_form.Designer.cs</Link>
+      <DependentUpon>image_import_options_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\MainForm.cs">
       <Link>MainForm.cs</Link>
     </Compile>
@@ -205,6 +212,10 @@
     <EmbeddedResource Include="..\src\image_export_options_form.resx">
       <Link>image_export_options_form.resx</Link>
       <DependentUpon>image_export_options_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\image_import_options_form.resx">
+      <Link>image_import_options_form.resx</Link>
+      <DependentUpon>image_import_options_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\MainForm.resx">
       <Link>MainForm.resx</Link>

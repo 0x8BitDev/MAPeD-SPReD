@@ -24,6 +24,7 @@ namespace SPReD
 		private rename_sprite_form 			m_rename_sprite_form 		= new rename_sprite_form();
 		private copy_sprite_new_name_form 	m_new_sprite_name_form 		= new copy_sprite_new_name_form();
 		private image_export_options_form 	m_img_export_options_form	= new image_export_options_form();
+		private image_import_options_form 	m_img_import_options_form	= new image_import_options_form();
 		private description_form			m_description_form			= new description_form();
 		
 #if DEF_SMS
@@ -1561,8 +1562,6 @@ namespace SPReD
 			
 			try
 			{
-				SpriteList.BeginUpdate();
-				
 				int i;
 				int j;
 				int size = filenames.Length;
@@ -1576,6 +1575,7 @@ namespace SPReD
 				
 				bool apply_palette 	= false;
 				bool crop_images 	= false;
+				int	palette_slot	= -1;
 				
 				if( ext == ".bmp" || ext == ".png" )
 				{
@@ -1583,17 +1583,18 @@ namespace SPReD
 					{
 						throw new Exception( "At the moment, data import is only supported for 8x8 sprites!\n\nSwitch to 8x8 mode and try again!" );
 					}
-					
-					if( message_box( "Apply the nearest colors to the imported sprite(s)?\n\nNote: This will modify the palette!", "Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+
+					if( m_img_import_options_form.ShowDialog() == DialogResult.Cancel )
 					{
-						apply_palette = true;
+						return;
 					}
 					
-					if( message_box( "Crop the imported sprites to their minimum size by alpha channel?\n\nNote: BMP files have no alpha channel!", "Data Import", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
-					{
-						crop_images = true;
-					}
+					apply_palette	= m_img_import_options_form.apply_palette;
+					crop_images		= m_img_import_options_form.crop_by_alpha;
+					palette_slot	= m_img_import_options_form.palette_slot;
 				}
+
+				SpriteList.BeginUpdate();
 				
 				switch( ext )
 				{
@@ -1633,11 +1634,11 @@ namespace SPReD
 											{
 												if( ext == ".png" )
 												{
-													spr = m_sprites_proc.load_sprite_png( filename, spr_name, apply_palette, crop_images );
+													spr = m_sprites_proc.load_sprite_png( filename, spr_name, apply_palette, crop_images, palette_slot );
 												}
 												else
 												{	// otherwise - .bmp
-													spr = m_sprites_proc.load_sprite_bmp( filename, spr_name, apply_palette );
+													spr = m_sprites_proc.load_sprite_bmp( filename, spr_name, apply_palette, palette_slot );
 												}												
 #if DEF_NES
 												if( apply_palette )

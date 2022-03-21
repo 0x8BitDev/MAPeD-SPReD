@@ -41,22 +41,22 @@ namespace SPReD
 			return new sprite_params( chr_data );
 		}
 		
-		public sprite_params create( PngReader _png_reader, bool _apply_palette, bool _crop_image )
+		public sprite_params create( PngReader _png_reader, bool _apply_palette, bool _crop_image, int _palette_slot )
 		{
 			CHR_data_group chr_data = new CHR_data_group();
 			
 			add( chr_data );
 			
-			return chr_data.setup( _png_reader, _apply_palette, _crop_image );
+			return chr_data.setup( _png_reader, _apply_palette, _crop_image, _palette_slot );
 		}
 
-		public sprite_params create( Bitmap _bmp, bool _apply_palette )
+		public sprite_params create( Bitmap _bmp, bool _apply_palette, int _palette_slot )
 		{
 			CHR_data_group chr_data = new CHR_data_group();
 			
 			add( chr_data );
 			
-			return chr_data.setup( _bmp, _apply_palette );
+			return chr_data.setup( _bmp, _apply_palette, _palette_slot );
 		}
 		
 		public void add( CHR_data_group _chr_data )

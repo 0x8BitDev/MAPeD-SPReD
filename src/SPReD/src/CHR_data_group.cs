@@ -145,7 +145,7 @@ namespace SPReD
 		}
 #endif
 
-		public sprite_params setup( Bitmap _bmp, bool _apply_palette )
+		public sprite_params setup( Bitmap _bmp, bool _apply_palette, int _palette_slot )
 		{
 			sprite_params spr_params 	= new sprite_params( this );
 			spr_params.m_CHR_data		= this;
@@ -208,11 +208,11 @@ namespace SPReD
 						}
 #elif DEF_FIXED_LEN_PALETTE16_ARR
 						palettes_array plt_arr = palettes_array.Instance;
-						plt_arr.palette_index = 0;
+						plt_arr.palette_index = _palette_slot;
 						
 						for( i = 0; i < clrs_cnt; i++ )
 						{
-							plt_arr.update_color( i, utils.find_nearest_color_ind( plte[ i % 16 ].ToArgb() ) );
+							plt_arr.update_color( _palette_slot, i, utils.find_nearest_color_ind( plte[ i % 16 ].ToArgb() ) );
 						}
 						
 						plt_arr.update_palette();
@@ -243,10 +243,10 @@ namespace SPReD
 				}
 			}
 			
-			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, false, -1, -1, false );
+			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, false, -1, -1, false, _palette_slot );
 		}
 		
-		public sprite_params setup( PngReader _png_reader, bool _apply_palette, bool _crop_image )
+		public sprite_params setup( PngReader _png_reader, bool _apply_palette, bool _crop_image, int _palette_slot )
 		{
 			sprite_params spr_params 	= new sprite_params( this );
 			
@@ -356,12 +356,12 @@ namespace SPReD
 				{
 #if DEF_FIXED_LEN_PALETTE16_ARR
 					palettes_array plt_arr = palettes_array.Instance;
-					plt_arr.palette_index = 0;
+					plt_arr.palette_index = _palette_slot;
 #endif
 					for( i = 0; i < num_colors; i++ )
 					{
 #if DEF_FIXED_LEN_PALETTE16_ARR
-						plt_arr.update_color( i, utils.find_nearest_color_ind( plte.GetEntry( ( trns != null ) ? ( i + alpha_ind ) % num_colors:i ) ) );
+						plt_arr.update_color( _palette_slot, i, utils.find_nearest_color_ind( plte.GetEntry( ( trns != null ) ? ( i + alpha_ind ) % num_colors:i ) ) );
 #else
 						palette_group.Instance.get_palettes_arr()[ i / utils.CONST_NUM_SMALL_PALETTES ].get_color_inds()[ i % utils.CONST_NUM_SMALL_PALETTES ] = utils.find_nearest_color_ind( plte.GetEntry( ( trns != null ) ? ( i + alpha_ind ) % num_colors:i ) );
 #endif
@@ -401,10 +401,10 @@ namespace SPReD
 				}
 			}
 
-			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, ( trns != null ), alpha_ind, num_colors, _crop_image );
+			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, ( trns != null ), alpha_ind, num_colors, _crop_image, _palette_slot );
 		}		
 		
-		private sprite_params cut_CHRs( sprite_params _spr_params, int _min_x, int _max_x, int _min_y, int _max_y, List< byte[] > _lines_arr, bool _alpha, int _alpha_ind, int _num_colors, bool _crop_image )
+		private sprite_params cut_CHRs( sprite_params _spr_params, int _min_x, int _max_x, int _min_y, int _max_y, List< byte[] > _lines_arr, bool _alpha, int _alpha_ind, int _num_colors, bool _crop_image, int _palette_slot )
 		{
 			// cut sprite by tiles 8x8
 			{
@@ -457,7 +457,7 @@ namespace SPReD
 						chr_data = new CHR_data();
 						chr_attr = new CHR_data_attr( chr_pos_x, chr_pos_y );
 #if DEF_FIXED_LEN_PALETTE16_ARR
-						chr_attr.palette_ind = 0;
+						chr_attr.palette_ind = _palette_slot;
 #endif
 						chr_pos_x += _min_x;
 						chr_pos_y += _min_y;
