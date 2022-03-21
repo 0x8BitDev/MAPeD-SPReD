@@ -97,7 +97,7 @@ SPReD-NES/SMS/PCE:
 15.03.2022 - Added color selection with the LMB+mouse move
 11.03.2022 - Added SPReD-PCE
 10.03.2022 - Added support for importing of compressed PNG images
-10.03.2022 - Fixed import of PNG images with an index of a transparent color
+10.03.2022 - Fixed import of indexed PNG images
 09.03.2022 - SMS/PCE: Added ability to swap two selected colors without changing graphics
 07.03.2022 - Added support for exporting of indexed PCX images
 

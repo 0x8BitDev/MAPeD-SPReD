@@ -284,12 +284,7 @@ namespace SPReD
 				{
 					int size;
 					
-					int[] plte_alpha = trns.GetPalletteAlpha();
-					
-					alpha_ind = plte_alpha.Length - 1;
-					
-					num_colors = plte_alpha.Length;
-					num_colors = ( num_colors == 1 ) ? plte.GetNentries():num_colors;
+					alpha_ind = trns.GetPalletteAlpha().Length - 1;
 					
 					if( _crop_image )
 					{
@@ -304,7 +299,7 @@ namespace SPReD
 					
 					for( i = 0; i < img_height; i++ )
 					{
-						line 		= _png_reader.ReadRowByte( i );
+						line = _png_reader.ReadRowByte( i );
 						
 						if( line.ImgInfo.Packed )
 						{
@@ -323,8 +318,8 @@ namespace SPReD
 						
 						for( j = 0; j < size; j++ )
 						{
-							// if pixel is not transparent 
-							if( _crop_image && ( ( ( alpha_ind == 0 ) && ( pixels_line[ j ] != plte_alpha[ alpha_ind ] ) ) || ( plte_alpha[ Math.Min( pixels_line[ j ], alpha_ind ) ] > 0 ) ) )
+							// if pixel is not transparent
+							if( _crop_image && ( pixels_line[ j ] != alpha_ind ) )
 							{
 								if( min_x > j )
 								{
@@ -363,7 +358,7 @@ namespace SPReD
 					palettes_array plt_arr = palettes_array.Instance;
 					plt_arr.palette_index = 0;
 #endif
-					for( i = 0; i < plte.GetNentries(); i++ )
+					for( i = 0; i < num_colors; i++ )
 					{
 #if DEF_FIXED_LEN_PALETTE16_ARR
 						plt_arr.update_color( i, utils.find_nearest_color_ind( plte.GetEntry( ( trns != null ) ? ( i + alpha_ind ) % num_colors:i ) ) );
@@ -390,7 +385,7 @@ namespace SPReD
 				{
 					for( i = 0; i < img_height; i++ )
 					{
-						line 		= _png_reader.ReadRowByte( i );
+						line = _png_reader.ReadRowByte( i );
 						
 						if( line.ImgInfo.Packed )
 						{
@@ -406,7 +401,7 @@ namespace SPReD
 				}
 			}
 
-			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, ( trns != null ), alpha_ind, plte.GetNentries(), _crop_image );
+			return cut_CHRs( spr_params, min_x, max_x, min_y, max_y, lines_arr, ( trns != null ), alpha_ind, num_colors, _crop_image );
 		}		
 		
 		private sprite_params cut_CHRs( sprite_params _spr_params, int _min_x, int _max_x, int _min_y, int _max_y, List< byte[] > _lines_arr, bool _alpha, int _alpha_ind, int _num_colors, bool _crop_image )
@@ -482,10 +477,10 @@ namespace SPReD
 									
 									pix_ind = ( chr_pos_x + col_n <= _max_x ) ? ( pixels_line != null ? pixels_line[ chr_pos_x + col_n ]:( _alpha ? (byte)_alpha_ind:(byte)0 ) ):( _alpha ? (byte)_alpha_ind:(byte)0 );
 									
-									if( _alpha_ind != 0 )
+									if( _alpha && ( _alpha_ind != 0 ) )
 									{
-										++pix_ind;
-										pix_ind %= (byte)_num_colors;
+										pix_ind += ( byte )( _num_colors - _alpha_ind );
+										pix_ind %= ( byte )_num_colors;
 									}
 									
 									pix_acc += pix_ind;
@@ -519,12 +514,11 @@ namespace SPReD
 							{
 								pix_ind = ( chr_pos_x + num_row_pixs <= _max_x ) ? ( pixels_line != null ? pixels_line[ chr_pos_x + num_row_pixs ]:( _alpha ? (byte)_alpha_ind:(byte)0 ) ):( _alpha ? (byte)_alpha_ind:(byte)0 );
 
-								// increment the index if pixel has transparency,
-								// so that the first one will be transparency index ( it last by default in 4bpp PNG\BMP )
+								// fix the pixel index so that the first one will be transparency index 
 								if( _alpha && ( _alpha_ind != 0 ) )
 								{
-									++pix_ind;
-									pix_ind %= (byte)_num_colors;
+									pix_ind += ( byte )( _num_colors - _alpha_ind );
+									pix_ind %= ( byte )_num_colors;
 								}
 
 								pix_acc += pix_ind;
