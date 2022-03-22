@@ -1,6 +1,6 @@
 ;###################################################################
 ;
-; Copyright 2021 0x8BitDev ( MIT license )
+; Copyright 2022 0x8BitDev ( MIT license )
 ;
 ;###################################################################
 ;
@@ -23,18 +23,8 @@ MAP_FLAG_OFF	.func ( MAP_DATA_MAGIC & \1 ) = 0
 VDC_SCR_DATA
 .endif
 
+	.data
 	.zp
-
-; temporary values
-;
-tmp_val1:
-	.ds 1
-tmp_val2:
-	.ds 1
-tmp_val3:
-	.ds 1
-tmp_val4:
-	.ds 1
 
 ; tilemap renderer data
 ;

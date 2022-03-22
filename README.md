@@ -182,7 +182,7 @@ coming soon...
 
 ## SPReD-PCE
 
-coming soon...
+- `./samples/pce/sprite_render/show_sprites/asm/`	- simple demo that shows test sprites exported as asm data
 
 ---
 **Used tools:**

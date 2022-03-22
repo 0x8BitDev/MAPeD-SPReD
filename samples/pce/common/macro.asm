@@ -1,6 +1,6 @@
 ;###################################################################
 ;
-; Copyright 2021 0x8BitDev ( MIT license )
+; Copyright 2022 0x8BitDev ( MIT license )
 ;
 ;###################################################################
 ;
@@ -19,7 +19,53 @@
 	adc \1 + 1
 	tay
 	.endm
+; \2 = \1 + \2
+	.macro add_word_to_word
+	clc
+	lda low_byte \1
+	adc low_byte \2
+	sta low_byte \2
+	lda high_byte \1
+	adc high_byte \2
+	sta high_byte \2
+	.endm
+; \1 *= 8
+	.macro div8_word
+	lda low_byte \1
+	lsr a	
+	ror high_byte \1
 
+	lsr a	
+	ror high_byte \1
+
+	lsr a	
+	ror high_byte \1
+	sta low_byte \1
+	.endm
+; \1 \= 8
+	.macro mul8_word
+	lda low_byte \1
+	asl a	
+	rol high_byte \1
+
+	asl a	
+	rol high_byte \1
+
+	asl a	
+	rol high_byte \1
+	sta low_byte \1
+	.endm	
+; word += A
+	.macro add_a_to_word
+	clc
+	adc low_byte \1
+	sta low_byte \1
+
+	lda #$00
+	adc high_byte \1
+	sta high_byte \1
+	.endm
+; val -> addr
 	.macro stw ; \1 - val, \2 - addr
 	lda low_byte \1
 	sta low_byte \2
@@ -27,7 +73,7 @@
 	lda high_byte \1
 	sta high_byte \2
 	.endm
-
+; addr = null
 	.macro stwz ; \1 - addr
 	cla
 	sta low_byte \1
@@ -37,12 +83,12 @@
 	.macro irq_disable
 	lda #\1
 	sta <_irq_flags
-	sta IRQ_DISABLE			
+	sta IRQ_DISABLE
 	.endm
 
 	.macro irq_enable
 	lda #~(\1)	
 	and <_irq_flags
 	sta <_irq_flags
-	sta IRQ_DISABLE			
+	sta IRQ_DISABLE
 	.endm

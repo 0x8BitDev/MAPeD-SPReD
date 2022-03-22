@@ -1,14 +1,14 @@
 ;###################################################################
 ;
-; Copyright 2021 0x8BitDev ( MIT license )
+; Copyright 2022 0x8BitDev ( MIT license )
 ;
 ;###################################################################
 ;
 ; The PCE hardware init entry point
 ;
 
-	.include "..\..\..\common\def.asm"
-	.include "..\..\..\common\macro.asm"
+	.include "../../../common/def.asm"
+	.include "../../../common/macro.asm"
 
 	.zp
 
@@ -28,6 +28,15 @@ _jpad3:		.ds 1
 _jpad2:		.ds 1
 _jpad1:		.ds 1
 
+__al:		.ds 1
+__ah:		.ds 1
+__bl:		.ds 1
+__bh:		.ds 1
+__cl:		.ds 1
+__ch:		.ds 1
+__dl:		.ds 1
+__dh:		.ds 1
+
 	.bss
 
 ; fast data transfer
@@ -38,12 +47,18 @@ _bdst:	.ds 2
 _blen:	.ds 2
 _tiarts	.ds 1	; $60 rts
 
+_TII:	.ds 1	; $73 tii
+_bsrci:	.ds 2
+_bdsti:	.ds 2
+_bleni:	.ds 2
+_tiirts	.ds 1	; $60 rts
+
 	.code
 	.bank 0
 	.org $fd00
 
-	.include "..\..\..\common\vdc.asm"
-	.include "..\..\..\common\jpad.asm"
+	.include "../../../common/vdc.asm"
+	.include "../../../common/jpad.asm"
 
 reset:
 	; On reset:
@@ -96,6 +111,13 @@ reset:
 	sta _TIA
 	lda #$60
 	sta _tiarts
+
+	; init TII
+
+	lda #$73
+	sta _TII
+	lda #$60
+	sta _tiirts
 
 	jmp main
 
