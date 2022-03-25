@@ -29,10 +29,13 @@ namespace SPReD
 		
 #if	DEF_NES
 		public const string	CONST_PLATFORM	= "NES";
+		public const string	CONST_PRJ_EXT	= ".sprednes";
 #elif DEF_SMS
 		public const string	CONST_PLATFORM	= "SMS";
+		public const string	CONST_PRJ_EXT	= ".spredsms";
 #elif DEF_PCE
 		public const string	CONST_PLATFORM	= "PCE";
+		public const string	CONST_PRJ_EXT	= ".spredpce";
 #else
 		public const string	CONST_PLATFORM	= "UNKNOWN";
 #endif

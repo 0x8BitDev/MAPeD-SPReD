@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2019
  * Time: 15:20
  */
@@ -38,11 +38,8 @@ namespace SPReD
 	        EnsureAssociationsSet(
 	            new FileAssociation
 	            {
-#if DEF_NES	            	
-	                Extension = ".sprednes",
-#elif DEF_SMS	                
-					Extension = ".spredsms",
-#endif
+	                Extension = utils.CONST_PRJ_EXT,
+	                
 	                ProgId = utils.CONST_PLATFORM + "_SpriteEditor",
 	                FileTypeDescription = utils.CONST_PLATFORM + " Sprite Editor File",
 	                ExecutableFilePath = filePath
