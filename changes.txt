@@ -94,6 +94,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+25.03.2022 - Disabled optimization during data packing operation
 15.03.2022 - Added color selection with the LMB+mouse move
 11.03.2022 - Added SPReD-PCE
 10.03.2022 - Added support for importing of compressed PNG images

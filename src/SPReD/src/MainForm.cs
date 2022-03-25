@@ -1046,7 +1046,7 @@ namespace SPReD
 			
 			if( SpriteList.SelectedIndices.Count > 0 )
 			{
-				if( message_box( "Are you sure you want to pack the selected sprites?\n\nWARNING: Irreversible operation for Ref sprites!\nALL unused/empty/duplicate CHRs will be lost!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to pack the selected sprites?\n\nWARNING: Irreversible operation for Ref sprites!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
 					if( !check_selected_sprites_data( "CHR Data Packing" ) )
 					{
@@ -1073,7 +1073,7 @@ namespace SPReD
 					
 					System.Windows.Forms.ListBox.SelectedIndexCollection tmp_inds_list = SpriteList.SelectedIndices;
 					
-					m_sprites_proc.CHR_bank_optimization_begin();
+//					m_sprites_proc.CHR_bank_optimization_begin();
 					
 					for( i = 0; i < tmp_inds_list.Count; i++ )
 					{
@@ -1117,7 +1117,7 @@ namespace SPReD
 								
 									--j;
 									
-									m_sprites_proc.CHR_bank_optimization( spr_1.get_CHR_data().id, SpriteList.Items, CBoxMode8x16.Checked );
+//									m_sprites_proc.CHR_bank_optimization( spr_1.get_CHR_data().id, SpriteList.Items, CBoxMode8x16.Checked );
 								}
 							}
 						}
@@ -1128,7 +1128,7 @@ namespace SPReD
 					// update data in the layout viewport
 					update_selected_sprite( false );
 					
-					m_sprites_proc.CHR_bank_optimization_end( true, "Packing Statistics" );
+//					m_sprites_proc.CHR_bank_optimization_end( true, "Packing Statistics" );
 				}
 			}
 			else
