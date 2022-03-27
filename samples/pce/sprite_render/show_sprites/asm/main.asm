@@ -19,7 +19,12 @@
 	.bank 2
 	.org $4000
 	
-	.include "sprites_test.asm"
+	.include "data/sprites_test.asm"
+
+	.bank 3
+	.org $6000
+
+chr0:	.incbin "data/sprites_test_chr0.bin"	; 8192 bytes
 
 	.code
 	.bank 0
@@ -32,13 +37,16 @@ main:
 
 	lda #$02
 	tam #02
-	
+
+	lda #$03
+	tam #03
+
 	; init data
 
 	jsr SATB_reset
 
 	; ignore CHR data loading twice
-	; because both sprites share the same CHR data
+	; because all sprites share the same CHR data
 
 	lda #SATB_FLAG_CHECK_CHR_BANK
 	sta _SATB_flags
@@ -55,28 +63,36 @@ main:
 
 	stw #SPRITES_TEST_SPR_VADDR,	<_spr_VRAM
 
-	; 1-sprite
-	; set sprite data
+	; push sprites data to SATB
 
-	stw #gigan_idle_LEFT_frame,	<_spr_data
-
-	; set sprite coordinates
-
-	stw #180, 		<_spr_pos_x
-	stw #225, 		<_spr_pos_y
-
+	set_sprite_data broomstick_RIGHT_32x16_frame, 90, 130
 	jsr SATB_push_sprite
 
-	; 2-sprite
-	; set sprite data
+	set_sprite_data ripple_fly_RIGHT_32x32_frame, 130, 130
+	jsr SATB_push_sprite
 
-	stw #tony_idle_RIGHT_frame,	<_spr_data
+	set_sprite_data jackie_chan_idle_RIGHT_32x64_frame, 170, 160
+	jsr SATB_push_sprite
 
-	; set sprite coordinates
+	set_sprite_data dryad_missile_UP_frame, 205, 130
+	jsr SATB_push_sprite
 
-	stw #120, 		<_spr_pos_x
-	stw #225, 		<_spr_pos_y
+	set_sprite_data jackie_chan_mini_16x32_0_frame, 205, 125
+	jsr SATB_push_sprite
 
+	set_sprite_data jackie_chan_mini_16x32_1_ref_frame, 237, 125
+	jsr SATB_push_sprite
+
+	set_sprite_data dryad_missile_UP_16x64_0_frame, 221, 100
+	jsr SATB_push_sprite
+
+	set_sprite_data dryad_missile_UP_16x64_1_ref_frame, 253, 100
+	jsr SATB_push_sprite
+
+	set_sprite_data gigan_idle_LEFT_frame, 180, 260
+	jsr SATB_push_sprite
+
+	set_sprite_data tony_idle_RIGHT_frame, 120, 260
 	jsr SATB_push_sprite
 
 	; load SATB data to VRAM

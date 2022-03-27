@@ -7,6 +7,13 @@
 ; Sprite render using a local SATB
 ;
 
+
+	.macro set_sprite_data
+	stw #\1,	<_spr_data
+	stw #\2,	<_spr_pos_x
+	stw #\3,	<_spr_pos_y
+	.endm
+
 	.data
 	.zp
 ; sprite render data
