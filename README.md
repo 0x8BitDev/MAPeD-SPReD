@@ -183,6 +183,7 @@ coming soon...
 ## SPReD-PCE
 
 - `./samples/pce/sprite_render/show_sprites/asm/`	- simple demo that shows test sprites exported as asm data
+- `./samples/pce/sprite_render/show_sprites/huc/`	- the same as previous, but with data exported as PCX images
 
 ---
 **Used tools:**
