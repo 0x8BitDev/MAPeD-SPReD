@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 01.02.2019
  * Time: 19:34
  */
@@ -53,7 +53,7 @@ namespace SPReD
 			// 
 			this.richTextBox.AcceptsTab = true;
 			this.richTextBox.Location = new System.Drawing.Point(5, 7);
-			this.richTextBox.MaxLength = 1024;
+			this.richTextBox.MaxLength = 8192;
 			this.richTextBox.Name = "richTextBox";
 			this.richTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
 			this.richTextBox.Size = new System.Drawing.Size(280, 215);
