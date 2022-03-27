@@ -1848,7 +1848,7 @@ namespace SPReD
 #elif DEF_SMS
 					m_sprites_proc.export_CHR( sw, filename, true, m_SMS_export_form.bpp << 3 );
 #elif DEF_PCE
-					m_sprites_proc.export_CHR( sw, filename, false );
+					m_sprites_proc.export_CHR( sw, filename, true );
 #else
 ...
 #endif

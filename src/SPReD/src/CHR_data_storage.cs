@@ -137,8 +137,10 @@ namespace SPReD
 			
 			int size = m_data.Count;
 			
-#if DEF_SMS || DEF_PCE
+#if DEF_SMS
 			string CHR_data_arr = ( _commented ? ";":"" ) + _filename + "_CHR_arr:\t";
+#elif DEF_PCE
+			string CHR_data_arr = _filename + "_CHR_arr:\t";
 #endif
 			for( int i = 0; i < size; i++ )
 			{
@@ -158,8 +160,10 @@ namespace SPReD
 ...
 #endif
 
-#if DEF_SMS || DEF_PCE
+#if DEF_SMS
 				CHR_data_arr += "\n" + ( _commented ? ";":"" ) + "\t.word " + CHR_data_size + ", " + m_data[ i ].name;
+#elif DEF_PCE
+				CHR_data_arr += "\n" + "\t.word " + CHR_data_size + ", " + m_data[ i ].name;
 #endif
 			}
 			
