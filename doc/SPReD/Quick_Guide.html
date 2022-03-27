@@ -127,9 +127,10 @@ item in the context menu or in the </SPAN></FONT><FONT FACE="Arial, sans-serif">
 Menu</B></SPAN></FONT> &rarr; <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Sprite</B></SPAN></FONT>
 &rarr; <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Create
 New</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">.
-But before you should select what sprite mode you will use (
+<P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<B>NES/SMS:</B> Before you should select what sprite mode you will use (
 check/uncheck the &ldquo;8x16&rdquo; flag in the <A HREF="#Layout|region">&ldquo;Layout&rdquo;</A>
-section ).</SPAN></SPAN></FONT></P>
+section ).</P></SPAN></SPAN></FONT></P>
 <P STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>Delete:</B></FONT></P>
@@ -557,8 +558,19 @@ for export:</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif">Images ( .png, .bmp or indexed .pcx )</FONT></P>
 </UL>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
+<P LANG="en-US" STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">
+<B>PCE:</B> The sprites 32x16/32x32/32x64 will be correctly exported to asm with the CGX/CGY flags by default.
+If you want to create a correct 16x32/16x64 sprite and export it as asm data you have to follow the next steps: </FONT></P>
+<OL STYLE="overflow: hidden">
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+	Two 16x32/16x64 sprites must be combined into one - 32x32/32x64. So you have two sprites the left and right. The same is true if you will export your sprites as PCX images for the use in HuC program.</SPAN></SPAN></FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+	The first sprite should have the following substring "16x32_0"/"16x64_0" in its name. "0" means the left sprite.</SPAN></SPAN></FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+	After that, you should create a referenced copy (Copy Ref) of the first sprite to share the same CHRs data. The second sprite should have in its name - "16x32_1"/"16x64_1". "1" means the right sprite.</SPAN></SPAN></FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">
+	When exported to asm, such sprites will be divided into two sprites with the correct CGX/CGY flags.</SPAN></SPAN></FONT></FONT></P>
+</OL>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <DIV ID="Miscellaneous" DIR="LTR"><A NAME="Miscellaneous|region"></A>
