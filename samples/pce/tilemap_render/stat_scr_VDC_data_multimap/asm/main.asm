@@ -1,6 +1,6 @@
 ;###################################################################
 ;
-; Copyright 2021 0x8BitDev ( MIT license )
+; Copyright 2022 0x8BitDev ( MIT license )
 ;
 ;###################################################################
 ;
@@ -13,7 +13,7 @@
 ;DEF_INT_NMI		; int_nmi
 
 
-	.include "..\..\..\common\init.asm"
+	.include "../../../common/init.asm"
 
 	.zp
 
@@ -35,7 +35,7 @@ data_end:
 	.bank 0
 	.org $e000
 
-	.include "..\..\..\common\tilemap_render.asm"
+	.include "../../../common/tilemap_render.asm"
 
 .if	MAP_FLAG_OFF( MAP_FLAG_MODE_STATIC_SCREENS )
 	fail 'Only MAP_FLAG_MODE_STATIC_SCREENS is supported by this sample !'
