@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 15.07.2020
  * Time: 11:29
  */
@@ -40,25 +40,26 @@ namespace SPReD
 			this.label2 = new System.Windows.Forms.Label();
 			this.NumCHRsOffset = new System.Windows.Forms.NumericUpDown();
 			this.BtnTilesOffsetInfo = new System.Windows.Forms.Button();
+			this.CheckBoxCommentCHRData = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.NumCHRsOffset)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(58, 82);
+			this.BtnOk.Location = new System.Drawing.Point(57, 95);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 1;
+			this.BtnOk.TabIndex = 6;
 			this.BtnOk.Text = "&Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(11, 13);
+			this.label1.Location = new System.Drawing.Point(81, 13);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(64, 17);
-			this.label1.TabIndex = 0;
+			this.label1.Size = new System.Drawing.Size(60, 17);
+			this.label1.TabIndex = 1;
 			this.label1.Text = "CHRs BPP:";
 			// 
 			// CBoxCHRsBpp
@@ -71,22 +72,22 @@ namespace SPReD
 									"2 bpp",
 									"3 bpp",
 									"4 bpp"});
-			this.CBoxCHRsBpp.Location = new System.Drawing.Point(81, 10);
+			this.CBoxCHRsBpp.Location = new System.Drawing.Point(12, 9);
 			this.CBoxCHRsBpp.Name = "CBoxCHRsBpp";
 			this.CBoxCHRsBpp.Size = new System.Drawing.Size(64, 21);
-			this.CBoxCHRsBpp.TabIndex = 1;
+			this.CBoxCHRsBpp.TabIndex = 0;
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(11, 42);
+			this.label2.Location = new System.Drawing.Point(81, 42);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(79, 17);
-			this.label2.TabIndex = 2;
-			this.label2.Text = "CHRs offset:";
+			this.label2.Size = new System.Drawing.Size(72, 17);
+			this.label2.TabIndex = 3;
+			this.label2.Text = "CHRs offset";
 			// 
 			// NumCHRsOffset
 			// 
-			this.NumCHRsOffset.Location = new System.Drawing.Point(81, 39);
+			this.NumCHRsOffset.Location = new System.Drawing.Point(12, 38);
 			this.NumCHRsOffset.Maximum = new decimal(new int[] {
 									255,
 									0,
@@ -94,7 +95,7 @@ namespace SPReD
 									0});
 			this.NumCHRsOffset.Name = "NumCHRsOffset";
 			this.NumCHRsOffset.Size = new System.Drawing.Size(64, 20);
-			this.NumCHRsOffset.TabIndex = 3;
+			this.NumCHRsOffset.TabIndex = 2;
 			// 
 			// BtnTilesOffsetInfo
 			// 
@@ -106,13 +107,25 @@ namespace SPReD
 			this.BtnTilesOffsetInfo.UseVisualStyleBackColor = true;
 			this.BtnTilesOffsetInfo.Click += new System.EventHandler(this.BtnTilesOffsetInfoClick);
 			// 
+			// CheckBoxCommentCHRData
+			// 
+			this.CheckBoxCommentCHRData.Checked = true;
+			this.CheckBoxCommentCHRData.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.CheckBoxCommentCHRData.Location = new System.Drawing.Point(11, 65);
+			this.CheckBoxCommentCHRData.Name = "CheckBoxCommentCHRData";
+			this.CheckBoxCommentCHRData.Size = new System.Drawing.Size(134, 17);
+			this.CheckBoxCommentCHRData.TabIndex = 5;
+			this.CheckBoxCommentCHRData.Text = "Comment  CHR data";
+			this.CheckBoxCommentCHRData.UseVisualStyleBackColor = true;
+			// 
 			// SMS_export_form
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(187, 117);
+			this.ClientSize = new System.Drawing.Size(187, 130);
 			this.Controls.Add(this.BtnTilesOffsetInfo);
+			this.Controls.Add(this.CheckBoxCommentCHRData);
 			this.Controls.Add(this.NumCHRsOffset);
 			this.Controls.Add(this.CBoxCHRsBpp);
 			this.Controls.Add(this.label2);
@@ -127,6 +140,7 @@ namespace SPReD
 			((System.ComponentModel.ISupportInitialize)(this.NumCHRsOffset)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox CheckBoxCommentCHRData;
 		private System.Windows.Forms.Button BtnTilesOffsetInfo;
 		private System.Windows.Forms.NumericUpDown NumCHRsOffset;
 		private System.Windows.Forms.Label label2;

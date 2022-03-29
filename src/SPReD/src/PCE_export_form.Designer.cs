@@ -41,6 +41,7 @@ namespace SPReD
 			this.BtnTilesOffsetInfo = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.NumPaletteSlot = new System.Windows.Forms.NumericUpDown();
+			this.CheckBoxCommentCHRData = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.NumCHRsOffset)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumPaletteSlot)).BeginInit();
 			this.SuspendLayout();
@@ -51,7 +52,7 @@ namespace SPReD
 			this.BtnOk.Location = new System.Drawing.Point(103, 84);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 4;
+			this.BtnOk.TabIndex = 7;
 			this.BtnOk.Text = "&Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			// 
@@ -60,7 +61,7 @@ namespace SPReD
 			this.label1.Location = new System.Drawing.Point(12, 22);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(69, 23);
-			this.label1.TabIndex = 1;
+			this.label1.TabIndex = 0;
 			this.label1.Text = "CHRs offset:";
 			// 
 			// NumCHRsOffset
@@ -82,7 +83,7 @@ namespace SPReD
 			this.LabelVADDR.Location = new System.Drawing.Point(148, 22);
 			this.LabelVADDR.Name = "LabelVADDR";
 			this.LabelVADDR.Size = new System.Drawing.Size(89, 23);
-			this.LabelVADDR.TabIndex = 3;
+			this.LabelVADDR.TabIndex = 2;
 			this.LabelVADDR.Text = "VADDR: #0000";
 			// 
 			// BtnTilesOffsetInfo
@@ -90,7 +91,7 @@ namespace SPReD
 			this.BtnTilesOffsetInfo.Location = new System.Drawing.Point(243, 18);
 			this.BtnTilesOffsetInfo.Name = "BtnTilesOffsetInfo";
 			this.BtnTilesOffsetInfo.Size = new System.Drawing.Size(20, 20);
-			this.BtnTilesOffsetInfo.TabIndex = 2;
+			this.BtnTilesOffsetInfo.TabIndex = 3;
 			this.BtnTilesOffsetInfo.Text = "?";
 			this.BtnTilesOffsetInfo.UseVisualStyleBackColor = true;
 			this.BtnTilesOffsetInfo.Click += new System.EventHandler(this.BtnCHRsOffsetInfoClick);
@@ -100,7 +101,7 @@ namespace SPReD
 			this.label3.Location = new System.Drawing.Point(12, 48);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(69, 23);
-			this.label3.TabIndex = 1;
+			this.label3.TabIndex = 4;
 			this.label3.Text = "Palette slot:";
 			// 
 			// NumPaletteSlot
@@ -113,9 +114,20 @@ namespace SPReD
 									0});
 			this.NumPaletteSlot.Name = "NumPaletteSlot";
 			this.NumPaletteSlot.Size = new System.Drawing.Size(61, 20);
-			this.NumPaletteSlot.TabIndex = 3;
+			this.NumPaletteSlot.TabIndex = 5;
 			this.NumPaletteSlot.ValueChanged += new System.EventHandler(this.NumCHRsOffsetChanged_Event);
 			this.NumPaletteSlot.KeyUp += new System.Windows.Forms.KeyEventHandler(this.NumCHRsOffsetChanged_Event);
+			// 
+			// CheckBoxCommentCHRData
+			// 
+			this.CheckBoxCommentCHRData.Checked = true;
+			this.CheckBoxCommentCHRData.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.CheckBoxCommentCHRData.Location = new System.Drawing.Point(148, 48);
+			this.CheckBoxCommentCHRData.Name = "CheckBoxCommentCHRData";
+			this.CheckBoxCommentCHRData.Size = new System.Drawing.Size(126, 17);
+			this.CheckBoxCommentCHRData.TabIndex = 6;
+			this.CheckBoxCommentCHRData.Text = "Comment  CHR data";
+			this.CheckBoxCommentCHRData.UseVisualStyleBackColor = true;
 			// 
 			// PCE_export_form
 			// 
@@ -123,6 +135,7 @@ namespace SPReD
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(278, 117);
+			this.Controls.Add(this.CheckBoxCommentCHRData);
 			this.Controls.Add(this.BtnTilesOffsetInfo);
 			this.Controls.Add(this.LabelVADDR);
 			this.Controls.Add(this.NumPaletteSlot);
@@ -140,6 +153,7 @@ namespace SPReD
 			((System.ComponentModel.ISupportInitialize)(this.NumPaletteSlot)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox CheckBoxCommentCHRData;
 		private System.Windows.Forms.NumericUpDown NumPaletteSlot;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button BtnTilesOffsetInfo;

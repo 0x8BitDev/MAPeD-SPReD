@@ -21,6 +21,9 @@
 	
 	.include "data/sprites_test.asm"
 
+sprites_test_CHR_arr:
+	.word 8192, chr0
+
 	.bank 3
 	.org $6000
 

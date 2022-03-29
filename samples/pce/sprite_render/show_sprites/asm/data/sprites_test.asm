@@ -9,8 +9,9 @@ SPRITES_TEST_PALETTE_SLOT	= 0
 
 
 ;chr0:	.incbin "sprites_test_chr0.bin"	; 8192 bytes
-sprites_test_CHR_arr:	
-	.word 8192, chr0
+
+;sprites_test_CHR_arr:	
+;	.word 8192, chr0
 
 
 sprites_test_palette:

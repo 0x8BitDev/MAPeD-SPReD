@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 15.07.2020
  * Time: 11:29
  */
@@ -24,6 +24,12 @@ namespace SPReD
 		public int CHRs_offset
 		{
 			get { return (int)NumCHRsOffset.Value; }
+			set {}
+		}
+		
+		public bool comment_CHR_data
+		{
+			get { return CheckBoxCommentCHRData.Checked; }
 			set {}
 		}
 		

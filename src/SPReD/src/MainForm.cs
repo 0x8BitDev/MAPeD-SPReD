@@ -1846,9 +1846,9 @@ namespace SPReD
 #if DEF_NES
 					m_sprites_proc.export_CHR( sw, filename, true, save_padding_data );
 #elif DEF_SMS
-					m_sprites_proc.export_CHR( sw, filename, true, m_SMS_export_form.bpp << 3 );
+					m_sprites_proc.export_CHR( sw, filename, m_SMS_export_form.comment_CHR_data, m_SMS_export_form.bpp << 3 );
 #elif DEF_PCE
-					m_sprites_proc.export_CHR( sw, filename, true );
+					m_sprites_proc.export_CHR( sw, filename, m_PCE_export_form.comment_CHR_data );
 #else
 ...
 #endif

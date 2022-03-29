@@ -32,6 +32,12 @@ namespace SPReD
 			get { return (int)NumPaletteSlot.Value; }
 		}
 		
+		public bool comment_CHR_data
+		{
+			get { return CheckBoxCommentCHRData.Checked; }
+			set {}
+		}
+		
 		public PCE_export_form()
 		{
 			//
