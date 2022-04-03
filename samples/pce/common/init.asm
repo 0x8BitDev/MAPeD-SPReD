@@ -37,6 +37,11 @@ __ch:		.ds 1
 __dl:		.ds 1
 __dh:		.ds 1
 
+__ax	= __al
+__bx	= __bl
+__cx	= __cl
+__dx	= __dl
+
 	.bss
 
 ; fast data transfer
@@ -143,9 +148,10 @@ irq1_vdc:
 	lda VDC_REG			; to avoid infinite IRQ1 call loop
 	sta <_vdc_sr			; save status reg data
 
-	bbr5 <_vdc_sr, .cont		; 5 bit - VBLANK
+	and #VDC_SR_VBLANK
+	beq .cont
 
-	dec <_frame_cnt
+	dec <_frame_cnt			; decrement the frames counter on VBLANK
 
 .cont:
 IFDEF	DEF_INT_IRQ1_VDC
