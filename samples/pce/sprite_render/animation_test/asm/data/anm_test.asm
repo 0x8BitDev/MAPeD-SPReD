@@ -19,7 +19,7 @@ anm_test_palette:
 anm_test_palette_end:
 
 anm_test_num_frames:
-	.byte $07
+	.byte $06
 anm_test_frames_data:
 martha_punch01_frame:
 	.word martha_punch01
@@ -44,10 +44,6 @@ martha_punch05_frame:
 martha_punch06_ref04_frame:
 	.word martha_punch06_ref04
 	.word martha_punch06_ref04_end - martha_punch06_ref04
-	.byte 0
-martha_punch07_ref03_frame:
-	.word martha_punch07_ref03
-	.word martha_punch07_ref03_end - martha_punch07_ref03
 	.byte 0
 
 
@@ -138,27 +134,27 @@ martha_punch04:
 martha_punch04_end:
 
 martha_punch05:
-	.word $FF80, $08, $190, $80
-	.word $FF90, $08, $192, $80
-	.word $FF90, $18, $194, $80
-	.word $FFA0, $FFF8, $196, $80
-	.word $FFA0, $08, $198, $80
-	.word $FFA0, $18, $19A, $80
-	.word $FFB0, $FFE8, $19C, $80
-	.word $FFB0, $FFF8, $19E, $80
-	.word $FFB0, $08, $1A0, $80
-	.word $FFC0, $FFE8, $1A2, $80
-	.word $FFC0, $FFF8, $1A4, $80
-	.word $FFC0, $08, $1A6, $80
-	.word $FFD0, $FFE8, $1A8, $80
-	.word $FFD0, $FFF8, $1AA, $80
-	.word $FFD0, $08, $1AC, $80
-	.word $FFE0, $FFE8, $1AE, $80
-	.word $FFE0, $FFF8, $1B0, $80
-	.word $FFE0, $08, $1B2, $80
-	.word $FFF0, $FFE8, $1B4, $80
-	.word $FFF0, $FFF8, $1B6, $80
-	.word $FFF0, $08, $1B8, $80
+	.word $FF81, $08, $190, $80
+	.word $FF91, $08, $192, $80
+	.word $FF91, $18, $194, $80
+	.word $FFA1, $FFF8, $196, $80
+	.word $FFA1, $08, $198, $80
+	.word $FFA1, $18, $19A, $80
+	.word $FFB1, $FFE8, $19C, $80
+	.word $FFB1, $FFF8, $19E, $80
+	.word $FFB1, $08, $1A0, $80
+	.word $FFC1, $FFE8, $1A2, $80
+	.word $FFC1, $FFF8, $1A4, $80
+	.word $FFC1, $08, $1A6, $80
+	.word $FFD1, $FFE8, $1A8, $80
+	.word $FFD1, $FFF8, $1AA, $80
+	.word $FFD1, $08, $1AC, $80
+	.word $FFE1, $FFE8, $1AE, $80
+	.word $FFE1, $FFF8, $1B0, $80
+	.word $FFE1, $08, $1B2, $80
+	.word $FFF1, $FFE8, $1B4, $80
+	.word $FFF1, $FFF8, $1B6, $80
+	.word $FFF1, $08, $1B8, $80
 martha_punch05_end:
 
 martha_punch06_ref04:
@@ -184,26 +180,4 @@ martha_punch06_ref04:
 	.word $FFF0, $FFF8, $18C, $80
 	.word $FFF0, $08, $18E, $80
 martha_punch06_ref04_end:
-
-martha_punch07_ref03:
-	.word $FFA0, $FFF8, $140, $80
-	.word $FFA0, $08, $142, $80
-	.word $FFB0, $FFE8, $144, $80
-	.word $FFB0, $FFF8, $146, $80
-	.word $FFB0, $08, $148, $80
-	.word $FFC0, $FFE8, $14A, $80
-	.word $FFC0, $FFF8, $14C, $80
-	.word $FFC0, $08, $14E, $80
-	.word $FFC0, $18, $150, $80
-	.word $FFD0, $FFE8, $152, $80
-	.word $FFD0, $FFF8, $154, $80
-	.word $FFD0, $08, $156, $80
-	.word $FFD0, $18, $158, $80
-	.word $FFE0, $FFE8, $15A, $80
-	.word $FFE0, $FFF8, $15C, $80
-	.word $FFE0, $08, $15E, $80
-	.word $FFF0, $FFE8, $160, $80
-	.word $FFF0, $FFF8, $162, $80
-	.word $FFF0, $08, $164, $80
-martha_punch07_ref03_end:
 

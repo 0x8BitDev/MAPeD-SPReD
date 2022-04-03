@@ -30,8 +30,8 @@ player_anm:	.ds 7;ANM_RAM_DATA_SIZE
 ; ROM animation data structure
 
 animation_desc:
-	.byte 7				; number of ticks to change a frame
-	.byte $07			; number of frames
+	.byte 9				; number of ticks to change a frame
+	.byte $06			; number of frames
 	.byte $00			; loop frame
 	.word anm_test_frames_data	; frames data pointer
 
