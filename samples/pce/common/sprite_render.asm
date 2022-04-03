@@ -7,15 +7,47 @@
 ; Sprite render using a local SATB
 ;
 
-
+; macroses
+;
 	.macro set_sprite_data
 	stw #\1,	<_spr_data
 	stw #\2,	<_spr_pos_x
 	stw #\3,	<_spr_pos_y
 	.endm
 
+	.macro SATB_set_state
+	SATB_get_flags
+	ora #\1
+	sta _SATB_flags
+	.endm
+
+	.macro SATB_get_state
+	lda _SATB_flags
+	and #SATB_FLAG_STATE_MASK
+	.endm
+
+	.macro SATB_get_flags
+	lda _SATB_flags
+	and #~SATB_FLAG_STATE_MASK
+	.endm
+
+	.macro SATB_set_flags
+	lda #(\1)
+	and #~SATB_FLAG_STATE_MASK
+	ora _SATB_flags
+	sta _SATB_flags
+	.endm
+
+	.macro SATB_wait_state
+.wait_loop\@:
+	SATB_get_state
+	cmp #\1
+	bne .wait_loop\@
+	.endm
+
 	.data
 	.zp
+	
 ; sprite render data
 ;
 _CHR_data_arr	.ds 2
@@ -30,11 +62,21 @@ _spr_VRAM	.ds 2
 SATB_SIZE			= 64
 
 SATB_FLAG_CHECK_CHR_BANK	= %00000001	; CHR data will be copied to VRAM once if set
+SATB_FLAG_PEND_CHR_DATA		= %00000010	; copy CHR data _bsrc/_bdst/_blen for delayed use
+
+SATB_FLAG_STATE_MASK		= %11100000
+SATB_FLAG_STATE_FREE		= %10000000	; end of screen drawing
+SATB_FLAG_STATE_BUSY		= %01000000	; SATB -> VRAM
+SATB_FLAG_STATE_READY		= %00100000	; SATB data moved to VRAM
 
 _SATB_flags	.ds 1
 _last_CHR_bank	.ds 1
 _SATB_pos	.ds 1
 _SATB		.ds 512
+
+_CHR_DATA_SRC	.ds 2
+_CHR_DATA_DST	.ds 2
+_CHR_DATA_LEN	.ds 2
 
 	.code
 
@@ -46,7 +88,6 @@ SATB_reset:
 	sta _last_CHR_bank
 
 	stz _SATB_pos
-	stz _SATB_flags
 
 	stz _SATB
 	tii _SATB, _SATB+1, 511
@@ -55,7 +96,7 @@ SATB_reset:
 
 ; *** load the local SATB to VRAM ***
 
-SATB_update:
+SATB_to_VRAM:
 
 	load_data_to_VRAM #_SATB, #VDC_VRAM_DEFAULT_SAT_ADDR, #$200
 
@@ -211,7 +252,7 @@ SATB_push_sprite:
 	; check SATB_FLAG_CHECK_CHR_BANK flag
 
 	tax
-	lda _SATB_flags
+	SATB_get_flags
 	and #SATB_FLAG_CHECK_CHR_BANK
 	beq .load_CHR_data
 
@@ -265,6 +306,22 @@ SATB_push_sprite:
 	lda <_spr_VRAM + 1
 	sta _bdst + 1
 
+	SATB_get_flags
+	and #SATB_FLAG_PEND_CHR_DATA
+	bne .copy_src_dst_len
+
 	; set VRAM write mode and perform TIA
 
 	jmp vdc_copy_to_VRAM
+
+.copy_src_dst_len:
+
+	stw _CHR_DATA_SRC, <__ax
+	stw _CHR_DATA_DST, <__bx
+	stw _CHR_DATA_LEN, <__cx
+
+	stw_zpii _bsrc, <__ax
+	stw_zpii _bdst, <__bx
+	stw_zpii _blen, <__cx
+
+	rts

@@ -1,6 +1,6 @@
 ;###################################################################
 ;
-; Copyright 2021 0x8BitDev ( MIT license )
+; Copyright 2022 0x8BitDev ( MIT license )
 ;
 ;###################################################################
 ;
@@ -72,6 +72,20 @@
 	vdc_reg_data VDC_R05_CR, _vdc_cr
 	.endm
 	
+	.macro vdc_sr_wait_set
+.wait_loop\@:
+	lda VDC_REG
+	and #\1
+	beq .wait_loop\@
+	.endm
+
+	.macro vdc_sr_wait_res
+.wait_loop\@:
+	lda VDC_REG
+	and #\1
+	bne .wait_loop\@
+	.endm
+
 	.macro vsync
 .if ( \# > 0 )
 	lda #\1
@@ -88,7 +102,7 @@
 
 ; --- set border color ---
 ;
-; IN: 	_data - 16 bit color index
+; IN: 	_ax - 16 bit color index
 ;
 
 vce_border_color:
@@ -99,7 +113,7 @@ vce_border_color:
 
 	; set color	
 
-	stw _data, VCE_WRITE_DATA
+	stw <__ax, VCE_WRITE_DATA
 
 	rts
 

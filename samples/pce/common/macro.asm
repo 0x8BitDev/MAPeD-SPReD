@@ -29,6 +29,16 @@
 	adc high_byte \2
 	sta high_byte \2
 	.endm
+; word += A
+	.macro add_a_to_word
+	clc
+	adc low_byte \1
+	sta low_byte \1
+
+	lda #$00
+	adc high_byte \1
+	sta high_byte \1
+	.endm
 ; \1 *= 8
 	.macro div8_word
 	lda low_byte \1
@@ -55,23 +65,22 @@
 	rol high_byte \1
 	sta low_byte \1
 	.endm	
-; word += A
-	.macro add_a_to_word
-	clc
-	adc low_byte \1
-	sta low_byte \1
-
-	lda #$00
-	adc high_byte \1
-	sta high_byte \1
-	.endm
-; val -> addr
+; val -> *addr
 	.macro stw ; \1 - val, \2 - addr
 	lda low_byte \1
 	sta low_byte \2
 
 	lda high_byte \1
 	sta high_byte \2
+	.endm
+; val -> &(*addr) zpii - zero-page indexed indirect addressing
+	.macro stw_zpii ; \1 - val, \2 - addr
+	cly
+	lda low_byte \1
+	sta [\2], y
+	iny
+	lda high_byte \1
+	sta [\2], y
 	.endm
 ; addr = null
 	.macro stwz ; \1 - addr
