@@ -4,7 +4,7 @@
 ;
 ;###################################################################
 ;
-; DESC: Simple example that shows test sprites
+; DESC: Simple demo that shows test sprites.
 ;
 
 ;DEF_INT_IRQ2		; int_irq2
@@ -100,11 +100,11 @@ main:
 
 	; load SATB data to VRAM
 
-	jsr SATB_update
+	jsr SATB_to_VRAM
 
-	; enable VRAM -> SATB DMA each VBLANK
+	; load VRAM-SATB to the inner SATB
 
-	vdc_reg_data VDC_R0F_DCR,	#VDC_DCR_DSR
+	vdc_reg_data VDC_R13_DVSSR,	#VDC_VRAM_DEFAULT_SAT_ADDR
 
 	; show the sprites
 
