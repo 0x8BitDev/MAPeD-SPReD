@@ -4,7 +4,7 @@
 :#
 :################################################
 
-@set OutFile=palyer_cntrl_asm
+@set OutFile=player_cntrl_asm
 @set OutDir=..\..\..\bin\
 
 @del %OutDir%%OutFile%.pce

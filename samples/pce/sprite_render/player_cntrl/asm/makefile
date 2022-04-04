@@ -4,7 +4,7 @@
 #
 ################################################
 
-out_file = palyer_cntrl_asm
+out_file = player_cntrl_asm
 out_dir = ../../../bin/
 
 EMU = mednafen
