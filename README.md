@@ -185,6 +185,7 @@ coming soon...
 - `./samples/pce/sprite_render/show_sprites/asm/`	- simple demo that shows test sprites exported as asm data
 - `./samples/pce/sprite_render/show_sprites/huc/`	- the same as previous, but with data exported as PCX images
 - `./samples/pce/sprite_render/animation_test/asm/`	- simple animation demo with big sprites
+- `./samples/pce/sprite_render/player_cntrl/asm/`	- simple character controller: idle, move, kick; Controls: LEFT,RIGHT,UP
 
 ---
 **Used tools:**

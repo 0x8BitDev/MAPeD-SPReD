@@ -94,6 +94,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+04.04.2022 - PCE: added native samples (asm/HuC)
 25.03.2022 - Disabled optimization during data packing operation
 15.03.2022 - Added color selection with the LMB+mouse move
 11.03.2022 - Added SPReD-PCE

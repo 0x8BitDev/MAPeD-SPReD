@@ -39,7 +39,19 @@
 	adc high_byte \1
 	sta high_byte \1
 	.endm
-; \1 *= 8
+; word -= A
+	.macro sub_a_from_word
+	sta <__al
+	sec
+	lda low_byte \1
+	sbc <__al
+	sta low_byte \1
+
+	lda high_byte \1
+	sbc #$00
+	sta high_byte \1
+	.endm
+; \1 /= 8
 	.macro div8_word
 	lda low_byte \1
 	lsr a	
@@ -52,7 +64,7 @@
 	ror high_byte \1
 	sta low_byte \1
 	.endm
-; \1 \= 8
+; \1 *= 8
 	.macro mul8_word
 	lda low_byte \1
 	asl a	
