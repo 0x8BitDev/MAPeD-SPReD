@@ -71,77 +71,77 @@ tony_idle_RIGHT_frame:
 	; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc
 
 jackie_chan_idle_RIGHT_32x64:
-	.word $FFC0, $FFF0, $100, $3100
+	.word $FFC0, $FFF0, $100, $3180
 jackie_chan_idle_RIGHT_32x64_end:
 
 dryad_missile_UP_16x64_0:
-	.word $00, $FFF8, $110, $3005
+	.word $00, $FFF8, $110, $3085
 dryad_missile_UP_16x64_0_end:
 
 dryad_missile_UP_16x64_1_ref:
-	.word $00, $FFF8, $112, $3005
+	.word $00, $FFF8, $112, $3085
 dryad_missile_UP_16x64_1_ref_end:
 
 jackie_chan_mini_16x32_0:
-	.word $FFE0, $FFF8, $120, $1000
+	.word $FFE0, $FFF8, $120, $1080
 jackie_chan_mini_16x32_0_end:
 
 jackie_chan_mini_16x32_1_ref:
-	.word $FFE0, $FFF8, $122, $1000
+	.word $FFE0, $FFF8, $122, $1080
 jackie_chan_mini_16x32_1_ref_end:
 
 ripple_fly_RIGHT_32x32:
-	.word $FFF0, $FFF0, $128, $1101
+	.word $FFF0, $FFF0, $128, $1181
 ripple_fly_RIGHT_32x32_end:
 
 broomstick_RIGHT_32x16:
-	.word $FFF8, $FFF0, $130, $102
+	.word $FFF8, $FFF0, $130, $182
 broomstick_RIGHT_32x16_end:
 
 dryad_missile_UP:
-	.word $00, $FFF8, $134, $05
-	.word $10, $FFF8, $136, $05
+	.word $00, $FFF8, $134, $85
+	.word $10, $FFF8, $136, $85
 dryad_missile_UP_end:
 
 gigan_idle_LEFT:
-	.word $FFA0, $FFF6, $138, $03
-	.word $FFB0, $FFF2, $13A, $03
-	.word $FFB0, $02, $13C, $03
-	.word $FFB0, $12, $13E, $03
-	.word $FFC0, $FFE4, $140, $03
-	.word $FFC0, $FFF4, $142, $03
-	.word $FFC0, $04, $144, $03
-	.word $FFC0, $14, $146, $03
-	.word $FFD0, $FFE4, $148, $03
-	.word $FFD0, $FFF4, $14A, $03
-	.word $FFD0, $04, $14C, $03
-	.word $FFD0, $14, $14E, $03
-	.word $FFD0, $26, $150, $03
-	.word $FFD0, $36, $152, $03
-	.word $FFE0, $FFF6, $154, $03
-	.word $FFE0, $06, $156, $03
-	.word $FFE0, $16, $158, $03
-	.word $FFE0, $26, $15A, $03
-	.word $FFE0, $36, $15C, $03
-	.word $FFF0, $FFF0, $15E, $03
-	.word $FFF0, $02, $160, $03
-	.word $FFF0, $12, $162, $03
+	.word $FFA0, $FFF6, $138, $83
+	.word $FFB0, $FFF2, $13A, $83
+	.word $FFB0, $02, $13C, $83
+	.word $FFB0, $12, $13E, $83
+	.word $FFC0, $FFE4, $140, $83
+	.word $FFC0, $FFF4, $142, $83
+	.word $FFC0, $04, $144, $83
+	.word $FFC0, $14, $146, $83
+	.word $FFD0, $FFE4, $148, $83
+	.word $FFD0, $FFF4, $14A, $83
+	.word $FFD0, $04, $14C, $83
+	.word $FFD0, $14, $14E, $83
+	.word $FFD0, $26, $150, $83
+	.word $FFD0, $36, $152, $83
+	.word $FFE0, $FFF6, $154, $83
+	.word $FFE0, $06, $156, $83
+	.word $FFE0, $16, $158, $83
+	.word $FFE0, $26, $15A, $83
+	.word $FFE0, $36, $15C, $83
+	.word $FFF0, $FFF0, $15E, $83
+	.word $FFF0, $02, $160, $83
+	.word $FFF0, $12, $162, $83
 gigan_idle_LEFT_end:
 
 tony_idle_RIGHT:
-	.word $FFA0, $FFF4, $164, $804
-	.word $FFB0, $05, $166, $804
-	.word $FFB0, $FFF5, $168, $804
-	.word $FFB0, $FFE5, $16A, $804
-	.word $FFC0, $05, $16C, $804
-	.word $FFC0, $FFF5, $16E, $804
-	.word $FFC0, $FFE5, $170, $804
-	.word $FFD0, $FFFD, $172, $804
-	.word $FFD0, $FFED, $174, $804
-	.word $FFE0, $FFFF, $176, $804
-	.word $FFE0, $FFEC, $178, $804
-	.word $FFF0, $02, $17A, $804
-	.word $FFF0, $FFF2, $17C, $804
-	.word $FFF0, $FFE2, $17E, $804
+	.word $FFA0, $FFF4, $164, $884
+	.word $FFB0, $05, $166, $884
+	.word $FFB0, $FFF5, $168, $884
+	.word $FFB0, $FFE5, $16A, $884
+	.word $FFC0, $05, $16C, $884
+	.word $FFC0, $FFF5, $16E, $884
+	.word $FFC0, $FFE5, $170, $884
+	.word $FFD0, $FFFD, $172, $884
+	.word $FFD0, $FFED, $174, $884
+	.word $FFE0, $FFFF, $176, $884
+	.word $FFE0, $FFEC, $178, $884
+	.word $FFF0, $02, $17A, $884
+	.word $FFF0, $FFF2, $17C, $884
+	.word $FFF0, $FFE2, $17E, $884
 tony_idle_RIGHT_end:
 
