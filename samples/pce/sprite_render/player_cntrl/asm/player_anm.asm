@@ -44,10 +44,10 @@ anm_player_kick_left:
 
 	.include "data/player_gfx.asm"
 
-frames_player_idle_right	= muscle_power_idle01_RIGHT_frame
-frames_player_walk_right	= muscle_power_walk01_RIGHT_frame
-frames_player_kick_right	= muscle_power_kick01_RIGHT_frame
+frames_player_idle_right	= mpwr_idle01_RIGHT_frame
+frames_player_walk_right	= mpwr_walk01_RIGHT_frame
+frames_player_kick_right	= mpwr_kick01_RIGHT_frame
 
-frames_player_idle_left		= muscle_power_idle01_LEFT_frame
-frames_player_walk_left		= muscle_power_walk01_LEFT_frame
-frames_player_kick_left		= muscle_power_kick01_LEFT_frame
+frames_player_idle_left		= mpwr_idle01_LEFT_frame
+frames_player_walk_left		= mpwr_walk01_LEFT_frame
+frames_player_kick_left		= mpwr_kick01_LEFT_frame

@@ -39,107 +39,107 @@ player_gfx_palette_end:
 player_gfx_num_frames:
 	.byte $18
 player_gfx_frames_data:
-muscle_power_idle01_RIGHT_frame:
-	.word muscle_power_idle01_RIGHT
-	.word muscle_power_idle01_RIGHT_end - muscle_power_idle01_RIGHT	; data size
+mpwr_idle01_RIGHT_frame:
+	.word mpwr_idle01_RIGHT
+	.word mpwr_idle01_RIGHT_end - mpwr_idle01_RIGHT	; data size
 	.byte 6		; CHR bank index (chr6)
-muscle_power_walk01_RIGHT_frame:
-	.word muscle_power_walk01_RIGHT
-	.word muscle_power_walk01_RIGHT_end - muscle_power_walk01_RIGHT
+mpwr_walk01_RIGHT_frame:
+	.word mpwr_walk01_RIGHT
+	.word mpwr_walk01_RIGHT_end - mpwr_walk01_RIGHT
 	.byte 0
-muscle_power_walk02_RIGHT_frame:
-	.word muscle_power_walk02_RIGHT
-	.word muscle_power_walk02_RIGHT_end - muscle_power_walk02_RIGHT
+mpwr_walk02_RIGHT_frame:
+	.word mpwr_walk02_RIGHT
+	.word mpwr_walk02_RIGHT_end - mpwr_walk02_RIGHT
 	.byte 1
-muscle_power_walk03_RIGHT_frame:
-	.word muscle_power_walk03_RIGHT
-	.word muscle_power_walk03_RIGHT_end - muscle_power_walk03_RIGHT
+mpwr_walk03_RIGHT_frame:
+	.word mpwr_walk03_RIGHT
+	.word mpwr_walk03_RIGHT_end - mpwr_walk03_RIGHT
 	.byte 2
-muscle_power_walk04_RIGHT_frame:
-	.word muscle_power_walk04_RIGHT
-	.word muscle_power_walk04_RIGHT_end - muscle_power_walk04_RIGHT
+mpwr_walk04_RIGHT_frame:
+	.word mpwr_walk04_RIGHT
+	.word mpwr_walk04_RIGHT_end - mpwr_walk04_RIGHT
 	.byte 3
-muscle_power_walk05_RIGHT_frame:
-	.word muscle_power_walk05_RIGHT
-	.word muscle_power_walk05_RIGHT_end - muscle_power_walk05_RIGHT
+mpwr_walk05_RIGHT_frame:
+	.word mpwr_walk05_RIGHT
+	.word mpwr_walk05_RIGHT_end - mpwr_walk05_RIGHT
 	.byte 4
-muscle_power_walk06_RIGHT_frame:
-	.word muscle_power_walk06_RIGHT
-	.word muscle_power_walk06_RIGHT_end - muscle_power_walk06_RIGHT
+mpwr_walk06_RIGHT_frame:
+	.word mpwr_walk06_RIGHT
+	.word mpwr_walk06_RIGHT_end - mpwr_walk06_RIGHT
 	.byte 5
-muscle_power_kick01_RIGHT_frame:
-	.word muscle_power_kick01_RIGHT
-	.word muscle_power_kick01_RIGHT_end - muscle_power_kick01_RIGHT
+mpwr_kick01_RIGHT_frame:
+	.word mpwr_kick01_RIGHT
+	.word mpwr_kick01_RIGHT_end - mpwr_kick01_RIGHT
 	.byte 7
-muscle_power_kick02_RIGHT_frame:
-	.word muscle_power_kick02_RIGHT
-	.word muscle_power_kick02_RIGHT_end - muscle_power_kick02_RIGHT
+mpwr_kick02_RIGHT_frame:
+	.word mpwr_kick02_RIGHT
+	.word mpwr_kick02_RIGHT_end - mpwr_kick02_RIGHT
 	.byte 8
-muscle_power_kick03_RIGHT_frame:
-	.word muscle_power_kick03_RIGHT
-	.word muscle_power_kick03_RIGHT_end - muscle_power_kick03_RIGHT
+mpwr_kick03_RIGHT_frame:
+	.word mpwr_kick03_RIGHT
+	.word mpwr_kick03_RIGHT_end - mpwr_kick03_RIGHT
 	.byte 9
-muscle_power_kick04_ref02_RIGHT_frame:
-	.word muscle_power_kick04_ref02_RIGHT
-	.word muscle_power_kick04_ref02_RIGHT_end - muscle_power_kick04_ref02_RIGHT
+mpwr_kick04_ref02_RIGHT_frame:
+	.word mpwr_kick04_ref02_RIGHT
+	.word mpwr_kick04_ref02_RIGHT_end - mpwr_kick04_ref02_RIGHT
 	.byte 8
-muscle_power_kick05_ref01_RIGHT_frame:
-	.word muscle_power_kick05_ref01_RIGHT
-	.word muscle_power_kick05_ref01_RIGHT_end - muscle_power_kick05_ref01_RIGHT
+mpwr_kick05_ref01_RIGHT_frame:
+	.word mpwr_kick05_ref01_RIGHT
+	.word mpwr_kick05_ref01_RIGHT_end - mpwr_kick05_ref01_RIGHT
 	.byte 7
-muscle_power_idle01_LEFT_frame:
-	.word muscle_power_idle01_LEFT
-	.word muscle_power_idle01_LEFT_end - muscle_power_idle01_LEFT
+mpwr_idle01_LEFT_frame:
+	.word mpwr_idle01_LEFT
+	.word mpwr_idle01_LEFT_end - mpwr_idle01_LEFT
 	.byte 6
-muscle_power_walk01_LEFT_frame:
-	.word muscle_power_walk01_LEFT
-	.word muscle_power_walk01_LEFT_end - muscle_power_walk01_LEFT
+mpwr_walk01_LEFT_frame:
+	.word mpwr_walk01_LEFT
+	.word mpwr_walk01_LEFT_end - mpwr_walk01_LEFT
 	.byte 0
-muscle_power_walk02_LEFT_frame:
-	.word muscle_power_walk02_LEFT
-	.word muscle_power_walk02_LEFT_end - muscle_power_walk02_LEFT
+mpwr_walk02_LEFT_frame:
+	.word mpwr_walk02_LEFT
+	.word mpwr_walk02_LEFT_end - mpwr_walk02_LEFT
 	.byte 1
-muscle_power_walk03_LEFT_frame:
-	.word muscle_power_walk03_LEFT
-	.word muscle_power_walk03_LEFT_end - muscle_power_walk03_LEFT
+mpwr_walk03_LEFT_frame:
+	.word mpwr_walk03_LEFT
+	.word mpwr_walk03_LEFT_end - mpwr_walk03_LEFT
 	.byte 2
-muscle_power_walk04_LEFT_frame:
-	.word muscle_power_walk04_LEFT
-	.word muscle_power_walk04_LEFT_end - muscle_power_walk04_LEFT
+mpwr_walk04_LEFT_frame:
+	.word mpwr_walk04_LEFT
+	.word mpwr_walk04_LEFT_end - mpwr_walk04_LEFT
 	.byte 3
-muscle_power_walk05_LEFT_frame:
-	.word muscle_power_walk05_LEFT
-	.word muscle_power_walk05_LEFT_end - muscle_power_walk05_LEFT
+mpwr_walk05_LEFT_frame:
+	.word mpwr_walk05_LEFT
+	.word mpwr_walk05_LEFT_end - mpwr_walk05_LEFT
 	.byte 4
-muscle_power_walk06_LEFT_frame:
-	.word muscle_power_walk06_LEFT
-	.word muscle_power_walk06_LEFT_end - muscle_power_walk06_LEFT
+mpwr_walk06_LEFT_frame:
+	.word mpwr_walk06_LEFT
+	.word mpwr_walk06_LEFT_end - mpwr_walk06_LEFT
 	.byte 5
-muscle_power_kick01_LEFT_frame:
-	.word muscle_power_kick01_LEFT
-	.word muscle_power_kick01_LEFT_end - muscle_power_kick01_LEFT
+mpwr_kick01_LEFT_frame:
+	.word mpwr_kick01_LEFT
+	.word mpwr_kick01_LEFT_end - mpwr_kick01_LEFT
 	.byte 7
-muscle_power_kick02_LEFT_frame:
-	.word muscle_power_kick02_LEFT
-	.word muscle_power_kick02_LEFT_end - muscle_power_kick02_LEFT
+mpwr_kick02_LEFT_frame:
+	.word mpwr_kick02_LEFT
+	.word mpwr_kick02_LEFT_end - mpwr_kick02_LEFT
 	.byte 8
-muscle_power_kick03_LEFT_frame:
-	.word muscle_power_kick03_LEFT
-	.word muscle_power_kick03_LEFT_end - muscle_power_kick03_LEFT
+mpwr_kick03_LEFT_frame:
+	.word mpwr_kick03_LEFT
+	.word mpwr_kick03_LEFT_end - mpwr_kick03_LEFT
 	.byte 9
-muscle_power_kick04_ref02_LEFT_frame:
-	.word muscle_power_kick04_ref02_LEFT
-	.word muscle_power_kick04_ref02_LEFT_end - muscle_power_kick04_ref02_LEFT
+mpwr_kick04_ref02_LEFT_frame:
+	.word mpwr_kick04_ref02_LEFT
+	.word mpwr_kick04_ref02_LEFT_end - mpwr_kick04_ref02_LEFT
 	.byte 8
-muscle_power_kick05_ref01_LEFT_frame:
-	.word muscle_power_kick05_ref01_LEFT
-	.word muscle_power_kick05_ref01_LEFT_end - muscle_power_kick05_ref01_LEFT
+mpwr_kick05_ref01_LEFT_frame:
+	.word mpwr_kick05_ref01_LEFT
+	.word mpwr_kick05_ref01_LEFT_end - mpwr_kick05_ref01_LEFT
 	.byte 7
 
 
 	; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc
 
-muscle_power_idle01_RIGHT:
+mpwr_idle01_RIGHT:
 	.word $FF9E, $0B, $100, $880
 	.word $FF9E, $FFFB, $102, $880
 	.word $FF9E, $FFEB, $104, $880
@@ -160,9 +160,9 @@ muscle_power_idle01_RIGHT:
 	.word $FFEE, $FFEB, $122, $880
 	.word $FFEE, $FFDB, $124, $880
 	.word $FFFE, $FFE4, $126, $880
-muscle_power_idle01_RIGHT_end:
+mpwr_idle01_RIGHT_end:
 
-muscle_power_walk01_RIGHT:
+mpwr_walk01_RIGHT:
 	.word $FF97, $03, $100, $880
 	.word $FF97, $FFF3, $102, $880
 	.word $FF97, $FFE3, $104, $880
@@ -186,9 +186,9 @@ muscle_power_walk01_RIGHT:
 	.word $FFF7, $05, $128, $880
 	.word $FFF7, $FFF5, $12A, $880
 	.word $FFF7, $FFDC, $12C, $880
-muscle_power_walk01_RIGHT_end:
+mpwr_walk01_RIGHT_end:
 
-muscle_power_walk02_RIGHT:
+mpwr_walk02_RIGHT:
 	.word $FF96, $02, $100, $880
 	.word $FF96, $FFF2, $102, $880
 	.word $FFA6, $12, $104, $880
@@ -207,9 +207,9 @@ muscle_power_walk02_RIGHT:
 	.word $FFF6, $FFFE, $11E, $880
 	.word $FFF6, $FFEE, $120, $880
 	.word $FFF6, $FFDE, $122, $880
-muscle_power_walk02_RIGHT_end:
+mpwr_walk02_RIGHT_end:
 
-muscle_power_walk03_RIGHT:
+mpwr_walk03_RIGHT:
 	.word $FF93, $02, $100, $880
 	.word $FF93, $FFF2, $102, $880
 	.word $FFA3, $10, $104, $880
@@ -229,9 +229,9 @@ muscle_power_walk03_RIGHT:
 	.word $FFE3, $FFE6, $120, $880
 	.word $FFF3, $FFE7, $122, $880
 	.word $FFF3, $FFD7, $124, $880
-muscle_power_walk03_RIGHT_end:
+mpwr_walk03_RIGHT_end:
 
-muscle_power_walk04_RIGHT:
+mpwr_walk04_RIGHT:
 	.word $FF97, $02, $100, $880
 	.word $FF97, $FFF2, $102, $880
 	.word $FFA7, $12, $104, $880
@@ -255,9 +255,9 @@ muscle_power_walk04_RIGHT:
 	.word $FFF7, $0D, $128, $880
 	.word $FFF7, $FFFD, $12A, $880
 	.word $FFF7, $FFD7, $12C, $880
-muscle_power_walk04_RIGHT_end:
+mpwr_walk04_RIGHT_end:
 
-muscle_power_walk05_RIGHT:
+mpwr_walk05_RIGHT:
 	.word $FF9A, $02, $100, $880
 	.word $FF9A, $FFF2, $102, $880
 	.word $FFAA, $0E, $104, $880
@@ -278,9 +278,9 @@ muscle_power_walk05_RIGHT:
 	.word $FFFA, $02, $122, $880
 	.word $FFFA, $FFF2, $124, $880
 	.word $FFFA, $FFDA, $126, $880
-muscle_power_walk05_RIGHT_end:
+mpwr_walk05_RIGHT_end:
 
-muscle_power_walk06_RIGHT:
+mpwr_walk06_RIGHT:
 	.word $FF98, $02, $100, $880
 	.word $FF98, $FFF2, $102, $880
 	.word $FFA8, $12, $104, $880
@@ -299,9 +299,9 @@ muscle_power_walk06_RIGHT:
 	.word $FFE8, $FFEE, $11E, $880
 	.word $FFF8, $FFF0, $120, $880
 	.word $FFF8, $FFE0, $122, $880
-muscle_power_walk06_RIGHT_end:
+mpwr_walk06_RIGHT_end:
 
-muscle_power_kick01_RIGHT:
+mpwr_kick01_RIGHT:
 	.word $FF98, $15, $100, $880
 	.word $FF98, $05, $102, $880
 	.word $FF98, $FFF5, $104, $880
@@ -327,9 +327,9 @@ muscle_power_kick01_RIGHT:
 	.word $FFF8, $0B, $12C, $880
 	.word $FFF8, $FFFB, $12E, $880
 	.word $FFF8, $FFE1, $130, $880
-muscle_power_kick01_RIGHT_end:
+mpwr_kick01_RIGHT_end:
 
-muscle_power_kick02_RIGHT:
+mpwr_kick02_RIGHT:
 	.word $FF93, $FFFD, $100, $880
 	.word $FF93, $FFED, $102, $880
 	.word $FFA3, $0E, $104, $880
@@ -347,9 +347,9 @@ muscle_power_kick02_RIGHT:
 	.word $FFE3, $FFF0, $11C, $880
 	.word $FFF3, $0B, $11E, $880
 	.word $FFF3, $FFFB, $120, $880
-muscle_power_kick02_RIGHT_end:
+mpwr_kick02_RIGHT_end:
 
-muscle_power_kick03_RIGHT:
+mpwr_kick03_RIGHT:
 	.word $FF9A, $33, $100, $880
 	.word $FF9A, $18, $102, $880
 	.word $FF9A, $08, $104, $880
@@ -375,9 +375,9 @@ muscle_power_kick03_RIGHT:
 	.word $FFEA, $FFFE, $12C, $880
 	.word $FFFA, $0B, $12E, $880
 	.word $FFFA, $FFFB, $130, $880
-muscle_power_kick03_RIGHT_end:
+mpwr_kick03_RIGHT_end:
 
-muscle_power_kick04_ref02_RIGHT:
+mpwr_kick04_ref02_RIGHT:
 	.word $FF93, $FFFD, $100, $880
 	.word $FF93, $FFED, $102, $880
 	.word $FFA3, $0E, $104, $880
@@ -395,9 +395,9 @@ muscle_power_kick04_ref02_RIGHT:
 	.word $FFE3, $FFF0, $11C, $880
 	.word $FFF3, $0B, $11E, $880
 	.word $FFF3, $FFFB, $120, $880
-muscle_power_kick04_ref02_RIGHT_end:
+mpwr_kick04_ref02_RIGHT_end:
 
-muscle_power_kick05_ref01_RIGHT:
+mpwr_kick05_ref01_RIGHT:
 	.word $FF98, $15, $100, $880
 	.word $FF98, $05, $102, $880
 	.word $FF98, $FFF5, $104, $880
@@ -423,9 +423,9 @@ muscle_power_kick05_ref01_RIGHT:
 	.word $FFF8, $0B, $12C, $880
 	.word $FFF8, $FFFB, $12E, $880
 	.word $FFF8, $FFE1, $130, $880
-muscle_power_kick05_ref01_RIGHT_end:
+mpwr_kick05_ref01_RIGHT_end:
 
-muscle_power_idle01_LEFT:
+mpwr_idle01_LEFT:
 	.word $FF9E, $FFE5, $100, $80
 	.word $FF9E, $FFF5, $102, $80
 	.word $FF9E, $05, $104, $80
@@ -446,9 +446,9 @@ muscle_power_idle01_LEFT:
 	.word $FFEE, $05, $122, $80
 	.word $FFEE, $15, $124, $80
 	.word $FFFE, $0C, $126, $80
-muscle_power_idle01_LEFT_end:
+mpwr_idle01_LEFT_end:
 
-muscle_power_walk01_LEFT:
+mpwr_walk01_LEFT:
 	.word $FF97, $FFED, $100, $80
 	.word $FF97, $FFFD, $102, $80
 	.word $FF97, $0D, $104, $80
@@ -472,9 +472,9 @@ muscle_power_walk01_LEFT:
 	.word $FFF7, $FFEB, $128, $80
 	.word $FFF7, $FFFB, $12A, $80
 	.word $FFF7, $14, $12C, $80
-muscle_power_walk01_LEFT_end:
+mpwr_walk01_LEFT_end:
 
-muscle_power_walk02_LEFT:
+mpwr_walk02_LEFT:
 	.word $FF96, $FFEE, $100, $80
 	.word $FF96, $FFFE, $102, $80
 	.word $FFA6, $FFDE, $104, $80
@@ -493,9 +493,9 @@ muscle_power_walk02_LEFT:
 	.word $FFF6, $FFF2, $11E, $80
 	.word $FFF6, $02, $120, $80
 	.word $FFF6, $12, $122, $80
-muscle_power_walk02_LEFT_end:
+mpwr_walk02_LEFT_end:
 
-muscle_power_walk03_LEFT:
+mpwr_walk03_LEFT:
 	.word $FF93, $FFEE, $100, $80
 	.word $FF93, $FFFE, $102, $80
 	.word $FFA3, $FFE0, $104, $80
@@ -515,9 +515,9 @@ muscle_power_walk03_LEFT:
 	.word $FFE3, $0A, $120, $80
 	.word $FFF3, $09, $122, $80
 	.word $FFF3, $19, $124, $80
-muscle_power_walk03_LEFT_end:
+mpwr_walk03_LEFT_end:
 
-muscle_power_walk04_LEFT:
+mpwr_walk04_LEFT:
 	.word $FF97, $FFEE, $100, $80
 	.word $FF97, $FFFE, $102, $80
 	.word $FFA7, $FFDE, $104, $80
@@ -541,9 +541,9 @@ muscle_power_walk04_LEFT:
 	.word $FFF7, $FFE3, $128, $80
 	.word $FFF7, $FFF3, $12A, $80
 	.word $FFF7, $19, $12C, $80
-muscle_power_walk04_LEFT_end:
+mpwr_walk04_LEFT_end:
 
-muscle_power_walk05_LEFT:
+mpwr_walk05_LEFT:
 	.word $FF9A, $FFEE, $100, $80
 	.word $FF9A, $FFFE, $102, $80
 	.word $FFAA, $FFE2, $104, $80
@@ -564,9 +564,9 @@ muscle_power_walk05_LEFT:
 	.word $FFFA, $FFEE, $122, $80
 	.word $FFFA, $FFFE, $124, $80
 	.word $FFFA, $16, $126, $80
-muscle_power_walk05_LEFT_end:
+mpwr_walk05_LEFT_end:
 
-muscle_power_walk06_LEFT:
+mpwr_walk06_LEFT:
 	.word $FF98, $FFEE, $100, $80
 	.word $FF98, $FFFE, $102, $80
 	.word $FFA8, $FFDE, $104, $80
@@ -585,9 +585,9 @@ muscle_power_walk06_LEFT:
 	.word $FFE8, $02, $11E, $80
 	.word $FFF8, $00, $120, $80
 	.word $FFF8, $10, $122, $80
-muscle_power_walk06_LEFT_end:
+mpwr_walk06_LEFT_end:
 
-muscle_power_kick01_LEFT:
+mpwr_kick01_LEFT:
 	.word $FF98, $FFDB, $100, $80
 	.word $FF98, $FFEB, $102, $80
 	.word $FF98, $FFFB, $104, $80
@@ -613,9 +613,9 @@ muscle_power_kick01_LEFT:
 	.word $FFF8, $FFE5, $12C, $80
 	.word $FFF8, $FFF5, $12E, $80
 	.word $FFF8, $0F, $130, $80
-muscle_power_kick01_LEFT_end:
+mpwr_kick01_LEFT_end:
 
-muscle_power_kick02_LEFT:
+mpwr_kick02_LEFT:
 	.word $FF93, $FFF3, $100, $80
 	.word $FF93, $03, $102, $80
 	.word $FFA3, $FFE2, $104, $80
@@ -633,9 +633,9 @@ muscle_power_kick02_LEFT:
 	.word $FFE3, $00, $11C, $80
 	.word $FFF3, $FFE5, $11E, $80
 	.word $FFF3, $FFF5, $120, $80
-muscle_power_kick02_LEFT_end:
+mpwr_kick02_LEFT_end:
 
-muscle_power_kick03_LEFT:
+mpwr_kick03_LEFT:
 	.word $FF9A, $FFBD, $100, $80
 	.word $FF9A, $FFD8, $102, $80
 	.word $FF9A, $FFE8, $104, $80
@@ -661,9 +661,9 @@ muscle_power_kick03_LEFT:
 	.word $FFEA, $FFF2, $12C, $80
 	.word $FFFA, $FFE5, $12E, $80
 	.word $FFFA, $FFF5, $130, $80
-muscle_power_kick03_LEFT_end:
+mpwr_kick03_LEFT_end:
 
-muscle_power_kick04_ref02_LEFT:
+mpwr_kick04_ref02_LEFT:
 	.word $FF93, $FFF3, $100, $80
 	.word $FF93, $03, $102, $80
 	.word $FFA3, $FFE2, $104, $80
@@ -681,9 +681,9 @@ muscle_power_kick04_ref02_LEFT:
 	.word $FFE3, $00, $11C, $80
 	.word $FFF3, $FFE5, $11E, $80
 	.word $FFF3, $FFF5, $120, $80
-muscle_power_kick04_ref02_LEFT_end:
+mpwr_kick04_ref02_LEFT_end:
 
-muscle_power_kick05_ref01_LEFT:
+mpwr_kick05_ref01_LEFT:
 	.word $FF98, $FFDB, $100, $80
 	.word $FF98, $FFEB, $102, $80
 	.word $FF98, $FFFB, $104, $80
@@ -709,5 +709,5 @@ muscle_power_kick05_ref01_LEFT:
 	.word $FFF8, $FFE5, $12C, $80
 	.word $FFF8, $FFF5, $12E, $80
 	.word $FFF8, $0F, $130, $80
-muscle_power_kick05_ref01_LEFT_end:
+mpwr_kick05_ref01_LEFT_end:
 
