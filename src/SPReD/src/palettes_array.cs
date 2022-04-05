@@ -140,7 +140,12 @@ namespace SPReD
 		
 		public int get_color( int _plt_ind, int _clr_pos )
 		{
-			return m_plts[ _plt_ind ].data[ _clr_pos ];
+			return get_palette( _plt_ind ).data[ _clr_pos ];
+		}
+		
+		public palette16_data get_palette( int _plt_ind )
+		{
+			return m_plts[ _plt_ind ];
 		}
 		
 		public void save( BinaryWriter _bw )

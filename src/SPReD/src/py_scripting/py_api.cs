@@ -16,15 +16,23 @@ namespace SPReD
 	/// </summary>
 	public class py_api : global::SPSeD.i_py_api
 	{
-		private ListBox		m_spr_list	= null;
-		private CheckBox	m_8x16_mode	= null;
-		
+		private ListBox			m_spr_list	= null;
+		private CheckBox		m_8x16_mode	= null;
+#if DEF_PCE
+		private palettes_array	m_plts_arr	= null;
+#endif
 		public const string CONST_PREFIX	= "spd_"; 
-		
-		public py_api( CheckBox _8x16_mode, ListBox _spr_list  ) : base()
+#if DEF_PCE
+		public py_api( CheckBox _8x16_mode, ListBox _spr_list, palettes_array _plts_arr ) : base()
+#else
+		public py_api( CheckBox _8x16_mode, ListBox _spr_list ) : base()
+#endif
 		{
 			m_8x16_mode	= _8x16_mode;
 			m_spr_list	= _spr_list;
+#if DEF_PCE
+			m_plts_arr	= _plts_arr;
+#endif
 		}
 
 		public string get_prefix()
@@ -78,6 +86,16 @@ namespace SPReD
 		
 		public int[] get_palette( int _plt_ind )
 		{
+#if DEF_PCE
+			if( _plt_ind >= 0 && _plt_ind < utils.CONST_PALETTE16_ARR_LEN )
+			{
+				int[] arr_copy = new int[ 16 ];
+				
+				m_plts_arr.get_palette( _plt_ind ).data.CopyTo( arr_copy, 0 );
+				
+				return arr_copy;
+			}
+#else
 			if( _plt_ind >= 0 && _plt_ind < utils.CONST_NUM_SMALL_PALETTES )
 			{
 				int[] arr_copy = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
@@ -86,7 +104,7 @@ namespace SPReD
 				
 				return arr_copy;
 			}
-			
+#endif
 			return null;
 		}
 		
