@@ -39,9 +39,9 @@ animation_desc:
 	.org $6000
 
 anm_test_CHR_arr:	
-	.word 11904, chr0
+	.word 9600, chr0
 
-chr0:	.incbin "data/anm_test_chr0.bin"	; 11904 bytes
+chr0:	.incbin "data/anm_test_chr0.bin"	; 9600 bytes
 
 	.code
 	.bank 0
