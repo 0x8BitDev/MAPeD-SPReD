@@ -88,12 +88,10 @@ namespace SPReD
 			// 
 			// RBtnFormatPNG
 			// 
-			this.RBtnFormatPNG.Checked = true;
 			this.RBtnFormatPNG.Location = new System.Drawing.Point(17, 14);
 			this.RBtnFormatPNG.Name = "RBtnFormatPNG";
 			this.RBtnFormatPNG.Size = new System.Drawing.Size(53, 24);
 			this.RBtnFormatPNG.TabIndex = 1;
-			this.RBtnFormatPNG.TabStop = true;
 			this.RBtnFormatPNG.Text = "PNG";
 			this.RBtnFormatPNG.UseVisualStyleBackColor = true;
 			this.RBtnFormatPNG.CheckedChanged += new System.EventHandler(this.BtnImgFormatChanged_Event);
