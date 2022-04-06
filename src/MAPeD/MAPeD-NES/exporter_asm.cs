@@ -918,12 +918,7 @@ namespace MAPeD
 						exp_scr.m_PPU_scr_offset = data_offset;
 						screens[ key ] = exp_scr;
 						
-						if( compress_and_save( bw, CHRs_arr, ref data_offset ) == false )
-						{
-							_sw.Close();
-							bw.Close();
-							throw new System.Exception( "Can't compress an empty data!" );
-						}
+						compress_and_save( bw, CHRs_arr, ref data_offset );
 					}
 					
 					data_size = bw.BaseStream.Length;
@@ -968,12 +963,7 @@ namespace MAPeD
 							exp_scr.m_MMC5_scr_attrs_offset = data_offset;
 							screens[ key ] = exp_scr;
 							
-							if( compress_and_save( bw, attrs_chr, ref data_offset ) == false )
-							{
-								_sw.Close();
-								bw.Close();
-								throw new System.Exception( "Can't compress an empty data!" );
-							}
+							compress_and_save( bw, attrs_chr, ref data_offset );
 						}
 						
 						data_size = bw.BaseStream.Length;
@@ -1386,42 +1376,49 @@ namespace MAPeD
 #endif			
 		}
 
-		private bool compress_and_save( BinaryWriter _bw, byte[] _data, ref int _data_offset )
+		private void compress_and_save( BinaryWriter _bw, byte[] _data, ref int _data_offset )
 		{
-			if( CheckBoxRLE.Checked )
+			try
 			{
-				byte[] rle_data_arr	= null;
-
-				int rle_data_size = utils.RLE8( _data, ref rle_data_arr );
-				
-				if( rle_data_size < 0 )
+				if( CheckBoxRLE.Checked )
 				{
-					return false;
+					byte[] rle_data_arr	= null;
+	
+					int rle_data_size = utils.RLE8( _data, ref rle_data_arr );
+					
+					if( rle_data_size < 0 )
+					{
+						throw new System.Exception( "Can't compress an empty data!" );
+					}
+					else
+					{
+						_bw.Write( rle_data_arr, 0, rle_data_size );
+						
+						_data_offset += rle_data_size;
+					}
+					
+					rle_data_arr = null;
 				}
 				else
 				{
-					_bw.Write( rle_data_arr, 0, rle_data_size );
+					_bw.Write( _data );
 					
-					_data_offset += rle_data_size;
+					_data_offset += _data.Length;
 				}
-				
-				rle_data_arr = null;
 			}
-			else
+			catch( Exception )
 			{
-				_bw.Write( _data );
+				_bw.Dispose();
 				
-				_data_offset += _data.Length;
+				throw;
 			}
-			
-			return true;
 		}
 
-		private bool compress_and_save( BinaryWriter _bw, byte[] _data )
+		private void compress_and_save( BinaryWriter _bw, byte[] _data )
 		{
 			int offset = 0;
 			
-			return compress_and_save( _bw, _data, ref offset );
+			compress_and_save( _bw, _data, ref offset );
 		}
 		
 		private void fill_screen_attrs_per_CHR( byte[] 			_attrs_chr,
@@ -1851,6 +1848,11 @@ namespace MAPeD
 						}
 					}
 				}
+				
+				if( chk_bank_ind < 0 )
+				{
+					continue;
+				}
 
 				// write collected data
 				_sw.WriteLine( "\n; *** " + level_prefix_str + " ***\n" );
@@ -1875,12 +1877,7 @@ namespace MAPeD
 					utils.swap_columns_rows_order<byte>( map_data_arr, get_tiles_cnt_width( n_scr_X ), get_tiles_cnt_height( n_scr_Y ) );
 				}
 				
-				if( compress_and_save( bw, map_data_arr ) == false )
-				{
-					_sw.Close();
-					bw.Close();
-					throw new System.Exception( "Can't compress an empty data!" );
-				}
+				compress_and_save( bw, map_data_arr );
 				
 				data_size = bw.BaseStream.Length;
 				bw.Close();
@@ -1937,12 +1934,7 @@ namespace MAPeD
 						utils.swap_columns_rows_order<byte>( map_tiles_arr, n_scr_X * platform_data.get_screen_tiles_width(), n_scr_Y * platform_data.get_screen_tiles_height() );
 					}
 					
-					if( compress_and_save( bw, map_tiles_arr ) == false )
-					{
-						_sw.Close();
-						bw.Close();
-						throw new System.Exception( "Can't compress an empty data!" );
-					}
+					compress_and_save( bw, map_tiles_arr );
 					
 					data_size = bw.BaseStream.Length;
 					bw.Close();

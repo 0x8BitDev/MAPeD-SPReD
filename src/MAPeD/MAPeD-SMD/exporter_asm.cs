@@ -1043,12 +1043,7 @@ namespace MAPeD
 						exp_scr.m_VDP_scr_offset = data_offset;
 						screens[ key ] = exp_scr;
 						
-						if( compress_and_save_ushort( bw, attrs_chr, ref data_offset ) == false )
-						{
-							_sw.Close();
-							bw.Close();
-							throw new System.Exception( "Can't compress an empty data!" );
-						}
+						compress_and_save_ushort( bw, attrs_chr, ref data_offset );
 					}
 					
 					data_size = bw.BaseStream.Length;
@@ -1406,42 +1401,50 @@ namespace MAPeD
 			foreach( var key in screens.Keys ) { screens[ key ].destroy(); }
 		}
 
-		private bool compress_and_save_ushort( BinaryWriter _bw, ushort[] _data, ref int _data_offset )
+		private void compress_and_save_ushort( BinaryWriter _bw, ushort[] _data, ref int _data_offset )
 		{
-			if( CheckBoxRLE.Checked )
+			try
 			{
-				ushort[] rle_data_arr	= null;
-
-				int rle_data_size = utils.RLE16( _data, ref rle_data_arr );
-				
-				if( rle_data_size < 0 )
+				if( CheckBoxRLE.Checked )
 				{
-					return false;
+					ushort[] rle_data_arr	= null;
+	
+					int rle_data_size = utils.RLE16( _data, ref rle_data_arr );
+					
+					if( rle_data_size < 0 )
+					{
+						throw new System.Exception( "Can't compress an empty data!" );
+					}
+					else
+					{
+						utils.write_ushort_arr( _bw, rle_data_arr, rle_data_size );
+						
+						_data_offset += rle_data_size * sizeof( ushort );
+					}
+					
+					rle_data_arr = null;
 				}
 				else
 				{
-					utils.write_ushort_arr( _bw, rle_data_arr, rle_data_size );
+					utils.write_ushort_arr( _bw, _data, _data.Length );
 					
-					_data_offset += rle_data_size * sizeof( ushort );
+					_data_offset += _data.Length * sizeof( ushort );
 				}
-				
-				rle_data_arr = null;
 			}
-			else
+			catch( Exception )
 			{
-				utils.write_ushort_arr( _bw, _data, _data.Length );
+				_bw.Dispose();
 				
-				_data_offset += _data.Length * sizeof( ushort );
+				throw;
 			}
 			
-			return true;
 		}
 
-		private bool compress_and_save_ushort( BinaryWriter _bw, ushort[] _data )
+		private void compress_and_save_ushort( BinaryWriter _bw, ushort[] _data )
 		{
 			int offset = 0;
 			
-			return compress_and_save_ushort( _bw, _data, ref offset );
+			compress_and_save_ushort( _bw, _data, ref offset );
 		}
 		
 		private void fill_screen_attrs_per_CHR( ushort[] 		_attrs_chr,
@@ -1947,6 +1950,11 @@ namespace MAPeD
 					}
 				}
 
+				if( chk_bank_ind < 0 )
+				{
+					continue;
+				}
+				
 				// write collected data
 				_sw.WriteLine( "\n; *** " + level_prefix_str + " ***\n" );
 				
@@ -1976,12 +1984,7 @@ namespace MAPeD
 						utils.swap_columns_rows_order< ushort >( map_data_arr, get_tiles_cnt_width( n_scr_X ), get_tiles_cnt_height( n_scr_Y ) );
 					}
 					
-					if( compress_and_save_ushort( bw, map_data_arr ) == false )
-					{
-						_sw.Close();
-						bw.Close();
-						throw new System.Exception( "Can't compress an empty data!" );
-					}
+					compress_and_save_ushort( bw, map_data_arr );
 					
 					data_size = bw.BaseStream.Length;
 					bw.Close();
