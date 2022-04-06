@@ -1,6 +1,8 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+05.04.2022 v0.69b
+
 15.03.2022 - Added color selection with the LMB+mouse move
 15.03.2022 - Screen editor: speeding up drawing of tiles when the layout mode is active
 16.02.2022 - Fixed exported data for maps that share the same CHR bank
@@ -93,6 +95,8 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
+
+05.04.2022 v0.62b
 
 04.04.2022 - PCE: added native samples (asm/HuC)
 25.03.2022 - Disabled optimization during data packing operation
