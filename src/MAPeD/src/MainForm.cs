@@ -305,7 +305,7 @@ namespace MAPeD
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "CA65\\PCEAS\\HuC (*.asm;*.h)" );
 
-			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin";
+			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin|Palette (1536 bytes) (*.pal)|*.pal";
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false;
 #elif DEF_ZX
@@ -319,9 +319,9 @@ namespace MAPeD
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Substring( Project_exportFileDialog.Filter.IndexOf( "Z" ) );
 			Project_exportFileDialog.DefaultExt = "zxa";
 
-			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin";
+			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin|Palette (48 bytes) (*.pal)|*.pal";
 			
-			BtnSwapColors.Visible			= false;
+			BtnSwapColors.Visible = false;
 			
 			BtnPltCopy.Enabled = BtnPltDelete.Enabled = BtnSwapColors.Enabled = false;
 			
@@ -346,7 +346,7 @@ namespace MAPeD
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "vasm\\SGDK (*.asm;*.h,*.s)" );
 
-			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin";
+			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin|Palette (1536 bytes) (*.pal)|*.pal";
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false;
 #endif
@@ -1159,17 +1159,23 @@ namespace MAPeD
 							
 						case ".pal":
 							{
-								if( br.BaseStream.Length == 192 )
+								int plt_len_bytes = palette_group.Instance.main_palette.Length * 3;
+								
+								if( br.BaseStream.Length == plt_len_bytes )
 								{
 									palette_group plt_grp = palette_group.Instance;
 									
 									plt_grp.load_main_palette( br );
 									
 									// update selected palette color
-									plt_grp.active_palette = 0;									
+									plt_grp.active_palette = 0;
 									
-									update_graphics( true );
-									update_screens( false );
+									progress_bar_show( true, "Graphics updating...", false );
+									{
+										update_graphics( true );
+										update_all_screens( false );
+									}
+									progress_bar_show( false, "", false );
 									
 									m_screen_editor.clear_active_tile_img();
 									
@@ -1177,7 +1183,7 @@ namespace MAPeD
 								}
 								else
 								{
-									throw new Exception( "The imported palette must be 192 bytes length!" );
+									throw new Exception( "The imported palette must be " + plt_len_bytes + " bytes length!" );
 								}
 							}
 							break;
@@ -2962,6 +2968,28 @@ namespace MAPeD
 		{
 			// update_screens - may change a current palette
 			update_screens_by_bank_id( _disable_upd_scr_btn, true );
+			
+			m_layout_editor.update();
+			
+			if( _show_status_msg )
+			{
+				set_status_msg( "Screen list updated" );
+			}
+		}
+
+		void update_all_screens( bool _disable_upd_scr_btn, bool _show_status_msg = true )
+		{
+			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type );
+			
+			// renew a palette
+			palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+			
+			LabelLayoutEditorCHRBankID.Text = CheckBoxLayoutEditorAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
+		
+			if( _disable_upd_scr_btn )
+			{
+				enable_update_screens_btn( false );
+			}
 			
 			m_layout_editor.update();
 			

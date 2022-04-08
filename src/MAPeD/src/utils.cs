@@ -99,13 +99,14 @@ namespace MAPeD
 		public static readonly string CONST_FULL_APP_NAME	= CONST_FULL_APP_NAMES_ARR[ ( int )platform_data.get_platform_type() ];
 		
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'M';
-		public const byte CONST_PROJECT_FILE_VER	= 6;
+		public const byte CONST_PROJECT_FILE_VER	= 7;
 		// v1: initial data format
 		// v2: added palettes array
 		// v3: blocks data USHORT -> UINT; palette index BYTE -> INT
 		// v4: pre data flags: screen data type ( Tiles4X4 / Blocks2X2 )
 		// v5: screen data -> USHORT
 		// v6: tiles 4x4 data -> ULONG
+		// v7: save palette in a project file for all platforms
 
 		public const uint CONST_SPRED_FILE_MAGIC		= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
 		public const uint CONST_SPRED_PROJECT_FILE_VER	= 1;

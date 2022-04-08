@@ -757,9 +757,10 @@ namespace MAPeD
 				// save in a project file
 				// the other ones can be generated
 				
-#if DEF_NES || DEF_SMS				
-				palette_group.Instance.save_main_palette( _bw );
-#endif
+				if( ( ( utils.CONST_PROJECT_FILE_VER <= 6 ) && ( platform_data.get_platform_type() == platform_data.EPlatformType.pt_NES || platform_data.get_platform_type() == platform_data.EPlatformType.pt_SMS ) ) || ( utils.CONST_PROJECT_FILE_VER >= 7 ) )
+				{
+					palette_group.Instance.save_main_palette( _bw );
+				}
 			}
 			
 			// TILES PATTERNS
@@ -877,7 +878,7 @@ namespace MAPeD
 						{
 							plt_main = platform_data.get_palette_by_file_ext( _prj_data.m_file_ext );
 							
-							if( _prj_data.m_file_ext == platform_data.CONST_NES_FILE_EXT || _prj_data.m_file_ext == platform_data.CONST_SMS_FILE_EXT )
+							if( ( ( _prj_data.m_ver <= 6 ) && ( _prj_data.m_file_ext == platform_data.CONST_NES_FILE_EXT || _prj_data.m_file_ext == platform_data.CONST_SMS_FILE_EXT ) ) || ( _prj_data.m_ver >= 7 ) )
 							{
 								// load main palette from the project file
 								int data_pos = 0;
@@ -908,12 +909,13 @@ namespace MAPeD
 							}
 						}
 					}
-#if DEF_NES || DEF_SMS
 					else
 					{
-						palette_group.Instance.load_main_palette( _br );
+						if( ( ( _prj_data.m_ver <= 6 ) && ( _prj_data.m_file_ext == platform_data.CONST_NES_FILE_EXT || _prj_data.m_file_ext == platform_data.CONST_SMS_FILE_EXT ) ) || ( _prj_data.m_ver >= 7 ) )
+						{
+							palette_group.Instance.load_main_palette( _br );
+						}
 					}
-#endif
 #if DEF_FIXED_LEN_PALETTE16_ARR
 					// fill missing palette(s)
 					{
