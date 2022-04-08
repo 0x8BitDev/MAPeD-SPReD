@@ -191,7 +191,7 @@ namespace SPReD
 			this.Project_openFileDialog.Filter = "SPReD-PCE (*.spredpce)|*.spredpce";//|" + this.Project_openFileDialog.Filter;
 
 			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "4 colors", "16/4 colors" );
-			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "|Palette (192 bytes) (*.pal)|*.pal", "" );
+			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "Palette (192 bytes)", "Palette (1536 bytes)" );
 			
 			this.ExportASMToolStripMenuItem.Text = "&CA65/PCEAS";
 			this.ExportASM_saveFileDialog.Filter = "CA65/PCEAS (*.asm)|*.asm";
@@ -1481,7 +1481,7 @@ namespace SPReD
 									}
 									else
 									{
-										br.ReadBytes( 192 );
+										br.ReadBytes( plt_main.Length * 3 );
 									}
 								}
 								else
@@ -1600,17 +1600,19 @@ namespace SPReD
 				{
 					case ".pal":
 						{
+							int plt_len_bytes = palette_group.Instance.main_palette.Length * 3;
+							
 							fs = new FileStream( filenames[ 0 ], FileMode.Open, FileAccess.Read );
 							
 							br = new BinaryReader( fs );
 							
-							if( br.BaseStream.Length == 192 )
+							if( br.BaseStream.Length == plt_len_bytes )
 							{
 								palette_group.Instance.load_main_palette( br );
 							}
 							else
 							{
-								throw new Exception( "The imported palette must be 192 bytes long!" );
+								throw new Exception( "The imported palette must be " + plt_len_bytes + " bytes long!" );
 							}
 						}
 						break;
