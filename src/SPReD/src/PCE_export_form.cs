@@ -67,5 +67,19 @@ namespace SPReD
 		{
 			LabelVADDR.Text = "VADDR: #" + String.Format( "{0:X4}", VADDR );
 		}
+		
+		public DialogResult ShowDialog( bool _asm_data )
+		{
+			if( _asm_data )
+			{
+				CheckBoxCommentCHRData.Enabled = true;
+			}
+			else
+			{
+				CheckBoxCommentCHRData.Checked = CheckBoxCommentCHRData.Enabled = false;
+			}
+			
+			return base.ShowDialog();
+		}
 	}
 }

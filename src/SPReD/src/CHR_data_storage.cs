@@ -128,7 +128,7 @@ namespace SPReD
 #elif DEF_SMS
 		public void export( StreamWriter _sw, string _filename, bool _commented, int _CHR_size )
 #elif DEF_PCE
-		public void export( StreamWriter _sw, string _filename, bool _commented )
+		public void export( StreamWriter _sw, string _filename, bool _commented, bool _asm_data )
 #else
 ...
 #endif
@@ -160,6 +160,12 @@ namespace SPReD
 
 #if DEF_SMS || DEF_PCE
 				CHR_data_arr += "\n" + ( _commented ? ";":"" ) + "\t.word " + CHR_data_size + ", " + m_data[ i ].name;
+#endif
+#if DEF_PCE
+				if( !_asm_data )
+				{
+					CHR_data_arr += ", bank(" + m_data[ i ].name + ")";
+				}
 #endif
 			}
 			

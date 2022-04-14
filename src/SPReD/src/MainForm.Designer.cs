@@ -46,6 +46,7 @@ namespace SPReD
 			this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ExportASMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ExportCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ExportImagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportScriptEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
@@ -167,6 +168,7 @@ namespace SPReD
 			this.Palette2Label = new System.Windows.Forms.Label();
 			this.Palette0Label = new System.Windows.Forms.Label();
 			this.ExportASM_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this.ExportC_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.Project_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.Project_openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.SpriteListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -278,6 +280,7 @@ namespace SPReD
 			// 
 			this.exportToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.ExportASMToolStripMenuItem,
+									this.ExportCToolStripMenuItem,
 									this.ExportImagesToolStripMenuItem});
 			this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
 			this.exportToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
@@ -289,6 +292,13 @@ namespace SPReD
 			this.ExportASMToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
 			this.ExportASMToolStripMenuItem.Text = "C&A65\\NESasm";
 			this.ExportASMToolStripMenuItem.Click += new System.EventHandler(this.ExportASMToolStripMenuItemClick);
+			// 
+			// ExportASMToolStripMenuItem
+			// 
+			this.ExportCToolStripMenuItem.Name = "ExportCToolStripMenuItem";
+			this.ExportCToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+			this.ExportCToolStripMenuItem.Text = "&C";
+			this.ExportCToolStripMenuItem.Click += new System.EventHandler(this.ExportCToolStripMenuItemClick);
 			// 
 			// ExportImagesToolStripMenuItem
 			// 
@@ -1446,6 +1456,13 @@ namespace SPReD
 			this.ExportASM_saveFileDialog.Filter = "CA65\\NESasm (*.asm)|*.asm";
 			this.ExportASM_saveFileDialog.Title = "Export ASM: Select File";
 			this.ExportASM_saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ExportASM_OK);
+			//
+			// ExportC_saveFileDialog
+			//
+			this.ExportC_saveFileDialog.DefaultExt = "h";
+			this.ExportC_saveFileDialog.Filter = "C (*.h)|*.h";
+			this.ExportC_saveFileDialog.Title = "Export C: Select File";
+			this.ExportC_saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ExportC_OK);
 			// 
 			// Project_saveFileDialog
 			// 
@@ -1713,6 +1730,7 @@ namespace SPReD
 		private System.Windows.Forms.Button BtnCHRPack;
 		private System.Windows.Forms.Button BtnShiftColors;
 		private System.Windows.Forms.SaveFileDialog ExportASM_saveFileDialog;
+		private System.Windows.Forms.SaveFileDialog ExportC_saveFileDialog;
 		private System.Windows.Forms.Button BtnSpriteVFlip;
 		private System.Windows.Forms.Button BtnSpriteHFlip;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -1754,6 +1772,7 @@ namespace SPReD
 		private System.Windows.Forms.PictureBox SpriteLayout;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ExportASMToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ExportCToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;

@@ -56,7 +56,7 @@ The SPReD is a tool for converting prepared sprite images into a NES/SMS/PCE com
 - sprites data packing and optimization
 - 8x16 mode support
 - images import/export
-- export to **NES: CA65/NESasm** / **SMS: WLA-DX** / **PCE: CA65/PCEAS/HuC(PCX)**
+- export to **NES: CA65/NESasm/CC65** / **SMS: WLA-DX/SDCC** / **PCE: CA65/PCEAS/HuC(PCX)**
 - built-in **Python** script editor for writing custom data export scripts
 - **NES <=> SMS** data conversion*
 - etc...

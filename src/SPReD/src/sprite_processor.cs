@@ -342,9 +342,9 @@ namespace SPReD
 			m_CHR_data_storage.export( _sw, _filename, _commented, _CHR_size );
 		}
 #elif DEF_PCE
-		public void export_CHR( StreamWriter _sw, string _filename, bool _commented )
+		public void export_CHR( StreamWriter _sw, string _filename, bool _commented, bool _asm_data )
 		{
-			m_CHR_data_storage.export( _sw, _filename, _commented );
+			m_CHR_data_storage.export( _sw, _filename, _commented, _asm_data );
 		}
 #else
 ...
