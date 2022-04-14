@@ -1,6 +1,6 @@
 ;########################################################################
 ;
-; Copyright 2019-2020 0x8BitDev ( MIT license )
+; Copyright 2019-2022 0x8BitDev ( MIT license )
 ;
 ;########################################################################
 
@@ -152,7 +152,7 @@ exit:
 	.incdir "./"
 	.include "player_anm.asm"
 
-.define CHR_BPP	SPR_CHR_BPP
+.define CHR_BPP	DOG_GFX_SPR_CHR_BPP
 
 .if CHR_BPP != 3
 .if CHR_BPP != 4
@@ -199,7 +199,7 @@ main:
 
 	; send show image command to VDP
 
-.if SPR_MODE_8X16 == 1
+.if DOG_GFX_SPR_MODE_8X16 == 1
 	VDP_WRITE_REG_CMD 1 VDPR1_FIXED|VDPR1_DISPLAY_ON|VDPR1_SPRITES_8x16|VDPR1_VBLANK
 .else
 	VDP_WRITE_REG_CMD 1 VDPR1_FIXED|VDPR1_DISPLAY_ON|VDPR1_VBLANK
@@ -270,7 +270,7 @@ loop:
 
 	ld (VDP_TILES_ROM_ADDR), de
 
-	ld hl, $0000 + ( $20 * SPR_CHRS_OFFSET )	; VRAM addr
+	ld hl, $0000 + ( $20 * DOG_GFX_SPR_CHRS_OFFSET )	; VRAM addr
 
 	ld (VDP_TILES_VRAM_ADDR), hl
 

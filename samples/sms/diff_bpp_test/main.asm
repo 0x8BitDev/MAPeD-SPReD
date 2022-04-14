@@ -1,6 +1,6 @@
 ;########################################################################
 ;
-; Copyright 2019-2020 0x8BitDev ( MIT license )
+; Copyright 2019-2022 0x8BitDev ( MIT license )
 ;
 ;########################################################################
 
@@ -75,7 +75,7 @@
 	.incdir "data"
 	.include "image.asm"
 
-.define CHR_BPP	SPR_CHR_BPP
+.define CHR_BPP	IMAGE_SPR_CHR_BPP
 
 	.incdir "../common"
 	.include "vdp.asm"
@@ -100,7 +100,7 @@ main:
 
 	ld hl, CHR_data
 	ld bc, CHR_data_size
-	ld de, $0000 + ( $20 * SPR_CHRS_OFFSET )	; VRAM addr (the first CHR bank)
+	ld de, $0000 + ( $20 * IMAGE_SPR_CHRS_OFFSET )	; VRAM addr (the first CHR bank)
 
 	call VDP_load_tiles
 
@@ -128,7 +128,7 @@ main:
 
 	; send show image command to VDP
 
-.if SPR_MODE_8X16 == 1      
+.if IMAGE_SPR_MODE_8X16 == 1
 	VDP_WRITE_REG_CMD 1 VDPR1_FIXED|VDPR1_DISPLAY_ON|VDPR1_SPRITES_8x16
 .else
 	VDP_WRITE_REG_CMD 1 VDPR1_FIXED|VDPR1_DISPLAY_ON

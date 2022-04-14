@@ -23,27 +23,27 @@ anm_test_num_frames:
 anm_test_frames_data:
 martha_punch01_frame:
 	.word martha_punch01
-	.word martha_punch01_end - martha_punch01	; data size
+	.word 112	; data size
 	.byte 0		; CHR bank index (chr0)
 martha_punch02_frame:
 	.word martha_punch02
-	.word martha_punch02_end - martha_punch02
+	.word 96
 	.byte 0
 martha_punch03_frame:
 	.word martha_punch03
-	.word martha_punch03_end - martha_punch03
+	.word 120
 	.byte 0
 martha_punch04_frame:
 	.word martha_punch04
-	.word martha_punch04_end - martha_punch04
+	.word 152
 	.byte 0
 martha_punch05_frame:
 	.word martha_punch05
-	.word martha_punch05_end - martha_punch05
+	.word 120
 	.byte 0
 martha_punch06_ref04_frame:
 	.word martha_punch06_ref04
-	.word martha_punch06_ref04_end - martha_punch06_ref04
+	.word 152
 	.byte 0
 
 
@@ -64,7 +64,6 @@ martha_punch01:
 	.word $FFE7, $0A, $116, $80
 	.word $FFF7, $FFE8, $118, $80
 	.word $FFF7, $02, $11A, $80
-martha_punch01_end:
 
 martha_punch02:
 	.word $FFA7, $FFED, $11C, $80
@@ -79,7 +78,6 @@ martha_punch02:
 	.word $FFD7, $FFFE, $12E, $80
 	.word $FFE7, $FFEA, $130, $80
 	.word $FFF7, $FFE8, $132, $80
-martha_punch02_end:
 
 martha_punch03:
 	.word $FFAD, $FFF4, $134, $80
@@ -97,7 +95,6 @@ martha_punch03:
 	.word $FFED, $03, $14C, $80
 	.word $FFFD, $FFE8, $14E, $80
 	.word $FFFD, $07, $150, $80
-martha_punch03_end:
 
 martha_punch04:
 	.word $FFA0, $0C, $152, $80
@@ -119,7 +116,6 @@ martha_punch04:
 	.word $FFE0, $0D, $172, $80
 	.word $FFF0, $FFE8, $174, $80
 	.word $FFF0, $04, $176, $80
-martha_punch04_end:
 
 martha_punch05:
 	.word $FF90, $0E, $178, $80
@@ -137,7 +133,6 @@ martha_punch05:
 	.word $FFF0, $FFE8, $190, $80
 	.word $FFF0, $04, $192, $80
 	.word $00, $06, $194, $80
-martha_punch05_end:
 
 martha_punch06_ref04:
 	.word $FFA0, $0C, $152, $80
@@ -159,5 +154,4 @@ martha_punch06_ref04:
 	.word $FFE0, $0D, $172, $80
 	.word $FFF0, $FFE8, $174, $80
 	.word $FFF0, $04, $176, $80
-martha_punch06_ref04_end:
 

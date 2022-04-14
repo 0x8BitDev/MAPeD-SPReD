@@ -1,6 +1,6 @@
 ;############################################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2022 0x8BitDev ( MIT license )
 ;
 ;############################################################
 ;
@@ -119,7 +119,7 @@ RESET:
 
 	jsr ppu_load_palettes
 
-	.IF SPR_MODE_8X16
+	.IF MARCO_GFX_SPR_MODE_8X16
 	lda #%10110000			; enable NMI, sprites from Pattern Table 1, 8x16
 	.ELSE
 	lda #%10010000			; enable NMI, sprites from Pattern Table 1, 8x8
