@@ -24,8 +24,8 @@ image_num_frames:
 image_frames_data:
 bpp_test_sprite_frame:
 	.word bpp_test_sprite
-	.byte 192	; data size
-	.byte 0		; CHR bank index (chr0)
+	.byte bpp_test_sprite_end - bpp_test_sprite	; data size
+	.byte 0		; GFX bank index (chr0)
 
 
 	; #1: Y pos, #2: X pos, #3: CHR index
@@ -95,4 +95,5 @@ bpp_test_sprite:
 	.byte $38, $28, $3D
 	.byte $38, $30, $3E
 	.byte $38, $38, $3F
+bpp_test_sprite_end:
 

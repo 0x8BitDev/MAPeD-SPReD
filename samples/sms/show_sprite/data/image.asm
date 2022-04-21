@@ -24,8 +24,8 @@ image_num_frames:
 image_frames_data:
 sonic8x8_frame:
 	.word sonic8x8
-	.byte 192	; data size
-	.byte 0		; CHR bank index (chr0)
+	.byte sonic8x8_end - sonic8x8	; data size
+	.byte 0		; GFX bank index (chr0)
 
 
 	; #1: Y pos, #2: X pos, #3: CHR index
@@ -95,4 +95,5 @@ sonic8x8:
 	.byte $38, $28, $3D
 	.byte $38, $30, $3E
 	.byte $38, $38, $3F
+sonic8x8_end:
 

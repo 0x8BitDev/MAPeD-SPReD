@@ -38,35 +38,35 @@ dog_gfx_num_frames:
 dog_gfx_frames_data:
 dog01_IDLE01_RIGHT_frame:
 	.word dog01_IDLE01_RIGHT
-	.byte 18	; data size
-	.byte 0		; CHR bank index (chr0)
+	.byte dog01_IDLE01_RIGHT_end - dog01_IDLE01_RIGHT	; data size
+	.byte 0		; GFX bank index (chr0)
 dog01_IDLE02_RIGHT_frame:
 	.word dog01_IDLE02_RIGHT
-	.byte 18
+	.byte dog01_IDLE02_RIGHT_end - dog01_IDLE02_RIGHT
 	.byte 1
 dog01_RUN01_RIGHT_frame:
 	.word dog01_RUN01_RIGHT
-	.byte 18
+	.byte dog01_RUN01_RIGHT_end - dog01_RUN01_RIGHT
 	.byte 2
 dog01_JUMP_RIGHT_frame:
 	.word dog01_JUMP_RIGHT
-	.byte 18
+	.byte dog01_JUMP_RIGHT_end - dog01_JUMP_RIGHT
 	.byte 3
 dog01_IDLE01_LEFT_frame:
 	.word dog01_IDLE01_LEFT
-	.byte 18
+	.byte dog01_IDLE01_LEFT_end - dog01_IDLE01_LEFT
 	.byte 4
 dog01_IDLE02_LEFT_frame:
 	.word dog01_IDLE02_LEFT
-	.byte 18
+	.byte dog01_IDLE02_LEFT_end - dog01_IDLE02_LEFT
 	.byte 5
 dog01_RUN01_LEFT_frame:
 	.word dog01_RUN01_LEFT
-	.byte 18
+	.byte dog01_RUN01_LEFT_end - dog01_RUN01_LEFT
 	.byte 6
 dog01_JUMP_LEFT_frame:
 	.word dog01_JUMP_LEFT
-	.byte 18
+	.byte dog01_JUMP_LEFT_end - dog01_JUMP_LEFT
 	.byte 7
 
 
@@ -79,6 +79,7 @@ dog01_IDLE01_RIGHT:
 	.byte $F1, $F4, $06
 	.byte $F1, $04, $08
 	.byte $F1, $FC, $0A
+dog01_IDLE01_RIGHT_end:
 
 dog01_IDLE02_RIGHT:
 	.byte $E0, $FC, $00
@@ -87,6 +88,7 @@ dog01_IDLE02_RIGHT:
 	.byte $F0, $FC, $06
 	.byte $F0, $04, $08
 	.byte $E0, $F4, $0A
+dog01_IDLE02_RIGHT_end:
 
 dog01_RUN01_RIGHT:
 	.byte $E0, $FC, $00
@@ -95,6 +97,7 @@ dog01_RUN01_RIGHT:
 	.byte $F0, $FC, $06
 	.byte $F0, $04, $08
 	.byte $E0, $F4, $0A
+dog01_RUN01_RIGHT_end:
 
 dog01_JUMP_RIGHT:
 	.byte $DE, $FC, $00
@@ -103,6 +106,7 @@ dog01_JUMP_RIGHT:
 	.byte $EE, $F4, $06
 	.byte $EE, $FC, $08
 	.byte $EE, $04, $0A
+dog01_JUMP_RIGHT_end:
 
 dog01_IDLE01_LEFT:
 	.byte $E1, $04, $00
@@ -111,6 +115,7 @@ dog01_IDLE01_LEFT:
 	.byte $F1, $04, $06
 	.byte $F1, $F4, $08
 	.byte $F1, $FC, $0A
+dog01_IDLE01_LEFT_end:
 
 dog01_IDLE02_LEFT:
 	.byte $E0, $FC, $00
@@ -119,6 +124,7 @@ dog01_IDLE02_LEFT:
 	.byte $F0, $FC, $06
 	.byte $F0, $F4, $08
 	.byte $E0, $04, $0A
+dog01_IDLE02_LEFT_end:
 
 dog01_RUN01_LEFT:
 	.byte $E0, $FC, $00
@@ -127,6 +133,7 @@ dog01_RUN01_LEFT:
 	.byte $F0, $FC, $06
 	.byte $F0, $F4, $08
 	.byte $E0, $04, $0A
+dog01_RUN01_LEFT_end:
 
 dog01_JUMP_LEFT:
 	.byte $DE, $FC, $00
@@ -135,4 +142,5 @@ dog01_JUMP_LEFT:
 	.byte $EE, $04, $06
 	.byte $EE, $FC, $08
 	.byte $EE, $F4, $0A
+dog01_JUMP_LEFT_end:
 
