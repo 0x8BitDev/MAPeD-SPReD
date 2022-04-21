@@ -54,14 +54,14 @@
 ; \1 /= 8
 	.macro div8_word
 	lda low_byte \1
-	lsr a	
-	ror high_byte \1
+	lsr high_byte \1
+	ror a
 
-	lsr a	
-	ror high_byte \1
-
-	lsr a	
-	ror high_byte \1
+	lsr high_byte \1
+	ror a
+	
+	lsr high_byte \1
+	ror a
 	sta low_byte \1
 	.endm
 ; \1 *= 8
