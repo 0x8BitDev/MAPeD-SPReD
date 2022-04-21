@@ -101,6 +101,7 @@ SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
 
+21.04.2022 - Added a library for rendering of simple sprites and meta-sprites using the HuC (spd.h)
 14.04.2022 - Added export to C for all platforms
 08.04.2022 - PCE: added an import of a custom palette
 
