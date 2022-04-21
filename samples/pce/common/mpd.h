@@ -80,7 +80,7 @@
 	; \3 - address
 	;
 
-	.macro farptr_add_offset  ; \1 - offset, \2 - bank number, \3 - address
+	.macro mpd_farptr_add_offset  ; \1 - offset, \2 - bank number, \3 - address
 
 	; add an offset
 
@@ -126,7 +126,7 @@ _mpd_get_CR_val
 #asm
 _mpd_load_palette.4
 
-	farptr_add_offset __dx, __bl, __si
+	mpd_farptr_add_offset __dx, __bl, __si
 
 	maplibfunc	lib2_load_palette
 	rts
@@ -140,7 +140,7 @@ _mpd_load_vram2.4:
 #asm
 _mpd_load_vram.4:
 
-	farptr_add_offset __ax, __bl, __si
+	mpd_farptr_add_offset __ax, __bl, __si
 
 	jmp _load_vram.3
 #endasm
@@ -148,7 +148,7 @@ _mpd_load_vram.4:
 #asm
 _mpd_load_bat.5:
 
-	farptr_add_offset __ax, __bl, __si
+	mpd_farptr_add_offset __ax, __bl, __si
 
 	maplibfunc	lib2_load_bat
 	rts
@@ -156,7 +156,7 @@ _mpd_load_bat.5:
 
 #asm
 _mpd_farpeekw.2:
-	farptr_add_offset __ax, __fbank, __fptr
+	mpd_farptr_add_offset __ax, __fbank, __fptr
 
 	jmp _farpeekw.1
 #endasm
@@ -164,7 +164,7 @@ _mpd_farpeekw.2:
 #asm
 _mpd_farpeekb.2:
 
-	farptr_add_offset __ax, __fbank, __fptr
+	mpd_farptr_add_offset __ax, __fbank, __fptr
 
 	jmp _farpeekb.1
 #endasm
