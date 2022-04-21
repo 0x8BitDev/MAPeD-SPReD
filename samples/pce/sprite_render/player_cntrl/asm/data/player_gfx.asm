@@ -19,7 +19,7 @@ PLAYER_GFX_PALETTE_SLOT	= 0
 ;chr8:	.incbin "player_gfx_chr8.bin"	; 2176 bytes
 ;chr9:	.incbin "player_gfx_chr9.bin"	; 3200 bytes
 
-;player_gfx_CHR_arr:	
+;player_gfx_SG_arr:	
 ;	.word 2944, chr0
 ;	.word 2304, chr1
 ;	.word 2432, chr2
@@ -42,7 +42,7 @@ player_gfx_frames_data:
 mpwr_idle01_RIGHT_frame:
 	.word mpwr_idle01_RIGHT
 	.word mpwr_idle01_RIGHT_end - mpwr_idle01_RIGHT	; data size
-	.byte 6		; CHR bank index (chr6)
+	.byte 6		; GFX bank index (chr6)
 mpwr_walk01_RIGHT_frame:
 	.word mpwr_walk01_RIGHT
 	.word mpwr_walk01_RIGHT_end - mpwr_walk01_RIGHT

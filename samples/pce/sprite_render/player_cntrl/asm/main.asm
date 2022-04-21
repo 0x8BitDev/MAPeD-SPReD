@@ -4,7 +4,8 @@
 ;
 ;###################################################################
 ;
-; DESC: Simple character controller demo with dynamic CHR data.
+; DESC: Simple character controller demo with a big meta-sprite 
+;	character and dynamic SG data.
 ;	Player actions: idle, move, kick
 ;	Controls: LEFT, RIGHT, UP
 ;
@@ -23,7 +24,7 @@ DEF_INT_IRQ1_VDC	; int_irq1_vdc
 
 	.include "player_anm.asm"
 
-player_gfx_CHR_arr:	
+player_gfx_SG_arr:
 	.word 2944, chr0
 	.word 2304, chr1
 	.word 2432, chr2
@@ -114,7 +115,7 @@ main:
 
 	jsr chrcntrl_update_logic
 
-	; waiting for CHR data to be loaded into VRAM on VBLANK
+	; waiting for SG data to be loaded into VRAM on VBLANK
 
 	SATB_get_state
 	cmp #SATB_FLAG_STATE_FREE
@@ -160,10 +161,10 @@ int_irq1_vdc:
 	cmp #SATB_FLAG_STATE_READY
 	bne .vblank_exit
 
-	; load the character's CHR data to VRAM to synchronize 
+	; load the character's SG data to VRAM to synchronize 
 	; it with the inner SATB on VBLANK
 
-	jsr chrcntrl_load_CHR_to_VRAM
+	jsr chrcntrl_load_SG_to_VRAM
 
 	SATB_set_state	SATB_FLAG_STATE_FREE
 

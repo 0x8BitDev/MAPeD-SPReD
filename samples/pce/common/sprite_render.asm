@@ -50,7 +50,7 @@
 	
 ; sprite render data
 ;
-_CHR_data_arr	.ds 2
+_SG_data_arr	.ds 2
 _spr_data	.ds 2
 
 _spr_pos_x	.ds 2
@@ -61,8 +61,8 @@ _spr_VRAM	.ds 2
 
 SATB_SIZE			= 64
 
-SATB_FLAG_CHECK_CHR_BANK	= %00000001	; CHR data will be copied to VRAM once if set
-SATB_FLAG_PEND_CHR_DATA		= %00000010	; copy CHR data _bsrc/_bdst/_blen for delayed use
+SATB_FLAG_CHECK_SG_BANK		= %00000001	; SG data will be copied to VRAM once if set
+SATB_FLAG_PEND_SG_DATA		= %00000010	; copy SG data _bsrc/_bdst/_blen for delayed use
 
 SATB_FLAG_STATE_MASK		= %11100000
 SATB_FLAG_STATE_FREE		= %10000000	; end of screen drawing
@@ -70,13 +70,13 @@ SATB_FLAG_STATE_BUSY		= %01000000	; SATB -> VRAM
 SATB_FLAG_STATE_READY		= %00100000	; SATB data moved to VRAM
 
 _SATB_flags	.ds 1
-_last_CHR_bank	.ds 1
+_last_SG_bank	.ds 1
 _SATB_pos	.ds 1
 _SATB		.ds 512
 
-_CHR_DATA_SRC	.ds 2
-_CHR_DATA_DST	.ds 2
-_CHR_DATA_LEN	.ds 2
+_SG_DATA_SRC	.ds 2
+_SG_DATA_DST	.ds 2
+_SG_DATA_LEN	.ds 2
 
 	.code
 
@@ -85,7 +85,7 @@ _CHR_DATA_LEN	.ds 2
 SATB_reset:
 
 	lda #$ff
-	sta _last_CHR_bank
+	sta _last_SG_bank
 
 	stz _SATB_pos
 
@@ -103,7 +103,7 @@ SATB_to_VRAM:
 	rts
 
 ; *** push sprite data to the local SATB ***
-; IN:	_CHR_data_arr
+; IN:	_SG_data_arr
 ;	_spr_VRAM
 ;	_spr_data
 ;
@@ -245,43 +245,43 @@ SATB_push_sprite:
 
 	ply
 
-	; load CHR data to VRAM
+	; load SG data to VRAM
 
 	lda [<_spr_data], y		; A = chr data index
 
-	; check SATB_FLAG_CHECK_CHR_BANK flag
+	; check SATB_FLAG_CHECK_SG_BANK flag
 
 	tax
 	SATB_get_flags
-	and #SATB_FLAG_CHECK_CHR_BANK
-	beq .load_CHR_data
+	and #SATB_FLAG_CHECK_SG_BANK
+	beq .load_SG_data
 
 	txa
-	cmp _last_CHR_bank
-	bne .load_CHR_data
+	cmp _last_SG_bank
+	bne .load_SG_data
 
-	; CHR data already loaded
+	; SG data already loaded
 
 	rts
 
-.load_CHR_data:
+.load_SG_data:
 
 	txa
-	sta _last_CHR_bank
+	sta _last_SG_bank
 
 	asl a
 	asl a				; x4
 
-	; __ax = CHR data array addr (size, CHR data addr) - (*_CHR_data_arr) + A
+	; __ax = SG data array addr (size, SG data addr) - (*_SG_data_arr) + A
 
 	clc
-	adc <_CHR_data_arr
+	adc <_SG_data_arr
 	sta <__al
 	lda #$00
-	adc <_CHR_data_arr + 1
+	adc <_SG_data_arr + 1
 	sta <__ah
 
-	; _blen = *__ax (CHR data size)
+	; _blen = *__ax (SG data size)
 
 	cly
 	lda [<__al], y
@@ -291,7 +291,7 @@ SATB_push_sprite:
 	sta _blen + 1
 	iny
 
-	; _bsrc = *__ax (CHR addr)
+	; _bsrc = *__ax (SG addr)
 
 	lda [<__al], y
 	sta _bsrc
@@ -307,7 +307,7 @@ SATB_push_sprite:
 	sta _bdst + 1
 
 	SATB_get_flags
-	and #SATB_FLAG_PEND_CHR_DATA
+	and #SATB_FLAG_PEND_SG_DATA
 	bne .copy_src_dst_len
 
 	; set VRAM write mode and perform TIA
@@ -316,9 +316,9 @@ SATB_push_sprite:
 
 .copy_src_dst_len:
 
-	stw _CHR_DATA_SRC, <__ax
-	stw _CHR_DATA_DST, <__bx
-	stw _CHR_DATA_LEN, <__cx
+	stw _SG_DATA_SRC, <__ax
+	stw _SG_DATA_DST, <__bx
+	stw _SG_DATA_LEN, <__cx
 
 	stw_zpii _bsrc, <__ax
 	stw_zpii _bdst, <__bx

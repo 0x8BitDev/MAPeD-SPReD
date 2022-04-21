@@ -38,7 +38,7 @@ animation_desc:
 	.bank 3
 	.org $6000
 
-anm_test_CHR_arr:	
+anm_test_SG_arr:	
 	.word 9600, chr0
 
 chr0:	.incbin "data/anm_test_chr0.bin"	; 9600 bytes
@@ -64,17 +64,17 @@ main:
 
 	; init data
 
-	; ignore CHR data loading to VRAM more than once on anm_copy_frame_to_SATB
+	; ignore SG data loading to VRAM more than once on anm_copy_frame_to_SATB
 
-	SATB_set_flags SATB_FLAG_CHECK_CHR_BANK
+	SATB_set_flags SATB_FLAG_CHECK_SG_BANK
 
 	; load palette
 
 	load_palette	anm_test_palette, $100 + ( ANM_TEST_PALETTE_SLOT << 4 ), ( anm_test_palette_end - anm_test_palette )
 
-	; set pointer to CHRs data array
+	; set pointer to SG data array
 
-	stw #anm_test_CHR_arr, <_CHR_data_arr
+	stw #anm_test_SG_arr, <_SG_data_arr
 
 	; set sprites VADDR
 

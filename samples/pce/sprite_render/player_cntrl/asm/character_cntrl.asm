@@ -36,11 +36,11 @@
 
 player_anm:	.ds ANM_RAM_DATA_SIZE
 
-; player's CHR data
+; player's SG data
 
-player_CHR_src:	.ds 2
-player_CHR_dst:	.ds 2
-player_CHR_len:	.ds 2
+player_SG_src:	.ds 2
+player_SG_dst:	.ds 2
+player_SG_len:	.ds 2
 
 player_pos_x:	.ds 2
 player_pos_y:	.ds 2
@@ -81,24 +81,24 @@ player_anm_tbl:
 
 chrcntrl_init:
 
-	; ignore CHR data loading to VRAM more than once on anm_copy_frame_to_SATB
-	; and enable delayed loading of CHR data to VRAM
+	; ignore SG data loading to VRAM more than once on anm_copy_frame_to_SATB
+	; and enable delayed loading of SG data to VRAM
 
-	SATB_set_flags SATB_FLAG_CHECK_CHR_BANK | SATB_FLAG_PEND_CHR_DATA
+	SATB_set_flags SATB_FLAG_CHECK_SG_BANK | SATB_FLAG_PEND_SG_DATA
 
-	; set CHR data parameters for delayed use (SATB_FLAG_PEND_CHR_DATA)
+	; set SG data parameters for delayed use (SATB_FLAG_PEND_SG_DATA)
 
-	stw #player_CHR_src,	_CHR_DATA_SRC
-	stw #player_CHR_dst,	_CHR_DATA_DST
-	stw #player_CHR_len,	_CHR_DATA_LEN
+	stw #player_SG_src,	_SG_DATA_SRC
+	stw #player_SG_dst,	_SG_DATA_DST
+	stw #player_SG_len,	_SG_DATA_LEN
 
 	; load sprites palette
 
 	load_palette	player_gfx_palette, $100 + ( PLAYER_GFX_PALETTE_SLOT << 4 ), ( player_gfx_palette_end - player_gfx_palette )
 
-	; set pointer to CHRs data array
+	; set pointer to SG data array
 
-	stw #player_gfx_CHR_arr,	<_CHR_data_arr
+	stw #player_gfx_SG_arr,	<_SG_data_arr
 
 	; set sprites VADDR
 
@@ -286,12 +286,12 @@ chrcntrl_update_graphics:
 	jmp anm_copy_frame_to_SATB
 
 
-chrcntrl_load_CHR_to_VRAM:
+chrcntrl_load_SG_to_VRAM:
 
-	; copy CHR data to VRAM
+	; copy SG data to VRAM
 
-	stw player_CHR_src, _bsrc
-	stw player_CHR_dst, _bdst
-	stw player_CHR_len, _blen
+	stw player_SG_src, _bsrc
+	stw player_SG_dst, _bdst
+	stw player_SG_len, _blen
 
 	jmp vdc_copy_to_VRAM

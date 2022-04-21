@@ -21,7 +21,7 @@
 	
 	.include "data/sprites_test.asm"
 
-sprites_test_CHR_arr:
+sprites_test_SG_arr:
 	.word 8192, chr0
 
 	.bank 3
@@ -48,19 +48,19 @@ main:
 
 	jsr SATB_reset
 
-	; ignore CHR data loading twice
-	; because all sprites share the same CHR data
+	; ignore SG data loading twice
+	; because all sprites share the same SG data
 
-	lda #SATB_FLAG_CHECK_CHR_BANK
+	lda #SATB_FLAG_CHECK_SG_BANK
 	sta _SATB_flags
 
 	; load sprites palette
 
 	load_palette	sprites_test_palette, $100 + ( SPRITES_TEST_PALETTE_SLOT << 4 ), sprites_test_palette_end - sprites_test_palette
 
-	; set pointer to CHRs data array
+	; set pointer to SG data array
 
-	stw #sprites_test_CHR_arr,	<_CHR_data_arr
+	stw #sprites_test_SG_arr,	<_SG_data_arr
 
 	; set sprites VADDR
 
@@ -68,28 +68,28 @@ main:
 
 	; push sprites data to SATB
 
-	set_sprite_data broomstick_RIGHT_32x16_frame, 90, 130
+	set_sprite_data brstick_RIGHT_32x16_frame, 90, 130
 	jsr SATB_push_sprite
 
-	set_sprite_data ripple_fly_RIGHT_32x32_frame, 130, 130
+	set_sprite_data rpl_fly_RIGHT_32x32_frame, 130, 130
 	jsr SATB_push_sprite
 
-	set_sprite_data jackie_chan_idle_RIGHT_32x64_frame, 170, 160
+	set_sprite_data jch_RIGHT_32x64_frame, 170, 160
 	jsr SATB_push_sprite
 
-	set_sprite_data dryad_missile_UP_frame, 205, 130
+	set_sprite_data dr_msl_UP_frame, 205, 130
 	jsr SATB_push_sprite
 
-	set_sprite_data jackie_chan_mini_16x32_0_frame, 205, 125
+	set_sprite_data jch_min_16x32_0_frame, 205, 125
 	jsr SATB_push_sprite
 
-	set_sprite_data jackie_chan_mini_16x32_1_ref_frame, 237, 125
+	set_sprite_data jch_min_16x32_1_ref_frame, 237, 125
 	jsr SATB_push_sprite
 
-	set_sprite_data dryad_missile_UP_16x64_0_frame, 221, 100
+	set_sprite_data dr_msl_UP_16x64_0_frame, 221, 100
 	jsr SATB_push_sprite
 
-	set_sprite_data dryad_missile_UP_16x64_1_ref_frame, 253, 100
+	set_sprite_data dr_msl_UP_16x64_1_ref_frame, 253, 100
 	jsr SATB_push_sprite
 
 	set_sprite_data gigan_idle_LEFT_frame, 180, 260

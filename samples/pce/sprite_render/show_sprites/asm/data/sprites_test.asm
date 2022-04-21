@@ -10,7 +10,7 @@ SPRITES_TEST_PALETTE_SLOT	= 0
 
 ;chr0:	.incbin "sprites_test_chr0.bin"	; 8192 bytes
 
-;sprites_test_CHR_arr:	
+;sprites_test_SG_arr:	
 ;	.word 8192, chr0
 
 
@@ -26,37 +26,37 @@ sprites_test_palette_end:
 sprites_test_num_frames:
 	.byte $0A
 sprites_test_frames_data:
-jackie_chan_idle_RIGHT_32x64_frame:
-	.word jackie_chan_idle_RIGHT_32x64
-	.word jackie_chan_idle_RIGHT_32x64_end - jackie_chan_idle_RIGHT_32x64	; data size
-	.byte 0		; CHR bank index (chr0)
-dryad_missile_UP_16x64_0_frame:
-	.word dryad_missile_UP_16x64_0
-	.word dryad_missile_UP_16x64_0_end - dryad_missile_UP_16x64_0
+jch_RIGHT_32x64_frame:
+	.word jch_RIGHT_32x64
+	.word jch_RIGHT_32x64_end - jch_RIGHT_32x64	; data size
+	.byte 0		; GFX bank index (chr0)
+dr_msl_UP_16x64_0_frame:
+	.word dr_msl_UP_16x64_0
+	.word dr_msl_UP_16x64_0_end - dr_msl_UP_16x64_0
 	.byte 0
-dryad_missile_UP_16x64_1_ref_frame:
-	.word dryad_missile_UP_16x64_1_ref
-	.word dryad_missile_UP_16x64_1_ref_end - dryad_missile_UP_16x64_1_ref
+dr_msl_UP_16x64_1_ref_frame:
+	.word dr_msl_UP_16x64_1_ref
+	.word dr_msl_UP_16x64_1_ref_end - dr_msl_UP_16x64_1_ref
 	.byte 0
-jackie_chan_mini_16x32_0_frame:
-	.word jackie_chan_mini_16x32_0
-	.word jackie_chan_mini_16x32_0_end - jackie_chan_mini_16x32_0
+jch_min_16x32_0_frame:
+	.word jch_min_16x32_0
+	.word jch_min_16x32_0_end - jch_min_16x32_0
 	.byte 0
-jackie_chan_mini_16x32_1_ref_frame:
-	.word jackie_chan_mini_16x32_1_ref
-	.word jackie_chan_mini_16x32_1_ref_end - jackie_chan_mini_16x32_1_ref
+jch_min_16x32_1_ref_frame:
+	.word jch_min_16x32_1_ref
+	.word jch_min_16x32_1_ref_end - jch_min_16x32_1_ref
 	.byte 0
-ripple_fly_RIGHT_32x32_frame:
-	.word ripple_fly_RIGHT_32x32
-	.word ripple_fly_RIGHT_32x32_end - ripple_fly_RIGHT_32x32
+rpl_fly_RIGHT_32x32_frame:
+	.word rpl_fly_RIGHT_32x32
+	.word rpl_fly_RIGHT_32x32_end - rpl_fly_RIGHT_32x32
 	.byte 0
-broomstick_RIGHT_32x16_frame:
-	.word broomstick_RIGHT_32x16
-	.word broomstick_RIGHT_32x16_end - broomstick_RIGHT_32x16
+brstick_RIGHT_32x16_frame:
+	.word brstick_RIGHT_32x16
+	.word brstick_RIGHT_32x16_end - brstick_RIGHT_32x16
 	.byte 0
-dryad_missile_UP_frame:
-	.word dryad_missile_UP
-	.word dryad_missile_UP_end - dryad_missile_UP
+dr_msl_UP_frame:
+	.word dr_msl_UP
+	.word dr_msl_UP_end - dr_msl_UP
 	.byte 0
 gigan_idle_LEFT_frame:
 	.word gigan_idle_LEFT
@@ -70,38 +70,38 @@ tony_idle_RIGHT_frame:
 
 	; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc
 
-jackie_chan_idle_RIGHT_32x64:
+jch_RIGHT_32x64:
 	.word $FFC0, $FFF0, $100, $3180
-jackie_chan_idle_RIGHT_32x64_end:
+jch_RIGHT_32x64_end:
 
-dryad_missile_UP_16x64_0:
+dr_msl_UP_16x64_0:
 	.word $00, $FFF8, $110, $3085
-dryad_missile_UP_16x64_0_end:
+dr_msl_UP_16x64_0_end:
 
-dryad_missile_UP_16x64_1_ref:
+dr_msl_UP_16x64_1_ref:
 	.word $00, $FFF8, $112, $3085
-dryad_missile_UP_16x64_1_ref_end:
+dr_msl_UP_16x64_1_ref_end:
 
-jackie_chan_mini_16x32_0:
+jch_min_16x32_0:
 	.word $FFE0, $FFF8, $120, $1080
-jackie_chan_mini_16x32_0_end:
+jch_min_16x32_0_end:
 
-jackie_chan_mini_16x32_1_ref:
+jch_min_16x32_1_ref:
 	.word $FFE0, $FFF8, $122, $1080
-jackie_chan_mini_16x32_1_ref_end:
+jch_min_16x32_1_ref_end:
 
-ripple_fly_RIGHT_32x32:
+rpl_fly_RIGHT_32x32:
 	.word $FFF0, $FFF0, $128, $1181
-ripple_fly_RIGHT_32x32_end:
+rpl_fly_RIGHT_32x32_end:
 
-broomstick_RIGHT_32x16:
+brstick_RIGHT_32x16:
 	.word $FFF8, $FFF0, $130, $182
-broomstick_RIGHT_32x16_end:
+brstick_RIGHT_32x16_end:
 
-dryad_missile_UP:
+dr_msl_UP:
 	.word $00, $FFF8, $134, $85
 	.word $10, $FFF8, $136, $85
-dryad_missile_UP_end:
+dr_msl_UP_end:
 
 gigan_idle_LEFT:
 	.word $FFA0, $FFF6, $138, $83
