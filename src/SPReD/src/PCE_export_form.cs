@@ -70,14 +70,7 @@ namespace SPReD
 		
 		public DialogResult ShowDialog( bool _asm_data )
 		{
-			if( _asm_data )
-			{
-				CheckBoxCommentCHRData.Enabled = true;
-			}
-			else
-			{
-				CheckBoxCommentCHRData.Checked = CheckBoxCommentCHRData.Enabled = false;
-			}
+			CheckBoxCommentCHRData.Checked = _asm_data;
 			
 			return base.ShowDialog();
 		}
