@@ -142,8 +142,12 @@ namespace SPReD
 #elif DEF_PCE
 			string CHR_data_arr = ( _commented ? ";":"" ) + _filename + "_SG_arr:\t";
 #endif
+			string label_name;
+
 			for( int i = 0; i < size; i++ )
 			{
+				label_name = _filename + "_" + m_data[ i ].name;
+				
 #if DEF_NES || DEF_PCE
 				CHR_data_size = m_data[ i ].get_size_bytes();
 #elif DEF_SMS
@@ -153,20 +157,20 @@ namespace SPReD
 #endif
 
 #if DEF_NES
-				_sw.WriteLine( ( _commented ? ";":"" ) + m_data[ i ].name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );
+				_sw.WriteLine( ( _commented ? ";":"" ) + label_name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );
 #elif DEF_SMS || DEF_PCE
-				_sw.WriteLine( ( _commented ? ";":"" ) + m_data[ i ].name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + " bytes" );
+				_sw.WriteLine( ( _commented ? ";":"" ) + label_name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + " bytes" );
 #else
 ...
 #endif
 
 #if DEF_SMS || DEF_PCE
-				CHR_data_arr += "\n" + ( _commented ? ";":"" ) + "\t.word " + CHR_data_size + ", " + m_data[ i ].name;
+				CHR_data_arr += "\n" + ( _commented ? ";":"" ) + "\t.word " + CHR_data_size + ", " + label_name;
 #endif
 #if DEF_PCE
 				if( !_asm_data )
 				{
-					CHR_data_arr += ", bank(" + m_data[ i ].name + ")";
+					CHR_data_arr += ", bank(" + label_name + ")";
 				}
 #endif
 			}
