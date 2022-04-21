@@ -34,6 +34,9 @@ char	sprite_show( char _ind, short _x, short _y )
 
 void init_sprites()
 {
+	/* SPD-render initialization */
+	spd_init();	
+
 	init_satb();
 
 	/* initialize exported sprite set */
