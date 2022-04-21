@@ -1,120 +1,74 @@
-//#################################################################
+//##################################################################
 //
 // Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: Simple show sprites demo using exported PCX images.
 //
-//#################################################################
+// Desc: Simple show sprites demo using exported normal sprites and
+//	 meta-sprites data.
+//
+//##################################################################
 
 #include <huc.h>
+#include "../../../common/spd.h"
+#include "sprites_test.h"
 
-// sprites data
-#incspr(jackie_chan, "data/jackie_chan_idle_RIGHT_32x64.pcx")
-#incspr(ripple, "data/ripple_fly_RIGHT_32x32.pcx")
-#incspr(broomstick, "data/broomstick_RIGHT_32x16.pcx")
-#incspr(dryad_missile, "data/dryad_missile_UP_16x64_0.pcx")
-#incspr(jackie_chan_mini, "data/jackie_chan_mini_16x32_0.pcx")
 
-// all sprites use the same palette
-#incpal(palette, "data/jackie_chan_idle_RIGHT_32x64.pcx", 0, 6)
+/* exported sprite set initialization */
+void	sprite_set_init()
+{
+	// load palette in a usual way.
+	load_palette( 16 + SPRITES_TEST_PALETTE_SLOT, sprites_test_palette, sprites_test_palette_size >> 4 );
 
-#define	JACKIE_CHAN_PALETTE_SLOT	16
-#define	JACKIE_CHAN_VRAM		0x5000
+	// set up exported sprite set with SG data array and VRAM address to load SG data to.
+	// NOTE: you can combine any number of exported sprite sets in your program.
+	//	 call the 'spd_sprite_params' to switch between them.
+	// NOTE: passing ZERO as the third parameter, means that SG data of all sprites must 
+	//	 be packed in a single file!
+	spd_sprite_params( sprites_test_SG_arr, SPRITES_TEST_SPR_VADDR, 0 );
+}
 
-#define	DR_MISSILE_PALETTE_SLOT		21
-#define	DR_MISSILE1_VRAM		0x5200
-#define	DR_MISSILE2_VRAM		0x5240
-
-#define	RIPPLE_PALETTE_SLOT		17
-#define	RIPPLE_VRAM			0x5400
-
-#define	JC_MINI_PALETTE_SLOT		16
-#define	JC_MINI1_VRAM			0x5500
-#define	JC_MINI2_VRAM			0x5540
-
-#define	BROOMSTICK_PALETTE_SLOT		18
-#define	BROOMSTICK_VRAM			0x5600
-
+/* show sprite from exported sprite set */
+char	sprite_show( char _ind, short _x, short _y )
+{
+	return spd_SATB_push_sprite( sprites_test_frames_data, _ind, _x, _y );
+}
 
 void init_sprites()
 {
 	init_satb();
 
-	// set background transparent color from the sprites palette
-	load_palette( 0, palette, 1 );
+	/* initialize exported sprite set */
+	sprite_set_init();
 
-	// init Jackie Chan sprite
-	load_vram( JACKIE_CHAN_VRAM, jackie_chan, 8 << 6 );	// 8 CHRs 16x16
-	load_palette( 16, palette, 6 );				// each exported PCX image contains all palettes
+	/* set the SATB position to push sprites to */
+	spd_SATB_set_pos( 0 );
 
-	spr_set( 0 );
-	spr_pal( JACKIE_CHAN_PALETTE_SLOT );
-	spr_pattern( JACKIE_CHAN_VRAM );
-	spr_ctrl( SIZE_MAS|FLIP_MAS, SZ_32x64|NO_FLIP );
-	spr_pri( 1 );
-	spr_x( 58 );
-	spr_y( 70 );
+	/* there are two ways to show a sprite: */
+	/* 1. by sprite index. it's suitable for animation sequences. */
 
-	// init Dryad missile sprites
-	load_vram( DR_MISSILE1_VRAM, dryad_missile, 8 << 6 );	// 8 CHRs 16x16
+	sprite_show( SPR_JCH_RIGHT_32X64, 138, 96 );
 
-	spr_set( 1 );
-	spr_pal( DR_MISSILE_PALETTE_SLOT );
-	spr_pattern( DR_MISSILE1_VRAM );
-	spr_ctrl( SIZE_MAS|FLIP_MAS, SZ_16x64|NO_FLIP );
-	spr_pri( 1 );
-	spr_x( 134 );
-	spr_y( 80 );
+	sprite_show( SPR_JCH_MIN_16X32_0, 173, 61 );
 
-	spr_set( 2 );
-	spr_pal( DR_MISSILE_PALETTE_SLOT );
-	spr_pattern( DR_MISSILE2_VRAM );
-	spr_ctrl( SIZE_MAS|FLIP_MAS, SZ_16x64|NO_FLIP );
-	spr_pri( 1 );
-	spr_x( 166 );
-	spr_y( 80 );
+	sprite_show( SPR_JCH_MIN_16X32_1_REF, 205, 61 );
 
-	// init Jackie Chan mini sprites
-	load_vram( JC_MINI1_VRAM, jackie_chan_mini, 4 << 6 );	// 4 CHRs 16x16
+	sprite_show( SPR_DR_MSL_UP_16X64_0, 189, 36 );
 
-	spr_set( 3 );
-	spr_pal( JC_MINI_PALETTE_SLOT );
-	spr_pattern( JC_MINI1_VRAM );
-	spr_ctrl( SIZE_MAS|FLIP_MAS, SZ_16x32|NO_FLIP );
-	spr_pri( 1 );
-	spr_x( 150 );
-	spr_y( 80 );
+	sprite_show( SPR_DR_MSL_UP_16X64_1_REF, 221, 36 );
 
-	spr_set( 4 );
-	spr_pal( JC_MINI_PALETTE_SLOT );
-	spr_pattern( JC_MINI2_VRAM );
-	spr_ctrl( SIZE_MAS|FLIP_MAS, SZ_16x32|NO_FLIP );
-	spr_pri( 1 );
-	spr_x( 182 );
-	spr_y( 80 );
+	/* 2. by sprite data pointer. */
 
-	// init Ripple sprite
-	load_vram( RIPPLE_VRAM, ripple, 4 << 6 );		// 4 CHRs 16x16
+	spd_SATB_push_sprite( dr_msl_UP_frame, 173, 66 );
 
-	spr_set( 5 );
-	spr_pal( RIPPLE_PALETTE_SLOT );
-	spr_pattern( RIPPLE_VRAM );
-	spr_ctrl( SIZE_MAS|FLIP_MAS, SZ_32x32|NO_FLIP );
-	spr_pri( 1 );
-	spr_x( 96 );
-	spr_y( 80 );
+	spd_SATB_push_sprite( brstick_RIGHT_32x16_frame, 58, 66 );
 
-	// init broomstick sprite
-	load_vram( BROOMSTICK_VRAM, broomstick, 2 << 6 );	// 2 CHRs 16x16
+	spd_SATB_push_sprite( rpl_fly_RIGHT_32x32_frame, 98, 66 );
 
-	spr_set( 6 );
-	spr_pal( BROOMSTICK_PALETTE_SLOT );
-	spr_pattern( BROOMSTICK_VRAM );
-	spr_ctrl( SIZE_MAS|FLIP_MAS, SZ_32x16|NO_FLIP );
-	spr_pri( 1 );
-	spr_x( 96 );
-	spr_y( 112 );
+	spd_SATB_push_sprite( gigan_idle_LEFT_frame, 148, 196 );
 
-	satb_update();
+	spd_SATB_push_sprite( tony_idle_RIGHT_frame, 88, 196 );
+
+	/* update SATB with the all pushed sprites */
+	satb_update( spd_SATB_get_pos() );
 }
 
 main()
@@ -125,7 +79,7 @@ main()
 	/* clear display */
 	cls();
 
-	/* initialization of a local SATB and send it to VRAM */
+	/* initialization of a local SATB with sprite data and sending it to VRAM */
 	init_sprites();
 
 	/* enable display */
