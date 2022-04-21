@@ -4,28 +4,28 @@
 ;
 ;#######################################################
 
-chr0:	.incbin "_player_gfx_chr0.bin"	; 2944 bytes
-chr1:	.incbin "_player_gfx_chr1.bin"	; 2304 bytes
-chr2:	.incbin "_player_gfx_chr2.bin"	; 2432 bytes
-chr3:	.incbin "_player_gfx_chr3.bin"	; 2944 bytes
-chr4:	.incbin "_player_gfx_chr4.bin"	; 2560 bytes
-chr5:	.incbin "_player_gfx_chr5.bin"	; 2304 bytes
-chr6:	.incbin "_player_gfx_chr6.bin"	; 2560 bytes
-chr7:	.incbin "_player_gfx_chr7.bin"	; 3200 bytes
-chr8:	.incbin "_player_gfx_chr8.bin"	; 2176 bytes
-chr9:	.incbin "_player_gfx_chr9.bin"	; 3200 bytes
+_player_gfx_chr0:	.incbin "_player_gfx_chr0.bin"	; 2944 bytes
+_player_gfx_chr1:	.incbin "_player_gfx_chr1.bin"	; 2304 bytes
+_player_gfx_chr2:	.incbin "_player_gfx_chr2.bin"	; 2432 bytes
+_player_gfx_chr3:	.incbin "_player_gfx_chr3.bin"	; 2944 bytes
+_player_gfx_chr4:	.incbin "_player_gfx_chr4.bin"	; 2560 bytes
+_player_gfx_chr5:	.incbin "_player_gfx_chr5.bin"	; 2304 bytes
+_player_gfx_chr6:	.incbin "_player_gfx_chr6.bin"	; 2560 bytes
+_player_gfx_chr7:	.incbin "_player_gfx_chr7.bin"	; 3200 bytes
+_player_gfx_chr8:	.incbin "_player_gfx_chr8.bin"	; 2176 bytes
+_player_gfx_chr9:	.incbin "_player_gfx_chr9.bin"	; 3200 bytes
 
 _player_gfx_SG_arr:	
-	.word 2944, chr0, bank(chr0)
-	.word 2304, chr1, bank(chr1)
-	.word 2432, chr2, bank(chr2)
-	.word 2944, chr3, bank(chr3)
-	.word 2560, chr4, bank(chr4)
-	.word 2304, chr5, bank(chr5)
-	.word 2560, chr6, bank(chr6)
-	.word 3200, chr7, bank(chr7)
-	.word 2176, chr8, bank(chr8)
-	.word 3200, chr9, bank(chr9)
+	.word 2944, _player_gfx_chr0, bank(_player_gfx_chr0)
+	.word 2304, _player_gfx_chr1, bank(_player_gfx_chr1)
+	.word 2432, _player_gfx_chr2, bank(_player_gfx_chr2)
+	.word 2944, _player_gfx_chr3, bank(_player_gfx_chr3)
+	.word 2560, _player_gfx_chr4, bank(_player_gfx_chr4)
+	.word 2304, _player_gfx_chr5, bank(_player_gfx_chr5)
+	.word 2560, _player_gfx_chr6, bank(_player_gfx_chr6)
+	.word 3200, _player_gfx_chr7, bank(_player_gfx_chr7)
+	.word 2176, _player_gfx_chr8, bank(_player_gfx_chr8)
+	.word 3200, _player_gfx_chr9, bank(_player_gfx_chr9)
 
 
 _player_gfx_palette:

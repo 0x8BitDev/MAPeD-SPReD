@@ -9,10 +9,10 @@
 .define	IMAGE_SPR_CHRS_OFFSET	0	; first CHR index in a CHR bank
 
 
-;chr0:	.incbin "image_chr0.bin"	; 2048 bytes
+;image_chr0:	.incbin "image_chr0.bin"	; 2048 bytes
 
 ;image_CHR_arr:	
-;	.word 2048, chr0
+;	.word 2048, image_chr0
 
 
 image_palette:

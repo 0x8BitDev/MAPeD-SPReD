@@ -6,7 +6,7 @@
 
 DOG_GFX_SPR_MODE_8X16 = 1
 
-;chr0:	.incbin "dog_gfx_chr0.bin"	; 512 of 1024 bytes
+;dog_gfx_chr0:	.incbin "dog_gfx_chr0.bin"	; 512 of 1024 bytes
 
 
 dog_gfx_palette:

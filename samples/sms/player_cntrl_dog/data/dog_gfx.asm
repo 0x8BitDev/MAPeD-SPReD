@@ -9,24 +9,24 @@
 .define	DOG_GFX_SPR_CHRS_OFFSET	0	; first CHR index in a CHR bank
 
 
-;chr0:	.incbin "dog_gfx_chr0.bin"	; 384 bytes
-;chr1:	.incbin "dog_gfx_chr1.bin"	; 384 bytes
-;chr2:	.incbin "dog_gfx_chr2.bin"	; 384 bytes
-;chr3:	.incbin "dog_gfx_chr3.bin"	; 384 bytes
-;chr4:	.incbin "dog_gfx_chr4.bin"	; 384 bytes
-;chr5:	.incbin "dog_gfx_chr5.bin"	; 384 bytes
-;chr6:	.incbin "dog_gfx_chr6.bin"	; 384 bytes
-;chr7:	.incbin "dog_gfx_chr7.bin"	; 384 bytes
+;dog_gfx_chr0:	.incbin "dog_gfx_chr0.bin"	; 384 bytes
+;dog_gfx_chr1:	.incbin "dog_gfx_chr1.bin"	; 384 bytes
+;dog_gfx_chr2:	.incbin "dog_gfx_chr2.bin"	; 384 bytes
+;dog_gfx_chr3:	.incbin "dog_gfx_chr3.bin"	; 384 bytes
+;dog_gfx_chr4:	.incbin "dog_gfx_chr4.bin"	; 384 bytes
+;dog_gfx_chr5:	.incbin "dog_gfx_chr5.bin"	; 384 bytes
+;dog_gfx_chr6:	.incbin "dog_gfx_chr6.bin"	; 384 bytes
+;dog_gfx_chr7:	.incbin "dog_gfx_chr7.bin"	; 384 bytes
 
 ;dog_gfx_CHR_arr:	
-;	.word 384, chr0
-;	.word 384, chr1
-;	.word 384, chr2
-;	.word 384, chr3
-;	.word 384, chr4
-;	.word 384, chr5
-;	.word 384, chr6
-;	.word 384, chr7
+;	.word 384, dog_gfx_chr0
+;	.word 384, dog_gfx_chr1
+;	.word 384, dog_gfx_chr2
+;	.word 384, dog_gfx_chr3
+;	.word 384, dog_gfx_chr4
+;	.word 384, dog_gfx_chr5
+;	.word 384, dog_gfx_chr6
+;	.word 384, dog_gfx_chr7
 
 
 dog_gfx_palette:

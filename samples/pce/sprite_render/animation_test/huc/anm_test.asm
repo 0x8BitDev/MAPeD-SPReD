@@ -4,10 +4,10 @@
 ;
 ;#######################################################
 
-chr0:	.incbin "_anm_test_chr0.bin"	; 9600 bytes
+_anm_test_chr0:	.incbin "_anm_test_chr0.bin"	; 9600 bytes
 
 _anm_test_SG_arr:	
-	.word 9600, chr0, bank(chr0)
+	.word 9600, _anm_test_chr0, bank(_anm_test_chr0)
 
 
 _anm_test_palette:

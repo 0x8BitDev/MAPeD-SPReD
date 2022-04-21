@@ -22,12 +22,12 @@
 	.include "data/sprites_test.asm"
 
 sprites_test_SG_arr:
-	.word 8192, chr0
+	.word 8192, sprites_test_chr0
 
 	.bank 3
 	.org $6000
 
-chr0:	.incbin "data/sprites_test_chr0.bin"	; 8192 bytes
+sprites_test_chr0:	.incbin "data/sprites_test_chr0.bin"	; 8192 bytes
 
 	.code
 	.bank 0

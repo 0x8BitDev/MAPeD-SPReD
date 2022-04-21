@@ -6,13 +6,13 @@
 
 MARCO_GFX_SPR_MODE_8X16 = 0
 
-;chr0:	.incbin "marco_gfx_chr0.bin"	; 912 of 1024 bytes
-;chr1:	.incbin "marco_gfx_chr1.bin"	; 912 of 1024 bytes
-;chr2:	.incbin "marco_gfx_chr2.bin"	; 784 of 1024 bytes
-;chr3:	.incbin "marco_gfx_chr3.bin"	; 800 of 1024 bytes
-;chr4:	.incbin "marco_gfx_chr4.bin"	; 816 of 1024 bytes
-;chr5:	.incbin "marco_gfx_chr5.bin"	; 832 of 1024 bytes
-;chr6:	.incbin "marco_gfx_chr6.bin"	; 288 of 1024 bytes
+;marco_gfx_chr0:	.incbin "marco_gfx_chr0.bin"	; 912 of 1024 bytes
+;marco_gfx_chr1:	.incbin "marco_gfx_chr1.bin"	; 912 of 1024 bytes
+;marco_gfx_chr2:	.incbin "marco_gfx_chr2.bin"	; 784 of 1024 bytes
+;marco_gfx_chr3:	.incbin "marco_gfx_chr3.bin"	; 800 of 1024 bytes
+;marco_gfx_chr4:	.incbin "marco_gfx_chr4.bin"	; 816 of 1024 bytes
+;marco_gfx_chr5:	.incbin "marco_gfx_chr5.bin"	; 832 of 1024 bytes
+;marco_gfx_chr6:	.incbin "marco_gfx_chr6.bin"	; 288 of 1024 bytes
 
 
 marco_gfx_palette:

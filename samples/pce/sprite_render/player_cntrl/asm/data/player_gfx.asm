@@ -8,28 +8,28 @@ PLAYER_GFX_SPR_VADDR	= 8192
 PLAYER_GFX_PALETTE_SLOT	= 0
 
 
-;chr0:	.incbin "player_gfx_chr0.bin"	; 2944 bytes
-;chr1:	.incbin "player_gfx_chr1.bin"	; 2304 bytes
-;chr2:	.incbin "player_gfx_chr2.bin"	; 2432 bytes
-;chr3:	.incbin "player_gfx_chr3.bin"	; 2944 bytes
-;chr4:	.incbin "player_gfx_chr4.bin"	; 2560 bytes
-;chr5:	.incbin "player_gfx_chr5.bin"	; 2304 bytes
-;chr6:	.incbin "player_gfx_chr6.bin"	; 2560 bytes
-;chr7:	.incbin "player_gfx_chr7.bin"	; 3200 bytes
-;chr8:	.incbin "player_gfx_chr8.bin"	; 2176 bytes
-;chr9:	.incbin "player_gfx_chr9.bin"	; 3200 bytes
+;player_gfx_chr0:	.incbin "player_gfx_chr0.bin"	; 2944 bytes
+;player_gfx_chr1:	.incbin "player_gfx_chr1.bin"	; 2304 bytes
+;player_gfx_chr2:	.incbin "player_gfx_chr2.bin"	; 2432 bytes
+;player_gfx_chr3:	.incbin "player_gfx_chr3.bin"	; 2944 bytes
+;player_gfx_chr4:	.incbin "player_gfx_chr4.bin"	; 2560 bytes
+;player_gfx_chr5:	.incbin "player_gfx_chr5.bin"	; 2304 bytes
+;player_gfx_chr6:	.incbin "player_gfx_chr6.bin"	; 2560 bytes
+;player_gfx_chr7:	.incbin "player_gfx_chr7.bin"	; 3200 bytes
+;player_gfx_chr8:	.incbin "player_gfx_chr8.bin"	; 2176 bytes
+;player_gfx_chr9:	.incbin "player_gfx_chr9.bin"	; 3200 bytes
 
 ;player_gfx_SG_arr:	
-;	.word 2944, chr0
-;	.word 2304, chr1
-;	.word 2432, chr2
-;	.word 2944, chr3
-;	.word 2560, chr4
-;	.word 2304, chr5
-;	.word 2560, chr6
-;	.word 3200, chr7
-;	.word 2176, chr8
-;	.word 3200, chr9
+;	.word 2944, player_gfx_chr0
+;	.word 2304, player_gfx_chr1
+;	.word 2432, player_gfx_chr2
+;	.word 2944, player_gfx_chr3
+;	.word 2560, player_gfx_chr4
+;	.word 2304, player_gfx_chr5
+;	.word 2560, player_gfx_chr6
+;	.word 3200, player_gfx_chr7
+;	.word 2176, player_gfx_chr8
+;	.word 3200, player_gfx_chr9
 
 
 player_gfx_palette:

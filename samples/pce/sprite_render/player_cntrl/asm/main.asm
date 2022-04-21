@@ -25,43 +25,43 @@ DEF_INT_IRQ1_VDC	; int_irq1_vdc
 	.include "player_anm.asm"
 
 player_gfx_SG_arr:
-	.word 2944, chr0
-	.word 2304, chr1
-	.word 2432, chr2
-	.word 2944, chr3
-	.word 2560, chr4
-	.word 2304, chr5
-	.word 2560, chr6
-	.word 3200, chr7
-	.word 2176, chr8
-	.word 3200, chr9
+	.word 2944, player_gfx_chr0
+	.word 2304, player_gfx_chr1
+	.word 2432, player_gfx_chr2
+	.word 2944, player_gfx_chr3
+	.word 2560, player_gfx_chr4
+	.word 2304, player_gfx_chr5
+	.word 2560, player_gfx_chr6
+	.word 3200, player_gfx_chr7
+	.word 2176, player_gfx_chr8
+	.word 3200, player_gfx_chr9
 
-chr0:	.incbin "data/player_gfx_chr0.bin"	; 2944 bytes
+player_gfx_chr0:	.incbin "data/player_gfx_chr0.bin"	; 2944 bytes
 
 	.bank 3
 	.org $6000
 
-chr1:	.incbin "data/player_gfx_chr1.bin"	; 2304 bytes
-chr2:	.incbin "data/player_gfx_chr2.bin"	; 2432 bytes
-chr3:	.incbin "data/player_gfx_chr3.bin"	; 2944 bytes
+player_gfx_chr1:	.incbin "data/player_gfx_chr1.bin"	; 2304 bytes
+player_gfx_chr2:	.incbin "data/player_gfx_chr2.bin"	; 2432 bytes
+player_gfx_chr3:	.incbin "data/player_gfx_chr3.bin"	; 2944 bytes
 
 	.bank 4
 	.org $8000
 
-chr4:	.incbin "data/player_gfx_chr4.bin"	; 2560 bytes
-chr5:	.incbin "data/player_gfx_chr5.bin"	; 2304 bytes
-chr6:	.incbin "data/player_gfx_chr6.bin"	; 2560 bytes
+player_gfx_chr4:	.incbin "data/player_gfx_chr4.bin"	; 2560 bytes
+player_gfx_chr5:	.incbin "data/player_gfx_chr5.bin"	; 2304 bytes
+player_gfx_chr6:	.incbin "data/player_gfx_chr6.bin"	; 2560 bytes
 
 	.bank 5
 	.org $a000
 
-chr7:	.incbin "data/player_gfx_chr7.bin"	; 3200 bytes
-chr9:	.incbin "data/player_gfx_chr9.bin"	; 3200 bytes
+player_gfx_chr7:	.incbin "data/player_gfx_chr7.bin"	; 3200 bytes
+player_gfx_chr9:	.incbin "data/player_gfx_chr9.bin"	; 3200 bytes
 
 	.bank 6
 	.org $c000
 
-chr8:	.incbin "data/player_gfx_chr8.bin"	; 2176 bytes
+player_gfx_chr8:	.incbin "data/player_gfx_chr8.bin"	; 2176 bytes
 
 	.code
 	.bank 0

@@ -8,10 +8,10 @@ SPRITES_TEST_SPR_VADDR	= 8192
 SPRITES_TEST_PALETTE_SLOT	= 0
 
 
-;chr0:	.incbin "sprites_test_chr0.bin"	; 8192 bytes
+;sprites_test_chr0:	.incbin "sprites_test_chr0.bin"	; 8192 bytes
 
 ;sprites_test_SG_arr:	
-;	.word 8192, chr0
+;	.word 8192, sprites_test_chr0
 
 
 sprites_test_palette:

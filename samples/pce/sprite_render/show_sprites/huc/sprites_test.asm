@@ -4,10 +4,10 @@
 ;
 ;#######################################################
 
-chr0:	.incbin "_sprites_test_chr0.bin"	; 8192 bytes
+_sprites_test_chr0:	.incbin "_sprites_test_chr0.bin"	; 8192 bytes
 
 _sprites_test_SG_arr:	
-	.word 8192, chr0, bank(chr0)
+	.word 8192, _sprites_test_chr0, bank(_sprites_test_chr0)
 
 
 _sprites_test_palette:
