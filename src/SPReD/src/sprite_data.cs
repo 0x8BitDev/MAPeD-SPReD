@@ -595,7 +595,7 @@ namespace SPReD
 #endif
 			}
 			
-			_sw.WriteLine( "" );
+			_sw.WriteLine( name + "_end:\n" );
 		}
 #if DEF_PCE
 		private int get_CGX_CGY_flags( ref int _CHR_ind_offset )

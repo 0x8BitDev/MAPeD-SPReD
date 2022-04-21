@@ -1855,6 +1855,7 @@ namespace SPReD
 				
 				string data_prefix = "";
 				string prefix_filename;
+				string post_spr_data = "";
 				
 				string path		= System.IO.Path.GetDirectoryName( _filename );
 				string filename	= System.IO.Path.GetFileNameWithoutExtension( _filename );
@@ -1896,8 +1897,12 @@ namespace SPReD
 #else
 ...
 #endif
+
+#if DEF_PCE
+						c_sw.WriteLine( "typedef struct\n{\n\tconst unsigned short*\tsprite_data;\n\tunsigned char\t\tbank;\n\tunsigned short\t\tsize;\n\tunsigned char\t\tSG_ind;\n} spd_ANM_FRAME;\n\n" );
+#else
 						c_sw.WriteLine( "typedef struct\n{\n\tconst unsigned short*\tsprite_data;\n\tunsigned short\t\tsize;\n\tunsigned char\t\tCHR_ind;\n} spd_ANM_FRAME;\n\n" );
-						
+#endif
 						data_prefix = "_";
 					}
 					prefix_filename = data_prefix + filename;
@@ -1916,7 +1921,11 @@ namespace SPReD
 #endif
 					if( !_asm_file )
 					{
+#if DEF_PCE
+						c_sw.WriteLine( "extern unsigned short*\t" + filename + "_SG_arr;" );
+#else
 						c_sw.WriteLine( "extern unsigned short*\t" + filename + "_CHR_arr;" );
+#endif
 					}
 					
 					sw.WriteLine( "\n" );
@@ -1973,16 +1982,19 @@ namespace SPReD
 							
 							sw.WriteLine( data_prefix + spr.name + "_frame:" );
 							sw.WriteLine( "\t.word " + data_prefix + spr.name );
-#if DEF_NES
-							sw.WriteLine( "\t.byte " + unchecked( ( byte )( spr.get_CHR_attr().Count << 2 ) ) + ( enable_comments ? "\t; data size":"" ) );
-#elif DEF_SMS
-							sw.WriteLine( "\t.byte " + unchecked( ( byte )( spr.get_CHR_attr().Count * 3 ) ) + ( enable_comments ? "\t; data size":"" ) );
+#if DEF_NES || DEF_SMS
+							sw.WriteLine( "\t.byte " + data_prefix + spr.name + "_end - " + spr.name + ( enable_comments ? "\t; data size":"" ) );
 #elif DEF_PCE
-							sw.WriteLine( "\t.word " + ( spr.get_CHR_attr().Count << 3 ) + ( enable_comments ? "\t; data size":"" ) );
+							if( !_asm_file )
+							{
+								sw.WriteLine( "\t.byte bank(" + ( data_prefix + spr.name ) + ")" );
+							}
+							
+							sw.WriteLine( "\t.word " + spr.name + "_end - " + data_prefix + spr.name + ( enable_comments ? "\t; data size":"" ) );
 #else
 ...
 #endif
-							sw.WriteLine( "\t.byte " + spr.get_CHR_data().id + ( enable_comments ? "\t\t; CHR bank index (" + spr.get_CHR_data().name + ")":"" ) );
+							sw.WriteLine( "\t.byte " + spr.get_CHR_data().id + ( enable_comments ? "\t\t; GFX bank index (" + spr.get_CHR_data().name + ")":"" ) );
 #if DEF_NES
 							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + prefix_filename + "_" + spr.get_CHR_data().get_filename(), save_padding_data );
 #elif DEF_SMS
@@ -1994,11 +2006,18 @@ namespace SPReD
 #endif
 							if( !_asm_file )
 							{
-								c_sw.WriteLine( "extern spd_ANM_FRAME\t" + spr.name + "_frame;" );
+								c_sw.WriteLine( "const unsigned " + ( _spr_cnt >= 256 ? "short":"char" ) + "\tSPR_" + spr.name.ToUpper() + "\t= " + i + ";" );
+								
+								post_spr_data += "extern spd_ANM_FRAME*\t" + spr.name + "_frame;\n";
 							}
 
 							enable_comments = false;
 						}
+					}
+					
+					if( !_asm_file )
+					{
+						c_sw.WriteLine( "\n" + post_spr_data );
 					}
 					
 					sw.WriteLine( "\n" );
