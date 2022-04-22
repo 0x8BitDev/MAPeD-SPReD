@@ -24,7 +24,7 @@ The main logic is:
 
 	// Initialization of exported sprite set.
 	{
-		// Load palette in a usual way.
+		// Load palette in the usual way.
 		load_palette( 16 + <EXPORTED_NAME>_PALETTE_SLOT, <exported_name>_palette, <exported_name>_palette_size >> 4 );
 
 		// Set up exported sprite set with SG data array and VRAM address to load SG data to.
@@ -80,8 +80,8 @@ The main logic is:
 
 
 2. UNPACKED sprites data. All exported SG data are stored in separate files. It were not packed in the SPReD-PCE.
-Unpacked data are suitable for dynamic SG data, that can be loaded to VRAM on VBLANK to save video memory. It`s
-suitable when you have a lot of animations that don`t fit into VRAM, like in fighting games.
+Unpacked data are suitable for dynamic SG data, that can be loaded to VRAM dynamically to save video memory. It`s
+useful when you have a lot of animations that don`t fit into VRAM, like in fighting games.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The main logic is:
 
@@ -90,7 +90,7 @@ The main logic is:
 
 	// Initialization of exported sprite set.
 	{
-		// Load palette in a usual way.
+		// Load palette in the usual way.
 		load_palette( 16 + <EXPORTED_NAME>_PALETTE_SLOT, <exported_name>_palette, <exported_name>_palette_size >> 4 );
 
 		// Set up exported sprite set with SG data array and VRAM address to load SG data to.
@@ -110,6 +110,9 @@ The main logic is:
 		// Set pointers to SG data for delayed use (SPD_FLAG_PEND_SG_DATA).
 		spd_SG_data_params( &SG_DATA_SRC_ADDR, &SG_DATA_SRC_BANK, &SG_DATA_DST_ADDR, &SG_DATA_LEN );
 #endif
+		// NOTE: Single- and double-buffered meta-sprites can be combined in runtime.
+		// NOTE: You can combine any number of exported sprite sets in your program.
+		//	 Call the 'spd_sprite_params' to switch between them.
 	}
 
 	// HuC's SATB initialization.
@@ -161,7 +164,7 @@ The main logic is:
 		vsync();
 
 #if	!DEF_SG_DBL_BUFF
-		// The HuC doesn't allow to handle VBLANK directly, so we use 'vsync' instead for sprite graphics and inner SATB synchronization.
+		// The HuC doesn't allow to handle VBLANK directly, so we use 'vsync' instead for synchronization of sprite graphics and the inner SATB.
 		// This may cause some graphical glitches at the upper part of the screen.
 
 		// Delayed copying of SG data to VRAM to synchronize it with the inner SATB
@@ -185,7 +188,7 @@ const unsigned char SPD_FLAG_PEND_SG_DATA	= 0x01;
 // NOTE: THIS FLAG CAN BE USED WITH UNPACKED SPRITES ONLY! WHERE EACH SPRITE HAS A SEPARATE SG DATA!
 const unsigned char SPD_FLAG_DBL_BUFF		= 0x02;
 
-/* main routines */
+/* main SPD-render routines */
 
 /* void	spd_init() */
 #pragma fastcall spd_init()
@@ -216,7 +219,7 @@ const unsigned char SPD_FLAG_DBL_BUFF		= 0x02;
 #pragma fastcall spd_SG_data_params( word __ax, word __bx, word __cx, word __dx )
 
 /* void spd_copy_SG_data_to_VRAM( word _src_addr, word _src_bank, word _dst_addr, word _len ) */
-#pragma fastcall spd_copy_SG_data_to_VRAM( word __ax, word __bx, word __cx, word __dx )
+#pragma fastcall spd_copy_SG_data_to_VRAM( word __ax, word __bx, word __dx, word __cx )
 
 /* void spd_dbl_buff_VRAM_addr( word _vram_addr ) */
 #pragma fastcall spd_dbl_buff_VRAM_addr( word __ax )
@@ -816,16 +819,9 @@ _push_SG_data:
 	get_SATB_flag SPD_FLAG_DBL_BUFF
 	beq .cont_load_SG_data1		; no double-buffering
 
-	; toggle the double-buffering flag
+	; check which VADDR to use
 
 	lda <__inner_flags
-	tax				; save the last state before modifying
-	eor #INNER_FLAGS_DBL_BUFF
-	sta <__inner_flags
-
-	; check which buffer we'll use
-
-	txa				; restore the previous state
 	and #INNER_FLAGS_DBL_BUFF
 	beq .cont_load_SG_data1		; use the main VADDR
 
@@ -834,11 +830,19 @@ _push_SG_data:
 	bra .cont_load_SG_data2
 
 .cont_load_SG_data1:
-;--- DBL-BUFF ---
+
 	stw <__spr_VADDR, <__di
 
 .cont_load_SG_data2:
 
+	; toggle the double-buffering flag anyway
+	; it helps to avoid glitches when you combine
+	; single- and double-buffered meta-sprites
+
+	lda <__inner_flags
+	eor #INNER_FLAGS_DBL_BUFF
+	sta <__inner_flags
+;--- DBL-BUFF ---
 	get_SATB_flag SPD_FLAG_PEND_SG_DATA
 	bne .copy_SG_data_params
 
@@ -924,7 +928,7 @@ __attr_loop_XY:
 
 	jmp _push_SG_data
 
-	; copy a sprite attributes and modify XY coordinates and the sprite pattern code
+	; copy a sprite attributes, modify XY coordinates and the sprite pattern code
 	; this routine is used when double-buffering is active
 
 __attr_loop_XY_IND:
@@ -1009,13 +1013,12 @@ _spd_SG_data_params.4:
 
 	rts
 
-;// spd_copy_SG_data_to_VRAM( word __ax / src_addr, word __bx / src_bank, word __cx / dst_addr, word __dx / len ) */
+;// spd_copy_SG_data_to_VRAM( word __ax / src_addr, word __bx / src_bank, word __dx / dst_addr, word __cx / len ) */
 ;
 _spd_copy_SG_data_to_VRAM.4:
 
 	stw <__ax, <__si
-	stw <__cx, <__di
-	stw <__dx, <__cx
+	stw <__dx, <__di
 
 	jmp load_vram
 
