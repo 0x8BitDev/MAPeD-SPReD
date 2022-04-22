@@ -169,23 +169,27 @@ coming soon...
 ## SPReD-NES
 
 - `./samples/nes/player_cntrl_NROM-128`	- character controller: idle, running and jumping; 8x8/8x16 mode
-- `./samples/nes/player_cntrl_MMC3`	- the same as previous, but using big sprites with MMC3 1KB CHR bank switching 
+- `./samples/nes/player_cntrl_MMC3`	- the same as previous, but using big meta-sprites with MMC3 1KB CHR bank switching 
 ( +shooting and ducking animations )
 
 ## SPReD-SMS
 
 - `./samples/sms/show_sprite`		- simple show sprite program
 - `./samples/sms/player_cntrl_dog`	- character controller: idle, running and jumping; 8x16 mode
-- `./samples/sms/player_cntrl_marco`	- the same as previous, but using big sprites 
+- `./samples/sms/player_cntrl_marco`	- the same as previous, but using big meta-sprites 
 ( +shooting and ducking animations )
 - `./samples/sms/diff_bpp_test`		- test program for testing the same image with different exported BPP values
 
 ## SPReD-PCE
 
-- `./samples/pce/sprite_render/show_sprites/asm/`	- simple demo that shows test sprites exported as asm data
-- `./samples/pce/sprite_render/show_sprites/huc/`	- the same as previous, but with data exported as PCX images
-- `./samples/pce/sprite_render/animation_test/asm/`	- simple animation demo with big sprites
-- `./samples/pce/sprite_render/player_cntrl/asm/`	- simple character controller: idle, move, kick; Controls: LEFT,RIGHT,UP
+- `./samples/pce/sprite_render/show_sprites/asm/`	- simple demo that shows test meta-sprites exported as asm data
+- `./samples/pce/sprite_render/show_sprites/huc/`	- simple meta-sprites demo written in HuC
+- `./samples/pce/sprite_render/show_sprites/huc2/`	- the same as previous, but with data exported as PCX images
+- `./samples/pce/sprite_render/animation_test/asm/`	- simple animation demo with big meta-sprites in assembly
+- `./samples/pce/sprite_render/animation_test/huc/`	- the same as previous, but written in HuC
+- `./samples/pce/sprite_render/animation_test/huc2/`	- animation demo that shows 3 independent, dynamic meta-sprite sets that fill the entire SATB with optional double-buffering
+- `./samples/pce/sprite_render/player_cntrl/asm/`	- simple character controller with a big meta-sprite character and dynamic sprite data: idle, move, kick; Controls: LEFT, RIGHT, UP
+- `./samples/pce/sprite_render/player_cntrl/huc/`	- simple character controller written in HuC with a big meta-sprite character, dynamic sprite data and optional double-buffering; Controls: LEFT, RIGHT, UP
 
 ---
 **Used tools:**
