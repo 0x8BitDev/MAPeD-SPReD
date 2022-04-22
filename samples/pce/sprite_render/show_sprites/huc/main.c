@@ -15,7 +15,7 @@
 /* exported sprite set initialization */
 void	sprite_set_init()
 {
-	// load palette in a usual way.
+	// load palette in the usual way.
 	load_palette( 16 + SPRITES_TEST_PALETTE_SLOT, sprites_test_palette, sprites_test_palette_size >> 4 );
 
 	// set up exported sprite set with SG data array and VRAM address to load SG data to.

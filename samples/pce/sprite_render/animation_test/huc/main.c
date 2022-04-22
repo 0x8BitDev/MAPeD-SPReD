@@ -29,7 +29,7 @@ anim_desc	test_anim	= { 0, 0, 9, 6, 0, 0 };
 /* exported sprite set initialization */
 void	sprite_set_init()
 {
-	// load palette in a usual way.
+	// load palette in the usual way.
 	load_palette( 16 + ANM_TEST_PALETTE_SLOT, anm_test_palette, anm_test_palette_size >> 4 );
 
 	// set up exported sprite set with SG data array and VRAM address to load SG data to.
@@ -92,7 +92,7 @@ main()
 		/* push sprite to SATB */
 		sprite_show( test_anim.start_frame + test_anim.curr_frame, 118, 176 );
 
-		/* after pushing of all sprites, `spd_SATB_get_pos()` returns the number of sprites in SATB. */
+		/* after pushing all sprites, `spd_SATB_get_pos()` returns the number of sprites in SATB. */
 		satb_update( spd_SATB_get_pos() );
 
 		vsync();
