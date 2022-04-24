@@ -374,16 +374,6 @@ const unsigned char SPD_FLAG_IGNORE_SG		= 0x04;
 	sta high_byte \2
 	.endm
 
-; \1 += A
-	.macro add_a_to_word
-	clc
-	adc low_byte \1
-	sta low_byte \1
-	cla
-	adc high_byte \1
-	sta high_byte \1
-	.endm
-
 ; \1 -= \2 [0..255]
 	.macro sub_N_from_word
 	sec
@@ -602,8 +592,12 @@ _spd_SATB_clear_from.1:
 
 	stw __bsrci, __bdsti
 
-	lda #$01
-	add_a_to_word __bdsti
+	; ++__bdsti
+
+	inc __bdsti
+	bne .cont
+	inc __bdsti + 1
+.cont:
 
 	; __bleni
 
@@ -742,11 +736,11 @@ _spd_SATB_push_sprite.3:
 	inner_flags_dbl_buff_state
 	beq .use_main_buff
 	
-	jmp __attr_loop_XY_IND
+	jmp __attr_transf_XY_IND
 
 .use_main_buff:
 
-	jmp __attr_loop_XY
+	jmp __attr_transf_XY
 
 _push_SG_data:
 
@@ -896,9 +890,13 @@ _push_SG_data:
 
 	; transform XY coordinates
 
-__attr_loop_XY:
+__attr_transf_XY:
 
-	ldy #01				;2
+	cly
+
+.__attr_loop_XY:
+
+	iny				;2
 
 	; attr.Y += __spr_pos_y
 
@@ -933,24 +931,35 @@ __attr_loop_XY:
 	iny
 	sta [<__cx], y
 
-	; calc next attr offset
+	; move to the next attr line
 
-	lda #$08
-	add_a_to_word <__cx
+	tya			;2
+	clc			;2
+	adc #05			;2
+	tay			;2 = 8
 
+	bne .cont		;2 = 10
+
+	inc <__ch
+	cly
+.cont:
 	inc __SATB_pos
 
 	dec <__al			; __al - number of attrs
-	bne __attr_loop_XY
+	bne .__attr_loop_XY
 
 	jmp _push_SG_data
 
 	; transform XY coordinates and modify a sprite pattern code
 	; this routine is used when double-buffering is active
 
-__attr_loop_XY_IND:
+__attr_transf_XY_IND:
 
-	ldy #01
+	cly
+
+.__attr_loop_XY_IND:
+
+	iny
 
 	; attr.Y += __spr_pos_y
 
@@ -1003,15 +1012,21 @@ __attr_loop_XY_IND:
 	iny
 	sta [<__cx], y
 
-	; calc next attr offset
+	; move to the next attr line
 
-	lda #$08
-	add_a_to_word <__cx
+	iny		;2
+	iny		;2
+	iny		;2 = 6
 
+	bne .cont	;2 = 8
+
+	inc <__ch
+	cly
+.cont:
 	inc __SATB_pos
 
 	dec <__al			; __al - number of attrs
-	bne __attr_loop_XY_IND
+	bne .__attr_loop_XY_IND
 
 	jmp _push_SG_data
 
