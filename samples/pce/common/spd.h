@@ -5,7 +5,17 @@
 //
 //######################################################################################################
 
-/*/	SPD-render v0.1
+/*/	SPD-render v0.2
+History:
+
+v0.2
+2022.04.24 - a little optimization of '__attr_loop_XY', '__attr_loop_XY_IND' loops
+2022.04.22 - added SPD_FLAG_IGNORE_SG
+
+v0.1
+2022.04.22 - initial release
+
+~~~~~~~~~~
 
 NOTE:	The SPReD-PCE exports both meta-sprites and simple sprites (16x16,16x32,16x64,32x16,32x32,32x64). The CGX/CGY
 	flags are automatically applied to exported sprites. So you don't need to configure anything in your HuC program.
@@ -30,6 +40,9 @@ The main logic is:
 		// Set up exported sprite set with SG data array and VRAM address to load SG data to.
 		// NOTE: You can combine any number of exported sprite sets in your program.
 		//	 Call the 'spd_sprite_params' to switch between them.
+[upd] v0.2	// NOTE: Passing 'SPD_FLAG_IGNORE_SG' as the third parameter will ignore loading SG to VRAM.
+		//	 It's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
+--->		//	 Such way you avoid loading SG to VRAM twice.
 		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, 0 );
 	}
 
@@ -187,6 +200,10 @@ const unsigned char SPD_FLAG_PEND_SG_DATA	= 0x01;
 // Thanks to elmer/pcengine.proboards.com for suggesting this mode.
 // NOTE: THIS FLAG CAN BE USED WITH UNPACKED SPRITES ONLY! WHERE EACH SPRITE HAS A SEPARATE SG DATA!
 const unsigned char SPD_FLAG_DBL_BUFF		= 0x02;
+
+// Loading sprite graphics to VRAM will be ignored. It's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
+// Such way you avoid loading SG to VRAM twice.
+const unsigned char SPD_FLAG_IGNORE_SG		= 0x04;
 
 /* main SPD-render routines */
 
@@ -392,6 +409,7 @@ const unsigned char SPD_FLAG_DBL_BUFF		= 0x02;
 
 SPD_FLAG_PEND_SG_DATA	= $01
 SPD_FLAG_DBL_BUFF	= $02
+SPD_FLAG_IGNORE_SG	= $04
 
 SATB_SIZE	= 64
 
@@ -732,42 +750,44 @@ _spd_SATB_push_sprite.3:
 
 _push_SG_data:
 
+	ply				; Y - SG bank index
+
 	get_SATB_flag SPD_FLAG_DBL_BUFF
-	bne .ignore_SG_data_checking	; when double-buffering is enabled we should ignore SG data checking to avoid glitches
+	bne .load_SG_data		; when double-buffering is enabled we should ignore SG data checking to avoid glitches
 ;--- DBL-BUFF ---
-	pla				; A - SG bank index
+
+;--- SPD_FLAG_IGNORE_SG ---
+	get_SATB_flag SPD_FLAG_IGNORE_SG
+	bne .ignore_SG_data
+;--- SPD_FLAG_IGNORE_SG ---
 
 	; check if SG data already loaded to VRAM
 
-	cmp __last_SG_bank
+	cpy __last_SG_bank
 	bne .load_SG_data
 
-	; SG data already loaded
+.ignore_SG_data:
+
+	; SG data already loaded or must be ignored
 
 	ldx #1
 	cla
 
 	rts
-;--- DBL-BUFF ---
-.ignore_SG_data_checking:
 
-	pla
-;--- DBL-BUFF ---
 	; load SG data to VRAM
 
 .load_SG_data:
 
-	sta <__last_SG_bank
+	sty <__last_SG_bank
 
 	; __dx = SG bank index x6 ( .word <data_length>, chrN, bank(chrN) )
 
-	tax
-	sta <__dl
+	sty <__dl
 	stz <__dh
 	mul4_word <__dx
 
-	txa
-	sta <__cl
+	sty <__cl
 	stz <__ch
 	mul2_word <__cx
 
@@ -874,42 +894,39 @@ _push_SG_data:
 	
 	rts
 
-	; copy a sprite attributes and modify XY coordinates
+	; transform XY coordinates
 
 __attr_loop_XY:
 
-	cly
+	ldy #01				;2
 
 	; attr.Y += __spr_pos_y
 
-	lda [<__cx], y
-	tax
-	iny
-	lda [<__cx], y
+	lda [<__cx], y			;7 high byte
+	tax				;2
+	dey				;2
+	lda [<__cx], y			;7 low byte
 
-	sax
-	clc
-	adc <__spr_pos_y
-	dey
-	sta [<__cx], y
-	txa
-	adc <__spr_pos_y + 1
-	iny
-	sta [<__cx], y
+	clc				;2
+	adc <__spr_pos_y		;4
+	sta [<__cx], y			;7
+	txa				;2
+	adc <__spr_pos_y + 1		;4
+	iny				;2
+	sta [<__cx], y			;7 = [46]
 
-	iny	
+	iny				;2 = 50
 
 	; attr.X += __spr_pos_x
 
-	lda [<__cx], y
-	tax
 	iny
 	lda [<__cx], y
+	tax
+	dey
+	lda [<__cx], y
 
-	sax
 	clc
 	adc <__spr_pos_x
-	dey
 	sta [<__cx], y
 	txa
 	adc <__spr_pos_x + 1
@@ -928,43 +945,40 @@ __attr_loop_XY:
 
 	jmp _push_SG_data
 
-	; copy a sprite attributes, modify XY coordinates and the sprite pattern code
+	; transform XY coordinates and modify a sprite pattern code
 	; this routine is used when double-buffering is active
 
 __attr_loop_XY_IND:
 
-	cly
+	ldy #01
 
 	; attr.Y += __spr_pos_y
 
 	lda [<__cx], y
 	tax
-	iny
+	dey
 	lda [<__cx], y
 
-	sax
 	clc
 	adc <__spr_pos_y
-	dey
 	sta [<__cx], y
 	txa
 	adc <__spr_pos_y + 1
 	iny
 	sta [<__cx], y
 
-	iny	
+	iny
 
 	; attr.X += __spr_pos_x
 
-	lda [<__cx], y
-	tax
 	iny
 	lda [<__cx], y
+	tax
+	dey
+	lda [<__cx], y
 
-	sax
 	clc
 	adc <__spr_pos_x
-	dey
 	sta [<__cx], y
 	txa
 	adc <__spr_pos_x + 1
@@ -975,15 +989,14 @@ __attr_loop_XY_IND:
 
 	; attr.SG_ind += __spr_SG_offset
 
-	lda [<__cx], y
-	tax
 	iny
 	lda [<__cx], y
+	tax
+	dey
+	lda [<__cx], y
 
-	sax
 	clc
 	adc <__spr_SG_offset
-	dey
 	sta [<__cx], y
 	txa
 	adc <__spr_SG_offset + 1

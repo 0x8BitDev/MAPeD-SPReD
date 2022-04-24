@@ -37,6 +37,9 @@ void	sprite_set_init()
 	//	 call the 'spd_sprite_params' to switch between them.
 	// NOTE: passing ZERO as the third parameter, means that SG data of all sprites must 
 	//	 be packed in a single file!
+	// NOTE: passing 'SPD_FLAG_IGNORE_SG' as the third parameter will ignore loading SG to VRAM.
+	//	 it's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
+	//	 such way you avoid loading SG to VRAM twice.
 	spd_sprite_params( anm_test_SG_arr, ANM_TEST_SPR_VADDR, 0 );
 }
 

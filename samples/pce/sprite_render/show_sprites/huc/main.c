@@ -2,7 +2,7 @@
 //
 // Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
 //
-// Desc: Simple show sprites demo using exported normal sprites and
+// Desc: Simple show sprites demo using exported simple sprites and
 //	 meta-sprites data.
 //
 //##################################################################
@@ -23,6 +23,9 @@ void	sprite_set_init()
 	//	 call the 'spd_sprite_params' to switch between them.
 	// NOTE: passing ZERO as the third parameter, means that SG data of all sprites must 
 	//	 be packed in a single file!
+	// NOTE: passing 'SPD_FLAG_IGNORE_SG' as the third parameter will ignore loading SG to VRAM.
+	//	 it's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
+	//	 such way you avoid loading SG to VRAM twice.
 	spd_sprite_params( sprites_test_SG_arr, SPRITES_TEST_SPR_VADDR, 0 );
 }
 
