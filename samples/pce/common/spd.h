@@ -9,7 +9,7 @@
 History:
 
 v0.2
-2022.04.24 - a little optimization of '__attr_loop_XY', '__attr_loop_XY_IND' loops
+2022.04.24 - optimization of '__attr_loop_XY', '__attr_loop_XY_IND' loops
 2022.04.22 - added SPD_FLAG_IGNORE_SG
 
 v0.1
@@ -77,18 +77,25 @@ The main logic is:
 
 
 	// NOTE: As mentioned before, you can combine the SPD calls with the HuC ones.
-	//	 For example, you can do the following for a simple sprite:
+	//	 For example, you can do the following for a simple static sprites:
+[upd]
+	// Initialization at startup
+	load_palette( ...
+	spd_sprite_params( ...
 
+	init_satb();
 	spd_SATB_set_pos( 0 );
 
 	spd_SATB_push_sprite( my_sprite_16x32, init_x, init_y );
 
 	...
 
+	// In update loop
 	spr_set( 0 );
 	spr_x( new_x );
 	spr_y( new_y );
 
+--->	// I recommend using simple static sprites this way, as it simplifies their initialization and is optimal for runtime.
 	// WARNING: Take into account your sprite origin! It can be configured out of (0, 0) in the SPReD-PCE.
 
 
@@ -374,17 +381,6 @@ const unsigned char SPD_FLAG_IGNORE_SG		= 0x04;
 	sta high_byte \2
 	.endm
 
-; \1 -= \2 [0..255]
-	.macro sub_N_from_word
-	sec
-	lda low_byte \1
-	sbc \2
-	sta low_byte \1
-	lda high_byte \1
-	sbc #$00
-	sta high_byte \1
-	.endm
-
 	.macro get_SATB_flag
 	lda <__SATB_flags
 	and #\1
@@ -553,7 +549,7 @@ _spd_SATB_set_pos.1:
 
 	lda <__al
 	and #SATB_SIZE - 1		; clamp to 0-63
-	sta __SATB_pos
+	sta <__SATB_pos
 
 	rts
 
@@ -595,9 +591,9 @@ _spd_SATB_clear_from.1:
 	; ++__bdsti
 
 	inc __bdsti
-	bne .cont
+	bne .cont1
 	inc __bdsti + 1
-.cont:
+.cont1:
 
 	; __bleni
 
@@ -612,7 +608,14 @@ _spd_SATB_clear_from.1:
 
 	mul8_word __bleni
 
-	sub_N_from_word __bleni, #$01
+	; --__bleni
+
+	dec __bleni
+	lda __bleni
+	eor #$ff
+	bne .cont2
+	dec __bleni + 1
+.cont2:
 
 	jmp __TII
 
@@ -710,7 +713,7 @@ _spd_SATB_push_sprite.3:
 	; calc SATB address to copy sprite data to
 	; _bdsti = __SATB + ( __SATB_pos * 8 )
 
-	lda __SATB_pos
+	lda <__SATB_pos
 	sta <__cl
 	stz <__ch
 	mul8_word <__cx			; __cx - SATB offset in bytes
@@ -757,7 +760,7 @@ _push_SG_data:
 
 	; check if SG data already loaded to VRAM
 
-	cpy __last_SG_bank
+	cpy <__last_SG_bank
 	bne .load_SG_data
 
 .ignore_SG_data:
@@ -787,8 +790,8 @@ _push_SG_data:
 
 	add_word_to_word <__cx, <__dx	
 
-	stw __spr_SG_data_addr, <__si
-	lda __spr_SG_data_bank
+	stw <__spr_SG_data_addr, <__si
+	lda <__spr_SG_data_bank
 	sta <__bl
 
 	jsr _spd_farptr_add_offset
@@ -941,9 +944,8 @@ __attr_transf_XY:
 	bne .cont		;2 = 10
 
 	inc <__ch
-	cly
 .cont:
-	inc __SATB_pos
+	inc <__SATB_pos
 
 	dec <__al			; __al - number of attrs
 	bne .__attr_loop_XY
@@ -1021,9 +1023,8 @@ __attr_transf_XY_IND:
 	bne .cont	;2 = 8
 
 	inc <__ch
-	cly
 .cont:
-	inc __SATB_pos
+	inc <__SATB_pos
 
 	dec <__al			; __al - number of attrs
 	bne .__attr_loop_XY_IND
