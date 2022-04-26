@@ -3,9 +3,9 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1251">
 	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.2  (Win32)">
+	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.7  (Win32)">
 	<META NAME="CREATED" CONTENT="20190702;10061053">
-	<META NAME="CHANGED" CONTENT="20200702;16543922">
+	<META NAME="CHANGED" CONTENT="20220426;18432267">
 	<STYLE TYPE="text/css">
 	<!--
 		p { margin:0; }
@@ -524,12 +524,59 @@ for import:</FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Note:</B></SPAN>
-<SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">BMP images have
-no alpha-channel.</SPAN></SPAN></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>Images import</B></FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<BR>
 </P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>The <B>SPReD</B> supports
+importing images with and without alpha channel.</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Images without alpha
+channel (.bmp, .png) are imported as a regular grid of tiles <B>(a)</B>.
+The resulting sprites can be optimized to remove empty tiles.</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>When importing images
+with alpha channel (.png) only the nearest active tiles will be
+selected in each row of tiles <B>(b)</B>.</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Images with alpha channel
+can be optionally cropped by their alpha channel to reduce the active
+image size and the number of tiles, respectively <B>(c)</B>.</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Thus, if you want to
+minimize the number of tiles in imported sprites, choose between
+options <B>(b)</B> and <B>(c)</B> whichever works best for your
+sprite set.</FONT></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=4 CELLSPACING=0 STYLE="page-break-inside: avoid">
+	<COL WIDTH=85*>
+	<COL WIDTH=85*>
+	<COL WIDTH=85*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=33%>
+			<P LANG="en-US" ALIGN=CENTER><IMG SRC="res/no_alpha.png" NAME="Графический объект4" ALIGN=CENTER WIDTH=289 HEIGHT=379 BORDER=0><BR CLEAR=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>(a)</B></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=33%>
+			<P LANG="en-US" ALIGN=CENTER><IMG SRC="res/alpha_no_cropped.png" NAME="Графический объект5" ALIGN=CENTER WIDTH=289 HEIGHT=379 BORDER=0><BR CLEAR=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>(b)</B></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=33%>
+			<P LANG="en-US" ALIGN=CENTER><IMG SRC="res/cropped_by_alpha.png" NAME="Графический объект6" ALIGN=CENTER WIDTH=289 HEIGHT=379 BORDER=0><BR CLEAR=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>(c)</B></FONT></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P ALIGN=CENTER STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=CENTER STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <DIV ID="Export" DIR="LTR"><A NAME="Export|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="margin-left: 1cm; margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
