@@ -63,7 +63,7 @@ _tr_draw_screen:
 .if	VDC_SCR_DATA
 
 	ldy #$00
-	lda [ tr_curr_scr ], y	; A - chr id
+	lda [ <tr_curr_scr ], y	; A - chr id
 
 	pha
 
@@ -73,10 +73,10 @@ _tr_draw_screen:
 	pha
 	tay
 
-	lda [ tr_CHRs_arr ], y
+	lda [ <tr_CHRs_arr ], y
 	sta _bsrc
 	iny
-	lda [ tr_CHRs_arr ], y
+	lda [ <tr_CHRs_arr ], y
 	sta _bsrc + 1
 
 	stw tr_CHR_VRAM_addr, _bdst
@@ -84,10 +84,10 @@ _tr_draw_screen:
 	pla
 	tay
 
-	lda [ tr_CHRs_size_arr ], y
+	lda [ <tr_CHRs_size_arr ], y
 	sta _blen
 	iny
-	lda [ tr_CHRs_size_arr ], y
+	lda [ <tr_CHRs_size_arr ], y
 	sta _blen + 1
 
 	jsr vdc_copy_to_VRAM	
@@ -115,10 +115,10 @@ _tr_draw_screen:
 	; load BAT
 
 	ldy #$01
-	lda [ tr_curr_scr ], y	; VDC scr data offset low byte
+	lda [ <tr_curr_scr ], y	; VDC scr data offset low byte
 	tax
 	iny
-	lda [ tr_curr_scr ], y	; VDC scr data offset high byte
+	lda [ <tr_curr_scr ], y	; VDC scr data offset high byte
 	tay
 
 	add_word_to_xy tr_VDC_scr_data
