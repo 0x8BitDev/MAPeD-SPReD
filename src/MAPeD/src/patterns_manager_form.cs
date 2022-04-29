@@ -88,7 +88,7 @@ namespace MAPeD
 			{
 				int scr_tile_size = utils.CONST_SCREEN_TILES_SIZE >> 1;
 				
-				m_pattern_image = new Bitmap( scr_tile_size * platform_data.get_screen_tiles_width(), scr_tile_size * platform_data.get_screen_tiles_height(), PixelFormat.Format32bppArgb );
+				m_pattern_image = new Bitmap( scr_tile_size * platform_data.get_screen_tiles_width(), scr_tile_size * platform_data.get_screen_tiles_height(), PixelFormat.Format32bppPArgb );
 				m_gfx = Graphics.FromImage( m_pattern_image );
 			}
 		}

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 29.05.2019
  * Time: 18:27
  */
@@ -189,7 +189,7 @@ namespace SPSeD
 					LineNumberPixBox.Image.Dispose();
 				}
 
-				Bitmap pbox_bmp = new Bitmap( LineNumberPixBox.Width, LineNumberPixBox.Height, PixelFormat.Format32bppArgb );
+				Bitmap pbox_bmp = new Bitmap( LineNumberPixBox.Width, LineNumberPixBox.Height, PixelFormat.Format32bppPArgb );
 				LineNumberPixBox.Image = pbox_bmp;
 				
 				m_gfx = Graphics.FromImage( pbox_bmp );

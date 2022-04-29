@@ -122,9 +122,9 @@ namespace MAPeD
 
 			for( i = 0; i < _cnt; i++ )
 			{
-				bmp = new Bitmap( _size, _size, _size << 2, PixelFormat.Format32bppArgb, handle.AddrOfPinnedObject() );
+				bmp = new Bitmap( _size, _size, _size << 2, PixelFormat.Format32bppPArgb, handle.AddrOfPinnedObject() );
 				
-				il.Images.Add( i.ToString(), bmp );				
+				il.Images.Add( i.ToString(), bmp );
 			}
 			
 			handle.Free();
@@ -529,7 +529,7 @@ namespace MAPeD
 			
 			palette_group.Instance.set_palette( _data );
 
-			Bitmap bmp = new Bitmap( platform_data.get_screen_width_pixels(), platform_data.get_screen_height_pixels(), PixelFormat.Format32bppArgb );
+			Bitmap bmp = new Bitmap( platform_data.get_screen_width_pixels(), platform_data.get_screen_height_pixels(), PixelFormat.Format32bppPArgb );
 			
 			Graphics gfx = Graphics.FromImage( bmp );
 			

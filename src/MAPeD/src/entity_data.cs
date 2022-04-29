@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 12.12.2018
  * Time: 18:27
  */
@@ -331,7 +331,7 @@ namespace MAPeD
 		{
 			if( m_bmp.PixelFormat == PixelFormat.Format8bppIndexed || m_bmp.PixelFormat == PixelFormat.Format4bppIndexed || m_bmp.PixelFormat == PixelFormat.Format1bppIndexed )
 			{
-				Bitmap new_bmp = new Bitmap( m_bmp.Width, m_bmp.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
+				Bitmap new_bmp = new Bitmap( m_bmp.Width, m_bmp.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb );
 				
 		        using( Graphics gfx = Graphics.FromImage( new_bmp ) ) 
 		        {

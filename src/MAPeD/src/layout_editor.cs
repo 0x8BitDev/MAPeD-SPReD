@@ -45,8 +45,8 @@ namespace MAPeD
 		private int		m_last_mouse_x	 = 0;
 		private int		m_last_mouse_y	 = 0;
 
-		private int m_scr_half_width  = 0;
-		private int m_scr_half_height = 0;
+		private int		m_scr_half_width  = 0;
+		private int		m_scr_half_height = 0;
 		
 		private int 	m_sel_screen_slot_id	= -1;
 		private byte	m_active_screen_index	= layout_data.CONST_EMPTY_CELL_ID;
@@ -900,18 +900,38 @@ namespace MAPeD
 		private void draw_screen_data( int _scr_width, int _scr_height, int _scr_size_width, int _scr_size_height, Action< int, layout_screen_data, int, int > _act )
 		{
 			layout_screen_data scr_data;
+			
+			int beg_scr_x;
+			int end_scr_x;
+			int beg_scr_y;
+			int end_scr_y;
 			int scr_x;
 			int scr_y;
 			int i;
 			int j;
 			
-			int scr_ind = 0;
-
-			for( i = 0; i < _scr_height; i++ )
+			// calculate visible region of screens
+			{
+				int offs_x		= transform_to_scr_pos( m_offset_x, m_scr_half_width );
+				int offs_y		= transform_to_scr_pos( m_offset_y, m_scr_half_height );
+	
+				int vp_width	= m_pix_box.Width;
+				int vp_height	= m_pix_box.Height;
+				
+				float scr_size_width_flt	= ( float )_scr_size_width;
+				float scr_size_height_flt	= ( float )_scr_size_height;
+				
+				beg_scr_x = Math.Max( 0, -( int )Math.Ceiling( offs_x / scr_size_width_flt ) );
+				end_scr_x = Math.Min( _scr_width - 1, beg_scr_x + ( int )Math.Ceiling( vp_width / scr_size_width_flt ) );
+				beg_scr_y = Math.Max( 0, -( int )Math.Ceiling( offs_y / scr_size_height_flt ) );
+				end_scr_y = Math.Min( _scr_height - 1, beg_scr_y + ( int )Math.Ceiling( vp_height / scr_size_height_flt ) );
+			}
+			
+			for( i = beg_scr_y; i <= end_scr_y; i++ )
 			{
 				scr_y = screen_pos_y_by_slot_id( i );
 				
-				for( j = 0; j < _scr_width; j++ )
+				for( j = beg_scr_x; j <= end_scr_x; j++ )
 				{
 					scr_data = m_layout.get_data( j, i );
 					
@@ -935,12 +955,10 @@ namespace MAPeD
 							}
 							else
 							{
-								_act( scr_ind, scr_data, scr_x, scr_y );
+								_act( ( ( i * _scr_width ) + j ), scr_data, scr_x, scr_y );
 							}
 						}
 					}
-					
-					++scr_ind;
 				}
 			}
 		}
@@ -1744,16 +1762,16 @@ namespace MAPeD
 		
 		private void set_high_quality_render_mode( bool _on )
 		{
-			m_high_quality_render = _on;
+			m_high_quality_render = ( m_scale < 1.0 ) ? _on:true;
 		
-			enable_smoothing_mode( ( m_scale != 2 ) ? _on:false );
+			enable_smoothing_mode( ( m_scale < 1.0 ) ? _on:false );
 		}
 
 		private void update_mark( Color _color, Action _act, bool _clear = true )
 		{
 			if( m_scr_mark_img == null )
 			{
-				m_scr_mark_img = new Bitmap( platform_data.get_screen_mark_image_size(), platform_data.get_screen_mark_image_size(), PixelFormat.Format32bppArgb );
+				m_scr_mark_img = new Bitmap( platform_data.get_screen_mark_image_size(), platform_data.get_screen_mark_image_size(), PixelFormat.Format32bppPArgb );
 				m_scr_mark_gfx = Graphics.FromImage( m_scr_mark_img );
 				
 				m_scr_mark_gfx.SmoothingMode 		= SmoothingMode.HighSpeed;

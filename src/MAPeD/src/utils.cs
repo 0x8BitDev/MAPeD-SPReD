@@ -356,7 +356,7 @@ namespace MAPeD
 				}
 			}
 			
-			Bitmap bmp = new Bitmap( _width, _height, _width<<2, PixelFormat.Format32bppArgb, handle.AddrOfPinnedObject() );
+			Bitmap bmp = new Bitmap( _width, _height, _width<<2, PixelFormat.Format32bppPArgb, handle.AddrOfPinnedObject() );
 
 			handle.Free();
 			
