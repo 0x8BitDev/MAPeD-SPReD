@@ -77,7 +77,7 @@ The main logic is:
 
 
 	// NOTE: As mentioned before, you can combine the SPD calls with the HuC ones.
-	//	 For example, you can do the following for a simple static sprites:
+	//	 For example, you can do the following for simple static sprites:
 [upd]
 	// Initialization at startup
 	load_palette( ...
@@ -623,7 +623,7 @@ _spd_SATB_clear_from.1:
 ;
 _spd_SATB_push_sprite.4:
 
-	; offset x6 -> sizeof( spd_ANM_FRAME )
+	; offset x6 -> sizeof( spd_SPRITE )
 
 	lda <__dl
 	asl a
@@ -660,7 +660,7 @@ _spd_SATB_push_sprite.3:
 	adc <__cx + 1
 	sta <__spr_pos_y + 1
 
-	jsr map_data			; map spd_ANM_FRAME data
+	jsr map_data			; map spd_SPRITE data
 
 	; get meta-sprite address and bank
 

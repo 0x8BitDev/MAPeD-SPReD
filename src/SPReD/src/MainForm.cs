@@ -1899,9 +1899,9 @@ namespace SPReD
 #endif
 
 #if DEF_PCE
-						c_sw.WriteLine( "typedef struct\n{\n\tconst unsigned short*\tsprite_data;\n\tunsigned char\t\tbank;\n\tunsigned short\t\tsize;\n\tunsigned char\t\tSG_ind;\n} spd_ANM_FRAME;\n\n" );
+						c_sw.WriteLine( "#ifndef\tDEF_TYPE_SPD_SPRITE\n#define\tDEF_TYPE_SPD_SPRITE\ntypedef struct\n{\n\tconst unsigned short*\tattrs;\n\tunsigned char\t\tbank;\n\tunsigned short\t\tsize;\n\tunsigned char\t\tSG_ind;\n} spd_SPRITE;\n#endif\t//DEF_TYPE_SPD_SPRITE\n\n" );
 #else
-						c_sw.WriteLine( "typedef struct\n{\n\tconst unsigned short*\tsprite_data;\n\tunsigned short\t\tsize;\n\tunsigned char\t\tCHR_ind;\n} spd_ANM_FRAME;\n\n" );
+						c_sw.WriteLine( "#ifndef\tDEF_TYPE_SPD_SPRITE\n#define\tDEF_TYPE_SPD_SPRITE\ntypedef struct\n{\n\tconst unsigned short*\tattrs;\n\tunsigned short\t\tsize;\n\tunsigned char\t\tCHR_ind;\n} spd_SPRITE;\n#endif\t//DEF_TYPE_SPD_SPRITE\n\n" );
 #endif
 						data_prefix = "_";
 					}
@@ -1971,7 +1971,7 @@ namespace SPReD
 						if( !_asm_file )
 						{
 							c_sw.WriteLine( "const unsigned short\t" + filename + "_frames_cnt\t= " + _spr_cnt + ";" );
-							c_sw.WriteLine( "extern spd_ANM_FRAME\t" + filename + "_frames_data[];\n" );
+							c_sw.WriteLine( "extern spd_SPRITE\t" + filename + "_frames_data[];\n" );
 						}
 						
 						bool enable_comments = true;
@@ -2008,7 +2008,7 @@ namespace SPReD
 							{
 								c_sw.WriteLine( "const unsigned " + ( _spr_cnt >= 256 ? "short":"char" ) + "\tSPR_" + spr.name.ToUpper() + "\t= " + i + ";" );
 								
-								post_spr_data += "extern spd_ANM_FRAME*\t" + spr.name + "_frame;\n";
+								post_spr_data += "extern spd_SPRITE*\t" + spr.name + "_frame;\n";
 							}
 
 							enable_comments = false;

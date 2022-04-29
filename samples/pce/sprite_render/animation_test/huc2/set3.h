@@ -10,13 +10,16 @@
 #define SET3_PALETTE_SLOT	2
 
 
+#ifndef	DEF_TYPE_SPD_SPRITE
+#define	DEF_TYPE_SPD_SPRITE
 typedef struct
 {
-	const unsigned short*	sprite_data;
+	const unsigned short*	attrs;
 	unsigned char		bank;
 	unsigned short		size;
 	unsigned char		SG_ind;
-} spd_ANM_FRAME;
+} spd_SPRITE;
+#endif	//DEF_TYPE_SPD_SPRITE
 
 
 extern unsigned short*	set3_SG_arr;
@@ -24,7 +27,7 @@ const unsigned short	set3_palette_size	= 16;	// words
 
 extern unsigned short*	set3_palette;
 const unsigned short	set3_frames_cnt	= 12;
-extern spd_ANM_FRAME	set3_frames_data[];
+extern spd_SPRITE	set3_frames_data[];
 
 const unsigned char	SPR_MPWR_IDLE01_LEFT	= 0;
 const unsigned char	SPR_MPWR_WALK01_LEFT	= 1;
@@ -39,16 +42,16 @@ const unsigned char	SPR_MPWR_KICK03_LEFT	= 9;
 const unsigned char	SPR_MPWR_KICK04_REF02_LEFT	= 10;
 const unsigned char	SPR_MPWR_KICK05_REF01_LEFT	= 11;
 
-extern spd_ANM_FRAME*	mpwr_idle01_LEFT_frame;
-extern spd_ANM_FRAME*	mpwr_walk01_LEFT_frame;
-extern spd_ANM_FRAME*	mpwr_walk02_LEFT_frame;
-extern spd_ANM_FRAME*	mpwr_walk03_LEFT_frame;
-extern spd_ANM_FRAME*	mpwr_walk04_LEFT_frame;
-extern spd_ANM_FRAME*	mpwr_walk05_LEFT_frame;
-extern spd_ANM_FRAME*	mpwr_walk06_LEFT_frame;
-extern spd_ANM_FRAME*	mpwr_kick01_LEFT_frame;
-extern spd_ANM_FRAME*	mpwr_kick02_LEFT_frame;
-extern spd_ANM_FRAME*	mpwr_kick03_LEFT_frame;
-extern spd_ANM_FRAME*	mpwr_kick04_ref02_LEFT_frame;
-extern spd_ANM_FRAME*	mpwr_kick05_ref01_LEFT_frame;
+extern spd_SPRITE*	mpwr_idle01_LEFT_frame;
+extern spd_SPRITE*	mpwr_walk01_LEFT_frame;
+extern spd_SPRITE*	mpwr_walk02_LEFT_frame;
+extern spd_SPRITE*	mpwr_walk03_LEFT_frame;
+extern spd_SPRITE*	mpwr_walk04_LEFT_frame;
+extern spd_SPRITE*	mpwr_walk05_LEFT_frame;
+extern spd_SPRITE*	mpwr_walk06_LEFT_frame;
+extern spd_SPRITE*	mpwr_kick01_LEFT_frame;
+extern spd_SPRITE*	mpwr_kick02_LEFT_frame;
+extern spd_SPRITE*	mpwr_kick03_LEFT_frame;
+extern spd_SPRITE*	mpwr_kick04_ref02_LEFT_frame;
+extern spd_SPRITE*	mpwr_kick05_ref01_LEFT_frame;
 

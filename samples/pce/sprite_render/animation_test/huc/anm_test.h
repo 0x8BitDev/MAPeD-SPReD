@@ -10,13 +10,16 @@
 #define ANM_TEST_PALETTE_SLOT	0
 
 
+#ifndef	DEF_TYPE_SPD_SPRITE
+#define	DEF_TYPE_SPD_SPRITE
 typedef struct
 {
-	const unsigned short*	sprite_data;
+	const unsigned short*	attrs;
 	unsigned char		bank;
 	unsigned short		size;
 	unsigned char		SG_ind;
-} spd_ANM_FRAME;
+} spd_SPRITE;
+#endif	//DEF_TYPE_SPD_SPRITE
 
 
 extern unsigned short*	anm_test_SG_arr;
@@ -24,7 +27,7 @@ const unsigned short	anm_test_palette_size	= 16;	// words
 
 extern unsigned short*	anm_test_palette;
 const unsigned short	anm_test_frames_cnt	= 6;
-extern spd_ANM_FRAME	anm_test_frames_data[];
+extern spd_SPRITE	anm_test_frames_data[];
 
 const unsigned char	SPR_MARTHA_PUNCH01	= 0;
 const unsigned char	SPR_MARTHA_PUNCH02	= 1;
@@ -33,10 +36,10 @@ const unsigned char	SPR_MARTHA_PUNCH04	= 3;
 const unsigned char	SPR_MARTHA_PUNCH05	= 4;
 const unsigned char	SPR_MARTHA_PUNCH06_REF04	= 5;
 
-extern spd_ANM_FRAME*	martha_punch01_frame;
-extern spd_ANM_FRAME*	martha_punch02_frame;
-extern spd_ANM_FRAME*	martha_punch03_frame;
-extern spd_ANM_FRAME*	martha_punch04_frame;
-extern spd_ANM_FRAME*	martha_punch05_frame;
-extern spd_ANM_FRAME*	martha_punch06_ref04_frame;
+extern spd_SPRITE*	martha_punch01_frame;
+extern spd_SPRITE*	martha_punch02_frame;
+extern spd_SPRITE*	martha_punch03_frame;
+extern spd_SPRITE*	martha_punch04_frame;
+extern spd_SPRITE*	martha_punch05_frame;
+extern spd_SPRITE*	martha_punch06_ref04_frame;
 
