@@ -1,11 +1,12 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 15:20
  */
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
@@ -27,7 +28,7 @@ namespace SPReD
 		{
 			m_pix_box = _pbox;
 			
-			m_main_bmp = new Bitmap( _pbox.Width, _pbox.Height );
+			m_main_bmp = new Bitmap( _pbox.Width, _pbox.Height, PixelFormat.Format32bppPArgb );
 			_pbox.Image = m_main_bmp;
 			
 			m_gfx = Graphics.FromImage( m_main_bmp );
@@ -36,7 +37,7 @@ namespace SPReD
 			
 			m_pen = new Pen( Color.White );
 			m_pen.EndCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;
-			m_pen.StartCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;			
+			m_pen.StartCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;
 		}
 		
 		protected void clear_background( int _color )

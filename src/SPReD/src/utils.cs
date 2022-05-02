@@ -159,7 +159,7 @@ namespace SPReD
 
 		public static Bitmap create_CHR_bitmap( CHR_data _chr_data, CHR_data_attr _attr, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null )
 		{
-			Bitmap bmp = new Bitmap( CONST_CHR_SIDE_PIXELS_CNT, CONST_CHR_SIDE_PIXELS_CNT, PixelFormat.Format32bppArgb );
+			Bitmap bmp = new Bitmap( CONST_CHR_SIDE_PIXELS_CNT, CONST_CHR_SIDE_PIXELS_CNT, PixelFormat.Format32bppPArgb );
 			
 			update_CHR_bitmap( _chr_data, bmp, _attr, _alpha, _plt_ind, _plt_arr );
 			
@@ -168,7 +168,7 @@ namespace SPReD
 		
 		public static void update_CHR_bitmap( CHR_data _chr_data, Bitmap _bmp, CHR_data_attr _attr, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
 		{
-			BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, _bmp.Width, _bmp.Height ), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb );
+			BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, _bmp.Width, _bmp.Height ), ImageLockMode.ReadWrite, PixelFormat.Format32bppPArgb );
 			
 			if( bmp_data != null )
 			{
@@ -182,7 +182,7 @@ namespace SPReD
 
 		public static Bitmap create_bitmap8x16( CHR_data _chr_data1, CHR_data _chr_data2, CHR_data_attr _attr, bool _alpha, int _plt_ind, palette_small[] _plt_arr = null )
 		{
-			Bitmap bmp = new Bitmap( 8, 16, PixelFormat.Format32bppArgb );
+			Bitmap bmp = new Bitmap( 8, 16, PixelFormat.Format32bppPArgb );
 			
 			update_bitmap8x16( _chr_data1, _chr_data2, bmp, _attr, _alpha, _plt_ind, _plt_arr );
 			
@@ -191,7 +191,7 @@ namespace SPReD
 		
 		public static void update_bitmap8x16( CHR_data _chr_data1, CHR_data _chr_data2, Bitmap _bmp, CHR_data_attr _attr, bool  _alpha, int _plt_ind, palette_small[] _plt_arr )
 		{
-			BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, _bmp.Width, _bmp.Height ), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb );
+			BitmapData bmp_data = _bmp.LockBits( new Rectangle( 0, 0, _bmp.Width, _bmp.Height ), ImageLockMode.ReadWrite, PixelFormat.Format32bppPArgb );
 			
 			if( bmp_data != null )
 			{
