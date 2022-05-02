@@ -1,7 +1,8 @@
 //################################################################
 //
 // Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: Static screens switching demo with multiple maps support
+// Desc: Static screens switching demo for bidirectional map data
+//	 with multiple maps support
 //
 // Supported flags:
 //

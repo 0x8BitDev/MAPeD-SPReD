@@ -1,9 +1,16 @@
 //######################################################################################################
 //
 // This file is a part of the MAPeD-PCE Copyright 2017-2022 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: It contains some HuC helper functions, structures and a tilemap rendering implementation
+// Desc: It contains some HuC helper functions, structures and a tilemap rendering library
 //
 //######################################################################################################
+
+/*/	MPD-render v0.1
+History:
+
+v0.1
+2022.02.16 - initial release
+*/
 
 //
 // public functions:
@@ -327,6 +334,8 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 /* tilemap rendering functions	*/
 /*				*/
 /********************************/
+
+const u8 mpd_ver[] = { "M", "P", "D", "v", "0", ".", "1", 0 };
 
 /* flags */
 

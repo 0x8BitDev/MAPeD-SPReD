@@ -195,6 +195,8 @@ The main logic is:
 	That`s it! :)
 /*/
 
+const unsigned char spd_ver[] = { "S", "P", "D", "v", "0", ".", "2", 0 };
+
 /* SPD flag(s) */
 
 // Copies SG data parameters: src_addr/src_bank/vram_addr/len for delayed use on VBLANK;

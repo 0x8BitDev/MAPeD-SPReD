@@ -84,6 +84,8 @@ bool	mpd_tile_prop_demo_init()
 	/* clear display */
 	cls();
 
+	put_string( mpd_ver, 25, 27 );
+
 	put_string( "Maps:  /", 0, 0 );
 	put_number( MAPS_CNT, 2, 5, 0 );
 	put_number( valid_maps_cnt, 2, 8, 0 );
