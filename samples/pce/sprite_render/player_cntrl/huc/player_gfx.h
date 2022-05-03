@@ -23,6 +23,7 @@ typedef struct
 
 
 extern unsigned short*	player_gfx_SG_arr;
+const unsigned char	player_gfx_SG_cnt	= 10;	// graphics banks count
 const unsigned short	player_gfx_palette_size	= 16;	// words
 
 extern unsigned short*	player_gfx_palette;

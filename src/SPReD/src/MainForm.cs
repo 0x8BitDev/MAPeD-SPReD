@@ -1923,8 +1923,10 @@ namespace SPReD
 					{
 #if DEF_PCE
 						c_sw.WriteLine( "extern unsigned short*\t" + filename + "_SG_arr;" );
+						c_sw.WriteLine( "const unsigned char\t" + filename + "_SG_cnt\t= " + m_sprites_proc.get_CHR_banks().Count + ";\t// graphics banks count" );
 #else
 						c_sw.WriteLine( "extern unsigned short*\t" + filename + "_CHR_arr;" );
+						c_sw.WriteLine( "const unsigned char\t" + filename + "_CHR_cnt\t= " + m_sprites_proc.get_CHR_banks().Count + ";\t// graphics banks count" );
 #endif
 					}
 					

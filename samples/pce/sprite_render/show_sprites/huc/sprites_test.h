@@ -23,6 +23,7 @@ typedef struct
 
 
 extern unsigned short*	sprites_test_SG_arr;
+const unsigned char	sprites_test_SG_cnt	= 1;	// graphics banks count
 const unsigned short	sprites_test_palette_size	= 96;	// words
 
 extern unsigned short*	sprites_test_palette;

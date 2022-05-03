@@ -23,6 +23,7 @@ typedef struct
 
 
 extern unsigned short*	set3_SG_arr;
+const unsigned char	set3_SG_cnt	= 10;	// graphics banks count
 const unsigned short	set3_palette_size	= 16;	// words
 
 extern unsigned short*	set3_palette;
