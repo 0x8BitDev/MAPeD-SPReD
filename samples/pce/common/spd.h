@@ -5,12 +5,15 @@
 //
 //######################################################################################################
 
-/*/	SPD-render v0.2
+/*/	SPD-render v0.3
 History:
+
+v0.3
+2022.05.03 - added 'spd_copy_SG_to_VRAM( _SG_ind )'
 
 v0.2
 2022.04.24 - optimization of '__attr_loop_XY', '__attr_loop_XY_IND' loops
-2022.04.22 - added SPD_FLAG_IGNORE_SG
+2022.04.22 - added 'SPD_FLAG_IGNORE_SG'
 
 v0.1
 2022.04.22 - initial release
@@ -44,6 +47,15 @@ The main logic is:
 		//	 It's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
 --->		//	 Such way you avoid loading SG to VRAM twice.
 		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, 0 );
+
+[upd] v0.3	// NOTE: There are two ways to load SG data to VRAM:
+		//	 1. Indirect loading, when you push the first sprite by calling 'spd_SATB_push_sprite'.
+		//	 The third argument for the 'spd_sprite_params' must be ZERO.
+		//
+		//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a SG data index. It's always ZERO for PACKED sprites.
+		//	 The third argument for the 'spd_sprite_params' must be 'SPD_FLAG_IGNORE_SG'.
+		//
+-->		//	 spd_copy_SG_data_to_VRAM( _SG_ind ) - '_SG_ind' is an index in the '<exported_name>_SG_arr' array
 	}
 
 	// HuC's SATB initialization.
@@ -66,7 +78,8 @@ The main logic is:
 		// (see exported .h file for generated data)
 		spd_SATB_push_sprite( <animation_name>_frame, _x, _y );
 
-		// NOTE: SG data will be automatically loaded once to VRAM at first call to 'spd_SATB_push_sprite' (!)
+[upd] v0.3	// NOTE: SG data will be automatically loaded once to VRAM at first call to the 'spd_SATB_push_sprite',
+-->		//	 when the third parameter passed to the 'spd_sprite_params' is ZERO (!)
 		// NOTE: If meta-sprite does not fit into SATB, it will be ignored!
 		// NOTE: 'spd_SATB_push_sprite' returns: 1-Ok; 0-SATB overflow
 	}
@@ -195,7 +208,7 @@ The main logic is:
 	That`s it! :)
 /*/
 
-const unsigned char spd_ver[] = { "S", "P", "D", "v", "0", ".", "2", 0 };
+const unsigned char spd_ver[] = { "S", "P", "D", "v", "0", ".", "3", 0 };
 
 /* SPD flag(s) */
 
@@ -246,6 +259,9 @@ const unsigned char SPD_FLAG_IGNORE_SG		= 0x04;
 
 /* void spd_copy_SG_data_to_VRAM( word _src_addr, word _src_bank, word _dst_addr, word _len ) */
 #pragma fastcall spd_copy_SG_data_to_VRAM( word __ax, word __bx, word __dx, word __cx )
+
+/* void spd_copy_SG_data_to_VRAM( byte _SG_index ) */
+#pragma fastcall spd_copy_SG_data_to_VRAM( byte __al )
 
 /* void spd_dbl_buff_VRAM_addr( word _vram_addr ) */
 #pragma fastcall spd_dbl_buff_VRAM_addr( word __ax )
@@ -752,7 +768,7 @@ _push_SG_data:
 	ply				; Y - SG bank index
 
 	get_SATB_flag SPD_FLAG_DBL_BUFF
-	bne .load_SG_data		; when double-buffering is enabled we should ignore SG data checking to avoid glitches
+	bne _load_SG_data		; when double-buffering is enabled we should ignore SG data checking to avoid glitches
 ;--- DBL-BUFF ---
 
 ;--- SPD_FLAG_IGNORE_SG ---
@@ -763,7 +779,7 @@ _push_SG_data:
 	; check if SG data already loaded to VRAM
 
 	cpy <__last_SG_bank
-	bne .load_SG_data
+	bne _load_SG_data
 
 .ignore_SG_data:
 
@@ -776,7 +792,7 @@ _push_SG_data:
 
 	; load SG data to VRAM
 
-.load_SG_data:
+_load_SG_data:
 
 	sty <__last_SG_bank
 
@@ -1052,5 +1068,14 @@ _spd_copy_SG_data_to_VRAM.4:
 	stw <__dx, <__di
 
 	jmp load_vram
+
+;// spd_copy_SG_data_to_VRAM( byte __al / _SG_index )
+;
+_spd_copy_SG_data_to_VRAM.1
+
+	lda <__al
+	tay
+
+	jmp _load_SG_data
 
 #endasm
