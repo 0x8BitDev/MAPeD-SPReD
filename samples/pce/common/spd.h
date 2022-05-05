@@ -55,7 +55,7 @@ The main logic is:
 		//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a SG data index. It's always ZERO for PACKED sprites.
 		//	 The third argument for the 'spd_sprite_params' must be 'SPD_FLAG_IGNORE_SG'.
 		//
--->		//	 spd_copy_SG_data_to_VRAM( _SG_ind ) - '_SG_ind' is an index in the '<exported_name>_SG_arr' array
+--->		//	 spd_copy_SG_data_to_VRAM( _SG_ind ) - '_SG_ind' is an index in the '<exported_name>_SG_arr' array
 	}
 
 	// HuC's SATB initialization.
@@ -79,7 +79,7 @@ The main logic is:
 		spd_SATB_push_sprite( <animation_name>_frame, _x, _y );
 
 [upd] v0.3	// NOTE: SG data will be automatically loaded once to VRAM at first call to the 'spd_SATB_push_sprite',
--->		//	 when the third parameter passed to the 'spd_sprite_params' is ZERO (!)
+--->		//	 when the third parameter passed to the 'spd_sprite_params' is ZERO (!)
 		// NOTE: If meta-sprite does not fit into SATB, it will be ignored!
 		// NOTE: 'spd_SATB_push_sprite' returns: 1-Ok; 0-SATB overflow
 	}
@@ -511,7 +511,7 @@ _spd_init:
 
 	rts
 
-;/* spd_sprite_params( farptr __bl:__si / SG_data, word __dx / vaddr, byte __al / flags ) */
+;// spd_sprite_params( farptr __bl:__si / SG_data, word __dx / vaddr, byte __al / flags )
 ;
 _spd_sprite_params.3:
 
@@ -529,7 +529,7 @@ _spd_sprite_params.3:
 
 	rts
 
-;/* spd_dbl_buff_VRAM_addr( word __ax / vram_addr ) */
+;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr )
 ;
 _spd_dbl_buff_VRAM_addr.1:
 
@@ -561,7 +561,7 @@ _spd_dbl_buff_VRAM_addr.1:
 
 	rts
 
-;/* spd_SATB_set_pos( byte __al / pos ) */
+;// spd_SATB_set_pos( byte __al / pos )
 ;
 _spd_SATB_set_pos.1:
 
@@ -579,7 +579,7 @@ _spd_SATB_get_pos:
 
 	rts
 
-;/* spd_SATB_clear_from( byte __al / pos ) */
+;// spd_SATB_clear_from( byte __al / pos )
 ;
 _spd_SATB_clear_from.1:
 
@@ -1049,7 +1049,7 @@ __attr_transf_XY_IND:
 
 	jmp _push_SG_data
 
-;// spd_SG_data_params( word __ax / src_addr, word __bx / src_bank, word __cx / dst_addr, word __dx / len ) */
+;// spd_SG_data_params( word __ax / src_addr, word __bx / src_bank, word __cx / dst_addr, word __dx / len )
 ;
 _spd_SG_data_params.4:
 
@@ -1060,7 +1060,7 @@ _spd_SG_data_params.4:
 
 	rts
 
-;// spd_copy_SG_data_to_VRAM( word __ax / src_addr, word __bx / src_bank, word __dx / dst_addr, word __cx / len ) */
+;// spd_copy_SG_data_to_VRAM( word __ax / src_addr, word __bx / src_bank, word __dx / dst_addr, word __cx / len )
 ;
 _spd_copy_SG_data_to_VRAM.4:
 
