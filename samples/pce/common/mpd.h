@@ -5,8 +5,13 @@
 //
 //######################################################################################################
 
-/*/	MPD-render v0.1
+/*/	MPD-render v0.2
 History:
+
+v0.2
+2022.05.05 - added 'mpd_draw_screen_by_scr_data( mpd_SCREEN* _scr_data )' for bidir maps
+2022.05.05 - added 'mpd_draw_screen_by_pos( u16 _x, u16 _y )' for multidir maps
+2022.05.04 - added 'mpd_draw_screen_by_scr_ind( u16 _scr_ind )' for multidir maps
 
 v0.1
 2022.02.16 - initial release
@@ -29,6 +34,16 @@ v0.1
 // #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 //
 // void		mpd_draw_screen()
+//
+// #if		FLAG_MODE_MULTIDIR_SCROLL
+// void		mpd_draw_screen_by_scr_ind( u16 _scr_ind );
+// void		mpd_draw_screen_by_pos( u16 _x, u16 _y );
+// #endif	//FLAG_MODE_MULTIDIR_SCROLL
+//
+// #if		FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
+// void		mpd_draw_screen_by_scr_data( mpd_SCREEN* _scr_data );
+// #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
+//
 // bool		mpd_check_adj_screen( u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
 // u8		mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; result: property id
 //
@@ -335,7 +350,7 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 /*				*/
 /********************************/
 
-const u8 mpd_ver[] = { "M", "P", "D", "v", "0", ".", "1", 0 };
+const u8 mpd_ver[] = { "M", "P", "D", "v", "0", ".", "2", 0 };
 
 /* flags */
 
@@ -360,6 +375,8 @@ u16		__scr_tiles_height_tbl[ ScrTilesWidth ];
 #if	FLAG_MODE_MULTIDIR_SCROLL
 u16		__map_tiles_width;
 u16		__map_tiles_height;
+u8		__map_scr_width;
+u8		__map_scr_height;
 u16		__cropped_map_width;	// active map area = map_width_in_pixels - scr_width_in_pixels
 u16		__cropped_map_height;	// the same in height
 u16		__init_tiles_offset;	// to draw a start screen
@@ -470,15 +487,6 @@ void	mpd_init( u8 _map_ind, mpd_scroll_step _step )
 void	mpd_init( u8 _map_ind )
 #endif
 {
-#if	FLAG_MODE_MULTIDIR_SCROLL
-	u8	map_scr_width;
-	u8	map_scr_height;
-	u16	start_scr;
-	u16	LUT_pos_x;
-	u16	LUT_pos_y;
-	u16	LUT_offset;
-#endif	//FLAG_MODE_MULTIDIR_SCROLL
-
 #if	!FLAG_MODE_MULTIDIR_SCROLL
 	u16	n;
 	u16	data_acc;
@@ -530,46 +538,16 @@ void	mpd_init( u8 _map_ind )
 	__maps_offset		= mpd_farpeekw( mpd_MapsOffs,	__map_ind_mul2 );
 	__maps_tbl_offset	= mpd_farpeekw( mpd_MapsTblOffs,__map_ind_mul2 );
 
-	map_scr_width	= mpd_MapsDimArr[ __map_ind_mul2 ];
-	map_scr_height	= mpd_MapsDimArr[ __map_ind_mul2 + 1 ];
+	__map_scr_width		= mpd_MapsDimArr[ __map_ind_mul2 ];
+	__map_scr_height	= mpd_MapsDimArr[ __map_ind_mul2 + 1 ];
 
-	__map_tiles_width	= map_scr_width * ScrTilesWidth;
-	__map_tiles_height	= map_scr_height * ScrTilesHeight;
+	__map_tiles_width	= __map_scr_width * ScrTilesWidth;
+	__map_tiles_height	= __map_scr_height * ScrTilesHeight;
 
-	__cropped_map_width	= ( map_scr_width * ScrPixelsWidth ) - ScrPixelsWidth;
-	__cropped_map_height	= ( map_scr_height * ScrPixelsHeight ) - ScrPixelsHeight;
+	__cropped_map_width	= ( __map_scr_width * ScrPixelsWidth ) - ScrPixelsWidth;
+	__cropped_map_height	= ( __map_scr_height * ScrPixelsHeight ) - ScrPixelsHeight;
 
-	start_scr	= mpd_StartScrArr[ _map_ind ];
-
-	LUT_pos_x	= ScrTilesWidth * ( start_scr % map_scr_width );
-
-#if	FLAG_TILES2X2
-	__scroll_x	= LUT_pos_x << 4;
-#elif	FLAG_TILES4X4
-	__scroll_x	= LUT_pos_x << 5;
-#endif	//FLAG_TILES2X2|FLAG_TILES4X4
-
-	LUT_pos_y	= ScrTilesHeight * ( start_scr / map_scr_width );
-
-#if	FLAG_TILES2X2
-	__scroll_y	= LUT_pos_y << 4;
-#elif	FLAG_TILES4X4
-	__scroll_y	= LUT_pos_y << 5;
-#endif	//FLAG_TILES2X2|FLAG_TILES4X4
-
-#if	FLAG_DIR_COLUMNS
-	LUT_offset		= __maps_tbl_offset + ( LUT_pos_x << 1 );
-	__init_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, LUT_offset ) + LUT_pos_y;
-#elif	FLAG_DIR_ROWS
-	__height_scr_step	= __map_tiles_width * ScrTilesHeight;
-	LUT_offset		= __maps_tbl_offset + ( LUT_pos_y << 1 );
-	__init_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, LUT_offset ) + LUT_pos_x;
-#endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
-
-	__horiz_dir_pos	= __scroll_x;
-	__vert_dir_pos	= __scroll_y;
-
-	__mpd_update_data_offsets();
+	__mpd_calc_scr_pos_by_scr_ind( mpd_StartScrArr[ _map_ind ] );
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	__curr_chr_id_mul2	= 0xff;
@@ -670,6 +648,48 @@ void	__mpd_draw_tiled_screen()
 #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
+void	__mpd_calc_scr_pos_by_scr_ind( u16 _scr_ind )
+{
+	u16	LUT_pos_x;
+	u16	LUT_pos_y;
+
+	LUT_pos_x	= ScrTilesWidth * ( _scr_ind % __map_scr_width );
+	LUT_pos_y	= ScrTilesHeight * ( _scr_ind / __map_scr_width );
+
+	__mpd_calc_scr_pos_by_LUT_pos( LUT_pos_x, LUT_pos_y );
+}
+
+void	__mpd_calc_scr_pos_by_LUT_pos( u16 _LUT_pos_x, u16 _LUT_pos_y )
+{
+	u16	LUT_offset;
+
+#if	FLAG_TILES2X2
+	__scroll_x	= _LUT_pos_x << 4;
+#elif	FLAG_TILES4X4
+	__scroll_x	= _LUT_pos_x << 5;
+#endif	//FLAG_TILES2X2|FLAG_TILES4X4
+
+#if	FLAG_TILES2X2
+	__scroll_y	= _LUT_pos_y << 4;
+#elif	FLAG_TILES4X4
+	__scroll_y	= _LUT_pos_y << 5;
+#endif	//FLAG_TILES2X2|FLAG_TILES4X4
+
+#if	FLAG_DIR_COLUMNS
+	LUT_offset		= __maps_tbl_offset + ( _LUT_pos_x << 1 );
+	__init_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, LUT_offset ) + _LUT_pos_y;
+#elif	FLAG_DIR_ROWS
+	__height_scr_step	= __map_tiles_width * ScrTilesHeight;
+	LUT_offset		= __maps_tbl_offset + ( _LUT_pos_y << 1 );
+	__init_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, LUT_offset ) + _LUT_pos_x;
+#endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
+
+	__horiz_dir_pos	= __scroll_x;
+	__vert_dir_pos	= __scroll_y;
+
+	__mpd_update_data_offsets();
+}
+
 void	__mpd_draw_tiled_screen()
 {
 	u8	scr_tile;
@@ -732,7 +752,61 @@ void	__mpd_draw_tiled_screen()
 
 #endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
 }
+
+void	mpd_draw_screen_by_scr_ind( u16 _scr_ind )
+{
+	__upd_flags = 0;
+
+	__mpd_calc_scr_pos_by_scr_ind( _scr_ind );
+
+	mpd_draw_screen();
+}
+
+void	mpd_draw_screen_by_pos( u16 _x, u16 _y )
+{
+	u16	LUT_pos_x;
+	u16	LUT_pos_y;
+	u8	step_dec1;
+
+	__upd_flags = 0;
+
+	// make coordinates are multiple to a scroll step
+
+	step_dec1 = __scroll_step - 1;
+	_x &= ~step_dec1;
+	_y &= ~step_dec1;
+
+#if	FLAG_TILES2X2
+	LUT_pos_x = _x >> 4;
+	LUT_pos_y = _y >> 4;
+#elif	FLAG_TILES4X4
+	LUT_pos_x = _x >> 5;
+	LUT_pos_y = _y >> 5;
+#endif
+
+	__mpd_calc_scr_pos_by_LUT_pos( LUT_pos_x, LUT_pos_y );
+
+	mpd_draw_screen();
+}
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
+
+#if	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
+void	mpd_draw_screen_by_scr_data( mpd_SCREEN* _scr_data )
+{
+	__curr_scr	= _scr_data;
+	__scr_offset	= __curr_scr->scr_ind * __c_scr_tiles_size;
+
+#if	FLAG_MODE_BIDIR_SCROLL
+	__scroll_x	= 0;
+	__scroll_y	= 0;
+	__horiz_dir_pos	= 0;
+	__vert_dir_pos	= 0;
+	__upd_flags	= 0;
+#endif	//FLAG_MODE_BIDIR_SCROLL
+
+	mpd_draw_screen();
+}
+#endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
 void	mpd_draw_screen()
 {
