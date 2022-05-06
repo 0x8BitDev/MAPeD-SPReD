@@ -2543,6 +2543,8 @@ namespace MAPeD
 			{
 				if( insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 ) >= 0 )
 				{
+					ListBoxScreens.SelectedIndices.Clear();
+					
 					ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
 					m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
 					
@@ -2563,37 +2565,63 @@ namespace MAPeD
 
 		void BtnCopyScreenClick_Event(object sender, EventArgs e)
 		{
-			if( m_data_manager.screen_data_copy() == true )
+			if( ListBoxScreens.SelectedIndices.Count == 1 )
 			{
-				if( insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 ) >= 0 )
+				if( m_data_manager.screen_data_copy() == true )
 				{
-					ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
-					m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
-					
-					enable_update_screens_btn( true );
-					
-					set_status_msg( "Screen copied" );
+					if( insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 ) >= 0 )
+					{
+						ListBoxScreens.SelectedIndices.Clear();
+						
+						ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
+						m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
+						
+						enable_update_screens_btn( true );
+						
+						set_status_msg( "Screen copied" );
+					}
+					else
+					{
+						m_data_manager.screen_data_delete();
+						
+						set_status_msg( "Failed to copy screen" );
+						
+						message_box( "Can't copy the screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Failed to Copy Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+					}
 				}
-				else
-				{
-					m_data_manager.screen_data_delete();
-					
-					set_status_msg( "Failed to copy screen" );
-					
-					message_box( "Can't copy the screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Failed to Copy Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-				}
+			}
+			else
+			{
+				message_box( "Please, select one screen!", "Failed to Copy Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 			}
 		}
 		
 		void BtnDeleteScreenClick_Event(object sender, EventArgs e)
 		{
-			if( ListBoxScreens.SelectedIndex >= 0 && ListBoxScreens.Items.Count > 0 && message_box( "Are you sure?", "Delete Screen", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( ListBoxScreens.SelectedIndex >= 0 && ListBoxScreens.Items.Count > 0 && message_box( "Are you sure, you want to delete " + ListBoxScreens.SelectedIndices.Count + " screen(s) ?", "Delete Screen", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
-				m_data_manager.screen_data_delete();
-
-				m_data_manager.remove_screen_from_layouts( CBoxCHRBanks.SelectedIndex, ListBoxScreens.SelectedIndex );
+				bool scr_removed	= false;
 				
-				if( m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, ListBoxScreens.SelectedIndex ) )
+				int del_scr_ind;
+				int scr_cnt			= ListBoxScreens.SelectedIndices.Count;
+				int[] del_scr_arr	= new int[ scr_cnt ];
+				
+				ListBoxScreens.SelectedIndices.CopyTo( del_scr_arr, 0 );
+				Array.Reverse( del_scr_arr );
+				
+				for( int i = 0; i < scr_cnt; i++ )
+				{
+					del_scr_ind = del_scr_arr[ i ];
+					
+					m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ).delete_screen( del_scr_ind );
+					m_data_manager.scr_data_pos = del_scr_ind - 1;
+					
+					m_data_manager.remove_screen_from_layouts( CBoxCHRBanks.SelectedIndex, del_scr_ind );
+					
+					scr_removed |= m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, del_scr_ind );
+				}
+
+				if( scr_removed )
 				{
 					m_layout_editor.update_dimension_changes();
 
@@ -2618,7 +2646,7 @@ namespace MAPeD
 
 				enable_update_screens_btn( true );
 				
-				set_status_msg( "Screen deleted" );
+				set_status_msg( scr_cnt + " Screen(s) deleted" );
 			}
 		}
 		

@@ -2402,6 +2402,7 @@ namespace MAPeD
 			this.ListBoxScreens.FormattingEnabled = true;
 			this.ListBoxScreens.Location = new System.Drawing.Point(8, 20);
 			this.ListBoxScreens.Name = "ListBoxScreens";
+			this.ListBoxScreens.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.ListBoxScreens.Size = new System.Drawing.Size(64, 277);
 			this.ListBoxScreens.TabIndex = 44;
 			this.ListBoxScreens.SelectedIndexChanged += new System.EventHandler(this.ListBoxScreensClick_Event);
