@@ -5,8 +5,11 @@
 //
 //######################################################################################################
 
-/*/	MPD-render v0.2
+/*/	MPD-render v0.3
 History:
+
+v0.3
+2022.05.07 - added 'mpd_get_adj_screen( mpd_SCREEN* _scr_data, u8 _ind )' for bidir maps
 
 v0.2
 2022.05.05 - added 'mpd_draw_screen_by_scr_data( mpd_SCREEN* _scr_data )' for bidir maps
@@ -29,29 +32,6 @@ v0.1
 // } mpd_scroll_step;
 //
 // void		mpd_init( u8 _map_ind, mpd_scroll_step _step )
-// #else
-// void		mpd_init( u8 _map_ind )
-// #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-//
-// void		mpd_draw_screen()
-//
-// #if		FLAG_MODE_MULTIDIR_SCROLL
-// void		mpd_draw_screen_by_scr_ind( u16 _scr_ind );
-// void		mpd_draw_screen_by_pos( u16 _x, u16 _y );
-// #endif	//FLAG_MODE_MULTIDIR_SCROLL
-//
-// #if		FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
-// void		mpd_draw_screen_by_scr_data( mpd_SCREEN* _scr_data );
-// #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
-//
-// bool		mpd_check_adj_screen( u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
-// u8		mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; result: property id
-//
-// #if  	!FLAG_MODE_MULTIDIR_SCROLL
-// mpd_SCREEN*	mpd_curr_screen()
-// #endif	//!FLAG_MODE_MULTIDIR_SCROLL
-//
-// #if		FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 // void		mpd_clear_update_flags()
 // void		mpd_move_left()
 // void		mpd_move_right()
@@ -60,7 +40,24 @@ v0.1
 // void		mpd_update_screen( bool _vsync )
 // u16		mpd_offset_x()
 // u16		mpd_offset_y()
+// #else
+// void		mpd_init( u8 _map_ind )
 // #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+//
+// u8		mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; result: property id
+// void		mpd_draw_screen()
+//
+// #if		FLAG_MODE_MULTIDIR_SCROLL
+// void		mpd_draw_screen_by_scr_ind( u16 _scr_ind )
+// void		mpd_draw_screen_by_pos( u16 _x, u16 _y )
+// #endif	//FLAG_MODE_MULTIDIR_SCROLL
+//
+// #if		FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
+// mpd_SCREEN*	mpd_curr_screen()
+// mpd_SCREEN*	mpd_get_adj_screen( mpd_SCREEN* _scr_data, u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
+// bool		mpd_check_adj_screen( u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
+// void		mpd_draw_screen_by_scr_data( mpd_SCREEN* _scr_data )
+// #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 //
 
 /************************/
@@ -350,7 +347,7 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 /*				*/
 /********************************/
 
-const u8 mpd_ver[] = { "M", "P", "D", "v", "0", ".", "2", 0 };
+const u8 mpd_ver[] = { "M", "P", "D", "v", "0", ".", "3", 0 };
 
 /* flags */
 
@@ -851,13 +848,13 @@ void	mpd_draw_screen()
 }
 
 #if	!FLAG_MODE_MULTIDIR_SCROLL
-mpd_SCREEN*	__mpd_get_adj_screen( u8 _ind )
+mpd_SCREEN*	mpd_get_adj_screen( mpd_SCREEN* _scr_data, u8 _ind )
 {
 	mpd_SCREEN*	adj_scr;
 	u8		adj_scr_ind;
 
 #if	FLAG_MARKS
-	if( !( __curr_scr->marks & ( 1 << ( _ind + 4 ) ) ) )
+	if( !( _scr_data->marks & ( 1 << ( _ind + 4 ) ) ) )
 	{
 		return NULL;
 	}
@@ -865,7 +862,7 @@ mpd_SCREEN*	__mpd_get_adj_screen( u8 _ind )
 
 #if	FLAG_LAYOUT_ADJ_SCR
 		
-	adj_scr = __curr_scr->adj_scr[ _ind ];
+	adj_scr = _scr_data->adj_scr[ _ind ];
 
 	if( adj_scr != NULL )
 	{
@@ -874,7 +871,7 @@ mpd_SCREEN*	__mpd_get_adj_screen( u8 _ind )
 #endif
 #if	FLAG_LAYOUT_ADJ_SCR_INDS
 
-	adj_scr_ind = __curr_scr->adj_scr[ _ind ];
+	adj_scr_ind = _scr_data->adj_scr[ _ind ];
 
 	if( adj_scr_ind != 0xff )
 	{
@@ -888,7 +885,7 @@ bool	mpd_check_adj_screen( u8 _ind )
 {
 	mpd_SCREEN* adj_scr;
 
-	if( adj_scr = __mpd_get_adj_screen( _ind ) )
+	if( adj_scr = mpd_get_adj_screen( __curr_scr, _ind ) )
 	{
 		__curr_scr	= adj_scr;
 		__scr_offset	= __curr_scr->scr_ind * __c_scr_tiles_size;
@@ -923,7 +920,7 @@ void	mpd_move_left()
 
 	if( __horiz_dir_pos == 0 )
 	{
-		if( __mpd_get_adj_screen( ADJ_SCR_LEFT ) == FALSE )
+		if( mpd_get_adj_screen( __curr_scr, ADJ_SCR_LEFT ) == FALSE )
 		{
 			return;
 		}
@@ -959,7 +956,7 @@ void	mpd_move_right()
 
 	if( __horiz_dir_pos == 0 )
 	{
-		if( __mpd_get_adj_screen( ADJ_SCR_RIGHT ) == FALSE )
+		if( mpd_get_adj_screen( __curr_scr, ADJ_SCR_RIGHT ) == FALSE )
 		{
 			return;
 		}
@@ -995,7 +992,7 @@ void	mpd_move_up()
 
 	if( __vert_dir_pos == 0 )
 	{
-		if( __mpd_get_adj_screen( ADJ_SCR_UP ) == FALSE )
+		if( mpd_get_adj_screen( __curr_scr, ADJ_SCR_UP ) == FALSE )
 		{
 			return;
 		}
@@ -1031,7 +1028,7 @@ void	mpd_move_down()
 
 	if( __vert_dir_pos == 0 )
 	{
-		if( __mpd_get_adj_screen( ADJ_SCR_DOWN ) == FALSE )
+		if( mpd_get_adj_screen( __curr_scr, ADJ_SCR_DOWN ) == FALSE )
 		{
 			return;
 		}
@@ -1283,7 +1280,7 @@ void	__mpd_draw_right_tiles_column()
 #if	FLAG_MODE_BIDIR_SCROLL
 	mpd_SCREEN* 	tmp_scr;
 
-	tmp_scr		= __mpd_get_adj_screen( ADJ_SCR_RIGHT );
+	tmp_scr		= mpd_get_adj_screen( __curr_scr, ADJ_SCR_RIGHT );
 	tiles_offset	= __horiz_dir_pos;
 
 #if	FLAG_TILES4X4
@@ -1391,7 +1388,7 @@ void	__mpd_draw_down_tiles_row()
 #if	FLAG_MODE_BIDIR_SCROLL
 	mpd_SCREEN* 	tmp_scr;
 
-	tmp_scr		= __mpd_get_adj_screen( ADJ_SCR_DOWN );
+	tmp_scr		= mpd_get_adj_screen( __curr_scr, ADJ_SCR_DOWN );
 	tiles_offset	= __vert_dir_pos;
 
 #if	FLAG_TILES4X4
@@ -1857,7 +1854,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 		if( dy >= 0 )
 		{
-			tmp_scr		= __mpd_get_adj_screen( ADJ_SCR_DOWN );
+			tmp_scr		= mpd_get_adj_screen( __curr_scr, ADJ_SCR_DOWN );
 			scr_offs	= tmp_scr->scr_ind * __c_scr_tiles_size;
 			_y		= dy;
 		}
@@ -1873,7 +1870,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 		if( dx >= 0 )
 		{
-			tmp_scr		= __mpd_get_adj_screen( ADJ_SCR_RIGHT );
+			tmp_scr		= mpd_get_adj_screen( __curr_scr, ADJ_SCR_RIGHT );
 			scr_offs	= tmp_scr->scr_ind * __c_scr_tiles_size;
 			_x		= dx;
 		}
