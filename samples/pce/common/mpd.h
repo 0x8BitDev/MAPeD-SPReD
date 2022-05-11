@@ -1,12 +1,22 @@
 //######################################################################################################
 //
 // This file is a part of the MAPeD-PCE Copyright 2017-2022 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: It contains some HuC helper functions, structures and a tilemap rendering library
+// Desc: It contains tilemap rendering library and some HuC helper functions
 //
 //######################################################################################################
 
-/*/	MPD-render v0.3
+/*/	MPD-render v0.04
 History:
+
+v0.4
+2022.05.10 - added 'mpd_draw_screen_by_data_offs( mpd_SCREEN* _scr_data, u16 _BAT_offset )'
+2022.05.10 - 'mpd_draw_screen_by_scr_data' renamed to 'mpd_draw_screen_by_data'
+2022.05.10 - added 'mpd_draw_screen_by_ind_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )' and 'mpd_draw_screen_by_pos_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )'
+2022.05.10 - 'mpd_draw_screen_by_scr_ind' renamed to 'mpd_draw_screen_by_ind'
+2022.05.10 - added support for free step scrolling (1-7 pix) for both bi- and multi-dir modes
+2022.05.09 - added 'mpd_scroll_step_x( u8 _step_pix )/mpd_scroll_step_y( u8 _step_pix )' for scrollable maps
+2022.05.08 - removed 'mpd_scroll_step' enum, now 'mpd_init( u8 _map_ind, u8 _step )' as scroll step value receives numbers 1-7 pix
+2022.05.08 - mpd_scroll_x()/mpd_scroll_y() return signed word
 
 v0.3
 2022.05.07 - added 'mpd_get_adj_screen( mpd_SCREEN* _scr_data, u8 _ind )' for bidir maps
@@ -24,22 +34,17 @@ v0.1
 // public functions:
 //
 // #if		FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-// typedef enum
-// {
-// 	ms_1px = 1,
-// 	ms_2px = 2,
-// 	ms_4px = 4 
-// } mpd_scroll_step;
-//
-// void		mpd_init( u8 _map_ind, mpd_scroll_step _step )
+// void		mpd_init( u8 _map_ind, u8 _step ) / _step - default step for both axes
+// void		mpd_scroll_step_x( u8 _step_pix ) / _step_pix - 1-7 pix
+// void		mpd_scroll_step_y( u8 _step_pix ) / _step_pix - 1-7 pix
 // void		mpd_clear_update_flags()
 // void		mpd_move_left()
 // void		mpd_move_right()
 // void		mpd_move_up()
 // void		mpd_move_down()
 // void		mpd_update_screen( bool _vsync )
-// u16		mpd_offset_x()
-// u16		mpd_offset_y()
+// s16		mpd_scroll_x()
+// s16		mpd_scroll_y()
 // #else
 // void		mpd_init( u8 _map_ind )
 // #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
@@ -48,15 +53,18 @@ v0.1
 // void		mpd_draw_screen()
 //
 // #if		FLAG_MODE_MULTIDIR_SCROLL
-// void		mpd_draw_screen_by_scr_ind( u16 _scr_ind )
+// void		mpd_draw_screen_by_ind( u16 _scr_ind )
+// void		mpd_draw_screen_by_ind_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
 // void		mpd_draw_screen_by_pos( u16 _x, u16 _y )
+// void		mpd_draw_screen_by_pos_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
 // #endif	//FLAG_MODE_MULTIDIR_SCROLL
 //
 // #if		FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 // mpd_SCREEN*	mpd_curr_screen()
 // mpd_SCREEN*	mpd_get_adj_screen( mpd_SCREEN* _scr_data, u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
 // bool		mpd_check_adj_screen( u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
-// void		mpd_draw_screen_by_scr_data( mpd_SCREEN* _scr_data )
+// void		mpd_draw_screen_by_data( mpd_SCREEN* _scr_data )
+// void		mpd_draw_screen_by_data_offs( mpd_SCREEN* _scr_data, u16 _BAT_offset )
 // #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 //
 
@@ -347,7 +355,7 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 /*				*/
 /********************************/
 
-const u8 mpd_ver[] = { "M", "P", "D", "v", "0", ".", "3", 0 };
+const u8 mpd_ver[] = { "M", "P", "D", "v", "0", ".", "4", 0 };
 
 /* flags */
 
@@ -419,18 +427,16 @@ u16		__tiles_offset;
 #define	UPD_FLAG_DRAW_DOWN	0x08
 #define	UPD_FLAG_DRAW_MASK	UPD_FLAG_DRAW_LEFT|UPD_FLAG_DRAW_RIGHT|UPD_FLAG_DRAW_UP|UPD_FLAG_DRAW_DOWN
 
-typedef enum
-{
-	ms_1px = 1,
-	ms_2px = 2,
-	ms_4px = 4 
-} mpd_scroll_step;
+u8	__scroll_step_x;
+u8	__scroll_step_y;
+s16	__scroll_x;
+s16	__scroll_y;
 
-u8	__scroll_step;
-u16	__horiz_dir_pos;
-u16	__vert_dir_pos;
-u16	__scroll_x;
-u16	__scroll_y;
+#if	FLAG_MODE_BIDIR_SCROLL
+s16	__horiz_dir_pos;
+s16	__vert_dir_pos;
+#endif
+
 u8	__upd_flags;
 #endif
 
@@ -479,7 +485,7 @@ void	__mpd_get_BAT_params()
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-void	mpd_init( u8 _map_ind, mpd_scroll_step _step )
+void	mpd_init( u8 _map_ind, u8 _step )
 #else
 void	mpd_init( u8 _map_ind )
 #endif
@@ -516,11 +522,14 @@ void	mpd_init( u8 _map_ind )
 	set_screen_size( BAT_INDEX );
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-	__scroll_step	= _step;
+	mpd_scroll_step_x( _step );
+	mpd_scroll_step_y( _step );
 	__scroll_x	= 0;
 	__scroll_y	= 0;
+#if	FLAG_MODE_BIDIR_SCROLL
 	__horiz_dir_pos	= 0;
 	__vert_dir_pos	= 0;
+#endif
 	__upd_flags	= 0;
 
 	__mpd_disp_list_reset();
@@ -544,7 +553,7 @@ void	mpd_init( u8 _map_ind )
 	__cropped_map_width	= ( __map_scr_width * ScrPixelsWidth ) - ScrPixelsWidth;
 	__cropped_map_height	= ( __map_scr_height * ScrPixelsHeight ) - ScrPixelsHeight;
 
-	__mpd_calc_scr_pos_by_scr_ind( mpd_StartScrArr[ _map_ind ] );
+	__mpd_calc_scr_pos_by_scr_ind( mpd_StartScrArr[ _map_ind ], FALSE );
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	__curr_chr_id_mul2	= 0xff;
@@ -593,7 +602,7 @@ void	__mpd_draw_tile4x4( u16 _vaddr, u16 _offset )
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
 #if	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
-void	__mpd_draw_tiled_screen()
+void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 {
 	u8	scr_tile;
 	u16	w, h;
@@ -612,9 +621,9 @@ void	__mpd_draw_tiled_screen()
 		{
 			scr_tile = mpd_farpeekb( mpd_TilesScr, __scr_offset + n );
 #if	FLAG_TILES2X2
-			__mpd_draw_block2x2( ( h_acc + w ) << 1, __blocks_offset + ( scr_tile << 3 ) );
+			__mpd_draw_block2x2( _BAT_offset + ( ( h_acc + w ) << 1 ), __blocks_offset + ( scr_tile << 3 ) );
 #elif	FLAG_TILES4X4
-			__mpd_draw_tile4x4( ( h_acc + w ) << 2, __tiles_offset + ( scr_tile << 2 ) );
+			__mpd_draw_tile4x4( _BAT_offset + ( ( h_acc + w ) << 2 ), __tiles_offset + ( scr_tile << 2 ) );
 #endif
 			h_acc += __BAT_width;
 			++n;
@@ -630,9 +639,9 @@ void	__mpd_draw_tiled_screen()
 		{
 			scr_tile = mpd_farpeekb( mpd_TilesScr, __scr_offset + n );
 #if	FLAG_TILES2X2
-			__mpd_draw_block2x2( ( h_acc + w ) << 1, __blocks_offset + ( scr_tile << 3 ) );
+			__mpd_draw_block2x2( _BAT_offset + ( ( h_acc + w ) << 1 ), __blocks_offset + ( scr_tile << 3 ) );
 #elif	FLAG_TILES4X4
-			__mpd_draw_tile4x4( ( h_acc + w ) << 2, __tiles_offset + ( scr_tile << 2 ) );
+			__mpd_draw_tile4x4( _BAT_offset + ( ( h_acc + w ) << 2 ), __tiles_offset + ( scr_tile << 2 ) );
 #endif
 			++n;
 		}
@@ -645,7 +654,7 @@ void	__mpd_draw_tiled_screen()
 #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-void	__mpd_calc_scr_pos_by_scr_ind( u16 _scr_ind )
+void	__mpd_calc_scr_pos_by_scr_ind( u16 _scr_ind, bool _reset_scroll )
 {
 	u16	LUT_pos_x;
 	u16	LUT_pos_y;
@@ -653,24 +662,32 @@ void	__mpd_calc_scr_pos_by_scr_ind( u16 _scr_ind )
 	LUT_pos_x	= ScrTilesWidth * ( _scr_ind % __map_scr_width );
 	LUT_pos_y	= ScrTilesHeight * ( _scr_ind / __map_scr_width );
 
-	__mpd_calc_scr_pos_by_LUT_pos( LUT_pos_x, LUT_pos_y );
+	__mpd_calc_scr_pos_by_LUT_pos( LUT_pos_x, LUT_pos_y, _reset_scroll );
 }
 
-void	__mpd_calc_scr_pos_by_LUT_pos( u16 _LUT_pos_x, u16 _LUT_pos_y )
+void	__mpd_calc_scr_pos_by_LUT_pos( u16 _LUT_pos_x, u16 _LUT_pos_y, bool _reset_scroll )
 {
 	u16	LUT_offset;
 
+	if( _reset_scroll )
+	{
+		__scroll_x	= 0;
+		__scroll_y	= 0;
+	}
+	else
+	{
 #if	FLAG_TILES2X2
-	__scroll_x	= _LUT_pos_x << 4;
+		__scroll_x	= _LUT_pos_x << 4;
 #elif	FLAG_TILES4X4
-	__scroll_x	= _LUT_pos_x << 5;
+		__scroll_x	= _LUT_pos_x << 5;
 #endif	//FLAG_TILES2X2|FLAG_TILES4X4
 
 #if	FLAG_TILES2X2
-	__scroll_y	= _LUT_pos_y << 4;
+		__scroll_y	= _LUT_pos_y << 4;
 #elif	FLAG_TILES4X4
-	__scroll_y	= _LUT_pos_y << 5;
+		__scroll_y	= _LUT_pos_y << 5;
 #endif	//FLAG_TILES2X2|FLAG_TILES4X4
+	}
 
 #if	FLAG_DIR_COLUMNS
 	LUT_offset		= __maps_tbl_offset + ( _LUT_pos_x << 1 );
@@ -681,13 +698,10 @@ void	__mpd_calc_scr_pos_by_LUT_pos( u16 _LUT_pos_x, u16 _LUT_pos_y )
 	__init_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, LUT_offset ) + _LUT_pos_x;
 #endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
 
-	__horiz_dir_pos	= __scroll_x;
-	__vert_dir_pos	= __scroll_y;
-
 	__mpd_update_data_offsets();
 }
 
-void	__mpd_draw_tiled_screen()
+void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 {
 	u8	scr_tile;
 	u16	w, h;
@@ -699,7 +713,7 @@ void	__mpd_draw_tiled_screen()
 
 	tiles_offset	= __maps_offset + __init_tiles_offset;
 
-	vaddr		= ( ( __scroll_x >> 3 ) & __BAT_width_dec1 ) + ( ( ( __scroll_y >> 3 ) /*& __BAT_height_dec1*/ ) << __BAT_width_pow2 );
+	vaddr		= _BAT_offset + ( ( __scroll_x >> 3 ) & __BAT_width_dec1 ) + ( ( ( __scroll_y >> 3 ) /*& __BAT_height_dec1*/ ) << __BAT_width_pow2 );
 
 #if	FLAG_DIR_COLUMNS
 
@@ -750,28 +764,31 @@ void	__mpd_draw_tiled_screen()
 #endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
 }
 
-void	mpd_draw_screen_by_scr_ind( u16 _scr_ind )
+void	mpd_draw_screen_by_ind( u16 _scr_ind )
+{
+	mpd_draw_screen_by_ind_offs( _scr_ind, 0, FALSE );
+}
+
+void	mpd_draw_screen_by_ind_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
 {
 	__upd_flags = 0;
 
-	__mpd_calc_scr_pos_by_scr_ind( _scr_ind );
+	__mpd_calc_scr_pos_by_scr_ind( _scr_ind, _reset_scroll );
 
-	mpd_draw_screen();
+	__mpd_draw_screen( _BAT_offset );
 }
 
 void	mpd_draw_screen_by_pos( u16 _x, u16 _y )
 {
+	mpd_draw_screen_by_pos_offs( _x, _y, 0, FALSE );
+}
+
+void	mpd_draw_screen_by_pos_offs( u16 _x, u16 _y, u16 _BAT_offset, bool _reset_scroll )
+{
 	u16	LUT_pos_x;
 	u16	LUT_pos_y;
-	u8	step_dec1;
 
 	__upd_flags = 0;
-
-	// make coordinates are multiple to a scroll step
-
-	step_dec1 = __scroll_step - 1;
-	_x &= ~step_dec1;
-	_y &= ~step_dec1;
 
 #if	FLAG_TILES2X2
 	LUT_pos_x = _x >> 4;
@@ -781,14 +798,19 @@ void	mpd_draw_screen_by_pos( u16 _x, u16 _y )
 	LUT_pos_y = _y >> 5;
 #endif
 
-	__mpd_calc_scr_pos_by_LUT_pos( LUT_pos_x, LUT_pos_y );
+	__mpd_calc_scr_pos_by_LUT_pos( LUT_pos_x, LUT_pos_y, _reset_scroll );
 
-	mpd_draw_screen();
+	__mpd_draw_screen( _BAT_offset );
 }
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
-void	mpd_draw_screen_by_scr_data( mpd_SCREEN* _scr_data )
+void	mpd_draw_screen_by_data( mpd_SCREEN* _scr_data )
+{
+	mpd_draw_screen_by_data_offs( _scr_data, 0 );
+}
+
+void	mpd_draw_screen_by_data_offs( mpd_SCREEN* _scr_data, u16 _BAT_offset )
 {
 	__curr_scr	= _scr_data;
 	__scr_offset	= __curr_scr->scr_ind * __c_scr_tiles_size;
@@ -801,11 +823,16 @@ void	mpd_draw_screen_by_scr_data( mpd_SCREEN* _scr_data )
 	__upd_flags	= 0;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 
-	mpd_draw_screen();
+	__mpd_draw_screen( _BAT_offset );
 }
 #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
 void	mpd_draw_screen()
+{
+	__mpd_draw_screen( 0 );
+}
+
+void	__mpd_draw_screen( u16 _BAT_offset )
 {
 	u16	num_CHRs;
 
@@ -843,7 +870,7 @@ void	mpd_draw_screen()
 	mpd_load_bat( 0, mpd_VDCScr, __curr_scr->VDC_data_offset, SCR_CHRS_WIDTH, SCR_CHRS_HEIGHT );
 #endif	//FLAG_RLE
 #elif	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
-	__mpd_draw_tiled_screen();
+	__mpd_draw_tiled_screen( _BAT_offset );
 #endif
 }
 
@@ -911,7 +938,7 @@ mpd_SCREEN*	mpd_curr_screen()
 #if	FLAG_MODE_BIDIR_SCROLL
 void	mpd_move_left()
 {
-	mpd_SCREEN* adj_scr;
+	u8	tmp_pos;
 
 	if( __vert_dir_pos != 0 )
 	{
@@ -926,28 +953,34 @@ void	mpd_move_left()
 		}
 	}
 
-	if( __horiz_dir_pos <= 0 )
+	tmp_pos = __scroll_x;
+	tmp_pos &= 0x07;
+
+	__horiz_dir_pos -= __scroll_step_x;
+	__scroll_x	-= __scroll_step_x;
+
+	if( __horiz_dir_pos < 0 )
 	{
-		__horiz_dir_pos = ScrPixelsWidth;
+		__horiz_dir_pos += ScrPixelsWidth;
 
 		if( mpd_check_adj_screen( ADJ_SCR_LEFT ) == FALSE )
 		{
+			__scroll_x	+= ScrPixelsWidth - __horiz_dir_pos;
+			__horiz_dir_pos = 0;
+
 			return;
 		}
-
-		mpd_move_left();
-
-		return;
 	}
 
-	__horiz_dir_pos -= __scroll_step;
-
-	__mpd_upd_scroll_left();
+	if( ( ( tmp_pos - __scroll_step_x ) & 0x08 ) || !tmp_pos )
+	{
+		__upd_flags |= UPD_FLAG_DRAW_LEFT;
+	}
 }
 
 void	mpd_move_right()
 {
-	mpd_SCREEN* adj_scr;
+	u8	tmp_pos;
 
 	if( __vert_dir_pos != 0 )
 	{
@@ -962,28 +995,42 @@ void	mpd_move_right()
 		}
 	}
 
+	tmp_pos = __scroll_x;
+	tmp_pos &= 0x07;
+
+	__horiz_dir_pos += __scroll_step_x;
+	__scroll_x	+= __scroll_step_x;
+
 	if( __horiz_dir_pos >= ScrPixelsWidth )
 	{
-		__horiz_dir_pos = 0;
+		__horiz_dir_pos -= ScrPixelsWidth;
 
 		if( mpd_check_adj_screen( ADJ_SCR_RIGHT ) == FALSE )
 		{
+			__scroll_x	-= __horiz_dir_pos;
+			__horiz_dir_pos = 0;
+
 			return;
 		}
+		else
+		if( mpd_get_adj_screen( __curr_scr, ADJ_SCR_RIGHT ) == FALSE )
+		{
+			__scroll_x	-= __horiz_dir_pos;
+			__horiz_dir_pos = 0;
 
-		mpd_move_right();
-
-		return;
+			return;
+		}
 	}
 
-	__horiz_dir_pos += __scroll_step;
-
-	__mpd_upd_scroll_right();
+	if( ( ( tmp_pos + __scroll_step_x ) & 0x08 ) || !tmp_pos )
+	{
+		__upd_flags |= UPD_FLAG_DRAW_RIGHT;
+	}
 }
 
 void	mpd_move_up()
 {
-	mpd_SCREEN* adj_scr;
+	u8	tmp_pos;
 
 	if( __horiz_dir_pos != 0 )
 	{
@@ -998,28 +1045,34 @@ void	mpd_move_up()
 		}
 	}
 
-	if( __vert_dir_pos <= 0 )
+	tmp_pos = __scroll_y;
+	tmp_pos &= 0x07;
+
+	__vert_dir_pos	-= __scroll_step_y;
+	__scroll_y	-= __scroll_step_y;
+
+	if( __vert_dir_pos < 0 )
 	{
-		__vert_dir_pos = ScrPixelsHeight;
+		__vert_dir_pos += ScrPixelsHeight;
 
 		if( mpd_check_adj_screen( ADJ_SCR_UP ) == FALSE )
 		{
+			__scroll_y	+= ScrPixelsHeight - __vert_dir_pos;
+			__vert_dir_pos = 0;
+
 			return;
 		}
-
-		mpd_move_up();
-
-		return;
 	}
 
-	__vert_dir_pos -= __scroll_step;
-
-	__mpd_upd_scroll_up();
+	if( ( ( tmp_pos - __scroll_step_y ) & 0x08 ) || !tmp_pos )
+	{
+		__upd_flags |= UPD_FLAG_DRAW_UP;
+	}
 }
 
 void	mpd_move_down()
 {
-	mpd_SCREEN* adj_scr;
+	u8	tmp_pos;
 
 	if( __horiz_dir_pos != 0 )
 	{
@@ -1034,73 +1087,165 @@ void	mpd_move_down()
 		}
 	}
 
+	tmp_pos = __scroll_y;
+	tmp_pos &= 0x07;
+
+	__vert_dir_pos	+= __scroll_step_y;
+	__scroll_y	+= __scroll_step_y;
+
 	if( __vert_dir_pos >= ScrPixelsHeight )
 	{
-		__vert_dir_pos = 0;
+		__vert_dir_pos -= ScrPixelsHeight;
 
 		if( mpd_check_adj_screen( ADJ_SCR_DOWN ) == FALSE )
 		{
+			__scroll_y	-= __vert_dir_pos;
+			__vert_dir_pos = 0;
+
 			return;
 		}
+		else
+		if( mpd_get_adj_screen( __curr_scr, ADJ_SCR_DOWN ) == FALSE )
+		{
+			__scroll_y	-= __vert_dir_pos;
+			__vert_dir_pos = 0;
 
-		mpd_move_down();
-
-		return;
+			return;
+		}
 	}
 
-	__vert_dir_pos += __scroll_step;
-
-	__mpd_upd_scroll_down();
+	if( ( ( tmp_pos + __scroll_step_y ) & 0x08 ) || !tmp_pos )
+	{
+		__upd_flags |= UPD_FLAG_DRAW_DOWN;
+	}
 }
 #endif	//FLAG_MODE_BIDIR_SCROLL
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
 void	mpd_move_left()
 {
-	if( __horiz_dir_pos > 0 )
+	if( __scroll_x >= 0 )
 	{
-		__horiz_dir_pos -= __scroll_step;
 		__mpd_upd_scroll_left();
 	}
 }
 
 void	mpd_move_right()
 {
-	if( __horiz_dir_pos < __cropped_map_width )
+	if( __scroll_x < __cropped_map_width )
 	{
-		__horiz_dir_pos += __scroll_step;
 		__mpd_upd_scroll_right();
 	}
 	else
 	{
-		__horiz_dir_pos = __cropped_map_width;
+		__scroll_x = __cropped_map_width;
 	}
 }
 
 void	mpd_move_up()
 {
-	if( __vert_dir_pos > 0 )
+	if( __scroll_y >= 0 )
 	{
-		__vert_dir_pos -= __scroll_step;
 		__mpd_upd_scroll_up();
 	}
 }
 
 void	mpd_move_down()
 {
-	if( __vert_dir_pos < __cropped_map_height )
+	if( __scroll_y < __cropped_map_height )
 	{
-		__vert_dir_pos += __scroll_step;
 		__mpd_upd_scroll_down();
 	}
 	else
 	{
-		__vert_dir_pos = __cropped_map_height;
+		__scroll_y = __cropped_map_height;
 	}
-}	
+}
+
+void	__mpd_upd_scroll_left()
+{
+	u8	tmp_pos;
+
+	tmp_pos = __scroll_x;
+	tmp_pos &= 0x07;
+
+	__scroll_x -= __scroll_step_x;
+
+	if( __scroll_x < 0 )
+	{
+		__scroll_x = 0;
+		return;
+	}
+
+	if( ( ( tmp_pos - __scroll_step_x ) & 0x08 ) || !tmp_pos )
+	{
+		__upd_flags |= UPD_FLAG_DRAW_LEFT;
+	}
+}
+
+void	__mpd_upd_scroll_right()
+{
+	u8	tmp_pos;
+
+	tmp_pos = __scroll_x;
+	tmp_pos &= 0x07;
+
+	if( ( ( tmp_pos + __scroll_step_x ) & 0x08 ) || !tmp_pos )
+	{
+		__upd_flags |= UPD_FLAG_DRAW_RIGHT;
+	}
+
+	__scroll_x += __scroll_step_x;
+}
+
+void	__mpd_upd_scroll_up()
+{
+	u8	tmp_pos;
+
+	tmp_pos = __scroll_y;
+	tmp_pos &= 0x07;
+
+	__scroll_y -= __scroll_step_y;
+
+	if( __scroll_y < 0 )
+	{
+		__scroll_y = 0;
+		return;
+	}
+
+	if( ( ( tmp_pos - __scroll_step_y ) & 0x08 ) || !tmp_pos )
+	{
+		__upd_flags |= UPD_FLAG_DRAW_UP;
+	}
+}
+
+void	__mpd_upd_scroll_down()
+{
+	u8	tmp_pos;
+
+	tmp_pos = __scroll_y;
+	tmp_pos &= 0x07;
+
+	if( ( ( tmp_pos + __scroll_step_y ) & 0x08 ) || !tmp_pos )
+	{
+		__upd_flags |= UPD_FLAG_DRAW_DOWN;
+	}
+
+	__scroll_y += __scroll_step_y;
+}
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+void	mpd_scroll_step_x( u8 _step_pix )
+{
+	__scroll_step_x = _step_pix & 0x07;
+}
+
+void	mpd_scroll_step_y( u8 _step_pix )
+{
+	__scroll_step_y = _step_pix & 0x07;
+}
+
 void	mpd_clear_update_flags()
 {
 	__upd_flags &= ~(UPD_FLAG_DRAW_MASK);
@@ -1131,92 +1276,9 @@ void	mpd_update_screen( bool _vsync )
 		}
 
 		__mpd_disp_list_flush();
-		__mpd_update_scroll( _vsync );
-	}
-}
-
-void	__mpd_upd_scroll_left()
-{
-	bool need_column;
-
-	need_column = FALSE;
-
-	if( ( __scroll_x & 0x07 ) == 0 )
-	{
-		need_column = TRUE;
 	}
 
-	__scroll_x -= __scroll_step;
-
-	if( __scroll_x == 0 || need_column == FALSE )
-	{
-		return;
-	}
-
-	__upd_flags |= UPD_FLAG_DRAW_LEFT;
-}
-
-void	__mpd_upd_scroll_right()
-{
-	bool need_column;
-
-	need_column = FALSE;
-
-	if( ( __scroll_x & 0x07 ) == 0 )
-	{
-		need_column = TRUE;
-	}
-
-	__scroll_x += __scroll_step;
-
-	if( __scroll_x == 0 || need_column == FALSE )
-	{
-		return;
-	}
-
-	__upd_flags |= UPD_FLAG_DRAW_RIGHT;
-}
-
-void	__mpd_upd_scroll_up()
-{
-	bool need_column;
-
-	need_column = FALSE;
-
-	if( ( __scroll_y & 0x07 ) == 0 )
-	{
-		need_column = TRUE;
-	}
-
-	__scroll_y -= __scroll_step;
-
-	if( __scroll_y == 0 || need_column == FALSE )
-	{
-		return;
-	}
-
-	__upd_flags |= UPD_FLAG_DRAW_UP;
-}
-
-void	__mpd_upd_scroll_down()
-{
-	bool need_column;
-
-	need_column = FALSE;
-
-	if( ( __scroll_y & 0x07 ) == 0 )
-	{
-		need_column = TRUE;
-	}
-
-	__scroll_y += __scroll_step;
-
-	if( __scroll_y == 0 || need_column == FALSE )
-	{
-		return;
-	}
-
-	__upd_flags |= UPD_FLAG_DRAW_DOWN;
+	__mpd_update_scroll( _vsync );
 }
 
 void	__mpd_draw_left_tiles_column()
@@ -1247,8 +1309,8 @@ void	__mpd_draw_left_tiles_column()
 	u16	map_pos_y;
 	u8	u8_pos_y;
 
-	map_pos_x	= __horiz_dir_pos;
-	map_pos_y	= __vert_dir_pos;
+	map_pos_x	= __scroll_x;
+	map_pos_y	= __scroll_y;
 	u8_pos_y	= map_pos_y;
 
 #if	FLAG_TILES4X4
@@ -1301,8 +1363,8 @@ void	__mpd_draw_right_tiles_column()
 	u16	map_pos_y;
 	u8	u8_pos_y;
 
-	map_pos_x	= __horiz_dir_pos;
-	map_pos_y	= __vert_dir_pos;
+	map_pos_x	= __scroll_x;
+	map_pos_y	= __scroll_y;
 	u8_pos_y	= map_pos_y;
 
 #if	FLAG_TILES4X4
@@ -1355,8 +1417,8 @@ void	__mpd_draw_up_tiles_row()
 	u16	map_pos_y;
 	u8	u8_pos_x;
 
-	map_pos_x	= __horiz_dir_pos;
-	map_pos_y	= __vert_dir_pos;
+	map_pos_x	= __scroll_x;
+	map_pos_y	= __scroll_y;
 	u8_pos_x	= map_pos_x;
 
 #if	FLAG_TILES4X4
@@ -1409,8 +1471,8 @@ void	__mpd_draw_down_tiles_row()
 	u16	map_pos_y;
 	u8	u8_pos_x;
 
-	map_pos_x	= __horiz_dir_pos;
-	map_pos_y	= __vert_dir_pos;
+	map_pos_x	= __scroll_x;
+	map_pos_y	= __scroll_y;
 	u8_pos_x	= map_pos_x;
 
 #if	FLAG_TILES4X4
@@ -1467,12 +1529,12 @@ void	__mpd_fill_column_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
 	u8	block_x_pos;
 	u16	tile4x4_offset;
 
-	block_x_pos	= ( __horiz_dir_pos >> 4 ) & 0x01;
+	block_x_pos	= ( __scroll_x >> 4 ) & 0x01;
 #endif
 	data_part1	= _CHRs_cnt;
 	data_part2	= 0;
 
-	CHR_x_pos	= ( ( __horiz_dir_pos >> 3 ) & 0x01 ) << 1;
+	CHR_x_pos	= ( ( __scroll_x >> 3 ) & 0x01 ) << 1;
 
 	// loop the _vaddr vertically
 	BAT_size	= __BAT_size_dec1 + 1;
@@ -1636,7 +1698,7 @@ void	__mpd_fill_row_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
 	u8	block_y_pos;
 	u16	tile4x4_offset;
 
-	block_y_pos	= ( ( __vert_dir_pos >> 4 ) & 0x01 ) << 1;
+	block_y_pos	= ( ( __scroll_y >> 4 ) & 0x01 ) << 1;
 #endif
 	data_part1	= _CHRs_cnt;
 	data_part2	= 0;
@@ -1658,7 +1720,7 @@ void	__mpd_fill_row_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
 #endif
 	__mpd_disp_list_push_hdr( DL_FLAG_DATA_INC1, data_part1, _vaddr );
 
-	CHR_y_pos	= ( ( __vert_dir_pos >> 3 ) & 0x01 ) << 2;
+	CHR_y_pos	= ( ( __scroll_y >> 3 ) & 0x01 ) << 2;
 
 	tile_n = 0;
 
@@ -1804,12 +1866,12 @@ void	__mpd_update_scroll( bool _vsync )
 	vreg( 8, __scroll_y );
 }
 
-u16	mpd_scroll_x()
+s16	mpd_scroll_x()
 {
 	return __scroll_x;
 }
 
-u16	mpd_scroll_y()
+s16	mpd_scroll_y()
 {
 	return __scroll_y;
 }

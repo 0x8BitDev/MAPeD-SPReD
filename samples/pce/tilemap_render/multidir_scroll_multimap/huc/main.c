@@ -50,7 +50,7 @@ void	display_next_map()
 
 	/* init tilemap renderer data */
 	map_ind = ++map_ind % MAPS_CNT;
-	mpd_init( map_ind, ms_2px );
+	mpd_init( map_ind, 2 );
 
 	/* draw start screen */
 	mpd_draw_screen();
