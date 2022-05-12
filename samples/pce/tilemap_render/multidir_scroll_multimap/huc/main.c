@@ -47,6 +47,7 @@ void	display_next_map()
 {
 	/*  disable display */
 	disp_off();
+	vsync();
 
 	/* init tilemap renderer data */
 	map_ind = ++map_ind % MAPS_CNT;
@@ -150,6 +151,12 @@ main()
 			mpd_move_down();
 		}
 
-		mpd_update_screen( TRUE );
+		/* update BAT with tiles */
+		mpd_update_screen();
+
+		/* see mpd.h for details */
+		vsync();
+		vreg( 7, mpd_scroll_x() );
+		vreg( 8, mpd_scroll_y() );
 	}
 }

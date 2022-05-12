@@ -56,6 +56,7 @@ void	display_next_map()
 {
 	/*  disable display */
 	disp_off();
+	vsync();
 
 	/* init tilemap renderer data */
 	map_ind = ++map_ind % MAPS_CNT;

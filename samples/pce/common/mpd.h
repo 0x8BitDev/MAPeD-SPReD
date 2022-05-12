@@ -5,10 +5,12 @@
 //
 //######################################################################################################
 
-/*/	MPD-render v0.04
+/*/	MPD-render v0.4
 History:
 
 v0.4
+2022.05.12 - 'mpd_update_screen( bool _vsync )' changed to 'mpd_update_screen()'
+2022.05.12 - removed VDC's scroll registers update on 'mpd_init' and 'mpd_update_screen'
 2022.05.10 - added 'mpd_draw_screen_by_data_offs( mpd_SCREEN* _scr_data, u16 _BAT_offset )'
 2022.05.10 - 'mpd_draw_screen_by_scr_data' renamed to 'mpd_draw_screen_by_data'
 2022.05.10 - added 'mpd_draw_screen_by_ind_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )' and 'mpd_draw_screen_by_pos_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )'
@@ -30,43 +32,101 @@ v0.1
 2022.02.16 - initial release
 */
 
-//
-// public functions:
-//
-// #if		FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-// void		mpd_init( u8 _map_ind, u8 _step ) / _step - default step for both axes
-// void		mpd_scroll_step_x( u8 _step_pix ) / _step_pix - 1-7 pix
-// void		mpd_scroll_step_y( u8 _step_pix ) / _step_pix - 1-7 pix
-// void		mpd_clear_update_flags()
-// void		mpd_move_left()
-// void		mpd_move_right()
-// void		mpd_move_up()
-// void		mpd_move_down()
-// void		mpd_update_screen( bool _vsync )
-// s16		mpd_scroll_x()
-// s16		mpd_scroll_y()
-// #else
-// void		mpd_init( u8 _map_ind )
-// #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-//
-// u8		mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; result: property id
-// void		mpd_draw_screen()
-//
-// #if		FLAG_MODE_MULTIDIR_SCROLL
-// void		mpd_draw_screen_by_ind( u16 _scr_ind )
-// void		mpd_draw_screen_by_ind_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
-// void		mpd_draw_screen_by_pos( u16 _x, u16 _y )
-// void		mpd_draw_screen_by_pos_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
-// #endif	//FLAG_MODE_MULTIDIR_SCROLL
-//
-// #if		FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
-// mpd_SCREEN*	mpd_curr_screen()
-// mpd_SCREEN*	mpd_get_adj_screen( mpd_SCREEN* _scr_data, u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
-// bool		mpd_check_adj_screen( u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
-// void		mpd_draw_screen_by_data( mpd_SCREEN* _scr_data )
-// void		mpd_draw_screen_by_data_offs( mpd_SCREEN* _scr_data, u16 _BAT_offset )
-// #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
-//
+/*/
+NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any way!	It just provides scroll values X/Y: mpd_scroll_x(), mpd_scroll_y().
+	Thus, user must set scroll values in his program using these functions. This is for scrollable maps only!
+
+	There are several ways:
+
+	1. Using the HuC scroll library - 'scroll( ... )'. The HuC`s scroll library has a higher priority on setting scroll values.
+	Fullscreen scrollable window can be defined like this:
+
+		scroll( 0, 0, 0, 0, ScrPixelsHeight, 0xC0 );
+
+		and then in update loop:
+
+		for(;;)
+		{
+			your code here...
+
+			// update BAT with tiles
+			mpd_update_screen();
+
+			// update your scrollable window
+			scroll( 0, mpd_scroll_x(), mpd_scroll_y(), 0, ScrPixelsHeight, 0xC0 );
+			vsync();
+		}
+
+		When you have a complex system of transitions between screens + scrolling, this option will help avoid glitches.
+
+	2. Write directly to VDC`s scroll registers immediately after vsync(); This way you`ll override the HuC`s scroll values and it works faster than
+	HuC`s scroll library.
+
+	BUT if you`ll skip overriding HuC`s scroll values, you may see one-frame shifted image.
+
+	This option is most suitable for a game loops, when all your data is preloaded, and you are sitting in a game level.
+	If your game loop looks something like this, you can use this option.
+
+		...
+		all graphics/sound/sprites/map preloaded here...
+		...
+
+		for(;;)
+		{
+			controls update...
+			player update...
+			map position update...
+			enemies update...
+			fxs update...
+
+			// update BAT with tiles
+			mpd_update_screen();
+
+			vsync();
+			vreg( 7, mpd_scroll_x() );
+			vreg( 8, mpd_scroll_y() );
+		}
+
+	You can try the both options and choose which is the best in your case.
+
+
+public functions:
+~~~~~~~~~~~~~~~~~
+
+#if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+void	mpd_init( u8 _map_ind, u8 _step ) / _step - default step for both axes
+void	mpd_scroll_step_x( u8 _step_pix ) / _step_pix - 1-7 pix
+void	mpd_scroll_step_y( u8 _step_pix ) / _step_pix - 1-7 pix
+void	mpd_clear_update_flags()
+void	mpd_move_left()
+void	mpd_move_right()
+void	mpd_move_up()
+void	mpd_move_down()
+void	mpd_update_screen()
+s16	mpd_scroll_x()
+s16	mpd_scroll_y()
+#else
+void	mpd_init( u8 _map_ind )
+#endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+
+u8	mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; result: property id
+void	mpd_draw_screen()
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+void	mpd_draw_screen_by_ind( u16 _scr_ind )
+void	mpd_draw_screen_by_ind_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
+void	mpd_draw_screen_by_pos( u16 _x, u16 _y )
+void	mpd_draw_screen_by_pos_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
+#endif	//FLAG_MODE_MULTIDIR_SCROLL
+
+#if	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
+mpd_SCREEN*	mpd_curr_screen()
+mpd_SCREEN*	mpd_get_adj_screen( mpd_SCREEN* _scr_data, u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
+bool		mpd_check_adj_screen( u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
+void		mpd_draw_screen_by_data( mpd_SCREEN* _scr_data )
+void		mpd_draw_screen_by_data_offs( mpd_SCREEN* _scr_data, u16 _BAT_offset )
+#endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
+*/
 
 /************************/
 /*			*/
@@ -558,10 +618,6 @@ void	mpd_init( u8 _map_ind )
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	__curr_chr_id_mul2	= 0xff;
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
-
-#if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-	__mpd_update_scroll( TRUE );
-#endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 }
 
 void	__mpd_update_data_offsets()
@@ -1251,7 +1307,7 @@ void	mpd_clear_update_flags()
 	__upd_flags &= ~(UPD_FLAG_DRAW_MASK);
 }
 
-void	mpd_update_screen( bool _vsync )
+void	mpd_update_screen()
 {
 	if( __upd_flags & UPD_FLAG_DRAW_MASK )
 	{
@@ -1277,8 +1333,6 @@ void	mpd_update_screen( bool _vsync )
 
 		__mpd_disp_list_flush();
 	}
-
-	__mpd_update_scroll( _vsync );
 }
 
 void	__mpd_draw_left_tiles_column()
@@ -1853,17 +1907,6 @@ void	__mpd_push_data2_row_hdr( u16 _vaddr, u8 _size )
 u16	__mpd_get_VRAM_addr( u16 _x, u16 _y )
 {
 	return ( ( ( _x >> 3 ) & __BAT_width_dec1 ) + ( ( ( _y >> 3 ) & __BAT_height_dec1 ) << __BAT_width_pow2 ) ) & __BAT_size_dec1;
-}
-
-void	__mpd_update_scroll( bool _vsync )
-{
-	if( _vsync )
-	{
-		vsync();
-	}
-
-	vreg( 7, __scroll_x );
-	vreg( 8, __scroll_y );
 }
 
 s16	mpd_scroll_x()
