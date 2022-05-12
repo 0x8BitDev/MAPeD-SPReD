@@ -118,7 +118,7 @@ void	show_screen()
 	dbl_buff_trig ^= 1;
 
 	/* an offset to BAT's active buffer */
-	BAT_offset = dbl_buff_trig << 5;
+	BAT_offset = dbl_buff_trig * ( SCR_BLOCKS2x2_WIDTH << 1 );
 
 	/* draw screen by index to invisible BAT buffer */
 	mpd_draw_screen_by_ind_offs( map_scr_ind, BAT_offset, TRUE );	// TRUE - disable scrolling
