@@ -1288,7 +1288,7 @@ namespace MAPeD
 										
 										if( scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 										{
-											gfx.DrawImage( ListViewScreens.LargeImageList.Images[ scr_ind ], j * scr_width_pix, i * scr_height_pix, scr_width_pix, scr_height_pix );
+											gfx.DrawImage( m_imagelist_manager.get_screen_list().get( scr_ind ), j * scr_width_pix, i * scr_height_pix, scr_width_pix, scr_height_pix );
 										}
 									}
 								}
