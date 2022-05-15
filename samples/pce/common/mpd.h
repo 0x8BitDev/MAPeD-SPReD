@@ -36,58 +36,34 @@ v0.1
 NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any way!	It just provides scroll values X/Y: mpd_scroll_x(), mpd_scroll_y().
 	Thus, user must set scroll values in his program using these functions. This is for scrollable maps only!
 
-	There are several ways:
+	There are two ways:
 
-	1. Using the HuC scroll library - 'scroll( ... )'. The HuC`s scroll library has a higher priority on setting scroll values.
-	Fullscreen scrollable window can be defined like this:
-
-		scroll( 0, 0, 0, 0, ScrPixelsHeight, 0xC0 );
-
-		and then in update loop:
+	1. Fullscreen scrolling. Write directly to the bgx1(0x220c)/bgy1(0x2210) system variables:
 
 		for(;;)
 		{
-			your code here...
+			...your code here...
 
-			// update BAT with tiles
-			mpd_update_screen();
-
-			// update your scrollable window
-			scroll( 0, mpd_scroll_x(), mpd_scroll_y(), 0, ScrPixelsHeight, 0xC0 );
+			// update VDC's scroll registers on VBLANK via bgx1/bgy1 variables
+			pokew( 0x220c, mpd_scroll_x() );
+			pokew( 0x2210, mpd_scroll_y() );
 			vsync();
 		}
 
-		When you have a complex system of transitions between screens + scrolling, this option will help avoid glitches.
-
-	2. Write directly to VDC`s scroll registers immediately after vsync(); This way you`ll override the HuC`s scroll values and it works faster than
-	HuC`s scroll library.
-
-	BUT if you`ll skip overriding HuC`s scroll values, you may see one-frame shifted image.
-
-	This option is most suitable for a game loops, when all your data is preloaded, and you are sitting in a game level.
-	If your game loop looks something like this, you can use this option.
-
-		...
-		all graphics/sound/sprites/map preloaded here...
-		...
+	2. Area scrolling. If you need to combine a static HUD and the scrollable area for your map, you can do this using the HuC's scroll library - 'scroll(...)':
 
 		for(;;)
 		{
-			controls update...
-			player update...
-			map position update...
-			enemies update...
-			fxs update...
+			...your code here...
 
-			// update BAT with tiles
-			mpd_update_screen();
-
+			// scrollable region update
+			scroll( 0, mpd_scroll_x(), mpd_scroll_y(), region_top, region_bottom, 0xC0 );
 			vsync();
-			vreg( 7, mpd_scroll_x() );
-			vreg( 8, mpd_scroll_y() );
 		}
 
-	You can try the both options and choose which is the best in your case.
+	Thus, the main option is (1). But if you need to limit the scrollable area you need to use the (2) option.
+
+	NOTE: To avoid conflicts, these options can not be used together. You must use either (1) or (2).
 
 
 public functions:

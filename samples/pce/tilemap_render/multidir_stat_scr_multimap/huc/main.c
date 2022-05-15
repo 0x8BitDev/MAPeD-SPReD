@@ -127,7 +127,8 @@ void	show_screen()
 	put_hex( dbl_buff_trig, 1, BAT_offset, 0 );
 
 	/* show buffered screen */
-	scroll( 0, ( dbl_buff_trig ? ScrPixelsWidth:0 ), 0, 0, ScrPixelsHeight, 0xC0 );
+	pokew( 0x220c, ( dbl_buff_trig ? ScrPixelsWidth:0 ) );
+	pokew( 0x2210, 0 );
 }
 
 main()
@@ -151,9 +152,6 @@ main()
 
 	/* enable display */
 	disp_on();
-
-	/* create scrollable window to jump between buffers */
-	scroll( 0, 0, 0, 0, ScrPixelsHeight, 0xC0 );
 
 	sel_btn_pressed	= FALSE;
 	btn_pressed	= FALSE;
