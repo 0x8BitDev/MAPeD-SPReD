@@ -52,12 +52,19 @@ NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any
 
 	2. Area scrolling. If you need to combine a static HUD and the scrollable area for your map, you can do this using the HuC's scroll library - 'scroll(...)':
 
+		NOTE: This will work for linear horizontal bi-directional maps!
+
+		// init map area
+		scroll( 0, 0, 0, 0, region_bottom, 0xC0 );
+		// init HUD area
+		scroll( 1, 0, region_bottom + 1, region_bottom + 1, scr_height - 1, 0x80 );
+
 		for(;;)
 		{
 			...your code here...
 
 			// scrollable region update
-			scroll( 0, mpd_scroll_x(), mpd_scroll_y(), region_top, region_bottom, 0xC0 );
+			scroll( 0, mpd_scroll_x(), 0, 0, region_bottom, 0xC0 );
 			vsync();
 		}
 
