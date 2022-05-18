@@ -651,7 +651,7 @@ namespace MAPeD
 							{
 								if( _scr_data.m_scr_ind == common_scr_ind )
 								{
-									_scr_data.m_scr_ind = ( byte )curr_common_scr_ind;
+									_scr_data.m_scr_ind = curr_common_scr_ind;
 								}
 							});
 						});

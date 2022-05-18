@@ -41,15 +41,16 @@ namespace MAPeD
 		private readonly screen_editor m_screen_editor		= null;
 		private readonly layout_editor m_layout_editor		= null;
 		
-		private readonly tiles_palette_form m_tiles_palette_form		= null;
-		private readonly patterns_manager_form m_patterns_manager_form	= null;
-		private readonly optimization_form m_optimization_form			= null;
-		private readonly object_name_form m_object_name_form			= null;
-		private readonly import_tiles_form m_import_tiles_form			= null;
-		private readonly screen_mark_form m_screen_mark_form			= null;
-		private readonly description_form m_description_form			= null;
-		private readonly statistics_form m_statistics_form				= null;
-		private readonly create_layout_form m_create_layout_form		= null;
+		private readonly tiles_palette_form		m_tiles_palette_form		= null;
+		private readonly patterns_manager_form	m_patterns_manager_form		= null;
+		private readonly optimization_form		m_optimization_form			= null;
+		private readonly object_name_form		m_object_name_form			= null;
+		private readonly import_tiles_form		m_import_tiles_form			= null;
+		private readonly screen_mark_form		m_screen_mark_form			= null;
+		private readonly description_form		m_description_form			= null;
+		private readonly statistics_form		m_statistics_form			= null;
+		private readonly create_layout_form		m_create_layout_form		= null;
+		private readonly reorder_CHR_banks_form m_reorder_CHR_banks_form	= null;
 		
 		private SPSeD.py_editor		m_py_editor	= null;
 		
@@ -171,6 +172,7 @@ namespace MAPeD
 			m_statistics_form					= new statistics_form( m_data_manager );
 			m_create_layout_form				= new create_layout_form();
 			m_export_active_tile_block_set_form	= new export_active_tile_block_set_form();
+			m_reorder_CHR_banks_form			= new reorder_CHR_banks_form( m_data_manager );
 
 			enable_update_gfx_btn( false );
 			enable_update_screens_btn( true );
@@ -1679,6 +1681,39 @@ namespace MAPeD
 			}
 		}
 		
+		void BtnReorderCHRBanksClick_Event(object sender, EventArgs e)
+		{
+			if( m_data_manager.tiles_data_cnt > 0 )
+			{
+				m_reorder_CHR_banks_form.show_dialog();
+				
+				if( ( CBoxCHRBanks.SelectedIndex != m_reorder_CHR_banks_form.selected_CHR_bank ) || m_reorder_CHR_banks_form.data_changed )
+				{
+					progress_bar_show( true, "Data updating...", false );
+
+					CBoxCHRBanks.SelectedIndex = -1;	// this guarantees switching between different banks with the same index
+					CBoxCHRBanks.SelectedIndex = m_reorder_CHR_banks_form.selected_CHR_bank;
+					
+					if( m_reorder_CHR_banks_form.data_changed )
+					{
+						bool all_banks_flag_state = CheckBoxLayoutEditorAllBanks.Checked;
+						
+						CheckBoxLayoutEditorAllBanks.Checked = true;
+						
+						update_all_screens( true, true );
+						
+						CheckBoxLayoutEditorAllBanks.Checked = all_banks_flag_state;
+					}
+					
+					progress_bar_show( false );
+				}
+			}
+			else
+			{
+				message_box( "There are no CHR banks!", "Reorder CHR Banks", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+		}
+		
 		void PanelBlocksClick_Event(object sender, EventArgs e)
 		{
 			select_block( get_sender_index( sender ), true, true );
@@ -2847,7 +2882,7 @@ namespace MAPeD
 								m_data_manager.insert_screen_into_layouts( scr_global_ind );
 
 								scr_data = layout.get_data( x, y );
-								scr_data.m_scr_ind = (byte)scr_global_ind;
+								scr_data.m_scr_ind = scr_global_ind;
 								layout.set_data( scr_data, x, y );
 							}
 							else

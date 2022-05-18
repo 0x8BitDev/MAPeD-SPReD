@@ -215,6 +215,13 @@
     <Compile Include="..\src\py_scripting\py_api.cs">
       <Link>py_scripting\py_api.cs</Link>
     </Compile>
+    <Compile Include="..\src\reorder_CHR_banks_form.cs">
+      <Link>reorder_CHR_banks_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\reorder_CHR_banks_form.Designer.cs">
+      <Link>reorder_CHR_banks_form.Designer.cs</Link>
+      <DependentUpon>reorder_CHR_banks_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\screen_data.cs">
       <Link>screen_data.cs</Link>
     </Compile>
@@ -354,6 +361,10 @@
     <EmbeddedResource Include="..\src\progress_form.resx">
       <Link>progress_form.resx</Link>
       <DependentUpon>progress_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\reorder_CHR_banks_form.resx">
+      <Link>reorder_CHR_banks_form.resx</Link>
+      <DependentUpon>reorder_CHR_banks_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\screen_mark_form.resx">
       <Link>screen_mark_form.resx</Link>

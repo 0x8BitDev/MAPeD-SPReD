@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 21.12.2018
  * Time: 16:34
  */
@@ -98,6 +98,33 @@ namespace MAPeD
 					}
 				}
 								
+				m_pen.Width = 1;
+				draw_border( Color.Black );
+				
+				disable( false );
+			}
+			else
+			{
+				disable( true );
+			}
+			
+			if( _invalidate )
+			{
+				invalidate();
+			}
+		}
+
+		public void update( Bitmap _bmp, int _width, int _height, int _x, int _y, bool _invalidate = true, bool _clear_background = true )
+		{
+			if( _clear_background )
+			{
+				clear_background( CONST_BACKGROUND_COLOR );
+			}
+			
+			if( _bmp != null )
+			{
+				m_gfx.DrawImage( _bmp, _x, _y, _width, _height );
+				
 				m_pen.Width = 1;
 				draw_border( Color.Black );
 				

@@ -220,7 +220,7 @@ namespace MAPeD
 			if( !_temp_data )
 			{
 				++m_id;
-				name = m_id.ToString();
+				name = build_name( m_id );
 			}
 			else
 			{
@@ -268,7 +268,12 @@ namespace MAPeD
 			m_scr_data = null;
 			
 			delete_patterns();
-		}			
+		}
+		
+		public static string build_name( int _id )
+		{
+			return _id.ToString();
+		}
 
 #if DEF_FIXED_LEN_PALETTE16_ARR
 		private void palettes_create_fixed_arr()

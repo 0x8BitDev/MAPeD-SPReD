@@ -60,6 +60,7 @@ namespace MAPeD
 			this.addBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.reorderBanksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CHRBankPageBtnsToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.prevPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.nextPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -619,6 +620,7 @@ namespace MAPeD
 									this.addBankToolStripMenuItem,
 									this.deleteBankToolStripMenuItem,
 									this.copyBankToolStripMenuItem,
+									this.reorderBanksToolStripMenuItem,
 									this.CHRBankPageBtnsToolStripSeparator,
 									this.prevPageToolStripMenuItem,
 									this.nextPageToolStripMenuItem,
@@ -631,34 +633,42 @@ namespace MAPeD
 			// addBankToolStripMenuItem
 			// 
 			this.addBankToolStripMenuItem.Name = "addBankToolStripMenuItem";
-			this.addBankToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.addBankToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.addBankToolStripMenuItem.Text = "&Add Bank";
 			this.addBankToolStripMenuItem.Click += new System.EventHandler(this.BtnAddCHRBankClick_Event);
 			// 
 			// deleteBankToolStripMenuItem
 			// 
 			this.deleteBankToolStripMenuItem.Name = "deleteBankToolStripMenuItem";
-			this.deleteBankToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.deleteBankToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.deleteBankToolStripMenuItem.Text = "&Delete Bank";
 			this.deleteBankToolStripMenuItem.Click += new System.EventHandler(this.BtnDeleteCHRBankClick_Event);
 			// 
 			// copyBankToolStripMenuItem
 			// 
 			this.copyBankToolStripMenuItem.Name = "copyBankToolStripMenuItem";
-			this.copyBankToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.copyBankToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.copyBankToolStripMenuItem.Text = "&Copy Bank";
 			this.copyBankToolStripMenuItem.Click += new System.EventHandler(this.BtnCopyCHRBankClick_Event);
+			// 
+			// reorderBanksToolStripMenuItem
+			// 
+			this.reorderBanksToolStripMenuItem.Name = "reorderBanksToolStripMenuItem";
+			this.reorderBanksToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+			this.reorderBanksToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.reorderBanksToolStripMenuItem.Text = "&Reorder Banks";
+			this.reorderBanksToolStripMenuItem.Click += new System.EventHandler(this.BtnReorderCHRBanksClick_Event);
 			// 
 			// CHRBankPageBtnsToolStripSeparator
 			// 
 			this.CHRBankPageBtnsToolStripSeparator.Name = "CHRBankPageBtnsToolStripSeparator";
-			this.CHRBankPageBtnsToolStripSeparator.Size = new System.Drawing.Size(186, 6);
+			this.CHRBankPageBtnsToolStripSeparator.Size = new System.Drawing.Size(187, 6);
 			// 
 			// prevPageToolStripMenuItem
 			// 
 			this.prevPageToolStripMenuItem.Name = "prevPageToolStripMenuItem";
 			this.prevPageToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Left)));
-			this.prevPageToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.prevPageToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.prevPageToolStripMenuItem.Text = "&Prev Page";
 			this.prevPageToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRBankPrevPageClick_Event);
 			// 
@@ -666,14 +676,14 @@ namespace MAPeD
 			// 
 			this.nextPageToolStripMenuItem.Name = "nextPageToolStripMenuItem";
 			this.nextPageToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Right)));
-			this.nextPageToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.nextPageToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.nextPageToolStripMenuItem.Text = "&Next Page";
 			this.nextPageToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRBankNextPageClick_Event);
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(186, 6);
+			this.toolStripSeparator8.Size = new System.Drawing.Size(187, 6);
 			// 
 			// cHRToolStripMenuItem
 			// 
@@ -682,7 +692,7 @@ namespace MAPeD
 									this.flipHOrizontalToolStripMenuItem,
 									this.rotateToolStripMenuItem});
 			this.cHRToolStripMenuItem.Name = "cHRToolStripMenuItem";
-			this.cHRToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.cHRToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.cHRToolStripMenuItem.Text = "C&HR";
 			// 
 			// flipVerticalToolStripMenuItem
@@ -3813,6 +3823,7 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem reorderBanksToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem clearPropertiesToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripMenuItem clearPropertiesToolStripMenuItem;

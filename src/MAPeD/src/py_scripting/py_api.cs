@@ -229,7 +229,7 @@ namespace MAPeD
 			
 			if( data != null )
 			{
-				return ( int )data.m_scr_ind;
+				return data.m_scr_ind;
 			}
 			
 			return -1;

@@ -453,6 +453,39 @@ namespace MAPeD
 			m_layouts_data[ _layout2 ] = temp_data;
 		}
 
+		public void layout_screens_proc( Func< int, int > _func )
+		{
+			int 	width;
+			int 	height;
+			
+			layout_screen_data scr_data;
+			
+			layout_data data;
+			
+			int layouts_cnt = m_layouts_data.Count;
+			
+			for( int layout_n = 0; layout_n < layouts_cnt; layout_n++ )
+			{
+				data = m_layouts_data[ layout_n ];
+				
+				width	= data.get_width();
+				height	= data.get_height();
+				
+				for( int i = 0; i < height; i++ )
+				{
+					for( int j = 0; j < width; j++ )
+					{
+						scr_data = data.get_data( j, i );
+						
+						if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
+						{
+							scr_data.m_scr_ind = _func( scr_data.m_scr_ind );
+						}
+					}
+				}
+			}
+		}
+		
 		public void remove_screen_from_layouts( int _CHR_bank_ind, int _scr_id )
 		{
 			int 	width;

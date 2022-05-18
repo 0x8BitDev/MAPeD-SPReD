@@ -48,8 +48,8 @@ namespace MAPeD
 		private int		m_scr_half_width  = 0;
 		private int		m_scr_half_height = 0;
 		
-		private int 	m_sel_screen_slot_id	= -1;
-		private byte	m_active_screen_index	= layout_data.CONST_EMPTY_CELL_ID;
+		private int		m_sel_screen_slot_id	= -1;
+		private int		m_active_screen_index	= layout_data.CONST_EMPTY_CELL_ID;
 		
 		private readonly ImageAttributes m_scr_img_attr	= null;
 		private Rectangle 			m_scr_img_rect;

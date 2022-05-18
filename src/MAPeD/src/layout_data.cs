@@ -41,12 +41,12 @@ namespace MAPeD
 		}
 		
 		[DataMember]
-		public byte 					m_scr_ind;
+		public int 					m_scr_ind;
 		
 		[DataMember]
 		public List< entity_instance > 	m_ents;
 		
-		public layout_screen_data( byte _scr_ind )
+		public layout_screen_data( int _scr_ind )
 		{
 			m_scr_ind = _scr_ind;
 			m_ents = new List< entity_instance >();
@@ -67,7 +67,7 @@ namespace MAPeD
 		{
 			_bw.Write( m_marks );
 			
-			_bw.Write( m_scr_ind );
+			_bw.Write( ( byte )m_scr_ind );
 			
 			_bw.Write( m_ents.Count );
 			
@@ -137,7 +137,7 @@ namespace MAPeD
 		[DataMember]
 		private List< List< layout_screen_data > >	m_layout	= null;
 
-		public const byte	CONST_EMPTY_CELL_ID		= 255;
+		public const int	CONST_EMPTY_CELL_ID		= 255;
 		
 		public static readonly int[] adj_scr_slots	= new int[]{ -1, -1, 0, -1, 1, -1, -1, 1, 0, 1, 1, 1, -1, 0, 1, 0 };
 		
