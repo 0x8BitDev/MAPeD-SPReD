@@ -5,8 +5,11 @@
 //
 //######################################################################################################
 
-/*/	MPD-render v0.4
+/*/	MPD-render v0.5
 History:
+
+v0.5
+2022.05.19 - added 'mpd_draw_CHR( u16 _x, u16 _y, u8 _block2x2_ind, u8 _CHR_ind )', 'mpd_draw_block2x2( u8 _x, u8 _y, u8 _block2x2_ind )' and 'mpd_draw_tile4x4( u8 _x, u8 _y, u8 _tile4x4_ind )'
 
 v0.4
 2022.05.12 - 'mpd_update_screen( bool _vsync )' changed to 'mpd_update_screen()'
@@ -91,6 +94,14 @@ s16	mpd_scroll_y()
 #else
 void	mpd_init( u8 _map_ind )
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+
+// NOTE: 'mpd_draw_...' - for scrollable maps add 'mpd_scroll_x()' to _x and 'mpd_scroll_y()' to _y
+void	mpd_draw_CHR( u16 _x, u16 _y, u8 _block2x2_ind, u8 _CHR_ind ) / _x/_y - screen space coordinates in pixels, _block2x2_ind - 0..255, _CHR_ind - 0..3
+void	mpd_draw_block2x2( u8 _x, u8 _y, u8 _block2x2_ind ) / _x/_y - screen space coordinates in pixels, _block2x2_ind - 0..255
+
+#if	FLAG_TILES4X4
+void	mpd_draw_tile4x4( u8 _x, u8 _y, u8 _tile4x4_ind ) / _x/_y - screen space coordinates in pixels, _tile4x4_ind - 0..255
+#endif	//FLAG_TILES4X4
 
 u8	mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; result: property id
 void	mpd_draw_screen()
@@ -398,7 +409,7 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 /*				*/
 /********************************/
 
-const u8 mpd_ver[] = { "M", "P", "D", "v", "0", ".", "4", 0 };
+const u8 mpd_ver[] = { "M", "P", "D", "v", "0", ".", "5", 0 };
 
 /* flags */
 
@@ -614,6 +625,36 @@ void	__mpd_update_data_offsets()
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
+void	mpd_draw_CHR( u16 _x, u16 _y, u8 _block2x2_ind, u8 _CHR_ind )
+{
+	u16	offs;
+
+	offs = __blocks_offset + ( _block2x2_ind << 3 ) + ( ( _CHR_ind & 0x03 ) << 1 );
+
+	mpd_load_vram( __mpd_get_VRAM_addr( _x, _y ), mpd_Attrs, offs, 1 );
+}
+
+void	mpd_draw_block2x2( u16 _x, u16 _y, u8 _block2x2_ind )
+{
+	u16	offs;
+
+	offs	= __blocks_offset + ( _block2x2_ind << 3 );
+
+	mpd_load_vram( __mpd_get_VRAM_addr( _x, _y ), mpd_Attrs, offs, 1 );
+
+	offs += 2;
+	_x   += 8;
+	mpd_load_vram( __mpd_get_VRAM_addr( _x, _y ), mpd_Attrs, offs, 1 );
+
+	offs += 4;
+	_y   += 8;
+	mpd_load_vram( __mpd_get_VRAM_addr( _x, _y ), mpd_Attrs, offs, 1 );
+
+	offs -= 2;
+	_x   -= 8;
+	mpd_load_vram( __mpd_get_VRAM_addr( _x, _y ), mpd_Attrs, offs, 1 );
+}
+
 void	__mpd_draw_block2x2( u16 _vaddr, u16 _offset )
 {
 	mpd_load_vram( _vaddr, mpd_Attrs, _offset, 2 );
@@ -621,21 +662,37 @@ void	__mpd_draw_block2x2( u16 _vaddr, u16 _offset )
 }
 
 #if	FLAG_TILES4X4
+void	mpd_draw_tile4x4( u16 _x, u16 _y, u8 _tile4x4_ind )
+{
+	u16	tiles12;
+	u16	tiles34;
+	u16	offs;
+
+	offs	= __tiles_offset + ( _tile4x4_ind << 2 );
+
+	tiles12 = mpd_farpeekw( mpd_Tiles, offs );
+	tiles34 = mpd_farpeekw( mpd_Tiles, offs + 2 );
+
+	mpd_draw_block2x2( _x, _y,	tiles12 );
+	mpd_draw_block2x2( _x + 16, _y,	( tiles12 >> 8 ) );
+	_y += 16;
+	mpd_draw_block2x2( _x, _y,	tiles34 );
+	mpd_draw_block2x2( _x + 16, _y,	( tiles34 >> 8 ) );
+}
+
 void	__mpd_draw_tile4x4( u16 _vaddr, u16 _offset )
 {
-	u16 tiles12;
-	u16 tiles34;
+	u16	tiles12;
+	u16	tiles34;
 
 	tiles12 = mpd_farpeekw( mpd_Tiles, _offset );
 	tiles34 = mpd_farpeekw( mpd_Tiles, _offset + 2 );
 
-	__mpd_draw_block2x2( _vaddr, __blocks_offset + ( ( tiles12 & 0x00ff ) << 3 ) );
-	_vaddr += 2;
-	__mpd_draw_block2x2( _vaddr, __blocks_offset + ( ( tiles12 & 0xff00 ) >> 5 ) );
-	_vaddr += ( __BAT_width << 1 ) - 2;
-	__mpd_draw_block2x2( _vaddr, __blocks_offset + ( ( tiles34 & 0x00ff ) << 3 ) );
-	_vaddr += 2;
-	__mpd_draw_block2x2( _vaddr, __blocks_offset + ( ( tiles34 & 0xff00 ) >> 5 ) );
+	__mpd_draw_block2x2( _vaddr,		__blocks_offset + ( ( tiles12 & 0x00ff ) << 3 ) );
+	__mpd_draw_block2x2( _vaddr + 2,	__blocks_offset + ( ( tiles12 & 0xff00 ) >> 5 ) );
+	_vaddr += ( __BAT_width << 1 );
+	__mpd_draw_block2x2( _vaddr, 		__blocks_offset + ( ( tiles34 & 0x00ff ) << 3 ) );
+	__mpd_draw_block2x2( _vaddr + 2,	__blocks_offset + ( ( tiles34 & 0xff00 ) >> 5 ) );
 }
 #endif	//FLAG_TILES4X4
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
@@ -1887,11 +1944,6 @@ void	__mpd_push_data2_row_hdr( u16 _vaddr, u8 _size )
 	__mpd_disp_list_push_hdr( DL_FLAG_DATA_INC1, _size, ( _vaddr & ~__BAT_width_dec1 ) );
 }
 
-u16	__mpd_get_VRAM_addr( u16 _x, u16 _y )
-{
-	return ( ( ( _x >> 3 ) & __BAT_width_dec1 ) + ( ( ( _y >> 3 ) & __BAT_height_dec1 ) << __BAT_width_pow2 ) ) & __BAT_size_dec1;
-}
-
 s16	mpd_scroll_x()
 {
 	return __scroll_x;
@@ -1902,6 +1954,11 @@ s16	mpd_scroll_y()
 	return __scroll_y;
 }
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+
+u16	__mpd_get_VRAM_addr( u16 _x, u16 _y )
+{
+	return ( ( ( _x >> 3 ) & __BAT_width_dec1 ) + ( ( ( _y >> 3 ) & __BAT_height_dec1 ) << __BAT_width_pow2 ) ) & __BAT_size_dec1;
+}
 
 u8	mpd_get_property( u16 _x, u16 _y )
 {
