@@ -11,7 +11,6 @@
 
 @echo compiling...
 huc -fno-recursive -msmall main.c
-pceas -S main.s
 @if ERRORLEVEL 1 goto failure
 @echo Ok!
 

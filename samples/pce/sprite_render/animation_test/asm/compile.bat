@@ -10,7 +10,7 @@
 @del %OutDir%%OutFile%.pce
 
 @echo compiling...
-pceas -S main.asm
+pceas -S -O main.asm
 @if ERRORLEVEL 1 goto failure
 @echo Ok!
 
