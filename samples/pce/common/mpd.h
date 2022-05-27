@@ -8,6 +8,11 @@
 /*/	MPD-render v0.5
 History:
 
+2022.05.27 - fixed 'mpd_draw_screen_by_pos' and removed 'mpd_draw_screen_by_pos_offs' as unsafe and useless
+2022.05.26 - 'mpd_draw_screen_by_ind' and 'mpd_draw_screen_by_ind_offs' - changed screen index from u16 to u8
+2022.05.25 - fixed scroll values overflow in the 'mpd_move_right/left/up/down' for multi-dir mode
+2022.05.20 - 'mpd_draw_CHR' removed _CHR_ind clamping  (_CHR_ind & 0x03)
+
 v0.5
 2022.05.19 - added 'mpd_draw_CHR( u16 _x, u16 _y, u8 _block2x2_ind, u8 _CHR_ind )', 'mpd_draw_block2x2( u8 _x, u8 _y, u8 _block2x2_ind )' and 'mpd_draw_tile4x4( u8 _x, u8 _y, u8 _tile4x4_ind )'
 
@@ -16,7 +21,7 @@ v0.4
 2022.05.12 - removed VDC's scroll registers update on 'mpd_init' and 'mpd_update_screen'
 2022.05.10 - added 'mpd_draw_screen_by_data_offs( mpd_SCREEN* _scr_data, u16 _BAT_offset )'
 2022.05.10 - 'mpd_draw_screen_by_scr_data' renamed to 'mpd_draw_screen_by_data'
-2022.05.10 - added 'mpd_draw_screen_by_ind_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )' and 'mpd_draw_screen_by_pos_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )'
+2022.05.10 - added 'mpd_draw_screen_by_ind_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )' and 'mpd_draw_screen_by_pos_offs( u16 _x, u16 _y, u16 _BAT_offset, bool _reset_scroll )'
 2022.05.10 - 'mpd_draw_screen_by_scr_ind' renamed to 'mpd_draw_screen_by_ind'
 2022.05.10 - added support for free step scrolling (1-7 pix) for both bi- and multi-dir modes
 2022.05.09 - added 'mpd_scroll_step_x( u8 _step_pix )/mpd_scroll_step_y( u8 _step_pix )' for scrollable maps
@@ -107,10 +112,9 @@ u8	mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; result: property id
 void	mpd_draw_screen()
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-void	mpd_draw_screen_by_ind( u16 _scr_ind )
-void	mpd_draw_screen_by_ind_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
+void	mpd_draw_screen_by_ind( u8 _scr_ind )
+void	mpd_draw_screen_by_ind_offs( u8 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
 void	mpd_draw_screen_by_pos( u16 _x, u16 _y )
-void	mpd_draw_screen_by_pos_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
@@ -629,7 +633,7 @@ void	mpd_draw_CHR( u16 _x, u16 _y, u8 _block2x2_ind, u8 _CHR_ind )
 {
 	u16	offs;
 
-	offs = __blocks_offset + ( _block2x2_ind << 3 ) + ( ( _CHR_ind & 0x03 ) << 1 );
+	offs = __blocks_offset + ( _block2x2_ind << 3 ) + ( _CHR_ind << 1 );
 
 	mpd_load_vram( __mpd_get_VRAM_addr( _x, _y ), mpd_Attrs, offs, 1 );
 }
@@ -750,7 +754,7 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-void	__mpd_calc_scr_pos_by_scr_ind( u16 _scr_ind, bool _reset_scroll )
+void	__mpd_calc_scr_pos_by_scr_ind( u8 _scr_ind, bool _reset_scroll )
 {
 	u16	LUT_pos_x;
 	u16	LUT_pos_y;
@@ -860,26 +864,109 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 #endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
 }
 
-void	mpd_draw_screen_by_ind( u16 _scr_ind )
+void	__mpd_draw_free_tiled_screen()
+{
+	u8	scr_tile;
+	u8	x_beg_CHR;
+	u8	y_beg_CHR;
+	u16	w, h;
+	u16	width_cnt, height_cnt;
+	u16	CHR_x;
+	u16	CHR_y;
+	u16	n;
+	u16	tiles_offset;
+	u16	side_step;
+
+	CHR_x		= __scroll_x;
+	CHR_y		= __scroll_y;
+
+	x_beg_CHR	= __mpd_calc_skip_CHRs_cnt( __scroll_x );
+	y_beg_CHR	= __mpd_calc_skip_CHRs_cnt( __scroll_y );
+
+	width_cnt	= x_beg_CHR + SCR_CHRS_WIDTH + ( __scroll_x & 0x07 ? 1:0 );
+	height_cnt	= y_beg_CHR + SCR_CHRS_HEIGHT + ( __scroll_y & 0x07 ? 1:0 );
+
+	tiles_offset	= __maps_offset + __init_tiles_offset;
+
+#if	FLAG_DIR_COLUMNS
+
+	side_step	= ScrTilesHeight * mpd_MapsDimArr[ __map_ind_mul2 + 1 ];
+
+	for( w = x_beg_CHR; w < width_cnt; w++ )
+	{
+#if	FLAG_TILES2X2
+		n = ( w >> 1 ) * side_step;
+#else
+		n = ( w >> 2 ) * side_step;
+#endif
+		CHR_y = __scroll_y;
+
+		for( h = y_beg_CHR; h < height_cnt; h++ )
+		{
+			scr_tile = mpd_farpeekb( mpd_Maps, tiles_offset + n );
+#if	FLAG_TILES4X4
+			scr_tile = mpd_farpeekw( mpd_Tiles, __tiles_offset + ( scr_tile << 2 ) + ( h & 0x02 ) + ( ( w & 0x02 ) >> 1 ) );
+#endif
+			mpd_load_vram( __mpd_get_VRAM_addr( CHR_x, CHR_y ), mpd_Attrs, __blocks_offset + ( scr_tile << 3 ) + ( ( h & 0x01 ) << 2 ) + ( ( w & 0x01 ) << 1 ), 1 );
+#if	FLAG_TILES2X2
+			n += h & 0x01;
+#elif	FLAG_TILES4X4
+			n += ( ( h & 0x03 ) == 0x03 ) ? 1:0;
+#endif
+			CHR_y += 8;
+		}
+
+		CHR_x += 8;
+	}
+#elif	FLAG_DIR_ROWS
+
+	side_step	= ScrTilesWidth * mpd_MapsDimArr[ __map_ind_mul2 ];
+
+	for( h = y_beg_CHR; h < height_cnt; h++ )
+	{
+#if	FLAG_TILES2X2
+		n = ( h >> 1 ) * side_step;
+#else
+		n = ( h >> 2 ) * side_step;
+#endif
+		CHR_x = __scroll_x;
+
+		for( w = x_beg_CHR; w < width_cnt; w++ )
+		{
+			scr_tile = mpd_farpeekb( mpd_Maps, tiles_offset + n );
+#if	FLAG_TILES4X4
+			scr_tile = mpd_farpeekw( mpd_Tiles, __tiles_offset + ( scr_tile << 2 ) + ( h & 0x02 ) + ( ( w & 0x02 ) >> 1 ) );
+#endif
+			mpd_load_vram( __mpd_get_VRAM_addr( CHR_x, CHR_y ), mpd_Attrs, __blocks_offset + ( scr_tile << 3 ) + ( ( h & 0x01 ) << 2 ) + ( ( w & 0x01 ) << 1 ), 1 );
+#if	FLAG_TILES2X2
+			n += w & 0x01;
+#elif	FLAG_TILES4X4
+			n += ( ( w & 0x03 ) == 0x03 ) ? 1:0;
+#endif
+			CHR_x += 8;
+		}
+
+		CHR_y += 8;
+	}
+
+#endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
+}
+
+void	mpd_draw_screen_by_ind( u8 _scr_ind )
 {
 	mpd_draw_screen_by_ind_offs( _scr_ind, 0, FALSE );
 }
 
-void	mpd_draw_screen_by_ind_offs( u16 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
+void	mpd_draw_screen_by_ind_offs( u8 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
 {
 	__upd_flags = 0;
 
 	__mpd_calc_scr_pos_by_scr_ind( _scr_ind, _reset_scroll );
 
-	__mpd_draw_screen( _BAT_offset );
+	__mpd_draw_screen( _BAT_offset, 0 );
 }
 
 void	mpd_draw_screen_by_pos( u16 _x, u16 _y )
-{
-	mpd_draw_screen_by_pos_offs( _x, _y, 0, FALSE );
-}
-
-void	mpd_draw_screen_by_pos_offs( u16 _x, u16 _y, u16 _BAT_offset, bool _reset_scroll )
 {
 	u16	LUT_pos_x;
 	u16	LUT_pos_y;
@@ -894,9 +981,23 @@ void	mpd_draw_screen_by_pos_offs( u16 _x, u16 _y, u16 _BAT_offset, bool _reset_s
 	LUT_pos_y = _y >> 5;
 #endif
 
-	__mpd_calc_scr_pos_by_LUT_pos( LUT_pos_x, LUT_pos_y, _reset_scroll );
+	__mpd_calc_scr_pos_by_LUT_pos( LUT_pos_x, LUT_pos_y, FALSE );
 
-	__mpd_draw_screen( _BAT_offset );
+	__scroll_x = _x;
+	__scroll_y = _y;
+
+#if	FLAG_TILES2X2
+	if( !( __scroll_x & 0x0f ) && !( __scroll_y & 0x0f ) )
+#elif	FLAG_TILES4X4
+	if( !( __scroll_x & 0x1f ) && !( __scroll_y & 0x1f ) )
+#endif
+	{
+		__mpd_draw_screen( 0, 0 );
+	}
+	else
+	{
+		__mpd_draw_screen( 0, 1 );
+	}
 }
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
@@ -919,16 +1020,16 @@ void	mpd_draw_screen_by_data_offs( mpd_SCREEN* _scr_data, u16 _BAT_offset )
 	__upd_flags	= 0;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 
-	__mpd_draw_screen( _BAT_offset );
+	__mpd_draw_screen( _BAT_offset, 0 );
 }
 #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
 void	mpd_draw_screen()
 {
-	__mpd_draw_screen( 0 );
+	__mpd_draw_screen( 0, 0 );
 }
 
-void	__mpd_draw_screen( u16 _BAT_offset )
+void	__mpd_draw_screen( u16 _BAT_offset, u8 _free_scr )
 {
 	u16	num_CHRs;
 
@@ -965,7 +1066,18 @@ void	__mpd_draw_screen( u16 _BAT_offset )
 #else
 	mpd_load_bat( 0, mpd_VDCScr, __curr_scr->VDC_data_offset, SCR_CHRS_WIDTH, SCR_CHRS_HEIGHT );
 #endif	//FLAG_RLE
-#elif	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
+#elif	FLAG_MODE_MULTIDIR_SCROLL
+	
+	if( _free_scr )
+	{
+		__mpd_draw_free_tiled_screen();
+	}
+	else
+	{
+		__mpd_draw_tiled_screen( _BAT_offset );
+	}
+
+#elif	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 	__mpd_draw_tiled_screen( _BAT_offset );
 #endif
 }
@@ -1220,46 +1332,6 @@ void	mpd_move_down()
 #if	FLAG_MODE_MULTIDIR_SCROLL
 void	mpd_move_left()
 {
-	if( __scroll_x >= 0 )
-	{
-		__mpd_upd_scroll_left();
-	}
-}
-
-void	mpd_move_right()
-{
-	if( __scroll_x < __cropped_map_width )
-	{
-		__mpd_upd_scroll_right();
-	}
-	else
-	{
-		__scroll_x = __cropped_map_width;
-	}
-}
-
-void	mpd_move_up()
-{
-	if( __scroll_y >= 0 )
-	{
-		__mpd_upd_scroll_up();
-	}
-}
-
-void	mpd_move_down()
-{
-	if( __scroll_y < __cropped_map_height )
-	{
-		__mpd_upd_scroll_down();
-	}
-	else
-	{
-		__scroll_y = __cropped_map_height;
-	}
-}
-
-void	__mpd_upd_scroll_left()
-{
 	u8	tmp_pos;
 
 	tmp_pos = __scroll_x;
@@ -1279,7 +1351,7 @@ void	__mpd_upd_scroll_left()
 	}
 }
 
-void	__mpd_upd_scroll_right()
+void	mpd_move_right()
 {
 	u8	tmp_pos;
 
@@ -1292,9 +1364,14 @@ void	__mpd_upd_scroll_right()
 	}
 
 	__scroll_x += __scroll_step_x;
+
+	if( __scroll_x > __cropped_map_width )
+	{
+		__scroll_x = __cropped_map_width;
+	}
 }
 
-void	__mpd_upd_scroll_up()
+void	mpd_move_up()
 {
 	u8	tmp_pos;
 
@@ -1315,7 +1392,7 @@ void	__mpd_upd_scroll_up()
 	}
 }
 
-void	__mpd_upd_scroll_down()
+void	mpd_move_down()
 {
 	u8	tmp_pos;
 
@@ -1328,6 +1405,11 @@ void	__mpd_upd_scroll_down()
 	}
 
 	__scroll_y += __scroll_step_y;
+
+	if( __scroll_y > __cropped_map_height )
+	{
+		__scroll_y = __cropped_map_height;
+	}
 }
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
