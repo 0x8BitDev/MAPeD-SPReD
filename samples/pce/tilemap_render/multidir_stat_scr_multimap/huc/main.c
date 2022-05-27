@@ -80,7 +80,8 @@ void	display_next_map()
 	dbl_buff_trig	= 0;
 
 	/* jump to an active BAT buffer */
-	scroll( 0, ( dbl_buff_trig ? ScrPixelsWidth:0 ), 0, 0, ScrPixelsHeight, 0xC0 );
+	pokew( 0x220c, ( dbl_buff_trig ? ScrPixelsWidth:0 ) );
+	pokew( 0x2210, 0 );
 
 	/* enable display */
 	disp_on();
