@@ -8,6 +8,8 @@
 /*/	SPD-render v0.3
 History:
 
+2022.06.02 - fixed _spd_farptr_add_offset
+
 v0.3
 2022.05.03 - added 'spd_copy_SG_to_VRAM( _SG_ind )'
 
@@ -91,7 +93,7 @@ The main logic is:
 
 	// NOTE: As mentioned before, you can combine the SPD calls with the HuC ones.
 	//	 For example, you can do the following for simple static sprites:
-[upd]
+[upd] v0.3
 	// Initialization at startup
 	load_palette( ...
 	spd_sprite_params( ...
@@ -469,12 +471,13 @@ _spd_farptr_add_offset:
 
 	; add an offset
 
-	clc     
+	clc
 	lda <__dx
 	adc <__si
 	sta <__si
-	lda <__dx+1
-	adc <__si+1
+	lda <__si+1
+	and #$1f
+	adc <__dx+1
 
 	tay
 
@@ -492,7 +495,8 @@ _spd_farptr_add_offset:
 	; save high byte of a bank address
 
 	tya
-	and #$9f
+	and #$1f
+	ora #$60
 	sta <__si+1	
 	
 	rts
