@@ -8,6 +8,7 @@
 /*/	SPD-render v0.3
 History:
 
+2022.06.04 - changed exported data, now '<exported_name>_PALETTE_SLOT' includes sprite palette offset (16) and '<exported_name>_palette_size' is the number of active palettes
 2022.06.02 - fixed _spd_farptr_add_offset
 
 v0.3
@@ -40,7 +41,7 @@ The main logic is:
 	// Initialization of exported sprite set.
 	{
 		// Load palette in the usual way.
-		load_palette( 16 + <EXPORTED_NAME>_PALETTE_SLOT, <exported_name>_palette, <exported_name>_palette_size >> 4 );
+		load_palette( <EXPORTED_NAME>_PALETTE_SLOT, <exported_name>_palette, <exported_name>_palette_size );
 
 		// Set up exported sprite set with SG data array and VRAM address to load SG data to.
 		// NOTE: You can combine any number of exported sprite sets in your program.
@@ -126,7 +127,7 @@ The main logic is:
 	// Initialization of exported sprite set.
 	{
 		// Load palette in the usual way.
-		load_palette( 16 + <EXPORTED_NAME>_PALETTE_SLOT, <exported_name>_palette, <exported_name>_palette_size >> 4 );
+		load_palette( <EXPORTED_NAME>_PALETTE_SLOT, <exported_name>_palette, <exported_name>_palette_size );
 
 		// Set up exported sprite set with SG data array and VRAM address to load SG data to.
 #if	DEF_SG_DBL_BUFF
