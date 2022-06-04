@@ -1893,7 +1893,7 @@ namespace SPReD
 #elif DEF_PCE
 						c_sw.WriteLine( "#incasm( \"" + filename + "." + this.ExportASM_saveFileDialog.DefaultExt + "\" )\n" );
 						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_VADDR\t" + m_PCE_export_form.VADDR );
-						c_sw.WriteLine( "#define " + filename.ToUpper() + "_PALETTE_SLOT\t" + m_PCE_export_form.palette_slot + "\n\n" );
+						c_sw.WriteLine( "#define " + filename.ToUpper() + "_PALETTE_SLOT\t" + ( m_PCE_export_form.palette_slot + 16 ) + "\n\n" );
 #else
 ...
 #endif
@@ -1955,7 +1955,7 @@ namespace SPReD
 					
 					if( !_asm_file )
 					{
-						c_sw.WriteLine( "const unsigned short\t" + filename + "_palette_size\t= " + ( ( max_palettes + 1 ) << 4 ) + ";\t// words\n" );
+						c_sw.WriteLine( "const unsigned short\t" + filename + "_palette_size\t= " + ( max_palettes + 1 ) + ";\t// active palettes\n" );
 					}
 #else
 					m_sprites_proc.export_palette( sw, prefix_filename );

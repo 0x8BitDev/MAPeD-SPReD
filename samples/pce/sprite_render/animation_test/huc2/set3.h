@@ -7,7 +7,7 @@
 #incasm( "data/set3.asm" )
 
 #define SET3_SPR_VADDR	16384
-#define SET3_PALETTE_SLOT	2
+#define SET3_PALETTE_SLOT	18
 
 
 #ifndef	DEF_TYPE_SPD_SPRITE
@@ -24,7 +24,7 @@ typedef struct
 
 extern unsigned short*	set3_SG_arr;
 const unsigned char	set3_SG_cnt	= 10;	// graphics banks count
-const unsigned short	set3_palette_size	= 16;	// words
+const unsigned short	set3_palette_size	= 1;	// active palettes
 
 extern unsigned short*	set3_palette;
 const unsigned short	set3_frames_cnt	= 12;

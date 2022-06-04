@@ -164,7 +164,7 @@ void	update_frame( rt_anim_desc* _anm_desc )
 void	sprite_set_init()
 {
 	// load palette in the usual way
-	load_palette( 16 + PLAYER_GFX_PALETTE_SLOT, player_gfx_palette, player_gfx_palette_size >> 4 );
+	load_palette( PLAYER_GFX_PALETTE_SLOT, player_gfx_palette, player_gfx_palette_size );
 
 	// set up exported sprite set with SG data array and VRAM address to load SG data to.
 #if	DEF_SG_DBL_BUFF

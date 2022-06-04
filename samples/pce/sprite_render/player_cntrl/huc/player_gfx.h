@@ -7,7 +7,7 @@
 #incasm( "player_gfx.asm" )
 
 #define PLAYER_GFX_SPR_VADDR	8192
-#define PLAYER_GFX_PALETTE_SLOT	0
+#define PLAYER_GFX_PALETTE_SLOT	16
 
 
 #ifndef	DEF_TYPE_SPD_SPRITE
@@ -24,7 +24,7 @@ typedef struct
 
 extern unsigned short*	player_gfx_SG_arr;
 const unsigned char	player_gfx_SG_cnt	= 10;	// graphics banks count
-const unsigned short	player_gfx_palette_size	= 16;	// words
+const unsigned short	player_gfx_palette_size	= 1;	// active palettes
 
 extern unsigned short*	player_gfx_palette;
 const unsigned short	player_gfx_frames_cnt	= 24;

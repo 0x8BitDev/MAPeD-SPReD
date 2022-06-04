@@ -7,7 +7,7 @@
 #incasm( "sprites_test.asm" )
 
 #define SPRITES_TEST_SPR_VADDR	8192
-#define SPRITES_TEST_PALETTE_SLOT	0
+#define SPRITES_TEST_PALETTE_SLOT	16
 
 
 #ifndef	DEF_TYPE_SPD_SPRITE
@@ -24,7 +24,7 @@ typedef struct
 
 extern unsigned short*	sprites_test_SG_arr;
 const unsigned char	sprites_test_SG_cnt	= 1;	// graphics banks count
-const unsigned short	sprites_test_palette_size	= 96;	// words
+const unsigned short	sprites_test_palette_size	= 6;	// active palettes
 
 extern unsigned short*	sprites_test_palette;
 const unsigned short	sprites_test_frames_cnt	= 10;

@@ -159,9 +159,9 @@ main()
 	spd_init();	
 
 	/* load palettes in the usual way */
-	load_palette( 16 + SET1_PALETTE_SLOT, set1_palette, set1_palette_size >> 4 );
-	load_palette( 16 + SET2_PALETTE_SLOT, set2_palette, set2_palette_size >> 4 );
-	load_palette( 16 + SET3_PALETTE_SLOT, set3_palette, set3_palette_size >> 4 );
+	load_palette( SET1_PALETTE_SLOT, set1_palette, set1_palette_size );
+	load_palette( SET2_PALETTE_SLOT, set2_palette, set2_palette_size );
+	load_palette( SET3_PALETTE_SLOT, set3_palette, set3_palette_size );
 
 	/* enable display */
 	disp_on();
