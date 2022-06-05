@@ -30,12 +30,12 @@ extern unsigned short*	set2_palette;
 const unsigned short	set2_frames_cnt	= 6;
 extern spd_SPRITE	set2_frames_data[];
 
-const unsigned char	SPR_MARTHA_PUNCH01	= 0;
-const unsigned char	SPR_MARTHA_PUNCH02	= 1;
-const unsigned char	SPR_MARTHA_PUNCH03	= 2;
-const unsigned char	SPR_MARTHA_PUNCH04	= 3;
-const unsigned char	SPR_MARTHA_PUNCH05	= 4;
-const unsigned char	SPR_MARTHA_PUNCH06_REF04	= 5;
+#define	SPR_MARTHA_PUNCH01	0
+#define	SPR_MARTHA_PUNCH02	1
+#define	SPR_MARTHA_PUNCH03	2
+#define	SPR_MARTHA_PUNCH04	3
+#define	SPR_MARTHA_PUNCH05	4
+#define	SPR_MARTHA_PUNCH06_REF04	5
 
 extern spd_SPRITE*	martha_punch01_frame;
 extern spd_SPRITE*	martha_punch02_frame;

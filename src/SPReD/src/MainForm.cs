@@ -2008,7 +2008,7 @@ namespace SPReD
 #endif
 							if( !_asm_file )
 							{
-								c_sw.WriteLine( "const unsigned " + ( _spr_cnt >= 256 ? "short":"char" ) + "\tSPR_" + spr.name.ToUpper() + "\t= " + i + ";" );
+								c_sw.WriteLine( "#define\tSPR_" + spr.name.ToUpper() + "\t" + i );
 								
 								post_spr_data += "extern spd_SPRITE*\t" + spr.name + "_frame;\n";
 							}

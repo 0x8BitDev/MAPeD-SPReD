@@ -30,16 +30,16 @@ extern unsigned short*	sprites_test_palette;
 const unsigned short	sprites_test_frames_cnt	= 10;
 extern spd_SPRITE	sprites_test_frames_data[];
 
-const unsigned char	SPR_JCH_RIGHT_32X64	= 0;
-const unsigned char	SPR_DR_MSL_UP_16X64_0	= 1;
-const unsigned char	SPR_DR_MSL_UP_16X64_1_REF	= 2;
-const unsigned char	SPR_JCH_MIN_16X32_0	= 3;
-const unsigned char	SPR_JCH_MIN_16X32_1_REF	= 4;
-const unsigned char	SPR_RPL_FLY_RIGHT_32X32	= 5;
-const unsigned char	SPR_BRSTICK_RIGHT_32X16	= 6;
-const unsigned char	SPR_DR_MSL_UP	= 7;
-const unsigned char	SPR_GIGAN_IDLE_LEFT	= 8;
-const unsigned char	SPR_TONY_IDLE_RIGHT	= 9;
+#define	SPR_JCH_RIGHT_32X64	0
+#define	SPR_DR_MSL_UP_16X64_0	1
+#define	SPR_DR_MSL_UP_16X64_1_REF	2
+#define	SPR_JCH_MIN_16X32_0	3
+#define	SPR_JCH_MIN_16X32_1_REF	4
+#define	SPR_RPL_FLY_RIGHT_32X32	5
+#define	SPR_BRSTICK_RIGHT_32X16	6
+#define	SPR_DR_MSL_UP	7
+#define	SPR_GIGAN_IDLE_LEFT	8
+#define	SPR_TONY_IDLE_RIGHT	9
 
 extern spd_SPRITE*	jch_RIGHT_32x64_frame;
 extern spd_SPRITE*	dr_msl_UP_16x64_0_frame;

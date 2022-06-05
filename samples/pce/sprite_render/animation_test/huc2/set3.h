@@ -30,18 +30,18 @@ extern unsigned short*	set3_palette;
 const unsigned short	set3_frames_cnt	= 12;
 extern spd_SPRITE	set3_frames_data[];
 
-const unsigned char	SPR_MPWR_IDLE01_LEFT	= 0;
-const unsigned char	SPR_MPWR_WALK01_LEFT	= 1;
-const unsigned char	SPR_MPWR_WALK02_LEFT	= 2;
-const unsigned char	SPR_MPWR_WALK03_LEFT	= 3;
-const unsigned char	SPR_MPWR_WALK04_LEFT	= 4;
-const unsigned char	SPR_MPWR_WALK05_LEFT	= 5;
-const unsigned char	SPR_MPWR_WALK06_LEFT	= 6;
-const unsigned char	SPR_MPWR_KICK01_LEFT	= 7;
-const unsigned char	SPR_MPWR_KICK02_LEFT	= 8;
-const unsigned char	SPR_MPWR_KICK03_LEFT	= 9;
-const unsigned char	SPR_MPWR_KICK04_REF02_LEFT	= 10;
-const unsigned char	SPR_MPWR_KICK05_REF01_LEFT	= 11;
+#define	SPR_MPWR_IDLE01_LEFT	0
+#define	SPR_MPWR_WALK01_LEFT	1
+#define	SPR_MPWR_WALK02_LEFT	2
+#define	SPR_MPWR_WALK03_LEFT	3
+#define	SPR_MPWR_WALK04_LEFT	4
+#define	SPR_MPWR_WALK05_LEFT	5
+#define	SPR_MPWR_WALK06_LEFT	6
+#define	SPR_MPWR_KICK01_LEFT	7
+#define	SPR_MPWR_KICK02_LEFT	8
+#define	SPR_MPWR_KICK03_LEFT	9
+#define	SPR_MPWR_KICK04_REF02_LEFT	10
+#define	SPR_MPWR_KICK05_REF01_LEFT	11
 
 extern spd_SPRITE*	mpwr_idle01_LEFT_frame;
 extern spd_SPRITE*	mpwr_walk01_LEFT_frame;
