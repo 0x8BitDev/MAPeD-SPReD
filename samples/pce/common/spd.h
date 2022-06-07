@@ -5,9 +5,12 @@
 //
 //######################################################################################################
 
-/*/	SPD-render v0.3
+/*/	SPD-render v0.4
 History:
 
+v0.4
+2022.06.07 - added fourth argument to the 'spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, _flag, _last_bank_ind )' and also added 'spd_SG_bank_get_ind()'
+2022.06.07 - changed 'spd_copy_SG_data_to_VRAM( _SG_ind )' to 'spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )' and added 'spd_copy_SG_data_to_VRAM( <animation_name>_frame )'
 2022.06.04 - changed exported data, now '<exported_name>_PALETTE_SLOT' includes sprite palette offset (16) and '<exported_name>_palette_size' is the number of active palettes
 2022.06.02 - fixed _spd_farptr_add_offset
 
@@ -49,16 +52,19 @@ The main logic is:
 [upd] v0.2	// NOTE: Passing 'SPD_FLAG_IGNORE_SG' as the third parameter will ignore loading SG to VRAM.
 		//	 It's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
 --->		//	 Such way you avoid loading SG to VRAM twice.
-		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, 0 );
+[upd] v0.4	// NOTE: Passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
+		//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. The initial value is '0xff'.
+--->		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, 0, _last_bank_ind );
 
 [upd] v0.3	// NOTE: There are two ways to load SG data to VRAM:
 		//	 1. Indirect loading, when you push the first sprite by calling 'spd_SATB_push_sprite'.
 		//	 The third argument for the 'spd_sprite_params' must be ZERO.
-		//
-		//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a SG data index. It's always ZERO for PACKED sprites.
+--->		//
+[upd] v0.4	//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a sprite data frame/index.
 		//	 The third argument for the 'spd_sprite_params' must be 'SPD_FLAG_IGNORE_SG'.
 		//
---->		//	 spd_copy_SG_data_to_VRAM( _SG_ind ) - '_SG_ind' is an index in the '<exported_name>_SG_arr' array
+		//	 spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )
+--->		//	 spd_copy_SG_data_to_VRAM( <animation_name>_frame )
 	}
 
 	// HuC's SATB initialization.
@@ -134,14 +140,16 @@ The main logic is:
 		// NOTE: Using the `SPD_FLAG_DBL_BUFF` flag means double-buffering for sprite graphics.
 		//	 It costs x2 of dynamic SG data in VRAM, but glitches free. You have to compare the results
 		//	 of using 'SPD_FLAG_DBL_BUFF' and 'SPD_FLAG_PEND_SG_DATA' and decide which is better in your case.
-		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, SPD_FLAG_DBL_BUFF );
+[upd] v0.4	// NOTE: Passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
+		//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. The initial value is '0xff'.
+--->		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, SPD_FLAG_DBL_BUFF, _last_bank_ind );
 
 		// Set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF).
 		spd_dbl_buff_VRAM_addr( VADDR_dbl_buff );
 #else
 		// NOTE: Using the `SPD_FLAG_PEND_SG_DATA` flag means that SG data will not be loaded
 		//	 to VRAM automatically. You should do that manually on VBLANK.
-		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, SPD_FLAG_PEND_SG_DATA );
+		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, SPD_FLAG_PEND_SG_DATA, _last_bank_ind );
 
 		// Set pointers to SG data for delayed use (SPD_FLAG_PEND_SG_DATA).
 		spd_SG_data_params( &SG_DATA_SRC_ADDR, &SG_DATA_SRC_BANK, &SG_DATA_DST_ADDR, &SG_DATA_LEN );
@@ -211,7 +219,7 @@ The main logic is:
 	That`s it! :)
 /*/
 
-const unsigned char spd_ver[] = { "S", "P", "D", "v", "0", ".", "3", 0 };
+const unsigned char spd_ver[] = { "S", "P", "D", "v", "0", ".", "4", 0 };
 
 /* SPD flag(s) */
 
@@ -235,8 +243,11 @@ const unsigned char SPD_FLAG_IGNORE_SG		= 0x04;
 /* void	spd_init() */
 #pragma fastcall spd_init()
 
-/* void spd_sprite_params( far void* _SG_data, word _vaddr, byte _flags ) */
-#pragma fastcall spd_sprite_params( farptr __bl:__si, word __dx, byte __al )
+/* void spd_sprite_params( far void* _SG_data, word _vaddr, byte _flags, byte _last_SG_bank_ind ) */
+#pragma fastcall spd_sprite_params( farptr __bl:__si, word __dx, byte __al, byte __ah )
+
+/* char spd_SG_bank_get_ind() */
+#pragma fastcall spd_SG_bank_get_ind();
 
 /* void	spd_SATB_set_pos( byte _pos ); _pos: 0-63 */
 #pragma fastcall spd_SATB_set_pos( byte __al )
@@ -263,8 +274,11 @@ const unsigned char SPD_FLAG_IGNORE_SG		= 0x04;
 /* void spd_copy_SG_data_to_VRAM( word _src_addr, word _src_bank, word _dst_addr, word _len ) */
 #pragma fastcall spd_copy_SG_data_to_VRAM( word __ax, word __bx, word __dx, word __cx )
 
-/* void spd_copy_SG_data_to_VRAM( byte _SG_index ) */
-#pragma fastcall spd_copy_SG_data_to_VRAM( byte __al )
+/* void spd_copy_SG_data_to_VRAM( far void* _addr, byte _spr_ind ) */
+#pragma fastcall spd_copy_SG_data_to_VRAM( farptr __bl:__si, byte __dl )
+
+/* void spd_copy_SG_data_to_VRAM( far void* _frame_addr ) */
+#pragma fastcall spd_copy_SG_data_to_VRAM( farptr __bl:__si )
 
 /* void spd_dbl_buff_VRAM_addr( word _vram_addr ) */
 #pragma fastcall spd_dbl_buff_VRAM_addr( word __ax )
@@ -309,7 +323,31 @@ const unsigned char SPD_FLAG_IGNORE_SG		= 0x04;
 	asl a	
 	rol high_byte \1
 	sta low_byte \1
-	.endm	
+	.endm
+
+; \1 *= 6
+	.macro mul6_word
+	; XY = 2x
+	lda low_byte \1
+	asl a
+	tay
+	rol high_byte \1
+	ldx high_byte \1
+
+	; \1 = 4x
+	asl a
+	rol high_byte \1
+	sta low_byte \1
+
+	; \1 = XY + 4x
+	clc
+	tya
+	adc low_byte \1
+	sta low_byte \1
+	txa
+	adc high_byte \1
+	sta high_byte \1
+	.endm
 
 ; \1 *= 8
 	.macro mul8_word
@@ -516,9 +554,9 @@ _spd_init:
 
 	rts
 
-;// spd_sprite_params( farptr __bl:__si / SG_data, word __dx / vaddr, byte __al / flags )
+;// spd_sprite_params( farptr __bl:__si / SG_data, word __dx / vaddr, byte __al / flags, byte __ah / last_SG_bank_ind )
 ;
-_spd_sprite_params.3:
+_spd_sprite_params.4:
 
 	stw <__si, <__spr_SG_data_addr
 	lda <__bl
@@ -529,8 +567,18 @@ _spd_sprite_params.3:
 	lda <__al
 	sta <__SATB_flags
 
-	lda #$ff
+	lda <__ah
 	sta <__last_SG_bank
+
+	rts
+
+;// spd_SG_bank_get_ind()
+;
+_spd_SG_bank_get_ind:
+
+	lda <__last_SG_bank
+	tax
+	cla
 
 	rts
 
@@ -648,16 +696,8 @@ _spd_SATB_push_sprite.4:
 
 	; offset x6 -> sizeof( spd_SPRITE )
 
-	lda <__dl
-	asl a
-	asl a
-	sta <__dh
-	lda <__dl
-	asl a
-	clc
-	adc <__dh
-	sta <__dl
 	stz <__dh
+	mul6_word <__dx
 
 	jsr _spd_farptr_add_offset
 
@@ -805,13 +845,7 @@ _load_SG_data:
 
 	sty <__dl
 	stz <__dh
-	mul4_word <__dx
-
-	sty <__cl
-	stz <__ch
-	mul2_word <__cx
-
-	add_word_to_word <__cx, <__dx	
+	mul6_word <__dx
 
 	stw <__spr_SG_data_addr, <__si
 	lda <__spr_SG_data_bank
@@ -1074,13 +1108,52 @@ _spd_copy_SG_data_to_VRAM.4:
 
 	jmp load_vram
 
-;// spd_copy_SG_data_to_VRAM( byte __al / _SG_index )
+;// spd_copy_SG_data_to_VRAM( farptr __bl:__si / addr, byte __dl / index )
 ;
-_spd_copy_SG_data_to_VRAM.1
+_spd_copy_SG_data_to_VRAM.2:
 
-	lda <__al
-	tay
+	; offset x6 -> sizeof( spd_SPRITE )
+
+	stz <__dh
+	mul6_word <__dx
+
+	jsr _spd_farptr_add_offset
+
+;// spd_copy_SG_data_to_VRAM( farptr __bl:__si / addr )
+;
+_spd_copy_SG_data_to_VRAM.1:
+
+	jsr map_data			; map spd_SPRITE data
+
+	ldy #$05
+	lda [<__si], y
+	tay				; Y - SG bank index
+
+	jsr unmap_data
 
 	jmp _load_SG_data
 
 #endasm
+
+/*/ for debugging purposes
+#asm
+_black_border:
+
+	stz <__al
+	stz <__ah
+
+	jmp _border_color
+
+_pink_border:
+
+	lda #$ff
+	sta <__al
+	stz <__ah
+
+_border_color:
+
+	stw #$0100, $0402
+	stw <__ax, $0404
+
+	rts
+#endasm//*/

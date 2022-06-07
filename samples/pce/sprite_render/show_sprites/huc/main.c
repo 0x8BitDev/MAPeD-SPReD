@@ -26,16 +26,19 @@ void	sprite_set_init()
 	// NOTE: passing 'SPD_FLAG_IGNORE_SG' as the third parameter will ignore loading SG to VRAM.
 	//	 it's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
 	//	 such way you avoid loading SG to VRAM twice.
-	spd_sprite_params( sprites_test_SG_arr, SPRITES_TEST_SPR_VADDR, 0 );
+	// NOTE: passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
+	//	 the last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is '0xff'.
+	spd_sprite_params( sprites_test_SG_arr, SPRITES_TEST_SPR_VADDR, 0, 0xff );
 
 	// NOTE: There are two ways to load SG data to VRAM:
 	//	 1. Indirect loading, when you push the first sprite by calling 'spd_SATB_push_sprite'.
 	//	 The third argument for the 'spd_sprite_params' must be ZERO.
 	//
-	//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a SG data index. It's always ZERO for PACKED sprites.
+	//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a sprite data frame/index.
 	//	 The third argument for the 'spd_sprite_params' must be 'SPD_FLAG_IGNORE_SG'.
 	//
-	//	 spd_copy_SG_data_to_VRAM( _SG_ind ) - '_SG_ind' is an index in the '<exported_name>_SG_arr' array
+	//	 spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )
+	//	 spd_copy_SG_data_to_VRAM( <animation_name>_frame )
 }
 
 /* show sprite from exported sprite set */
