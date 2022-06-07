@@ -23,7 +23,7 @@ namespace SPReD
 		
 		public int VADDR
 		{
-			get { return ( CHRs_offset << 6 ); }
+			get { return (int)NumVADDR.Value; }
 			set {}
 		}
 		
@@ -48,14 +48,22 @@ namespace SPReD
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
-			NumCHRsOffset.Value = 128;
+			NumCHRsOffset.Value	= 128;
 			
 			update_vaddr_label();
 		}
-		
-		void BtnCHRsOffsetInfoClick(object sender, EventArgs e)
+
+		void NumVADDRChanged_Event(object sender, EventArgs e)
 		{
-			MainForm.message_box( "This value will be added to each CHR index in a sprite attributes.\nIn other words, it's VRAM address of sprite data.", "CHRs Offset Description", MessageBoxButtons.OK, MessageBoxIcon.Information );
+			update_chr_offset_label();
+		}
+
+		void NumVADDRKeyUp_Event(object sender, KeyEventArgs e)
+		{
+			if( NumVADDR.Text.Length > 2 )
+			{
+				update_chr_offset_label();
+			}
 		}
 		
 		void NumCHRsOffsetChanged_Event(object sender, EventArgs e)
@@ -65,7 +73,12 @@ namespace SPReD
 		
 		void update_vaddr_label()
 		{
-			LabelVADDR.Text = "VADDR: #" + String.Format( "{0:X4}", VADDR );
+			NumVADDR.Value = CHRs_offset << 6;
+		}
+		
+		void update_chr_offset_label()
+		{
+			NumCHRsOffset.Value = VADDR >> 6;
 		}
 		
 		public DialogResult ShowDialog( bool _asm_data )

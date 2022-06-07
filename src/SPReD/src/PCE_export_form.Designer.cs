@@ -38,12 +38,13 @@ namespace SPReD
 			this.label1 = new System.Windows.Forms.Label();
 			this.NumCHRsOffset = new System.Windows.Forms.NumericUpDown();
 			this.LabelVADDR = new System.Windows.Forms.Label();
-			this.BtnTilesOffsetInfo = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.NumPaletteSlot = new System.Windows.Forms.NumericUpDown();
 			this.CheckBoxCommentCHRData = new System.Windows.Forms.CheckBox();
+			this.NumVADDR = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.NumCHRsOffset)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumPaletteSlot)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.NumVADDR)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// BtnOk
@@ -68,7 +69,7 @@ namespace SPReD
 			// 
 			this.NumCHRsOffset.Location = new System.Drawing.Point(81, 20);
 			this.NumCHRsOffset.Maximum = new decimal(new int[] {
-									1024,
+									512,
 									0,
 									0,
 									0});
@@ -82,19 +83,9 @@ namespace SPReD
 			// 
 			this.LabelVADDR.Location = new System.Drawing.Point(148, 22);
 			this.LabelVADDR.Name = "LabelVADDR";
-			this.LabelVADDR.Size = new System.Drawing.Size(89, 23);
+			this.LabelVADDR.Size = new System.Drawing.Size(61, 23);
 			this.LabelVADDR.TabIndex = 2;
-			this.LabelVADDR.Text = "VADDR: #0000";
-			// 
-			// BtnTilesOffsetInfo
-			// 
-			this.BtnTilesOffsetInfo.Location = new System.Drawing.Point(243, 18);
-			this.BtnTilesOffsetInfo.Name = "BtnTilesOffsetInfo";
-			this.BtnTilesOffsetInfo.Size = new System.Drawing.Size(20, 20);
-			this.BtnTilesOffsetInfo.TabIndex = 3;
-			this.BtnTilesOffsetInfo.Text = "?";
-			this.BtnTilesOffsetInfo.UseVisualStyleBackColor = true;
-			this.BtnTilesOffsetInfo.Click += new System.EventHandler(this.BtnCHRsOffsetInfoClick);
+			this.LabelVADDR.Text = "VADDR#:";
 			// 
 			// label3
 			// 
@@ -129,14 +120,34 @@ namespace SPReD
 			this.CheckBoxCommentCHRData.Text = "Comment  CHR data";
 			this.CheckBoxCommentCHRData.UseVisualStyleBackColor = true;
 			// 
+			// NumVADDR
+			// 
+			this.NumVADDR.Hexadecimal = true;
+			this.NumVADDR.Increment = new decimal(new int[] {
+									64,
+									0,
+									0,
+									0});
+			this.NumVADDR.Location = new System.Drawing.Point(202, 20);
+			this.NumVADDR.Maximum = new decimal(new int[] {
+									32768,
+									0,
+									0,
+									0});
+			this.NumVADDR.Name = "NumVADDR";
+			this.NumVADDR.Size = new System.Drawing.Size(61, 20);
+			this.NumVADDR.TabIndex = 3;
+			this.NumVADDR.ValueChanged += new System.EventHandler(this.NumVADDRChanged_Event);
+			this.NumVADDR.KeyUp += new System.Windows.Forms.KeyEventHandler(this.NumVADDRKeyUp_Event);
+			// 
 			// PCE_export_form
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(278, 117);
+			this.Controls.Add(this.NumVADDR);
 			this.Controls.Add(this.CheckBoxCommentCHRData);
-			this.Controls.Add(this.BtnTilesOffsetInfo);
 			this.Controls.Add(this.LabelVADDR);
 			this.Controls.Add(this.NumPaletteSlot);
 			this.Controls.Add(this.label3);
@@ -151,12 +162,13 @@ namespace SPReD
 			this.Text = "Export Options";
 			((System.ComponentModel.ISupportInitialize)(this.NumCHRsOffset)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumPaletteSlot)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.NumVADDR)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.NumericUpDown NumVADDR;
 		private System.Windows.Forms.CheckBox CheckBoxCommentCHRData;
 		private System.Windows.Forms.NumericUpDown NumPaletteSlot;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Button BtnTilesOffsetInfo;
 		private System.Windows.Forms.Label LabelVADDR;
 		private System.Windows.Forms.NumericUpDown NumCHRsOffset;
 		private System.Windows.Forms.Label label1;
