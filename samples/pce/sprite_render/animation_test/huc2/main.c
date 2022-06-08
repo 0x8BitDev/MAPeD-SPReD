@@ -47,6 +47,10 @@ unsigned char SET1_LAST_SG_BANK	= 0xff;
 unsigned char SET2_LAST_SG_BANK	= 0xff;
 unsigned char SET3_LAST_SG_BANK	= 0xff;
 
+unsigned char SET1_SPR_PUSH_RES;
+unsigned char SET2_SPR_PUSH_RES;
+unsigned char SET3_SPR_PUSH_RES;
+
 /* animation sequence description */
 typedef struct
 {
@@ -68,7 +72,7 @@ static short		y_pos		= 176;
 static unsigned char	dir_trigger	= 0;
 
 /* show sprite by input index */
-char	sprite1_show( char _ind, short _x, short _y )
+unsigned char	sprite1_show( char _ind, short _x, short _y )
 {
 	// set up exported sprite set with SG data array and VRAM address to load SG data to.
 	// NOTE: you can combine any number of exported sprite sets in your program.
@@ -94,7 +98,7 @@ char	sprite1_show( char _ind, short _x, short _y )
 	return spd_SATB_push_sprite( set1_frames_data, _ind, _x, _y );
 }
 
-char	sprite2_show( char _ind, short _x, short _y )
+unsigned char	sprite2_show( char _ind, short _x, short _y )
 {
 #if	DEF_SET2_SG_DBL_BUFF
 	spd_sprite_params( set2_SG_arr, SET2_SPR_VADDR, SPD_FLAG_DBL_BUFF, SET2_LAST_SG_BANK );
@@ -106,7 +110,7 @@ char	sprite2_show( char _ind, short _x, short _y )
 	return spd_SATB_push_sprite( set2_frames_data, _ind, _x, _y );
 }
 
-char	sprite3_show( char _ind, short _x, short _y )
+unsigned char	sprite3_show( char _ind, short _x, short _y )
 {
 #if	DEF_SET3_SG_DBL_BUFF
 	spd_sprite_params( set3_SG_arr, SET3_SPR_VADDR, SPD_FLAG_DBL_BUFF, SET3_LAST_SG_BANK );
@@ -190,14 +194,14 @@ main()
 		spd_SATB_set_pos( 0 );
 
 		/* push meta-sprites to SATB */
-		sprite1_show( test_anim1.start_frame + test_anim1.curr_frame, 40,  y_pos );
-		SET1_LAST_SG_BANK = spd_SG_bank_get_ind();
+		SET1_SPR_PUSH_RES	= sprite1_show( test_anim1.start_frame + test_anim1.curr_frame, 40,  y_pos );
+		SET1_LAST_SG_BANK	= spd_SG_bank_get_ind();
 
-		sprite2_show( test_anim2.start_frame + test_anim2.curr_frame, 120, y_pos );
-		SET2_LAST_SG_BANK = spd_SG_bank_get_ind();
+		SET2_SPR_PUSH_RES	= sprite2_show( test_anim2.start_frame + test_anim2.curr_frame, 120, y_pos );
+		SET2_LAST_SG_BANK	= spd_SG_bank_get_ind();
 
-		sprite3_show( test_anim3.start_frame + test_anim3.curr_frame, 220, y_pos );
-		SET3_LAST_SG_BANK = spd_SG_bank_get_ind();
+		SET3_SPR_PUSH_RES	= sprite3_show( test_anim3.start_frame + test_anim3.curr_frame, 220, y_pos );
+		SET3_LAST_SG_BANK	= spd_SG_bank_get_ind();
 
 		/* change sprites position */
 		update_y_pos();
@@ -216,7 +220,10 @@ main()
 		// this may cause some graphical glitches at the upper part of the screen
 
 		// delayed copying of SG data to VRAM to synchronize it with the inner SATB
-		spd_copy_SG_data_to_VRAM( SET1_SG_DATA_SRC_ADDR, SET1_SG_DATA_SRC_BANK, SET1_SG_DATA_DST_ADDR, SET1_SG_DATA_LEN );
+		if( SET1_SPR_PUSH_RES & SPD_SG_NEW_DATA )
+		{
+			spd_copy_SG_data_to_VRAM( SET1_SG_DATA_SRC_ADDR, SET1_SG_DATA_SRC_BANK, SET1_SG_DATA_DST_ADDR, SET1_SG_DATA_LEN );
+		}
 		put_string( "S1:SNGL-BUFF", 0, 25 );
 
 		data_size += SET1_SG_DATA_LEN;
@@ -225,7 +232,10 @@ main()
 #if	DEF_SET2_SG_DBL_BUFF
 		put_string( "S2:DBL-BUFF", 0, 26 );
 #else
-		spd_copy_SG_data_to_VRAM( SET2_SG_DATA_SRC_ADDR, SET2_SG_DATA_SRC_BANK, SET2_SG_DATA_DST_ADDR, SET2_SG_DATA_LEN );
+		if( SET2_SPR_PUSH_RES & SPD_SG_NEW_DATA )
+		{
+			spd_copy_SG_data_to_VRAM( SET2_SG_DATA_SRC_ADDR, SET2_SG_DATA_SRC_BANK, SET2_SG_DATA_DST_ADDR, SET2_SG_DATA_LEN );
+		}
 		put_string( "S2:SNGL-BUFF", 0, 26 );
 
 		data_size += SET2_SG_DATA_LEN;
@@ -234,7 +244,10 @@ main()
 #if	DEF_SET3_SG_DBL_BUFF
 		put_string( "S3:DBL-BUFF", 0, 27 );
 #else
-		spd_copy_SG_data_to_VRAM( SET3_SG_DATA_SRC_ADDR, SET3_SG_DATA_SRC_BANK, SET3_SG_DATA_DST_ADDR, SET3_SG_DATA_LEN );
+		if( SET3_SPR_PUSH_RES & SPD_SG_NEW_DATA )
+		{
+			spd_copy_SG_data_to_VRAM( SET3_SG_DATA_SRC_ADDR, SET3_SG_DATA_SRC_BANK, SET3_SG_DATA_DST_ADDR, SET3_SG_DATA_LEN );
+		}
 		put_string( "S3:SNGL-BUFF", 0, 27 );
 
 		data_size += SET3_SG_DATA_LEN;

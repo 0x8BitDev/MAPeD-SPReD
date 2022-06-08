@@ -23,6 +23,8 @@ unsigned short SG_DATA_SRC_ADDR 	= 0;
 unsigned short SG_DATA_SRC_BANK 	= 0;
 unsigned short SG_DATA_DST_ADDR 	= 0;
 unsigned short SG_DATA_LEN		= 0;
+
+unsigned char SPR_PUSH_RES;
 #endif
 
 /* animation data */
@@ -190,7 +192,7 @@ void	sprite_set_init()
 }
 
 /* show sprite by an index */
-char	sprite_show( char _ind, short _x, short _y )
+unsigned char	sprite_show( char _ind, short _x, short _y )
 {
 	return spd_SATB_push_sprite( player_gfx_frames_data, _ind, _x, _y );
 }
@@ -230,7 +232,7 @@ main()
 		spd_SATB_set_pos( 0 );
 
 		// push current sprite to local SATB
-		sprite_show( player_anims[ player_anim.anm_desc_offs + ANM_OFFS_START_FRAME ] + player_anim.curr_frame, player_pos_x, player_pos_y );
+		SPR_PUSH_RES = sprite_show( player_anims[ player_anim.anm_desc_offs + ANM_OFFS_START_FRAME ] + player_anim.curr_frame, player_pos_x, player_pos_y );
 
 		// load all sprites to VRAM SAT
 		satb_update( spd_SATB_get_pos() );
@@ -244,7 +246,10 @@ main()
 		// this may cause some graphical glitches at the upper part of the screen
 
 		// delayed copying of SG data to VRAM to synchronize it with the inner SATB
-		spd_copy_SG_data_to_VRAM( SG_DATA_SRC_ADDR, SG_DATA_SRC_BANK, SG_DATA_DST_ADDR, SG_DATA_LEN );
+		if( SPR_PUSH_RES & SPD_SG_NEW_DATA )
+		{
+			spd_copy_SG_data_to_VRAM( SG_DATA_SRC_ADDR, SG_DATA_SRC_BANK, SG_DATA_DST_ADDR, SG_DATA_LEN );
+		}
 
 		put_number( ( SG_DATA_LEN << 1 ), 5, 10, 0 );
 		put_string( "ROM->VRAM:", 0, 0 );

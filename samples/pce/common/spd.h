@@ -9,6 +9,8 @@
 History:
 
 v0.4
+2022.06.08 - added a debug flag 'SPD_DEBUG' that shows when gfx data is being loaded to VRAM
+2022.06.08 - added a flag 'SPD_SG_NEW_DATA' to the 'spd_SATB_push_sprite' function result
 2022.06.07 - added fourth argument to the 'spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, _flag, _last_bank_ind )' and also added 'spd_SG_bank_get_ind()'
 2022.06.07 - changed 'spd_copy_SG_data_to_VRAM( _SG_ind )' to 'spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )' and added 'spd_copy_SG_data_to_VRAM( <animation_name>_frame )'
 2022.06.04 - changed exported data, now '<exported_name>_PALETTE_SLOT' includes sprite palette offset (16) and '<exported_name>_palette_size' is the number of active palettes
@@ -90,7 +92,7 @@ The main logic is:
 [upd] v0.3	// NOTE: SG data will be automatically loaded once to VRAM at first call to the 'spd_SATB_push_sprite',
 --->		//	 when the third parameter passed to the 'spd_sprite_params' is ZERO (!)
 		// NOTE: If meta-sprite does not fit into SATB, it will be ignored!
-		// NOTE: 'spd_SATB_push_sprite' returns: 1-Ok; 0-SATB overflow
+[upd] v0.4	// NOTE: 'spd_SATB_push_sprite' returns: 1-Ok + ORed flag 'SPD_SG_NEW_DATA' when a new SG data already or must be loaded to VRAM; 0-SATB overflow
 	}
 
 	// Then call 'satb_update' to push your sprite data to VRAM SAT.
@@ -180,7 +182,7 @@ The main logic is:
 		spd_SATB_push_sprite( <animation_name>_frame, _x, _y );
 
 		// NOTE: If meta-sprite does not fit into SATB, it will be ignored!
-		// NOTE: 'spd_SATB_push_sprite' returns: 1-Ok; 0-SATB overflow
+[upd] v0.4	// NOTE: 'spd_SATB_push_sprite' returns: 1-Ok + ORed flag 'SPD_SG_NEW_DATA' when a new SG data already or must be loaded to VRAM; 0-SATB overflow
 	}
 
 	// 'VRAM-SATB Transfer Auto-Repeat on VBLANK' (DCR ROF-$10) is enabled by default in HuC at startup, so we skip this step.
@@ -200,7 +202,7 @@ The main logic is:
 		spd_SATB_set_pos( <SATB_pos[0...63]> );
 
 		// Push your sprite to the local RAM SATB.
-		spd_SATB_push_sprite( <exported_name>_frames_data, test_anim.start_frame + test_anim.curr_frame, _x, _y );
+[upd] v0.4	res_byte = spd_SATB_push_sprite( <exported_name>_frames_data, test_anim.start_frame + test_anim.curr_frame, _x, _y );
 
 		// Load all sprites to VRAM SAT.
 		satb_update( spd_SATB_get_pos() );
@@ -212,10 +214,21 @@ The main logic is:
 		// This may cause some graphical glitches at the upper part of the screen.
 
 		// Delayed copying of SG data to VRAM to synchronize it with the inner SATB
-		spd_copy_SG_data_to_VRAM( SG_DATA_SRC_ADDR, SG_DATA_SRC_BANK, SG_DATA_DST_ADDR, SG_DATA_LEN );
+[upd] v0.4	if( res_byte & SPD_SG_NEW_DATA )
+		{
+			spd_copy_SG_data_to_VRAM( SG_DATA_SRC_ADDR, SG_DATA_SRC_BANK, SG_DATA_DST_ADDR, SG_DATA_LEN );
+		}
 #endif
 	}
-	
+
+[upd] v0.4	
+3. Also you can use PACKED and UNPACKED data in one data set (in one SPReD-PCE project) by combining the approaches described above.
+
+debug info: the pink border shows when gfx data is being loaded to VRAM
+#asm
+SPD_DEBUG
+#endasm
+--->
 	That`s it! :)
 /*/
 
@@ -226,17 +239,20 @@ const unsigned char spd_ver[] = { "S", "P", "D", "v", "0", ".", "4", 0 };
 // Copies SG data parameters: src_addr/src_bank/vram_addr/len for delayed use on VBLANK;
 // it's suitable for sprites with dynamic SG data like in fighting games.
 // NOTE: THIS FLAG CAN BE USED WITH UNPACKED SPRITES ONLY! WHERE EACH SPRITE HAS A SEPARATE SG DATA!
-const unsigned char SPD_FLAG_PEND_SG_DATA	= 0x01;
+#define	SPD_FLAG_PEND_SG_DATA	0x01
 
 // Double-buffering. It costs x2 of dynamic SG data in VRAM, but glitches free.
 // You have to compare the results of using 'SPD_FLAG_DBL_BUFF' and 'SPD_FLAG_PEND_SG_DATA' and decide which is better for you.
 // Thanks to elmer/pcengine.proboards.com for suggesting this mode.
 // NOTE: THIS FLAG CAN BE USED WITH UNPACKED SPRITES ONLY! WHERE EACH SPRITE HAS A SEPARATE SG DATA!
-const unsigned char SPD_FLAG_DBL_BUFF		= 0x02;
+#define	SPD_FLAG_DBL_BUFF	0x02
 
 // Loading sprite graphics to VRAM will be ignored. It's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
 // Such way you avoid loading SG to VRAM twice.
-const unsigned char SPD_FLAG_IGNORE_SG		= 0x04;
+#define	SPD_FLAG_IGNORE_SG	0x04
+
+// ORed value returned by 'spd_SATB_push_sprite', means that new SG data already or must be loaded to VRAM
+#define SPD_SG_NEW_DATA		0x80
 
 /* main SPD-render routines */
 
@@ -456,6 +472,8 @@ SPD_FLAG_PEND_SG_DATA	= $01
 SPD_FLAG_DBL_BUFF	= $02
 SPD_FLAG_IGNORE_SG	= $04
 
+SPD_SG_NEW_DATA		= $80
+
 SATB_SIZE	= 64
 
 __SATB	= satb	; satb - HuC`s local satb
@@ -576,8 +594,7 @@ _spd_sprite_params.4:
 ;
 _spd_SG_bank_get_ind:
 
-	lda <__last_SG_bank
-	tax
+	ldx <__last_SG_bank
 	cla
 
 	rts
@@ -626,8 +643,7 @@ _spd_SATB_set_pos.1:
 
 _spd_SATB_get_pos:
 
-	lda <__SATB_pos
-	tax
+	ldx <__SATB_pos
 	cla
 
 	rts
@@ -760,6 +776,10 @@ _spd_SATB_push_sprite.3:
 
 	; SATB overflow
 
+.ifdef	SPD_DEBUG
+	jsr _black_border
+.endif
+
 	clx
 	cla
 
@@ -829,6 +849,10 @@ _push_SG_data:
 .ignore_SG_data:
 
 	; SG data already loaded or must be ignored
+
+.ifdef	SPD_DEBUG
+	jsr _black_border
+.endif
 
 	ldx #1
 	cla
@@ -922,7 +946,11 @@ _load_SG_data:
 
 	jsr load_vram
 
-	ldx #1
+.ifdef	SPD_DEBUG
+	jsr _pink_border
+.endif
+
+	ldx #( 1 | SPD_SG_NEW_DATA )
 	cla
 	
 	rts
@@ -943,7 +971,11 @@ _load_SG_data:
 	stw __SG_DATA_LEN, <__ax
 	stw_zpii <__cx, <__ax
 
-	ldx #1
+.ifdef	SPD_DEBUG
+	jsr _black_border
+.endif
+
+	ldx #( 1 | SPD_SG_NEW_DATA )
 	cla
 	
 	rts
@@ -1106,6 +1138,10 @@ _spd_copy_SG_data_to_VRAM.4:
 	stw <__ax, <__si
 	stw <__dx, <__di
 
+.ifdef	SPD_DEBUG
+	jsr _pink_border
+.endif
+
 	jmp load_vram
 
 ;// spd_copy_SG_data_to_VRAM( farptr __bl:__si / addr, byte __dl / index )
@@ -1135,8 +1171,9 @@ _spd_copy_SG_data_to_VRAM.1:
 
 #endasm
 
-/*/ for debugging purposes
+//*/ for debugging purposes
 #asm
+.ifdef SPD_DEBUG
 _black_border:
 
 	stz <__al
@@ -1156,4 +1193,5 @@ _border_color:
 	stw <__ax, $0404
 
 	rts
+.endif	;SPD_DEBUG
 #endasm//*/
