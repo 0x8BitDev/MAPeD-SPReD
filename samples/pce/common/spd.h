@@ -8,6 +8,8 @@
 /*/	SPD-render v0.4
 History:
 
+2022.06.09 - small fix to 'SPD_DEBUG', the pink border now shows how long it takes to load graphics data to VRAM
+
 v0.4
 2022.06.08 - added a debug flag 'SPD_DEBUG' that shows when gfx data is being loaded to VRAM
 2022.06.08 - added a flag 'SPD_SG_NEW_DATA' to the 'spd_SATB_push_sprite' function result
@@ -776,10 +778,6 @@ _spd_SATB_push_sprite.3:
 
 	; SATB overflow
 
-.ifdef	SPD_DEBUG
-	jsr _black_border
-.endif
-
 	clx
 	cla
 
@@ -849,10 +847,6 @@ _push_SG_data:
 .ignore_SG_data:
 
 	; SG data already loaded or must be ignored
-
-.ifdef	SPD_DEBUG
-	jsr _black_border
-.endif
 
 	ldx #1
 	cla
@@ -944,10 +938,13 @@ _load_SG_data:
 	get_SATB_flag SPD_FLAG_PEND_SG_DATA
 	bne .copy_SG_data_params
 
+.ifdef	SPD_DEBUG
+	jsr _pink_border
+.endif
 	jsr load_vram
 
 .ifdef	SPD_DEBUG
-	jsr _pink_border
+	jsr _black_border
 .endif
 
 	ldx #( 1 | SPD_SG_NEW_DATA )
@@ -970,10 +967,6 @@ _load_SG_data:
 
 	stw __SG_DATA_LEN, <__ax
 	stw_zpii <__cx, <__ax
-
-.ifdef	SPD_DEBUG
-	jsr _black_border
-.endif
 
 	ldx #( 1 | SPD_SG_NEW_DATA )
 	cla
@@ -1140,9 +1133,13 @@ _spd_copy_SG_data_to_VRAM.4:
 
 .ifdef	SPD_DEBUG
 	jsr _pink_border
-.endif
 
+	jsr load_vram
+
+	jmp _black_border
+.else
 	jmp load_vram
+.endif
 
 ;// spd_copy_SG_data_to_VRAM( farptr __bl:__si / addr, byte __dl / index )
 ;
