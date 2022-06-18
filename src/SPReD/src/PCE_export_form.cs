@@ -38,6 +38,12 @@ namespace SPReD
 			set {}
 		}
 		
+		public string data_dir
+		{
+			get { return TextBoxDataDir.Text; }
+			set {}
+		}
+		
 		public PCE_export_form()
 		{
 			//

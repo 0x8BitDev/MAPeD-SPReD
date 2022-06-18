@@ -42,6 +42,8 @@ namespace SPReD
 			this.NumPaletteSlot = new System.Windows.Forms.NumericUpDown();
 			this.CheckBoxCommentCHRData = new System.Windows.Forms.CheckBox();
 			this.NumVADDR = new System.Windows.Forms.NumericUpDown();
+			this.TextBoxDataDir = new System.Windows.Forms.TextBox();
+			this.label2 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.NumCHRsOffset)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumPaletteSlot)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumVADDR)).BeginInit();
@@ -50,7 +52,7 @@ namespace SPReD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(103, 84);
+			this.BtnOk.Location = new System.Drawing.Point(102, 127);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 7;
@@ -140,12 +142,29 @@ namespace SPReD
 			this.NumVADDR.ValueChanged += new System.EventHandler(this.NumVADDRChanged_Event);
 			this.NumVADDR.KeyUp += new System.Windows.Forms.KeyEventHandler(this.NumVADDRKeyUp_Event);
 			// 
+			// TextBoxDataDir
+			// 
+			this.TextBoxDataDir.Location = new System.Drawing.Point(13, 91);
+			this.TextBoxDataDir.MaxLength = 256;
+			this.TextBoxDataDir.Name = "TextBoxDataDir";
+			this.TextBoxDataDir.Size = new System.Drawing.Size(251, 20);
+			this.TextBoxDataDir.TabIndex = 8;
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(12, 73);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(251, 18);
+			this.label2.TabIndex = 4;
+			this.label2.Text = "Data directory (e.g. \'data/sprites\'):";
+			// 
 			// PCE_export_form
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(278, 117);
+			this.ClientSize = new System.Drawing.Size(278, 162);
+			this.Controls.Add(this.TextBoxDataDir);
 			this.Controls.Add(this.NumVADDR);
 			this.Controls.Add(this.CheckBoxCommentCHRData);
 			this.Controls.Add(this.LabelVADDR);
@@ -154,6 +173,7 @@ namespace SPReD
 			this.Controls.Add(this.NumCHRsOffset);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.BtnOk);
+			this.Controls.Add(this.label2);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -164,7 +184,10 @@ namespace SPReD
 			((System.ComponentModel.ISupportInitialize)(this.NumPaletteSlot)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumVADDR)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 		}
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.TextBox TextBoxDataDir;
 		private System.Windows.Forms.NumericUpDown NumVADDR;
 		private System.Windows.Forms.CheckBox CheckBoxCommentCHRData;
 		private System.Windows.Forms.NumericUpDown NumPaletteSlot;

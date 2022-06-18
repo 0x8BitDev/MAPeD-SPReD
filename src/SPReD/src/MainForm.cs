@@ -1828,6 +1828,13 @@ namespace SPReD
 		{
 			StreamWriter sw		= null;
 			StreamWriter c_sw	= null;
+			
+			sprite_data spr;
+			
+			string prefix_filename;
+			string data_prefix		= "";
+			string post_spr_data	= "";
+			string data_dir			= "";
 		
 			try
 			{
@@ -1848,19 +1855,40 @@ namespace SPReD
 				{
 					return;
 				}
+				
+				data_dir = m_PCE_export_form.data_dir;
 #else
 ...
-#endif				
-				sprite_data spr;
-				
-				string data_prefix = "";
-				string prefix_filename;
-				string post_spr_data = "";
-				
+#endif
 				string path		= System.IO.Path.GetDirectoryName( _filename );
 				string filename	= System.IO.Path.GetFileNameWithoutExtension( _filename );
+
+				if( data_dir.Length > 0 )
+				{
+					if( data_dir.StartsWith( System.IO.Path.DirectorySeparatorChar.ToString() ) || data_dir.StartsWith( System.IO.Path.AltDirectorySeparatorChar.ToString() ) )
+					{
+						// cut off the first slash
+						data_dir = data_dir.Substring( 1 );
+					}
+					
+					if( data_dir.EndsWith( System.IO.Path.DirectorySeparatorChar.ToString() ) || data_dir.EndsWith( System.IO.Path.AltDirectorySeparatorChar.ToString() ) )
+					{
+						// cut off the last slash
+						data_dir = data_dir.Substring( 0, data_dir.Length - 1 );
+					}
+					
+					data_dir += "/";
+					
+					data_dir = data_dir.Replace( "\\", "/" );
+					
+					// create data directory if needed
+					if( !System.IO.Directory.Exists( path + System.IO.Path.DirectorySeparatorChar + data_dir ) )
+					{
+						System.IO.Directory.CreateDirectory( path + System.IO.Path.DirectorySeparatorChar + data_dir );
+					}
+				}
 				
-				sw = File.CreateText( path + System.IO.Path.DirectorySeparatorChar + filename + "." + this.ExportASM_saveFileDialog.DefaultExt );
+				sw = File.CreateText( path + System.IO.Path.DirectorySeparatorChar + data_dir + filename + "." + this.ExportASM_saveFileDialog.DefaultExt );
 				{
 					sw.WriteLine( utils.get_file_title( ";" ) );
 					
@@ -1891,7 +1919,7 @@ namespace SPReD
 						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_CHR_BPP\t" + m_SMS_export_form.bpp );
 						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_CHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t// first CHR index in a CHR bank\n\n" );
 #elif DEF_PCE
-						c_sw.WriteLine( "#incasm( \"" + filename + "." + this.ExportASM_saveFileDialog.DefaultExt + "\" )\n" );
+						c_sw.WriteLine( "#incasm( \"" + data_dir + filename + "." + this.ExportASM_saveFileDialog.DefaultExt + "\" )\n" );
 						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_VADDR\t" + m_PCE_export_form.VADDR );
 						c_sw.WriteLine( "#define " + filename.ToUpper() + "_PALETTE_SLOT\t" + ( m_PCE_export_form.palette_slot + 16 ) + "\n\n" );
 #else
@@ -1911,11 +1939,11 @@ namespace SPReD
 					m_sprites_proc.rearrange_CHR_data_ids();
 					
 #if DEF_NES
-					m_sprites_proc.export_CHR( sw, prefix_filename, true, save_padding_data );
+					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, true, save_padding_data );
 #elif DEF_SMS
-					m_sprites_proc.export_CHR( sw, prefix_filename, m_SMS_export_form.comment_CHR_data, m_SMS_export_form.bpp << 3 );
+					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, m_SMS_export_form.comment_CHR_data, m_SMS_export_form.bpp << 3 );
 #elif DEF_PCE
-					m_sprites_proc.export_CHR( sw, prefix_filename, m_PCE_export_form.comment_CHR_data, _asm_file );
+					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, m_PCE_export_form.comment_CHR_data, _asm_file );
 #else
 ...
 #endif
@@ -1923,10 +1951,10 @@ namespace SPReD
 					{
 #if DEF_PCE
 						c_sw.WriteLine( "extern unsigned short*\t" + filename + "_SG_arr;" );
-						c_sw.WriteLine( "const unsigned char\t" + filename + "_SG_cnt\t= " + m_sprites_proc.get_CHR_banks().Count + ";\t// graphics banks count" );
+						c_sw.WriteLine( "#define\t" + filename + "_SG_cnt\t" + m_sprites_proc.get_CHR_banks().Count + "\t// graphics banks count" );
 #else
 						c_sw.WriteLine( "extern unsigned short*\t" + filename + "_CHR_arr;" );
-						c_sw.WriteLine( "const unsigned char\t" + filename + "_CHR_cnt\t= " + m_sprites_proc.get_CHR_banks().Count + ";\t// graphics banks count" );
+						c_sw.WriteLine( "#define\t" + filename + "_CHR_cnt\t" + m_sprites_proc.get_CHR_banks().Count + "\t// graphics banks count" );
 #endif
 					}
 					
@@ -1955,7 +1983,14 @@ namespace SPReD
 					
 					if( !_asm_file )
 					{
-						c_sw.WriteLine( "const unsigned short\t" + filename + "_palette_size\t= " + ( max_palettes + 1 ) + ";\t// active palettes\n" );
+						c_sw.WriteLine( "#define\t" + filename + "_palette_size\t" + ( max_palettes + 1 ) + "\t// active palettes\n" );
+						
+						for( int i = 0; i < max_palettes + 1; i++ )
+						{
+							c_sw.WriteLine( "extern unsigned short*\t" + filename + "_palette_slot" + i + ";" );
+						}
+						
+						c_sw.WriteLine( "" );
 					}
 #else
 					m_sprites_proc.export_palette( sw, prefix_filename );
@@ -1972,7 +2007,7 @@ namespace SPReD
 						
 						if( !_asm_file )
 						{
-							c_sw.WriteLine( "const unsigned short\t" + filename + "_frames_cnt\t= " + _spr_cnt + ";" );
+							c_sw.WriteLine( "#define\t" + filename + "_frames_cnt\t" + _spr_cnt );
 							c_sw.WriteLine( "extern spd_SPRITE\t" + filename + "_frames_data[];\n" );
 						}
 						
@@ -1998,11 +2033,11 @@ namespace SPReD
 #endif
 							sw.WriteLine( "\t.byte " + spr.get_CHR_data().id + ( enable_comments ? "\t\t; GFX bank index (" + spr.get_CHR_data().name + ")":"" ) );
 #if DEF_NES
-							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + prefix_filename + "_" + spr.get_CHR_data().get_filename(), save_padding_data );
+							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + data_dir + prefix_filename + "_" + spr.get_CHR_data().get_filename(), save_padding_data );
 #elif DEF_SMS
-							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + prefix_filename + "_" + spr.get_CHR_data().get_filename(), m_SMS_export_form.bpp );
+							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + data_dir + prefix_filename + "_" + spr.get_CHR_data().get_filename(), m_SMS_export_form.bpp );
 #elif DEF_PCE
-							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + prefix_filename + "_" + spr.get_CHR_data().get_filename() );
+							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + data_dir + prefix_filename + "_" + spr.get_CHR_data().get_filename() );
 #else
 ...
 #endif

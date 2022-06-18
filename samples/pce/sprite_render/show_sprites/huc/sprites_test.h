@@ -23,11 +23,18 @@ typedef struct
 
 
 extern unsigned short*	sprites_test_SG_arr;
-const unsigned char	sprites_test_SG_cnt	= 1;	// graphics banks count
-const unsigned short	sprites_test_palette_size	= 6;	// active palettes
+#define	sprites_test_SG_cnt	1	// graphics banks count
+#define	sprites_test_palette_size	6	// active palettes
+
+extern unsigned short*	sprites_test_palette_slot0;
+extern unsigned short*	sprites_test_palette_slot1;
+extern unsigned short*	sprites_test_palette_slot2;
+extern unsigned short*	sprites_test_palette_slot3;
+extern unsigned short*	sprites_test_palette_slot4;
+extern unsigned short*	sprites_test_palette_slot5;
 
 extern unsigned short*	sprites_test_palette;
-const unsigned short	sprites_test_frames_cnt	= 10;
+#define	sprites_test_frames_cnt	10
 extern spd_SPRITE	sprites_test_frames_data[];
 
 #define	SPR_JCH_RIGHT_32X64	0

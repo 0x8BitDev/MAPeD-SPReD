@@ -11,6 +11,7 @@ _anm_test_SG_arr:
 
 
 _anm_test_palette:
+_anm_test_palette_slot0:
 	.word $147, $1FD, $16C, $1FE, $1B8, $130, $98, $17B, $132, $F0, $A8, $60, $1FF, $1B6, $DB, $00
 _anm_test_palette_end:
 

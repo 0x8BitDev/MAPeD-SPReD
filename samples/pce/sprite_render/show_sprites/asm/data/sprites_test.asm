@@ -15,11 +15,17 @@ SPRITES_TEST_PALETTE_SLOT	= 0
 
 
 sprites_test_palette:
+sprites_test_palette_slot0:
 	.word $147, $02, $C6, $06, $173, $133, $F3, $1B6, $00, $00, $00, $00, $00, $00, $00, $00
+sprites_test_palette_slot1:
 	.word $147, $136, $CB, $15C, $11B, $1B0, $170, $E9, $173, $F0, $58, $68, $61, $F3, $1B6, $00
+sprites_test_palette_slot2:
 	.word $147, $1B0, $170, $E9, $F0, $58, $68, $00, $00, $00, $00, $00, $00, $00, $00, $00
+sprites_test_palette_slot3:
 	.word $147, $8B, $D4, $82, $41, $16A, $91, $DA, $10, $1B6, $124, $DB, $92, $49, $00, $72
+sprites_test_palette_slot4:
 	.word $147, $12B, $E8, $A0, $E9, $A8, $58, $28, $20, $10, $124, $00, $4A, $93, $124, $1BC
+sprites_test_palette_slot5:
 	.word $147, $1F8, $178, $F8, $78, $1FF, $68, $00, $00, $00, $00, $00, $00, $00, $00, $00
 sprites_test_palette_end:
 

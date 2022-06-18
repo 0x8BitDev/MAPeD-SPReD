@@ -19,6 +19,7 @@ _set2_SG_arr:
 
 
 _set2_palette:
+_set2_palette_slot0:
 	.word $147, $1FD, $16C, $1FE, $1B8, $130, $98, $17B, $132, $F0, $A8, $60, $1FF, $1B6, $DB, $00
 _set2_palette_end:
 

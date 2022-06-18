@@ -147,13 +147,13 @@ namespace SPReD
 			
 			try
 			{
-				if( bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
+				if( bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Format8bppIndexed && bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Format4bppIndexed )
 				{
 					bmp.Dispose();
 #if DEF_NES			
-					throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe BMP image must have a 4 bpp color depth \\ 4 colors palette (not RLE encoded)!" );
+					throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe BMP image must have a 4/8 bpp color depth \\ 4 colors palette (not RLE encoded)!" );
 #elif DEF_SMS || DEF_PCE
-					throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe BMP image must have a 4 bpp color depth \\ 16 or 4 colors palette (not RLE encoded)!" );
+					throw new Exception( _filename + " - Pixel format: " + bmp.PixelFormat.ToString() + "\n\nThe BMP image must have a 4/8 bpp color depth \\ 16 or 4 colors palette (not RLE encoded)!" );
 #else
 ...
 #endif
@@ -332,19 +332,19 @@ namespace SPReD
 		}
 		
 #if DEF_NES
-		public void export_CHR( StreamWriter _sw, string _filename, bool _commented, bool _need_padding )
+		public void export_CHR( StreamWriter _sw, string _data_dir, string _filename, bool _commented, bool _need_padding )
 		{
-			m_CHR_data_storage.export( _sw, _filename, _commented, _need_padding );
+			m_CHR_data_storage.export( _sw, _data_dir, _filename, _commented, _need_padding );
 		}
 #elif DEF_SMS
-		public void export_CHR( StreamWriter _sw, string _filename, bool _commented, int _CHR_size )
+		public void export_CHR( StreamWriter _sw, string _data_dir, string _filename, bool _commented, int _CHR_size )
 		{
-			m_CHR_data_storage.export( _sw, _filename, _commented, _CHR_size );
+			m_CHR_data_storage.export( _sw, _data_dir, _filename, _commented, _CHR_size );
 		}
 #elif DEF_PCE
-		public void export_CHR( StreamWriter _sw, string _filename, bool _commented, bool _asm_data )
+		public void export_CHR( StreamWriter _sw, string _data_dir, string _filename, bool _commented, bool _asm_data )
 		{
-			m_CHR_data_storage.export( _sw, _filename, _commented, _asm_data );
+			m_CHR_data_storage.export( _sw, _data_dir, _filename, _commented, _asm_data );
 		}
 #else
 ...

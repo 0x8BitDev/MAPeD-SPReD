@@ -23,11 +23,13 @@ typedef struct
 
 
 extern unsigned short*	set2_SG_arr;
-const unsigned char	set2_SG_cnt	= 5;	// graphics banks count
-const unsigned short	set2_palette_size	= 1;	// active palettes
+#define	set2_SG_cnt	5	// graphics banks count
+#define	set2_palette_size	1	// active palettes
+
+extern unsigned short*	set2_palette_slot0;
 
 extern unsigned short*	set2_palette;
-const unsigned short	set2_frames_cnt	= 6;
+#define	set2_frames_cnt	6
 extern spd_SPRITE	set2_frames_data[];
 
 #define	SPR_MARTHA_PUNCH01	0

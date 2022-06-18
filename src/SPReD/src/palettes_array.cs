@@ -177,6 +177,8 @@ namespace SPReD
 			
 			for( int i = 0; i < _max_plts; i++ )
 			{
+				_sw.WriteLine( _prefix + "_palette_slot" + i + ":" );
+				
 				m_plts[ i ].export( _sw );
 			}
 			

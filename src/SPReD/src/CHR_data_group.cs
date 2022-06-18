@@ -230,9 +230,18 @@ namespace SPReD
 	
 							for( j = 0; j < img_width; j++ )
 							{
-								index_byte = Marshal.ReadByte( data_ptr, ( j >> 1 ) + ( i * bmp_data.Stride ) );
-								
-								pixels_line[ j ] = ( byte )( ( ( ( j & 0x01 ) == 0x01 ) ? ( index_byte & 0x0f ):( ( index_byte & 0xf0 ) >> 4 ) ) & index_clamp_val );
+								if( plte.Length == 256 )
+								{
+									index_byte = Marshal.ReadByte( data_ptr, j + ( i * bmp_data.Stride ) );
+									
+									pixels_line[ j ] = ( byte )( index_byte & index_clamp_val );
+								}
+								else
+								{
+									index_byte = Marshal.ReadByte( data_ptr, ( j >> 1 ) + ( i * bmp_data.Stride ) );
+									
+									pixels_line[ j ] = ( byte )( ( ( ( j & 0x01 ) == 0x01 ) ? ( index_byte & 0x0f ):( ( index_byte & 0xf0 ) >> 4 ) ) & index_clamp_val );
+								}
 							}
 							
 							lines_arr.Add( pixels_line );

@@ -33,6 +33,7 @@ PLAYER_GFX_PALETTE_SLOT	= 0
 
 
 player_gfx_palette:
+player_gfx_palette_slot0:
 	.word $147, $C2, $81, $14B, $19D, $1B0, $170, $E9, $173, $F0, $1B5, $B0, $58, $133, $F2, $1B6
 player_gfx_palette_end:
 

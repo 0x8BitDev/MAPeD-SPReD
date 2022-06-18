@@ -102,6 +102,8 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+17.06.2022 - PCE: added 'data directory' field to the export options dialog
+10.06.2022 - Added support for importing 8-bit BMP images
 07.06.2022 - PCE: added VRAM address field to the export options dialog
 21.04.2022 - Added a library for rendering of simple sprites and meta-sprites using the HuC (SPD-render/spd.h)
 14.04.2022 - Added export to C for all platforms

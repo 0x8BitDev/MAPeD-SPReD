@@ -29,6 +29,7 @@ _set3_SG_arr:
 
 
 _set3_palette:
+_set3_palette_slot0:
 	.word $147, $87, $44, $107, $14D, $1B0, $170, $E9, $173, $F0, $1B5, $B0, $58, $133, $F2, $1B6
 _set3_palette_end:
 

@@ -15,6 +15,7 @@ ANM_TEST_PALETTE_SLOT	= 0
 
 
 anm_test_palette:
+anm_test_palette_slot0:
 	.word $147, $1FD, $16C, $1FE, $1B8, $130, $98, $17B, $132, $F0, $A8, $60, $1FF, $1B6, $DB, $00
 anm_test_palette_end:
 

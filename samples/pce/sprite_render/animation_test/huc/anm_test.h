@@ -23,11 +23,13 @@ typedef struct
 
 
 extern unsigned short*	anm_test_SG_arr;
-const unsigned char	anm_test_SG_cnt	= 1;	// graphics banks count
-const unsigned short	anm_test_palette_size	= 1;	// active palettes
+#define	anm_test_SG_cnt	1	// graphics banks count
+#define	anm_test_palette_size	1	// active palettes
+
+extern unsigned short*	anm_test_palette_slot0;
 
 extern unsigned short*	anm_test_palette;
-const unsigned short	anm_test_frames_cnt	= 6;
+#define	anm_test_frames_cnt	6
 extern spd_SPRITE	anm_test_frames_data[];
 
 #define	SPR_MARTHA_PUNCH01	0

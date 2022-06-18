@@ -124,11 +124,11 @@ namespace SPReD
 		}
 		
 #if DEF_NES
-		public void export( StreamWriter _sw, string _filename, bool _commented, bool _need_padding )
+		public void export( StreamWriter _sw, string _data_dir, string _filename, bool _commented, bool _need_padding )
 #elif DEF_SMS
-		public void export( StreamWriter _sw, string _filename, bool _commented, int _CHR_size )
+		public void export( StreamWriter _sw, string _data_dir, string _filename, bool _commented, int _CHR_size )
 #elif DEF_PCE
-		public void export( StreamWriter _sw, string _filename, bool _commented, bool _asm_data )
+		public void export( StreamWriter _sw, string _data_dir, string _filename, bool _commented, bool _asm_data )
 #else
 ...
 #endif
@@ -157,9 +157,9 @@ namespace SPReD
 #endif
 
 #if DEF_NES
-				_sw.WriteLine( ( _commented ? ";":"" ) + label_name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );
+				_sw.WriteLine( ( _commented ? ";":"" ) + label_name + ":\t.incbin \"" + _data_dir + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );
 #elif DEF_SMS || DEF_PCE
-				_sw.WriteLine( ( _commented ? ";":"" ) + label_name + ":\t.incbin \"" + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + " bytes" );
+				_sw.WriteLine( ( _commented ? ";":"" ) + label_name + ":\t.incbin \"" + _data_dir + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + " bytes" );
 #else
 ...
 #endif
