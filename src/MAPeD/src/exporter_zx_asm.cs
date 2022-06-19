@@ -134,6 +134,8 @@ namespace MAPeD
 			
 			CheckBoxRLE.Enabled = true;
 			
+			RBtnEntityCoordMap.Checked	= true;
+			
 			if( !RBtnModeMultidirScroll.Checked )
 			{
 				CheckBoxRenderLevelPNG.Checked = CheckBoxRenderTilesPNG.Checked = false;
@@ -149,7 +151,8 @@ namespace MAPeD
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = true;
 			RBtnLayoutAdjacentScreens.Checked	= true;
 			
-			CheckBoxExportMarks.Enabled = true;
+			CheckBoxExportMarks.Enabled 	= true;			
+			RBtnEntityCoordScreen.Checked	= true;
 			
 			CheckBoxRLE.Checked = CheckBoxRLE.Enabled = false;
 			

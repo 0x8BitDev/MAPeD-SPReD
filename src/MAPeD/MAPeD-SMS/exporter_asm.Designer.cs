@@ -355,22 +355,22 @@ namespace MAPeD
 			// 
 			// RBtnEntityCoordMap
 			// 
+			this.RBtnEntityCoordMap.Checked = true;
 			this.RBtnEntityCoordMap.Location = new System.Drawing.Point(68, 13);
 			this.RBtnEntityCoordMap.Name = "RBtnEntityCoordMap";
 			this.RBtnEntityCoordMap.Size = new System.Drawing.Size(47, 20);
 			this.RBtnEntityCoordMap.TabIndex = 21;
+			this.RBtnEntityCoordMap.TabStop = true;
 			this.RBtnEntityCoordMap.Text = "Map";
 			this.RBtnEntityCoordMap.UseVisualStyleBackColor = true;
 			this.RBtnEntityCoordMap.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
 			// RBtnEntityCoordScreen
 			// 
-			this.RBtnEntityCoordScreen.Checked = true;
 			this.RBtnEntityCoordScreen.Location = new System.Drawing.Point(9, 13);
 			this.RBtnEntityCoordScreen.Name = "RBtnEntityCoordScreen";
 			this.RBtnEntityCoordScreen.Size = new System.Drawing.Size(60, 20);
 			this.RBtnEntityCoordScreen.TabIndex = 20;
-			this.RBtnEntityCoordScreen.TabStop = true;
 			this.RBtnEntityCoordScreen.Text = "Screen";
 			this.RBtnEntityCoordScreen.UseVisualStyleBackColor = true;
 			this.RBtnEntityCoordScreen.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -498,7 +498,7 @@ namespace MAPeD
 			this.RichTextBoxExportDesc.TabIndex = 35;
 			this.RichTextBoxExportDesc.Text = "";
 			// 
-			// exporter_sms_asm
+			// exporter_asm
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -512,7 +512,7 @@ namespace MAPeD
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "exporter_sms_asm";
+			this.Name = "exporter_asm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "WLA-DX Asm Export Options";
 			this.groupBox1.ResumeLayout(false);

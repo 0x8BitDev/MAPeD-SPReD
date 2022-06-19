@@ -121,6 +121,8 @@ namespace MAPeD
 			CheckBoxExportMarks.Enabled = ( CheckBoxExportEntities.Checked == false && RBtnModeMultidirScroll.Checked ) ? false:true;
 			CheckBoxExportMarks.Checked = CheckBoxExportMarks.Enabled ? CheckBoxExportMarks.Checked:false;
 			
+			RBtnEntityCoordMap.Checked	= true;
+			
 			CheckBoxRLE.Enabled = true;
 			
 			update_desc();
@@ -131,7 +133,8 @@ namespace MAPeD
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = true;
 			RBtnLayoutAdjacentScreens.Checked	= true;
 			
-			CheckBoxExportMarks.Enabled = true;
+			CheckBoxExportMarks.Enabled		= true;
+			RBtnEntityCoordScreen.Checked	= true;
 			
 			CheckBoxRLE.Checked = CheckBoxRLE.Enabled = false;
 			
@@ -143,7 +146,8 @@ namespace MAPeD
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = true;
 			RBtnLayoutAdjacentScreens.Checked	= true;
 			
-			CheckBoxExportMarks.Enabled = true;
+			CheckBoxExportMarks.Enabled		= true;
+			RBtnEntityCoordScreen.Checked	= true;
 			
 			CheckBoxRLE.Enabled = true;
 			
