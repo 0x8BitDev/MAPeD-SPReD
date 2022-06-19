@@ -69,251 +69,22 @@ typedef struct
 #endif
 #if	FLAG_LAYOUT_ADJ_SCR
 	// adjacent screen pointers
-	void*	adj_scr[4];
+	u16	adj_scr[4];
 #endif
 #if	FLAG_LAYOUT_ADJ_SCR_INDS
 	u8	adj_scr[4];
 #endif
 #if	FLAG_ENTITIES
 	u8	ents_cnt;
-	mpd_ENTITY_INSTANCE*	ents[];
 #endif
 } mpd_SCREEN;
 
 extern u16*	chr0;
 extern u16*	chr1;
 
-// *** Lev0 ***
-extern u8	Lev0_StartScr;	// start screen
-const u8	Lev0_TilesCnt	= 246;	// map tiles count
-
-#asm
-_Lev0_StartScr	= 3	; start screen
-_Lev0_WScrCnt	= 4	; number of screens in width
-_Lev0_HScrCnt	= 5	; number of screens in height
-
-_Lev0_Layout:	
-	.word _Lev0Scr0
-	.word _Lev0Scr1
-	.word _Lev0Scr2
-	.word _Lev0Scr3
-	.word _Lev0Scr4
-	.word _Lev0Scr5
-	.word _Lev0Scr6
-	.word _Lev0Scr7
-	.word _Lev0Scr8
-	.word _Lev0Scr9
-	.word _Lev0Scr10
-	.word _Lev0Scr11
-	.word _Lev0Scr12
-	.word _Lev0Scr13
-	.word _Lev0Scr14
-	.word _Lev0Scr15
-	.word _Lev0Scr16
-	.word _Lev0Scr17
-	.word _Lev0Scr18
-	.word _Lev0Scr19
-
-_Lev0Scr0:
-
-_Lev0Scr1:
-
-_Lev0Scr2:
-
-_Lev0Scr3:
-
-_Lev0Scr4:
-
-_Lev0Scr5:
-
-_Lev0Scr6:
-
-_Lev0Scr7:
-
-_Lev0Scr8:
-
-_Lev0Scr9:
-
-_Lev0Scr10:
-
-_Lev0Scr11:
-
-_Lev0Scr12:
-
-_Lev0Scr13:
-
-_Lev0Scr14:
-
-_Lev0Scr15:
-
-_Lev0Scr16:
-
-_Lev0Scr17:
-
-_Lev0Scr18:
-
-_Lev0Scr19:
-
-#endasm
-
-extern mpd_SCREEN*	Lev0_Layout[];
-
-extern u8	Lev0_WScrCnt;	// number of screens in width
-extern u8	Lev0_HScrCnt;	// number of screens in height
-
-// *** Lev1 ***
-extern u8	Lev1_StartScr;	// start screen
-const u8	Lev1_TilesCnt	= 174;	// map tiles count
-
-#asm
-_Lev1_StartScr	= 36	; start screen
-_Lev1_WScrCnt	= 6	; number of screens in width
-_Lev1_HScrCnt	= 7	; number of screens in height
-
-_Lev1_Layout:	
-	.word _Lev1Scr0
-	.word _Lev1Scr1
-	.word _Lev1Scr2
-	.word _Lev1Scr3
-	.word _Lev1Scr4
-	.word _Lev1Scr5
-	.word _Lev1Scr6
-	.word _Lev1Scr7
-	.word _Lev1Scr8
-	.word _Lev1Scr9
-	.word _Lev1Scr10
-	.word _Lev1Scr11
-	.word _Lev1Scr12
-	.word _Lev1Scr13
-	.word _Lev1Scr14
-	.word _Lev1Scr15
-	.word _Lev1Scr16
-	.word _Lev1Scr17
-	.word _Lev1Scr18
-	.word _Lev1Scr19
-	.word _Lev1Scr20
-	.word _Lev1Scr21
-	.word _Lev1Scr22
-	.word _Lev1Scr23
-	.word _Lev1Scr24
-	.word _Lev1Scr25
-	.word _Lev1Scr26
-	.word _Lev1Scr27
-	.word _Lev1Scr28
-	.word _Lev1Scr29
-	.word _Lev1Scr30
-	.word _Lev1Scr31
-	.word _Lev1Scr32
-	.word _Lev1Scr33
-	.word _Lev1Scr34
-	.word _Lev1Scr35
-	.word _Lev1Scr36
-	.word _Lev1Scr37
-	.word _Lev1Scr38
-	.word _Lev1Scr39
-	.word _Lev1Scr40
-	.word _Lev1Scr41
-
-_Lev1Scr0:
-
-_Lev1Scr1:
-
-_Lev1Scr2:
-
-_Lev1Scr3:
-
-_Lev1Scr4:
-
-_Lev1Scr5:
-
-_Lev1Scr6:
-
-_Lev1Scr7:
-
-_Lev1Scr8:
-
-_Lev1Scr9:
-
-_Lev1Scr10:
-
-_Lev1Scr11:
-
-_Lev1Scr12:
-
-_Lev1Scr13:
-
-_Lev1Scr14:
-
-_Lev1Scr15:
-
-_Lev1Scr16:
-
-_Lev1Scr17:
-
-_Lev1Scr18:
-
-_Lev1Scr19:
-
-_Lev1Scr20:
-
-_Lev1Scr21:
-
-_Lev1Scr22:
-
-_Lev1Scr23:
-
-_Lev1Scr24:
-
-_Lev1Scr25:
-
-_Lev1Scr26:
-
-_Lev1Scr27:
-
-_Lev1Scr28:
-
-_Lev1Scr29:
-
-_Lev1Scr30:
-
-_Lev1Scr31:
-
-_Lev1Scr32:
-
-_Lev1Scr33:
-
-_Lev1Scr34:
-
-_Lev1Scr35:
-
-_Lev1Scr36:
-
-_Lev1Scr37:
-
-_Lev1Scr38:
-
-_Lev1Scr39:
-
-_Lev1Scr40:
-
-_Lev1Scr41:
-
-#endasm
-
-extern mpd_SCREEN*	Lev1_Layout[];
-
-extern u8	Lev1_WScrCnt;	// number of screens in width
-extern u8	Lev1_HScrCnt;	// number of screens in height
-
 // *** GLOBAL DATA ***
 
-#asm
-_mpd_CHRs:
-	.word bank(_chr0)
-	.word _chr0
-	.word bank(_chr1)
-	.word _chr1
-#endasm
+#define	ENT_MAX_PROPS_CNT	0
 
 extern u16	mpd_CHRs[];
 extern u16*	mpd_CHRs_size;
@@ -327,30 +98,6 @@ extern u16*	mpd_MapsTbl;
 extern u16*	mpd_MapsTblOffs;
 extern u16*	mpd_Plts;
 extern u8*	mpd_MapsCHRBanks;
-
+extern u8*	mpd_StartScrArr[];
+extern u8*	mpd_MapsDimArr[];
 extern mpd_SCREEN** mpd_MapsArr[];
-
-#asm
-_mpd_MapsArr:
-	.word _Lev0_Layout
-	.word _Lev1_Layout
-
-#endasm
-
-extern u8 mpd_StartScrArr[];
-
-#asm
-_mpd_StartScrArr:
-	.byte _Lev0_StartScr
-	.byte _Lev1_StartScr
-
-#endasm
-
-extern u8 mpd_MapsDimArr[];
-
-#asm
-_mpd_MapsDimArr:
-	.byte _Lev0_WScrCnt, _Lev0_HScrCnt
-	.byte _Lev1_WScrCnt, _Lev1_HScrCnt
-
-#endasm

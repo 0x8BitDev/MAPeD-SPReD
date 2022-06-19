@@ -72,14 +72,13 @@ typedef struct
 #endif
 #if	FLAG_LAYOUT_ADJ_SCR
 	// adjacent screen pointers
-	void*	adj_scr[4];
+	u16	adj_scr[4];
 #endif
 #if	FLAG_LAYOUT_ADJ_SCR_INDS
 	u8	adj_scr[4];
 #endif
 #if	FLAG_ENTITIES
 	u8	ents_cnt;
-	mpd_ENTITY_INSTANCE*	ents[];
 #endif
 } mpd_SCREEN;
 
@@ -87,18 +86,6 @@ extern u16*	chr0;
 extern u16*	chr1;
 extern u16*	chr2;
 extern u16*	chr3;
-
-#asm
-_mpd_CHRs:
-	.word bank(_chr0)
-	.word _chr0
-	.word bank(_chr1)
-	.word _chr1
-	.word bank(_chr2)
-	.word _chr2
-	.word bank(_chr3)
-	.word _chr3
-#endasm
 
 extern u16	mpd_CHRs[];
 extern u16*	mpd_CHRs_size;
@@ -111,136 +98,8 @@ extern u16*	mpd_VDCScr;	// VDC-ready data array for each screen
 extern u8*	mpd_TilesScr;
 extern u16*	mpd_Plts;
 
-// *** _Lev0 ***
-
-extern mpd_SCREEN*	Lev0_ScrArr[];
-extern mpd_SCREEN*	Lev0_StartScr;
-
-#asm
-_Lev0_StartScr:	.word _Lev0Scr0
-
-_Lev0Scr0:
-	.byte 0	; chr_id
-
-	.word 0	; _tilemap_VDCScr offset
-
-	.byte 0	; screen index
-
-; adjacent screen indices ( the valid values are $00 - $FE, $FF - means no screen )
-; use the _Lev0_ScrArr array to get a screen description by adjacent screen index
-	.byte $FF	; left adjacent screen index
-	.byte $FF	; up adjacent screen index
-	.byte $FF	; right adjacent screen index
-	.byte $FF	; down adjacent screen index
-
-; screens array
-_Lev0_ScrArr:
-	.word _Lev0Scr0
-
-#endasm
-
-// *** _Lev1 ***
-
-extern mpd_SCREEN*	Lev1_ScrArr[];
-extern mpd_SCREEN*	Lev1_StartScr;
-
-#asm
-_Lev1_StartScr:	.word _Lev1Scr0
-
-_Lev1Scr0:
-	.byte 1	; chr_id
-
-	.word 1792	; _tilemap_VDCScr offset
-
-	.byte 1	; screen index
-
-; adjacent screen indices ( the valid values are $00 - $FE, $FF - means no screen )
-; use the _Lev1_ScrArr array to get a screen description by adjacent screen index
-	.byte $FF	; left adjacent screen index
-	.byte $FF	; up adjacent screen index
-	.byte $FF	; right adjacent screen index
-	.byte $FF	; down adjacent screen index
-
-; screens array
-_Lev1_ScrArr:
-	.word _Lev1Scr0
-
-#endasm
-
-// *** _Lev2 ***
-
-extern mpd_SCREEN*	Lev2_ScrArr[];
-extern mpd_SCREEN*	Lev2_StartScr;
-
-#asm
-_Lev2_StartScr:	.word _Lev2Scr0
-
-_Lev2Scr0:
-	.byte 2	; chr_id
-
-	.word 3584	; _tilemap_VDCScr offset
-
-	.byte 2	; screen index
-
-; adjacent screen indices ( the valid values are $00 - $FE, $FF - means no screen )
-; use the _Lev2_ScrArr array to get a screen description by adjacent screen index
-	.byte $FF	; left adjacent screen index
-	.byte $FF	; up adjacent screen index
-	.byte $FF	; right adjacent screen index
-	.byte $FF	; down adjacent screen index
-
-; screens array
-_Lev2_ScrArr:
-	.word _Lev2Scr0
-
-#endasm
-
-// *** _Lev3 ***
-
-extern mpd_SCREEN*	Lev3_ScrArr[];
-extern mpd_SCREEN*	Lev3_StartScr;
-
-#asm
-_Lev3_StartScr:	.word _Lev3Scr0
-
-_Lev3Scr0:
-	.byte 3	; chr_id
-
-	.word 5376	; _tilemap_VDCScr offset
-
-	.byte 3	; screen index
-
-; adjacent screen indices ( the valid values are $00 - $FE, $FF - means no screen )
-; use the _Lev3_ScrArr array to get a screen description by adjacent screen index
-	.byte $FF	; left adjacent screen index
-	.byte $FF	; up adjacent screen index
-	.byte $FF	; right adjacent screen index
-	.byte $FF	; down adjacent screen index
-
-; screens array
-_Lev3_ScrArr:
-	.word _Lev3Scr0
-
-#endasm
 
 extern mpd_SCREEN** mpd_MapsArr[];
-
-#asm
-_mpd_MapsArr:
-	.word _Lev0_StartScr
-	.word _Lev1_StartScr
-	.word _Lev2_StartScr
-	.word _Lev3_StartScr
-
-#endasm
-
 extern mpd_SCREEN** mpd_MapsScrArr[];
 
-#asm
-_mpd_MapsScrArr:
-	.word _Lev0_ScrArr
-	.word _Lev1_ScrArr
-	.word _Lev2_ScrArr
-	.word _Lev3_ScrArr
-
-#endasm
+#define	ENT_MAX_PROPS_CNT	0

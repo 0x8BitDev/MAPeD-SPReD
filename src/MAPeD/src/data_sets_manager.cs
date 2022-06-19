@@ -1076,8 +1076,11 @@ namespace MAPeD
 			return res ? CHR_cnt:-1;
 		}
 		
-		public void export_entity_asm( StreamWriter _sw, string _db, string _num_pref )
+		public int export_entity_asm( StreamWriter _sw, string _db, string _num_pref )
 		{
+			int max_props_cnt = 0;
+			int props_cnt;
+			
 			bool enable_comments = true;
 			
 			_sw.WriteLine( "\n; *** BASE ENTITIES ***\n" );
@@ -1093,13 +1096,20 @@ namespace MAPeD
 					_sw.WriteLine( "\t" + _db + " " + utils.hex( _num_pref, _ent.pivot_x ) + ( enable_comments ? "\t; pivot x":"" ) );
 					_sw.WriteLine( "\t" + _db + " " + utils.hex( _num_pref, _ent.pivot_y ) + ( enable_comments ? "\t; pivot y":"" ) );
 		
-					utils.save_prop_asm( _sw, _db, _num_pref, _ent.properties, enable_comments );
+					props_cnt = utils.save_prop_asm( _sw, _db, _num_pref, _ent.properties, enable_comments );
+					
+					if( max_props_cnt < props_cnt )
+					{
+						max_props_cnt = props_cnt;
+					}
 					
 					_sw.WriteLine( "" );
 					
 					enable_comments = false;
 				});
-			}			
+			}
+			
+			return max_props_cnt;
 		}
 
 		private void tiles_to_blocks()

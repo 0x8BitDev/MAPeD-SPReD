@@ -538,7 +538,7 @@ namespace MAPeD
 			return _prefix + String.Format( "{0:X2}", _val );
 		}
 		
-		public static void save_prop_asm( StreamWriter _sw, string _db, string _num_pref, string _prop, bool _enable_comments )
+		public static int save_prop_asm( StreamWriter _sw, string _db, string _num_pref, string _prop, bool _enable_comments )
 		{
 			int		all_props_cnt	= 0;
 			string	data_str		= "";
@@ -604,6 +604,8 @@ namespace MAPeD
 			{
 				_sw.WriteLine( data_str + ( _enable_comments ? "\t; properties data":"" ) );
 			}
+			
+			return all_props_cnt;
 		}
 		
 		public static void swap_columns_rows_order<T>( T[] _arr, int _width, int _height )

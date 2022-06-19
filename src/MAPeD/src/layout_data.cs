@@ -96,8 +96,11 @@ namespace MAPeD
 			}
 		}
 
-		public void export_entities_asm( StreamWriter _sw, ref int _ent_id, string _label, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _ent_coords_scr, int _x, int _y, bool _enable_comments )
+		public int export_entities_asm( StreamWriter _sw, ref int _ent_id, string _label, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _ent_coords_scr, int _x, int _y, bool _enable_comments )
 		{
+			int max_props_cnt = -1;
+			int props_cnt;
+			
 			entity_instance ent_inst;
 			
 			_sw.WriteLine( _label + ":" );
@@ -123,8 +126,15 @@ namespace MAPeD
 				_sw.WriteLine( "\t" + _def_coord + " " + utils.hex( _num_pref, ent_inst.x + ent_inst.base_entity.pivot_x + ( _ent_coords_scr ? 0:_x * platform_data.get_screen_width_pixels() ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " X" ):"" ) );
 				_sw.WriteLine( "\t" + _def_coord + " " + utils.hex( _num_pref, ent_inst.y + ent_inst.base_entity.pivot_y + ( _ent_coords_scr ? 0:_y * platform_data.get_screen_height_pixels() ) ) + ( _enable_comments ? ( "\t; " + ( _ent_coords_scr ? "scr":"map" ) + " Y" ):"" ) );
 					
-				utils.save_prop_asm( _sw, _def_num, _num_pref, ent_inst.properties, _enable_comments );
+				props_cnt = utils.save_prop_asm( _sw, _def_num, _num_pref, ent_inst.properties, _enable_comments );
+				
+				if( max_props_cnt < props_cnt )
+				{
+					max_props_cnt = props_cnt;
+				}
 			}
+			
+			return max_props_cnt;
 		}
 	}
 	
@@ -685,8 +695,11 @@ namespace MAPeD
 			return ent_cnt;
 		}
 		
-		public void export_asm( StreamWriter _sw, string _data_mark, string _define, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr, bool _compact_layout = true )
+		public int export_asm( StreamWriter _sw, string _data_mark, string _define, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr, bool _compact_layout = true )
 		{
+			int max_props_cnt = 0;
+			int props_cnt;
+			
 			int x;
 			int y;
 
@@ -765,7 +778,12 @@ namespace MAPeD
 	
 							if( _export_entities )
 							{
-								scr_data.export_entities_asm( _sw, ref ent_n, lev_scr_id + "EntsArr", _def_num, _def_addr, _def_coord, _num_pref, _ent_coords_scr, x, y, enable_comments );
+								props_cnt = scr_data.export_entities_asm( _sw, ref ent_n, lev_scr_id + "EntsArr", _def_num, _def_addr, _def_coord, _num_pref, _ent_coords_scr, x, y, enable_comments );
+								
+								if( max_props_cnt < props_cnt )
+								{
+									max_props_cnt = props_cnt;
+								}
 							}
 							
 							enable_comments = false;
@@ -787,6 +805,8 @@ namespace MAPeD
 					}
 				}
 			}
+			
+			return max_props_cnt;
 		}
 		
 		public void save( BinaryWriter _bw )

@@ -56,6 +56,8 @@ void	show_info()
 
 void	display_next_map()
 {
+	u16	map_size;
+
 	/* disable display */
 	disp_off();
 	vsync();
@@ -65,14 +67,16 @@ void	display_next_map()
 	mpd_init( map_ind, 2 );
 
 	/* start screen */
-	map_scr_ind	= mpd_StartScrArr[ map_ind ];
+	map_scr_ind	= mpd_get_start_screen_ind( map_ind );
 
 	/* draw start screen */
 	mpd_draw_screen_by_ind_offs( map_scr_ind, 0, TRUE );	// 0 - BAT offset; TRUE - disable scrolling
 
 	/* map size */
-	map_scr_width	= mpd_MapsDimArr[ map_ind << 1 ];
-	map_scr_height	= mpd_MapsDimArr[ ( map_ind << 1 ) + 1 ];
+	map_size	= mpd_get_map_size( map_ind );
+
+	map_scr_width	= map_size & 0x00ff;
+	map_scr_height	= ( map_size & 0xff00 ) >> 8;
 
 	map_max_scr	= map_scr_width * map_scr_height;
 

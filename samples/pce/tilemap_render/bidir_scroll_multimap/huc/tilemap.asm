@@ -12,6 +12,14 @@ _chr1:	.incbin "_tilemap__chr1.bin"		; (8064)
 _chr2:	.incbin "_tilemap__chr2.bin"		; (9952)
 
 
+_mpd_CHRs:
+	.word _chr0
+	.byte bank(_chr0)
+	.word _chr1
+	.byte bank(_chr1)
+	.word _chr2
+	.byte bank(_chr2)
+
 _mpd_CHRs_size:
 	.word 11392	; (_chr0)
 	.word 8064	; (_chr1)
@@ -33,3 +41,522 @@ _mpd_BlocksOffs:
 _mpd_Attrs:	.incbin "_tilemap_Attrs.bin"	; (4800) 2x2 tiles attributes array of all exported data banks ( 2 bytes per attribute )
 _mpd_TilesScr:	.incbin "_tilemap_TilesScr.bin"	; (9632) 2x2 tiles array for each screen ( 224 bytes per screen \ 1 byte per tile )
 _mpd_Plts:	.incbin "_tilemap_Plts.bin"	; (1536) palettes array of all exported data banks ( data offset = chr_id * 512 )
+
+; *** _Lev0 ***
+
+_Lev0_StartScr:	.word _Lev0Scr44
+
+_Lev0Scr2:
+	.byte 0	; chr_id
+
+	.byte 0	; screen index
+
+; adjacent screen indices ( the valid values are $00 - $FE, $FF - means no screen )
+; use the _Lev0_ScrArr array to get a screen description by adjacent screen index
+	.byte $FF	; left adjacent screen index
+	.byte $FF	; up adjacent screen index
+	.byte $01	; right adjacent screen index
+	.byte $05	; down adjacent screen index
+
+_Lev0Scr3:
+	.byte 0
+
+	.byte 1
+
+	.byte $00
+	.byte $FF
+	.byte $02
+	.byte $FF
+
+_Lev0Scr4:
+	.byte 0
+
+	.byte 2
+
+	.byte $01
+	.byte $FF
+	.byte $FF
+	.byte $FF
+
+_Lev0Scr9:
+	.byte 0
+
+	.byte 3
+
+	.byte $FF
+	.byte $FF
+	.byte $04
+	.byte $06
+
+_Lev0Scr10:
+	.byte 0
+
+	.byte 4
+
+	.byte $03
+	.byte $FF
+	.byte $05
+	.byte $FF
+
+_Lev0Scr11:
+	.byte 0
+
+	.byte 5
+
+	.byte $04
+	.byte $00
+	.byte $FF
+	.byte $FF
+
+_Lev0Scr18:
+	.byte 0
+
+	.byte 6
+
+	.byte $FF
+	.byte $03
+	.byte $FF
+	.byte $07
+
+_Lev0Scr27:
+	.byte 0
+
+	.byte 7
+
+	.byte $FF
+	.byte $06
+	.byte $08
+	.byte $FF
+
+_Lev0Scr28:
+	.byte 0
+
+	.byte 8
+
+	.byte $07
+	.byte $FF
+	.byte $09
+	.byte $FF
+
+_Lev0Scr29:
+	.byte 0
+
+	.byte 9
+
+	.byte $08
+	.byte $FF
+	.byte $0A
+	.byte $FF
+
+_Lev0Scr30:
+	.byte 0
+
+	.byte 10
+
+	.byte $09
+	.byte $FF
+	.byte $FF
+	.byte $0B
+
+_Lev0Scr39:
+	.byte 0
+
+	.byte 11
+
+	.byte $FF
+	.byte $0A
+	.byte $0C
+	.byte $FF
+
+_Lev0Scr40:
+	.byte 0
+
+	.byte 12
+
+	.byte $0B
+	.byte $FF
+	.byte $0D
+	.byte $FF
+
+_Lev0Scr41:
+	.byte 0
+
+	.byte 13
+
+	.byte $0C
+	.byte $FF
+	.byte $0E
+	.byte $FF
+
+_Lev0Scr42:
+	.byte 0
+
+	.byte 14
+
+	.byte $0D
+	.byte $FF
+	.byte $0F
+	.byte $FF
+
+_Lev0Scr43:
+	.byte 0
+
+	.byte 15
+
+	.byte $0E
+	.byte $FF
+	.byte $10
+	.byte $FF
+
+_Lev0Scr44:
+	.byte 0
+
+	.byte 16
+
+	.byte $0F
+	.byte $FF
+	.byte $FF
+	.byte $FF
+
+; screens array
+_Lev0_ScrArr:
+	.word _Lev0Scr2
+	.word _Lev0Scr3
+	.word _Lev0Scr4
+	.word _Lev0Scr9
+	.word _Lev0Scr10
+	.word _Lev0Scr11
+	.word _Lev0Scr18
+	.word _Lev0Scr27
+	.word _Lev0Scr28
+	.word _Lev0Scr29
+	.word _Lev0Scr30
+	.word _Lev0Scr39
+	.word _Lev0Scr40
+	.word _Lev0Scr41
+	.word _Lev0Scr42
+	.word _Lev0Scr43
+	.word _Lev0Scr44
+
+
+; *** _Lev1 ***
+
+_Lev1_StartScr:	.word _Lev1Scr30
+
+_Lev1Scr7:
+	.byte 1	; chr_id
+
+	.byte 17	; screen index
+
+; adjacent screen indices ( the valid values are $00 - $FE, $FF - means no screen )
+; use the _Lev1_ScrArr array to get a screen description by adjacent screen index
+	.byte $FF	; left adjacent screen index
+	.byte $FF	; up adjacent screen index
+	.byte $01	; right adjacent screen index
+	.byte $07	; down adjacent screen index
+
+_Lev1Scr8:
+	.byte 1
+
+	.byte 18
+
+	.byte $00
+	.byte $FF
+	.byte $02
+	.byte $FF
+
+_Lev1Scr9:
+	.byte 1
+
+	.byte 19
+
+	.byte $01
+	.byte $FF
+	.byte $FF
+	.byte $FF
+
+_Lev1Scr13:
+	.byte 1
+
+	.byte 20
+
+	.byte $FF
+	.byte $FF
+	.byte $04
+	.byte $0B
+
+_Lev1Scr14:
+	.byte 1
+
+	.byte 21
+
+	.byte $03
+	.byte $FF
+	.byte $05
+	.byte $FF
+
+_Lev1Scr15:
+	.byte 1
+
+	.byte 22
+
+	.byte $04
+	.byte $FF
+	.byte $06
+	.byte $FF
+
+_Lev1Scr16:
+	.byte 1
+
+	.byte 23
+
+	.byte $05
+	.byte $FF
+	.byte $07
+	.byte $FF
+
+_Lev1Scr17:
+	.byte 1
+
+	.byte 24
+
+	.byte $06
+	.byte $00
+	.byte $FF
+	.byte $FF
+
+_Lev1Scr20:
+	.byte 1
+
+	.byte 25
+
+	.byte $FF
+	.byte $FF
+	.byte $09
+	.byte $0C
+
+_Lev1Scr21:
+	.byte 1
+
+	.byte 26
+
+	.byte $08
+	.byte $FF
+	.byte $0A
+	.byte $FF
+
+_Lev1Scr22:
+	.byte 1
+
+	.byte 27
+
+	.byte $09
+	.byte $FF
+	.byte $0B
+	.byte $FF
+
+_Lev1Scr23:
+	.byte 1
+
+	.byte 28
+
+	.byte $0A
+	.byte $03
+	.byte $FF
+	.byte $FF
+
+_Lev1Scr30:
+	.byte 1
+
+	.byte 29
+
+	.byte $FF
+	.byte $08
+	.byte $FF
+	.byte $FF
+
+; screens array
+_Lev1_ScrArr:
+	.word _Lev1Scr7
+	.word _Lev1Scr8
+	.word _Lev1Scr9
+	.word _Lev1Scr13
+	.word _Lev1Scr14
+	.word _Lev1Scr15
+	.word _Lev1Scr16
+	.word _Lev1Scr17
+	.word _Lev1Scr20
+	.word _Lev1Scr21
+	.word _Lev1Scr22
+	.word _Lev1Scr23
+	.word _Lev1Scr30
+
+
+; *** _Lev2 ***
+
+_Lev2_StartScr:	.word _Lev2Scr0
+
+_Lev2Scr0:
+	.byte 2	; chr_id
+
+	.byte 30	; screen index
+
+; adjacent screen indices ( the valid values are $00 - $FE, $FF - means no screen )
+; use the _Lev2_ScrArr array to get a screen description by adjacent screen index
+	.byte $FF	; left adjacent screen index
+	.byte $FF	; up adjacent screen index
+	.byte $01	; right adjacent screen index
+	.byte $FF	; down adjacent screen index
+
+_Lev2Scr1:
+	.byte 2
+
+	.byte 31
+
+	.byte $00
+	.byte $FF
+	.byte $02
+	.byte $FF
+
+_Lev2Scr2:
+	.byte 2
+
+	.byte 32
+
+	.byte $01
+	.byte $FF
+	.byte $03
+	.byte $FF
+
+_Lev2Scr3:
+	.byte 2
+
+	.byte 33
+
+	.byte $02
+	.byte $FF
+	.byte $04
+	.byte $FF
+
+_Lev2Scr4:
+	.byte 2
+
+	.byte 34
+
+	.byte $03
+	.byte $FF
+	.byte $05
+	.byte $FF
+
+_Lev2Scr5:
+	.byte 2
+
+	.byte 35
+
+	.byte $04
+	.byte $FF
+	.byte $06
+	.byte $FF
+
+_Lev2Scr6:
+	.byte 2
+
+	.byte 36
+
+	.byte $05
+	.byte $FF
+	.byte $07
+	.byte $FF
+
+_Lev2Scr7:
+	.byte 2
+
+	.byte 37
+
+	.byte $06
+	.byte $FF
+	.byte $08
+	.byte $FF
+
+_Lev2Scr8:
+	.byte 2
+
+	.byte 38
+
+	.byte $07
+	.byte $FF
+	.byte $09
+	.byte $FF
+
+_Lev2Scr9:
+	.byte 2
+
+	.byte 39
+
+	.byte $08
+	.byte $FF
+	.byte $0A
+	.byte $FF
+
+_Lev2Scr10:
+	.byte 2
+
+	.byte 40
+
+	.byte $09
+	.byte $FF
+	.byte $0B
+	.byte $FF
+
+_Lev2Scr11:
+	.byte 2
+
+	.byte 41
+
+	.byte $0A
+	.byte $FF
+	.byte $0C
+	.byte $FF
+
+_Lev2Scr12:
+	.byte 2
+
+	.byte 42
+
+	.byte $0B
+	.byte $FF
+	.byte $FF
+	.byte $FF
+
+; screens array
+_Lev2_ScrArr:
+	.word _Lev2Scr0
+	.word _Lev2Scr1
+	.word _Lev2Scr2
+	.word _Lev2Scr3
+	.word _Lev2Scr4
+	.word _Lev2Scr5
+	.word _Lev2Scr6
+	.word _Lev2Scr7
+	.word _Lev2Scr8
+	.word _Lev2Scr9
+	.word _Lev2Scr10
+	.word _Lev2Scr11
+	.word _Lev2Scr12
+
+_mpd_MapsArr:
+	.word _Lev0_StartScr
+	.byte bank(_Lev0_StartScr)
+	.word _Lev1_StartScr
+	.byte bank(_Lev1_StartScr)
+	.word _Lev2_StartScr
+	.byte bank(_Lev2_StartScr)
+
+_mpd_MapsScrArr:
+	.word _Lev0_ScrArr
+	.byte bank(_Lev0_ScrArr)
+	.word _Lev1_ScrArr
+	.byte bank(_Lev1_ScrArr)
+	.word _Lev2_ScrArr
+	.byte bank(_Lev2_ScrArr)
+
