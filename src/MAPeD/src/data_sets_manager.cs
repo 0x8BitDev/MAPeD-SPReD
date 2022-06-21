@@ -1085,6 +1085,30 @@ namespace MAPeD
 			
 			_sw.WriteLine( "\n; *** BASE ENTITIES ***\n" );
 			
+			// print number of entities
+			int ents_cnt = 0;
+			foreach( var key in entities_data.Keys ) 
+			{
+				( entities_data[ key ] as List< entity_data > ).ForEach( delegate( entity_data _ent )
+				{ 
+					++ents_cnt;
+				});
+			}
+			
+			_sw.WriteLine( "BaseEntities:\n\t.word " + ents_cnt + "\t\t; number of base entities" );
+
+			// print entity pointers array
+			foreach( var key in entities_data.Keys ) 
+			{
+				( entities_data[ key ] as List< entity_data > ).ForEach( delegate( entity_data _ent )
+				{ 
+					_sw.WriteLine( "\t.word " + _ent.name );
+				});
+			}
+			
+			_sw.WriteLine( "" );
+			
+			// print base entities data
 			foreach( var key in entities_data.Keys ) 
 			{ 
 				( entities_data[ key ] as List< entity_data > ).ForEach( delegate( entity_data _ent ) 
