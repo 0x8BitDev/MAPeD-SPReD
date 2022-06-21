@@ -8,6 +8,8 @@
 /*/	MPD-render v0.6
 History:
 
+v0.6
+2022.06.21 - added functions for working with base entities
 2022.06.19 - screen/entity data moved from .h file to .asm, and added interface functions
 2022.06.02 - fixed _mpd_farptr_add_offset
 2022.05.27 - fixed 'mpd_draw_screen_by_pos' and removed 'mpd_draw_screen_by_pos_offs' as unsafe and useless
@@ -141,6 +143,10 @@ void	mpd_get_start_screen( mpd_SCR_DATA* _scr_data )
 #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
 #if	FLAG_ENTITIES
+void	mpd_init_base_ent_arr()- must be called once for all maps(!)
+u16	mpd_get_base_ent_cnt()
+void	mpd_get_base_entity( mpd_SCR_DATA* _scr_data, u16 _ent_ind ) - OUT: _scr_data->inst_ent.base
+
 void	mpd_get_entity( mpd_SCR_DATA* _scr_data, u8 _ent_ind )
 bool	mpd_find_entity_by_base_id( mpd_SCR_DATA* _scr_data, u8 _id )
 bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
@@ -463,6 +469,9 @@ typedef struct
 	u8			base_props[ ENT_MAX_PROPS_CNT ];
 
 } mpd_ENTITY;
+
+mpd_PTR24	__base_ent_arr;
+
 #endif	//FLAG_ENTITIES
 
 typedef struct
@@ -575,6 +584,26 @@ void	__mpd_get_entity_by_addr( mpd_SCR_DATA* _scr_data, u16 _addr, mpd_ENTITY* _
 
 	// copy base entity
 	mpd_farmemcpyb( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, ent_offset, _ent->base, sizeof( mpd_ENTITY_BASE ) + ENT_MAX_PROPS_CNT );
+}
+
+void	mpd_init_base_ent_arr()
+{
+	mpd_get_ptr24( mpd_BaseEntities, 0, &__base_ent_arr );
+}
+
+u16	mpd_get_base_ent_cnt()
+{
+	return mpd_farpeekw( __base_ent_arr.bank, __base_ent_arr.addr, 0 );
+}
+
+void	mpd_get_base_entity( mpd_SCR_DATA* _scr_data, u16 _ent_ind )
+{
+	u16	ent_offset;
+
+	ent_offset = mpd_farpeekw( __base_ent_arr.bank, __base_ent_arr.addr, ( _ent_ind << 1 ) + 2 ) - _scr_data->scr_arr_ptr.addr;
+
+	// copy base entity
+	mpd_farmemcpyb( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, ent_offset, _scr_data->inst_ent.base, sizeof( mpd_ENTITY_BASE ) + ENT_MAX_PROPS_CNT );
 }
 
 void	mpd_get_entity( mpd_SCR_DATA* _scr_data, u8 _ent_ind )
@@ -829,7 +858,7 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 /*				*/
 /********************************/
 
-const u8 mpd_ver[] = { "M", "P", "D", "v", "0", ".", "6", 0 };
+const u8 mpd_ver[] = { "M", "P", "D", "0", "6", 0 };
 
 /* flags */
 
