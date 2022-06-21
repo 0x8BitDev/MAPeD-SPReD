@@ -1344,6 +1344,8 @@ namespace MAPeD
 				
 				_sw.WriteLine( maps_scr_arr );
 			}
+			
+			export_base_entities_ptr24( _sw );
 
 			if( m_C_writer != null )
 			{
@@ -2215,6 +2217,8 @@ namespace MAPeD
 				_sw.WriteLine( maps_arr );
 			}
 			
+			export_base_entities_ptr24( _sw );
+			
 			if( exp_data_size > 8192 )
 			{
 				MainForm.message_box( "The exported binary data size exceeds 8K ( " + exp_data_size + " B ) !", "Data Export Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
@@ -2246,6 +2250,19 @@ namespace MAPeD
 				if( _layout.get_ent_instances_cnt() > utils.CONST_MAX_ENT_INST_CNT )
 				{
 					throw new Exception( "The number of entity instances is out of range!\nThe maximum number allowed to export: " + utils.CONST_MAX_ENT_INST_CNT + "\n\n[" + _lev_pref_str + "]" );
+				}
+			}
+		}
+		
+		void export_base_entities_ptr24( StreamWriter _sw )
+		{
+			if( CheckBoxExportEntities.Checked )
+			{
+				if( m_C_writer != null )
+				{
+					m_C_writer.WriteLine( "extern u8*\tmpd_BaseEntities;" );
+					
+					_sw.WriteLine( "_mpd_BaseEntities:\n\t.word BaseEntities\n\t.byte bank(BaseEntities)" );
 				}
 			}
 		}
