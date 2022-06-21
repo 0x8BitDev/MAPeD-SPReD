@@ -1020,18 +1020,38 @@ namespace SPReD
 #region CHR data packing, splitting, optimization	
 		void BtnCHRSplit_Event(object sender, EventArgs e)
 		{
-			if( SpriteList.Items.Count > 0 )
+			if( SpriteList.SelectedIndices.Count > 0 )
 			{
-				if( message_box( "Are you sure you want to split the CHR data?\n\nWARNING: ALL sprites, including Ref ones, will have unique CHR banks!", "CHR Data Splitting", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to split the CHR data?\n\nAll sprite groups with selected sprite(s) will be splitted!\n\nWARNING: ALL sprites, including Ref ones, will have their own unique CHR banks!", "CHR Data Splitting", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
-					if( check_all_sprites_data( "CHR Data Splitting" ) )
+					if( check_selected_sprites_data( "CHR Data Splitting" ) )
 					{
-						int i;
-						int sprites_cnt = SpriteList.Items.Count;					
+						sprite_data spr;
+						sprite_data sel_spr;
 						
-						for( i = 0; i < sprites_cnt; i++ )
+						int spr_n;
+						int sel_spr_n;
+
+						int sel_spr_bank_ind;
+						
+						int sprites_cnt		= SpriteList.Items.Count;
+						int sel_sprites_cnt	= SpriteList.SelectedIndices.Count;
+						
+						for( sel_spr_n = 0; sel_spr_n < sel_sprites_cnt; sel_spr_n++ )
 						{
-							m_sprites_proc.split_CHR( SpriteList.Items[ i ] as sprite_data, CBoxMode8x16.Checked );
+							sel_spr = SpriteList.Items[ SpriteList.SelectedIndices[ sel_spr_n ] ] as sprite_data;
+							
+							sel_spr_bank_ind = sel_spr.get_CHR_data().id;
+							
+							for( spr_n = 0; spr_n < sprites_cnt; spr_n++ )
+							{
+								spr = SpriteList.Items[ spr_n ] as sprite_data;
+								
+								if( spr.is_packed( CBoxMode8x16.Checked ) && spr.get_CHR_data().id == sel_spr_bank_ind )
+								{
+									m_sprites_proc.split_CHR( spr, CBoxMode8x16.Checked );
+								}
+							}
 						}
 						
 						m_sprites_proc.rearrange_CHR_data_ids();
@@ -1058,7 +1078,7 @@ namespace SPReD
 			
 			if( SpriteList.SelectedIndices.Count > 0 )
 			{
-				if( message_box( "Are you sure you want to pack the selected sprites?\n\nWARNING: Irreversible operation for Ref sprites!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to pack the selected sprites?\n\nAlready packed sprites will be ignored!\n\nWARNING: Irreversible operation for Ref sprites!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
 				{
 					if( !check_selected_sprites_data( "CHR Data Packing" ) )
 					{
@@ -1079,7 +1099,7 @@ namespace SPReD
 					
 					int m;
 					int size;
-					int spr_1_last_CHR_cnt;					
+					int spr_1_last_CHR_cnt;
 					
 					SPReD.CHR_data_group.ECHRPackingType packing_type = ( SPReD.CHR_data_group.ECHRPackingType )( CBoxCHRPackingType.SelectedIndex );
 					

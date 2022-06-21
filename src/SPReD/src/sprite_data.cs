@@ -455,14 +455,16 @@ namespace SPReD
 			return true;
 		}
 		
+		public bool is_packed( bool _mode8x16 )
+		{
+			return get_CHR_data().get_data().Count > get_CHR_attr().Count * ( _mode8x16 ? 2:1 );
+		}
+		
 		public bool merge_CHR( sprite_data _spr, SPReD.CHR_data_group.ECHRPackingType _packing_type, bool _mode8x16 )
 		{
 			// check if data were already packed
-			if( _spr.get_CHR_data().get_data().Count > _spr.get_CHR_attr().Count * ( _mode8x16 ? 2:1 ) )
+			if( _spr.is_packed( _mode8x16 ) )
 			{
-				// already packed!
-				MainForm.message_box( "'" + _spr.name + "' - already packed!\n\nYou can pack unpacked sprites only!\n\nTry to split all the sprites data and repack it again!", "CHR Data Packing", MessageBoxButtons.OK, MessageBoxIcon.Error );
-				
 				return false;
 			}
 
@@ -498,7 +500,7 @@ namespace SPReD
 		
 		public bool split_CHR( bool _mode8x16 )
 		{
-			// creating a new bank and transfer all sprite data from the common bank to it
+			// create a new bank and transfer all sprite data from the common bank to it
 			CHR_data_group new_chr_data = new CHR_data_group();
 			
 			CHR_data_attr attr;
