@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 29.08.2018
  * Time: 15:20
  */
@@ -59,6 +59,7 @@ namespace MAPeD
 			this.RBtnTilesDirRows = new System.Windows.Forms.RadioButton();
 			this.RBtnTilesDirColumns = new System.Windows.Forms.RadioButton();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.CBoxEntSortingType = new System.Windows.Forms.ComboBox();
 			this.groupBoxEntityCoordinates = new System.Windows.Forms.GroupBox();
 			this.RBtnEntityCoordMap = new System.Windows.Forms.RadioButton();
 			this.RBtnEntityCoordScreen = new System.Windows.Forms.RadioButton();
@@ -93,7 +94,7 @@ namespace MAPeD
 			this.groupBox1.Location = new System.Drawing.Point(167, 14);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(111, 65);
-			this.groupBox1.TabIndex = 0;
+			this.groupBox1.TabIndex = 17;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Type";
 			// 
@@ -102,7 +103,7 @@ namespace MAPeD
 			this.RBtnTypeMonochrome.Location = new System.Drawing.Point(9, 40);
 			this.RBtnTypeMonochrome.Name = "RBtnTypeMonochrome";
 			this.RBtnTypeMonochrome.Size = new System.Drawing.Size(90, 15);
-			this.RBtnTypeMonochrome.TabIndex = 2;
+			this.RBtnTypeMonochrome.TabIndex = 19;
 			this.RBtnTypeMonochrome.TabStop = true;
 			this.RBtnTypeMonochrome.Text = "Monochrome";
 			this.RBtnTypeMonochrome.UseVisualStyleBackColor = true;
@@ -113,7 +114,7 @@ namespace MAPeD
 			this.RBtnTypeColor.Location = new System.Drawing.Point(9, 20);
 			this.RBtnTypeColor.Name = "RBtnTypeColor";
 			this.RBtnTypeColor.Size = new System.Drawing.Size(90, 15);
-			this.RBtnTypeColor.TabIndex = 1;
+			this.RBtnTypeColor.TabIndex = 18;
 			this.RBtnTypeColor.TabStop = true;
 			this.RBtnTypeColor.Text = "Color";
 			this.RBtnTypeColor.UseVisualStyleBackColor = true;
@@ -127,7 +128,7 @@ namespace MAPeD
 			this.groupBox2.Location = new System.Drawing.Point(8, 14);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(153, 65);
-			this.groupBox2.TabIndex = 3;
+			this.groupBox2.TabIndex = 0;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Tiles";
 			// 
@@ -138,7 +139,7 @@ namespace MAPeD
 			this.CheckBoxGFXDithering.Location = new System.Drawing.Point(72, 40);
 			this.CheckBoxGFXDithering.Name = "CheckBoxGFXDithering";
 			this.CheckBoxGFXDithering.Size = new System.Drawing.Size(76, 19);
-			this.CheckBoxGFXDithering.TabIndex = 6;
+			this.CheckBoxGFXDithering.TabIndex = 4;
 			this.CheckBoxGFXDithering.Text = "Dithering";
 			this.CheckBoxGFXDithering.UseVisualStyleBackColor = true;
 			this.CheckBoxGFXDithering.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -148,7 +149,7 @@ namespace MAPeD
 			this.CheckBoxRLE.Location = new System.Drawing.Point(72, 20);
 			this.CheckBoxRLE.Name = "CheckBoxRLE";
 			this.CheckBoxRLE.Size = new System.Drawing.Size(48, 19);
-			this.CheckBoxRLE.TabIndex = 6;
+			this.CheckBoxRLE.TabIndex = 3;
 			this.CheckBoxRLE.Text = "RLE";
 			this.CheckBoxRLE.UseVisualStyleBackColor = true;
 			this.CheckBoxRLE.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -159,7 +160,7 @@ namespace MAPeD
 			this.RBtnTiles4x4.Location = new System.Drawing.Point(14, 40);
 			this.RBtnTiles4x4.Name = "RBtnTiles4x4";
 			this.RBtnTiles4x4.Size = new System.Drawing.Size(42, 15);
-			this.RBtnTiles4x4.TabIndex = 5;
+			this.RBtnTiles4x4.TabIndex = 2;
 			this.RBtnTiles4x4.Text = "4x4";
 			this.RBtnTiles4x4.UseVisualStyleBackColor = true;
 			this.RBtnTiles4x4.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -170,7 +171,7 @@ namespace MAPeD
 			this.RBtnTiles2x2.Location = new System.Drawing.Point(14, 20);
 			this.RBtnTiles2x2.Name = "RBtnTiles2x2";
 			this.RBtnTiles2x2.Size = new System.Drawing.Size(42, 15);
-			this.RBtnTiles2x2.TabIndex = 4;
+			this.RBtnTiles2x2.TabIndex = 1;
 			this.RBtnTiles2x2.TabStop = true;
 			this.RBtnTiles2x2.Text = "2x2";
 			this.RBtnTiles2x2.UseVisualStyleBackColor = true;
@@ -182,7 +183,7 @@ namespace MAPeD
 			this.BtnOk.Location = new System.Drawing.Point(408, 377);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 21;
+			this.BtnOk.TabIndex = 36;
 			this.BtnOk.Text = "Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			this.BtnOk.Click += new System.EventHandler(this.event_ok);
@@ -193,7 +194,7 @@ namespace MAPeD
 			this.BtnCancel.Location = new System.Drawing.Point(489, 377);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
-			this.BtnCancel.TabIndex = 22;
+			this.BtnCancel.TabIndex = 37;
 			this.BtnCancel.Text = "Cancel";
 			this.BtnCancel.UseVisualStyleBackColor = true;
 			this.BtnCancel.Click += new System.EventHandler(this.event_cancel);
@@ -205,7 +206,7 @@ namespace MAPeD
 			this.GrpBoxExtraOutput.Location = new System.Drawing.Point(8, 248);
 			this.GrpBoxExtraOutput.Name = "GrpBoxExtraOutput";
 			this.GrpBoxExtraOutput.Size = new System.Drawing.Size(132, 93);
-			this.GrpBoxExtraOutput.TabIndex = 7;
+			this.GrpBoxExtraOutput.TabIndex = 14;
 			this.GrpBoxExtraOutput.TabStop = false;
 			this.GrpBoxExtraOutput.Text = "Extra Output";
 			// 
@@ -214,7 +215,7 @@ namespace MAPeD
 			this.CheckBoxRenderTilesPNG.Location = new System.Drawing.Point(14, 41);
 			this.CheckBoxRenderTilesPNG.Name = "CheckBoxRenderTilesPNG";
 			this.CheckBoxRenderTilesPNG.Size = new System.Drawing.Size(86, 24);
-			this.CheckBoxRenderTilesPNG.TabIndex = 9;
+			this.CheckBoxRenderTilesPNG.TabIndex = 16;
 			this.CheckBoxRenderTilesPNG.Text = "Tiles .png";
 			this.CheckBoxRenderTilesPNG.UseVisualStyleBackColor = true;
 			// 
@@ -223,7 +224,7 @@ namespace MAPeD
 			this.CheckBoxRenderLevelPNG.Location = new System.Drawing.Point(14, 19);
 			this.CheckBoxRenderLevelPNG.Name = "CheckBoxRenderLevelPNG";
 			this.CheckBoxRenderLevelPNG.Size = new System.Drawing.Size(86, 24);
-			this.CheckBoxRenderLevelPNG.TabIndex = 8;
+			this.CheckBoxRenderLevelPNG.TabIndex = 15;
 			this.CheckBoxRenderLevelPNG.Text = "Level .png";
 			this.CheckBoxRenderLevelPNG.UseVisualStyleBackColor = true;
 			// 
@@ -235,7 +236,7 @@ namespace MAPeD
 			this.groupBoxColorConversion.Location = new System.Drawing.Point(146, 271);
 			this.groupBoxColorConversion.Name = "groupBoxColorConversion";
 			this.groupBoxColorConversion.Size = new System.Drawing.Size(132, 70);
-			this.groupBoxColorConversion.TabIndex = 10;
+			this.groupBoxColorConversion.TabIndex = 31;
 			this.groupBoxColorConversion.TabStop = false;
 			this.groupBoxColorConversion.Text = "Color Conversion";
 			// 
@@ -249,7 +250,7 @@ namespace MAPeD
 			this.CBoxColorConversionModes.Location = new System.Drawing.Point(11, 42);
 			this.CBoxColorConversionModes.Name = "CBoxColorConversionModes";
 			this.CBoxColorConversionModes.Size = new System.Drawing.Size(111, 21);
-			this.CBoxColorConversionModes.TabIndex = 11;
+			this.CBoxColorConversionModes.TabIndex = 34;
 			// 
 			// NumericUpDownInkFactor
 			// 
@@ -266,7 +267,7 @@ namespace MAPeD
 									0});
 			this.NumericUpDownInkFactor.Name = "NumericUpDownInkFactor";
 			this.NumericUpDownInkFactor.Size = new System.Drawing.Size(48, 20);
-			this.NumericUpDownInkFactor.TabIndex = 13;
+			this.NumericUpDownInkFactor.TabIndex = 33;
 			this.NumericUpDownInkFactor.Value = new decimal(new int[] {
 									3,
 									0,
@@ -278,7 +279,7 @@ namespace MAPeD
 			this.label2.Location = new System.Drawing.Point(11, 21);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(67, 17);
-			this.label2.TabIndex = 12;
+			this.label2.TabIndex = 32;
 			this.label2.Text = "Ink Factor:";
 			// 
 			// RichTextBoxExportDesc
@@ -289,7 +290,7 @@ namespace MAPeD
 			this.RichTextBoxExportDesc.ReadOnly = true;
 			this.RichTextBoxExportDesc.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
 			this.RichTextBoxExportDesc.Size = new System.Drawing.Size(265, 348);
-			this.RichTextBoxExportDesc.TabIndex = 20;
+			this.RichTextBoxExportDesc.TabIndex = 35;
 			this.RichTextBoxExportDesc.Text = "";
 			// 
 			// RBtnPropPerBlock
@@ -298,7 +299,7 @@ namespace MAPeD
 			this.RBtnPropPerBlock.Location = new System.Drawing.Point(14, 16);
 			this.RBtnPropPerBlock.Name = "RBtnPropPerBlock";
 			this.RBtnPropPerBlock.Size = new System.Drawing.Size(61, 17);
-			this.RBtnPropPerBlock.TabIndex = 23;
+			this.RBtnPropPerBlock.TabIndex = 12;
 			this.RBtnPropPerBlock.TabStop = true;
 			this.RBtnPropPerBlock.Text = "Block";
 			this.RBtnPropPerBlock.UseVisualStyleBackColor = true;
@@ -311,7 +312,7 @@ namespace MAPeD
 			this.groupBox7.Location = new System.Drawing.Point(8, 201);
 			this.groupBox7.Name = "groupBox7";
 			this.groupBox7.Size = new System.Drawing.Size(132, 41);
-			this.groupBox7.TabIndex = 27;
+			this.groupBox7.TabIndex = 11;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "Property Id per";
 			// 
@@ -320,7 +321,7 @@ namespace MAPeD
 			this.RBtnPropPerCHR.Location = new System.Drawing.Point(72, 16);
 			this.RBtnPropPerCHR.Name = "RBtnPropPerCHR";
 			this.RBtnPropPerCHR.Size = new System.Drawing.Size(54, 17);
-			this.RBtnPropPerCHR.TabIndex = 24;
+			this.RBtnPropPerCHR.TabIndex = 13;
 			this.RBtnPropPerCHR.Text = "CHR";
 			this.RBtnPropPerCHR.UseVisualStyleBackColor = true;
 			this.RBtnPropPerCHR.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -332,7 +333,7 @@ namespace MAPeD
 			this.groupBox4.Location = new System.Drawing.Point(8, 85);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(132, 41);
-			this.groupBox4.TabIndex = 23;
+			this.groupBox4.TabIndex = 5;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Data Order";
 			// 
@@ -360,15 +361,30 @@ namespace MAPeD
 			// 
 			// groupBox8
 			// 
+			this.groupBox8.Controls.Add(this.CBoxEntSortingType);
 			this.groupBox8.Controls.Add(this.groupBoxEntityCoordinates);
 			this.groupBox8.Controls.Add(this.CheckBoxExportEntities);
 			this.groupBox8.Location = new System.Drawing.Point(146, 188);
 			this.groupBox8.Name = "groupBox8";
 			this.groupBox8.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.groupBox8.Size = new System.Drawing.Size(132, 77);
-			this.groupBox8.TabIndex = 26;
+			this.groupBox8.TabIndex = 25;
 			this.groupBox8.TabStop = false;
 			this.groupBox8.Text = "Entities";
+			// 
+			// CBoxEntSortingType
+			// 
+			this.CBoxEntSortingType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.CBoxEntSortingType.FormattingEnabled = true;
+			this.CBoxEntSortingType.Items.AddRange(new object[] {
+									"SORT",
+									"L->R",
+									"B->T"});
+			this.CBoxEntSortingType.Location = new System.Drawing.Point(70, 12);
+			this.CBoxEntSortingType.Name = "CBoxEntSortingType";
+			this.CBoxEntSortingType.Size = new System.Drawing.Size(55, 21);
+			this.CBoxEntSortingType.TabIndex = 27;
+			this.CBoxEntSortingType.SelectedIndexChanged += new System.EventHandler(this.ParamChanged_Event);
 			// 
 			// groupBoxEntityCoordinates
 			// 
@@ -377,7 +393,7 @@ namespace MAPeD
 			this.groupBoxEntityCoordinates.Location = new System.Drawing.Point(7, 33);
 			this.groupBoxEntityCoordinates.Name = "groupBoxEntityCoordinates";
 			this.groupBoxEntityCoordinates.Size = new System.Drawing.Size(118, 38);
-			this.groupBoxEntityCoordinates.TabIndex = 19;
+			this.groupBoxEntityCoordinates.TabIndex = 28;
 			this.groupBoxEntityCoordinates.TabStop = false;
 			this.groupBoxEntityCoordinates.Text = "Coordinates";
 			// 
@@ -386,7 +402,7 @@ namespace MAPeD
 			this.RBtnEntityCoordMap.Location = new System.Drawing.Point(68, 13);
 			this.RBtnEntityCoordMap.Name = "RBtnEntityCoordMap";
 			this.RBtnEntityCoordMap.Size = new System.Drawing.Size(47, 20);
-			this.RBtnEntityCoordMap.TabIndex = 21;
+			this.RBtnEntityCoordMap.TabIndex = 30;
 			this.RBtnEntityCoordMap.Text = "Map";
 			this.RBtnEntityCoordMap.UseVisualStyleBackColor = true;
 			this.RBtnEntityCoordMap.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -397,7 +413,7 @@ namespace MAPeD
 			this.RBtnEntityCoordScreen.Location = new System.Drawing.Point(9, 13);
 			this.RBtnEntityCoordScreen.Name = "RBtnEntityCoordScreen";
 			this.RBtnEntityCoordScreen.Size = new System.Drawing.Size(60, 20);
-			this.RBtnEntityCoordScreen.TabIndex = 20;
+			this.RBtnEntityCoordScreen.TabIndex = 29;
 			this.RBtnEntityCoordScreen.TabStop = true;
 			this.RBtnEntityCoordScreen.Text = "Screen";
 			this.RBtnEntityCoordScreen.UseVisualStyleBackColor = true;
@@ -409,8 +425,8 @@ namespace MAPeD
 			this.CheckBoxExportEntities.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.CheckBoxExportEntities.Location = new System.Drawing.Point(14, 15);
 			this.CheckBoxExportEntities.Name = "CheckBoxExportEntities";
-			this.CheckBoxExportEntities.Size = new System.Drawing.Size(92, 18);
-			this.CheckBoxExportEntities.TabIndex = 18;
+			this.CheckBoxExportEntities.Size = new System.Drawing.Size(62, 18);
+			this.CheckBoxExportEntities.TabIndex = 26;
 			this.CheckBoxExportEntities.Text = "Export";
 			this.CheckBoxExportEntities.UseVisualStyleBackColor = true;
 			this.CheckBoxExportEntities.CheckedChanged += new System.EventHandler(this.CheckBoxExportEntitiesChanged_Event);
@@ -422,7 +438,7 @@ namespace MAPeD
 			this.groupBox9.Location = new System.Drawing.Point(8, 132);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(132, 63);
-			this.groupBox9.TabIndex = 25;
+			this.groupBox9.TabIndex = 8;
 			this.groupBox9.TabStop = false;
 			this.groupBox9.Text = "Mode";
 			// 
@@ -431,7 +447,7 @@ namespace MAPeD
 			this.RBtnModeMultidirScroll.Location = new System.Drawing.Point(14, 16);
 			this.RBtnModeMultidirScroll.Name = "RBtnModeMultidirScroll";
 			this.RBtnModeMultidirScroll.Size = new System.Drawing.Size(107, 17);
-			this.RBtnModeMultidirScroll.TabIndex = 14;
+			this.RBtnModeMultidirScroll.TabIndex = 9;
 			this.RBtnModeMultidirScroll.Text = "Multidir scrolling";
 			this.RBtnModeMultidirScroll.UseVisualStyleBackColor = true;
 			this.RBtnModeMultidirScroll.CheckedChanged += new System.EventHandler(this.RBtnModeMultidirScrollChanged_Event);
@@ -441,7 +457,7 @@ namespace MAPeD
 			this.RBtnModeBidirScroll.Location = new System.Drawing.Point(14, 35);
 			this.RBtnModeBidirScroll.Name = "RBtnModeBidirScroll";
 			this.RBtnModeBidirScroll.Size = new System.Drawing.Size(107, 17);
-			this.RBtnModeBidirScroll.TabIndex = 15;
+			this.RBtnModeBidirScroll.TabIndex = 10;
 			this.RBtnModeBidirScroll.Text = "Bidir scrolling";
 			this.RBtnModeBidirScroll.UseVisualStyleBackColor = true;
 			this.RBtnModeBidirScroll.CheckedChanged += new System.EventHandler(this.RBtnModeScreenToScreenChanged_Event);
@@ -455,7 +471,7 @@ namespace MAPeD
 			this.groupBoxLayout.Location = new System.Drawing.Point(146, 85);
 			this.groupBoxLayout.Name = "groupBoxLayout";
 			this.groupBoxLayout.Size = new System.Drawing.Size(132, 97);
-			this.groupBoxLayout.TabIndex = 24;
+			this.groupBoxLayout.TabIndex = 20;
 			this.groupBoxLayout.TabStop = false;
 			this.groupBoxLayout.Text = "Layout";
 			// 
@@ -465,7 +481,7 @@ namespace MAPeD
 			this.RBtnLayoutMatrix.Location = new System.Drawing.Point(14, 54);
 			this.RBtnLayoutMatrix.Name = "RBtnLayoutMatrix";
 			this.RBtnLayoutMatrix.Size = new System.Drawing.Size(100, 17);
-			this.RBtnLayoutMatrix.TabIndex = 11;
+			this.RBtnLayoutMatrix.TabIndex = 23;
 			this.RBtnLayoutMatrix.TabStop = true;
 			this.RBtnLayoutMatrix.Text = "Layout matrix";
 			this.RBtnLayoutMatrix.UseVisualStyleBackColor = true;
@@ -476,7 +492,7 @@ namespace MAPeD
 			this.RBtnLayoutAdjacentScreenIndices.Location = new System.Drawing.Point(14, 35);
 			this.RBtnLayoutAdjacentScreenIndices.Name = "RBtnLayoutAdjacentScreenIndices";
 			this.RBtnLayoutAdjacentScreenIndices.Size = new System.Drawing.Size(110, 17);
-			this.RBtnLayoutAdjacentScreenIndices.TabIndex = 10;
+			this.RBtnLayoutAdjacentScreenIndices.TabIndex = 22;
 			this.RBtnLayoutAdjacentScreenIndices.Text = "Adjacent scr inds";
 			this.RBtnLayoutAdjacentScreenIndices.UseVisualStyleBackColor = true;
 			this.RBtnLayoutAdjacentScreenIndices.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -486,7 +502,7 @@ namespace MAPeD
 			this.RBtnLayoutAdjacentScreens.Location = new System.Drawing.Point(14, 16);
 			this.RBtnLayoutAdjacentScreens.Name = "RBtnLayoutAdjacentScreens";
 			this.RBtnLayoutAdjacentScreens.Size = new System.Drawing.Size(110, 17);
-			this.RBtnLayoutAdjacentScreens.TabIndex = 9;
+			this.RBtnLayoutAdjacentScreens.TabIndex = 21;
 			this.RBtnLayoutAdjacentScreens.Text = "Adjacent screens";
 			this.RBtnLayoutAdjacentScreens.UseVisualStyleBackColor = true;
 			this.RBtnLayoutAdjacentScreens.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -498,7 +514,7 @@ namespace MAPeD
 			this.CheckBoxExportMarks.Location = new System.Drawing.Point(14, 75);
 			this.CheckBoxExportMarks.Name = "CheckBoxExportMarks";
 			this.CheckBoxExportMarks.Size = new System.Drawing.Size(92, 18);
-			this.CheckBoxExportMarks.TabIndex = 12;
+			this.CheckBoxExportMarks.TabIndex = 24;
 			this.CheckBoxExportMarks.Text = "Export marks";
 			this.CheckBoxExportMarks.UseVisualStyleBackColor = true;
 			this.CheckBoxExportMarks.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -551,6 +567,7 @@ namespace MAPeD
 			this.groupBox5.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.ComboBox CBoxEntSortingType;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.CheckBox CheckBoxExportMarks;
 		private System.Windows.Forms.RadioButton RBtnLayoutAdjacentScreens;

@@ -105,6 +105,8 @@ namespace MAPeD
 			
 			// 64x32 by default, cause its more suitable for scrolling maps
 			ComboBoxBAT.SelectedIndex = 1;
+			
+			CBoxEntSortingType.SelectedIndex = 0;
 		}
 
 		void CheckBoxExportEntitiesChanged_Event(object sender, EventArgs e)
@@ -257,7 +259,10 @@ namespace MAPeD
 				else
 				{
 					RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_COORDS_MAP;
-				}				
+				}
+				
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_SORTING;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_SORT_TYPES[ CBoxEntSortingType.SelectedIndex ];
 			}
 			else
 			{
@@ -429,7 +434,7 @@ namespace MAPeD
 			
 			_sw.WriteLine( comment + "\t- layout: " + ( RBtnLayoutAdjacentScreens.Checked ? "adjacent screens":RBtnLayoutAdjacentScreenIndices.Checked ? "adjacent screen indices":"matrix" ) + ( CheckBoxExportMarks.Checked ? " (marks)":" (no marks)" ) );
 			
-			_sw.WriteLine( comment + "\t- " + ( CheckBoxExportEntities.Checked ? "entities " + ( RBtnEntityCoordScreen.Checked ? "(screen coordinates)":"(map coordinates)" ):"no entities" ) );
+			_sw.WriteLine( comment + "\t- " + ( CheckBoxExportEntities.Checked ? "entities " + ( RBtnEntityCoordScreen.Checked ? "(screen coordinates)":"(map coordinates)" ) + ( CBoxEntSortingType.SelectedIndex == 0 ? "/no sorting":( CBoxEntSortingType.SelectedIndex == 1 ) ? "/left-right":"/bottom-top" ):"no entities" ) );
 			
 			_sw.WriteLine( "\n" );
 		}
@@ -456,6 +461,9 @@ namespace MAPeD
 				_sw.WriteLine( c_def + "FLAG_ENTITIES                 " + c_def_eq + ( CheckBoxExportEntities.Checked ? "1":"0" ) );
 				_sw.WriteLine( c_def + "FLAG_ENTITY_SCR_COORDS        " + c_def_eq + ( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordScreen.Checked ? "1":"0" ):"0" ) );
 				_sw.WriteLine( c_def + "FLAG_ENTITY_MAP_COORS         " + c_def_eq + ( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordMap.Checked ? "1":"0" ):"0" ) );
+				_sw.WriteLine( c_def + "FLAG_ENTITY_SORTING_OFF       " + c_def_eq + ( CheckBoxExportEntities.Checked ? ( CBoxEntSortingType.SelectedIndex == 0 ? "1":"0" ):"0" ) );
+				_sw.WriteLine( c_def + "FLAG_ENTITY_SORTING_LT_RT     " + c_def_eq + ( CheckBoxExportEntities.Checked ? ( CBoxEntSortingType.SelectedIndex == 1 ? "1":"0" ):"0" ) );
+				_sw.WriteLine( c_def + "FLAG_ENTITY_SORTING_BTM_TP    " + c_def_eq + ( CheckBoxExportEntities.Checked ? ( CBoxEntSortingType.SelectedIndex == 2 ? "1":"0" ):"0" ) );
 				_sw.WriteLine( c_def + "FLAG_LAYOUT_ADJ_SCR           " + c_def_eq + ( RBtnLayoutAdjacentScreens.Checked ? "1":"0" ) );
 				_sw.WriteLine( c_def + "FLAG_LAYOUT_ADJ_SCR_INDS      " + c_def_eq + ( RBtnLayoutAdjacentScreenIndices.Checked ? "1":"0" ) );
 				_sw.WriteLine( c_def + "FLAG_LAYOUT_MATRIX            " + c_def_eq + ( RBtnLayoutMatrix.Checked ? "1":"0" ) );
@@ -473,7 +481,10 @@ namespace MAPeD
 				                                              		( CheckBoxExportEntities.Checked ? ( RBtnEntityCoordScreen.Checked ? 512:1024 ):0 ) |
 				                                              		( RBtnLayoutAdjacentScreens.Checked ? 2048:RBtnLayoutAdjacentScreenIndices.Checked ? 4096:8192 ) |
 				                                              		( CheckBoxExportMarks.Checked ? 16384:0 ) |
-				                                              		( RBtnPropPerBlock.Checked ? 32768:65536 ) ) );
+				                                              		( RBtnPropPerBlock.Checked ? 32768:65536 ) |
+																	( CBoxEntSortingType.SelectedIndex == 0 ? 131072:0 ) |
+																	( CBoxEntSortingType.SelectedIndex == 1 ? 262144:0 ) |
+																	( CBoxEntSortingType.SelectedIndex == 2 ? 524288:0 ) ) );
 				_sw.WriteLine( "\n" + c_comment + " data flags:" );
 				_sw.WriteLine( c_def + "MAP_FLAG_TILES2X2                 " + c_def_eq + utils.hex( c_hex_pref, 1 ) );
 				_sw.WriteLine( c_def + "MAP_FLAG_TILES4X4                 " + c_def_eq + utils.hex( c_hex_pref, 2 ) );
@@ -492,6 +503,9 @@ namespace MAPeD
 				_sw.WriteLine( c_def + "MAP_FLAG_MARKS                    " + c_def_eq + utils.hex( c_hex_pref, 16384 ) );
 				_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_BLOCK        " + c_def_eq + utils.hex( c_hex_pref, 32768 ) );
 				_sw.WriteLine( c_def + "MAP_FLAG_PROP_ID_PER_CHR          " + c_def_eq + utils.hex( c_hex_pref, 65536 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_ENT_SORTING_OFF          " + c_def_eq + utils.hex( c_hex_pref, 131072 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_ENT_SORTING_LT_RT        " + c_def_eq + utils.hex( c_hex_pref, 262144 ) );
+				_sw.WriteLine( c_def + "MAP_FLAG_ENT_SORTING_BTM_TOP      " + c_def_eq + utils.hex( c_hex_pref, 524288 ) );
 			}
 			
 			_sw.WriteLine( "\n" + c_def + "MAPS_CNT\t" + c_def_eq + m_data_mngr.layouts_data_cnt );
@@ -1217,7 +1231,7 @@ namespace MAPeD
 
 										_sw.WriteLine( level_prefix_str + "_StartScr:\t.byte " + start_scr_ind + "\n" );
 										
-										level_data.export_asm( _sw, level_prefix_str, null, ".byte", ".word", ".word", "$", false, false, false, false, ( m_C_writer != null ? false:true ) );
+										level_data.export_asm( _sw, level_prefix_str, null, ".byte", ".word", ".word", "$", false, false, false, false, ( layout_screen_data.EEntSortType )CBoxEntSortingType.SelectedIndex, ( m_C_writer != null ? false:true ) );
 									}
 									else
 									{
@@ -1270,7 +1284,7 @@ namespace MAPeD
 								
 								if( CheckBoxExportEntities.Checked )
 								{
-									props_cnt = scr_data.export_entities_asm( _sw, ref ents_cnt, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
+									props_cnt = scr_data.export_entities_asm( _sw, ref ents_cnt, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, ( layout_screen_data.EEntSortType )CBoxEntSortingType.SelectedIndex, enable_comments );
 									
 									if( max_props_cnt < props_cnt )
 									{
@@ -1316,7 +1330,7 @@ namespace MAPeD
 					m_C_writer.WriteLine( "};" );
 				}
 				
-				props_cnt = m_data_mngr.export_entity_asm( _sw, ".byte", "$" );
+				props_cnt = m_data_mngr.export_base_entity_asm( _sw, ".byte", "$" );
 				
 				if( max_props_cnt < props_cnt )
 				{
@@ -2041,7 +2055,7 @@ namespace MAPeD
 				_sw.WriteLine( get_exp_prefix() + level_prefix_str + "_TilesCnt\t= " + ( ( RBtnTiles2x2.Checked ? map_blocks_arr:map_tiles_arr ).Max() + 1 ) + "\t; map tiles count" );				
 				_sw.WriteLine( get_exp_prefix() + level_prefix_str + "_StartScr\t= " + start_scr_ind + "\t; start screen" );
 				
-				props_cnt = level_data.export_asm( _sw, ( get_exp_prefix() + level_prefix_str ), null, ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked, ( m_C_writer != null ? false:true ) );
+				props_cnt = level_data.export_asm( _sw, ( get_exp_prefix() + level_prefix_str ), null, ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked, ( layout_screen_data.EEntSortType )CBoxEntSortingType.SelectedIndex, ( m_C_writer != null ? false:true ) );
 				
 				if( max_props_cnt < props_cnt )
 				{
@@ -2055,7 +2069,7 @@ namespace MAPeD
 			
 			if( CheckBoxExportEntities.Checked )
 			{
-				props_cnt = m_data_mngr.export_entity_asm( _sw, ".byte", "$" );
+				props_cnt = m_data_mngr.export_base_entity_asm( _sw, ".byte", "$" );
 				
 				if( max_props_cnt < props_cnt )
 				{

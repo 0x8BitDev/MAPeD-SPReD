@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+22.06.2022 - Added sorting option for entities (Left->Right, Bottom->Top) to the data export dialog
 18.05.2022 - Added dialog for reordering CHR banks (Main Menu->CHR Banks->Reorder Banks)
 06.05.2022 - Added deletion of multiple selected screens
 29.04.2022 - Optimized rendering of maps; Now it's really fast

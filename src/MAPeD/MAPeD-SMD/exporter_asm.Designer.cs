@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 13.09.2018
  * Time: 17:59
  */
@@ -54,6 +54,7 @@ namespace MAPeD
 			this.RBtnPropPerCHR = new System.Windows.Forms.RadioButton();
 			this.RBtnPropPerBlock = new System.Windows.Forms.RadioButton();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.CBoxEntSortingType = new System.Windows.Forms.ComboBox();
 			this.groupBoxEntityCoordinates = new System.Windows.Forms.GroupBox();
 			this.RBtnEntityCoordMap = new System.Windows.Forms.RadioButton();
 			this.RBtnEntityCoordScreen = new System.Windows.Forms.RadioButton();
@@ -86,7 +87,7 @@ namespace MAPeD
 			this.BtnCancel.Location = new System.Drawing.Point(516, 302);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
-			this.BtnCancel.TabIndex = 37;
+			this.BtnCancel.TabIndex = 34;
 			this.BtnCancel.Text = "Cancel";
 			this.BtnCancel.UseVisualStyleBackColor = true;
 			this.BtnCancel.Click += new System.EventHandler(this.event_cancel);
@@ -97,7 +98,7 @@ namespace MAPeD
 			this.BtnOk.Location = new System.Drawing.Point(435, 302);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 36;
+			this.BtnOk.TabIndex = 33;
 			this.BtnOk.Text = "Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			this.BtnOk.Click += new System.EventHandler(this.event_ok);
@@ -202,7 +203,7 @@ namespace MAPeD
 			this.CheckBoxExportSGDKData.Location = new System.Drawing.Point(14, 255);
 			this.CheckBoxExportSGDKData.Name = "CheckBoxExportSGDKData";
 			this.CheckBoxExportSGDKData.Size = new System.Drawing.Size(125, 17);
-			this.CheckBoxExportSGDKData.TabIndex = 25;
+			this.CheckBoxExportSGDKData.TabIndex = 26;
 			this.CheckBoxExportSGDKData.Text = "Export SGDK (.h, .s)";
 			this.CheckBoxExportSGDKData.UseVisualStyleBackColor = true;
 			this.CheckBoxExportSGDKData.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -216,7 +217,7 @@ namespace MAPeD
 			this.groupBox6.Location = new System.Drawing.Point(145, 196);
 			this.groupBox6.Name = "groupBox6";
 			this.groupBox6.Size = new System.Drawing.Size(152, 76);
-			this.groupBox6.TabIndex = 26;
+			this.groupBox6.TabIndex = 27;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Exrtra";
 			// 
@@ -245,7 +246,7 @@ namespace MAPeD
 			this.ComboBoxInFrontOfSpritesProp.Location = new System.Drawing.Point(83, 44);
 			this.ComboBoxInFrontOfSpritesProp.Name = "ComboBoxInFrontOfSpritesProp";
 			this.ComboBoxInFrontOfSpritesProp.Size = new System.Drawing.Size(57, 21);
-			this.ComboBoxInFrontOfSpritesProp.TabIndex = 29;
+			this.ComboBoxInFrontOfSpritesProp.TabIndex = 31;
 			// 
 			// NumericUpDownCHROffset
 			// 
@@ -257,14 +258,14 @@ namespace MAPeD
 									0});
 			this.NumericUpDownCHROffset.Name = "NumericUpDownCHROffset";
 			this.NumericUpDownCHROffset.Size = new System.Drawing.Size(57, 20);
-			this.NumericUpDownCHROffset.TabIndex = 28;
+			this.NumericUpDownCHROffset.TabIndex = 29;
 			// 
 			// label2
 			// 
 			this.label2.Location = new System.Drawing.Point(16, 20);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(77, 17);
-			this.label2.TabIndex = 27;
+			this.label2.TabIndex = 28;
 			this.label2.Text = "CHR Offset:";
 			// 
 			// label1
@@ -272,7 +273,7 @@ namespace MAPeD
 			this.label1.Location = new System.Drawing.Point(16, 47);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(77, 17);
-			this.label1.TabIndex = 27;
+			this.label1.TabIndex = 30;
 			this.label1.Text = "Priority Id:";
 			// 
 			// groupBox7
@@ -282,7 +283,7 @@ namespace MAPeD
 			this.groupBox7.Location = new System.Drawing.Point(7, 196);
 			this.groupBox7.Name = "groupBox7";
 			this.groupBox7.Size = new System.Drawing.Size(132, 45);
-			this.groupBox7.TabIndex = 22;
+			this.groupBox7.TabIndex = 23;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "Property Id per";
 			// 
@@ -291,7 +292,7 @@ namespace MAPeD
 			this.RBtnPropPerCHR.Location = new System.Drawing.Point(67, 16);
 			this.RBtnPropPerCHR.Name = "RBtnPropPerCHR";
 			this.RBtnPropPerCHR.Size = new System.Drawing.Size(54, 17);
-			this.RBtnPropPerCHR.TabIndex = 24;
+			this.RBtnPropPerCHR.TabIndex = 25;
 			this.RBtnPropPerCHR.Text = "CHR";
 			this.RBtnPropPerCHR.UseVisualStyleBackColor = true;
 			this.RBtnPropPerCHR.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -302,7 +303,7 @@ namespace MAPeD
 			this.RBtnPropPerBlock.Location = new System.Drawing.Point(14, 16);
 			this.RBtnPropPerBlock.Name = "RBtnPropPerBlock";
 			this.RBtnPropPerBlock.Size = new System.Drawing.Size(61, 17);
-			this.RBtnPropPerBlock.TabIndex = 23;
+			this.RBtnPropPerBlock.TabIndex = 24;
 			this.RBtnPropPerBlock.TabStop = true;
 			this.RBtnPropPerBlock.Text = "Block";
 			this.RBtnPropPerBlock.UseVisualStyleBackColor = true;
@@ -310,6 +311,7 @@ namespace MAPeD
 			// 
 			// groupBox5
 			// 
+			this.groupBox5.Controls.Add(this.CBoxEntSortingType);
 			this.groupBox5.Controls.Add(this.groupBoxEntityCoordinates);
 			this.groupBox5.Controls.Add(this.CheckBoxExportEntities);
 			this.groupBox5.Location = new System.Drawing.Point(165, 115);
@@ -320,6 +322,20 @@ namespace MAPeD
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Entities";
 			// 
+			// CBoxEntSortingType
+			// 
+			this.CBoxEntSortingType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.CBoxEntSortingType.FormattingEnabled = true;
+			this.CBoxEntSortingType.Items.AddRange(new object[] {
+									"SORT",
+									"L->R",
+									"B->T"});
+			this.CBoxEntSortingType.Location = new System.Drawing.Point(69, 13);
+			this.CBoxEntSortingType.Name = "CBoxEntSortingType";
+			this.CBoxEntSortingType.Size = new System.Drawing.Size(55, 21);
+			this.CBoxEntSortingType.TabIndex = 19;
+			this.CBoxEntSortingType.SelectedIndexChanged += new System.EventHandler(this.ParamChanged_Event);
+			// 
 			// groupBoxEntityCoordinates
 			// 
 			this.groupBoxEntityCoordinates.Controls.Add(this.RBtnEntityCoordMap);
@@ -327,7 +343,7 @@ namespace MAPeD
 			this.groupBoxEntityCoordinates.Location = new System.Drawing.Point(7, 33);
 			this.groupBoxEntityCoordinates.Name = "groupBoxEntityCoordinates";
 			this.groupBoxEntityCoordinates.Size = new System.Drawing.Size(118, 38);
-			this.groupBoxEntityCoordinates.TabIndex = 19;
+			this.groupBoxEntityCoordinates.TabIndex = 20;
 			this.groupBoxEntityCoordinates.TabStop = false;
 			this.groupBoxEntityCoordinates.Text = "Coordinates";
 			// 
@@ -337,7 +353,7 @@ namespace MAPeD
 			this.RBtnEntityCoordMap.Location = new System.Drawing.Point(68, 13);
 			this.RBtnEntityCoordMap.Name = "RBtnEntityCoordMap";
 			this.RBtnEntityCoordMap.Size = new System.Drawing.Size(47, 20);
-			this.RBtnEntityCoordMap.TabIndex = 21;
+			this.RBtnEntityCoordMap.TabIndex = 22;
 			this.RBtnEntityCoordMap.TabStop = true;
 			this.RBtnEntityCoordMap.Text = "Map";
 			this.RBtnEntityCoordMap.UseVisualStyleBackColor = true;
@@ -348,7 +364,7 @@ namespace MAPeD
 			this.RBtnEntityCoordScreen.Location = new System.Drawing.Point(9, 13);
 			this.RBtnEntityCoordScreen.Name = "RBtnEntityCoordScreen";
 			this.RBtnEntityCoordScreen.Size = new System.Drawing.Size(60, 20);
-			this.RBtnEntityCoordScreen.TabIndex = 20;
+			this.RBtnEntityCoordScreen.TabIndex = 21;
 			this.RBtnEntityCoordScreen.Text = "Screen";
 			this.RBtnEntityCoordScreen.UseVisualStyleBackColor = true;
 			this.RBtnEntityCoordScreen.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
@@ -473,7 +489,7 @@ namespace MAPeD
 			this.RichTextBoxExportDesc.ReadOnly = true;
 			this.RichTextBoxExportDesc.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
 			this.RichTextBoxExportDesc.Size = new System.Drawing.Size(275, 277);
-			this.RichTextBoxExportDesc.TabIndex = 35;
+			this.RichTextBoxExportDesc.TabIndex = 32;
 			this.RichTextBoxExportDesc.Text = "";
 			// 
 			// exporter_asm
@@ -505,6 +521,7 @@ namespace MAPeD
 			this.groupBoxLayout.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.ComboBox CBoxEntSortingType;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ComboBox ComboBoxInFrontOfSpritesProp;
 		private System.Windows.Forms.CheckBox CheckBoxExportSGDKData;

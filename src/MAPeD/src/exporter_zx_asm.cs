@@ -96,7 +96,8 @@ namespace MAPeD
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
-			CBoxColorConversionModes.SelectedIndex = 0;
+			CBoxColorConversionModes.SelectedIndex	= 0;
+			CBoxEntSortingType.SelectedIndex		= 0;
 			
 			zx_palette = platform_data.get_palette_by_file_ext( platform_data.CONST_ZX_FILE_EXT );
 			
@@ -251,7 +252,10 @@ namespace MAPeD
 				else
 				{
 					RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_COORDS_MAP;
-				}				
+				}
+				
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_SORTING;
+				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_ENT_SORT_TYPES[ CBoxEntSortingType.SelectedIndex ];
 			}
 			else
 			{
@@ -305,7 +309,7 @@ namespace MAPeD
 				
 				if( CheckBoxExportEntities.Checked )
 				{
-					m_data_mngr.export_entity_asm( sw, "db", "$" );
+					m_data_mngr.export_base_entity_asm( sw, "db", "$" );
 				}
 				
 				if( RBtnModeMultidirScroll.Checked )
@@ -670,7 +674,7 @@ namespace MAPeD
 						
 						if( CheckBoxExportMarks.Checked || CheckBoxExportEntities.Checked )
 						{
-							level_data.export_asm( _sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked );
+							level_data.export_asm( _sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked, ( layout_screen_data.EEntSortType )CBoxEntSortingType.SelectedIndex );
 						}
 					}
 				}
@@ -1148,7 +1152,7 @@ namespace MAPeD
 								
 								if( CheckBoxExportEntities.Checked )
 								{
-									scr_data.export_entities_asm( _sw, ref ents_cnt, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", "db", "dw", "dw", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, enable_comments );
+									scr_data.export_entities_asm( _sw, ref ents_cnt, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", "db", "dw", "dw", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, ( layout_screen_data.EEntSortType )CBoxEntSortingType.SelectedIndex, enable_comments );
 									
 									_sw.WriteLine( "" );
 								}
@@ -1180,7 +1184,7 @@ namespace MAPeD
 					{
 						_sw.WriteLine( level_prefix_str + "_StartScr\tequ\t" + start_scr_ind + "\n" );
 						
-						level_data.export_asm( _sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "$", false, false, false, false );
+						level_data.export_asm( _sw, level_prefix_str, "\tDEFINE", "db", "dw", "dw", "$", false, false, false, false, ( layout_screen_data.EEntSortType )CBoxEntSortingType.SelectedIndex );
 					}
 					else
 					{
@@ -1811,7 +1815,7 @@ namespace MAPeD
 				
 				_sw.WriteLine( ";\t- layout: " + ( RBtnLayoutAdjacentScreens.Checked ? "adjacent screens":RBtnLayoutAdjacentScreenIndices.Checked ? "adjacent screen indices":"matrix" ) + ( CheckBoxExportMarks.Checked ? " (marks)":" (no marks)" ) );
 				
-				_sw.WriteLine( ";\t- " + ( CheckBoxExportEntities.Checked ? "entities " + ( RBtnEntityCoordScreen.Checked ? "(screen coordinates)":"(map coordinates)" ):"no entities" ) );
+				_sw.WriteLine( ";\t- " + ( CheckBoxExportEntities.Checked ? "entities " + ( RBtnEntityCoordScreen.Checked ? "(screen coordinates)":"(map coordinates)" ) + ( CBoxEntSortingType.SelectedIndex == 0 ? "/no sorting":( CBoxEntSortingType.SelectedIndex == 1 ) ? "/left-right":"/bottom-top" ):"no entities" ) );
 				_sw.WriteLine( "\n" );
 			}
 			
@@ -1824,7 +1828,10 @@ namespace MAPeD
 																( RBtnLayoutAdjacentScreens.Checked ? 2048:RBtnLayoutAdjacentScreenIndices.Checked ? 4096:8192 ) |
 																( CheckBoxExportMarks.Checked ? 16384:0 ) |
 																( RBtnPropPerBlock.Checked ? 32768:65536 ) |
-																( RBtnTypeColor.Checked ? 131072:0 ) ) );
+																( RBtnTypeColor.Checked ? 131072:0 ) |
+																( CBoxEntSortingType.SelectedIndex == 0 ? 262144:0 ) |
+																( CBoxEntSortingType.SelectedIndex == 1 ? 524288:0 ) |
+																( CBoxEntSortingType.SelectedIndex == 2 ? 1048576:0 ) ) );
 			_sw.WriteLine( "\n; data flags:" );
 			_sw.WriteLine( "MAP_FLAG_TILES2X2                 = " + utils.hex( "$", 1 ) );
 			_sw.WriteLine( "MAP_FLAG_TILES4X4                 = " + utils.hex( "$", 2 ) );
@@ -1844,6 +1851,9 @@ namespace MAPeD
 			_sw.WriteLine( "MAP_FLAG_PROP_ID_PER_BLOCK        = " + utils.hex( "$", 32768 ) );
 			_sw.WriteLine( "MAP_FLAG_PROP_ID_PER_CHR          = " + utils.hex( "$", 65536 ) );
 			_sw.WriteLine( "MAP_FLAG_COLOR_TILES              = " + utils.hex( "$", 131072 ) );
+			_sw.WriteLine( "MAP_FLAG_ENT_SORTING_OFF          = " + utils.hex( "$", 262144 ) );
+			_sw.WriteLine( "MAP_FLAG_ENT_SORTING_LT_RT        = " + utils.hex( "$", 524288 ) );
+			_sw.WriteLine( "MAP_FLAG_ENT_SORTING_BTM_TOP      = " + utils.hex( "$", 1048576 ) );
 			
 			_sw.WriteLine( "\nSCR_BLOCKS2x2_WIDTH\tequ " + platform_data.get_screen_blocks_width() + "\t\t; number of screen blocks (2x2) in width" );
 			_sw.WriteLine( "SCR_BLOCKS2x2_HEIGHT\tequ " + platform_data.get_screen_blocks_height() + "\t\t; number of screen blocks (2x2) in height\n" );

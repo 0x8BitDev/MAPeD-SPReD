@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 30.07.2020
  * Time: 13:48
  */
@@ -75,6 +75,9 @@ namespace MAPeD
 		public const string CONST_STR_EXP_ENT_COORDS			= "\nENTITY COORDINATES: ";
 		public const string CONST_STR_EXP_ENT_COORDS_SCR		= "Screen space\nThe upper left corner of each screen is used as the origin of the coordinate space for an entity belonging to the screen."; 
 		public const string CONST_STR_EXP_ENT_COORDS_MAP		= "Map space\nThe upper left corner of each level is used as the origin of the coordinate space for an entity.";
+		
+		public const string CONST_STR_EXP_ENT_SORTING			= "\nENTITIES SORTING: ";
+		public static string[] CONST_STR_EXP_ENT_SORT_TYPES		= new string[] { "No sorting", "Left to right", "Bottom to top" };
 
 		public const string CONST_STR_EXP_ZX_INK_FACTOR			= "\n\nNOTE: Try to change the 'Ink Factor' value to achieve the best result.";		
 		

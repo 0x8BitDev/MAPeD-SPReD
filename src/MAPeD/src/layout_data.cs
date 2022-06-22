@@ -40,6 +40,13 @@ namespace MAPeD
 			set {}
 		}
 		
+		public enum EEntSortType
+		{
+			est_NoSorting	= 0,
+			est_LeftToRight = 1,
+			est_BottomToTop = 2,
+		};
+		
 		[DataMember]
 		public int 					m_scr_ind;
 		
@@ -96,7 +103,7 @@ namespace MAPeD
 			}
 		}
 
-		public int export_entities_asm( StreamWriter _sw, ref int _ent_id, string _label, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _ent_coords_scr, int _x, int _y, bool _enable_comments )
+		public int export_entities_asm( StreamWriter _sw, ref int _ent_id, string _label, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _ent_coords_scr, int _x, int _y, EEntSortType _sort_type, bool _enable_comments )
 		{
 			int max_props_cnt = -1;
 			int props_cnt;
@@ -105,7 +112,24 @@ namespace MAPeD
 			
 			_sw.WriteLine( _label + ":" );
 			_sw.WriteLine( "\t" + _def_num + " " + m_ents.Count );
-
+			
+			// entities sorting left to right and bottom to top
+			if( _sort_type == EEntSortType.est_LeftToRight )
+			{
+				m_ents.Sort( delegate( entity_instance _ent1, entity_instance _ent2 )
+				{
+					return ( ( _ent1.base_entity.pivot_x + _ent1.x ).CompareTo( _ent2.base_entity.pivot_x + _ent2.x ) );
+				});
+			}
+			else
+			if( _sort_type == EEntSortType.est_BottomToTop )
+			{
+				m_ents.Sort( delegate( entity_instance _ent1, entity_instance _ent2 )
+				{
+					return ( -( _ent1.base_entity.pivot_y + _ent1.y ).CompareTo( _ent2.base_entity.pivot_y + _ent2.y ) );
+				});
+			}
+			
 			// ent labels arr
 			for( int ent_n = 0; ent_n < m_ents.Count; ent_n++ )
 			{
@@ -695,7 +719,7 @@ namespace MAPeD
 			return ent_cnt;
 		}
 		
-		public int export_asm( StreamWriter _sw, string _data_mark, string _define, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr, bool _compact_layout = true )
+		public int export_asm( StreamWriter _sw, string _data_mark, string _define, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr, layout_screen_data.EEntSortType _sort_type, bool _compact_layout = true )
 		{
 			int max_props_cnt = 0;
 			int props_cnt;
@@ -778,7 +802,7 @@ namespace MAPeD
 	
 							if( _export_entities )
 							{
-								props_cnt = scr_data.export_entities_asm( _sw, ref ent_n, lev_scr_id + "EntsArr", _def_num, _def_addr, _def_coord, _num_pref, _ent_coords_scr, x, y, enable_comments );
+								props_cnt = scr_data.export_entities_asm( _sw, ref ent_n, lev_scr_id + "EntsArr", _def_num, _def_addr, _def_coord, _num_pref, _ent_coords_scr, x, y, _sort_type, enable_comments );
 								
 								if( max_props_cnt < props_cnt )
 								{

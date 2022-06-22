@@ -1076,7 +1076,7 @@ namespace MAPeD
 			return res ? CHR_cnt:-1;
 		}
 		
-		public int export_entity_asm( StreamWriter _sw, string _db, string _num_pref )
+		public int export_base_entity_asm( StreamWriter _sw, string _db, string _num_pref )
 		{
 			int max_props_cnt = 0;
 			int props_cnt;
