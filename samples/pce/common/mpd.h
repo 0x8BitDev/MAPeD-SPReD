@@ -9,6 +9,7 @@
 History:
 
 v0.6
+2022.06.23 - added 'Working with screens/entities' info and 'mpd_get_screen_data' for bi-dir maps and 'mpd_copy_screen'
 2022.06.21 - added functions for working with base entities
 2022.06.19 - screen/entity data moved from .h file to .asm, and added interface functions
 2022.06.02 - fixed _mpd_farptr_add_offset
@@ -84,6 +85,184 @@ NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any
 
 	NOTE: To avoid conflicts, these options can not be used together. You must use either (1) or (2).
 
+Working with screens/entities:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+General information:
+
+1. Regardless of a map type, all entities data is stored in screens.
+2. The maximum number of allowed entities per screen is 255.
+3. There are base entities and instances. The base entities you customize in MAPeD in the 'Entities' tab. The instances are base entities that have been placed on a map.
+4. Entities can be sorted during the data export process in two ways: left to right or bottom to top. The sorting goes by pivot points.
+5. So, for a multi-directional map, whichever screen you take, you will always have sorted entity data.
+6. Accessing screen/entity data requires banks switching and data copying. So it is recommended to cache the data in optimal way for your project when initializing a map data.
+
+Data structures:
+
+typedef struct
+{
+	u8	id;
+	u8	width;
+	u8	height;
+	u8	pivot_x;
+	u8	pivot_y;
+	u8	props_cnt;
+
+} mpd_ENTITY_BASE;
+
+typedef struct
+{
+	u8	id;
+	u16	base_ent_addr;	// for library use only
+	u16	targ_ent_addr;	// for library use only
+	u16	x_pos;
+	u16	y_pos;
+	u8	props_cnt;
+
+} mpd_ENTITY_INSTANCE;
+
+typedef struct
+{
+	mpd_ENTITY_INSTANCE	inst;
+	u8			inst_props[ ENT_MAX_PROPS_CNT ];
+
+	mpd_ENTITY_BASE		base;
+	u8			base_props[ ENT_MAX_PROPS_CNT ];
+
+} mpd_ENTITY;
+
+typedef struct
+{
+	mpd_PTR24		scr_arr_ptr;	// for library use only
+	u16			scr_offset;	// for library use only
+
+	mpd_SCREEN		scr;		// depends on exported options, see exported .h file for details
+
+#if	FLAG_ENTITIES
+	mpd_ENTITY		inst_ent;
+	mpd_ENTITY		targ_ent;
+#endif	//FLAG_ENTITIES
+
+} mpd_SCR_DATA;
+
+
+The functions for accessing base entities:
+
+void	mpd_init_base_ent_arr() - must be called once for all maps(!)
+u16	mpd_get_base_ent_cnt()
+void	mpd_get_base_entity( mpd_SCR_DATA* _scr_data, u16 _ent_ind ) - RES: _scr_data->inst_ent.base
+
+Examples of using the library for multi-dir maps:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+void	mpd_init_screen_arr( mpd_SCR_DATA* _scr_data, u8 _map_ind ) - must be called once for each map(!)
+
+Getting a map size in screens:
+
+	u16	map_size;
+	u8	scr_width;
+	u8	scr_height;
+
+	map_size	= mpd_get_map_size( map_ind );
+
+	scr_width	= map_size & 0x00ff;
+	scr_height	= ( map_size & 0xff00 ) >> 8;
+
+Accessing screen/entity data:
+
+	mpd_SCR_DATA	scr_data;
+
+	u8	scr_w_n;
+	u8	scr_h_n;
+	u8	ent_n;
+
+	for( scr_h_n = 0; scr_h_n < scr_height; scr_h_n++ )
+	{
+		for( scr_w_n = 0; scr_w_n < scr_width; scr_w_n++ )
+		{
+			mpd_get_screen_data( &scr_data, scr_h_n * scr_width + scr_w_n );
+
+			for( ent_n = 0; ent_n < scr_data.scr.ents_cnt; ent_n++ )
+			{
+				mpd_get_entity( &scr_data, ent_n );
+
+				AND/OR
+
+				if( mpd_find_entity_by_base_id( &scr_data, base_ent_id ) )
+				{
+					...
+				}
+
+				AND/OR
+
+				if( mpd_find_entity_by_inst_id( &scr_data, inst_ent_id ) )
+				{
+					...
+				}
+
+				...
+			}
+		}
+	}
+
+
+Examples of using the library for bi-dir maps:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use 'mpd_SCR_DATA* mpd_curr_screen()' for getting a current screen, but
+make a copy 'mpd_copy_screen( mpd_SCR_DATA* _src_scr, mpd_SCR_DATA* _dst_scr )'
+before using 'mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u16 _scr_ind )'
+
+Iterating a map screens:
+
+	u16		adj_scr;
+	mpd_SCR_DATA	scr_data;
+
+	mpd_get_start_screen( &scr_data );
+
+	adj_scr = mpd_get_adj_screen( &scr_data, ADJ_SCR_LEFT/ADJ_SCR_RIGHT/ADJ_SCR_UP/ADJ_SCR_DOWN );
+
+	if( adj_scr != 0xffff )
+	{
+		mpd_get_screen_data( &scr_data, adj_scr );
+		...
+	...
+
+
+Accessing entities:
+
+	u8	ent_n;
+
+	mpd_SCR_DATA*	scr_data;
+	scr_data = mpd_curr_screen(); 
+
+	OR
+
+	mpd_SCR_DATA	scr_data;
+	mpd_get_start_screen( &scr_data );
+
+	for( ent_n = 0; ent_n < scr_data->scr.ents_cnt; ent_n++ )
+	{
+		mpd_get_entity( scr_data, ent_n );
+
+		AND/OR
+
+		if( mpd_find_entity_by_base_id( scr_data, base_ent_id ) )
+		{
+			...
+		}
+
+		AND/OR
+
+		if( mpd_find_entity_by_inst_id( scr_data, inst_ent_id ) )
+		{
+			...
+		}
+
+		...
+	}
+
+The rest functions see below.
 
 public functions:
 ~~~~~~~~~~~~~~~~~
@@ -123,16 +302,17 @@ void	mpd_draw_screen_by_pos( u16 _x, u16 _y )
 
 #if	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 mpd_SCR_DATA*	mpd_curr_screen()
-u16		mpd_get_adj_screen( mpd_SCR_DATA* _scr_data, u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN; OUT: 0xffff - no screen; screen index (FLAG_LAYOUT_ADJ_SCR_INDS) OR screen address (FLAG_LAYOUT_ADJ_SCR)
+u16		mpd_get_adj_screen( mpd_SCR_DATA* _scr_data, u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN; RES: 0xffff - no screen; screen index (FLAG_LAYOUT_ADJ_SCR_INDS) OR screen address (FLAG_LAYOUT_ADJ_SCR)
 bool		mpd_check_adj_screen( u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
 void		mpd_draw_screen_by_data( mpd_SCR_DATA* _scr_data )
 void		mpd_draw_screen_by_data_offs( mpd_SCR_DATA* _scr_data, u16 _BAT_offset )
 #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
 void	mpd_init_screen_arr( mpd_SCR_DATA* _scr_data, u8 _map_ind ) - must be called once for each map(!)
+void	mpd_copy_screen( mpd_SCR_DATA* _src_scr, mpd_SCR_DATA* _dst_scr )
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-u16	mpd_get_map_size( u8 _map_ind ) / OUT: low byte - screens in width, high byte - screens in height
+u16	mpd_get_map_size( u8 _map_ind ) / RES: low byte - screens in width, high byte - screens in height
 void	mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u8 _scr_ind )
 u8	mpd_get_start_screen_ind( u8 _map_ind )
 void	mpd_get_start_screen( mpd_SCR_DATA* _scr_data, u8 _map_ind )
@@ -140,12 +320,13 @@ void	mpd_get_start_screen( mpd_SCR_DATA* _scr_data, u8 _map_ind )
 
 #if	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 void	mpd_get_start_screen( mpd_SCR_DATA* _scr_data )
+void	mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u16 _scr_ind )
 #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 
 #if	FLAG_ENTITIES
-void	mpd_init_base_ent_arr()- must be called once for all maps(!)
+void	mpd_init_base_ent_arr() - must be called once for all maps(!)
 u16	mpd_get_base_ent_cnt()
-void	mpd_get_base_entity( mpd_SCR_DATA* _scr_data, u16 _ent_ind ) - OUT: _scr_data->inst_ent.base
+void	mpd_get_base_entity( mpd_SCR_DATA* _scr_data, u16 _ent_ind ) - RES: _scr_data->inst_ent.base
 
 void	mpd_get_entity( mpd_SCR_DATA* _scr_data, u8 _ent_ind )
 bool	mpd_find_entity_by_base_id( mpd_SCR_DATA* _scr_data, u8 _id )
@@ -495,26 +676,37 @@ mpd_SCR_DATA	__curr_scr;
 
 #if	FLAG_LAYOUT_ADJ_SCR_INDS
 mpd_PTR24	__scr_arr;
+#endif	//FLAG_LAYOUT_ADJ_SCR_INDS
 
 void	__mpd_get_screen_data( u16 _scr_ind, mpd_SCREEN* _scr )
 {
+#if	FLAG_LAYOUT_ADJ_SCR_INDS
 	__curr_scr.scr_offset	= mpd_farpeekw( __scr_arr.bank, __scr_arr.addr, ( _scr_ind << 1 ) ) - __curr_scr.scr_arr_ptr.addr;
-
-	mpd_farmemcpyb( __curr_scr.scr_arr_ptr.bank, __curr_scr.scr_arr_ptr.addr, __curr_scr.scr_offset, _scr, sizeof( mpd_SCREEN ) );
-}
 #else
-void	__mpd_get_screen_data( u16 _scr_addr, mpd_SCREEN* _scr )
-{
-	__curr_scr.scr_offset	= _scr_addr - __curr_scr.scr_arr_ptr.addr;
-
+	__curr_scr.scr_offset	= _scr_ind - __curr_scr.scr_arr_ptr.addr;	// _scr_ind is a screen address for FLAG_LAYOUT_ADJ_SCR
+#endif
 	mpd_farmemcpyb( __curr_scr.scr_arr_ptr.bank, __curr_scr.scr_arr_ptr.addr, __curr_scr.scr_offset, _scr, sizeof( mpd_SCREEN ) );
 }
-#endif	//FLAG_LAYOUT_ADJ_SCR_INDS
+
+void	mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u16 _scr_ind )
+{
+#if	FLAG_LAYOUT_ADJ_SCR_INDS
+	_scr_data->scr_offset	= mpd_farpeekw( __scr_arr.bank, __scr_arr.addr, ( _scr_ind << 1 ) ) - _scr_data->scr_arr_ptr.addr;
+#else
+	_scr_data->scr_offset	= _scr_ind - _scr_data->scr_arr_ptr.addr;	// _scr_ind is a screen address for FLAG_LAYOUT_ADJ_SCR
+#endif
+	mpd_farmemcpyb( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, _scr_data->scr_offset, _scr_data->scr, sizeof( mpd_SCREEN ) );
+}
 #endif	//!FLAG_MODE_MULTIDIR_SCROLL
 
 void	mpd_init_screen_arr( mpd_SCR_DATA* _scr_data, u8 _map_ind )
 {
 	mpd_get_ptr24( mpd_MapsArr, _map_ind, _scr_data->scr_arr_ptr );
+}
+
+void	mpd_copy_screen( mpd_SCR_DATA* _src_scr, mpd_SCR_DATA* _dst_scr )
+{
+	mpd_memcpyb( _src_scr, _dst_scr, sizeof( mpd_SCR_DATA ) );
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
@@ -1464,7 +1656,7 @@ void	mpd_draw_screen_by_data( mpd_SCR_DATA* _scr_data )
 
 void	mpd_draw_screen_by_data_offs( mpd_SCR_DATA* _scr_data, u16 _BAT_offset )
 {
-	mpd_memcpyb( _scr_data, &__curr_scr, sizeof( mpd_SCR_DATA ) );
+	mpd_copy_screen( _scr_data, &__curr_scr );
 
 	__scr_offset	= __curr_scr.scr.scr_ind * __c_scr_tiles_size;
 
