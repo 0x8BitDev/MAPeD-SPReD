@@ -17,15 +17,17 @@
 #define DEF_SG_DBL_BUFF	0
 
 
-#if !DEF_SG_DBL_BUFF
+#if DEF_SG_DBL_BUFF
+unsigned char  LAST_DBL_BUFF_IND	= 0;
+#else
 /* variables for delayed use of SG data */
 unsigned short SG_DATA_SRC_ADDR 	= 0;
 unsigned short SG_DATA_SRC_BANK 	= 0;
 unsigned short SG_DATA_DST_ADDR 	= 0;
 unsigned short SG_DATA_LEN		= 0;
+#endif
 
 unsigned char SPR_PUSH_RES;
-#endif
 
 /* animation data */
 typedef struct
@@ -178,8 +180,9 @@ void	sprite_set_init()
 	//	 the last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is '0xff'.
 	spd_sprite_params( player_gfx_SG_arr, PLAYER_GFX_SPR_VADDR, SPD_FLAG_DBL_BUFF, 0xff );
 
-	// set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF).
-	spd_dbl_buff_VRAM_addr( 0x2800 );
+	// set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF)
+	// and the last value of the double-buffer index (zero by default).
+	spd_dbl_buff_VRAM_addr( 0x2800, LAST_DBL_BUFF_IND );
 #else
 	// NOTE: using the `SPD_FLAG_PEND_SG_DATA` flag means that SG data will not be loaded
 	//	 to VRAM automatically. You should do that manually on VBLANK.
@@ -194,7 +197,16 @@ void	sprite_set_init()
 /* show sprite by an index */
 unsigned char	sprite_show( char _ind, short _x, short _y )
 {
-	return spd_SATB_push_sprite( player_gfx_frames_data, _ind, _x, _y );
+	unsigned char res;
+
+	res = spd_SATB_push_sprite( player_gfx_frames_data, _ind, _x, _y );
+
+#if	DEF_SG_DBL_BUFF
+	// save the last double-buffer index
+	LAST_DBL_BUFF_IND = spd_get_dbl_buff_ind();
+#endif
+
+	return res;
 }
 
 main()

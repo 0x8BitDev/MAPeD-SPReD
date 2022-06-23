@@ -5,9 +5,11 @@
 //
 //######################################################################################################
 
-/*/	SPD-render v0.4
+/*/	SPD-render v0.5
 History:
 
+v0.5
+2022.06.23 - added second argument to the 'spd_dbl_buff_VRAM_addr( VADDR_dbl_buff, _dbl_buff_ind )' function and added 'spd_get_dbl_buff_ind()' function
 2022.06.09 - small fix to 'SPD_DEBUG', the pink border now shows how long it takes to load graphics data to VRAM
 
 v0.4
@@ -56,9 +58,9 @@ The main logic is:
 [upd] v0.2	// NOTE: Passing 'SPD_FLAG_IGNORE_SG' as the third parameter will ignore loading SG to VRAM.
 		//	 It's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
 --->		//	 Such way you avoid loading SG to VRAM twice.
-[upd] v0.4	// NOTE: Passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
+[upd] v0.4	// NOTE: Passing 'last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
 		//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. The initial value is '0xff'.
---->		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, 0, _last_bank_ind );
+--->		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, 0, last_bank_ind );
 
 [upd] v0.3	// NOTE: There are two ways to load SG data to VRAM:
 		//	 1. Indirect loading, when you push the first sprite by calling 'spd_SATB_push_sprite'.
@@ -95,6 +97,9 @@ The main logic is:
 --->		//	 when the third parameter passed to the 'spd_sprite_params' is ZERO (!)
 		// NOTE: If meta-sprite does not fit into SATB, it will be ignored!
 [upd] v0.4	// NOTE: 'spd_SATB_push_sprite' returns: 1-Ok + ORed flag 'SPD_SG_NEW_DATA' when a new SG data already or must be loaded to VRAM; 0-SATB overflow
+
+		// Save SG bank index, especially if you are using more than one sprite set(!)
+--->		last_bank_ind	= spd_SG_bank_get_ind();
 	}
 
 	// Then call 'satb_update' to push your sprite data to VRAM SAT.
@@ -146,14 +151,14 @@ The main logic is:
 		//	 of using 'SPD_FLAG_DBL_BUFF' and 'SPD_FLAG_PEND_SG_DATA' and decide which is better in your case.
 [upd] v0.4	// NOTE: Passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
 		//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. The initial value is '0xff'.
---->		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, SPD_FLAG_DBL_BUFF, _last_bank_ind );
+--->		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, SPD_FLAG_DBL_BUFF, last_bank_ind );
 
-		// Set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF).
-		spd_dbl_buff_VRAM_addr( VADDR_dbl_buff );
+[upd] v0.5	// Set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF) and the last double-buffer index value (zero by default).
+--->		spd_dbl_buff_VRAM_addr( VADDR_dbl_buff, last_dbl_buff_ind );
 #else
 		// NOTE: Using the `SPD_FLAG_PEND_SG_DATA` flag means that SG data will not be loaded
 		//	 to VRAM automatically. You should do that manually on VBLANK.
-		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, SPD_FLAG_PEND_SG_DATA, _last_bank_ind );
+		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, SPD_FLAG_PEND_SG_DATA, last_bank_ind );
 
 		// Set pointers to SG data for delayed use (SPD_FLAG_PEND_SG_DATA).
 		spd_SG_data_params( &SG_DATA_SRC_ADDR, &SG_DATA_SRC_BANK, &SG_DATA_DST_ADDR, &SG_DATA_LEN );
@@ -185,6 +190,14 @@ The main logic is:
 
 		// NOTE: If meta-sprite does not fit into SATB, it will be ignored!
 [upd] v0.4	// NOTE: 'spd_SATB_push_sprite' returns: 1-Ok + ORed flag 'SPD_SG_NEW_DATA' when a new SG data already or must be loaded to VRAM; 0-SATB overflow
+
+		// Save SG bank index, especially if you are using more than one sprite set(!)
+--->		last_bank_ind	= spd_SG_bank_get_ind();
+[upd] v0.5
+#if		DEF_SG_DBL_BUFF
+		last_dbl_buff_ind	= spd_get_dbl_buff_ind();
+#endif
+--->
 	}
 
 	// 'VRAM-SATB Transfer Auto-Repeat on VBLANK' (DCR ROF-$10) is enabled by default in HuC at startup, so we skip this step.
@@ -206,6 +219,12 @@ The main logic is:
 		// Push your sprite to the local RAM SATB.
 [upd] v0.4	res_byte = spd_SATB_push_sprite( <exported_name>_frames_data, test_anim.start_frame + test_anim.curr_frame, _x, _y );
 
+--->		last_bank_ind	= spd_SG_bank_get_ind();
+[upd] v0.5
+#if		DEF_SG_DBL_BUFF
+		last_dbl_buff_ind	= spd_get_dbl_buff_ind();
+#endif
+--->
 		// Load all sprites to VRAM SAT.
 		satb_update( spd_SATB_get_pos() );
 
@@ -234,7 +253,7 @@ SPD_DEBUG
 	That`s it! :)
 /*/
 
-const unsigned char spd_ver[] = { "S", "P", "D", "v", "0", ".", "4", 0 };
+const unsigned char spd_ver[] = { "S", "P", "D", "0", "5", 0 };
 
 /* SPD flag(s) */
 
@@ -298,9 +317,11 @@ const unsigned char spd_ver[] = { "S", "P", "D", "v", "0", ".", "4", 0 };
 /* void spd_copy_SG_data_to_VRAM( far void* _frame_addr ) */
 #pragma fastcall spd_copy_SG_data_to_VRAM( farptr __bl:__si )
 
-/* void spd_dbl_buff_VRAM_addr( word _vram_addr ) */
-#pragma fastcall spd_dbl_buff_VRAM_addr( word __ax )
+/* void spd_dbl_buff_VRAM_addr( word _vram_addr, char _dbl_buff_ind ) */
+#pragma fastcall spd_dbl_buff_VRAM_addr( word __ax, byte __bl )
 
+/* char spd_get_dbl_buff_ind() */
+#pragma fastcall spd_get_dbl_buff_ind()
 
 #asm
 
@@ -601,9 +622,30 @@ _spd_SG_bank_get_ind:
 
 	rts
 
-;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr )
+;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr, byte __bl / dbl_buff_ind )
 ;
-_spd_dbl_buff_VRAM_addr.1:
+_spd_dbl_buff_VRAM_addr.2:
+
+	; set double-buffer index
+
+	lda <__bl
+	beq .reset
+
+	; set
+
+	ora <__inner_flags
+	sta <__inner_flags
+
+	bra .cont
+
+.reset:
+
+	lda <__inner_flags
+	and #(~INNER_FLAGS_DBL_BUFF)
+	sta <__inner_flags
+
+.cont:
+	; set alternative VADDR
 
 	stw <__ax, <__spr_VADDR_dbl
 	stw <__spr_VADDR, <__bx
@@ -630,6 +672,16 @@ _spd_dbl_buff_VRAM_addr.1:
 
 	div32_word <__bx
 	stw <__bx, <__spr_SG_offset
+
+	rts
+
+;// char spd_get_dbl_buff_ind()
+;
+_spd_get_dbl_buff_ind
+
+	inner_flags_dbl_buff_state
+	tax
+	cla
 
 	rts
 

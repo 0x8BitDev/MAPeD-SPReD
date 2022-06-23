@@ -21,7 +21,9 @@
 #define	DEF_SET3_SG_DBL_BUFF 1
 
 
-#if !DEF_SET1_SG_DBL_BUFF
+#if DEF_SET1_SG_DBL_BUFF
+unsigned char  SET1_LAST_DBL_BUFF_IND	= 0;
+#else
 /* variables for delayed use of SG data */
 unsigned short SET1_SG_DATA_SRC_ADDR 	= 0;
 unsigned short SET1_SG_DATA_SRC_BANK 	= 0;
@@ -29,14 +31,18 @@ unsigned short SET1_SG_DATA_DST_ADDR 	= 0;
 unsigned short SET1_SG_DATA_LEN		= 0;
 #endif
 
-#if !DEF_SET2_SG_DBL_BUFF
+#if DEF_SET2_SG_DBL_BUFF
+unsigned char  SET2_LAST_DBL_BUFF_IND	= 0;
+#else
 unsigned short SET2_SG_DATA_SRC_ADDR 	= 0;
 unsigned short SET2_SG_DATA_SRC_BANK 	= 0;
 unsigned short SET2_SG_DATA_DST_ADDR 	= 0;
 unsigned short SET2_SG_DATA_LEN		= 0;
 #endif
 
-#if !DEF_SET3_SG_DBL_BUFF
+#if DEF_SET3_SG_DBL_BUFF
+unsigned char  SET3_LAST_DBL_BUFF_IND	= 0;
+#else
 unsigned short SET3_SG_DATA_SRC_ADDR 	= 0;
 unsigned short SET3_SG_DATA_SRC_BANK 	= 0;
 unsigned short SET3_SG_DATA_DST_ADDR 	= 0;
@@ -74,6 +80,8 @@ static unsigned char	dir_trigger	= 0;
 /* show sprite by input index */
 unsigned char	sprite1_show( char _ind, short _x, short _y )
 {
+	unsigned char res;
+
 	// set up exported sprite set with SG data array and VRAM address to load SG data to.
 	// NOTE: you can combine any number of exported sprite sets in your program.
 	//	 call the 'spd_sprite_params' to switch between them.
@@ -86,8 +94,9 @@ unsigned char	sprite1_show( char _ind, short _x, short _y )
 	//	 the last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is '0xff'.
 	spd_sprite_params( set1_SG_arr, SET1_SPR_VADDR, SPD_FLAG_DBL_BUFF, SET1_LAST_SG_BANK );
 
-	// set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF).
-	spd_dbl_buff_VRAM_addr( SET1_SPR_VADDR + 0x800 );
+	// set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF)
+	// and the last value of the double-buffer index (zero by default).
+	spd_dbl_buff_VRAM_addr( SET1_SPR_VADDR + 0x800, SET1_LAST_DBL_BUFF_IND );
 #else
 	//	 THIS FLAG CAN BE USED WITH UNPACKED SPRITES ONLY! WHERE EACH SPRITE HAS A SEPARATE SG DATA!
 	spd_sprite_params( set1_SG_arr, SET1_SPR_VADDR, SPD_FLAG_PEND_SG_DATA, SET1_LAST_SG_BANK );
@@ -95,31 +104,55 @@ unsigned char	sprite1_show( char _ind, short _x, short _y )
 	// set pointers to SG data for delayed use (SPD_FLAG_PEND_SG_DATA).
 	spd_SG_data_params( &SET1_SG_DATA_SRC_ADDR, &SET1_SG_DATA_SRC_BANK, &SET1_SG_DATA_DST_ADDR, &SET1_SG_DATA_LEN );
 #endif
-	return spd_SATB_push_sprite( set1_frames_data, _ind, _x, _y );
+	res = spd_SATB_push_sprite( set1_frames_data, _ind, _x, _y );
+
+#if	DEF_SET1_SG_DBL_BUFF
+	// save the last double-buffer index
+	SET1_LAST_DBL_BUFF_IND = spd_get_dbl_buff_ind();
+#endif
+
+	return res;
 }
 
 unsigned char	sprite2_show( char _ind, short _x, short _y )
 {
+	unsigned char res;
+
 #if	DEF_SET2_SG_DBL_BUFF
 	spd_sprite_params( set2_SG_arr, SET2_SPR_VADDR, SPD_FLAG_DBL_BUFF, SET2_LAST_SG_BANK );
-	spd_dbl_buff_VRAM_addr( SET2_SPR_VADDR + 0x800 );
+	spd_dbl_buff_VRAM_addr( SET2_SPR_VADDR + 0x800, SET2_LAST_DBL_BUFF_IND );
 #else
 	spd_sprite_params( set2_SG_arr, SET2_SPR_VADDR, SPD_FLAG_PEND_SG_DATA, SET2_LAST_SG_BANK );
 	spd_SG_data_params( &SET2_SG_DATA_SRC_ADDR, &SET2_SG_DATA_SRC_BANK, &SET2_SG_DATA_DST_ADDR, &SET2_SG_DATA_LEN );
 #endif
-	return spd_SATB_push_sprite( set2_frames_data, _ind, _x, _y );
+	res = spd_SATB_push_sprite( set2_frames_data, _ind, _x, _y );
+
+#if	DEF_SET2_SG_DBL_BUFF
+	SET2_LAST_DBL_BUFF_IND = spd_get_dbl_buff_ind();
+#endif
+
+	return res;
+
 }
 
 unsigned char	sprite3_show( char _ind, short _x, short _y )
 {
+	unsigned char res;
+
 #if	DEF_SET3_SG_DBL_BUFF
 	spd_sprite_params( set3_SG_arr, SET3_SPR_VADDR, SPD_FLAG_DBL_BUFF, SET3_LAST_SG_BANK );
-	spd_dbl_buff_VRAM_addr( SET3_SPR_VADDR + 0x800 );
+	spd_dbl_buff_VRAM_addr( SET3_SPR_VADDR + 0x800, SET3_LAST_DBL_BUFF_IND );
 #else
 	spd_sprite_params( set3_SG_arr, SET3_SPR_VADDR, SPD_FLAG_PEND_SG_DATA, SET3_LAST_SG_BANK );
 	spd_SG_data_params( &SET3_SG_DATA_SRC_ADDR, &SET3_SG_DATA_SRC_BANK, &SET3_SG_DATA_DST_ADDR, &SET3_SG_DATA_LEN );
 #endif
-	return spd_SATB_push_sprite( set3_frames_data, _ind, _x, _y );
+	res = spd_SATB_push_sprite( set3_frames_data, _ind, _x, _y );
+
+#if	DEF_SET3_SG_DBL_BUFF
+	SET3_LAST_DBL_BUFF_IND = spd_get_dbl_buff_ind();
+#endif
+
+	return res;
 }
 
 /* animation update */
