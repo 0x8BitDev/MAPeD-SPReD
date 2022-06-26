@@ -9,6 +9,13 @@
 //
 //#####################################################################
 
+// debug info:
+// - pink border color - ROM-VRAM data copying
+// - white border color - spd_SATB_push_sprite
+#asm
+SPD_DEBUG
+#endasm
+
 #include <huc.h>
 #include "../../../common/spd.h"
 #include "player_gfx.h"
@@ -18,7 +25,7 @@
 
 
 #if DEF_SG_DBL_BUFF
-unsigned char  LAST_DBL_BUFF_IND	= 0;
+unsigned short  LAST_DBL_BUFF_IND	= SPD_DBL_BUFF_INIT_VAL;
 #else
 /* variables for delayed use of SG data */
 unsigned short SG_DATA_SRC_ADDR 	= 0;
@@ -181,7 +188,7 @@ void	sprite_set_init()
 	spd_sprite_params( player_gfx_SG_arr, PLAYER_GFX_SPR_VADDR, SPD_FLAG_DBL_BUFF, 0xff );
 
 	// set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF)
-	// and the last value of the double-buffer index (zero by default).
+	// and the last double-buffer index value (initial value is 'SPD_DBL_BUFF_INIT_VAL').
 	spd_dbl_buff_VRAM_addr( 0x2800, LAST_DBL_BUFF_IND );
 #else
 	// NOTE: using the `SPD_FLAG_PEND_SG_DATA` flag means that SG data will not be loaded
@@ -199,6 +206,7 @@ unsigned char	sprite_show( char _ind, short _x, short _y )
 {
 	unsigned char res;
 
+	// NOTE: Use sprite pushing by index ONLY, if double buffering is enabled (!)
 	res = spd_SATB_push_sprite( player_gfx_frames_data, _ind, _x, _y );
 
 #if	DEF_SG_DBL_BUFF
@@ -211,6 +219,16 @@ unsigned char	sprite_show( char _ind, short _x, short _y )
 
 main()
 {
+
+#asm
+.ifdef	SPD_DEBUG
+#endasm
+	// make the screen a little smaller so that the border color is visible
+	set_xres( 252, XRES_SOFT );
+#asm
+.endif
+#endasm
+
 	/* disable display */
 	disp_off();
 

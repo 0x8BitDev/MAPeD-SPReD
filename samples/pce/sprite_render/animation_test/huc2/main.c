@@ -8,6 +8,13 @@
 //
 //######################################################################
 
+// debug info:
+// - pink border color - ROM-VRAM data copying
+// - white border color - spd_SATB_push_sprite
+#asm
+SPD_DEBUG
+#endasm
+
 #include <huc.h>
 #include "../../../common/spd.h"
 #include "set1.h"
@@ -22,7 +29,7 @@
 
 
 #if DEF_SET1_SG_DBL_BUFF
-unsigned char  SET1_LAST_DBL_BUFF_IND	= 0;
+unsigned short  SET1_LAST_DBL_BUFF_IND	= SPD_DBL_BUFF_INIT_VAL;
 #else
 /* variables for delayed use of SG data */
 unsigned short SET1_SG_DATA_SRC_ADDR 	= 0;
@@ -32,7 +39,7 @@ unsigned short SET1_SG_DATA_LEN		= 0;
 #endif
 
 #if DEF_SET2_SG_DBL_BUFF
-unsigned char  SET2_LAST_DBL_BUFF_IND	= 0;
+unsigned short  SET2_LAST_DBL_BUFF_IND	= SPD_DBL_BUFF_INIT_VAL;
 #else
 unsigned short SET2_SG_DATA_SRC_ADDR 	= 0;
 unsigned short SET2_SG_DATA_SRC_BANK 	= 0;
@@ -41,7 +48,7 @@ unsigned short SET2_SG_DATA_LEN		= 0;
 #endif
 
 #if DEF_SET3_SG_DBL_BUFF
-unsigned char  SET3_LAST_DBL_BUFF_IND	= 0;
+unsigned short  SET3_LAST_DBL_BUFF_IND	= SPD_DBL_BUFF_INIT_VAL;
 #else
 unsigned short SET3_SG_DATA_SRC_ADDR 	= 0;
 unsigned short SET3_SG_DATA_SRC_BANK 	= 0;
@@ -95,7 +102,7 @@ unsigned char	sprite1_show( char _ind, short _x, short _y )
 	spd_sprite_params( set1_SG_arr, SET1_SPR_VADDR, SPD_FLAG_DBL_BUFF, SET1_LAST_SG_BANK );
 
 	// set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF)
-	// and the last value of the double-buffer index (zero by default).
+	// and the last double-buffer index value (initial value is 'SPD_DBL_BUFF_INIT_VAL').
 	spd_dbl_buff_VRAM_addr( SET1_SPR_VADDR + 0x800, SET1_LAST_DBL_BUFF_IND );
 #else
 	//	 THIS FLAG CAN BE USED WITH UNPACKED SPRITES ONLY! WHERE EACH SPRITE HAS A SEPARATE SG DATA!
@@ -104,6 +111,8 @@ unsigned char	sprite1_show( char _ind, short _x, short _y )
 	// set pointers to SG data for delayed use (SPD_FLAG_PEND_SG_DATA).
 	spd_SG_data_params( &SET1_SG_DATA_SRC_ADDR, &SET1_SG_DATA_SRC_BANK, &SET1_SG_DATA_DST_ADDR, &SET1_SG_DATA_LEN );
 #endif
+
+	// NOTE: Use sprite pushing by index ONLY, if double buffering is enabled (!)
 	res = spd_SATB_push_sprite( set1_frames_data, _ind, _x, _y );
 
 #if	DEF_SET1_SG_DBL_BUFF
@@ -191,6 +200,15 @@ void	update_y_pos()
 main()
 {
 	unsigned short data_size;
+
+#asm
+.ifdef	SPD_DEBUG
+#endasm
+	// make the screen a little smaller so that the border color is visible
+	set_xres( 252, XRES_SOFT );
+#asm
+.endif
+#endasm
 
 	/* disable display */
 	disp_off();
@@ -289,8 +307,8 @@ main()
 		if( !( DEF_SET1_SG_DBL_BUFF * DEF_SET2_SG_DBL_BUFF * DEF_SET3_SG_DBL_BUFF ) )
 		{
 			// print ROM->VRAM data size for single-buffering mode
-			put_string( "SNGL-BUFF:", 17, 27 );
-			put_number( ( data_size << 1 ), 5, 27, 27 );
+			put_string( "SNGL-BUFF:", 16, 27 );
+			put_number( ( data_size << 1 ), 5, 26, 27 );
 		}
 	}
 }

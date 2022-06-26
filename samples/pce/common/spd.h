@@ -9,6 +9,7 @@
 History:
 
 v0.5
+2022.06.25 - optimized loading of SG data to VRAM for double-buffered meta-sprites; added 'SPD_DBL_BUFF_INIT_VAL' as initial value for a double-buffer index
 2022.06.23 - added second argument to the 'spd_dbl_buff_VRAM_addr( VADDR_dbl_buff, _dbl_buff_ind )' function and added 'spd_get_dbl_buff_ind()' function
 2022.06.09 - small fix to 'SPD_DEBUG', the pink border now shows how long it takes to load graphics data to VRAM
 
@@ -149,11 +150,11 @@ The main logic is:
 		// NOTE: Using the `SPD_FLAG_DBL_BUFF` flag means double-buffering for sprite graphics.
 		//	 It costs x2 of dynamic SG data in VRAM, but glitches free. You have to compare the results
 		//	 of using 'SPD_FLAG_DBL_BUFF' and 'SPD_FLAG_PEND_SG_DATA' and decide which is better in your case.
-[upd] v0.4	// NOTE: Passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
+[upd] v0.4	// NOTE: Passing 'last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
 		//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. The initial value is '0xff'.
 --->		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, SPD_FLAG_DBL_BUFF, last_bank_ind );
 
-[upd] v0.5	// Set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF) and the last double-buffer index value (zero by default).
+[upd] v0.5	// Set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF) and the last double-buffer index value (initial value is 'SPD_DBL_BUFF_INIT_VAL').
 --->		spd_dbl_buff_VRAM_addr( VADDR_dbl_buff, last_dbl_buff_ind );
 #else
 		// NOTE: Using the `SPD_FLAG_PEND_SG_DATA` flag means that SG data will not be loaded
@@ -182,10 +183,12 @@ The main logic is:
 		// There are two ways to show a sprite:
 		// 1. By index in a sprite array. Suitable for animation sequences.
 		// (see exported .h file for generated constants)
+[upd] v0.5	// NOTE: Use this function ONLY, if double-buffering is enabled (!)
 		spd_SATB_push_sprite( <exported_name>_frames_data, _ind, _x, _y );
 
 		// 2. By sprite data pointer.
 		// (see exported .h file for generated data)
+[upd] v0.5	// NOTE: Don't use this function, if double-buffering is enabled (!)
 		spd_SATB_push_sprite( <animation_name>_frame, _x, _y );
 
 		// NOTE: If meta-sprite does not fit into SATB, it will be ignored!
@@ -245,7 +248,9 @@ The main logic is:
 [upd] v0.4	
 3. Also you can use PACKED and UNPACKED data in one data set (in one SPReD-PCE project) by combining the approaches described above.
 
-debug info: the pink border shows when gfx data is being loaded to VRAM
+debug info:
+- pink border color - ROM-VRAM data copying
+- white border color - spd_SATB_push_sprite
 #asm
 SPD_DEBUG
 #endasm
@@ -274,6 +279,9 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "5", 0 };
 
 // ORed value returned by 'spd_SATB_push_sprite', means that new SG data already or must be loaded to VRAM
 #define SPD_SG_NEW_DATA		0x80
+
+// Initial value of a last double-buffer index
+#define	SPD_DBL_BUFF_INIT_VAL	0xff00
 
 /* main SPD-render routines */
 
@@ -317,10 +325,10 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "5", 0 };
 /* void spd_copy_SG_data_to_VRAM( far void* _frame_addr ) */
 #pragma fastcall spd_copy_SG_data_to_VRAM( farptr __bl:__si )
 
-/* void spd_dbl_buff_VRAM_addr( word _vram_addr, char _dbl_buff_ind ) */
-#pragma fastcall spd_dbl_buff_VRAM_addr( word __ax, byte __bl )
+/* void spd_dbl_buff_VRAM_addr( word _vram_addr, word _dbl_buff_ind ) */
+#pragma fastcall spd_dbl_buff_VRAM_addr( word __ax, word __bx )
 
-/* char spd_get_dbl_buff_ind() */
+/* unsigned short spd_get_dbl_buff_ind() */
 #pragma fastcall spd_get_dbl_buff_ind()
 
 #asm
@@ -489,6 +497,12 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "5", 0 };
 	and #INNER_FLAGS_DBL_BUFF
 	.endm
 
+	.macro inner_flags_switch_dbl_buff
+	lda <__inner_flags
+	eor #INNER_FLAGS_DBL_BUFF
+	sta <__inner_flags
+	.endm
+
 	.zp
 
 SPD_FLAG_PEND_SG_DATA	= $01
@@ -504,6 +518,9 @@ __SATB	= satb	; satb - HuC`s local satb
 __SATB_pos	.ds 1
 __SATB_flags	.ds 1
 __last_SG_bank	.ds 1
+
+__curr_spr_ind	.ds 1
+__last_spr_ind	.ds 1
 
 INNER_FLAGS_DBL_BUFF	= %00000001
 
@@ -622,9 +639,14 @@ _spd_SG_bank_get_ind:
 
 	rts
 
-;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr, byte __bl / dbl_buff_ind )
+;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr, word __bx / dbl_buff_ind )
 ;
 _spd_dbl_buff_VRAM_addr.2:
+
+	; set last sprite index
+
+	lda <__bh
+	sta <__last_spr_ind
 
 	; set double-buffer index
 
@@ -675,13 +697,14 @@ _spd_dbl_buff_VRAM_addr.2:
 
 	rts
 
-;// char spd_get_dbl_buff_ind()
+;// unsigned short spd_get_dbl_buff_ind()
 ;
 _spd_get_dbl_buff_ind
 
 	inner_flags_dbl_buff_state
 	tax
-	cla
+	
+	lda <__last_spr_ind
 
 	rts
 
@@ -764,6 +787,44 @@ _spd_SATB_clear_from.1:
 ;
 _spd_SATB_push_sprite.4:
 
+.ifdef	SPD_DEBUG
+	jsr _push_sprite_border
+.endif
+
+;--- DBL-BUFF ---
+	; check double-buffering state
+
+	get_SATB_flag SPD_FLAG_DBL_BUFF
+	beq .calc_data_offset		; no double-buffering
+
+	ldx <__dl
+	stx <__curr_spr_ind		; save curr_spr_ind
+
+	lda <__last_spr_ind
+	sta <__dl			; last sprite is always used when double-buffering is enabled
+
+	cpx <__last_spr_ind
+	beq .calc_data_offset		; continue processing sprite data if last_spr_ind == curr_spr_ind
+
+	; save farptr to get a curr_spr SG bank a bit later
+
+	stw <__si, __SG_DATA_SRC_ADDR
+	lda <__bl
+	sta __SG_DATA_SRC_BANK
+
+	lda <__dl
+	cmp #$ff
+	bne .calc_data_offset
+
+	; use curr_spr to calculate SG bank index, if last_spr == 0xff - initial value
+
+	lda <__curr_spr_ind
+	sta <__dl
+
+.calc_data_offset:
+
+;--- DBL-BUFF ---
+
 	; offset x6 -> sizeof( spd_SPRITE )
 
 	stz <__dh
@@ -774,6 +835,10 @@ _spd_SATB_push_sprite.4:
 ;// spd_SATB_push_sprite( farptr __bl:__si / addr, word __ax / x_pos, word __cx / y_pos )
 ;
 _spd_SATB_push_sprite.3:
+
+.ifdef	SPD_DEBUG
+	jsr _push_sprite_border
+.endif
 
 	; XY coordinates correction
 
@@ -815,6 +880,69 @@ _spd_SATB_push_sprite.3:
 
 	jsr unmap_data
 
+;--- DBL-BUFF ---
+	; check double-buffering state
+
+	get_SATB_flag SPD_FLAG_DBL_BUFF
+	beq .check_SATB_overflow	; no double-buffering
+
+	; new sprite?
+	; last_spr != curr_spr
+
+	lda <__last_spr_ind
+	cmp <__curr_spr_ind
+	beq .check_SATB_overflow	; continue with the same sprite as the previous one
+
+	; yep, we have a new sprite!
+	; check initial sprite value - $ff
+
+	lda <__last_spr_ind
+	cmp #$ff
+	bne .get_curr_spr_SG_bank_ind
+
+	; skip sprite attributes processing for initial sprite (last_spr = 0xff)
+	; while SG data has not been loaded to VRAM
+
+	jmp _check_SG_bank
+
+.get_curr_spr_SG_bank_ind:
+
+	; if( last_spr != curr_spr ) { SG_bank = SG_bank_ind( curr_spr ); last_SG_bank = 0xff; }
+
+	; since we have a new sprite, we need to load SG data of curr_spr at opposite VADDR (!)
+	; and continue showing the last sprite with its attributes at the last VADDR
+
+	stw __SG_DATA_SRC_ADDR, <__si
+	lda __SG_DATA_SRC_BANK
+	sta <__bl
+
+	; offset x6 -> sizeof( spd_SPRITE )
+
+	lda <__curr_spr_ind
+	sta <__dl
+
+	stz <__dh
+	mul6_word <__dx
+
+	jsr _spd_farptr_add_offset
+
+	jsr map_data
+
+	ldy #$05
+	lda [<__si], y
+	tay				; Y - SG bank index <- SG data of curr_spr will be loaded at opposite VADDR, while the last sprite will be shown (!)
+
+	jsr unmap_data
+
+	; reset the last SG bank index to guarantee that SG will be loaded to VRAM
+
+	lda #$ff
+	sta <__last_SG_bank
+
+.check_SATB_overflow:
+
+;--- DBL-BUFF ---
+
 	stw <__cx, <__si		; matasprite address
 	lda <__al
 	sta <__bl			; meta-sprite bank
@@ -829,6 +957,10 @@ _spd_SATB_push_sprite.3:
 	bcc .push_sprite
 
 	; SATB overflow
+
+.ifdef	SPD_DEBUG
+	jsr _black_border
+.endif
 
 	clx
 	cla
@@ -861,6 +993,7 @@ _spd_SATB_push_sprite.3:
 	jsr unmap_data
 
 	phy				; Y - SG bank index
+
 ;--- DBL-BUFF ---
 	; check double-buffering state
 
@@ -876,14 +1009,19 @@ _spd_SATB_push_sprite.3:
 
 .use_main_buff:
 
+;--- DBL-BUFF ---
+
 	jmp __attr_transf_XY
 
 _push_SG_data:
 
 	ply				; Y - SG bank index
 
-	get_SATB_flag SPD_FLAG_DBL_BUFF
-	bne _load_SG_data		; when double-buffering is enabled we should ignore SG data checking to avoid glitches
+;--- DBL-BUFF ---
+_check_SG_bank:
+
+	lda <__curr_spr_ind		; last_spr_ind = curr_spr_ind
+	sta <__last_spr_ind
 ;--- DBL-BUFF ---
 
 ;--- SPD_FLAG_IGNORE_SG ---
@@ -899,6 +1037,10 @@ _push_SG_data:
 .ignore_SG_data:
 
 	; SG data already loaded or must be ignored
+
+.ifdef	SPD_DEBUG
+	jsr _black_border
+.endif
 
 	ldx #1
 	cla
@@ -959,39 +1101,37 @@ _load_SG_data:
 	stw <__ax, <__si
 
 	; __di = VADDR
+	
 ;--- DBL-BUFF ---
 	get_SATB_flag SPD_FLAG_DBL_BUFF
-	beq .cont_load_SG_data1		; no double-buffering
+	beq .use_main_VADDR		; no double-buffering
+
+	; toggle the double-buffering flag
+
+	inner_flags_switch_dbl_buff
 
 	; check which VADDR to use
 
-	lda <__inner_flags
-	and #INNER_FLAGS_DBL_BUFF
-	beq .cont_load_SG_data1		; use the main VADDR
+	inner_flags_dbl_buff_state
+	beq .use_main_VADDR		; use the main VADDR
 
-	stw <__spr_VADDR_dbl, <__di	; use the alternative VADDR
+	stw <__spr_VADDR_dbl, <__di	; use opposite VADDR
 
-	bra .cont_load_SG_data2
+	bra .cont_load_SG_data
 
-.cont_load_SG_data1:
+.use_main_VADDR:
+
+;--- DBL-BUFF ---
 
 	stw <__spr_VADDR, <__di
 
-.cont_load_SG_data2:
+.cont_load_SG_data:
 
-	; toggle the double-buffering flag anyway
-	; it helps to avoid glitches when you combine
-	; single- and double-buffered meta-sprites
-
-	lda <__inner_flags
-	eor #INNER_FLAGS_DBL_BUFF
-	sta <__inner_flags
-;--- DBL-BUFF ---
 	get_SATB_flag SPD_FLAG_PEND_SG_DATA
 	bne .copy_SG_data_params
 
 .ifdef	SPD_DEBUG
-	jsr _pink_border
+	jsr _load_VRAM_border
 .endif
 	jsr load_vram
 
@@ -1019,6 +1159,10 @@ _load_SG_data:
 
 	stw __SG_DATA_LEN, <__ax
 	stw_zpii <__cx, <__ax
+
+.ifdef	SPD_DEBUG
+	jsr _black_border
+.endif
 
 	ldx #( 1 | SPD_SG_NEW_DATA )
 	cla
@@ -1184,7 +1328,7 @@ _spd_copy_SG_data_to_VRAM.4:
 	stw <__dx, <__di
 
 .ifdef	SPD_DEBUG
-	jsr _pink_border
+	jsr _load_VRAM_border
 
 	jsr load_vram
 
@@ -1225,21 +1369,31 @@ _spd_copy_SG_data_to_VRAM.1:
 .ifdef SPD_DEBUG
 _black_border:
 
-	stz <__al
-	stz <__ah
+	clx
+	cly
 
 	jmp _border_color
 
-_pink_border:
+_push_sprite_border:
 
-	lda #$ff
-	sta <__al
-	stz <__ah
+	ldx #$01
+	ldy #$ff
+
+	jmp _border_color
+
+_load_VRAM_border:
+
+	clx
+	ldy #$ff
+
+	jmp _border_color
 
 _border_color:
 
 	stw #$0100, $0402
-	stw <__ax, $0404
+
+	sty $0404
+	stx $0405
 
 	rts
 .endif	;SPD_DEBUG
