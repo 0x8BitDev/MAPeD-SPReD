@@ -230,7 +230,7 @@ namespace SPReD
 	
 							for( j = 0; j < img_width; j++ )
 							{
-								if( plte.Length == 256 )
+								if( _bmp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed )
 								{
 									index_byte = Marshal.ReadByte( data_ptr, j + ( i * bmp_data.Stride ) );
 									
