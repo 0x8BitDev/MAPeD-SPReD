@@ -2071,9 +2071,15 @@ namespace SPReD
 #endif
 							if( !_asm_file )
 							{
+#if DEF_PCE
+								c_sw.WriteLine( "#define\tSPR_" + ( m_PCE_export_form.add_filename_to_sprite_names ? filename.ToUpper() + "_":"" ) + spr.name.ToUpper() + "\t" + i );
+								
+								post_spr_data += "extern spd_SPRITE*\t" + ( m_PCE_export_form.add_filename_to_sprite_names ? filename + "_":"" ) + spr.name + "_frame;\n";
+#else
 								c_sw.WriteLine( "#define\tSPR_" + spr.name.ToUpper() + "\t" + i );
 								
 								post_spr_data += "extern spd_SPRITE*\t" + spr.name + "_frame;\n";
+#endif
 							}
 
 							enable_comments = false;

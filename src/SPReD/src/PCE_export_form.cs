@@ -32,6 +32,12 @@ namespace SPReD
 			get { return (int)NumPaletteSlot.Value; }
 		}
 		
+		public bool add_filename_to_sprite_names
+		{
+			get { return CheckBoxAddFileNameToSpriteName.Checked; }
+			set {}
+		}
+		
 		public bool comment_CHR_data
 		{
 			get { return CheckBoxCommentCHRData.Checked; }

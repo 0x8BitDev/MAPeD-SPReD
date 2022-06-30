@@ -103,6 +103,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+30.06.2022 - PCE: added 'add filename to sprite names' checkbox to the export options dialog
 21.06.2022 - Packed sprites splitting by selected sprites
 17.06.2022 - PCE: added 'data directory' field to the export options dialog
 10.06.2022 - Added support for importing 8-bit BMP images
