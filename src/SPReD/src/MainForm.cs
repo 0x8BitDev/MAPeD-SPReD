@@ -1856,6 +1856,8 @@ namespace SPReD
 			string post_spr_data	= "";
 			string data_dir			= "";
 		
+			bool comment_CHR_data	= false;
+			
 			try
 			{
 #if DEF_NES
@@ -1865,16 +1867,22 @@ namespace SPReD
 				{
 					save_padding_data = true;
 				}
+				
+				comment_CHR_data = true;
 #elif DEF_SMS
 				if( m_SMS_export_form.ShowDialog() == DialogResult.Cancel )
 				{
 					return;
 				}
+				
+				comment_CHR_data = m_SMS_export_form.comment_CHR_data;
 #elif DEF_PCE
 				if( m_PCE_export_form.ShowDialog( _asm_file ) == DialogResult.Cancel )
 				{
 					return;
 				}
+				
+				comment_CHR_data = m_PCE_export_form.comment_CHR_data;
 				
 				data_dir = m_PCE_export_form.data_dir;
 #else
@@ -1959,22 +1967,22 @@ namespace SPReD
 					m_sprites_proc.rearrange_CHR_data_ids();
 					
 #if DEF_NES
-					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, true, save_padding_data );
+					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, comment_CHR_data, save_padding_data );
 #elif DEF_SMS
-					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, m_SMS_export_form.comment_CHR_data, m_SMS_export_form.bpp << 3 );
+					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, comment_CHR_data, m_SMS_export_form.bpp << 3 );
 #elif DEF_PCE
-					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, m_PCE_export_form.comment_CHR_data, _asm_file );
+					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, comment_CHR_data, _asm_file );
 #else
 ...
 #endif
 					if( !_asm_file )
 					{
 #if DEF_PCE
-						c_sw.WriteLine( "extern unsigned short*\t" + filename + "_SG_arr;" );
-						c_sw.WriteLine( "#define\t" + filename + "_SG_cnt\t" + m_sprites_proc.get_CHR_banks().Count + "\t// graphics banks count" );
+						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "extern unsigned short*\t" + filename + "_SG_arr;" );
+						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "#define\t" + filename + "_SG_cnt\t" + m_sprites_proc.get_CHR_banks().Count + "\t// graphics banks count" );
 #else
-						c_sw.WriteLine( "extern unsigned short*\t" + filename + "_CHR_arr;" );
-						c_sw.WriteLine( "#define\t" + filename + "_CHR_cnt\t" + m_sprites_proc.get_CHR_banks().Count + "\t// graphics banks count" );
+						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "extern unsigned short*\t" + filename + "_CHR_arr;" );
+						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "#define\t" + filename + "_CHR_cnt\t" + m_sprites_proc.get_CHR_banks().Count + "\t// graphics banks count" );
 #endif
 					}
 					
