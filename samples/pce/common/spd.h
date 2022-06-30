@@ -9,9 +9,11 @@
 History:
 
 v0.5
+2022.06.28 - added 'spd_alt_VRAM_addr()' function to use VRAM address other than exported one
 2022.06.25 - optimized loading of SG data to VRAM for double-buffered meta-sprites; added 'SPD_DBL_BUFF_INIT_VAL' as initial value for a double-buffer index
+2022.06.25 - small changes in 'SPD_DEBUG', the white border now shows how long the 'spd_SATB_push_sprite' takes
 2022.06.23 - added second argument to the 'spd_dbl_buff_VRAM_addr( VADDR_dbl_buff, _dbl_buff_ind )' function and added 'spd_get_dbl_buff_ind()' function
-2022.06.09 - small fix to 'SPD_DEBUG', the pink border now shows how long it takes to load graphics data to VRAM
+2022.06.09 - small fix in 'SPD_DEBUG', the pink border now shows how long it takes to load graphics data to VRAM
 
 v0.4
 2022.06.08 - added a debug flag 'SPD_DEBUG' that shows when gfx data is being loaded to VRAM
@@ -51,7 +53,7 @@ The main logic is:
 	// Initialization of exported sprite set.
 	{
 		// Load palette in the usual way.
-		load_palette( <EXPORTED_NAME>_PALETTE_SLOT, <exported_name>_palette, <exported_name>_palette_size );
+		load_palette( <EXPORTED_NAME>_PALETTE_SLOT, <exported_name>_palette, <exported_name>_PALETTE_SIZE );
 
 		// Set up exported sprite set with SG data array and VRAM address to load SG data to.
 		// NOTE: You can combine any number of exported sprite sets in your program.
@@ -131,6 +133,12 @@ The main logic is:
 	// WARNING: Take into account your sprite origin! It can be configured out of (0, 0) in the SPReD-PCE.
 
 
+[upd] v0.5
+	NOTE: If you need a cache of sprites, for example, for identical objects that may appear on screen in a certain quantity, 
+	initialize and use the same set of sprites as many times as you need for your cache. In this case, all of your
+--->	cached sprites will use the same graphics, but may be located at different positions on the screen.
+
+
 2. UNPACKED sprites data. All exported SG data are stored in separate files. It were not packed in the SPReD-PCE.
 Unpacked data are suitable for dynamic SG data, that can be loaded to VRAM dynamically to save video memory. It`s
 useful when you have a lot of animations that don`t fit into VRAM, like in fighting games.
@@ -143,7 +151,7 @@ The main logic is:
 	// Initialization of exported sprite set.
 	{
 		// Load palette in the usual way.
-		load_palette( <EXPORTED_NAME>_PALETTE_SLOT, <exported_name>_palette, <exported_name>_palette_size );
+		load_palette( <EXPORTED_NAME>_PALETTE_SLOT, <exported_name>_palette, <exported_name>_PALETTE_SIZE );
 
 		// Set up exported sprite set with SG data array and VRAM address to load SG data to.
 #if	DEF_SG_DBL_BUFF
@@ -167,6 +175,9 @@ The main logic is:
 		// NOTE: Single- and double-buffered meta-sprites can be combined in runtime.
 		// NOTE: You can combine any number of exported sprite sets in your program.
 		//	 Call the 'spd_sprite_params' to switch between them.
+
+[upd] v0.5	// NOTE: To use multiple instances of the same sprite set, for example, for a sprite cache,
+--->		//	 use 'spd_alt_VRAM_addr( _alt_VADDR )' which replaces the '<EXPORTED_NAME>_SPR_VADDR'.
 	}
 
 	// HuC's SATB initialization.
@@ -327,6 +338,9 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "5", 0 };
 
 /* void spd_dbl_buff_VRAM_addr( word _vram_addr, word _dbl_buff_ind ) */
 #pragma fastcall spd_dbl_buff_VRAM_addr( word __ax, word __bx )
+
+/* void spd_alt_VRAM_addr( word _vram_addr ) */
+#pragma fastcall spd_alt_VRAM_addr( word __ax )
 
 /* unsigned short spd_get_dbl_buff_ind() */
 #pragma fastcall spd_get_dbl_buff_ind()
@@ -508,8 +522,9 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "5", 0 };
 SPD_FLAG_PEND_SG_DATA	= $01
 SPD_FLAG_DBL_BUFF	= $02
 SPD_FLAG_IGNORE_SG	= $04
+SPD_FLAG_ALT_VADDR	= $08	; is used when the 'spd_alt_VRAM_addr()' is called
 
-SPD_SG_NEW_DATA		= $80
+SPD_SG_NEW_DATA		= $80	; 'spd_SATB_push_sprite' result
 
 SATB_SIZE	= 64
 
@@ -530,8 +545,11 @@ __inner_flags	.ds 1
 
 __spr_VADDR	.ds 2	; sprite`s SG data address in VRAM
 __spr_VADDR_dbl	.ds 2	; VRAM address for double-buffering
-__spr_SG_offset
+__spr_dbf_SG_offset
 		.ds 2	; SG offset for pattern index correction when double-buffering is active
+
+__spr_alt_SG_offset
+		.ds 2	; SG offset for pattern index correction for alternative VADDR
 
 __spr_SG_data_addr
 		.ds 2
@@ -672,6 +690,41 @@ _spd_dbl_buff_VRAM_addr.2:
 	stw <__ax, <__spr_VADDR_dbl
 	stw <__spr_VADDR, <__bx
 
+	jsr _calc_SG_pattern_offset
+
+	stw <__bx, <__spr_dbf_SG_offset
+
+	rts
+
+;// void spd_alt_VRAM_addr( word __ax / vram_addr )
+;
+_spd_alt_VRAM_addr.1:
+
+	; apply alt VADDR flag
+
+	lda #SPD_FLAG_ALT_VADDR
+	ora <__SATB_flags
+	sta <__SATB_flags
+
+	; set alternative VADDR
+
+	stw <__spr_VADDR, <__bx
+	stw <__ax, <__spr_VADDR			; replace the sprite VADDR with the alternative one
+
+	jsr _calc_SG_pattern_offset
+
+	stw <__bx, <__spr_alt_SG_offset
+
+	rts
+
+;
+; IN:	__ax - VADDR1
+;	__bx - VADDR2
+;
+; OUT:	__bx - pattern index offset
+;
+_calc_SG_pattern_offset:
+
 	sub_word_from_word <__ax, <__bx
 
 	lda <__bh
@@ -679,10 +732,9 @@ _spd_dbl_buff_VRAM_addr.2:
 
 	; negative val
 
-	; __spr_SG_offset = __bx / 32
+	; SG_offset = __bx / 32
 
 	div32_neg_word <__bx
-	stw <__bx, <__spr_SG_offset
 
 	rts
 
@@ -690,10 +742,9 @@ _spd_dbl_buff_VRAM_addr.2:
 
 .pos_val:
 
-	; __spr_SG_offset = __bx / 32
+	; SG_offset = __bx / 32
 
 	div32_word <__bx
-	stw <__bx, <__spr_SG_offset
 
 	rts
 
@@ -1005,7 +1056,7 @@ _spd_SATB_push_sprite.3:
 	inner_flags_dbl_buff_state
 	beq .use_main_buff
 	
-	jmp __attr_transf_XY_IND
+	jmp __attr_transf_XY_IND_dbf
 
 .use_main_buff:
 
@@ -1175,6 +1226,13 @@ __attr_transf_XY:
 
 	cly
 
+;--- SPD_FLAG_ALT_VADDR ---
+	get_SATB_flag SPD_FLAG_ALT_VADDR
+	beq .__attr_loop_XY
+
+	jmp __attr_transf_XY_IND_alt
+;--- SPD_FLAG_ALT_VADDR ---
+
 .__attr_loop_XY:
 
 	iny				;2
@@ -1230,14 +1288,14 @@ __attr_transf_XY:
 
 	jmp _push_SG_data
 
-	; transform XY coordinates and modify a sprite pattern code
-	; this routine is used when double-buffering is active
+	; transform XY coordinates and modify sprite pattern code
+	; this routine is used for alternative VADDR
 
-__attr_transf_XY_IND:
+__attr_transf_XY_IND_alt:
 
 	cly
 
-.__attr_loop_XY_IND:
+.__attr_loop_XY_IND_alt:
 
 	iny
 
@@ -1276,7 +1334,7 @@ __attr_transf_XY_IND:
 
 	iny
 
-	; attr.SG_ind += __spr_SG_offset
+	; attr.SG_ind += __spr_alt_SG_offset
 
 	iny
 	lda [<__cx], y
@@ -1285,10 +1343,10 @@ __attr_transf_XY_IND:
 	lda [<__cx], y
 
 	clc
-	adc <__spr_SG_offset
+	adc <__spr_alt_SG_offset
 	sta [<__cx], y
 	txa
-	adc <__spr_SG_offset + 1
+	adc <__spr_alt_SG_offset + 1
 	iny
 	sta [<__cx], y
 
@@ -1305,7 +1363,86 @@ __attr_transf_XY_IND:
 	inc <__SATB_pos
 
 	dec <__al			; __al - number of attrs
-	bne .__attr_loop_XY_IND
+	bne .__attr_loop_XY_IND_alt
+
+	jmp _push_SG_data
+
+	; transform XY coordinates and modify sprite pattern code
+	; this routine is used when double-buffering is active
+
+__attr_transf_XY_IND_dbf:
+
+	cly
+
+.__attr_loop_XY_IND_dbf:
+
+	iny
+
+	; attr.Y += __spr_pos_y
+
+	lda [<__cx], y
+	tax
+	dey
+	lda [<__cx], y
+
+	clc
+	adc <__spr_pos_y
+	sta [<__cx], y
+	txa
+	adc <__spr_pos_y + 1
+	iny
+	sta [<__cx], y
+
+	iny
+
+	; attr.X += __spr_pos_x
+
+	iny
+	lda [<__cx], y
+	tax
+	dey
+	lda [<__cx], y
+
+	clc
+	adc <__spr_pos_x
+	sta [<__cx], y
+	txa
+	adc <__spr_pos_x + 1
+	iny
+	sta [<__cx], y
+
+	iny
+
+	; attr.SG_ind += __spr_dbf_SG_offset
+
+	iny
+	lda [<__cx], y
+	tax
+	dey
+	lda [<__cx], y
+
+	clc
+	adc <__spr_dbf_SG_offset
+	sta [<__cx], y
+	txa
+	adc <__spr_dbf_SG_offset + 1
+	iny
+	sta [<__cx], y
+
+	; move to the next attr line
+
+	iny		;2
+	iny		;2
+	iny		;2 = 6
+
+	bne .cont	;2 = 8
+
+	inc <__ch
+.cont:
+	inc <__SATB_pos
+
+	dec <__al			; __al - number of attrs
+	bne .__attr_loop_XY_IND_dbf
 
 	jmp _push_SG_data
 
