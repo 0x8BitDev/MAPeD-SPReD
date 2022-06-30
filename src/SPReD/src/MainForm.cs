@@ -1929,7 +1929,7 @@ namespace SPReD
 						sw.WriteLine( ".define\t" + filename.ToUpper() + "_SPR_CHR_BPP\t" + m_SMS_export_form.bpp );
 						sw.WriteLine( ".define\t" + filename.ToUpper() + "_SPR_CHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t; first CHR index in a CHR bank\n\n" );
 #elif DEF_PCE
-						sw.WriteLine( filename.ToUpper() + "_SPR_VADDR\t= " + m_PCE_export_form.VADDR );
+						sw.WriteLine( filename.ToUpper() + "_SPR_VADDR\t= " + utils.hex( "$", m_PCE_export_form.VADDR ) );
 						sw.WriteLine( filename.ToUpper() + "_PALETTE_SLOT\t= " + m_PCE_export_form.palette_slot + "\n\n" );
 #else
 ...
@@ -1948,7 +1948,7 @@ namespace SPReD
 						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_CHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t// first CHR index in a CHR bank\n\n" );
 #elif DEF_PCE
 						c_sw.WriteLine( "#incasm( \"" + data_dir + filename + "." + this.ExportASM_saveFileDialog.DefaultExt + "\" )\n" );
-						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_VADDR\t" + m_PCE_export_form.VADDR );
+						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_VADDR\t" + utils.hex( "0x", m_PCE_export_form.VADDR ) );
 						c_sw.WriteLine( "#define " + filename.ToUpper() + "_PALETTE_SLOT\t" + ( m_PCE_export_form.palette_slot + 16 ) + "\n\n" );
 #else
 ...

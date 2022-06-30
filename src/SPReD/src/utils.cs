@@ -347,5 +347,10 @@ namespace SPReD
 			
 			return res;
 		}
+		
+		public static string hex( string _prefix, int _val )
+		{
+			return _prefix + String.Format( "{0:X2}", _val );
+		}
 	}
 }
