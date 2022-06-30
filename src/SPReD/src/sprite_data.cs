@@ -531,11 +531,11 @@ namespace SPReD
 		}
 
 #if DEF_NES		
-		public void export( StreamWriter _sw, string data_prefix )
+		public void export( StreamWriter _sw, string _data_prefix )
 #elif DEF_SMS
-		public void export( StreamWriter _sw, int _CHRs_offset, string data_prefix )
+		public void export( StreamWriter _sw, int _CHRs_offset, string _data_prefix )
 #elif DEF_PCE
-		public void export( StreamWriter _sw, int _CHRs_offset, int _palette_slot, string data_prefix )
+		public void export( StreamWriter _sw, int _CHRs_offset, int _palette_slot, string _data_prefix )
 #else
 ...
 #endif
@@ -549,7 +549,7 @@ namespace SPReD
 				throw new Exception( "The sprite - " + name + " - has more than " + utils.CONST_SPRITE_MAX_NUM_ATTRS.ToString() + " tiles that exceed the hardware limit!\n Please, fix it to avoid the sprite drawing error in your project!" );
 			}
 			
-			_sw.WriteLine( data_prefix + name + ":" );
+			_sw.WriteLine( _data_prefix + name + ":" );
 			
 			for( int i = 0; i < size; i++ )
 			{
@@ -597,7 +597,7 @@ namespace SPReD
 #endif
 			}
 			
-			_sw.WriteLine( name + "_end:\n" );
+			_sw.WriteLine( _data_prefix + name + "_end:\n" );
 		}
 #if DEF_PCE
 		private int get_CGX_CGY_flags( ref int _CHR_ind_offset )

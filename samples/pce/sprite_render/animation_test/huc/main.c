@@ -30,7 +30,7 @@ anim_desc	test_anim	= { 0, 0, 9, 6, 0, 0 };
 void	sprite_set_init()
 {
 	// load palette in the usual way.
-	load_palette( ANM_TEST_PALETTE_SLOT, anm_test_palette, anm_test_palette_size );
+	load_palette( ANM_TEST_PALETTE_SLOT, anm_test_palette, ANM_TEST_PALETTE_SIZE );
 
 	// set up exported sprite set with SG data array and VRAM address to load SG data to.
 	// NOTE: you can combine any number of exported sprite sets in your program.

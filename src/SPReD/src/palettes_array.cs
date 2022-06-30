@@ -171,7 +171,7 @@ namespace SPReD
 			}
 		}
 
-		public void export( StreamWriter _sw, string _prefix, int _max_plts )
+		public void export( StreamWriter _sw, string _prefix, int _start_slot, int _max_plts )
 		{
 			_sw.WriteLine( _prefix + "_palette:" );
 			
@@ -179,7 +179,7 @@ namespace SPReD
 			{
 				_sw.WriteLine( _prefix + "_palette_slot" + i + ":" );
 				
-				m_plts[ i ].export( _sw );
+				m_plts[ _start_slot + i ].export( _sw );
 			}
 			
 			_sw.WriteLine( _prefix + "_palette_end:" );

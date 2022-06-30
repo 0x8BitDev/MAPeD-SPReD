@@ -6,9 +6,7 @@
 
 #incasm( "sprites_test.asm" )
 
-#define SPRITES_TEST_SPR_VADDR	8192
-#define SPRITES_TEST_PALETTE_SLOT	16
-
+#define SPRITES_TEST_SPR_VADDR	0x2000
 
 #ifndef	DEF_TYPE_SPD_SPRITE
 #define	DEF_TYPE_SPD_SPRITE
@@ -22,9 +20,11 @@ typedef struct
 #endif	//DEF_TYPE_SPD_SPRITE
 
 
+#define	SPRITES_TEST_SG_CNT	1	// graphics banks count
 extern unsigned short*	sprites_test_SG_arr;
-#define	sprites_test_SG_cnt	1	// graphics banks count
-#define	sprites_test_palette_size	6	// active palettes
+
+#define	SPRITES_TEST_PALETTE_SIZE	6	// active palettes
+#define SPRITES_TEST_PALETTE_SLOT	16
 
 extern unsigned short*	sprites_test_palette_slot0;
 extern unsigned short*	sprites_test_palette_slot1;
@@ -32,9 +32,9 @@ extern unsigned short*	sprites_test_palette_slot2;
 extern unsigned short*	sprites_test_palette_slot3;
 extern unsigned short*	sprites_test_palette_slot4;
 extern unsigned short*	sprites_test_palette_slot5;
-
 extern unsigned short*	sprites_test_palette;
-#define	sprites_test_frames_cnt	10
+
+#define	SPRITES_TEST_FRAMES_CNT	10
 extern spd_SPRITE	sprites_test_frames_data[];
 
 #define	SPR_JCH_RIGHT_32X64	0

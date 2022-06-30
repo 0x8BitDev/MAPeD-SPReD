@@ -39,62 +39,62 @@ _set3_frames_data:
 _mpwr_idle01_LEFT_frame:
 	.word _mpwr_idle01_LEFT
 	.byte bank(_mpwr_idle01_LEFT)
-	.word mpwr_idle01_LEFT_end - _mpwr_idle01_LEFT	; data size
+	.word _mpwr_idle01_LEFT_end - _mpwr_idle01_LEFT	; data size
 	.byte 6		; GFX bank index (chr6)
 _mpwr_walk01_LEFT_frame:
 	.word _mpwr_walk01_LEFT
 	.byte bank(_mpwr_walk01_LEFT)
-	.word mpwr_walk01_LEFT_end - _mpwr_walk01_LEFT
+	.word _mpwr_walk01_LEFT_end - _mpwr_walk01_LEFT
 	.byte 0
 _mpwr_walk02_LEFT_frame:
 	.word _mpwr_walk02_LEFT
 	.byte bank(_mpwr_walk02_LEFT)
-	.word mpwr_walk02_LEFT_end - _mpwr_walk02_LEFT
+	.word _mpwr_walk02_LEFT_end - _mpwr_walk02_LEFT
 	.byte 1
 _mpwr_walk03_LEFT_frame:
 	.word _mpwr_walk03_LEFT
 	.byte bank(_mpwr_walk03_LEFT)
-	.word mpwr_walk03_LEFT_end - _mpwr_walk03_LEFT
+	.word _mpwr_walk03_LEFT_end - _mpwr_walk03_LEFT
 	.byte 2
 _mpwr_walk04_LEFT_frame:
 	.word _mpwr_walk04_LEFT
 	.byte bank(_mpwr_walk04_LEFT)
-	.word mpwr_walk04_LEFT_end - _mpwr_walk04_LEFT
+	.word _mpwr_walk04_LEFT_end - _mpwr_walk04_LEFT
 	.byte 3
 _mpwr_walk05_LEFT_frame:
 	.word _mpwr_walk05_LEFT
 	.byte bank(_mpwr_walk05_LEFT)
-	.word mpwr_walk05_LEFT_end - _mpwr_walk05_LEFT
+	.word _mpwr_walk05_LEFT_end - _mpwr_walk05_LEFT
 	.byte 4
 _mpwr_walk06_LEFT_frame:
 	.word _mpwr_walk06_LEFT
 	.byte bank(_mpwr_walk06_LEFT)
-	.word mpwr_walk06_LEFT_end - _mpwr_walk06_LEFT
+	.word _mpwr_walk06_LEFT_end - _mpwr_walk06_LEFT
 	.byte 5
 _mpwr_kick01_LEFT_frame:
 	.word _mpwr_kick01_LEFT
 	.byte bank(_mpwr_kick01_LEFT)
-	.word mpwr_kick01_LEFT_end - _mpwr_kick01_LEFT
+	.word _mpwr_kick01_LEFT_end - _mpwr_kick01_LEFT
 	.byte 7
 _mpwr_kick02_LEFT_frame:
 	.word _mpwr_kick02_LEFT
 	.byte bank(_mpwr_kick02_LEFT)
-	.word mpwr_kick02_LEFT_end - _mpwr_kick02_LEFT
+	.word _mpwr_kick02_LEFT_end - _mpwr_kick02_LEFT
 	.byte 8
 _mpwr_kick03_LEFT_frame:
 	.word _mpwr_kick03_LEFT
 	.byte bank(_mpwr_kick03_LEFT)
-	.word mpwr_kick03_LEFT_end - _mpwr_kick03_LEFT
+	.word _mpwr_kick03_LEFT_end - _mpwr_kick03_LEFT
 	.byte 9
 _mpwr_kick04_ref02_LEFT_frame:
 	.word _mpwr_kick04_ref02_LEFT
 	.byte bank(_mpwr_kick04_ref02_LEFT)
-	.word mpwr_kick04_ref02_LEFT_end - _mpwr_kick04_ref02_LEFT
+	.word _mpwr_kick04_ref02_LEFT_end - _mpwr_kick04_ref02_LEFT
 	.byte 8
 _mpwr_kick05_ref01_LEFT_frame:
 	.word _mpwr_kick05_ref01_LEFT
 	.byte bank(_mpwr_kick05_ref01_LEFT)
-	.word mpwr_kick05_ref01_LEFT_end - _mpwr_kick05_ref01_LEFT
+	.word _mpwr_kick05_ref01_LEFT_end - _mpwr_kick05_ref01_LEFT
 	.byte 7
 
 
@@ -121,7 +121,7 @@ _mpwr_idle01_LEFT:
 	.word $FFEE, $05, $222, $82
 	.word $FFEE, $15, $224, $82
 	.word $FFFE, $0C, $226, $82
-mpwr_idle01_LEFT_end:
+_mpwr_idle01_LEFT_end:
 
 _mpwr_walk01_LEFT:
 	.word $FF97, $FFED, $200, $82
@@ -147,7 +147,7 @@ _mpwr_walk01_LEFT:
 	.word $FFF7, $FFEB, $228, $82
 	.word $FFF7, $FFFB, $22A, $82
 	.word $FFF7, $14, $22C, $82
-mpwr_walk01_LEFT_end:
+_mpwr_walk01_LEFT_end:
 
 _mpwr_walk02_LEFT:
 	.word $FF96, $FFEE, $200, $82
@@ -168,7 +168,7 @@ _mpwr_walk02_LEFT:
 	.word $FFF6, $FFF2, $21E, $82
 	.word $FFF6, $02, $220, $82
 	.word $FFF6, $12, $222, $82
-mpwr_walk02_LEFT_end:
+_mpwr_walk02_LEFT_end:
 
 _mpwr_walk03_LEFT:
 	.word $FF93, $FFEE, $200, $82
@@ -190,7 +190,7 @@ _mpwr_walk03_LEFT:
 	.word $FFE3, $0A, $220, $82
 	.word $FFF3, $09, $222, $82
 	.word $FFF3, $19, $224, $82
-mpwr_walk03_LEFT_end:
+_mpwr_walk03_LEFT_end:
 
 _mpwr_walk04_LEFT:
 	.word $FF97, $FFEE, $200, $82
@@ -216,7 +216,7 @@ _mpwr_walk04_LEFT:
 	.word $FFF7, $FFE3, $228, $82
 	.word $FFF7, $FFF3, $22A, $82
 	.word $FFF7, $19, $22C, $82
-mpwr_walk04_LEFT_end:
+_mpwr_walk04_LEFT_end:
 
 _mpwr_walk05_LEFT:
 	.word $FF9A, $FFEE, $200, $82
@@ -239,7 +239,7 @@ _mpwr_walk05_LEFT:
 	.word $FFFA, $FFEE, $222, $82
 	.word $FFFA, $FFFE, $224, $82
 	.word $FFFA, $16, $226, $82
-mpwr_walk05_LEFT_end:
+_mpwr_walk05_LEFT_end:
 
 _mpwr_walk06_LEFT:
 	.word $FF98, $FFEE, $200, $82
@@ -260,7 +260,7 @@ _mpwr_walk06_LEFT:
 	.word $FFE8, $02, $21E, $82
 	.word $FFF8, $00, $220, $82
 	.word $FFF8, $10, $222, $82
-mpwr_walk06_LEFT_end:
+_mpwr_walk06_LEFT_end:
 
 _mpwr_kick01_LEFT:
 	.word $FF98, $FFDB, $200, $82
@@ -288,7 +288,7 @@ _mpwr_kick01_LEFT:
 	.word $FFF8, $FFE5, $22C, $82
 	.word $FFF8, $FFF5, $22E, $82
 	.word $FFF8, $0F, $230, $82
-mpwr_kick01_LEFT_end:
+_mpwr_kick01_LEFT_end:
 
 _mpwr_kick02_LEFT:
 	.word $FF93, $FFF3, $200, $82
@@ -308,7 +308,7 @@ _mpwr_kick02_LEFT:
 	.word $FFE3, $00, $21C, $82
 	.word $FFF3, $FFE5, $21E, $82
 	.word $FFF3, $FFF5, $220, $82
-mpwr_kick02_LEFT_end:
+_mpwr_kick02_LEFT_end:
 
 _mpwr_kick03_LEFT:
 	.word $FF9A, $FFBD, $200, $82
@@ -336,7 +336,7 @@ _mpwr_kick03_LEFT:
 	.word $FFEA, $FFF2, $22C, $82
 	.word $FFFA, $FFE5, $22E, $82
 	.word $FFFA, $FFF5, $230, $82
-mpwr_kick03_LEFT_end:
+_mpwr_kick03_LEFT_end:
 
 _mpwr_kick04_ref02_LEFT:
 	.word $FF93, $FFF3, $200, $82
@@ -356,7 +356,7 @@ _mpwr_kick04_ref02_LEFT:
 	.word $FFE3, $00, $21C, $82
 	.word $FFF3, $FFE5, $21E, $82
 	.word $FFF3, $FFF5, $220, $82
-mpwr_kick04_ref02_LEFT_end:
+_mpwr_kick04_ref02_LEFT_end:
 
 _mpwr_kick05_ref01_LEFT:
 	.word $FF98, $FFDB, $200, $82
@@ -384,5 +384,5 @@ _mpwr_kick05_ref01_LEFT:
 	.word $FFF8, $FFE5, $22C, $82
 	.word $FFF8, $FFF5, $22E, $82
 	.word $FFF8, $0F, $230, $82
-mpwr_kick05_ref01_LEFT_end:
+_mpwr_kick05_ref01_LEFT_end:
 

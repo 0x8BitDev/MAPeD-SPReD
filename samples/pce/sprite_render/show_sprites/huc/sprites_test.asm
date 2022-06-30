@@ -31,52 +31,52 @@ _sprites_test_frames_data:
 _jch_RIGHT_32x64_frame:
 	.word _jch_RIGHT_32x64
 	.byte bank(_jch_RIGHT_32x64)
-	.word jch_RIGHT_32x64_end - _jch_RIGHT_32x64	; data size
+	.word _jch_RIGHT_32x64_end - _jch_RIGHT_32x64	; data size
 	.byte 0		; GFX bank index (chr0)
 _dr_msl_UP_16x64_0_frame:
 	.word _dr_msl_UP_16x64_0
 	.byte bank(_dr_msl_UP_16x64_0)
-	.word dr_msl_UP_16x64_0_end - _dr_msl_UP_16x64_0
+	.word _dr_msl_UP_16x64_0_end - _dr_msl_UP_16x64_0
 	.byte 0
 _dr_msl_UP_16x64_1_ref_frame:
 	.word _dr_msl_UP_16x64_1_ref
 	.byte bank(_dr_msl_UP_16x64_1_ref)
-	.word dr_msl_UP_16x64_1_ref_end - _dr_msl_UP_16x64_1_ref
+	.word _dr_msl_UP_16x64_1_ref_end - _dr_msl_UP_16x64_1_ref
 	.byte 0
 _jch_min_16x32_0_frame:
 	.word _jch_min_16x32_0
 	.byte bank(_jch_min_16x32_0)
-	.word jch_min_16x32_0_end - _jch_min_16x32_0
+	.word _jch_min_16x32_0_end - _jch_min_16x32_0
 	.byte 0
 _jch_min_16x32_1_ref_frame:
 	.word _jch_min_16x32_1_ref
 	.byte bank(_jch_min_16x32_1_ref)
-	.word jch_min_16x32_1_ref_end - _jch_min_16x32_1_ref
+	.word _jch_min_16x32_1_ref_end - _jch_min_16x32_1_ref
 	.byte 0
 _rpl_fly_RIGHT_32x32_frame:
 	.word _rpl_fly_RIGHT_32x32
 	.byte bank(_rpl_fly_RIGHT_32x32)
-	.word rpl_fly_RIGHT_32x32_end - _rpl_fly_RIGHT_32x32
+	.word _rpl_fly_RIGHT_32x32_end - _rpl_fly_RIGHT_32x32
 	.byte 0
 _brstick_RIGHT_32x16_frame:
 	.word _brstick_RIGHT_32x16
 	.byte bank(_brstick_RIGHT_32x16)
-	.word brstick_RIGHT_32x16_end - _brstick_RIGHT_32x16
+	.word _brstick_RIGHT_32x16_end - _brstick_RIGHT_32x16
 	.byte 0
 _dr_msl_UP_frame:
 	.word _dr_msl_UP
 	.byte bank(_dr_msl_UP)
-	.word dr_msl_UP_end - _dr_msl_UP
+	.word _dr_msl_UP_end - _dr_msl_UP
 	.byte 0
 _gigan_idle_LEFT_frame:
 	.word _gigan_idle_LEFT
 	.byte bank(_gigan_idle_LEFT)
-	.word gigan_idle_LEFT_end - _gigan_idle_LEFT
+	.word _gigan_idle_LEFT_end - _gigan_idle_LEFT
 	.byte 0
 _tony_idle_RIGHT_frame:
 	.word _tony_idle_RIGHT
 	.byte bank(_tony_idle_RIGHT)
-	.word tony_idle_RIGHT_end - _tony_idle_RIGHT
+	.word _tony_idle_RIGHT_end - _tony_idle_RIGHT
 	.byte 0
 
 
@@ -84,36 +84,36 @@ _tony_idle_RIGHT_frame:
 
 _jch_RIGHT_32x64:
 	.word $FFC0, $FFF0, $100, $3180
-jch_RIGHT_32x64_end:
+_jch_RIGHT_32x64_end:
 
 _dr_msl_UP_16x64_0:
 	.word $00, $FFF8, $110, $3085
-dr_msl_UP_16x64_0_end:
+_dr_msl_UP_16x64_0_end:
 
 _dr_msl_UP_16x64_1_ref:
 	.word $00, $FFF8, $112, $3085
-dr_msl_UP_16x64_1_ref_end:
+_dr_msl_UP_16x64_1_ref_end:
 
 _jch_min_16x32_0:
 	.word $FFE0, $FFF8, $120, $1080
-jch_min_16x32_0_end:
+_jch_min_16x32_0_end:
 
 _jch_min_16x32_1_ref:
 	.word $FFE0, $FFF8, $122, $1080
-jch_min_16x32_1_ref_end:
+_jch_min_16x32_1_ref_end:
 
 _rpl_fly_RIGHT_32x32:
 	.word $FFF0, $FFF0, $128, $1181
-rpl_fly_RIGHT_32x32_end:
+_rpl_fly_RIGHT_32x32_end:
 
 _brstick_RIGHT_32x16:
 	.word $FFF8, $FFF0, $130, $182
-brstick_RIGHT_32x16_end:
+_brstick_RIGHT_32x16_end:
 
 _dr_msl_UP:
 	.word $00, $FFF8, $134, $85
 	.word $10, $FFF8, $136, $85
-dr_msl_UP_end:
+_dr_msl_UP_end:
 
 _gigan_idle_LEFT:
 	.word $FFA0, $FFF6, $138, $83
@@ -138,7 +138,7 @@ _gigan_idle_LEFT:
 	.word $FFF0, $FFF0, $15E, $83
 	.word $FFF0, $02, $160, $83
 	.word $FFF0, $12, $162, $83
-gigan_idle_LEFT_end:
+_gigan_idle_LEFT_end:
 
 _tony_idle_RIGHT:
 	.word $FFA0, $FFF4, $164, $884
@@ -155,5 +155,5 @@ _tony_idle_RIGHT:
 	.word $FFF0, $02, $17A, $884
 	.word $FFF0, $FFF2, $17C, $884
 	.word $FFF0, $FFE2, $17E, $884
-tony_idle_RIGHT_end:
+_tony_idle_RIGHT_end:
 

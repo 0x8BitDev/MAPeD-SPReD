@@ -4,9 +4,7 @@
 ;
 ;#######################################################
 
-PLAYER_GFX_SPR_VADDR	= 8192
-PLAYER_GFX_PALETTE_SLOT	= 0
-
+PLAYER_GFX_SPR_VADDR	= $2000
 
 ;player_gfx_chr0:	.incbin "player_gfx_chr0.bin"	; 2944 bytes
 ;player_gfx_chr1:	.incbin "player_gfx_chr1.bin"	; 2304 bytes
@@ -36,6 +34,9 @@ player_gfx_palette:
 player_gfx_palette_slot0:
 	.word $147, $C2, $81, $14B, $19D, $1B0, $170, $E9, $173, $F0, $1B5, $B0, $58, $133, $F2, $1B6
 player_gfx_palette_end:
+
+PLAYER_GFX_PALETTE_SLOT	= 0
+
 
 player_gfx_num_frames:
 	.byte $18

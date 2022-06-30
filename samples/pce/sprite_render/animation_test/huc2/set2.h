@@ -6,9 +6,7 @@
 
 #incasm( "data/set2.asm" )
 
-#define SET2_SPR_VADDR	12288
-#define SET2_PALETTE_SLOT	17
-
+#define SET2_SPR_VADDR	0x3000
 
 #ifndef	DEF_TYPE_SPD_SPRITE
 #define	DEF_TYPE_SPD_SPRITE
@@ -22,14 +20,16 @@ typedef struct
 #endif	//DEF_TYPE_SPD_SPRITE
 
 
+#define	SET2_SG_CNT	5	// graphics banks count
 extern unsigned short*	set2_SG_arr;
-#define	set2_SG_cnt	5	// graphics banks count
-#define	set2_palette_size	1	// active palettes
+
+#define	SET2_PALETTE_SIZE	1	// active palettes
+#define SET2_PALETTE_SLOT	17
 
 extern unsigned short*	set2_palette_slot0;
-
 extern unsigned short*	set2_palette;
-#define	set2_frames_cnt	6
+
+#define	SET2_FRAMES_CNT	6
 extern spd_SPRITE	set2_frames_data[];
 
 #define	SPR_MARTHA_PUNCH01	0

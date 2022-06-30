@@ -6,9 +6,7 @@
 
 #incasm( "anm_test.asm" )
 
-#define ANM_TEST_SPR_VADDR	8192
-#define ANM_TEST_PALETTE_SLOT	16
-
+#define ANM_TEST_SPR_VADDR	0x2000
 
 #ifndef	DEF_TYPE_SPD_SPRITE
 #define	DEF_TYPE_SPD_SPRITE
@@ -22,14 +20,16 @@ typedef struct
 #endif	//DEF_TYPE_SPD_SPRITE
 
 
+#define	ANM_TEST_SG_CNT	1	// graphics banks count
 extern unsigned short*	anm_test_SG_arr;
-#define	anm_test_SG_cnt	1	// graphics banks count
-#define	anm_test_palette_size	1	// active palettes
+
+#define	ANM_TEST_PALETTE_SIZE	1	// active palettes
+#define ANM_TEST_PALETTE_SLOT	16
 
 extern unsigned short*	anm_test_palette_slot0;
-
 extern unsigned short*	anm_test_palette;
-#define	anm_test_frames_cnt	6
+
+#define	ANM_TEST_FRAMES_CNT	6
 extern spd_SPRITE	anm_test_frames_data[];
 
 #define	SPR_MARTHA_PUNCH01	0

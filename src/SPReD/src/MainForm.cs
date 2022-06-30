@@ -1855,11 +1855,16 @@ namespace SPReD
 			string data_prefix		= "";
 			string post_spr_data	= "";
 			string data_dir			= "";
+			string sprite_prefix	= "";
 		
 			bool comment_CHR_data	= false;
 			
 			try
 			{
+				string path				= System.IO.Path.GetDirectoryName( _filename );
+				string filename			= System.IO.Path.GetFileNameWithoutExtension( _filename );
+				string filename_upper	= filename.ToUpper();
+				
 #if DEF_NES
 				bool save_padding_data = false;
 				
@@ -1882,15 +1887,14 @@ namespace SPReD
 					return;
 				}
 				
+				sprite_prefix = ( m_PCE_export_form.add_filename_to_sprite_names ? filename + "_":"" );
+				
 				comment_CHR_data = m_PCE_export_form.comment_CHR_data;
 				
 				data_dir = m_PCE_export_form.data_dir;
 #else
 ...
 #endif
-				string path		= System.IO.Path.GetDirectoryName( _filename );
-				string filename	= System.IO.Path.GetFileNameWithoutExtension( _filename );
-
 				if( data_dir.Length > 0 )
 				{
 					if( data_dir.StartsWith( System.IO.Path.DirectorySeparatorChar.ToString() ) || data_dir.StartsWith( System.IO.Path.AltDirectorySeparatorChar.ToString() ) )
@@ -1923,14 +1927,13 @@ namespace SPReD
 					if( _asm_file )
 					{
 #if DEF_NES
-						sw.WriteLine( filename.ToUpper() + "_SPR_MODE_8X16 = " + ( CBoxMode8x16.Checked ? "1":"0" ) + "\n" );
+						sw.WriteLine( filename_upper + "_SPR_MODE_8X16 = " + ( CBoxMode8x16.Checked ? "1":"0" ) + "\n" );
 #elif DEF_SMS
-						sw.WriteLine( ".define\t" + filename.ToUpper() + "_SPR_MODE_8X16\t" + ( CBoxMode8x16.Checked ? "1":"0" ) );
-						sw.WriteLine( ".define\t" + filename.ToUpper() + "_SPR_CHR_BPP\t" + m_SMS_export_form.bpp );
-						sw.WriteLine( ".define\t" + filename.ToUpper() + "_SPR_CHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t; first CHR index in a CHR bank\n\n" );
+						sw.WriteLine( ".define\t" + filename_upper + "_SPR_MODE_8X16\t" + ( CBoxMode8x16.Checked ? "1":"0" ) );
+						sw.WriteLine( ".define\t" + filename_upper + "_SPR_CHR_BPP\t" + m_SMS_export_form.bpp );
+						sw.WriteLine( ".define\t" + filename_upper + "_SPR_CHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t; first CHR index in a CHR bank\n\n" );
 #elif DEF_PCE
-						sw.WriteLine( filename.ToUpper() + "_SPR_VADDR\t= " + utils.hex( "$", m_PCE_export_form.VADDR ) );
-						sw.WriteLine( filename.ToUpper() + "_PALETTE_SLOT\t= " + m_PCE_export_form.palette_slot + "\n\n" );
+						sw.WriteLine( filename_upper + "_SPR_VADDR\t= " + utils.hex( "$", m_PCE_export_form.VADDR ) + "\n" );
 #else
 ...
 #endif
@@ -1941,15 +1944,14 @@ namespace SPReD
 						
 						c_sw.WriteLine( utils.get_file_title( "//" ) );
 #if DEF_NES
-						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_MODE_8X16\t" + ( CBoxMode8x16.Checked ? "1":"0" ) + "\n" );
+						c_sw.WriteLine( "#define " + filename_upper + "_SPR_MODE_8X16\t" + ( CBoxMode8x16.Checked ? "1":"0" ) + "\n" );
 #elif DEF_SMS
-						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_MODE_8X16\t" + ( CBoxMode8x16.Checked ? "1":"0" ) );
-						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_CHR_BPP\t" + m_SMS_export_form.bpp );
-						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_CHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t// first CHR index in a CHR bank\n\n" );
+						c_sw.WriteLine( "#define " + filename_upper + "_SPR_MODE_8X16\t" + ( CBoxMode8x16.Checked ? "1":"0" ) );
+						c_sw.WriteLine( "#define " + filename_upper + "_SPR_CHR_BPP\t" + m_SMS_export_form.bpp );
+						c_sw.WriteLine( "#define " + filename_upper + "_SPR_CHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t// first CHR index in a CHR bank\n\n" );
 #elif DEF_PCE
 						c_sw.WriteLine( "#incasm( \"" + data_dir + filename + "." + this.ExportASM_saveFileDialog.DefaultExt + "\" )\n" );
-						c_sw.WriteLine( "#define " + filename.ToUpper() + "_SPR_VADDR\t" + utils.hex( "0x", m_PCE_export_form.VADDR ) );
-						c_sw.WriteLine( "#define " + filename.ToUpper() + "_PALETTE_SLOT\t" + ( m_PCE_export_form.palette_slot + 16 ) + "\n\n" );
+						c_sw.WriteLine( "#define " + filename_upper + "_SPR_VADDR\t" + utils.hex( "0x", m_PCE_export_form.VADDR ) + "\n" );
 #else
 ...
 #endif
@@ -1978,18 +1980,20 @@ namespace SPReD
 					if( !_asm_file )
 					{
 #if DEF_PCE
-						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "extern unsigned short*\t" + filename + "_SG_arr;" );
-						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "#define\t" + filename + "_SG_cnt\t" + m_sprites_proc.get_CHR_banks().Count + "\t// graphics banks count" );
+						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "#define\t" + filename_upper + "_SG_CNT\t" + m_sprites_proc.get_CHR_banks().Count + "\t// graphics banks count" );
+						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "extern unsigned short*\t" + filename + "_SG_arr;\n" );
 #else
-						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "extern unsigned short*\t" + filename + "_CHR_arr;" );
-						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "#define\t" + filename + "_CHR_cnt\t" + m_sprites_proc.get_CHR_banks().Count + "\t// graphics banks count" );
+						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "#define\t" + filename_upper + "_CHR_CNT\t" + m_sprites_proc.get_CHR_banks().Count + "\t// graphics banks count" );
+						c_sw.WriteLine( ( comment_CHR_data ? "//":"" ) + "extern unsigned short*\t" + filename + "_CHR_arr;\n" );
 #endif
 					}
 					
 					sw.WriteLine( "\n" );
 					
 #if DEF_FIXED_LEN_PALETTE16_ARR
-					int max_palettes = -1;
+					int max_palettes	= -1;
+					int min_palettes	= utils.CONST_PALETTE16_ARR_LEN;
+					int slots_cnt		= 0;
 					
 					for( int i = 0; i < _spr_cnt; i++ )
 					{
@@ -1999,33 +2003,43 @@ namespace SPReD
 							{
 								max_palettes = attr.palette_ind;
 							}
+							
+							if( min_palettes > attr.palette_ind )
+							{
+								min_palettes = attr.palette_ind;
+							}
 						}
 					}
+					
+					slots_cnt = ( max_palettes - min_palettes ) + 1;
 					
 					if( ( max_palettes + m_PCE_export_form.palette_slot ) >= utils.CONST_PALETTE16_ARR_LEN )
 					{
 						throw new Exception( "The palette data doesn't fit into" + utils.CONST_PALETTE16_ARR_LEN + "slots!" );
 					}
 					
-					palettes_array.Instance.export( sw, prefix_filename, max_palettes + 1 );
+					palettes_array.Instance.export( sw, prefix_filename, min_palettes, slots_cnt );
 					
 					if( !_asm_file )
 					{
-						c_sw.WriteLine( "#define\t" + filename + "_palette_size\t" + ( max_palettes + 1 ) + "\t// active palettes\n" );
+						c_sw.WriteLine( "#define\t" + filename_upper + "_PALETTE_SIZE\t" + ( ( max_palettes - min_palettes ) + 1 ) + "\t// active palettes" );
+						c_sw.WriteLine( "#define " + filename_upper + "_PALETTE_SLOT\t" + ( min_palettes + m_PCE_export_form.palette_slot + 16 ) + "\n" );
 						
-						for( int i = 0; i < max_palettes + 1; i++ )
+						for( int i = 0; i < slots_cnt; i++ )
 						{
 							c_sw.WriteLine( "extern unsigned short*\t" + filename + "_palette_slot" + i + ";" );
 						}
-						
-						c_sw.WriteLine( "" );
+					}
+					else
+					{
+						sw.WriteLine( "\n" + filename_upper + "_PALETTE_SLOT\t= " + ( min_palettes + m_PCE_export_form.palette_slot ) + "\n" );
 					}
 #else
 					m_sprites_proc.export_palette( sw, prefix_filename );
 #endif
 					if( !_asm_file )
 					{
-						c_sw.WriteLine( "extern unsigned short*\t" + filename + "_palette;" );
+						c_sw.WriteLine( "extern unsigned short*\t" + filename + "_palette;\n" );
 					}
 					
 					// save common sprites data
@@ -2035,27 +2049,30 @@ namespace SPReD
 						
 						if( !_asm_file )
 						{
-							c_sw.WriteLine( "#define\t" + filename + "_frames_cnt\t" + _spr_cnt );
+							c_sw.WriteLine( "#define\t" + filename_upper + "_FRAMES_CNT\t" + _spr_cnt );
 							c_sw.WriteLine( "extern spd_SPRITE\t" + filename + "_frames_data[];\n" );
 						}
 						
 						bool enable_comments = true;
+						string sprite_name;
 						
 						for( int i = 0; i < _spr_cnt; i++ )
 						{
 							spr = _get_spr( i );
 							
-							sw.WriteLine( data_prefix + spr.name + "_frame:" );
-							sw.WriteLine( "\t.word " + data_prefix + spr.name );
+							sprite_name = sprite_prefix + spr.name; 
+							
+							sw.WriteLine( data_prefix + sprite_name + "_frame:" );
+							sw.WriteLine( "\t.word " + data_prefix + sprite_name );
 #if DEF_NES || DEF_SMS
-							sw.WriteLine( "\t.byte " + data_prefix + spr.name + "_end - " + spr.name + ( enable_comments ? "\t; data size":"" ) );
+							sw.WriteLine( "\t.byte " + data_prefix + sprite_name + "_end - " + sprite_name + ( enable_comments ? "\t; data size":"" ) );
 #elif DEF_PCE
 							if( !_asm_file )
 							{
-								sw.WriteLine( "\t.byte bank(" + ( data_prefix + spr.name ) + ")" );
+								sw.WriteLine( "\t.byte bank(" + ( data_prefix + sprite_name ) + ")" );
 							}
 							
-							sw.WriteLine( "\t.word " + spr.name + "_end - " + data_prefix + spr.name + ( enable_comments ? "\t; data size":"" ) );
+							sw.WriteLine( "\t.word " + data_prefix + sprite_name + "_end - " + data_prefix + sprite_name + ( enable_comments ? "\t; data size":"" ) );
 #else
 ...
 #endif
@@ -2071,15 +2088,9 @@ namespace SPReD
 #endif
 							if( !_asm_file )
 							{
-#if DEF_PCE
-								c_sw.WriteLine( "#define\tSPR_" + ( m_PCE_export_form.add_filename_to_sprite_names ? filename.ToUpper() + "_":"" ) + spr.name.ToUpper() + "\t" + i );
+								c_sw.WriteLine( "#define\tSPR_" + sprite_name.ToUpper() + "\t" + i );
 								
-								post_spr_data += "extern spd_SPRITE*\t" + ( m_PCE_export_form.add_filename_to_sprite_names ? filename + "_":"" ) + spr.name + "_frame;\n";
-#else
-								c_sw.WriteLine( "#define\tSPR_" + spr.name.ToUpper() + "\t" + i );
-								
-								post_spr_data += "extern spd_SPRITE*\t" + spr.name + "_frame;\n";
-#endif
+								post_spr_data += "extern spd_SPRITE*\t" + sprite_name + "_frame;\n";
 							}
 
 							enable_comments = false;
@@ -2099,7 +2110,7 @@ namespace SPReD
 					// save the sprites data
 					for( int i = 0; i < _spr_cnt; i++ )
 					{
-						_get_spr( i ).export( sw, data_prefix );
+						_get_spr( i ).export( sw, data_prefix + sprite_prefix );
 					}
 #elif DEF_SMS
 					sw.WriteLine( "\t; #1: Y pos, #2: X pos, #3: CHR index\n" );
@@ -2107,7 +2118,7 @@ namespace SPReD
 					// save the sprites data
 					for( int i = 0; i < _spr_cnt; i++ )
 					{
-						_get_spr( i ).export( sw, m_SMS_export_form.CHRs_offset, data_prefix );
+						_get_spr( i ).export( sw, m_SMS_export_form.CHRs_offset, data_prefix + sprite_prefix );
 					}
 #elif DEF_PCE
 					sw.WriteLine( "\t; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc\n" );
@@ -2115,7 +2126,7 @@ namespace SPReD
 					// save the sprites data
 					for( int i = 0; i < _spr_cnt; i++ )
 					{
-						_get_spr( i ).export( sw, m_PCE_export_form.CHRs_offset, m_PCE_export_form.palette_slot, data_prefix );
+						_get_spr( i ).export( sw, m_PCE_export_form.CHRs_offset, m_PCE_export_form.palette_slot, data_prefix + sprite_prefix );
 					}
 #else
 ...

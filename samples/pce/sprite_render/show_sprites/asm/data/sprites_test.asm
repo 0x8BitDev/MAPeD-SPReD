@@ -4,9 +4,7 @@
 ;
 ;#######################################################
 
-SPRITES_TEST_SPR_VADDR	= 8192
-SPRITES_TEST_PALETTE_SLOT	= 0
-
+SPRITES_TEST_SPR_VADDR	= $2000
 
 ;sprites_test_chr0:	.incbin "sprites_test_chr0.bin"	; 8192 bytes
 
@@ -28,6 +26,9 @@ sprites_test_palette_slot4:
 sprites_test_palette_slot5:
 	.word $147, $1F8, $178, $F8, $78, $1FF, $68, $00, $00, $00, $00, $00, $00, $00, $00, $00
 sprites_test_palette_end:
+
+SPRITES_TEST_PALETTE_SLOT	= 0
+
 
 sprites_test_num_frames:
 	.byte $0A

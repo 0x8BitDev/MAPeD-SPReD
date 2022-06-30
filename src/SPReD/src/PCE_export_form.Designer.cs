@@ -88,7 +88,7 @@ namespace SPReD
 			this.LabelVADDR.Name = "LabelVADDR";
 			this.LabelVADDR.Size = new System.Drawing.Size(61, 23);
 			this.LabelVADDR.TabIndex = 2;
-			this.LabelVADDR.Text = "VADDR#:";
+			this.LabelVADDR.Text = "VADDR$:";
 			// 
 			// label3
 			// 

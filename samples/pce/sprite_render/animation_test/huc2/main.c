@@ -220,9 +220,9 @@ main()
 	spd_init();	
 
 	/* load palettes in the usual way */
-	load_palette( SET1_PALETTE_SLOT, set1_palette, set1_palette_size );
-	load_palette( SET2_PALETTE_SLOT, set2_palette, set2_palette_size );
-	load_palette( SET3_PALETTE_SLOT, set3_palette, set3_palette_size );
+	load_palette( SET1_PALETTE_SLOT, set1_palette, SET1_PALETTE_SIZE );
+	load_palette( SET2_PALETTE_SLOT, set2_palette, SET2_PALETTE_SIZE );
+	load_palette( SET3_PALETTE_SLOT, set3_palette, SET3_PALETTE_SIZE );
 
 	/* enable display */
 	disp_on();

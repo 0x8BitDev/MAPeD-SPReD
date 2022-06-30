@@ -29,32 +29,32 @@ _set2_frames_data:
 _martha_punch01_frame:
 	.word _martha_punch01
 	.byte bank(_martha_punch01)
-	.word martha_punch01_end - _martha_punch01	; data size
+	.word _martha_punch01_end - _martha_punch01	; data size
 	.byte 0		; GFX bank index (chr0)
 _martha_punch02_frame:
 	.word _martha_punch02
 	.byte bank(_martha_punch02)
-	.word martha_punch02_end - _martha_punch02
+	.word _martha_punch02_end - _martha_punch02
 	.byte 1
 _martha_punch03_frame:
 	.word _martha_punch03
 	.byte bank(_martha_punch03)
-	.word martha_punch03_end - _martha_punch03
+	.word _martha_punch03_end - _martha_punch03
 	.byte 2
 _martha_punch04_frame:
 	.word _martha_punch04
 	.byte bank(_martha_punch04)
-	.word martha_punch04_end - _martha_punch04
+	.word _martha_punch04_end - _martha_punch04
 	.byte 3
 _martha_punch05_frame:
 	.word _martha_punch05
 	.byte bank(_martha_punch05)
-	.word martha_punch05_end - _martha_punch05
+	.word _martha_punch05_end - _martha_punch05
 	.byte 4
 _martha_punch06_ref04_frame:
 	.word _martha_punch06_ref04
 	.byte bank(_martha_punch06_ref04)
-	.word martha_punch06_ref04_end - _martha_punch06_ref04
+	.word _martha_punch06_ref04_end - _martha_punch06_ref04
 	.byte 3
 
 
@@ -75,7 +75,7 @@ _martha_punch01:
 	.word $FFE7, $0A, $196, $81
 	.word $FFF7, $FFE8, $198, $81
 	.word $FFF7, $02, $19A, $81
-martha_punch01_end:
+_martha_punch01_end:
 
 _martha_punch02:
 	.word $FFA7, $FFED, $180, $81
@@ -90,7 +90,7 @@ _martha_punch02:
 	.word $FFD7, $FFFE, $192, $81
 	.word $FFE7, $FFEA, $194, $81
 	.word $FFF7, $FFE8, $196, $81
-martha_punch02_end:
+_martha_punch02_end:
 
 _martha_punch03:
 	.word $FFAD, $FFF4, $180, $81
@@ -108,7 +108,7 @@ _martha_punch03:
 	.word $FFED, $03, $198, $81
 	.word $FFFD, $FFE8, $19A, $81
 	.word $FFFD, $07, $19C, $81
-martha_punch03_end:
+_martha_punch03_end:
 
 _martha_punch04:
 	.word $FFA0, $0C, $180, $81
@@ -130,7 +130,7 @@ _martha_punch04:
 	.word $FFE0, $0D, $1A0, $81
 	.word $FFF0, $FFE8, $1A2, $81
 	.word $FFF0, $04, $1A4, $81
-martha_punch04_end:
+_martha_punch04_end:
 
 _martha_punch05:
 	.word $FF90, $0E, $180, $81
@@ -148,7 +148,7 @@ _martha_punch05:
 	.word $FFF0, $FFE8, $198, $81
 	.word $FFF0, $04, $19A, $81
 	.word $00, $06, $19C, $81
-martha_punch05_end:
+_martha_punch05_end:
 
 _martha_punch06_ref04:
 	.word $FFA0, $0C, $180, $81
@@ -170,5 +170,5 @@ _martha_punch06_ref04:
 	.word $FFE0, $0D, $1A0, $81
 	.word $FFF0, $FFE8, $1A2, $81
 	.word $FFF0, $04, $1A4, $81
-martha_punch06_ref04_end:
+_martha_punch06_ref04_end:
 
