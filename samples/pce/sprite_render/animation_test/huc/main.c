@@ -6,6 +6,13 @@
 //
 //#################################################################
 
+// debug info:
+// - pink border color - ROM-VRAM data copying
+// - white border color - spd_SATB_push_sprite
+#asm
+SPD_DEBUG
+#endasm
+
 #include <huc.h>
 #include "../../../common/spd.h"
 #include "anm_test.h"
@@ -77,6 +84,15 @@ void	update_frame( anim_desc* _anm_desc )
 
 main()
 {
+#asm
+.ifdef	SPD_DEBUG
+#endasm
+	// make the screen a little smaller so that the border color is visible
+	set_xres( 252, XRES_SOFT );
+#asm
+.endif
+#endasm
+
 	/* disable display */
 	disp_off();
 
