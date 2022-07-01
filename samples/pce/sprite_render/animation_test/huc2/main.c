@@ -1,12 +1,12 @@
-//######################################################################
+//###############################################################################
 //
 // Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
 //
-// DESC: Animation demo that shows 3 independent, dynamic meta-sprite
-//	 sets that fill the entire SATB with optional double-buffering
-//	 (see 'DEF_SET<N>_SG_DBL_BUFF' flags)
+// DESC: Animation demo that shows 3 independent, dynamic meta-sprite sets 
+//	 that fill the entire SATB with peak data load ROM->VRAM 8KB
+//	 and with optional double-buffering (see 'DEF_SET<N>_SG_DBL_BUFF' flags)
 //
-//######################################################################
+//###############################################################################
 
 // debug info:
 // - pink border color - ROM-VRAM data copying
