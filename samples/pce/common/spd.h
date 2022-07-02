@@ -58,6 +58,8 @@ The main logic is:
 		// Set up exported sprite set with SG data array and VRAM address to load SG data to.
 		// NOTE: You can combine any number of exported sprite sets in your program.
 		//	 Call the 'spd_sprite_params' to switch between them.
+[upd] v0.5	// NOTE: Passing ZERO as the third parameter, means that SG data will be automatically
+--->		//	 loaded to VRAM on 'spd_SATB_push_sprite'.
 [upd] v0.2	// NOTE: Passing 'SPD_FLAG_IGNORE_SG' as the third parameter will ignore loading SG to VRAM.
 		//	 It's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
 --->		//	 Such way you avoid loading SG to VRAM twice.
