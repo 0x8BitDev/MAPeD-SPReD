@@ -85,7 +85,7 @@ static short player_pos_x	= 118;
 static short player_pos_y	= 176;
 static short player_state	= 0;
 
-const unsigned char move_step	= 2;	// pix/frame
+#define MOVE_STEP		2	// pix/frame
 
 #define	PLAYER_SET_STATE( _val )	player_state = ( ( player_state & PLAYER_DIR_MASK ) | _val )
 #define	PLAYER_SET_DIR( _val )		player_state = ( ( player_state & ~PLAYER_DIR_MASK ) | _val )
@@ -104,7 +104,7 @@ void	update_player_controller()
 	else
 	if( joy(0) & JOY_RIGHT )
 	{
-		player_pos_x += move_step;
+		player_pos_x += MOVE_STEP;
 
 		if( player_pos_x >= 224 )
 		{
@@ -121,7 +121,7 @@ void	update_player_controller()
 	else
 	if( joy(0) & JOY_LEFT )
 	{
-		player_pos_x -= move_step;
+		player_pos_x -= MOVE_STEP;
 
 		if( player_pos_x <= 32 )
 		{

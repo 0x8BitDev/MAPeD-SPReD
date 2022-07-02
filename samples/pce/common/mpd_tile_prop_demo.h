@@ -25,10 +25,12 @@
 #define SCR_MOVE_BORDER	10
 #endif
 
-#define	SCR_LEFT_BORDER		__scroll_step
-#define	SCR_RIGHT_BORDER	( ScrPixelsWidth - 16 - __scroll_step )
-#define	SCR_UP_BORDER		__scroll_step
-#define	SCR_DOWN_BORDER		( ScrPixelsHeight - 16 - __scroll_step )
+#define SCROLL_STEP		2	// pix/frame
+
+#define	SCR_LEFT_BORDER		SCROLL_STEP
+#define	SCR_RIGHT_BORDER	( ScrPixelsWidth - 16 - SCROLL_STEP )
+#define	SCR_UP_BORDER		SCROLL_STEP
+#define	SCR_DOWN_BORDER		( ScrPixelsHeight - 16 - SCROLL_STEP )
 
 /* cursor data */
 
@@ -56,7 +58,6 @@ s8	__curr_prop_digit	= -1;
 
 s8	__map_ind		= -1;
 
-const u8 __scroll_step		= 2;
 
 //--------------------------------------------------------------------//
 // The main function that gets a property value by cursor coordinates //
@@ -196,7 +197,7 @@ void	__display_next_map()
 
 	/* init tilemap renderer data */
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-	mpd_init( __map_ind, __scroll_step );
+	mpd_init( __map_ind, SCROLL_STEP );
 #else
 	mpd_init( __map_ind );
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
@@ -304,7 +305,7 @@ void	__cursor_move_left()
 {
 	u16	tmp_scroll_x;
 
-	__cursor_x -= __scroll_step;
+	__cursor_x -= SCROLL_STEP;
 
 	if( __cursor_center_x() < SCR_MOVE_BORDER )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
@@ -315,7 +316,7 @@ void	__cursor_move_left()
 
 		if( tmp_scroll_x != mpd_scroll_x() )
 		{
-			__cursor_x += __scroll_step;
+			__cursor_x += SCROLL_STEP;
 		}
 	}
 #else
@@ -341,7 +342,7 @@ void	__cursor_move_right()
 {
 	u16	tmp_scroll_x;
 
-	__cursor_x += __scroll_step;
+	__cursor_x += SCROLL_STEP;
 
 	if( __cursor_center_x() > ( ScrPixelsWidth - SCR_MOVE_BORDER ) )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
@@ -352,7 +353,7 @@ void	__cursor_move_right()
 
 		if( tmp_scroll_x != mpd_scroll_x() )
 		{
-			__cursor_x -= __scroll_step;
+			__cursor_x -= SCROLL_STEP;
 		}
 	}
 #else
@@ -378,7 +379,7 @@ void	__cursor_move_up()
 {
 	u16	tmp_scroll_y;
 
-	__cursor_y -= __scroll_step;
+	__cursor_y -= SCROLL_STEP;
 
 	if( __cursor_center_y() < SCR_MOVE_BORDER )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
@@ -389,7 +390,7 @@ void	__cursor_move_up()
 
 		if( tmp_scroll_y != mpd_scroll_y() )
 		{
-			__cursor_y += __scroll_step;
+			__cursor_y += SCROLL_STEP;
 		}
 	}
 #else
@@ -415,7 +416,7 @@ void	__cursor_move_down()
 {
 	u16	tmp_scroll_y;
 
-	__cursor_y += __scroll_step;
+	__cursor_y += SCROLL_STEP;
 
 	if( __cursor_center_y() > ( ScrPixelsHeight - SCR_MOVE_BORDER ) )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
@@ -426,7 +427,7 @@ void	__cursor_move_down()
 
 		if( tmp_scroll_y != mpd_scroll_y() )
 		{
-			__cursor_y -= __scroll_step;
+			__cursor_y -= SCROLL_STEP;
 		}
 	}
 #else
