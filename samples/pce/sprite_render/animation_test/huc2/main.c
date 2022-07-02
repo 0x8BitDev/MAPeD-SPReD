@@ -120,6 +120,8 @@ unsigned char	sprite1_show( char _ind, short _x, short _y )
 	SET1_LAST_DBL_BUFF_IND = spd_get_dbl_buff_ind();
 #endif
 
+	SET1_LAST_SG_BANK = spd_SG_bank_get_ind();
+
 	return res;
 }
 
@@ -140,8 +142,9 @@ unsigned char	sprite2_show( char _ind, short _x, short _y )
 	SET2_LAST_DBL_BUFF_IND = spd_get_dbl_buff_ind();
 #endif
 
-	return res;
+	SET2_LAST_SG_BANK = spd_SG_bank_get_ind();
 
+	return res;
 }
 
 unsigned char	sprite3_show( char _ind, short _x, short _y )
@@ -160,6 +163,8 @@ unsigned char	sprite3_show( char _ind, short _x, short _y )
 #if	DEF_SET3_SG_DBL_BUFF
 	SET3_LAST_DBL_BUFF_IND = spd_get_dbl_buff_ind();
 #endif
+
+	SET3_LAST_SG_BANK = spd_SG_bank_get_ind();
 
 	return res;
 }
@@ -246,13 +251,8 @@ main()
 
 		/* push meta-sprites to SATB */
 		SET1_SPR_PUSH_RES	= sprite1_show( test_anim1.start_frame + test_anim1.curr_frame, 40,  y_pos );
-		SET1_LAST_SG_BANK	= spd_SG_bank_get_ind();
-
 		SET2_SPR_PUSH_RES	= sprite2_show( test_anim2.start_frame + test_anim2.curr_frame, 120, y_pos );
-		SET2_LAST_SG_BANK	= spd_SG_bank_get_ind();
-
 		SET3_SPR_PUSH_RES	= sprite3_show( test_anim3.start_frame + test_anim3.curr_frame, 220, y_pos );
-		SET3_LAST_SG_BANK	= spd_SG_bank_get_ind();
 
 		/* change sprites position */
 		update_y_pos();
