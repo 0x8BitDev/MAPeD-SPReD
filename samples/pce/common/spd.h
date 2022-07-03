@@ -9,15 +9,17 @@
 History:
 
 v0.5
-2022.06.28 - added 'spd_alt_VRAM_addr()' function to use VRAM address other than exported one
+2022.07.03 - asm routines are wrapped in .proc/.endp
+2022.07.03 - added 'spd_change_palette( _plt_ind )' function to change palette after the 'spd_SATB_push_sprite' function call
+2022.06.28 - added 'spd_alt_VRAM_addr( _alt_VADDR )' function to use VRAM address other than exported one
 2022.06.25 - optimized loading of SG data to VRAM for double-buffered meta-sprites; added 'SPD_DBL_BUFF_INIT_VAL' as initial value for a double-buffer index
 2022.06.25 - small changes in 'SPD_DEBUG', the white border now shows how long the 'spd_SATB_push_sprite' takes
 2022.06.23 - added second argument to the 'spd_dbl_buff_VRAM_addr( VADDR_dbl_buff, _dbl_buff_ind )' function and added 'spd_get_dbl_buff_ind()' function
 2022.06.09 - small fix in 'SPD_DEBUG', the pink border now shows how long it takes to load graphics data to VRAM
 
 v0.4
-2022.06.08 - added a debug flag 'SPD_DEBUG' that shows when gfx data is being loaded to VRAM
-2022.06.08 - added a flag 'SPD_SG_NEW_DATA' to the 'spd_SATB_push_sprite' function result
+2022.06.08 - added debug flag 'SPD_DEBUG' that shows when gfx data is being loaded to VRAM (use Mednafen)
+2022.06.08 - added flag 'SPD_SG_NEW_DATA' to the 'spd_SATB_push_sprite' function result
 2022.06.07 - added fourth argument to the 'spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, _flag, _last_bank_ind )' and also added 'spd_SG_bank_get_ind()'
 2022.06.07 - changed 'spd_copy_SG_data_to_VRAM( _SG_ind )' to 'spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )' and added 'spd_copy_SG_data_to_VRAM( <animation_name>_frame )'
 2022.06.04 - changed exported data, now '<exported_name>_PALETTE_SLOT' includes sprite palette offset (16) and '<exported_name>_palette_size' is the number of active palettes
@@ -34,6 +36,13 @@ v0.1
 2022.04.22 - initial release
 
 ~~~~~~~~~~
+debug info (use Mednafen):
+ - pink border color - ROM-VRAM data copying
+ - white border color - spd_SATB_push_sprite
+ 
+#asm
+SPD_DEBUG
+#endasm
 
 NOTE:	The SPReD-PCE exports both meta-sprites and simple sprites (16x16,16x32,16x64,32x16,32x32,32x64). The CGX/CGY
 	flags are automatically applied to exported sprites. So you don't need to configure anything in your HuC program.
@@ -236,7 +245,14 @@ The main logic is:
 [upd] v0.4	res_byte = spd_SATB_push_sprite( <exported_name>_frames_data, test_anim.start_frame + test_anim.curr_frame, _x, _y );
 
 --->		last_bank_ind	= spd_SG_bank_get_ind();
-[upd] v0.5
+
+[upd] v0.5	// NOTE: To change sprite palette, use 'spd_change_palette( _plt_ind )' function immediately after calling the 'spd_SATB_push_sprite',
+		//	 if the result isn't zero. See './samples/pce/sprite_render/animation_test/huc3' and '/huc4' for details.
+		if( res_byte )
+		{
+			spd_change_palette( _plt_ind );	// _plt_ind - 0...15
+		}
+
 #if		DEF_SG_DBL_BUFF
 		last_dbl_buff_ind	= spd_get_dbl_buff_ind();
 #endif
@@ -261,12 +277,6 @@ The main logic is:
 [upd] v0.4	
 3. Also you can use PACKED and UNPACKED data in one data set (in one SPReD-PCE project) by combining the approaches described above.
 
-debug info:
-- pink border color - ROM-VRAM data copying
-- white border color - spd_SATB_push_sprite
-#asm
-SPD_DEBUG
-#endasm
 --->
 	That`s it! :)
 /*/
@@ -325,6 +335,9 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "5", 0 };
    OUT: 1-Ok!, 0-SATB overflow
 */
 #pragma fastcall spd_SATB_push_sprite( farptr __bl:__si, word __ax, word __cx )
+
+/* void spd_change_palette( byte _plt_ind ) */
+#pragma fastcall spd_change_palette( byte __al )
 
 /* void spd_SG_data_params( word _src_addr, word _src_bank, word _dst_addr, word _len ) */
 #pragma fastcall spd_SG_data_params( word __ax, word __bx, word __cx, word __dx )
@@ -492,6 +505,17 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "5", 0 };
 	sta high_byte \2
 	.endm
 
+; \1 += A
+	.macro add_a_to_word
+	clc
+	adc low_byte \1
+	sta low_byte \1
+
+	cla
+	adc high_byte \1
+	sta high_byte \1
+	.endm
+
 ; \2 = \1 - \2
 	.macro sub_word_from_word
 	lda low_byte \1
@@ -575,6 +599,7 @@ __bleni:	.ds 2
 __tiirts	.ds 1	; $60 rts
 
 	.code
+	.procgroup
 
 ; *** farptr += offset ***
 ;
@@ -584,7 +609,7 @@ __tiirts	.ds 1	; $60 rts
 ; __bl - bank number
 ; __si - address
 ;
-_spd_farptr_add_offset:
+	.proc _spd_farptr_add_offset
 
 	; add an offset
 
@@ -618,7 +643,9 @@ _spd_farptr_add_offset:
 	
 	rts
 
-_spd_init:
+	.endp
+
+	.proc _spd_init
 
 	cla
 	sta <__inner_flags
@@ -632,9 +659,11 @@ _spd_init:
 
 	rts
 
+	.endp
+
 ;// spd_sprite_params( farptr __bl:__si / SG_data, word __dx / vaddr, byte __al / flags, byte __ah / last_SG_bank_ind )
 ;
-_spd_sprite_params.4:
+	.proc _spd_sprite_params.4
 
 	stw <__si, <__spr_SG_data_addr
 	lda <__bl
@@ -650,18 +679,22 @@ _spd_sprite_params.4:
 
 	rts
 
+	.endp
+
 ;// spd_SG_bank_get_ind()
 ;
-_spd_SG_bank_get_ind:
+	.proc _spd_SG_bank_get_ind
 
 	ldx <__last_SG_bank
 	cla
 
 	rts
 
+	.endp
+
 ;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr, word __bx / dbl_buff_ind )
 ;
-_spd_dbl_buff_VRAM_addr.2:
+	.proc _spd_dbl_buff_VRAM_addr.2
 
 	; set last sprite index
 
@@ -692,15 +725,17 @@ _spd_dbl_buff_VRAM_addr.2:
 	stw <__ax, <__spr_VADDR_dbl
 	stw <__spr_VADDR, <__bx
 
-	jsr _calc_SG_pattern_offset
+	call _calc_SG_pattern_offset
 
 	stw <__bx, <__spr_dbf_SG_offset
 
 	rts
 
+	.endp
+
 ;// void spd_alt_VRAM_addr( word __ax / vram_addr )
 ;
-_spd_alt_VRAM_addr.1:
+	.proc _spd_alt_VRAM_addr.1
 
 	; apply alt VADDR flag
 
@@ -713,11 +748,13 @@ _spd_alt_VRAM_addr.1:
 	stw <__spr_VADDR, <__bx
 	stw <__ax, <__spr_VADDR			; replace the sprite VADDR with the alternative one
 
-	jsr _calc_SG_pattern_offset
+	call _calc_SG_pattern_offset
 
 	stw <__bx, <__spr_alt_SG_offset
 
 	rts
+
+	.endp
 
 ;
 ; IN:	__ax - VADDR1
@@ -725,7 +762,7 @@ _spd_alt_VRAM_addr.1:
 ;
 ; OUT:	__bx - pattern index offset
 ;
-_calc_SG_pattern_offset:
+	.proc _calc_SG_pattern_offset
 
 	sub_word_from_word <__ax, <__bx
 
@@ -750,9 +787,11 @@ _calc_SG_pattern_offset:
 
 	rts
 
+	.endp
+
 ;// unsigned short spd_get_dbl_buff_ind()
 ;
-_spd_get_dbl_buff_ind
+	.proc _spd_get_dbl_buff_ind
 
 	inner_flags_dbl_buff_state
 	tax
@@ -761,9 +800,11 @@ _spd_get_dbl_buff_ind
 
 	rts
 
+	.endp
+
 ;// spd_SATB_set_pos( byte __al / pos )
 ;
-_spd_SATB_set_pos.1:
+	.proc _spd_SATB_set_pos.1
 
 	lda <__al
 	and #SATB_SIZE - 1		; clamp to 0-63
@@ -771,16 +812,20 @@ _spd_SATB_set_pos.1:
 
 	rts
 
-_spd_SATB_get_pos:
+	.endp
+
+	.proc _spd_SATB_get_pos
 
 	ldx <__SATB_pos
 	cla
 
 	rts
 
+	.endp
+
 ;// spd_SATB_clear_from( byte __al / pos )
 ;
-_spd_SATB_clear_from.1:
+	.proc _spd_SATB_clear_from.1
 
 	lda <__al
 	and #SATB_SIZE - 1		; clamp to 0-63
@@ -836,12 +881,51 @@ _spd_SATB_clear_from.1:
 
 	jmp __TII
 
+	.endp
+
+;// spd_change_palette( byte __al / plt_ind )
+;
+	.proc _spd_change_palette.1
+
+	lda <__al
+	and #%00001111			; clamp 16 colors area
+	ora #%10000000			; set SPBG bit by default
+	tax
+
+	stw __bleni, <__bx
+	div8_word <__bx			; __bl - number of sprites
+
+	stw __bdsti, <__cx
+	lda #6				; offset to the first palette byte
+	add_a_to_word <__cx
+
+	cly
+.loop:
+	txa
+	sta [<__cx], y
+
+	clc
+	tya
+	adc #8
+	tay
+
+	bne .cont
+
+	inc <__ch
+.cont:
+	dec <__bl
+	bne .loop
+
+	rts
+
+	.endp
+
 ;// spd_SATB_push_sprite( farptr __bl:__si / addr, byte __dl / index, word __ax / x_pos, word __cx / y_pos )
 ;
-_spd_SATB_push_sprite.4:
+	.proc _spd_SATB_push_sprite.4
 
 .ifdef	SPD_DEBUG
-	jsr _push_sprite_border
+	call _push_sprite_border
 .endif
 
 ;--- DBL-BUFF ---
@@ -883,14 +967,20 @@ _spd_SATB_push_sprite.4:
 	stz <__dh
 	mul6_word <__dx
 
-	jsr _spd_farptr_add_offset
+	call _spd_farptr_add_offset
+
+	call _spd_SATB_push_sprite.3
+
+	rts
+
+	.endp
 
 ;// spd_SATB_push_sprite( farptr __bl:__si / addr, word __ax / x_pos, word __cx / y_pos )
 ;
-_spd_SATB_push_sprite.3:
+	.proc _spd_SATB_push_sprite.3
 
 .ifdef	SPD_DEBUG
-	jsr _push_sprite_border
+	call _push_sprite_border
 .endif
 
 	; XY coordinates correction
@@ -977,7 +1067,7 @@ _spd_SATB_push_sprite.3:
 	stz <__dh
 	mul6_word <__dx
 
-	jsr _spd_farptr_add_offset
+	call _spd_farptr_add_offset
 
 	jsr map_data
 
@@ -1012,7 +1102,7 @@ _spd_SATB_push_sprite.3:
 	; SATB overflow
 
 .ifdef	SPD_DEBUG
-	jsr _black_border
+	call _black_border
 .endif
 
 	clx
@@ -1085,141 +1175,23 @@ _check_SG_bank:
 	; check if SG data already loaded to VRAM
 
 	cpy <__last_SG_bank
-	bne _load_SG_data
+	beq .ignore_SG_data
+
+	call _load_SG_data
+
+	rts
 
 .ignore_SG_data:
 
 	; SG data already loaded or must be ignored
 
 .ifdef	SPD_DEBUG
-	jsr _black_border
+	call _black_border
 .endif
 
 	ldx #1
 	cla
 
-	rts
-
-	; load SG data to VRAM
-
-_load_SG_data:
-
-	sty <__last_SG_bank
-
-	; __dx = SG bank index x6 ( .word <data_length>, chrN, bank(chrN) )
-
-	sty <__dl
-	stz <__dh
-	mul6_word <__dx
-
-	stw <__spr_SG_data_addr, <__si
-	lda <__spr_SG_data_bank
-	sta <__bl
-
-	jsr _spd_farptr_add_offset
-
-	jsr map_data			; map SG data array
-
-	; __cx = SG data length
-
-	cly
-	lda [<__si], y
-	sta <__cl
-	iny
-	lda [<__si], y
-	sta <__ch
-	div2_word <__cx
-
-	; __ax = SG data address
-
-	iny
-	lda [<__si], y
-	sta <__al
-	iny
-	lda [<__si], y
-	sta <__ah
-
-	; __bl = SG data bank
-
-	iny
-	lda [<__si], y
-	tax
-
-	jsr unmap_data
-
-	stx <__bl
-
-	; __si = __ax
-
-	stw <__ax, <__si
-
-	; __di = VADDR
-	
-;--- DBL-BUFF ---
-	get_SATB_flag SPD_FLAG_DBL_BUFF
-	beq .use_main_VADDR		; no double-buffering
-
-	; toggle the double-buffering flag
-
-	inner_flags_switch_dbl_buff
-
-	; check which VADDR to use
-
-	inner_flags_dbl_buff_state
-	beq .use_main_VADDR		; use the main VADDR
-
-	stw <__spr_VADDR_dbl, <__di	; use opposite VADDR
-
-	bra .cont_load_SG_data
-
-.use_main_VADDR:
-
-;--- DBL-BUFF ---
-
-	stw <__spr_VADDR, <__di
-
-.cont_load_SG_data:
-
-	get_SATB_flag SPD_FLAG_PEND_SG_DATA
-	bne .copy_SG_data_params
-
-.ifdef	SPD_DEBUG
-	jsr _load_VRAM_border
-.endif
-	jsr load_vram
-
-.ifdef	SPD_DEBUG
-	jsr _black_border
-.endif
-
-	ldx #( 1 | SPD_SG_NEW_DATA )
-	cla
-	
-	rts
-
-.copy_SG_data_params:
-
-	; copy SG data parameters for delayed use on VBLANK
-
-	stw __SG_DATA_SRC_ADDR, <__ax
-	stw_zpii <__si, <__ax
-
-	stw __SG_DATA_SRC_BANK, <__ax
-	stw_zpii <__bx, <__ax
-
-	stw __SG_DATA_DST_ADDR, <__ax
-	stw_zpii <__di, <__ax
-
-	stw __SG_DATA_LEN, <__ax
-	stw_zpii <__cx, <__ax
-
-.ifdef	SPD_DEBUG
-	jsr _black_border
-.endif
-
-	ldx #( 1 | SPD_SG_NEW_DATA )
-	cla
-	
 	rts
 
 	; transform XY coordinates
@@ -1448,9 +1420,130 @@ __attr_transf_XY_IND_dbf:
 
 	jmp _push_SG_data
 
+	.endp
+
+	; load SG data to VRAM
+
+	.proc _load_SG_data
+
+	sty <__last_SG_bank
+
+	; __dx = SG bank index x6 ( .word <data_length>, chrN, bank(chrN) )
+
+	sty <__dl
+	stz <__dh
+	mul6_word <__dx
+
+	stw <__spr_SG_data_addr, <__si
+	lda <__spr_SG_data_bank
+	sta <__bl
+
+	call _spd_farptr_add_offset
+
+	jsr map_data			; map SG data array
+
+	; __cx = SG data length
+
+	cly
+	lda [<__si], y
+	sta <__cl
+	iny
+	lda [<__si], y
+	sta <__ch
+	div2_word <__cx
+
+	; __ax = SG data address
+
+	iny
+	lda [<__si], y
+	sta <__al
+	iny
+	lda [<__si], y
+	sta <__ah
+
+	; __bl = SG data bank
+
+	iny
+	lda [<__si], y
+	tax
+
+	jsr unmap_data
+
+	stx <__bl
+
+	; __si = __ax
+
+	stw <__ax, <__si
+
+	; __di = VADDR
+	
+;--- DBL-BUFF ---
+	get_SATB_flag SPD_FLAG_DBL_BUFF
+	beq .use_main_VADDR		; no double-buffering
+
+	; toggle the double-buffering flag
+
+	inner_flags_switch_dbl_buff
+
+	; check which VADDR to use
+
+	inner_flags_dbl_buff_state
+	beq .use_main_VADDR		; use the main VADDR
+
+	stw <__spr_VADDR_dbl, <__di	; use opposite VADDR
+
+	bra .cont_load_SG_data
+
+.use_main_VADDR:
+
+;--- DBL-BUFF ---
+
+	stw <__spr_VADDR, <__di
+
+.cont_load_SG_data:
+
+	get_SATB_flag SPD_FLAG_PEND_SG_DATA
+	bne .copy_SG_data_params
+
+.ifdef	SPD_DEBUG
+	call _load_VRAM_border
+.endif
+	jsr load_vram
+
+.exit:
+
+.ifdef	SPD_DEBUG
+	call _black_border
+.endif
+
+	ldx #( 1 | SPD_SG_NEW_DATA )
+	cla
+	
+	rts
+
+.copy_SG_data_params:
+
+	; copy SG data parameters for delayed use on VBLANK
+
+	stw __SG_DATA_SRC_ADDR, <__ax
+	stw_zpii <__si, <__ax
+
+	stw __SG_DATA_SRC_BANK, <__ax
+	stw_zpii <__bx, <__ax
+
+	stw __SG_DATA_DST_ADDR, <__ax
+	stw_zpii <__di, <__ax
+
+	stw __SG_DATA_LEN, <__ax
+	stw_zpii <__cx, <__ax
+
+	jmp .exit
+
+	.endp
+
 ;// spd_SG_data_params( word __ax / src_addr, word __bx / src_bank, word __cx / dst_addr, word __dx / len )
 ;
-_spd_SG_data_params.4:
+	.proc _spd_SG_data_params.4
 
 	stw <__ax, __SG_DATA_SRC_ADDR
 	stw <__bx, __SG_DATA_SRC_BANK
@@ -1459,37 +1552,48 @@ _spd_SG_data_params.4:
 
 	rts
 
+	.endp
+
 ;// spd_copy_SG_data_to_VRAM( word __ax / src_addr, word __bx / src_bank, word __dx / dst_addr, word __cx / len )
 ;
-_spd_copy_SG_data_to_VRAM.4:
+	.proc _spd_copy_SG_data_to_VRAM.4
 
 	stw <__ax, <__si
 	stw <__dx, <__di
 
 .ifdef	SPD_DEBUG
-	jsr _load_VRAM_border
+	call _load_VRAM_border
 
 	jsr load_vram
 
-	jmp _black_border
+	call _black_border
+
+	rts
 .else
 	jmp load_vram
 .endif
+	.endp
 
 ;// spd_copy_SG_data_to_VRAM( farptr __bl:__si / addr, byte __dl / index )
 ;
-_spd_copy_SG_data_to_VRAM.2:
+	.proc _spd_copy_SG_data_to_VRAM.2
 
 	; offset x6 -> sizeof( spd_SPRITE )
 
 	stz <__dh
 	mul6_word <__dx
 
-	jsr _spd_farptr_add_offset
+	call _spd_farptr_add_offset
+
+	call _spd_copy_SG_data_to_VRAM.1
+
+	rts
+
+	.endp
 
 ;// spd_copy_SG_data_to_VRAM( farptr __bl:__si / addr )
 ;
-_spd_copy_SG_data_to_VRAM.1:
+	.proc _spd_copy_SG_data_to_VRAM.1
 
 	jsr map_data			; map spd_SPRITE data
 
@@ -1499,35 +1603,48 @@ _spd_copy_SG_data_to_VRAM.1:
 
 	jsr unmap_data
 
-	jmp _load_SG_data
+	call _load_SG_data
 
-#endasm
+	rts
 
-//*/ for debugging purposes
-#asm
+	.endp
+
+; for debugging purposes
 .ifdef SPD_DEBUG
-_black_border:
+	.proc _black_border
 
 	clx
 	cly
 
-	jmp _border_color
+	call _set_border_color
 
-_push_sprite_border:
+	rts
+
+	.endp
+
+	.proc _push_sprite_border
 
 	ldx #$01
 	ldy #$ff
 
-	jmp _border_color
+	call _set_border_color
 
-_load_VRAM_border:
+	rts
+
+	.endp
+
+	.proc _load_VRAM_border
 
 	clx
 	ldy #$ff
 
-	jmp _border_color
+	call _set_border_color
 
-_border_color:
+	rts
+
+	.endp
+
+	.proc _set_border_color
 
 	stw #$0100, $0402
 
@@ -1535,5 +1652,11 @@ _border_color:
 	stx $0405
 
 	rts
+
+	.endp
+
 .endif	;SPD_DEBUG
-#endasm//*/
+
+	.endprocgroup
+
+#endasm
