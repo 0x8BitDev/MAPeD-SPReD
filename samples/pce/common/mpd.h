@@ -9,6 +9,8 @@
 History:
 
 v0.6
+2022.07.01 - added MPD_DEBUG flag that shows how long screen drawing/scrolling takes by border colors (use Mednafen)
+2022.06.26 - asm routines are wrapped in .proc/.endp
 2022.06.23 - added 'Working with screens/entities' info and 'mpd_get_screen_data' for bi-dir maps and 'mpd_copy_screen'
 2022.06.21 - added functions for working with base entities
 2022.06.19 - screen/entity data moved from .h file to .asm, and added interface functions
@@ -46,6 +48,15 @@ v0.1
 */
 
 /*/
+debug info (use Mednafen):
+ - green+red border color	- screen scrolling
+ - blue border color		- static screen drawing
+ - yellow border color		- getting a tile property
+
+#asm
+MPD_DEBUG
+#endasm
+
 NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any way!	It just provides scroll values X/Y: mpd_scroll_x(), mpd_scroll_y().
 	Thus, user must set scroll values in his program using these functions. This is for scrollable maps only!
 
@@ -291,7 +302,7 @@ void	mpd_draw_block2x2( u8 _x, u8 _y, u8 _block2x2_ind ) / _x/_y - screen space 
 void	mpd_draw_tile4x4( u8 _x, u8 _y, u8 _tile4x4_ind ) / _x/_y - screen space coordinates in pixels, _tile4x4_ind - 0..255
 #endif	//FLAG_TILES4X4
 
-u8	mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; result: property id
+u8	mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; RES: property id
 void	mpd_draw_screen()
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
@@ -332,6 +343,8 @@ void	mpd_get_entity( mpd_SCR_DATA* _scr_data, u8 _ent_ind )
 bool	mpd_find_entity_by_base_id( mpd_SCR_DATA* _scr_data, u8 _id )
 bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 #endif	//FLAG_ENTITIES
+
+--------------------------------------------------------
 */
 
 /************************/
@@ -355,16 +368,16 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 /* void mpd_load_bat( u16 _vaddr, far void* _addr, u16 _offset, u8 _width, u8 _height ) */
 #pragma fastcall mpd_load_bat( word __di, farptr __bl:__si, word __ax, byte __cl, byte __ch )
 
-/* int mpd_farpeekw( far void* _addr, u16 _offset )*/
+/* u16 mpd_farpeekw( far void* _addr, u16 _offset )*/
 #pragma fastcall mpd_farpeekw( farptr __bl:__si, word __ax )
 
-/* char mpd_farpeekb( far void* _addr, u16 _offset )*/
+/* u8 mpd_farpeekb( far void* _addr, u16 _offset )*/
 #pragma fastcall mpd_farpeekb( farptr __bl:__si, word __ax )
 
-/* int mpd_farpeekw( u8 _bank, u16 _addr, u16 _offset )*/
+/* u16 mpd_farpeekw( u8 _bank, u16 _addr, u16 _offset )*/
 #pragma fastcall mpd_farpeekw( byte __bl, word __si, word __ax )
 
-/* char mpd_farpeekb( u8 _bank, u16 _addr, u16 _offset )*/
+/* u8 mpd_farpeekb( u8 _bank, u16 _addr, u16 _offset )*/
 #pragma fastcall mpd_farpeekb( byte __bl, word __si, word __ax )
 
 /* void	mpd_farmemcpyb( u8 _bank, u16 _addr, u16 _offset, void* _dst_addr, u8 _size ) */
@@ -410,6 +423,8 @@ __mtiirts	.ds 1	; $60 rts
 
 	.code
 
+	.procgroup
+
 ; *** farptr += offset ***
 ;
 ; IN:
@@ -418,7 +433,7 @@ __mtiirts	.ds 1	; $60 rts
 ; __bl - bank number
 ; __si - address
 ;
-_mpd_farptr_add_offset:
+	.proc _mpd_farptr_add_offset
 
 	; add an offset
 
@@ -452,42 +467,22 @@ _mpd_farptr_add_offset:
 	
 	rts
 
-_mpd_get_CR_val
+	.endp
 
-	ldx <vdc_crl
-	lda <vdc_crh
+;// u16 mpd_farpeekw( byte __bl / bank, word __si / addr, word __ax / offset )
+;
+	.proc _mpd_farpeekw.3
 
-	rts
-	
-_mpd_load_palette.4
-
-	stw <__dx, <__ax
-	jsr _mpd_farptr_add_offset
-
-	maplibfunc	lib2_load_palette
+	call _mpd_farpeekw.2
 	rts
 
-_mpd_load_vram2.4:
-	jmp _load_vram.3
+	.endp
 
-_mpd_load_vram.4:
+;// u16 mpd_farpeekw( farptr __bl:__si / addr, word __ax / offset )
+;
+	.proc _mpd_farpeekw.2
 
-	jsr _mpd_farptr_add_offset
-
-	jmp _load_vram.3
-
-_mpd_load_bat.5:
-
-	jsr _mpd_farptr_add_offset
-
-	maplibfunc	lib2_load_bat
-	rts
-
-_mpd_farpeekw.3:
-
-_mpd_farpeekw.2:
-
-	jsr _mpd_farptr_add_offset
+	call _mpd_farptr_add_offset
 
 	lda	<__bl
 	tam	#3
@@ -513,15 +508,26 @@ _mpd_farpeekw.2:
 	lda	[__si]
 	rts
 
-_mpd_farpeekb.3:
+	.endp
+
+;// u8 mpd_farpeekb( byte __bl / bank, word __si / addr, word __ax / offset )
+;
+	.proc _mpd_farpeekb.3
 
 	lda <__si + 1
 	and #$1f
 	sta <__si + 1
 
-_mpd_farpeekb.2:
+	call _mpd_farpeekb.2
+	rts
 
-	jsr _mpd_farptr_add_offset
+	.endp
+
+;// u8 mpd_farpeekb( farptr __bl:__si / addr, word __ax / offset )
+;
+	.proc _mpd_farpeekb.2
+
+	call _mpd_farptr_add_offset
 
 	lda	<__bl
 	tam	#3
@@ -532,15 +538,17 @@ _mpd_farpeekb.2:
 	cla
 	rts
 
-;// mpd_farmemcpy( byte __bl / bank, word __si / addr, word __ax / offset, word __dx / dst_addr, byte __bh / size )
+	.endp
+
+;// void mpd_farmemcpy( byte __bl / bank, word __si / addr, word __ax / offset, word __dx / dst_addr, byte __bh / size )
 ;
-_mpd_farmemcpyb.5:
+	.proc _mpd_farmemcpyb.5
 
 	lda <__bh
 	bne .cont
 	rts		; exit if data size is zero
 .cont:
-	jsr _mpd_farptr_add_offset
+	call _mpd_farptr_add_offset
 
 	lda <__bh
 	sta __mbleni
@@ -555,9 +563,11 @@ _mpd_farmemcpyb.5:
 
 	jmp unmap_data
 
-;// mpd_memcpyb( word __ax / src_addr, word __bx / dst_addr, byte __cl / size ) */
+	.endp
+
+;// void mpd_memcpyb( word __ax / src_addr, word __bx / dst_addr, byte __cl / size ) */
 ;
-_mpd_memcpyb.3:
+	.proc _mpd_memcpyb.3
 
 	stw <__ax, __mbsrci
 	stw <__bx, __mbdsti
@@ -568,9 +578,11 @@ _mpd_memcpyb.3:
 
 	jmp __mTII
 
-;// mpd_get_ptr24( farptr __bl:__si / addr, byte __al / index, word __dx / dst_addr )
+	.endp
+
+;// void mpd_get_ptr24( farptr __bl:__si / addr, byte __al / index, word __dx / dst_addr )
 ;
-_mpd_get_ptr24.3:
+	.proc _mpd_get_ptr24.3
 
 	cla
 	sta <__ah
@@ -579,7 +591,7 @@ _mpd_get_ptr24.3:
 	mpd_mul2_word <__ax
 	mpd_add_word_to_word <__cx, <__ax
 
-	jsr _mpd_farptr_add_offset
+	call _mpd_farptr_add_offset
 
 	jsr map_data
 
@@ -601,6 +613,57 @@ _mpd_get_ptr24.3:
 	sta [<__dx], y
 
 	jmp unmap_data
+
+	.endp
+
+	.endprocgroup
+
+;// void mpd_load_vram2( word __di / vaddr, byte __bl / bank, word __si / addr, word __cx / words_cnt )
+;
+_mpd_load_vram2.4:
+	jmp _load_vram.3
+
+;// void mpd_load_vram( word __di / vaddr, farptr __bl:__si / addr, word __ax / offset, word __cx / words_cnt )
+;
+	.proc _mpd_load_vram.4
+
+	call _mpd_farptr_add_offset
+
+	jmp _load_vram.3
+
+	.endp
+
+;// void mpd_load_palette( byte __al / sub_plt, farptr __bl:__si / addr, word __dx / offset, byte __cl / sub_plts_cnt )
+;
+	.proc _mpd_load_palette.4
+
+	stw <__dx, <__ax
+	call _mpd_farptr_add_offset
+
+	jmp _load_palette.3
+
+	.endp
+
+;// void mpd_load_bat( word __di / vaddr, farptr __bl:__si / addr, word __ax / offset, byte __cl / width, byte __ch / height )
+;	
+	.proc _mpd_load_bat.5
+
+	call _mpd_farptr_add_offset
+
+	jmp _load_bat.4
+
+	.endp
+
+;// u16 mpd_get_CR_val()
+;
+	.proc _mpd_get_CR_val
+
+	ldx <vdc_crl
+	lda <vdc_crh
+
+	rts
+
+	.endp
 
 #endasm
 
@@ -883,6 +946,24 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 	return FALSE;
 }
 #endif	//FLAG_ENTITIES
+
+
+/*********************/
+/*		     */
+/* Debug info colors */
+/*		     */
+/*********************/
+
+#define	DBG_COLOR_ROW_COL_FILLING	256	// green
+#define	DBG_COLOR_DISP_LIST_FLUSH	184	// red
+#define	DBG_COLOR_DRAW_SCREEN		4	// blue
+#define	DBG_COLOR_GET_TILE_PROP		504	// yellow
+
+#define	DBG_BORDER_COLOR_GET_TILE_PROP		mpd_dbg_set_border( DBG_COLOR_GET_TILE_PROP );
+#define	DBG_BORDER_COLOR_DRAW_SCREEN		mpd_dbg_set_border( DBG_COLOR_DRAW_SCREEN );
+#define	DBG_BORDER_COLOR_DISP_LIST_FLUSH	mpd_dbg_set_border( DBG_COLOR_DISP_LIST_FLUSH );
+#define	DBG_BORDER_COLOR_ROW_COL_FILLING	mpd_dbg_set_border( DBG_COLOR_ROW_COL_FILLING );
+#define	DBG_BORDER_COLOR_RESET			mpd_dbg_set_border( 0 );
 
 void	mpd_dbg_set_border( u16 _clr )
 {
@@ -1682,6 +1763,17 @@ void	__mpd_draw_screen( u16 _BAT_offset, u8 _free_scr )
 	u16		num_CHRs;
 	mpd_PTR24	CHRs_ptr;
 
+#if	!FLAG_MODE_MULTIDIR_SCROLL
+	u8		chr_id_mul2;
+#endif
+
+#asm
+.ifdef MPD_DEBUG
+#endasm
+	DBG_BORDER_COLOR_DRAW_SCREEN
+#asm
+.endif
+#endasm
 	// load tiles & palette
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
@@ -1689,8 +1781,6 @@ void	__mpd_draw_screen( u16 _BAT_offset, u8 _free_scr )
 		num_CHRs = mpd_farpeekw( mpd_CHRs_size, __curr_chr_id_mul2 ) >> 5;
 
 #else
-	u8	chr_id_mul2;
-
 	chr_id_mul2	= __curr_scr.scr.chr_id << 1;
 	num_CHRs	= mpd_farpeekw( mpd_CHRs_size, chr_id_mul2 ) >> 5;
 
@@ -1731,6 +1821,14 @@ void	__mpd_draw_screen( u16 _BAT_offset, u8 _free_scr )
 #elif	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 	__mpd_draw_tiled_screen( _BAT_offset );
 #endif
+
+#asm
+.ifdef MPD_DEBUG
+#endasm
+	DBG_BORDER_COLOR_RESET
+#asm
+.endif
+#endasm
 }
 
 #if	!FLAG_MODE_MULTIDIR_SCROLL
@@ -1985,7 +2083,7 @@ void	mpd_move_left()
 
 	__scroll_x -= __scroll_step_x;
 
-	if( __scroll_x < 0 )
+	if( __scroll_x <= 0 )
 	{
 		__scroll_x = 0;
 		return;
@@ -2004,16 +2102,17 @@ void	mpd_move_right()
 	tmp_pos = __scroll_x;
 	tmp_pos &= 0x07;
 
+	__scroll_x += __scroll_step_x;
+
+	if( __scroll_x >= __cropped_map_width )
+	{
+		__scroll_x = __cropped_map_width;
+		return;
+	}
+
 	if( ( ( tmp_pos + __scroll_step_x ) & 0x08 ) || !tmp_pos )
 	{
 		__upd_flags |= UPD_FLAG_DRAW_RIGHT;
-	}
-
-	__scroll_x += __scroll_step_x;
-
-	if( __scroll_x > __cropped_map_width )
-	{
-		__scroll_x = __cropped_map_width;
 	}
 }
 
@@ -2026,7 +2125,7 @@ void	mpd_move_up()
 
 	__scroll_y -= __scroll_step_y;
 
-	if( __scroll_y < 0 )
+	if( __scroll_y <= 0 )
 	{
 		__scroll_y = 0;
 		return;
@@ -2045,16 +2144,17 @@ void	mpd_move_down()
 	tmp_pos = __scroll_y;
 	tmp_pos &= 0x07;
 
+	__scroll_y += __scroll_step_y;
+
+	if( __scroll_y >= __cropped_map_height )
+	{
+		__scroll_y = __cropped_map_height;
+		return;
+	}
+
 	if( ( ( tmp_pos + __scroll_step_y ) & 0x08 ) || !tmp_pos )
 	{
 		__upd_flags |= UPD_FLAG_DRAW_DOWN;
-	}
-
-	__scroll_y += __scroll_step_y;
-
-	if( __scroll_y > __cropped_map_height )
-	{
-		__scroll_y = __cropped_map_height;
 	}
 }
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
@@ -2077,6 +2177,13 @@ void	mpd_clear_update_flags()
 
 void	mpd_update_screen()
 {
+#asm
+.ifdef MPD_DEBUG
+#endasm
+	DBG_BORDER_COLOR_ROW_COL_FILLING
+#asm
+.endif
+#endasm
 	if( __upd_flags & UPD_FLAG_DRAW_MASK )
 	{
 		if( __upd_flags & UPD_FLAG_DRAW_LEFT )
@@ -2099,8 +2206,22 @@ void	mpd_update_screen()
 			__mpd_draw_down_tiles_row();
 		}
 
+#asm
+.ifdef MPD_DEBUG
+#endasm
+	DBG_BORDER_COLOR_DISP_LIST_FLUSH
+#asm
+.endif
+#endasm
 		__mpd_disp_list_flush();
 	}
+#asm
+.ifdef MPD_DEBUG
+#endasm
+	DBG_BORDER_COLOR_RESET
+#asm
+.endif
+#endasm
 }
 
 void	__mpd_draw_left_tiles_column()
@@ -2711,6 +2832,17 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 	s16		dx;
 	s16		dy;
+#endif
+
+#asm
+.ifdef MPD_DEBUG
+#endasm
+	DBG_BORDER_COLOR_GET_TILE_PROP
+#asm
+.endif
+#endasm
+
+#if	FLAG_MODE_BIDIR_SCROLL		/* !!! */
 
 	scr_offs	= __scr_offset;
 
@@ -2821,9 +2953,25 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	tile_id		= mpd_farpeekb( mpd_Tiles, __tiles_offset + ( tile_id << 2 ) + ( block_pos_y << 1 ) + block_pos_x );
 #endif
 
+#asm
+.ifdef MPD_DEBUG
+#endasm
+#if	FLAG_PROP_ID_PER_BLOCK
+	tile_id		= mpd_farpeekb( mpd_Props, __props_offset + tile_id );
+#else	//FLAG_PROP_ID_PER_CHR
+	tile_id		= mpd_farpeekb( mpd_Props, __props_offset + ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x );
+#endif
+	DBG_BORDER_COLOR_RESET
+	return tile_id;
+#asm
+.else
+#endasm
 #if	FLAG_PROP_ID_PER_BLOCK
 	return mpd_farpeekb( mpd_Props, __props_offset + tile_id );
 #else	//FLAG_PROP_ID_PER_CHR
 	return mpd_farpeekb( mpd_Props, __props_offset + ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x );
 #endif
+#asm
+.endif
+#endasm
 }
