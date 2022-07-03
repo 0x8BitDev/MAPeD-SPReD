@@ -189,6 +189,7 @@ coming soon...
 - `./samples/pce/sprite_render/animation_test/asm/`	- simple animation demo with big meta-sprites in assembly
 - `./samples/pce/sprite_render/animation_test/huc/`	- the same as previous, but written in HuC
 - `./samples/pce/sprite_render/animation_test/huc2/`	- animation demo that shows 3 independent, dynamic meta-sprite sets that fill the entire SATB with optional double-buffering
+- `./samples/pce/sprite_render/animation_test/huc3/`	- meta-sprite instancing demo; each meta-sprite has its own unique behaviour, palette and share the same graphics data
 - `./samples/pce/sprite_render/player_cntrl/asm/`	- simple character controller with a big meta-sprite character and dynamic sprite data: idle, move, kick; Controls: LEFT, RIGHT, UP
 - `./samples/pce/sprite_render/player_cntrl/huc/`	- simple character controller written in HuC with a big meta-sprite character, dynamic sprite data and optional double-buffering; Controls: LEFT, RIGHT, UP
 
