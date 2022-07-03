@@ -21,6 +21,15 @@
 //
 //################################################################
 
+// debug info (use Mednafen):
+// - green+red border color	- screen scrolling
+// - blue border color		- static screen drawing
+// - yellow border color	- getting a tile property
+//
+#asm
+;MPD_DEBUG
+#endasm
+
 #include <huc.h>
 
 #include "../../../common/mpd_def.h"
@@ -92,6 +101,15 @@ main()
 	bool	btn_pressed;
 	bool	sel_btn_pressed;
 	bool	prop_demo_res;
+
+#asm
+.ifdef MPD_DEBUG
+#endasm
+	// make the screen a little smaller so that the border color is visible
+	set_xres( 252, XRES_SOFT );
+#asm
+.endif
+#endasm
 
 	/*  disable display */
 	disp_off();
