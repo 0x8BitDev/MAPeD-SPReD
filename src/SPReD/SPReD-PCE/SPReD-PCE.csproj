@@ -164,6 +164,9 @@
       <Link>PCE_export_form.Designer.cs</Link>
       <DependentUpon>PCE_export_form.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\PCE_metasprite_exporter.cs">
+      <Link>PCE_metasprite_exporter.cs</Link>
+    </Compile>
     <Compile Include="..\src\Program.cs">
       <Link>Program.cs</Link>
     </Compile>

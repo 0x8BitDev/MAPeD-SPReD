@@ -756,28 +756,23 @@ namespace SPReD
 			
 			CHR_data chr_data;
 			
-			int i;
-			int j;
-			int x;
-			int y;
-			
-			int val;
 #if DEF_SMS
 			int max_clr_ind = ( 2 << ( _bpp - 1 ) ) - 1;
 #endif
 			int size = m_CHR_arr.Count;
 			
-			for( i = 0; i < size; i++ )
+			for( int i = 0; i < size; i++ )
 			{
 				chr_data = m_CHR_arr[ i ];
 #if DEF_NES
-				for( j = 0; j < 2; j++ )
+				for( int j = 0; j < 2; j++ )
 				{
-					for( y = 0; y < utils.CONST_CHR_SIDE_PIXELS_CNT; y++ )
+					for( int y = 0; y < utils.CONST_CHR_SIDE_PIXELS_CNT; y++ )
 					{
-						byte data = 0;
+						byte	data = 0;
+						int		val;
 						
-						for( x = 0; x < utils.CONST_CHR_SIDE_PIXELS_CNT; x++ )
+						for( int x = 0; x < utils.CONST_CHR_SIDE_PIXELS_CNT; x++ )
 						{
 							val = chr_data.get_data()[ ( y << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS ) + ( ( utils.CONST_CHR_SIDE_PIXELS_CNT - 1 ) - x ) ];
 							
@@ -788,13 +783,14 @@ namespace SPReD
 					}
 				}
 #elif DEF_SMS
-				for( y = 0; y < utils.CONST_CHR_SIDE_PIXELS_CNT; y++ )
+				for( int y = 0; y < utils.CONST_CHR_SIDE_PIXELS_CNT; y++ )
 				{
-					for( j = 0; j < _bpp; j++ )
+					for( int j = 0; j < _bpp; j++ )
 					{
-						byte data = 0;
+						byte	data = 0;
+						int		val;
 						
-						for( x = 0; x < utils.CONST_CHR_SIDE_PIXELS_CNT; x++ )
+						for( int x = 0; x < utils.CONST_CHR_SIDE_PIXELS_CNT; x++ )
 						{
 							val = chr_data.get_data()[ ( y << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS ) + ( ( utils.CONST_CHR_SIDE_PIXELS_CNT - 1 ) - x ) ];
 							
@@ -807,22 +803,7 @@ namespace SPReD
 					}
 				}
 #elif DEF_PCE
-				for( j = 0; j < 4; j++ )
-				{
-					for( y = 0; y < utils.CONST_CHR_SIDE_PIXELS_CNT; y++ )
-					{
-						ushort data = 0;
-						
-						for( x = 0; x < utils.CONST_CHR_SIDE_PIXELS_CNT; x++ )
-						{
-							val = chr_data.get_data()[ ( y << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS ) + ( ( utils.CONST_CHR_SIDE_PIXELS_CNT - 1 ) - x ) ];
-							
-							data |= ( ushort )( ( ( val >> j ) & 0x01 ) << x );
-						}
-						
-						bw.Write( data );
-					}
-				}
+				PCE_metasprite_exporter.save_CHR( bw, chr_data );
 #else
 ...
 #endif				

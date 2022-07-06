@@ -1852,6 +1852,7 @@ namespace SPReD
 			sprite_data spr;
 			
 			string prefix_filename;
+			string CHR_data_filename;
 			string data_prefix		= "";
 			string post_spr_data	= "";
 			string data_dir			= "";
@@ -2077,12 +2078,21 @@ namespace SPReD
 ...
 #endif
 							sw.WriteLine( "\t.byte " + spr.get_CHR_data().id + ( enable_comments ? "\t\t; GFX bank index (" + spr.get_CHR_data().name + ")":"" ) );
+							
+							CHR_data_filename = path + Path.DirectorySeparatorChar + data_dir + prefix_filename + "_" + spr.get_CHR_data().get_filename();
 #if DEF_NES
-							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + data_dir + prefix_filename + "_" + spr.get_CHR_data().get_filename(), save_padding_data );
+							spr.get_CHR_data().export( CHR_data_filename, save_padding_data );
 #elif DEF_SMS
-							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + data_dir + prefix_filename + "_" + spr.get_CHR_data().get_filename(), m_SMS_export_form.bpp );
+							spr.get_CHR_data().export( CHR_data_filename, m_SMS_export_form.bpp );
 #elif DEF_PCE
-							spr.get_CHR_data().export( path + Path.DirectorySeparatorChar + data_dir + prefix_filename + "_" + spr.get_CHR_data().get_filename() );
+							if( !m_PCE_export_form.non_packed_sprites_opt || ( spr.is_packed( CBoxMode8x16.Checked ) || spr.check_16x32_64_mode() ) )
+							{
+								spr.get_CHR_data().export( CHR_data_filename );
+							}
+							else
+							{
+								PCE_metasprite_exporter.export_CHR_data( spr, CHR_data_filename );
+							}
 #else
 ...
 #endif
@@ -2126,7 +2136,16 @@ namespace SPReD
 					// save the sprites data
 					for( int i = 0; i < _spr_cnt; i++ )
 					{
-						_get_spr( i ).export( sw, m_PCE_export_form.CHRs_offset, m_PCE_export_form.palette_slot, data_prefix + sprite_prefix );
+						spr = _get_spr( i );
+						
+						if( !m_PCE_export_form.non_packed_sprites_opt || ( spr.is_packed( CBoxMode8x16.Checked ) || spr.check_16x32_64_mode() ) )
+						{
+							spr.export( sw, m_PCE_export_form.CHRs_offset, m_PCE_export_form.palette_slot, data_prefix + sprite_prefix );
+						}
+						else
+						{
+							PCE_metasprite_exporter.export_sprite( sw, spr, m_PCE_export_form.CHRs_offset, m_PCE_export_form.palette_slot, data_prefix + sprite_prefix );
+						}
 					}
 #else
 ...

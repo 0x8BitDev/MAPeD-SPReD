@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 22.03.2017
  * Time: 10:35
  */
@@ -26,8 +26,9 @@ namespace SPReD
 			set {}
 		}
 		
-		public const int CONST_CHR_ATTR_FLAG_HFLIP	= 0x01;
-		public const int CONST_CHR_ATTR_FLAG_VFLIP	= 0x02;
+		public const int CONST_CHR_ATTR_FLAG_HFLIP		= 0x01;
+		public const int CONST_CHR_ATTR_FLAG_VFLIP		= 0x02;
+		public const int CONST_CHR_ATTR_FLAG_FLIP_MASK	= 0x03;
 		
 		public int CHR_ind
 		{

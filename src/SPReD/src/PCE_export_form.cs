@@ -32,6 +32,12 @@ namespace SPReD
 			get { return (int)NumPaletteSlot.Value; }
 		}
 		
+		public bool non_packed_sprites_opt
+		{
+			get {return CheckBoxNonPackedSpritesOpt.Checked; }
+			set {}
+		}
+		
 		public bool add_filename_to_sprite_names
 		{
 			get { return CheckBoxAddFileNameToSpriteName.Checked; }

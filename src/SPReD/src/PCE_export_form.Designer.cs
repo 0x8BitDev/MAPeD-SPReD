@@ -45,6 +45,7 @@ namespace SPReD
 			this.TextBoxDataDir = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.CheckBoxAddFileNameToSpriteName = new System.Windows.Forms.CheckBox();
+			this.CheckBoxNonPackedSpritesOpt = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.NumCHRsOffset)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumPaletteSlot)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumVADDR)).BeginInit();
@@ -53,10 +54,10 @@ namespace SPReD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(101, 149);
+			this.BtnOk.Location = new System.Drawing.Point(101, 171);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 7;
+			this.BtnOk.TabIndex = 12;
 			this.BtnOk.Text = "&Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			// 
@@ -145,35 +146,47 @@ namespace SPReD
 			// 
 			// TextBoxDataDir
 			// 
-			this.TextBoxDataDir.Location = new System.Drawing.Point(14, 112);
+			this.TextBoxDataDir.Location = new System.Drawing.Point(14, 135);
 			this.TextBoxDataDir.MaxLength = 256;
 			this.TextBoxDataDir.Name = "TextBoxDataDir";
 			this.TextBoxDataDir.Size = new System.Drawing.Size(251, 20);
-			this.TextBoxDataDir.TabIndex = 8;
+			this.TextBoxDataDir.TabIndex = 11;
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(13, 94);
+			this.label2.Location = new System.Drawing.Point(13, 117);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(251, 18);
-			this.label2.TabIndex = 4;
+			this.label2.TabIndex = 10;
 			this.label2.Text = "Data directory (e.g. \'data/sprites\'):";
 			// 
 			// CheckBoxAddFileNameToSpriteName
 			// 
-			this.CheckBoxAddFileNameToSpriteName.Location = new System.Drawing.Point(12, 72);
+			this.CheckBoxAddFileNameToSpriteName.Location = new System.Drawing.Point(12, 95);
 			this.CheckBoxAddFileNameToSpriteName.Name = "CheckBoxAddFileNameToSpriteName";
 			this.CheckBoxAddFileNameToSpriteName.Size = new System.Drawing.Size(250, 17);
 			this.CheckBoxAddFileNameToSpriteName.TabIndex = 9;
 			this.CheckBoxAddFileNameToSpriteName.Text = "Add filename to sprite names";
 			this.CheckBoxAddFileNameToSpriteName.UseVisualStyleBackColor = true;
 			// 
+			// CheckBoxNonPackedSpritesOpt
+			// 
+			this.CheckBoxNonPackedSpritesOpt.Checked = true;
+			this.CheckBoxNonPackedSpritesOpt.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.CheckBoxNonPackedSpritesOpt.Location = new System.Drawing.Point(12, 74);
+			this.CheckBoxNonPackedSpritesOpt.Name = "CheckBoxNonPackedSpritesOpt";
+			this.CheckBoxNonPackedSpritesOpt.Size = new System.Drawing.Size(250, 17);
+			this.CheckBoxNonPackedSpritesOpt.TabIndex = 7;
+			this.CheckBoxNonPackedSpritesOpt.Text = "Non-packed sprites optimization";
+			this.CheckBoxNonPackedSpritesOpt.UseVisualStyleBackColor = true;
+			// 
 			// PCE_export_form
 			// 
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(278, 182);
+			this.ClientSize = new System.Drawing.Size(278, 207);
+			this.Controls.Add(this.CheckBoxNonPackedSpritesOpt);
 			this.Controls.Add(this.CheckBoxAddFileNameToSpriteName);
 			this.Controls.Add(this.TextBoxDataDir);
 			this.Controls.Add(this.NumVADDR);
@@ -197,6 +210,7 @@ namespace SPReD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.CheckBox CheckBoxNonPackedSpritesOpt;
 		private System.Windows.Forms.CheckBox CheckBoxAddFileNameToSpriteName;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox TextBoxDataDir;

@@ -573,20 +573,10 @@ namespace SPReD
 
 				_sw.WriteLine( "\t.byte " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}", unchecked( ( byte )( offset_y + chr_attr.y ) ), unchecked( ( byte )( offset_x + chr_attr.x ) ), unchecked( ( byte )( chr_attr.CHR_ind + _CHRs_offset ) ) ) );
 #elif DEF_PCE
-				if( chr_attr.CHR_ind + _CHRs_offset >= utils.CONST_PCE_MAX_SPRITES_CNT )
-				{
-					throw new Exception( "CHRs indices overflow! Invalid CHRs offset value!" );
-				}
-				
 				int CHR_ind_offset = 0;
-				int attr	= ( chr_attr.palette_ind + _palette_slot ) & 0x0f;
-				int cgx_cgy	= get_CGX_CGY_flags( ref CHR_ind_offset );
-				attr |= cgx_cgy;
-				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_HFLIP ) != 0 ) ? ( 1 << 11 ):0;
-				attr |= ( ( chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) != 0 ) ? ( 1 << 15 ):0;
-				attr |= 1 << 7; // sprite priority
+				int cgx_cgy	= PCE_metasprite_exporter.get_CGX_CGY_flags( this, ref CHR_ind_offset );
 
-				_sw.WriteLine( "\t.word " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( ushort )( offset_y + chr_attr.y ) ), unchecked( ( ushort )( offset_x + chr_attr.x ) ), unchecked( ( ushort )( ( chr_attr.CHR_ind + CHR_ind_offset + _CHRs_offset ) << 1 ) ), ( ushort )attr ) );
+				PCE_metasprite_exporter.save_attribute( _sw, this, chr_attr, cgx_cgy, _CHRs_offset, CHR_ind_offset, _palette_slot );
 				
 				if( cgx_cgy != 0 )
 				{
@@ -600,89 +590,9 @@ namespace SPReD
 			_sw.WriteLine( _data_prefix + name + "_end:\n" );
 		}
 #if DEF_PCE
-		private int get_CGX_CGY_flags( ref int _CHR_ind_offset )
+		public bool check_16x32_64_mode()
 		{
-			int res = 0;
-			
-			if( m_size_x == 32 )
-			{
-				string lower_name = name.ToLower();
-				
-				bool s16x_0 = lower_name.Contains( "16x32_0" ) || lower_name.Contains( "16x64_0" );
-				bool s16x_1 = lower_name.Contains( "16x32_1" ) || lower_name.Contains( "16x64_1" );
-				
-				if( s16x_0 || s16x_1 )
-				{
-					if( m_size_y == 32 && m_CHR_attr.Count == 4 )
-					{
-						res = 0x10;
-					}
-					else
-					if( m_size_y == 64 && m_CHR_attr.Count == 8 )
-					{
-						res = 0x30;
-					}
-					
-					if( res != 0 )
-					{
-						if( s16x_1 )
-						{
-							_CHR_ind_offset = 1;
-						}
-						else
-						{
-							_CHR_ind_offset = 0;
-						}
-					}
-				}
-				else
-				{
-					if( m_size_y == 16 && m_CHR_attr.Count == 2 )
-					{
-						res = 0x01; 
-					}
-					else
-					if( m_size_y == 32 && m_CHR_attr.Count == 4 )
-					{
-						res = 0x11;
-					}
-					else
-					if( m_size_y == 64 && m_CHR_attr.Count == 8 )
-					{
-						res = 0x31;
-					}
-				}
-			}
-			
-			if( res != 0 )
-			{
-				// check coordinates multiples of 16
-				CHR_data_attr attr;
-				
-				int x;
-				int y;
-				
-				int offs_x = m_CHR_attr[ 0 ].x;
-				int offs_y = m_CHR_attr[ 0 ].y;
-					
-				for( int i = 1; i < m_CHR_attr.Count; i++ )
-				{
-					attr = m_CHR_attr[ i ];
-					
-					x = attr.x - offs_x;
-					y = attr.y - offs_y;
-					
-					if( ( x != 0 && ( ( x - 1 ) & 0x0f ) != 0x0f ) || ( y != 0 && ( ( y - 1 ) & 0x0f ) != 0x0f ) )
-					{
-						res = 0;
-						_CHR_ind_offset = 0;
-						
-						break;
-					}
-				}
-			}
-				
-			return res << 8;
+			return m_name.Contains( "16x32_0" ) || m_name.Contains( "16x32_1" ) || m_name.Contains( "16x64_0" ) || m_name.Contains( "16x64_1" );
 		}
 #endif
 		public Rectangle get_rect()
