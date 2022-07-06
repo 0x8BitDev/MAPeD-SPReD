@@ -3,8 +3,7 @@
 // Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
 //
 // DESC: Animation demo that shows 3 independent, dynamic meta-sprite sets 
-//	 that fill the entire SATB with peak data load ROM->VRAM 8KB
-//	 and with optional double-buffering (see 'DEF_SET<N>_SG_DBL_BUFF' flags)
+//	 with optional double-buffering (see 'DEF_SET<N>_SG_DBL_BUFF' flags)
 //
 //###############################################################################
 
@@ -78,17 +77,15 @@ typedef struct
 
 /* our test animations */
 static anim_desc	test_anim1	= { 0, 0, 8, 12, 0, 0 };
-static anim_desc	test_anim2	= { 0, 0, 8, 6,  0, 0 };
-static anim_desc	test_anim3	= { 0, 6, 8, 12, 0, 0 };
+static anim_desc	test_anim2	= { 2, 0, 8, 6,  0, 0 };
+static anim_desc	test_anim3	= { 4, 6, 8, 12, 0, 0 };
 
 static short		y_pos		= 176;
 static unsigned char	dir_trigger	= 0;
 
 /* show sprite by input index */
-unsigned char	sprite1_show( char _ind, short _x, short _y )
+void	sprite1_show( char _ind, short _x, short _y )
 {
-	unsigned char res;
-
 	// set up exported sprite set with SG data array and VRAM address to load SG data to.
 	// NOTE: you can combine any number of exported sprite sets in your program.
 	//	 call the 'spd_sprite_params' to switch between them.
@@ -113,7 +110,7 @@ unsigned char	sprite1_show( char _ind, short _x, short _y )
 #endif
 
 	// NOTE: Use sprite pushing by index ONLY, if double buffering is enabled (!)
-	res = spd_SATB_push_sprite( set1_frames_data, _ind, _x, _y );
+	SET1_SPR_PUSH_RES = spd_SATB_push_sprite( set1_frames_data, _ind, _x, _y );
 
 #if	DEF_SET1_SG_DBL_BUFF
 	// save the last double-buffer index
@@ -121,14 +118,10 @@ unsigned char	sprite1_show( char _ind, short _x, short _y )
 #endif
 
 	SET1_LAST_SG_BANK = spd_SG_bank_get_ind();
-
-	return res;
 }
 
-unsigned char	sprite2_show( char _ind, short _x, short _y )
+void	sprite2_show( char _ind, short _x, short _y )
 {
-	unsigned char res;
-
 #if	DEF_SET2_SG_DBL_BUFF
 	spd_sprite_params( set2_SG_arr, SET2_SPR_VADDR, SPD_FLAG_DBL_BUFF, SET2_LAST_SG_BANK );
 	spd_dbl_buff_VRAM_addr( SET2_SPR_VADDR + 0x800, SET2_LAST_DBL_BUFF_IND );
@@ -136,21 +129,17 @@ unsigned char	sprite2_show( char _ind, short _x, short _y )
 	spd_sprite_params( set2_SG_arr, SET2_SPR_VADDR, SPD_FLAG_PEND_SG_DATA, SET2_LAST_SG_BANK );
 	spd_SG_data_params( &SET2_SG_DATA_SRC_ADDR, &SET2_SG_DATA_SRC_BANK, &SET2_SG_DATA_DST_ADDR, &SET2_SG_DATA_LEN );
 #endif
-	res = spd_SATB_push_sprite( set2_frames_data, _ind, _x, _y );
+	SET2_SPR_PUSH_RES = spd_SATB_push_sprite( set2_frames_data, _ind, _x, _y );
 
 #if	DEF_SET2_SG_DBL_BUFF
 	SET2_LAST_DBL_BUFF_IND = spd_get_dbl_buff_ind();
 #endif
 
 	SET2_LAST_SG_BANK = spd_SG_bank_get_ind();
-
-	return res;
 }
 
-unsigned char	sprite3_show( char _ind, short _x, short _y )
+void	sprite3_show( char _ind, short _x, short _y )
 {
-	unsigned char res;
-
 #if	DEF_SET3_SG_DBL_BUFF
 	spd_sprite_params( set3_SG_arr, SET3_SPR_VADDR, SPD_FLAG_DBL_BUFF, SET3_LAST_SG_BANK );
 	spd_dbl_buff_VRAM_addr( SET3_SPR_VADDR + 0x800, SET3_LAST_DBL_BUFF_IND );
@@ -158,15 +147,13 @@ unsigned char	sprite3_show( char _ind, short _x, short _y )
 	spd_sprite_params( set3_SG_arr, SET3_SPR_VADDR, SPD_FLAG_PEND_SG_DATA, SET3_LAST_SG_BANK );
 	spd_SG_data_params( &SET3_SG_DATA_SRC_ADDR, &SET3_SG_DATA_SRC_BANK, &SET3_SG_DATA_DST_ADDR, &SET3_SG_DATA_LEN );
 #endif
-	res = spd_SATB_push_sprite( set3_frames_data, _ind, _x, _y );
+	SET3_SPR_PUSH_RES = spd_SATB_push_sprite( set3_frames_data, _ind, _x, _y );
 
 #if	DEF_SET3_SG_DBL_BUFF
 	SET3_LAST_DBL_BUFF_IND = spd_get_dbl_buff_ind();
 #endif
 
 	SET3_LAST_SG_BANK = spd_SG_bank_get_ind();
-
-	return res;
 }
 
 /* animation update */
@@ -250,9 +237,9 @@ main()
 		spd_SATB_set_pos( 0 );
 
 		/* push meta-sprites to SATB */
-		SET1_SPR_PUSH_RES	= sprite1_show( test_anim1.start_frame + test_anim1.curr_frame, 40,  y_pos );
-		SET2_SPR_PUSH_RES	= sprite2_show( test_anim2.start_frame + test_anim2.curr_frame, 120, y_pos );
-		SET3_SPR_PUSH_RES	= sprite3_show( test_anim3.start_frame + test_anim3.curr_frame, 220, y_pos );
+		sprite1_show( test_anim1.start_frame + test_anim1.curr_frame, 40,  y_pos );
+		sprite2_show( test_anim2.start_frame + test_anim2.curr_frame, 120, y_pos );
+		sprite3_show( test_anim3.start_frame + test_anim3.curr_frame, 220, y_pos );
 
 		/* change sprites position */
 		update_y_pos();

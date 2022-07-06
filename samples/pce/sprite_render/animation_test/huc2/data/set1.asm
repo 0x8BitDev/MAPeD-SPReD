@@ -101,288 +101,173 @@ _mpwr_kick05_ref01_RIGHT_frame:
 	; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc
 
 _mpwr_idle01_RIGHT:
-	.word $FF9E, $0B, $100, $880
-	.word $FF9E, $FFFB, $102, $880
-	.word $FF9E, $FFEB, $104, $880
-	.word $FFAE, $0F, $106, $880
-	.word $FFAE, $FFFF, $108, $880
-	.word $FFAE, $FFEF, $10A, $880
-	.word $FFBE, $0C, $10C, $880
-	.word $FFBE, $FFFC, $10E, $880
-	.word $FFBE, $FFEC, $110, $880
-	.word $FFCE, $0B, $112, $880
-	.word $FFCE, $FFFB, $114, $880
-	.word $FFCE, $FFEB, $116, $880
-	.word $FFDE, $0B, $118, $880
-	.word $FFDE, $FFFB, $11A, $880
-	.word $FFDE, $FFEB, $11C, $880
-	.word $FFEE, $0B, $11E, $880
-	.word $FFEE, $FFFB, $120, $880
-	.word $FFEE, $FFEB, $122, $880
-	.word $FFEE, $FFDB, $124, $880
+	.word $FFCE, $FFFB, $100, $1980
+	.word $FF9E, $FFFB, $108, $980
+	.word $FFAE, $FFFF, $10C, $980
+	.word $FFBE, $FFFC, $110, $980
+	.word $FFEE, $FFFB, $114, $980
+	.word $FFEE, $FFDB, $118, $980
+	.word $FF9E, $FFEB, $11C, $880
+	.word $FFAE, $FFEF, $11E, $880
+	.word $FFBE, $FFEC, $120, $880
+	.word $FFCE, $FFEB, $122, $880
+	.word $FFDE, $FFEB, $124, $880
 	.word $FFFE, $FFE4, $126, $880
 _mpwr_idle01_RIGHT_end:
 
 _mpwr_walk01_RIGHT:
-	.word $FF97, $03, $100, $880
-	.word $FF97, $FFF3, $102, $880
-	.word $FF97, $FFE3, $104, $880
-	.word $FFA7, $18, $106, $880
-	.word $FFA7, $08, $108, $880
-	.word $FFA7, $FFF8, $10A, $880
-	.word $FFA7, $FFE8, $10C, $880
-	.word $FFA7, $FFD8, $10E, $880
-	.word $FFB7, $17, $110, $880
-	.word $FFB7, $07, $112, $880
-	.word $FFB7, $FFF7, $114, $880
-	.word $FFB7, $FFE7, $116, $880
-	.word $FFC7, $FFFD, $118, $880
-	.word $FFC7, $FFED, $11A, $880
-	.word $FFD7, $01, $11C, $880
-	.word $FFD7, $FFF1, $11E, $880
-	.word $FFD7, $FFE1, $120, $880
-	.word $FFE7, $FFFF, $122, $880
-	.word $FFE7, $FFE9, $124, $880
-	.word $FFE7, $FFD9, $126, $880
-	.word $FFF7, $05, $128, $880
-	.word $FFF7, $FFF5, $12A, $880
+	.word $FF97, $FFF3, $100, $980
+	.word $FFA7, $08, $104, $980
+	.word $FFA7, $FFE8, $108, $980
+	.word $FFB7, $07, $10C, $980
+	.word $FFB7, $FFE7, $110, $980
+	.word $FFC7, $FFED, $114, $980
+	.word $FFD7, $FFF1, $118, $980
+	.word $FFE7, $FFD9, $11C, $980
+	.word $FFF7, $FFF5, $120, $980
+	.word $FF97, $FFE3, $124, $880
+	.word $FFA7, $FFD8, $126, $880
+	.word $FFD7, $FFE1, $128, $880
+	.word $FFE7, $FFFF, $12A, $880
 	.word $FFF7, $FFDC, $12C, $880
 _mpwr_walk01_RIGHT_end:
 
 _mpwr_walk02_RIGHT:
-	.word $FF96, $02, $100, $880
-	.word $FF96, $FFF2, $102, $880
-	.word $FFA6, $12, $104, $880
-	.word $FFA6, $02, $106, $880
-	.word $FFA6, $FFF2, $108, $880
-	.word $FFB6, $FFFF, $10A, $880
-	.word $FFB6, $FFEF, $10C, $880
-	.word $FFC6, $FFF9, $10E, $880
-	.word $FFC6, $FFE9, $110, $880
-	.word $FFD6, $FFFC, $112, $880
-	.word $FFD6, $FFEC, $114, $880
-	.word $FFD6, $FFDC, $116, $880
-	.word $FFE6, $FFFA, $118, $880
-	.word $FFE6, $FFEA, $11A, $880
-	.word $FFE6, $FFDA, $11C, $880
-	.word $FFF6, $FFFE, $11E, $880
-	.word $FFF6, $FFEE, $120, $880
+	.word $FF96, $FFF2, $100, $1980
+	.word $FFB6, $FFEF, $108, $980
+	.word $FFC6, $FFE9, $10C, $980
+	.word $FFD6, $FFEC, $110, $980
+	.word $FFE6, $FFEA, $114, $980
+	.word $FFF6, $FFEE, $118, $980
+	.word $FFA6, $12, $11C, $880
+	.word $FFD6, $FFDC, $11E, $880
+	.word $FFE6, $FFDA, $120, $880
 	.word $FFF6, $FFDE, $122, $880
 _mpwr_walk02_RIGHT_end:
 
 _mpwr_walk03_RIGHT:
-	.word $FF93, $02, $100, $880
-	.word $FF93, $FFF2, $102, $880
-	.word $FFA3, $10, $104, $880
-	.word $FFA3, $00, $106, $880
-	.word $FFA3, $FFF0, $108, $880
-	.word $FFB3, $02, $10A, $880
-	.word $FFB3, $FFF2, $10C, $880
-	.word $FFB3, $FFE2, $10E, $880
-	.word $FFC3, $0A, $110, $880
-	.word $FFC3, $FFFA, $112, $880
-	.word $FFC3, $FFEA, $114, $880
-	.word $FFD3, $0A, $116, $880
-	.word $FFD3, $FFFA, $118, $880
-	.word $FFD3, $FFEA, $11A, $880
-	.word $FFE3, $06, $11C, $880
-	.word $FFE3, $FFF6, $11E, $880
-	.word $FFE3, $FFE6, $120, $880
-	.word $FFF3, $FFE7, $122, $880
-	.word $FFF3, $FFD7, $124, $880
+	.word $FFC3, $FFFA, $100, $1980
+	.word $FF93, $FFF2, $108, $980
+	.word $FFA3, $00, $10C, $980
+	.word $FFB3, $FFF2, $110, $980
+	.word $FFE3, $FFF6, $114, $980
+	.word $FFF3, $FFD7, $118, $980
+	.word $FFA3, $FFF0, $11C, $880
+	.word $FFB3, $FFE2, $11E, $880
+	.word $FFC3, $FFEA, $120, $880
+	.word $FFD3, $FFEA, $122, $880
+	.word $FFE3, $FFE6, $124, $880
 _mpwr_walk03_RIGHT_end:
 
 _mpwr_walk04_RIGHT:
-	.word $FF97, $02, $100, $880
-	.word $FF97, $FFF2, $102, $880
-	.word $FFA7, $12, $104, $880
-	.word $FFA7, $02, $106, $880
-	.word $FFA7, $FFF2, $108, $880
-	.word $FFA7, $FFE2, $10A, $880
-	.word $FFB7, $0C, $10C, $880
-	.word $FFB7, $FFFC, $10E, $880
-	.word $FFB7, $FFEC, $110, $880
-	.word $FFC7, $06, $112, $880
-	.word $FFC7, $FFF6, $114, $880
-	.word $FFC7, $FFE6, $116, $880
-	.word $FFD7, $09, $118, $880
-	.word $FFD7, $FFF9, $11A, $880
-	.word $FFD7, $FFE9, $11C, $880
-	.word $FFD7, $FFD9, $11E, $880
-	.word $FFE7, $0D, $120, $880
-	.word $FFE7, $FFFD, $122, $880
-	.word $FFE7, $FFE9, $124, $880
-	.word $FFE7, $FFD9, $126, $880
-	.word $FFF7, $0D, $128, $880
-	.word $FFF7, $FFFD, $12A, $880
+	.word $FF97, $FFF2, $100, $1980
+	.word $FFD7, $FFD9, $108, $1980
+	.word $FFE7, $FFFD, $110, $1980
+	.word $FFB7, $FFFC, $118, $980
+	.word $FFC7, $FFF6, $11C, $980
+	.word $FFD7, $FFF9, $120, $980
+	.word $FFA7, $12, $124, $880
+	.word $FFA7, $FFE2, $126, $880
+	.word $FFB7, $FFEC, $128, $880
+	.word $FFC7, $FFE6, $12A, $880
 	.word $FFF7, $FFD7, $12C, $880
 _mpwr_walk04_RIGHT_end:
 
 _mpwr_walk05_RIGHT:
-	.word $FF9A, $02, $100, $880
-	.word $FF9A, $FFF2, $102, $880
-	.word $FFAA, $0E, $104, $880
-	.word $FFAA, $FFFE, $106, $880
-	.word $FFAA, $FFEE, $108, $880
-	.word $FFBA, $02, $10A, $880
-	.word $FFBA, $FFF2, $10C, $880
-	.word $FFBA, $FFE2, $10E, $880
-	.word $FFCA, $02, $110, $880
-	.word $FFCA, $FFF2, $112, $880
-	.word $FFCA, $FFE2, $114, $880
-	.word $FFDA, $03, $116, $880
-	.word $FFDA, $FFF3, $118, $880
-	.word $FFDA, $FFE3, $11A, $880
-	.word $FFEA, $01, $11C, $880
-	.word $FFEA, $FFF1, $11E, $880
-	.word $FFEA, $FFE1, $120, $880
-	.word $FFFA, $02, $122, $880
-	.word $FFFA, $FFF2, $124, $880
+	.word $FFBA, $FFF2, $100, $1980
+	.word $FF9A, $FFF2, $108, $980
+	.word $FFAA, $FFFE, $10C, $980
+	.word $FFDA, $FFF3, $110, $980
+	.word $FFEA, $FFF1, $114, $980
+	.word $FFFA, $FFF2, $118, $980
+	.word $FFAA, $FFEE, $11C, $880
+	.word $FFBA, $FFE2, $11E, $880
+	.word $FFCA, $FFE2, $120, $880
+	.word $FFDA, $FFE3, $122, $880
+	.word $FFEA, $FFE1, $124, $880
 	.word $FFFA, $FFDA, $126, $880
 _mpwr_walk05_RIGHT_end:
 
 _mpwr_walk06_RIGHT:
-	.word $FF98, $02, $100, $880
-	.word $FF98, $FFF2, $102, $880
-	.word $FFA8, $12, $104, $880
-	.word $FFA8, $02, $106, $880
-	.word $FFA8, $FFF2, $108, $880
-	.word $FFA8, $FFE2, $10A, $880
-	.word $FFB8, $00, $10C, $880
-	.word $FFB8, $FFF0, $10E, $880
-	.word $FFB8, $FFE0, $110, $880
-	.word $FFC8, $02, $112, $880
-	.word $FFC8, $FFF2, $114, $880
-	.word $FFC8, $FFE2, $116, $880
-	.word $FFD8, $02, $118, $880
-	.word $FFD8, $FFF2, $11A, $880
-	.word $FFE8, $FFFE, $11C, $880
-	.word $FFE8, $FFEE, $11E, $880
-	.word $FFF8, $FFF0, $120, $880
-	.word $FFF8, $FFE0, $122, $880
+	.word $FF98, $FFF2, $100, $1980
+	.word $FFC8, $FFF2, $108, $1980
+	.word $FFB8, $FFF0, $110, $980
+	.word $FFE8, $FFEE, $114, $980
+	.word $FFF8, $FFE0, $118, $980
+	.word $FFA8, $12, $11C, $880
+	.word $FFA8, $FFE2, $11E, $880
+	.word $FFB8, $FFE0, $120, $880
+	.word $FFC8, $FFE2, $122, $880
 _mpwr_walk06_RIGHT_end:
 
 _mpwr_kick01_RIGHT:
-	.word $FF98, $15, $100, $880
-	.word $FF98, $05, $102, $880
-	.word $FF98, $FFF5, $104, $880
-	.word $FF98, $FFE5, $106, $880
-	.word $FFA8, $18, $108, $880
-	.word $FFA8, $08, $10A, $880
-	.word $FFA8, $FFF8, $10C, $880
-	.word $FFA8, $FFE8, $10E, $880
-	.word $FFB8, $17, $110, $880
-	.word $FFB8, $06, $112, $880
-	.word $FFB8, $FFF6, $114, $880
-	.word $FFC8, $0C, $116, $880
-	.word $FFC8, $FFFC, $118, $880
-	.word $FFC8, $FFEC, $11A, $880
-	.word $FFD8, $0F, $11C, $880
-	.word $FFD8, $FFFF, $11E, $880
-	.word $FFD8, $FFEF, $120, $880
-	.word $FFD8, $FFDF, $122, $880
-	.word $FFE8, $0B, $124, $880
-	.word $FFE8, $FFFB, $126, $880
-	.word $FFE8, $FFEB, $128, $880
-	.word $FFE8, $FFDB, $12A, $880
-	.word $FFF8, $0B, $12C, $880
-	.word $FFF8, $FFFB, $12E, $880
+	.word $FFE8, $FFFB, $100, $1980
+	.word $FF98, $05, $108, $980
+	.word $FF98, $FFE5, $10C, $980
+	.word $FFA8, $08, $110, $980
+	.word $FFA8, $FFE8, $114, $980
+	.word $FFB8, $FFF6, $118, $980
+	.word $FFC8, $FFFC, $11C, $980
+	.word $FFD8, $FFFF, $120, $980
+	.word $FFD8, $FFDF, $124, $980
+	.word $FFE8, $FFDB, $128, $980
+	.word $FFB8, $17, $12C, $880
+	.word $FFC8, $FFEC, $12E, $880
 	.word $FFF8, $FFE1, $130, $880
 _mpwr_kick01_RIGHT_end:
 
 _mpwr_kick02_RIGHT:
-	.word $FF93, $FFFD, $100, $880
-	.word $FF93, $FFED, $102, $880
-	.word $FFA3, $0E, $104, $880
-	.word $FFA3, $FFFE, $106, $880
-	.word $FFA3, $FFEE, $108, $880
-	.word $FFB3, $07, $10A, $880
-	.word $FFB3, $FFF7, $10C, $880
-	.word $FFC3, $0D, $10E, $880
-	.word $FFC3, $FFFD, $110, $880
-	.word $FFD3, $10, $112, $880
-	.word $FFD3, $00, $114, $880
-	.word $FFD3, $FFF0, $116, $880
-	.word $FFE3, $10, $118, $880
-	.word $FFE3, $00, $11A, $880
-	.word $FFE3, $FFF0, $11C, $880
-	.word $FFF3, $0B, $11E, $880
-	.word $FFF3, $FFFB, $120, $880
+	.word $FFD3, $00, $100, $1980
+	.word $FF93, $FFED, $108, $980
+	.word $FFA3, $FFFE, $10C, $980
+	.word $FFB3, $FFF7, $110, $980
+	.word $FFC3, $FFFD, $114, $980
+	.word $FFF3, $FFFB, $118, $980
+	.word $FFA3, $FFEE, $11C, $880
+	.word $FFD3, $FFF0, $11E, $880
+	.word $FFE3, $FFF0, $120, $880
 _mpwr_kick02_RIGHT_end:
 
 _mpwr_kick03_RIGHT:
-	.word $FF9A, $33, $100, $880
-	.word $FF9A, $18, $102, $880
-	.word $FF9A, $08, $104, $880
-	.word $FF9A, $FFF8, $106, $880
-	.word $FFAA, $34, $108, $880
-	.word $FFAA, $24, $10A, $880
-	.word $FFAA, $14, $10C, $880
-	.word $FFAA, $04, $10E, $880
-	.word $FFAA, $FFF4, $110, $880
-	.word $FFAA, $FFE4, $112, $880
-	.word $FFBA, $24, $114, $880
-	.word $FFBA, $14, $116, $880
-	.word $FFBA, $04, $118, $880
-	.word $FFBA, $FFF4, $11A, $880
-	.word $FFBA, $FFE4, $11C, $880
-	.word $FFCA, $13, $11E, $880
-	.word $FFCA, $03, $120, $880
-	.word $FFCA, $FFF3, $122, $880
-	.word $FFCA, $FFE3, $124, $880
-	.word $FFDA, $13, $126, $880
-	.word $FFDA, $03, $128, $880
-	.word $FFEA, $0E, $12A, $880
-	.word $FFEA, $FFFE, $12C, $880
-	.word $FFFA, $0B, $12E, $880
-	.word $FFFA, $FFFB, $130, $880
+	.word $FFAA, $14, $100, $1980
+	.word $FFAA, $FFF4, $108, $1980
+	.word $FFCA, $03, $110, $1980
+	.word $FF9A, $08, $118, $980
+	.word $FFCA, $FFE3, $11C, $980
+	.word $FFEA, $FFFE, $120, $980
+	.word $FFFA, $FFFB, $124, $980
+	.word $FF9A, $33, $128, $880
+	.word $FF9A, $FFF8, $12A, $880
+	.word $FFAA, $34, $12C, $880
+	.word $FFAA, $FFE4, $12E, $880
+	.word $FFBA, $FFE4, $130, $880
 _mpwr_kick03_RIGHT_end:
 
 _mpwr_kick04_ref02_RIGHT:
-	.word $FF93, $FFFD, $100, $880
-	.word $FF93, $FFED, $102, $880
-	.word $FFA3, $0E, $104, $880
-	.word $FFA3, $FFFE, $106, $880
-	.word $FFA3, $FFEE, $108, $880
-	.word $FFB3, $07, $10A, $880
-	.word $FFB3, $FFF7, $10C, $880
-	.word $FFC3, $0D, $10E, $880
-	.word $FFC3, $FFFD, $110, $880
-	.word $FFD3, $10, $112, $880
-	.word $FFD3, $00, $114, $880
-	.word $FFD3, $FFF0, $116, $880
-	.word $FFE3, $10, $118, $880
-	.word $FFE3, $00, $11A, $880
-	.word $FFE3, $FFF0, $11C, $880
-	.word $FFF3, $0B, $11E, $880
-	.word $FFF3, $FFFB, $120, $880
+	.word $FFD3, $00, $100, $1980
+	.word $FF93, $FFED, $108, $980
+	.word $FFA3, $FFFE, $10C, $980
+	.word $FFB3, $FFF7, $110, $980
+	.word $FFC3, $FFFD, $114, $980
+	.word $FFF3, $FFFB, $118, $980
+	.word $FFA3, $FFEE, $11C, $880
+	.word $FFD3, $FFF0, $11E, $880
+	.word $FFE3, $FFF0, $120, $880
 _mpwr_kick04_ref02_RIGHT_end:
 
 _mpwr_kick05_ref01_RIGHT:
-	.word $FF98, $15, $100, $880
-	.word $FF98, $05, $102, $880
-	.word $FF98, $FFF5, $104, $880
-	.word $FF98, $FFE5, $106, $880
-	.word $FFA8, $18, $108, $880
-	.word $FFA8, $08, $10A, $880
-	.word $FFA8, $FFF8, $10C, $880
-	.word $FFA8, $FFE8, $10E, $880
-	.word $FFB8, $17, $110, $880
-	.word $FFB8, $06, $112, $880
-	.word $FFB8, $FFF6, $114, $880
-	.word $FFC8, $0C, $116, $880
-	.word $FFC8, $FFFC, $118, $880
-	.word $FFC8, $FFEC, $11A, $880
-	.word $FFD8, $0F, $11C, $880
-	.word $FFD8, $FFFF, $11E, $880
-	.word $FFD8, $FFEF, $120, $880
-	.word $FFD8, $FFDF, $122, $880
-	.word $FFE8, $0B, $124, $880
-	.word $FFE8, $FFFB, $126, $880
-	.word $FFE8, $FFEB, $128, $880
-	.word $FFE8, $FFDB, $12A, $880
-	.word $FFF8, $0B, $12C, $880
-	.word $FFF8, $FFFB, $12E, $880
+	.word $FFE8, $FFFB, $100, $1980
+	.word $FF98, $05, $108, $980
+	.word $FF98, $FFE5, $10C, $980
+	.word $FFA8, $08, $110, $980
+	.word $FFA8, $FFE8, $114, $980
+	.word $FFB8, $FFF6, $118, $980
+	.word $FFC8, $FFFC, $11C, $980
+	.word $FFD8, $FFFF, $120, $980
+	.word $FFD8, $FFDF, $124, $980
+	.word $FFE8, $FFDB, $128, $980
+	.word $FFB8, $17, $12C, $880
+	.word $FFC8, $FFEC, $12E, $880
 	.word $FFF8, $FFE1, $130, $880
 _mpwr_kick05_ref01_RIGHT_end:
 

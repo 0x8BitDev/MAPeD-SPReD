@@ -61,30 +61,21 @@ _martha_punch06_ref04_frame:
 	; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc
 
 _martha_punch01:
-	.word $FFA7, $FFF6, $180, $81
-	.word $FFA7, $06, $182, $81
-	.word $FFB7, $FFF2, $184, $81
-	.word $FFB7, $02, $186, $81
-	.word $FFB7, $12, $188, $81
-	.word $FFC7, $FFF2, $18A, $81
-	.word $FFC7, $02, $18C, $81
-	.word $FFD7, $FFF2, $18E, $81
-	.word $FFD7, $02, $190, $81
-	.word $FFE7, $FFEA, $192, $81
-	.word $FFE7, $FFFA, $194, $81
+	.word $FFB7, $FFF2, $180, $1181
+	.word $FFA7, $FFF6, $188, $181
+	.word $FFD7, $FFF2, $18C, $181
+	.word $FFE7, $FFEA, $190, $181
+	.word $FFB7, $12, $194, $81
 	.word $FFE7, $0A, $196, $81
 	.word $FFF7, $FFE8, $198, $81
 	.word $FFF7, $02, $19A, $81
 _martha_punch01_end:
 
 _martha_punch02:
-	.word $FFA7, $FFED, $180, $81
-	.word $FFA7, $FFFD, $182, $81
-	.word $FFB7, $FFE9, $184, $81
-	.word $FFB7, $FFF9, $186, $81
-	.word $FFB7, $09, $188, $81
-	.word $FFC7, $FFEA, $18A, $81
-	.word $FFC7, $FFFA, $18C, $81
+	.word $FFA7, $FFED, $180, $181
+	.word $FFB7, $FFE9, $184, $181
+	.word $FFC7, $FFEA, $188, $181
+	.word $FFB7, $09, $18C, $81
 	.word $FFC7, $0A, $18E, $81
 	.word $FFD7, $FFEC, $190, $81
 	.word $FFD7, $FFFE, $192, $81
@@ -93,16 +84,12 @@ _martha_punch02:
 _martha_punch02_end:
 
 _martha_punch03:
-	.word $FFAD, $FFF4, $180, $81
-	.word $FFAD, $04, $182, $81
-	.word $FFAD, $14, $184, $81
-	.word $FFBD, $FFF6, $186, $81
-	.word $FFBD, $06, $188, $81
-	.word $FFCD, $FFF2, $18A, $81
-	.word $FFCD, $02, $18C, $81
-	.word $FFCD, $12, $18E, $81
-	.word $FFDD, $FFEC, $190, $81
-	.word $FFDD, $FFFC, $192, $81
+	.word $FFAD, $FFF4, $180, $181
+	.word $FFBD, $FFF6, $184, $181
+	.word $FFCD, $FFF2, $188, $181
+	.word $FFDD, $FFEC, $18C, $181
+	.word $FFAD, $14, $190, $81
+	.word $FFCD, $12, $192, $81
 	.word $FFDD, $0C, $194, $81
 	.word $FFED, $FFE8, $196, $81
 	.word $FFED, $03, $198, $81
@@ -111,62 +98,43 @@ _martha_punch03:
 _martha_punch03_end:
 
 _martha_punch04:
-	.word $FFA0, $0C, $180, $81
-	.word $FFA0, $1C, $182, $81
-	.word $FFB0, $FFF5, $184, $81
-	.word $FFB0, $05, $186, $81
-	.word $FFB0, $15, $188, $81
-	.word $FFB0, $25, $18A, $81
-	.word $FFB0, $35, $18C, $81
-	.word $FFC0, $FFFB, $18E, $81
-	.word $FFC0, $0B, $190, $81
-	.word $FFC0, $1C, $192, $81
-	.word $FFC0, $2C, $194, $81
-	.word $FFD0, $FFF6, $196, $81
-	.word $FFD0, $06, $198, $81
-	.word $FFD0, $16, $19A, $81
-	.word $FFE0, $FFED, $19C, $81
-	.word $FFE0, $FFFD, $19E, $81
+	.word $FFA0, $0C, $180, $181
+	.word $FFB0, $FFF5, $184, $181
+	.word $FFB0, $15, $188, $181
+	.word $FFC0, $FFFB, $18C, $181
+	.word $FFC0, $1C, $190, $181
+	.word $FFD0, $FFF6, $194, $181
+	.word $FFE0, $FFED, $198, $181
+	.word $FFB0, $35, $19C, $81
+	.word $FFD0, $16, $19E, $81
 	.word $FFE0, $0D, $1A0, $81
 	.word $FFF0, $FFE8, $1A2, $81
 	.word $FFF0, $04, $1A4, $81
 _martha_punch04_end:
 
 _martha_punch05:
-	.word $FF90, $0E, $180, $81
-	.word $FFA0, $01, $182, $81
-	.word $FFA0, $11, $184, $81
-	.word $FFB0, $FFF7, $186, $81
-	.word $FFB0, $07, $188, $81
-	.word $FFB0, $17, $18A, $81
-	.word $FFC0, $FFF5, $18C, $81
-	.word $FFC0, $05, $18E, $81
-	.word $FFD0, $FFEE, $190, $81
-	.word $FFD0, $FFFE, $192, $81
-	.word $FFE0, $FFED, $194, $81
-	.word $FFE0, $FFFD, $196, $81
+	.word $FFA0, $01, $180, $181
+	.word $FFB0, $FFF7, $184, $181
+	.word $FFC0, $FFF5, $188, $181
+	.word $FFD0, $FFEE, $18C, $181
+	.word $FFE0, $FFED, $190, $181
+	.word $FF90, $0E, $194, $81
+	.word $FFB0, $17, $196, $81
 	.word $FFF0, $FFE8, $198, $81
 	.word $FFF0, $04, $19A, $81
 	.word $00, $06, $19C, $81
 _martha_punch05_end:
 
 _martha_punch06_ref04:
-	.word $FFA0, $0C, $180, $81
-	.word $FFA0, $1C, $182, $81
-	.word $FFB0, $FFF5, $184, $81
-	.word $FFB0, $05, $186, $81
-	.word $FFB0, $15, $188, $81
-	.word $FFB0, $25, $18A, $81
-	.word $FFB0, $35, $18C, $81
-	.word $FFC0, $FFFB, $18E, $81
-	.word $FFC0, $0B, $190, $81
-	.word $FFC0, $1C, $192, $81
-	.word $FFC0, $2C, $194, $81
-	.word $FFD0, $FFF6, $196, $81
-	.word $FFD0, $06, $198, $81
-	.word $FFD0, $16, $19A, $81
-	.word $FFE0, $FFED, $19C, $81
-	.word $FFE0, $FFFD, $19E, $81
+	.word $FFA0, $0C, $180, $181
+	.word $FFB0, $FFF5, $184, $181
+	.word $FFB0, $15, $188, $181
+	.word $FFC0, $FFFB, $18C, $181
+	.word $FFC0, $1C, $190, $181
+	.word $FFD0, $FFF6, $194, $181
+	.word $FFE0, $FFED, $198, $181
+	.word $FFB0, $35, $19C, $81
+	.word $FFD0, $16, $19E, $81
 	.word $FFE0, $0D, $1A0, $81
 	.word $FFF0, $FFE8, $1A2, $81
 	.word $FFF0, $04, $1A4, $81
