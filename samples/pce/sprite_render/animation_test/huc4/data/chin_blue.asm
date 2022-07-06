@@ -81,160 +81,80 @@ _chin_blue_walk04_LEFT_frame:
 	; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc
 
 _chin_blue_idle01_RIGHT:
-	.word $FFB0, $FFE9, $100, $82
-	.word $FFB0, $FFF9, $102, $82
-	.word $FFB0, $09, $104, $82
-	.word $FFC0, $FFE9, $106, $82
-	.word $FFC0, $FFF9, $108, $82
-	.word $FFC0, $09, $10A, $82
-	.word $FFD0, $FFE9, $10C, $82
-	.word $FFD0, $FFF9, $10E, $82
-	.word $FFD0, $09, $110, $82
-	.word $FFE0, $FFE9, $112, $82
-	.word $FFE0, $FFF9, $114, $82
-	.word $FFE0, $09, $116, $82
-	.word $FFF0, $FFE9, $118, $82
-	.word $FFF0, $FFF9, $11A, $82
+	.word $FFB0, $FFE9, $100, $3182
+	.word $FFF0, $FFE9, $110, $182
+	.word $FFB0, $09, $114, $82
+	.word $FFC0, $09, $116, $82
+	.word $FFD0, $09, $118, $82
+	.word $FFE0, $09, $11A, $82
 	.word $FFF0, $09, $11C, $82
 _chin_blue_idle01_RIGHT_end:
 
 _chin_blue_walk01_RIGHT:
-	.word $FFB0, $FFEC, $100, $82
-	.word $FFB0, $FFFC, $102, $82
-	.word $FFC0, $FFEC, $104, $82
-	.word $FFC0, $FFFC, $106, $82
-	.word $FFC0, $0C, $108, $82
-	.word $FFD0, $FFEC, $10A, $82
-	.word $FFD0, $FFFC, $10C, $82
-	.word $FFD0, $0C, $10E, $82
-	.word $FFE0, $FFEC, $110, $82
-	.word $FFE0, $FFFC, $112, $82
-	.word $FFF0, $FFEC, $114, $82
-	.word $FFF0, $FFFC, $116, $82
+	.word $FFB0, $FFEC, $100, $3182
+	.word $FFF0, $FFEC, $110, $182
+	.word $FFC0, $0C, $114, $82
+	.word $FFD0, $0C, $116, $82
 	.word $FFF0, $0C, $118, $82
 _chin_blue_walk01_RIGHT_end:
 
 _chin_blue_walk02_RIGHT:
-	.word $FFB0, $FFEC, $100, $82
-	.word $FFB0, $FFFC, $102, $82
-	.word $FFC0, $FFEC, $104, $82
-	.word $FFC0, $FFFC, $106, $82
-	.word $FFC0, $0C, $108, $82
-	.word $FFD0, $FFEC, $10A, $82
-	.word $FFD0, $FFFC, $10C, $82
-	.word $FFD0, $0C, $10E, $82
-	.word $FFE0, $FFEC, $110, $82
-	.word $FFE0, $FFFC, $112, $82
-	.word $FFF0, $FFEC, $114, $82
-	.word $FFF0, $FFFC, $116, $82
+	.word $FFB0, $FFEC, $100, $3182
+	.word $FFF0, $FFEC, $110, $182
+	.word $FFC0, $0C, $114, $82
+	.word $FFD0, $0C, $116, $82
 _chin_blue_walk02_RIGHT_end:
 
 _chin_blue_walk03_RIGHT:
-	.word $FFB0, $FFEC, $100, $82
-	.word $FFB0, $FFFC, $102, $82
-	.word $FFC0, $FFEC, $104, $82
-	.word $FFC0, $FFFC, $106, $82
-	.word $FFC0, $0C, $108, $82
-	.word $FFD0, $FFEC, $10A, $82
-	.word $FFD0, $FFFC, $10C, $82
-	.word $FFD0, $0C, $10E, $82
-	.word $FFE0, $FFEC, $110, $82
-	.word $FFE0, $FFFC, $112, $82
-	.word $FFF0, $FFEC, $114, $82
-	.word $FFF0, $FFFC, $116, $82
+	.word $FFB0, $FFEC, $100, $3182
+	.word $FFF0, $FFEC, $110, $182
+	.word $FFC0, $0C, $114, $82
+	.word $FFD0, $0C, $116, $82
 _chin_blue_walk03_RIGHT_end:
 
 _chin_blue_walk04_RIGHT:
-	.word $FFB0, $FFEC, $100, $82
-	.word $FFB0, $FFFC, $102, $82
-	.word $FFC0, $FFEC, $104, $82
-	.word $FFC0, $FFFC, $106, $82
-	.word $FFC0, $0C, $108, $82
-	.word $FFD0, $FFEC, $10A, $82
-	.word $FFD0, $FFFC, $10C, $82
-	.word $FFD0, $0C, $10E, $82
-	.word $FFE0, $FFEC, $110, $82
-	.word $FFE0, $FFFC, $112, $82
-	.word $FFF0, $FFEC, $114, $82
-	.word $FFF0, $FFFC, $116, $82
+	.word $FFB0, $FFEC, $100, $3182
+	.word $FFF0, $FFEC, $110, $182
+	.word $FFC0, $0C, $114, $82
+	.word $FFD0, $0C, $116, $82
 _chin_blue_walk04_RIGHT_end:
 
 _chin_blue_idle01_LEFT:
-	.word $FFB0, $07, $100, $882
-	.word $FFB0, $FFF7, $102, $882
-	.word $FFB0, $FFE7, $104, $882
-	.word $FFC0, $07, $106, $882
-	.word $FFC0, $FFF7, $108, $882
-	.word $FFC0, $FFE7, $10A, $882
-	.word $FFD0, $07, $10C, $882
-	.word $FFD0, $FFF7, $10E, $882
-	.word $FFD0, $FFE7, $110, $882
-	.word $FFE0, $07, $112, $882
-	.word $FFE0, $FFF7, $114, $882
-	.word $FFE0, $FFE7, $116, $882
-	.word $FFF0, $07, $118, $882
-	.word $FFF0, $FFF7, $11A, $882
+	.word $FFB0, $FFF7, $100, $3982
+	.word $FFF0, $FFF7, $110, $982
+	.word $FFB0, $FFE7, $114, $882
+	.word $FFC0, $FFE7, $116, $882
+	.word $FFD0, $FFE7, $118, $882
+	.word $FFE0, $FFE7, $11A, $882
 	.word $FFF0, $FFE7, $11C, $882
 _chin_blue_idle01_LEFT_end:
 
 _chin_blue_walk01_LEFT:
-	.word $FFB0, $04, $100, $882
-	.word $FFB0, $FFF4, $102, $882
-	.word $FFC0, $04, $104, $882
-	.word $FFC0, $FFF4, $106, $882
-	.word $FFC0, $FFE4, $108, $882
-	.word $FFD0, $04, $10A, $882
-	.word $FFD0, $FFF4, $10C, $882
-	.word $FFD0, $FFE4, $10E, $882
-	.word $FFE0, $04, $110, $882
-	.word $FFE0, $FFF4, $112, $882
-	.word $FFF0, $04, $114, $882
-	.word $FFF0, $FFF4, $116, $882
+	.word $FFB0, $FFF4, $100, $3982
+	.word $FFF0, $FFF4, $110, $982
+	.word $FFC0, $FFE4, $114, $882
+	.word $FFD0, $FFE4, $116, $882
 	.word $FFF0, $FFE4, $118, $882
 _chin_blue_walk01_LEFT_end:
 
 _chin_blue_walk02_LEFT:
-	.word $FFB0, $04, $100, $882
-	.word $FFB0, $FFF4, $102, $882
-	.word $FFC0, $04, $104, $882
-	.word $FFC0, $FFF4, $106, $882
-	.word $FFC0, $FFE4, $108, $882
-	.word $FFD0, $04, $10A, $882
-	.word $FFD0, $FFF4, $10C, $882
-	.word $FFD0, $FFE4, $10E, $882
-	.word $FFE0, $04, $110, $882
-	.word $FFE0, $FFF4, $112, $882
-	.word $FFF0, $04, $114, $882
-	.word $FFF0, $FFF4, $116, $882
+	.word $FFB0, $FFF4, $100, $3982
+	.word $FFF0, $FFF4, $110, $982
+	.word $FFC0, $FFE4, $114, $882
+	.word $FFD0, $FFE4, $116, $882
 _chin_blue_walk02_LEFT_end:
 
 _chin_blue_walk03_LEFT:
-	.word $FFB0, $04, $100, $882
-	.word $FFB0, $FFF4, $102, $882
-	.word $FFC0, $04, $104, $882
-	.word $FFC0, $FFF4, $106, $882
-	.word $FFC0, $FFE4, $108, $882
-	.word $FFD0, $04, $10A, $882
-	.word $FFD0, $FFF4, $10C, $882
-	.word $FFD0, $FFE4, $10E, $882
-	.word $FFE0, $04, $110, $882
-	.word $FFE0, $FFF4, $112, $882
-	.word $FFF0, $04, $114, $882
-	.word $FFF0, $FFF4, $116, $882
+	.word $FFB0, $FFF4, $100, $3982
+	.word $FFF0, $FFF4, $110, $982
+	.word $FFC0, $FFE4, $114, $882
+	.word $FFD0, $FFE4, $116, $882
 _chin_blue_walk03_LEFT_end:
 
 _chin_blue_walk04_LEFT:
-	.word $FFB0, $04, $100, $882
-	.word $FFB0, $FFF4, $102, $882
-	.word $FFC0, $04, $104, $882
-	.word $FFC0, $FFF4, $106, $882
-	.word $FFC0, $FFE4, $108, $882
-	.word $FFD0, $04, $10A, $882
-	.word $FFD0, $FFF4, $10C, $882
-	.word $FFD0, $FFE4, $10E, $882
-	.word $FFE0, $04, $110, $882
-	.word $FFE0, $FFF4, $112, $882
-	.word $FFF0, $04, $114, $882
-	.word $FFF0, $FFF4, $116, $882
+	.word $FFB0, $FFF4, $100, $3982
+	.word $FFF0, $FFF4, $110, $982
+	.word $FFC0, $FFE4, $114, $882
+	.word $FFD0, $FFE4, $116, $882
 _chin_blue_walk04_LEFT_end:
 

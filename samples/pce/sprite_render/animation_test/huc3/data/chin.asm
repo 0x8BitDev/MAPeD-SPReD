@@ -92,166 +92,86 @@ _chin_dummy_sprite_for_palettes_frame:
 	; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc
 
 _chin_idle01_RIGHT:
-	.word $FFB0, $FFE9, $100, $80
-	.word $FFB0, $FFF9, $102, $80
-	.word $FFB0, $09, $104, $80
-	.word $FFC0, $FFE9, $106, $80
-	.word $FFC0, $FFF9, $108, $80
-	.word $FFC0, $09, $10A, $80
-	.word $FFD0, $FFE9, $10C, $80
-	.word $FFD0, $FFF9, $10E, $80
-	.word $FFD0, $09, $110, $80
-	.word $FFE0, $FFE9, $112, $80
-	.word $FFE0, $FFF9, $114, $80
-	.word $FFE0, $09, $116, $80
-	.word $FFF0, $FFE9, $118, $80
-	.word $FFF0, $FFF9, $11A, $80
+	.word $FFB0, $FFE9, $100, $3180
+	.word $FFF0, $FFE9, $110, $180
+	.word $FFB0, $09, $114, $80
+	.word $FFC0, $09, $116, $80
+	.word $FFD0, $09, $118, $80
+	.word $FFE0, $09, $11A, $80
 	.word $FFF0, $09, $11C, $80
 _chin_idle01_RIGHT_end:
 
 _chin_walk01_RIGHT:
-	.word $FFB0, $FFEC, $100, $80
-	.word $FFB0, $FFFC, $102, $80
-	.word $FFC0, $FFEC, $104, $80
-	.word $FFC0, $FFFC, $106, $80
-	.word $FFC0, $0C, $108, $80
-	.word $FFD0, $FFEC, $10A, $80
-	.word $FFD0, $FFFC, $10C, $80
-	.word $FFD0, $0C, $10E, $80
-	.word $FFE0, $FFEC, $110, $80
-	.word $FFE0, $FFFC, $112, $80
-	.word $FFF0, $FFEC, $114, $80
-	.word $FFF0, $FFFC, $116, $80
+	.word $FFB0, $FFEC, $100, $3180
+	.word $FFF0, $FFEC, $110, $180
+	.word $FFC0, $0C, $114, $80
+	.word $FFD0, $0C, $116, $80
 	.word $FFF0, $0C, $118, $80
 _chin_walk01_RIGHT_end:
 
 _chin_walk02_RIGHT:
-	.word $FFB0, $FFEC, $100, $80
-	.word $FFB0, $FFFC, $102, $80
-	.word $FFC0, $FFEC, $104, $80
-	.word $FFC0, $FFFC, $106, $80
-	.word $FFC0, $0C, $108, $80
-	.word $FFD0, $FFEC, $10A, $80
-	.word $FFD0, $FFFC, $10C, $80
-	.word $FFD0, $0C, $10E, $80
-	.word $FFE0, $FFEC, $110, $80
-	.word $FFE0, $FFFC, $112, $80
-	.word $FFF0, $FFEC, $114, $80
-	.word $FFF0, $FFFC, $116, $80
+	.word $FFB0, $FFEC, $100, $3180
+	.word $FFF0, $FFEC, $110, $180
+	.word $FFC0, $0C, $114, $80
+	.word $FFD0, $0C, $116, $80
 _chin_walk02_RIGHT_end:
 
 _chin_walk03_RIGHT:
-	.word $FFB0, $FFEC, $100, $80
-	.word $FFB0, $FFFC, $102, $80
-	.word $FFC0, $FFEC, $104, $80
-	.word $FFC0, $FFFC, $106, $80
-	.word $FFC0, $0C, $108, $80
-	.word $FFD0, $FFEC, $10A, $80
-	.word $FFD0, $FFFC, $10C, $80
-	.word $FFD0, $0C, $10E, $80
-	.word $FFE0, $FFEC, $110, $80
-	.word $FFE0, $FFFC, $112, $80
-	.word $FFF0, $FFEC, $114, $80
-	.word $FFF0, $FFFC, $116, $80
+	.word $FFB0, $FFEC, $100, $3180
+	.word $FFF0, $FFEC, $110, $180
+	.word $FFC0, $0C, $114, $80
+	.word $FFD0, $0C, $116, $80
 _chin_walk03_RIGHT_end:
 
 _chin_walk04_RIGHT:
-	.word $FFB0, $FFEC, $100, $80
-	.word $FFB0, $FFFC, $102, $80
-	.word $FFC0, $FFEC, $104, $80
-	.word $FFC0, $FFFC, $106, $80
-	.word $FFC0, $0C, $108, $80
-	.word $FFD0, $FFEC, $10A, $80
-	.word $FFD0, $FFFC, $10C, $80
-	.word $FFD0, $0C, $10E, $80
-	.word $FFE0, $FFEC, $110, $80
-	.word $FFE0, $FFFC, $112, $80
-	.word $FFF0, $FFEC, $114, $80
-	.word $FFF0, $FFFC, $116, $80
+	.word $FFB0, $FFEC, $100, $3180
+	.word $FFF0, $FFEC, $110, $180
+	.word $FFC0, $0C, $114, $80
+	.word $FFD0, $0C, $116, $80
 _chin_walk04_RIGHT_end:
 
 _chin_idle01_LEFT:
-	.word $FFB0, $07, $100, $880
-	.word $FFB0, $FFF7, $102, $880
-	.word $FFB0, $FFE7, $104, $880
-	.word $FFC0, $07, $106, $880
-	.word $FFC0, $FFF7, $108, $880
-	.word $FFC0, $FFE7, $10A, $880
-	.word $FFD0, $07, $10C, $880
-	.word $FFD0, $FFF7, $10E, $880
-	.word $FFD0, $FFE7, $110, $880
-	.word $FFE0, $07, $112, $880
-	.word $FFE0, $FFF7, $114, $880
-	.word $FFE0, $FFE7, $116, $880
-	.word $FFF0, $07, $118, $880
-	.word $FFF0, $FFF7, $11A, $880
+	.word $FFB0, $FFF7, $100, $3980
+	.word $FFF0, $FFF7, $110, $980
+	.word $FFB0, $FFE7, $114, $880
+	.word $FFC0, $FFE7, $116, $880
+	.word $FFD0, $FFE7, $118, $880
+	.word $FFE0, $FFE7, $11A, $880
 	.word $FFF0, $FFE7, $11C, $880
 _chin_idle01_LEFT_end:
 
 _chin_walk01_LEFT:
-	.word $FFB0, $04, $100, $880
-	.word $FFB0, $FFF4, $102, $880
-	.word $FFC0, $04, $104, $880
-	.word $FFC0, $FFF4, $106, $880
-	.word $FFC0, $FFE4, $108, $880
-	.word $FFD0, $04, $10A, $880
-	.word $FFD0, $FFF4, $10C, $880
-	.word $FFD0, $FFE4, $10E, $880
-	.word $FFE0, $04, $110, $880
-	.word $FFE0, $FFF4, $112, $880
-	.word $FFF0, $04, $114, $880
-	.word $FFF0, $FFF4, $116, $880
+	.word $FFB0, $FFF4, $100, $3980
+	.word $FFF0, $FFF4, $110, $980
+	.word $FFC0, $FFE4, $114, $880
+	.word $FFD0, $FFE4, $116, $880
 	.word $FFF0, $FFE4, $118, $880
 _chin_walk01_LEFT_end:
 
 _chin_walk02_LEFT:
-	.word $FFB0, $04, $100, $880
-	.word $FFB0, $FFF4, $102, $880
-	.word $FFC0, $04, $104, $880
-	.word $FFC0, $FFF4, $106, $880
-	.word $FFC0, $FFE4, $108, $880
-	.word $FFD0, $04, $10A, $880
-	.word $FFD0, $FFF4, $10C, $880
-	.word $FFD0, $FFE4, $10E, $880
-	.word $FFE0, $04, $110, $880
-	.word $FFE0, $FFF4, $112, $880
-	.word $FFF0, $04, $114, $880
-	.word $FFF0, $FFF4, $116, $880
+	.word $FFB0, $FFF4, $100, $3980
+	.word $FFF0, $FFF4, $110, $980
+	.word $FFC0, $FFE4, $114, $880
+	.word $FFD0, $FFE4, $116, $880
 _chin_walk02_LEFT_end:
 
 _chin_walk03_LEFT:
-	.word $FFB0, $04, $100, $880
-	.word $FFB0, $FFF4, $102, $880
-	.word $FFC0, $04, $104, $880
-	.word $FFC0, $FFF4, $106, $880
-	.word $FFC0, $FFE4, $108, $880
-	.word $FFD0, $04, $10A, $880
-	.word $FFD0, $FFF4, $10C, $880
-	.word $FFD0, $FFE4, $10E, $880
-	.word $FFE0, $04, $110, $880
-	.word $FFE0, $FFF4, $112, $880
-	.word $FFF0, $04, $114, $880
-	.word $FFF0, $FFF4, $116, $880
+	.word $FFB0, $FFF4, $100, $3980
+	.word $FFF0, $FFF4, $110, $980
+	.word $FFC0, $FFE4, $114, $880
+	.word $FFD0, $FFE4, $116, $880
 _chin_walk03_LEFT_end:
 
 _chin_walk04_LEFT:
-	.word $FFB0, $04, $100, $880
-	.word $FFB0, $FFF4, $102, $880
-	.word $FFC0, $04, $104, $880
-	.word $FFC0, $FFF4, $106, $880
-	.word $FFC0, $FFE4, $108, $880
-	.word $FFD0, $04, $10A, $880
-	.word $FFD0, $FFF4, $10C, $880
-	.word $FFD0, $FFE4, $10E, $880
-	.word $FFE0, $04, $110, $880
-	.word $FFE0, $FFF4, $112, $880
-	.word $FFF0, $04, $114, $880
-	.word $FFF0, $FFF4, $116, $880
+	.word $FFB0, $FFF4, $100, $3980
+	.word $FFF0, $FFF4, $110, $980
+	.word $FFC0, $FFE4, $114, $880
+	.word $FFD0, $FFE4, $116, $880
 _chin_walk04_LEFT_end:
 
 _chin_dummy_sprite_for_palettes:
 	.word $00, $00, $100, $80
-	.word $00, $10, $100, $81
-	.word $00, $20, $100, $82
+	.word $00, $10, $102, $81
+	.word $00, $20, $104, $82
 _chin_dummy_sprite_for_palettes_end:
 
