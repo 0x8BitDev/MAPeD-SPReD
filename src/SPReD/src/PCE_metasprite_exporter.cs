@@ -118,10 +118,10 @@ namespace SPReD
 			
 			for( i = 0; i < attrs.Count; i++ )
 			{
-				if( _attr_usage[ i ] == false )
+				attr = attrs[ i ];
+				
+				if( ( attr.palette_ind == _attr.palette_ind ) && ( _attr_usage[ i ] == false ) )
 				{
-					attr = attrs[ i ];
-
 					offset_x = attr.x - _attr.x;
 					offset_y = attr.y - _attr.y;
 					
