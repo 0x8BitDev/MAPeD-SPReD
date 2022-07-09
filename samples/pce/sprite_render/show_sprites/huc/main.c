@@ -18,16 +18,17 @@ void	sprite_set_init()
 	// load palette in the usual way.
 	load_palette( SPRITES_TEST_PALETTE_SLOT, sprites_test_palette, SPRITES_TEST_PALETTE_SIZE );
 
-	// set up exported sprite set with SG data array and VRAM address to load SG data to.
-	// NOTE: you can combine any number of exported sprite sets in your program.
-	//	 call the 'spd_sprite_params' to switch between them.
-	// NOTE: passing ZERO as the third parameter, means that SG data will be automatically
+	// Set up exported sprite set with SG data array and VRAM address to load SG data to.
+	// NOTE: You can combine any number of exported sprite sets in your program.
+	//	 Call the 'spd_sprite_params' to switch between them.
+	// NOTE: Passing ZERO as the third parameter, means that SG data will be automatically
 	//	 loaded to VRAM on 'spd_SATB_push_sprite'.
-	// NOTE: passing 'SPD_FLAG_IGNORE_SG' as the third parameter will ignore loading SG to VRAM.
-	//	 it's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
-	//	 such way you avoid loading SG to VRAM twice.
-	// NOTE: passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
-	//	 the last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is '0xff'.
+	// NOTE: Passing 'SPD_FLAG_IGNORE_SG' as the third parameter will ignore loading SG to VRAM.
+	//	 This is useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
+	//	 Such way you avoid loading SG to VRAM twice.
+	// NOTE: Passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
+	//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is '0xff'.
+
 	spd_sprite_params( sprites_test_SG_arr, SPRITES_TEST_SPR_VADDR, 0, 0xff );
 
 	// NOTE: There are two ways to load SG data to VRAM:
@@ -44,7 +45,16 @@ void	sprite_set_init()
 /* show sprite from exported sprite set */
 char	sprite_show( char _ind, short _x, short _y )
 {
-	return spd_SATB_push_sprite( sprites_test_frames_data, _ind, _x, _y );
+	// NOTE: There are two ways to push sprite to SATB:
+	//	 1. spd_SATB_push_sprite - for meta-sprites
+	//
+	//	 2. spd_SATB_push_simple_sprite - for simple sprites, it takes a little less processing time
+	//	 compared to 'spd_SATB_push_sprite' and allows you to use sprite offset values, that will be
+	//	 zeroed out when using HuC sprite functions.
+	//
+	// NOTE: Double-buffering and 'spd_change_palette' aren't supported with 'spd_SATB_push_simple_sprite'.
+
+	return spd_SATB_push_simple_sprite( sprites_test_frames_data, _ind, _x, _y );
 }
 
 void init_sprites()
@@ -75,11 +85,13 @@ void init_sprites()
 
 	/* 2. by sprite data pointer. */
 
+	spd_SATB_push_simple_sprite( brstick_RIGHT_32x16_frame, 58, 66 );
+
+	spd_SATB_push_simple_sprite( rpl_fly_RIGHT_32x32_frame, 98, 66 );
+
+	/* the following sprites are meta-sprites, so we use 'spd_SATB_push_sprite' for them */
+
 	spd_SATB_push_sprite( dr_msl_UP_frame, 173, 66 );
-
-	spd_SATB_push_sprite( brstick_RIGHT_32x16_frame, 58, 66 );
-
-	spd_SATB_push_sprite( rpl_fly_RIGHT_32x32_frame, 98, 66 );
 
 	spd_SATB_push_sprite( gigan_idle_LEFT_frame, 148, 196 );
 

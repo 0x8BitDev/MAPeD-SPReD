@@ -5,8 +5,13 @@
 //
 //######################################################################################################
 
-/*/	SPD-render v0.5
+/*/	SPD-render v0.6
 History:
+
+v0.6
+2022.07.08 - added 'spd_SATB_push_simple_sprite' for simple sprites, it takes a little less processing time compared to 'spd_SATB_push_sprite' and allows you to use sprite offset values unlike HuC sprite functions
+2022.07.08 - the type of the second argument for 'spd_copy_SG_data_to_VRAM' and 'spd_SG_data_params' has changed, now '_src_bank' is a byte and therefore a pointer to a byte
+2022.07.08 - changed a sprite index register __dl -> __bh in 'spd_SATB_push_sprite' and 'spd_SATB_push_simple_sprite' for using HuC rand() as argument for X, Y
 
 v0.5
 2022.07.03 - asm routines are wrapped in .proc/.endp
@@ -97,15 +102,28 @@ The main logic is:
 		// Now you can set a local SATB position to push your exported sprites/meta-sprites to.
 		// NOTE: The SATB position will be automatically incremented with each call to 'spd_SATB_push_sprite' (!)
 		spd_SATB_set_pos( <SATB_pos[0...63]> );
-
+[upd] v0.6
+		// NOTE: There are two ways to push sprite to SATB:
+		//	 1. spd_SATB_push_sprite - for meta-sprites
+		//
+		//	 2. spd_SATB_push_simple_sprite - for simple sprites, it takes a little less processing time
+		//	 compared to 'spd_SATB_push_sprite' and allows you to use sprite offset values, that will be
+		//	 zeroed out when using HuC sprite functions.
+		//
+		// NOTE: Double-buffering and 'spd_change_palette' aren't supported with 'spd_SATB_push_simple_sprite'.
+--->
 		// There are two ways to show a sprite:
 		// 1. By index in a sprite array. Suitable for animation sequences.
 		// (see exported .h file for generated constants)
 		spd_SATB_push_sprite( <exported_name>_frames_data, _ind, _x, _y );
+		OR
+[upd] v0.6	spd_SATB_push_simple_sprite( <exported_name>_frames_data, _ind, _x, _y );
 
 		// 2. By sprite data pointer.
 		// (see exported .h file for generated data)
 		spd_SATB_push_sprite( <animation_name>_frame, _x, _y );
+		OR
+[upd] v0.6	spd_SATB_push_simple_sprite( <animation_name>_frame, _x, _y );
 
 [upd] v0.3	// NOTE: SG data will be automatically loaded once to VRAM at first call to the 'spd_SATB_push_sprite',
 --->		//	 when the third parameter passed to the 'spd_sprite_params' is ZERO (!)
@@ -281,7 +299,7 @@ The main logic is:
 	That`s it! :)
 /*/
 
-const unsigned char spd_ver[] = { "S", "P", "D", "0", "5", 0 };
+const unsigned char spd_ver[] = { "S", "P", "D", "0", "6", 0 };
 
 /* SPD flag(s) */
 
@@ -308,61 +326,39 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "5", 0 };
 
 /* main SPD-render routines */
 
-/* void	spd_init() */
-#pragma fastcall spd_init()
+void		__fastcall spd_init();
+void		__fastcall spd_sprite_params( unsigned short far* _SG_data<__bl:__si>, unsigned short _VADDR<__dx>, unsigned char _flags<__al>, unsigned char _last_SG_bank_ind<__ah> );
+unsigned char	__fastcall spd_SG_bank_get_ind();
 
-/* void spd_sprite_params( far void* _SG_data, word _vaddr, byte _flags, byte _last_SG_bank_ind ) */
-#pragma fastcall spd_sprite_params( farptr __bl:__si, word __dx, byte __al, byte __ah )
+void		__fastcall spd_SATB_set_pos( unsigned char _pos<__al> );// _pos: 0-63
+unsigned char	__fastcall spd_SATB_get_pos();
+void		__fastcall spd_SATB_clear_from( unsigned char _pos<__al> );// _pos: 0-63
 
-/* char spd_SG_bank_get_ind() */
-#pragma fastcall spd_SG_bank_get_ind();
+unsigned char	__fastcall spd_SATB_push_sprite( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 0-SATB overflow
+unsigned char	__fastcall spd_SATB_push_sprite( unsigned char far* _frame_addr<__bl:__si>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 0-SATB overflow
+unsigned char	__fastcall spd_SATB_push_simple_sprite( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 0-SATB overflow
+unsigned char	__fastcall spd_SATB_push_simple_sprite( unsigned char far* _frame_addr<__bl:__si>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 0-SATB overflow
+void		__fastcall spd_change_palette( unsigned char _plt_ind<__al> );
 
-/* void	spd_SATB_set_pos( byte _pos ); _pos: 0-63 */
-#pragma fastcall spd_SATB_set_pos( byte __al )
+void		__fastcall spd_SG_data_params( unsigned short _src_addr<__ax>, unsigned short _src_bank<__bx>, unsigned short _dst_addr<__cx>, unsigned short _len<__dx> );
+void		__fastcall spd_copy_SG_data_to_VRAM( unsigned short _src_addr<__ax>, unsigned char _src_bank<__bl>, unsigned short _dst_addr<__dx>, unsigned short _len<__cx> );
+void		__fastcall spd_copy_SG_data_to_VRAM( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh> );
+void		__fastcall spd_copy_SG_data_to_VRAM( unsigned char far* _frame_addr<__bl:__si> );
 
-/* char	spd_SATB_get_pos() */
-#pragma fastcall spd_SATB_get_pos()
-
-/* void spd_SATB_clear_from( byte _pos ); _pos: 0-63 */
-#pragma fastcall spd_SATB_clear_from( byte __al )
-
-/* char	spd_SATB_push_sprite( far void* _addr,  byte _ind, word _pos_x, word _pos_y )
-   OUT: 1-Ok!, 0-SATB overflow
-*/
-#pragma fastcall spd_SATB_push_sprite( farptr __bl:__si, byte __dl, word __ax, word __cx )
-
-/* char	spd_SATB_push_sprite( far void* _addr, word _pos_x, word _pos_y )
-   OUT: 1-Ok!, 0-SATB overflow
-*/
-#pragma fastcall spd_SATB_push_sprite( farptr __bl:__si, word __ax, word __cx )
-
-/* void spd_change_palette( byte _plt_ind ) */
-#pragma fastcall spd_change_palette( byte __al )
-
-/* void spd_SG_data_params( word _src_addr, word _src_bank, word _dst_addr, word _len ) */
-#pragma fastcall spd_SG_data_params( word __ax, word __bx, word __cx, word __dx )
-
-/* void spd_copy_SG_data_to_VRAM( word _src_addr, word _src_bank, word _dst_addr, word _len ) */
-#pragma fastcall spd_copy_SG_data_to_VRAM( word __ax, word __bx, word __dx, word __cx )
-
-/* void spd_copy_SG_data_to_VRAM( far void* _addr, byte _spr_ind ) */
-#pragma fastcall spd_copy_SG_data_to_VRAM( farptr __bl:__si, byte __dl )
-
-/* void spd_copy_SG_data_to_VRAM( far void* _frame_addr ) */
-#pragma fastcall spd_copy_SG_data_to_VRAM( farptr __bl:__si )
-
-/* void spd_dbl_buff_VRAM_addr( word _vram_addr, word _dbl_buff_ind ) */
-#pragma fastcall spd_dbl_buff_VRAM_addr( word __ax, word __bx )
-
-/* void spd_alt_VRAM_addr( word _vram_addr ) */
-#pragma fastcall spd_alt_VRAM_addr( word __ax )
-
-/* unsigned short spd_get_dbl_buff_ind() */
-#pragma fastcall spd_get_dbl_buff_ind()
+void		__fastcall spd_dbl_buff_VRAM_addr( unsigned short _VADDR<__ax>, unsigned short _dbl_buff_ind<__bx> );
+void		__fastcall spd_alt_VRAM_addr( unsigned short _VADDR<__ax> );
+unsigned short	__fastcall spd_get_dbl_buff_ind();
 
 #asm
 
 ; macros(es)
+
+; val -> &((byte)(*zp))
+	.macro stb_zpii ; \1 - val, \2 - zp
+	cly
+	lda low_byte \1
+	sta [\2], y
+	.endm
 
 ; val -> &((word)(*zp))
 	.macro stw_zpii ; \1 - val, \2 - zp
@@ -422,6 +418,30 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "5", 0 };
 	sta low_byte \1
 	txa
 	adc high_byte \1
+	sta high_byte \1
+	.endm
+
+; \1 = bhdh * 6
+	.macro mul6_bhdh
+	; XY = 2x
+	lda <__bh
+	asl a
+	tay
+	rol <__dh
+	ldx <__dh
+
+	; \1 = 4x
+	asl a
+	rol <__dh
+	sta <__bh
+
+	; \1 = XY + 4x
+	clc
+	tya
+	adc <__bh
+	sta low_byte \1
+	txa
+	adc <__dh
 	sta high_byte \1
 	.endm
 
@@ -587,10 +607,10 @@ __spr_pos_y:	.ds 2
 
 	.bss
 
-__SG_DATA_SRC_ADDR	.ds 2
-__SG_DATA_SRC_BANK	.ds 2
-__SG_DATA_DST_ADDR	.ds 2
-__SG_DATA_LEN		.ds 2
+__SG_DATA_SRC_ADDR	.ds 2	; pointers
+__SG_DATA_SRC_BANK	.ds 2	; to
+__SG_DATA_DST_ADDR	.ds 2	; appropriate
+__SG_DATA_LEN		.ds 2	; data
 
 __TII:		.ds 1	; $73 tii
 __bsrci:	.ds 2
@@ -599,52 +619,9 @@ __bleni:	.ds 2
 __tiirts	.ds 1	; $60 rts
 
 	.code
-	.procgroup
 
-; *** farptr += offset ***
+;// spd_init()
 ;
-; IN:
-;
-; __dx - offset
-; __bl - bank number
-; __si - address
-;
-	.proc _spd_farptr_add_offset
-
-	; add an offset
-
-	clc
-	lda <__dx
-	adc <__si
-	sta <__si
-	lda <__si+1
-	and #$1f
-	adc <__dx+1
-
-	tay
-
-	; increment a bank number
-
-	lsr a
-	lsr a
-	lsr a
-	lsr a
-	lsr a
-	clc
-	adc <__bl
-	sta <__bl
-
-	; save high byte of a bank address
-
-	tya
-	and #$1f
-	ora #$60
-	sta <__si+1	
-	
-	rts
-
-	.endp
-
 	.proc _spd_init
 
 	cla
@@ -691,6 +668,8 @@ __tiirts	.ds 1	; $60 rts
 	rts
 
 	.endp
+
+	.procgroup
 
 ;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr, word __bx / dbl_buff_ind )
 ;
@@ -788,6 +767,8 @@ __tiirts	.ds 1	; $60 rts
 	rts
 
 	.endp
+
+	.endprocgroup
 
 ;// unsigned short spd_get_dbl_buff_ind()
 ;
@@ -920,7 +901,53 @@ __tiirts	.ds 1	; $60 rts
 
 	.endp
 
-;// spd_SATB_push_sprite( farptr __bl:__si / addr, byte __dl / index, word __ax / x_pos, word __cx / y_pos )
+	.procgroup
+
+; *** farptr += offset ***
+;
+; IN:
+;
+; __dx - offset
+; __bl - bank number
+; __si - address
+;
+	.proc _spd_farptr_add_offset
+
+	; add an offset
+
+	clc
+	lda <__dx
+	adc <__si
+	sta <__si
+	lda <__si+1
+	and #$1f
+	adc <__dx+1
+
+	tay
+
+	; increment a bank number
+
+	lsr a
+	lsr a
+	lsr a
+	lsr a
+	lsr a
+	clc
+	adc <__bl
+	sta <__bl
+
+	; save high byte of a bank address
+
+	tya
+	and #$1f
+	ora #$60
+	sta <__si+1	
+	
+	rts
+
+	.endp
+
+;// spd_SATB_push_sprite( farptr __bl:__si / addr, byte __bh / index, word __ax / x_pos, word __cx / y_pos )
 ;
 	.proc _spd_SATB_push_sprite.4
 
@@ -934,11 +961,11 @@ __tiirts	.ds 1	; $60 rts
 	get_SATB_flag SPD_FLAG_DBL_BUFF
 	beq .calc_data_offset		; no double-buffering
 
-	ldx <__dl
+	ldx <__bh
 	stx <__curr_spr_ind		; save curr_spr_ind
 
 	lda <__last_spr_ind
-	sta <__dl			; last sprite is always used when double-buffering is enabled
+	sta <__bh			; last sprite is always used when double-buffering is enabled
 
 	cpx <__last_spr_ind
 	beq .calc_data_offset		; continue processing sprite data if last_spr_ind == curr_spr_ind
@@ -949,14 +976,14 @@ __tiirts	.ds 1	; $60 rts
 	lda <__bl
 	sta __SG_DATA_SRC_BANK
 
-	lda <__dl
+	lda <__bh
 	cmp #$ff
 	bne .calc_data_offset
 
 	; use curr_spr to calculate SG bank index, if last_spr == 0xff - initial value
 
 	lda <__curr_spr_ind
-	sta <__dl
+	sta <__bh
 
 .calc_data_offset:
 
@@ -965,7 +992,7 @@ __tiirts	.ds 1	; $60 rts
 	; offset x6 -> sizeof( spd_SPRITE )
 
 	stz <__dh
-	mul6_word <__dx
+	mul6_bhdh <__dx
 
 	call _spd_farptr_add_offset
 
@@ -1062,10 +1089,10 @@ __tiirts	.ds 1	; $60 rts
 	; offset x6 -> sizeof( spd_SPRITE )
 
 	lda <__curr_spr_ind
-	sta <__dl
+	sta <__bh
 
 	stz <__dh
-	mul6_word <__dx
+	mul6_bhdh <__dx
 
 	call _spd_farptr_add_offset
 
@@ -1430,9 +1457,9 @@ __attr_transf_XY_IND_dbf:
 
 	; __dx = SG bank index x6 ( .word <data_length>, chrN, bank(chrN) )
 
-	sty <__dl
+	sty <__bh
 	stz <__dh
-	mul6_word <__dx
+	mul6_bhdh <__dx
 
 	stw <__spr_SG_data_addr, <__si
 	lda <__spr_SG_data_bank
@@ -1529,7 +1556,7 @@ __attr_transf_XY_IND_dbf:
 	stw_zpii <__si, <__ax
 
 	stw __SG_DATA_SRC_BANK, <__ax
-	stw_zpii <__bx, <__ax
+	stb_zpii <__bl, <__ax
 
 	stw __SG_DATA_DST_ADDR, <__ax
 	stw_zpii <__di, <__ax
@@ -1554,7 +1581,7 @@ __attr_transf_XY_IND_dbf:
 
 	.endp
 
-;// spd_copy_SG_data_to_VRAM( word __ax / src_addr, word __bx / src_bank, word __dx / dst_addr, word __cx / len )
+;// spd_copy_SG_data_to_VRAM( word __ax / src_addr, byte __bl / src_bank, word __dx / dst_addr, word __cx / len )
 ;
 	.proc _spd_copy_SG_data_to_VRAM.4
 
@@ -1574,14 +1601,14 @@ __attr_transf_XY_IND_dbf:
 .endif
 	.endp
 
-;// spd_copy_SG_data_to_VRAM( farptr __bl:__si / addr, byte __dl / index )
+;// spd_copy_SG_data_to_VRAM( farptr __bl:__si / addr, byte __bh / index )
 ;
 	.proc _spd_copy_SG_data_to_VRAM.2
 
 	; offset x6 -> sizeof( spd_SPRITE )
 
 	stz <__dh
-	mul6_word <__dx
+	mul6_bhdh <__dx
 
 	call _spd_farptr_add_offset
 
@@ -1605,6 +1632,310 @@ __attr_transf_XY_IND_dbf:
 
 	call _load_SG_data
 
+	rts
+
+	.endp
+
+;// spd_SATB_push_simple_sprite( farptr __bl:__si / addr, byte __bh / index, word __ax / x_pos, word __cx / y_pos )
+;
+	.proc _spd_SATB_push_simple_sprite.4
+
+.ifdef	SPD_DEBUG
+	call _push_sprite_border
+.endif
+
+	; offset x6 -> sizeof( spd_SPRITE )
+
+	stz <__dh
+	mul6_bhdh <__dx
+
+	call _spd_farptr_add_offset
+
+	call _spd_SATB_push_simple_sprite.3
+
+	rts
+
+	.endp
+
+;// spd_SATB_push_simple_sprite( farptr __bl:__si / addr, word __ax / x_pos, word __cx / y_pos )
+;
+	.proc _spd_SATB_push_simple_sprite.3
+
+.ifdef	SPD_DEBUG
+	call _push_sprite_border
+.endif
+
+	; XY coordinates correction
+
+	lda #32
+	clc
+	adc <__ax
+	sta <__spr_pos_x
+	cla
+	adc <__ax + 1
+	sta <__spr_pos_x + 1
+
+	lda #64
+	clc
+	adc <__cx
+	sta <__spr_pos_y
+	cla
+	adc <__cx + 1
+	sta <__spr_pos_y + 1
+
+	jsr map_data			; map spd_SPRITE data
+
+	; get meta-sprite address and bank
+
+	cly				; meta-sprite address offset
+	stw_zpii_rev __si, <__cx
+
+	ldy #$02			; meta-sprite bank offset
+	lda [<__si], y
+	sta <__bl			; __bl - meta-sprite bank
+
+	ldy #$04			; 3 - meta-sprite length offset, 4 - meta-sprite SG bank offset
+	lda [<__si], y
+	tay				; Y - SG bank index
+
+	jsr unmap_data
+
+	stw <__cx, <__si		; __si - matasprite address, __bl - bank
+
+	jsr map_data			; map meta-sprite data
+
+	; __si = meta-sprite address
+
+	; calc SATB address to copy sprite data to
+	; _bdsti = __SATB + ( __SATB_pos * 8 )
+
+	lda <__SATB_pos
+	sta <__cl
+	stz <__ch
+	mul8_word <__cx			; __cx - SATB offset in bytes
+
+	add_word_to_word #__SATB, <__cx
+
+	inc <__SATB_pos			; increment SATB position
+
+	phy				; Y - SG bank index
+
+	; transform XY coordinates
+
+	ldy #1
+
+	; transform XY coordinates for main VADDR
+
+	; attr.Y += __spr_pos_y
+
+	lda [<__si], y			;7 high byte
+	tax				;2
+	dey				;2
+	lda [<__si], y			;7 low byte
+
+	clc				;2
+	adc <__spr_pos_y		;4
+	sta [<__cx], y			;7
+	txa				;2
+	adc <__spr_pos_y + 1		;4
+	iny				;2
+	sta [<__cx], y			;7 = [46]
+
+	iny				;2 = 50
+
+	; attr.X += __spr_pos_x
+
+	iny
+	lda [<__si], y
+	tax
+	dey
+	lda [<__si], y
+
+	clc
+	adc <__spr_pos_x
+	sta [<__cx], y
+	txa
+	adc <__spr_pos_x + 1
+	iny
+	sta [<__cx], y
+
+;--- SPD_FLAG_ALT_VADDR ---
+	get_SATB_flag SPD_FLAG_ALT_VADDR
+	bne ._trans_pttrn_code
+
+	; copy pattern code and palette +CGX/CGY
+
+	iny				;2
+	lda [<__si], y			;7
+	sta [<__cx], y			;7 = (16)
+
+	iny
+	lda [<__si], y
+	sta [<__cx], y
+
+	iny
+	lda [<__si], y
+	sta [<__cx], y
+
+	iny
+	lda [<__si], y
+	sta [<__cx], y
+
+	bra ._push_SG_data
+
+._trans_pttrn_code:
+
+;--- SPD_FLAG_ALT_VADDR ---
+
+	; transform pattern code for alternative VADDR
+
+	iny
+
+	; attr.SG_ind += __spr_alt_SG_offset
+
+	iny
+	lda [<__si], y
+	tax
+	dey
+	lda [<__si], y
+
+	clc
+	adc <__spr_alt_SG_offset
+	sta [<__cx], y
+	txa
+	adc <__spr_alt_SG_offset + 1
+	iny
+	sta [<__cx], y
+
+	; copy palette and CGX/CGY
+
+	iny
+	lda [<__si], y
+	sta [<__cx], y
+
+	iny
+	lda [<__si], y
+	sta [<__cx], y
+
+._push_SG_data:
+
+	jsr unmap_data
+
+	ply				; Y - SG bank index
+
+;--- SPD_FLAG_IGNORE_SG ---
+	get_SATB_flag SPD_FLAG_IGNORE_SG
+	bne .ignore_SG_data
+;--- SPD_FLAG_IGNORE_SG ---
+
+	; check if SG data already loaded to VRAM
+
+	cpy <__last_SG_bank
+	bne .load_SG_data
+
+.ignore_SG_data:
+
+	; SG data already loaded or must be ignored
+
+.ifdef	SPD_DEBUG
+	call _black_border
+.endif
+
+	ldx #1
+	cla
+
+	rts
+
+.load_SG_data:
+
+	sty <__last_SG_bank
+
+	; __dx = SG bank index x6 ( .word <data_length>, chrN, bank(chrN) )
+
+	sty <__bh
+	stz <__dh
+	mul6_bhdh <__dx
+
+	stw <__spr_SG_data_addr, <__si
+	lda <__spr_SG_data_bank
+	sta <__bl
+
+	call _spd_farptr_add_offset
+
+	jsr map_data			; map SG data array
+
+	; __cx = SG data length
+
+	cly
+	lda [<__si], y
+	sta <__cl
+	iny
+	lda [<__si], y
+	sta <__ch
+	div2_word <__cx
+
+	; __ax = SG data address
+
+	iny
+	lda [<__si], y
+	sta <__al
+	iny
+	lda [<__si], y
+	sta <__ah
+
+	; __bl = SG data bank
+
+	iny
+	lda [<__si], y
+	tax
+
+	jsr unmap_data
+
+	stx <__bl
+
+	; __si = __ax
+
+	stw <__ax, <__si
+
+	; __di = VADDR
+	
+	stw <__spr_VADDR, <__di
+
+	get_SATB_flag SPD_FLAG_PEND_SG_DATA
+	beq .cont_SG_data_load
+
+	; copy SG data parameters for delayed use on VBLANK
+
+	stw __SG_DATA_SRC_ADDR, <__ax
+	stw_zpii <__si, <__ax
+
+	stw __SG_DATA_SRC_BANK, <__ax
+	stb_zpii <__bl, <__ax
+
+	stw __SG_DATA_DST_ADDR, <__ax
+	stw_zpii <__di, <__ax
+
+	stw __SG_DATA_LEN, <__ax
+	stw_zpii <__cx, <__ax
+
+	bra .exit
+
+.cont_SG_data_load:
+
+.ifdef	SPD_DEBUG
+	call _load_VRAM_border
+.endif
+	jsr load_vram
+
+.exit:
+
+.ifdef	SPD_DEBUG
+	call _black_border
+.endif
+
+	ldx #( 1 | SPD_SG_NEW_DATA )
+	cla
+	
 	rts
 
 	.endp

@@ -31,28 +31,28 @@ SPD_DEBUG
 unsigned short  SET1_LAST_DBL_BUFF_IND	= SPD_DBL_BUFF_INIT_VAL;
 #else
 /* variables for delayed use of SG data */
-unsigned short SET1_SG_DATA_SRC_ADDR 	= 0;
-unsigned short SET1_SG_DATA_SRC_BANK 	= 0;
-unsigned short SET1_SG_DATA_DST_ADDR 	= 0;
-unsigned short SET1_SG_DATA_LEN		= 0;
+unsigned short	SET1_SG_DATA_SRC_ADDR 	= 0;
+unsigned char	SET1_SG_DATA_SRC_BANK 	= 0;
+unsigned short	SET1_SG_DATA_DST_ADDR 	= 0;
+unsigned short	SET1_SG_DATA_LEN	= 0;
 #endif
 
 #if DEF_SET2_SG_DBL_BUFF
 unsigned short  SET2_LAST_DBL_BUFF_IND	= SPD_DBL_BUFF_INIT_VAL;
 #else
-unsigned short SET2_SG_DATA_SRC_ADDR 	= 0;
-unsigned short SET2_SG_DATA_SRC_BANK 	= 0;
-unsigned short SET2_SG_DATA_DST_ADDR 	= 0;
-unsigned short SET2_SG_DATA_LEN		= 0;
+unsigned short	SET2_SG_DATA_SRC_ADDR 	= 0;
+unsigned char 	SET2_SG_DATA_SRC_BANK 	= 0;
+unsigned short	SET2_SG_DATA_DST_ADDR 	= 0;
+unsigned short	SET2_SG_DATA_LEN	= 0;
 #endif
 
 #if DEF_SET3_SG_DBL_BUFF
 unsigned short  SET3_LAST_DBL_BUFF_IND	= SPD_DBL_BUFF_INIT_VAL;
 #else
-unsigned short SET3_SG_DATA_SRC_ADDR 	= 0;
-unsigned short SET3_SG_DATA_SRC_BANK 	= 0;
-unsigned short SET3_SG_DATA_DST_ADDR 	= 0;
-unsigned short SET3_SG_DATA_LEN		= 0;
+unsigned short	SET3_SG_DATA_SRC_ADDR 	= 0;
+unsigned char	SET3_SG_DATA_SRC_BANK 	= 0;
+unsigned short	SET3_SG_DATA_DST_ADDR 	= 0;
+unsigned short	SET3_SG_DATA_LEN	= 0;
 #endif
 
 unsigned char SET1_LAST_SG_BANK	= 0xff;

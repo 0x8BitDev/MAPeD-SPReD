@@ -66,7 +66,7 @@ typedef struct
 	unsigned short	dbf_ind;	// SPD_DBL_BUFF_INIT_VAL
 #else
 	unsigned short	SG_src_addr;	// data for delayed
-	unsigned short	SG_src_bank;	// load of SG data
+	unsigned char	SG_src_bank;	// load of SG data
 	unsigned short	SG_dst_addr;	// to VRAM
 	unsigned short	SG_data_len;	// ...
 #endif

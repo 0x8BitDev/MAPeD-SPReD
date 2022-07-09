@@ -28,10 +28,10 @@ SPD_DEBUG
 unsigned short  LAST_DBL_BUFF_IND	= SPD_DBL_BUFF_INIT_VAL;
 #else
 /* variables for delayed use of SG data */
-unsigned short SG_DATA_SRC_ADDR 	= 0;
-unsigned short SG_DATA_SRC_BANK 	= 0;
-unsigned short SG_DATA_DST_ADDR 	= 0;
-unsigned short SG_DATA_LEN		= 0;
+unsigned short	SG_DATA_SRC_ADDR 	= 0;
+unsigned char	SG_DATA_SRC_BANK 	= 0;
+unsigned short	SG_DATA_DST_ADDR 	= 0;
+unsigned short	SG_DATA_LEN		= 0;
 #endif
 
 unsigned char SPR_PUSH_RES;
