@@ -63,7 +63,7 @@ typedef struct
 
 #if	DEF_SG_DBL_BUFF
 	unsigned short	dbf_VADDR;	// VADDR for double-buffering
-	unsigned short	dbf_ind;	// SPD_DBL_BUFF_INIT_VAL
+	unsigned char	dbf_ind;	// SPD_DBL_BUFF_INIT_VAL
 #else
 	unsigned short	SG_src_addr;	// data for delayed
 	unsigned char	SG_src_bank;	// load of SG data

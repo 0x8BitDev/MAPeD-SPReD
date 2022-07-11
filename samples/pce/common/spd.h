@@ -9,6 +9,8 @@
 History:
 
 v0.6
+2022.07.11 - extremely simplified double-buffering logic for meta-sprites
+2022.07.11 - the double-buffer index in 'spd_get_dbl_buff_ind' and the second argument in 'spd_dbl_buff_VRAM_addr' changed to a byte value
 2022.07.08 - added 'spd_SATB_push_simple_sprite' for simple sprites, it takes a little less processing time compared to 'spd_SATB_push_sprite' and allows you to use sprite offset values unlike HuC sprite functions
 2022.07.08 - the type of the second argument for 'spd_copy_SG_data_to_VRAM' and 'spd_SG_data_params' has changed, now '_src_bank' is a byte and therefore a pointer to a byte
 2022.07.08 - changed a sprite index register __dl -> __bh in 'spd_SATB_push_sprite' and 'spd_SATB_push_simple_sprite' for using HuC rand() as argument for X, Y
@@ -322,7 +324,7 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "6", 0 };
 #define SPD_SG_NEW_DATA		0x80
 
 // Initial value of a last double-buffer index
-#define	SPD_DBL_BUFF_INIT_VAL	0xff00
+#define	SPD_DBL_BUFF_INIT_VAL	0x00
 
 /* main SPD-render routines */
 
@@ -345,9 +347,9 @@ void		__fastcall spd_copy_SG_data_to_VRAM( unsigned short _src_addr<__ax>, unsig
 void		__fastcall spd_copy_SG_data_to_VRAM( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh> );
 void		__fastcall spd_copy_SG_data_to_VRAM( unsigned char far* _frame_addr<__bl:__si> );
 
-void		__fastcall spd_dbl_buff_VRAM_addr( unsigned short _VADDR<__ax>, unsigned short _dbl_buff_ind<__bx> );
+void		__fastcall spd_dbl_buff_VRAM_addr( unsigned short _VADDR<__ax>, unsigned short _dbl_buff_ind<__bl> );
 void		__fastcall spd_alt_VRAM_addr( unsigned short _VADDR<__ax> );
-unsigned short	__fastcall spd_get_dbl_buff_ind();
+unsigned char	__fastcall spd_get_dbl_buff_ind();
 
 #asm
 
@@ -580,9 +582,6 @@ __SATB_pos	.ds 1
 __SATB_flags	.ds 1
 __last_SG_bank	.ds 1
 
-__curr_spr_ind	.ds 1
-__last_spr_ind	.ds 1
-
 INNER_FLAGS_DBL_BUFF	= %00000001
 
 __inner_flags	.ds 1
@@ -671,14 +670,9 @@ __tiirts	.ds 1	; $60 rts
 
 	.procgroup
 
-;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr, word __bx / dbl_buff_ind )
+;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr, word __bl / dbl_buff_ind )
 ;
 	.proc _spd_dbl_buff_VRAM_addr.2
-
-	; set last sprite index
-
-	lda <__bh
-	sta <__last_spr_ind
 
 	; set double-buffer index
 
@@ -770,15 +764,14 @@ __tiirts	.ds 1	; $60 rts
 
 	.endprocgroup
 
-;// unsigned short spd_get_dbl_buff_ind()
+;// unsigned char spd_get_dbl_buff_ind()
 ;
 	.proc _spd_get_dbl_buff_ind
 
 	inner_flags_dbl_buff_state
 	tax
+	cla
 	
-	lda <__last_spr_ind
-
 	rts
 
 	.endp
@@ -955,40 +948,6 @@ __tiirts	.ds 1	; $60 rts
 	call _push_sprite_border
 .endif
 
-;--- DBL-BUFF ---
-	; check double-buffering state
-
-	get_SATB_flag SPD_FLAG_DBL_BUFF
-	beq .calc_data_offset		; no double-buffering
-
-	ldx <__bh
-	stx <__curr_spr_ind		; save curr_spr_ind
-
-	lda <__last_spr_ind
-	sta <__bh			; last sprite is always used when double-buffering is enabled
-
-	cpx <__last_spr_ind
-	beq .calc_data_offset		; continue processing sprite data if last_spr_ind == curr_spr_ind
-
-	; save farptr to get a curr_spr SG bank a bit later
-
-	stw <__si, __SG_DATA_SRC_ADDR
-	lda <__bl
-	sta __SG_DATA_SRC_BANK
-
-	lda <__bh
-	cmp #$ff
-	bne .calc_data_offset
-
-	; use curr_spr to calculate SG bank index, if last_spr == 0xff - initial value
-
-	lda <__curr_spr_ind
-	sta <__bh
-
-.calc_data_offset:
-
-;--- DBL-BUFF ---
-
 	; offset x6 -> sizeof( spd_SPRITE )
 
 	stz <__dh
@@ -1050,69 +1009,6 @@ __tiirts	.ds 1	; $60 rts
 
 	jsr unmap_data
 
-;--- DBL-BUFF ---
-	; check double-buffering state
-
-	get_SATB_flag SPD_FLAG_DBL_BUFF
-	beq .check_SATB_overflow	; no double-buffering
-
-	; new sprite?
-	; last_spr != curr_spr
-
-	lda <__last_spr_ind
-	cmp <__curr_spr_ind
-	beq .check_SATB_overflow	; continue with the same sprite as the previous one
-
-	; yep, we have a new sprite!
-	; check initial sprite value - $ff
-
-	lda <__last_spr_ind
-	cmp #$ff
-	bne .get_curr_spr_SG_bank_ind
-
-	; skip sprite attributes processing for initial sprite (last_spr = 0xff)
-	; while SG data has not been loaded to VRAM
-
-	jmp _check_SG_bank
-
-.get_curr_spr_SG_bank_ind:
-
-	; if( last_spr != curr_spr ) { SG_bank = SG_bank_ind( curr_spr ); last_SG_bank = 0xff; }
-
-	; since we have a new sprite, we need to load SG data of curr_spr at opposite VADDR (!)
-	; and continue showing the last sprite with its attributes at the last VADDR
-
-	stw __SG_DATA_SRC_ADDR, <__si
-	lda __SG_DATA_SRC_BANK
-	sta <__bl
-
-	; offset x6 -> sizeof( spd_SPRITE )
-
-	lda <__curr_spr_ind
-	sta <__bh
-
-	stz <__dh
-	mul6_bhdh <__dx
-
-	call _spd_farptr_add_offset
-
-	jsr map_data
-
-	ldy #$05
-	lda [<__si], y
-	tay				; Y - SG bank index <- SG data of curr_spr will be loaded at opposite VADDR, while the last sprite will be shown (!)
-
-	jsr unmap_data
-
-	; reset the last SG bank index to guarantee that SG will be loaded to VRAM
-
-	lda #$ff
-	sta <__last_SG_bank
-
-.check_SATB_overflow:
-
-;--- DBL-BUFF ---
-
 	stw <__cx, <__si		; matasprite address
 	lda <__al
 	sta <__bl			; meta-sprite bank
@@ -1172,6 +1068,15 @@ __tiirts	.ds 1	; $60 rts
 
 	; double-buffering is enabled
 
+	cpy <__last_SG_bank
+	beq .skip_dbl_buff_switch	; we have the same SG bank data, so skip double-buffer switching and use the SG that already loaded to VRAM
+
+	; toggle the double-buffering flag
+
+	inner_flags_switch_dbl_buff	; the new SG data will be loaded to opposite VADDR
+
+.skip_dbl_buff_switch:
+
 	inner_flags_dbl_buff_state
 	beq .use_main_buff
 	
@@ -1186,13 +1091,6 @@ __tiirts	.ds 1	; $60 rts
 _push_SG_data:
 
 	ply				; Y - SG bank index
-
-;--- DBL-BUFF ---
-_check_SG_bank:
-
-	lda <__curr_spr_ind		; last_spr_ind = curr_spr_ind
-	sta <__last_spr_ind
-;--- DBL-BUFF ---
 
 ;--- SPD_FLAG_IGNORE_SG ---
 	get_SATB_flag SPD_FLAG_IGNORE_SG
@@ -1507,10 +1405,6 @@ __attr_transf_XY_IND_dbf:
 ;--- DBL-BUFF ---
 	get_SATB_flag SPD_FLAG_DBL_BUFF
 	beq .use_main_VADDR		; no double-buffering
-
-	; toggle the double-buffering flag
-
-	inner_flags_switch_dbl_buff
 
 	; check which VADDR to use
 

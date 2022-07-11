@@ -25,7 +25,7 @@ SPD_DEBUG
 
 
 #if DEF_SG_DBL_BUFF
-unsigned short  LAST_DBL_BUFF_IND	= SPD_DBL_BUFF_INIT_VAL;
+unsigned char	LAST_DBL_BUFF_IND	= SPD_DBL_BUFF_INIT_VAL;
 #else
 /* variables for delayed use of SG data */
 unsigned short	SG_DATA_SRC_ADDR 	= 0;
