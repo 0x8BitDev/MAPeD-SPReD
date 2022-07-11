@@ -79,7 +79,7 @@ typedef struct
 	// SPD library data
 
 	unsigned short	alt_VADDR;	// alternative VADDR for sprite instancing
-	unsigned char	last_bank;	// 0xff
+	unsigned char	last_bank;	// SPD_SG_BANK_INIT_VAL
 
 #if	DEF_SG_DBL_BUFF
 	unsigned short	dbf_VADDR;	// VADDR for double-buffering
@@ -125,7 +125,7 @@ sprite_desc	sprite_cache[ DEF_SPR_CACHE_SIZE ] =
 {
 	{
 		// SPD library data
-		0x2000, 0xff,
+		0x2000, SPD_SG_BANK_INIT_VAL,
 #if	DEF_SG_DBL_BUFF
 		0x3000, SPD_DBL_BUFF_INIT_VAL,
 #else
@@ -147,7 +147,7 @@ sprite_desc	sprite_cache[ DEF_SPR_CACHE_SIZE ] =
 		1
 	},
 	{
-		0x2400, 0xff,
+		0x2400, SPD_SG_BANK_INIT_VAL,
 #if	DEF_SG_DBL_BUFF
 		0x3400, SPD_DBL_BUFF_INIT_VAL,
 #else
@@ -165,7 +165,7 @@ sprite_desc	sprite_cache[ DEF_SPR_CACHE_SIZE ] =
 		1
 	},
 	{
-		0x2800, 0xff,
+		0x2800, SPD_SG_BANK_INIT_VAL,
 #if	DEF_SG_DBL_BUFF
 		0x3800, SPD_DBL_BUFF_INIT_VAL,
 #else
@@ -183,7 +183,7 @@ sprite_desc	sprite_cache[ DEF_SPR_CACHE_SIZE ] =
 		1
 	},
 	{
-		0x2c00, 0xff,
+		0x2c00, SPD_SG_BANK_INIT_VAL,
 #if	DEF_SG_DBL_BUFF
 		0x3c00, SPD_DBL_BUFF_INIT_VAL,
 #else
@@ -218,7 +218,7 @@ void	push_sprite_chin_violet( sprite_desc* _desc )
 	//	 of using 'SPD_FLAG_DBL_BUFF' and 'SPD_FLAG_PEND_SG_DATA' and decide which is better in your case.
 	//	 THIS FLAG CAN BE USED WITH UNPACKED SPRITES ONLY! WHERE EACH SPRITE HAS A SEPARATE SG DATA!
 	// NOTE: passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
-	//	 the last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is '0xff'.
+	//	 the last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is 'SPD_SG_BANK_INIT_VAL'.
 
 #if	DEF_SG_DBL_BUFF
 	spd_sprite_params( chin_SG_arr, CHIN_SPR_VADDR, SPD_FLAG_DBL_BUFF, _desc->last_bank );

@@ -55,9 +55,9 @@ unsigned short	SET3_SG_DATA_DST_ADDR 	= 0;
 unsigned short	SET3_SG_DATA_LEN	= 0;
 #endif
 
-unsigned char SET1_LAST_SG_BANK	= 0xff;
-unsigned char SET2_LAST_SG_BANK	= 0xff;
-unsigned char SET3_LAST_SG_BANK	= 0xff;
+unsigned char SET1_LAST_SG_BANK	= SPD_SG_BANK_INIT_VAL;
+unsigned char SET2_LAST_SG_BANK	= SPD_SG_BANK_INIT_VAL;
+unsigned char SET3_LAST_SG_BANK	= SPD_SG_BANK_INIT_VAL;
 
 unsigned char SET1_SPR_PUSH_RES;
 unsigned char SET2_SPR_PUSH_RES;
@@ -95,7 +95,7 @@ void	sprite1_show( char _ind, short _x, short _y )
 	//	 of using 'SPD_FLAG_DBL_BUFF' and 'SPD_FLAG_PEND_SG_DATA' and decide which is better in your case.
 	//	 THIS FLAG CAN BE USED WITH UNPACKED SPRITES ONLY! WHERE EACH SPRITE HAS A SEPARATE SG DATA!
 	// NOTE: passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
-	//	 the last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is '0xff'.
+	//	 the last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is 'SPD_SG_BANK_INIT_VAL'.
 	spd_sprite_params( set1_SG_arr, SET1_SPR_VADDR, SPD_FLAG_DBL_BUFF, SET1_LAST_SG_BANK );
 
 	// set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF)

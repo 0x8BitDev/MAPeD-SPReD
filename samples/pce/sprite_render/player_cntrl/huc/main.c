@@ -184,8 +184,8 @@ void	sprite_set_init()
 	//	 of using 'SPD_FLAG_DBL_BUFF' and 'SPD_FLAG_PEND_SG_DATA' and decide which is better in your case.
 	//	 THIS FLAG CAN BE USED WITH UNPACKED SPRITES ONLY! WHERE EACH SPRITE HAS A SEPARATE SG DATA!
 	// NOTE: passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
-	//	 the last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is '0xff'.
-	spd_sprite_params( player_gfx_SG_arr, PLAYER_GFX_SPR_VADDR, SPD_FLAG_DBL_BUFF, 0xff );
+	//	 the last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is 'SPD_SG_BANK_INIT_VAL'.
+	spd_sprite_params( player_gfx_SG_arr, PLAYER_GFX_SPR_VADDR, SPD_FLAG_DBL_BUFF, SPD_SG_BANK_INIT_VAL );
 
 	// set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF)
 	// and the last double-buffer index value (initial value is 'SPD_DBL_BUFF_INIT_VAL').
@@ -194,7 +194,7 @@ void	sprite_set_init()
 	// NOTE: using the `SPD_FLAG_PEND_SG_DATA` flag means that SG data will not be loaded
 	//	 to VRAM automatically. You should do that manually on VBLANK.
 	//	 THIS FLAG CAN BE USED WITH UNPACKED SPRITES ONLY! WHERE EACH SPRITE HAS A SEPARATE SG DATA!
-	spd_sprite_params( player_gfx_SG_arr, PLAYER_GFX_SPR_VADDR, SPD_FLAG_PEND_SG_DATA, 0xff );
+	spd_sprite_params( player_gfx_SG_arr, PLAYER_GFX_SPR_VADDR, SPD_FLAG_PEND_SG_DATA, SPD_SG_BANK_INIT_VAL );
 
 	// set pointers to SG data for delayed use (SPD_FLAG_PEND_SG_DATA).
 	spd_SG_data_params( &SG_DATA_SRC_ADDR, &SG_DATA_SRC_BANK, &SG_DATA_DST_ADDR, &SG_DATA_LEN );

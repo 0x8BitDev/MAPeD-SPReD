@@ -9,6 +9,7 @@
 History:
 
 v0.6
+2022.07.11 - added 'SPD_SG_BANK_INIT_VAL' as initial value for the '_last_bank_ind' in 'spd_sprite_params'
 2022.07.11 - extremely simplified double-buffering logic for meta-sprites
 2022.07.11 - the double-buffer index in 'spd_get_dbl_buff_ind' and the second argument in 'spd_dbl_buff_VRAM_addr' changed to a byte value
 2022.07.08 - added 'spd_SATB_push_simple_sprite' for simple sprites, it takes a little less processing time compared to 'spd_SATB_push_sprite' and allows you to use sprite offset values unlike HuC sprite functions
@@ -80,7 +81,7 @@ The main logic is:
 		//	 It's useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
 --->		//	 Such way you avoid loading SG to VRAM twice.
 [upd] v0.4	// NOTE: Passing 'last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
-		//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. The initial value is '0xff'.
+[upd] v0.6	//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. The initial value is 'SPD_SG_BANK_INIT_VAL'.
 --->		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, 0, last_bank_ind );
 
 [upd] v0.3	// NOTE: There are two ways to load SG data to VRAM:
@@ -190,7 +191,7 @@ The main logic is:
 		//	 It costs x2 of dynamic SG data in VRAM, but glitches free. You have to compare the results
 		//	 of using 'SPD_FLAG_DBL_BUFF' and 'SPD_FLAG_PEND_SG_DATA' and decide which is better in your case.
 [upd] v0.4	// NOTE: Passing 'last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
-		//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. The initial value is '0xff'.
+[upd] v0.6	//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. The initial value is 'SPD_SG_BANK_INIT_VAL'.
 --->		spd_sprite_params( <exported_name>_SG_arr, <EXPORTED_NAME>_SPR_VADDR, SPD_FLAG_DBL_BUFF, last_bank_ind );
 
 [upd] v0.5	// Set the second VRAM address for double-buffering (SPD_FLAG_DBL_BUFF) and the last double-buffer index value (initial value is 'SPD_DBL_BUFF_INIT_VAL').
@@ -325,6 +326,9 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "6", 0 };
 
 // Initial value of a last double-buffer index
 #define	SPD_DBL_BUFF_INIT_VAL	0x00
+
+// Initial value for a SG data
+#define	SPD_SG_BANK_INIT_VAL	0xff
 
 /* main SPD-render routines */
 

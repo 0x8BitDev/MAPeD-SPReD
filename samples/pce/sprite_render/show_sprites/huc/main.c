@@ -27,9 +27,9 @@ void	sprite_set_init()
 	//	 This is useful for PACKED(!) sprites when you are switching to a sprite set and SG data already loaded to VRAM.
 	//	 Such way you avoid loading SG to VRAM twice.
 	// NOTE: Passing '_last_bank_ind' allows to avoid loading SG data to VRAM twice when you are switching back from another data set.
-	//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is '0xff'.
+	//	 The last value can be obtained using 'spd_SG_bank_get_ind()'. the initial value is 'SPD_SG_BANK_INIT_VAL'.
 
-	spd_sprite_params( sprites_test_SG_arr, SPRITES_TEST_SPR_VADDR, 0, 0xff );
+	spd_sprite_params( sprites_test_SG_arr, SPRITES_TEST_SPR_VADDR, 0, SPD_SG_BANK_INIT_VAL );
 
 	// NOTE: There are two ways to load SG data to VRAM:
 	//	 1. Indirect loading, when you push the first sprite by calling 'spd_SATB_push_sprite'.
