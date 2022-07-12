@@ -10,8 +10,7 @@
 @del %OutDir%%OutFile%.pce
 
 @echo compiling...
-huc -s -fno-recursive -msmall main.c
-pceas main.s
+huc -fno-recursive -msmall main.c
 @if ERRORLEVEL 1 goto failure
 @echo Ok!
 
