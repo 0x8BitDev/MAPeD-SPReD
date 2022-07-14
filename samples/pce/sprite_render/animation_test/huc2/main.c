@@ -108,8 +108,6 @@ void	sprite1_show( char _ind, short _x, short _y )
 	// set pointers to SG data for delayed use (SPD_FLAG_PEND_SG_DATA).
 	spd_SG_data_params( &SET1_SG_DATA_SRC_ADDR, &SET1_SG_DATA_SRC_BANK, &SET1_SG_DATA_DST_ADDR, &SET1_SG_DATA_LEN );
 #endif
-
-	// NOTE: Use sprite pushing by index ONLY, if double buffering is enabled (!)
 	SET1_SPR_PUSH_RES = spd_SATB_push_sprite( set1_frames_data, _ind, _x, _y );
 
 #if	DEF_SET1_SG_DBL_BUFF

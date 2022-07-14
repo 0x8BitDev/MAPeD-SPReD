@@ -206,7 +206,6 @@ unsigned char	sprite_show( char _ind, short _x, short _y )
 {
 	unsigned char res;
 
-	// NOTE: Use sprite pushing by index ONLY, if double buffering is enabled (!)
 	res = spd_SATB_push_sprite( player_gfx_frames_data, _ind, _x, _y );
 
 #if	DEF_SG_DBL_BUFF

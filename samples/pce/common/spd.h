@@ -9,6 +9,9 @@
 History:
 
 v0.6
+2022.07.13 - added a little note about using the 'SPD_DEBUG' flag
+2022.07.12 - added 'SPD_TII_ATTR_XY' flag which speeds up transformation of meta-sprite attributes a bit
+2022.07.12 - added cyan border color as attributes transformation indicator
 2022.07.11 - added 'SPD_SG_BANK_INIT_VAL' as initial value for the '_last_bank_ind' in 'spd_sprite_params'
 2022.07.11 - extremely simplified double-buffering logic for meta-sprites
 2022.07.11 - the double-buffer index in 'spd_get_dbl_buff_ind' and the second argument in 'spd_dbl_buff_VRAM_addr' changed to a byte value
@@ -47,10 +50,17 @@ v0.1
 debug info (use Mednafen):
  - pink border color - ROM-VRAM data copying
  - white border color - spd_SATB_push_sprite
+ - cyan border color - attributes transformation
  
 #asm
 SPD_DEBUG
 #endasm
+
+[upd] v0.6
+NOTE: 	After enabling you will see two border lines: pink - ROM-VRAM data copying and white/cyan - spd_SATB_push_sprite.
+	Pay attention to the pink border line. The normal behaviour is when the pink line flashes sometimes (see sample
+	projects). When you see a bright pink border, this means that SG data copies to VRAM each frame. If this is not
+	expected behavior, then there is a bug somewhere in your program logic.
 
 NOTE:	The SPReD-PCE exports both meta-sprites and simple sprites (16x16,16x32,16x64,32x16,32x32,32x64). The CGX/CGY
 	flags are automatically applied to exported sprites. So you don't need to configure anything in your HuC program.
@@ -226,12 +236,10 @@ The main logic is:
 		// There are two ways to show a sprite:
 		// 1. By index in a sprite array. Suitable for animation sequences.
 		// (see exported .h file for generated constants)
-[upd] v0.5	// NOTE: Use this function ONLY, if double-buffering is enabled (!)
 		spd_SATB_push_sprite( <exported_name>_frames_data, _ind, _x, _y );
 
 		// 2. By sprite data pointer.
 		// (see exported .h file for generated data)
-[upd] v0.5	// NOTE: Don't use this function, if double-buffering is enabled (!)
 		spd_SATB_push_sprite( <animation_name>_frame, _x, _y );
 
 		// NOTE: If meta-sprite does not fit into SATB, it will be ignored!
@@ -297,7 +305,15 @@ The main logic is:
 
 [upd] v0.4	
 3. Also you can use PACKED and UNPACKED data in one data set (in one SPReD-PCE project) by combining the approaches described above.
+--->
 
+Misc:
+~~~~~
+
+[upd] v0.6
+#asm
+SPD_TII_ATTR_XY	; speeds up transformation of meta-sprite attributes a bit
+#endasm
 --->
 	That`s it! :)
 /*/
@@ -450,6 +466,21 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	adc <__dh
 	sta high_byte \1
 	.endm
+
+; \1 = \2 + ( a * 8 ), \2 - SATB
+	.macro calc_SATB_pos
+	stz high_byte \1
+	asl a
+	asl a
+	asl a
+	rol high_byte \1
+
+	adc low_byte \2
+	sta low_byte \1
+	lda high_byte \1
+	adc high_byte \2
+	sta high_byte \1
+	.endm	
 
 ; \1 *= 8
 	.macro mul8_word
@@ -1049,24 +1080,20 @@ __tiirts	.ds 1	; $60 rts
 	; _bdsti = __SATB + ( __SATB_pos * 8 )
 
 	lda <__SATB_pos
-	sta <__cl
-	stz <__ch
-	mul8_word <__cx			; __cx - SATB offset in bytes
+	calc_SATB_pos <__cx, #__SATB
 
-	add_word_to_word #__SATB, <__cx
 	stw <__cx, __bdsti
-
-	; copy meta-sprite data to the local SATB
-
-	jsr __TII
-
-	jsr unmap_data
 
 	phy				; Y - SG bank index
 
 ;--- DBL-BUFF ---
 	; check double-buffering state
 
+.ifdef	SPD_DEBUG
+	phy
+	call _attr_transf_border
+	ply
+.endif
 	get_SATB_flag SPD_FLAG_DBL_BUFF
 	beq .use_main_buff		; no double-buffering
 
@@ -1093,6 +1120,12 @@ __tiirts	.ds 1	; $60 rts
 	jmp __attr_transf_XY
 
 _push_SG_data:
+
+.ifdef	SPD_DEBUG
+	call _push_sprite_border
+.endif
+
+	jsr unmap_data
 
 	ply				; Y - SG bank index
 
@@ -1131,10 +1164,19 @@ __attr_transf_XY:
 
 ;--- SPD_FLAG_ALT_VADDR ---
 	get_SATB_flag SPD_FLAG_ALT_VADDR
-	beq .__attr_loop_XY
+	beq .__copy_attrs
 
 	jmp __attr_transf_XY_IND_alt
 ;--- SPD_FLAG_ALT_VADDR ---
+
+.__copy_attrs:
+
+.ifdef	SPD_TII_ATTR_XY
+
+	; copy meta-sprite attributes to the local SATB
+
+	jsr __TII
+.endif
 
 .__attr_loop_XY:
 
@@ -1142,10 +1184,10 @@ __attr_transf_XY:
 
 	; attr.Y += __spr_pos_y
 
-	lda [<__cx], y			;7 high byte
+	lda [<__si], y			;7 high byte
 	tax				;2
 	dey				;2
-	lda [<__cx], y			;7 low byte
+	lda [<__si], y			;7 low byte
 
 	clc				;2
 	adc <__spr_pos_y		;4
@@ -1160,10 +1202,10 @@ __attr_transf_XY:
 	; attr.X += __spr_pos_x
 
 	iny
-	lda [<__cx], y
+	lda [<__si], y
 	tax
 	dey
-	lda [<__cx], y
+	lda [<__si], y
 
 	clc
 	adc <__spr_pos_x
@@ -1175,12 +1217,31 @@ __attr_transf_XY:
 
 	; move to the next attr line
 
-	tya			;2
-	clc			;2
-	adc #05			;2
-	tay			;2 = 8
+.ifdef	SPD_TII_ATTR_XY
+	tya				;2
+	clc				;2
+	adc #05				;2
+	tay				;2 = 8
+.else
+	iny				;2
+	lda [<__si], y			;7
+	sta [<__cx], y			;7
 
-	bne .cont		;2 = 10
+	iny
+	lda [<__si], y
+	sta [<__cx], y
+
+	iny
+	lda [<__si], y
+	sta [<__cx], y
+
+	iny
+	lda [<__si], y
+	sta [<__cx], y
+
+	iny
+.endif
+	bne .cont			;2
 
 	inc <__ch
 .cont:
@@ -1204,10 +1265,10 @@ __attr_transf_XY_IND_alt:
 
 	; attr.Y += __spr_pos_y
 
-	lda [<__cx], y
+	lda [<__si], y
 	tax
 	dey
-	lda [<__cx], y
+	lda [<__si], y
 
 	clc
 	adc <__spr_pos_y
@@ -1222,10 +1283,10 @@ __attr_transf_XY_IND_alt:
 	; attr.X += __spr_pos_x
 
 	iny
-	lda [<__cx], y
+	lda [<__si], y
 	tax
 	dey
-	lda [<__cx], y
+	lda [<__si], y
 
 	clc
 	adc <__spr_pos_x
@@ -1240,10 +1301,10 @@ __attr_transf_XY_IND_alt:
 	; attr.SG_ind += __spr_alt_SG_offset
 
 	iny
-	lda [<__cx], y
+	lda [<__si], y
 	tax
 	dey
-	lda [<__cx], y
+	lda [<__si], y
 
 	clc
 	adc <__spr_alt_SG_offset
@@ -1253,13 +1314,19 @@ __attr_transf_XY_IND_alt:
 	iny
 	sta [<__cx], y
 
-	; move to the next attr line
+	; copy pattern code/palette/CGX/CGY data
 
-	iny		;2
-	iny		;2
-	iny		;2 = 6
+	iny				;2
+	lda [<__si], y			;7
+	sta [<__cx], y			;7
 
-	bne .cont	;2 = 8
+	iny
+	lda [<__si], y
+	sta [<__cx], y
+
+	iny
+
+	bne .cont			;2
 
 	inc <__ch
 .cont:
@@ -1283,10 +1350,10 @@ __attr_transf_XY_IND_dbf:
 
 	; attr.Y += __spr_pos_y
 
-	lda [<__cx], y
+	lda [<__si], y
 	tax
 	dey
-	lda [<__cx], y
+	lda [<__si], y
 
 	clc
 	adc <__spr_pos_y
@@ -1301,10 +1368,10 @@ __attr_transf_XY_IND_dbf:
 	; attr.X += __spr_pos_x
 
 	iny
-	lda [<__cx], y
+	lda [<__si], y
 	tax
 	dey
-	lda [<__cx], y
+	lda [<__si], y
 
 	clc
 	adc <__spr_pos_x
@@ -1319,10 +1386,10 @@ __attr_transf_XY_IND_dbf:
 	; attr.SG_ind += __spr_dbf_SG_offset
 
 	iny
-	lda [<__cx], y
+	lda [<__si], y
 	tax
 	dey
-	lda [<__cx], y
+	lda [<__si], y
 
 	clc
 	adc <__spr_dbf_SG_offset
@@ -1332,13 +1399,19 @@ __attr_transf_XY_IND_dbf:
 	iny
 	sta [<__cx], y
 
-	; move to the next attr line
+	; copy pattern code/palette/CGX/CGY data
 
-	iny		;2
-	iny		;2
-	iny		;2 = 6
+	iny
+	lda [<__si], y
+	sta [<__cx], y
 
-	bne .cont	;2 = 8
+	iny
+	lda [<__si], y
+	sta [<__cx], y
+
+	iny
+
+	bne .cont
 
 	inc <__ch
 .cont:
@@ -1565,13 +1638,13 @@ __attr_transf_XY_IND_dbf:
 
 	; XY coordinates correction
 
-	lda #32
-	clc
-	adc <__ax
-	sta <__spr_pos_x
-	cla
-	adc <__ax + 1
-	sta <__spr_pos_x + 1
+	lda #32				;2
+	clc				;2
+	adc <__ax			;4
+	sta <__spr_pos_x		;4
+	cla				;2
+	adc <__ax + 1			;4
+	sta <__spr_pos_x + 1		;4 = (22)
 
 	lda #64
 	clc
@@ -1605,20 +1678,22 @@ __attr_transf_XY_IND_dbf:
 	; __si = meta-sprite address
 
 	; calc SATB address to copy sprite data to
-	; _bdsti = __SATB + ( __SATB_pos * 8 )
+	; __cx = __SATB + ( __SATB_pos * 8 )
 
 	lda <__SATB_pos
-	sta <__cl
-	stz <__ch
-	mul8_word <__cx			; __cx - SATB offset in bytes
-
-	add_word_to_word #__SATB, <__cx
+	calc_SATB_pos <__cx, #__SATB
 
 	inc <__SATB_pos			; increment SATB position
 
 	phy				; Y - SG bank index
 
 	; transform XY coordinates
+
+.ifdef	SPD_DEBUG
+	phy
+	call _attr_transf_border
+	ply
+.endif
 
 	ldy #1
 
@@ -1659,7 +1734,7 @@ __attr_transf_XY_IND_dbf:
 
 ;--- SPD_FLAG_ALT_VADDR ---
 	get_SATB_flag SPD_FLAG_ALT_VADDR
-	bne ._trans_pttrn_code
+	bne ._transf_pttrn_code
 
 	; copy pattern code and palette +CGX/CGY
 
@@ -1681,7 +1756,7 @@ __attr_transf_XY_IND_dbf:
 
 	bra ._push_SG_data
 
-._trans_pttrn_code:
+._transf_pttrn_code:
 
 ;--- SPD_FLAG_ALT_VADDR ---
 
@@ -1716,6 +1791,10 @@ __attr_transf_XY_IND_dbf:
 	sta [<__cx], y
 
 ._push_SG_data:
+
+.ifdef	SPD_DEBUG
+	call _push_sprite_border
+.endif
 
 	jsr unmap_data
 
@@ -1840,6 +1919,16 @@ __attr_transf_XY_IND_dbf:
 
 ; for debugging purposes
 .ifdef SPD_DEBUG
+	.proc _attr_transf_border
+
+	ldx #$01
+	ldy #$e7
+
+	call _set_border_color
+
+	rts
+
+	.endp
 	.proc _black_border
 
 	clx
