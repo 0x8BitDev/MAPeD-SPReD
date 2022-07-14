@@ -9,6 +9,7 @@
 History:
 
 v0.6
+2022.07.14 - border color procedures replaced with macroses
 2022.07.13 - added a little note about using the 'SPD_DEBUG' flag
 2022.07.12 - added 'SPD_TII_ATTR_XY' flag which speeds up transformation of meta-sprite attributes a bit
 2022.07.12 - added cyan border color as attributes transformation indicator
@@ -375,6 +376,8 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 
 ; macros(es)
 
+; getting data by pointers
+
 ; val -> &((byte)(*zp))
 	.macro stb_zpii ; \1 - val, \2 - zp
 	cly
@@ -400,6 +403,8 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	lda [<\1], y
 	sta \2 + 1
 	.endm
+
+; math macroses
 
 ; \1 *= 2
 	.macro mul2_word
@@ -584,6 +589,8 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	sta high_byte \2
 	.endm
 
+; inner library flags macroses
+
 	.macro get_SATB_flag
 	lda <__SATB_flags
 	and #\1
@@ -598,6 +605,38 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	lda <__inner_flags
 	eor #INNER_FLAGS_DBL_BUFF
 	sta <__inner_flags
+	.endm
+
+; border color macroses
+
+	.macro set_border_color
+	stw #$0100, $0402
+	sty $0404
+	stx $0405
+	.endm
+
+	.macro	dbg_border_load_VRAM
+	clx
+	ldy #$ff
+	set_border_color
+	.endm
+
+	.macro	dbg_border_push_sprite
+	ldx #$01
+	ldy #$ff
+	set_border_color
+	.endm
+
+	.macro dbg_border_attrs_transf
+	ldx #$01
+	ldy #$e7
+	set_border_color
+	.endm
+
+	.macro	dbg_border_black
+	clx
+	cly
+	set_border_color
 	.endm
 
 	.zp
@@ -980,7 +1019,7 @@ __tiirts	.ds 1	; $60 rts
 	.proc _spd_SATB_push_sprite.4
 
 .ifdef	SPD_DEBUG
-	call _push_sprite_border
+	dbg_border_push_sprite
 .endif
 
 	; offset x6 -> sizeof( spd_SPRITE )
@@ -1001,7 +1040,7 @@ __tiirts	.ds 1	; $60 rts
 	.proc _spd_SATB_push_sprite.3
 
 .ifdef	SPD_DEBUG
-	call _push_sprite_border
+	dbg_border_push_sprite
 .endif
 
 	; XY coordinates correction
@@ -1060,7 +1099,7 @@ __tiirts	.ds 1	; $60 rts
 	; SATB overflow
 
 .ifdef	SPD_DEBUG
-	call _black_border
+	dbg_border_black
 .endif
 
 	clx
@@ -1091,7 +1130,7 @@ __tiirts	.ds 1	; $60 rts
 
 .ifdef	SPD_DEBUG
 	phy
-	call _attr_transf_border
+	dbg_border_attrs_transf
 	ply
 .endif
 	get_SATB_flag SPD_FLAG_DBL_BUFF
@@ -1122,7 +1161,7 @@ __tiirts	.ds 1	; $60 rts
 _push_SG_data:
 
 .ifdef	SPD_DEBUG
-	call _push_sprite_border
+	dbg_border_push_sprite
 .endif
 
 	jsr unmap_data
@@ -1148,7 +1187,7 @@ _push_SG_data:
 	; SG data already loaded or must be ignored
 
 .ifdef	SPD_DEBUG
-	call _black_border
+	dbg_border_black
 .endif
 
 	ldx #1
@@ -1504,14 +1543,14 @@ __attr_transf_XY_IND_dbf:
 	bne .copy_SG_data_params
 
 .ifdef	SPD_DEBUG
-	call _load_VRAM_border
+	dbg_border_load_VRAM
 .endif
 	jsr load_vram
 
 .exit:
 
 .ifdef	SPD_DEBUG
-	call _black_border
+	dbg_border_black
 .endif
 
 	ldx #( 1 | SPD_SG_NEW_DATA )
@@ -1560,11 +1599,11 @@ __attr_transf_XY_IND_dbf:
 	stw <__dx, <__di
 
 .ifdef	SPD_DEBUG
-	call _load_VRAM_border
+	dbg_border_load_VRAM
 
 	jsr load_vram
 
-	call _black_border
+	dbg_border_black
 
 	rts
 .else
@@ -1612,7 +1651,7 @@ __attr_transf_XY_IND_dbf:
 	.proc _spd_SATB_push_simple_sprite.4
 
 .ifdef	SPD_DEBUG
-	call _push_sprite_border
+	dbg_border_push_sprite
 .endif
 
 	; offset x6 -> sizeof( spd_SPRITE )
@@ -1633,7 +1672,7 @@ __attr_transf_XY_IND_dbf:
 	.proc _spd_SATB_push_simple_sprite.3
 
 .ifdef	SPD_DEBUG
-	call _push_sprite_border
+	dbg_border_push_sprite
 .endif
 
 	; XY coordinates correction
@@ -1691,7 +1730,7 @@ __attr_transf_XY_IND_dbf:
 
 .ifdef	SPD_DEBUG
 	phy
-	call _attr_transf_border
+	dbg_border_attrs_transf
 	ply
 .endif
 
@@ -1793,7 +1832,7 @@ __attr_transf_XY_IND_dbf:
 ._push_SG_data:
 
 .ifdef	SPD_DEBUG
-	call _push_sprite_border
+	dbg_border_push_sprite
 .endif
 
 	jsr unmap_data
@@ -1815,7 +1854,7 @@ __attr_transf_XY_IND_dbf:
 	; SG data already loaded or must be ignored
 
 .ifdef	SPD_DEBUG
-	call _black_border
+	dbg_border_black
 .endif
 
 	ldx #1
@@ -1900,14 +1939,14 @@ __attr_transf_XY_IND_dbf:
 .cont_SG_data_load:
 
 .ifdef	SPD_DEBUG
-	call _load_VRAM_border
+	dbg_border_load_VRAM
 .endif
 	jsr load_vram
 
 .exit:
 
 .ifdef	SPD_DEBUG
-	call _black_border
+	dbg_border_black
 .endif
 
 	ldx #( 1 | SPD_SG_NEW_DATA )
@@ -1916,64 +1955,6 @@ __attr_transf_XY_IND_dbf:
 	rts
 
 	.endp
-
-; for debugging purposes
-.ifdef SPD_DEBUG
-	.proc _attr_transf_border
-
-	ldx #$01
-	ldy #$e7
-
-	call _set_border_color
-
-	rts
-
-	.endp
-	.proc _black_border
-
-	clx
-	cly
-
-	call _set_border_color
-
-	rts
-
-	.endp
-
-	.proc _push_sprite_border
-
-	ldx #$01
-	ldy #$ff
-
-	call _set_border_color
-
-	rts
-
-	.endp
-
-	.proc _load_VRAM_border
-
-	clx
-	ldy #$ff
-
-	call _set_border_color
-
-	rts
-
-	.endp
-
-	.proc _set_border_color
-
-	stw #$0100, $0402
-
-	sty $0404
-	stx $0405
-
-	rts
-
-	.endp
-
-.endif	;SPD_DEBUG
 
 	.endprocgroup
 
