@@ -1,6 +1,6 @@
 ;###################################################################
 ;
-; Copyright 2019-2020 0x8BitDev ( MIT license )
+; Copyright 2019-2022 0x8BitDev ( MIT license )
 ;
 ;###################################################################
 ;
@@ -116,7 +116,6 @@ anm_update:
 ; IN:	HL - runtime anm data
 ;	BC - array of tile addresses
 ; OUT:	HL - sprite data address
-;	B - sprite data size
 ;	DE - tiles data address
 
 anm_get_frame_gfx_data:
@@ -144,9 +143,8 @@ anm_get_frame_gfx_data:
 
 	ld a, b
 
-	; A *= 4 ( size of frame_data )
+	; A *= 2 ( size of frame_data )
 
-	sla a
 	sla a
 
 	ld l, a
@@ -158,13 +156,14 @@ anm_get_frame_gfx_data:
 	inc hl
 	ld d, (hl)	; de - sprite data address
 
-	inc hl
-	ld b, (hl)	; b - sprite data size
+	ex de, hl	; hl - sprite data address
 
 	inc hl
+
 	ld a, (hl)	; a - index of tiles data
 
-	ex de, hl	; hl - sprite data address
+	dec hl		; hl - sprite data address
+
 	exx
 
 	pop hl		; hl - array of tile addresses

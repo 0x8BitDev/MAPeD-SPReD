@@ -1,6 +1,6 @@
 ;########################################################################
 ;
-; Copyright 2019-2020 0x8BitDev ( MIT license )
+; Copyright 2019-2022 0x8BitDev ( MIT license )
 ;
 ;########################################################################
 ;
@@ -12,11 +12,15 @@
 
 ; *** push a sprite to the characters "pool" ***
 ; IN:	HL - data addr
-;	B - data size
 ;	DE - X/Y
 
 spr_push:
 
+	ld b, (hl)			; data size
+ 
+	inc hl				; skip GFX bank index
+	inc hl				; HL - attributes address
+	
 	exx
 
 	ld hl, SPR_BUFF			; Y data addr
