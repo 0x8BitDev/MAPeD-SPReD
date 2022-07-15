@@ -190,6 +190,9 @@ namespace SPReD
 			
 			_sw.WriteLine( _data_prefix + _spr.name + ":" );
 			
+			_sw.WriteLine( "\t.word " + _data_prefix + _spr.name + "_end - " + _data_prefix + _spr.name + " - 3\t; data size" );
+			_sw.WriteLine( "\t.byte " + _spr.get_CHR_data().id + "\t\t; GFX bank index (" + _spr.get_CHR_data().name + ")\n" );
+			
 			// collect sprite patterns
 			{
 				// 32x64

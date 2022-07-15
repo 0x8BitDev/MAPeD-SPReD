@@ -1958,9 +1958,9 @@ namespace SPReD
 #endif
 
 #if DEF_PCE
-						c_sw.WriteLine( "#ifndef\tDEF_TYPE_SPD_SPRITE\n#define\tDEF_TYPE_SPD_SPRITE\ntypedef struct\n{\n\tconst unsigned short*\tattrs;\n\tunsigned char\t\tbank;\n\tunsigned short\t\tsize;\n\tunsigned char\t\tSG_ind;\n} spd_SPRITE;\n#endif\t//DEF_TYPE_SPD_SPRITE\n\n" );
+						c_sw.WriteLine( "#ifndef\tDEF_TYPE_SPD_SPRITE\n#define\tDEF_TYPE_SPD_SPRITE\ntypedef struct\n{\n\tconst unsigned char\tSG_ind;\n\tconst unsigned short\tsize;\n\tconst unsigned short\tattrs[];\n} spd_SPRITE;\n#endif\t//DEF_TYPE_SPD_SPRITE\n\n" );
 #else
-						c_sw.WriteLine( "#ifndef\tDEF_TYPE_SPD_SPRITE\n#define\tDEF_TYPE_SPD_SPRITE\ntypedef struct\n{\n\tconst unsigned short*\tattrs;\n\tunsigned short\t\tsize;\n\tunsigned char\t\tCHR_ind;\n} spd_SPRITE;\n#endif\t//DEF_TYPE_SPD_SPRITE\n\n" );
+						c_sw.WriteLine( "#ifndef\tDEF_TYPE_SPD_SPRITE\n#define\tDEF_TYPE_SPD_SPRITE\ntypedef struct\n{\n\tconst unsigned char\tCHR_ind;\n\tconst unsigned short\tsize;\n\tconst unsigned char\tattrs[];\n} spd_SPRITE;\n#endif\t//DEF_TYPE_SPD_SPRITE\n\n" );
 #endif
 						data_prefix = "_";
 					}
@@ -2051,10 +2051,9 @@ namespace SPReD
 						if( !_asm_file )
 						{
 							c_sw.WriteLine( "#define\t" + filename_upper + "_FRAMES_CNT\t" + _spr_cnt );
-							c_sw.WriteLine( "extern spd_SPRITE\t" + filename + "_frames_data[];\n" );
+							c_sw.WriteLine( "extern unsigned char*\t" + filename + "_frames_data;\n" );
 						}
 						
-						bool enable_comments = true;
 						string sprite_name;
 						
 						for( int i = 0; i < _spr_cnt; i++ )
@@ -2065,20 +2064,9 @@ namespace SPReD
 							
 							sw.WriteLine( data_prefix + sprite_name + "_frame:" );
 							sw.WriteLine( "\t.word " + data_prefix + sprite_name );
-#if DEF_NES || DEF_SMS
-							sw.WriteLine( "\t.byte " + data_prefix + sprite_name + "_end - " + sprite_name + ( enable_comments ? "\t; data size":"" ) );
-#elif DEF_PCE
-							if( !_asm_file )
-							{
-								sw.WriteLine( "\t.byte bank(" + ( data_prefix + sprite_name ) + ")" );
-							}
-							
-							sw.WriteLine( "\t.word " + data_prefix + sprite_name + "_end - " + data_prefix + sprite_name + ( enable_comments ? "\t; data size":"" ) );
-#else
-...
+#if DEF_PCE
+							sw.WriteLine( "\t.byte bank(" + ( data_prefix + sprite_name ) + ")" );
 #endif
-							sw.WriteLine( "\t.byte " + spr.get_CHR_data().id + ( enable_comments ? "\t\t; GFX bank index (" + spr.get_CHR_data().name + ")":"" ) );
-							
 							CHR_data_filename = path + Path.DirectorySeparatorChar + data_dir + prefix_filename + "_" + spr.get_CHR_data().get_filename();
 #if DEF_NES
 							spr.get_CHR_data().export( CHR_data_filename, save_padding_data );
@@ -2100,10 +2088,8 @@ namespace SPReD
 							{
 								c_sw.WriteLine( "#define\tSPR_" + sprite_name.ToUpper() + "\t" + i );
 								
-								post_spr_data += "extern spd_SPRITE*\t" + sprite_name + "_frame;\n";
+								post_spr_data += "extern spd_SPRITE*\t" + sprite_name + ";\n";
 							}
-
-							enable_comments = false;
 						}
 					}
 					

@@ -103,6 +103,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+15.07.2022 - Changed output ASM format: now frames data is an array of attributes data addresses (!!!)
 06.07.2022 - PCE: added 'non-packed sprites optimization' checkbox to the export options dialog, for meta-sprites optimization
 30.06.2022 - PCE: added 'add filename to sprite names' checkbox to the export options dialog
 21.06.2022 - Packed sprites splitting by selected sprites

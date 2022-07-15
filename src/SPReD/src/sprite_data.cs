@@ -550,7 +550,16 @@ namespace SPReD
 			}
 			
 			_sw.WriteLine( _data_prefix + name + ":" );
-			
+
+#if DEF_NES || DEF_SMS
+			_sw.WriteLine( "\t.byte " + _data_prefix + name + "_end - " + _data_prefix + name + " - 2\t; data size" );
+#elif DEF_PCE
+			_sw.WriteLine( "\t.word " + _data_prefix + name + "_end - " + _data_prefix + name + " - 3\t; data size" );
+#else
+...
+#endif
+			_sw.WriteLine( "\t.byte " + get_CHR_data().id + "\t\t; GFX bank index (" + get_CHR_data().name + ")\n" );
+
 			for( int i = 0; i < size; i++ )
 			{
 				chr_attr = m_CHR_attr[ i ];
