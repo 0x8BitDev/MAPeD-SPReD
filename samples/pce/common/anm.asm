@@ -130,10 +130,12 @@ anm_copy_frame_to_SATB:
 	ldy #ANM_OFFS_CURR_FRAME
 	lda [<__ax], y
 
-	; calc offset x5 ( 5 - frame data size )
+	; calc offset x3 -> word:addr, byte:bank
+
+	; unsafe 8-bit multiplying
+	; TODO: replace it with 16-bit version
 
 	sta <__bl
-	asl a
 	asl a
 	clc
 	adc <__bl

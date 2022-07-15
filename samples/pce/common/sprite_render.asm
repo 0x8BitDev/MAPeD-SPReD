@@ -124,11 +124,16 @@ SATB_push_sprite:
 
 	cly
 	lda [<_spr_data], y
-	sta _bsrci
+	sta <__dl
 	iny
 	lda [<_spr_data], y
-	sta _bsrci + 1
+	sta <__dh
 	iny
+
+	stw <__dx, _bsrci
+	lda #3
+	add_a_to_word _bsrci	; now _bsrci points to attributes data
+	
 
 	; _bdsti = _SATB + ( _SATB_pos * 8 )
 
@@ -147,10 +152,11 @@ SATB_push_sprite:
 
 	; _bleni = attributes data length
 
-	lda [<_spr_data], y
+	cly
+	lda [<__dx], y
 	sta _bleni
 	iny
-	lda [<_spr_data], y
+	lda [<__dx], y
 	sta _bleni + 1
 	iny
 
@@ -247,7 +253,7 @@ SATB_push_sprite:
 
 	; load SG data to VRAM
 
-	lda [<_spr_data], y		; A = chr data index
+	lda [<__dx], y			; A = chr data index
 
 	; check SATB_FLAG_CHECK_SG_BANK flag
 

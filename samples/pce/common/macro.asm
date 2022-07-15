@@ -35,7 +35,7 @@
 	adc low_byte \1
 	sta low_byte \1
 
-	lda #$00
+	cla
 	adc high_byte \1
 	sta high_byte \1
 	.endm
