@@ -1,6 +1,6 @@
 ;###############################################
 ;
-; Copyright 2018-2019 0x8BitDev ( MIT license )
+; Copyright 2018-2022 0x8BitDev ( MIT license )
 ;
 ;###############################################
 ;
@@ -26,6 +26,9 @@
 
 .struct frame_data
 	gfx_ptr		.word
+.endstruct
+
+.struct attr_data
 	data_size	.byte
 	chr_id		.byte
 .endstruct
@@ -102,9 +105,8 @@ anm_update:
 	jsr _anm_get_updated_frame_ind
 
 	; A - current anm frame
-	; A *= 4 ( .sizeof( frame_data ) )
+	; A *= 2 ( .sizeof( frame_data ) )
 	clc
-	rol a
 	rol a
 
 	; add offset to frames start address
