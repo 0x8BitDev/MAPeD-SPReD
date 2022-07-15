@@ -1,6 +1,6 @@
 ;###############################################
 ;
-; Copyright 2018-2020 0x8BitDev ( MIT license )
+; Copyright 2018-2022 0x8BitDev ( MIT license )
 ;
 ;###############################################
 ;
@@ -187,13 +187,14 @@ data_size:	.res 2
 
 ; word += A
 	.macro add_a_to_word word
+	.local @cont
 	clc
 	adc word
 	sta word
 
-	lda #$00
-	adc word + 1
-	sta word + 1
+	bcc @cont
+	inc word + 1
+@cont:
 	.endmacro
 
 ; word += -A
