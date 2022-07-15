@@ -24,13 +24,14 @@ image_num_frames:
 image_frames_data:
 bpp_test_sprite_frame:
 	.word bpp_test_sprite
-	.byte bpp_test_sprite_end - bpp_test_sprite	; data size
-	.byte 0		; GFX bank index (chr0)
 
 
 	; #1: Y pos, #2: X pos, #3: CHR index
 
 bpp_test_sprite:
+	.byte bpp_test_sprite_end - bpp_test_sprite - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $00, $00, $00
 	.byte $00, $08, $01
 	.byte $00, $10, $02

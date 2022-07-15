@@ -245,11 +245,9 @@ loop:
 	call anm_get_frame_gfx_data
 
 	; HL - sprite data address
-	; B - sprite data size
 	; DE - tiles data address
 
 	push hl
-	push bc
 
 	ex de, hl
 
@@ -274,7 +272,6 @@ loop:
 
 	ld (VDP_TILES_VRAM_ADDR), hl
 
-	pop bc
 	pop hl
 
 	pop de			; de - X/Y

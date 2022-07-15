@@ -116,9 +116,6 @@ main:
 	inc hl
 	ld d, (hl)		; DE - sprite data addr
 
-	inc hl
-	ld b, (hl)		; B - sprite data size
-
 	ex de, hl		; HL - sprite data addr
 
 	ld d, 100
