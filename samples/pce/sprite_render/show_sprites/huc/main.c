@@ -39,7 +39,7 @@ void	sprite_set_init()
 	//	 The third argument for the 'spd_sprite_params' must be 'SPD_FLAG_IGNORE_SG'.
 	//
 	//	 spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )
-	//	 spd_copy_SG_data_to_VRAM( <animation_name>_frame )
+	//	 spd_copy_SG_data_to_VRAM( <sprite_name> )
 }
 
 /* show sprite from exported sprite set */
@@ -85,17 +85,17 @@ void init_sprites()
 
 	/* 2. by sprite data pointer. */
 
-	spd_SATB_push_simple_sprite( brstick_RIGHT_32x16_frame, 58, 66 );
+	spd_SATB_push_simple_sprite( brstick_RIGHT_32x16, 58, 66 );
 
-	spd_SATB_push_simple_sprite( rpl_fly_RIGHT_32x32_frame, 98, 66 );
+	spd_SATB_push_simple_sprite( rpl_fly_RIGHT_32x32, 98, 66 );
 
 	/* the following sprites are meta-sprites, so we use 'spd_SATB_push_sprite' for them */
 
-	spd_SATB_push_sprite( dr_msl_UP_frame, 173, 66 );
+	spd_SATB_push_sprite( dr_msl_UP, 173, 66 );
 
-	spd_SATB_push_sprite( gigan_idle_LEFT_frame, 148, 196 );
+	spd_SATB_push_sprite( gigan_idle_LEFT, 148, 196 );
 
-	spd_SATB_push_sprite( tony_idle_RIGHT_frame, 88, 196 );
+	spd_SATB_push_sprite( tony_idle_RIGHT, 88, 196 );
 
 	/* update SATB with the all pushed sprites */
 	satb_update( spd_SATB_get_pos() );

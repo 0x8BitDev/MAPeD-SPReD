@@ -12,10 +12,9 @@
 #define	DEF_TYPE_SPD_SPRITE
 typedef struct
 {
-	const unsigned short*	attrs;
-	unsigned char		bank;
-	unsigned short		size;
-	unsigned char		SG_ind;
+	const unsigned char	SG_ind;
+	const unsigned short	size;
+	const unsigned short	attrs[];
 } spd_SPRITE;
 #endif	//DEF_TYPE_SPD_SPRITE
 
@@ -30,7 +29,7 @@ extern unsigned short*	player_gfx_palette_slot0;
 extern unsigned short*	player_gfx_palette;
 
 #define	PLAYER_GFX_FRAMES_CNT	24
-extern spd_SPRITE	player_gfx_frames_data[];
+extern unsigned char*	player_gfx_frames_data;
 
 #define	SPR_MPWR_IDLE01_RIGHT	0
 #define	SPR_MPWR_WALK01_RIGHT	1
@@ -57,28 +56,28 @@ extern spd_SPRITE	player_gfx_frames_data[];
 #define	SPR_MPWR_KICK04_REF02_LEFT	22
 #define	SPR_MPWR_KICK05_REF01_LEFT	23
 
-extern spd_SPRITE*	mpwr_idle01_RIGHT_frame;
-extern spd_SPRITE*	mpwr_walk01_RIGHT_frame;
-extern spd_SPRITE*	mpwr_walk02_RIGHT_frame;
-extern spd_SPRITE*	mpwr_walk03_RIGHT_frame;
-extern spd_SPRITE*	mpwr_walk04_RIGHT_frame;
-extern spd_SPRITE*	mpwr_walk05_RIGHT_frame;
-extern spd_SPRITE*	mpwr_walk06_RIGHT_frame;
-extern spd_SPRITE*	mpwr_kick01_RIGHT_frame;
-extern spd_SPRITE*	mpwr_kick02_RIGHT_frame;
-extern spd_SPRITE*	mpwr_kick03_RIGHT_frame;
-extern spd_SPRITE*	mpwr_kick04_ref02_RIGHT_frame;
-extern spd_SPRITE*	mpwr_kick05_ref01_RIGHT_frame;
-extern spd_SPRITE*	mpwr_idle01_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk01_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk02_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk03_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk04_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk05_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk06_LEFT_frame;
-extern spd_SPRITE*	mpwr_kick01_LEFT_frame;
-extern spd_SPRITE*	mpwr_kick02_LEFT_frame;
-extern spd_SPRITE*	mpwr_kick03_LEFT_frame;
-extern spd_SPRITE*	mpwr_kick04_ref02_LEFT_frame;
-extern spd_SPRITE*	mpwr_kick05_ref01_LEFT_frame;
+extern spd_SPRITE*	mpwr_idle01_RIGHT;
+extern spd_SPRITE*	mpwr_walk01_RIGHT;
+extern spd_SPRITE*	mpwr_walk02_RIGHT;
+extern spd_SPRITE*	mpwr_walk03_RIGHT;
+extern spd_SPRITE*	mpwr_walk04_RIGHT;
+extern spd_SPRITE*	mpwr_walk05_RIGHT;
+extern spd_SPRITE*	mpwr_walk06_RIGHT;
+extern spd_SPRITE*	mpwr_kick01_RIGHT;
+extern spd_SPRITE*	mpwr_kick02_RIGHT;
+extern spd_SPRITE*	mpwr_kick03_RIGHT;
+extern spd_SPRITE*	mpwr_kick04_ref02_RIGHT;
+extern spd_SPRITE*	mpwr_kick05_ref01_RIGHT;
+extern spd_SPRITE*	mpwr_idle01_LEFT;
+extern spd_SPRITE*	mpwr_walk01_LEFT;
+extern spd_SPRITE*	mpwr_walk02_LEFT;
+extern spd_SPRITE*	mpwr_walk03_LEFT;
+extern spd_SPRITE*	mpwr_walk04_LEFT;
+extern spd_SPRITE*	mpwr_walk05_LEFT;
+extern spd_SPRITE*	mpwr_walk06_LEFT;
+extern spd_SPRITE*	mpwr_kick01_LEFT;
+extern spd_SPRITE*	mpwr_kick02_LEFT;
+extern spd_SPRITE*	mpwr_kick03_LEFT;
+extern spd_SPRITE*	mpwr_kick04_ref02_LEFT;
+extern spd_SPRITE*	mpwr_kick05_ref01_LEFT;
 

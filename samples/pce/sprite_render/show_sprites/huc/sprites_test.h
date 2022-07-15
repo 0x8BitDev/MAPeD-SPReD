@@ -12,10 +12,9 @@
 #define	DEF_TYPE_SPD_SPRITE
 typedef struct
 {
-	const unsigned short*	attrs;
-	unsigned char		bank;
-	unsigned short		size;
-	unsigned char		SG_ind;
+	const unsigned char	SG_ind;
+	const unsigned short	size;
+	const unsigned short	attrs[];
 } spd_SPRITE;
 #endif	//DEF_TYPE_SPD_SPRITE
 
@@ -35,7 +34,7 @@ extern unsigned short*	sprites_test_palette_slot5;
 extern unsigned short*	sprites_test_palette;
 
 #define	SPRITES_TEST_FRAMES_CNT	10
-extern spd_SPRITE	sprites_test_frames_data[];
+extern unsigned char*	sprites_test_frames_data;
 
 #define	SPR_JCH_RIGHT_32X64	0
 #define	SPR_DR_MSL_UP_16X64_0	1
@@ -48,14 +47,14 @@ extern spd_SPRITE	sprites_test_frames_data[];
 #define	SPR_GIGAN_IDLE_LEFT	8
 #define	SPR_TONY_IDLE_RIGHT	9
 
-extern spd_SPRITE*	jch_RIGHT_32x64_frame;
-extern spd_SPRITE*	dr_msl_UP_16x64_0_frame;
-extern spd_SPRITE*	dr_msl_UP_16x64_1_ref_frame;
-extern spd_SPRITE*	jch_min_16x32_0_frame;
-extern spd_SPRITE*	jch_min_16x32_1_ref_frame;
-extern spd_SPRITE*	rpl_fly_RIGHT_32x32_frame;
-extern spd_SPRITE*	brstick_RIGHT_32x16_frame;
-extern spd_SPRITE*	dr_msl_UP_frame;
-extern spd_SPRITE*	gigan_idle_LEFT_frame;
-extern spd_SPRITE*	tony_idle_RIGHT_frame;
+extern spd_SPRITE*	jch_RIGHT_32x64;
+extern spd_SPRITE*	dr_msl_UP_16x64_0;
+extern spd_SPRITE*	dr_msl_UP_16x64_1_ref;
+extern spd_SPRITE*	jch_min_16x32_0;
+extern spd_SPRITE*	jch_min_16x32_1_ref;
+extern spd_SPRITE*	rpl_fly_RIGHT_32x32;
+extern spd_SPRITE*	brstick_RIGHT_32x16;
+extern spd_SPRITE*	dr_msl_UP;
+extern spd_SPRITE*	gigan_idle_LEFT;
+extern spd_SPRITE*	tony_idle_RIGHT;
 

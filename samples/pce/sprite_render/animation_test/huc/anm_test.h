@@ -12,10 +12,9 @@
 #define	DEF_TYPE_SPD_SPRITE
 typedef struct
 {
-	const unsigned short*	attrs;
-	unsigned char		bank;
-	unsigned short		size;
-	unsigned char		SG_ind;
+	const unsigned char	SG_ind;
+	const unsigned short	size;
+	const unsigned short	attrs[];
 } spd_SPRITE;
 #endif	//DEF_TYPE_SPD_SPRITE
 
@@ -30,7 +29,7 @@ extern unsigned short*	anm_test_palette_slot0;
 extern unsigned short*	anm_test_palette;
 
 #define	ANM_TEST_FRAMES_CNT	6
-extern spd_SPRITE	anm_test_frames_data[];
+extern unsigned char*	anm_test_frames_data;
 
 #define	SPR_MARTHA_PUNCH01	0
 #define	SPR_MARTHA_PUNCH02	1
@@ -39,10 +38,10 @@ extern spd_SPRITE	anm_test_frames_data[];
 #define	SPR_MARTHA_PUNCH05	4
 #define	SPR_MARTHA_PUNCH06_REF04	5
 
-extern spd_SPRITE*	martha_punch01_frame;
-extern spd_SPRITE*	martha_punch02_frame;
-extern spd_SPRITE*	martha_punch03_frame;
-extern spd_SPRITE*	martha_punch04_frame;
-extern spd_SPRITE*	martha_punch05_frame;
-extern spd_SPRITE*	martha_punch06_ref04_frame;
+extern spd_SPRITE*	martha_punch01;
+extern spd_SPRITE*	martha_punch02;
+extern spd_SPRITE*	martha_punch03;
+extern spd_SPRITE*	martha_punch04;
+extern spd_SPRITE*	martha_punch05;
+extern spd_SPRITE*	martha_punch06_ref04;
 

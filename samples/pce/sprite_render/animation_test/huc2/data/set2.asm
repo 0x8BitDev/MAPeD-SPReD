@@ -29,38 +29,29 @@ _set2_frames_data:
 _martha_punch01_frame:
 	.word _martha_punch01
 	.byte bank(_martha_punch01)
-	.word _martha_punch01_end - _martha_punch01	; data size
-	.byte 0		; GFX bank index (chr0)
 _martha_punch02_frame:
 	.word _martha_punch02
 	.byte bank(_martha_punch02)
-	.word _martha_punch02_end - _martha_punch02
-	.byte 1
 _martha_punch03_frame:
 	.word _martha_punch03
 	.byte bank(_martha_punch03)
-	.word _martha_punch03_end - _martha_punch03
-	.byte 2
 _martha_punch04_frame:
 	.word _martha_punch04
 	.byte bank(_martha_punch04)
-	.word _martha_punch04_end - _martha_punch04
-	.byte 3
 _martha_punch05_frame:
 	.word _martha_punch05
 	.byte bank(_martha_punch05)
-	.word _martha_punch05_end - _martha_punch05
-	.byte 4
 _martha_punch06_ref04_frame:
 	.word _martha_punch06_ref04
 	.byte bank(_martha_punch06_ref04)
-	.word _martha_punch06_ref04_end - _martha_punch06_ref04
-	.byte 3
 
 
 	; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc
 
 _martha_punch01:
+	.word _martha_punch01_end - _martha_punch01 - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $FFB7, $FFF2, $180, $1181
 	.word $FFA7, $FFF6, $188, $181
 	.word $FFD7, $FFF2, $18C, $181
@@ -72,6 +63,9 @@ _martha_punch01:
 _martha_punch01_end:
 
 _martha_punch02:
+	.word _martha_punch02_end - _martha_punch02 - 3	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.word $FFA7, $FFED, $180, $181
 	.word $FFB7, $FFE9, $184, $181
 	.word $FFC7, $FFEA, $188, $181
@@ -84,6 +78,9 @@ _martha_punch02:
 _martha_punch02_end:
 
 _martha_punch03:
+	.word _martha_punch03_end - _martha_punch03 - 3	; data size
+	.byte 2		; GFX bank index (chr2)
+
 	.word $FFAD, $FFF4, $180, $181
 	.word $FFBD, $FFF6, $184, $181
 	.word $FFCD, $FFF2, $188, $181
@@ -98,6 +95,9 @@ _martha_punch03:
 _martha_punch03_end:
 
 _martha_punch04:
+	.word _martha_punch04_end - _martha_punch04 - 3	; data size
+	.byte 3		; GFX bank index (chr3)
+
 	.word $FFA0, $0C, $180, $181
 	.word $FFB0, $FFF5, $184, $181
 	.word $FFB0, $15, $188, $181
@@ -113,6 +113,9 @@ _martha_punch04:
 _martha_punch04_end:
 
 _martha_punch05:
+	.word _martha_punch05_end - _martha_punch05 - 3	; data size
+	.byte 4		; GFX bank index (chr4)
+
 	.word $FFA0, $01, $180, $181
 	.word $FFB0, $FFF7, $184, $181
 	.word $FFC0, $FFF5, $188, $181
@@ -126,6 +129,9 @@ _martha_punch05:
 _martha_punch05_end:
 
 _martha_punch06_ref04:
+	.word _martha_punch06_ref04_end - _martha_punch06_ref04 - 3	; data size
+	.byte 3		; GFX bank index (chr3)
+
 	.word $FFA0, $0C, $180, $181
 	.word $FFB0, $FFF5, $184, $181
 	.word $FFB0, $15, $188, $181

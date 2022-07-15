@@ -31,91 +31,98 @@ _sprites_test_frames_data:
 _jch_RIGHT_32x64_frame:
 	.word _jch_RIGHT_32x64
 	.byte bank(_jch_RIGHT_32x64)
-	.word _jch_RIGHT_32x64_end - _jch_RIGHT_32x64	; data size
-	.byte 0		; GFX bank index (chr0)
 _dr_msl_UP_16x64_0_frame:
 	.word _dr_msl_UP_16x64_0
 	.byte bank(_dr_msl_UP_16x64_0)
-	.word _dr_msl_UP_16x64_0_end - _dr_msl_UP_16x64_0
-	.byte 0
 _dr_msl_UP_16x64_1_ref_frame:
 	.word _dr_msl_UP_16x64_1_ref
 	.byte bank(_dr_msl_UP_16x64_1_ref)
-	.word _dr_msl_UP_16x64_1_ref_end - _dr_msl_UP_16x64_1_ref
-	.byte 0
 _jch_min_16x32_0_frame:
 	.word _jch_min_16x32_0
 	.byte bank(_jch_min_16x32_0)
-	.word _jch_min_16x32_0_end - _jch_min_16x32_0
-	.byte 0
 _jch_min_16x32_1_ref_frame:
 	.word _jch_min_16x32_1_ref
 	.byte bank(_jch_min_16x32_1_ref)
-	.word _jch_min_16x32_1_ref_end - _jch_min_16x32_1_ref
-	.byte 0
 _rpl_fly_RIGHT_32x32_frame:
 	.word _rpl_fly_RIGHT_32x32
 	.byte bank(_rpl_fly_RIGHT_32x32)
-	.word _rpl_fly_RIGHT_32x32_end - _rpl_fly_RIGHT_32x32
-	.byte 0
 _brstick_RIGHT_32x16_frame:
 	.word _brstick_RIGHT_32x16
 	.byte bank(_brstick_RIGHT_32x16)
-	.word _brstick_RIGHT_32x16_end - _brstick_RIGHT_32x16
-	.byte 0
 _dr_msl_UP_frame:
 	.word _dr_msl_UP
 	.byte bank(_dr_msl_UP)
-	.word _dr_msl_UP_end - _dr_msl_UP
-	.byte 0
 _gigan_idle_LEFT_frame:
 	.word _gigan_idle_LEFT
 	.byte bank(_gigan_idle_LEFT)
-	.word _gigan_idle_LEFT_end - _gigan_idle_LEFT
-	.byte 0
 _tony_idle_RIGHT_frame:
 	.word _tony_idle_RIGHT
 	.byte bank(_tony_idle_RIGHT)
-	.word _tony_idle_RIGHT_end - _tony_idle_RIGHT
-	.byte 0
 
 
 	; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc
 
 _jch_RIGHT_32x64:
+	.word _jch_RIGHT_32x64_end - _jch_RIGHT_32x64 - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $FFC0, $FFF0, $100, $3180
 _jch_RIGHT_32x64_end:
 
 _dr_msl_UP_16x64_0:
+	.word _dr_msl_UP_16x64_0_end - _dr_msl_UP_16x64_0 - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $00, $FFF8, $110, $3085
 _dr_msl_UP_16x64_0_end:
 
 _dr_msl_UP_16x64_1_ref:
+	.word _dr_msl_UP_16x64_1_ref_end - _dr_msl_UP_16x64_1_ref - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $00, $FFF8, $112, $3085
 _dr_msl_UP_16x64_1_ref_end:
 
 _jch_min_16x32_0:
+	.word _jch_min_16x32_0_end - _jch_min_16x32_0 - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $FFE0, $FFF8, $120, $1080
 _jch_min_16x32_0_end:
 
 _jch_min_16x32_1_ref:
+	.word _jch_min_16x32_1_ref_end - _jch_min_16x32_1_ref - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $FFE0, $FFF8, $122, $1080
 _jch_min_16x32_1_ref_end:
 
 _rpl_fly_RIGHT_32x32:
+	.word _rpl_fly_RIGHT_32x32_end - _rpl_fly_RIGHT_32x32 - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $FFF0, $FFF0, $128, $1181
 _rpl_fly_RIGHT_32x32_end:
 
 _brstick_RIGHT_32x16:
+	.word _brstick_RIGHT_32x16_end - _brstick_RIGHT_32x16 - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $FFF8, $FFF0, $130, $182
 _brstick_RIGHT_32x16_end:
 
 _dr_msl_UP:
+	.word _dr_msl_UP_end - _dr_msl_UP - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $00, $FFF8, $134, $85
 	.word $10, $FFF8, $136, $85
 _dr_msl_UP_end:
 
 _gigan_idle_LEFT:
+	.word _gigan_idle_LEFT_end - _gigan_idle_LEFT - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $FFA0, $FFF6, $138, $83
 	.word $FFB0, $FFF2, $13A, $83
 	.word $FFB0, $02, $13C, $83
@@ -141,6 +148,9 @@ _gigan_idle_LEFT:
 _gigan_idle_LEFT_end:
 
 _tony_idle_RIGHT:
+	.word _tony_idle_RIGHT_end - _tony_idle_RIGHT - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $FFA0, $FFF4, $164, $884
 	.word $FFB0, $05, $166, $884
 	.word $FFB0, $FFF5, $168, $884

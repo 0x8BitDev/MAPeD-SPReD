@@ -35,63 +35,44 @@ _chin_frames_data:
 _chin_idle01_RIGHT_frame:
 	.word _chin_idle01_RIGHT
 	.byte bank(_chin_idle01_RIGHT)
-	.word _chin_idle01_RIGHT_end - _chin_idle01_RIGHT	; data size
-	.byte 0		; GFX bank index (chr0)
 _chin_walk01_RIGHT_frame:
 	.word _chin_walk01_RIGHT
 	.byte bank(_chin_walk01_RIGHT)
-	.word _chin_walk01_RIGHT_end - _chin_walk01_RIGHT
-	.byte 1
 _chin_walk02_RIGHT_frame:
 	.word _chin_walk02_RIGHT
 	.byte bank(_chin_walk02_RIGHT)
-	.word _chin_walk02_RIGHT_end - _chin_walk02_RIGHT
-	.byte 2
 _chin_walk03_RIGHT_frame:
 	.word _chin_walk03_RIGHT
 	.byte bank(_chin_walk03_RIGHT)
-	.word _chin_walk03_RIGHT_end - _chin_walk03_RIGHT
-	.byte 3
 _chin_walk04_RIGHT_frame:
 	.word _chin_walk04_RIGHT
 	.byte bank(_chin_walk04_RIGHT)
-	.word _chin_walk04_RIGHT_end - _chin_walk04_RIGHT
-	.byte 4
 _chin_idle01_LEFT_frame:
 	.word _chin_idle01_LEFT
 	.byte bank(_chin_idle01_LEFT)
-	.word _chin_idle01_LEFT_end - _chin_idle01_LEFT
-	.byte 0
 _chin_walk01_LEFT_frame:
 	.word _chin_walk01_LEFT
 	.byte bank(_chin_walk01_LEFT)
-	.word _chin_walk01_LEFT_end - _chin_walk01_LEFT
-	.byte 1
 _chin_walk02_LEFT_frame:
 	.word _chin_walk02_LEFT
 	.byte bank(_chin_walk02_LEFT)
-	.word _chin_walk02_LEFT_end - _chin_walk02_LEFT
-	.byte 2
 _chin_walk03_LEFT_frame:
 	.word _chin_walk03_LEFT
 	.byte bank(_chin_walk03_LEFT)
-	.word _chin_walk03_LEFT_end - _chin_walk03_LEFT
-	.byte 3
 _chin_walk04_LEFT_frame:
 	.word _chin_walk04_LEFT
 	.byte bank(_chin_walk04_LEFT)
-	.word _chin_walk04_LEFT_end - _chin_walk04_LEFT
-	.byte 4
 _chin_dummy_sprite_for_palettes_frame:
 	.word _chin_dummy_sprite_for_palettes
 	.byte bank(_chin_dummy_sprite_for_palettes)
-	.word _chin_dummy_sprite_for_palettes_end - _chin_dummy_sprite_for_palettes
-	.byte 5
 
 
 	; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc
 
 _chin_idle01_RIGHT:
+	.word _chin_idle01_RIGHT_end - _chin_idle01_RIGHT - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $FFB0, $FFE9, $100, $3180
 	.word $FFF0, $FFE9, $110, $180
 	.word $FFB0, $09, $114, $80
@@ -102,6 +83,9 @@ _chin_idle01_RIGHT:
 _chin_idle01_RIGHT_end:
 
 _chin_walk01_RIGHT:
+	.word _chin_walk01_RIGHT_end - _chin_walk01_RIGHT - 3	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.word $FFB0, $FFEC, $100, $3180
 	.word $FFF0, $FFEC, $110, $180
 	.word $FFC0, $0C, $114, $80
@@ -110,6 +94,9 @@ _chin_walk01_RIGHT:
 _chin_walk01_RIGHT_end:
 
 _chin_walk02_RIGHT:
+	.word _chin_walk02_RIGHT_end - _chin_walk02_RIGHT - 3	; data size
+	.byte 2		; GFX bank index (chr2)
+
 	.word $FFB0, $FFEC, $100, $3180
 	.word $FFF0, $FFEC, $110, $180
 	.word $FFC0, $0C, $114, $80
@@ -117,6 +104,9 @@ _chin_walk02_RIGHT:
 _chin_walk02_RIGHT_end:
 
 _chin_walk03_RIGHT:
+	.word _chin_walk03_RIGHT_end - _chin_walk03_RIGHT - 3	; data size
+	.byte 3		; GFX bank index (chr3)
+
 	.word $FFB0, $FFEC, $100, $3180
 	.word $FFF0, $FFEC, $110, $180
 	.word $FFC0, $0C, $114, $80
@@ -124,6 +114,9 @@ _chin_walk03_RIGHT:
 _chin_walk03_RIGHT_end:
 
 _chin_walk04_RIGHT:
+	.word _chin_walk04_RIGHT_end - _chin_walk04_RIGHT - 3	; data size
+	.byte 4		; GFX bank index (chr4)
+
 	.word $FFB0, $FFEC, $100, $3180
 	.word $FFF0, $FFEC, $110, $180
 	.word $FFC0, $0C, $114, $80
@@ -131,6 +124,9 @@ _chin_walk04_RIGHT:
 _chin_walk04_RIGHT_end:
 
 _chin_idle01_LEFT:
+	.word _chin_idle01_LEFT_end - _chin_idle01_LEFT - 3	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.word $FFB0, $FFF7, $100, $3980
 	.word $FFF0, $FFF7, $110, $980
 	.word $FFB0, $FFE7, $114, $880
@@ -141,6 +137,9 @@ _chin_idle01_LEFT:
 _chin_idle01_LEFT_end:
 
 _chin_walk01_LEFT:
+	.word _chin_walk01_LEFT_end - _chin_walk01_LEFT - 3	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.word $FFB0, $FFF4, $100, $3980
 	.word $FFF0, $FFF4, $110, $980
 	.word $FFC0, $FFE4, $114, $880
@@ -149,6 +148,9 @@ _chin_walk01_LEFT:
 _chin_walk01_LEFT_end:
 
 _chin_walk02_LEFT:
+	.word _chin_walk02_LEFT_end - _chin_walk02_LEFT - 3	; data size
+	.byte 2		; GFX bank index (chr2)
+
 	.word $FFB0, $FFF4, $100, $3980
 	.word $FFF0, $FFF4, $110, $980
 	.word $FFC0, $FFE4, $114, $880
@@ -156,6 +158,9 @@ _chin_walk02_LEFT:
 _chin_walk02_LEFT_end:
 
 _chin_walk03_LEFT:
+	.word _chin_walk03_LEFT_end - _chin_walk03_LEFT - 3	; data size
+	.byte 3		; GFX bank index (chr3)
+
 	.word $FFB0, $FFF4, $100, $3980
 	.word $FFF0, $FFF4, $110, $980
 	.word $FFC0, $FFE4, $114, $880
@@ -163,6 +168,9 @@ _chin_walk03_LEFT:
 _chin_walk03_LEFT_end:
 
 _chin_walk04_LEFT:
+	.word _chin_walk04_LEFT_end - _chin_walk04_LEFT - 3	; data size
+	.byte 4		; GFX bank index (chr4)
+
 	.word $FFB0, $FFF4, $100, $3980
 	.word $FFF0, $FFF4, $110, $980
 	.word $FFC0, $FFE4, $114, $880
@@ -170,6 +178,9 @@ _chin_walk04_LEFT:
 _chin_walk04_LEFT_end:
 
 _chin_dummy_sprite_for_palettes:
+	.word _chin_dummy_sprite_for_palettes_end - _chin_dummy_sprite_for_palettes - 3	; data size
+	.byte 5		; GFX bank index (chr5)
+
 	.word $00, $00, $100, $80
 	.word $00, $10, $102, $81
 	.word $00, $20, $104, $82

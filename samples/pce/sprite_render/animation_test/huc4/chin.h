@@ -12,10 +12,9 @@
 #define	DEF_TYPE_SPD_SPRITE
 typedef struct
 {
-	const unsigned short*	attrs;
-	unsigned char		bank;
-	unsigned short		size;
-	unsigned char		SG_ind;
+	const unsigned char	SG_ind;
+	const unsigned short	size;
+	const unsigned short	attrs[];
 } spd_SPRITE;
 #endif	//DEF_TYPE_SPD_SPRITE
 
@@ -30,7 +29,7 @@ extern unsigned short*	chin_palette_slot0;
 extern unsigned short*	chin_palette;
 
 #define	CHIN_FRAMES_CNT	10
-extern spd_SPRITE	chin_frames_data[];
+extern unsigned char*	chin_frames_data;
 
 #define	SPR_CHIN_IDLE01_RIGHT	0
 #define	SPR_CHIN_WALK01_RIGHT	1
@@ -43,14 +42,14 @@ extern spd_SPRITE	chin_frames_data[];
 #define	SPR_CHIN_WALK03_LEFT	8
 #define	SPR_CHIN_WALK04_LEFT	9
 
-extern spd_SPRITE*	chin_idle01_RIGHT_frame;
-extern spd_SPRITE*	chin_walk01_RIGHT_frame;
-extern spd_SPRITE*	chin_walk02_RIGHT_frame;
-extern spd_SPRITE*	chin_walk03_RIGHT_frame;
-extern spd_SPRITE*	chin_walk04_RIGHT_frame;
-extern spd_SPRITE*	chin_idle01_LEFT_frame;
-extern spd_SPRITE*	chin_walk01_LEFT_frame;
-extern spd_SPRITE*	chin_walk02_LEFT_frame;
-extern spd_SPRITE*	chin_walk03_LEFT_frame;
-extern spd_SPRITE*	chin_walk04_LEFT_frame;
+extern spd_SPRITE*	chin_idle01_RIGHT;
+extern spd_SPRITE*	chin_walk01_RIGHT;
+extern spd_SPRITE*	chin_walk02_RIGHT;
+extern spd_SPRITE*	chin_walk03_RIGHT;
+extern spd_SPRITE*	chin_walk04_RIGHT;
+extern spd_SPRITE*	chin_idle01_LEFT;
+extern spd_SPRITE*	chin_walk01_LEFT;
+extern spd_SPRITE*	chin_walk02_LEFT;
+extern spd_SPRITE*	chin_walk03_LEFT;
+extern spd_SPRITE*	chin_walk04_LEFT;
 

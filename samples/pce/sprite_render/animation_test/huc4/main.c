@@ -244,7 +244,7 @@ void	push_sprite_chin_violet( sprite_desc* _desc )
 	//	 The third argument for the 'spd_sprite_params' must be 'SPD_FLAG_IGNORE_SG'.
 	//
 	//	 spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )
-	//	 spd_copy_SG_data_to_VRAM( <animation_name>_frame )
+	//	 spd_copy_SG_data_to_VRAM( <sprite_name> )
 
 	// push sprite to SATB
 	_desc->push_spr_res	= spd_SATB_push_sprite( chin_frames_data, _desc->curr_frame, _desc->x, _desc->y );

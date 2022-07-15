@@ -12,10 +12,9 @@
 #define	DEF_TYPE_SPD_SPRITE
 typedef struct
 {
-	const unsigned short*	attrs;
-	unsigned char		bank;
-	unsigned short		size;
-	unsigned char		SG_ind;
+	const unsigned char	SG_ind;
+	const unsigned short	size;
+	const unsigned short	attrs[];
 } spd_SPRITE;
 #endif	//DEF_TYPE_SPD_SPRITE
 
@@ -30,7 +29,7 @@ extern unsigned short*	set3_palette_slot0;
 extern unsigned short*	set3_palette;
 
 #define	SET3_FRAMES_CNT	12
-extern spd_SPRITE	set3_frames_data[];
+extern unsigned char*	set3_frames_data;
 
 #define	SPR_MPWR_IDLE01_LEFT	0
 #define	SPR_MPWR_WALK01_LEFT	1
@@ -45,16 +44,16 @@ extern spd_SPRITE	set3_frames_data[];
 #define	SPR_MPWR_KICK04_REF02_LEFT	10
 #define	SPR_MPWR_KICK05_REF01_LEFT	11
 
-extern spd_SPRITE*	mpwr_idle01_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk01_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk02_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk03_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk04_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk05_LEFT_frame;
-extern spd_SPRITE*	mpwr_walk06_LEFT_frame;
-extern spd_SPRITE*	mpwr_kick01_LEFT_frame;
-extern spd_SPRITE*	mpwr_kick02_LEFT_frame;
-extern spd_SPRITE*	mpwr_kick03_LEFT_frame;
-extern spd_SPRITE*	mpwr_kick04_ref02_LEFT_frame;
-extern spd_SPRITE*	mpwr_kick05_ref01_LEFT_frame;
+extern spd_SPRITE*	mpwr_idle01_LEFT;
+extern spd_SPRITE*	mpwr_walk01_LEFT;
+extern spd_SPRITE*	mpwr_walk02_LEFT;
+extern spd_SPRITE*	mpwr_walk03_LEFT;
+extern spd_SPRITE*	mpwr_walk04_LEFT;
+extern spd_SPRITE*	mpwr_walk05_LEFT;
+extern spd_SPRITE*	mpwr_walk06_LEFT;
+extern spd_SPRITE*	mpwr_kick01_LEFT;
+extern spd_SPRITE*	mpwr_kick02_LEFT;
+extern spd_SPRITE*	mpwr_kick03_LEFT;
+extern spd_SPRITE*	mpwr_kick04_ref02_LEFT;
+extern spd_SPRITE*	mpwr_kick05_ref01_LEFT;
 
