@@ -24,241 +24,128 @@ marco_gfx_num_frames:
 marco_gfx_frames_data:
 marco_idle01_RIGHT_frame:
 	.word marco_idle01_RIGHT
-	.byte marco_idle01_RIGHT_end - marco_idle01_RIGHT	; data size
-	.byte 1		; GFX bank index (chr1)
 marco_idle02_RIGHT_frame:
 	.word marco_idle02_RIGHT
-	.byte marco_idle02_RIGHT_end - marco_idle02_RIGHT
-	.byte 1
 marco_idle03_RIGHT_frame:
 	.word marco_idle03_RIGHT
-	.byte marco_idle03_RIGHT_end - marco_idle03_RIGHT
-	.byte 1
 marco_idle04_RIGHT_frame:
 	.word marco_idle04_RIGHT
-	.byte marco_idle04_RIGHT_end - marco_idle04_RIGHT
-	.byte 1
 marco_idle05_RIGHT_frame:
 	.word marco_idle05_RIGHT
-	.byte marco_idle05_RIGHT_end - marco_idle05_RIGHT
-	.byte 1
 marco_idle06_RIGHT_frame:
 	.word marco_idle06_RIGHT
-	.byte marco_idle06_RIGHT_end - marco_idle06_RIGHT
-	.byte 1
 marco_duck01_RIGHT_frame:
 	.word marco_duck01_RIGHT
-	.byte marco_duck01_RIGHT_end - marco_duck01_RIGHT
-	.byte 1
 marco_duck02_RIGHT_frame:
 	.word marco_duck02_RIGHT
-	.byte marco_duck02_RIGHT_end - marco_duck02_RIGHT
-	.byte 0
 marco_duck03_RIGHT_frame:
 	.word marco_duck03_RIGHT
-	.byte marco_duck03_RIGHT_end - marco_duck03_RIGHT
-	.byte 0
 marco_duck04_RIGHT_frame:
 	.word marco_duck04_RIGHT
-	.byte marco_duck04_RIGHT_end - marco_duck04_RIGHT
-	.byte 0
 marco_duck05_RIGHT_frame:
 	.word marco_duck05_RIGHT
-	.byte marco_duck05_RIGHT_end - marco_duck05_RIGHT
-	.byte 0
 marco_duck06_RIGHT_frame:
 	.word marco_duck06_RIGHT
-	.byte marco_duck06_RIGHT_end - marco_duck06_RIGHT
-	.byte 0
 marco_duck07_RIGHT_frame:
 	.word marco_duck07_RIGHT
-	.byte marco_duck07_RIGHT_end - marco_duck07_RIGHT
-	.byte 0
 marco_duck08_RIGHT_frame:
 	.word marco_duck08_RIGHT
-	.byte marco_duck08_RIGHT_end - marco_duck08_RIGHT
-	.byte 0
 marco_duck09_RIGHT_frame:
 	.word marco_duck09_RIGHT
-	.byte marco_duck09_RIGHT_end - marco_duck09_RIGHT
-	.byte 0
 marco_duck10_RIGHT_frame:
 	.word marco_duck10_RIGHT
-	.byte marco_duck10_RIGHT_end - marco_duck10_RIGHT
-	.byte 0
 marco_run01_RIGHT_frame:
 	.word marco_run01_RIGHT
-	.byte marco_run01_RIGHT_end - marco_run01_RIGHT
-	.byte 2
 marco_run02_RIGHT_frame:
 	.word marco_run02_RIGHT
-	.byte marco_run02_RIGHT_end - marco_run02_RIGHT
-	.byte 2
 marco_run03_RIGHT_frame:
 	.word marco_run03_RIGHT
-	.byte marco_run03_RIGHT_end - marco_run03_RIGHT
-	.byte 2
 marco_run04_RIGHT_frame:
 	.word marco_run04_RIGHT
-	.byte marco_run04_RIGHT_end - marco_run04_RIGHT
-	.byte 3
 marco_run05_RIGHT_frame:
 	.word marco_run05_RIGHT
-	.byte marco_run05_RIGHT_end - marco_run05_RIGHT
-	.byte 3
 marco_run06_RIGHT_frame:
 	.word marco_run06_RIGHT
-	.byte marco_run06_RIGHT_end - marco_run06_RIGHT
-	.byte 3
 marco_run07_RIGHT_frame:
 	.word marco_run07_RIGHT
-	.byte marco_run07_RIGHT_end - marco_run07_RIGHT
-	.byte 4
 marco_run08_RIGHT_frame:
 	.word marco_run08_RIGHT
-	.byte marco_run08_RIGHT_end - marco_run08_RIGHT
-	.byte 4
 marco_run09_RIGHT_frame:
 	.word marco_run09_RIGHT
-	.byte marco_run09_RIGHT_end - marco_run09_RIGHT
-	.byte 4
 marco_shoot01_RIGHT_frame:
 	.word marco_shoot01_RIGHT
-	.byte marco_shoot01_RIGHT_end - marco_shoot01_RIGHT
-	.byte 5
 marco_shoot02_RIGHT_frame:
 	.word marco_shoot02_RIGHT
-	.byte marco_shoot02_RIGHT_end - marco_shoot02_RIGHT
-	.byte 5
 marco_shoot03_RIGHT_frame:
 	.word marco_shoot03_RIGHT
-	.byte marco_shoot03_RIGHT_end - marco_shoot03_RIGHT
-	.byte 5
 marco_shoot04_RIGHT_frame:
 	.word marco_shoot04_RIGHT
-	.byte marco_shoot04_RIGHT_end - marco_shoot04_RIGHT
-	.byte 6
 marco_idle01_LEFT_frame:
 	.word marco_idle01_LEFT
-	.byte marco_idle01_LEFT_end - marco_idle01_LEFT
-	.byte 1
 marco_idle02_LEFT_frame:
 	.word marco_idle02_LEFT
-	.byte marco_idle02_LEFT_end - marco_idle02_LEFT
-	.byte 1
 marco_idle03_LEFT_frame:
 	.word marco_idle03_LEFT
-	.byte marco_idle03_LEFT_end - marco_idle03_LEFT
-	.byte 1
 marco_idle04_LEFT_frame:
 	.word marco_idle04_LEFT
-	.byte marco_idle04_LEFT_end - marco_idle04_LEFT
-	.byte 1
 marco_idle05_LEFT_frame:
 	.word marco_idle05_LEFT
-	.byte marco_idle05_LEFT_end - marco_idle05_LEFT
-	.byte 1
 marco_idle06_LEFT_frame:
 	.word marco_idle06_LEFT
-	.byte marco_idle06_LEFT_end - marco_idle06_LEFT
-	.byte 1
 marco_duck01_LEFT_frame:
 	.word marco_duck01_LEFT
-	.byte marco_duck01_LEFT_end - marco_duck01_LEFT
-	.byte 1
 marco_duck02_LEFT_frame:
 	.word marco_duck02_LEFT
-	.byte marco_duck02_LEFT_end - marco_duck02_LEFT
-	.byte 0
 marco_duck03_LEFT_frame:
 	.word marco_duck03_LEFT
-	.byte marco_duck03_LEFT_end - marco_duck03_LEFT
-	.byte 0
 marco_duck04_LEFT_frame:
 	.word marco_duck04_LEFT
-	.byte marco_duck04_LEFT_end - marco_duck04_LEFT
-	.byte 0
 marco_duck05_LEFT_frame:
 	.word marco_duck05_LEFT
-	.byte marco_duck05_LEFT_end - marco_duck05_LEFT
-	.byte 0
 marco_duck06_LEFT_frame:
 	.word marco_duck06_LEFT
-	.byte marco_duck06_LEFT_end - marco_duck06_LEFT
-	.byte 0
 marco_duck07_LEFT_frame:
 	.word marco_duck07_LEFT
-	.byte marco_duck07_LEFT_end - marco_duck07_LEFT
-	.byte 0
 marco_duck08_LEFT_frame:
 	.word marco_duck08_LEFT
-	.byte marco_duck08_LEFT_end - marco_duck08_LEFT
-	.byte 0
 marco_duck09_LEFT_frame:
 	.word marco_duck09_LEFT
-	.byte marco_duck09_LEFT_end - marco_duck09_LEFT
-	.byte 0
 marco_duck10_LEFT_frame:
 	.word marco_duck10_LEFT
-	.byte marco_duck10_LEFT_end - marco_duck10_LEFT
-	.byte 0
 marco_run01_LEFT_frame:
 	.word marco_run01_LEFT
-	.byte marco_run01_LEFT_end - marco_run01_LEFT
-	.byte 2
 marco_run02_LEFT_frame:
 	.word marco_run02_LEFT
-	.byte marco_run02_LEFT_end - marco_run02_LEFT
-	.byte 2
 marco_run03_LEFT_frame:
 	.word marco_run03_LEFT
-	.byte marco_run03_LEFT_end - marco_run03_LEFT
-	.byte 2
 marco_run04_LEFT_frame:
 	.word marco_run04_LEFT
-	.byte marco_run04_LEFT_end - marco_run04_LEFT
-	.byte 3
 marco_run05_LEFT_frame:
 	.word marco_run05_LEFT
-	.byte marco_run05_LEFT_end - marco_run05_LEFT
-	.byte 3
 marco_run06_LEFT_frame:
 	.word marco_run06_LEFT
-	.byte marco_run06_LEFT_end - marco_run06_LEFT
-	.byte 3
 marco_run07_LEFT_frame:
 	.word marco_run07_LEFT
-	.byte marco_run07_LEFT_end - marco_run07_LEFT
-	.byte 4
 marco_run08_LEFT_frame:
 	.word marco_run08_LEFT
-	.byte marco_run08_LEFT_end - marco_run08_LEFT
-	.byte 4
 marco_run09_LEFT_frame:
 	.word marco_run09_LEFT
-	.byte marco_run09_LEFT_end - marco_run09_LEFT
-	.byte 4
 marco_shoot01_LEFT_frame:
 	.word marco_shoot01_LEFT
-	.byte marco_shoot01_LEFT_end - marco_shoot01_LEFT
-	.byte 5
 marco_shoot02_LEFT_frame:
 	.word marco_shoot02_LEFT
-	.byte marco_shoot02_LEFT_end - marco_shoot02_LEFT
-	.byte 5
 marco_shoot03_LEFT_frame:
 	.word marco_shoot03_LEFT
-	.byte marco_shoot03_LEFT_end - marco_shoot03_LEFT
-	.byte 5
 marco_shoot04_LEFT_frame:
 	.word marco_shoot04_LEFT
-	.byte marco_shoot04_LEFT_end - marco_shoot04_LEFT
-	.byte 6
 
 
 	; #1: Y pos, #2: CHR index, #3: Attributes, #4: X pos
 
 marco_idle01_RIGHT:
+	.byte marco_idle01_RIGHT_end - marco_idle01_RIGHT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $00, $F7
 	.byte $DA, $01, $00, $FF
 	.byte $DA, $02, $00, $07
@@ -279,6 +166,9 @@ marco_idle01_RIGHT:
 marco_idle01_RIGHT_end:
 
 marco_idle02_RIGHT:
+	.byte marco_idle02_RIGHT_end - marco_idle02_RIGHT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $00, $F7
 	.byte $DA, $11, $00, $FF
 	.byte $DA, $12, $00, $07
@@ -299,6 +189,9 @@ marco_idle02_RIGHT:
 marco_idle02_RIGHT_end:
 
 marco_idle03_RIGHT:
+	.byte marco_idle03_RIGHT_end - marco_idle03_RIGHT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $00, $F7
 	.byte $DA, $1D, $00, $FF
 	.byte $DA, $12, $00, $07
@@ -319,6 +212,9 @@ marco_idle03_RIGHT:
 marco_idle03_RIGHT_end:
 
 marco_idle04_RIGHT:
+	.byte marco_idle04_RIGHT_end - marco_idle04_RIGHT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $00, $F7
 	.byte $DA, $1D, $00, $FF
 	.byte $DA, $12, $00, $07
@@ -339,6 +235,9 @@ marco_idle04_RIGHT:
 marco_idle04_RIGHT_end:
 
 marco_idle05_RIGHT:
+	.byte marco_idle05_RIGHT_end - marco_idle05_RIGHT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $00, $F7
 	.byte $DA, $11, $00, $FF
 	.byte $DA, $12, $00, $07
@@ -359,6 +258,9 @@ marco_idle05_RIGHT:
 marco_idle05_RIGHT_end:
 
 marco_idle06_RIGHT:
+	.byte marco_idle06_RIGHT_end - marco_idle06_RIGHT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $00, $F7
 	.byte $DA, $01, $00, $FF
 	.byte $DA, $02, $00, $07
@@ -379,6 +281,9 @@ marco_idle06_RIGHT:
 marco_idle06_RIGHT_end:
 
 marco_duck01_RIGHT:
+	.byte marco_duck01_RIGHT_end - marco_duck01_RIGHT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $D7, $27, $00, $FA
 	.byte $D7, $28, $00, $02
 	.byte $DF, $29, $02, $F5
@@ -400,6 +305,9 @@ marco_duck01_RIGHT:
 marco_duck01_RIGHT_end:
 
 marco_duck02_RIGHT:
+	.byte marco_duck02_RIGHT_end - marco_duck02_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $DA, $00, $02, $F5
 	.byte $DA, $01, $00, $FE
 	.byte $DA, $02, $00, $06
@@ -420,6 +328,9 @@ marco_duck02_RIGHT:
 marco_duck02_RIGHT_end:
 
 marco_duck03_RIGHT:
+	.byte marco_duck03_RIGHT_end - marco_duck03_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $11, $02, $F1
 	.byte $E8, $12, $02, $F9
 	.byte $E8, $13, $00, $01
@@ -435,6 +346,9 @@ marco_duck03_RIGHT:
 marco_duck03_RIGHT_end:
 
 marco_duck04_RIGHT:
+	.byte marco_duck04_RIGHT_end - marco_duck04_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $1D, $02, $F1
 	.byte $E8, $1E, $02, $F9
 	.byte $E8, $1F, $00, $01
@@ -450,6 +364,9 @@ marco_duck04_RIGHT:
 marco_duck04_RIGHT_end:
 
 marco_duck05_RIGHT:
+	.byte marco_duck05_RIGHT_end - marco_duck05_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $26, $02, $F1
 	.byte $E8, $27, $02, $F9
 	.byte $E8, $28, $00, $01
@@ -465,6 +382,9 @@ marco_duck05_RIGHT:
 marco_duck05_RIGHT_end:
 
 marco_duck06_RIGHT:
+	.byte marco_duck06_RIGHT_end - marco_duck06_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $2F, $02, $F1
 	.byte $E8, $30, $02, $F9
 	.byte $E8, $31, $00, $01
@@ -480,6 +400,9 @@ marco_duck06_RIGHT:
 marco_duck06_RIGHT_end:
 
 marco_duck07_RIGHT:
+	.byte marco_duck07_RIGHT_end - marco_duck07_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $2F, $02, $F1
 	.byte $E8, $30, $02, $F9
 	.byte $E8, $31, $00, $01
@@ -495,6 +418,9 @@ marco_duck07_RIGHT:
 marco_duck07_RIGHT_end:
 
 marco_duck08_RIGHT:
+	.byte marco_duck08_RIGHT_end - marco_duck08_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $26, $02, $F1
 	.byte $E8, $27, $02, $F9
 	.byte $E8, $28, $00, $01
@@ -510,6 +436,9 @@ marco_duck08_RIGHT:
 marco_duck08_RIGHT_end:
 
 marco_duck09_RIGHT:
+	.byte marco_duck09_RIGHT_end - marco_duck09_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $1D, $02, $F1
 	.byte $E8, $1E, $02, $F9
 	.byte $E8, $1F, $00, $01
@@ -525,6 +454,9 @@ marco_duck09_RIGHT:
 marco_duck09_RIGHT_end:
 
 marco_duck10_RIGHT:
+	.byte marco_duck10_RIGHT_end - marco_duck10_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $11, $02, $F1
 	.byte $E8, $12, $02, $F9
 	.byte $E8, $13, $00, $01
@@ -540,6 +472,9 @@ marco_duck10_RIGHT:
 marco_duck10_RIGHT_end:
 
 marco_run01_RIGHT:
+	.byte marco_run01_RIGHT_end - marco_run01_RIGHT - 2	; data size
+	.byte 2		; GFX bank index (chr2)
+
 	.byte $D8, $00, $00, $FE
 	.byte $D8, $01, $00, $06
 	.byte $E0, $02, $02, $F6
@@ -559,6 +494,9 @@ marco_run01_RIGHT:
 marco_run01_RIGHT_end:
 
 marco_run02_RIGHT:
+	.byte marco_run02_RIGHT_end - marco_run02_RIGHT - 2	; data size
+	.byte 2		; GFX bank index (chr2)
+
 	.byte $D7, $00, $00, $FE
 	.byte $D7, $10, $00, $06
 	.byte $DF, $11, $02, $F6
@@ -579,6 +517,9 @@ marco_run02_RIGHT:
 marco_run02_RIGHT_end:
 
 marco_run03_RIGHT:
+	.byte marco_run03_RIGHT_end - marco_run03_RIGHT - 2	; data size
+	.byte 2		; GFX bank index (chr2)
+
 	.byte $D6, $20, $00, $F7
 	.byte $D6, $21, $00, $FF
 	.byte $D6, $22, $00, $07
@@ -599,6 +540,9 @@ marco_run03_RIGHT:
 marco_run03_RIGHT_end:
 
 marco_run04_RIGHT:
+	.byte marco_run04_RIGHT_end - marco_run04_RIGHT - 2	; data size
+	.byte 3		; GFX bank index (chr3)
+
 	.byte $D5, $00, $00, $FD
 	.byte $D5, $01, $00, $05
 	.byte $DD, $02, $02, $F5
@@ -620,6 +564,9 @@ marco_run04_RIGHT:
 marco_run04_RIGHT_end:
 
 marco_run05_RIGHT:
+	.byte marco_run05_RIGHT_end - marco_run05_RIGHT - 2	; data size
+	.byte 3		; GFX bank index (chr3)
+
 	.byte $D8, $12, $00, $F7
 	.byte $D8, $13, $00, $FF
 	.byte $D8, $14, $00, $07
@@ -640,6 +587,9 @@ marco_run05_RIGHT:
 marco_run05_RIGHT_end:
 
 marco_run06_RIGHT:
+	.byte marco_run06_RIGHT_end - marco_run06_RIGHT - 2	; data size
+	.byte 3		; GFX bank index (chr3)
+
 	.byte $D8, $12, $00, $F7
 	.byte $D8, $23, $00, $FF
 	.byte $D8, $24, $00, $07
@@ -659,6 +609,9 @@ marco_run06_RIGHT:
 marco_run06_RIGHT_end:
 
 marco_run07_RIGHT:
+	.byte marco_run07_RIGHT_end - marco_run07_RIGHT - 2	; data size
+	.byte 4		; GFX bank index (chr4)
+
 	.byte $D7, $00, $02, $F7
 	.byte $D7, $01, $00, $FF
 	.byte $D7, $02, $00, $07
@@ -679,6 +632,9 @@ marco_run07_RIGHT:
 marco_run07_RIGHT_end:
 
 marco_run08_RIGHT:
+	.byte marco_run08_RIGHT_end - marco_run08_RIGHT - 2	; data size
+	.byte 4		; GFX bank index (chr4)
+
 	.byte $D6, $11, $00, $F8
 	.byte $D6, $12, $00, $00
 	.byte $D6, $13, $00, $08
@@ -701,6 +657,9 @@ marco_run08_RIGHT:
 marco_run08_RIGHT_end:
 
 marco_run09_RIGHT:
+	.byte marco_run09_RIGHT_end - marco_run09_RIGHT - 2	; data size
+	.byte 4		; GFX bank index (chr4)
+
 	.byte $D8, $11, $00, $F9
 	.byte $D8, $24, $00, $01
 	.byte $D8, $25, $00, $09
@@ -720,6 +679,9 @@ marco_run09_RIGHT:
 marco_run09_RIGHT_end:
 
 marco_shoot01_RIGHT:
+	.byte marco_shoot01_RIGHT_end - marco_shoot01_RIGHT - 2	; data size
+	.byte 5		; GFX bank index (chr5)
+
 	.byte $DB, $00, $02, $F7
 	.byte $DB, $01, $00, $FF
 	.byte $DB, $02, $00, $07
@@ -745,6 +707,9 @@ marco_shoot01_RIGHT:
 marco_shoot01_RIGHT_end:
 
 marco_shoot02_RIGHT:
+	.byte marco_shoot02_RIGHT_end - marco_shoot02_RIGHT - 2	; data size
+	.byte 5		; GFX bank index (chr5)
+
 	.byte $DB, $16, $02, $F7
 	.byte $DB, $17, $00, $FF
 	.byte $DB, $18, $00, $07
@@ -772,6 +737,9 @@ marco_shoot02_RIGHT:
 marco_shoot02_RIGHT_end:
 
 marco_shoot03_RIGHT:
+	.byte marco_shoot03_RIGHT_end - marco_shoot03_RIGHT - 2	; data size
+	.byte 5		; GFX bank index (chr5)
+
 	.byte $DB, $16, $02, $F7
 	.byte $DB, $17, $00, $FF
 	.byte $DB, $28, $00, $07
@@ -795,6 +763,9 @@ marco_shoot03_RIGHT:
 marco_shoot03_RIGHT_end:
 
 marco_shoot04_RIGHT:
+	.byte marco_shoot04_RIGHT_end - marco_shoot04_RIGHT - 2	; data size
+	.byte 6		; GFX bank index (chr6)
+
 	.byte $D9, $00, $00, $FF
 	.byte $D9, $01, $00, $07
 	.byte $D9, $02, $00, $12
@@ -816,6 +787,9 @@ marco_shoot04_RIGHT:
 marco_shoot04_RIGHT_end:
 
 marco_idle01_LEFT:
+	.byte marco_idle01_LEFT_end - marco_idle01_LEFT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $40, $01
 	.byte $DA, $01, $40, $F9
 	.byte $DA, $02, $40, $F1
@@ -836,6 +810,9 @@ marco_idle01_LEFT:
 marco_idle01_LEFT_end:
 
 marco_idle02_LEFT:
+	.byte marco_idle02_LEFT_end - marco_idle02_LEFT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $40, $01
 	.byte $DA, $11, $40, $F9
 	.byte $DA, $12, $40, $F1
@@ -856,6 +833,9 @@ marco_idle02_LEFT:
 marco_idle02_LEFT_end:
 
 marco_idle03_LEFT:
+	.byte marco_idle03_LEFT_end - marco_idle03_LEFT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $40, $01
 	.byte $DA, $1D, $40, $F9
 	.byte $DA, $12, $40, $F1
@@ -876,6 +856,9 @@ marco_idle03_LEFT:
 marco_idle03_LEFT_end:
 
 marco_idle04_LEFT:
+	.byte marco_idle04_LEFT_end - marco_idle04_LEFT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $40, $01
 	.byte $DA, $1D, $40, $F9
 	.byte $DA, $12, $40, $F1
@@ -896,6 +879,9 @@ marco_idle04_LEFT:
 marco_idle04_LEFT_end:
 
 marco_idle05_LEFT:
+	.byte marco_idle05_LEFT_end - marco_idle05_LEFT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $40, $01
 	.byte $DA, $11, $40, $F9
 	.byte $DA, $12, $40, $F1
@@ -916,6 +902,9 @@ marco_idle05_LEFT:
 marco_idle05_LEFT_end:
 
 marco_idle06_LEFT:
+	.byte marco_idle06_LEFT_end - marco_idle06_LEFT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $DA, $00, $40, $01
 	.byte $DA, $01, $40, $F9
 	.byte $DA, $02, $40, $F1
@@ -936,6 +925,9 @@ marco_idle06_LEFT:
 marco_idle06_LEFT_end:
 
 marco_duck01_LEFT:
+	.byte marco_duck01_LEFT_end - marco_duck01_LEFT - 2	; data size
+	.byte 1		; GFX bank index (chr1)
+
 	.byte $D7, $27, $40, $FE
 	.byte $D7, $28, $40, $F6
 	.byte $DF, $29, $42, $03
@@ -957,6 +949,9 @@ marco_duck01_LEFT:
 marco_duck01_LEFT_end:
 
 marco_duck02_LEFT:
+	.byte marco_duck02_LEFT_end - marco_duck02_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $DA, $00, $42, $03
 	.byte $DA, $01, $40, $FA
 	.byte $DA, $02, $40, $F2
@@ -977,6 +972,9 @@ marco_duck02_LEFT:
 marco_duck02_LEFT_end:
 
 marco_duck03_LEFT:
+	.byte marco_duck03_LEFT_end - marco_duck03_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $11, $42, $07
 	.byte $E8, $12, $42, $FF
 	.byte $E8, $13, $40, $F7
@@ -992,6 +990,9 @@ marco_duck03_LEFT:
 marco_duck03_LEFT_end:
 
 marco_duck04_LEFT:
+	.byte marco_duck04_LEFT_end - marco_duck04_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $1D, $42, $07
 	.byte $E8, $1E, $42, $FF
 	.byte $E8, $1F, $40, $F7
@@ -1007,6 +1008,9 @@ marco_duck04_LEFT:
 marco_duck04_LEFT_end:
 
 marco_duck05_LEFT:
+	.byte marco_duck05_LEFT_end - marco_duck05_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $26, $42, $07
 	.byte $E8, $27, $42, $FF
 	.byte $E8, $28, $40, $F7
@@ -1022,6 +1026,9 @@ marco_duck05_LEFT:
 marco_duck05_LEFT_end:
 
 marco_duck06_LEFT:
+	.byte marco_duck06_LEFT_end - marco_duck06_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $2F, $42, $07
 	.byte $E8, $30, $42, $FF
 	.byte $E8, $31, $40, $F7
@@ -1037,6 +1044,9 @@ marco_duck06_LEFT:
 marco_duck06_LEFT_end:
 
 marco_duck07_LEFT:
+	.byte marco_duck07_LEFT_end - marco_duck07_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $2F, $42, $07
 	.byte $E8, $30, $42, $FF
 	.byte $E8, $31, $40, $F7
@@ -1052,6 +1062,9 @@ marco_duck07_LEFT:
 marco_duck07_LEFT_end:
 
 marco_duck08_LEFT:
+	.byte marco_duck08_LEFT_end - marco_duck08_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $26, $42, $07
 	.byte $E8, $27, $42, $FF
 	.byte $E8, $28, $40, $F7
@@ -1067,6 +1080,9 @@ marco_duck08_LEFT:
 marco_duck08_LEFT_end:
 
 marco_duck09_LEFT:
+	.byte marco_duck09_LEFT_end - marco_duck09_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $1D, $42, $07
 	.byte $E8, $1E, $42, $FF
 	.byte $E8, $1F, $40, $F7
@@ -1082,6 +1098,9 @@ marco_duck09_LEFT:
 marco_duck09_LEFT_end:
 
 marco_duck10_LEFT:
+	.byte marco_duck10_LEFT_end - marco_duck10_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E8, $11, $42, $07
 	.byte $E8, $12, $42, $FF
 	.byte $E8, $13, $40, $F7
@@ -1097,6 +1116,9 @@ marco_duck10_LEFT:
 marco_duck10_LEFT_end:
 
 marco_run01_LEFT:
+	.byte marco_run01_LEFT_end - marco_run01_LEFT - 2	; data size
+	.byte 2		; GFX bank index (chr2)
+
 	.byte $D8, $00, $40, $FA
 	.byte $D8, $01, $40, $F2
 	.byte $E0, $02, $42, $02
@@ -1116,6 +1138,9 @@ marco_run01_LEFT:
 marco_run01_LEFT_end:
 
 marco_run02_LEFT:
+	.byte marco_run02_LEFT_end - marco_run02_LEFT - 2	; data size
+	.byte 2		; GFX bank index (chr2)
+
 	.byte $D7, $00, $40, $FA
 	.byte $D7, $10, $40, $F2
 	.byte $DF, $11, $42, $02
@@ -1136,6 +1161,9 @@ marco_run02_LEFT:
 marco_run02_LEFT_end:
 
 marco_run03_LEFT:
+	.byte marco_run03_LEFT_end - marco_run03_LEFT - 2	; data size
+	.byte 2		; GFX bank index (chr2)
+
 	.byte $D6, $20, $40, $01
 	.byte $D6, $21, $40, $F9
 	.byte $D6, $22, $40, $F1
@@ -1156,6 +1184,9 @@ marco_run03_LEFT:
 marco_run03_LEFT_end:
 
 marco_run04_LEFT:
+	.byte marco_run04_LEFT_end - marco_run04_LEFT - 2	; data size
+	.byte 3		; GFX bank index (chr3)
+
 	.byte $D5, $00, $40, $FB
 	.byte $D5, $01, $40, $F3
 	.byte $DD, $02, $42, $03
@@ -1177,6 +1208,9 @@ marco_run04_LEFT:
 marco_run04_LEFT_end:
 
 marco_run05_LEFT:
+	.byte marco_run05_LEFT_end - marco_run05_LEFT - 2	; data size
+	.byte 3		; GFX bank index (chr3)
+
 	.byte $D8, $12, $40, $01
 	.byte $D8, $13, $40, $F9
 	.byte $D8, $14, $40, $F1
@@ -1197,6 +1231,9 @@ marco_run05_LEFT:
 marco_run05_LEFT_end:
 
 marco_run06_LEFT:
+	.byte marco_run06_LEFT_end - marco_run06_LEFT - 2	; data size
+	.byte 3		; GFX bank index (chr3)
+
 	.byte $D8, $12, $40, $01
 	.byte $D8, $23, $40, $F9
 	.byte $D8, $24, $40, $F1
@@ -1216,6 +1253,9 @@ marco_run06_LEFT:
 marco_run06_LEFT_end:
 
 marco_run07_LEFT:
+	.byte marco_run07_LEFT_end - marco_run07_LEFT - 2	; data size
+	.byte 4		; GFX bank index (chr4)
+
 	.byte $D7, $00, $42, $01
 	.byte $D7, $01, $40, $F9
 	.byte $D7, $02, $40, $F1
@@ -1236,6 +1276,9 @@ marco_run07_LEFT:
 marco_run07_LEFT_end:
 
 marco_run08_LEFT:
+	.byte marco_run08_LEFT_end - marco_run08_LEFT - 2	; data size
+	.byte 4		; GFX bank index (chr4)
+
 	.byte $D6, $11, $40, $00
 	.byte $D6, $12, $40, $F8
 	.byte $D6, $13, $40, $F0
@@ -1258,6 +1301,9 @@ marco_run08_LEFT:
 marco_run08_LEFT_end:
 
 marco_run09_LEFT:
+	.byte marco_run09_LEFT_end - marco_run09_LEFT - 2	; data size
+	.byte 4		; GFX bank index (chr4)
+
 	.byte $D8, $11, $40, $FF
 	.byte $D8, $24, $40, $F7
 	.byte $D8, $25, $40, $EF
@@ -1277,6 +1323,9 @@ marco_run09_LEFT:
 marco_run09_LEFT_end:
 
 marco_shoot01_LEFT:
+	.byte marco_shoot01_LEFT_end - marco_shoot01_LEFT - 2	; data size
+	.byte 5		; GFX bank index (chr5)
+
 	.byte $DB, $00, $42, $01
 	.byte $DB, $01, $40, $F9
 	.byte $DB, $02, $40, $F1
@@ -1302,6 +1351,9 @@ marco_shoot01_LEFT:
 marco_shoot01_LEFT_end:
 
 marco_shoot02_LEFT:
+	.byte marco_shoot02_LEFT_end - marco_shoot02_LEFT - 2	; data size
+	.byte 5		; GFX bank index (chr5)
+
 	.byte $DB, $16, $42, $01
 	.byte $DB, $17, $40, $F9
 	.byte $DB, $18, $40, $F1
@@ -1329,6 +1381,9 @@ marco_shoot02_LEFT:
 marco_shoot02_LEFT_end:
 
 marco_shoot03_LEFT:
+	.byte marco_shoot03_LEFT_end - marco_shoot03_LEFT - 2	; data size
+	.byte 5		; GFX bank index (chr5)
+
 	.byte $DB, $16, $42, $01
 	.byte $DB, $17, $40, $F9
 	.byte $DB, $28, $40, $F1
@@ -1352,6 +1407,9 @@ marco_shoot03_LEFT:
 marco_shoot03_LEFT_end:
 
 marco_shoot04_LEFT:
+	.byte marco_shoot04_LEFT_end - marco_shoot04_LEFT - 2	; data size
+	.byte 6		; GFX bank index (chr6)
+
 	.byte $D9, $00, $40, $F9
 	.byte $D9, $01, $40, $F1
 	.byte $D9, $02, $40, $E6

@@ -18,41 +18,28 @@ dog_gfx_num_frames:
 dog_gfx_frames_data:
 dog01_IDLE01_RIGHT_frame:
 	.word dog01_IDLE01_RIGHT
-	.byte dog01_IDLE01_RIGHT_end - dog01_IDLE01_RIGHT	; data size
-	.byte 0		; GFX bank index (chr0)
 dog01_IDLE02_RIGHT_frame:
 	.word dog01_IDLE02_RIGHT
-	.byte dog01_IDLE02_RIGHT_end - dog01_IDLE02_RIGHT
-	.byte 0
 dog01_RUN01_RIGHT_frame:
 	.word dog01_RUN01_RIGHT
-	.byte dog01_RUN01_RIGHT_end - dog01_RUN01_RIGHT
-	.byte 0
 dog01_JUMP_RIGHT_frame:
 	.word dog01_JUMP_RIGHT
-	.byte dog01_JUMP_RIGHT_end - dog01_JUMP_RIGHT
-	.byte 0
 dog01_IDLE01_LEFT_frame:
 	.word dog01_IDLE01_LEFT
-	.byte dog01_IDLE01_LEFT_end - dog01_IDLE01_LEFT
-	.byte 0
 dog01_IDLE02_LEFT_frame:
 	.word dog01_IDLE02_LEFT
-	.byte dog01_IDLE02_LEFT_end - dog01_IDLE02_LEFT
-	.byte 0
 dog01_RUN01_LEFT_frame:
 	.word dog01_RUN01_LEFT
-	.byte dog01_RUN01_LEFT_end - dog01_RUN01_LEFT
-	.byte 0
 dog01_JUMP_LEFT_frame:
 	.word dog01_JUMP_LEFT
-	.byte dog01_JUMP_LEFT_end - dog01_JUMP_LEFT
-	.byte 0
 
 
 	; #1: Y pos, #2: CHR index, #3: Attributes, #4: X pos
 
 dog01_IDLE01_RIGHT:
+	.byte dog01_IDLE01_RIGHT_end - dog01_IDLE01_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E1, $00, $00, $F4
 	.byte $E1, $02, $00, $FC
 	.byte $E1, $04, $00, $04
@@ -62,6 +49,9 @@ dog01_IDLE01_RIGHT:
 dog01_IDLE01_RIGHT_end:
 
 dog01_IDLE02_RIGHT:
+	.byte dog01_IDLE02_RIGHT_end - dog01_IDLE02_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E0, $02, $00, $FC
 	.byte $E0, $04, $00, $04
 	.byte $F0, $0C, $02, $F4
@@ -71,6 +61,9 @@ dog01_IDLE02_RIGHT:
 dog01_IDLE02_RIGHT_end:
 
 dog01_RUN01_RIGHT:
+	.byte dog01_RUN01_RIGHT_end - dog01_RUN01_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E0, $02, $00, $FC
 	.byte $E0, $04, $00, $04
 	.byte $F0, $1A, $02, $F4
@@ -80,6 +73,9 @@ dog01_RUN01_RIGHT:
 dog01_RUN01_RIGHT_end:
 
 dog01_JUMP_RIGHT:
+	.byte dog01_JUMP_RIGHT_end - dog01_JUMP_RIGHT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $DE, $02, $00, $FC
 	.byte $DE, $04, $00, $04
 	.byte $DE, $12, $00, $F4
@@ -89,6 +85,9 @@ dog01_JUMP_RIGHT:
 dog01_JUMP_RIGHT_end:
 
 dog01_IDLE01_LEFT:
+	.byte dog01_IDLE01_LEFT_end - dog01_IDLE01_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E1, $00, $40, $04
 	.byte $E1, $02, $40, $FC
 	.byte $E1, $04, $40, $F4
@@ -98,6 +97,9 @@ dog01_IDLE01_LEFT:
 dog01_IDLE01_LEFT_end:
 
 dog01_IDLE02_LEFT:
+	.byte dog01_IDLE02_LEFT_end - dog01_IDLE02_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E0, $02, $40, $FC
 	.byte $E0, $04, $40, $F4
 	.byte $F0, $0C, $42, $04
@@ -107,6 +109,9 @@ dog01_IDLE02_LEFT:
 dog01_IDLE02_LEFT_end:
 
 dog01_RUN01_LEFT:
+	.byte dog01_RUN01_LEFT_end - dog01_RUN01_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $E0, $02, $40, $FC
 	.byte $E0, $04, $40, $F4
 	.byte $F0, $1A, $42, $04
@@ -116,6 +121,9 @@ dog01_RUN01_LEFT:
 dog01_RUN01_LEFT_end:
 
 dog01_JUMP_LEFT:
+	.byte dog01_JUMP_LEFT_end - dog01_JUMP_LEFT - 2	; data size
+	.byte 0		; GFX bank index (chr0)
+
 	.byte $DE, $02, $40, $FC
 	.byte $DE, $04, $40, $F4
 	.byte $DE, $12, $40, $04

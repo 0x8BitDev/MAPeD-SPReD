@@ -7,6 +7,8 @@
 ; Simple character controller with MMC3 CHR bank switching
 ;
 
+.debuginfo	-	; Generate debug info ( if '+' then ld65 -Ln symbols.txt )
+
 .segment "HDR"
 
 INES_MAPPER 	= 4 ; MMC3
@@ -163,17 +165,21 @@ forever:
 	; preparing sprite data for transfer to PPU
 	ldy #frame_data::gfx_ptr
 	lda (<inner_vars::tmp_anm_addr), y
-	sta data_addr
-	ldy #frame_data::gfx_ptr + 1
+	sta <data_addr
+	iny
 	lda (<inner_vars::tmp_anm_addr), y
-	sta data_addr + 1
-	ldy #frame_data::data_size
-	lda (<inner_vars::tmp_anm_addr), y
-	sta data_size
+	sta <data_addr + 1
 
-	ldy #frame_data::chr_id
-	lda (<inner_vars::tmp_anm_addr), y	; CHR bank index
+	ldy #0
+	lda (<data_addr), y			; attributes size in bytes
+	sta <data_size
+
+	iny
+	lda (<data_addr), y			; CHR bank index
 	sta ppu_sprite_CHR_bank
+
+	lda #2
+	add_a_to_word data_addr			; data_addr points to sprite attributes
 
 	lda anm_pos_x
 	tax
