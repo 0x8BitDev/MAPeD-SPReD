@@ -1958,9 +1958,9 @@ namespace SPReD
 #endif
 
 #if DEF_PCE
-						c_sw.WriteLine( "#ifndef\tDEF_TYPE_SPD_SPRITE\n#define\tDEF_TYPE_SPD_SPRITE\ntypedef struct\n{\n\tconst unsigned char\tSG_ind;\n\tconst unsigned short\tsize;\n\tconst unsigned short\tattrs[];\n} spd_SPRITE;\n#endif\t//DEF_TYPE_SPD_SPRITE\n\n" );
+						c_sw.WriteLine( "#ifndef\tDEF_TYPE_SPD_SPRITE\n#define\tDEF_TYPE_SPD_SPRITE\ntypedef struct\n{\n\tconst unsigned short\tsize;\n\tconst unsigned char\tSG_ind;\n\tconst unsigned short\tattrs[];\n} spd_SPRITE;\n#endif\t//DEF_TYPE_SPD_SPRITE\n\n" );
 #else
-						c_sw.WriteLine( "#ifndef\tDEF_TYPE_SPD_SPRITE\n#define\tDEF_TYPE_SPD_SPRITE\ntypedef struct\n{\n\tconst unsigned char\tCHR_ind;\n\tconst unsigned short\tsize;\n\tconst unsigned char\tattrs[];\n} spd_SPRITE;\n#endif\t//DEF_TYPE_SPD_SPRITE\n\n" );
+						c_sw.WriteLine( "#ifndef\tDEF_TYPE_SPD_SPRITE\n#define\tDEF_TYPE_SPD_SPRITE\ntypedef struct\n{\n\tconst unsigned short\tsize;\n\tconst unsigned char\tCHR_ind;\n\tconst unsigned char\tattrs[];\n} spd_SPRITE;\n#endif\t//DEF_TYPE_SPD_SPRITE\n\n" );
 #endif
 						data_prefix = "_";
 					}

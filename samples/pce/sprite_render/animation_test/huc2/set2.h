@@ -12,8 +12,8 @@
 #define	DEF_TYPE_SPD_SPRITE
 typedef struct
 {
-	const unsigned char	SG_ind;
 	const unsigned short	size;
+	const unsigned char	SG_ind;
 	const unsigned short	attrs[];
 } spd_SPRITE;
 #endif	//DEF_TYPE_SPD_SPRITE
