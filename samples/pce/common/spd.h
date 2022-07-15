@@ -9,6 +9,7 @@
 History:
 
 v0.6
+2022.07-14 - the library code has been adapted to the new ASM data format; old projects need to be re-exported (!)
 2022.07.14 - border color procedures replaced with macroses
 2022.07.13 - added a little note about using the 'SPD_DEBUG' flag
 2022.07.12 - added 'SPD_TII_ATTR_XY' flag which speeds up transformation of meta-sprite attributes a bit
@@ -102,8 +103,8 @@ The main logic is:
 [upd] v0.4	//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a sprite data frame/index.
 		//	 The third argument for the 'spd_sprite_params' must be 'SPD_FLAG_IGNORE_SG'.
 		//
-		//	 spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )
---->		//	 spd_copy_SG_data_to_VRAM( <animation_name>_frame )
+--->		//	 spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )
+[upd] v0.6	//	 spd_copy_SG_data_to_VRAM( <sprite_name> )
 	}
 
 	// HuC's SATB initialization.
@@ -135,9 +136,9 @@ The main logic is:
 
 		// 2. By sprite data pointer.
 		// (see exported .h file for generated data)
-		spd_SATB_push_sprite( <animation_name>_frame, _x, _y );
+[upd] v0.6	spd_SATB_push_sprite( <sprite_name>, _x, _y );
 		OR
-[upd] v0.6	spd_SATB_push_simple_sprite( <animation_name>_frame, _x, _y );
+--->		spd_SATB_push_simple_sprite( <sprite_name>, _x, _y );
 
 [upd] v0.3	// NOTE: SG data will be automatically loaded once to VRAM at first call to the 'spd_SATB_push_sprite',
 --->		//	 when the third parameter passed to the 'spd_sprite_params' is ZERO (!)
@@ -241,7 +242,7 @@ The main logic is:
 
 		// 2. By sprite data pointer.
 		// (see exported .h file for generated data)
-		spd_SATB_push_sprite( <animation_name>_frame, _x, _y );
+[upd] v0.6	spd_SATB_push_sprite( <sprite_name>, _x, _y );
 
 		// NOTE: If meta-sprite does not fit into SATB, it will be ignored!
 [upd] v0.4	// NOTE: 'spd_SATB_push_sprite' returns: 1-Ok + ORed flag 'SPD_SG_NEW_DATA' when a new SG data already or must be loaded to VRAM; 0-SATB overflow
@@ -313,7 +314,7 @@ Misc:
 
 [upd] v0.6
 #asm
-SPD_TII_ATTR_XY	; speeds up transformation of meta-sprite attributes a bit
+SPD_TII_ATTR_XY	; speeds up transformation of meta-sprite attributes a bit, but may delay interrupts
 #endasm
 --->
 	That`s it! :)
@@ -395,7 +396,13 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	sta [\2], y
 	.endm
 
-; (word(*zp)) -> addr
+; (byte(*zp)) -> *addr
+	.macro stb_zpii_rev ; \1 - zp, \2 - addr
+	lda [<\1], y
+	sta \2
+	.endm
+
+; (word(*zp)) -> *addr
 	.macro stw_zpii_rev ; \1 - zp, \2 - addr
 	lda [<\1], y
 	sta \2
@@ -463,6 +470,25 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	sta <__bh
 
 	; \1 = XY + 4x
+	clc
+	tya
+	adc <__bh
+	sta low_byte \1
+	txa
+	adc <__dh
+	sta high_byte \1
+	.endm
+
+; \1 = bhdh * 3
+	.macro mul3_bhdh
+	; XY = 2x
+	lda <__bh
+	asl a
+	tay
+	rol <__dh
+	ldx <__dh
+
+	; \1 = XY + 2x
 	clc
 	tya
 	adc <__bh
@@ -573,9 +599,9 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	adc low_byte \1
 	sta low_byte \1
 
-	cla
-	adc high_byte \1
-	sta high_byte \1
+	bcc @cont
+	inc high_byte \1
+@cont:
 	.endm
 
 ; \2 = \1 - \2
@@ -990,7 +1016,9 @@ __tiirts	.ds 1	; $60 rts
 	and #$1f
 	adc <__dx+1
 
-	tay
+;	tay		;2
+
+	sta <__si+1
 
 	; increment a bank number
 
@@ -1005,10 +1033,10 @@ __tiirts	.ds 1	; $60 rts
 
 	; save high byte of a bank address
 
-	tya
-	and #$1f
-	ora #$60
-	sta <__si+1	
+;	tya		;2
+;	and #$1f	;2 will be
+;	ora #$60	;2 done in
+;	sta <__si+1	;4 map_data
 	
 	rts
 
@@ -1021,13 +1049,27 @@ __tiirts	.ds 1	; $60 rts
 .ifdef	SPD_DEBUG
 	dbg_border_push_sprite
 .endif
-
-	; offset x6 -> sizeof( spd_SPRITE )
+	; offset x3 -> word:addr, byte:bank
 
 	stz <__dh
-	mul6_bhdh <__dx
+	mul3_bhdh <__dx
 
 	call _spd_farptr_add_offset
+
+	jsr map_data
+
+	; __si - spd_SPRITE addr
+	; __bl - spd_SPRITE bank
+
+	cly
+
+	stw_zpii_rev __si, <__dx	; __dx - spd_SPRITE addr
+	iny
+	stb_zpii_rev __si, <__bl	; __bl - spd_SPRITE bank
+
+	stw <__dx, <__si		; __si - spd_SPRITE addr
+
+	jsr unmap_data
 
 	call _spd_SATB_push_sprite.3
 
@@ -1063,29 +1105,22 @@ __tiirts	.ds 1	; $60 rts
 
 	jsr map_data			; map spd_SPRITE data
 
-	; get meta-sprite address and bank
+	; get meta-sprite length
 
-	cly				; meta-sprite address offset
-	stw_zpii_rev __si, <__cx
-
-	ldy #$02			; meta-sprite bank offset
-	lda [<__si], y
-	sta <__al			; __al - bank
-
-	; get data length
-
-	iny				; meta-sprite length offset
+	cly
 	stw_zpii_rev __si, __bleni
 
-	iny				; meta-sprite SG bank offset
+	iny
+
+	; get meta-sprite SG bank index
+
 	lda [<__si], y
 	tay				; Y - SG bank index
 
-	jsr unmap_data
+	; move to the attributes data
 
-	stw <__cx, <__si		; matasprite address
-	lda <__al
-	sta <__bl			; meta-sprite bank
+	lda #3
+	add_a_to_word <__si		; __si - points to attributes
 
 	; check SATB overflow
 
@@ -1108,8 +1143,6 @@ __tiirts	.ds 1	; $60 rts
 	rts
 
 .push_sprite:
-
-	jsr map_data			; map meta-sprite data
 
 	; _bsrci = meta-sprite address
 
@@ -1615,12 +1648,27 @@ __attr_transf_XY_IND_dbf:
 ;
 	.proc _spd_copy_SG_data_to_VRAM.2
 
-	; offset x6 -> sizeof( spd_SPRITE )
+	; offset x3 -> word:addr, byte:bank
 
 	stz <__dh
-	mul6_bhdh <__dx
+	mul3_bhdh <__dx
 
 	call _spd_farptr_add_offset
+
+	jsr map_data
+
+	; __si - spd_SPRITE addr
+	; __bl - spd_SPRITE bank
+
+	cly
+
+	stw_zpii_rev __si, <__dx	; __dx - spd_SPRITE addr
+	iny
+	stb_zpii_rev __si, <__bl	; __bl - spd_SPRITE bank
+
+	stw <__dx, <__si		; __si - spd_SPRITE addr
+
+	jsr unmap_data
 
 	call _spd_copy_SG_data_to_VRAM.1
 
@@ -1634,7 +1682,7 @@ __attr_transf_XY_IND_dbf:
 
 	jsr map_data			; map spd_SPRITE data
 
-	ldy #$05
+	ldy #$02
 	lda [<__si], y
 	tay				; Y - SG bank index
 
@@ -1654,12 +1702,27 @@ __attr_transf_XY_IND_dbf:
 	dbg_border_push_sprite
 .endif
 
-	; offset x6 -> sizeof( spd_SPRITE )
+	; offset x3 -> word:addr, byte:bank
 
 	stz <__dh
-	mul6_bhdh <__dx
+	mul3_bhdh <__dx
 
 	call _spd_farptr_add_offset
+
+	jsr map_data
+
+	; __si - spd_SPRITE addr
+	; __bl - spd_SPRITE bank
+
+	cly
+
+	stw_zpii_rev __si, <__dx	; __dx - spd_SPRITE addr
+	iny
+	stb_zpii_rev __si, <__bl	; __bl - spd_SPRITE bank
+
+	stw <__dx, <__si		; __si - spd_SPRITE addr
+
+	jsr unmap_data
 
 	call _spd_SATB_push_simple_sprite.3
 
@@ -1695,26 +1758,16 @@ __attr_transf_XY_IND_dbf:
 
 	jsr map_data			; map spd_SPRITE data
 
-	; get meta-sprite address and bank
+	; get meta-sprite SG bank index
 
-	cly				; meta-sprite address offset
-	stw_zpii_rev __si, <__cx
-
-	ldy #$02			; meta-sprite bank offset
-	lda [<__si], y
-	sta <__bl			; __bl - meta-sprite bank
-
-	ldy #$04			; 3 - meta-sprite length offset, 4 - meta-sprite SG bank offset
+	ldy #2
 	lda [<__si], y
 	tay				; Y - SG bank index
 
-	jsr unmap_data
+	; move to the attributes data
 
-	stw <__cx, <__si		; __si - matasprite address, __bl - bank
-
-	jsr map_data			; map meta-sprite data
-
-	; __si = meta-sprite address
+	lda #3
+	add_a_to_word <__si		; __si - points to attributes
 
 	; calc SATB address to copy sprite data to
 	; __cx = __SATB + ( __SATB_pos * 8 )
