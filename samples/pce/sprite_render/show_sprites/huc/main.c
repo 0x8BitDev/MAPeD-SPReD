@@ -67,7 +67,8 @@ void init_sprites()
 	/* SPD-render initialization */
 	spd_init();	
 
-	init_satb();
+	/* SATB initialization */
+	spd_SATB_clear_from( 0 );
 
 	/* initialize exported sprite set */
 	sprite_set_init();
@@ -106,8 +107,8 @@ void init_sprites()
 
 	spd_SATB_push_sprite( tony_idle_RIGHT, 88, 196 );
 
-	/* update SATB with the all pushed sprites */
-	satb_update( spd_SATB_get_pos() );
+	/* move whole SATB to VRAM */
+	satb_update( 64 );
 
 	// NOTE: There are also some functions available for simple sprites:
 	//

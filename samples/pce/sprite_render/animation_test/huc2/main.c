@@ -228,8 +228,8 @@ main()
 		update_frame( &test_anim2 );
 		update_frame( &test_anim3 );
 
-		/* reset local SATB */
-		reset_satb();
+		/* clear local SATB */
+		spd_SATB_clear_from( 0 );
 
 		/* set SATB position to push meta-sprites to */
 		spd_SATB_set_pos( 0 );
@@ -242,8 +242,8 @@ main()
 		/* change sprites position */
 		update_y_pos();
 
-		/* after pushing all sprites, `spd_SATB_get_pos()` returns the number of sprites in SATB. */
-		satb_update( spd_SATB_get_pos() );
+		/* move whole SATB to VRAM */
+		satb_update( 64 );
 
 		vsync();
 

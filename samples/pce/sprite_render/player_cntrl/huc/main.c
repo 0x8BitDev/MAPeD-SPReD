@@ -255,7 +255,7 @@ main()
 		update_player_controller();
 
 		// clear local SATB
-		reset_satb();
+		spd_SATB_clear_from( 0 );
 
 		// reset sprite position in local SATB
 		spd_SATB_set_pos( 0 );
@@ -264,7 +264,7 @@ main()
 		SPR_PUSH_RES = sprite_show( player_anims[ player_anim.anm_desc_offs + ANM_OFFS_START_FRAME ] + player_anim.curr_frame, player_pos_x, player_pos_y );
 
 		// load all sprites to VRAM SAT
-		satb_update( spd_SATB_get_pos() );
+		satb_update( 64 );
 
 		vsync();
 

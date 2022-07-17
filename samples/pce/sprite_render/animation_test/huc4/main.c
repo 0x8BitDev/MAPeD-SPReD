@@ -531,8 +531,8 @@ main()
 	/* demo main loop */
 	for( ;; )
 	{
-		/* reset local SATB */
-		reset_satb();
+		/* clear local SATB */
+		spd_SATB_clear_from( 0 );
 
 		/* set SATB position to push sprites to */
 		spd_SATB_set_pos( 0 );
@@ -540,8 +540,8 @@ main()
 		/* update sprite cache and push sprites to SATB */
 		sprite_cache_update();
 
-		/* after pushing all sprites, `spd_SATB_get_pos()` returns the number of sprites in SATB */
-		satb_update( spd_SATB_get_pos() );
+		/* move whole SATB to VRAM */
+		satb_update( 64 );
 
 		vsync();
 

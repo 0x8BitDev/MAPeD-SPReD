@@ -9,6 +9,7 @@
 History:
 
 v0.6
+2022.07.17 - optimized 'spd_SATB_clear_from', 'spd_dbl_buff_VRAM_addr', fixed XY correction in the 'spd_SATB_set_sprite_LT'
 2022.07.16 - added functions for simple sprites: spd_set_palette_LT( ind ), spd_get_palette_LT(), spd_set_pri_LT( SPD_SPR_PRI_HIGH/SPD_SPR_PRI_LOW ), spd_set_x_LT( X ), spd_get_x_LT(), spd_set_y_LT( Y ), spd_get_y_LT(), spd_show_LT(), spd_hide_LT()
 2022.07.16 - 'spd_SATB_push_simple_sprite' renamed to 'spd_SATB_set_sprite_LT'
 2022.07-14 - the library code has been adapted to the new ASM data format; old projects need to be re-exported (!)
@@ -109,9 +110,10 @@ The main logic is:
 [upd] v0.6	//	 spd_copy_SG_data_to_VRAM( <sprite_name> )
 	}
 
-	// HuC's SATB initialization.
-	init_satb();
-
+[upd] v0.6
+	// SATB initialization.
+	spd_SATB_clear_from( 0 );
+--->
 	// Here you can use HuC's sprite calls...
 
 	// SPD calls
@@ -156,10 +158,11 @@ The main logic is:
 	// Then call 'satb_update' to push your sprite data to VRAM SAT.
 [upd] v0.6
 	// NOTE: After pushing all sprites, `spd_SATB_get_pos()` returns the number of sprites in SATB when using the 'spd_SATB_push_sprite'.
-	// NOTE: But when using 'spd_SATB_set_sprite_LT' you need to know how many sprites were used to pass a correct value to 'satb_update'.
+	// NOTE: But when using 'spd_SATB_set_sprite_LT' you need to know how many sprites were used.
+	
+	// Move whole SATB to VRAM
+	satb_update( 64 );
 --->
-	satb_update( spd_SATB_get_pos() );
-
 [upd] v0.6
 	// NOTE: As mentioned before, you can combine the SPD calls with the HuC ones or use SPD analogue functions.
 	//	 For example, you can do the following for simple static sprites:
@@ -167,7 +170,9 @@ The main logic is:
 	load_palette( ...
 	spd_sprite_params( ...
 
-	init_satb();
+	// SATB initialization.
+	spd_SATB_clear_from( 0 );
+
 	spd_SATB_set_pos( 0 );
 
 	spd_SATB_set_sprite_LT( my_sprite_16x32, init_x, init_y );
@@ -240,9 +245,10 @@ The main logic is:
 --->		//	 use 'spd_alt_VRAM_addr( _alt_VADDR )' which replaces the '<EXPORTED_NAME>_SPR_VADDR'.
 	}
 
-	// HuC's SATB initialization.
-	init_satb();
-
+[upd] v0.6
+	// SATB initialization.
+	spd_SATB_clear_from( 0 );
+--->
 	// Here you can use HuC's sprite calls...
 
 	// SPD calls
@@ -280,9 +286,7 @@ The main logic is:
 		// Update your sprite animation
 		update_frame( &test_anim );
 
-		// Here you can call the
-		reset_satb();// to clear all the SATB data
-		OR
+		// clear SATB
 		spd_SATB_clear_from( <SATB_pos[0...63]> );// to save sprites before 'SATB_pos', and clear memory after to avoid graphical glitches with variable sized meta-sprites
 
 		// Set the SATB position to push your sprite to.
@@ -304,8 +308,8 @@ The main logic is:
 		last_dbl_buff_ind	= spd_get_dbl_buff_ind();
 #endif
 --->
-		// Load all sprites to VRAM SAT.
-		satb_update( spd_SATB_get_pos() );
+[upd] v0.6	// Move whole SATB to VRAM
+--->		satb_update( 64 );
 
 		vsync();
 
@@ -406,7 +410,7 @@ void		__fastcall spd_copy_SG_data_to_VRAM( unsigned short _src_addr<__ax>, unsig
 void		__fastcall spd_copy_SG_data_to_VRAM( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh> );
 void		__fastcall spd_copy_SG_data_to_VRAM( unsigned char far* _frame_addr<__bl:__si> );
 
-void		__fastcall spd_dbl_buff_VRAM_addr( unsigned short _VADDR<__ax>, unsigned short _dbl_buff_ind<__bl> );
+void		__fastcall spd_dbl_buff_VRAM_addr( unsigned short _VADDR<__ax>, unsigned short _dbl_buff_ind<acc> );
 void		__fastcall spd_alt_VRAM_addr( unsigned short _VADDR<__ax> );
 unsigned char	__fastcall spd_get_dbl_buff_ind();
 
@@ -810,13 +814,13 @@ __tiirts	.ds 1	; $60 rts
 
 	.procgroup
 
-;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr, word __bl / dbl_buff_ind )
+;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr, word acc / dbl_buff_ind )
 ;
 	.proc _spd_dbl_buff_VRAM_addr.2
 
 	; set double-buffer index
 
-	lda <__bl
+	txa
 	beq .reset
 
 	; set
@@ -948,57 +952,70 @@ __tiirts	.ds 1	; $60 rts
 
 	txa
 	and #SATB_SIZE - 1		; clamp to 0-63
-	sta __bsrci
-	tax
 
-	; __bsrci
-
-	stz __bsrci + 1
-	mul8_word __bsrci
-
-	add_word_to_word #__SATB, __bsrci
-
-	; clear the first byte
-
-	stw __bsrci, <__ax
-	cly
-	cla
-	sta [<__ax], y
-
-	; __bdsti
-
-	stw __bsrci, __bdsti
-
-	; ++__bdsti
-
-	inc __bdsti
-	bne .cont1
-	inc __bdsti + 1
-.cont1:
-
-	; __bleni
-
-	txa
 	sec
 	sbc #SATB_SIZE
 	eor #$ff
 	inc a
+	tay				; Y - num sprites to clear
 
-	sta __bleni
-	stz __bleni + 1
+	ldx #$ff
 
-	mul8_word __bleni
+.loop:
 
-	; --__bleni
+	stz __SATB + 256, x
+	dex
+	stz __SATB + 256, x
+	dex
+	stz __SATB + 256, x
+	dex
+	stz __SATB + 256, x
+	dex
+	stz __SATB + 256, x
+	dex
+	stz __SATB + 256, x
+	dex
+	stz __SATB + 256, x
+	dex
+	stz __SATB + 256, x
 
-	dec __bleni
-	lda __bleni
-	eor #$ff
-	bne .cont2
-	dec __bleni + 1
-.cont2:
+	beq .clear_2nd_part
 
-	jmp __TII
+	dex
+
+	dey
+	bne .loop
+
+	rts
+
+.clear_2nd_part:
+
+	dey
+
+	ldx #$ff
+
+.loop2:
+	stz __SATB, x
+	dex
+	stz __SATB, x
+	dex
+	stz __SATB, x
+	dex
+	stz __SATB, x
+	dex
+	stz __SATB, x
+	dex
+	stz __SATB, x
+	dex
+	stz __SATB, x
+	dex
+	stz __SATB, x
+	dex
+
+	dey
+	bne .loop2
+
+	rts
 
 	.endp
 
@@ -1288,7 +1305,9 @@ __tiirts	.ds 1	; $60 rts
 	adc <__cx + 1
 	sta <__spr_pos_y + 1
 
-	jsr map_data			; map spd_SPRITE data
+	; map spd_SPRITE data
+
+	jsr map_data
 
 	; get meta-sprite length
 
@@ -1924,54 +1943,20 @@ __attr_transf_XY_IND_dbf:
 
 	; XY coordinates correction
 
-;	lda #32				;2
-;	clc				;2
-;	adc <__ax			;4
-;	sta <__spr_pos_x		;4
-;	cla				;2
-;	adc <__ax + 1			;4
-;	sta <__spr_pos_x + 1		;4 = (22)
-;
-;	lda #64
-;	clc
-;	adc <__cx
-;	sta <__spr_pos_y
-;	cla
-;	adc <__cx + 1
-;	sta <__spr_pos_y + 1
-
-	; X-pos correction
-
 	lda #32				;2
 	clc				;2
-	adc <__al			;4
+	adc <__ax			;4
 	sta <__spr_pos_x		;4
-
 	cla				;2
-	bcc .skip_hb_x			;2
-
-	lda <__ah			;4
-	inc a				;2
-
-.skip_hb_x:
-
-	sta <__spr_pos_x + 1		;4 = (20/26)
-
-	; Y-pos correction
+	adc <__ax + 1			;4
+	sta <__spr_pos_x + 1		;4 = (22)
 
 	lda #64
 	clc
-	adc <__cl
+	adc <__cx
 	sta <__spr_pos_y
-
 	cla
-	bcc .skip_hb_y
-
-	lda <__ch
-	inc a
-
-.skip_hb_y:
-
+	adc <__cx + 1
 	sta <__spr_pos_y + 1
 
 	; map spd_SPRITE data
