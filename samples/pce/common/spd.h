@@ -9,17 +9,19 @@
 History:
 
 v0.6
+2022.07.16 - added functions for simple sprites: spd_set_palette_LT( ind ), spd_get_palette_LT(), spd_set_pri_LT( SPD_SPR_PRI_HIGH/SPD_SPR_PRI_LOW ), spd_set_x_LT( X ), spd_get_x_LT(), spd_set_y_LT( Y ), spd_get_y_LT(), spd_show_LT(), spd_hide_LT()
+2022.07.16 - 'spd_SATB_push_simple_sprite' renamed to 'spd_SATB_set_sprite_LT'
 2022.07-14 - the library code has been adapted to the new ASM data format; old projects need to be re-exported (!)
 2022.07.14 - border color procedures replaced with macroses
 2022.07.13 - added a little note about using the 'SPD_DEBUG' flag
-2022.07.12 - added 'SPD_TII_ATTR_XY' flag which speeds up transformation of meta-sprite attributes a bit
+2022.07.12 - added 'SPD_TII_ATTR_XY' flag which speeds up transformation of meta-sprite attributes a bit, but may delay interrupts (!)
 2022.07.12 - added cyan border color as attributes transformation indicator
 2022.07.11 - added 'SPD_SG_BANK_INIT_VAL' as initial value for the '_last_bank_ind' in 'spd_sprite_params'
 2022.07.11 - extremely simplified double-buffering logic for meta-sprites
 2022.07.11 - the double-buffer index in 'spd_get_dbl_buff_ind' and the second argument in 'spd_dbl_buff_VRAM_addr' changed to a byte value
-2022.07.08 - added 'spd_SATB_push_simple_sprite' for simple sprites, it takes a little less processing time compared to 'spd_SATB_push_sprite' and allows you to use sprite offset values unlike HuC sprite functions
 2022.07.08 - the type of the second argument for 'spd_copy_SG_data_to_VRAM' and 'spd_SG_data_params' has changed, now '_src_bank' is a byte and therefore a pointer to a byte
 2022.07.08 - changed a sprite index register __dl -> __bh in 'spd_SATB_push_sprite' and 'spd_SATB_push_simple_sprite' for using HuC rand() as argument for X, Y
+2022.07.08 - added 'spd_SATB_push_simple_sprite' for simple sprites, it takes a little less processing time compared to 'spd_SATB_push_sprite' and allows you to use sprite offset values unlike HuC sprite functions
 
 v0.5
 2022.07.03 - asm routines are wrapped in .proc/.endp
@@ -69,7 +71,7 @@ NOTE:	The SPReD-PCE exports both meta-sprites and simple sprites (16x16,16x32,16
 
 *SG - sprite graphics data
 
-The SPD sprite/meta-sprite render works as an extension to the HuC local SATB. So you can combine it with the HuC`s sprite functions.
+The SPD sprite/meta-sprite render works as an extension to the HuC local SATB. So you can combine it with the HuC`s sprite functions or use SPD analogues.
 There are two data types the SPD-render works with.
 
 1. PACKED sprites data. All exported SG data are stored in a single file. It were packed in the SPReD-PCE before exporting.
@@ -100,7 +102,7 @@ The main logic is:
 		//	 1. Indirect loading, when you push the first sprite by calling 'spd_SATB_push_sprite'.
 		//	 The third argument for the 'spd_sprite_params' must be ZERO.
 --->		//
-[upd] v0.4	//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a sprite data frame/index.
+[upd] v0.4	//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a sprite name/index.
 		//	 The third argument for the 'spd_sprite_params' must be 'SPD_FLAG_IGNORE_SG'.
 		//
 --->		//	 spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )
@@ -116,31 +118,33 @@ The main logic is:
 	{
 		// Now you can set a local SATB position to push your exported sprites/meta-sprites to.
 		// NOTE: The SATB position will be automatically incremented with each call to 'spd_SATB_push_sprite' (!)
+[upd] v0.6	// NOTE: The SATB position will NOT be automatically incremented when using 'spd_SATB_set_sprite_LT' (!)
 		spd_SATB_set_pos( <SATB_pos[0...63]> );
 [upd] v0.6
 		// NOTE: There are two ways to push sprite to SATB:
 		//	 1. spd_SATB_push_sprite - for meta-sprites
 		//
-		//	 2. spd_SATB_push_simple_sprite - for simple sprites, it takes a little less processing time
+		//	 2. spd_SATB_set_sprite_LT - for simple sprites, it takes a little less processing time
 		//	 compared to 'spd_SATB_push_sprite' and allows you to use sprite offset values, that will be
 		//	 zeroed out when using HuC sprite functions.
 		//
-		// NOTE: Double-buffering and 'spd_change_palette' aren't supported with 'spd_SATB_push_simple_sprite'.
+		// NOTE: Double-buffering and 'spd_change_palette' aren't supported with 'spd_SATB_set_sprite_LT'.
+		//	 Use 'spd_set_palette_LT' instead of 'spd_change_palette' for simple sprites.
 --->
 		// There are two ways to show a sprite:
 		// 1. By index in a sprite array. Suitable for animation sequences.
 		// (see exported .h file for generated constants)
 		spd_SATB_push_sprite( <exported_name>_frames_data, _ind, _x, _y );
 		OR
-[upd] v0.6	spd_SATB_push_simple_sprite( <exported_name>_frames_data, _ind, _x, _y );
+[upd] v0.6	spd_SATB_set_sprite_LT( <exported_name>_frames_data, _ind, _x, _y );
 
-		// 2. By sprite data pointer.
+		// 2. By sprite data pointer or by sprite name (it is faster than by index).
 		// (see exported .h file for generated data)
-[upd] v0.6	spd_SATB_push_sprite( <sprite_name>, _x, _y );
+		spd_SATB_push_sprite( <sprite_name>, _x, _y );
 		OR
---->		spd_SATB_push_simple_sprite( <sprite_name>, _x, _y );
+		spd_SATB_set_sprite_LT( <sprite_name>, _x, _y );
 
-[upd] v0.3	// NOTE: SG data will be automatically loaded once to VRAM at first call to the 'spd_SATB_push_sprite',
+		// NOTE: SG data will be automatically loaded once to VRAM at first call to the 'spd_SATB_push_sprite' or 'spd_SATB_set_sprite_LT',
 --->		//	 when the third parameter passed to the 'spd_sprite_params' is ZERO (!)
 		// NOTE: If meta-sprite does not fit into SATB, it will be ignored!
 [upd] v0.4	// NOTE: 'spd_SATB_push_sprite' returns: 1-Ok + ORed flag 'SPD_SG_NEW_DATA' when a new SG data already or must be loaded to VRAM; 0-SATB overflow
@@ -150,13 +154,15 @@ The main logic is:
 	}
 
 	// Then call 'satb_update' to push your sprite data to VRAM SAT.
-	// NOTE: After pushing all sprites, `spd_SATB_get_pos()` returns the number of sprites in SATB.
+[upd] v0.6
+	// NOTE: After pushing all sprites, `spd_SATB_get_pos()` returns the number of sprites in SATB when using the 'spd_SATB_push_sprite'.
+	// NOTE: But when using 'spd_SATB_set_sprite_LT' you need to know how many sprites were used to pass a correct value to 'satb_update'.
+--->
 	satb_update( spd_SATB_get_pos() );
 
-
-	// NOTE: As mentioned before, you can combine the SPD calls with the HuC ones.
+[upd] v0.6
+	// NOTE: As mentioned before, you can combine the SPD calls with the HuC ones or use SPD analogue functions.
 	//	 For example, you can do the following for simple static sprites:
-[upd] v0.3
 	// Initialization at startup
 	load_palette( ...
 	spd_sprite_params( ...
@@ -164,28 +170,38 @@ The main logic is:
 	init_satb();
 	spd_SATB_set_pos( 0 );
 
-	spd_SATB_push_sprite( my_sprite_16x32, init_x, init_y );
+	spd_SATB_set_sprite_LT( my_sprite_16x32, init_x, init_y );
 
 	...
 
 	// In update loop
-	spr_set( 0 );
-	spr_x( new_x );
-	spr_y( new_y );
+	spd_SATB_set_pos( 0 );
+	spd_set_x_LT( new_x );
+	spd_set_y_LT( new_y );
 
---->	// I recommend using simple static sprites this way, as it simplifies their initialization and is optimal for runtime.
-	// WARNING: Take into account your sprite origin! It can be configured out of (0, 0) in the SPReD-PCE.
+	// I recommend using simple static sprites this way, as it simplifies their initialization and is optimal for runtime.
 
-
-[upd] v0.5
-	NOTE: If you need a cache of sprites, for example, for identical objects that may appear on screen in a certain quantity, 
-	initialize and use the same set of sprites as many times as you need for your cache. In this case, all of your
---->	cached sprites will use the same graphics, but may be located at different positions on the screen.
+	// NOTE: The functions for using with simple sprites:
+	//
+	//	 void		spd_set_palette_LT( unsigned char _plt_ind );
+	//	 unsigned char	spd_get_palette_LT();
+	//	 void		spd_set_pri_LT( SPD_SPR_PRI_HIGH/SPD_SPR_PRI_LOW );
+	//	 void		spd_set_x_LT( unsigned short _x );
+	//	 unsigned short	spd_get_x_LT();
+	//	 void		spd_set_y_LT( unsigned short _y );
+	//	 unsigned short	spd_get_y_LT();
+	//	 void		spd_show_LT();
+	//	 void		spd_hide_LT();
+	//
+	// NOTE: 'spd_set_x_LT' and 'spd_set_y_LT' don't use sprite offset values!
+	//	 They work like HuC analogues.
+--->
 
 
 2. UNPACKED sprites data. All exported SG data are stored in separate files. It were not packed in the SPReD-PCE.
 Unpacked data are suitable for dynamic SG data, that can be loaded to VRAM dynamically to save video memory. It`s
-useful when you have a lot of animations that don`t fit into VRAM, like in fighting games.
+useful when you have a lot of animations that don`t fit into VRAM, like in fighting games. Simple sprites can also
+be stored as unpacked data.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The main logic is:
 
@@ -240,9 +256,9 @@ The main logic is:
 		// (see exported .h file for generated constants)
 		spd_SATB_push_sprite( <exported_name>_frames_data, _ind, _x, _y );
 
-		// 2. By sprite data pointer.
+[upd] v0.6	// 2. By sprite data pointer or by sprite name (it is faster than by index).
 		// (see exported .h file for generated data)
-[upd] v0.6	spd_SATB_push_sprite( <sprite_name>, _x, _y );
+--->		spd_SATB_push_sprite( <sprite_name>, _x, _y );
 
 		// NOTE: If meta-sprite does not fit into SATB, it will be ignored!
 [upd] v0.4	// NOTE: 'spd_SATB_push_sprite' returns: 1-Ok + ORed flag 'SPD_SG_NEW_DATA' when a new SG data already or must be loaded to VRAM; 0-SATB overflow
@@ -305,9 +321,11 @@ The main logic is:
 #endif
 	}
 
-[upd] v0.4	
+[upd] v0.6
+3. See the sample projects for implementation details.
+
+[upd] v0.4
 3. Also you can use PACKED and UNPACKED data in one data set (in one SPReD-PCE project) by combining the approaches described above.
---->
 
 Misc:
 ~~~~~
@@ -348,21 +366,40 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "6", 0 };
 // Initial value for a SG data
 #define	SPD_SG_BANK_INIT_VAL	0xff
 
+// input parameters for spd_set_pri_LT
+#define SPD_SPR_PRI_HIGH	0x80
+#define SPD_SPR_PRI_LOW		0x00
+
 /* main SPD-render routines */
 
 void		__fastcall spd_init();
-void		__fastcall spd_sprite_params( unsigned short far* _SG_data<__bl:__si>, unsigned short _VADDR<__dx>, unsigned char _flags<__al>, unsigned char _last_SG_bank_ind<__ah> );
-unsigned char	__fastcall spd_SG_bank_get_ind();
 
-void		__fastcall spd_SATB_set_pos( unsigned char _pos<__al> );// _pos: 0-63
+// SATB functions
+void		__fastcall spd_SATB_set_pos( unsigned char _pos<acc> );// _pos: 0-63
 unsigned char	__fastcall spd_SATB_get_pos();
-void		__fastcall spd_SATB_clear_from( unsigned char _pos<__al> );// _pos: 0-63
+void		__fastcall spd_SATB_clear_from( unsigned char _pos<acc> );// _pos: 0-63
 
+// meta-sprites
 unsigned char	__fastcall spd_SATB_push_sprite( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 0-SATB overflow
 unsigned char	__fastcall spd_SATB_push_sprite( unsigned char far* _frame_addr<__bl:__si>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 0-SATB overflow
-unsigned char	__fastcall spd_SATB_push_simple_sprite( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 0-SATB overflow
-unsigned char	__fastcall spd_SATB_push_simple_sprite( unsigned char far* _frame_addr<__bl:__si>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 0-SATB overflow
 void		__fastcall spd_change_palette( unsigned char _plt_ind<__al> );
+
+// simple sprites
+unsigned char	__fastcall spd_SATB_set_sprite_LT( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: OUT: 1-Ok!, 1|SPD_SG_NEW_DATA
+unsigned char	__fastcall spd_SATB_set_sprite_LT( unsigned char far* _frame_addr<__bl:__si>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 1|SPD_SG_NEW_DATA
+void		__fastcall spd_set_palette_LT( unsigned char _plt_ind<__al> );
+unsigned char	__fastcall spd_get_palette_LT();
+void		__fastcall spd_set_pri_LT( unsigned char _val<__al> );
+void		__fastcall spd_set_x_LT( unsigned short _x<acc> );
+unsigned short	__fastcall spd_get_x_LT();
+void		__fastcall spd_set_y_LT( unsigned short _y<acc> );
+unsigned short	__fastcall spd_get_y_LT();
+void		__fastcall spd_show_LT();
+void		__fastcall spd_hide_LT();
+
+// common functions
+void		__fastcall spd_sprite_params( unsigned short far* _SG_data<__bl:__si>, unsigned short _VADDR<__dx>, unsigned char _flags<__al>, unsigned char _last_SG_bank_ind<__ah> );
+unsigned char	__fastcall spd_SG_bank_get_ind();
 
 void		__fastcall spd_SG_data_params( unsigned short _src_addr<__ax>, unsigned short _src_bank<__bx>, unsigned short _dst_addr<__cx>, unsigned short _len<__dx> );
 void		__fastcall spd_copy_SG_data_to_VRAM( unsigned short _src_addr<__ax>, unsigned char _src_bank<__bl>, unsigned short _dst_addr<__dx>, unsigned short _len<__cx> );
@@ -704,6 +741,9 @@ __spr_SG_data_bank
 __spr_pos_x:	.ds 2
 __spr_pos_y:	.ds 2
 
+__spr_SATB_addr:
+		.ds 2	; SATB entry address
+
 	.bss
 
 __SG_DATA_SRC_ADDR	.ds 2	; pointers
@@ -876,13 +916,18 @@ __tiirts	.ds 1	; $60 rts
 
 	.endp
 
-;// spd_SATB_set_pos( byte __al / pos )
+;// spd_SATB_set_pos( byte acc / pos )
 ;
 	.proc _spd_SATB_set_pos.1
 
-	lda <__al
+	txa
 	and #SATB_SIZE - 1		; clamp to 0-63
 	sta <__SATB_pos
+
+	; calc SATB address to copy sprite data to
+	; __spr_SATB_addr = __SATB + ( __SATB_pos * 8 )
+
+	calc_SATB_pos <__spr_SATB_addr, #__SATB
 
 	rts
 
@@ -897,11 +942,11 @@ __tiirts	.ds 1	; $60 rts
 
 	.endp
 
-;// spd_SATB_clear_from( byte __al / pos )
+;// spd_SATB_clear_from( byte acc / pos )
 ;
 	.proc _spd_SATB_clear_from.1
 
-	lda <__al
+	txa
 	and #SATB_SIZE - 1		; clamp to 0-63
 	sta __bsrci
 	tax
@@ -957,6 +1002,8 @@ __tiirts	.ds 1	; $60 rts
 
 	.endp
 
+	.procgroup
+
 ;// spd_change_palette( byte __al / plt_ind )
 ;
 	.proc _spd_change_palette.1
@@ -994,7 +1041,145 @@ __tiirts	.ds 1	; $60 rts
 
 	.endp
 
-	.procgroup
+;// spd_set_palette_LT( byte __al / plt_ind )
+;
+	.proc _spd_set_palette_LT.1
+
+	ldy #6
+	lda [<__spr_SATB_addr], y
+	and #$80
+	ora <__al
+	sta [<__spr_SATB_addr], y
+
+	rts
+
+	.endp
+
+;// unsigned char spd_get_palette_LT()
+;
+	.proc _spd_get_palette_LT
+
+	ldy #6
+	lda [<__spr_SATB_addr], y
+	and #$0f
+	tax
+	cla
+
+	rts
+
+	.endp
+
+;// spd_set_pri_LT( byte __al / val )
+;
+	.proc _spd_set_pri_LT.1
+
+	ldy #6
+	lda [<__spr_SATB_addr], y
+	and #$7f
+	ora <__al
+	sta [<__spr_SATB_addr], y
+
+	rts
+
+	.endp
+
+;// spd_set_x_LT( word acc / x )
+	.proc _spd_set_x_LT.1
+
+	sax				;3
+
+	clc				;2
+	adc #32				;2
+
+	ldy #2				;2
+	sta [<__spr_SATB_addr], y	;7
+
+	txa				;2
+	adc #00				;2
+
+	iny				;2
+	sta [<__spr_SATB_addr], y	;7 = 29
+
+	rts
+
+	.endp
+
+;// unsigned short spd_get_x_LT()
+	.proc _spd_get_x_LT
+
+	ldy #2				;2
+	lda [<__spr_SATB_addr], y	;7
+	sec				;2
+	sbc #32				;2
+	tax				;2
+
+	iny				;2
+	lda [<__spr_SATB_addr], y	;7
+	sbc #0				;2 = 26
+
+	rts
+
+	.endp
+
+;// spd_set_y_LT( word acc / y )
+	.proc _spd_set_y_LT.1
+
+	sax				;3
+
+	clc				;2
+	adc #64				;2
+
+	sta [<__spr_SATB_addr]		;7
+
+	txa				;2
+	adc #00				;2
+
+	ldy #1				;2
+	sta [<__spr_SATB_addr], y	;7 = 27
+
+	rts
+
+	.endp
+
+;// unsigned short spd_get_y_LT()
+	.proc _spd_get_y_LT
+
+	lda [<__spr_SATB_addr]		;4
+	sec				;2
+	sbc #64				;2
+	tax				;2
+
+	ldy #1				;2
+	lda [<__spr_SATB_addr], y	;7
+	sbc #0				;2 = 21
+
+	rts
+
+	.endp
+
+;// spd_show_LT()
+	.proc _spd_show_LT
+
+	ldy #1
+	lda [<__spr_SATB_addr], y
+	and #1
+	sta [<__spr_SATB_addr], y
+
+	rts
+
+	.endp
+
+;// spd_hide_LT()
+	.proc _spd_hide_LT
+
+	ldy #1
+	lda [<__spr_SATB_addr], y
+	ora #2
+	sta [<__spr_SATB_addr], y
+
+	rts
+
+	.endp
 
 ; *** farptr += offset ***
 ;
@@ -1148,13 +1333,7 @@ __tiirts	.ds 1	; $60 rts
 
 	stw <__si, __bsrci
 
-	; calc SATB address to copy sprite data to
-	; _bdsti = __SATB + ( __SATB_pos * 8 )
-
-	lda <__SATB_pos
-	calc_SATB_pos <__cx, #__SATB
-
-	stw <__cx, __bdsti
+	stw <__spr_SATB_addr, __bdsti	; for 'spd_change_palette'
 
 	phy				; Y - SG bank index
 
@@ -1192,6 +1371,11 @@ __tiirts	.ds 1	; $60 rts
 	jmp __attr_transf_XY
 
 _push_SG_data:
+
+	; calc SATB address for the next sprites
+
+	lda <__SATB_pos
+	calc_SATB_pos <__spr_SATB_addr, #__SATB
 
 .ifdef	SPD_DEBUG
 	dbg_border_push_sprite
@@ -1263,11 +1447,11 @@ __attr_transf_XY:
 
 	clc				;2
 	adc <__spr_pos_y		;4
-	sta [<__cx], y			;7
+	sta [<__spr_SATB_addr], y	;7
 	txa				;2
 	adc <__spr_pos_y + 1		;4
 	iny				;2
-	sta [<__cx], y			;7 = [46]
+	sta [<__spr_SATB_addr], y	;7 = [46]
 
 	iny				;2 = 50
 
@@ -1281,11 +1465,11 @@ __attr_transf_XY:
 
 	clc
 	adc <__spr_pos_x
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 	txa
 	adc <__spr_pos_x + 1
 	iny
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	; move to the next attr line
 
@@ -1297,25 +1481,25 @@ __attr_transf_XY:
 .else
 	iny				;2
 	lda [<__si], y			;7
-	sta [<__cx], y			;7
+	sta [<__spr_SATB_addr], y	;7
 
 	iny
 	lda [<__si], y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 	lda [<__si], y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 	lda [<__si], y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 .endif
 	bne .cont			;2
 
-	inc <__ch
+	inc <__spr_SATB_addr + 1
 .cont:
 	inc <__SATB_pos
 
@@ -1344,11 +1528,11 @@ __attr_transf_XY_IND_alt:
 
 	clc
 	adc <__spr_pos_y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 	txa
 	adc <__spr_pos_y + 1
 	iny
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 
@@ -1362,11 +1546,11 @@ __attr_transf_XY_IND_alt:
 
 	clc
 	adc <__spr_pos_x
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 	txa
 	adc <__spr_pos_x + 1
 	iny
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 
@@ -1380,27 +1564,27 @@ __attr_transf_XY_IND_alt:
 
 	clc
 	adc <__spr_alt_SG_offset
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 	txa
 	adc <__spr_alt_SG_offset + 1
 	iny
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	; copy pattern code/palette/CGX/CGY data
 
 	iny				;2
 	lda [<__si], y			;7
-	sta [<__cx], y			;7
+	sta [<__spr_SATB_addr], y	;7
 
 	iny
 	lda [<__si], y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 
 	bne .cont			;2
 
-	inc <__ch
+	inc <__spr_SATB_addr + 1
 .cont:
 	inc <__SATB_pos
 
@@ -1429,11 +1613,11 @@ __attr_transf_XY_IND_dbf:
 
 	clc
 	adc <__spr_pos_y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 	txa
 	adc <__spr_pos_y + 1
 	iny
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 
@@ -1447,11 +1631,11 @@ __attr_transf_XY_IND_dbf:
 
 	clc
 	adc <__spr_pos_x
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 	txa
 	adc <__spr_pos_x + 1
 	iny
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 
@@ -1465,27 +1649,27 @@ __attr_transf_XY_IND_dbf:
 
 	clc
 	adc <__spr_dbf_SG_offset
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 	txa
 	adc <__spr_dbf_SG_offset + 1
 	iny
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	; copy pattern code/palette/CGX/CGY data
 
 	iny
 	lda [<__si], y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 	lda [<__si], y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 
 	bne .cont
 
-	inc <__ch
+	inc <__spr_SATB_addr + 1
 .cont:
 	inc <__SATB_pos
 
@@ -1694,9 +1878,9 @@ __attr_transf_XY_IND_dbf:
 
 	.endp
 
-;// spd_SATB_push_simple_sprite( farptr __bl:__si / addr, byte __bh / index, word __ax / x_pos, word __cx / y_pos )
+;// spd_SATB_set_sprite_LT( farptr __bl:__si / addr, byte __bh / index, word __ax / x_pos, word __cx / y_pos )
 ;
-	.proc _spd_SATB_push_simple_sprite.4
+	.proc _spd_SATB_set_sprite_LT.4
 
 .ifdef	SPD_DEBUG
 	dbg_border_push_sprite
@@ -1724,15 +1908,15 @@ __attr_transf_XY_IND_dbf:
 
 	jsr unmap_data
 
-	call _spd_SATB_push_simple_sprite.3
+	call _spd_SATB_set_sprite_LT.3
 
 	rts
 
 	.endp
 
-;// spd_SATB_push_simple_sprite( farptr __bl:__si / addr, word __ax / x_pos, word __cx / y_pos )
+;// spd_SATB_set_sprite_LT( farptr __bl:__si / addr, word __ax / x_pos, word __cx / y_pos )
 ;
-	.proc _spd_SATB_push_simple_sprite.3
+	.proc _spd_SATB_set_sprite_LT.3
 
 .ifdef	SPD_DEBUG
 	dbg_border_push_sprite
@@ -1740,23 +1924,59 @@ __attr_transf_XY_IND_dbf:
 
 	; XY coordinates correction
 
+;	lda #32				;2
+;	clc				;2
+;	adc <__ax			;4
+;	sta <__spr_pos_x		;4
+;	cla				;2
+;	adc <__ax + 1			;4
+;	sta <__spr_pos_x + 1		;4 = (22)
+;
+;	lda #64
+;	clc
+;	adc <__cx
+;	sta <__spr_pos_y
+;	cla
+;	adc <__cx + 1
+;	sta <__spr_pos_y + 1
+
+	; X-pos correction
+
 	lda #32				;2
 	clc				;2
-	adc <__ax			;4
+	adc <__al			;4
 	sta <__spr_pos_x		;4
+
 	cla				;2
-	adc <__ax + 1			;4
-	sta <__spr_pos_x + 1		;4 = (22)
+	bcc .skip_hb_x			;2
+
+	lda <__ah			;4
+	inc a				;2
+
+.skip_hb_x:
+
+	sta <__spr_pos_x + 1		;4 = (20/26)
+
+	; Y-pos correction
 
 	lda #64
 	clc
-	adc <__cx
+	adc <__cl
 	sta <__spr_pos_y
+
 	cla
-	adc <__cx + 1
+	bcc .skip_hb_y
+
+	lda <__ch
+	inc a
+
+.skip_hb_y:
+
 	sta <__spr_pos_y + 1
 
-	jsr map_data			; map spd_SPRITE data
+	; map spd_SPRITE data
+
+	jsr map_data
 
 	; get meta-sprite SG bank index
 
@@ -1768,14 +1988,6 @@ __attr_transf_XY_IND_dbf:
 
 	lda #3
 	add_a_to_word <__si		; __si - points to attributes
-
-	; calc SATB address to copy sprite data to
-	; __cx = __SATB + ( __SATB_pos * 8 )
-
-	lda <__SATB_pos
-	calc_SATB_pos <__cx, #__SATB
-
-	inc <__SATB_pos			; increment SATB position
 
 	phy				; Y - SG bank index
 
@@ -1800,11 +2012,11 @@ __attr_transf_XY_IND_dbf:
 
 	clc				;2
 	adc <__spr_pos_y		;4
-	sta [<__cx], y			;7
+	sta [<__spr_SATB_addr], y	;7
 	txa				;2
 	adc <__spr_pos_y + 1		;4
 	iny				;2
-	sta [<__cx], y			;7 = [46]
+	sta [<__spr_SATB_addr], y	;7 = [46]
 
 	iny				;2 = 50
 
@@ -1818,11 +2030,11 @@ __attr_transf_XY_IND_dbf:
 
 	clc
 	adc <__spr_pos_x
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 	txa
 	adc <__spr_pos_x + 1
 	iny
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 ;--- SPD_FLAG_ALT_VADDR ---
 	get_SATB_flag SPD_FLAG_ALT_VADDR
@@ -1832,19 +2044,19 @@ __attr_transf_XY_IND_dbf:
 
 	iny				;2
 	lda [<__si], y			;7
-	sta [<__cx], y			;7 = (16)
+	sta [<__spr_SATB_addr], y	;7 = (16)
 
 	iny
 	lda [<__si], y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 	lda [<__si], y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 	lda [<__si], y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	bra ._push_SG_data
 
@@ -1866,21 +2078,21 @@ __attr_transf_XY_IND_dbf:
 
 	clc
 	adc <__spr_alt_SG_offset
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 	txa
 	adc <__spr_alt_SG_offset + 1
 	iny
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	; copy palette and CGX/CGY
 
 	iny
 	lda [<__si], y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 	iny
 	lda [<__si], y
-	sta [<__cx], y
+	sta [<__spr_SATB_addr], y
 
 ._push_SG_data:
 

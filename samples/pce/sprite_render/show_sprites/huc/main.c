@@ -11,6 +11,7 @@
 #include "../../../common/spd.h"
 #include "sprites_test.h"
 
+unsigned char	SATB_pos = 0;
 
 /* exported sprite set initialization */
 void	sprite_set_init()
@@ -35,7 +36,7 @@ void	sprite_set_init()
 	//	 1. Indirect loading, when you push the first sprite by calling 'spd_SATB_push_sprite'.
 	//	 The third argument for the 'spd_sprite_params' must be ZERO.
 	//
-	//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a sprite data frame/index.
+	//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a sprite name/index.
 	//	 The third argument for the 'spd_sprite_params' must be 'SPD_FLAG_IGNORE_SG'.
 	//
 	//	 spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )
@@ -43,18 +44,22 @@ void	sprite_set_init()
 }
 
 /* show sprite from exported sprite set */
-char	sprite_show( char _ind, short _x, short _y )
+void	sprite_show( char _ind, short _x, short _y )
 {
+	/* set the SATB position to push sprites to */
+	spd_SATB_set_pos( SATB_pos++ );
+
 	// NOTE: There are two ways to push sprite to SATB:
 	//	 1. spd_SATB_push_sprite - for meta-sprites
 	//
-	//	 2. spd_SATB_push_simple_sprite - for simple sprites, it takes a little less processing time
+	//	 2. spd_SATB_set_sprite_LT - for simple sprites, it takes a little less processing time
 	//	 compared to 'spd_SATB_push_sprite' and allows you to use sprite offset values, that will be
 	//	 zeroed out when using HuC sprite functions.
 	//
-	// NOTE: Double-buffering and 'spd_change_palette' aren't supported with 'spd_SATB_push_simple_sprite'.
+	// NOTE: Double-buffering and 'spd_change_palette' aren't supported with 'spd_SATB_set_sprite_LT'.
+	//	 Use 'spd_set_palette_LT' instead of 'spd_change_palette' for simple sprites.
 
-	return spd_SATB_push_simple_sprite( sprites_test_frames_data, _ind, _x, _y );
+	spd_SATB_set_sprite_LT( sprites_test_frames_data, _ind, _x, _y );
 }
 
 void init_sprites()
@@ -66,9 +71,6 @@ void init_sprites()
 
 	/* initialize exported sprite set */
 	sprite_set_init();
-
-	/* set the SATB position to push sprites to */
-	spd_SATB_set_pos( 0 );
 
 	/* there are two ways to show a sprite: */
 	/* 1. by sprite index. it's suitable for animation sequences. */
@@ -83,13 +85,20 @@ void init_sprites()
 
 	sprite_show( SPR_DR_MSL_UP_16X64_1_REF, 221, 36 );
 
-	/* 2. by sprite data pointer. */
+	/* 2. by sprite data pointer or by sprite name (it is faster than by sprite index). */
 
-	spd_SATB_push_simple_sprite( brstick_RIGHT_32x16, 58, 66 );
+	spd_SATB_set_pos( SATB_pos++ );
+	spd_SATB_set_sprite_LT( brstick_RIGHT_32x16, 58, 66 );
 
-	spd_SATB_push_simple_sprite( rpl_fly_RIGHT_32x32, 98, 66 );
+	spd_SATB_set_pos( SATB_pos++ );
+	spd_SATB_set_sprite_LT( rpl_fly_RIGHT_32x32, 98, 66 );
 
 	/* the following sprites are meta-sprites, so we use 'spd_SATB_push_sprite' for them */
+
+	spd_SATB_set_pos( SATB_pos );
+
+	// NOTE: unlike to the 'spd_SATB_set_sprite_LT' the 'spd_SATB_push_sprite' increments SATB position automatically.
+	//	 so it is enough to set a start SATB position and then push sprites.
 
 	spd_SATB_push_sprite( dr_msl_UP, 173, 66 );
 
@@ -99,6 +108,21 @@ void init_sprites()
 
 	/* update SATB with the all pushed sprites */
 	satb_update( spd_SATB_get_pos() );
+
+	// NOTE: There are also some functions available for simple sprites:
+	//
+	//	 void		spd_set_palette_LT( unsigned char _plt_ind );
+	//	 unsigned char	spd_get_palette_LT();
+	//	 void		spd_set_pri_LT( SPD_SPR_PRI_HIGH/SPD_SPR_PRI_LOW );
+	//	 void		spd_set_x_LT( unsigned short _x );
+	//	 unsigned short	spd_get_x_LT();
+	//	 void		spd_set_y_LT( unsigned short _y );
+	//	 unsigned short	spd_get_y_LT();
+	//	 void		spd_show_LT();
+	//	 void		spd_hide_LT();
+	//
+	// NOTE: 'spd_set_x_LT' and 'spd_set_y_LT' don't use sprite offset values!
+	//	 They work like HuC analogues.
 }
 
 main()

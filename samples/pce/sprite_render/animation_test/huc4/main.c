@@ -240,7 +240,7 @@ void	push_sprite_chin_violet( sprite_desc* _desc )
 	//	 1. Indirect loading, when you push the first sprite by calling 'spd_SATB_push_sprite'.
 	//	 The third argument for the 'spd_sprite_params' must be ZERO.
 	//
-	//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a sprite data frame/index.
+	//	 2. Direct loading, when you call 'spd_copy_SG_data_to_VRAM' with a sprite name/index.
 	//	 The third argument for the 'spd_sprite_params' must be 'SPD_FLAG_IGNORE_SG'.
 	//
 	//	 spd_copy_SG_data_to_VRAM( <exported_name>_frames_data, _spr_ind )
