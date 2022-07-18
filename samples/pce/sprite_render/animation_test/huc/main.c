@@ -123,8 +123,9 @@ main()
 		/* push sprite to SATB */
 		sprite_show( test_anim.start_frame + test_anim.curr_frame, 118, 176 );
 
-		/* move whole SATB to VRAM */
-		satb_update( 64 );
+		/* move the entire SATB - 64 sprites to VRAM-SAT */
+		spd_SATB_to_VRAM();
+		/* or use 'spd_SATB_to_VRAM( spr_cnt )' to move a certain number of sprites to VRAM */
 
 		vsync();
 	}

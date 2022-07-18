@@ -5,10 +5,22 @@
 //
 //######################################################################################################
 
+// external HuC data used by SPD library
+#asm
+__SATB		= satb			; satb - HuC`s local satb
+__VRAM_SAT_ADDR	= $7f00			; VRAM-SAT address
+__TIA		= ram_hdwr_tia
+__TIA_SRC	= ram_hdwr_tia_src
+__TIA_DST	= ram_hdwr_tia_dest
+__TIA_LEN	= ram_hdwr_tia_size
+__TIA_RTS	= ram_hdwr_tia_rts
+#endasm
+
 /*/	SPD-render v0.6
 History:
 
 v0.6
+2022.07.18 - added 'spd_SATB_to_VRAM()' and 'spd_SATB_to_VRAM( _spr_cnt )'
 2022.07.17 - optimized 'spd_SATB_clear_from', 'spd_dbl_buff_VRAM_addr', fixed XY correction in the 'spd_SATB_set_sprite_LT'
 2022.07.16 - added functions for simple sprites: spd_set_palette_LT( ind ), spd_get_palette_LT(), spd_set_pri_LT( SPD_SPR_PRI_HIGH/SPD_SPR_PRI_LOW ), spd_set_x_LT( X ), spd_get_x_LT(), spd_set_y_LT( Y ), spd_get_y_LT(), spd_show_LT(), spd_hide_LT()
 2022.07.16 - 'spd_SATB_push_simple_sprite' renamed to 'spd_SATB_set_sprite_LT'
@@ -155,13 +167,16 @@ The main logic is:
 --->		last_bank_ind	= spd_SG_bank_get_ind();
 	}
 
-	// Then call 'satb_update' to push your sprite data to VRAM SAT.
+	// Then call 'spd_SATB_to_VRAM' to push your sprite data to VRAM-SAT.
 [upd] v0.6
 	// NOTE: After pushing all sprites, `spd_SATB_get_pos()` returns the number of sprites in SATB when using the 'spd_SATB_push_sprite'.
 	// NOTE: But when using 'spd_SATB_set_sprite_LT' you need to know how many sprites were used.
 	
-	// Move whole SATB to VRAM
-	satb_update( 64 );
+	// Move the entire SATB - 64 sprites to VRAM-SAT
+	spd_SATB_to_VRAM();
+	OR
+	// Move a certain number of sprites to VRAM-SAT
+	spd_SATB_to_VRAM( spr_cnt );
 --->
 [upd] v0.6
 	// NOTE: As mentioned before, you can combine the SPD calls with the HuC ones or use SPD analogue functions.
@@ -308,9 +323,12 @@ The main logic is:
 		last_dbl_buff_ind	= spd_get_dbl_buff_ind();
 #endif
 --->
-[upd] v0.6	// Move whole SATB to VRAM
---->		satb_update( 64 );
-
+[upd] v0.6	// Move the entire SATB - 64 sprites to VRAM-SAT
+		spd_SATB_to_VRAM();
+		OR
+		// Move a certain number of sprites to VRAM-SAT
+		spd_SATB_to_VRAM( spr_cnt );
+--->		
 		vsync();
 
 #if	!DEF_SG_DBL_BUFF
@@ -382,6 +400,8 @@ void		__fastcall spd_init();
 void		__fastcall spd_SATB_set_pos( unsigned char _pos<acc> );// _pos: 0-63
 unsigned char	__fastcall spd_SATB_get_pos();
 void		__fastcall spd_SATB_clear_from( unsigned char _pos<acc> );// _pos: 0-63
+void		__fastcall spd_SATB_to_VRAM();
+void		__fastcall spd_SATB_to_VRAM( unsigned char _spr_cnt<acc> );// _spr_cnt: 1-64
 
 // meta-sprites
 unsigned char	__fastcall spd_SATB_push_sprite( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 0-SATB overflow
@@ -706,6 +726,23 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	set_border_color
 	.endm
 
+; VDC macroses
+
+	.macro spd_vreg
+	lda \1
+	sta <vdc_reg
+	st0 \1
+	.endm
+
+	.macro spd_VDC_set_write
+	spd_vreg #$00
+
+	st1 low_byte \1
+	st2 high_byte \1
+
+	spd_vreg #$02
+	.endm	
+
 	.zp
 
 SPD_FLAG_PEND_SG_DATA	= $01
@@ -716,8 +753,6 @@ SPD_FLAG_ALT_VADDR	= $08	; is used when the 'spd_alt_VRAM_addr()' is called
 SPD_SG_NEW_DATA		= $80	; 'spd_SATB_push_sprite' result
 
 SATB_SIZE	= 64
-
-__SATB	= satb	; satb - HuC`s local satb
 
 __SATB_pos	.ds 1
 __SATB_flags	.ds 1
@@ -920,6 +955,8 @@ __tiirts	.ds 1	; $60 rts
 
 	.endp
 
+	.procgroup
+
 ;// spd_SATB_set_pos( byte acc / pos )
 ;
 	.proc _spd_SATB_set_pos.1
@@ -995,6 +1032,7 @@ __tiirts	.ds 1	; $60 rts
 	ldx #$ff
 
 .loop2:
+
 	stz __SATB, x
 	dex
 	stz __SATB, x
@@ -1018,6 +1056,54 @@ __tiirts	.ds 1	; $60 rts
 	rts
 
 	.endp
+
+;// spd_SATB_to_VRAM()
+;
+	.proc _spd_SATB_to_VRAM
+
+	ldx #SATB_SIZE
+	call _spd_SATB_to_VRAM.1
+
+	rts
+
+	.endp
+
+;// spd_SATB_to_VRAM( unsigned char acc / spr_cnt )
+;
+	.proc _spd_SATB_to_VRAM.1
+
+	txa
+
+	; round up to the next group of 4 sprites
+
+	dec a
+	lsr a
+	lsr a
+	inc a
+	tax
+
+	; split data into chunks by 16 words
+
+	stw #$20, __TIA_LEN
+	stw #video_data, __TIA_DST
+	stw #__SATB, __TIA_SRC
+
+	spd_VDC_set_write #__VRAM_SAT_ADDR
+
+.loop:
+	jsr __TIA
+
+	lda #$20
+	add_a_to_word __TIA_SRC
+
+	dex
+	bne .loop
+
+	rts
+
+	.endp
+
+	.endprocgroup
 
 	.procgroup
 

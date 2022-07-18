@@ -481,8 +481,9 @@ main()
 		/* update sprite cache and push sprites to SATB */
 		sprite_cache_update();
 
-		/* move whole SATB to VRAM */
-		satb_update( 64 );
+		/* move the entire SATB - 64 sprites to VRAM-SAT */
+		spd_SATB_to_VRAM();
+		/* or use 'spd_SATB_to_VRAM( spr_cnt )' to move a certain number of sprites to VRAM */
 
 		vsync();
 

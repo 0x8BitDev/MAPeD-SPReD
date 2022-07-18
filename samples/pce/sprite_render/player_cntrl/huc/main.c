@@ -263,8 +263,9 @@ main()
 		// push current sprite to local SATB
 		SPR_PUSH_RES = sprite_show( player_anims[ player_anim.anm_desc_offs + ANM_OFFS_START_FRAME ] + player_anim.curr_frame, player_pos_x, player_pos_y );
 
-		// load all sprites to VRAM SAT
-		satb_update( 64 );
+		// load all 64 - sprites to VRAM-SAT
+		spd_SATB_to_VRAM();
+		// or use 'spd_SATB_to_VRAM( spr_cnt )' to load a certain number of sprites to VRAM-SAT
 
 		vsync();
 

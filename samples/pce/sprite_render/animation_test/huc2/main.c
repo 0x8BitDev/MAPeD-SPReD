@@ -242,8 +242,9 @@ main()
 		/* change sprites position */
 		update_y_pos();
 
-		/* move whole SATB to VRAM */
-		satb_update( 64 );
+		/* move the entire SATB - 64 sprites to VRAM-SAT */
+		spd_SATB_to_VRAM();
+		/* or use 'spd_SATB_to_VRAM( spr_cnt )' to move a certain number of sprites to VRAM */
 
 		vsync();
 

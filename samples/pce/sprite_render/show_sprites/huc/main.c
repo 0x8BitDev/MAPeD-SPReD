@@ -107,8 +107,9 @@ void init_sprites()
 
 	spd_SATB_push_sprite( tony_idle_RIGHT, 88, 196 );
 
-	/* move whole SATB to VRAM */
-	satb_update( 64 );
+	/* move the entire SATB - 64 sprites to VRAM-SAT */
+	spd_SATB_to_VRAM();
+	/* or use 'spd_SATB_to_VRAM( spr_cnt )' to move a certain number of sprites to VRAM */
 
 	// NOTE: There are also some functions available for simple sprites:
 	//
