@@ -81,10 +81,8 @@ NOTE: 	After enabling you will see two border lines: pink - ROM-VRAM data copyin
 	projects). When you see a bright pink border, this means that SG data copies to VRAM each frame. If this is not
 	expected behavior, then there is a bug somewhere in your program logic.
 
-NOTE:	The SPReD-PCE exports both meta-sprites and simple sprites (16x16,16x32,16x64,32x16,32x32,32x64). The CGX/CGY
-	flags are automatically applied to exported sprites. So you don't need to configure anything in your HuC program.
-
 *SG - sprite graphics data
+
 
 General information:
 ~~~~~~~~~~~~~~~~~~~~
@@ -94,24 +92,27 @@ General information:
 
    'spd_SATB_set_sprite_LT' - optimized to work with simple sprites. It supports sprite offset values, but does not support double-buffering and doesn't increment SATB position, unlike 'spd_SATB_push_sprite'.
 
-2. The library supports an arbitrary number of sprite sets, which are switched between using the 'spd_sprite_params' function.
+2. The SPReD-PCE exports both meta-sprites and simple sprites (16x16,16x32,16x64,32x16,32x32,32x64).
+   The CGX/CGY flags are automatically applied to exported sprites. So you don't need to configure anything in your HuC program.
 
-3. Double-buffering is supported for meta-sprites. This requires 2x video memory for SG data, but ensures that there are no glitches when synchronizing SG and VRAM inner SATB.
+3. The library supports an arbitrary number of sprite sets, which are switched between using the 'spd_sprite_params' function.
+
+4. Double-buffering is supported for meta-sprites. This requires 2x video memory for SG data, but ensures that there are no glitches when synchronizing SG and VRAM inner SATB.
    Compare both meta-sprites with and without double-buffering and decide which one is better in your case. As a rule, double-buffering helps when meta-sprites are at the top of the screen.
    But it also depends on the amount of SG data is being loaded to VRAM.
 
-4. Also palette changes is supported for meta-sprites. Use the 'spd_change_palette' function.
+5. Supports changing the color palette for meta-sprites. Use the 'spd_change_palette' function.
 
-5. A simple sprite and a meta-sprite graphics can be loaded to any VRAM address. Use the 'spd_alt_VRAM_addr' function.
+6. Simple or meta-sprite graphics can be loaded to any VRAM address. Use the 'spd_alt_VRAM_addr' function.
 
-6. There are two ways to load SG data to VRAM:
+7. There are two ways to load SG data to VRAM:
 
    - automatically, when calling 'spd_SATB_push_sprite' or 'spd_SATB_set_sprite_LT';
    - manually with 'spd_copy_SG_data_to_VRAM' for graphics caching before further use, as a rule for simple sprites, or to load a meta-sprite graphics without double-buffering after VBLANK/vsync();
 
    Keep this in mind when planning the logic of your program.
 
-7. The library can be used in combination with HuC sprite functions. This makes it much easier to initialize data for HuC sprites.
+8. The library can be used in combination with HuC sprite functions. This makes it much easier to initialize data for HuC sprites.
    You can also use similar SPD library functions:
 
 (!) Functions with the '_LT' postfix are designed to work with simple sprites.
@@ -127,12 +128,12 @@ General information:
    spr_show()		-	spd_show_LT()
    spr_hide()		-	spd_hide_LT()
 
-   There are also optimized analogues of the following functions:
+   There are also following optimized similar functions:
 
    init_satb()/reset_satb()	-	spd_SATB_clear_from( N )
    satb_update()		-	spd_SATB_to_VRAM()
 
-8. Performance. Starting with the fastest function:
+9. Performance. Starting with the fastest function:
 
    spd_SATB_set_sprite_LT( <sprite_name>, X, Y )
    spd_SATB_set_sprite_LT( <exported_name>_frames_arr, spr_ind, X, Y )
@@ -151,7 +152,8 @@ General information:
 
    The sprite indexing is designed specifically to make working with animations easier. So use these functions only for animated sprites.
 
-9. Use 'SPD_DEBUG' to keep track of how efficiently/frequently SG data is loaded to VRAM.
+10. Use 'SPD_DEBUG' to keep track of how efficiently/frequently SG data is loaded to VRAM.
+
 
 Examples of SPD library using:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
