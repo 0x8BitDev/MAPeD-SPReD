@@ -20,6 +20,7 @@ __TIA_RTS	= ram_hdwr_tia_rts
 History:
 
 v0.6
+2022.07.19 - added 'General information' section
 2022.07.18 - added 'spd_' prefix to macroses
 2022.07.18 - added 'spd_SATB_to_VRAM()' and 'spd_SATB_to_VRAM( _spr_cnt )'
 2022.07.17 - optimized 'spd_SATB_clear_from', 'spd_dbl_buff_VRAM_addr', fixed XY correction in the 'spd_SATB_set_sprite_LT'
@@ -85,7 +86,76 @@ NOTE:	The SPReD-PCE exports both meta-sprites and simple sprites (16x16,16x32,16
 
 *SG - sprite graphics data
 
-The SPD sprite/meta-sprite render works as an extension to the HuC local SATB. So you can combine it with the HuC`s sprite functions or use SPD analogues.
+General information:
+~~~~~~~~~~~~~~~~~~~~
+
+1. The library works with both simple sprites and meta-sprites.
+   The only difference is the use of the following functions: 'spd_SATB_push_sprite' for meta-sprites and 'spd_SATB_set_sprite_LT' for simple sprites.
+
+   'spd_SATB_set_sprite_LT' - optimized to work with simple sprites. It supports sprite offset values, but does not support double-buffering and doesn't increment SATB position, unlike 'spd_SATB_push_sprite'.
+
+2. The library supports an arbitrary number of sprite sets, which are switched between using the 'spd_sprite_params' function.
+
+3. Double-buffering is supported for meta-sprites. This requires 2x video memory for SG data, but ensures that there are no glitches when synchronizing SG and VRAM inner SATB.
+   Compare both meta-sprites with and without double-buffering and decide which one is better in your case. As a rule, double-buffering helps when meta-sprites are at the top of the screen.
+   But it also depends on the amount of SG data is being loaded to VRAM.
+
+4. Also palette changes is supported for meta-sprites. Use the 'spd_change_palette' function.
+
+5. A simple sprite and a meta-sprite graphics can be loaded to any VRAM address. Use the 'spd_alt_VRAM_addr' function.
+
+6. There are two ways to load SG data to VRAM:
+
+   - automatically, when calling 'spd_SATB_push_sprite' or 'spd_SATB_set_sprite_LT';
+   - manually with 'spd_copy_SG_data_to_VRAM' for graphics caching before further use, as a rule for simple sprites, or to load a meta-sprite graphics without double-buffering after VBLANK/vsync();
+
+   Keep this in mind when planning the logic of your program.
+
+7. The library can be used in combination with HuC sprite functions. This makes it much easier to initialize data for HuC sprites.
+   You can also use similar SPD library functions:
+
+(!) Functions with the '_LT' postfix are designed to work with simple sprites.
+
+   spr_set( N )		-	spd_SATB_set_pos( N )
+   spr_pal( _plt_ind )	-	spd_set_palette_LT( _plt_ind )
+   spr_get_pal()	-	spd_get_palette_LT()
+   spr_pri( val )	-	spd_set_pri_LT( SPD_SPR_PRI_HIGH/SPD_SPR_PRI_LOW )
+   spr_x( _x )		-	spd_set_x_LT( _x ) - doesn't support sprite offset value
+   spr_get_x()		-	spd_get_x_LT()
+   spr_y( _y )		-	spd_set_y_LT( _y ) - doesn't support sprite offset value
+   spr_get_y()		-	spd_get_y_LT()
+   spr_show()		-	spd_show_LT()
+   spr_hide()		-	spd_hide_LT()
+
+   There are also optimized analogues of the following functions:
+
+   init_satb()/reset_satb()	-	spd_SATB_clear_from( N )
+   satb_update()		-	spd_SATB_to_VRAM()
+
+8. Performance. Starting with the fastest function:
+
+   spd_SATB_set_sprite_LT( <sprite_name>, X, Y )
+   spd_SATB_set_sprite_LT( <exported_name>_frames_arr, spr_ind, X, Y )
+   spd_SATB_push_sprite( <sprite_name>, X, Y )
+   spd_SATB_push_sprite( <exported_name>_frames_arr, spr_ind, X, Y )
+
+   Use the following functions, if you don't use animations:
+
+   spd_SATB_set_sprite_LT( <sprite_name>, X, Y )
+   spd_SATB_push_sprite( <sprite_name>, X, Y )
+
+   This will work faster, than functions that use sprite indexing:
+
+   spd_SATB_set_sprite_LT( <exported_name>_frames_arr, spr_ind, X, Y )
+   spd_SATB_push_sprite( <exported_name>_frames_arr, spr_ind, X, Y )
+
+   The sprite indexing is designed specifically to make working with animations easier. So use these functions only for animated sprites.
+
+9. Use 'SPD_DEBUG' to keep track of how efficiently/frequently SG data is loaded to VRAM.
+
+Examples of SPD library using:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 There are two data types the SPD-render works with.
 
 1. PACKED sprites data. All exported SG data are stored in a single file. It were packed in the SPReD-PCE before exporting.
@@ -189,8 +259,8 @@ The main logic is:
 	// SATB initialization.
 	spd_SATB_clear_from( 0 );
 
+	// set SATB position to initialize a sprite data to
 	spd_SATB_set_pos( 0 );
-
 	spd_SATB_set_sprite_LT( my_sprite_16x32, init_x, init_y );
 
 	...
@@ -200,22 +270,19 @@ The main logic is:
 	spd_set_x_LT( new_x );
 	spd_set_y_LT( new_y );
 
-	// I recommend using simple static sprites this way, as it simplifies their initialization and is optimal for runtime.
+	// I recommend using simple sprites this way, as it simplifies their initialization and is optimal for runtime.
 
 	// NOTE: The functions for using with simple sprites:
 	//
 	//	 void		spd_set_palette_LT( unsigned char _plt_ind );
 	//	 unsigned char	spd_get_palette_LT();
 	//	 void		spd_set_pri_LT( SPD_SPR_PRI_HIGH/SPD_SPR_PRI_LOW );
-	//	 void		spd_set_x_LT( unsigned short _x );
+	//	 void		spd_set_x_LT( unsigned short _x );	<--- doesn't support sprite offset value
 	//	 unsigned short	spd_get_x_LT();
-	//	 void		spd_set_y_LT( unsigned short _y );
+	//	 void		spd_set_y_LT( unsigned short _y );	<--- doesn't support sprite offset value
 	//	 unsigned short	spd_get_y_LT();
 	//	 void		spd_show_LT();
 	//	 void		spd_hide_LT();
-	//
-	// NOTE: 'spd_set_x_LT' and 'spd_set_y_LT' don't use sprite offset values!
-	//	 They work like HuC analogues.
 --->
 
 
@@ -348,7 +415,7 @@ The main logic is:
 3. See the sample projects for implementation details.
 
 [upd] v0.4
-3. Also you can use PACKED and UNPACKED data in one data set (in one SPReD-PCE project) by combining the approaches described above.
+4. Also you can use PACKED and UNPACKED data in one data set (in one SPReD-PCE project) by combining the approaches described above.
 
 Misc:
 ~~~~~
