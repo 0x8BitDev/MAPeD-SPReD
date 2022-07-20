@@ -184,7 +184,7 @@ namespace SPReD
 			PixBoxPalette.Invalidate();
 		}
 		
-		void BtnOkClick_Event(object sender, EventArgs e)
+		void BtnSwapClick_Event(object sender, EventArgs e)
 		{
 			if( m_color_A >= 0 && m_color_B >= 0 )
 			{
@@ -249,6 +249,7 @@ namespace SPReD
 					sm_plts_arr[ j ].update();
 				}
 #endif
+				update();
 			}
 			else
 			{

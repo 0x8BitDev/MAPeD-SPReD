@@ -172,7 +172,7 @@ namespace MAPeD
 			PixBoxPalette.Invalidate();
 		}
 		
-		void BtnOkClick_Event(object sender, EventArgs e)
+		void BtnSwapClick_Event(object sender, EventArgs e)
 		{
 			if( m_color_A >= 0 && m_color_B >= 0 )
 			{
@@ -242,6 +242,8 @@ namespace MAPeD
 				{
 					palette_group.Instance.get_palettes_arr()[ j ].update();
 				}
+				
+				update();
 			}
 			else
 			{

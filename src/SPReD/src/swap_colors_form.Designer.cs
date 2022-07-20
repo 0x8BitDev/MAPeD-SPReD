@@ -34,34 +34,33 @@ namespace SPReD
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.BtnOk = new System.Windows.Forms.Button();
-			this.BtnCancel = new System.Windows.Forms.Button();
+			this.BtnSwap = new System.Windows.Forms.Button();
+			this.BtnClose = new System.Windows.Forms.Button();
 			this.PixBoxPalette = new System.Windows.Forms.PictureBox();
 			this.CheckBoxColorA = new System.Windows.Forms.CheckBox();
 			this.CheckBoxColorB = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.PixBoxPalette)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// BtnOk
+			// BtnSwap
 			// 
-			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(62, 80);
-			this.BtnOk.Name = "BtnOk";
-			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 0;
-			this.BtnOk.Text = "&Ok";
-			this.BtnOk.UseVisualStyleBackColor = true;
-			this.BtnOk.Click += new System.EventHandler(this.BtnOkClick_Event);
+			this.BtnSwap.Location = new System.Drawing.Point(100, 40);
+			this.BtnSwap.Name = "BtnSwap";
+			this.BtnSwap.Size = new System.Drawing.Size(81, 24);
+			this.BtnSwap.TabIndex = 0;
+			this.BtnSwap.Text = "&Swap";
+			this.BtnSwap.UseVisualStyleBackColor = true;
+			this.BtnSwap.Click += new System.EventHandler(this.BtnSwapClick_Event);
 			// 
-			// BtnCancel
+			// BtnClose
 			// 
-			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(143, 80);
-			this.BtnCancel.Name = "BtnCancel";
-			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
-			this.BtnCancel.TabIndex = 0;
-			this.BtnCancel.Text = "&Cancel";
-			this.BtnCancel.UseVisualStyleBackColor = true;
+			this.BtnClose.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.BtnClose.Location = new System.Drawing.Point(187, 78);
+			this.BtnClose.Name = "BtnClose";
+			this.BtnClose.Size = new System.Drawing.Size(82, 23);
+			this.BtnClose.TabIndex = 0;
+			this.BtnClose.Text = "&Close";
+			this.BtnClose.UseVisualStyleBackColor = true;
 			// 
 			// PixBoxPalette
 			// 
@@ -79,7 +78,7 @@ namespace SPReD
 			this.CheckBoxColorA.FlatAppearance.BorderSize = 2;
 			this.CheckBoxColorA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.CheckBoxColorA.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.CheckBoxColorA.Location = new System.Drawing.Point(55, 40);
+			this.CheckBoxColorA.Location = new System.Drawing.Point(11, 40);
 			this.CheckBoxColorA.Name = "CheckBoxColorA";
 			this.CheckBoxColorA.Size = new System.Drawing.Size(82, 24);
 			this.CheckBoxColorA.TabIndex = 3;
@@ -94,7 +93,7 @@ namespace SPReD
 			this.CheckBoxColorB.BackColor = System.Drawing.SystemColors.Control;
 			this.CheckBoxColorB.FlatAppearance.BorderSize = 2;
 			this.CheckBoxColorB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.CheckBoxColorB.Location = new System.Drawing.Point(143, 40);
+			this.CheckBoxColorB.Location = new System.Drawing.Point(187, 40);
 			this.CheckBoxColorB.Name = "CheckBoxColorB";
 			this.CheckBoxColorB.Size = new System.Drawing.Size(82, 24);
 			this.CheckBoxColorB.TabIndex = 3;
@@ -105,16 +104,16 @@ namespace SPReD
 			// 
 			// swap_colors_form
 			// 
-			this.AcceptButton = this.BtnOk;
+			this.AcceptButton = this.BtnSwap;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.BtnCancel;
+			this.CancelButton = this.BtnClose;
 			this.ClientSize = new System.Drawing.Size(281, 113);
 			this.Controls.Add(this.CheckBoxColorB);
 			this.Controls.Add(this.CheckBoxColorA);
 			this.Controls.Add(this.PixBoxPalette);
-			this.Controls.Add(this.BtnCancel);
-			this.Controls.Add(this.BtnOk);
+			this.Controls.Add(this.BtnClose);
+			this.Controls.Add(this.BtnSwap);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -127,7 +126,7 @@ namespace SPReD
 		private System.Windows.Forms.CheckBox CheckBoxColorB;
 		private System.Windows.Forms.CheckBox CheckBoxColorA;
 		private System.Windows.Forms.PictureBox PixBoxPalette;
-		private System.Windows.Forms.Button BtnCancel;
-		private System.Windows.Forms.Button BtnOk;
+		private System.Windows.Forms.Button BtnClose;
+		private System.Windows.Forms.Button BtnSwap;
 	}
 }
