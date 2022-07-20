@@ -295,6 +295,10 @@ namespace SPReD
 #if DEF_FIXED_LEN_PALETTE16_ARR
 			CBoxPalettes.Enabled = false;
 			CBoxPalettes.SelectedIndex = 0;
+			
+			palettes_array.Instance.reset();
+#else
+			palette_group.Instance.reset();
 #endif
 		}
 		

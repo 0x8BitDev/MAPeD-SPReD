@@ -51,12 +51,21 @@ namespace SPReD
 				m_cbox.Items.Add( String.Format( " #{0:d2}", i ) );
 				
 				m_plts[ i ] = new palette16_data();
+			}
+		}
+		
+		public void reset()
+		{
+			for( int i = 0; i < utils.CONST_PALETTE16_ARR_LEN; i++ )
+			{
 #if DEF_PCE
 				m_plts[ i ].assign( i == 0 ? 0x16f:0, 64, 128, 192, 64+20, 128+20, 192+20, 256+20, 128+40, 192+40, 256+40, 320+40, 192+60, 256+60, 320+60, 384+60 );
 #else
 ...
 #endif
 			}
+			
+			update_palette();
 		}
 		
 		void PaletteDrawItem_Event( object sender, DrawItemEventArgs e )
@@ -107,21 +116,22 @@ namespace SPReD
 		{
 			if( m_cbox.SelectedIndex >= 0 )
 			{
+				int i;
+				
 				palette16_data plt = m_plts[ m_cbox.SelectedIndex ];
 				
 				palette_group	plt_grp	= palette_group.Instance;
 				palette_small[]	plt_arr	= plt_grp.get_palettes_arr();
 				
-				for( int i = 0; i < ( utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ); i++ )
+				for( i = 0; i < ( utils.CONST_NUM_SMALL_PALETTES * utils.CONST_PALETTE_SMALL_NUM_COLORS ); i++ )
 				{
 					plt_arr[ i >> 2 ].get_color_inds()[ i & 0x03 ] = plt.data[ i ];
 				}
 
-				// update subpalettes
-				plt_arr[ 0 ].update();
-				plt_arr[ 1 ].update();
-				plt_arr[ 2 ].update();
-				plt_arr[ 3 ].update();
+				for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+				{
+					plt_arr[ i ].update();
+				}
 			}
 		}
 		

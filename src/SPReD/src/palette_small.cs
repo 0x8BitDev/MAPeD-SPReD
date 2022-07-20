@@ -84,20 +84,29 @@ namespace SPReD
 			}
 		}
 		
-		public palette_small( int _id, PictureBox _pbox, int _init_clr_offset ) : base( _pbox )
+		public palette_small( int _id, PictureBox _pbox ) : base( _pbox )
 		{
 			m_id = _id;
 			
 #if DEF_NES
-			m_clr_inds = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 16, _init_clr_offset+16, _init_clr_offset+32, _init_clr_offset+48 };
+			m_clr_inds = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 #elif DEF_SMS
-			m_clr_inds = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ( _id == 0 ) ? 42:_id*16 + _id, _id*16 + _id + 3, _id*16 + _id + 7, _id*16 + _id + 11 };
+			m_clr_inds = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
+#elif DEF_PCE
+			m_clr_inds = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
+#endif
+			m_pix_box.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Layout_MouseClick);
+		}
+		
+		public void reset()
+		{
+#if DEF_NES
+			m_clr_inds = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 16, ( 1 + m_id * 3 ) + 16, ( 1 + m_id * 3 ) + 32, ( 1 + m_id * 3 ) + 48 };
+#elif DEF_SMS
+			m_clr_inds = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ ( m_id == 0 ) ? 42:m_id*16 + m_id, m_id*16 + m_id + 3, m_id*16 + m_id + 7, m_id*16 + m_id + 11 };
 #elif DEF_PCE
 			m_clr_inds = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ]{ 0, 0, 0, 0 };
 #endif
-			
-			m_pix_box.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Layout_MouseClick);
-			
 			update();
 		}
 		

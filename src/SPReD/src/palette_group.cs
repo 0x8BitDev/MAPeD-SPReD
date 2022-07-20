@@ -106,11 +106,10 @@ namespace SPReD
 				m_main_palette[ i ] = ( r << 16 ) | ( g << 8 ) | b;
 			}
 #endif
-			m_plt_arr = new palette_small[ utils.CONST_NUM_SMALL_PALETTES ] { 	new palette_small( 0, _plt0, 1 ), 
-																				new palette_small( 1, _plt1, 4 ),
-																			 	new palette_small( 2, _plt2, 7 ),
-																				new palette_small( 3, _plt3, 10 ) };
-									
+			m_plt_arr = new palette_small[ utils.CONST_NUM_SMALL_PALETTES ] { 	new palette_small( 0, _plt0 ), 
+																				new palette_small( 1, _plt1 ),
+																			 	new palette_small( 2, _plt2 ),
+																				new palette_small( 3, _plt3 ) };
 			for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
 			{
 				m_plt_arr[ i ].ActivePalette += new EventHandler( update_palettes );
@@ -122,6 +121,14 @@ namespace SPReD
 			m_pix_box.MouseClick	+= new MouseEventHandler(this.Palette_MouseClick);
 			
 			update();
+		}
+		
+		public void reset()
+		{
+			for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+			{
+				m_plt_arr[ i ].reset();
+			}
 		}
 		
 		private void update()
