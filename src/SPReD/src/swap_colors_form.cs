@@ -56,28 +56,21 @@ namespace SPReD
 		
 		private void swap_colors_MouseClock(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
-			int sel_ind = e.X / 16;
+			int sel_ind = e.X >> 4;
 			
-			if( CheckBoxColorA.Checked )
+			if( m_color_A >= 0 && m_color_B >= 0 )
 			{
-				if( sel_ind != m_color_B )
-				{
-					m_color_A = sel_ind;
-					
-					CheckBoxColorA.ForeColor = get_color( sel_ind );
-					CheckBoxColorA.Checked = false;
-				}
+				m_color_A = m_color_B = -1; 
+			}
+			
+			if( m_color_A == -1 )
+			{
+				m_color_A = sel_ind;
 			}
 			else
-			if( CheckBoxColorB.Checked )
+			if( m_color_B == -1 )
 			{
-				if( sel_ind != m_color_A )
-				{
-					m_color_B = sel_ind;
-					
-					CheckBoxColorB.ForeColor = get_color( sel_ind );
-					CheckBoxColorB.Checked = false;
-				}
+				m_color_B = sel_ind;
 			}
 			
 			update();
@@ -85,36 +78,13 @@ namespace SPReD
 		
 		public DialogResult ShowDialog( ListBox.ObjectCollection _obj_arr )
 		{
-			m_sprites_arr	= _obj_arr;
+			m_sprites_arr = _obj_arr;
 			
 			m_color_A = m_color_B = -1;
-			CheckBoxColorA.Checked = CheckBoxColorB.Checked = false;
-
-			CheckBoxColorA.ForeColor = CheckBoxColorB.ForeColor = CONST_COLOR_PALETTE_SWAP_COLOR_TEXT_DEFAULT;
 			
 			update();
 			
 			return ShowDialog();
-		}
-		
-		void CheckBoxColorAChanged_Event(object sender, EventArgs e)
-		{
-			if( CheckBoxColorA.Checked )
-			{
-				CheckBoxColorB.Checked = false;
-			}
-			
-			update();
-		}
-		
-		void CheckBoxColorBChanged_Event(object sender, EventArgs e)
-		{
-			if( CheckBoxColorB.Checked )
-			{
-				CheckBoxColorA.Checked = false;
-			}
-			
-			update();
 		}
 		
 		private Color get_color( int _ind )
@@ -155,7 +125,7 @@ namespace SPReD
 					m_main_gfx.FillRectangle( utils.brush, ( i << 4 ) + 1, 1, 16, 16 );
 				}
 				
-				if( CheckBoxColorA.Checked || CheckBoxColorB.Checked )
+				if( ( m_color_A != -1 ) || ( m_color_B != -1 ) )
 				{
 					m_pen.Color = CONST_COLOR_PALETTE_SWAP_COLOR_ACTIVE_BORDER;
 					m_pen.Width = 2;
@@ -253,7 +223,7 @@ namespace SPReD
 			}
 			else
 			{
-				MainForm.message_box( "Please, select both Color A and Color B!", "Colors Swapping Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( "Please, select two colors!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 			}
 		}
 	}

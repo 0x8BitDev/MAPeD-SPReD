@@ -37,16 +37,15 @@ namespace SPReD
 			this.BtnSwap = new System.Windows.Forms.Button();
 			this.BtnClose = new System.Windows.Forms.Button();
 			this.PixBoxPalette = new System.Windows.Forms.PictureBox();
-			this.CheckBoxColorA = new System.Windows.Forms.CheckBox();
-			this.CheckBoxColorB = new System.Windows.Forms.CheckBox();
+			this.label1 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.PixBoxPalette)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// BtnSwap
 			// 
-			this.BtnSwap.Location = new System.Drawing.Point(100, 40);
+			this.BtnSwap.Location = new System.Drawing.Point(187, 35);
 			this.BtnSwap.Name = "BtnSwap";
-			this.BtnSwap.Size = new System.Drawing.Size(81, 24);
+			this.BtnSwap.Size = new System.Drawing.Size(82, 24);
 			this.BtnSwap.TabIndex = 0;
 			this.BtnSwap.Text = "&Swap";
 			this.BtnSwap.UseVisualStyleBackColor = true;
@@ -55,7 +54,7 @@ namespace SPReD
 			// BtnClose
 			// 
 			this.BtnClose.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnClose.Location = new System.Drawing.Point(187, 78);
+			this.BtnClose.Location = new System.Drawing.Point(187, 65);
 			this.BtnClose.Name = "BtnClose";
 			this.BtnClose.Size = new System.Drawing.Size(82, 23);
 			this.BtnClose.TabIndex = 0;
@@ -71,36 +70,13 @@ namespace SPReD
 			this.PixBoxPalette.TabIndex = 1;
 			this.PixBoxPalette.TabStop = false;
 			// 
-			// CheckBoxColorA
+			// label1
 			// 
-			this.CheckBoxColorA.Appearance = System.Windows.Forms.Appearance.Button;
-			this.CheckBoxColorA.BackColor = System.Drawing.SystemColors.Control;
-			this.CheckBoxColorA.FlatAppearance.BorderSize = 2;
-			this.CheckBoxColorA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.CheckBoxColorA.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.CheckBoxColorA.Location = new System.Drawing.Point(11, 40);
-			this.CheckBoxColorA.Name = "CheckBoxColorA";
-			this.CheckBoxColorA.Size = new System.Drawing.Size(82, 24);
-			this.CheckBoxColorA.TabIndex = 3;
-			this.CheckBoxColorA.Text = "Color A";
-			this.CheckBoxColorA.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.CheckBoxColorA.UseVisualStyleBackColor = false;
-			this.CheckBoxColorA.CheckedChanged += new System.EventHandler(this.CheckBoxColorAChanged_Event);
-			// 
-			// CheckBoxColorB
-			// 
-			this.CheckBoxColorB.Appearance = System.Windows.Forms.Appearance.Button;
-			this.CheckBoxColorB.BackColor = System.Drawing.SystemColors.Control;
-			this.CheckBoxColorB.FlatAppearance.BorderSize = 2;
-			this.CheckBoxColorB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.CheckBoxColorB.Location = new System.Drawing.Point(187, 40);
-			this.CheckBoxColorB.Name = "CheckBoxColorB";
-			this.CheckBoxColorB.Size = new System.Drawing.Size(82, 24);
-			this.CheckBoxColorB.TabIndex = 3;
-			this.CheckBoxColorB.Text = "Color B";
-			this.CheckBoxColorB.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.CheckBoxColorB.UseVisualStyleBackColor = false;
-			this.CheckBoxColorB.CheckedChanged += new System.EventHandler(this.CheckBoxColorBChanged_Event);
+			this.label1.Location = new System.Drawing.Point(12, 35);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(143, 34);
+			this.label1.TabIndex = 2;
+			this.label1.Text = "*Select two colors and click the \'Swap\' button.";
 			// 
 			// swap_colors_form
 			// 
@@ -108,9 +84,8 @@ namespace SPReD
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnClose;
-			this.ClientSize = new System.Drawing.Size(281, 113);
-			this.Controls.Add(this.CheckBoxColorB);
-			this.Controls.Add(this.CheckBoxColorA);
+			this.ClientSize = new System.Drawing.Size(281, 100);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.PixBoxPalette);
 			this.Controls.Add(this.BtnClose);
 			this.Controls.Add(this.BtnSwap);
@@ -123,8 +98,7 @@ namespace SPReD
 			((System.ComponentModel.ISupportInitialize)(this.PixBoxPalette)).EndInit();
 			this.ResumeLayout(false);
 		}
-		private System.Windows.Forms.CheckBox CheckBoxColorB;
-		private System.Windows.Forms.CheckBox CheckBoxColorA;
+		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.PictureBox PixBoxPalette;
 		private System.Windows.Forms.Button BtnClose;
 		private System.Windows.Forms.Button BtnSwap;

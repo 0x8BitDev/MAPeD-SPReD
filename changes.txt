@@ -1,7 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-20.07.2022 - Updated 'Swap Colors'; now the colors swapping takes place without closing the dialog window
+21.07.2022 - Improved colors swapping
 22.06.2022 - Added sorting option for entities (Left->Right, Bottom->Top) to the data export dialog
 18.05.2022 - Added dialog for reordering CHR banks (Main Menu->CHR Banks->Reorder Banks)
 06.05.2022 - Added deletion of multiple selected screens
@@ -104,7 +104,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
-20.07.2022 - Updated 'Swap Colors'; now the colors swapping takes place without closing the dialog window
+21.07.2022 - Improved colors swapping
 20.07.2022 - Fixed the main palette reset when closing a project
 15.07.2022 - Changed output ASM format: now frames data is an array of attributes data addresses (!!!)
 06.07.2022 - PCE: added 'non-packed sprites optimization' checkbox to the export options dialog, for meta-sprites optimization
