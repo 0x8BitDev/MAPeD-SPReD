@@ -17,6 +17,8 @@ namespace SPReD
 	public class palettes_array
 	{
 		private palette16_data[]	m_plts	= new palette16_data[ utils.CONST_PALETTE16_ARR_LEN ];
+
+		private ListBox.ObjectCollection m_sprites	= null;
 		
 		private ComboBox	m_cbox	= null;
 		
@@ -36,9 +38,11 @@ namespace SPReD
 			}
 		}
 		
-		public palettes_array( ComboBox _cbox_palettes )
+		public palettes_array( ComboBox _cbox_palettes, ListBox.ObjectCollection _sprites )
 		{
 			instance = this;
+			
+			m_sprites = _sprites;
 			
 			m_cbox = _cbox_palettes;
 			
@@ -100,7 +104,36 @@ namespace SPReD
 				
 				utils.pen.Color = Color.Black;
 				gfx.DrawRectangle( utils.pen, plt_offset - 1, clr_box_y_offs - 1, ( clr_box_side * clrs_cnt ) + 1, clr_box_side + 1 );
+				
+				if( active_palette( e.Index ) && ( ( e.State & DrawItemState.ComboBoxEdit ) != DrawItemState.ComboBoxEdit ) )
+				{
+					// mark palette in use
+					utils.brush.Color = Color.Red;
+				
+					gfx.FillRectangle( utils.brush, plt_offset - 9, clr_box_y_offs + 3, 5, 5 );
+				}
+				
 			}
+		}
+		
+		public bool active_palette( int _ind )
+		{
+			sprite_data spr;
+			
+			for( int i = 0; i < m_sprites.Count; i++ )
+			{
+				spr = m_sprites[ i ] as sprite_data;
+				
+				foreach( var attr in spr.get_CHR_attr() )
+				{
+					if( attr.palette_ind == _ind )
+					{
+						return true;
+					}
+				}
+			}
+			
+			return false;
 		}
 		
 		public void swap_colors( int _clr_A, int _clr_B )

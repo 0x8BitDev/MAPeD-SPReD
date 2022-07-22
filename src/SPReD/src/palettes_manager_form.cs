@@ -84,7 +84,7 @@ namespace SPReD
 					utils.brush.Color = Color.Cyan;
 				}
 				else
-				if( active_palette( e.Index ) )
+				if( m_palettes_array.active_palette( e.Index ) )
 				{
 					// mark palette in use
 					utils.brush.Color = Color.Red;
@@ -98,26 +98,6 @@ namespace SPReD
 			}
 		}
 		
-		private bool active_palette( int _ind )
-		{
-			sprite_data spr;
-			
-			for( int i = 0; i < m_sprites.Count; i++ )
-			{
-				spr = m_sprites[ i ] as sprite_data;
-				
-				foreach( var attr in spr.get_CHR_attr() )
-				{
-					if( attr.palette_ind == _ind )
-					{
-						return true;
-					}
-				}
-			}
-			
-			return false;
-		}
-
 		public DialogResult Open()
 		{
 			ListBoxPalettes.SelectedIndex = m_palettes_array.palette_index;

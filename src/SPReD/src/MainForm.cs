@@ -140,7 +140,7 @@ namespace SPReD
 			set_title_name( null );
 			
 #if DEF_FIXED_LEN_PALETTE16_ARR
-			m_palettes_arr			= new palettes_array( CBoxPalettes );
+			m_palettes_arr			= new palettes_array( CBoxPalettes, SpriteList.Items );
 			
 			m_palettes_mngr_form	= new palettes_manager_form( m_palettes_arr, SpriteList.Items, delegate() { update_selected_sprite(); } );
 			
