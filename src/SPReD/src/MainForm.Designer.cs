@@ -186,6 +186,7 @@ namespace SPReD
 			this.PasteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.separatorToolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.FillWithColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.managerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SpriteLayout)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.CHRBank)).BeginInit();
@@ -289,21 +290,21 @@ namespace SPReD
 			// ExportASMToolStripMenuItem
 			// 
 			this.ExportASMToolStripMenuItem.Name = "ExportASMToolStripMenuItem";
-			this.ExportASMToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+			this.ExportASMToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.ExportASMToolStripMenuItem.Text = "C&A65\\NESasm";
 			this.ExportASMToolStripMenuItem.Click += new System.EventHandler(this.ExportASMToolStripMenuItemClick);
 			// 
-			// ExportASMToolStripMenuItem
+			// ExportCToolStripMenuItem
 			// 
 			this.ExportCToolStripMenuItem.Name = "ExportCToolStripMenuItem";
-			this.ExportCToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+			this.ExportCToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.ExportCToolStripMenuItem.Text = "&C";
 			this.ExportCToolStripMenuItem.Click += new System.EventHandler(this.ExportCToolStripMenuItemClick);
 			// 
 			// ExportImagesToolStripMenuItem
 			// 
 			this.ExportImagesToolStripMenuItem.Name = "ExportImagesToolStripMenuItem";
-			this.ExportImagesToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+			this.ExportImagesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.ExportImagesToolStripMenuItem.Text = "&Images";
 			this.ExportImagesToolStripMenuItem.Click += new System.EventHandler(this.ExportImagesToolStripMenuItemClick);
 			// 
@@ -734,7 +735,8 @@ namespace SPReD
 			// paletteToolStripMenuItem
 			// 
 			this.paletteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.swapToolStripMenuItem});
+									this.swapToolStripMenuItem,
+									this.managerToolStripMenuItem});
 			this.paletteToolStripMenuItem.Name = "paletteToolStripMenuItem";
 			this.paletteToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
 			this.paletteToolStripMenuItem.Text = "&Palette";
@@ -1456,9 +1458,9 @@ namespace SPReD
 			this.ExportASM_saveFileDialog.Filter = "CA65\\NESasm (*.asm)|*.asm";
 			this.ExportASM_saveFileDialog.Title = "Export ASM: Select File";
 			this.ExportASM_saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ExportASM_OK);
-			//
+			// 
 			// ExportC_saveFileDialog
-			//
+			// 
 			this.ExportC_saveFileDialog.DefaultExt = "h";
 			this.ExportC_saveFileDialog.Filter = "C (*.h)|*.h";
 			this.ExportC_saveFileDialog.Title = "Export C: Select File";
@@ -1586,6 +1588,14 @@ namespace SPReD
 			this.FillWithColorToolStripMenuItem.Text = "Fill With Color";
 			this.FillWithColorToolStripMenuItem.Click += new System.EventHandler(this.FillWithColorToolStripMenuItemClick_Event);
 			// 
+			// managerToolStripMenuItem
+			// 
+			this.managerToolStripMenuItem.Name = "managerToolStripMenuItem";
+			this.managerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
+			this.managerToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+			this.managerToolStripMenuItem.Text = "&Manager";
+			this.managerToolStripMenuItem.Click += new System.EventHandler(this.PalettesManagerClick_Event);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1629,6 +1639,7 @@ namespace SPReD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem managerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem swapToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;
 		private System.Windows.Forms.Button BtnSwapColors;

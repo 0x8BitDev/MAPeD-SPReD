@@ -112,6 +112,17 @@ namespace SPReD
 			m_plts[ palette_index ].data[ _clr_B ] = ind_A;
 		}
 		
+		public void swap_palettes( int _plt_A, int _plt_B )
+		{
+			palette16_data plt_src = get_palette( _plt_A );
+			palette16_data plt_dst = get_palette( _plt_B );
+			palette16_data plt_tmp = new palette16_data();
+			
+			Array.Copy( plt_src.data, plt_tmp.data, plt_src.data.Length );
+			Array.Copy( plt_dst.data, plt_src.data, plt_src.data.Length );
+			Array.Copy( plt_tmp.data, plt_dst.data, plt_src.data.Length );
+		}
+		
 		public void update_palette()
 		{
 			if( m_cbox.SelectedIndex >= 0 )

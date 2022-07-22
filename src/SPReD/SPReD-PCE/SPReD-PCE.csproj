@@ -151,6 +151,13 @@
     <Compile Include="..\src\palettes_array.cs">
       <Link>palettes_array.cs</Link>
     </Compile>
+    <Compile Include="..\src\palettes_manager_form.cs">
+      <Link>palettes_manager_form.cs</Link>
+    </Compile>
+    <Compile Include="..\src\palettes_manager_form.Designer.cs">
+      <Link>palettes_manager_form.Designer.cs</Link>
+      <DependentUpon>palettes_manager_form.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\palette_group.cs">
       <Link>palette_group.cs</Link>
     </Compile>
@@ -240,6 +247,10 @@
     <EmbeddedResource Include="..\src\MainForm.resx">
       <Link>MainForm.resx</Link>
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\src\palettes_manager_form.resx">
+      <Link>palettes_manager_form.resx</Link>
+      <DependentUpon>palettes_manager_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\PCE_export_form.resx">
       <Link>PCE_export_form.resx</Link>

@@ -104,6 +104,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+22.07.2022 - PCE: added palettes manager
 21.07.2022 - Improved colors swapping
 20.07.2022 - Fixed the main palette reset when closing a project
 15.07.2022 - Changed output ASM format: now frames data is an array of attributes data addresses (!!!)

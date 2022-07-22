@@ -38,6 +38,7 @@ namespace SPReD
 
 #if DEF_FIXED_LEN_PALETTE16_ARR
 		private palettes_array				m_palettes_arr				= null;
+		private palettes_manager_form		m_palettes_mngr_form		= null;
 #endif
 		private SPSeD.py_editor	m_py_editor	= null;
 		
@@ -141,6 +142,8 @@ namespace SPReD
 #if DEF_FIXED_LEN_PALETTE16_ARR
 			m_palettes_arr			= new palettes_array( CBoxPalettes );
 			
+			m_palettes_mngr_form	= new palettes_manager_form( m_palettes_arr, SpriteList.Items, delegate() { update_selected_sprite(); } );
+			
 			Palette0Label.Location	= new Point( Palette0Label.Location.X - 13, Palette0Label.Location.Y );
 			Palette0.Location		= new Point( Palette0.Location.X - 14,		Palette0.Location.Y );
 			Palette2Label.Location	= new Point( Palette2Label.Location.X - 13, Palette2Label.Location.Y );
@@ -190,6 +193,9 @@ namespace SPReD
 			m_SMS_export_form		= new SMS_export_form();
 			
 			CBoxCHRPackingType.Items.Add( "8KB" );
+			
+			managerToolStripMenuItem.Visible = false;
+			
 #elif DEF_PCE
 			this.Project_saveFileDialog.DefaultExt = "spredpce";
 			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "NES", "PCE" );
@@ -2219,6 +2225,16 @@ namespace SPReD
 			{
 				m_swap_colors_form.ShowDialog( SpriteList.Items );
 				update_selected_sprite();
+			}
+#endif
+		}
+
+		void PalettesManagerClick_Event(object sender, EventArgs e)
+		{
+#if DEF_PCE
+			if( SpriteList.Items.Count > 0 )
+			{
+				m_palettes_mngr_form.Open();
 			}
 #endif
 		}
