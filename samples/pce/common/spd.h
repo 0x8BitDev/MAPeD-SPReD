@@ -20,6 +20,7 @@ __TIA_RTS	= ram_hdwr_tia_rts
 History:
 
 v0.6
+2022.07.22 - changed 'General information' items 5, 6, 9
 2022.07.19 - added 'General information' section
 2022.07.18 - added 'spd_' prefix to macroses
 2022.07.18 - added 'spd_SATB_to_VRAM()' and 'spd_SATB_to_VRAM( _spr_cnt )'
@@ -101,9 +102,9 @@ General information:
    Compare both meta-sprites with and without double-buffering and decide which one is better in your case. As a rule, double-buffering helps when meta-sprites are at the top of the screen.
    But it also depends on the amount of SG data is being loaded to VRAM.
 
-5. Supports changing the color palette for meta-sprites. Use the 'spd_change_palette' function.
+5. Supports changing the color palette for meta-sprites. Use 'spd_change_palette' right after 'spd_SATB_push_sprite'.
 
-6. Simple or meta-sprite graphics can be loaded to any VRAM address. Use the 'spd_alt_VRAM_addr' function.
+6. Simple or meta-sprite graphics can be loaded to any VRAM address. Use 'spd_alt_VRAM_addr' right after 'spd_sprite_params' and before 'spd_copy_SG_data_to_VRAM', 'spd_SATB_push_sprite' and 'spd_SATB_set_sprite_LT'.
 
 7. There are two ways to load SG data to VRAM:
 
@@ -134,6 +135,8 @@ General information:
    satb_update()		-	spd_SATB_to_VRAM()
 
 9. Performance. Starting with the fastest function:
+
+   Direct writing to SATB using: 'spd_set_palette_LT', 'spd_set_pri_LT', 'spd_set_x_LT', 'spd_set_y_LT' etc. or HuC functions.
 
    spd_SATB_set_sprite_LT( <sprite_name>, X, Y )
    spd_SATB_set_sprite_LT( <exported_name>_frames_arr, spr_ind, X, Y )
