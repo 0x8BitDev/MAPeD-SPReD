@@ -20,6 +20,7 @@ __TIA_RTS	= ram_hdwr_tia_rts
 History:
 
 v0.6
+2022.07.25 - fixed and optimized 'spd_mul3_bhdh' macro and 'spd_SATB_push_sprite', 'load_SG_data' routines (-32 cycles); removed unused math macroses
 2022.07.22 - changed 'General information' items 5, 6, 9
 2022.07.19 - added 'General information' section
 2022.07.18 - added 'spd_' prefix to macroses
@@ -545,49 +546,18 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	sta \2 + 1
 	.endm
 
+; ( (word(*zp)) / 2 ) -> *addr
+	.macro spd_stw_div2_zpii_rev ; \1 - zp, \2 - addr
+	lda [<\1], y		; high byte
+	lsr a
+	sta \2 + 1
+	dey
+	lda [<\1], y		; low byte
+	ror a
+	sta \2
+	.endm
+
 ; math macroses
-
-; \1 *= 2
-	.macro spd_mul2_word
-	lda low_byte \1
-	asl a	
-	rol high_byte \1
-	sta low_byte \1
-	.endm	
-
-; \1 *= 4
-	.macro spd_mul4_word
-	lda low_byte \1
-	asl a	
-	rol high_byte \1
-	asl a	
-	rol high_byte \1
-	sta low_byte \1
-	.endm
-
-; \1 *= 6
-	.macro spd_mul6_word
-	; XY = 2x
-	lda low_byte \1
-	asl a
-	tay
-	rol high_byte \1
-	ldx high_byte \1
-
-	; \1 = 4x
-	asl a
-	rol high_byte \1
-	sta low_byte \1
-
-	; \1 = XY + 4x
-	clc
-	tya
-	adc low_byte \1
-	sta low_byte \1
-	txa
-	adc high_byte \1
-	sta high_byte \1
-	.endm
 
 ; \1 = bhdh * 6
 	.macro spd_mul6_bhdh
@@ -616,20 +586,21 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 ; \1 = bhdh * 3
 	.macro spd_mul3_bhdh
 	; XY = 2x
-	lda <__bh
-	asl a
-	tay
-	rol <__dh
-	ldx <__dh
+	lda <__bh		;4
+	asl a			;2
+	tay			;2
+	lda <__dh		;4
+	rol a			;2
+	tax			;2 = 16
 
 	; \1 = XY + 2x
-	clc
-	tya
-	adc <__bh
-	sta low_byte \1
-	txa
-	adc <__dh
-	sta high_byte \1
+	clc			;2
+	tya			;2
+	adc <__bh		;4
+	sta low_byte \1		;4/5
+	txa			;2
+	adc <__dh		;4
+	sta high_byte \1	;4/5 = 22(24)
 	.endm
 
 ; \1 = \2 + ( a * 8 ), \2 - SATB
@@ -646,26 +617,6 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	adc high_byte \2
 	sta high_byte \1
 	.endm	
-
-; \1 *= 8
-	.macro spd_mul8_word
-	lda low_byte \1
-	asl a	
-	rol high_byte \1
-	asl a	
-	rol high_byte \1
-	asl a	
-	rol high_byte \1
-	sta low_byte \1
-	.endm	
-
-; \1 /= 2
-	.macro spd_div2_word
-	lda low_byte \1
-	lsr high_byte \1
-	ror a
-	sta low_byte \1
-	.endm
 
 ; \1 /= 8
 	.macro spd_div8_word
@@ -714,17 +665,6 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	ror high_byte \1
 	ror a
 	sta low_byte \1
-	.endm
-
-; \2 = \1 + \2
-	.macro spd_add_word_to_word
-	clc
-	lda low_byte \1
-	adc low_byte \2
-	sta low_byte \2
-	lda high_byte \1
-	adc high_byte \2
-	sta high_byte \2
 	.endm
 
 ; \1 += A
@@ -1507,10 +1447,11 @@ __tiirts	.ds 1	; $60 rts
 
 .push_sprite:
 
+.ifdef	SPD_TII_ATTR_XY
 	; _bsrci = meta-sprite address
-
+	
 	stw <__si, __bsrci
-
+.endif
 	stw <__spr_SATB_addr, __bdsti	; for 'spd_change_palette'
 
 	phy				; Y - SG bank index
@@ -1880,22 +1821,13 @@ __attr_transf_XY_IND_dbf:
 
 	; __cx = SG data length
 
-	cly
-	lda [<__si], y
-	sta <__cl
-	iny
-	lda [<__si], y
-	sta <__ch
-	spd_div2_word <__cx
+	ldy #$01
+	spd_stw_div2_zpii_rev __si, <__cx
 
 	; __ax = SG data address
 
-	iny
-	lda [<__si], y
-	sta <__al
-	iny
-	lda [<__si], y
-	sta <__ah
+	ldy #$02
+	spd_stw_zpii_rev __si, <__ax
 
 	; __bl = SG data bank
 
@@ -2291,22 +2223,13 @@ __attr_transf_XY_IND_dbf:
 
 	; __cx = SG data length
 
-	cly
-	lda [<__si], y
-	sta <__cl
-	iny
-	lda [<__si], y
-	sta <__ch
-	spd_div2_word <__cx
+	ldy #$01
+	spd_stw_div2_zpii_rev __si, <__cx
 
 	; __ax = SG data address
 
-	iny
-	lda [<__si], y
-	sta <__al
-	iny
-	lda [<__si], y
-	sta <__ah
+	ldy #$02
+	spd_stw_zpii_rev __si, <__ax
 
 	; __bl = SG data bank
 
