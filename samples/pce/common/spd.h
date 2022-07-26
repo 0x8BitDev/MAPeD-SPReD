@@ -20,7 +20,7 @@ __TIA_RTS	= ram_hdwr_tia_rts
 History:
 
 v0.6
-2022.07.25 - fixed and optimized 'spd_mul3_bhdh' macro and 'spd_SATB_push_sprite', 'load_SG_data' routines (-32 cycles); removed unused math macroses
+2022.07.26 - added LUT for sprite/SG data indexing +minor changes (-92 cycles); removed unused math macroses
 2022.07.22 - changed 'General information' items 5, 6, 9
 2022.07.19 - added 'General information' section
 2022.07.18 - added 'spd_' prefix to macroses
@@ -559,51 +559,25 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 
 ; math macroses
 
-; \1 = bhdh * 6
-	.macro spd_mul6_bhdh
-	; XY = 2x
-	lda <__bh
-	asl a
-	tay
-	rol <__dh
-	ldx <__dh
-
-	; \1 = 4x
-	asl a
-	rol <__dh
-	sta <__bh
-
-	; \1 = XY + 4x
-	clc
-	tya
-	adc <__bh
-	sta low_byte \1
-	txa
-	adc <__dh
-	sta high_byte \1
+; \1 = Y * 3
+	.macro spd_mul3_y
+	lda __mul3_lb_LUT, y	;5
+	sta low_byte \1		;4/5
+	lda __mul3_hb_LUT, y	;5
+	sta high_byte \1	;4/5 = 18(20)
 	.endm
 
-; \1 = bhdh * 3
-	.macro spd_mul3_bhdh
-	; XY = 2x
-	lda <__bh		;4
+; \1 = Y * 6
+	.macro spd_mul6_y
+	lda __mul3_lb_LUT, y	;5
 	asl a			;2
-	tay			;2
-	lda <__dh		;4
-	rol a			;2
-	tax			;2 = 16
-
-	; \1 = XY + 2x
-	clc			;2
-	tya			;2
-	adc <__bh		;4
 	sta low_byte \1		;4/5
-	txa			;2
-	adc <__dh		;4
+	lda __mul3_hb_LUT, y	;5
+	rol a			;2
 	sta high_byte \1	;4/5 = 22(24)
 	.endm
 
-; \1 = \2 + ( a * 8 ), \2 - SATB
+; \1 = \2 + ( A * 8 ), \2 - SATB
 	.macro spd_calc_SATB_pos
 	stz high_byte \1
 	asl a
@@ -1352,8 +1326,8 @@ __tiirts	.ds 1	; $60 rts
 .endif
 	; offset x3 -> word:addr, byte:bank
 
-	stz <__dh
-	spd_mul3_bhdh <__dx
+	ldy <__bh
+	spd_mul3_y <__dx
 
 	call _spd_farptr_add_offset
 
@@ -1807,9 +1781,7 @@ __attr_transf_XY_IND_dbf:
 
 	; __dx = SG bank index x6 ( .word <data_length>, chrN, bank(chrN) )
 
-	sty <__bh
-	stz <__dh
-	spd_mul6_bhdh <__dx
+	spd_mul6_y <__dx
 
 	stw <__spr_SG_data_addr, <__si
 	lda <__spr_SG_data_bank
@@ -1944,8 +1916,8 @@ __attr_transf_XY_IND_dbf:
 
 	; offset x3 -> word:addr, byte:bank
 
-	stz <__dh
-	spd_mul3_bhdh <__dx
+	ldy <__bh
+	spd_mul3_y <__dx
 
 	call _spd_farptr_add_offset
 
@@ -1998,8 +1970,8 @@ __attr_transf_XY_IND_dbf:
 
 	; offset x3 -> word:addr, byte:bank
 
-	stz <__dh
-	spd_mul3_bhdh <__dx
+	ldy <__bh
+	spd_mul3_y <__dx
 
 	call _spd_farptr_add_offset
 
@@ -2209,9 +2181,7 @@ __attr_transf_XY_IND_dbf:
 
 	; __dx = SG bank index x6 ( .word <data_length>, chrN, bank(chrN) )
 
-	sty <__bh
-	stz <__dh
-	spd_mul6_bhdh <__dx
+	spd_mul6_y <__dx
 
 	stw <__spr_SG_data_addr, <__si
 	lda <__spr_SG_data_bank
@@ -2287,6 +2257,42 @@ __attr_transf_XY_IND_dbf:
 	rts
 
 	.endp
+
+__mul3_lb_LUT:
+	.byte $00,$03,$06,$09,$0C,$0F,$12,$15,$18,$1B,$1E,$21,$24,$27,$2A,$2D
+	.byte $30,$33,$36,$39,$3C,$3F,$42,$45,$48,$4B,$4E,$51,$54,$57,$5A,$5D
+	.byte $60,$63,$66,$69,$6C,$6F,$72,$75,$78,$7B,$7E,$81,$84,$87,$8A,$8D
+	.byte $90,$93,$96,$99,$9C,$9F,$A2,$A5,$A8,$AB,$AE,$B1,$B4,$B7,$BA,$BD
+	.byte $C0,$C3,$C6,$C9,$CC,$CF,$D2,$D5,$D8,$DB,$DE,$E1,$E4,$E7,$EA,$ED
+	.byte $F0,$F3,$F6,$F9,$FC,$FF,$02,$05,$08,$0B,$0E,$11,$14,$17,$1A,$1D
+	.byte $20,$23,$26,$29,$2C,$2F,$32,$35,$38,$3B,$3E,$41,$44,$47,$4A,$4D
+	.byte $50,$53,$56,$59,$5C,$5F,$62,$65,$68,$6B,$6E,$71,$74,$77,$7A,$7D
+	.byte $80,$83,$86,$89,$8C,$8F,$92,$95,$98,$9B,$9E,$A1,$A4,$A7,$AA,$AD
+	.byte $B0,$B3,$B6,$B9,$BC,$BF,$C2,$C5,$C8,$CB,$CE,$D1,$D4,$D7,$DA,$DD
+	.byte $E0,$E3,$E6,$E9,$EC,$EF,$F2,$F5,$F8,$FB,$FE,$01,$04,$07,$0A,$0D
+	.byte $10,$13,$16,$19,$1C,$1F,$22,$25,$28,$2B,$2E,$31,$34,$37,$3A,$3D
+	.byte $40,$43,$46,$49,$4C,$4F,$52,$55,$58,$5B,$5E,$61,$64,$67,$6A,$6D
+	.byte $70,$73,$76,$79,$7C,$7F,$82,$85,$88,$8B,$8E,$91,$94,$97,$9A,$9D
+	.byte $A0,$A3,$A6,$A9,$AC,$AF,$B2,$B5,$B8,$BB,$BE,$C1,$C4,$C7,$CA,$CD
+	.byte $D0,$D3,$D6,$D9,$DC,$DF,$E2,$E5,$E8,$EB,$EE,$F1,$F4,$F7,$FA,$FD
+
+__mul3_hb_LUT:
+	.byte $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+	.byte $00,$00,$00,$00,$00,$00,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01
+	.byte $01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01
+	.byte $01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01
+	.byte $01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01
+	.byte $01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01
+	.byte $01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$02,$02,$02,$02,$02
+	.byte $02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02
+	.byte $02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02
+	.byte $02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02
+	.byte $02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02
+	.byte $02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02
 
 	.endprocgroup
 
