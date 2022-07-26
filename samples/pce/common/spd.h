@@ -1104,7 +1104,7 @@ __tiirts	.ds 1	; $60 rts
 	tax
 
 	stw __bleni, <__bx
-	spd_div8_word <__bx			; __bl - number of sprites
+	spd_div8_word <__bx		; __bl - number of sprites
 
 	stw __bdsti, <__cx
 	lda #6				; offset to the first palette byte
@@ -1465,14 +1465,14 @@ __tiirts	.ds 1	; $60 rts
 
 _push_SG_data:
 
+.ifdef	SPD_DEBUG
+	spd_dbg_border_push_sprite
+.endif
+
 	; calc SATB address for the next sprites
 
 	lda <__SATB_pos
 	spd_calc_SATB_pos <__spr_SATB_addr, #__SATB
-
-.ifdef	SPD_DEBUG
-	spd_dbg_border_push_sprite
-.endif
 
 	jsr unmap_data
 
