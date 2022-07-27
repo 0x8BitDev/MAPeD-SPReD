@@ -20,16 +20,16 @@ __TIA_RTS	= ram_hdwr_tia_rts
 History:
 
 v0.6
-2022.07.26 - added LUT for sprite/SG data indexing +minor changes (-92 cycles); removed unused math macroses
+2022.07.26 - added LUT for sprite/SG data indexing +minor changes (-100 cycles); removed unused math macros
 2022.07.22 - changed 'General information' items 5, 6, 9
 2022.07.19 - added 'General information' section
-2022.07.18 - added 'spd_' prefix to macroses
+2022.07.18 - added 'spd_' prefix to macros
 2022.07.18 - added 'spd_SATB_to_VRAM()' and 'spd_SATB_to_VRAM( _spr_cnt )'
 2022.07.17 - optimized 'spd_SATB_clear_from', 'spd_dbl_buff_VRAM_addr', fixed XY correction in the 'spd_SATB_set_sprite_LT'
 2022.07.16 - added functions for simple sprites: spd_set_palette_LT( ind ), spd_get_palette_LT(), spd_set_pri_LT( SPD_SPR_PRI_HIGH/SPD_SPR_PRI_LOW ), spd_set_x_LT( X ), spd_get_x_LT(), spd_set_y_LT( Y ), spd_get_y_LT(), spd_show_LT(), spd_hide_LT()
 2022.07.16 - 'spd_SATB_push_simple_sprite' renamed to 'spd_SATB_set_sprite_LT'
 2022.07-14 - the library code has been adapted to the new ASM data format; old projects need to be re-exported (!)
-2022.07.14 - border color procedures replaced with macroses
+2022.07.14 - border color procedures replaced with macros
 2022.07.13 - added a little note about using the 'SPD_DEBUG' flag
 2022.07.12 - added 'SPD_TII_ATTR_XY' flag which speeds up transformation of meta-sprite attributes a bit, but may delay interrupts (!)
 2022.07.12 - added cyan border color as attributes transformation indicator
@@ -592,16 +592,18 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	sta high_byte \1
 	.endm	
 
-; \1 /= 8
+; \2 = \1 / 8
 	.macro spd_div8_word
-	lda low_byte \1
-	lsr high_byte \1
-	ror a
-	lsr high_byte \1
-	ror a
-	lsr high_byte \1
-	ror a
-	sta low_byte \1
+	lda high_byte \1	;4/5
+	sta high_byte \2	;4/5
+	lda low_byte \1		;4/5
+	lsr high_byte \2	;6
+	ror a			;2
+	lsr high_byte \2	;6
+	ror a			;2
+	lsr high_byte \2	;6
+	ror a			;2
+	sta low_byte \2		;4/5 = 40(44)
 	.endm
 
 ; \1 /= 32
@@ -1103,8 +1105,7 @@ __tiirts	.ds 1	; $60 rts
 	ora #%10000000			; set SPBG bit by default
 	tax
 
-	stw __bleni, <__bx
-	spd_div8_word <__bx		; __bl - number of sprites
+	spd_div8_word __bleni, <__bx	; __bl - number of sprites
 
 	stw __bdsti, <__cx
 	lda #6				; offset to the first palette byte
@@ -1400,9 +1401,7 @@ __tiirts	.ds 1	; $60 rts
 	spd_add_a_to_word <__si		; __si - points to attributes
 
 	; check SATB overflow
-
-	stw __bleni, <__ax
-	spd_div8_word <__ax			; __al - number of sprites
+	spd_div8_word __bleni, <__ax	; __al - number of sprites
 	clc
 	adc <__SATB_pos
 	cmp #SATB_SIZE + 1
