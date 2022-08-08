@@ -1526,7 +1526,7 @@ __attr_transf_XY:
 	jsr __TII
 .endif
 
-.__attr_loop_XY:
+.__attr_loop_XY:			;176(180)
 
 	iny				;2
 
@@ -1607,7 +1607,7 @@ __attr_transf_XY_IND_alt:
 
 	cly
 
-.__attr_loop_XY_IND_alt:
+.__attr_loop_XY_IND_alt:		;194(198)
 
 	iny
 
@@ -1692,7 +1692,7 @@ __attr_transf_XY_IND_dbf:
 
 	cly
 
-.__attr_loop_XY_IND_dbf:
+.__attr_loop_XY_IND_dbf:		;194(198)
 
 	iny
 
