@@ -8,6 +8,8 @@
 
 u8	__spr_collision = 0;
 
+#define	ENABLE_COLLISION_DETECTION	__spr_collision = 1;	// enable collision detection anyway
+
 void	__fastcall wait_vsync();
 
 

@@ -61,8 +61,8 @@ void scene_update()
 	delta_y = __player_y - mpd_scroll_y();
 
 	// update scene position
-	mpd_scroll_step_x( __delta_LR );
-	mpd_scroll_step_y( __delta_UD );
+	mpd_set_scroll_step_x( __delta_LR );
+	mpd_set_scroll_step_y( __delta_UD );
 
 	mpd_clear_update_flags();
 
@@ -92,32 +92,38 @@ void scene_update()
 	// use updated scroll values to synchronize player's position with the scene coordinates
 	player_update_pos( __player_x - mpd_scroll_x(), __player_y - mpd_scroll_y() );
 
-DBG_UPDATE_ENTITIES
-
-	// update all map entities
-	update_scene_entities( SATB_POS_ENTITY );
-
 	// check player collision
 	if( __spr_collision )
 	{
 DBG_PLAYER_COLLISION
 
-		check_player_collision();
+		check_player_collisions();
 
 		__spr_collision = 0;
 	}
 
+DBG_UPDATE_ENTITIES
+
+	update_scene_entities( SATB_POS_ENTITY );
+
 DBG_BLACK_BORDER
 
+	if( __enemy_hit )
+	{
+		player_update_hit();
+	}
+
 #if	DBG_MODE
-put_string( "ents :", 3, 0 );
-put_number( __screen_ent_cache_pos, 2, 9, 0 );
-put_string( "cents:", 3, 1 );
-put_number( __screen_ent_coll_cache_pos, 2, 9, 1 );
-put_string( "stars:", 3, 2 );
-put_number( __player_data.stars, 2, 9, 2 );
-put_string( "/", 11, 2 );
-put_number( __player_data.max_stars, 2, 12, 2 );
+put_string( "ccach:", 3, 0 );
+put_number( __collision_cache_pos, 2, 9, 0 );
+put_string( "ents :", 3, 1 );
+put_number( __screen_ent_cache_pos, 2, 9, 1 );
+put_string( "cents:", 3, 2 );
+put_number( __screen_ent_coll_cache_pos, 2, 9, 2 );
+put_string( "stars:", 3, 3 );
+put_number( __player_data.stars, 2, 9, 3 );
+put_string( "/", 11, 3 );
+put_number( __player_data.max_stars, 2, 12, 3 );
 #endif
 
 	// update BAT with tiles

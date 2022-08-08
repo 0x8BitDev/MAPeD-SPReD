@@ -13,6 +13,7 @@
 #define	UID_ENT_ENEMY_WALKING		2
 #define	UID_ENT_ENEMY_FLYING		3
 #define	UID_ENT_SWITCH			4
+#define	UID_ENT_PLATFORM		5
 
 // sprite name aliases
 
@@ -23,6 +24,7 @@
 #define	ENT_SPR_ENEMY_FLYING_RIGHT	enemy_flying_16x16_RIGHT
 #define	ENT_SPR_SWITCH_OFF		switch_off
 #define	ENT_SPR_SWITCH_ON		switch_on
+#define	ENT_SPR_PLATFORM		platform_32x8
 
 #define	ENT_ID( id )	id << 12
 
@@ -58,6 +60,8 @@ u8	base_ent_coll_star_height	= 0;
 
 #define	ENT_ENEMY_WALKING_WIDTH		16
 #define	ENT_ENEMY_FLYING_WIDTH		16
+#define	ENT_PLATFORM_WIDTH		32
+#define	ENT_PLATFORM_HEIGHT		8
 
 #define	IS_PLAYER_INTERSECT_BOX( box_x, box_y, box_width, box_height ) ( player_x < ( box_x + box_width ) ) && ( ( player_x + PLAYER_WIDTH ) > box_x ) && ( player_y < ( box_y + box_height ) ) && ( ( player_y + PLAYER_HEIGHT ) > box_y )
 
@@ -98,6 +102,7 @@ _init_ent_arr:
 	.dw _init_ent_enemy_walking
 	.dw _init_ent_enemy_flying
 	.dw _init_ent_switch
+	.dw _init_ent_platform
 
 _init_ent_null:
 	call _init_null
@@ -116,6 +121,10 @@ _init_ent_enemy_flying:
 	rts
 
 _init_ent_switch:
+	call _init_entity
+	rts
+
+_init_ent_platform:
 	call _init_entity
 	rts
 
@@ -168,6 +177,7 @@ _upd_ent_arr:
 	.dw _upd_ent_enemy_walking
 	.dw _upd_ent_enemy_flying
 	.dw _upd_ent_switch
+	.dw _upd_ent_platform
 
 _upd_ent_null:
 	call _update_null
@@ -187,6 +197,10 @@ _upd_ent_enemy_flying:
 
 _upd_ent_switch:
 	call _update_switch
+	rts
+
+_upd_ent_platform:
+	call _update_platform
 	rts
 
 #endasm
@@ -244,6 +258,18 @@ u8	update_switch()
 	return 0;
 }
 
+u8	update_platform()
+{
+	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
+	{
+		update_cached_platform();
+
+		return 1;
+	}
+
+	return 0;
+}
+
 //************************************************************
 // 3. Cached entities update.
 //************************************************************
@@ -269,6 +295,7 @@ _upd_cached_ent_arr:
 	.dw _upd_cached_ent_enemy_walking
 	.dw _upd_cached_ent_enemy_flying
 	.dw _upd_cached_ent_switch
+	.dw _upd_cached_ent_platform
 
 _upd_cached_ent_null:
 	call _update_cached_null
@@ -290,6 +317,10 @@ _upd_cached_ent_switch:
 	call _update_cached_switch
 	rts
 
+_upd_cached_ent_platform:
+	call _update_cached_platform
+	rts
+
 #endasm
 
 void	update_cached_null()
@@ -309,7 +340,7 @@ __eny_y_offs:
 #endasm
 
 //
-// prop0: 8-bit: 1 - RIGHT, 0-LEFT; 6-0: distance
+// prop0: 7-bit: 1 - RIGHT, 0-LEFT; 6-0: distance
 // prop1: 7-0: current distance
 // prop2: 7-0: pause in frames
 // prop3: 7-0: current pause value
@@ -391,7 +422,7 @@ void	update_cached_enemy_walking()
 }
 
 //
-// prop0: 8-bit: 1 - RIGHT, 0-LEFT; 6-0: distance
+// prop0: 7-bit: 1 - RIGHT, 0-LEFT; 6-0: distance
 // prop1: 7-0: current distance
 //
 void	update_cached_enemy_flying()
@@ -452,11 +483,14 @@ void	update_cached_enemy_flying()
 	}
 }
 
+//
+// prop0: 0-bit: 1 - ON, 0 - OFF
+//
 void	update_cached_switch()
 {
 	ENT_ADD_TO_SATB
 
-	if( ent_ptr->prop1 & 0x01 )
+	if( ent_ptr->prop0 & 0x01 )
 	{
 		spd_SATB_set_sprite_LT( ENT_SPR_SWITCH_ON, ent_x, ent_y_unmasked );
 	}
@@ -464,6 +498,69 @@ void	update_cached_switch()
 	{
 		spd_SATB_set_sprite_LT( ENT_SPR_SWITCH_OFF, ent_x, ent_y_unmasked );
 	}
+}
+
+//
+// prop0: 7-bit: 1 - RIGHT/DOWN, 0-LEFT/UP; 6-0: distance
+// prop1: 7-0: current distance
+// prop2: 7-bit: 1 - ON, 0 - OFF; 6-bit: 1 - UP/DOWN, 0 - LEFT/RIGHT
+//
+void	update_cached_platform()
+{
+	ENT_ADD_TO_SATB
+
+	if( ent_ptr->prop2 & 0x40 )	// UP/DOWN
+	{
+		if( ent_ptr->prop2 & 0x80 )	// ON
+		{
+			if( ent_ptr->prop0 & 0x80 )	// DOWN
+			{
+				++ent_ptr->prop1;
+
+				if( ent_ptr->prop1 >= ( ent_ptr->prop0 & 0x7f ) )
+				{
+					ent_ptr->prop0 ^= 0x80;
+				}
+			}
+			else	// UP
+			{
+				--ent_ptr->prop1;
+
+				if( !ent_ptr->prop1 )
+				{
+					ent_ptr->prop0 ^= 0x80;
+				}
+			}
+		}
+		spd_SATB_set_sprite_LT( ENT_SPR_PLATFORM, ent_x, ent_y_unmasked + ent_ptr->prop1 );
+	}
+	else
+	{
+		if( ent_ptr->prop2 & 0x80 )	// ON
+		{
+			if( ent_ptr->prop0 & 0x80 )	// RIGHT
+			{
+				++ent_ptr->prop1;
+
+				if( ent_ptr->prop1 >= ( ent_ptr->prop0 & 0x7f ) )
+				{
+					ent_ptr->prop0 ^= 0x80;
+				}
+			}
+			else	// LEFT
+			{
+				--ent_ptr->prop1;
+
+				if( !ent_ptr->prop1 )
+				{
+					ent_ptr->prop0 ^= 0x80;
+				}
+			}
+		}
+		spd_SATB_set_sprite_LT( ENT_SPR_PLATFORM, ent_x + ent_ptr->prop1, ent_y_unmasked );
+	}
+
+	ENABLE_COLLISION_DETECTION
 }
 
 //************************************************************
@@ -491,6 +588,7 @@ _check_collision_func_arr:
 	.dw _check_enemy_walking
 	.dw _check_enemy_flying
 	.dw _check_switch
+	.dw _check_platform
 
 _check_null:
 	call _check_collision_null
@@ -512,6 +610,10 @@ _check_switch:
 	call _check_collision_switch
 	rts
 
+_check_platform:
+	call _check_collision_platform
+	rts
+
 #endasm
 
 u8	check_collision_null()
@@ -528,7 +630,7 @@ u8	check_collision_coll_star()
 		++__player_data.stars;	// increment collected stars counter
 		ENT_CACHE_RESET
 		
-		return 1;	// break collision detection loop
+		return 1;	// add to collision cache
 	}
 
 	return 0;	// continue collision detection
@@ -540,7 +642,7 @@ u8	check_collision_enemy_walking()
 	{
 		player_enemy_hit();
 
-		return 1;	// break collision detection loop
+		return 1;	// add to collision cache
 	}
 
 	return 0;	// continue collision detection
@@ -552,7 +654,7 @@ u8	check_collision_enemy_flying()
 	{
 		player_enemy_hit();
 
-		return 1;	// break collision detection loop
+		return 1;	// add to collision cache
 	}
 
 	return 0;	// continue collision detection
@@ -569,18 +671,107 @@ u8	check_collision_switch()
 	{
 		if( __jpad_val & JOY_ACTION_BTN )
 		{
-			if( !( ent_ptr->prop1 & 2 ) )
+			if( !( ent_ptr->prop0 & 2 ) )
 			{
-				ent_ptr->prop1 ^= 1;
-				ent_ptr->prop1 |= 2;
+				ent_ptr->prop0 ^= 1;
+				ent_ptr->prop0 |= 2;
+
+				if( ent_ptr->targ_id != 0xff )
+				{
+					__map_ents[ ent_ptr->targ_id ].prop2 ^= 0x80;	// switch on/off target entity
+				}
 			}
 		}
 		else
 		{
-			ent_ptr->prop1 &= ~2;
+			ent_ptr->prop0 &= ~2;
 		}
 
-		return 1;	// break collision detection loop
+		return 1;	// add to collision cache
+	}
+
+	return 0;	// continue collision detection
+}
+
+u8	check_collision_platform()
+{
+	u8	player_bottom;
+	s16	ent_y_pos;
+
+	if( ent_ptr->prop2 & 0x40 )	// UP/DOWN
+	{
+		ent_y_pos = ent_y_unmasked + ent_ptr->prop1;
+
+		if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_pos, ENT_PLATFORM_WIDTH, ENT_PLATFORM_HEIGHT ) )
+		{
+			player_bottom = player_y + PLAYER_HEIGHT;
+
+			if( player_bottom > ent_y_pos && player_bottom <= ( ent_y_pos + ENT_PLATFORM_HEIGHT ) )
+			{
+				// update player Y-position
+				player_y = ent_y_pos - PLAYER_HEIGHT;
+				spd_set_y_LT( player_y );
+				__player_y = player_y + scr_scroll_y + 1;
+
+				if( ent_ptr->prop2 & 0x80 )	// ON
+				{
+					mpd_set_scroll_step_y( mpd_get_scroll_step_y() + 1 );
+
+					// move player with platform
+					if( ent_ptr->prop0 & 0x80 )	// DOWN
+					{
+						++__player_y;
+						mpd_move_down();
+
+					}
+					else	// UP
+					{
+						--__player_y;
+						mpd_move_up();
+					}
+				}
+
+				PLAYER_STATE_ON_SURFACE
+			}
+		}
+
+		return 1;	// add to collision cache
+	}
+	else
+	{
+		if( IS_PLAYER_INTERSECT_BOX( ent_x + ent_ptr->prop1, ent_y_unmasked, ENT_PLATFORM_WIDTH, ENT_PLATFORM_HEIGHT ) )
+		{
+			player_bottom = player_y + PLAYER_HEIGHT;
+
+			if( player_bottom > ent_y_unmasked && player_bottom <= ( ent_y_unmasked + ENT_PLATFORM_HEIGHT ) )
+			{
+				// update player Y-position
+				player_y = ent_y_unmasked - PLAYER_HEIGHT;
+				spd_set_y_LT( player_y );
+				__player_y = player_y + scr_scroll_y + 1;
+
+				if( ent_ptr->prop2 & 0x80 )	// ON
+				{
+					mpd_set_scroll_step_x( mpd_get_scroll_step_x() + 1 );
+
+					// move player with platform
+					if( ent_ptr->prop0 & 0x80 )	// RIGHT
+					{
+						++__player_x;
+						mpd_move_right();
+					}
+					else	// LEFT
+					{
+						--__player_x;
+						mpd_move_left();
+					}
+				}
+
+				PLAYER_STATE_ON_SURFACE
+			}
+		}
+
+		return 1;	// add to collision cache
 	}
 
 	return 0;	// continue collision detection

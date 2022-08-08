@@ -29,6 +29,8 @@ const u8 PLAYER_CP_LT_RT	= ( PLAYER_HEIGHT - 7 );
 const u8 PLAYER_CP_MID_WIDTH	= ( PLAYER_WIDTH >> 1 );
 const u8 PLAYER_CP_LADDER	= PLAYER_CP_MID_WIDTH;
 
+#define	PLAYER_STATE_ON_SURFACE	__jump_acc = JUMP_ACC_VAL; __fall_acc = 0;
+
 #define MOVE_SPEED_LADDER	2	// pix/frame
 
 #define MOVE_LR_ACC_VAL		16	// power of two
@@ -228,8 +230,7 @@ void	__check_ground()
 	// check ground if player isn't jumping
 	if( __check_ground_cp() )
 	{
-		__jump_acc = JUMP_ACC_VAL;
-		__fall_acc = 0;
+		PLAYER_STATE_ON_SURFACE
 	}
 	else
 	{
@@ -404,31 +405,33 @@ void	player_enemy_hit()
 
 void	player_update_pos( s16 _x, s16 _y )
 {
-	u8 tick;
-
 	// update player's sprite position
 	spd_SATB_set_pos( SATB_POS_PLAYER );
 
-	if( __enemy_hit )
-	{
-		tick = clock_tt();
-
-		if( tick & 0x04 )
-		{
-			spd_hide_LT();
-			return;
-		}
-
-		__enemy_hit -= tick;
-
-		if( __enemy_hit < 0 )
-		{
-			__enemy_hit = 0;
-		}
-
-		spd_show_LT();
-	}
-
 	spd_set_x_LT( _x );
 	spd_set_y_LT( _y );
+}
+
+void	player_update_hit()
+{
+	u8 tick;
+
+	spd_SATB_set_pos( SATB_POS_PLAYER );
+
+	tick = clock_tt();
+
+	if( tick & 0x04 )
+	{
+		spd_hide_LT();
+		return;
+	}
+
+	__enemy_hit -= tick;
+
+	if( __enemy_hit < 0 )
+	{
+		__enemy_hit = 0;
+	}
+
+	spd_show_LT();
 }
