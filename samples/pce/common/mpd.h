@@ -8,6 +8,9 @@
 /*/	MPD-render v0.6
 History:
 
+2022.08.07 - added 'mpd_get_scroll_step_x'/'mpd_get_scroll_step_y'
+2022.08.07 - renamed 'mpd_scroll_step_x'/'mpd_scroll_step_y' to 'mpd_set_scroll_step_x'/'mpd_set_scroll_step_y'
+
 v0.6
 2022.07.01 - added MPD_DEBUG flag that shows how long screen drawing/scrolling takes by border colors (use Mednafen)
 2022.06.26 - asm routines are wrapped in .proc/.endp
@@ -280,8 +283,10 @@ public functions:
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 void	mpd_init( u8 _map_ind, u8 _step ) / _step - default step for both axes
-void	mpd_scroll_step_x( u8 _step_pix ) / _step_pix - 1-7 pix
-void	mpd_scroll_step_y( u8 _step_pix ) / _step_pix - 1-7 pix
+void	mpd_set_scroll_step_x( u8 _step_pix ) / _step_pix - 1-7 pix
+void	mpd_set_scroll_step_y( u8 _step_pix ) / _step_pix - 1-7 pix
+u8	mpd_get_scroll_step_x()
+u8	mpd_get_scroll_step_y()
 void	mpd_clear_update_flags()
 void	mpd_move_left()
 void	mpd_move_right()
@@ -1307,8 +1312,8 @@ void	mpd_init( u8 _map_ind )
 	set_screen_size( BAT_INDEX );
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-	mpd_scroll_step_x( _step );
-	mpd_scroll_step_y( _step );
+	mpd_set_scroll_step_x( _step );
+	mpd_set_scroll_step_y( _step );
 	__scroll_x	= 0;
 	__scroll_y	= 0;
 #if	FLAG_MODE_BIDIR_SCROLL
@@ -2160,14 +2165,24 @@ void	mpd_move_down()
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-void	mpd_scroll_step_x( u8 _step_pix )
+void	mpd_set_scroll_step_x( u8 _step_pix )
 {
 	__scroll_step_x = _step_pix & 0x07;
 }
 
-void	mpd_scroll_step_y( u8 _step_pix )
+void	mpd_set_scroll_step_y( u8 _step_pix )
 {
 	__scroll_step_y = _step_pix & 0x07;
+}
+
+u8	mpd_get_scroll_step_x()
+{
+	return __scroll_step_x;
+}
+
+u8	mpd_get_scroll_step_y()
+{
+	return __scroll_step_y;
 }
 
 void	mpd_clear_update_flags()
