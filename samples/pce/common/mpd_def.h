@@ -8,9 +8,9 @@
 /* some useful definitions */
 
 typedef unsigned char	u8;
-typedef unsigned int	u16;
-typedef char		s8;
-typedef int		s16;
+typedef unsigned short	u16;
+typedef signed char	s8;
+typedef short		s16;
 
 #define bool		u8
 #define TRUE	1
