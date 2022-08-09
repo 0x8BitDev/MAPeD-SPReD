@@ -7,13 +7,13 @@
 //##################################################################
 
 #define	SCREEN_ENT_MAX			4	// power of 2 to simplify data accessing by shifting screen number by 2 bits
-#define	SCREEN_ENT_COLLECTABLE_MAX	8	// power of 2 to simplify data accessing by shifting screen number by 3 bits
+#define	SCREEN_ENT_COLLECTABLE_MAX	4	// power of 2 to simplify data accessing by shifting screen number by 2 bits
 #define MAP_SCREENS_MAX			10	// max number of screens in a game map
 #define MAP_ENTS_MAX			SCREEN_ENT_MAX * MAP_SCREENS_MAX
 #define MAP_ENTS_COLLECTABLE_MAX	SCREEN_ENT_COLLECTABLE_MAX * MAP_SCREENS_MAX
 
 #define COLLISION_CACHE_MAX			4	// number of items in collision cache
-#define NUM_FRAMES_TO_UPDATE_COLLISION_CACHE	14	// number of frames to update collision cache
+#define NUM_FRAMES_TO_UPDATE_COLLISION_CACHE	6	// number of frames to update collision cache
 
 #define	ENT_FLAG_ACTIVE		0x8000
 #define	ENT_ID_MASK		0xf000
@@ -337,7 +337,7 @@ void	__update_ents( u8 _scr_pos )
 
 	// COLLECTABLE ENTITIES
 	scr_pos	= _scr_pos;
-	scr_pos <<= 3;	// x8 - SCREEN_ENT_COLLECTABLE_MAX[8]
+	scr_pos <<= 2;	// x4 - SCREEN_ENT_COLLECTABLE_MAX[4]
 
 	ent_coll_ptr = &__map_coll_ents[ scr_pos ];
 
@@ -365,8 +365,8 @@ void	__update_ents( u8 _scr_pos )
 	}
 
 	// OTHER ENTITIES
-	scr_pos	= _scr_pos;
-	scr_pos <<= 2;	// x4 - SCREEN_ENT_MAX[4]
+//!	scr_pos	= _scr_pos;
+//!	scr_pos <<= 2;	// x4 - SCREEN_ENT_MAX[4]
 
 	ent_ptr = &__map_ents[ scr_pos ];
 
@@ -506,9 +506,12 @@ void	check_player_collisions()
 		if( check_cached_entity_collision( ent_y & ENT_ID_MASK ) )
 		{
 			__map_collision_cache[ __collision_cache_pos++ ] = map_ent_ind;
-
-			__collision_cache_frames = NUM_FRAMES_TO_UPDATE_COLLISION_CACHE;
 		}
+	}
+
+	if( __collision_cache_pos )
+	{
+		__collision_cache_frames = NUM_FRAMES_TO_UPDATE_COLLISION_CACHE;
 	}
 
 	spd_SATB_set_pos( SATB_pos );

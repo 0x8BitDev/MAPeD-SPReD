@@ -9,12 +9,13 @@
 // entity uids
 
 #define UID_PLAYER			0
-#define	UID_ENT_COLLECTABLE_STAR	1
-#define	UID_ENT_ENEMY_WALKING		2
-#define	UID_ENT_ENEMY_FLYING		3
-#define	UID_ENT_SWITCH			4
-#define	UID_ENT_BUTTON			5
-#define	UID_ENT_PLATFORM		6
+#define	UID_ENT_COLLECTABLE_STAR	1	// ignores collision cache
+#define	UID_ENT_ENEMY_WALKING		2	// collision cache
+#define	UID_ENT_ENEMY_FLYING		3	// collision cache
+#define	UID_ENT_SWITCH			4	// collision cache
+#define	UID_ENT_BUTTON			5	// collision cache
+#define	UID_ENT_PLATFORM		6	// ignores collision cache - enables collision detection every frame
+#define	UID_ENT_LOGS			7	// ignores collision cache - enables collision detection every frame
 
 // sprite name aliases
 
@@ -28,6 +29,7 @@
 #define	ENT_SPR_BUTTON_OFF		button_off
 #define	ENT_SPR_BUTTON_ON		button_on
 #define	ENT_SPR_PLATFORM		platform_32x8
+#define	ENT_SPR_LOGS			logs_32x16
 
 #define	ENT_ID( id )	id << 12
 
@@ -39,6 +41,8 @@ u8	scr_pos;
 
 u8	map_coll_ent;
 u8	map_ent;
+
+u8	tmp_val8;
 
 s16	ent_x;
 s16	ent_y;
@@ -65,6 +69,7 @@ u8	base_ent_coll_star_height	= 0;
 #define	ENT_ENEMY_FLYING_WIDTH		16
 #define	ENT_PLATFORM_WIDTH		32
 #define	ENT_PLATFORM_HEIGHT		8
+#define	ENT_LOGS_PLATFORM_HEIGHT	8
 
 #define	IS_PLAYER_INTERSECT_BOX( box_x, box_y, box_width, box_height ) ( player_x < ( box_x + box_width ) ) && ( ( player_x + PLAYER_WIDTH ) > box_x ) && ( player_y < ( box_y + box_height ) ) && ( ( player_y + PLAYER_HEIGHT ) > box_y )
 
@@ -107,6 +112,7 @@ _init_ent_arr:
 	.dw _init_ent_switch
 	.dw _init_ent_button
 	.dw _init_ent_platform
+	.dw _init_ent_logs
 
 _init_ent_null:
 	call _init_null
@@ -121,6 +127,7 @@ _init_ent_enemy_flying:
 _init_ent_switch:
 _init_ent_button:
 _init_ent_platform:
+_init_ent_logs:
 	call _init_entity
 	rts
 
@@ -175,6 +182,7 @@ _upd_ent_arr:
 	.dw _upd_ent_switch
 	.dw _upd_ent_button
 	.dw _upd_ent_platform
+	.dw _upd_ent_logs
 
 _upd_ent_null:
 	call _update_null
@@ -202,6 +210,10 @@ _upd_ent_button:
 
 _upd_ent_platform:
 	call _update_platform
+	rts
+
+_upd_ent_logs:
+	call _update_logs
 	rts
 
 #endasm
@@ -283,6 +295,18 @@ u8	update_platform()
 	return 0;
 }
 
+u8	update_logs()
+{
+	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
+	{
+		update_cached_logs();
+
+		return 1;
+	}
+
+	return 0;
+}
+
 //************************************************************
 // 3. Cached entities update.
 //************************************************************
@@ -310,6 +334,7 @@ _upd_cached_ent_arr:
 	.dw _upd_cached_ent_switch
 	.dw _upd_cached_ent_button
 	.dw _upd_cached_ent_platform
+	.dw _upd_cached_ent_logs
 
 _upd_cached_ent_null:
 	call _update_cached_null
@@ -337,6 +362,10 @@ _upd_cached_ent_button:
 
 _upd_cached_ent_platform:
 	call _update_cached_platform
+	rts
+
+_upd_cached_ent_logs:
+	call _update_cached_logs
 	rts
 
 #endasm
@@ -598,6 +627,61 @@ void	update_cached_platform()
 	ENABLE_COLLISION_DETECTION
 }
 
+//
+// prop0: 7-0: falling pause in frames
+//*prop1: 7-bit: 1 - activation, 6-bit: 1 - start falling; 5-bit: 1 - inactive
+//
+#asm
+__prand_offs:
+	.db $0, $1, $2, $3, $2, $1, $0, $1
+#endasm
+
+void	update_cached_logs()
+{
+	if( !( ent_ptr->prop1 & 0x20 ) )	// active?
+	{
+		if( ent_ptr->prop1 & 0x80 )	// activated?
+		{
+			if( ent_ptr->prop1 & 0x40 )
+			{
+				ent_ptr->prop2 += 5;
+
+				if( ent_ptr->prop2 > ScrPixelsHeight )
+				{
+					ent_ptr->prop1 |= 0x20;	// deactivate
+				}
+			}
+			else
+			if( !--ent_ptr->prop0 )
+			{
+				ent_ptr->prop1 |= 0x40;	// time is over, start falling
+			}
+
+			tmp_val8 = ent_ptr->prop0;
+#asm	; apply shake
+
+	lda _tmp_val8
+	and #$07
+	tax
+
+	lda __prand_offs, x
+
+	clc
+	adc _ent_y_unmasked
+	sta _ent_y_unmasked
+	bcc .skip_hb
+	inc _ent_y_unmasked + 1
+.skip_hb:
+#endasm
+		}
+
+		ENT_ADD_TO_SATB
+		spd_SATB_set_sprite_LT( ENT_SPR_LOGS, ent_x, ent_y_unmasked + ent_ptr->prop2 );
+
+		ENABLE_COLLISION_DETECTION
+	}
+}
+
 //************************************************************
 // 4. Player/entity collision detection.
 //************************************************************
@@ -625,6 +709,7 @@ _check_collision_func_arr:
 	.dw _check_switch
 	.dw _check_button
 	.dw _check_platform
+	.dw _check_logs
 
 _check_null:
 	call _check_collision_null
@@ -654,6 +739,10 @@ _check_platform:
 	call _check_collision_platform
 	rts
 
+_check_logs:
+	call _check_collision_logs
+	rts
+
 #endasm
 
 u8	check_collision_null()
@@ -670,7 +759,7 @@ u8	check_collision_coll_star()
 		++__player_data.stars;	// increment collected stars counter
 		ENT_CACHE_RESET
 		
-		return 1;	// add to collision cache
+//		return 1;	// add to collision cache <- IGNORE COLLISION CACHE FOR COLLECTABLE ENTITIES!
 	}
 
 	return 0;	// continue collision detection
@@ -766,7 +855,7 @@ u8	check_collision_button()
 
 u8	check_collision_platform()
 {
-	u8	player_bottom;
+	s16	player_bottom;
 	s16	ent_y_pos;
 
 	if( PLAYER_IS_FALLING )
@@ -808,7 +897,7 @@ u8	check_collision_platform()
 				}
 			}
 
-			return 1;	// add to collision cache
+//			return 1;	// add to collision cache <- IGNORE COLLISION CACHE FOR PLATFORM ENTITIES!
 		}
 		else
 		{
@@ -844,7 +933,44 @@ u8	check_collision_platform()
 				}
 			}
 
-			return 1;	// add to collision cache
+//			return 1;	// add to collision cache <- IGNORE COLLISION CACHE FOR PLATFORM ENTITIES!
+		}
+	}
+
+	return 0;	// continue collision detection
+}
+
+//
+// prop0: 7-0: falling pause in frames
+//*prop1: 7-bit: 1 - activation, 6-bit: 1 - start falling; 5-bit: 1 - inactive
+//
+u8	check_collision_logs()
+{
+	s16	player_bottom;
+
+	if( !( ent_ptr->prop1 & 0x60 ) )
+	{
+		if( PLAYER_IS_FALLING )
+		{
+			if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, ent_ptr->width, ent_ptr->height ) )
+			{
+				player_bottom = player_y + PLAYER_HEIGHT;
+
+				if( player_bottom > ent_y_unmasked && player_bottom < ( ent_y_unmasked + ENT_LOGS_PLATFORM_HEIGHT ) )
+				{
+					// activate platform
+					ent_ptr->prop1 |= 0x80;
+
+					// update player Y-position
+					player_y = ent_y_unmasked - PLAYER_HEIGHT;
+					spd_set_y_LT( player_y );
+					__player_y = player_y + scr_scroll_y + 1;
+
+					PLAYER_STATE_ON_SURFACE
+				}
+
+//				return 1;	// add to collision cache <- IGNORE COLLISION CACHE FOR PLATFORM ENTITIES!
+			}
 		}
 	}
 
