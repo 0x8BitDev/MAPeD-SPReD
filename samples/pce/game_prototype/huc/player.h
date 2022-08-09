@@ -30,6 +30,7 @@ const u8 PLAYER_CP_MID_WIDTH	= ( PLAYER_WIDTH >> 1 );
 const u8 PLAYER_CP_LADDER	= PLAYER_CP_MID_WIDTH;
 
 #define	PLAYER_STATE_ON_SURFACE	__jump_acc = JUMP_ACC_VAL; __fall_acc = 0;
+#define	PLAYER_IS_FALLING	__fall_acc
 
 #define MOVE_SPEED_LADDER	2	// pix/frame
 
