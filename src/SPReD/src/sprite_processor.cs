@@ -641,7 +641,11 @@ namespace SPReD
 					{
 						attr = new CHR_data_attr( x << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS, y << utils.CONST_CHR_SIDE_PIXELS_CNT_POW_BITS );
 						attr.CHR_ind 		= x + ( y * _width );
+#if DEF_FIXED_LEN_PALETTE16_ARR
+						attr.palette_ind 	= palettes_array.Instance.palette_index;
+#else
 						attr.palette_ind 	= palette_group.Instance.active_palette;
+#endif
 						attr.palette_ind 	= attr.palette_ind < 0 ? 0:attr.palette_ind;
 						
 						spr.get_CHR_attr().Add( attr );
