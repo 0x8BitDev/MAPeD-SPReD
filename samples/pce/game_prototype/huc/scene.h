@@ -52,7 +52,12 @@ void	scene_init()
 	vsync();
 }
 
-void scene_update()
+void	scene_shake()
+{
+	//...
+}
+
+void	scene_update()
 {
 	s16	delta_x;
 	s16	delta_y;

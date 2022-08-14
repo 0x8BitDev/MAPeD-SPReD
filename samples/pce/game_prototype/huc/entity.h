@@ -16,6 +16,8 @@
 #define	UID_ENT_BUTTON			5	// collision cache
 #define	UID_ENT_PLATFORM		6	// ignores collision cache - enables collision detection every frame
 #define	UID_ENT_LOGS			7	// ignores collision cache - enables collision detection every frame
+#define	UID_ENT_DOOR			8	// ignores collision cache - enables collision detection every frame
+#define	UID_ENT_HEAVY_LOAD		9	// ignores collision cache - enables collision detection every frame
 
 // sprite name aliases
 
@@ -30,6 +32,23 @@
 #define	ENT_SPR_BUTTON_ON		button_on
 #define	ENT_SPR_PLATFORM		platform_32x8
 #define	ENT_SPR_LOGS			logs_32x16
+#define	ENT_SPR_DOOR			door_16x32_0
+#define	ENT_SPR_HEAVY_LOAD		heavy_load_32x64
+
+// static entities data
+u8	base_ent_coll_star_width	= 0;
+u8	base_ent_coll_star_height	= 0;
+
+#define	ENT_ENEMY_WALKING_WIDTH			16
+#define	ENT_ENEMY_FLYING_WIDTH			16
+#define	ENT_PLATFORM_WIDTH			32
+#define	ENT_PLATFORM_HEIGHT			8
+#define	ENT_LOGS_PLATFORM_HEIGHT		8
+#define	ENT_DOOR_HEIGHT				32
+#define	ENT_HEAVY_LOAD_HEIGHT			64
+
+#define	ENT_DOOR_LOOP_PAUSE_IN_FRAMES		0
+#define	ENT_HEAVY_LOAD_LOOP_PAUSE_IN_FRAMES	60
 
 #define	ENT_ID( id )	id << 12
 
@@ -60,16 +79,6 @@ mpd_MAP_COLLECTABLE_ENT*	ent_coll_ptr;
 mpd_SCR_DATA			scr_data;
 
 // end of the global vars scope
-
-// static entities data
-u8	base_ent_coll_star_width	= 0;
-u8	base_ent_coll_star_height	= 0;
-
-#define	ENT_ENEMY_WALKING_WIDTH		16
-#define	ENT_ENEMY_FLYING_WIDTH		16
-#define	ENT_PLATFORM_WIDTH		32
-#define	ENT_PLATFORM_HEIGHT		8
-#define	ENT_LOGS_PLATFORM_HEIGHT	8
 
 #define	IS_PLAYER_INTERSECT_BOX( box_x, box_y, box_width, box_height ) ( player_x < ( box_x + box_width ) ) && ( ( player_x + PLAYER_WIDTH ) > box_x ) && ( player_y < ( box_y + box_height ) ) && ( ( player_y + PLAYER_HEIGHT ) > box_y )
 
@@ -113,6 +122,8 @@ _init_ent_arr:
 	.dw _init_ent_button
 	.dw _init_ent_platform
 	.dw _init_ent_logs
+	.dw _init_ent_door
+	.dw _init_ent_heavy_load
 
 _init_ent_null:
 	call _init_null
@@ -128,6 +139,8 @@ _init_ent_switch:
 _init_ent_button:
 _init_ent_platform:
 _init_ent_logs:
+_init_ent_door:
+_init_ent_heavy_load:
 	call _init_entity
 	rts
 
@@ -183,6 +196,8 @@ _upd_ent_arr:
 	.dw _upd_ent_button
 	.dw _upd_ent_platform
 	.dw _upd_ent_logs
+	.dw _upd_ent_door
+	.dw _upd_ent_heavy_load
 
 _upd_ent_null:
 	call _update_null
@@ -214,6 +229,14 @@ _upd_ent_platform:
 
 _upd_ent_logs:
 	call _update_logs
+	rts
+
+_upd_ent_door:
+	call _update_door
+	rts
+
+_upd_ent_heavy_load:
+	call _update_heavy_load
 	rts
 
 #endasm
@@ -307,6 +330,30 @@ u8	update_logs()
 	return 0;
 }
 
+u8	update_door()
+{
+	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
+	{
+		update_cached_door();
+
+		return 1;
+	}
+
+	return 0;
+}
+
+u8	update_heavy_load()
+{
+	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
+	{
+		update_cached_heavy_load();
+
+		return 1;
+	}
+
+	return 0;
+}
+
 //************************************************************
 // 3. Cached entities update.
 //************************************************************
@@ -335,6 +382,8 @@ _upd_cached_ent_arr:
 	.dw _upd_cached_ent_button
 	.dw _upd_cached_ent_platform
 	.dw _upd_cached_ent_logs
+	.dw _upd_cached_ent_door
+	.dw _upd_cached_ent_heavy_load
 
 _upd_cached_ent_null:
 	call _update_cached_null
@@ -366,6 +415,14 @@ _upd_cached_ent_platform:
 
 _upd_cached_ent_logs:
 	call _update_cached_logs
+	rts
+
+_upd_cached_ent_door:
+	call _update_cached_door
+	rts
+
+_upd_cached_ent_heavy_load:
+	call _update_cached_heavy_load
 	rts
 
 #endasm
@@ -531,13 +588,13 @@ void	update_cached_enemy_flying()
 }
 
 //
-// prop0: 0-bit: 1 - ON, 0 - OFF
+// prop2: 7-bit: 1 - ON, 0 - OFF
 //
 void	update_cached_switch()
 {
 	ENT_ADD_TO_SATB
 
-	if( ent_ptr->prop0 & 0x01 )
+	if( ent_ptr->prop2 & 0x80 )
 	{
 		spd_SATB_set_sprite_LT( ENT_SPR_SWITCH_ON, ent_x, ent_y_unmasked );
 	}
@@ -548,13 +605,13 @@ void	update_cached_switch()
 }
 
 //
-// prop0: 0-bit: 1 - ON, 0 - OFF
+// prop2: 7-bit: 1 - ON, 0 - OFF
 //
 void	update_cached_button()
 {
 	ENT_ADD_TO_SATB
 
-	if( ent_ptr->prop0 )
+	if( ent_ptr->prop2 & 0x80 )
 	{
 		spd_SATB_set_sprite_LT( ENT_SPR_BUTTON_ON, ent_x, ent_y_unmasked );
 	}
@@ -682,6 +739,101 @@ void	update_cached_logs()
 	}
 }
 
+void	update_cached_door()
+{
+	update_obstacle_logic( ENT_DOOR_LOOP_PAUSE_IN_FRAMES );
+
+	ENT_ADD_TO_SATB
+	spd_SATB_set_sprite_LT( ENT_SPR_DOOR, ent_x, ent_y_unmasked + ent_ptr->prop1 );
+	spd_set_pri_LT( SPD_SPR_PRI_LOW );
+
+	ENABLE_COLLISION_DETECTION
+}
+
+void	update_cached_heavy_load()
+{
+	update_obstacle_logic( ENT_HEAVY_LOAD_LOOP_PAUSE_IN_FRAMES );
+
+	ENT_ADD_TO_SATB
+	spd_SATB_set_sprite_LT( ENT_SPR_HEAVY_LOAD, ent_x, ent_y_unmasked + ent_ptr->prop1 );
+	spd_set_pri_LT( SPD_SPR_PRI_LOW );
+
+	ENABLE_COLLISION_DETECTION
+}
+
+//
+// prop0: 7-bit: 1 - DOWN, 0 - UP; 6-0: distance
+// prop1: 7-0: current distance
+// prop2: 7-bit: 1 - ON, 0 - OFF; 6-bit: loop, 5-bit: damage ON/OFF, 4-bit: shake when hits the ground
+//*prop3: 7-0: pause in frames
+//
+void	update_obstacle_logic( u8 _pause_in_frames )
+{
+	if( ent_ptr->prop2 & 0x80 )	// ON/OFF
+	{
+		if( ent_ptr->prop0 & 0x80 )	// DOWN
+		{
+			if( ent_ptr->prop3 )	// pause?
+			{
+				--ent_ptr->prop3;
+				return;
+			}
+
+			if( ( ent_ptr->prop1 += 4 ) >= ( ent_ptr->prop0 & 0x7f ) )
+			{
+				ent_ptr->prop0 ^= 0x80;
+
+				if( !( ent_ptr->prop2 & 0x40 ) )	// looped?
+				{
+					ent_ptr->prop2 &= 0x7f;		// NO!
+
+					if( ent_ptr->targ_id != 0xff )
+					{
+						__map_ents[ ent_ptr->targ_id ].prop2 ^= 0x80;	// switch on/off target entity
+					}
+				}
+				else
+				{
+					ent_ptr->prop3 = _pause_in_frames;
+				}
+			}
+		}
+		else	// UP
+		{
+			if( ent_ptr->prop3 )	// pause?
+			{
+				--ent_ptr->prop3;
+
+				return;
+			}
+
+			if( !--ent_ptr->prop1 )
+			{
+				ent_ptr->prop0 ^= 0x80;
+
+				if( !( ent_ptr->prop2 & 0x40 ) )	// looped?
+				{
+					ent_ptr->prop2 &= 0x7f;		// NO!
+
+					if( ent_ptr->targ_id != 0xff )
+					{
+						__map_ents[ ent_ptr->targ_id ].prop2 ^= 0x80;	// switch on/off target entity
+					}
+				}
+				else
+				{
+					ent_ptr->prop3 = _pause_in_frames;
+
+					if( ent_ptr->prop2 & 0x10 )	// shake?
+					{
+						scene_shake();
+					}
+				}
+			}
+		}
+	}
+}
+
 //************************************************************
 // 4. Player/entity collision detection.
 //************************************************************
@@ -710,6 +862,8 @@ _check_collision_func_arr:
 	.dw _check_button
 	.dw _check_platform
 	.dw _check_logs
+	.dw _check_door
+	.dw _check_heavy_load
 
 _check_null:
 	call _check_collision_null
@@ -741,6 +895,14 @@ _check_platform:
 
 _check_logs:
 	call _check_collision_logs
+	rts
+
+_check_door:
+	call _check_collision_door
+	rts
+
+_check_heavy_load:
+	call _check_collision_heavy_load
 	rts
 
 #endasm
@@ -790,7 +952,7 @@ u8	check_collision_enemy_flying()
 }
 
 //
-// prop0: 0-bit - ON/OFF; 1-bit - bit lock for inner use
+// prop2: 7-bit - ON/OFF; 6-bit - bit lock for inner use
 //
 u8	check_collision_switch()
 {
@@ -800,10 +962,10 @@ u8	check_collision_switch()
 	{
 		if( __jpad_val & JOY_ACTION_BTN )
 		{
-			if( !( ent_ptr->prop0 & 2 ) )
+			if( !( ent_ptr->prop2 & 0x40 ) )
 			{
-				ent_ptr->prop0 ^= 1;
-				ent_ptr->prop0 |= 2;
+				ent_ptr->prop2 ^= 0x80;
+				ent_ptr->prop2 |= 0x40;
 
 				if( ent_ptr->targ_id != 0xff )
 				{
@@ -813,7 +975,7 @@ u8	check_collision_switch()
 		}
 		else
 		{
-			ent_ptr->prop0 &= ~2;
+			ent_ptr->prop2 &= ~0x40;
 		}
 
 		return 1;	// add to collision cache
@@ -823,7 +985,7 @@ u8	check_collision_switch()
 }
 
 //
-// prop0: 0-bit - ON/OFF
+// prop2: 7-bit - ON/OFF
 //
 u8	check_collision_button()
 {
@@ -831,7 +993,7 @@ u8	check_collision_button()
 
 	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, ent_ptr->width, ent_ptr->height ) )
 	{
-		ent_ptr->prop0 = 1;
+		ent_ptr->prop2 |= 0x80;
 
 		if( ent_ptr->targ_id != 0xff )
 		{
@@ -842,7 +1004,7 @@ u8	check_collision_button()
 	}
 	else
 	{
-		ent_ptr->prop0 = 0;
+		ent_ptr->prop2 &= ~0x80;
 
 		if( ent_ptr->targ_id != 0xff )
 		{
@@ -948,7 +1110,7 @@ u8	check_collision_logs()
 {
 	s16	player_bottom;
 
-	if( !( ent_ptr->prop1 & 0x60 ) )
+	if( !( ent_ptr->prop1 & 0x60 ) )	// active and isn't falling
 	{
 		if( PLAYER_IS_FALLING )
 		{
@@ -972,6 +1134,76 @@ u8	check_collision_logs()
 //				return 1;	// add to collision cache <- IGNORE COLLISION CACHE FOR PLATFORM ENTITIES!
 			}
 		}
+	}
+
+	return 0;	// continue collision detection
+}
+
+//
+// prop0: 7-bit: 1 - DOWN, 0 - UP; 6-0: distance
+// prop1: 7-0: current distance
+// prop2: 7-bit: 1 - ON, 0 - OFF; 6-bit: loop, 5-bit: damage ON/OFF, 4-bit: shake when hits the ground
+//*prop3: 7-0: pause in frames
+//
+u8	check_collision_door()
+{
+	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked + ent_ptr->prop1, ent_ptr->width, ENT_DOOR_HEIGHT ) )
+	{
+		if( player_x + PLAYER_CP_MID_WIDTH < ent_x + ( ent_ptr->width >> 1 ) )
+		{
+			player_x = ent_x - PLAYER_WIDTH;
+		}
+		else
+		{
+			player_x = ent_x + ent_ptr->width;
+		}
+
+		spd_set_x_LT( player_x );
+		__player_x = player_x + scr_scroll_x;
+
+		if( ent_ptr->prop2 & 0x20 )	// hit?
+		{
+			player_enemy_hit();
+		}
+
+//		return 1;	// add to collision cache <- IGNORE COLLISION CACHE
+	}
+
+	return 0;	// continue collision detection
+}
+
+//
+// prop0: 7-bit: 1 - DOWN, 0 - UP; 6-0: distance
+// prop1: 7-0: current distance
+// prop2: 7-bit: 1 - ON, 0 - OFF; 6-bit: loop, 5-bit: damage ON/OFF, 4-bit: shake when hits the ground
+//*prop3: 7-0: pause in frames
+//
+u8	check_collision_heavy_load()
+{
+	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked + ent_ptr->prop1, ent_ptr->width, ENT_HEAVY_LOAD_HEIGHT ) )
+	{
+		if( player_x + PLAYER_CP_MID_WIDTH < ent_x )
+		{
+			player_x = ent_x - PLAYER_WIDTH;
+
+			spd_set_x_LT( player_x );
+			__player_x = player_x + scr_scroll_x;
+		}
+		else
+		if( player_x + PLAYER_CP_MID_WIDTH > ent_x + ent_ptr->width )
+		{
+			player_x = ent_x + ent_ptr->width;
+
+			spd_set_x_LT( player_x );
+			__player_x = player_x + scr_scroll_x;
+		}
+
+		if( ent_ptr->prop2 & 0x20 )	// hit?
+		{
+			player_enemy_hit();
+		}
+
+//		return 1;	// add to collision cache <- IGNORE COLLISION CACHE
 	}
 
 	return 0;	// continue collision detection
