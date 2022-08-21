@@ -8,6 +8,7 @@
 /*/	MPD-render v0.6
 History:
 
+2022.08.21 - removed display list + pre-optimization of screen scrolling
 2022.08.07 - added 'mpd_get_scroll_step_x'/'mpd_get_scroll_step_y'
 2022.08.07 - renamed 'mpd_scroll_step_x'/'mpd_scroll_step_y' to 'mpd_set_scroll_step_x'/'mpd_set_scroll_step_y'
 
@@ -416,6 +417,14 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 	lda high_byte \1
 	adc high_byte \2
 	sta high_byte \2
+	.endm
+
+; VDC macroses
+
+	.macro mpd_vreg
+	lda \1
+	sta <vdc_reg
+	st0 \1
 	.endm
 
 	.bss
@@ -966,7 +975,6 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 
 #define	DBG_BORDER_COLOR_GET_TILE_PROP		mpd_dbg_set_border( DBG_COLOR_GET_TILE_PROP );
 #define	DBG_BORDER_COLOR_DRAW_SCREEN		mpd_dbg_set_border( DBG_COLOR_DRAW_SCREEN );
-#define	DBG_BORDER_COLOR_DISP_LIST_FLUSH	mpd_dbg_set_border( DBG_COLOR_DISP_LIST_FLUSH );
 #define	DBG_BORDER_COLOR_ROW_COL_FILLING	mpd_dbg_set_border( DBG_COLOR_ROW_COL_FILLING );
 #define	DBG_BORDER_COLOR_RESET			mpd_dbg_set_border( 0 );
 
@@ -976,105 +984,6 @@ void	mpd_dbg_set_border( u16 _clr )
 	pokew( 0x0404, _clr );
 }
 
-
-/****************/
-/*		*/
-/* Display list	*/
-/*		*/
-/****************/
-
-#if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-
-#define DISP_LIST_SIZE	128
-#define DISP_LIST_END	0
-
-#define DL_FLAG_DATA_INC1	0x01
-#define DL_FLAG_DATA_INC_VERT	0x02
-
-#define	CR_IW_INV_MASK		~( 0x18 << 8 )
-
-u8	__dl_pos;
-u16	__dl_arr[ DISP_LIST_SIZE ];
-u16	__CR_IW_val;
-
-void	__mpd_disp_list_reset()
-{
-	__dl_pos = 0;
-	__dl_arr[ __dl_pos ] = 0;
-}
-
-void	__mpd_disp_list_push_hdr( u8 _flag, u8 _size, u16 _vaddr )
-{
-	__dl_arr[ __dl_pos++ ] = ( _flag << 8 ) | _size;
-	__dl_arr[ __dl_pos++ ] = _vaddr;
-}
-
-void	__mpd_disp_list_push_data( u16 _data )
-{
-	__dl_arr[ __dl_pos++ ] = _data;
-}
-
-void	__mpd_disp_list_end()
-{
-	__dl_arr[ __dl_pos ] = DISP_LIST_END;
-}
-
-void	__mpd_disp_list_flush()
-{
-	u16	CR_val;
-	u16 	hdr;
-	u16 	vaddr;
-	u16	data_inc1;
-	u16	data_inc_vert;
-	u8	data_flag;
-	u8	data_size;
-
-	if( __mpd_disp_list_empty() == FALSE )
-	{
-		// save CR
-		CR_val = mpd_get_CR_val();
-
-		data_inc1	= CR_IW_INV_MASK & CR_val;
-		data_inc_vert	= data_inc1 | __CR_IW_val;
-
-		__dl_pos = 0;
-
-		while( __dl_arr[ __dl_pos ] != DISP_LIST_END )
-		{
-			hdr	= __dl_arr[ __dl_pos++ ];
-			vaddr	= __dl_arr[ __dl_pos++ ];
-
-			data_flag = hdr >> 8;
-			data_size = hdr & 0x00ff;
-
-			if( data_flag == DL_FLAG_DATA_INC1 )
-			{
-				vreg( 5, data_inc1 );
-			}
-			else
-			if( data_flag == DL_FLAG_DATA_INC_VERT )
-			{
-				vreg( 5, data_inc_vert );
-			}
-
-			mpd_load_vram( vaddr, __dl_arr, __dl_pos << 1, data_size );
-
-			__dl_pos += data_size;
-		}
-
-		// restore CR
-		vreg( 5, CR_val );
-
-		__mpd_disp_list_reset();
-	}
-}
-
-bool	__mpd_disp_list_empty()
-{
-	return __dl_pos != 0 ? FALSE:TRUE;
-}
-
-#endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 
 /*****************/
 /*		 */
@@ -1150,6 +1059,10 @@ const u8 ADJ_SCR_DOWN	= 3;
 const u16 __c_scr_tiles_size	= ScrTilesWidth * ScrTilesHeight;
 
 /* variables */
+#define	CR_IW_INV_MASK		~( 0x18 << 8 )
+u16		__CR_IW_val;
+u16		__CR_val;
+
 #if	!FLAG_MODE_MULTIDIR_SCROLL
 u16		__scr_offset;
 
@@ -1179,8 +1092,10 @@ u16		__height_scr_step;
 u8		__curr_chr_id_mul2;
 u8		__BAT_width;
 u8		__BAT_width_dec1;
+u8		__BAT_width_dec1_inv;
 u8		__BAT_height_dec1;
 u8		__BAT_width_pow2;
+u16		__BAT_size;
 u16		__BAT_size_dec1;	// ( BAT_width * BAT_height ) - 1
 
 u16		__props_offset;
@@ -1256,8 +1171,10 @@ void	__mpd_get_BAT_params()
 	}
 
 	__BAT_width_dec1	= __BAT_width - 1;
+	__BAT_width_dec1_inv	= ~__BAT_width_dec1;
 	__BAT_height_dec1	= BAT_height - 1;
-	__BAT_size_dec1		= ( __BAT_width * BAT_height ) - 1;
+	__BAT_size		= __BAT_width * BAT_height;
+	__BAT_size_dec1		= __BAT_size - 1;
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
@@ -1322,7 +1239,6 @@ void	mpd_init( u8 _map_ind )
 #endif
 	__upd_flags	= 0;
 
-	__mpd_disp_list_reset();
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
@@ -2201,6 +2117,8 @@ void	mpd_update_screen()
 #endasm
 	if( __upd_flags & UPD_FLAG_DRAW_MASK )
 	{
+		__CR_val = mpd_get_CR_val();
+
 		if( __upd_flags & UPD_FLAG_DRAW_LEFT )
 		{
 			__mpd_draw_left_tiles_column();
@@ -2221,14 +2139,8 @@ void	mpd_update_screen()
 			__mpd_draw_down_tiles_row();
 		}
 
-#asm
-.ifdef MPD_DEBUG
-#endasm
-	DBG_BORDER_COLOR_DISP_LIST_FLUSH
-#asm
-.endif
-#endasm
-		__mpd_disp_list_flush();
+		// restore CR
+		vreg( 5, __CR_val );
 	}
 #asm
 .ifdef MPD_DEBUG
@@ -2239,25 +2151,51 @@ void	mpd_update_screen()
 #endasm
 }
 
-void	__mpd_draw_left_tiles_column()
-{
-	u16	tiles_offset;
+//*** scroll routine vars ***
 
-#if	FLAG_MODE_BIDIR_SCROLL
-	tiles_offset	= __horiz_dir_pos;
+u16	__CHR_offset;
+u8	__CHR_x_pos;
+u8	__CHR_y_pos;
+
+u16	__last_data_addr;
+u8	__data_size;
 
 #if	FLAG_TILES4X4
-	tiles_offset >>= 5;
+u8	__block_x_pos;
+u8	__block_y_pos;
+u16	__tile4x4_offset;
+#endif
+
+u16	__tmp_vaddr;
+u16	__tmp_tiles_offset;
+u8	__tmp_CHRs_cnt;
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+u8	__tmp_skip_CHRs_cnt;
+u16	__tile_n;
 #else
-	tiles_offset >>= 4;
+u8	__tile_n;
+#endif
+
+//***************************
+
+void	__mpd_draw_left_tiles_column()
+{
+#if	FLAG_MODE_BIDIR_SCROLL
+	__tmp_tiles_offset	= __horiz_dir_pos;
+
+#if	FLAG_TILES4X4
+	__tmp_tiles_offset >>= 5;
+#else
+	__tmp_tiles_offset >>= 4;
 #endif
 	// tiles column offset
 #if	FLAG_DIR_COLUMNS
-	tiles_offset = __scr_tiles_height_tbl[ tiles_offset ];		// tiles_offset *= ScrTilesHeight;
+	__tmp_tiles_offset = __scr_tiles_height_tbl[ __tmp_tiles_offset ];		// __tmp_tiles_offset *= ScrTilesHeight;
 #endif
-	tiles_offset += ( __curr_scr.scr.scr_ind * __c_scr_tiles_size );
+	__tmp_tiles_offset += ( __curr_scr.scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), tiles_offset, COLUMN_CHRS_CNT );
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), COLUMN_CHRS_CNT );
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	u16	map_pos_x;
@@ -2277,41 +2215,37 @@ void	__mpd_draw_left_tiles_column()
 #endif
 
 #if	FLAG_DIR_ROWS
-	tiles_offset	= __maps_tbl_offset + ( map_pos_y << 1 );
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, tiles_offset ) + map_pos_x;
+	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( map_pos_y << 1 ) ) + map_pos_x;
 #else
-	tiles_offset	= __maps_tbl_offset + ( map_pos_x << 1 );
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, tiles_offset ) + map_pos_y;
+	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( map_pos_x << 1 ) ) + map_pos_y;
 #endif
-	tiles_offset	+= __maps_offset;
+	__tmp_tiles_offset	+= __maps_offset;
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), tiles_offset, COLUMN_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), COLUMN_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
 
 void	__mpd_draw_right_tiles_column()
 {
-	u16	tiles_offset;
-
 #if	FLAG_MODE_BIDIR_SCROLL
 	mpd_SCREEN 	tmp_scr;
 
 	__mpd_get_screen_data( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_RIGHT ), &tmp_scr );
-	tiles_offset	= __horiz_dir_pos;
+	__tmp_tiles_offset	= __horiz_dir_pos;
 
 #if	FLAG_TILES4X4
-	tiles_offset >>= 5;
+	__tmp_tiles_offset >>= 5;
 #else
-	tiles_offset >>= 4;
+	__tmp_tiles_offset >>= 4;
 #endif
 	// tiles column offset
 #if	FLAG_DIR_COLUMNS
-	tiles_offset = __scr_tiles_height_tbl[ tiles_offset ];		// tiles_offset *= ScrTilesHeight;
+	__tmp_tiles_offset = __scr_tiles_height_tbl[ __tmp_tiles_offset ];		// __tmp_tiles_offset *= ScrTilesHeight;
 #endif
-	tiles_offset += ( tmp_scr.scr_ind * __c_scr_tiles_size );
+	__tmp_tiles_offset += ( tmp_scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x + ScrPixelsWidth, __scroll_y ), tiles_offset, COLUMN_CHRS_CNT );
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x + ScrPixelsWidth, __scroll_y ), COLUMN_CHRS_CNT );
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	u16	map_pos_x;
@@ -2331,38 +2265,34 @@ void	__mpd_draw_right_tiles_column()
 #endif
 
 #if	FLAG_DIR_ROWS
-	tiles_offset	= __maps_tbl_offset + ( map_pos_y << 1 );
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, tiles_offset ) + map_pos_x + ScrTilesWidth;
+	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( map_pos_y << 1 ) ) + map_pos_x + ScrTilesWidth;
 #else	
-	tiles_offset	= __maps_tbl_offset + ( ( map_pos_x + ScrTilesWidth ) << 1 );
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, tiles_offset ) + map_pos_y;
+	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( ( map_pos_x + ScrTilesWidth ) << 1 ) ) + map_pos_y;
 #endif
-	tiles_offset	+= __maps_offset;
+	__tmp_tiles_offset	+= __maps_offset;
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x + ScrPixelsWidth, __scroll_y ), tiles_offset, COLUMN_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x + ScrPixelsWidth, __scroll_y ), COLUMN_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
 
 void	__mpd_draw_up_tiles_row()
 {
-	u16	tiles_offset;
-
 #if	FLAG_MODE_BIDIR_SCROLL
-	tiles_offset	= __vert_dir_pos;
+	__tmp_tiles_offset	= __vert_dir_pos;
 
 #if	FLAG_TILES4X4
-	tiles_offset >>= 5;
+	__tmp_tiles_offset >>= 5;
 #else
-	tiles_offset >>= 4;
+	__tmp_tiles_offset >>= 4;
 #endif
 	// tiles column offset
 #if	FLAG_DIR_ROWS
-	tiles_offset = __scr_tiles_width_tbl[ tiles_offset ];		// tiles_offset *= ScrTilesWidth;
+	__tmp_tiles_offset = __scr_tiles_width_tbl[ __tmp_tiles_offset ];		// __tmp_tiles_offset *= ScrTilesWidth;
 #endif
-	tiles_offset += ( __curr_scr.scr.scr_ind * __c_scr_tiles_size );
+	__tmp_tiles_offset += ( __curr_scr.scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), tiles_offset, ROW_CHRS_CNT );
+	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), ROW_CHRS_CNT );
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	u16	map_pos_x;
@@ -2382,41 +2312,37 @@ void	__mpd_draw_up_tiles_row()
 #endif
 
 #if	FLAG_DIR_ROWS
-	tiles_offset	= __maps_tbl_offset + ( map_pos_y << 1 );
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, tiles_offset ) + map_pos_x;
+	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( map_pos_y << 1 ) ) + map_pos_x;
 #else
-	tiles_offset	= __maps_tbl_offset + ( map_pos_x << 1 );
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, tiles_offset ) + map_pos_y;
+	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( map_pos_x << 1 ) ) + map_pos_y;
 #endif
-	tiles_offset	+= __maps_offset;
+	__tmp_tiles_offset	+= __maps_offset;
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), tiles_offset, ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_x ) );
+	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_x ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
 
 void	__mpd_draw_down_tiles_row()
 {
-	u16	tiles_offset;
-
 #if	FLAG_MODE_BIDIR_SCROLL
 	mpd_SCREEN 	tmp_scr;
 
 	__mpd_get_screen_data( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_DOWN ), &tmp_scr );
-	tiles_offset	= __vert_dir_pos;
+	__tmp_tiles_offset	= __vert_dir_pos;
 
 #if	FLAG_TILES4X4
-	tiles_offset >>= 5;
+	__tmp_tiles_offset >>= 5;
 #else
-	tiles_offset >>= 4;
+	__tmp_tiles_offset >>= 4;
 #endif
 	// tiles column offset
 #if	FLAG_DIR_ROWS
-	tiles_offset = __scr_tiles_width_tbl[ tiles_offset ];		// tiles_offset *= ScrTilesWidth;
+	__tmp_tiles_offset = __scr_tiles_width_tbl[ __tmp_tiles_offset ];		// __tmp_tiles_offset *= ScrTilesWidth;
 #endif
-	tiles_offset += ( tmp_scr.scr_ind * __c_scr_tiles_size );
+	__tmp_tiles_offset += ( tmp_scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y + ScrPixelsHeight ), tiles_offset, ROW_CHRS_CNT );
+	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y + ScrPixelsHeight ), ROW_CHRS_CNT );
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	u16	map_pos_x;
@@ -2436,15 +2362,13 @@ void	__mpd_draw_down_tiles_row()
 #endif
 
 #if	FLAG_DIR_ROWS
-	tiles_offset	= __maps_tbl_offset + ( map_pos_y << 1 );
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, tiles_offset ) + map_pos_x + __height_scr_step;
+	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl,  __maps_tbl_offset + ( map_pos_y << 1 ) ) + map_pos_x + __height_scr_step;
 #else
-	tiles_offset	= __maps_tbl_offset + ( map_pos_x << 1 );
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, tiles_offset ) + map_pos_y + ScrTilesHeight;
+	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( map_pos_x << 1 ) ) + map_pos_y + ScrTilesHeight;
 #endif
-	tiles_offset	+= __maps_offset;
+	__tmp_tiles_offset	+= __maps_offset;
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y + ScrPixelsHeight ), tiles_offset, ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_x ) );
+	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y + ScrPixelsHeight ), ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_x ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -2459,347 +2383,591 @@ u8	__mpd_calc_skip_CHRs_cnt( u8 _pos )
 #endif
 }
 
-void	__mpd_fill_column_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt, u8 _skip_CHRs_cnt )
+void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt, u8 _skip_CHRs_cnt )
 #else
-void	__mpd_fill_column_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
+void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt )
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 {
-	u16	CHR_offset;
-#if	FLAG_MODE_MULTIDIR_SCROLL
-	u16	tile_n;
-#else
-	u8	tile_n;
-#endif
-	u8	CHR_x_pos;
+	__tmp_CHRs_cnt		= _CHRs_cnt;
+	__tmp_vaddr		= _vaddr;
 
-	u16	BAT_size;
-	u16	last_data_addr;
-	u8	data_part1;
-	u8	data_part2;
+#if	FLAG_MODE_MULTIDIR_SCROLL
+	__tmp_skip_CHRs_cnt	= _skip_CHRs_cnt;
+#endif
 
 #if	FLAG_TILES4X4
-	u8	block_x_pos;
-	u16	tile4x4_offset;
 
-	block_x_pos	= ( __scroll_x >> 4 ) & 0x01;
+	__block_x_pos	= ( __scroll_x >> 4 ) & 0x01;
 #endif
-	data_part1	= _CHRs_cnt;
-	data_part2	= 0;
+	__data_size	= __tmp_CHRs_cnt;
 
-	CHR_x_pos	= ( ( __scroll_x >> 3 ) & 0x01 ) << 1;
+	__CHR_x_pos	= ( ( __scroll_x >> 3 ) & 0x01 ) << 1;
 
 	// loop the _vaddr vertically
-	BAT_size	= __BAT_size_dec1 + 1;
-	last_data_addr	= _vaddr + ( data_part1 << __BAT_width_pow2 );
+	__last_data_addr	= __tmp_vaddr + ( __data_size << __BAT_width_pow2 );
 
-	if( last_data_addr > BAT_size )
+	if( __last_data_addr > __BAT_size )
 	{
-		data_part2 = ( ( last_data_addr - BAT_size ) & ~__BAT_width_dec1 ) >> __BAT_width_pow2;
-		data_part1 -= data_part2;
+		__data_size -= ( ( __last_data_addr - __BAT_size ) & ~__BAT_width_dec1 ) >> __BAT_width_pow2;
 	}
 
-	__mpd_disp_list_push_hdr( DL_FLAG_DATA_INC_VERT, data_part1, _vaddr );
+	// set data step
+	vreg( 5, ( CR_IW_INV_MASK & __CR_val ) | __CR_IW_val );
 
-	tile_n = 0;
+	// set write mode
+#asm
+	mpd_vreg #$00
+
+	lda ___tmp_vaddr
+	sta video_data_l
+	lda ___tmp_vaddr + 1
+	sta video_data_h
+
+	mpd_vreg #$02
+#endasm
+
+	__tile_n = 0;
 
 #if	FLAG_TILES4X4
 	while( TRUE )
 	{
 #if	FLAG_MODE_BIDIR_SCROLL
-		tile4x4_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 2 ) + block_x_pos;
+		__tile4x4_offset = ( mpd_farpeekb( mpd_TilesScr, __tmp_tiles_offset + __tile_n ) << 2 ) + __block_x_pos;
 #else
-		tile4x4_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 2 ) + block_x_pos;
+		__tile4x4_offset = ( mpd_farpeekb( mpd_Maps, __tmp_tiles_offset + __tile_n ) << 2 ) + __block_x_pos;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 
 #if	FLAG_DIR_COLUMNS
-		++tile_n;
+		++__tile_n;
 #else	//FLAG_DIR_ROWS
 #if	FLAG_MODE_BIDIR_SCROLL
-		tile_n += ScrTilesWidth;
+		__tile_n += ScrTilesWidth;
 #else
-		tile_n += __map_tiles_width;
+		__tile_n += __map_tiles_width;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 #endif	//FLAG_DIR_COLUMNS
 #if	MAPS_CNT != 1
-		tile4x4_offset += __tiles_offset;
+		__tile4x4_offset += __tiles_offset;
 #endif
 		// block 1
-		CHR_offset = ( mpd_farpeekb( mpd_Tiles, tile4x4_offset ) << 3 ) + CHR_x_pos;
+		__CHR_offset = ( mpd_farpeekb( mpd_Tiles, __tile4x4_offset ) << 3 ) + __CHR_x_pos;
 #if	MAPS_CNT != 1
-		CHR_offset += __blocks_offset;
+		__CHR_offset += __blocks_offset;
 #endif
 #if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !_skip_CHRs_cnt )
+		if( !__tmp_skip_CHRs_cnt )
 		{
 #endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset ) );
-		if( !--_CHRs_cnt )	{ break; }
-		if( !--data_part1 )	{ __mpd_push_data2_col_hdr( _vaddr, data_part2 ); }
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --_skip_CHRs_cnt; }
+			mpd_farpeekw( mpd_Attrs, __CHR_offset );
+#asm
+			sax
+			sta video_data_l
+			sax
+			sta video_data_h
+#endasm
 
-		if( !_skip_CHRs_cnt )
-		{
-#endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset + 4 ) );
-		if( !--_CHRs_cnt )	{ break; }
-		if( !--data_part1 )	{ __mpd_push_data2_col_hdr( _vaddr, data_part2 ); }
+			if( !--__tmp_CHRs_cnt )	{ break; }
+			if( !--__data_size )
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___BAT_width_dec1
+				sta video_data_l
+				stz video_data_h
+
+				mpd_vreg #$02
+#endasm
+			}
+
 #if	FLAG_MODE_MULTIDIR_SCROLL
 		}
 		else
-		{ --_skip_CHRs_cnt; }
+		{ --__tmp_skip_CHRs_cnt; }
+
+		if( !__tmp_skip_CHRs_cnt )
+		{
+#endif
+			mpd_farpeekw( mpd_Attrs, __CHR_offset + 4 );
+#asm
+			sax
+			sta video_data_l
+			sax
+			sta video_data_h
+#endasm
+
+			if( !--__tmp_CHRs_cnt )	{ break; }
+			if( !--__data_size )
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___BAT_width_dec1
+				sta video_data_l
+				stz video_data_h
+
+				mpd_vreg #$02
+#endasm
+			}
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+		}
+		else
+		{ --__tmp_skip_CHRs_cnt; }
 #endif
 		// block 2
-		CHR_offset = ( mpd_farpeekb( mpd_Tiles, tile4x4_offset + 2 ) << 3 ) + CHR_x_pos;
+		__CHR_offset = ( mpd_farpeekb( mpd_Tiles, __tile4x4_offset + 2 ) << 3 ) + __CHR_x_pos;
 #if	MAPS_CNT != 1
-		CHR_offset += __blocks_offset;
+		__CHR_offset += __blocks_offset;
 #endif
 #if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !_skip_CHRs_cnt )
+		if( !__tmp_skip_CHRs_cnt )
 		{
 #endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset ) );
-		if( !--_CHRs_cnt )	{ break; }
-		if( !--data_part1 )	{ __mpd_push_data2_col_hdr( _vaddr, data_part2 ); }
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --_skip_CHRs_cnt; }
+			mpd_farpeekw( mpd_Attrs, __CHR_offset );
+#asm
+			sax
+			sta video_data_l
+			sax
+			sta video_data_h
+#endasm
 
-		if( !_skip_CHRs_cnt )
-		{
-#endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset + 4 ) );
-		if( !--_CHRs_cnt )	{ break; }
-		if( !--data_part1 )	{ __mpd_push_data2_col_hdr( _vaddr, data_part2 ); }
+			if( !--__tmp_CHRs_cnt )	{ break; }
+			if( !--__data_size )
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___BAT_width_dec1
+				sta video_data_l
+				stz video_data_h
+
+				mpd_vreg #$02
+#endasm
+			}
+
 #if	FLAG_MODE_MULTIDIR_SCROLL
 		}
 		else
-		{ --_skip_CHRs_cnt; }
+		{ --__tmp_skip_CHRs_cnt; }
+
+		if( !__tmp_skip_CHRs_cnt )
+		{
+#endif
+			mpd_farpeekw( mpd_Attrs, __CHR_offset + 4 );
+#asm
+			sax
+			sta video_data_l
+			sax
+			sta video_data_h
+#endasm
+
+			if( !--__tmp_CHRs_cnt )	{ break; }
+			if( !--__data_size )
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___BAT_width_dec1
+				sta video_data_l
+				stz video_data_h
+
+				mpd_vreg #$02
+#endasm
+			}
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+		}
+		else
+		{ --__tmp_skip_CHRs_cnt; }
 #endif
 	}
 #else	//FLAG_TILES2X2
 	while( TRUE )
 	{
 #if	FLAG_MODE_BIDIR_SCROLL
-		CHR_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 3 ) + CHR_x_pos;
+		__CHR_offset = ( mpd_farpeekb( mpd_TilesScr, __tmp_tiles_offset + __tile_n ) << 3 ) + __CHR_x_pos;
 #else
-		CHR_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 3 ) + CHR_x_pos;
+		__CHR_offset = ( mpd_farpeekb( mpd_Maps, __tmp_tiles_offset + __tile_n ) << 3 ) + __CHR_x_pos;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 
 #if	FLAG_DIR_COLUMNS
-		++tile_n;
+		++__tile_n;
 #else	//FLAG_DIR_ROWS
 #if	FLAG_MODE_BIDIR_SCROLL
-		tile_n += ScrTilesWidth;
+		__tile_n += ScrTilesWidth;
 #else
-		tile_n += __map_tiles_width;
+		__tile_n += __map_tiles_width;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 #endif	//FLAG_DIR_COLUMNS
 #if	MAPS_CNT != 1
-		CHR_offset += __blocks_offset;
+		__CHR_offset += __blocks_offset;
 #endif
 #if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !_skip_CHRs_cnt )
+		if( !__tmp_skip_CHRs_cnt )
 		{
 #endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset ) );
-		if( !--_CHRs_cnt )	{ break; }
-		if( !--data_part1 )	{ __mpd_push_data2_col_hdr( _vaddr, data_part2 ); }
+			mpd_farpeekw( mpd_Attrs, __CHR_offset );
+#asm
+			sax
+			sta video_data_l
+			sax
+			sta video_data_h
+#endasm
+
+			if( !--__tmp_CHRs_cnt )	{ break; }
+			if( !--__data_size )
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___BAT_width_dec1
+				sta video_data_l
+				stz video_data_h
+
+				mpd_vreg #$02
+#endasm
+			}
+
 #if	FLAG_MODE_MULTIDIR_SCROLL
 		}
 		else
-		{ --_skip_CHRs_cnt; }
+		{ --__tmp_skip_CHRs_cnt; }
 #endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset + 4 ) );
-		if( !--_CHRs_cnt )	{ break; }
-		if( !--data_part1 )	{ __mpd_push_data2_col_hdr( _vaddr, data_part2 ); }
+		mpd_farpeekw( mpd_Attrs, __CHR_offset + 4 );
+#asm
+		sax
+		sta video_data_l
+		sax
+		sta video_data_h
+#endasm
+
+		if( !--__tmp_CHRs_cnt )	{ break; }
+		if( !--__data_size )
+		{
+			// set write mode
+#asm
+			mpd_vreg #$00
+
+			lda ___tmp_vaddr
+			and ___BAT_width_dec1
+			sta video_data_l
+			stz video_data_h
+
+			mpd_vreg #$02
+#endasm
+		}
 	}
 #endif	//FLAG_TILES4X4
-
-	__mpd_disp_list_end();
-}
-
-void	__mpd_push_data2_col_hdr( u16 _vaddr, u8 _size )
-{
-	__mpd_disp_list_push_hdr( DL_FLAG_DATA_INC_VERT, _size, _vaddr & __BAT_width_dec1 );
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-void	__mpd_fill_row_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt, u8 _skip_CHRs_cnt )
+void	__mpd_fill_row_data( u16 _vaddr, u8 _CHRs_cnt, u8 _skip_CHRs_cnt )
 #else
-void	__mpd_fill_row_data( u16 _vaddr, u16 _tiles_offset, u8 _CHRs_cnt )
+void	__mpd_fill_row_data( u16 _vaddr, u8 _CHRs_cnt )
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 {
-	u16	CHR_offset;
-#if	FLAG_MODE_MULTIDIR_SCROLL
-	u16	tile_n;
-#else
-	u8	tile_n;
-#endif
-	u8	CHR_y_pos;
+	__tmp_CHRs_cnt		= _CHRs_cnt;
+	__tmp_vaddr		= _vaddr;
 
-	u16	last_data_addr;
-	u16	BAT_width_dec1_inv;
-	u8	data_part1;
-	u8	data_part2;
+#if	FLAG_MODE_MULTIDIR_SCROLL
+	__tmp_skip_CHRs_cnt	= _skip_CHRs_cnt;
+#endif
+
 
 #if	FLAG_TILES4X4
-	u8	block_y_pos;
-	u16	tile4x4_offset;
-
-	block_y_pos	= ( ( __scroll_y >> 4 ) & 0x01 ) << 1;
+	__block_y_pos	= ( ( __scroll_y >> 4 ) & 0x01 ) << 1;
 #endif
-	data_part1	= _CHRs_cnt;
-	data_part2	= 0;
+	__data_size	= __tmp_CHRs_cnt;
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + ( FLAG_MODE_BIDIR_SCROLL * ( SCR_BLOCKS2x2_WIDTH != 16 ) )
 	{
 		// loop the _vaddr horizontally
-		last_data_addr	= _vaddr + _CHRs_cnt;
+		__last_data_addr	= __tmp_vaddr + __tmp_CHRs_cnt;
 
-		BAT_width_dec1_inv	= __BAT_width_dec1;
-		BAT_width_dec1_inv	= ~BAT_width_dec1_inv;
-
-		if( ( last_data_addr & BAT_width_dec1_inv ) != ( _vaddr & BAT_width_dec1_inv ) )
+		if( ( __last_data_addr & __BAT_width_dec1_inv ) != ( __tmp_vaddr & __BAT_width_dec1_inv ) )
 		{
-			data_part2 = last_data_addr & __BAT_width_dec1;
-			data_part1 -= data_part2;
+			__data_size -= __last_data_addr & __BAT_width_dec1;
 		}
 	}
 #endif
-	__mpd_disp_list_push_hdr( DL_FLAG_DATA_INC1, data_part1, _vaddr );
+	// set data step
+	vreg( 5, CR_IW_INV_MASK & __CR_val );
 
-	CHR_y_pos	= ( ( __scroll_y >> 3 ) & 0x01 ) << 2;
+	// set write mode
+#asm
+	mpd_vreg #$00
 
-	tile_n = 0;
+	lda ___tmp_vaddr
+	sta video_data_l
+	lda ___tmp_vaddr + 1
+	sta video_data_h
+
+	mpd_vreg #$02
+#endasm
+
+	__CHR_y_pos	= ( ( __scroll_y >> 3 ) & 0x01 ) << 2;
+
+	__tile_n = 0;
 
 #if	FLAG_TILES4X4
 	while( TRUE )
 	{
 #if	FLAG_MODE_BIDIR_SCROLL		
-		tile4x4_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 2 ) + block_y_pos;
+		__tile4x4_offset = ( mpd_farpeekb( mpd_TilesScr, __tmp_tiles_offset + __tile_n ) << 2 ) + __block_y_pos;
 #else
-		tile4x4_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 2 ) + block_y_pos;
+		__tile4x4_offset = ( mpd_farpeekb( mpd_Maps, __tmp_tiles_offset + __tile_n ) << 2 ) + __block_y_pos;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 
 #if	FLAG_DIR_COLUMNS
 #if	FLAG_MODE_BIDIR_SCROLL
-		tile_n += ScrTilesHeight;
+		__tile_n += ScrTilesHeight;
 #else
-		tile_n += __map_tiles_height;
+		__tile_n += __map_tiles_height;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 #else	//FLAG_DIR_ROWS
-		++tile_n;
+		++__tile_n;
 #endif	//FLAG_DIR_COLUMNS
 #if	MAPS_CNT != 1
-		tile4x4_offset += __tiles_offset;
+		__tile4x4_offset += __tiles_offset;
 #endif
 		// block 1
-		CHR_offset = ( mpd_farpeekb( mpd_Tiles, tile4x4_offset ) << 3 ) + CHR_y_pos;
+		__CHR_offset = ( mpd_farpeekb( mpd_Tiles, __tile4x4_offset ) << 3 ) + __CHR_y_pos;
 #if	MAPS_CNT != 1
-		CHR_offset += __blocks_offset;
+		__CHR_offset += __blocks_offset;
 #endif
 #if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !_skip_CHRs_cnt )
+		if( !__tmp_skip_CHRs_cnt )
 		{
 #endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset ) );
-		if( !--_CHRs_cnt ) { break; }
-		if( !--data_part1 )	{ __mpd_push_data2_row_hdr( _vaddr, data_part2 ); }
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --_skip_CHRs_cnt; }
+			mpd_farpeekw( mpd_Attrs, __CHR_offset );
+#asm
+			sax
+			sta video_data_l
+			sax
+			sta video_data_h
+#endasm
 
-		if( !_skip_CHRs_cnt )
-		{
-#endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset + 2 ) );
-		if( !--_CHRs_cnt ) { break; }
-		if( !--data_part1 )	{ __mpd_push_data2_row_hdr( _vaddr, data_part2 ); }
+			if( !--__tmp_CHRs_cnt ) { break; }
+			if( !--__data_size )
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___BAT_width_dec1_inv
+				sta video_data_l
+				lda ___tmp_vaddr + 1
+				sta video_data_h
+
+				mpd_vreg #$02
+#endasm
+			}
+
 #if	FLAG_MODE_MULTIDIR_SCROLL
 		}
 		else
-		{ --_skip_CHRs_cnt; }
+		{ --__tmp_skip_CHRs_cnt; }
+
+		if( !__tmp_skip_CHRs_cnt )
+		{
+#endif
+			mpd_farpeekw( mpd_Attrs, __CHR_offset + 2 );
+#asm
+			sax
+			sta video_data_l
+			sax
+			sta video_data_h
+#endasm
+
+			if( !--__tmp_CHRs_cnt ) { break; }
+			if( !--__data_size )
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___BAT_width_dec1_inv
+				sta video_data_l
+				lda ___tmp_vaddr + 1
+				sta video_data_h
+
+				mpd_vreg #$02
+#endasm
+			}
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+		}
+		else
+		{ --__tmp_skip_CHRs_cnt; }
 #endif
 
 		// block 2
-		CHR_offset = ( mpd_farpeekb( mpd_Tiles, tile4x4_offset + 1 ) << 3 ) + CHR_y_pos;
+		__CHR_offset = ( mpd_farpeekb( mpd_Tiles, __tile4x4_offset + 1 ) << 3 ) + __CHR_y_pos;
 #if	MAPS_CNT != 1
-		CHR_offset += __blocks_offset;
+		__CHR_offset += __blocks_offset;
 #endif
 #if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !_skip_CHRs_cnt )
+		if( !__tmp_skip_CHRs_cnt )
 		{
 #endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset ) );
-		if( !--_CHRs_cnt ) { break; }
-		if( !--data_part1 )	{ __mpd_push_data2_row_hdr( _vaddr, data_part2 ); }
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --_skip_CHRs_cnt; }
+			mpd_farpeekw( mpd_Attrs, __CHR_offset );
+#asm
+			sax
+			sta video_data_l
+			sax
+			sta video_data_h
+#endasm
 
-		if( !_skip_CHRs_cnt )
-		{
-#endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset + 2 ) );
-		if( !--_CHRs_cnt ) { break; }
-		if( !--data_part1 )	{ __mpd_push_data2_row_hdr( _vaddr, data_part2 ); }
+			if( !--__tmp_CHRs_cnt ) { break; }
+			if( !--__data_size )
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___BAT_width_dec1_inv
+				sta video_data_l
+				lda ___tmp_vaddr + 1
+				sta video_data_h
+
+				mpd_vreg #$02
+#endasm
+			}
+
 #if	FLAG_MODE_MULTIDIR_SCROLL
 		}
 		else
-		{ --_skip_CHRs_cnt; }
+		{ --__tmp_skip_CHRs_cnt; }
+
+		if( !__tmp_skip_CHRs_cnt )
+		{
+#endif
+			mpd_farpeekw( mpd_Attrs, __CHR_offset + 2 );
+#asm
+			sax
+			sta video_data_l
+			sax
+			sta video_data_h
+#endasm
+
+			if( !--__tmp_CHRs_cnt ) { break; }
+			if( !--__data_size )
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___BAT_width_dec1_inv
+				sta video_data_l
+				lda ___tmp_vaddr + 1
+				sta video_data_h
+
+				mpd_vreg #$02
+#endasm
+			}
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+		}
+		else
+		{ --__tmp_skip_CHRs_cnt; }
 #endif
 	}
 #else	//FLAG_TILES2X2
 	while( TRUE )
 	{
 #if	FLAG_MODE_BIDIR_SCROLL
-		CHR_offset = ( mpd_farpeekb( mpd_TilesScr, _tiles_offset + tile_n ) << 3 ) + CHR_y_pos;
+		__CHR_offset = ( mpd_farpeekb( mpd_TilesScr, __tmp_tiles_offset + __tile_n ) << 3 ) + __CHR_y_pos;
 #else
-		CHR_offset = ( mpd_farpeekb( mpd_Maps, _tiles_offset + tile_n ) << 3 ) + CHR_y_pos;
+		__CHR_offset = ( mpd_farpeekb( mpd_Maps, __tmp_tiles_offset + __tile_n ) << 3 ) + __CHR_y_pos;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 
 #if	FLAG_DIR_COLUMNS
 #if	FLAG_MODE_BIDIR_SCROLL
-		tile_n += ScrTilesHeight;
+		__tile_n += ScrTilesHeight;
 #else
-		tile_n += __map_tiles_height;
+		__tile_n += __map_tiles_height;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 #else	//FLAG_DIR_ROWS
-		++tile_n;
+		++__tile_n;
 #endif	//FLAG_DIR_COLUMNS
 #if	MAPS_CNT != 1
-		CHR_offset += __blocks_offset;
+		__CHR_offset += __blocks_offset;
 #endif
 #if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !_skip_CHRs_cnt )
+		if( !__tmp_skip_CHRs_cnt )
 		{
 #endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset ) );
-		if( !--_CHRs_cnt ) { break; }
-		if( !--data_part1 )	{ __mpd_push_data2_row_hdr( _vaddr, data_part2 ); }
+			mpd_farpeekw( mpd_Attrs, __CHR_offset );
+#asm
+			sax
+			sta video_data_l
+			sax
+			sta video_data_h
+#endasm
+
+			if( !--__tmp_CHRs_cnt ) { break; }
+			if( !--__data_size )
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___BAT_width_dec1_inv
+				sta video_data_l
+				lda ___tmp_vaddr + 1
+				sta video_data_h
+
+				mpd_vreg #$02
+#endasm
+			}
+
 #if	FLAG_MODE_MULTIDIR_SCROLL
 		}
 		else
-		{ --_skip_CHRs_cnt; }
+		{ --__tmp_skip_CHRs_cnt; }
 #endif
-		__mpd_disp_list_push_data( mpd_farpeekw( mpd_Attrs, CHR_offset + 2 ) );
-		if( !--_CHRs_cnt ) { break; }
-		if( !--data_part1 )	{ __mpd_push_data2_row_hdr( _vaddr, data_part2 ); }
+		mpd_farpeekw( mpd_Attrs, __CHR_offset + 2 );
+#asm
+		sax
+		sta video_data_l
+		sax
+		sta video_data_h
+#endasm
+
+		if( !--__tmp_CHRs_cnt ) { break; }
+		if( !--__data_size )
+		{
+			// set write mode
+#asm
+			mpd_vreg #$00
+
+			lda ___tmp_vaddr
+			and ___BAT_width_dec1_inv
+			sta video_data_l
+			lda ___tmp_vaddr + 1
+			sta video_data_h
+
+			mpd_vreg #$02
+#endasm
+		}
 	}
 #endif	//FLAG_TILES4X4
-
-	__mpd_disp_list_end();
-}
-
-void	__mpd_push_data2_row_hdr( u16 _vaddr, u8 _size )
-{
-	__mpd_disp_list_push_hdr( DL_FLAG_DATA_INC1, _size, ( _vaddr & ~__BAT_width_dec1 ) );
 }
 
 s16	mpd_scroll_x()
