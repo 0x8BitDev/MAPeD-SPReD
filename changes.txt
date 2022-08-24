@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+23.08.2022 - PCE: MPD-render: optimized screen scrolling, re-written in assembler
 21.07.2022 - Improved colors swapping
 22.06.2022 - Added sorting option for entities (Left->Right, Bottom->Top) to the data export dialog
 18.05.2022 - Added dialog for reordering CHR banks (Main Menu->CHR Banks->Reorder Banks)
@@ -115,7 +116,7 @@ SPReD-NES/SMS/PCE:
 17.06.2022 - PCE: added 'data directory' field to the export options dialog
 10.06.2022 - Added support for importing 8-bit BMP images
 07.06.2022 - PCE: added VRAM address field to the export options dialog
-21.04.2022 - Added a library for rendering of simple sprites and meta-sprites using the HuC (SPD-render/spd.h)
+21.04.2022 - PCE: added library for rendering of simple sprites and meta-sprites using the HuC (SPD-render/spd.h)
 14.04.2022 - Added export to C for all platforms
 08.04.2022 - PCE: added an import of a custom palette
 

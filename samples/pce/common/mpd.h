@@ -5,9 +5,11 @@
 //
 //######################################################################################################
 
-/*/	MPD-render v0.6
+/*/	MPD-render v0.7
 History:
 
+v0.7
+2022.08.23 - optimized screen scrolling, re-written in assembler; 3x faster than before
 2022.08.21 - removed display list + pre-optimization of screen scrolling
 2022.08.07 - added 'mpd_get_scroll_step_x'/'mpd_get_scroll_step_y'
 2022.08.07 - renamed 'mpd_scroll_step_x'/'mpd_scroll_step_y' to 'mpd_set_scroll_step_x'/'mpd_set_scroll_step_y'
@@ -53,9 +55,9 @@ v0.1
 
 /*/
 debug info (use Mednafen):
- - green+red border color	- screen scrolling
- - blue border color		- static screen drawing
- - yellow border color		- getting a tile property
+ - green border color	- screen scrolling
+ - blue border color	- static screen drawing
+ - yellow border color	- getting a tile property
 
 #asm
 MPD_DEBUG
@@ -417,6 +419,28 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 	lda high_byte \1
 	adc high_byte \2
 	sta high_byte \2
+	.endm
+
+; \3 = \1 + \2
+	.macro mpd_add_word_to_word2
+	clc
+	lda low_byte \1
+	adc low_byte \2
+	sta low_byte \3
+	lda high_byte \1
+	adc high_byte \2
+	sta high_byte \3
+	.endm
+
+; \1 += A
+	.macro mpd_add_a_to_word
+	clc
+	adc low_byte \1
+	sta low_byte \1
+
+	bcc .cont\@
+	inc high_byte \1
+.cont\@:
 	.endm
 
 ; VDC macroses
@@ -1045,7 +1069,7 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 /*				*/
 /********************************/
 
-const u8 mpd_ver[] = { "M", "P", "D", "0", "6", 0 };
+const u8 mpd_ver[] = { "M", "P", "D", "0", "7", 0 };
 
 /* flags */
 
@@ -1059,7 +1083,6 @@ const u8 ADJ_SCR_DOWN	= 3;
 const u16 __c_scr_tiles_size	= ScrTilesWidth * ScrTilesHeight;
 
 /* variables */
-#define	CR_IW_INV_MASK		~( 0x18 << 8 )
 u16		__CR_IW_val;
 u16		__CR_val;
 
@@ -1091,8 +1114,8 @@ u16		__height_scr_step;
 
 u8		__curr_chr_id_mul2;
 u8		__BAT_width;
-u8		__BAT_width_dec1;
-u8		__BAT_width_dec1_inv;
+u16		__BAT_width_dec1;
+u16		__BAT_width_dec1_inv;
 u8		__BAT_height_dec1;
 u8		__BAT_width_pow2;
 u16		__BAT_size;
@@ -2154,17 +2177,18 @@ void	mpd_update_screen()
 //*** scroll routine vars ***
 
 u16	__CHR_offset;
-u8	__CHR_x_pos;
-u8	__CHR_y_pos;
+u8	__CHR_xy_pos;
 
 u16	__last_data_addr;
 u8	__data_size;
 
 #if	FLAG_TILES4X4
-u8	__block_x_pos;
-u8	__block_y_pos;
+u8	__block_xy_pos;
 u16	__tile4x4_offset;
+u8	__tiles_cache[ ScrTilesWidth + 1 ];
 #endif
+
+u8	__blocks_cache[ SCR_BLOCKS2x2_WIDTH + 2 ];
 
 u16	__tmp_vaddr;
 u16	__tmp_tiles_offset;
@@ -2176,6 +2200,14 @@ u16	__tile_n;
 #else
 u8	__tile_n;
 #endif
+
+u8	__tile_ind;
+u8	__block_ind;
+u16	__tile_step;
+
+u8	__block_CHR_offset;
+u8	__tile_block_offset;
+u16	__vaddr_mask;
 
 //***************************
 
@@ -2396,12 +2428,11 @@ void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt )
 #endif
 
 #if	FLAG_TILES4X4
-
-	__block_x_pos	= ( __scroll_x >> 4 ) & 0x01;
+	__block_xy_pos	= ( __scroll_x >> 4 ) & 0x01;
 #endif
 	__data_size	= __tmp_CHRs_cnt;
 
-	__CHR_x_pos	= ( ( __scroll_x >> 3 ) & 0x01 ) << 1;
+	__CHR_xy_pos	= ( ( __scroll_x >> 3 ) & 0x01 ) << 1;
 
 	// loop the _vaddr vertically
 	__last_data_addr	= __tmp_vaddr + ( __data_size << __BAT_width_pow2 );
@@ -2411,11 +2442,32 @@ void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt )
 		__data_size -= ( ( __last_data_addr - __BAT_size ) & ~__BAT_width_dec1 ) >> __BAT_width_pow2;
 	}
 
-	// set data step
-	vreg( 5, ( CR_IW_INV_MASK & __CR_val ) | __CR_IW_val );
+#if	FLAG_DIR_COLUMNS
+	__tile_step = 1;
+#else	//FLAG_DIR_ROWS
+#if	FLAG_MODE_BIDIR_SCROLL
+	__tile_step = ScrTilesWidth;
+#else
+	__tile_step = __map_tiles_width;
+#endif	//FLAG_MODE_BIDIR_SCROLL
+#endif
 
-	// set write mode
 #asm
+	; set data step
+
+	mpd_vreg #$05
+
+	; video_data = ( ___CR_val & ~___CR_IW_MASK ) | ___CR_IW_val
+
+	lda ___CR_val
+	sta video_data_l
+	lda ___CR_val + 1
+	and #~$18
+	ora ___CR_IW_val + 1
+	sta video_data_h
+
+	; set write mode
+
 	mpd_vreg #$00
 
 	lda ___tmp_vaddr
@@ -2426,249 +2478,11 @@ void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt )
 	mpd_vreg #$02
 #endasm
 
-	__tile_n = 0;
+	__block_CHR_offset	= 4;
+	__tile_block_offset	= 2;
+	__vaddr_mask		= __BAT_width_dec1;
 
-#if	FLAG_TILES4X4
-	while( TRUE )
-	{
-#if	FLAG_MODE_BIDIR_SCROLL
-		__tile4x4_offset = ( mpd_farpeekb( mpd_TilesScr, __tmp_tiles_offset + __tile_n ) << 2 ) + __block_x_pos;
-#else
-		__tile4x4_offset = ( mpd_farpeekb( mpd_Maps, __tmp_tiles_offset + __tile_n ) << 2 ) + __block_x_pos;
-#endif	//FLAG_MODE_BIDIR_SCROLL
-
-#if	FLAG_DIR_COLUMNS
-		++__tile_n;
-#else	//FLAG_DIR_ROWS
-#if	FLAG_MODE_BIDIR_SCROLL
-		__tile_n += ScrTilesWidth;
-#else
-		__tile_n += __map_tiles_width;
-#endif	//FLAG_MODE_BIDIR_SCROLL
-#endif	//FLAG_DIR_COLUMNS
-#if	MAPS_CNT != 1
-		__tile4x4_offset += __tiles_offset;
-#endif
-		// block 1
-		__CHR_offset = ( mpd_farpeekb( mpd_Tiles, __tile4x4_offset ) << 3 ) + __CHR_x_pos;
-#if	MAPS_CNT != 1
-		__CHR_offset += __blocks_offset;
-#endif
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !__tmp_skip_CHRs_cnt )
-		{
-#endif
-			mpd_farpeekw( mpd_Attrs, __CHR_offset );
-#asm
-			sax
-			sta video_data_l
-			sax
-			sta video_data_h
-#endasm
-
-			if( !--__tmp_CHRs_cnt )	{ break; }
-			if( !--__data_size )
-			{
-				// set write mode
-#asm
-				mpd_vreg #$00
-
-				lda ___tmp_vaddr
-				and ___BAT_width_dec1
-				sta video_data_l
-				stz video_data_h
-
-				mpd_vreg #$02
-#endasm
-			}
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --__tmp_skip_CHRs_cnt; }
-
-		if( !__tmp_skip_CHRs_cnt )
-		{
-#endif
-			mpd_farpeekw( mpd_Attrs, __CHR_offset + 4 );
-#asm
-			sax
-			sta video_data_l
-			sax
-			sta video_data_h
-#endasm
-
-			if( !--__tmp_CHRs_cnt )	{ break; }
-			if( !--__data_size )
-			{
-				// set write mode
-#asm
-				mpd_vreg #$00
-
-				lda ___tmp_vaddr
-				and ___BAT_width_dec1
-				sta video_data_l
-				stz video_data_h
-
-				mpd_vreg #$02
-#endasm
-			}
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --__tmp_skip_CHRs_cnt; }
-#endif
-		// block 2
-		__CHR_offset = ( mpd_farpeekb( mpd_Tiles, __tile4x4_offset + 2 ) << 3 ) + __CHR_x_pos;
-#if	MAPS_CNT != 1
-		__CHR_offset += __blocks_offset;
-#endif
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !__tmp_skip_CHRs_cnt )
-		{
-#endif
-			mpd_farpeekw( mpd_Attrs, __CHR_offset );
-#asm
-			sax
-			sta video_data_l
-			sax
-			sta video_data_h
-#endasm
-
-			if( !--__tmp_CHRs_cnt )	{ break; }
-			if( !--__data_size )
-			{
-				// set write mode
-#asm
-				mpd_vreg #$00
-
-				lda ___tmp_vaddr
-				and ___BAT_width_dec1
-				sta video_data_l
-				stz video_data_h
-
-				mpd_vreg #$02
-#endasm
-			}
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --__tmp_skip_CHRs_cnt; }
-
-		if( !__tmp_skip_CHRs_cnt )
-		{
-#endif
-			mpd_farpeekw( mpd_Attrs, __CHR_offset + 4 );
-#asm
-			sax
-			sta video_data_l
-			sax
-			sta video_data_h
-#endasm
-
-			if( !--__tmp_CHRs_cnt )	{ break; }
-			if( !--__data_size )
-			{
-				// set write mode
-#asm
-				mpd_vreg #$00
-
-				lda ___tmp_vaddr
-				and ___BAT_width_dec1
-				sta video_data_l
-				stz video_data_h
-
-				mpd_vreg #$02
-#endasm
-			}
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --__tmp_skip_CHRs_cnt; }
-#endif
-	}
-#else	//FLAG_TILES2X2
-	while( TRUE )
-	{
-#if	FLAG_MODE_BIDIR_SCROLL
-		__CHR_offset = ( mpd_farpeekb( mpd_TilesScr, __tmp_tiles_offset + __tile_n ) << 3 ) + __CHR_x_pos;
-#else
-		__CHR_offset = ( mpd_farpeekb( mpd_Maps, __tmp_tiles_offset + __tile_n ) << 3 ) + __CHR_x_pos;
-#endif	//FLAG_MODE_BIDIR_SCROLL
-
-#if	FLAG_DIR_COLUMNS
-		++__tile_n;
-#else	//FLAG_DIR_ROWS
-#if	FLAG_MODE_BIDIR_SCROLL
-		__tile_n += ScrTilesWidth;
-#else
-		__tile_n += __map_tiles_width;
-#endif	//FLAG_MODE_BIDIR_SCROLL
-#endif	//FLAG_DIR_COLUMNS
-#if	MAPS_CNT != 1
-		__CHR_offset += __blocks_offset;
-#endif
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !__tmp_skip_CHRs_cnt )
-		{
-#endif
-			mpd_farpeekw( mpd_Attrs, __CHR_offset );
-#asm
-			sax
-			sta video_data_l
-			sax
-			sta video_data_h
-#endasm
-
-			if( !--__tmp_CHRs_cnt )	{ break; }
-			if( !--__data_size )
-			{
-				// set write mode
-#asm
-				mpd_vreg #$00
-
-				lda ___tmp_vaddr
-				and ___BAT_width_dec1
-				sta video_data_l
-				stz video_data_h
-
-				mpd_vreg #$02
-#endasm
-			}
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --__tmp_skip_CHRs_cnt; }
-#endif
-		mpd_farpeekw( mpd_Attrs, __CHR_offset + 4 );
-#asm
-		sax
-		sta video_data_l
-		sax
-		sta video_data_h
-#endasm
-
-		if( !--__tmp_CHRs_cnt )	{ break; }
-		if( !--__data_size )
-		{
-			// set write mode
-#asm
-			mpd_vreg #$00
-
-			lda ___tmp_vaddr
-			and ___BAT_width_dec1
-			sta video_data_l
-			stz video_data_h
-
-			mpd_vreg #$02
-#endasm
-		}
-	}
-#endif	//FLAG_TILES4X4
+	__mpd_fill_row_column_data();
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
@@ -2684,9 +2498,8 @@ void	__mpd_fill_row_data( u16 _vaddr, u8 _CHRs_cnt )
 	__tmp_skip_CHRs_cnt	= _skip_CHRs_cnt;
 #endif
 
-
 #if	FLAG_TILES4X4
-	__block_y_pos	= ( ( __scroll_y >> 4 ) & 0x01 ) << 1;
+	__block_xy_pos	= ( ( __scroll_y >> 4 ) & 0x01 ) << 1;
 #endif
 	__data_size	= __tmp_CHRs_cnt;
 
@@ -2701,11 +2514,32 @@ void	__mpd_fill_row_data( u16 _vaddr, u8 _CHRs_cnt )
 		}
 	}
 #endif
-	// set data step
-	vreg( 5, CR_IW_INV_MASK & __CR_val );
 
-	// set write mode
+#if	FLAG_DIR_COLUMNS
+#if	FLAG_MODE_BIDIR_SCROLL
+	__tile_step = ScrTilesHeight;
+#else
+	__tile_step = __map_tiles_height;
+#endif	//FLAG_MODE_BIDIR_SCROLL
+#else	//FLAG_DIR_ROWS
+	__tile_step = 1;
+#endif
+
 #asm
+	; set data step
+
+	mpd_vreg #$05
+
+	; video_data = ___CR_val & ~___CR_IW_MASK
+
+	lda ___CR_val
+	sta video_data_l
+	lda ___CR_val + 1
+	and #~$18
+	sta video_data_h
+
+	; set write mode
+
 	mpd_vreg #$00
 
 	lda ___tmp_vaddr
@@ -2716,257 +2550,762 @@ void	__mpd_fill_row_data( u16 _vaddr, u8 _CHRs_cnt )
 	mpd_vreg #$02
 #endasm
 
-	__CHR_y_pos	= ( ( __scroll_y >> 3 ) & 0x01 ) << 2;
+	__CHR_xy_pos	= ( ( __scroll_y >> 3 ) & 0x01 ) << 2;
 
+	__block_CHR_offset	= 2;
+	__tile_block_offset	= 1;
+	__vaddr_mask		= __BAT_width_dec1_inv;
+
+	__mpd_fill_row_column_data();
+}
+
+void	__mpd_fill_row_column_data()
+{
+#if	FLAG_TILES4X4
+
+#if	FLAG_MODE_BIDIR_SCROLL
+#asm
+	__farptr _mpd_TilesScr, __bl, __si
+#endasm
+#else
+#asm
+	__farptr _mpd_Maps, __bl, __si
+#endasm
+#endif	//FLAG_MODE_BIDIR_SCROLL
+
+#asm
+	; switch data banks
+
+	stw ___tmp_tiles_offset, <__ax
+
+	call _mpd_farptr_add_offset
+	jsr map_data
+#endasm
+
+	// tiles cache filling
+#asm
+	; X = ( __tmp_CHRs_cnt + 3 ) >> 2
+
+	lda ___tmp_CHRs_cnt
+	inc a
+	inc a
+	inc a
+	lsr a
+	lsr a
+	tax
+
+	stz ___tile_n
+	stz ___tile_n + 1
+
+	stw #___tiles_cache, <__cx
+	cly
+
+.tiles_cache_loop:
+
+	; __tiles_cache[ __tile_ind ] = lda [__si], __tile_n;
+
+	mpd_add_word_to_word2 <__si, ___tile_n, <__ax
+	lda [<__ax]
+
+	sta [<__cx], y
+	iny
+
+	mpd_add_word_to_word ___tile_step, ___tile_n
+
+	dex
+	bne .tiles_cache_loop
+
+	jsr unmap_data
+#endasm
+/*
 	__tile_n = 0;
 
-#if	FLAG_TILES4X4
-	while( TRUE )
+	// tiles cache filling
+	for( __tile_ind = 0; __tile_ind < ( ( __tmp_CHRs_cnt + 3 ) >> 2 ); )
 	{
-#if	FLAG_MODE_BIDIR_SCROLL		
-		__tile4x4_offset = ( mpd_farpeekb( mpd_TilesScr, __tmp_tiles_offset + __tile_n ) << 2 ) + __block_y_pos;
-#else
-		__tile4x4_offset = ( mpd_farpeekb( mpd_Maps, __tmp_tiles_offset + __tile_n ) << 2 ) + __block_y_pos;
-#endif	//FLAG_MODE_BIDIR_SCROLL
-
-#if	FLAG_DIR_COLUMNS
 #if	FLAG_MODE_BIDIR_SCROLL
-		__tile_n += ScrTilesHeight;
+		__tiles_cache[ __tile_ind++ ] = mpd_farpeekb( mpd_TilesScr, __tmp_tiles_offset + __tile_n );
 #else
-		__tile_n += __map_tiles_height;
+		__tiles_cache[ __tile_ind++ ] = mpd_farpeekb( mpd_Maps, __tmp_tiles_offset + __tile_n );
 #endif	//FLAG_MODE_BIDIR_SCROLL
-#else	//FLAG_DIR_ROWS
-		++__tile_n;
-#endif	//FLAG_DIR_COLUMNS
-#if	MAPS_CNT != 1
-		__tile4x4_offset += __tiles_offset;
-#endif
-		// block 1
-		__CHR_offset = ( mpd_farpeekb( mpd_Tiles, __tile4x4_offset ) << 3 ) + __CHR_y_pos;
-#if	MAPS_CNT != 1
-		__CHR_offset += __blocks_offset;
-#endif
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !__tmp_skip_CHRs_cnt )
-		{
-#endif
-			mpd_farpeekw( mpd_Attrs, __CHR_offset );
-#asm
-			sax
-			sta video_data_l
-			sax
-			sta video_data_h
-#endasm
 
-			if( !--__tmp_CHRs_cnt ) { break; }
-			if( !--__data_size )
-			{
-				// set write mode
-#asm
-				mpd_vreg #$00
-
-				lda ___tmp_vaddr
-				and ___BAT_width_dec1_inv
-				sta video_data_l
-				lda ___tmp_vaddr + 1
-				sta video_data_h
-
-				mpd_vreg #$02
-#endasm
-			}
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --__tmp_skip_CHRs_cnt; }
-
-		if( !__tmp_skip_CHRs_cnt )
-		{
-#endif
-			mpd_farpeekw( mpd_Attrs, __CHR_offset + 2 );
-#asm
-			sax
-			sta video_data_l
-			sax
-			sta video_data_h
-#endasm
-
-			if( !--__tmp_CHRs_cnt ) { break; }
-			if( !--__data_size )
-			{
-				// set write mode
-#asm
-				mpd_vreg #$00
-
-				lda ___tmp_vaddr
-				and ___BAT_width_dec1_inv
-				sta video_data_l
-				lda ___tmp_vaddr + 1
-				sta video_data_h
-
-				mpd_vreg #$02
-#endasm
-			}
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --__tmp_skip_CHRs_cnt; }
-#endif
-
-		// block 2
-		__CHR_offset = ( mpd_farpeekb( mpd_Tiles, __tile4x4_offset + 1 ) << 3 ) + __CHR_y_pos;
-#if	MAPS_CNT != 1
-		__CHR_offset += __blocks_offset;
-#endif
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !__tmp_skip_CHRs_cnt )
-		{
-#endif
-			mpd_farpeekw( mpd_Attrs, __CHR_offset );
-#asm
-			sax
-			sta video_data_l
-			sax
-			sta video_data_h
-#endasm
-
-			if( !--__tmp_CHRs_cnt ) { break; }
-			if( !--__data_size )
-			{
-				// set write mode
-#asm
-				mpd_vreg #$00
-
-				lda ___tmp_vaddr
-				and ___BAT_width_dec1_inv
-				sta video_data_l
-				lda ___tmp_vaddr + 1
-				sta video_data_h
-
-				mpd_vreg #$02
-#endasm
-			}
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --__tmp_skip_CHRs_cnt; }
-
-		if( !__tmp_skip_CHRs_cnt )
-		{
-#endif
-			mpd_farpeekw( mpd_Attrs, __CHR_offset + 2 );
-#asm
-			sax
-			sta video_data_l
-			sax
-			sta video_data_h
-#endasm
-
-			if( !--__tmp_CHRs_cnt ) { break; }
-			if( !--__data_size )
-			{
-				// set write mode
-#asm
-				mpd_vreg #$00
-
-				lda ___tmp_vaddr
-				and ___BAT_width_dec1_inv
-				sta video_data_l
-				lda ___tmp_vaddr + 1
-				sta video_data_h
-
-				mpd_vreg #$02
-#endasm
-			}
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --__tmp_skip_CHRs_cnt; }
-#endif
+		__tile_n += __tile_step;
 	}
-#else	//FLAG_TILES2X2
-	while( TRUE )
-	{
-#if	FLAG_MODE_BIDIR_SCROLL
-		__CHR_offset = ( mpd_farpeekb( mpd_TilesScr, __tmp_tiles_offset + __tile_n ) << 3 ) + __CHR_y_pos;
-#else
-		__CHR_offset = ( mpd_farpeekb( mpd_Maps, __tmp_tiles_offset + __tile_n ) << 3 ) + __CHR_y_pos;
-#endif	//FLAG_MODE_BIDIR_SCROLL
-
-#if	FLAG_DIR_COLUMNS
-#if	FLAG_MODE_BIDIR_SCROLL
-		__tile_n += ScrTilesHeight;
-#else
-		__tile_n += __map_tiles_height;
-#endif	//FLAG_MODE_BIDIR_SCROLL
-#else	//FLAG_DIR_ROWS
-		++__tile_n;
-#endif	//FLAG_DIR_COLUMNS
-#if	MAPS_CNT != 1
-		__CHR_offset += __blocks_offset;
-#endif
-#if	FLAG_MODE_MULTIDIR_SCROLL
-		if( !__tmp_skip_CHRs_cnt )
-		{
-#endif
-			mpd_farpeekw( mpd_Attrs, __CHR_offset );
+*/
+	// blocks cache filling
 #asm
-			sax
-			sta video_data_l
-			sax
-			sta video_data_h
+	; switch data banks
+
+	__farptr _mpd_Tiles, __bl, __si
+
+	stw ___tiles_offset, <__ax
+
+	call _mpd_farptr_add_offset
+	jsr map_data
+
+	; x = ( ( __tmp_CHRs_cnt + 1 ) >> 2 ) + 1	[HuC: ( __tmp_CHRs_cnt + 1 ) >> 1 ]
+
+	lda ___tmp_CHRs_cnt
+	inc a
+	lsr a
+	lsr a
+	inc a
+	tax
+
+	stz ___tile_ind
+	stz ___block_ind
+
+	stw #___blocks_cache, <__cx
+	stw #___tiles_cache, <__dx
+
+.blocks_cache_loop:
+
+	; A = __tiles_cache[ __tile_ind++ ]
+
+	ldy ___tile_ind
+	lda [<__dx], y
+	cly
+
+	inc ___tile_ind
+
+	; __ax = ( A/Y << 2 ) + __block_xy_pos
+
+	asl a
+	say
+	rol a
+	say
+	asl a
+	say
+	rol a
+	say
+
+	clc
+	adc ___block_xy_pos
+	sta <__al
+	say
+	adc #00
+	sta <__ah
+
+	; A = mpd_Tiles[ __ax ]
+
+	mpd_add_word_to_word <__si, <__ax
+	lda [<__ax]
+
+	; __blocks_cache[ __block_ind++ ] = A
+
+	ldy ___block_ind
+	sta [<__cx], y
+
+	inc ___block_ind
+
+	; A = mpd_Tiles[ __ax + 2 ]
+
+	lda ___tile_block_offset
+	mpd_add_a_to_word <__ax
+
+	lda [<__ax]
+
+	; __blocks_cache[ __block_ind++ ] = A
+
+	iny
+	sta [<__cx], y
+
+	inc ___block_ind
+
+	dex
+	bne .blocks_cache_loop
+
+	jsr unmap_data
+#endasm
+/*
+	__tile_ind = 0;
+
+	// fill blocks cache
+	for( __block_ind = 0; __block_ind < ( ( __tmp_CHRs_cnt + 1 ) >> 1 ); )
+	{
+		__tile4x4_offset = ( __tiles_cache[ __tile_ind++ ] << 2 ) + __block_xy_pos;
+
+//#if	MAPS_CNT != 1
+		__tile4x4_offset += __tiles_offset;
+//#endif
+		__blocks_cache[ __block_ind++ ] = mpd_farpeekb( mpd_Tiles, __tile4x4_offset );
+		__blocks_cache[ __block_ind++ ] = mpd_farpeekb( mpd_Tiles, __tile4x4_offset + 2/1 );
+	}
+*/
+	// put CHRs into BAT
+#asm
+	; switch data banks
+
+	__farptr _mpd_Attrs, __bl, __si
+
+	stw ___blocks_offset, <__ax
+
+	call _mpd_farptr_add_offset
+	jsr map_data
+
+	stz ___block_ind
+	ldx ___data_size
+
+	lda ___tmp_CHRs_cnt
+	sta <__dl
 #endasm
 
-			if( !--__tmp_CHRs_cnt ) { break; }
-			if( !--__data_size )
+#if	FLAG_MODE_MULTIDIR_SCROLL
+#asm
+	lda ___tmp_skip_CHRs_cnt
+	sta <__dh
+#endasm
+#endif
+
+//	__block_ind = 0;
+
+#asm
+CHRs_proc_loop:
+#endasm
+//	while( TRUE )
+//	{
+		// block 1
+//		__CHR_offset = ( __blocks_cache[ __block_ind++ ] << 3 ) + __CHR_xy_pos;
+#asm
+		stw #___blocks_cache, <__ax
+		ldy ___block_ind
+		lda [<__ax], y
+		cly
+
+		inc ___block_ind
+
+		; __cx(__CHR_offset) = ( A/Y << 3 ) + __CHR_xy_pos
+
+		asl a
+		say
+		rol a
+		say
+		asl a
+		say
+		rol a
+		say
+		asl a
+		say
+		rol a
+		say
+
+		clc
+		adc ___CHR_xy_pos
+		sta <__cl		;___CHR_offset
+		say
+		adc #00
+		sta <__ch		;___CHR_offset + 1
+#endasm
+//#if	MAPS_CNT != 1
+//		__CHR_offset += __blocks_offset;
+//#endif
+#if	FLAG_MODE_MULTIDIR_SCROLL
+//		if( !__tmp_skip_CHRs_cnt )
+//		{
+#asm
+		lda <__dh	;___tmp_skip_CHRs_cnt
+		beq .CHRs_proc_put_CHR1
+
+		dec <__dh	;___tmp_skip_CHRs_cnt
+		bra .CHRs_proc_cont11
+.CHRs_proc_put_CHR1:
+#endasm
+#endif
+//			mpd_farpeekw( mpd_Attrs, __CHR_offset );
+#asm
+			mpd_add_word_to_word2 <__si, <__cx, <__ax	;__cx = ___CHR_offset
+			lda [<__ax]
+			sta video_data_l
+
+			ldy #1
+			lda [<__ax], y
+			sta video_data_h
+#endasm
+//			if( !--__tmp_CHRs_cnt )	{ break; }
+//			if( !--__data_size )
+#asm
+			dec <__dl	;___tmp_CHRs_cnt
+			bne .CHRs_proc_cont01
+			jmp CHRs_proc_exit
+.CHRs_proc_cont01:
+			dex		;___data_size
+			bne .CHRs_proc_cont11
+#endasm
 			{
 				// set write mode
 #asm
 				mpd_vreg #$00
 
 				lda ___tmp_vaddr
-				and ___BAT_width_dec1_inv
+				and ___vaddr_mask
 				sta video_data_l
+
 				lda ___tmp_vaddr + 1
+				and ___vaddr_mask + 1
 				sta video_data_h
 
 				mpd_vreg #$02
+.CHRs_proc_cont11:
 #endasm
 			}
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-		}
-		else
-		{ --__tmp_skip_CHRs_cnt; }
-#endif
-		mpd_farpeekw( mpd_Attrs, __CHR_offset + 2 );
+//		}
+//		else
+//		{ --__tmp_skip_CHRs_cnt; }
+
+//		if( !__tmp_skip_CHRs_cnt )
+//		{
 #asm
-		sax
+		lda <__dh	;___tmp_skip_CHRs_cnt
+		beq .CHRs_proc_put_CHR2
+		
+		dec <__dh	;___tmp_skip_CHRs_cnt
+		bra .CHRs_proc_cont22
+.CHRs_proc_put_CHR2:
+#endasm
+#endif
+//			mpd_farpeekw( mpd_Attrs, __CHR_offset + 4/2 );
+#asm
+			mpd_add_word_to_word2 <__si, <__cx, <__ax	;__cx = ___CHR_offset
+			lda ___block_CHR_offset
+			mpd_add_a_to_word <__ax 
+
+			lda [<__ax]
+			sta video_data_l
+
+			ldy #1
+			lda [<__ax], y
+			sta video_data_h
+#endasm
+//			if( !--__tmp_CHRs_cnt )	{ break; }
+//			if( !--__data_size )
+#asm
+			dec <__dl	;___tmp_CHRs_cnt
+			bne .CHRs_proc_cont02
+			jmp CHRs_proc_exit
+.CHRs_proc_cont02:
+			dex		;___data_size
+			bne .CHRs_proc_cont22
+#endasm
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___vaddr_mask
+				sta video_data_l
+
+				lda ___tmp_vaddr + 1
+				and ___vaddr_mask + 1
+				sta video_data_h
+
+				mpd_vreg #$02
+.CHRs_proc_cont22:
+#endasm
+			}
+//#if	FLAG_MODE_MULTIDIR_SCROLL
+//		}
+//		else
+//		{ --__tmp_skip_CHRs_cnt; }
+//#endif
+		// block 2
+//		__CHR_offset = ( __blocks_cache[ __block_ind++ ] << 3 ) + __CHR_xy_pos;
+#asm
+		stw #___blocks_cache, <__ax
+		ldy ___block_ind
+		lda [<__ax], y
+		cly
+
+		inc ___block_ind
+
+		; __cx(__CHR_offset) = ( A/Y << 3 ) + __CHR_xy_pos
+
+		asl a
+		say
+		rol a
+		say
+		asl a
+		say
+		rol a
+		say
+		asl a
+		say
+		rol a
+		say
+
+		clc
+		adc ___CHR_xy_pos
+		sta <__cl		;___CHR_offset
+		say
+		adc #00
+		sta <__ch		;___CHR_offset + 1
+#endasm
+//#if	MAPS_CNT != 1
+//		__CHR_offset += __blocks_offset;
+//#endif
+#if	FLAG_MODE_MULTIDIR_SCROLL
+//		if( !__tmp_skip_CHRs_cnt )
+//		{
+#asm
+		lda <__dh	;___tmp_skip_CHRs_cnt
+		beq .CHRs_proc_put_CHR3
+		
+		dec <__dh	;___tmp_skip_CHRs_cnt
+		bra .CHRs_proc_cont33
+.CHRs_proc_put_CHR3:
+#endasm
+#endif
+//			mpd_farpeekw( mpd_Attrs, __CHR_offset );
+#asm
+			mpd_add_word_to_word2 <__si, <__cx, <__ax	;__cx = ___CHR_offset
+			lda [<__ax]
+			sta video_data_l
+
+			ldy #1
+			lda [<__ax], y
+			sta video_data_h
+#endasm
+//			if( !--__tmp_CHRs_cnt )	{ break; }
+//			if( !--__data_size )
+#asm
+			dec <__dl	;___tmp_CHRs_cnt
+			bne .CHRs_proc_cont03
+			jmp CHRs_proc_exit
+.CHRs_proc_cont03:
+			dex		;___data_size
+			bne .CHRs_proc_cont33
+#endasm
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___vaddr_mask
+				sta video_data_l
+
+				lda ___tmp_vaddr + 1
+				and ___vaddr_mask + 1
+				sta video_data_h
+
+				mpd_vreg #$02
+.CHRs_proc_cont33
+#endasm
+			}
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+//		}
+//		else
+//		{ --__tmp_skip_CHRs_cnt; }
+
+//		if( !__tmp_skip_CHRs_cnt )
+//		{
+#asm
+		lda <__dh	;___tmp_skip_CHRs_cnt
+		beq .CHRs_proc_put_CHR4
+		
+		dec <__dh	;___tmp_skip_CHRs_cnt
+		bra .CHRs_proc_cont44
+.CHRs_proc_put_CHR4:
+#endasm
+#endif
+//			mpd_farpeekw( mpd_Attrs, __CHR_offset + 4/2 );
+#asm
+			mpd_add_word_to_word2 <__si, <__cx, <__ax	;__cx = ___CHR_offset
+			lda ___block_CHR_offset
+			mpd_add_a_to_word <__ax 
+
+			lda [<__ax]
+			sta video_data_l
+
+			ldy #1
+			lda [<__ax], y
+			sta video_data_h
+#endasm
+//			if( !--__tmp_CHRs_cnt )	{ break; }
+//			if( !--__data_size )
+#asm
+			dec <__dl	;___tmp_CHRs_cnt
+			bne .CHRs_proc_cont04
+			bra CHRs_proc_exit
+.CHRs_proc_cont04:
+			dex		;___data_size
+			bne .CHRs_proc_cont44
+#endasm
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___vaddr_mask
+				sta video_data_l
+
+				lda ___tmp_vaddr + 1
+				and ___vaddr_mask + 1
+				sta video_data_h
+
+				mpd_vreg #$02
+.CHRs_proc_cont44
+#endasm
+			}
+
+//#if	FLAG_MODE_MULTIDIR_SCROLL
+//		}
+//		else
+//		{ --__tmp_skip_CHRs_cnt; }
+//#endif
+//	}
+
+#asm
+	jmp CHRs_proc_loop
+
+CHRs_proc_exit:
+
+	jsr unmap_data
+#endasm
+#else	//FLAG_TILES2X2
+
+#if	FLAG_MODE_BIDIR_SCROLL
+#asm
+	__farptr _mpd_TilesScr, __bl, __si
+#endasm
+#else
+#asm
+	__farptr _mpd_Maps, __bl, __si
+#endasm
+#endif	//FLAG_MODE_BIDIR_SCROLL
+
+#asm
+	; switch data banks
+
+	stw ___tmp_tiles_offset, <__ax
+
+	call _mpd_farptr_add_offset
+	jsr map_data
+#endasm
+
+#asm
+	; X = ( __tmp_CHRs_cnt + 1 ) >> 1
+
+	lda ___tmp_CHRs_cnt
+	inc a
+	lsr a
+	tax
+
+	stz ___tile_n
+	stz ___tile_n + 1
+
+	stw #___blocks_cache, <__cx
+	cly
+
+.blocks_cache_loop:	
+
+	; __blocks_cache[ __block_ind ] = lda [__si], __tile_n;
+
+	mpd_add_word_to_word2 <__si, ___tile_n, <__ax
+	lda [<__ax]
+
+	sta [<__cx], y
+	iny
+
+	mpd_add_word_to_word ___tile_step, ___tile_n
+
+	dex
+	bne .blocks_cache_loop
+
+	jsr unmap_data
+#endasm
+/*
+	// blocks cache filling
+	__tile_n = 0;
+
+	for( __block_ind = 0; __block_ind < ( ( __tmp_CHRs_cnt + 1 ) >> 1 ); )
+	{
+#if	FLAG_MODE_BIDIR_SCROLL
+		__blocks_cache[ __block_ind++ ] = mpd_farpeekb( mpd_TilesScr, __tmp_tiles_offset + __tile_n );
+#else
+		__blocks_cache[ __block_ind++ ] = mpd_farpeekb( mpd_Maps, __tmp_tiles_offset + __tile_n );
+#endif	//FLAG_MODE_BIDIR_SCROLL
+
+		__tile_n += __tile_step;
+	}
+*/
+	// put CHRs into BAT
+#asm
+	; switch data banks
+
+	__farptr _mpd_Attrs, __bl, __si
+
+	stw ___blocks_offset, <__ax
+
+	call _mpd_farptr_add_offset
+	jsr map_data
+
+	stz ___block_ind
+	ldx ___data_size
+
+	lda ___tmp_CHRs_cnt
+	sta <__dl
+#endasm
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+#asm
+	lda ___tmp_skip_CHRs_cnt
+	sta <__dh
+#endasm
+#endif
+
+//	__block_ind = 0;
+
+#asm
+CHRs_proc_loop:
+#endasm
+//	while( TRUE )
+//	{
+		// block 1
+//		__CHR_offset = ( __blocks_cache[ __block_ind++ ] << 3 ) + __CHR_xy_pos;
+#asm
+		stw #___blocks_cache, <__ax
+		ldy ___block_ind
+		lda [<__ax], y
+		cly
+
+		inc ___block_ind
+
+		; __cx(__CHR_offset) = ( A/Y << 3 ) + __CHR_xy_pos
+
+		asl a
+		say
+		rol a
+		say
+		asl a
+		say
+		rol a
+		say
+		asl a
+		say
+		rol a
+		say
+
+		clc
+		adc ___CHR_xy_pos
+		sta <__cl		;___CHR_offset
+		say
+		adc #00
+		sta <__ch		;___CHR_offset + 1
+#endasm
+//#if	MAPS_CNT != 1
+//		__CHR_offset += __blocks_offset;
+//#endif
+#if	FLAG_MODE_MULTIDIR_SCROLL
+//		if( !__tmp_skip_CHRs_cnt )
+//		{
+#asm
+		lda <__dh	;___tmp_skip_CHRs_cnt
+		beq .CHRs_proc_put_CHR1
+		
+		dec <__dh	;___tmp_skip_CHRs_cnt
+		bra .CHRs_proc_cont11
+.CHRs_proc_put_CHR1:
+#endasm
+#endif
+//			mpd_farpeekw( mpd_Attrs, __CHR_offset );
+#asm
+			mpd_add_word_to_word2 <__si, <__cx, <__ax	;__cx = ___CHR_offset
+
+			lda [<__ax]
+			sta video_data_l
+
+			ldy #1
+			lda [<__ax], y
+			sta video_data_h
+#endasm
+
+//			if( !--__tmp_CHRs_cnt )	{ break; }
+//			if( !--__data_size )
+#asm
+			dec <__dl	;___tmp_CHRs_cnt
+			bne .CHRs_proc_cont01
+			bra CHRs_proc_exit
+.CHRs_proc_cont01:
+			dex		;___data_size
+			bne .CHRs_proc_cont11
+#endasm
+			{
+				// set write mode
+#asm
+				mpd_vreg #$00
+
+				lda ___tmp_vaddr
+				and ___vaddr_mask
+				sta video_data_l
+
+				lda ___tmp_vaddr + 1
+				and ___vaddr_mask + 1
+				sta video_data_h
+
+				mpd_vreg #$02
+.CHRs_proc_cont11:
+#endasm
+			}
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+//		}
+//		else
+//		{ --__tmp_skip_CHRs_cnt; }
+#endif
+//		mpd_farpeekw( mpd_Attrs, __CHR_offset + 4/2 );
+#asm
+		mpd_add_word_to_word2 <__si, <__cx, <__ax	;__cx = ___CHR_offset
+		lda ___block_CHR_offset
+		mpd_add_a_to_word <__ax 
+
+		lda [<__ax]
 		sta video_data_l
-		sax
+
+		ldy #1
+		lda [<__ax], y
 		sta video_data_h
 #endasm
 
-		if( !--__tmp_CHRs_cnt ) { break; }
-		if( !--__data_size )
+//		if( !--__tmp_CHRs_cnt )	{ break; }
+//		if( !--__data_size )
+#asm
+		dec <__dl	;___tmp_CHRs_cnt
+		bne .CHRs_proc_cont02
+		bra CHRs_proc_exit
+.CHRs_proc_cont02:
+		dex		;___data_size
+		bne .CHRs_proc_cont22
+#endasm
 		{
 			// set write mode
 #asm
 			mpd_vreg #$00
 
 			lda ___tmp_vaddr
-			and ___BAT_width_dec1_inv
+			and ___vaddr_mask
 			sta video_data_l
+
 			lda ___tmp_vaddr + 1
+			and ___vaddr_mask + 1
 			sta video_data_h
 
 			mpd_vreg #$02
+.CHRs_proc_cont22:
 #endasm
 		}
-	}
+//	}
+#asm
+	jmp CHRs_proc_loop
+
+CHRs_proc_exit:
+
+	jsr unmap_data
+#endasm
 #endif	//FLAG_TILES4X4
 }
 
@@ -3107,11 +3446,9 @@ u8	mpd_get_property( u16 _x, u16 _y )
 #if	FLAG_MODE_MULTIDIR_SCROLL	/* !!! */
 
 #if	FLAG_DIR_ROWS
-	tiles_offset	= __maps_tbl_offset + ( _y << 1 );
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, tiles_offset ) + _x;
+	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( _y << 1 ) ) + _x;
 #else
-	tiles_offset	= __maps_tbl_offset + ( _x << 1 );
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, tiles_offset ) + _y;
+	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( _x << 1 ) ) + _y;
 #endif
 	tiles_offset	+= __maps_offset;
 
