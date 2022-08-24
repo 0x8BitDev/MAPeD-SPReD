@@ -649,9 +649,9 @@ unsigned char	__fastcall spd_get_dbl_buff_ind();
 	adc low_byte \1
 	sta low_byte \1
 
-	bcc @cont
+	bcc .cont\@
 	inc high_byte \1
-@cont:
+.cont\@:
 	.endm
 
 ; \2 = \1 - \2
