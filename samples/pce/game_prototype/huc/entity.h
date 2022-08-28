@@ -624,7 +624,7 @@ void	update_cached_button()
 //
 // prop0: 7-bit: 1 - RIGHT/DOWN, 0-LEFT/UP; 6-0: distance
 // prop1: 7-0: current distance
-// prop2: 7-bit: 1 - ON, 0 - OFF; 6-bit: 1 - UP/DOWN, 0 - LEFT/RIGHT
+// prop2: 7-bit: 1 - ON, 0 - OFF; 6-bit: 1 - UP/DOWN, 0 - LEFT/RIGHT; 5-bit: looped?; 4-bit: sprite low priority
 //
 void	update_cached_platform()
 {
@@ -636,19 +636,35 @@ void	update_cached_platform()
 		{
 			if( ent_ptr->prop0 & 0x80 )	// DOWN
 			{
-				++ent_ptr->prop1;
-
-				if( ent_ptr->prop1 >= ( ent_ptr->prop0 & 0x7f ) )
+				if( ++ent_ptr->prop1 >= ( ent_ptr->prop0 & 0x7f ) )
 				{
+					if( !( ent_ptr->prop2 & 0x20 ) )	// looped?
+					{
+						ent_ptr->prop2 &= 0x7f;		// NO!
+
+						if( ent_ptr->targ_id != 0xff )
+						{
+							__map_ents[ ent_ptr->targ_id ].prop2 ^= 0x80;	// switch on/off target entity
+						}
+					}
+
 					ent_ptr->prop0 ^= 0x80;
 				}
 			}
 			else	// UP
 			{
-				--ent_ptr->prop1;
-
-				if( !ent_ptr->prop1 )
+				if( !--ent_ptr->prop1 )
 				{
+					if( !( ent_ptr->prop2 & 0x20 ) )	// looped?
+					{
+						ent_ptr->prop2 &= 0x7f;		// NO!
+
+						if( ent_ptr->targ_id != 0xff )
+						{
+							__map_ents[ ent_ptr->targ_id ].prop2 ^= 0x80;	// switch on/off target entity
+						}
+					}
+
 					ent_ptr->prop0 ^= 0x80;
 				}
 			}
@@ -661,19 +677,35 @@ void	update_cached_platform()
 		{
 			if( ent_ptr->prop0 & 0x80 )	// RIGHT
 			{
-				++ent_ptr->prop1;
-
-				if( ent_ptr->prop1 >= ( ent_ptr->prop0 & 0x7f ) )
+				if( ++ent_ptr->prop1 >= ( ent_ptr->prop0 & 0x7f ) )
 				{
+					if( !( ent_ptr->prop2 & 0x20 ) )	// looped?
+					{
+						ent_ptr->prop2 &= 0x7f;		// NO!
+
+						if( ent_ptr->targ_id != 0xff )
+						{
+							__map_ents[ ent_ptr->targ_id ].prop2 ^= 0x80;	// switch on/off target entity
+						}
+					}
+
 					ent_ptr->prop0 ^= 0x80;
 				}
 			}
 			else	// LEFT
 			{
-				--ent_ptr->prop1;
-
-				if( !ent_ptr->prop1 )
+				if( !--ent_ptr->prop1 )
 				{
+					if( !( ent_ptr->prop2 & 0x20 ) )	// looped?
+					{
+						ent_ptr->prop2 &= 0x7f;		// NO!
+
+						if( ent_ptr->targ_id != 0xff )
+						{
+							__map_ents[ ent_ptr->targ_id ].prop2 ^= 0x80;	// switch on/off target entity
+						}
+					}
+
 					ent_ptr->prop0 ^= 0x80;
 				}
 			}
@@ -681,7 +713,12 @@ void	update_cached_platform()
 		spd_SATB_set_sprite_LT( ENT_SPR_PLATFORM, ent_x + ent_ptr->prop1, ent_y_unmasked );
 	}
 
-	ENABLE_COLLISION_DETECTION
+	if( ent_ptr->prop2 & 0x10 )
+	{
+		spd_set_pri_LT( SPD_SPR_PRI_LOW );
+	}
+
+	FORCE_COLLISION_DETECTION
 }
 
 //
@@ -735,7 +772,7 @@ void	update_cached_logs()
 		ENT_ADD_TO_SATB
 		spd_SATB_set_sprite_LT( ENT_SPR_LOGS, ent_x, ent_y_unmasked + ent_ptr->prop2 );
 
-		ENABLE_COLLISION_DETECTION
+		FORCE_COLLISION_DETECTION
 	}
 }
 
@@ -747,7 +784,7 @@ void	update_cached_door()
 	spd_SATB_set_sprite_LT( ENT_SPR_DOOR, ent_x, ent_y_unmasked + ent_ptr->prop1 );
 	spd_set_pri_LT( SPD_SPR_PRI_LOW );
 
-	ENABLE_COLLISION_DETECTION
+	FORCE_COLLISION_DETECTION
 }
 
 void	update_cached_heavy_load()
@@ -758,7 +795,7 @@ void	update_cached_heavy_load()
 	spd_SATB_set_sprite_LT( ENT_SPR_HEAVY_LOAD, ent_x, ent_y_unmasked + ent_ptr->prop1 );
 	spd_set_pri_LT( SPD_SPR_PRI_LOW );
 
-	ENABLE_COLLISION_DETECTION
+	FORCE_COLLISION_DETECTION
 }
 
 //
