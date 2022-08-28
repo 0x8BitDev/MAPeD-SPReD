@@ -97,6 +97,8 @@ void	scene_update()
 	// use updated scroll values to synchronize player's position with the scene coordinates
 	player_update_pos( __player_x - mpd_scroll_x(), __player_y - mpd_scroll_y() );
 
+#if	!DBG_ENTITIES_OFF
+
 	// check player collision
 	if( __spr_collision )
 	{
@@ -111,6 +113,8 @@ DBG_UPDATE_ENTITIES
 
 	update_scene_entities( SATB_POS_ENTITY );
 
+#endif	//!DBG_ENTITIES_ON
+
 DBG_BLACK_BORDER
 
 	if( __enemy_hit )
@@ -118,7 +122,7 @@ DBG_BLACK_BORDER
 		player_update_hit();
 	}
 
-#if	DBG_MODE
+#if	DBG_SHOW_INFO
 put_string( "ccach:", 3, 0 );
 put_number( __collision_cache_pos, 2, 9, 0 );
 put_string( "ents :", 3, 1 );

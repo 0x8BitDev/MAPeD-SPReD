@@ -8,67 +8,25 @@
 
 u8	__spr_collision = 0;
 
-#define	ENABLE_COLLISION_DETECTION	__spr_collision = 1;	// enable collision detection anyway
+#define	FORCE_COLLISION_DETECTION	__spr_collision = 1;	// enable collision detection manually
 
 void	__fastcall wait_vsync();
 
 
 #asm
 
-; This is a usual HuC/MagicKit IRQ1 routine, but with a little improvement for the hardware collision detection
+__irq1_hdwr_collisions:
 
-__user_irq1:
 		pha			; save registers
 		phx
 		phy
-		; --
-		lda	video_reg	; get VDC status register
-		sta	<vdc_sr		; save a copy
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		; check for sprite #0 collision event
 
-		bbr0	<vdc_sr, .vsync
+		maplibfunc __lib2_irq1_hdwr_collisions
 
-		tax
-
-		lda	#$01
-		sta 	___spr_collision
-
-		txa
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		 ; ----
-		 ; vsync interrupt
-		 ;
-.vsync:		bbr5	<vdc_sr,.hsync
-		; --
-		inc	irq_cnt		; increment IRQ counter
-		; --
-		st0	#5		; update display control (bg/sp)
-		lda	<vdc_crl
-		sta	video_data_l
-		; --
-		bbs5	<irq_m,.hsync
-		; --
-		jsr	vsync_hndl
-		; --
-		; ----
-		; hsync interrupt
-		;
-
-.hsync:		bbr2	<vdc_sr,.exit
-		bbs7	<irq_m,.exit
-		; --
-		jsr	hsync_hndl
-
-		; ----
-		; exit interrupt
-		;
-.exit:		lda	<vdc_reg	; restore VDC register index
-		sta	video_reg
-		; --
 		ply
 		plx
 		pla
+
 		rti
 
 ; HuC/MagicKit ignores vsync for user defined IRQ1. So I just re-use it for my re-used IRQ1
@@ -162,6 +120,6 @@ void	hdwr_collisions_init()
 	; enable user irq1
 
 	smb1	<irq_m
-	stw	#__user_irq1, irq1_jmp
+	stw	#__irq1_hdwr_collisions, irq1_jmp
 #endasm
 }

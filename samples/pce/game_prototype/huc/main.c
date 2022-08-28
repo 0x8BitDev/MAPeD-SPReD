@@ -16,11 +16,15 @@
 // - yellow border color	- getting a tile property
 //
 #asm
-;MPD_DEBUG
-;SPD_DEBUG
+MPD_DEBUG
+SPD_DEBUG
 #endasm
 
-#define	DBG_MODE	1
+#define	DBG_MODE		1
+#if	DBG_MODE
+#define	DBG_SHOW_INFO		0
+#endif
+#define DBG_ENTITIES_OFF	0
 
 #if	DBG_MODE
 #define	DBG_UPDATE_ENTITIES	mpd_dbg_set_border( 511 );
@@ -47,8 +51,6 @@ void	show_msg( char* _msg )
 	disp_off();
 	cls();
 
-	load_default_font();
-
 	put_string( _msg, 0, 0 );
 
 	pokew( 0x220c, 0 );
@@ -61,7 +63,7 @@ void	show_msg( char* _msg )
 }
 
 #include "sprite_set.h"
-#include "hdwr_collision.h"
+#include "hdwr_collisions.h"
 #include "player.h"
 #include "entity_manager.h"
 #include "scene.h"
@@ -83,6 +85,8 @@ main()
 	scene_init();
 
 	hdwr_collisions_init();
+
+	load_default_font( 0, 0x1a00 );
 
 	/* demo main loop */
 	for( ;; )
