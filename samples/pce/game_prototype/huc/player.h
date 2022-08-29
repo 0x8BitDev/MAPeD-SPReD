@@ -6,14 +6,20 @@
 //
 //##################################################################
 
+#define	JOY_UP_BTN		JOY_UP
+#define	JOY_DOWN_BTN		JOY_DOWN
+#define	JOY_LEFT_BTN		JOY_LEFT
+#define	JOY_RIGHT_BTN		JOY_RIGHT
 #define	JOY_JUMP_BTN		JOY_A
 #define	JOY_ACTION_BTN		JOY_B
 
 #define	HEAD_COLLISIONS		1
 
 #define TILE_PROP_PLATFORM	1
-#define TILE_PROP_WALL		3
 #define TILE_PROP_LADDER	2
+#define TILE_PROP_WALL		3
+#define TILE_PROP_DAMAGE	4
+#define TILE_PROP_JUMPER	5
 
 #define	PLAYER_WIDTH		16
 #define	PLAYER_HEIGHT		32
@@ -71,6 +77,18 @@ PLAYER_DATA	__player_data;
 // movement flags
 u8	__mvmnt_flags	= 0;
 
+// variables scope
+s16	map_pos_x;
+s16	map_pos_y;
+u8	cp1_prop;
+u8	cp2_prop;
+
+#if	HEAD_COLLISIONS
+u8	cp_lt_res;
+u8	cp_rt_res;
+u8	cont_jump;
+#endif
+
 #define	MVMNT_FLAG_LEFT		0x01
 #define	MVMNT_FLAG_RIGHT	0x02
 #define	MVMNT_FLAG_UP		0x04
@@ -102,13 +120,28 @@ void	player_init( mpd_ENTITY* _ent )
 
 u8	__check_ground_cp()
 {
-	s16	map_pos_x;
-	s16	map_pos_y;
-	u8	cp1_prop;
-	u8	cp2_prop;
-
 	map_pos_x = __player_x;
 	map_pos_y = __player_y + PLAYER_HEIGHT;
+
+	cp1_prop = mpd_get_property( map_pos_x + PLAYER_CP_MID_WIDTH, __player_y + PLAYER_CP_LT_RT );
+
+	if( cp1_prop == TILE_PROP_DAMAGE )
+	{
+		player_enemy_hit();
+	}
+
+	if( cp1_prop == TILE_PROP_JUMPER )
+	{
+		if( __fall_acc )	// falling?
+		{
+			__jump_acc = JUMP_ACC_VAL - 1;	// jump when falling
+			__fall_acc = 0xff;
+
+			__player_y &= ~0x07;
+
+			return 0;
+		}
+	}
 
 	cp1_prop = mpd_get_property( map_pos_x + PLAYER_CP_GRND_LT, map_pos_y );
 	cp2_prop = mpd_get_property( map_pos_x + PLAYER_CP_GRND_RT, map_pos_y );
@@ -138,9 +171,6 @@ u8	__check_ground_cp()
 
 u8	__check_ladder( u8 _offs_y )
 {
-	s16	map_pos_x;
-	s16	map_pos_y;
-
 	map_pos_x = __player_x + PLAYER_CP_LADDER;
 	map_pos_y = __player_y + PLAYER_HEIGHT;
 
@@ -155,12 +185,6 @@ u8	__check_ladder( u8 _offs_y )
 #if	HEAD_COLLISIONS
 u8	__check_head_cp()
 {
-	s16	map_pos_x;
-	s16	map_pos_y;
-	u8	cp_lt_res;
-	u8	cp_rt_res;
-	u8	cont_jump;
-
 	cont_jump = 1;
 
 	map_pos_x = __player_x;
@@ -199,13 +223,17 @@ u8	__check_head_cp()
 
 void	__check_left_cp()
 {
-	s16	map_pos_x;
-	s16	map_pos_y;
-
 	map_pos_x = __player_x;
 	map_pos_y = __player_y + PLAYER_CP_LT_RT;
 
-	if( mpd_get_property( map_pos_x, map_pos_y ) == TILE_PROP_WALL )
+	cp1_prop = mpd_get_property( map_pos_x, map_pos_y );
+
+	if( cp1_prop == TILE_PROP_DAMAGE )
+	{
+		player_enemy_hit();
+	}
+
+	if( cp1_prop == TILE_PROP_WALL )
 	{
 		__player_x += 8;
 		__player_x &= ~0x07;
@@ -214,13 +242,17 @@ void	__check_left_cp()
 
 void	__check_right_cp()
 {
-	s16	map_pos_x;
-	s16	map_pos_y;
-
 	map_pos_x = __player_x + PLAYER_WIDTH;
 	map_pos_y = __player_y + PLAYER_CP_LT_RT;
 
-	if( mpd_get_property( map_pos_x, map_pos_y ) == TILE_PROP_WALL )
+	cp1_prop = mpd_get_property( map_pos_x, map_pos_y );
+
+	if( cp1_prop == TILE_PROP_DAMAGE )
+	{
+		player_enemy_hit();
+	}
+
+	if( cp1_prop == TILE_PROP_WALL )
 	{
 		__player_x &= ~0x07;
 	}
@@ -246,7 +278,7 @@ void	player_update()
 	__mvmnt_flags	= 0;
 
 	// UP / DOWN
-	if( __jpad_val & JOY_UP )
+	if( __jpad_val & JOY_UP_BTN )
 	{
 		if( __check_ladder( 1 ) )
 		{
@@ -257,7 +289,7 @@ void	player_update()
 		}
 	}
 	else
-	if( __jpad_val & JOY_DOWN )
+	if( __jpad_val & JOY_DOWN_BTN )
 	{
 		if( __check_ladder( 0 ) )
 		{
@@ -329,7 +361,7 @@ void	player_update()
 	}
 
 	// LEFT / RIGHT
-	if( __jpad_val & JOY_LEFT )
+	if( __jpad_val & JOY_LEFT_BTN )
 	{
 		if( ++__move_left_acc > MOVE_LR_ACC_VAL )
 		{
@@ -342,7 +374,7 @@ void	player_update()
 		}
 	}
 	else
-	if( __jpad_val & JOY_RIGHT )
+	if( __jpad_val & JOY_RIGHT_BTN )
 	{
 		if( ++__move_right_acc > MOVE_LR_ACC_VAL )
 		{
