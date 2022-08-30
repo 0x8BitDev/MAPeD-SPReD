@@ -35,18 +35,19 @@ const u8 PLAYER_CP_LT_RT	= ( PLAYER_HEIGHT - 7 );
 const u8 PLAYER_CP_MID_WIDTH	= ( PLAYER_WIDTH >> 1 );
 const u8 PLAYER_CP_LADDER	= PLAYER_CP_MID_WIDTH;
 
-#define	PLAYER_STATE_ON_SURFACE	__jump_acc = JUMP_ACC_VAL; __fall_acc = 0;
+#define	PLAYER_STATE_ON_SURFACE	__jump_acc = __jump_acc_max = JUMP_ACC_VAL; __fall_acc = 0;
 #define	PLAYER_IS_FALLING	__fall_acc
 
 #define MOVE_SPEED_LADDER	2	// pix/frame
 
-#define MOVE_LR_ACC_VAL		16	// power of two
+#define MOVE_LR_ACC_VAL		16
 #define MOVE_LR_ACC_CAP		2	// obj_pos +-= MOVE_ACC_VAL >> MOVE_ACC_CAP
 
-#define JUMP_ACC_VAL		16	// power of two
+#define JUMP_ACC_VAL		16
+#define JUMPER_ACC_VAL		20
 #define JUMP_ACC_CAP		1	// obj_pos +-= MOVE_ACC_VAL >> MOVE_ACC_CAP
 
-#define FALL_ACC_VAL		16	// power of two
+#define FALL_ACC_VAL		16
 #define FALL_ACC_CAP		1	// obj_pos +-= MOVE_ACC_VAL >> MOVE_ACC_CAP
 
 // player dynamic data
@@ -56,6 +57,7 @@ u8	__move_left_acc		= 0;
 u8	__move_right_acc	= 0;
 
 u8	__jump_acc	= 0;
+u8	__jump_acc_max	= 0;
 u8	__fall_acc	= 0;
 
 u8	__delta_LR	= 0;
@@ -106,8 +108,7 @@ void	player_init( mpd_ENTITY* _ent )
 	__player_x	= _ent->inst.x_pos;
 	__player_y	= _ent->inst.y_pos;
 
-	__jump_acc	= JUMP_ACC_VAL;
-	__fall_acc	= 0;
+	PLAYER_STATE_ON_SURFACE
 
 	/* set the SATB position to push sprites to */
 	spd_SATB_set_pos( SATB_POS_PLAYER );
@@ -134,7 +135,8 @@ u8	__check_ground_cp()
 	{
 		if( __fall_acc )	// falling?
 		{
-			__jump_acc = JUMP_ACC_VAL - 1;	// jump when falling
+			__jump_acc_max = JUMPER_ACC_VAL;
+			__jump_acc = __jump_acc_max - 1;	// jump when falling
 			__fall_acc = 0xff;
 
 			__player_y &= ~0x07;
@@ -267,7 +269,7 @@ void	__check_ground()
 	}
 	else
 	{
-		++__fall_acc;	// start falling
+		++__fall_acc;	// falling
 	}
 }
 
@@ -303,7 +305,7 @@ void	player_update()
 	// JUMPING
 	if( __jpad_val & JOY_JUMP_BTN )
 	{
-		if( __jump_acc == JUMP_ACC_VAL )
+		if( __jump_acc == __jump_acc_max )
 		{
 			--__jump_acc;
 		}
@@ -332,7 +334,7 @@ void	player_update()
 		__check_ground();
 	}
 	else
-	if( __jump_acc < JUMP_ACC_VAL && __jump_acc )
+	if( __jump_acc < __jump_acc_max && __jump_acc )
 	{
 		if( --__jump_acc <= 0 )
 		{

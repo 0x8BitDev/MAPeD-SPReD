@@ -4,6 +4,14 @@
 //
 // Desc: Simple game prototype demo.
 //
+// Features:
+// ~~~~~~~~~
+// - 40 screens scrollable multidirectional map
+// - inertial player/scene movement
+// - sprite/tile objects
+// - entities: collectable, dynamic platforms, buttons, switches, dynamic obstacles, simple dynamic enemies
+// - hardware collisions
+//
 //##################################################################
 
 #define	PLAYER_SPRITE_ID	SPR_PLAYER_16X32_0
