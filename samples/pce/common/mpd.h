@@ -9,6 +9,7 @@
 History:
 
 v0.7
+2022.08.30 - added 'mpd_active_map_width()' and 'mpd_active_map_height()' for multidirectional maps
 2022.08.23 - optimized screen scrolling, re-written in assembler; 3x faster than before
 2022.08.21 - removed display list + pre-optimization of screen scrolling
 2022.08.07 - added 'mpd_get_scroll_step_x'/'mpd_get_scroll_step_y'
@@ -314,6 +315,8 @@ u8	mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; RES: property id
 void	mpd_draw_screen()
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
+u16	mpd_active_map_width() / map screens width in pixels - screen width in pixels
+u16	mpd_active_map_height() / map screens height in pixels - screen height in pixels
 void	mpd_draw_screen_by_ind( u8 _scr_ind )
 void	mpd_draw_screen_by_ind_offs( u8 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
 void	mpd_draw_screen_by_pos( u16 _x, u16 _y )
@@ -1127,16 +1130,17 @@ u16		__blocks_offset;
 u16		__tiles_offset;
 #endif
 
-#define	SCR_CHRS_WIDTH	( SCR_BLOCKS2x2_WIDTH << 1 )
-#define	SCR_CHRS_HEIGHT	( SCR_BLOCKS2x2_HEIGHT << 1 )
+const u8	SCR_CHRS_WIDTH	 = SCR_BLOCKS2x2_WIDTH << 1;
+const u8	SCR_CHRS_HEIGHT	 = SCR_BLOCKS2x2_HEIGHT << 1;
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 #if	FLAG_MODE_MULTIDIR_SCROLL
-#define	COLUMN_CHRS_CNT	SCR_CHRS_HEIGHT + 1
-#define	ROW_CHRS_CNT	SCR_CHRS_WIDTH + 1
+const u8	COLUMN_CHRS_CNT_INC1	= ( SCR_CHRS_HEIGHT ) + 1;
+const u8	COLUMN_CHRS_CNT		= SCR_CHRS_HEIGHT;
+const u8	ROW_CHRS_CNT		= ( SCR_CHRS_WIDTH ) + 1;
 #else
-#define	COLUMN_CHRS_CNT	SCR_CHRS_HEIGHT
-#define	ROW_CHRS_CNT	SCR_CHRS_WIDTH
+const u8	COLUMN_CHRS_CNT	= SCR_CHRS_HEIGHT;
+const u8	ROW_CHRS_CNT	= SCR_CHRS_WIDTH;
 #endif
 
 #define	UPD_FLAG_DRAW_LEFT	0x01
@@ -2101,6 +2105,16 @@ void	mpd_move_down()
 		__upd_flags |= UPD_FLAG_DRAW_DOWN;
 	}
 }
+
+u16	mpd_active_map_width()
+{
+	return __cropped_map_width;
+}
+
+u16	mpd_active_map_height()
+{
+	return __cropped_map_height;
+}
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
@@ -2253,7 +2267,7 @@ void	__mpd_draw_left_tiles_column()
 #endif
 	__tmp_tiles_offset	+= __maps_offset;
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), COLUMN_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), ( ( __scroll_y & 0x0f ) ? COLUMN_CHRS_CNT_INC1:COLUMN_CHRS_CNT ), __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -2303,7 +2317,7 @@ void	__mpd_draw_right_tiles_column()
 #endif
 	__tmp_tiles_offset	+= __maps_offset;
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x + ScrPixelsWidth, __scroll_y ), COLUMN_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x + ScrPixelsWidth, __scroll_y ), ( ( __scroll_y & 0x0f ) ? COLUMN_CHRS_CNT_INC1:COLUMN_CHRS_CNT ), __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
