@@ -9,6 +9,7 @@
 History:
 
 v0.7
+2022.08.31 - fixed missed tile 4x4 drawing in '__mpd_fill_row_column_data' and also fixed BAT overflow in '__mpd_draw_tiled_screen( _BAT_offset )'
 2022.08.30 - added 'mpd_active_map_width()' and 'mpd_active_map_height()' for multidirectional maps
 2022.08.23 - optimized screen scrolling, re-written in assembler; 3x faster than before
 2022.08.21 - removed display list + pre-optimization of screen scrolling
@@ -407,10 +408,8 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 
 ; \1 *= 2
 	.macro mpd_mul2_word
-	lda low_byte \1
-	asl a	
+	asl low_byte \1
 	rol high_byte \1
-	sta low_byte \1
 	.endm	
 
 ; \2 = \1 + \2
@@ -1162,6 +1161,27 @@ s16	__vert_dir_pos;
 u8	__upd_flags;
 #endif
 
+// variables for assembly optimization
+
+union mpd_var16
+{
+	u16	w;
+
+	struct
+	{
+		u8	l;
+		u8	b;
+	};
+};
+
+union mpd_var16	mpd_ax;
+union mpd_var16	mpd_bx;
+union mpd_var16	mpd_cx;
+union mpd_var16	mpd_dx;
+union mpd_var16	mpd_ex;
+union mpd_var16	mpd_fx;
+
+
 void	__mpd_get_BAT_params()
 {
 	u16 BAT_height;
@@ -1481,35 +1501,85 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 {
 	u8	scr_tile;
 	u16	w, h;
-	u16	h_acc;
 	u16	n;
 	u16	tiles_offset;
-	u16	vaddr;
 	u16	side_step;
 
 	tiles_offset	= __maps_offset + __init_tiles_offset;
 
-	vaddr		= _BAT_offset + ( ( __scroll_x >> 3 ) & __BAT_width_dec1 ) + ( ( ( __scroll_y >> 3 ) /*& __BAT_height_dec1*/ ) << __BAT_width_pow2 );
+	mpd_ax.w	= _BAT_offset + ( ( __scroll_x >> 3 ) & __BAT_width_dec1 ) + ( ( ( __scroll_y >> 3 ) /*& __BAT_height_dec1*/ ) << __BAT_width_pow2 );
 
 #if	FLAG_DIR_COLUMNS
 
 	side_step	= ScrTilesHeight * __map_scr_height;
 
-	for( w = 0; w < ScrTilesWidth; w++ )
+	for( mpd_cx.w = 0; mpd_cx.w < ScrTilesWidth; mpd_cx.w++ )
 	{
-		h_acc = 0;
+		mpd_bx.w = 0;
 
-		n = w * side_step;
+		n = mpd_cx.w * side_step;
 
 		for( h = 0; h < ScrTilesHeight; h++ )
 		{
 			scr_tile = mpd_farpeekb( mpd_Maps, tiles_offset + n );
-#if	FLAG_TILES2X2
-			__mpd_draw_block2x2( ( vaddr + ( ( h_acc + w ) << 1 ) ) & __BAT_size_dec1, __blocks_offset + ( scr_tile << 3 ) );
-#elif	FLAG_TILES4X4
-			__mpd_draw_tile4x4( ( vaddr + ( ( h_acc + w ) << 2 ) ) & __BAT_size_dec1, __tiles_offset + ( scr_tile << 2 ) );
+#asm
+			; <__cx = ( mpd_ax.w + ( mpd_bx.w << 1 ) )
+
+			lda _mpd_bx
+			asl a
+			sta <__bl
+			lda _mpd_bx + 1
+			rol a
+			sta <__bh
+#endasm
+
+#if	FLAG_TILES4X4
+#asm
+			mpd_mul2_word <__bx
+#endasm
 #endif
-			h_acc += __BAT_width;
+
+#asm
+			mpd_add_word_to_word2 _mpd_ax, <__bx, <__cx
+
+			; <__al = mpd_dx.w & __BAT_width_dec1_inv
+
+			lda <__cl
+			and ___BAT_width_dec1_inv
+			sta <__al
+
+			; mpd_dx.w = ( ( ( <__cx + ( mpd_cx.w << 1 ) ) & __BAT_width_dec1 ) | <__al ) & __BAT_size_dec1
+
+			lda _mpd_cx
+			asl a
+#endasm
+
+#if	FLAG_TILES4X4
+#asm
+			asl a
+#endasm
+#endif
+
+#asm
+			clc
+			adc <__cl
+
+			and ___BAT_width_dec1
+			ora <__al
+
+			sta _mpd_dx
+
+			lda <__ch
+			and ___BAT_size_dec1 + 1
+			sta _mpd_dx + 1
+#endasm
+
+#if	FLAG_TILES2X2
+			__mpd_draw_block2x2( mpd_dx.w, __blocks_offset + ( scr_tile << 3 ) );
+#elif	FLAG_TILES4X4
+			__mpd_draw_tile4x4( mpd_dx.w, __tiles_offset + ( scr_tile << 2 ) );
+#endif
+			mpd_bx.w += __BAT_width;
 			++n;
 		}
 	}
@@ -1517,24 +1587,62 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 
 	side_step	= ScrTilesWidth * __map_scr_width;
 
-	h_acc = 0;
+	mpd_bx.w = 0;
 
 	for( h = 0; h < ScrTilesHeight; h++ )
 	{
 		n = h * side_step;
 
-		for( w = 0; w < ScrTilesWidth; w++ )
+#if	FLAG_TILES2X2
+		mpd_dx.w	= mpd_ax.w + ( mpd_bx.w << 1 );
+#elif	FLAG_TILES4X4
+		mpd_dx.w	= mpd_ax.w + ( mpd_bx.w << 2 );
+#endif
+		mpd_ex.w	= mpd_dx.w & __BAT_width_dec1_inv;
+
+		for( mpd_cx.w = 0; mpd_cx.w < ScrTilesWidth; mpd_cx.w++ )
 		{
 			scr_tile = mpd_farpeekb( mpd_Maps, tiles_offset + n );
 #if	FLAG_TILES2X2
-			__mpd_draw_block2x2( ( vaddr + ( ( h_acc + w ) << 1 ) ) & __BAT_size_dec1, __blocks_offset + ( scr_tile << 3 ) );
+#asm
+			; mpd_fx.w = ( ( ( mpd_dx.w + ( mpd_cx.w << 1 ) ) & __BAT_width_dec1 ) | mpd_ex.w ) & __BAT_size_dec1
+
+			lda _mpd_cx
+			asl a
+#endasm
 #elif	FLAG_TILES4X4
-			__mpd_draw_tile4x4( ( vaddr + ( ( h_acc + w ) << 2 ) ) & __BAT_size_dec1, __tiles_offset + ( scr_tile << 2 ) );
+#asm
+			; mpd_fx.w = ( ( ( mpd_dx.w + ( mpd_cx.w << 2 ) ) & __BAT_width_dec1 ) | mpd_ex.w ) & __BAT_size_dec1
+
+			lda _mpd_cx
+			asl a
+			asl a
+#endasm
+#endif
+
+#asm
+			clc
+			adc _mpd_dx
+
+			and ___BAT_width_dec1
+			ora _mpd_ex
+
+			sta _mpd_fx
+
+			lda _mpd_dx + 1
+			and ___BAT_size_dec1 + 1
+			sta _mpd_fx + 1
+#endasm
+
+#if	FLAG_TILES2X2
+			__mpd_draw_block2x2( mpd_fx.w, __blocks_offset + ( scr_tile << 3 ) );
+#elif	FLAG_TILES4X4
+			__mpd_draw_tile4x4( mpd_fx.w, __tiles_offset + ( scr_tile << 2 ) );
 #endif
 			++n;
 		}
 
-		h_acc += __BAT_width;
+		mpd_bx.w += __BAT_width;
 	}
 
 #endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
@@ -2598,7 +2706,7 @@ void	__mpd_fill_row_column_data()
 
 	// tiles cache filling
 #asm
-	; X = ( __tmp_CHRs_cnt + 3 ) >> 2
+	; X = ( ( __tmp_CHRs_cnt + 3 ) >> 2 ) + 1	[HuC: ( __tmp_CHRs_cnt + 3 ) >> 2 ]
 
 	lda ___tmp_CHRs_cnt
 	inc a
@@ -2606,6 +2714,7 @@ void	__mpd_fill_row_column_data()
 	inc a
 	lsr a
 	lsr a
+	inc a
 	tax
 
 	stz ___tile_n
