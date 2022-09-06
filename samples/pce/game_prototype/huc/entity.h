@@ -18,6 +18,7 @@
 #define	UID_ENT_LOGS			7	// ignores collision cache - enables collision detection every frame
 #define	UID_ENT_DOOR			8	// ignores collision cache - enables collision detection every frame
 #define	UID_ENT_HEAVY_LOAD		9	// ignores collision cache - enables collision detection every frame
+#define	UID_ENT_PORTAL			10	// collision cache
 
 // sprite name aliases
 
@@ -34,6 +35,7 @@
 #define	ENT_SPR_LOGS			logs_32x16
 #define	ENT_SPR_DOOR			door_16x32_0
 #define	ENT_SPR_HEAVY_LOAD		heavy_load_32x64
+#define	ENT_SPR_PORTAL			portal_16x32_1
 
 // static entities data
 u8	base_ent_coll_star_width	= 0;
@@ -124,6 +126,7 @@ _init_ent_arr:
 	.dw _init_ent_logs
 	.dw _init_ent_door
 	.dw _init_ent_heavy_load
+	.dw _init_ent_portal
 
 _init_ent_null:
 	call _init_null
@@ -141,6 +144,7 @@ _init_ent_platform:
 _init_ent_logs:
 _init_ent_door:
 _init_ent_heavy_load:
+_init_ent_portal:
 	call _init_entity
 	rts
 
@@ -198,6 +202,7 @@ _upd_ent_arr:
 	.dw _upd_ent_logs
 	.dw _upd_ent_door
 	.dw _upd_ent_heavy_load
+	.dw _upd_ent_portal
 
 _upd_ent_null:
 	call _update_null
@@ -237,6 +242,10 @@ _upd_ent_door:
 
 _upd_ent_heavy_load:
 	call _update_heavy_load
+	rts
+
+_upd_ent_portal:
+	call _update_portal
 	rts
 
 #endasm
@@ -354,6 +363,18 @@ u8	update_heavy_load()
 	return 0;
 }
 
+u8	update_portal()
+{
+	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
+	{
+		update_cached_portal();
+
+		return 1;
+	}
+
+	return 0;
+}
+
 //************************************************************
 // 3. Cached entities update.
 //************************************************************
@@ -384,6 +405,7 @@ _upd_cached_ent_arr:
 	.dw _upd_cached_ent_logs
 	.dw _upd_cached_ent_door
 	.dw _upd_cached_ent_heavy_load
+	.dw _upd_cached_ent_portal
 
 _upd_cached_ent_null:
 	call _update_cached_null
@@ -423,6 +445,10 @@ _upd_cached_ent_door:
 
 _upd_cached_ent_heavy_load:
 	call _update_cached_heavy_load
+	rts
+
+_upd_cached_ent_portal:
+	call _update_cached_portal
 	rts
 
 #endasm
@@ -871,6 +897,19 @@ void	update_obstacle_logic( u8 _pause_in_frames )
 	}
 }
 
+//
+// prop0: 0-bit: 1 - portal IN, 0 - portal OUT
+//
+void	update_cached_portal()
+{
+	ENT_ADD_TO_SATB
+
+	if( ent_ptr->prop0 & 0x01 )
+	{
+		spd_SATB_set_sprite_LT( ENT_SPR_PORTAL, ent_x, ent_y_unmasked );
+	}
+}
+
 //************************************************************
 // 4. Player/entity collision detection.
 //************************************************************
@@ -901,6 +940,7 @@ _check_collision_func_arr:
 	.dw _check_logs
 	.dw _check_door
 	.dw _check_heavy_load
+	.dw _check_portal
 
 _check_null:
 	call _check_collision_null
@@ -940,6 +980,10 @@ _check_door:
 
 _check_heavy_load:
 	call _check_collision_heavy_load
+	rts
+
+_check_portal:
+	call _check_collision_portal
 	rts
 
 #endasm
@@ -1241,6 +1285,72 @@ u8	check_collision_heavy_load()
 		}
 
 //		return 1;	// add to collision cache <- IGNORE COLLISION CACHE
+	}
+
+	return 0;	// continue collision detection
+}
+
+//
+// prop0: 0-bit: 1 - portal IN, 0 - portal OUT
+//
+u8	check_collision_portal()
+{
+	s16		portal_out_x;
+	s16		portal_out_y;
+	s16		scr_pos_x;
+	s16		scr_pos_y;
+
+	mpd_MAP_ENT*	ent_portal_out_ptr;
+
+
+	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, ent_ptr->width, ent_ptr->height ) )
+	{
+		if( ( __jpad_val & JOY_ACTION_BTN ) && ( ent_ptr->prop0 & 0x01 ) )	// portal IN ?
+		{
+			if( ent_ptr->targ_id != 0xff )
+			{
+				ent_portal_out_ptr = &__map_ents[ ent_ptr->targ_id ];
+
+				// get target portal position
+				portal_out_x	= ( ent_portal_out_ptr->x & ENT_FLAG_ACTIVE_INV );
+				portal_out_y	= ( ent_portal_out_ptr->y & ENT_ID_MASK_INV );
+
+				// calc new screen position
+				scr_pos_x	= portal_out_x - ( ScrPixelsWidth >> 1 ) + ( ent_portal_out_ptr->width >> 1 );
+				scr_pos_y	= portal_out_y - ( ScrPixelsHeight >> 1 ) + ( ent_portal_out_ptr->height >> 1 );
+
+				scr_pos_x	= scr_pos_x < 0 ? 0:scr_pos_x;
+				scr_pos_y	= scr_pos_y < 0 ? 0:scr_pos_y;
+
+				scr_pos_x	= ( scr_pos_x > mpd_active_map_width() ) ? mpd_active_map_width():scr_pos_x;
+				scr_pos_y	= ( scr_pos_y > mpd_active_map_height() ) ? mpd_active_map_height():scr_pos_y;
+
+				disp_off();
+				vsync();
+
+				// redraw scene at target portal position
+				mpd_draw_screen_by_pos( scr_pos_x, scr_pos_y );
+
+				// update player position
+				spd_set_x_LT( portal_out_x - scr_pos_x );
+				spd_set_y_LT( portal_out_y - scr_pos_y );
+
+				__player_x = portal_out_x;
+				__player_y = portal_out_y;
+
+				PLAYER_STATE_ON_SURFACE
+
+				disp_on();
+				vsync();
+
+				// rebuild entity cache at new scene position
+				ENT_CACHE_RESET
+
+				return 0;	// continue collision detection
+			}
+		}
+
+		return 1;	// add to collision cache
 	}
 
 	return 0;	// continue collision detection
