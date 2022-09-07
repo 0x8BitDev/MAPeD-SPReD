@@ -41,8 +41,6 @@
 
 u8	map_ind		= 0xff;
 
-u8	map_scr_width	= 0;
-u8	map_scr_height	= 0;
 u8	map_max_scr	= 0;	// W x H
 
 s8	map_scr_ind	= 0;
@@ -65,8 +63,6 @@ void	show_info()
 
 void	display_next_map()
 {
-	u16	map_size;
-
 	/* disable display */
 	disp_off();
 	vsync();
@@ -81,13 +77,7 @@ void	display_next_map()
 	/* draw start screen */
 	mpd_draw_screen_by_ind_offs( map_scr_ind, 0, TRUE );	// 0 - BAT offset; TRUE - disable scrolling
 
-	/* map size */
-	map_size	= mpd_get_map_size( map_ind );
-
-	map_scr_width	= map_size & 0x00ff;
-	map_scr_height	= ( map_size & 0xff00 ) >> 8;
-
-	map_max_scr	= map_scr_width * map_scr_height;
+	map_max_scr	= mpd_map_scr_width * mpd_map_scr_height;
 
 	/* reset double-buffers flag */
 	dbl_buff_trig	= 0;
@@ -230,9 +220,9 @@ main()
 			{
 				if( !btn_pressed )
 				{
-					if( ( map_scr_ind - map_scr_width ) >= 0 )
+					if( ( map_scr_ind - mpd_map_scr_width ) >= 0 )
 					{
-						map_scr_ind -= map_scr_width;
+						map_scr_ind -= mpd_map_scr_width;
 					}
 					show_screen();
 					
@@ -244,9 +234,9 @@ main()
 			{
 				if( !btn_pressed )
 				{
-					if( ( map_scr_ind + map_scr_width ) < map_max_scr )
+					if( ( map_scr_ind + mpd_map_scr_width ) < map_max_scr )
 					{
-						map_scr_ind += map_scr_width;
+						map_scr_ind += mpd_map_scr_width;
 					}
 					show_screen();
 					

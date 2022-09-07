@@ -62,12 +62,12 @@ void	scene_update()
 	s16	delta_x;
 	s16	delta_y;
 
-	delta_x = __player_x - mpd_scroll_x();
-	delta_y = __player_y - mpd_scroll_y();
+	delta_x = __player_x - mpd_scroll_x;
+	delta_y = __player_y - mpd_scroll_y;
 
 	// update scene position
-	mpd_set_scroll_step_x( __delta_LR );
-	mpd_set_scroll_step_y( __delta_UD );
+	mpd_scroll_step_x = __delta_LR & 0x07;
+	mpd_scroll_step_y = __delta_UD & 0x07;
 
 	mpd_clear_update_flags();
 
@@ -95,7 +95,7 @@ void	scene_update()
 	spd_SATB_clear_from( SATB_POS_ENTITY );	// 0 - reserved for player
 
 	// use updated scroll values to synchronize player's position with the scene coordinates
-	player_update_pos( __player_x - mpd_scroll_x(), __player_y - mpd_scroll_y() );
+	player_update_pos( __player_x - mpd_scroll_x, __player_y - mpd_scroll_y );
 
 #if	!DBG_ENTITIES_OFF
 
@@ -139,8 +139,8 @@ put_number( __player_data.max_stars, 2, 12, 3 );
 	mpd_update_screen();
 
 	/* see mpd.h for details */
-	pokew( 0x220c, mpd_scroll_x() );
-	pokew( 0x2210, mpd_scroll_y() );
+	pokew( 0x220c, mpd_scroll_x );
+	pokew( 0x2210, mpd_scroll_y );
 
 	/* update SATB with the all pushed sprites */
 	spd_SATB_to_VRAM();

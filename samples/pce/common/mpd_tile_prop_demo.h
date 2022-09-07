@@ -66,7 +66,7 @@ s8	__map_ind		= -1;
 void	__update_property()
 {
 #if	FLAG_MODE_MULTIDIR_SCROLL
-	__show_property_val( mpd_get_property( mpd_scroll_x() + __cursor_center_x(), mpd_scroll_y() + __cursor_center_y() ) );
+	__show_property_val( mpd_get_property( mpd_scroll_x + __cursor_center_x(), mpd_scroll_y + __cursor_center_y() ) );
 #else
 	__show_property_val( mpd_get_property( __cursor_center_x(), __cursor_center_y() ) );
 #endif
@@ -310,11 +310,11 @@ void	__cursor_move_left()
 	if( __cursor_center_x() < SCR_MOVE_BORDER )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 	{
-		tmp_scroll_x = mpd_scroll_x();
+		tmp_scroll_x = mpd_scroll_x;
 
 		mpd_move_left();
 
-		if( tmp_scroll_x != mpd_scroll_x() )
+		if( tmp_scroll_x != mpd_scroll_x )
 		{
 			__cursor_x += SCROLL_STEP;
 		}
@@ -347,11 +347,11 @@ void	__cursor_move_right()
 	if( __cursor_center_x() > ( ScrPixelsWidth - SCR_MOVE_BORDER ) )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 	{
-		tmp_scroll_x = mpd_scroll_x();
+		tmp_scroll_x = mpd_scroll_x;
 
 		mpd_move_right();
 
-		if( tmp_scroll_x != mpd_scroll_x() )
+		if( tmp_scroll_x != mpd_scroll_x )
 		{
 			__cursor_x -= SCROLL_STEP;
 		}
@@ -384,11 +384,11 @@ void	__cursor_move_up()
 	if( __cursor_center_y() < SCR_MOVE_BORDER )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 	{
-		tmp_scroll_y = mpd_scroll_y();
+		tmp_scroll_y = mpd_scroll_y;
 
 		mpd_move_up();
 
-		if( tmp_scroll_y != mpd_scroll_y() )
+		if( tmp_scroll_y != mpd_scroll_y )
 		{
 			__cursor_y += SCROLL_STEP;
 		}
@@ -421,11 +421,11 @@ void	__cursor_move_down()
 	if( __cursor_center_y() > ( ScrPixelsHeight - SCR_MOVE_BORDER ) )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 	{
-		tmp_scroll_y = mpd_scroll_y();
+		tmp_scroll_y = mpd_scroll_y;
 
 		mpd_move_down();
 
-		if( tmp_scroll_y != mpd_scroll_y() )
+		if( tmp_scroll_y != mpd_scroll_y )
 		{
 			__cursor_y -= SCROLL_STEP;
 		}
@@ -518,8 +518,8 @@ void	__tile_prop_demo_start()
 		mpd_update_screen();
 
 		/* see mpd.h for details */
-		pokew( 0x220c, mpd_scroll_x() );
-		pokew( 0x2210, mpd_scroll_y() );
+		pokew( 0x220c, mpd_scroll_x );
+		pokew( 0x2210, mpd_scroll_y );
 		vsync();
 #else
 		vsync();

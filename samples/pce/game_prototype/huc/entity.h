@@ -72,9 +72,6 @@ s16	ent_y_unmasked;
 s16	player_x;
 s16	player_y;
 
-s16	scr_scroll_x;
-s16	scr_scroll_y;
-
 mpd_MAP_ENT*			ent_ptr;
 mpd_MAP_COLLECTABLE_ENT*	ent_coll_ptr;
 
@@ -1116,11 +1113,11 @@ u8	check_collision_platform()
 					// update player Y-position
 					player_y = ent_y_pos - PLAYER_HEIGHT;
 					spd_set_y_LT( player_y );
-					__player_y = player_y + scr_scroll_y + 1;
+					__player_y = player_y + mpd_scroll_y + 1;
 
 					if( ent_ptr->prop2 & 0x80 )	// ON
 					{
-						mpd_set_scroll_step_y( mpd_get_scroll_step_y() + 1 );
+						mpd_scroll_step_y = ( mpd_scroll_step_y + 1 ) & 0x07;
 
 						// move player with platform
 						if( ent_ptr->prop0 & 0x80 )	// DOWN
@@ -1153,11 +1150,11 @@ u8	check_collision_platform()
 					// update player Y-position
 					player_y = ent_y_unmasked - PLAYER_HEIGHT;
 					spd_set_y_LT( player_y );
-					__player_y = player_y + scr_scroll_y + 1;
+					__player_y = player_y + mpd_scroll_y + 1;
 
 					if( ent_ptr->prop2 & 0x80 )	// ON
 					{
-						mpd_set_scroll_step_x( mpd_get_scroll_step_x() + 1 );
+						mpd_scroll_step_x = ( mpd_scroll_step_x + 1 ) & 0x07;
 
 						// move player with platform
 						if( ent_ptr->prop0 & 0x80 )	// RIGHT
@@ -1207,7 +1204,7 @@ u8	check_collision_logs()
 					// update player Y-position
 					player_y = ent_y_unmasked - PLAYER_HEIGHT;
 					spd_set_y_LT( player_y );
-					__player_y = player_y + scr_scroll_y + 1;
+					__player_y = player_y + mpd_scroll_y + 1;
 
 					PLAYER_STATE_ON_SURFACE
 				}
@@ -1240,7 +1237,7 @@ u8	check_collision_door()
 		}
 
 		spd_set_x_LT( player_x );
-		__player_x = player_x + scr_scroll_x;
+		__player_x = player_x + mpd_scroll_x;
 
 		if( ent_ptr->prop2 & 0x20 )	// hit?
 		{
@@ -1268,7 +1265,7 @@ u8	check_collision_heavy_load()
 			player_x = ent_x - PLAYER_WIDTH;
 
 			spd_set_x_LT( player_x );
-			__player_x = player_x + scr_scroll_x;
+			__player_x = player_x + mpd_scroll_x;
 		}
 		else
 		if( player_x + PLAYER_CP_MID_WIDTH > ent_x + ent_ptr->width )
@@ -1276,7 +1273,7 @@ u8	check_collision_heavy_load()
 			player_x = ent_x + ent_ptr->width;
 
 			spd_set_x_LT( player_x );
-			__player_x = player_x + scr_scroll_x;
+			__player_x = player_x + mpd_scroll_x;
 		}
 
 		if( ent_ptr->prop2 & 0x20 )	// hit?
@@ -1322,8 +1319,8 @@ u8	check_collision_portal()
 				scr_pos_x	= scr_pos_x < 0 ? 0:scr_pos_x;
 				scr_pos_y	= scr_pos_y < 0 ? 0:scr_pos_y;
 
-				scr_pos_x	= ( scr_pos_x > mpd_active_map_width() ) ? mpd_active_map_width():scr_pos_x;
-				scr_pos_y	= ( scr_pos_y > mpd_active_map_height() ) ? mpd_active_map_height():scr_pos_y;
+				scr_pos_x	= ( scr_pos_x > mpd_map_active_width ) ? mpd_map_active_width:scr_pos_x;
+				scr_pos_y	= ( scr_pos_y > mpd_map_active_height ) ? mpd_map_active_height:scr_pos_y;
 
 				disp_off();
 				vsync();

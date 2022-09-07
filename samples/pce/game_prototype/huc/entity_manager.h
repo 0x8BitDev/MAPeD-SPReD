@@ -71,9 +71,6 @@ s8	__screen_ent_coll_cache_pos	= -1;
 s16	__scr_scroll_x = -1;
 s16	__scr_scroll_y = -1;
 
-u8	__scr_width;
-u8	__scr_height;
-
 u8	__ent_coll_pos;
 u8	__ent_pos;
 u8	__collision_cache_pos;
@@ -158,17 +155,10 @@ void	init_map_entities( u8 _map_ind )
 	u8	scr_h_n;
 	u8	ent2_n;
 
-	u16	map_size;
-
 	mpd_MAP_ENT*	ent2_ptr;
 
-	map_size	= mpd_get_map_size( _map_ind );
-
-	__scr_width	= map_size & 0x00ff;
-	__scr_height	= ( map_size & 0xff00 ) >> 8;
-
 	// check the entity array overflow
-	if( ( __scr_width * __scr_height ) > MAP_SCREENS_MAX )
+	if( ( mpd_map_scr_width * mpd_map_scr_height ) > MAP_SCREENS_MAX )
 	{
 		show_msg( "SCREEN ARRAY OVERFLOW!" );
 	}
@@ -209,11 +199,11 @@ void	init_map_entities( u8 _map_ind )
 	map_coll_ent	= 0;
 
 	// fill up the entity array
-	for( scr_h_n = 0; scr_h_n < __scr_height; scr_h_n++ )
+	for( scr_h_n = 0; scr_h_n < mpd_map_scr_height; scr_h_n++ )
 	{
-		for( scr_w_n = 0; scr_w_n < __scr_width; scr_w_n++ )
+		for( scr_w_n = 0; scr_w_n < mpd_map_scr_width; scr_w_n++ )
 		{
-			mpd_get_screen_data( &scr_data, scr_h_n * __scr_width + scr_w_n );
+			mpd_get_screen_data( &scr_data, scr_h_n * mpd_map_scr_width + scr_w_n );
 
 			__ent_pos	= 0;
 			__ent_coll_pos	= 0;
@@ -267,36 +257,28 @@ u8	update_scene_entities( u8 _SATB_pos )
 {
 	u8	scr_pos;
 
-	u16	scr_x;
-	u16	scr_y;
 	u16	right_scr_offset;
 	u16	bottom_scr_offset;
-
-	scr_scroll_x = mpd_scroll_x();
-	scr_scroll_y = mpd_scroll_y();
 
 	SATB_pos = _SATB_pos;
 
 	// update cache after each ENT_UPDATE_CACHE_STEP
-	if( ( __screen_ent_cache_pos < 0 ) || ( ( abs( scr_scroll_x - __scr_scroll_x ) > ENT_UPDATE_CACHE_STEP ) || ( abs( scr_scroll_y - __scr_scroll_y ) > ENT_UPDATE_CACHE_STEP ) ) )
+	if( ( __screen_ent_cache_pos < 0 ) || ( ( abs( mpd_scroll_x - __scr_scroll_x ) > ENT_UPDATE_CACHE_STEP ) || ( abs( mpd_scroll_y - __scr_scroll_y ) > ENT_UPDATE_CACHE_STEP ) ) )
 	{
-		__scr_scroll_x	= scr_scroll_x;
-		__scr_scroll_y	= scr_scroll_y;
+		__scr_scroll_x	= mpd_scroll_x;
+		__scr_scroll_y	= mpd_scroll_y;
 
 		// reset static entities cache
 		__screen_ent_cache_pos		= 0;
 		__screen_ent_coll_cache_pos	= 0;
 
-		scr_x	= scr_scroll_x / ScrPixelsWidth;
-		scr_y	= scr_scroll_y / ScrPixelsHeight;
-
-		scr_pos = ( scr_y * __scr_width ) + scr_x;
+		scr_pos = mpd_get_curr_screen_ind();
 
 		// update the main screen where the player is
 		__update_ents( scr_pos );
 
 		// check the right screen visibility
-		right_scr_offset = scr_scroll_x % ScrPixelsWidth;
+		right_scr_offset = mpd_scroll_x % ScrPixelsWidth;
 
 		if( right_scr_offset )
 		{
@@ -305,12 +287,12 @@ u8	update_scene_entities( u8 _SATB_pos )
 		}
 
 		// check the bottom screen visibility
-		bottom_scr_offset = scr_scroll_y % ScrPixelsHeight;
+		bottom_scr_offset = mpd_scroll_y % ScrPixelsHeight;
 
 		if( bottom_scr_offset )
 		{
 			// update the right screen
-			scr_pos	 += __scr_width;
+			scr_pos	 += mpd_map_scr_width;
 			__update_ents( scr_pos );
 		}
 
@@ -331,9 +313,6 @@ u8	update_scene_entities( u8 _SATB_pos )
 
 void	__update_ents( u8 _scr_pos )
 {
-	scr_scroll_x = mpd_scroll_x();
-	scr_scroll_y = mpd_scroll_y();
-
 	// fill SATB by entities of the current screen
 
 	// COLLECTABLE ENTITIES
@@ -348,8 +327,8 @@ void	__update_ents( u8 _scr_pos )
 		{
 			ent_y = ent_coll_ptr->y;
 
-			ent_x		= ( ent_coll_ptr->x & ENT_FLAG_ACTIVE_INV ) - scr_scroll_x;
-			ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - scr_scroll_y;
+			ent_x		= ( ent_coll_ptr->x & ENT_FLAG_ACTIVE_INV ) - mpd_scroll_x;
+			ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - mpd_scroll_y;
 
 			// check screen/entity intersection
 			if( ( ent_x < ScrPixelsWidth ) && ( ent_y_unmasked < ScrPixelsHeight ) )
@@ -376,8 +355,8 @@ void	__update_ents( u8 _scr_pos )
 		{
 			ent_y = ent_ptr->y;
 
-			ent_x		= ( ent_ptr->x & ENT_FLAG_ACTIVE_INV ) - scr_scroll_x;
-			ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - scr_scroll_y;
+			ent_x		= ( ent_ptr->x & ENT_FLAG_ACTIVE_INV ) - mpd_scroll_x;
+			ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - mpd_scroll_y;
 
 			// check screen/entity intersection
 			if( ( ent_x < ScrPixelsWidth ) && ( ent_y_unmasked < ScrPixelsHeight ) )
@@ -395,9 +374,6 @@ void	__update_ents( u8 _scr_pos )
 
 void	__update_cached_ents()
 {
-	scr_scroll_x = mpd_scroll_x();
-	scr_scroll_y = mpd_scroll_y();
-
 	// use cached values
 
 	// COLLECTABLE ENTITIES
@@ -407,8 +383,8 @@ void	__update_cached_ents()
 
 		ent_y = ent_coll_ptr->y;
 
-		ent_x		= ( ent_coll_ptr->x & ENT_FLAG_ACTIVE_INV ) - scr_scroll_x;
-		ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - scr_scroll_y;
+		ent_x		= ( ent_coll_ptr->x & ENT_FLAG_ACTIVE_INV ) - mpd_scroll_x;
+		ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - mpd_scroll_y;
 
 		update_cached_entity( ent_y & ENT_ID_MASK );
 	}
@@ -420,8 +396,8 @@ void	__update_cached_ents()
 
 		ent_y = ent_ptr->y;
 
-		ent_x		= ( ent_ptr->x & ENT_FLAG_ACTIVE_INV ) - scr_scroll_x;
-		ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - scr_scroll_y;
+		ent_x		= ( ent_ptr->x & ENT_FLAG_ACTIVE_INV ) - mpd_scroll_x;
+		ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - mpd_scroll_y;
 
 		update_cached_entity( ent_y & ENT_ID_MASK );
 	}
@@ -432,15 +408,12 @@ void	check_player_collisions()
 	u8	map_ent_ind;
 	u8	collis_cnt;
 
-	scr_scroll_x = mpd_scroll_x();
-	scr_scroll_y = mpd_scroll_y();
-
 	SATB_pos = spd_SATB_get_pos();
 
 	spd_SATB_set_pos( SATB_POS_PLAYER );
 
 	player_x = spd_get_x_LT();
-	player_y = __player_y - scr_scroll_y;
+	player_y = __player_y - mpd_scroll_y;
 
 	// use cached entities
 
@@ -455,8 +428,8 @@ void	check_player_collisions()
 
 			ent_y = ent_ptr->y;
 
-			ent_x		= ( ent_ptr->x & ENT_FLAG_ACTIVE_INV ) - scr_scroll_x;
-			ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - scr_scroll_y;
+			ent_x		= ( ent_ptr->x & ENT_FLAG_ACTIVE_INV ) - mpd_scroll_x;
+			ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - mpd_scroll_y;
 
 			if( check_cached_entity_collision( ent_y & ENT_ID_MASK ) )
 			{
@@ -481,8 +454,8 @@ void	check_player_collisions()
 
 		ent_y = ent_coll_ptr->y;
 
-		ent_x		= ( ent_coll_ptr->x & ENT_FLAG_ACTIVE_INV ) - scr_scroll_x;
-		ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - scr_scroll_y;
+		ent_x		= ( ent_coll_ptr->x & ENT_FLAG_ACTIVE_INV ) - mpd_scroll_x;
+		ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - mpd_scroll_y;
 
 		if( check_cached_entity_collision( ent_y & ENT_ID_MASK ) )
 		{
@@ -499,8 +472,8 @@ void	check_player_collisions()
 
 		ent_y = ent_ptr->y;
 
-		ent_x		= ( ent_ptr->x & ENT_FLAG_ACTIVE_INV ) - scr_scroll_x;
-		ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - scr_scroll_y;
+		ent_x		= ( ent_ptr->x & ENT_FLAG_ACTIVE_INV ) - mpd_scroll_x;
+		ent_y_unmasked	= ( ent_y & ENT_ID_MASK_INV ) - mpd_scroll_y;
 
 		if( check_cached_entity_collision( ent_y & ENT_ID_MASK ) )
 		{

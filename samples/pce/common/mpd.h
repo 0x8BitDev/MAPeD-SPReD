@@ -9,6 +9,8 @@
 History:
 
 v0.7
+2022.09.07 - added 'mpd_get_curr_screen_ind()' for multidirectional maps
+2022.09.06 - added open variables to replace deprecated functions
 2022.08.31 - fixed missed tile 4x4 drawing in '__mpd_fill_row_column_data' and also fixed BAT overflow in '__mpd_draw_tiled_screen( _BAT_offset )'
 2022.08.30 - added 'mpd_active_map_width()' and 'mpd_active_map_height()' for multidirectional maps
 2022.08.23 - optimized screen scrolling, re-written in assembler; 3x faster than before
@@ -65,8 +67,8 @@ debug info (use Mednafen):
 MPD_DEBUG
 #endasm
 
-NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any way!	It just provides scroll values X/Y: mpd_scroll_x(), mpd_scroll_y().
-	Thus, user must set scroll values in his program using these functions. This is for scrollable maps only!
+NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any way!	It just provides scroll values X/Y: mpd_scroll_x, mpd_scroll_y.
+	Thus, user must set scroll values in his program using these global variables. This is for scrollable maps only!
 
 	There are two ways:
 
@@ -77,8 +79,8 @@ NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any
 			...your code here...
 
 			// update VDC's scroll registers on VBLANK via bgx1/bgy1 variables
-			pokew( 0x220c, mpd_scroll_x() );
-			pokew( 0x2210, mpd_scroll_y() );
+			pokew( 0x220c, mpd_scroll_x );
+			pokew( 0x2210, mpd_scroll_y );
 			vsync();
 		}
 
@@ -96,7 +98,7 @@ NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any
 			...your code here...
 
 			// scrollable region update
-			scroll( 0, mpd_scroll_x(), 0, 0, region_bottom, 0xC0 );
+			scroll( 0, mpd_scroll_x, 0, 0, region_bottom, 0xC0 );
 			vsync();
 		}
 
@@ -228,7 +230,7 @@ Accessing screen/entity data:
 Examples of using the library for bi-dir maps:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use 'mpd_SCR_DATA* mpd_curr_screen()' for getting a current screen, but
+Use 'mpd_curr_scr' to access the current screen, but
 make a copy 'mpd_copy_screen( mpd_SCR_DATA* _src_scr, mpd_SCR_DATA* _dst_scr )'
 before using 'mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u16 _scr_ind )'
 
@@ -252,28 +254,27 @@ Accessing entities:
 
 	u8	ent_n;
 
-	mpd_SCR_DATA*	scr_data;
-	scr_data = mpd_curr_screen(); 
+	mpd_curr_scr <- read only!
 
 	OR
 
 	mpd_SCR_DATA	scr_data;
 	mpd_get_start_screen( &scr_data );
 
-	for( ent_n = 0; ent_n < scr_data->scr.ents_cnt; ent_n++ )
+	for( ent_n = 0; ent_n < scr_data.scr.ents_cnt; ent_n++ )
 	{
-		mpd_get_entity( scr_data, ent_n );
+		mpd_get_entity( &scr_data, ent_n );
 
 		AND/OR
 
-		if( mpd_find_entity_by_base_id( scr_data, base_ent_id ) )
+		if( mpd_find_entity_by_base_id( &scr_data, base_ent_id ) )
 		{
 			...
 		}
 
 		AND/OR
 
-		if( mpd_find_entity_by_inst_id( scr_data, inst_ent_id ) )
+		if( mpd_find_entity_by_inst_id( &scr_data, inst_ent_id ) )
 		{
 			...
 		}
@@ -283,28 +284,70 @@ Accessing entities:
 
 The rest functions see below.
 
-public functions:
+Public functions and variables:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Open variables and their deprecated functions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#if	FLAG_MODE_BIDIR_SCROLL
+
+R: mpd_SCR_DATA	mpd_curr_scr -> mpd_curr_screen() - DEPRECATED
+
+#endif	//FLAG_MODE_BIDIR_SCROLL
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+
+Map width/height in screens:
+
+R: u8	mpd_map_scr_width
+R: u8	mpd_map_scr_height
+
+Active map width/height in pixels = map width/height in pixels - screen width/height in pixels
+
+R: u16	mpd_map_active_width  -> mpd_active_map_width() - DEPRECATED
+R: u16	mpd_map_active_height -> mpd_active_map_height() - DEPRECATED
+
+#endif	//FLAG_MODE_MULTIDIR_SCROLL
+
+#if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+
+Map scrolling step in the range 0..7
+
+RW: u8	mpd_scroll_step_x [0..7] -> mpd_get_scroll_step_x()/mpd_set_scroll_step_x(...) - DEPRECATED
+RW: u8	mpd_scroll_step_y [0..7] -> mpd_get_scroll_step_y()/mpd_set_scroll_step_y(...) - DEPRECATED
+
+Map scrolling values:
+
+R: s16	mpd_scroll_x -> mpd_scroll_x() - DEPRECATED
+R: s16	mpd_scroll_y -> mpd_scroll_y() - DEPRECATED
+
+#endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+
+*R-read only; RW-read/write
+
+Public functions:
 ~~~~~~~~~~~~~~~~~
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 void	mpd_init( u8 _map_ind, u8 _step ) / _step - default step for both axes
-void	mpd_set_scroll_step_x( u8 _step_pix ) / _step_pix - 1-7 pix
-void	mpd_set_scroll_step_y( u8 _step_pix ) / _step_pix - 1-7 pix
-u8	mpd_get_scroll_step_x()
-u8	mpd_get_scroll_step_y()
+DEPRECATED -->	void	mpd_set_scroll_step_x( u8 _step_pix ) / _step_pix - 1-7 pix
+DEPRECATED -->	void	mpd_set_scroll_step_y( u8 _step_pix ) / _step_pix - 1-7 pix
+DEPRECATED -->	u8	mpd_get_scroll_step_x()
+DEPRECATED -->	u8	mpd_get_scroll_step_y()
 void	mpd_clear_update_flags()
 void	mpd_move_left()
 void	mpd_move_right()
 void	mpd_move_up()
 void	mpd_move_down()
 void	mpd_update_screen()
-s16	mpd_scroll_x()
-s16	mpd_scroll_y()
+DEPRECATED -->	s16	mpd_scroll_x()
+DEPRECATED -->	s16	mpd_scroll_y()
 #else
 void	mpd_init( u8 _map_ind )
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 
-// NOTE: 'mpd_draw_...' - for scrollable maps add 'mpd_scroll_x()' to _x and 'mpd_scroll_y()' to _y
+// NOTE: 'mpd_draw_...' - for scrollable maps add 'mpd_scroll_x' to _x and 'mpd_scroll_y' to _y
 void	mpd_draw_CHR( u16 _x, u16 _y, u8 _block2x2_ind, u8 _CHR_ind ) / _x/_y - screen space coordinates in pixels, _block2x2_ind - 0..255, _CHR_ind - 0..3
 void	mpd_draw_block2x2( u8 _x, u8 _y, u8 _block2x2_ind ) / _x/_y - screen space coordinates in pixels, _block2x2_ind - 0..255
 
@@ -316,35 +359,30 @@ u8	mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; RES: property id
 void	mpd_draw_screen()
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-u16	mpd_active_map_width() / map screens width in pixels - screen width in pixels
-u16	mpd_active_map_height() / map screens height in pixels - screen height in pixels
+DEPRECATED -->	u16	mpd_active_map_width() / map screens width in pixels - screen width in pixels
+DEPRECATED -->	u16	mpd_active_map_height() / map screens height in pixels - screen height in pixels
 void	mpd_draw_screen_by_ind( u8 _scr_ind )
 void	mpd_draw_screen_by_ind_offs( u8 _scr_ind, u16 _BAT_offset, bool _reset_scroll )
 void	mpd_draw_screen_by_pos( u16 _x, u16 _y )
-#endif	//FLAG_MODE_MULTIDIR_SCROLL
-
-#if	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
-mpd_SCR_DATA*	mpd_curr_screen()
-u16		mpd_get_adj_screen( mpd_SCR_DATA* _scr_data, u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN; RES: 0xffff - no screen; screen index (FLAG_LAYOUT_ADJ_SCR_INDS) OR screen address (FLAG_LAYOUT_ADJ_SCR)
-bool		mpd_check_adj_screen( u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
-void		mpd_draw_screen_by_data( mpd_SCR_DATA* _scr_data )
-void		mpd_draw_screen_by_data_offs( mpd_SCR_DATA* _scr_data, u16 _BAT_offset )
-#endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
-
-void	mpd_init_screen_arr( mpd_SCR_DATA* _scr_data, u8 _map_ind ) - must be called once for each map(!)
-void	mpd_copy_screen( mpd_SCR_DATA* _src_scr, mpd_SCR_DATA* _dst_scr )
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
 u16	mpd_get_map_size( u8 _map_ind ) / RES: low byte - screens in width, high byte - screens in height
 void	mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u8 _scr_ind )
 u8	mpd_get_start_screen_ind( u8 _map_ind )
 void	mpd_get_start_screen( mpd_SCR_DATA* _scr_data, u8 _map_ind )
+u8	mpd_get_curr_screen_ind()
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
+DEPRECATED -->	mpd_SCR_DATA*	mpd_curr_screen()
+u16	mpd_get_adj_screen( mpd_SCR_DATA* _scr_data, u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN; RES: 0xffff - no screen; screen index (FLAG_LAYOUT_ADJ_SCR_INDS) OR screen address (FLAG_LAYOUT_ADJ_SCR)
+bool	mpd_check_adj_screen( u8 _ind ) / _ind: ADJ_SCR_LEFT,ADJ_SCR_RIGHT,ADJ_SCR_UP,ADJ_SCR_DOWN;
+void	mpd_draw_screen_by_data( mpd_SCR_DATA* _scr_data )
+void	mpd_draw_screen_by_data_offs( mpd_SCR_DATA* _scr_data, u16 _BAT_offset )
 void	mpd_get_start_screen( mpd_SCR_DATA* _scr_data )
 void	mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u16 _scr_ind )
 #endif	//FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
+
+void	mpd_init_screen_arr( mpd_SCR_DATA* _scr_data, u8 _map_ind ) - must be called once for each map(!)
+void	mpd_copy_screen( mpd_SCR_DATA* _src_scr, mpd_SCR_DATA* _dst_scr )
 
 #if	FLAG_ENTITIES
 void	mpd_init_base_ent_arr() - must be called once for all maps(!)
@@ -358,6 +396,8 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 
 --------------------------------------------------------
 */
+
+#define	MPD_DEPRECATED_FUNC	0
 
 /************************/
 /*			*/
@@ -775,7 +815,7 @@ typedef struct
 
 
 #if	!FLAG_MODE_MULTIDIR_SCROLL
-mpd_SCR_DATA	__curr_scr;
+mpd_SCR_DATA	mpd_curr_scr;
 
 #if	FLAG_LAYOUT_ADJ_SCR_INDS
 mpd_PTR24	__scr_arr;
@@ -784,11 +824,11 @@ mpd_PTR24	__scr_arr;
 void	__mpd_get_screen_data( u16 _scr_ind, mpd_SCREEN* _scr )
 {
 #if	FLAG_LAYOUT_ADJ_SCR_INDS
-	__curr_scr.scr_offset	= mpd_farpeekw( __scr_arr.bank, __scr_arr.addr, ( _scr_ind << 1 ) ) - __curr_scr.scr_arr_ptr.addr;
+	mpd_curr_scr.scr_offset	= mpd_farpeekw( __scr_arr.bank, __scr_arr.addr, ( _scr_ind << 1 ) ) - mpd_curr_scr.scr_arr_ptr.addr;
 #else
-	__curr_scr.scr_offset	= _scr_ind - __curr_scr.scr_arr_ptr.addr;	// _scr_ind is a screen address for FLAG_LAYOUT_ADJ_SCR
+	mpd_curr_scr.scr_offset	= _scr_ind - mpd_curr_scr.scr_arr_ptr.addr;	// _scr_ind is a screen address for FLAG_LAYOUT_ADJ_SCR
 #endif
-	mpd_farmemcpyb( __curr_scr.scr_arr_ptr.bank, __curr_scr.scr_arr_ptr.addr, __curr_scr.scr_offset, _scr, sizeof( mpd_SCREEN ) );
+	mpd_farmemcpyb( mpd_curr_scr.scr_arr_ptr.bank, mpd_curr_scr.scr_arr_ptr.addr, mpd_curr_scr.scr_offset, _scr, sizeof( mpd_SCREEN ) );
 }
 
 void	mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u16 _scr_ind )
@@ -994,6 +1034,10 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 /*		     */
 /*********************/
 
+#asm
+.ifdef MPD_DEBUG
+#endasm
+
 #define	DBG_COLOR_ROW_COL_FILLING	256	// green
 #define	DBG_COLOR_DISP_LIST_FLUSH	184	// red
 #define	DBG_COLOR_DRAW_SCREEN		4	// blue
@@ -1010,6 +1054,9 @@ void	mpd_dbg_set_border( u16 _clr )
 	pokew( 0x0404, _clr );
 }
 
+#asm
+.endif
+#endasm
 
 /*****************/
 /*		 */
@@ -1098,10 +1145,10 @@ u16		__scr_tiles_height_tbl[ ScrTilesWidth ];
 #if	FLAG_MODE_MULTIDIR_SCROLL
 u16		__map_tiles_width;
 u16		__map_tiles_height;
-u8		__map_scr_width;
-u8		__map_scr_height;
-u16		__cropped_map_width;	// active map area = map_width_in_pixels - scr_width_in_pixels
-u16		__cropped_map_height;	// the same in height
+u8		mpd_map_scr_width;
+u8		mpd_map_scr_height;
+u16		mpd_map_active_width;	// active map area = map_width_in_pixels - scr_width_in_pixels
+u16		mpd_map_active_height;	// the same in height
 u16		__init_tiles_offset;	// to draw a start screen
 
 u16		__maps_offset;
@@ -1148,10 +1195,10 @@ const u8	ROW_CHRS_CNT	= SCR_CHRS_WIDTH;
 #define	UPD_FLAG_DRAW_DOWN	0x08
 #define	UPD_FLAG_DRAW_MASK	UPD_FLAG_DRAW_LEFT|UPD_FLAG_DRAW_RIGHT|UPD_FLAG_DRAW_UP|UPD_FLAG_DRAW_DOWN
 
-u8	__scroll_step_x;
-u8	__scroll_step_y;
-s16	__scroll_x;
-s16	__scroll_y;
+u8	mpd_scroll_step_x;
+u8	mpd_scroll_step_y;
+s16	mpd_scroll_x;
+s16	mpd_scroll_y;
 
 #if	FLAG_MODE_BIDIR_SCROLL
 s16	__horiz_dir_pos;
@@ -1260,10 +1307,10 @@ void	mpd_init( u8 _map_ind )
 		data_acc += ScrTilesHeight;
 	}
 
-	mpd_init_screen_arr( &__curr_scr, _map_ind );
-	mpd_get_start_screen( &__curr_scr );
+	mpd_init_screen_arr( &mpd_curr_scr, _map_ind );
+	mpd_get_start_screen( &mpd_curr_scr );
 
-	__scr_offset	= __curr_scr.scr.scr_ind * __c_scr_tiles_size;
+	__scr_offset	= mpd_curr_scr.scr.scr_ind * __c_scr_tiles_size;
 
 #endif	//!FLAG_MODE_MULTIDIR_SCROLL
 
@@ -1276,10 +1323,10 @@ void	mpd_init( u8 _map_ind )
 	set_screen_size( BAT_INDEX );
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-	mpd_set_scroll_step_x( _step );
-	mpd_set_scroll_step_y( _step );
-	__scroll_x	= 0;
-	__scroll_y	= 0;
+	mpd_scroll_step_x = _step;
+	mpd_scroll_step_y = _step;
+	mpd_scroll_x	= 0;
+	mpd_scroll_y	= 0;
 #if	FLAG_MODE_BIDIR_SCROLL
 	__horiz_dir_pos	= 0;
 	__vert_dir_pos	= 0;
@@ -1298,14 +1345,14 @@ void	mpd_init( u8 _map_ind )
 	__maps_tbl_offset	= mpd_farpeekw( mpd_MapsTblOffs,__map_ind_mul2 );
 
 	n = mpd_get_map_size( _map_ind );
-	__map_scr_width		= n & 0x00ff;
-	__map_scr_height	= ( n & 0xff00 ) >> 8;
+	mpd_map_scr_width	= n & 0x00ff;
+	mpd_map_scr_height	= ( n & 0xff00 ) >> 8;
 
-	__map_tiles_width	= __map_scr_width * ScrTilesWidth;
-	__map_tiles_height	= __map_scr_height * ScrTilesHeight;
+	__map_tiles_width	= mpd_map_scr_width * ScrTilesWidth;
+	__map_tiles_height	= mpd_map_scr_height * ScrTilesHeight;
 
-	__cropped_map_width	= ( __map_scr_width * ScrPixelsWidth ) - ScrPixelsWidth;
-	__cropped_map_height	= ( __map_scr_height * ScrPixelsHeight ) - ScrPixelsHeight;
+	mpd_map_active_width	= ( mpd_map_scr_width * ScrPixelsWidth ) - ScrPixelsWidth;
+	mpd_map_active_height	= ( mpd_map_scr_height * ScrPixelsHeight ) - ScrPixelsHeight;
 
 	__mpd_calc_scr_pos_by_scr_ind( mpd_get_start_screen_ind( _map_ind ), FALSE );
 
@@ -1455,8 +1502,8 @@ void	__mpd_calc_scr_pos_by_scr_ind( u8 _scr_ind, bool _reset_scroll )
 	u16	LUT_pos_x;
 	u16	LUT_pos_y;
 
-	LUT_pos_x	= ScrTilesWidth * ( _scr_ind % __map_scr_width );
-	LUT_pos_y	= ScrTilesHeight * ( _scr_ind / __map_scr_width );
+	LUT_pos_x	= ScrTilesWidth * ( _scr_ind % mpd_map_scr_width );
+	LUT_pos_y	= ScrTilesHeight * ( _scr_ind / mpd_map_scr_width );
 
 	__mpd_calc_scr_pos_by_LUT_pos( LUT_pos_x, LUT_pos_y, _reset_scroll );
 }
@@ -1467,21 +1514,21 @@ void	__mpd_calc_scr_pos_by_LUT_pos( u16 _LUT_pos_x, u16 _LUT_pos_y, bool _reset_
 
 	if( _reset_scroll )
 	{
-		__scroll_x	= 0;
-		__scroll_y	= 0;
+		mpd_scroll_x	= 0;
+		mpd_scroll_y	= 0;
 	}
 	else
 	{
 #if	FLAG_TILES2X2
-		__scroll_x	= _LUT_pos_x << 4;
+		mpd_scroll_x	= _LUT_pos_x << 4;
 #elif	FLAG_TILES4X4
-		__scroll_x	= _LUT_pos_x << 5;
+		mpd_scroll_x	= _LUT_pos_x << 5;
 #endif	//FLAG_TILES2X2|FLAG_TILES4X4
 
 #if	FLAG_TILES2X2
-		__scroll_y	= _LUT_pos_y << 4;
+		mpd_scroll_y	= _LUT_pos_y << 4;
 #elif	FLAG_TILES4X4
-		__scroll_y	= _LUT_pos_y << 5;
+		mpd_scroll_y	= _LUT_pos_y << 5;
 #endif	//FLAG_TILES2X2|FLAG_TILES4X4
 	}
 
@@ -1507,11 +1554,11 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 
 	tiles_offset	= __maps_offset + __init_tiles_offset;
 
-	mpd_ax.w	= _BAT_offset + ( ( __scroll_x >> 3 ) & __BAT_width_dec1 ) + ( ( ( __scroll_y >> 3 ) /*& __BAT_height_dec1*/ ) << __BAT_width_pow2 );
+	mpd_ax.w	= _BAT_offset + ( ( mpd_scroll_x >> 3 ) & __BAT_width_dec1 ) + ( ( ( mpd_scroll_y >> 3 ) /*& __BAT_height_dec1*/ ) << __BAT_width_pow2 );
 
 #if	FLAG_DIR_COLUMNS
 
-	side_step	= ScrTilesHeight * __map_scr_height;
+	side_step	= ScrTilesHeight * mpd_map_scr_height;
 
 	for( mpd_cx.w = 0; mpd_cx.w < ScrTilesWidth; mpd_cx.w++ )
 	{
@@ -1585,7 +1632,7 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 	}
 #elif	FLAG_DIR_ROWS
 
-	side_step	= ScrTilesWidth * __map_scr_width;
+	side_step	= ScrTilesWidth * mpd_map_scr_width;
 
 	mpd_bx.w = 0;
 
@@ -1661,20 +1708,20 @@ void	__mpd_draw_free_tiled_screen()
 	u16	tiles_offset;
 	u16	side_step;
 
-	CHR_x		= __scroll_x;
-	CHR_y		= __scroll_y;
+	CHR_x		= mpd_scroll_x;
+	CHR_y		= mpd_scroll_y;
 
-	x_beg_CHR	= __mpd_calc_skip_CHRs_cnt( __scroll_x );
-	y_beg_CHR	= __mpd_calc_skip_CHRs_cnt( __scroll_y );
+	x_beg_CHR	= __mpd_calc_skip_CHRs_cnt( mpd_scroll_x );
+	y_beg_CHR	= __mpd_calc_skip_CHRs_cnt( mpd_scroll_y );
 
-	width_cnt	= x_beg_CHR + SCR_CHRS_WIDTH + ( __scroll_x & 0x07 ? 1:0 );
-	height_cnt	= y_beg_CHR + SCR_CHRS_HEIGHT + ( __scroll_y & 0x07 ? 1:0 );
+	width_cnt	= x_beg_CHR + SCR_CHRS_WIDTH + ( mpd_scroll_x & 0x07 ? 1:0 );
+	height_cnt	= y_beg_CHR + SCR_CHRS_HEIGHT + ( mpd_scroll_y & 0x07 ? 1:0 );
 
 	tiles_offset	= __maps_offset + __init_tiles_offset;
 
 #if	FLAG_DIR_COLUMNS
 
-	side_step	= ScrTilesHeight * __map_scr_height;
+	side_step	= ScrTilesHeight * mpd_map_scr_height;
 
 	for( w = x_beg_CHR; w < width_cnt; w++ )
 	{
@@ -1683,7 +1730,7 @@ void	__mpd_draw_free_tiled_screen()
 #else
 		n = ( w >> 2 ) * side_step;
 #endif
-		CHR_y = __scroll_y;
+		CHR_y = mpd_scroll_y;
 
 		for( h = y_beg_CHR; h < height_cnt; h++ )
 		{
@@ -1704,7 +1751,7 @@ void	__mpd_draw_free_tiled_screen()
 	}
 #elif	FLAG_DIR_ROWS
 
-	side_step	= ScrTilesWidth * __map_scr_width;
+	side_step	= ScrTilesWidth * mpd_map_scr_width;
 
 	for( h = y_beg_CHR; h < height_cnt; h++ )
 	{
@@ -1713,7 +1760,7 @@ void	__mpd_draw_free_tiled_screen()
 #else
 		n = ( h >> 2 ) * side_step;
 #endif
-		CHR_x = __scroll_x;
+		CHR_x = mpd_scroll_x;
 
 		for( w = x_beg_CHR; w < width_cnt; w++ )
 		{
@@ -1767,13 +1814,13 @@ void	mpd_draw_screen_by_pos( u16 _x, u16 _y )
 
 	__mpd_calc_scr_pos_by_LUT_pos( LUT_pos_x, LUT_pos_y, FALSE );
 
-	__scroll_x = _x;
-	__scroll_y = _y;
+	mpd_scroll_x = _x;
+	mpd_scroll_y = _y;
 
 #if	FLAG_TILES2X2
-	if( !( __scroll_x & 0x0f ) && !( __scroll_y & 0x0f ) )
+	if( !( mpd_scroll_x & 0x0f ) && !( mpd_scroll_y & 0x0f ) )
 #elif	FLAG_TILES4X4
-	if( !( __scroll_x & 0x1f ) && !( __scroll_y & 0x1f ) )
+	if( !( mpd_scroll_x & 0x1f ) && !( mpd_scroll_y & 0x1f ) )
 #endif
 	{
 		__mpd_draw_screen( 0, 0 );
@@ -1793,13 +1840,13 @@ void	mpd_draw_screen_by_data( mpd_SCR_DATA* _scr_data )
 
 void	mpd_draw_screen_by_data_offs( mpd_SCR_DATA* _scr_data, u16 _BAT_offset )
 {
-	mpd_copy_screen( _scr_data, &__curr_scr );
+	mpd_copy_screen( _scr_data, &mpd_curr_scr );
 
-	__scr_offset	= __curr_scr.scr.scr_ind * __c_scr_tiles_size;
+	__scr_offset	= mpd_curr_scr.scr.scr_ind * __c_scr_tiles_size;
 
 #if	FLAG_MODE_BIDIR_SCROLL
-	__scroll_x	= 0;
-	__scroll_y	= 0;
+	mpd_scroll_x	= 0;
+	mpd_scroll_y	= 0;
 	__horiz_dir_pos	= 0;
 	__vert_dir_pos	= 0;
 	__upd_flags	= 0;
@@ -1837,12 +1884,12 @@ void	__mpd_draw_screen( u16 _BAT_offset, u8 _free_scr )
 		num_CHRs = mpd_farpeekw( mpd_CHRs_size, __curr_chr_id_mul2 ) >> 5;
 
 #else
-	chr_id_mul2	= __curr_scr.scr.chr_id << 1;
+	chr_id_mul2	= mpd_curr_scr.scr.chr_id << 1;
 	num_CHRs	= mpd_farpeekw( mpd_CHRs_size, chr_id_mul2 ) >> 5;
 
-	if( __curr_scr.scr.chr_id != ( __curr_chr_id_mul2 >> 1 ) )
+	if( mpd_curr_scr.scr.chr_id != ( __curr_chr_id_mul2 >> 1 ) )
 	{
-		__curr_chr_id_mul2 = __curr_scr.scr.chr_id << 1;
+		__curr_chr_id_mul2 = mpd_curr_scr.scr.chr_id << 1;
 
 		__mpd_update_data_offsets();
 
@@ -1858,10 +1905,10 @@ void	__mpd_draw_screen( u16 _BAT_offset, u8 _free_scr )
 
 #if	FLAG_MODE_STAT_SCR
 #if	FLAG_RLE
-	__mpd_UNRLE_stat_scr( __curr_scr.scr.VDC_data_offset );
+	__mpd_UNRLE_stat_scr( mpd_curr_scr.scr.VDC_data_offset );
 	mpd_load_bat( 0, __stat_scr_buff, 0, SCR_CHRS_WIDTH, SCR_CHRS_HEIGHT );
 #else
-	mpd_load_bat( 0, mpd_VDCScr, __curr_scr.scr.VDC_data_offset, SCR_CHRS_WIDTH, SCR_CHRS_HEIGHT );
+	mpd_load_bat( 0, mpd_VDCScr, mpd_curr_scr.scr.VDC_data_offset, SCR_CHRS_WIDTH, SCR_CHRS_HEIGHT );
 #endif	//FLAG_RLE
 #elif	FLAG_MODE_MULTIDIR_SCROLL
 	
@@ -1917,13 +1964,13 @@ bool	mpd_check_adj_screen( u8 _ind )
 {
 	u16	adj_scr;
 
-	adj_scr = mpd_get_adj_screen( &__curr_scr, _ind );
+	adj_scr = mpd_get_adj_screen( &mpd_curr_scr, _ind );
 
 	if( adj_scr != 0xffff )
 	{
-		__mpd_get_screen_data( adj_scr, __curr_scr.scr );
+		__mpd_get_screen_data( adj_scr, mpd_curr_scr.scr );
 
-		__scr_offset	= __curr_scr.scr.scr_ind * __c_scr_tiles_size;
+		__scr_offset	= mpd_curr_scr.scr.scr_ind * __c_scr_tiles_size;
 
 		return TRUE;
 	}
@@ -1931,10 +1978,12 @@ bool	mpd_check_adj_screen( u8 _ind )
 	return FALSE;
 }
 
+#if	MPD_DEPRECATED_FUNC
 mpd_SCR_DATA*	mpd_curr_screen()
 {
-	return &__curr_scr;
+	return &mpd_curr_scr;
 }
+#endif //MPD_DEPRECATED_FUNC
 #endif	//!FLAG_MODE_MULTIDIR_SCROLL
 
 /********************************/
@@ -1955,17 +2004,17 @@ void	mpd_move_left()
 
 	if( __horiz_dir_pos == 0 )
 	{
-		if( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_LEFT ) == 0xffff )
+		if( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_LEFT ) == 0xffff )
 		{
 			return;
 		}
 	}
 
-	tmp_pos = __scroll_x;
+	tmp_pos = mpd_scroll_x;
 	tmp_pos &= 0x07;
 
-	__horiz_dir_pos -= __scroll_step_x;
-	__scroll_x	-= __scroll_step_x;
+	__horiz_dir_pos -= mpd_scroll_step_x;
+	mpd_scroll_x	-= mpd_scroll_step_x;
 
 	if( __horiz_dir_pos < 0 )
 	{
@@ -1973,14 +2022,14 @@ void	mpd_move_left()
 
 		if( mpd_check_adj_screen( ADJ_SCR_LEFT ) == FALSE )
 		{
-			__scroll_x	+= ScrPixelsWidth - __horiz_dir_pos;
+			mpd_scroll_x	+= ScrPixelsWidth - __horiz_dir_pos;
 			__horiz_dir_pos = 0;
 
 			return;
 		}
 	}
 
-	if( ( ( tmp_pos - __scroll_step_x ) & 0x08 ) || !tmp_pos )
+	if( ( ( tmp_pos - mpd_scroll_step_x ) & 0x08 ) || !tmp_pos )
 	{
 		__upd_flags |= UPD_FLAG_DRAW_LEFT;
 	}
@@ -1997,17 +2046,17 @@ void	mpd_move_right()
 
 	if( __horiz_dir_pos == 0 )
 	{
-		if( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_RIGHT ) == 0xffff )
+		if( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_RIGHT ) == 0xffff )
 		{
 			return;
 		}
 	}
 
-	tmp_pos = __scroll_x;
+	tmp_pos = mpd_scroll_x;
 	tmp_pos &= 0x07;
 
-	__horiz_dir_pos += __scroll_step_x;
-	__scroll_x	+= __scroll_step_x;
+	__horiz_dir_pos += mpd_scroll_step_x;
+	mpd_scroll_x	+= mpd_scroll_step_x;
 
 	if( __horiz_dir_pos >= ScrPixelsWidth )
 	{
@@ -2015,22 +2064,22 @@ void	mpd_move_right()
 
 		if( mpd_check_adj_screen( ADJ_SCR_RIGHT ) == FALSE )
 		{
-			__scroll_x	-= __horiz_dir_pos;
+			mpd_scroll_x	-= __horiz_dir_pos;
 			__horiz_dir_pos = 0;
 
 			return;
 		}
 		else
-		if( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_RIGHT ) == 0xffff )
+		if( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_RIGHT ) == 0xffff )
 		{
-			__scroll_x	-= __horiz_dir_pos;
+			mpd_scroll_x	-= __horiz_dir_pos;
 			__horiz_dir_pos = 0;
 
 			return;
 		}
 	}
 
-	if( ( ( tmp_pos + __scroll_step_x ) & 0x08 ) || !tmp_pos )
+	if( ( ( tmp_pos + mpd_scroll_step_x ) & 0x08 ) || !tmp_pos )
 	{
 		__upd_flags |= UPD_FLAG_DRAW_RIGHT;
 	}
@@ -2047,17 +2096,17 @@ void	mpd_move_up()
 
 	if( __vert_dir_pos == 0 )
 	{
-		if( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_UP ) == 0xffff )
+		if( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_UP ) == 0xffff )
 		{
 			return;
 		}
 	}
 
-	tmp_pos = __scroll_y;
+	tmp_pos = mpd_scroll_y;
 	tmp_pos &= 0x07;
 
-	__vert_dir_pos	-= __scroll_step_y;
-	__scroll_y	-= __scroll_step_y;
+	__vert_dir_pos	-= mpd_scroll_step_y;
+	mpd_scroll_y	-= mpd_scroll_step_y;
 
 	if( __vert_dir_pos < 0 )
 	{
@@ -2065,14 +2114,14 @@ void	mpd_move_up()
 
 		if( mpd_check_adj_screen( ADJ_SCR_UP ) == FALSE )
 		{
-			__scroll_y	+= ScrPixelsHeight - __vert_dir_pos;
+			mpd_scroll_y	+= ScrPixelsHeight - __vert_dir_pos;
 			__vert_dir_pos = 0;
 
 			return;
 		}
 	}
 
-	if( ( ( tmp_pos - __scroll_step_y ) & 0x08 ) || !tmp_pos )
+	if( ( ( tmp_pos - mpd_scroll_step_y ) & 0x08 ) || !tmp_pos )
 	{
 		__upd_flags |= UPD_FLAG_DRAW_UP;
 	}
@@ -2089,17 +2138,17 @@ void	mpd_move_down()
 
 	if( __vert_dir_pos == 0 )
 	{
-		if( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_DOWN ) == 0xffff )
+		if( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_DOWN ) == 0xffff )
 		{
 			return;
 		}
 	}
 
-	tmp_pos = __scroll_y;
+	tmp_pos = mpd_scroll_y;
 	tmp_pos &= 0x07;
 
-	__vert_dir_pos	+= __scroll_step_y;
-	__scroll_y	+= __scroll_step_y;
+	__vert_dir_pos	+= mpd_scroll_step_y;
+	mpd_scroll_y	+= mpd_scroll_step_y;
 
 	if( __vert_dir_pos >= ScrPixelsHeight )
 	{
@@ -2107,22 +2156,22 @@ void	mpd_move_down()
 
 		if( mpd_check_adj_screen( ADJ_SCR_DOWN ) == FALSE )
 		{
-			__scroll_y	-= __vert_dir_pos;
+			mpd_scroll_y	-= __vert_dir_pos;
 			__vert_dir_pos = 0;
 
 			return;
 		}
 		else
-		if( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_DOWN ) == 0xffff )
+		if( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_DOWN ) == 0xffff )
 		{
-			__scroll_y	-= __vert_dir_pos;
+			mpd_scroll_y	-= __vert_dir_pos;
 			__vert_dir_pos = 0;
 
 			return;
 		}
 	}
 
-	if( ( ( tmp_pos + __scroll_step_y ) & 0x08 ) || !tmp_pos )
+	if( ( ( tmp_pos + mpd_scroll_step_y ) & 0x08 ) || !tmp_pos )
 	{
 		__upd_flags |= UPD_FLAG_DRAW_DOWN;
 	}
@@ -2134,18 +2183,18 @@ void	mpd_move_left()
 {
 	u8	tmp_pos;
 
-	tmp_pos = __scroll_x;
+	tmp_pos = mpd_scroll_x;
 	tmp_pos &= 0x07;
 
-	__scroll_x -= __scroll_step_x;
+	mpd_scroll_x -= mpd_scroll_step_x;
 
-	if( __scroll_x <= 0 )
+	if( mpd_scroll_x <= 0 )
 	{
-		__scroll_x = 0;
+		mpd_scroll_x = 0;
 		return;
 	}
 
-	if( ( ( tmp_pos - __scroll_step_x ) & 0x08 ) || !tmp_pos )
+	if( ( ( tmp_pos - mpd_scroll_step_x ) & 0x08 ) || !tmp_pos )
 	{
 		__upd_flags |= UPD_FLAG_DRAW_LEFT;
 	}
@@ -2155,18 +2204,18 @@ void	mpd_move_right()
 {
 	u8	tmp_pos;
 
-	tmp_pos = __scroll_x;
+	tmp_pos = mpd_scroll_x;
 	tmp_pos &= 0x07;
 
-	__scroll_x += __scroll_step_x;
+	mpd_scroll_x += mpd_scroll_step_x;
 
-	if( __scroll_x >= __cropped_map_width )
+	if( mpd_scroll_x >= mpd_map_active_width )
 	{
-		__scroll_x = __cropped_map_width;
+		mpd_scroll_x = mpd_map_active_width;
 		return;
 	}
 
-	if( ( ( tmp_pos + __scroll_step_x ) & 0x08 ) || !tmp_pos )
+	if( ( ( tmp_pos + mpd_scroll_step_x ) & 0x08 ) || !tmp_pos )
 	{
 		__upd_flags |= UPD_FLAG_DRAW_RIGHT;
 	}
@@ -2176,18 +2225,18 @@ void	mpd_move_up()
 {
 	u8	tmp_pos;
 
-	tmp_pos = __scroll_y;
+	tmp_pos = mpd_scroll_y;
 	tmp_pos &= 0x07;
 
-	__scroll_y -= __scroll_step_y;
+	mpd_scroll_y -= mpd_scroll_step_y;
 
-	if( __scroll_y <= 0 )
+	if( mpd_scroll_y <= 0 )
 	{
-		__scroll_y = 0;
+		mpd_scroll_y = 0;
 		return;
 	}
 
-	if( ( ( tmp_pos - __scroll_step_y ) & 0x08 ) || !tmp_pos )
+	if( ( ( tmp_pos - mpd_scroll_step_y ) & 0x08 ) || !tmp_pos )
 	{
 		__upd_flags |= UPD_FLAG_DRAW_UP;
 	}
@@ -2197,54 +2246,73 @@ void	mpd_move_down()
 {
 	u8	tmp_pos;
 
-	tmp_pos = __scroll_y;
+	tmp_pos = mpd_scroll_y;
 	tmp_pos &= 0x07;
 
-	__scroll_y += __scroll_step_y;
+	mpd_scroll_y += mpd_scroll_step_y;
 
-	if( __scroll_y >= __cropped_map_height )
+	if( mpd_scroll_y >= mpd_map_active_height )
 	{
-		__scroll_y = __cropped_map_height;
+		mpd_scroll_y = mpd_map_active_height;
 		return;
 	}
 
-	if( ( ( tmp_pos + __scroll_step_y ) & 0x08 ) || !tmp_pos )
+	if( ( ( tmp_pos + mpd_scroll_step_y ) & 0x08 ) || !tmp_pos )
 	{
 		__upd_flags |= UPD_FLAG_DRAW_DOWN;
 	}
 }
 
+u8	mpd_get_curr_screen_ind()
+{
+	return ( ( mpd_scroll_y / ScrPixelsHeight ) * mpd_map_scr_width ) + ( mpd_scroll_x / ScrPixelsWidth );
+}
+
+#if	MPD_DEPRECATED_FUNC
 u16	mpd_active_map_width()
 {
-	return __cropped_map_width;
+	return mpd_map_active_width;
 }
 
 u16	mpd_active_map_height()
 {
-	return __cropped_map_height;
+	return mpd_map_active_height;
 }
+#endif //MPD_DEPRECATED_FUNC
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+#if	MPD_DEPRECATED_FUNC
 void	mpd_set_scroll_step_x( u8 _step_pix )
 {
-	__scroll_step_x = _step_pix & 0x07;
+	mpd_scroll_step_x = _step_pix & 0x07;
 }
 
 void	mpd_set_scroll_step_y( u8 _step_pix )
 {
-	__scroll_step_y = _step_pix & 0x07;
+	mpd_scroll_step_y = _step_pix & 0x07;
 }
 
 u8	mpd_get_scroll_step_x()
 {
-	return __scroll_step_x;
+	return mpd_scroll_step_x;
 }
 
 u8	mpd_get_scroll_step_y()
 {
-	return __scroll_step_y;
+	return mpd_scroll_step_y;
 }
+
+s16	mpd_scroll_x()
+{
+	return mpd_scroll_x;
+}
+
+s16	mpd_scroll_y()
+{
+	return mpd_scroll_y;
+}
+#endif //MPD_DEPRECATED_FUNC
 
 void	mpd_clear_update_flags()
 {
@@ -2347,17 +2415,17 @@ void	__mpd_draw_left_tiles_column()
 #if	FLAG_DIR_COLUMNS
 	__tmp_tiles_offset = __scr_tiles_height_tbl[ __tmp_tiles_offset ];		// __tmp_tiles_offset *= ScrTilesHeight;
 #endif
-	__tmp_tiles_offset += ( __curr_scr.scr.scr_ind * __c_scr_tiles_size );
+	__tmp_tiles_offset += ( mpd_curr_scr.scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), COLUMN_CHRS_CNT );
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y ), COLUMN_CHRS_CNT );
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	u16	map_pos_x;
 	u16	map_pos_y;
 	u8	u8_pos_y;
 
-	map_pos_x	= __scroll_x;
-	map_pos_y	= __scroll_y;
+	map_pos_x	= mpd_scroll_x;
+	map_pos_y	= mpd_scroll_y;
 	u8_pos_y	= map_pos_y;
 
 #if	FLAG_TILES4X4
@@ -2375,7 +2443,7 @@ void	__mpd_draw_left_tiles_column()
 #endif
 	__tmp_tiles_offset	+= __maps_offset;
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), ( ( __scroll_y & 0x0f ) ? COLUMN_CHRS_CNT_INC1:COLUMN_CHRS_CNT ), __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y ), ( ( mpd_scroll_y & 0x0f ) ? COLUMN_CHRS_CNT_INC1:COLUMN_CHRS_CNT ), __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -2385,7 +2453,7 @@ void	__mpd_draw_right_tiles_column()
 #if	FLAG_MODE_BIDIR_SCROLL
 	mpd_SCREEN 	tmp_scr;
 
-	__mpd_get_screen_data( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_RIGHT ), &tmp_scr );
+	__mpd_get_screen_data( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_RIGHT ), &tmp_scr );
 	__tmp_tiles_offset	= __horiz_dir_pos;
 
 #if	FLAG_TILES4X4
@@ -2399,15 +2467,15 @@ void	__mpd_draw_right_tiles_column()
 #endif
 	__tmp_tiles_offset += ( tmp_scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x + ScrPixelsWidth, __scroll_y ), COLUMN_CHRS_CNT );
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( mpd_scroll_x + ScrPixelsWidth, mpd_scroll_y ), COLUMN_CHRS_CNT );
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	u16	map_pos_x;
 	u16	map_pos_y;
 	u8	u8_pos_y;
 
-	map_pos_x	= __scroll_x;
-	map_pos_y	= __scroll_y;
+	map_pos_x	= mpd_scroll_x;
+	map_pos_y	= mpd_scroll_y;
 	u8_pos_y	= map_pos_y;
 
 #if	FLAG_TILES4X4
@@ -2425,7 +2493,7 @@ void	__mpd_draw_right_tiles_column()
 #endif
 	__tmp_tiles_offset	+= __maps_offset;
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( __scroll_x + ScrPixelsWidth, __scroll_y ), ( ( __scroll_y & 0x0f ) ? COLUMN_CHRS_CNT_INC1:COLUMN_CHRS_CNT ), __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
+	__mpd_fill_column_data( __mpd_get_VRAM_addr( mpd_scroll_x + ScrPixelsWidth, mpd_scroll_y ), ( ( mpd_scroll_y & 0x0f ) ? COLUMN_CHRS_CNT_INC1:COLUMN_CHRS_CNT ), __mpd_calc_skip_CHRs_cnt( u8_pos_y ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -2444,17 +2512,17 @@ void	__mpd_draw_up_tiles_row()
 #if	FLAG_DIR_ROWS
 	__tmp_tiles_offset = __scr_tiles_width_tbl[ __tmp_tiles_offset ];		// __tmp_tiles_offset *= ScrTilesWidth;
 #endif
-	__tmp_tiles_offset += ( __curr_scr.scr.scr_ind * __c_scr_tiles_size );
+	__tmp_tiles_offset += ( mpd_curr_scr.scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), ROW_CHRS_CNT );
+	__mpd_fill_row_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y ), ROW_CHRS_CNT );
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	u16	map_pos_x;
 	u16	map_pos_y;
 	u8	u8_pos_x;
 
-	map_pos_x	= __scroll_x;
-	map_pos_y	= __scroll_y;
+	map_pos_x	= mpd_scroll_x;
+	map_pos_y	= mpd_scroll_y;
 	u8_pos_x	= map_pos_x;
 
 #if	FLAG_TILES4X4
@@ -2472,7 +2540,7 @@ void	__mpd_draw_up_tiles_row()
 #endif
 	__tmp_tiles_offset	+= __maps_offset;
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y ), ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_x ) );
+	__mpd_fill_row_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y ), ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_x ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -2482,7 +2550,7 @@ void	__mpd_draw_down_tiles_row()
 #if	FLAG_MODE_BIDIR_SCROLL
 	mpd_SCREEN 	tmp_scr;
 
-	__mpd_get_screen_data( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_DOWN ), &tmp_scr );
+	__mpd_get_screen_data( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_DOWN ), &tmp_scr );
 	__tmp_tiles_offset	= __vert_dir_pos;
 
 #if	FLAG_TILES4X4
@@ -2496,15 +2564,15 @@ void	__mpd_draw_down_tiles_row()
 #endif
 	__tmp_tiles_offset += ( tmp_scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y + ScrPixelsHeight ), ROW_CHRS_CNT );
+	__mpd_fill_row_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y + ScrPixelsHeight ), ROW_CHRS_CNT );
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	u16	map_pos_x;
 	u16	map_pos_y;
 	u8	u8_pos_x;
 
-	map_pos_x	= __scroll_x;
-	map_pos_y	= __scroll_y;
+	map_pos_x	= mpd_scroll_x;
+	map_pos_y	= mpd_scroll_y;
 	u8_pos_x	= map_pos_x;
 
 #if	FLAG_TILES4X4
@@ -2522,7 +2590,7 @@ void	__mpd_draw_down_tiles_row()
 #endif
 	__tmp_tiles_offset	+= __maps_offset;
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( __scroll_x, __scroll_y + ScrPixelsHeight ), ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_x ) );
+	__mpd_fill_row_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y + ScrPixelsHeight ), ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( u8_pos_x ) );
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -2550,11 +2618,11 @@ void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt )
 #endif
 
 #if	FLAG_TILES4X4
-	__block_xy_pos	= ( __scroll_x >> 4 ) & 0x01;
+	__block_xy_pos	= ( mpd_scroll_x >> 4 ) & 0x01;
 #endif
 	__data_size	= __tmp_CHRs_cnt;
 
-	__CHR_xy_pos	= ( ( __scroll_x >> 3 ) & 0x01 ) << 1;
+	__CHR_xy_pos	= ( ( mpd_scroll_x >> 3 ) & 0x01 ) << 1;
 
 	// loop the _vaddr vertically
 	__last_data_addr	= __tmp_vaddr + ( __data_size << __BAT_width_pow2 );
@@ -2621,7 +2689,7 @@ void	__mpd_fill_row_data( u16 _vaddr, u8 _CHRs_cnt )
 #endif
 
 #if	FLAG_TILES4X4
-	__block_xy_pos	= ( ( __scroll_y >> 4 ) & 0x01 ) << 1;
+	__block_xy_pos	= ( ( mpd_scroll_y >> 4 ) & 0x01 ) << 1;
 #endif
 	__data_size	= __tmp_CHRs_cnt;
 
@@ -2672,7 +2740,7 @@ void	__mpd_fill_row_data( u16 _vaddr, u8 _CHRs_cnt )
 	mpd_vreg #$02
 #endasm
 
-	__CHR_xy_pos	= ( ( __scroll_y >> 3 ) & 0x01 ) << 2;
+	__CHR_xy_pos	= ( ( mpd_scroll_y >> 3 ) & 0x01 ) << 2;
 
 	__block_CHR_offset	= 2;
 	__tile_block_offset	= 1;
@@ -3431,16 +3499,6 @@ CHRs_proc_exit:
 #endasm
 #endif	//FLAG_TILES4X4
 }
-
-s16	mpd_scroll_x()
-{
-	return __scroll_x;
-}
-
-s16	mpd_scroll_y()
-{
-	return __scroll_y;
-}
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 
 u16	__mpd_get_VRAM_addr( u16 _x, u16 _y )
@@ -3497,7 +3555,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 		if( dy >= 0 )
 		{
-			__mpd_get_screen_data( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_DOWN ), &tmp_scr );
+			__mpd_get_screen_data( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_DOWN ), &tmp_scr );
 			scr_offs	= tmp_scr.scr_ind * __c_scr_tiles_size;
 			_y		= dy;
 		}
@@ -3513,7 +3571,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 		if( dx >= 0 )
 		{
-			__mpd_get_screen_data( mpd_get_adj_screen( &__curr_scr, ADJ_SCR_RIGHT ), &tmp_scr );
+			__mpd_get_screen_data( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_RIGHT ), &tmp_scr );
 			scr_offs	= tmp_scr.scr_ind * __c_scr_tiles_size;
 			_x		= dx;
 		}

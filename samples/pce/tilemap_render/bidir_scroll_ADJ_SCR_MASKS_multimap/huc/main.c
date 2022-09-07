@@ -179,8 +179,8 @@ main()
 			mpd_update_screen();
 
 			/* see mpd.h for details */
-			pokew( 0x220c, mpd_scroll_x() );
-			pokew( 0x2210, mpd_scroll_y() );
+			pokew( 0x220c, mpd_scroll_x );
+			pokew( 0x2210, mpd_scroll_y );
 			vsync();
 		}
 	}
