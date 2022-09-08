@@ -187,40 +187,44 @@ Getting a map size in screens:
 	scr_width	= map_size & 0x00ff;
 	scr_height	= ( map_size & 0xff00 ) >> 8;
 
+	or for a current map use these global variables:
+
+	mpd_map_scr_width
+	mpd_map_scr_height
+
 Accessing screen/entity data:
 
 	mpd_SCR_DATA	scr_data;
 
-	u8	scr_w_n;
-	u8	scr_h_n;
+	u8	scr_cnt;
+	u8	scr_n;
 	u8	ent_n;
 
-	for( scr_h_n = 0; scr_h_n < scr_height; scr_h_n++ )
+	scr_cnt = mpd_map_scr_width * mpd_map_scr_height;
+
+	for( scr_n = 0; scr_n < scr_cnt; scr_n++ )
 	{
-		for( scr_w_n = 0; scr_w_n < scr_width; scr_w_n++ )
+		mpd_get_screen_data( &scr_data, scr_n );
+
+		for( ent_n = 0; ent_n < scr_data.scr.ents_cnt; ent_n++ )
 		{
-			mpd_get_screen_data( &scr_data, scr_h_n * scr_width + scr_w_n );
+			mpd_get_entity( &scr_data, ent_n );
 
-			for( ent_n = 0; ent_n < scr_data.scr.ents_cnt; ent_n++ )
+			AND/OR
+
+			if( mpd_find_entity_by_base_id( &scr_data, base_ent_id ) )
 			{
-				mpd_get_entity( &scr_data, ent_n );
-
-				AND/OR
-
-				if( mpd_find_entity_by_base_id( &scr_data, base_ent_id ) )
-				{
-					...
-				}
-
-				AND/OR
-
-				if( mpd_find_entity_by_inst_id( &scr_data, inst_ent_id ) )
-				{
-					...
-				}
-
 				...
 			}
+
+			AND/OR
+
+			if( mpd_find_entity_by_inst_id( &scr_data, inst_ent_id ) )
+			{
+				...
+			}
+
+			...
 		}
 	}
 
