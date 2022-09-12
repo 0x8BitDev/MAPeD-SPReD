@@ -1036,29 +1036,18 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 /*		     */
 /*********************/
 
-#asm
-.ifdef MPD_DEBUG
-#endasm
-
 #define	DBG_COLOR_ROW_COL_FILLING	256	// green
 #define	DBG_COLOR_DISP_LIST_FLUSH	184	// red
 #define	DBG_COLOR_DRAW_SCREEN		4	// blue
 #define	DBG_COLOR_GET_TILE_PROP		504	// yellow
 
-#define	DBG_BORDER_COLOR_GET_TILE_PROP		mpd_dbg_set_border( DBG_COLOR_GET_TILE_PROP );
-#define	DBG_BORDER_COLOR_DRAW_SCREEN		mpd_dbg_set_border( DBG_COLOR_DRAW_SCREEN );
-#define	DBG_BORDER_COLOR_ROW_COL_FILLING	mpd_dbg_set_border( DBG_COLOR_ROW_COL_FILLING );
-#define	DBG_BORDER_COLOR_RESET			mpd_dbg_set_border( 0 );
+#define	DBG_BORDER_COLOR_GET_TILE_PROP		DBG_MPD_BORDER_COLOR( DBG_COLOR_GET_TILE_PROP )
+#define	DBG_BORDER_COLOR_DRAW_SCREEN		DBG_MPD_BORDER_COLOR( DBG_COLOR_DRAW_SCREEN )
+#define	DBG_BORDER_COLOR_ROW_COL_FILLING	DBG_MPD_BORDER_COLOR( DBG_COLOR_ROW_COL_FILLING )
+#define	DBG_BORDER_COLOR_RESET			DBG_MPD_BORDER_COLOR( 0 )
 
-void	mpd_dbg_set_border( u16 _clr )
-{
-	pokew( 0x0402, 0x0100 );
-	pokew( 0x0404, _clr );
-}
+#define DBG_MPD_BORDER_COLOR( _clr )		pokew( 0x0402, 0x0100 ); pokew( 0x0404, _clr );
 
-#asm
-.endif
-#endasm
 
 /*****************/
 /*		 */
