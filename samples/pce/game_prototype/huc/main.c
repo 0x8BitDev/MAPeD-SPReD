@@ -16,7 +16,8 @@
 
 #define	PLAYER_SPRITE_ID	SPR_PLAYER_16X32_0
 #define SATB_POS_PLAYER		0
-#define SATB_POS_ENTITY		1
+#define SATB_POS_HUD		1
+#define SATB_POS_ENTITY		4
 
 // debug info:
 // - green+red border color	- screen scrolling

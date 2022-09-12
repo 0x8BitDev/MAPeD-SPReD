@@ -9,7 +9,7 @@
 // entity uids
 
 #define UID_PLAYER			0
-#define	UID_ENT_COLLECTABLE_STAR	1	// ignores collision cache
+#define	UID_ENT_COLLECTABLE_DIAMOND	1	// ignores collision cache
 #define	UID_ENT_ENEMY_WALKING		2	// collision cache
 #define	UID_ENT_ENEMY_FLYING		3	// collision cache
 #define	UID_ENT_SWITCH			4	// collision cache
@@ -22,7 +22,7 @@
 
 // sprite name aliases
 
-#define	ENT_SPR_COLLECTABLE_STAR	collectable_star
+#define	ENT_SPR_COLLECTABLE_DIAMOND	collectable_diamond
 #define	ENT_SPR_ENEMY_WALKING_LEFT	enemy_walking_16x32_1_LEFT
 #define	ENT_SPR_ENEMY_WALKING_RIGHT	enemy_walking_16x32_0_RIGHT
 #define	ENT_SPR_ENEMY_FLYING_LEFT	enemy_flying_16x16_LEFT
@@ -31,7 +31,7 @@
 #define	ENT_SPR_SWITCH_ON		switch_on
 #define	ENT_SPR_BUTTON_OFF		button_off
 #define	ENT_SPR_BUTTON_ON		button_on
-#define	ENT_SPR_PLATFORM		platform_32x8
+#define	ENT_SPR_PLATFORM		platform_32x10
 #define	ENT_SPR_LOGS			logs_32x16
 #define	ENT_SPR_DOOR			door_16x32_0
 #define	ENT_SPR_HEAVY_LOAD		heavy_load_32x64
@@ -160,7 +160,7 @@ void	init_coll_star()
 
 	if( add_collectable_entity() )
 	{
-		++__player_data.max_stars;
+		++__player_data.max_diamonds;
 	}
 }
 
@@ -458,7 +458,7 @@ void	update_cached_null()
 void	update_cached_coll_star()
 {
 	ENT_ADD_TO_SATB
-	spd_SATB_set_sprite_LT( ENT_SPR_COLLECTABLE_STAR, ent_x, ent_y_unmasked );
+	spd_SATB_set_sprite_LT( ENT_SPR_COLLECTABLE_DIAMOND, ent_x, ent_y_unmasked );
 }
 
 #asm
@@ -996,7 +996,7 @@ u8	check_collision_coll_star()
 	{
 		ENT_COLL_DEACTIVATE
 
-		++__player_data.stars;	// increment collected stars counter
+		++__player_data.diamonds;	// increment collected diamonds counter
 		ENT_CACHE_RESET
 		
 //		return 1;	// add to collision cache <- IGNORE COLLISION CACHE FOR COLLECTABLE ENTITIES!

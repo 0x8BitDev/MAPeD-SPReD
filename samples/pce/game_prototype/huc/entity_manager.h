@@ -151,8 +151,7 @@ u8	add_entity()
 
 void	init_map_entities( u8 _map_ind )
 {
-	u8	scr_w_n;
-	u8	scr_h_n;
+	u8	scr_n;
 	u8	ent2_n;
 
 	mpd_MAP_ENT*	ent2_ptr;
@@ -199,25 +198,22 @@ void	init_map_entities( u8 _map_ind )
 	map_coll_ent	= 0;
 
 	// fill up the entity array
-	for( scr_h_n = 0; scr_h_n < mpd_map_scr_height; scr_h_n++ )
+	for( scr_n = 0; scr_n < ( mpd_map_scr_height * mpd_map_scr_width ); scr_n++ )
 	{
-		for( scr_w_n = 0; scr_w_n < mpd_map_scr_width; scr_w_n++ )
+		mpd_get_screen_data( &scr_data, scr_n );
+
+		__ent_pos	= 0;
+		__ent_coll_pos	= 0;
+
+		for( ent_n = 0; ent_n < scr_data.scr.ents_cnt; ent_n++ )
 		{
-			mpd_get_screen_data( &scr_data, scr_h_n * mpd_map_scr_width + scr_w_n );
+			mpd_get_entity( &scr_data, ent_n );
 
-			__ent_pos	= 0;
-			__ent_coll_pos	= 0;
+			init_map_entity( scr_data.inst_ent.base.id );
+		}	
 
-			for( ent_n = 0; ent_n < scr_data.scr.ents_cnt; ent_n++ )
-			{
-				mpd_get_entity( &scr_data, ent_n );
-
-				init_map_entity( scr_data.inst_ent.base.id );
-			}	
-
-			map_ent		+= SCREEN_ENT_MAX;
-			map_coll_ent	+= SCREEN_ENT_COLLECTABLE_MAX;
-		}
+		map_ent		+= SCREEN_ENT_MAX;
+		map_coll_ent	+= SCREEN_ENT_COLLECTABLE_MAX;
 	}
 
 	// assign target entity indexes
@@ -253,14 +249,12 @@ void	init_map_entities( u8 _map_ind )
 }
 
 // OUT: new SATB pos
-u8	update_scene_entities( u8 _SATB_pos )
+void	update_scene_entities()
 {
 	u8	scr_pos;
 
 	u16	right_scr_offset;
 	u16	bottom_scr_offset;
-
-	SATB_pos = _SATB_pos;
 
 	// update cache after each ENT_UPDATE_CACHE_STEP
 	if( ( __screen_ent_cache_pos < 0 ) || ( ( abs( mpd_scroll_x - __scr_scroll_x ) > ENT_UPDATE_CACHE_STEP ) || ( abs( mpd_scroll_y - __scr_scroll_y ) > ENT_UPDATE_CACHE_STEP ) ) )
@@ -291,7 +285,7 @@ u8	update_scene_entities( u8 _SATB_pos )
 
 		if( bottom_scr_offset )
 		{
-			// update the right screen
+			// update the bottom screen
 			scr_pos	 += mpd_map_scr_width;
 			__update_ents( scr_pos );
 		}
@@ -299,7 +293,7 @@ u8	update_scene_entities( u8 _SATB_pos )
 		// check the right bottom screen visibility
 		if( right_scr_offset && bottom_scr_offset )
 		{
-			// update the right screen
+			// update the right bottom screen
 			__update_ents( scr_pos + 1 );
 		}
 	}
@@ -307,8 +301,6 @@ u8	update_scene_entities( u8 _SATB_pos )
 	{
 		__update_cached_ents();
 	}
-
-	return SATB_pos;
 }
 
 void	__update_ents( u8 _scr_pos )

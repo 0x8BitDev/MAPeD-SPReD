@@ -67,8 +67,8 @@ s16	__enemy_hit	= 0;
 
 typedef struct
 {
-	u8	max_stars;
-	u8	stars;
+	u8	max_diamonds;
+	u8	diamonds;
 
 	u8	hp;
 
@@ -99,9 +99,13 @@ u8	cont_jump;
 
 void	player_init( mpd_ENTITY* _ent )
 {
-	__player_data.max_stars	= 0;
-	__player_data.stars	= 0;
-	__player_data.hp	= PLAYER_MAX_HEALTH_POINTS;
+	u8	i;
+	u8	x_offs;
+	u8	satb_pos;
+
+	__player_data.max_diamonds	= 0;
+	__player_data.diamonds		= 0;
+	__player_data.hp		= PLAYER_MAX_HEALTH_POINTS;
 
 	__enemy_hit	= 0;
 
@@ -110,11 +114,29 @@ void	player_init( mpd_ENTITY* _ent )
 
 	PLAYER_STATE_ON_SURFACE
 
-	/* set the SATB position to push sprites to */
+	// set the SATB position to push sprites to
 	spd_SATB_set_pos( SATB_POS_PLAYER );
 
-	/* push player sprite into SATB */
+	// push player sprite into SATB
 	spd_SATB_set_sprite_LT( sprites_frames_data, PLAYER_SPRITE_ID, __player_x, __player_y );
+
+	// init HUD
+	{
+		spd_SATB_set_pos( SATB_POS_HUD );
+		satb_pos = SATB_POS_HUD;
+
+		x_offs = 0;
+
+		for( i = 0; i < ( PLAYER_MAX_HEALTH_POINTS >> 1 ); i++ )
+		{
+			spd_SATB_set_sprite_LT( live_heart, x_offs, 0 );	// blue heart by default
+			x_offs += 16;
+
+			spd_set_palette_LT( 17 );	// red heart
+
+			spd_SATB_set_pos( ++satb_pos );
+		}
+	}
 }
 
 // check contact points
@@ -424,6 +446,8 @@ void	player_update()
 
 void	player_enemy_hit()
 {
+	u8 satb_pos;
+
 	if( !__enemy_hit )
 	{
 		__enemy_hit = 1000;
@@ -434,6 +458,24 @@ void	player_enemy_hit()
 		{
 			// GAME OVER
 			show_msg( "GAME OVER" );
+		}
+		else
+		{
+			// update HUD lives
+			satb_pos = spd_SATB_get_pos();
+
+			spd_SATB_set_pos( SATB_POS_HUD + ( __player_data.hp >> 1 ) );
+
+			if( __player_data.hp & 0x01 )
+			{
+				spd_set_palette_LT( 18 );	// blue heart
+			}
+			else
+			{
+				spd_hide_LT();
+			}
+
+			spd_SATB_set_pos( satb_pos );
 		}
 	}
 }

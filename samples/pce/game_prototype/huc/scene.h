@@ -14,6 +14,7 @@ const u8 SCR_TOP_BORDER		= ( ScrPixelsHeight >> 1 ) - 50;
 const u8 SCR_BOTTOM_BORDER	= ( ScrPixelsHeight >> 1 );
 
 u8	__map_ind	= 0;
+u8	__warn_sign_cnt	= 0;
 
 
 void	scene_init()
@@ -92,10 +93,14 @@ void	scene_update()
 		mpd_move_right();
 	}
 
-	spd_SATB_clear_from( SATB_POS_ENTITY );	// 0 - reserved for player
-
 	// use updated scroll values to synchronize player's position with the scene coordinates
 	player_update_pos( __player_x - mpd_scroll_x, __player_y - mpd_scroll_y );
+
+	SATB_pos = SATB_POS_ENTITY;	// 0 - reserved for player, the next positions for HUD
+	// set initial SATB pos
+	spd_SATB_set_pos( SATB_pos );
+	// clear previous sprites except the player one
+	spd_SATB_clear_from( SATB_pos );
 
 #if	!DBG_ENTITIES_OFF
 
@@ -111,7 +116,10 @@ DBG_PLAYER_COLLISION
 
 DBG_UPDATE_ENTITIES
 
-	update_scene_entities( SATB_POS_ENTITY );
+	update_scene_entities();
+
+	// the warning sign flashing - red/white
+	set_color( 27, ( ++__warn_sign_cnt & 0x10 ) ? 511:56 );
 
 #endif	//!DBG_ENTITIES_ON
 
@@ -129,10 +137,10 @@ put_string( "ents :", 3, 1 );
 put_number( __screen_ent_cache_pos, 2, 9, 1 );
 put_string( "cents:", 3, 2 );
 put_number( __screen_ent_coll_cache_pos, 2, 9, 2 );
-put_string( "stars:", 3, 3 );
-put_number( __player_data.stars, 2, 9, 3 );
+put_string( "dmnds:", 3, 3 );
+put_number( __player_data.diamonds, 2, 9, 3 );
 put_string( "/", 11, 3 );
-put_number( __player_data.max_stars, 2, 12, 3 );
+put_number( __player_data.max_diamonds, 3, 12, 3 );
 #endif
 
 	// update BAT with tiles
