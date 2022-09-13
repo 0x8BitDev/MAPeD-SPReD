@@ -1423,8 +1423,6 @@ u8	check_collision_exit()
 	{
 		if( __jpad_val & JOY_ACTION_BTN )
 		{
-			ENT_CACHE_RESET
-
 			__level_state = LEVEL_STATE_PASSED;
 		}
 

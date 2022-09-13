@@ -246,6 +246,8 @@ void	init_map_entities( u8 _map_ind )
 	__collision_cache_pos	= 0;
 	__collision_cache_frames= 0;
 
+	ENT_CACHE_RESET
+
 	__scr_scroll_x = -1;
 	__scr_scroll_y = -1;
 }
