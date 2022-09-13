@@ -20,6 +20,7 @@
 #define	UID_ENT_HEAVY_LOAD		9	// ignores collision cache - enables collision detection every frame
 #define	UID_ENT_PORTAL			10	// collision cache
 #define	UID_ENT_CHECKPOINT		11	// collision cache
+#define	UID_ENT_EXIT			12	// collision cache
 
 // sprite name aliases
 
@@ -38,6 +39,7 @@
 #define	ENT_SPR_HEAVY_LOAD		heavy_load_32x64
 #define	ENT_SPR_PORTAL			portal_16x32_1
 #define	ENT_SPR_CHECKPOINT		checkpoint_16x32_1
+#define	ENT_SPR_EXIT			portal_16x32_1
 
 // static entities data
 u8	base_ent_coll_diamond_width	= 0;
@@ -130,6 +132,7 @@ _init_ent_arr:
 	.dw _init_ent_heavy_load
 	.dw _init_ent_portal
 	.dw _init_ent_checkpoint
+	.dw _init_ent_exit
 
 _init_ent_null:
 	call _init_null
@@ -149,6 +152,7 @@ _init_ent_door:
 _init_ent_heavy_load:
 _init_ent_portal:
 _init_ent_checkpoint:
+_init_ent_exit:
 	call _init_entity
 	rts
 
@@ -208,6 +212,7 @@ _upd_ent_arr:
 	.dw _upd_ent_heavy_load
 	.dw _upd_ent_portal
 	.dw _upd_ent_checkpoint
+	.dw _upd_ent_exit
 
 _upd_ent_null:
 	call _update_null
@@ -255,6 +260,10 @@ _upd_ent_portal:
 
 _upd_ent_checkpoint:
 	call _update_checkpoint
+	rts
+
+_upd_ent_exit:
+	call _update_exit
 	rts
 
 #endasm
@@ -396,6 +405,18 @@ u8	update_checkpoint()
 	return 0;
 }
 
+u8	update_exit()
+{
+	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
+	{
+		update_cached_exit();
+
+		return 1;
+	}
+
+	return 0;
+}
+
 //************************************************************
 // 3. Cached entities update.
 //************************************************************
@@ -428,6 +449,7 @@ _upd_cached_ent_arr:
 	.dw _upd_cached_ent_heavy_load
 	.dw _upd_cached_ent_portal
 	.dw _upd_cached_ent_checkpoint
+	.dw _upd_cached_ent_exit
 
 _upd_cached_ent_null:
 	call _update_cached_null
@@ -477,6 +499,10 @@ _upd_cached_ent_checkpoint:
 	call _update_cached_checkpoint
 	rts
 
+_upd_cached_ent_exit:
+	call _update_cached_exit
+	rts
+
 #endasm
 
 void	update_cached_null()
@@ -486,7 +512,7 @@ void	update_cached_null()
 
 void	update_cached_coll_diamond()
 {
-	ENT_ADD_TO_SATB
+	ENT_NEXT_SATB_POS
 	spd_SATB_set_sprite_LT( ENT_SPR_COLLECTABLE_DIAMOND, ent_x, ent_y_unmasked );
 }
 
@@ -503,7 +529,7 @@ __eny_y_offs:
 //
 void	update_cached_enemy_walking()
 {
-	ENT_ADD_TO_SATB
+	ENT_NEXT_SATB_POS
 
 	if( ent_ptr->prop0 & 0x80 )	// RIGHT
 	{
@@ -583,7 +609,7 @@ void	update_cached_enemy_walking()
 //
 void	update_cached_enemy_flying()
 {
-	ENT_ADD_TO_SATB
+	ENT_NEXT_SATB_POS
 
 	if( ent_ptr->prop0 & 0x80 )	// RIGHT
 	{
@@ -644,7 +670,7 @@ void	update_cached_enemy_flying()
 //
 void	update_cached_switch()
 {
-	ENT_ADD_TO_SATB
+	ENT_NEXT_SATB_POS
 
 	if( ent_ptr->prop2 & 0x80 )
 	{
@@ -661,7 +687,7 @@ void	update_cached_switch()
 //
 void	update_cached_button()
 {
-	ENT_ADD_TO_SATB
+	ENT_NEXT_SATB_POS
 
 	if( ent_ptr->prop2 & 0x80 )
 	{
@@ -680,7 +706,7 @@ void	update_cached_button()
 //
 void	update_cached_platform()
 {
-	ENT_ADD_TO_SATB
+	ENT_NEXT_SATB_POS
 
 	if( ent_ptr->prop2 & 0x40 )	// UP/DOWN
 	{
@@ -821,7 +847,7 @@ void	update_cached_logs()
 #endasm
 		}
 
-		ENT_ADD_TO_SATB
+		ENT_NEXT_SATB_POS
 		spd_SATB_set_sprite_LT( ENT_SPR_LOGS, ent_x, ent_y_unmasked + ent_ptr->prop2 );
 
 		FORCE_COLLISION_DETECTION
@@ -832,7 +858,7 @@ void	update_cached_door()
 {
 	update_obstacle_logic( ENT_DOOR_LOOP_PAUSE_IN_FRAMES );
 
-	ENT_ADD_TO_SATB
+	ENT_NEXT_SATB_POS
 	spd_SATB_set_sprite_LT( ENT_SPR_DOOR, ent_x, ent_y_unmasked + ent_ptr->prop1 );
 	spd_set_pri_LT( SPD_SPR_PRI_LOW );
 
@@ -843,7 +869,7 @@ void	update_cached_heavy_load()
 {
 	update_obstacle_logic( ENT_HEAVY_LOAD_LOOP_PAUSE_IN_FRAMES );
 
-	ENT_ADD_TO_SATB
+	ENT_NEXT_SATB_POS
 	spd_SATB_set_sprite_LT( ENT_SPR_HEAVY_LOAD, ent_x, ent_y_unmasked + ent_ptr->prop1 );
 	spd_set_pri_LT( SPD_SPR_PRI_LOW );
 
@@ -928,7 +954,7 @@ void	update_obstacle_logic( u8 _pause_in_frames )
 //
 void	update_cached_portal()
 {
-	ENT_ADD_TO_SATB
+	ENT_NEXT_SATB_POS
 
 	if( ent_ptr->prop0 & 0x01 )
 	{
@@ -938,9 +964,16 @@ void	update_cached_portal()
 
 void	update_cached_checkpoint()
 {
-	ENT_ADD_TO_SATB
+	ENT_NEXT_SATB_POS
 
 	spd_SATB_set_sprite_LT( ENT_SPR_CHECKPOINT, ent_x, ent_y_unmasked );
+}
+
+void	update_cached_exit()
+{
+	ENT_NEXT_SATB_POS
+
+	spd_SATB_set_sprite_LT( ENT_SPR_EXIT, ent_x, ent_y_unmasked );
 }
 
 //************************************************************
@@ -975,6 +1008,7 @@ _check_collision_func_arr:
 	.dw _check_heavy_load
 	.dw _check_portal
 	.dw _check_checkpoint
+	.dw _check_exit
 
 _check_null:
 	call _check_collision_null
@@ -1022,6 +1056,10 @@ _check_portal:
 
 _check_checkpoint:
 	call _check_collision_checkpoint
+	rts
+
+_check_exit:
+	call _check_collision_exit
 	rts
 
 #endasm
@@ -1372,6 +1410,23 @@ u8	check_collision_checkpoint()
 	{
 		checkpoint_x = ent_x + mpd_scroll_x;
 		checkpoint_y = ent_y_unmasked + mpd_scroll_y;
+
+		return 1;	// add to collision cache
+	}
+
+	return 0;	// continue collision detection
+}
+
+u8	check_collision_exit()
+{
+	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, ent_ptr->width, ent_ptr->height ) )
+	{
+		if( __jpad_val & JOY_ACTION_BTN )
+		{
+			ENT_CACHE_RESET
+
+			scene_level_passed();
+		}
 
 		return 1;	// add to collision cache
 	}

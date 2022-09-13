@@ -66,7 +66,7 @@ s8	__screen_ent_coll_cache_pos	= -1;
 #define	ENT_COLL_DEACTIVATE	ent_coll_ptr->x &= ENT_FLAG_ACTIVE_INV;
 
 #define	ENT_UPDATE_CACHE_STEP	4	// update entity cache after each UPDATE_CACHE_STEP pixels
-#define	ENT_ADD_TO_SATB		spd_SATB_set_pos( SATB_pos++ );
+#define	ENT_NEXT_SATB_POS		spd_SATB_set_pos( SATB_pos++ );
 
 s16	__scr_scroll_x = -1;
 s16	__scr_scroll_y = -1;
@@ -191,6 +191,8 @@ void	init_map_entities( u8 _map_ind )
 		{
 			ent_coll_ptr->x = 0;
 			ent_coll_ptr->y = 0;
+
+			++ent_coll_ptr;
 		}
 	}
 

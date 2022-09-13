@@ -66,20 +66,16 @@ void	scene_game_over()
 {
 	u8	time;
 
+	// set black screen color
+	set_color( 0, 0 );
+
 	disp_off();
 	wait_vsync();
-	cls();
+
+	scene_clear_screen();
 
 	put_string( "GAME OVER", 11, 13 );
 	put_string( "CONTINUE?", 11, 20 );
-
-	// clear map scrolling values
-	pokew( 0x220c, 0 );
-	pokew( 0x2210, 0 );
-
-	// clear sprites
-	spd_SATB_clear_from( 0 );
-	spd_SATB_to_VRAM();
 
 	disp_on();
 	wait_vsync();
@@ -109,6 +105,62 @@ void	scene_game_over()
 
 		wait_vsync();
 	}
+}
+
+void	scene_level_passed()
+{
+	u8	next_level;
+
+	// waiting for releasing jpad buttons
+	while( joy( 0 ) ){}
+
+	disp_off();
+	wait_vsync();
+
+	// set black screen color
+	set_color( 0, 0 );
+
+	scene_clear_screen();
+
+	if( __map_ind + 1 < MAPS_CNT )
+	{
+		put_string( "LEVEL PASSED!", 9, 13 );
+
+		next_level = TRUE;
+	}
+	else
+	{
+		// congrats! game completed!
+		put_string( "CONGRATULATIONS!", 8, 12 );
+		put_string( "GAME COMPLETED!", 8, 14 );
+
+		next_level = FALSE;
+	}
+
+	disp_on();
+	wait_vsync();
+
+	for(;;)
+	{
+		if( joy( 0 ) )
+		{
+			if( next_level )
+			{
+				++__map_ind;
+
+				start_game_level( TRUE );
+			}
+			else
+			{
+				scene_main_menu();
+			}
+		}
+
+		//...
+
+		wait_vsync();
+	}
+
 }
 
 void	start_game_level( u8 _new_level )
@@ -158,6 +210,19 @@ void	start_game_level( u8 _new_level )
 	}
 
 	game_update_loop();
+}
+
+void	scene_clear_screen()
+{
+	cls();
+
+	// clear map scrolling values
+	pokew( 0x220c, 0 );
+	pokew( 0x2210, 0 );
+
+	// clear sprites
+	spd_SATB_clear_from( 0 );
+	spd_SATB_to_VRAM();
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
