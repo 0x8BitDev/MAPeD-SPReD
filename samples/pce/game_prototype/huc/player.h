@@ -464,7 +464,7 @@ void	player_enemy_hit()
 		if( !--__player_data.hp )
 		{
 			// GAME OVER
-			scene_game_over();
+			__level_state = LEVEL_STATE_FAILED;
 		}
 		else
 		{

@@ -38,6 +38,7 @@ void	scene_main_menu()
 	put_string( "<ARROWS> - MOVE", 8, 15 );
 	put_string( "<A> - JUMP", 8, 16 );
 	put_string( "<B> - ACTION", 8, 17 );
+	put_string( "<START> - PAUSE", 8, 18 );
 	put_string( "PUSH START", 11, 23 );
 	put_string( "(c) 2022 0x8BitDev", 7, 26 );
 	put_string( mpd_ver, 27, 26 );
@@ -80,8 +81,7 @@ void	scene_game_over()
 	disp_on();
 	wait_vsync();
 
-	// waiting for releasing jpad buttons
-	while( joy( 0 ) ){}
+	wait_jpad_btns_release();
 
 	clock_reset();
 
@@ -111,8 +111,7 @@ void	scene_level_passed()
 {
 	u8	next_level;
 
-	// waiting for releasing jpad buttons
-	while( joy( 0 ) ){}
+	wait_jpad_btns_release();
 
 	disp_off();
 	wait_vsync();
@@ -165,8 +164,7 @@ void	scene_level_passed()
 
 void	start_game_level( u8 _new_level )
 {
-	// waiting for releasing jpad buttons
-	while( joy( 0 ) ){}
+	wait_jpad_btns_release();
 
 	if( _new_level )
 	{
@@ -210,6 +208,49 @@ void	start_game_level( u8 _new_level )
 	}
 
 	game_update_loop();
+
+	// level state processing
+	switch( __level_state )
+	{
+		case LEVEL_STATE_PASSED:
+		{
+			scene_level_passed();
+		}
+		break;
+
+		case LEVEL_STATE_FAILED:
+		{
+			scene_game_over();
+		}
+		break;
+	}
+}
+
+void	scene_pause()
+{
+	wait_jpad_btns_release();
+
+	spd_SATB_set_pos( SATB_POS_PAUSE );
+	spd_SATB_set_sprite_LT( pause_32x16, 112, 0 );
+
+	// update SATB with the all pushed sprites
+	spd_SATB_to_VRAM();
+
+	for(;;)
+	{
+		if( joy( 0 ) & JOY_STRT )
+		{
+			wait_jpad_btns_release();
+
+			spd_hide_LT();
+
+			break;
+		}
+
+		//...
+
+		wait_vsync();
+	}
 }
 
 void	scene_clear_screen()
@@ -223,6 +264,12 @@ void	scene_clear_screen()
 	// clear sprites
 	spd_SATB_clear_from( 0 );
 	spd_SATB_to_VRAM();
+}
+
+void	wait_jpad_btns_release()
+{
+	// waiting for releasing jpad buttons
+	while( joy( 0 ) ){}
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -330,9 +377,16 @@ void	game_update_loop()
 	s16	delta_x;
 	s16	delta_y;
 
+	__level_state = 0;
+
 	for( ;; )
 	{
 		__jpad_val = joy( 0 );
+
+		if( __jpad_val & JOY_STRT )
+		{
+			scene_pause();
+		}
 
 		player_update();
 
@@ -427,5 +481,11 @@ put_number( __player_data.max_diamonds, 3, 12, 3 );
 		spd_SATB_to_VRAM();
 
 		wait_vsync();
+
+		if( __level_state )
+		{
+			// the level state has changed: passed, failed
+			break;
+		}
 	}
 }

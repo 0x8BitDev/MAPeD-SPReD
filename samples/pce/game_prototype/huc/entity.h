@@ -1425,7 +1425,7 @@ u8	check_collision_exit()
 		{
 			ENT_CACHE_RESET
 
-			scene_level_passed();
+			__level_state = LEVEL_STATE_PASSED;
 		}
 
 		return 1;	// add to collision cache

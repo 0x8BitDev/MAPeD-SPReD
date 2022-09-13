@@ -19,7 +19,8 @@
 #define	PLAYER_SPRITE_ID	SPR_PLAYER_16X32_0
 #define SATB_POS_PLAYER		0
 #define SATB_POS_HUD		1
-#define SATB_POS_ENTITY		4
+#define SATB_POS_PAUSE		4
+#define SATB_POS_ENTITY		5
 
 // debug info:
 // - green+red border color	- screen scrolling
@@ -54,6 +55,11 @@
 #include "../../common/mpd.h"
 
 u16	__jpad_val	= 0;
+u8	__level_state	= 0;
+
+#define	LEVEL_STATE_PASSED	0x01
+#define	LEVEL_STATE_FAILED	0x02
+
 
 void	show_msg( char* _msg )
 {
