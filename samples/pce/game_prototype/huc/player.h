@@ -97,20 +97,27 @@ u8	cont_jump;
 #define	MVMNT_FLAG_DOWN		0x08
 
 
-void	player_init( mpd_ENTITY* _ent )
+void	player_init( u16 _x, u16 _y, u8 _reset_progress )
 {
 	u8	i;
 	u8	x_offs;
 	u8	satb_pos;
 
-	__player_data.max_diamonds	= 0;
-	__player_data.diamonds		= 0;
-	__player_data.hp		= PLAYER_MAX_HEALTH_POINTS;
+	if( _reset_progress )
+	{
+		__player_data.max_diamonds	= 0;
+		__player_data.diamonds		= 0;
+	}
+
+	__player_data.hp	= PLAYER_MAX_HEALTH_POINTS;
 
 	__enemy_hit	= 0;
 
-	__player_x	= _ent->inst.x_pos;
-	__player_y	= _ent->inst.y_pos;
+	__player_x	= _x;
+	__player_y	= _y;
+
+	__move_left_acc		= 0;
+	__move_right_acc	= 0;
 
 	PLAYER_STATE_ON_SURFACE
 
@@ -457,7 +464,7 @@ void	player_enemy_hit()
 		if( !--__player_data.hp )
 		{
 			// GAME OVER
-			show_msg( "GAME OVER" );
+			scene_game_over();
 		}
 		else
 		{

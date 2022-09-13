@@ -14,6 +14,8 @@
 //
 //##################################################################
 
+#define DEMO_VER	"v0.1"
+
 #define	PLAYER_SPRITE_ID	SPR_PLAYER_16X32_0
 #define SATB_POS_PLAYER		0
 #define SATB_POS_HUD		1
@@ -25,20 +27,18 @@
 // - yellow border color	- getting a tile property
 //
 #asm
-MPD_DEBUG
-SPD_DEBUG
+;MPD_DEBUG
+;SPD_DEBUG
 #endasm
 
-#define	DBG_MODE		1
-#if	DBG_MODE
+#define	DBG_MODE		0
 #define	DBG_SHOW_INFO		0
-#endif
 #define DBG_ENTITIES_OFF	0
 
 #if	DBG_MODE
-#define	DBG_UPDATE_ENTITIES	mpd_dbg_set_border( 511 );
-#define	DBG_PLAYER_COLLISION	mpd_dbg_set_border( 500 );
-#define	DBG_BLACK_BORDER	mpd_dbg_set_border( 0 );
+#define	DBG_UPDATE_ENTITIES	DBG_MPD_BORDER_COLOR( 511 )
+#define	DBG_PLAYER_COLLISION	DBG_MPD_BORDER_COLOR( 500 )
+#define	DBG_BLACK_BORDER	DBG_MPD_BORDER_COLOR( 0 )
 #else
 #define	DBG_UPDATE_ENTITIES	//
 #define	DBG_PLAYER_COLLISION	//
@@ -58,15 +58,17 @@ u16	__jpad_val	= 0;
 void	show_msg( char* _msg )
 {
 	disp_off();
+	wait_vsync();
 	cls();
 
 	put_string( _msg, 0, 0 );
 
+	// reset scroll values
 	pokew( 0x220c, 0 );
 	pokew( 0x2210, 0 );
 
 	disp_on();
-	vsync();
+	wait_vsync();
 
 	for(;;) {}
 }
@@ -88,24 +90,9 @@ main()
 #asm
 .endif
 #endasm
-	/* initialization of a local SATB with sprite data and sending it to VRAM */
-	sprites_init();
-
-	scene_init();
-
 	hdwr_collisions_init();
 
 	load_default_font( 0, 0x1a00 );
 
-	/* demo main loop */
-	for( ;; )
-	{
-		__jpad_val = joy( 0 );
-
-		player_update();
-
-		scene_update();
-
-		wait_vsync();
-	}
+	scene_main_menu();
 }

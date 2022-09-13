@@ -19,6 +19,7 @@
 #define	UID_ENT_DOOR			8	// ignores collision cache - enables collision detection every frame
 #define	UID_ENT_HEAVY_LOAD		9	// ignores collision cache - enables collision detection every frame
 #define	UID_ENT_PORTAL			10	// collision cache
+#define	UID_ENT_CHECKPOINT		11	// collision cache
 
 // sprite name aliases
 
@@ -36,15 +37,16 @@
 #define	ENT_SPR_DOOR			door_16x32_0
 #define	ENT_SPR_HEAVY_LOAD		heavy_load_32x64
 #define	ENT_SPR_PORTAL			portal_16x32_1
+#define	ENT_SPR_CHECKPOINT		checkpoint_16x32_1
 
 // static entities data
-u8	base_ent_coll_star_width	= 0;
-u8	base_ent_coll_star_height	= 0;
+u8	base_ent_coll_diamond_width	= 0;
+u8	base_ent_coll_diamond_height	= 0;
 
 #define	ENT_ENEMY_WALKING_WIDTH			16
 #define	ENT_ENEMY_FLYING_WIDTH			16
 #define	ENT_PLATFORM_WIDTH			32
-#define	ENT_PLATFORM_HEIGHT			8
+#define	ENT_PLATFORM_HEIGHT			10
 #define	ENT_LOGS_PLATFORM_HEIGHT		8
 #define	ENT_DOOR_HEIGHT				32
 #define	ENT_HEAVY_LOAD_HEIGHT			64
@@ -71,6 +73,9 @@ s16	ent_y_unmasked;
 
 s16	player_x;
 s16	player_y;
+
+u16	checkpoint_x;
+u16	checkpoint_y;
 
 mpd_MAP_ENT*			ent_ptr;
 mpd_MAP_COLLECTABLE_ENT*	ent_coll_ptr;
@@ -114,7 +119,7 @@ void	__fastcall	init_map_entity( u8 _ind<acc> );	// entity ID is an entity index
 _init_ent_arr:
 
 	.dw _init_ent_null
-	.dw _init_ent_coll_star
+	.dw _init_ent_coll_diamond
 	.dw _init_ent_enemy_walking
 	.dw _init_ent_enemy_flying
 	.dw _init_ent_switch
@@ -124,13 +129,14 @@ _init_ent_arr:
 	.dw _init_ent_door
 	.dw _init_ent_heavy_load
 	.dw _init_ent_portal
+	.dw _init_ent_checkpoint
 
 _init_ent_null:
 	call _init_null
 	rts
 
-_init_ent_coll_star:
-	call _init_coll_star
+_init_ent_coll_diamond:
+	call _init_coll_diamond
 	rts
 
 _init_ent_enemy_walking:
@@ -142,6 +148,7 @@ _init_ent_logs:
 _init_ent_door:
 _init_ent_heavy_load:
 _init_ent_portal:
+_init_ent_checkpoint:
 	call _init_entity
 	rts
 
@@ -152,11 +159,11 @@ void	init_null()
 	//...
 }
 
-void	init_coll_star()
+void	init_coll_diamond()
 {
 	// get entity size
-	base_ent_coll_star_width	= scr_data.inst_ent.base.width;
-	base_ent_coll_star_height	= scr_data.inst_ent.base.height;
+	base_ent_coll_diamond_width	= scr_data.inst_ent.base.width;
+	base_ent_coll_diamond_height	= scr_data.inst_ent.base.height;
 
 	if( add_collectable_entity() )
 	{
@@ -190,7 +197,7 @@ u8	__fastcall	update_global_entity( u8 _ind<acc> );	// entity ID is an entity in
 _upd_ent_arr:
 
 	.dw _upd_ent_null
-	.dw _upd_ent_coll_star
+	.dw _upd_ent_coll_diamond
 	.dw _upd_ent_enemy_walking
 	.dw _upd_ent_enemy_flying
 	.dw _upd_ent_switch
@@ -200,13 +207,14 @@ _upd_ent_arr:
 	.dw _upd_ent_door
 	.dw _upd_ent_heavy_load
 	.dw _upd_ent_portal
+	.dw _upd_ent_checkpoint
 
 _upd_ent_null:
 	call _update_null
 	rts
 
-_upd_ent_coll_star:
-	call _update_coll_star
+_upd_ent_coll_diamond:
+	call _update_coll_diamond
 	rts
 
 _upd_ent_enemy_walking:
@@ -245,6 +253,10 @@ _upd_ent_portal:
 	call _update_portal
 	rts
 
+_upd_ent_checkpoint:
+	call _update_checkpoint
+	rts
+
 #endasm
 
 u8	update_null()
@@ -252,11 +264,11 @@ u8	update_null()
 	return 0;	// ignore entity
 }
 
-u8	update_coll_star()
+u8	update_coll_diamond()
 {
-	if( ( ( ent_x + base_ent_coll_star_width ) > 0 ) && ( ( ent_y_unmasked + base_ent_coll_star_height ) > 0 ) )
+	if( ( ( ent_x + base_ent_coll_diamond_width ) > 0 ) && ( ( ent_y_unmasked + base_ent_coll_diamond_height ) > 0 ) )
 	{
-		update_cached_coll_star();
+		update_cached_coll_diamond();
 
 		return 1;
 	}
@@ -372,6 +384,18 @@ u8	update_portal()
 	return 0;
 }
 
+u8	update_checkpoint()
+{
+	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
+	{
+		update_cached_checkpoint();
+
+		return 1;
+	}
+
+	return 0;
+}
+
 //************************************************************
 // 3. Cached entities update.
 //************************************************************
@@ -393,7 +417,7 @@ void	__fastcall	update_cached_entity( u8 _ind<acc> );	// entity ID is an entity 
 _upd_cached_ent_arr:
 
 	.dw _upd_cached_ent_null
-	.dw _upd_cached_ent_coll_star
+	.dw _upd_cached_ent_coll_diamond
 	.dw _upd_cached_ent_enemy_walking
 	.dw _upd_cached_ent_enemy_flying
 	.dw _upd_cached_ent_switch
@@ -403,13 +427,14 @@ _upd_cached_ent_arr:
 	.dw _upd_cached_ent_door
 	.dw _upd_cached_ent_heavy_load
 	.dw _upd_cached_ent_portal
+	.dw _upd_cached_ent_checkpoint
 
 _upd_cached_ent_null:
 	call _update_cached_null
 	rts
 
-_upd_cached_ent_coll_star:
-	call _update_cached_coll_star
+_upd_cached_ent_coll_diamond:
+	call _update_cached_coll_diamond
 	rts
 
 _upd_cached_ent_enemy_walking:
@@ -448,6 +473,10 @@ _upd_cached_ent_portal:
 	call _update_cached_portal
 	rts
 
+_upd_cached_ent_checkpoint:
+	call _update_cached_checkpoint
+	rts
+
 #endasm
 
 void	update_cached_null()
@@ -455,7 +484,7 @@ void	update_cached_null()
 	//...
 }
 
-void	update_cached_coll_star()
+void	update_cached_coll_diamond()
 {
 	ENT_ADD_TO_SATB
 	spd_SATB_set_sprite_LT( ENT_SPR_COLLECTABLE_DIAMOND, ent_x, ent_y_unmasked );
@@ -907,6 +936,13 @@ void	update_cached_portal()
 	}
 }
 
+void	update_cached_checkpoint()
+{
+	ENT_ADD_TO_SATB
+
+	spd_SATB_set_sprite_LT( ENT_SPR_CHECKPOINT, ent_x, ent_y_unmasked );
+}
+
 //************************************************************
 // 4. Player/entity collision detection.
 //************************************************************
@@ -928,7 +964,7 @@ u8	__fastcall	check_cached_entity_collision( u8 _ind<acc> );	// entity ID is an 
 _check_collision_func_arr:
 
 	.dw _check_null
-	.dw _check_coll_star
+	.dw _check_coll_diamond
 	.dw _check_enemy_walking
 	.dw _check_enemy_flying
 	.dw _check_switch
@@ -938,13 +974,14 @@ _check_collision_func_arr:
 	.dw _check_door
 	.dw _check_heavy_load
 	.dw _check_portal
+	.dw _check_checkpoint
 
 _check_null:
 	call _check_collision_null
 	rts
 
-_check_coll_star:
-	call _check_collision_coll_star
+_check_coll_diamond:
+	call _check_collision_coll_diamond
 	rts
 
 _check_enemy_walking:
@@ -983,6 +1020,10 @@ _check_portal:
 	call _check_collision_portal
 	rts
 
+_check_checkpoint:
+	call _check_collision_checkpoint
+	rts
+
 #endasm
 
 u8	check_collision_null()
@@ -990,9 +1031,9 @@ u8	check_collision_null()
 	return 0;
 }
 
-u8	check_collision_coll_star()
+u8	check_collision_coll_diamond()
 {
-	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, base_ent_coll_star_width, base_ent_coll_star_height ) )
+	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, base_ent_coll_diamond_width, base_ent_coll_diamond_height ) )
 	{
 		ENT_COLL_DEACTIVATE
 
@@ -1294,8 +1335,6 @@ u8	check_collision_portal()
 {
 	s16		portal_out_x;
 	s16		portal_out_y;
-	s16		scr_pos_x;
-	s16		scr_pos_y;
 
 	mpd_MAP_ENT*	ent_portal_out_ptr;
 
@@ -1312,33 +1351,7 @@ u8	check_collision_portal()
 				portal_out_x	= ( ent_portal_out_ptr->x & ENT_FLAG_ACTIVE_INV );
 				portal_out_y	= ( ent_portal_out_ptr->y & ENT_ID_MASK_INV );
 
-				// calc new screen position
-				scr_pos_x	= portal_out_x - ( ScrPixelsWidth >> 1 ) + ( ent_portal_out_ptr->width >> 1 );
-				scr_pos_y	= portal_out_y - ( ScrPixelsHeight >> 1 ) + ( ent_portal_out_ptr->height >> 1 );
-
-				scr_pos_x	= scr_pos_x < 0 ? 0:scr_pos_x;
-				scr_pos_y	= scr_pos_y < 0 ? 0:scr_pos_y;
-
-				scr_pos_x	= ( scr_pos_x > mpd_map_active_width ) ? mpd_map_active_width:scr_pos_x;
-				scr_pos_y	= ( scr_pos_y > mpd_map_active_height ) ? mpd_map_active_height:scr_pos_y;
-
-				disp_off();
-				vsync();
-
-				// redraw scene at target portal position
-				mpd_draw_screen_by_pos( scr_pos_x, scr_pos_y );
-
-				// update player position
-				spd_set_x_LT( portal_out_x - scr_pos_x );
-				spd_set_y_LT( portal_out_y - scr_pos_y );
-
-				__player_x = portal_out_x;
-				__player_y = portal_out_y;
-
-				PLAYER_STATE_ON_SURFACE
-
-				disp_on();
-				vsync();
+				scene_restore_player( portal_out_x, portal_out_y, FALSE );
 
 				// rebuild entity cache at new scene position
 				ENT_CACHE_RESET
@@ -1346,6 +1359,19 @@ u8	check_collision_portal()
 				return 0;	// continue collision detection
 			}
 		}
+
+		return 1;	// add to collision cache
+	}
+
+	return 0;	// continue collision detection
+}
+
+u8	check_collision_checkpoint()
+{
+	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, ent_ptr->width, ent_ptr->height ) )
+	{
+		checkpoint_x = ent_x + mpd_scroll_x;
+		checkpoint_y = ent_y_unmasked + mpd_scroll_y;
 
 		return 1;	// add to collision cache
 	}
