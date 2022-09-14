@@ -6,11 +6,14 @@
 //
 // Features:
 // ~~~~~~~~~
-// - 40 screens scrollable multidirectional map
+// - 40 screens (10x4) scrollable multidirectional map
 // - inertial player/scene movement
 // - sprite/tile objects
-// - entities: collectable, dynamic platforms, buttons, switches, dynamic obstacles, simple dynamic enemies
+// - entities:  collectable, dynamic platforms, buttons, switches, 
+//		dynamic obstacles, simple dynamic enemies, checkpoint, level exit
 // - hardware collisions
+// - 2-level entities cache, +collisions cache
+// - infinite credits to complete the game! )))
 //
 //##################################################################
 

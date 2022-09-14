@@ -23,6 +23,28 @@ u8	__warn_sign_cnt	= 0;
 
 void	scene_main_menu()
 {
+	__draw_main_menu();
+
+	for(;;)
+	{
+		if( joy( 0 ) & JOY_STRT )
+		{
+			// reset game level
+			__map_ind = 0;
+
+			start_game_level( TRUE );
+
+			__draw_main_menu();
+		}
+
+		//...
+
+		wait_vsync();
+	}
+}
+
+void __draw_main_menu()
+{
 	disp_off();
 	cls();
 
@@ -34,10 +56,10 @@ void	scene_main_menu()
 
 	put_string( "GAME PROTOTYPE DEMO", 4, 7 );
 	put_string( DEMO_VER, 24, 7 );
-	put_string( "CONTROLS:", 11, 13 );
-	put_string( "<ARROWS> - MOVE", 8, 15 );
-	put_string( "<A> - JUMP", 8, 16 );
-	put_string( "<B> - ACTION", 8, 17 );
+	put_string( "CONTROLS:", 11, 12 );
+	put_string( "<ARROWS> - MOVE", 8, 14 );
+	put_string( "<A> - JUMP", 8, 15 );
+	put_string( "<B> - ACTION", 8, 16 );
 	put_string( "<START> - PAUSE", 8, 18 );
 	put_string( "PUSH START", 11, 23 );
 	put_string( "(c) 2022 0x8BitDev", 7, 26 );
@@ -46,21 +68,6 @@ void	scene_main_menu()
 
 	disp_on();
 	wait_vsync();
-
-	for(;;)
-	{
-		if( joy( 0 ) & JOY_STRT )
-		{
-			// reset game level
-			__map_ind = 0;
-
-			start_game_level( TRUE );
-		}
-
-		//...
-
-		wait_vsync();
-	}
 }
 
 void	scene_game_over()
@@ -93,7 +100,8 @@ void	scene_game_over()
 
 		if( time > 9 )
 		{
-			scene_main_menu();
+			// return to the main menu by stack
+			break;
 		}
 
 		if( joy( 0 ) )
@@ -151,7 +159,8 @@ void	scene_level_passed()
 			}
 			else
 			{
-				scene_main_menu();
+				// return to the main menu by stack
+				break;
 			}
 		}
 
@@ -183,7 +192,7 @@ void	start_game_level( u8 _new_level )
 
 		clock_reset();
 
-		// waiting 3 seconds
+		// waiting for 3 seconds
 		for(;;)
 		{
 			if( clock_ss() == 3 || joy( 0 ) )
@@ -289,6 +298,10 @@ void	scene_init()
 
 	// draw start screen
 	mpd_draw_screen();
+
+	// update scroll values (see mpd.h for details)
+	pokew( 0x220c, mpd_scroll_x );
+	pokew( 0x2210, mpd_scroll_y );
 
 	mpd_init_screen_arr( &scr_data, __map_ind );
 
