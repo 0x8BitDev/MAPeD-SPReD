@@ -323,6 +323,8 @@ void	scene_init()
 
 	init_map_entities( __map_ind );
 
+	player_HUD_update_diamonds_cnt();
+
 	// enable display
 	disp_on();
 	wait_vsync();

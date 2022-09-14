@@ -7,7 +7,7 @@
 // Features:
 // ~~~~~~~~~
 // - 40 screens (10x4) scrollable multidirectional map
-// - inertial player/scene movement
+// - inertial player/map movement (map uses player inertial movement)
 // - sprite/tile objects
 // - entities:  collectable, dynamic platforms, buttons, switches, 
 //		dynamic obstacles, simple dynamic enemies, checkpoint, level exit
@@ -19,11 +19,13 @@
 
 #define DEMO_VER	"v0.1"
 
-#define	PLAYER_SPRITE_ID	SPR_PLAYER_16X32_0
-#define SATB_POS_PLAYER		0
-#define SATB_POS_HUD		1
-#define SATB_POS_PAUSE		4
-#define SATB_POS_ENTITY		5
+#define	PLAYER_SPRITE_ID		SPR_PLAYER_16X32_0
+#define SATB_POS_PLAYER			0
+#define SATB_POS_HUD_LIVES		1
+#define SATB_POS_HUD_DIAMOND		4
+#define SATB_POS_HUD_DIAMONDS_CNT	5
+#define SATB_POS_PAUSE			6
+#define SATB_POS_ENTITY			7
 
 // debug info:
 // - green+red border color	- screen scrolling

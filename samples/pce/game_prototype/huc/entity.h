@@ -1076,6 +1076,9 @@ u8	check_collision_coll_diamond()
 		ENT_COLL_DEACTIVATE
 
 		++__player_data.diamonds;	// increment collected diamonds counter
+
+		player_HUD_update_diamonds_cnt();
+		
 		ENT_CACHE_RESET
 		
 //		return 1;	// add to collision cache <- IGNORE COLLISION CACHE FOR COLLECTABLE ENTITIES!

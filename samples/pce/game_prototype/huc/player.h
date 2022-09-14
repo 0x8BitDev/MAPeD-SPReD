@@ -129,20 +129,25 @@ void	player_init( u16 _x, u16 _y, u8 _reset_progress )
 
 	// init HUD
 	{
-		spd_SATB_set_pos( SATB_POS_HUD );
-		satb_pos = SATB_POS_HUD;
+		satb_pos = SATB_POS_HUD_LIVES;
+		spd_SATB_set_pos( SATB_POS_HUD_LIVES );
 
 		x_offs = 0;
 
 		for( i = 0; i < ( PLAYER_MAX_HEALTH_POINTS >> 1 ); i++ )
 		{
-			spd_SATB_set_sprite_LT( live_heart, x_offs, 0 );	// blue heart by default
+			spd_SATB_set_sprite_LT( HUD_lives_heart, x_offs, 0 );	// blue heart by default
 			x_offs += 16;
 
 			spd_set_palette_LT( 17 );	// red heart
 
 			spd_SATB_set_pos( ++satb_pos );
 		}
+
+		// diamonds
+		spd_SATB_set_sprite_LT( HUD_diamond, ScrPixelsWidth - 32, 0 );
+		spd_SATB_set_pos( ++satb_pos );
+		spd_SATB_set_sprite_LT( HUD_diamonds_cnt, ScrPixelsWidth - 17, 0 );
 	}
 }
 
@@ -471,7 +476,7 @@ void	player_enemy_hit()
 			// update HUD lives
 			satb_pos = spd_SATB_get_pos();
 
-			spd_SATB_set_pos( SATB_POS_HUD + ( __player_data.hp >> 1 ) );
+			spd_SATB_set_pos( SATB_POS_HUD_LIVES + ( __player_data.hp >> 1 ) );
 
 			if( __player_data.hp & 0x01 )
 			{
@@ -518,4 +523,136 @@ void	player_update_hit()
 	}
 
 	spd_show_LT();
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// HUD's diamonds counter update //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+u8	HUD_diamonds_digits[ 16 ];
+
+#asm
+HUD_digits_09:
+	.db 0x00, 0x3c, 0x66, 0x6e, 0x76, 0x66, 0x3c, 0x00
+	.db 0x00, 0x18, 0x38, 0x18, 0x18, 0x18, 0x3c, 0x00
+	.db 0x00, 0x3c, 0x66, 0x06, 0x3c, 0x60, 0x7e, 0x00
+	.db 0x00, 0x3c, 0x66, 0x0c, 0x06, 0x66, 0x3c, 0x00
+	.db 0x00, 0x0c, 0x1c, 0x2c, 0x6c, 0x7e, 0x0c, 0x00
+	.db 0x00, 0x7e, 0x60, 0x7c, 0x06, 0x66, 0x3c, 0x00
+	.db 0x00, 0x3c, 0x60, 0x7c, 0x66, 0x66, 0x3c, 0x00
+	.db 0x00, 0x7e, 0x06, 0x0c, 0x18, 0x18, 0x18, 0x00
+	.db 0x00, 0x3c, 0x66, 0x3c, 0x66, 0x66, 0x3c, 0x00
+	.db 0x00, 0x3c, 0x66, 0x66, 0x3e, 0x06, 0x3c, 0x00
+#endasm
+
+void	player_HUD_update_diamonds_cnt()
+{
+	mpd_ax = __player_data.max_diamonds - __player_data.diamonds;
+
+#asm
+	stw #_HUD_diamonds_digits, <__ax
+
+	; bin 2 dec: http://www.6502.org/source/integers/hex2dec-more.htm
+
+	sed		; Switch to decimal mode
+
+	cla		; Ensure the result is clear
+	sta <__cl
+	sta <__ch	; __cx - BCD
+	
+	ldx #8		; The number of source bits
+
+.CNVBIT:
+
+	asl _mpd_ax	; Shift out one bit
+	lda <__cl	; And add into result
+	adc <__cl
+	sta <__cl
+	lda <__ch	; propagating any carry
+	adc <__ch
+	sta <__ch
+	dex		; And repeat for next bit
+	bne .CNVBIT
+
+	cld		; Back to binary
+
+	; units
+
+	stw #HUD_digits_09, <__bx
+
+	lda <__cl
+	and #$0f
+	asl a		; *8
+	asl a
+	asl a
+
+	spd_add_a_to_word <__bx
+
+	cly
+
+;	lda [<__bx], y
+;	sta [<__ax], y
+
+	lda #7
+	sta <__dl
+
+.copy_units:
+
+	lda [<__bx], y
+	tax
+	tya
+	asl a
+	tay
+	txa
+	sta [<__ax], y
+	tya
+	lsr a
+	tay
+	iny
+
+	dec <__dl
+	bne .copy_units
+
+	; dozens
+
+	stw #HUD_digits_09, <__bx
+
+	lda <__cl
+	and #$f0
+	lsr a		; >>4 *8
+
+	spd_add_a_to_word <__bx
+
+	cly
+
+;	lda [<__bx], y
+;	sta [<__ax], y
+
+	lda #7
+	sta <__dl
+
+.copy_dozens:
+
+	lda [<__bx], y
+	tax
+
+	phy
+
+	tya
+	asl a
+	inc a
+	tay
+	txa
+	sta [<__ax], y
+
+	ply
+
+	iny
+
+	dec <__dl
+	bne .copy_dozens
+#endasm
+
+	// copy the digits graphics at sprite area
+	load_vram( 0x2843, HUD_diamonds_digits, 8 );
 }
