@@ -6,12 +6,6 @@
 //
 //##################################################################
 
-#define	JOY_UP_BTN		JOY_UP
-#define	JOY_DOWN_BTN		JOY_DOWN
-#define	JOY_LEFT_BTN		JOY_LEFT
-#define	JOY_RIGHT_BTN		JOY_RIGHT
-#define	JOY_JUMP_BTN		JOY_A
-#define	JOY_ACTION_BTN		JOY_B
 
 #define	HEAD_COLLISIONS		1
 
@@ -148,6 +142,11 @@ void	player_init( u16 _x, u16 _y, u8 _reset_progress )
 		spd_SATB_set_sprite_LT( HUD_diamond, ScrPixelsWidth - 32, 0 );
 		spd_SATB_set_pos( ++satb_pos );
 		spd_SATB_set_sprite_LT( HUD_diamonds_cnt, ScrPixelsWidth - 17, 0 );
+
+		// diamonds counter shadow
+		spd_SATB_set_pos( ++satb_pos );
+		spd_SATB_set_sprite_LT( HUD_diamonds_cnt, ScrPixelsWidth - 16, 1 );
+		spd_set_palette_LT( 18 );	// use dark blue color of the blue heart palette as a shadow for the diamonds counter
 	}
 }
 
@@ -549,10 +548,14 @@ void	player_HUD_update_diamonds_cnt()
 {
 	mpd_ax = __player_data.max_diamonds - __player_data.diamonds;
 
-#asm
-	stw #_HUD_diamonds_digits, <__ax
+	// 1. convert 'mpd_ax' from binary to BCD
+	// 2. fill the HUD_diamonds_digits[] array with interleaved digits data
+	// 3. send the HUD_diamonds_digits[] array to VRAM into appropriate sprite region
 
-	; bin 2 dec: http://www.6502.org/source/integers/hex2dec-more.htm
+#asm
+; -= 1 =-
+
+	; 1-byte bin to 2-bytes dec: http://www.6502.org/source/integers/hex2dec-more.htm
 
 	sed		; Switch to decimal mode
 
@@ -575,6 +578,10 @@ void	player_HUD_update_diamonds_cnt()
 	bne .CNVBIT
 
 	cld		; Back to binary
+
+; -= 2 =-
+
+	stw #_HUD_diamonds_digits, <__ax
 
 	; units
 
@@ -651,8 +658,21 @@ void	player_HUD_update_diamonds_cnt()
 
 	dec <__dl
 	bne .copy_dozens
+
+; -= 3 =-
+
+	stw #$10, __TIA_LEN
+	stw #video_data, __TIA_DST
+	stw #_HUD_diamonds_digits, __TIA_SRC
+
+	spd_VDC_set_write #$2843
+
+	jsr __TIA
+
 #endasm
 
-	// copy the digits graphics at sprite area
-	load_vram( 0x2843, HUD_diamonds_digits, 8 );
+// -= 3 =- in HuC
+
+	// copy the digits graphics into sprite area
+//	load_vram( 0x2843, HUD_diamonds_digits, 8 );
 }

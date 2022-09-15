@@ -27,7 +27,7 @@ void	scene_main_menu()
 
 	for(;;)
 	{
-		if( joy( 0 ) & JOY_STRT )
+		if( joy( 0 ) & JOY_START_BTN )
 		{
 			// reset game level
 			__map_ind = 0;
@@ -247,7 +247,7 @@ void	scene_pause()
 
 	for(;;)
 	{
-		if( joy( 0 ) & JOY_STRT )
+		if( joy( 0 ) & JOY_PAUSE_BTN )
 		{
 			wait_jpad_btns_release();
 
@@ -398,7 +398,7 @@ void	game_update_loop()
 	{
 		__jpad_val = joy( 0 );
 
-		if( __jpad_val & JOY_STRT )
+		if( __jpad_val & JOY_PAUSE_BTN )
 		{
 			scene_pause();
 		}
@@ -438,7 +438,7 @@ void	game_update_loop()
 		// use updated scroll values to synchronize player's position with the scene coordinates
 		player_update_pos( __player_x - mpd_scroll_x, __player_y - mpd_scroll_y );
 
-		SATB_pos = SATB_POS_ENTITY;	// 0 - reserved for player, the next positions for HUD
+		SATB_pos = SATB_POS_ENTITY;	// 0 - reserved for player, the next positions for HUD and PAUSE sprite
 		// set initial SATB pos
 		spd_SATB_set_pos( SATB_pos );
 		// clear previous entity sprites

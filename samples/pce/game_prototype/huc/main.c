@@ -7,7 +7,7 @@
 // Features:
 // ~~~~~~~~~
 // - 40 screens (10x4) scrollable multidirectional map
-// - inertial player/map movement (map uses player inertial movement)
+// - inertial player/map movement (map scrolling uses player inertial movement)
 // - sprite/tile objects
 // - entities:  collectable, dynamic platforms, buttons, switches, 
 //		dynamic obstacles, simple dynamic enemies, checkpoint, level exit
@@ -17,21 +17,16 @@
 //
 //##################################################################
 
-#define DEMO_VER	"v0.1"
-
-#define	PLAYER_SPRITE_ID		SPR_PLAYER_16X32_0
-#define SATB_POS_PLAYER			0
-#define SATB_POS_HUD_LIVES		1
-#define SATB_POS_HUD_DIAMOND		4
-#define SATB_POS_HUD_DIAMONDS_CNT	5
-#define SATB_POS_PAUSE			6
-#define SATB_POS_ENTITY			7
-
-// debug info:
+// MPD debug info:
 // - green+red border color	- screen scrolling
 // - blue border color		- static screen drawing
 // - yellow border color	- getting a tile property
 //
+// SPD debug info:
+// - pink border color		- ROM-VRAM data copying
+// - white border color		- spd_SATB_push_sprite
+// - cyan border color		- attributes transformation
+
 #asm
 ;MPD_DEBUG
 ;SPD_DEBUG
@@ -59,31 +54,7 @@
 #include "maps.h"
 #include "../../common/mpd.h"
 
-u16	__jpad_val	= 0;
-u8	__level_state	= 0;
-
-#define	LEVEL_STATE_PASSED	0x01
-#define	LEVEL_STATE_FAILED	0x02
-
-
-void	show_msg( char* _msg )
-{
-	disp_off();
-	wait_vsync();
-	cls();
-
-	put_string( _msg, 0, 0 );
-
-	// reset scroll values
-	pokew( 0x220c, 0 );
-	pokew( 0x2210, 0 );
-
-	disp_on();
-	wait_vsync();
-
-	for(;;) {}
-}
-
+#include "common.h"
 #include "sprite_set.h"
 #include "hdwr_collisions.h"
 #include "player.h"
