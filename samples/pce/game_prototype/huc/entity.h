@@ -22,6 +22,47 @@
 #define	UID_ENT_CHECKPOINT		11	// collision cache
 #define	UID_ENT_EXIT			12	// collision cache
 
+// entity property descriptions
+// 
+// ENEMY:
+// ~~~~~~
+// prop0: 7-bit: 1 - RIGHT, 0-LEFT; 6-0: distance
+// prop1: 7-0: current distance
+// prop2: 7-0: pause in frames
+// prop3: 7-0: current pause value
+//
+// SWITCH:
+// ~~~~~~~
+// prop2: 7-bit: 1 - ON, 0 - OFF
+//
+// BUTTON:
+// ~~~~~~~
+// prop2: 7-bit: 1 - ON, 0 - OFF
+//
+// PLATFORM:
+// ~~~~~~~~~
+// prop0: 7-bit: 1 - RIGHT/DOWN, 0-LEFT/UP; 6-0: distance
+// prop1: 7-0: current distance
+// prop2: 7-bit: 1 - ON, 0 - OFF; 6-bit: 1 - UP/DOWN, 0 - LEFT/RIGHT; 5-bit: looped?; 4-bit: sprite low priority
+//
+// LOGS:
+// ~~~~~
+// prop0: 7-0: falling pause in frames
+//*prop1: 7-bit: 1 - activation, 6-bit: 1 - start falling; 5-bit: 1 - inactive
+//
+// OBSTACLE:
+// ~~~~~~~~~
+// prop0: 7-bit: 1 - DOWN, 0 - UP; 6-0: distance
+// prop1: 7-0: current distance
+// prop2: 7-bit: 1 - ON, 0 - OFF; 6-bit: loop, 5-bit: damage ON/OFF, 4-bit: shake when hits the ground
+//*prop3: 7-0: pause in frames
+//
+// PORTAL:
+// ~~~~~~~
+// prop0: 0-bit: 1 - portal IN, 0 - portal OUT
+//
+// * - internal properties
+
 // sprite name aliases
 
 #define	ENT_SPR_COLLECTABLE_DIAMOND	collectable_diamond
@@ -42,9 +83,8 @@
 #define	ENT_SPR_EXIT			portal_16x32_1
 
 // static entities data
-u8	base_ent_coll_diamond_width	= 0;
-u8	base_ent_coll_diamond_height	= 0;
 
+#define	ENT_COLLECTABLE_SIZE			16
 #define	ENT_ENEMY_WALKING_WIDTH			16
 #define	ENT_ENEMY_FLYING_WIDTH			16
 #define	ENT_PLATFORM_WIDTH			32
@@ -92,17 +132,16 @@ mpd_SCR_DATA			scr_data;
 //
 // 	There are a few steps to work with entities:
 //	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//	1. Map entities initialization.
-//	2. Entities update and SATB/screen cache filling.
-//	3. Cached entities update.
-//	4. Player/entity collision detection.
+//	1. Map entities caching.
+//	2. Cached entities update, SATB/screen cache filling.
+//	3. Player/entity collision detection.
 //
 //	[!] An entity UID is the index of the entity processing function.
 //
 //**************************************************************************
 
 //************************************************************
-// 1. Map entities initialization.
+// 1. Map entities caching.
 //************************************************************
 
 void	__fastcall	init_map_entity( u8 _ind<acc> );	// entity ID is an entity index
@@ -165,10 +204,6 @@ void	init_null()
 
 void	init_coll_diamond()
 {
-	// get entity size
-	base_ent_coll_diamond_width	= scr_data.inst_ent.base.width;
-	base_ent_coll_diamond_height	= scr_data.inst_ent.base.height;
-
 	if( add_collectable_entity() )
 	{
 		++__player_data.max_diamonds;
@@ -181,244 +216,7 @@ void	init_entity()
 }
 
 //************************************************************
-// 2. Entities update and SATB/screen cache filling.
-//************************************************************
-
-u8	__fastcall	update_global_entity( u8 _ind<acc> );	// entity ID is an entity index
-
-#asm
-	.proc _update_global_entity.1
-
-	lsr a
-	lsr a
-	lsr a
-	tax
-
-	jmp [_upd_ent_arr, x]
-
-	.endp
-
-_upd_ent_arr:
-
-	.dw _upd_ent_null
-	.dw _upd_ent_coll_diamond
-	.dw _upd_ent_enemy_walking
-	.dw _upd_ent_enemy_flying
-	.dw _upd_ent_switch
-	.dw _upd_ent_button
-	.dw _upd_ent_platform
-	.dw _upd_ent_logs
-	.dw _upd_ent_door
-	.dw _upd_ent_heavy_load
-	.dw _upd_ent_portal
-	.dw _upd_ent_checkpoint
-	.dw _upd_ent_exit
-
-_upd_ent_null:
-	call _update_null
-	rts
-
-_upd_ent_coll_diamond:
-	call _update_coll_diamond
-	rts
-
-_upd_ent_enemy_walking:
-	call _update_enemy_walking
-	rts
-
-_upd_ent_enemy_flying:
-	call _update_enemy_flying
-	rts
-
-_upd_ent_switch:
-	call _update_switch
-	rts
-
-_upd_ent_button:
-	call _update_button
-	rts
-
-_upd_ent_platform:
-	call _update_platform
-	rts
-
-_upd_ent_logs:
-	call _update_logs
-	rts
-
-_upd_ent_door:
-	call _update_door
-	rts
-
-_upd_ent_heavy_load:
-	call _update_heavy_load
-	rts
-
-_upd_ent_portal:
-	call _update_portal
-	rts
-
-_upd_ent_checkpoint:
-	call _update_checkpoint
-	rts
-
-_upd_ent_exit:
-	call _update_exit
-	rts
-
-#endasm
-
-u8	update_null()
-{
-	return 0;	// ignore entity
-}
-
-u8	update_coll_diamond()
-{
-	if( ( ( ent_x + base_ent_coll_diamond_width ) > 0 ) && ( ( ent_y_unmasked + base_ent_coll_diamond_height ) > 0 ) )
-	{
-		update_cached_coll_diamond();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-u8	update_enemy_walking()
-{
-	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
-	{
-		update_cached_enemy_walking();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-u8	update_enemy_flying()
-{
-	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
-	{
-		update_cached_enemy_flying();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-u8	update_switch()
-{
-	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
-	{
-		update_cached_switch();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-u8	update_button()
-{
-	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
-	{
-		update_cached_button();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-u8	update_platform()
-{
-	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
-	{
-		update_cached_platform();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-u8	update_logs()
-{
-	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
-	{
-		update_cached_logs();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-u8	update_door()
-{
-	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
-	{
-		update_cached_door();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-u8	update_heavy_load()
-{
-	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
-	{
-		update_cached_heavy_load();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-u8	update_portal()
-{
-	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
-	{
-		update_cached_portal();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-u8	update_checkpoint()
-{
-	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
-	{
-		update_cached_checkpoint();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-u8	update_exit()
-{
-	if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
-	{
-		update_cached_exit();
-
-		return 1;
-	}
-
-	return 0;
-}
-
-//************************************************************
-// 3. Cached entities update.
+// 2. Cached entities update, SATB/screen cache filling.
 //************************************************************
 
 void	__fastcall	update_cached_entity( u8 _ind<acc> );	// entity ID is an entity index
@@ -977,7 +775,7 @@ void	update_cached_exit()
 }
 
 //************************************************************
-// 4. Player/entity collision detection.
+// 3. Player/entity collision detection.
 //************************************************************
 
 u8	__fastcall	check_cached_entity_collision( u8 _ind<acc> );	// entity ID is an entity index
@@ -1071,7 +869,7 @@ u8	check_collision_null()
 
 u8	check_collision_coll_diamond()
 {
-	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, base_ent_coll_diamond_width, base_ent_coll_diamond_height ) )
+	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, ENT_COLLECTABLE_SIZE, ENT_COLLECTABLE_SIZE ) )
 	{
 		ENT_COLL_DEACTIVATE
 

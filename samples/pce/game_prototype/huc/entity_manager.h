@@ -66,7 +66,7 @@ s8	__screen_ent_coll_cache_pos	= -1;
 #define	ENT_COLL_DEACTIVATE	ent_coll_ptr->x &= ENT_FLAG_ACTIVE_INV;
 
 #define	ENT_UPDATE_CACHE_STEP	4	// update entity cache after each UPDATE_CACHE_STEP pixels
-#define	ENT_NEXT_SATB_POS		spd_SATB_set_pos( SATB_pos++ );
+#define	ENT_NEXT_SATB_POS	spd_SATB_set_pos( SATB_pos++ );
 
 s16	__scr_scroll_x = -1;
 s16	__scr_scroll_y = -1;
@@ -329,8 +329,10 @@ void	__update_ents( u8 _scr_pos )
 			// check screen/entity intersection
 			if( ( ent_x < ScrPixelsWidth ) && ( ent_y_unmasked < ScrPixelsHeight ) )
 			{
-				if( update_global_entity( ent_y & ENT_ID_MASK ) )
+				if( ( ( ent_x + ENT_COLLECTABLE_SIZE ) > 0 ) && ( ( ent_y_unmasked + ENT_COLLECTABLE_SIZE ) > 0 ) )
 				{
+					update_cached_entity( ent_y & ENT_ID_MASK );
+
 					__screen_ent_coll_cache[ __screen_ent_coll_cache_pos++ ] = scr_pos + ent_n;
 				}
 			}
@@ -357,8 +359,10 @@ void	__update_ents( u8 _scr_pos )
 			// check screen/entity intersection
 			if( ( ent_x < ScrPixelsWidth ) && ( ent_y_unmasked < ScrPixelsHeight ) )
 			{
-				if( update_global_entity( ent_y & ENT_ID_MASK ) )
+				if( ( ( ent_x + ent_ptr->width ) > 0 ) && ( ( ent_y_unmasked + ent_ptr->height ) > 0 ) )
 				{
+					update_cached_entity( ent_y & ENT_ID_MASK );
+					
 					__screen_ent_cache[ __screen_ent_cache_pos++ ] = scr_pos + ent_n;
 				}
 			}
