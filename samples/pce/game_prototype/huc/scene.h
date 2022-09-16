@@ -104,7 +104,7 @@ void	scene_game_over()
 			break;
 		}
 
-		if( joy( 0 ) )
+		if( joy( 0 ) & JOY_START_BTN )
 		{
 			start_game_level( FALSE );
 
