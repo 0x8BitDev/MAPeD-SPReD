@@ -6,12 +6,12 @@
 //
 // Features:
 // ~~~~~~~~~
-// - 40 screens (10x4) scrollable multidirectional map
+// - 40 screens (10x4) scrollable multidirectional map with 201 entities, +bonus level
 // - inertial player/map movement (map scrolling uses player inertial movement)
 // - sprite/tile objects
 // - entities:  collectable, dynamic platforms, buttons, switches, 
 //		dynamic obstacles, simple dynamic enemies, checkpoint, level exit
-// - hardware collisions
+// - hardware collisions (yes in HuC and yes it works stable)
 // - 2-level entities cache, +collisions cache
 // - infinite credits to complete the game! )))
 //

@@ -752,10 +752,10 @@ void	update_obstacle_logic( u8 _pause_in_frames )
 //
 void	update_cached_portal()
 {
-	ENT_NEXT_SATB_POS
-
 	if( ent_ptr->prop0 & 0x01 )
 	{
+		ENT_NEXT_SATB_POS
+
 		spd_SATB_set_sprite_LT( ENT_SPR_PORTAL, ent_x, ent_y_unmasked );
 	}
 }

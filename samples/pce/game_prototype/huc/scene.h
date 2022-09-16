@@ -398,11 +398,6 @@ void	game_update_loop()
 	{
 		__jpad_val = joy( 0 );
 
-		if( __jpad_val & JOY_PAUSE_BTN )
-		{
-			scene_pause();
-		}
-
 		player_update();
 
 		delta_x = __player_x - mpd_scroll_x;
@@ -496,6 +491,11 @@ put_number( __player_data.max_diamonds, 3, 12, 3 );
 		spd_SATB_to_VRAM();
 
 		wait_vsync();
+
+		if( __jpad_val & JOY_PAUSE_BTN )
+		{
+			scene_pause();
+		}
 
 		if( __level_state )
 		{

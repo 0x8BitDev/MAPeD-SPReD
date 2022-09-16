@@ -581,10 +581,9 @@ void	player_HUD_update_diamonds_cnt()
 
 ; -= 2 =-
 
-	stw #_HUD_diamonds_digits, <__ax
-
 	; units
 
+	stw #_HUD_diamonds_digits, <__ax
 	stw #HUD_digits_09, <__bx
 
 	lda <__cl
@@ -595,12 +594,9 @@ void	player_HUD_update_diamonds_cnt()
 
 	spd_add_a_to_word <__bx
 
-	cly
+	ldy #1
 
-;	lda [<__bx], y
-;	sta [<__ax], y
-
-	lda #7
+	lda #6
 	sta <__dl
 
 .copy_units:
@@ -622,6 +618,7 @@ void	player_HUD_update_diamonds_cnt()
 
 	; dozens
 
+	stw #_HUD_diamonds_digits + 1, <__ax
 	stw #HUD_digits_09, <__bx
 
 	lda <__cl
@@ -630,30 +627,23 @@ void	player_HUD_update_diamonds_cnt()
 
 	spd_add_a_to_word <__bx
 
-	cly
+	ldy #1
 
-;	lda [<__bx], y
-;	sta [<__ax], y
-
-	lda #7
+	lda #6
 	sta <__dl
 
 .copy_dozens:
 
 	lda [<__bx], y
 	tax
-
-	phy
-
 	tya
 	asl a
-	inc a
 	tay
 	txa
 	sta [<__ax], y
-
-	ply
-
+	tya
+	lsr a
+	tay
 	iny
 
 	dec <__dl

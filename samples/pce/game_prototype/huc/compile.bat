@@ -17,7 +17,7 @@ pceas -S main.s
 
 copy main.pce %OutDir%%OutFile%.pce
 
-: @del *.pce *.lst *.sym *.s
+@del *.pce *.lst *.sym *.s
 
 %OutDir%%OutFile%.pce
 @goto exit
