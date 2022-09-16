@@ -148,7 +148,8 @@ namespace MAPeD
 			y 			= _br.ReadInt32();
 			m_uid 		= _br.ReadInt32();
 			target_uid 	= _br.ReadInt32();
-		
+			
+/* this code fixes an entity position inside a screen...		
 			{
 				int			CHRs_in_tile = ( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? 32:16;
 				Rectangle	prj_scr_rect = project_data_converter_provider.get_converter().get_prj_scr_rect();
@@ -162,7 +163,7 @@ namespace MAPeD
 				x = x < 0 ? 0:x;
 				x = ( x >= platform_data.get_screen_width_pixels() ) ? ( platform_data.get_screen_width_pixels() - 1 ):x;
 			}
-			
+*/			
 			// extra data ( reserved for future purposes )
 			int extra_data_size = _br.ReadInt32();
 		}
