@@ -1,3 +1,11 @@
+;##################################################################
+;
+; Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
+;
+; This file is a part of the game prototype demo.
+;
+;##################################################################
+
 ; This is the HuC/MagicKit IRQ1 routine, but with a little improvement for the hardware collision detection
 
 		.bank	LIB2_BANK

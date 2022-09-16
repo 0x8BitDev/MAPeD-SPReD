@@ -1,5 +1,9 @@
-
-; This is a place holder file for custom library include on the asm side. To use this feature, have a file with the same name as
-; this in your project directory and huc will pull from that instead.
+;##################################################################
+;
+; Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
+;
+; This file is a part of the game prototype demo.
+;
+;##################################################################
 
 	.include "irq1_hdwr_collisions.asm"
