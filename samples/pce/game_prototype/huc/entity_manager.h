@@ -275,13 +275,16 @@ void	update_scene_entities()
 		// update the main screen where the player is
 		__update_ents( scr_pos );
 
-		// check the right screen visibility
-		right_scr_offset = mpd_scroll_x % ScrPixelsWidth;
-
-		if( right_scr_offset )
+		if( mpd_map_scr_width > 1 )
 		{
-			// update the right screen
-			__update_ents( scr_pos + 1 );
+			// check the right screen visibility
+			right_scr_offset = mpd_scroll_x % ScrPixelsWidth;
+
+			if( right_scr_offset )
+			{
+				// update the right screen
+				__update_ents( scr_pos + 1 );
+			}
 		}
 
 		// check the bottom screen visibility
@@ -294,11 +297,14 @@ void	update_scene_entities()
 			__update_ents( scr_pos );
 		}
 
-		// check the right bottom screen visibility
-		if( right_scr_offset && bottom_scr_offset )
+		if( mpd_map_scr_width > 1 )
 		{
-			// update the right bottom screen
-			__update_ents( scr_pos + 1 );
+			// check the right bottom screen visibility
+			if( right_scr_offset && bottom_scr_offset )
+			{
+				// update the right bottom screen
+				__update_ents( scr_pos + 1 );
+			}
 		}
 	}
 	else

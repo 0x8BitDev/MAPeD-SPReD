@@ -107,6 +107,8 @@ void	scene_game_over()
 		if( joy( 0 ) )
 		{
 			start_game_level( FALSE );
+
+			break;
 		}
 
 		//...
@@ -156,6 +158,8 @@ void	scene_level_passed()
 				++__map_ind;
 
 				start_game_level( TRUE );
+
+				break;
 			}
 			else
 			{
@@ -237,13 +241,16 @@ void	start_game_level( u8 _new_level )
 
 void	scene_pause()
 {
-	wait_jpad_btns_release();
-
 	spd_SATB_set_pos( SATB_POS_PAUSE );
 	spd_SATB_set_sprite_LT( pause_32x16, 112, 0 );
 
 	// update SATB with the all pushed sprites
 	spd_SATB_to_VRAM();
+
+	// show the 'PAUSE' sprite immediately after pressing the pause button
+	wait_vsync();
+
+	wait_jpad_btns_release();
 
 	for(;;)
 	{
