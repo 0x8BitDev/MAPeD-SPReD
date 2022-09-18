@@ -585,7 +585,7 @@ namespace SPReD
 				int CHR_ind_offset = 0;
 				int cgx_cgy	= PCE_metasprite_exporter.get_CGX_CGY_flags( this, ref CHR_ind_offset );
 
-				PCE_metasprite_exporter.save_attribute( _sw, this, chr_attr, cgx_cgy, _CHRs_offset, CHR_ind_offset, _palette_slot );
+				PCE_metasprite_exporter.save_attribute( _sw, this, m_CHR_attr[ i + CHR_ind_offset ], cgx_cgy, _CHRs_offset, CHR_ind_offset, _palette_slot );
 				
 				if( cgx_cgy != 0 )
 				{

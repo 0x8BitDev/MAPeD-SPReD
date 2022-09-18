@@ -307,7 +307,7 @@ namespace SPReD
 			attr |= ( ( _chr_attr.flip_flag & CHR_data_attr.CONST_CHR_ATTR_FLAG_VFLIP ) != 0 ) ? ( 1 << 15 ):0;
 			attr |= 1 << 7; // sprite priority
 
-			_sw.WriteLine( "\t.word " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( ushort )( _spr.offset_y + _chr_attr.y ) ), unchecked( ( ushort )( _spr.offset_x + _chr_attr.x ) ), unchecked( ( ushort )( ( _chr_attr.CHR_ind + _CHR_ind_offset + _CHRs_offset ) << 1 ) ), ( ushort )attr ) );
+			_sw.WriteLine( "\t.word " + String.Format( "${0:X2}, ${1:X2}, ${2:X2}, ${3:X2}", unchecked( ( ushort )( _spr.offset_y + _chr_attr.y ) ), unchecked( ( ushort )( _spr.offset_x + _chr_attr.x - ( _CHR_ind_offset << 4 ) ) ), unchecked( ( ushort )( ( _chr_attr.CHR_ind + _CHRs_offset ) << 1 ) ), ( ushort )attr ) );
 		}
 		
 		public static int get_CGX_CGY_flags( sprite_data _spr, ref int _CHR_ind_offset )
