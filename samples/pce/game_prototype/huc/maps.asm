@@ -1215,7 +1215,7 @@ Instance165:
 	.word $2B0
 	.word $1B0
 	.byte $03
-	.byte $D0, $00, $E0
+	.byte $D0, $28, $E0
 
 _Lev0Scr23:
 _Lev0Scr23EntsArr:
@@ -2019,7 +2019,7 @@ Instance402:
 	.word diamond
 	.word $00
 	.word $88
-	.word $128
+	.word $118
 	.byte $00
 
 _Lev1Scr2:

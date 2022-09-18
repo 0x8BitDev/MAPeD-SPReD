@@ -6,7 +6,7 @@
 //
 // Features:
 // ~~~~~~~~~
-// - fully playable game prototype
+// - fully playable game prototype, run'n'jump platformer
 // - 40 screens (10x4) scrollable multidirectional map with 201 entities, +bonus level
 // - inertial player/map movement (map scrolling uses player inertial movement)
 // - sprite/tile objects
@@ -35,6 +35,7 @@
 
 #define	DBG_MODE		0
 #define	DBG_SHOW_INFO		0
+#define	DBG_SHOW_NUM_CACHED_SCR	0	// number of cached screens
 #define DBG_ENTITIES_OFF	0
 
 #if	DBG_MODE

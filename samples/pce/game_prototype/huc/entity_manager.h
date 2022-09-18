@@ -252,17 +252,21 @@ void	init_map_entities( u8 _map_ind )
 	__scr_scroll_y = -1;
 }
 
+u16	__right_scr_offset;
+u16	__bottom_scr_offset;
+
+#if 	DBG_SHOW_NUM_CACHED_SCR
+u8 	__cached_screens;
+#endif
 // OUT: new SATB pos
 void	update_scene_entities()
 {
-	u8	scr_pos;
-
-	u16	right_scr_offset;
-	u16	bottom_scr_offset;
-
 	// update cache after each ENT_UPDATE_CACHE_STEP
 	if( ( __screen_ent_cache_pos < 0 ) || ( ( abs( mpd_scroll_x - __scr_scroll_x ) > ENT_UPDATE_CACHE_STEP ) || ( abs( mpd_scroll_y - __scr_scroll_y ) > ENT_UPDATE_CACHE_STEP ) ) )
 	{
+#if 	DBG_SHOW_NUM_CACHED_SCR
+		__cached_screens = 0;
+#endif
 		__scr_scroll_x	= mpd_scroll_x;
 		__scr_scroll_y	= mpd_scroll_y;
 
@@ -270,42 +274,41 @@ void	update_scene_entities()
 		__screen_ent_cache_pos		= 0;
 		__screen_ent_coll_cache_pos	= 0;
 
-		scr_pos = mpd_get_curr_screen_ind();
+		curr_scr_pos = mpd_get_curr_screen_ind();
 
 		// update the main screen where the player is
-		__update_ents( scr_pos );
+		__update_ents( curr_scr_pos );
 
-		if( mpd_map_scr_width > 1 )
+		// check the right screen visibility
+		__right_scr_offset = mpd_scroll_x % ScrPixelsWidth;
+
+		if( __right_scr_offset )
 		{
-			// check the right screen visibility
-			right_scr_offset = mpd_scroll_x % ScrPixelsWidth;
-
-			if( right_scr_offset )
-			{
-				// update the right screen
-				__update_ents( scr_pos + 1 );
-			}
+			// update the right screen
+			__update_ents( curr_scr_pos + 1 );
 		}
 
 		// check the bottom screen visibility
-		bottom_scr_offset = mpd_scroll_y % ScrPixelsHeight;
+		__bottom_scr_offset = mpd_scroll_y % ScrPixelsHeight;
 
-		if( bottom_scr_offset )
+		if( __bottom_scr_offset )
 		{
 			// update the bottom screen
-			scr_pos	 += mpd_map_scr_width;
-			__update_ents( scr_pos );
+			curr_scr_pos	 += mpd_map_scr_width;
+			__update_ents( curr_scr_pos );
 		}
 
-		if( mpd_map_scr_width > 1 )
+		// check the right bottom screen visibility
+		if( __right_scr_offset && __bottom_scr_offset )
 		{
-			// check the right bottom screen visibility
-			if( right_scr_offset && bottom_scr_offset )
-			{
-				// update the right bottom screen
-				__update_ents( scr_pos + 1 );
-			}
+			// update the right bottom screen
+			__update_ents( curr_scr_pos + 1 );
 		}
+		
+#if 	DBG_SHOW_NUM_CACHED_SCR
+		put_number( __cached_screens, 2, 15, 1 );
+		put_number( __cached_screens, 2, 47, 1 );
+#endif
 	}
 	else
 	{
@@ -315,6 +318,9 @@ void	update_scene_entities()
 
 void	__update_ents( u8 _scr_pos )
 {
+#if 	DBG_SHOW_NUM_CACHED_SCR
+	++__cached_screens;
+#endif
 	// fill SATB by entities of the current screen
 
 	// COLLECTABLE ENTITIES

@@ -103,6 +103,7 @@
 u8	ent_n;
 u8	SATB_pos;
 u8	scr_pos;
+u8	curr_scr_pos;
 
 u8	map_coll_ent;
 u8	map_ent;
