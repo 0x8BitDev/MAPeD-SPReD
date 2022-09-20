@@ -405,7 +405,10 @@ void	game_update_loop()
 	{
 		__jpad_val = joy( 0 );
 
-		player_update();
+		if( __player_data.hp )
+		{
+			player_update();
+		}
 
 		delta_x = __player_x - mpd_scroll_x;
 		delta_y = __player_y - mpd_scroll_y;
@@ -462,9 +465,6 @@ DBG_UPDATE_ENTITIES
 
 		update_scene_entities();
 
-		// flashing the warning sign - red/white
-		set_color( 26, ( ++__warn_sign_cnt & 0x10 ) ? 511:56 );
-
 #endif	//!DBG_ENTITIES_ON
 
 DBG_BLACK_BORDER
@@ -499,12 +499,16 @@ put_number( __player_data.max_diamonds, 3, 12, 3 );
 
 		wait_vsync();
 
+		// flashing the warning sign - red/white
+		// palette color(s) update should be placed on VBLANK to avoid glitches
+		set_color( 26, ( ++__warn_sign_cnt & 0x10 ) ? 511:56 );
+
 		if( __jpad_val & JOY_PAUSE_BTN )
 		{
 			scene_pause();
 		}
 
-		if( __level_state )
+		if( __level_state && !__enemy_hit )
 		{
 			// the level state has changed: passed, failed
 			break;

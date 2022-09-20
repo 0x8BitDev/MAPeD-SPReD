@@ -184,9 +184,11 @@ u8	__check_ground_cp()
 	if( cp1_prop == TILE_PROP_PLATFORM || cp1_prop == TILE_PROP_WALL || cp2_prop == TILE_PROP_PLATFORM || cp2_prop == TILE_PROP_WALL )
 	{
 		__player_y &= ~0x07;
+		map_pos_y   = __player_y + PLAYER_HEIGHT - 1;
 
 		// check mid ground position
-		cp1_prop = mpd_get_property( map_pos_x + PLAYER_CP_MID_WIDTH, map_pos_y - 1 );
+		// this check prevents the player from appearing inside a wall/platform
+		cp1_prop = mpd_get_property( map_pos_x + PLAYER_CP_MID_WIDTH, map_pos_y );
 
 		if( cp1_prop == TILE_PROP_PLATFORM || cp1_prop == TILE_PROP_WALL )
 		{
