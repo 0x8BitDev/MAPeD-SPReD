@@ -45,14 +45,14 @@ extern unsigned char*	sprites_frames_data;
 #define	SPR_ENEMY_FLYING_16X16_RIGHT	9
 #define	SPR_ENEMY_FLYING_16X16_LEFT	10
 #define	SPR_PLAYER_16X16	11
-#define	SPR_COLLECTABLE_DIAMOND	12
+#define	SPR_COLLECTABLE_GEM	12
 #define	SPR_SWITCH_OFF	13
 #define	SPR_SWITCH_ON	14
 #define	SPR_BUTTON_OFF	15
 #define	SPR_BUTTON_ON	16
 #define	SPR_HUD_LIVES_HEART	17
-#define	SPR_HUD_DIAMOND	18
-#define	SPR_HUD_DIAMONDS_CNT	19
+#define	SPR_HUD_GEM	18
+#define	SPR_HUD_GEMS_CNT	19
 #define	SPR_PAUSE_32X16	20
 
 extern spd_SPRITE*	heavy_load_32x64;
@@ -67,13 +67,13 @@ extern spd_SPRITE*	platform_32x10;
 extern spd_SPRITE*	enemy_flying_16x16_RIGHT;
 extern spd_SPRITE*	enemy_flying_16x16_LEFT;
 extern spd_SPRITE*	player_16x16;
-extern spd_SPRITE*	collectable_diamond;
+extern spd_SPRITE*	collectable_gem;
 extern spd_SPRITE*	switch_off;
 extern spd_SPRITE*	switch_on;
 extern spd_SPRITE*	button_off;
 extern spd_SPRITE*	button_on;
 extern spd_SPRITE*	HUD_lives_heart;
-extern spd_SPRITE*	HUD_diamond;
-extern spd_SPRITE*	HUD_diamonds_cnt;
+extern spd_SPRITE*	HUD_gem;
+extern spd_SPRITE*	HUD_gems_cnt;
 extern spd_SPRITE*	pause_32x16;
 

@@ -91,7 +91,7 @@ Instance142:
 	.byte $00	; properties count
 Instance143:
 	.byte $03	; entity instance number (0..n)
-	.word diamond	; base entity
+	.word gem	; base entity
 	.word $00	; target entity
 	.word $80	; map X
 	.word $30	; map Y
@@ -106,21 +106,21 @@ Instance141:
 	.byte $C0, $00, $40	; properties data
 Instance117:
 	.byte $05	; entity instance number (0..n)
-	.word diamond	; base entity
+	.word gem	; base entity
 	.word $00	; target entity
 	.word $18	; map X
 	.word $88	; map Y
 	.byte $00	; properties count
 Instance116:
 	.byte $06	; entity instance number (0..n)
-	.word diamond	; base entity
+	.word gem	; base entity
 	.word $00	; target entity
 	.word $48	; map X
 	.word $58	; map Y
 	.byte $00	; properties count
 Instance115:
 	.byte $07	; entity instance number (0..n)
-	.word diamond	; base entity
+	.word gem	; base entity
 	.word $00	; target entity
 	.word $18	; map X
 	.word $28	; map Y
@@ -153,28 +153,28 @@ Instance139:
 	.byte $20
 Instance120:
 	.byte $0A
-	.word diamond
+	.word gem
 	.word $00
 	.word $1D8
 	.word $60
 	.byte $00
 Instance119:
 	.byte $0B
-	.word diamond
+	.word gem
 	.word $00
 	.word $160
 	.word $30
 	.byte $00
 Instance140:
 	.byte $0C
-	.word diamond
+	.word gem
 	.word $00
 	.word $130
 	.word $78
 	.byte $00
 Instance118:
 	.byte $0D
-	.word diamond
+	.word gem
 	.word $00
 	.word $100
 	.word $78
@@ -212,14 +212,14 @@ Instance144:
 	.byte $E0, $00
 Instance121:
 	.byte $11
-	.word diamond
+	.word gem
 	.word $00
 	.word $2E0
 	.word $60
 	.byte $00
 Instance340:
 	.byte $12
-	.word diamond
+	.word gem
 	.word $00
 	.word $270
 	.word $20
@@ -245,14 +245,14 @@ _Lev0Scr3EntsArr:
 	.word Instance159
 Instance123:
 	.byte $14
-	.word diamond
+	.word gem
 	.word $00
 	.word $3A8
 	.word $A0
 	.byte $00
 Instance158:
 	.byte $15
-	.word diamond
+	.word gem
 	.word $00
 	.word $3A8
 	.word $70
@@ -274,7 +274,7 @@ Instance332:
 	.byte $00
 Instance122:
 	.byte $18
-	.word diamond
+	.word gem
 	.word $00
 	.word $340
 	.word $80
@@ -289,7 +289,7 @@ Instance145:
 	.byte $E0, $00
 Instance159:
 	.byte $1A
-	.word diamond
+	.word gem
 	.word $00
 	.word $340
 	.word $50
@@ -338,21 +338,21 @@ Instance190:
 	.byte $A0, $00, $F0
 Instance196:
 	.byte $1F
-	.word diamond
+	.word gem
 	.word $00
 	.word $4D8
 	.word $20
 	.byte $00
 Instance194:
 	.byte $20
-	.word diamond
+	.word gem
 	.word $00
 	.word $458
 	.word $20
 	.byte $00
 Instance195:
 	.byte $21
-	.word diamond
+	.word gem
 	.word $00
 	.word $4A0
 	.word $88
@@ -377,14 +377,14 @@ Instance220:
 	.byte $F0, $00, $A0
 Instance229:
 	.byte $23
-	.word diamond
+	.word gem
 	.word $00
 	.word $540
 	.word $20
 	.byte $00
 Instance230:
 	.byte $24
-	.word diamond
+	.word gem
 	.word $00
 	.word $5B8
 	.word $20
@@ -432,14 +432,14 @@ Instance234:
 	.byte $00
 Instance239:
 	.byte $29
-	.word diamond
+	.word gem
 	.word $00
 	.word $658
 	.word $18
 	.byte $00
 Instance238:
 	.byte $2A
-	.word diamond
+	.word gem
 	.word $00
 	.word $6D0
 	.word $18
@@ -462,7 +462,7 @@ Instance241:
 	.byte $F0, $00, $20
 Instance243:
 	.byte $2D
-	.word diamond
+	.word gem
 	.word $00
 	.word $688
 	.word $88
@@ -486,7 +486,7 @@ _Lev0Scr7EntsArr:
 	.word Instance246
 Instance242:
 	.byte $2F
-	.word diamond
+	.word gem
 	.word $00
 	.word $720
 	.word $B0
@@ -509,7 +509,7 @@ Instance245:
 	.byte $20, $20
 Instance259:
 	.byte $32
-	.word diamond
+	.word gem
 	.word $00
 	.word $7D8
 	.word $18
@@ -565,21 +565,21 @@ Instance255:
 	.byte $E0, $00, $00
 Instance256:
 	.byte $38
-	.word diamond
+	.word gem
 	.word $00
 	.word $8D0
 	.word $B0
 	.byte $00
 Instance258:
 	.byte $39
-	.word diamond
+	.word gem
 	.word $00
 	.word $840
 	.word $B0
 	.byte $00
 Instance257:
 	.byte $3A
-	.word diamond
+	.word gem
 	.word $00
 	.word $840
 	.word $58
@@ -604,7 +604,7 @@ _Lev0Scr9EntsArr:
 	.word Instance346
 Instance313:
 	.byte $3C
-	.word diamond
+	.word gem
 	.word $00
 	.word $990
 	.word $08
@@ -641,7 +641,7 @@ Instance339:
 	.byte $00
 Instance346:
 	.byte $41
-	.word diamond
+	.word gem
 	.word $00
 	.word $9B8
 	.word $90
@@ -656,7 +656,7 @@ _Lev0Scr10EntsArr:
 	.word Instance328
 Instance109:
 	.byte $42
-	.word diamond
+	.word gem
 	.word $00
 	.word $70
 	.word $130
@@ -671,7 +671,7 @@ Instance129:
 	.byte $E0, $00
 Instance146:
 	.byte $44
-	.word diamond
+	.word gem
 	.word $00
 	.word $C0
 	.word $1A0
@@ -692,14 +692,14 @@ _Lev0Scr11EntsArr:
 	.word Instance130
 Instance113:
 	.byte $46
-	.word diamond
+	.word gem
 	.word $00
 	.word $178
 	.word $E1
 	.byte $00
 Instance110:
 	.byte $47
-	.word diamond
+	.word gem
 	.word $00
 	.word $130
 	.word $130
@@ -722,7 +722,7 @@ _Lev0Scr12EntsArr:
 	.word Instance111
 Instance112:
 	.byte $49
-	.word diamond
+	.word gem
 	.word $00
 	.word $2B0
 	.word $130
@@ -737,14 +737,14 @@ Instance125:
 	.byte $81, $01, $40
 Instance160:
 	.byte $4B
-	.word diamond
+	.word gem
 	.word $00
 	.word $218
 	.word $1A0
 	.byte $00
 Instance111:
 	.byte $4C
-	.word diamond
+	.word gem
 	.word $00
 	.word $260
 	.word $100
@@ -778,7 +778,7 @@ Instance154:
 	.byte $E0, $00
 Instance157:
 	.byte $4F
-	.word diamond
+	.word gem
 	.word $00
 	.word $330
 	.word $130
@@ -792,14 +792,14 @@ Instance150:
 	.byte $00
 Instance155:
 	.byte $51
-	.word diamond
+	.word gem
 	.word $00
 	.word $3B8
 	.word $118
 	.byte $00
 Instance156:
 	.byte $52
-	.word diamond
+	.word gem
 	.word $00
 	.word $3E8
 	.word $178
@@ -847,7 +847,7 @@ Instance185:
 	.byte $00
 Instance186:
 	.byte $57
-	.word diamond
+	.word gem
 	.word $00
 	.word $448
 	.word $128
@@ -861,7 +861,7 @@ Instance232:
 	.byte $00
 Instance187:
 	.byte $59
-	.word diamond
+	.word gem
 	.word $00
 	.word $4C0
 	.word $128
@@ -883,14 +883,14 @@ Instance226:
 	.byte $E0, $00
 Instance228:
 	.byte $5B
-	.word diamond
+	.word gem
 	.word $00
 	.word $5C8
 	.word $160
 	.byte $00
 Instance227:
 	.byte $5C
-	.word diamond
+	.word gem
 	.word $00
 	.word $5C8
 	.word $130
@@ -912,14 +912,14 @@ Instance260:
 	.byte $E0, $00
 Instance263:
 	.byte $5E
-	.word diamond
+	.word gem
 	.word $00
 	.word $658
 	.word $F8
 	.byte $00
 Instance268:
 	.byte $5F
-	.word diamond
+	.word gem
 	.word $00
 	.word $6C8
 	.word $160
@@ -944,14 +944,14 @@ Instance262:
 	.byte $81, $01, $40
 Instance264:
 	.byte $61
-	.word diamond
+	.word gem
 	.word $00
 	.word $750
 	.word $110
 	.byte $00
 Instance267:
 	.byte $62
-	.word diamond
+	.word gem
 	.word $00
 	.word $7F0
 	.word $110
@@ -972,7 +972,7 @@ Instance337:
 	.byte $00
 Instance345:
 	.byte $65
-	.word diamond
+	.word gem
 	.word $00
 	.word $7C8
 	.word $1B0
@@ -1006,28 +1006,28 @@ Instance273:
 	.byte $20
 Instance274:
 	.byte $68
-	.word diamond
+	.word gem
 	.word $00
 	.word $878
 	.word $150
 	.byte $00
 Instance275:
 	.byte $69
-	.word diamond
+	.word gem
 	.word $00
 	.word $8D8
 	.word $150
 	.byte $00
 Instance298:
 	.byte $6A
-	.word diamond
+	.word gem
 	.word $00
 	.word $878
 	.word $1B0
 	.byte $00
 Instance297:
 	.byte $6B
-	.word diamond
+	.word gem
 	.word $00
 	.word $8D8
 	.word $1B0
@@ -1053,7 +1053,7 @@ _Lev0Scr19EntsArr:
 	.word Instance326
 Instance311:
 	.byte $6D
-	.word diamond
+	.word gem
 	.word $00
 	.word $978
 	.word $E0
@@ -1084,7 +1084,7 @@ Instance324:
 	.byte $20
 Instance325:
 	.byte $71
-	.word diamond
+	.word gem
 	.word $00
 	.word $910
 	.word $150
@@ -1099,7 +1099,7 @@ Instance323:
 	.byte $20
 Instance326:
 	.byte $73
-	.word diamond
+	.word gem
 	.word $00
 	.word $988
 	.word $150
@@ -1114,21 +1114,21 @@ _Lev0Scr20EntsArr:
 	.word Instance128
 Instance106:
 	.byte $74
-	.word diamond
+	.word gem
 	.word $00
 	.word $D0
 	.word $1F0
 	.byte $00
 Instance107:
 	.byte $75
-	.word diamond
+	.word gem
 	.word $00
 	.word $40
 	.word $220
 	.byte $00
 Instance108:
 	.byte $76
-	.word diamond
+	.word gem
 	.word $00
 	.word $30
 	.word $1C0
@@ -1158,14 +1158,14 @@ Instance126:
 	.byte $81, $01, $40
 Instance103:
 	.byte $79
-	.word diamond
+	.word gem
 	.word $00
 	.word $1B8
 	.word $220
 	.byte $00
 Instance105:
 	.byte $7A
-	.word diamond
+	.word gem
 	.word $00
 	.word $128
 	.word $1C0
@@ -1181,14 +1181,14 @@ _Lev0Scr22EntsArr:
 	.word Instance165
 Instance161:
 	.byte $7B
-	.word diamond
+	.word gem
 	.word $00
 	.word $218
 	.word $240
 	.byte $00
 Instance163:
 	.byte $7C
-	.word diamond
+	.word gem
 	.word $00
 	.word $2B8
 	.word $260
@@ -1203,7 +1203,7 @@ Instance166:
 	.byte $E0, $00, $00
 Instance167:
 	.byte $7E
-	.word diamond
+	.word gem
 	.word $00
 	.word $248
 	.word $1F0
@@ -1233,7 +1233,7 @@ Instance179:
 	.byte $81, $01, $40
 Instance169:
 	.byte $81
-	.word diamond
+	.word gem
 	.word $00
 	.word $318
 	.word $208
@@ -1273,21 +1273,21 @@ Instance215:
 	.byte $00
 Instance182:
 	.byte $85
-	.word diamond
+	.word gem
 	.word $00
 	.word $4D8
 	.word $208
 	.byte $00
 Instance231:
 	.byte $86
-	.word diamond
+	.word gem
 	.word $00
 	.word $448
 	.word $1D8
 	.byte $00
 Instance180:
 	.byte $87
-	.word diamond
+	.word gem
 	.word $00
 	.word $408
 	.word $208
@@ -1336,14 +1336,14 @@ Instance210:
 	.byte $A0, $00, $F0
 Instance214:
 	.byte $8C
-	.word diamond
+	.word gem
 	.word $00
 	.word $5C8
 	.word $1E8
 	.byte $00
 Instance213:
 	.byte $8D
-	.word diamond
+	.word gem
 	.word $00
 	.word $510
 	.word $250
@@ -1358,7 +1358,7 @@ Instance211:
 	.byte $01
 Instance212:
 	.byte $8F
-	.word diamond
+	.word gem
 	.word $00
 	.word $558
 	.word $208
@@ -1373,7 +1373,7 @@ _Lev0Scr26EntsArr:
 	.word Instance200
 Instance233:
 	.byte $90
-	.word diamond
+	.word gem
 	.word $00
 	.word $680
 	.word $1D0
@@ -1417,14 +1417,14 @@ Instance202:
 	.byte $00
 Instance216:
 	.byte $95
-	.word diamond
+	.word gem
 	.word $00
 	.word $728
 	.word $260
 	.byte $00
 Instance341:
 	.byte $96
-	.word diamond
+	.word gem
 	.word $00
 	.word $7A8
 	.word $240
@@ -1450,7 +1450,7 @@ Instance290:
 	.byte $20
 Instance292:
 	.byte $98
-	.word diamond
+	.word gem
 	.word $00
 	.word $850
 	.word $270
@@ -1472,7 +1472,7 @@ Instance291:
 	.byte $00
 Instance293:
 	.byte $9B
-	.word diamond
+	.word gem
 	.word $00
 	.word $828
 	.word $218
@@ -1487,7 +1487,7 @@ Instance289:
 	.byte $F0, $00
 Instance294:
 	.byte $9D
-	.word diamond
+	.word gem
 	.word $00
 	.word $8D8
 	.word $218
@@ -1519,14 +1519,14 @@ Instance317:
 	.byte $20, $20
 Instance321:
 	.byte $A0
-	.word diamond
+	.word gem
 	.word $00
 	.word $9D0
 	.word $218
 	.byte $00
 Instance327:
 	.byte $A1
-	.word diamond
+	.word gem
 	.word $00
 	.word $978
 	.word $1F8
@@ -1582,21 +1582,21 @@ Instance92:
 	.byte $00
 Instance94:
 	.byte $A7
-	.word diamond
+	.word gem
 	.word $00
 	.word $18
 	.word $2F8
 	.byte $00
 Instance93:
 	.byte $A8
-	.word diamond
+	.word gem
 	.word $00
 	.word $48
 	.word $318
 	.byte $00
 Instance98:
 	.byte $A9
-	.word diamond
+	.word gem
 	.word $00
 	.word $D8
 	.word $318
@@ -1619,21 +1619,21 @@ _Lev0Scr31EntsArr:
 	.word Instance329
 Instance127:
 	.byte $AB
-	.word diamond
+	.word gem
 	.word $00
 	.word $190
 	.word $350
 	.byte $00
 Instance104:
 	.byte $AC
-	.word diamond
+	.word gem
 	.word $00
 	.word $118
 	.word $2C0
 	.byte $00
 Instance102:
 	.byte $AD
-	.word diamond
+	.word gem
 	.word $00
 	.word $1B8
 	.word $2A0
@@ -1660,14 +1660,14 @@ _Lev0Scr32EntsArr:
 	.word Instance164
 Instance162:
 	.byte $B0
-	.word diamond
+	.word gem
 	.word $00
 	.word $218
 	.word $2C0
 	.byte $00
 Instance164:
 	.byte $B1
-	.word diamond
+	.word gem
 	.word $00
 	.word $2B8
 	.word $2E0
@@ -1681,21 +1681,21 @@ _Lev0Scr33EntsArr:
 	.word Instance172
 Instance171:
 	.byte $B2
-	.word diamond
+	.word gem
 	.word $00
 	.word $3E8
 	.word $2B0
 	.byte $00
 Instance170:
 	.byte $B3
-	.word diamond
+	.word gem
 	.word $00
 	.word $3A8
 	.word $2F0
 	.byte $00
 Instance172:
 	.byte $B4
-	.word diamond
+	.word gem
 	.word $00
 	.word $348
 	.word $2D0
@@ -1707,7 +1707,7 @@ _Lev0Scr34EntsArr:
 	.word Instance173
 Instance173:
 	.byte $B5
-	.word diamond
+	.word gem
 	.word $00
 	.word $488
 	.word $2E0
@@ -1720,7 +1720,7 @@ _Lev0Scr35EntsArr:
 	.word Instance217
 Instance205:
 	.byte $B6
-	.word diamond
+	.word gem
 	.word $00
 	.word $538
 	.word $2C0
@@ -1740,7 +1740,7 @@ _Lev0Scr36EntsArr:
 	.word Instance344
 Instance344:
 	.byte $B8
-	.word diamond
+	.word gem
 	.word $00
 	.word $6B8
 	.word $2D0
@@ -1754,14 +1754,14 @@ _Lev0Scr37EntsArr:
 	.word Instance335
 Instance207:
 	.byte $B9
-	.word diamond
+	.word gem
 	.word $00
 	.word $7B8
 	.word $2C0
 	.byte $00
 Instance206:
 	.byte $BA
-	.word diamond
+	.word gem
 	.word $00
 	.word $718
 	.word $2E0
@@ -1817,14 +1817,14 @@ Instance288:
 	.byte $50, $50, $E0
 Instance343:
 	.byte $C0
-	.word diamond
+	.word gem
 	.word $00
 	.word $8C8
 	.word $2B0
 	.byte $00
 Instance342:
 	.byte $C1
-	.word diamond
+	.word gem
 	.word $00
 	.word $848
 	.word $2B0
@@ -1874,21 +1874,21 @@ Instance301:
 	.byte $20, $20
 Instance304:
 	.byte $C6
-	.word diamond
+	.word gem
 	.word $00
 	.word $998
 	.word $308
 	.byte $00
 Instance305:
 	.byte $C7
-	.word diamond
+	.word gem
 	.word $00
 	.word $968
 	.word $350
 	.byte $00
 Instance303:
 	.byte $C8
-	.word diamond
+	.word gem
 	.word $00
 	.word $910
 	.word $2B0
@@ -1932,28 +1932,28 @@ Instance386:
 	.byte $00	; properties count
 Instance349:
 	.byte $01	; entity instance number (0..n)
-	.word diamond	; base entity
+	.word gem	; base entity
 	.word $00	; target entity
 	.word $28	; map X
 	.word $10	; map Y
 	.byte $00	; properties count
 Instance387:
 	.byte $02	; entity instance number (0..n)
-	.word diamond	; base entity
+	.word gem	; base entity
 	.word $00	; target entity
 	.word $50	; map X
 	.word $28	; map Y
 	.byte $00	; properties count
 Instance350:
 	.byte $03	; entity instance number (0..n)
-	.word diamond	; base entity
+	.word gem	; base entity
 	.word $00	; target entity
 	.word $78	; map X
 	.word $10	; map Y
 	.byte $00	; properties count
 Instance388:
 	.byte $04	; entity instance number (0..n)
-	.word diamond	; base entity
+	.word gem	; base entity
 	.word $00	; target entity
 	.word $A0	; map X
 	.word $28	; map Y
@@ -2009,14 +2009,14 @@ Instance398:
 	.byte $E0, $00
 Instance401:
 	.byte $0A
-	.word diamond
+	.word gem
 	.word $00
 	.word $30
 	.word $160
 	.byte $00
 Instance402:
 	.byte $0B
-	.word diamond
+	.word gem
 	.word $00
 	.word $88
 	.word $118
@@ -2047,21 +2047,21 @@ Instance395:
 	.byte $D0, $00, $60
 Instance400:
 	.byte $0E
-	.word diamond
+	.word gem
 	.word $00
 	.word $C0
 	.word $1B8
 	.byte $00
 Instance406:
 	.byte $0F
-	.word diamond
+	.word gem
 	.word $00
 	.word $20
 	.word $208
 	.byte $00
 Instance405:
 	.byte $10
-	.word diamond
+	.word gem
 	.word $00
 	.word $C0
 	.word $248
@@ -2088,7 +2088,7 @@ Instance384:
 	.byte $60, $60, $20
 Instance385:
 	.byte $12
-	.word diamond
+	.word gem
 	.word $00
 	.word $B0
 	.word $370
@@ -2103,7 +2103,7 @@ Instance390:
 	.byte $20, $20
 Instance393:
 	.byte $14
-	.word diamond
+	.word gem
 	.word $00
 	.word $18
 	.word $2E8
@@ -2125,14 +2125,14 @@ Instance392:
 	.byte $00
 Instance403:
 	.byte $17
-	.word diamond
+	.word gem
 	.word $00
 	.word $D0
 	.word $2C0
 	.byte $00
 Instance408:
 	.byte $18
-	.word diamond
+	.word gem
 	.word $00
 	.word $68
 	.word $2D0
@@ -2183,28 +2183,28 @@ Instance378:
 	.byte $70, $70, $A0
 Instance380:
 	.byte $1D
-	.word diamond
+	.word gem
 	.word $00
 	.word $C8
 	.word $428
 	.byte $00
 Instance382:
 	.byte $1E
-	.word diamond
+	.word gem
 	.word $00
 	.word $C8
 	.word $3D8
 	.byte $00
 Instance383:
 	.byte $1F
-	.word diamond
+	.word gem
 	.word $00
 	.word $28
 	.word $450
 	.byte $00
 Instance381:
 	.byte $20
-	.word diamond
+	.word gem
 	.word $00
 	.word $28
 	.word $400
@@ -2221,21 +2221,21 @@ _Lev1Scr5EntsArr:
 	.word Instance375
 Instance363:
 	.byte $21
-	.word diamond
+	.word gem
 	.word $00
 	.word $98
 	.word $518
 	.byte $00
 Instance364:
 	.byte $22
-	.word diamond
+	.word gem
 	.word $00
 	.word $20
 	.word $4E0
 	.byte $00
 Instance372:
 	.byte $23
-	.word diamond
+	.word gem
 	.word $00
 	.word $C8
 	.word $470
@@ -2249,7 +2249,7 @@ Instance373:
 	.byte $00
 Instance374:
 	.byte $25
-	.word diamond
+	.word gem
 	.word $00
 	.word $50
 	.word $4B0
@@ -2288,14 +2288,14 @@ Instance359:
 	.byte $F0, $00
 Instance365:
 	.byte $29
-	.word diamond
+	.word gem
 	.word $00
 	.word $E0
 	.word $570
 	.byte $00
 Instance371:
 	.byte $2A
-	.word diamond
+	.word gem
 	.word $00
 	.word $98
 	.word $5D0
@@ -2328,14 +2328,14 @@ Instance361:
 	.byte $E0, $00
 Instance369:
 	.byte $2D
-	.word diamond
+	.word gem
 	.word $00
 	.word $60
 	.word $690
 	.byte $00
 Instance370:
 	.byte $2E
-	.word diamond
+	.word gem
 	.word $00
 	.word $88
 	.word $638
@@ -2358,7 +2358,7 @@ Instance356:
 	.byte $C0, $00, $E0
 Instance409:
 	.byte $31
-	.word diamond
+	.word gem
 	.word $00
 	.word $D8
 	.word $690
@@ -2382,14 +2382,14 @@ Instance355:
 	.byte $E0, $00
 Instance367:
 	.byte $33
-	.word diamond
+	.word gem
 	.word $00
 	.word $C8
 	.word $7D0
 	.byte $00
 Instance368:
 	.byte $34
-	.word diamond
+	.word gem
 	.word $00
 	.word $80
 	.word $720
@@ -2404,7 +2404,7 @@ Instance347:
 	.byte $F0, $00, $A0
 Instance407:
 	.byte $36
-	.word diamond
+	.word gem
 	.word $00
 	.word $30
 	.word $700
@@ -2451,7 +2451,7 @@ Instance353:
 	.byte $20
 Instance366:
 	.byte $3B
-	.word diamond
+	.word gem
 	.word $00
 	.word $88
 	.word $820
@@ -2468,7 +2468,7 @@ BaseEntities:
 	.word enemy_standing
 	.word enemy_flying96
 	.word enemy_walking112
-	.word diamond
+	.word gem
 	.word switch
 	.word button
 	.word portal_in_green
@@ -2525,7 +2525,7 @@ enemy_walking112:
 	.byte $00
 	.byte $00
 
-diamond:
+gem:
 	.byte $01
 	.byte $10
 	.byte $10

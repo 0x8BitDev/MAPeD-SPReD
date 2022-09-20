@@ -58,9 +58,9 @@ _enemy_flying_16x16_LEFT_frame:
 _player_16x16_frame:
 	.word _player_16x16
 	.byte bank(_player_16x16)
-_collectable_diamond_frame:
-	.word _collectable_diamond
-	.byte bank(_collectable_diamond)
+_collectable_gem_frame:
+	.word _collectable_gem
+	.byte bank(_collectable_gem)
 _switch_off_frame:
 	.word _switch_off
 	.byte bank(_switch_off)
@@ -76,12 +76,12 @@ _button_on_frame:
 _HUD_lives_heart_frame:
 	.word _HUD_lives_heart
 	.byte bank(_HUD_lives_heart)
-_HUD_diamond_frame:
-	.word _HUD_diamond
-	.byte bank(_HUD_diamond)
-_HUD_diamonds_cnt_frame:
-	.word _HUD_diamonds_cnt
-	.byte bank(_HUD_diamonds_cnt)
+_HUD_gem_frame:
+	.word _HUD_gem
+	.byte bank(_HUD_gem)
+_HUD_gems_cnt_frame:
+	.word _HUD_gems_cnt
+	.byte bank(_HUD_gems_cnt)
 _pause_32x16_frame:
 	.word _pause_32x16
 	.byte bank(_pause_32x16)
@@ -173,12 +173,12 @@ _player_16x16:
 	.word $00, $00, $132, $82
 _player_16x16_end:
 
-_collectable_diamond:
-	.word _collectable_diamond_end - _collectable_diamond - 3	; data size
+_collectable_gem:
+	.word _collectable_gem_end - _collectable_gem - 3	; data size
 	.byte 0		; GFX bank index (chr0)
 
 	.word $00, $00, $134, $81
-_collectable_diamond_end:
+_collectable_gem_end:
 
 _switch_off:
 	.word _switch_off_end - _switch_off - 3	; data size
@@ -215,19 +215,19 @@ _HUD_lives_heart:
 	.word $00, $00, $13E, $82
 _HUD_lives_heart_end:
 
-_HUD_diamond:
-	.word _HUD_diamond_end - _HUD_diamond - 3	; data size
+_HUD_gem:
+	.word _HUD_gem_end - _HUD_gem - 3	; data size
 	.byte 0		; GFX bank index (chr0)
 
 	.word $00, $00, $140, $81
-_HUD_diamond_end:
+_HUD_gem_end:
 
-_HUD_diamonds_cnt:
-	.word _HUD_diamonds_cnt_end - _HUD_diamonds_cnt - 3	; data size
+_HUD_gems_cnt:
+	.word _HUD_gems_cnt_end - _HUD_gems_cnt - 3	; data size
 	.byte 0		; GFX bank index (chr0)
 
 	.word $00, $00, $142, $80
-_HUD_diamonds_cnt_end:
+_HUD_gems_cnt_end:
 
 _pause_32x16:
 	.word _pause_32x16_end - _pause_32x16 - 3	; data size

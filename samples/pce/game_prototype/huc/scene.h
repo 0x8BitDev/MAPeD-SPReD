@@ -330,7 +330,7 @@ void	scene_init()
 
 	init_map_entities( __map_ind );
 
-	player_HUD_update_diamonds_cnt();
+	player_HUD_update_gems_cnt();
 
 	// enable display
 	disp_on();
@@ -482,9 +482,9 @@ put_number( __screen_ent_cache_pos, 2, 9, 1 );
 put_string( "cents:", 3, 2 );
 put_number( __screen_ent_coll_cache_pos, 2, 9, 2 );
 put_string( "dmnds:", 3, 3 );
-put_number( __player_data.diamonds, 2, 9, 3 );
+put_number( __player_data.gems, 2, 9, 3 );
 put_string( "/", 11, 3 );
-put_number( __player_data.max_diamonds, 3, 12, 3 );
+put_number( __player_data.max_gems, 3, 12, 3 );
 #endif
 
 		// update BAT with tiles

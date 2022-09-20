@@ -9,7 +9,7 @@
 // entity uids
 
 #define UID_PLAYER			0
-#define	UID_ENT_COLLECTABLE_DIAMOND	1	// ignores collision cache
+#define	UID_ENT_COLLECTABLE_GEM		1	// ignores collision cache
 #define	UID_ENT_ENEMY_WALKING		2	// collision cache
 #define	UID_ENT_ENEMY_FLYING		3	// collision cache
 #define	UID_ENT_SWITCH			4	// collision cache
@@ -65,7 +65,7 @@
 
 // sprite name aliases
 
-#define	ENT_SPR_COLLECTABLE_DIAMOND	collectable_diamond
+#define	ENT_SPR_COLLECTABLE_GEM		collectable_gem
 #define	ENT_SPR_ENEMY_WALKING_LEFT	enemy_walking_16x32_1_LEFT
 #define	ENT_SPR_ENEMY_WALKING_RIGHT	enemy_walking_16x32_0_RIGHT
 #define	ENT_SPR_ENEMY_FLYING_LEFT	enemy_flying_16x16_LEFT
@@ -161,7 +161,7 @@ void	__fastcall	init_map_entity( u8 _ind<acc> );	// entity ID is an entity index
 _init_ent_arr:
 
 	.dw _init_ent_null
-	.dw _init_ent_coll_diamond
+	.dw _init_ent_coll_gem
 	.dw _init_ent_enemy_walking
 	.dw _init_ent_enemy_flying
 	.dw _init_ent_switch
@@ -178,8 +178,8 @@ _init_ent_null:
 	call _init_null
 	rts
 
-_init_ent_coll_diamond:
-	call _init_coll_diamond
+_init_ent_coll_gem:
+	call _init_coll_gem
 	rts
 
 _init_ent_enemy_walking:
@@ -203,11 +203,11 @@ void	init_null()
 	//...
 }
 
-void	init_coll_diamond()
+void	init_coll_gem()
 {
 	if( add_collectable_entity() )
 	{
-		++__player_data.max_diamonds;
+		++__player_data.max_gems;
 	}
 }
 
@@ -237,7 +237,7 @@ void	__fastcall	update_cached_entity( u8 _ind<acc> );	// entity ID is an entity 
 _upd_cached_ent_arr:
 
 	.dw _upd_cached_ent_null
-	.dw _upd_cached_ent_coll_diamond
+	.dw _upd_cached_ent_coll_gem
 	.dw _upd_cached_ent_enemy_walking
 	.dw _upd_cached_ent_enemy_flying
 	.dw _upd_cached_ent_switch
@@ -254,8 +254,8 @@ _upd_cached_ent_null:
 	call _update_cached_null
 	rts
 
-_upd_cached_ent_coll_diamond:
-	call _update_cached_coll_diamond
+_upd_cached_ent_coll_gem:
+	call _update_cached_coll_gem
 	rts
 
 _upd_cached_ent_enemy_walking:
@@ -309,10 +309,10 @@ void	update_cached_null()
 	//...
 }
 
-void	update_cached_coll_diamond()
+void	update_cached_coll_gem()
 {
 	ENT_NEXT_SATB_POS
-	spd_SATB_set_sprite_LT( ENT_SPR_COLLECTABLE_DIAMOND, ent_x, ent_y_unmasked );
+	spd_SATB_set_sprite_LT( ENT_SPR_COLLECTABLE_GEM, ent_x, ent_y_unmasked );
 }
 
 #asm
@@ -796,7 +796,7 @@ u8	__fastcall	check_cached_entity_collision( u8 _ind<acc> );	// entity ID is an 
 _check_collision_func_arr:
 
 	.dw _check_null
-	.dw _check_coll_diamond
+	.dw _check_coll_gem
 	.dw _check_enemy_walking
 	.dw _check_enemy_flying
 	.dw _check_switch
@@ -813,8 +813,8 @@ _check_null:
 	call _check_collision_null
 	rts
 
-_check_coll_diamond:
-	call _check_collision_coll_diamond
+_check_coll_gem:
+	call _check_collision_coll_gem
 	rts
 
 _check_enemy_walking:
@@ -868,15 +868,15 @@ u8	check_collision_null()
 	return 0;
 }
 
-u8	check_collision_coll_diamond()
+u8	check_collision_coll_gem()
 {
 	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, ENT_COLLECTABLE_SIZE, ENT_COLLECTABLE_SIZE ) )
 	{
 		ENT_COLL_DEACTIVATE
 
-		++__player_data.diamonds;	// increment collected diamonds counter
+		++__player_data.gems;	// increment collected gems counter
 
-		player_HUD_update_diamonds_cnt();
+		player_HUD_update_gems_cnt();
 		
 		ENT_CACHE_RESET
 		

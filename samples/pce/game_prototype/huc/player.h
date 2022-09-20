@@ -61,8 +61,8 @@ s16	__enemy_hit	= 0;
 
 typedef struct
 {
-	u8	max_diamonds;
-	u8	diamonds;
+	u8	max_gems;
+	u8	gems;
 
 	u8	hp;
 
@@ -99,8 +99,8 @@ void	player_init( u16 _x, u16 _y, u8 _reset_progress )
 
 	if( _reset_progress )
 	{
-		__player_data.max_diamonds	= 0;
-		__player_data.diamonds		= 0;
+		__player_data.max_gems	= 0;
+		__player_data.gems	= 0;
 	}
 
 	__player_data.hp	= PLAYER_MAX_HEALTH_POINTS;
@@ -138,15 +138,15 @@ void	player_init( u16 _x, u16 _y, u8 _reset_progress )
 			spd_SATB_set_pos( ++satb_pos );
 		}
 
-		// diamonds
-		spd_SATB_set_sprite_LT( HUD_diamond, ScrPixelsWidth - 32, 0 );
+		// gems
+		spd_SATB_set_sprite_LT( HUD_gem, ScrPixelsWidth - 32, 0 );
 		spd_SATB_set_pos( ++satb_pos );
-		spd_SATB_set_sprite_LT( HUD_diamonds_cnt, ScrPixelsWidth - 17, 0 );
+		spd_SATB_set_sprite_LT( HUD_gems_cnt, ScrPixelsWidth - 17, 0 );
 
-		// diamonds counter shadow
+		// gems counter shadow
 		spd_SATB_set_pos( ++satb_pos );
-		spd_SATB_set_sprite_LT( HUD_diamonds_cnt, ScrPixelsWidth - 16, 1 );
-		spd_set_palette_LT( 18 );	// use dark blue color of the blue heart palette as a shadow for the diamonds counter
+		spd_SATB_set_sprite_LT( HUD_gems_cnt, ScrPixelsWidth - 16, 1 );
+		spd_set_palette_LT( 18 );	// use dark blue color of the blue heart palette as a shadow for the gems counter
 	}
 }
 
@@ -526,11 +526,11 @@ void	player_update_hit()
 	spd_show_LT();
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-// HUD's diamonds counter update //
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+// HUD's gems counter update //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-u8	HUD_diamonds_digits[ 16 ];
+u8	HUD_gems_digits[ 16 ];
 
 #asm
 HUD_digits_09:
@@ -546,13 +546,13 @@ HUD_digits_09:
 	.db 0x00, 0x3c, 0x66, 0x66, 0x3e, 0x06, 0x3c, 0x00
 #endasm
 
-void	player_HUD_update_diamonds_cnt()
+void	player_HUD_update_gems_cnt()
 {
-	mpd_ax = __player_data.max_diamonds - __player_data.diamonds;
+	mpd_ax = __player_data.max_gems - __player_data.gems;
 
 	// 1. convert 'mpd_ax' from binary to BCD
-	// 2. fill the HUD_diamonds_digits[] array with interleaved digits data
-	// 3. send the HUD_diamonds_digits[] array to VRAM into appropriate sprite region
+	// 2. fill the HUD_gems_digits[] array with interleaved digits data
+	// 3. send the HUD_gems_digits[] array to VRAM into appropriate sprite region
 
 #asm
 ; -= 1 =-
@@ -585,7 +585,7 @@ void	player_HUD_update_diamonds_cnt()
 
 	; units
 
-	stw #_HUD_diamonds_digits, <__ax
+	stw #_HUD_gems_digits, <__ax
 	stw #HUD_digits_09, <__bx
 
 	lda <__cl
@@ -620,7 +620,7 @@ void	player_HUD_update_diamonds_cnt()
 
 	; dozens
 
-	stw #_HUD_diamonds_digits + 1, <__ax
+	stw #_HUD_gems_digits + 1, <__ax
 	stw #HUD_digits_09, <__bx
 
 	lda <__cl
@@ -655,7 +655,7 @@ void	player_HUD_update_diamonds_cnt()
 
 	stw #$10, __TIA_LEN
 	stw #video_data, __TIA_DST
-	stw #_HUD_diamonds_digits, __TIA_SRC
+	stw #_HUD_gems_digits, __TIA_SRC
 
 	spd_VDC_set_write #$2843
 
@@ -666,5 +666,5 @@ void	player_HUD_update_diamonds_cnt()
 // -= 3 =- in HuC
 
 	// copy the digits graphics into sprite area
-//	load_vram( 0x2843, HUD_diamonds_digits, 8 );
+//	load_vram( 0x2843, HUD_gems_digits, 8 );
 }
