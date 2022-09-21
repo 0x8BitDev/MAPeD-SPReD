@@ -153,10 +153,10 @@ As mentioned before, you need to install Mono on your computer. To run the tools
  - `./samples/pce/tilemap_render/bidir_scroll_ADJ_SCR_MASKS_multimap/huc/`	- bidirectional scroller with a complex map topology
  - `./samples/pce/tilemap_render/multidir_scroll_multimap/huc/`	- multidirectional scroller
  - `./samples/pce/tilemap_render/multidir_stat_scr_multimap/huc/`	- screens switching with double-buffering for multidirectional maps
- - `./samples/pce/tilemap_render/stat_scr_VDC_data_multimap/huc/`- static screens switching using VDC-ready data (raw BAT data)
- - `./samples/pce/game_prototype/huc/' - fully playable game prototype demo, 40 screens multidir scrollable map, 201 entities +bonus level
+ - `./samples/pce/tilemap_render/stat_scr_VDC_data_multimap/huc/`	- static screens switching using VDC-ready data (raw BAT data)
+ - `./samples/pce/game_prototype/huc/` - fully playable game prototype demo, run'n'jump platformer, 40 screens multidir scrollable map, 201 entities +bonus level
 
-* All samples are written in C and support all export options
+* All samples are written in HuC (C-like language) and support all export options
 
 ## MAPeD-ZX
 
