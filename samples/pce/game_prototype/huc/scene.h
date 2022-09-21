@@ -405,7 +405,7 @@ void	game_update_loop()
 	{
 		__jpad_val = joy( 0 );
 
-		if( __player_data.hp )
+		if( __player_HUD_data.hp )
 		{
 			player_update();
 		}
@@ -420,22 +420,22 @@ void	game_update_loop()
 		mpd_clear_update_flags();
 
 		// move scene with player
-		if( ( __mvmnt_flags & MVMNT_FLAG_UP ) && delta_y < SCR_TOP_BORDER )
+		if( ( __player_flags & PLAYER_FLAGS_MOVE_UP ) && delta_y < SCR_TOP_BORDER )
 		{
 			mpd_move_up();
 		}
 		else
-		if( ( __mvmnt_flags & MVMNT_FLAG_DOWN ) && delta_y > SCR_BOTTOM_BORDER )
+		if( ( __player_flags & PLAYER_FLAGS_MOVE_DOWN ) && delta_y > SCR_BOTTOM_BORDER )
 		{
 			mpd_move_down();
 		}
 
-		if( ( __mvmnt_flags & MVMNT_FLAG_LEFT ) && delta_x < SCR_LEFT_BORDER )
+		if( ( __player_flags & PLAYER_FLAGS_MOVE_LEFT ) && delta_x < SCR_LEFT_BORDER )
 		{
 			mpd_move_left();
 		}
 		else
-		if( ( __mvmnt_flags & MVMNT_FLAG_RIGHT ) && delta_x > SCR_RIGHT_BORDER )
+		if( ( __player_flags & PLAYER_FLAGS_MOVE_RIGHT ) && delta_x > SCR_RIGHT_BORDER )
 		{
 			mpd_move_right();
 		}
@@ -482,9 +482,9 @@ put_number( __screen_ent_cache_pos, 2, 9, 1 );
 put_string( "cents:", 3, 2 );
 put_number( __screen_ent_coll_cache_pos, 2, 9, 2 );
 put_string( "dmnds:", 3, 3 );
-put_number( __player_data.gems, 2, 9, 3 );
+put_number( __player_HUD_data.gems, 2, 9, 3 );
 put_string( "/", 11, 3 );
-put_number( __player_data.max_gems, 3, 12, 3 );
+put_number( __player_HUD_data.max_gems, 3, 12, 3 );
 #endif
 
 		// update BAT with tiles

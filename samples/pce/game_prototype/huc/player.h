@@ -66,12 +66,18 @@ typedef struct
 
 	u8	hp;
 
-} PLAYER_DATA;
+} PLAYER_HUD_DATA;
 
-PLAYER_DATA	__player_data;
+PLAYER_HUD_DATA	__player_HUD_data;
 
-// movement flags
-u8	__mvmnt_flags	= 0;
+u8	__player_flags	= 0;
+
+#define	PLAYER_FLAGS_MOVE_LEFT		0x01
+#define	PLAYER_FLAGS_MOVE_RIGHT		0x02
+#define	PLAYER_FLAGS_MOVE_UP		0x04
+#define	PLAYER_FLAGS_MOVE_DOWN		0x08
+#define	PLAYER_FLAGS_MOVE_MASK_INV	0xf0
+#define	PLAYER_FLAGS_JMP_BTN_PRESSED	0x80
 
 // variables scope
 s16	map_pos_x;
@@ -85,11 +91,6 @@ u8	cp_rt_res;
 u8	cont_jump;
 #endif
 
-#define	MVMNT_FLAG_LEFT		0x01
-#define	MVMNT_FLAG_RIGHT	0x02
-#define	MVMNT_FLAG_UP		0x04
-#define	MVMNT_FLAG_DOWN		0x08
-
 
 void	player_init( u16 _x, u16 _y, u8 _reset_progress )
 {
@@ -99,16 +100,18 @@ void	player_init( u16 _x, u16 _y, u8 _reset_progress )
 
 	if( _reset_progress )
 	{
-		__player_data.max_gems	= 0;
-		__player_data.gems	= 0;
+		__player_HUD_data.max_gems	= 0;
+		__player_HUD_data.gems	= 0;
 	}
 
-	__player_data.hp	= PLAYER_MAX_HEALTH_POINTS;
+	__player_HUD_data.hp	= PLAYER_MAX_HEALTH_POINTS;
 
 	__enemy_hit	= 0;
 
 	__player_x	= _x;
 	__player_y	= _y;
+
+	__player_flags	= 0;
 
 	__move_left_acc		= 0;
 	__move_right_acc	= 0;
@@ -312,7 +315,7 @@ void	player_update()
 {
 	__delta_LR	= 0;
 	__delta_UD	= 0;
-	__mvmnt_flags	= 0;
+	__player_flags	&= PLAYER_FLAGS_MOVE_MASK_INV;
 
 	// UP / DOWN
 	if( __jpad_val & JOY_UP_BTN )
@@ -322,7 +325,7 @@ void	player_update()
 			__delta_UD = MOVE_SPEED_LADDER;
 			__player_y -= __delta_UD;
 
-			__mvmnt_flags |= MVMNT_FLAG_UP;
+			__player_flags |= PLAYER_FLAGS_MOVE_UP;
 		}
 	}
 	else
@@ -333,17 +336,26 @@ void	player_update()
 			__delta_UD = MOVE_SPEED_LADDER;
 			__player_y += __delta_UD;
 
-			__mvmnt_flags |= MVMNT_FLAG_DOWN;
+			__player_flags |= PLAYER_FLAGS_MOVE_DOWN;
 		}
 	}
 
 	// JUMPING
 	if( __jpad_val & JOY_JUMP_BTN )
 	{
-		if( __jump_acc == __jump_acc_max )
+		if( !( __player_flags & PLAYER_FLAGS_JMP_BTN_PRESSED ) )
 		{
-			--__jump_acc;
+			if( __jump_acc == __jump_acc_max )
+			{
+				--__jump_acc;
+
+				__player_flags |= PLAYER_FLAGS_JMP_BTN_PRESSED;
+			}
 		}
+	}
+	else
+	{
+		__player_flags &= ~PLAYER_FLAGS_JMP_BTN_PRESSED;
 	}
 
 	// FALLING
@@ -364,7 +376,7 @@ void	player_update()
 
 		__player_y += __delta_UD;
 
-		__mvmnt_flags |= MVMNT_FLAG_DOWN;
+		__player_flags |= PLAYER_FLAGS_MOVE_DOWN;
 
 		__check_ground();
 	}
@@ -381,7 +393,7 @@ void	player_update()
 		__delta_UD = __jump_acc >> JUMP_ACC_CAP;
 		__player_y -= __delta_UD;
 
-		__mvmnt_flags |= MVMNT_FLAG_UP;
+		__player_flags |= PLAYER_FLAGS_MOVE_UP;
 
 #if	HEAD_COLLISIONS
 		if( __check_head_cp() )
@@ -441,7 +453,7 @@ void	player_update()
 		__delta_LR = __move_right_acc >> MOVE_LR_ACC_CAP;
 		__player_x += __delta_LR;
 
-		__mvmnt_flags |= MVMNT_FLAG_RIGHT;
+		__player_flags |= PLAYER_FLAGS_MOVE_RIGHT;
 
 		__check_right_cp();
 	}
@@ -451,7 +463,7 @@ void	player_update()
 		__delta_LR = __move_left_acc >> MOVE_LR_ACC_CAP;
 		__player_x -= __delta_LR;
 
-		__mvmnt_flags |= MVMNT_FLAG_LEFT;
+		__player_flags |= PLAYER_FLAGS_MOVE_LEFT;
 
 		__check_left_cp();
 	}
@@ -467,7 +479,7 @@ void	player_enemy_hit()
 
 		clock_reset();
 
-		if( !--__player_data.hp )
+		if( !--__player_HUD_data.hp )
 		{
 			// GAME OVER
 			__level_state = LEVEL_STATE_FAILED;
@@ -477,9 +489,9 @@ void	player_enemy_hit()
 			// update HUD lives
 			satb_pos = spd_SATB_get_pos();
 
-			spd_SATB_set_pos( SATB_POS_HUD_LIVES + ( __player_data.hp >> 1 ) );
+			spd_SATB_set_pos( SATB_POS_HUD_LIVES + ( __player_HUD_data.hp >> 1 ) );
 
-			if( __player_data.hp & 0x01 )
+			if( __player_HUD_data.hp & 0x01 )
 			{
 				spd_set_palette_LT( 18 );	// blue heart
 			}
@@ -548,7 +560,7 @@ HUD_digits_09:
 
 void	player_HUD_update_gems_cnt()
 {
-	mpd_ax = __player_data.max_gems - __player_data.gems;
+	mpd_ax = __player_HUD_data.max_gems - __player_HUD_data.gems;
 
 	// 1. convert 'mpd_ax' from binary to BCD
 	// 2. fill the HUD_gems_digits[] array with interleaved digits data

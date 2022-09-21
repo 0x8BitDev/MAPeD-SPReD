@@ -207,7 +207,7 @@ void	init_coll_gem()
 {
 	if( add_collectable_entity() )
 	{
-		++__player_data.max_gems;
+		++__player_HUD_data.max_gems;
 	}
 }
 
@@ -874,7 +874,7 @@ u8	check_collision_coll_gem()
 	{
 		ENT_COLL_DEACTIVATE
 
-		++__player_data.gems;	// increment collected gems counter
+		++__player_HUD_data.gems;	// increment collected gems counter
 
 		player_HUD_update_gems_cnt();
 		
