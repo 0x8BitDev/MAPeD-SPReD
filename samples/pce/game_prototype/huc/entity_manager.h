@@ -6,8 +6,8 @@
 //
 //##################################################################
 
-#define	SCREEN_ENT_MAX			4
-#define	SCREEN_ENT_COLLECTABLE_MAX	4
+#define	SCREEN_ENT_COLLECTABLE_MAX	4	// number of collectable entities per screen
+#define	SCREEN_ENT_MAX			4	// number of any other entities per screen
 #define MAP_SCREENS_MAX			40	// max number of screens in a game map
 
 #define MAP_ENTS_MAX			MAP_SCREENS_MAX * SCREEN_ENT_MAX

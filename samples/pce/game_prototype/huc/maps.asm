@@ -8,7 +8,7 @@
 
 ; *** Lev0 ***
 
-_Lev0_TilesCnt	= 252	; map tiles count
+_Lev0_TilesCnt	= 256	; map tiles count
 _Lev0_StartScr	= 30	; start screen
 _Lev0_WScrCnt	= 10	; number of screens in width
 _Lev0_HScrCnt	= 4	; number of screens in height
@@ -688,8 +688,8 @@ _Lev0Scr11:
 _Lev0Scr11EntsArr:
 	.byte 3
 	.word Instance113
-	.word Instance110
 	.word Instance130
+	.word Instance110
 Instance113:
 	.byte $46
 	.word gem
@@ -697,21 +697,21 @@ Instance113:
 	.word $178
 	.word $E1
 	.byte $00
-Instance110:
-	.byte $47
-	.word gem
-	.word $00
-	.word $130
-	.word $130
-	.byte $00
 Instance130:
-	.byte $48
+	.byte $47
 	.word enemy_walking96
 	.word $00
 	.word $100
 	.word $120
 	.byte $03
 	.byte $E0, $00, $00
+Instance110:
+	.byte $48
+	.word gem
+	.word $00
+	.word $130
+	.word $130
+	.byte $00
 
 _Lev0Scr12:
 _Lev0Scr12EntsArr:
@@ -754,12 +754,12 @@ _Lev0Scr13:
 _Lev0Scr13EntsArr:
 	.byte 7
 	.word Instance133
-	.word Instance154
 	.word Instance157
-	.word Instance150
 	.word Instance155
 	.word Instance156
+	.word Instance154
 	.word Instance149
+	.word Instance150
 Instance133:
 	.byte $4D
 	.word logs_32x16
@@ -768,50 +768,50 @@ Instance133:
 	.word $130
 	.byte $01
 	.byte $20
-Instance154:
-	.byte $4E
-	.word enemy_flying96
-	.word $00
-	.word $330
-	.word $100
-	.byte $02
-	.byte $E0, $00
 Instance157:
-	.byte $4F
+	.byte $4E
 	.word gem
 	.word $00
 	.word $330
 	.word $130
 	.byte $00
-Instance150:
-	.byte $50
-	.word switch
-	.word Instance153
-	.word $340
-	.word $1B0
-	.byte $00
 Instance155:
-	.byte $51
+	.byte $4F
 	.word gem
 	.word $00
 	.word $3B8
 	.word $118
 	.byte $00
 Instance156:
-	.byte $52
+	.byte $50
 	.word gem
 	.word $00
 	.word $3E8
 	.word $178
 	.byte $00
+Instance154:
+	.byte $51
+	.word enemy_flying96
+	.word $00
+	.word $330
+	.word $108
+	.byte $02
+	.byte $E0, $00
 Instance149:
-	.byte $53
+	.byte $52
 	.word enemy_walking96
 	.word $00
 	.word $310
 	.word $1A0
 	.byte $03
 	.byte $60, $60, $20
+Instance150:
+	.byte $53
+	.word switch
+	.word Instance153
+	.word $340
+	.word $1B0
+	.byte $00
 
 _Lev0Scr14:
 _Lev0Scr14EntsArr:
@@ -2666,21 +2666,21 @@ _mpd_CHRs:
 	.word _chr0
 	.byte bank(_chr0)
 
-_mpd_Tiles:	.incbin "_maps_Tiles.bin"	; (1020) (4x4) 4 block indices per tile ( left to right, up to down ) of all exported data banks
+_mpd_Tiles:	.incbin "_maps_Tiles.bin"	; (1024) (4x4) 4 block indices per tile ( left to right, up to down ) of all exported data banks
 
 _mpd_TilesOffs:
 	.word 0	; (chr0)
 
-_mpd_Attrs:	.incbin "_maps_Attrs.bin"	; (632) attributes array per block ( 2 bytes per attribute; 8 bytes per block ) of all exported data banks
+_mpd_Attrs:	.incbin "_maps_Attrs.bin"	; (640) attributes array per block ( 2 bytes per attribute; 8 bytes per block ) of all exported data banks
 
 _mpd_BlocksOffs:
 	.word 0	; (chr0)
 
-_mpd_Props:	.incbin "_maps_Props.bin"	; (79) blocks properties array ( 1 byte per block ) of all exported data banks
+_mpd_Props:	.incbin "_maps_Props.bin"	; (80) blocks properties array ( 1 byte per block ) of all exported data banks
 
 _mpd_PropsOffs:
 	.word 0	; (chr0)
-	.word 79	; data end
+	.word 80	; data end
 
 _mpd_Maps:	.incbin "_maps_Maps.bin"	; (2800) game levels tiles (4x4) array of all exported data banks
 
