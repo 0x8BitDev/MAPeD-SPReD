@@ -7,7 +7,7 @@
 //##################################################################
 
 
-#define DEMO_VER	"v0.1"
+#define DEMO_VER	"v0.2"
 
 #define	PLAYER_SPRITE_ID	SPR_PLAYER_16X32_0
 

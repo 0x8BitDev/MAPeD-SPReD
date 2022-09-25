@@ -16,6 +16,11 @@ const u8 SCR_BOTTOM_BORDER	= ( ScrPixelsHeight >> 1 );
 u8	__map_ind	= 0;
 u8	__warn_sign_cnt	= 0;
 
+// scene shaking data
+
+const s8	__scene_shaking_vals_arr[ 9 ]	= { -1, 1, -1, 2, -2, 3, -3, 4, -4 };
+u8		__scene_shaking_arr_pos		= 0;
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 // The main game states switching functions //
@@ -344,9 +349,35 @@ void	scene_init()
 // A game scene utility functions //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
-void	scene_shake()
+void	scene_start_shaking()
 {
-	//...
+	__scene_shaking_arr_pos = 8;
+}
+
+void	__scene_shaking()
+{
+	mpd_clear_update_flags();
+
+	mpd_ax.l = __scene_shaking_vals_arr[ __scene_shaking_arr_pos ];
+
+	if( mpd_ax.l & 0x80 )
+	{
+		// negative val
+		mpd_scroll_step_y = ~mpd_ax.l + 1;
+
+		mpd_move_up();
+	}
+	else
+	{
+		mpd_scroll_step_y = mpd_ax.l;
+
+		mpd_move_down();
+	}
+
+	// update BAT with tiles if needed, to avoid a map breaking
+	mpd_update_screen();
+
+	--__scene_shaking_arr_pos;
 }
 
 void	scene_restore_player( s16 _x, s16 _y, u8 _reinit_player )
@@ -404,6 +435,12 @@ void	game_update_loop()
 	for( ;; )
 	{
 		__jpad_val = joy( 0 );
+
+		// check scene shaking
+		if( __scene_shaking_arr_pos )
+		{
+			__scene_shaking();
+		}
 
 		if( __player_HUD_data.hp )
 		{

@@ -7,7 +7,7 @@
 // Features:
 // ~~~~~~~~~
 // - fully playable game prototype, run'n'jump platformer
-// - 40 screens (10x4) scrollable multidirectional map with 201 entities, +bonus level
+// - 40 screens (10x4) scrollable multidirectional map with 203 entities, +bonus level
 // - inertial player/map movement (map scrolling uses player inertial movement)
 // - sprite/tile objects
 // - entities:  collectable, dynamic platform, button, switch, 
@@ -18,12 +18,26 @@
 //
 //##################################################################
 
-// MPD debug info:
+/*
+History:
+
+v0.2
+- added scene shaking
+
+v0.1
+- fixed auto-jumps
+- replaced solid brick tiles with decorative ones in the grass platforms
+- fixed a bug in jumps
+- fixed mid-frame palette update
+- initial release
+*/
+
+// MPD debug info (use Mednaffen PCE Dev version):
 // - green+red border color	- screen scrolling
 // - blue border color		- static screen drawing
 // - yellow border color	- getting a tile property
 //
-// SPD debug info:
+// SPD debug info (use Mednaffen PCE Dev version):
 // - pink border color		- ROM-VRAM data copying
 // - white border color		- spd_SATB_push_sprite
 // - cyan border color		- attributes transformation
@@ -70,6 +84,7 @@ main()
 .ifdef	MPD_DEBUG
 #endasm
 	// make the screen a little smaller so that the border color is visible
+	// uncomment for Mednaffen non-PCE Dev version
 //	set_xres( 252, XRES_SOFT );
 #asm
 .endif

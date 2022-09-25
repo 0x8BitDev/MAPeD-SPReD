@@ -758,8 +758,8 @@ _Lev0Scr13EntsArr:
 	.word Instance155
 	.word Instance156
 	.word Instance154
-	.word Instance149
 	.word Instance150
+	.word Instance149
 Instance133:
 	.byte $4D
 	.word logs_32x16
@@ -797,21 +797,21 @@ Instance154:
 	.word $108
 	.byte $02
 	.byte $E0, $00
-Instance149:
+Instance150:
 	.byte $52
+	.word switch
+	.word Instance153
+	.word $340
+	.word $1B0
+	.byte $00
+Instance149:
+	.byte $53
 	.word enemy_walking96
 	.word $00
 	.word $310
 	.word $1A0
 	.byte $03
 	.byte $60, $60, $20
-Instance150:
-	.byte $53
-	.word switch
-	.word Instance153
-	.word $340
-	.word $1B0
-	.byte $00
 
 _Lev0Scr14:
 _Lev0Scr14EntsArr:
@@ -1404,10 +1404,11 @@ Instance200:
 
 _Lev0Scr27:
 _Lev0Scr27EntsArr:
-	.byte 3
+	.byte 4
 	.word Instance202
 	.word Instance216
 	.word Instance341
+	.word Instance414
 Instance202:
 	.byte $94
 	.word switch
@@ -1429,6 +1430,14 @@ Instance341:
 	.word $7A8
 	.word $240
 	.byte $00
+Instance414:
+	.byte $97
+	.word enemy_walking96
+	.word $00
+	.word $728
+	.word $1F0
+	.byte $03
+	.byte $E0, $00, $00
 
 _Lev0Scr28:
 _Lev0Scr28EntsArr:
@@ -1441,7 +1450,7 @@ _Lev0Scr28EntsArr:
 	.word Instance289
 	.word Instance294
 Instance290:
-	.byte $97
+	.byte $98
 	.word logs_32x16
 	.word $00
 	.word $840
@@ -1449,14 +1458,14 @@ Instance290:
 	.byte $01
 	.byte $20
 Instance292:
-	.byte $98
+	.byte $99
 	.word gem
 	.word $00
 	.word $850
 	.word $270
 	.byte $00
 Instance295:
-	.byte $99
+	.byte $9A
 	.word logs_32x16
 	.word $00
 	.word $8C0
@@ -1464,21 +1473,21 @@ Instance295:
 	.byte $01
 	.byte $20
 Instance291:
-	.byte $9A
+	.byte $9B
 	.word switch
 	.word Instance301
 	.word $830
 	.word $1D0
 	.byte $00
 Instance293:
-	.byte $9B
+	.byte $9C
 	.word gem
 	.word $00
 	.word $828
 	.word $218
 	.byte $00
 Instance289:
-	.byte $9C
+	.byte $9D
 	.word enemy_walking112
 	.word $00
 	.word $870
@@ -1486,7 +1495,7 @@ Instance289:
 	.byte $02
 	.byte $F0, $00
 Instance294:
-	.byte $9D
+	.byte $9E
 	.word gem
 	.word $00
 	.word $8D8
@@ -1503,14 +1512,14 @@ _Lev0Scr29EntsArr:
 	.word Instance318
 	.word Instance319
 Instance316:
-	.byte $9E
+	.byte $9F
 	.word switch
 	.word Instance314
 	.word $9D0
 	.word $230
 	.byte $00
 Instance317:
-	.byte $9F
+	.byte $A0
 	.word door_closed
 	.word $00
 	.word $9B0
@@ -1518,21 +1527,21 @@ Instance317:
 	.byte $02
 	.byte $20, $20
 Instance321:
-	.byte $A0
+	.byte $A1
 	.word gem
 	.word $00
 	.word $9D0
 	.word $218
 	.byte $00
 Instance327:
-	.byte $A1
+	.byte $A2
 	.word gem
 	.word $00
 	.word $978
 	.word $1F8
 	.byte $00
 Instance318:
-	.byte $A2
+	.byte $A3
 	.word platform_32x10_horiz112
 	.word $00
 	.word $960
@@ -1540,7 +1549,7 @@ Instance318:
 	.byte $03
 	.byte $70, $70, $20
 Instance319:
-	.byte $A3
+	.byte $A4
 	.word button
 	.word Instance318
 	.word $910
@@ -1558,7 +1567,7 @@ _Lev0Scr30EntsArr:
 	.word Instance98
 	.word Instance96
 Instance97:
-	.byte $A4
+	.byte $A5
 	.word logs_32x16
 	.word $00
 	.word $80
@@ -1566,7 +1575,7 @@ Instance97:
 	.byte $01
 	.byte $20
 Instance91:
-	.byte $A5
+	.byte $A6
 	.word door_closed
 	.word $00
 	.word $C0
@@ -1574,35 +1583,35 @@ Instance91:
 	.byte $02
 	.byte $20, $20
 Instance92:
-	.byte $A6
+	.byte $A7
 	.word switch
 	.word Instance91
 	.word $B0
 	.word $300
 	.byte $00
 Instance94:
-	.byte $A7
+	.byte $A8
 	.word gem
 	.word $00
 	.word $18
 	.word $2F8
 	.byte $00
 Instance93:
-	.byte $A8
+	.byte $A9
 	.word gem
 	.word $00
 	.word $48
 	.word $318
 	.byte $00
 Instance98:
-	.byte $A9
+	.byte $AA
 	.word gem
 	.word $00
 	.word $D8
 	.word $318
 	.byte $00
 Instance96:
-	.byte $AA
+	.byte $AB
 	.word player_entity
 	.word $00
 	.word $98
@@ -1618,35 +1627,35 @@ _Lev0Scr31EntsArr:
 	.word Instance176
 	.word Instance329
 Instance127:
-	.byte $AB
+	.byte $AC
 	.word gem
 	.word $00
 	.word $190
 	.word $350
 	.byte $00
 Instance104:
-	.byte $AC
+	.byte $AD
 	.word gem
 	.word $00
 	.word $118
 	.word $2C0
 	.byte $00
 Instance102:
-	.byte $AD
+	.byte $AE
 	.word gem
 	.word $00
 	.word $1B8
 	.word $2A0
 	.byte $00
 Instance176:
-	.byte $AE
+	.byte $AF
 	.word portal_out_red
 	.word $00
 	.word $188
 	.word $2F0
 	.byte $00
 Instance329:
-	.byte $AF
+	.byte $B0
 	.word checkpoint
 	.word $00
 	.word $108
@@ -1659,14 +1668,14 @@ _Lev0Scr32EntsArr:
 	.word Instance162
 	.word Instance164
 Instance162:
-	.byte $B0
+	.byte $B1
 	.word gem
 	.word $00
 	.word $218
 	.word $2C0
 	.byte $00
 Instance164:
-	.byte $B1
+	.byte $B2
 	.word gem
 	.word $00
 	.word $2B8
@@ -1680,21 +1689,21 @@ _Lev0Scr33EntsArr:
 	.word Instance170
 	.word Instance172
 Instance171:
-	.byte $B2
+	.byte $B3
 	.word gem
 	.word $00
 	.word $3E8
 	.word $2B0
 	.byte $00
 Instance170:
-	.byte $B3
+	.byte $B4
 	.word gem
 	.word $00
 	.word $3A8
 	.word $2F0
 	.byte $00
 Instance172:
-	.byte $B4
+	.byte $B5
 	.word gem
 	.word $00
 	.word $348
@@ -1706,7 +1715,7 @@ _Lev0Scr34EntsArr:
 	.byte 1
 	.word Instance173
 Instance173:
-	.byte $B5
+	.byte $B6
 	.word gem
 	.word $00
 	.word $488
@@ -1719,14 +1728,14 @@ _Lev0Scr35EntsArr:
 	.word Instance205
 	.word Instance217
 Instance205:
-	.byte $B6
+	.byte $B7
 	.word gem
 	.word $00
 	.word $538
 	.word $2C0
 	.byte $00
 Instance217:
-	.byte $B7
+	.byte $B8
 	.word logs_32x16
 	.word $00
 	.word $580
@@ -1739,7 +1748,7 @@ _Lev0Scr36EntsArr:
 	.byte 1
 	.word Instance344
 Instance344:
-	.byte $B8
+	.byte $B9
 	.word gem
 	.word $00
 	.word $6B8
@@ -1748,31 +1757,40 @@ Instance344:
 
 _Lev0Scr37:
 _Lev0Scr37EntsArr:
-	.byte 3
+	.byte 4
 	.word Instance207
 	.word Instance206
 	.word Instance335
+	.word Instance413
 Instance207:
-	.byte $B9
+	.byte $BA
 	.word gem
 	.word $00
 	.word $7B8
 	.word $2C0
 	.byte $00
 Instance206:
-	.byte $BA
+	.byte $BB
 	.word gem
 	.word $00
 	.word $718
 	.word $2E0
 	.byte $00
 Instance335:
-	.byte $BB
+	.byte $BC
 	.word checkpoint
 	.word $00
 	.word $7E0
 	.word $340
 	.byte $00
+Instance413:
+	.byte $BD
+	.word enemy_walking112
+	.word $00
+	.word $738
+	.word $340
+	.byte $03
+	.byte $F0, $00, $20
 
 _Lev0Scr38:
 _Lev0Scr38EntsArr:
@@ -1784,7 +1802,7 @@ _Lev0Scr38EntsArr:
 	.word Instance343
 	.word Instance342
 Instance285:
-	.byte $BC
+	.byte $BE
 	.word platform_32x10_vert80
 	.word $00
 	.word $820
@@ -1792,7 +1810,7 @@ Instance285:
 	.byte $03
 	.byte $D0, $00, $E0
 Instance286:
-	.byte $BD
+	.byte $BF
 	.word platform_32x10_vert80
 	.word $00
 	.word $860
@@ -1800,7 +1818,7 @@ Instance286:
 	.byte $03
 	.byte $50, $50, $E0
 Instance287:
-	.byte $BE
+	.byte $C0
 	.word platform_32x10_vert80
 	.word $00
 	.word $8A0
@@ -1808,7 +1826,7 @@ Instance287:
 	.byte $03
 	.byte $D0, $00, $E0
 Instance288:
-	.byte $BF
+	.byte $C1
 	.word platform_32x10_vert80
 	.word $00
 	.word $8E0
@@ -1816,14 +1834,14 @@ Instance288:
 	.byte $03
 	.byte $50, $50, $E0
 Instance343:
-	.byte $C0
+	.byte $C2
 	.word gem
 	.word $00
 	.word $8C8
 	.word $2B0
 	.byte $00
 Instance342:
-	.byte $C1
+	.byte $C3
 	.word gem
 	.word $00
 	.word $848
@@ -1841,7 +1859,7 @@ _Lev0Scr39EntsArr:
 	.word Instance305
 	.word Instance303
 Instance302:
-	.byte $C2
+	.byte $C4
 	.word door_closed
 	.word $00
 	.word $980
@@ -1849,7 +1867,7 @@ Instance302:
 	.byte $02
 	.byte $20, $20
 Instance299:
-	.byte $C3
+	.byte $C5
 	.word door_closed
 	.word $00
 	.word $990
@@ -1857,7 +1875,7 @@ Instance299:
 	.byte $02
 	.byte $20, $20
 Instance300:
-	.byte $C4
+	.byte $C6
 	.word door_closed
 	.word $00
 	.word $9A0
@@ -1865,7 +1883,7 @@ Instance300:
 	.byte $02
 	.byte $20, $20
 Instance301:
-	.byte $C5
+	.byte $C7
 	.word door_closed
 	.word $00
 	.word $9B0
@@ -1873,28 +1891,28 @@ Instance301:
 	.byte $02
 	.byte $20, $20
 Instance304:
-	.byte $C6
+	.byte $C8
 	.word gem
 	.word $00
 	.word $998
 	.word $308
 	.byte $00
 Instance305:
-	.byte $C7
+	.byte $C9
 	.word gem
 	.word $00
 	.word $968
 	.word $350
 	.byte $00
 Instance303:
-	.byte $C8
+	.byte $CA
 	.word gem
 	.word $00
 	.word $910
 	.word $2B0
 	.byte $00
 
-_Lev0_EntInstCnt = 201	; number of entities instances
+_Lev0_EntInstCnt = 203	; number of entities instances
 ; *** Lev1 ***
 
 _Lev1_TilesCnt	= 255	; map tiles count

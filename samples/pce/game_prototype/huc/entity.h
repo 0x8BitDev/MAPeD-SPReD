@@ -108,8 +108,6 @@ u8	curr_scr_pos;
 u8	map_coll_ent;
 u8	map_ent;
 
-u8	tmp_val8;
-
 s16	ent_x;
 s16	ent_y;
 s16	ent_y_unmasked;
@@ -628,10 +626,10 @@ void	update_cached_logs()
 				ent_ptr->prop1 |= 0x40;	// time is over, start falling
 			}
 
-			tmp_val8 = ent_ptr->prop0;
+			mpd_ax = ent_ptr->prop0;
 #asm	; apply shake
 
-	lda _tmp_val8
+	lda _mpd_ax
 	and #$07
 	tax
 
@@ -709,6 +707,11 @@ void	update_obstacle_logic( u8 _pause_in_frames )
 				else
 				{
 					ent_ptr->prop3 = _pause_in_frames;
+
+					if( ent_ptr->prop2 & 0x10 )	// shake?
+					{
+						scene_start_shaking();
+					}
 				}
 			}
 		}
@@ -737,11 +740,6 @@ void	update_obstacle_logic( u8 _pause_in_frames )
 				else
 				{
 					ent_ptr->prop3 = _pause_in_frames;
-
-					if( ent_ptr->prop2 & 0x10 )	// shake?
-					{
-						scene_shake();
-					}
 				}
 			}
 		}
