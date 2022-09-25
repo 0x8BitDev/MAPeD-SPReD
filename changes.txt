@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+16.09.2022 - PCE: added 'Game Prototype' demo: fully playable game prototype, run'n'jump platformer, 40 screens scrollable multidirectional map with 200+ entities, +bonus level
 23.08.2022 - PCE: MPD-render: optimized screen scrolling, re-written in assembler
 21.07.2022 - Improved colors swapping
 22.06.2022 - Added sorting option for entities (Left->Right, Bottom->Top) to the data export dialog
