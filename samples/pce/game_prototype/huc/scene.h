@@ -351,7 +351,11 @@ void	scene_init()
 
 void	scene_start_shaking()
 {
-	__scene_shaking_arr_pos = 8;
+	// apply shaking if it is inactive
+	if( !__scene_shaking_arr_pos )
+	{
+		__scene_shaking_arr_pos = 8;
+	}
 }
 
 void	__scene_shaking()
