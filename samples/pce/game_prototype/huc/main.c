@@ -7,7 +7,7 @@
 // Features:
 // ~~~~~~~~~
 // - fully playable game prototype, run'n'jump platformer
-// - 40 screens (10x4) scrollable multidirectional map with 203 entities, +bonus level
+// - 40 screens (10x4) scrollable multidirectional map with 200+ entities, +bonus level
 // - inertial player/map movement (map scrolling uses player inertial movement)
 // - sprite/tile objects
 // - entities:  collectable, dynamic platform, button, switch, 
@@ -89,7 +89,7 @@ main()
 #asm
 .endif
 #endasm
-	hdwr_collisions_init();
+	hdwr_collisions_enable( TRUE );
 
 	load_default_font( 0, 0x1a00 );
 

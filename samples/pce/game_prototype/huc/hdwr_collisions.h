@@ -108,8 +108,10 @@ __irq1_hdwr_collisions:
 #endasm
 
 
-void	hdwr_collisions_init()
+void	hdwr_collisions_enable( u8 _on )
 {
+	if( _on )
+	{
 #asm
 	; enable collision interrupts
 
@@ -122,4 +124,20 @@ void	hdwr_collisions_init()
 	smb1	<irq_m
 	stw	#__irq1_hdwr_collisions, irq1_jmp
 #endasm
+	}
+	else
+	{
+#asm
+	; disable collision interrupts
+
+	lda	<vdc_crl
+	and	#$fe
+	sta	<vdc_crl
+
+	; disable user irq1
+
+	rmb1	<irq_m
+	stwz	irq1_jmp
+#endasm
+	}
 }
