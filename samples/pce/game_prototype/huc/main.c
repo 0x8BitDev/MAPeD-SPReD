@@ -12,7 +12,7 @@
 // - sprite/tile objects
 // - entities:  collectable, dynamic platform, button, switch, 
 //		dynamic obstacles, simple dynamic enemies, checkpoint, level exit
-// - hardware collisions (yes in HuC and yes it works stable)
+// - hardware collisions
 // - 2-level entities cache, +collisions cache
 // - infinite credits to complete the game! )))
 //
@@ -22,7 +22,8 @@
 History:
 
 v0.2
-- added scene shaking
+- 'hdwr_collisions_init()' replaced with 'hdwr_collisions_enable(TRUE/FALSE)'
+- added scene shaking when a heavy load hits the ground
 
 v0.1
 - fixed auto-jumps
