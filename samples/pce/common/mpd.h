@@ -9,6 +9,7 @@
 History:
 
 v0.7
+2022.09.27 - removed deprecated functions
 2022.09.07 - added 'mpd_get_curr_screen_ind()' for multidirectional maps
 2022.09.06 - added open variables to replace deprecated functions
 2022.08.31 - fixed missed tile 4x4 drawing in '__mpd_fill_row_column_data' and also fixed BAT overflow in '__mpd_draw_tiled_screen( _BAT_offset )'
@@ -398,8 +399,6 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 
 --------------------------------------------------------
 */
-
-#define	MPD_DEPRECATED_FUNC	0
 
 /************************/
 /*			*/
@@ -1968,13 +1967,6 @@ bool	mpd_check_adj_screen( u8 _ind )
 
 	return FALSE;
 }
-
-#if	MPD_DEPRECATED_FUNC
-mpd_SCR_DATA*	mpd_curr_screen()
-{
-	return &mpd_curr_scr;
-}
-#endif //MPD_DEPRECATED_FUNC
 #endif	//!FLAG_MODE_MULTIDIR_SCROLL
 
 /********************************/
@@ -2258,53 +2250,9 @@ u8	mpd_get_curr_screen_ind()
 {
 	return ( ( mpd_scroll_y / ScrPixelsHeight ) * mpd_map_scr_width ) + ( mpd_scroll_x / ScrPixelsWidth );
 }
-
-#if	MPD_DEPRECATED_FUNC
-u16	mpd_active_map_width()
-{
-	return mpd_map_active_width;
-}
-
-u16	mpd_active_map_height()
-{
-	return mpd_map_active_height;
-}
-#endif //MPD_DEPRECATED_FUNC
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-#if	MPD_DEPRECATED_FUNC
-void	mpd_set_scroll_step_x( u8 _step_pix )
-{
-	mpd_scroll_step_x = _step_pix & 0x07;
-}
-
-void	mpd_set_scroll_step_y( u8 _step_pix )
-{
-	mpd_scroll_step_y = _step_pix & 0x07;
-}
-
-u8	mpd_get_scroll_step_x()
-{
-	return mpd_scroll_step_x;
-}
-
-u8	mpd_get_scroll_step_y()
-{
-	return mpd_scroll_step_y;
-}
-
-s16	mpd_scroll_x()
-{
-	return mpd_scroll_x;
-}
-
-s16	mpd_scroll_y()
-{
-	return mpd_scroll_y;
-}
-#endif //MPD_DEPRECATED_FUNC
-
 void	mpd_clear_update_flags()
 {
 	__upd_flags &= ~(UPD_FLAG_DRAW_MASK);
