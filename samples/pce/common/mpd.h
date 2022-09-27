@@ -9,6 +9,7 @@
 History:
 
 v0.7
+2022.09.27 - updated 'Working with screens/entities - General information' / item 2
 2022.09.27 - removed deprecated functions
 2022.09.07 - added 'mpd_get_curr_screen_ind()' for multidirectional maps
 2022.09.06 - added open variables to replace deprecated functions
@@ -111,7 +112,7 @@ Working with screens/entities:
 General information:
 
 1. Regardless of a map type, all entities data is stored in screens.
-2. The maximum number of allowed entities per screen is 255.
+2. The maximum number of allowed entities per screen is 255. But the maximum number of allowed entities per map is 256.
 3. There are base entities and instances. The base entities you customize in MAPeD in the 'Entities' tab. The instances are base entities that have been placed on a map.
 4. Entities can be sorted during the data export process in two ways: left to right or bottom to top. The sorting goes by pivot points.
 5. So, for a multi-directional map, whichever screen you take, you will always have sorted entity data.
