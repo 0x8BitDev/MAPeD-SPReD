@@ -3599,6 +3599,15 @@ namespace MAPeD
 		{
 			if( e.Label != null )
 			{
+				if( TreeViewEntities.Nodes.Find( e.Label, true ).Length > 0 )
+				{
+					e.CancelEdit = true;
+					
+					message_box( "An item with the same name (" + e.Label +  ") is already exist!", "Renaming Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					
+					return;
+				}
+				
 				if( e.Node.Parent == null )
 				{
 					m_data_manager.group_rename( e.Node.Text, e.Label );
