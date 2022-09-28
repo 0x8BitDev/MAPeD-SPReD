@@ -143,7 +143,8 @@ void	scene_level_passed()
 
 	scene_clear_screen();
 
-	put_string( "LEVEL PASSED!", 9, 13 );
+	put_string( "LEVEL    PASSED!", 8, 13 );
+	put_number( __map_ind + 101, 2, 14, 13 );
 
 	if( __map_ind + 1 < MAPS_CNT )
 	{
@@ -236,7 +237,7 @@ void	start_game_level( u8 _new_level )
 		cls();
 
 		put_string( "LEVEL", 12, 13 );
-		put_number( __map_ind + 1, 1, 18, 13 );
+		put_number( __map_ind + 101, 2, 18, 13 );
 
 		// reset the last checkpoint for the new game level
 		checkpoint_x = checkpoint_y = 0xffff;
