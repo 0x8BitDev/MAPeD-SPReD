@@ -21,6 +21,11 @@ u8	__warn_sign_cnt	= 0;
 const s8	__scene_shaking_vals_arr[ 9 ]	= { -1, 1, -1, 2, -2, 3, -3, 4, -4 };
 u8		__scene_shaking_arr_pos		= 0;
 
+// level stats
+
+u8	__ls_attempts;
+u16	__ls_time_sec;
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 // The main game states switching functions //
@@ -40,6 +45,8 @@ void	scene_main_menu()
 			start_game_level( TRUE );
 
 			__draw_main_menu();
+
+			wait_jpad_btns_release();
 		}
 
 		//...
@@ -136,20 +143,20 @@ void	scene_level_passed()
 
 	scene_clear_screen();
 
+	put_string( "LEVEL PASSED!", 9, 13 );
+
 	if( __map_ind + 1 < MAPS_CNT )
 	{
-		put_string( "LEVEL PASSED!", 9, 13 );
-
 		next_level = TRUE;
 	}
 	else
 	{
-		// congrats! game completed!
-		put_string( "CONGRATULATIONS!", 8, 12 );
-		put_string( "GAME COMPLETED!", 8, 14 );
+		put_string( "GAME COMPLETED!", 8, 15 );
 
 		next_level = FALSE;
 	}
+
+	__show_level_stats();
 
 	disp_on();
 	wait_vsync();
@@ -180,6 +187,44 @@ void	scene_level_passed()
 
 }
 
+void	__show_level_stats()
+{
+	u8	hh;
+	u8	mm;
+	u8	ss;
+
+	scene_save_curr_time();
+
+	hh = __ls_time_sec / 3600;
+	mm = ( __ls_time_sec / 60 ) % 60;
+	ss = __ls_time_sec % 60;
+
+	put_string( "ATTEMPTS:", 8, 20 );
+	put_number( __ls_attempts + 100, 2, 18, 20 );
+
+	put_string( "TIME:", 8, 21 );
+
+	if( hh )
+	{
+		put_number( hh + 100, 2, 18, 21 );
+		put_string( ":", 20, 21 );
+		put_number( mm + 100, 2, 21, 21 );
+		put_string( ":", 23, 21 );
+		put_number( ss + 100, 2, 24, 21 );
+	}
+	else
+	{
+		put_number( mm + 100, 2, 18, 21 );
+		put_string( ":", 20, 21 );
+		put_number( ss + 100, 2, 21, 21 );
+	}
+
+	put_string( "GEMS:", 8, 22 );
+	put_number( __player_HUD_data.gems + 100, 2, 18, 22 );
+	put_string( "/", 20, 22 );
+	put_number( __player_HUD_data.max_gems + 100, 2, 21, 22 );
+}
+
 void	start_game_level( u8 _new_level )
 {
 	wait_jpad_btns_release();
@@ -195,6 +240,10 @@ void	start_game_level( u8 _new_level )
 
 		// reset the last checkpoint for the new game level
 		checkpoint_x = checkpoint_y = 0xffff;
+
+		// reset level stats
+		__ls_attempts	= 1;
+		__ls_time_sec	= 0;
 
 		disp_on();
 		wait_vsync();
@@ -213,6 +262,11 @@ void	start_game_level( u8 _new_level )
 
 			wait_vsync();
 		}
+	}
+	else
+	{
+		// restart the last level
+		++__ls_attempts;
 	}
 
 	if( !_new_level && ( checkpoint_x != 0xffff ) )
@@ -252,6 +306,9 @@ void	scene_pause()
 	// update SATB with the all pushed sprites
 	spd_SATB_to_VRAM();
 
+	// save current level time and ignore the pausing time
+	scene_save_curr_time();
+
 	// show the 'PAUSE' sprite immediately after pressing the pause button
 	wait_vsync();
 
@@ -272,6 +329,9 @@ void	scene_pause()
 
 		wait_vsync();
 	}
+
+	// restart level timer after pausing
+	clock_reset();
 }
 
 void	scene_clear_screen()
@@ -367,13 +427,13 @@ void	__scene_shaking()
 	if( mpd_ax.l & 0x80 )
 	{
 		// negative val
-		mpd_scroll_step_y = ~mpd_ax.l + 1;
+		mpd_scroll_step_y = ~mpd_ax.l + 1;	// max 7 pix!
 
 		mpd_move_up();
 	}
 	else
 	{
-		mpd_scroll_step_y = mpd_ax.l;
+		mpd_scroll_step_y = mpd_ax.l;		// max 7 pix!
 
 		mpd_move_down();
 	}
@@ -423,6 +483,11 @@ void	scene_restore_player( s16 _x, s16 _y, u8 _reinit_player )
 
 	disp_on();
 	wait_vsync();
+}
+
+void	scene_save_curr_time()
+{
+	__ls_time_sec += clock_ss();
 }
 
 //~~~~~~~~~~~~~~~~~~~~//
@@ -512,7 +577,7 @@ DBG_BLACK_BORDER
 
 		if( __enemy_hit )
 		{
-			player_update_hit();
+			player_update_damage_state();
 		}
 
 #if	DBG_SHOW_INFO

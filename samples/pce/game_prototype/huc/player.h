@@ -477,6 +477,9 @@ void	player_enemy_hit()
 	{
 		__enemy_hit = 1000;
 
+		// save current level time before init the damage timer
+		scene_save_curr_time();
+
 		clock_reset();
 
 		if( !--__player_HUD_data.hp )
@@ -514,7 +517,7 @@ void	player_update_pos( s16 _x, s16 _y )
 	spd_set_y_LT( _y );
 }
 
-void	player_update_hit()
+void	player_update_damage_state()
 {
 	u8 tick;
 
@@ -533,6 +536,10 @@ void	player_update_hit()
 	if( __enemy_hit < 0 )
 	{
 		__enemy_hit = 0;
+
+		// save the damage time as level time and restart the level timer
+		scene_save_curr_time();
+		clock_reset();
 	}
 
 	spd_show_LT();
