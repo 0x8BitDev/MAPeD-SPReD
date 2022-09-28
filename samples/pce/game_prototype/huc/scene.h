@@ -146,6 +146,8 @@ void	scene_level_passed()
 	put_string( "LEVEL    PASSED!", 8, 13 );
 	put_number( __map_ind + 101, 2, 14, 13 );
 
+	put_string( "<A> - REPLAY", 10, 26 );
+
 	if( __map_ind + 1 < MAPS_CNT )
 	{
 		next_level = TRUE;
@@ -164,8 +166,17 @@ void	scene_level_passed()
 
 	for(;;)
 	{
-		if( joy( 0 ) )
+		__jpad_val = joy( 0 );
+
+		if( __jpad_val )
 		{
+			if( __jpad_val & JOY_REPLAY_BTN )
+			{
+				start_game_level( TRUE );
+
+				break;
+			}
+			else
 			if( next_level )
 			{
 				++__map_ind;

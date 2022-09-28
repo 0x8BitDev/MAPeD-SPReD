@@ -22,6 +22,7 @@
 History:
 
 v0.2
+- added ability to replay a passed level
 - added level stats: attempts, time, gems
 - 'hdwr_collisions_init()' replaced with 'hdwr_collisions_enable(TRUE/FALSE)'
 - added scene shaking when a heavy load hits the ground

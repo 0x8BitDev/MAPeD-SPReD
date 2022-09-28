@@ -21,6 +21,7 @@
 #define	JOY_ACTION_BTN		JOY_B
 #define	JOY_PAUSE_BTN		JOY_STRT
 #define	JOY_START_BTN		JOY_STRT
+#define	JOY_REPLAY_BTN		JOY_A
 
 // main SATB positions
 
