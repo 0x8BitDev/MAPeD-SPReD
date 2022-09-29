@@ -86,6 +86,9 @@ void	scene_game_over()
 {
 	u8	time;
 
+	// save current level time and ignore the 10-sec timer
+	scene_save_curr_time();
+
 	// set black screen color
 	set_color( 0, 0 );
 
@@ -133,7 +136,8 @@ void	scene_level_passed()
 {
 	u8	next_level;
 
-	wait_jpad_btns_release();
+	// save current level time and ignore the waiting pause
+	scene_save_curr_time();
 
 	disp_off();
 	wait_vsync();
@@ -146,7 +150,7 @@ void	scene_level_passed()
 	put_string( "LEVEL    PASSED!", 8, 13 );
 	put_number( __map_ind + 101, 2, 14, 13 );
 
-	put_string( "<A> - REPLAY", 10, 26 );
+	put_string( "<A> - RESTART", 10, 26 );
 
 	if( __map_ind + 1 < MAPS_CNT )
 	{
@@ -164,13 +168,15 @@ void	scene_level_passed()
 	disp_on();
 	wait_vsync();
 
+	wait_jpad_btns_release();
+
 	for(;;)
 	{
 		__jpad_val = joy( 0 );
 
 		if( __jpad_val )
 		{
-			if( __jpad_val & JOY_REPLAY_BTN )
+			if( __jpad_val & JOY_RESTART_BTN )
 			{
 				start_game_level( TRUE );
 
@@ -205,8 +211,6 @@ void	__show_level_stats()
 	u8	mm;
 	u8	ss;
 
-	scene_save_curr_time();
-
 	hh = __ls_time_sec / 3600;
 	mm = ( __ls_time_sec / 60 ) % 60;
 	ss = __ls_time_sec % 60;
@@ -216,7 +220,7 @@ void	__show_level_stats()
 
 	put_string( "TIME:", 8, 21 );
 
-	if( hh )
+	if( hh ) // hours?! are you kidding me? ))
 	{
 		put_number( hh + 100, 2, 18, 21 );
 		put_string( ":", 20, 21 );
@@ -280,6 +284,9 @@ void	start_game_level( u8 _new_level )
 		// restart the last level
 		++__ls_attempts;
 	}
+
+	// init a game level timer
+	clock_reset();
 
 	if( !_new_level && ( checkpoint_x != 0xffff ) )
 	{
