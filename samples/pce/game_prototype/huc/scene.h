@@ -506,7 +506,7 @@ void	scene_restore_player( s16 _x, s16 _y, u8 _reinit_player )
 
 void	scene_save_curr_time()
 {
-	__ls_time_sec += clock_ss();
+	__ls_time_sec += clock_ss() + ( clock_mm() * 60 ) + ( clock_hh() * 3600 );
 }
 
 //~~~~~~~~~~~~~~~~~~~~//
