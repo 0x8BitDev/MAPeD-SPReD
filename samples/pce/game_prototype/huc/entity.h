@@ -1002,13 +1002,28 @@ u8	check_collision_platform()
 						if( ent_ptr->prop0 & 0x80 )	// DOWN
 						{
 							++__player_y;
+
+							// update BAT with the last changes in the game loop
+							mpd_update_screen();
+
+							// start a new BAT update iteration
+							mpd_clear_update_flags();
 							mpd_move_down();
 
+							// 'mpd_update_screen()' will be called in the game loop(!)
 						}
 						else	// UP
 						{
 							--__player_y;
+
+							// update BAT with the last changes in the game loop
+							mpd_update_screen();
+
+							// start a new BAT update iteration
+							mpd_clear_update_flags();
 							mpd_move_up();
+
+							// 'mpd_update_screen()' will be called in the game loop(!)
 						}
 					}
 
@@ -1039,12 +1054,28 @@ u8	check_collision_platform()
 						if( ent_ptr->prop0 & 0x80 )	// RIGHT
 						{
 							++__player_x;
+
+							// update BAT with the last changes in the game loop
+							mpd_update_screen();
+
+							// start a new BAT update iteration
+							mpd_clear_update_flags();
 							mpd_move_right();
+
+							// 'mpd_update_screen()' will be called in the game loop(!)
 						}
 						else	// LEFT
 						{
 							--__player_x;
+
+							// update BAT with the last changes in the game loop
+							mpd_update_screen();
+
+							// start a new BAT update iteration
+							mpd_clear_update_flags();
 							mpd_move_left();
+
+							// 'mpd_update_screen()' will be called in the game loop(!)
 						}
 					}
 

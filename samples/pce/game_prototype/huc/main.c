@@ -22,6 +22,7 @@
 History:
 
 v0.2
+- fixed the player/platform collision bug that led to incorrect drawing of map tiles
 - added ability to restart a passed level
 - added a passed level stats: attempts, time, gems
 - 'hdwr_collisions_init()' replaced with 'hdwr_collisions_enable(TRUE/FALSE)'

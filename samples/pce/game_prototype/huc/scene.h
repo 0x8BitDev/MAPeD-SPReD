@@ -150,7 +150,7 @@ void	scene_level_passed()
 	put_string( "LEVEL    PASSED!", 8, 13 );
 	put_number( __map_ind + 101, 2, 14, 13 );
 
-	put_string( "<A> - RESTART", 10, 26 );
+	put_string( "<A> - RESTART", 9, 26 );
 
 	if( __map_ind + 1 < MAPS_CNT )
 	{
