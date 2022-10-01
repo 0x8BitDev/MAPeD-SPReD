@@ -24,7 +24,10 @@ u8		__scene_shaking_arr_pos		= 0;
 // level stats
 
 u8	__ls_attempts;
-u16	__ls_time_sec;
+u8	__ls_time_hh;
+u8	__ls_time_mm;
+u16	__ls_time_ss;
+u16	__ls_time_tt;
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -207,32 +210,30 @@ void	scene_level_passed()
 
 void	__show_level_stats()
 {
-	u8	hh;
-	u8	mm;
-	u8	ss;
-
-	hh = __ls_time_sec / 3600;
-	mm = ( __ls_time_sec / 60 ) % 60;
-	ss = __ls_time_sec % 60;
-
 	put_string( "ATTEMPTS:", 8, 20 );
 	put_number( __ls_attempts + 100, 2, 18, 20 );
 
 	put_string( "TIME:", 8, 21 );
 
-	if( hh ) // hours?! are you kidding me? ))
+	__ls_time_ss += __ls_time_tt / 60;
+	__ls_time_mm += __ls_time_ss / 60;
+
+	__ls_time_ss %= 60;
+	__ls_time_mm %= 60;
+
+	if( __ls_time_hh ) // hours?! are you kidding me? ))
 	{
-		put_number( hh + 100, 2, 18, 21 );
+		put_number( __ls_time_hh + 100, 2, 18, 21 );
 		put_string( ":", 20, 21 );
-		put_number( mm + 100, 2, 21, 21 );
+		put_number( __ls_time_mm + 100, 2, 21, 21 );
 		put_string( ":", 23, 21 );
-		put_number( ss + 100, 2, 24, 21 );
+		put_number( __ls_time_ss + 100, 2, 24, 21 );
 	}
 	else
 	{
-		put_number( mm + 100, 2, 18, 21 );
+		put_number( __ls_time_mm + 100, 2, 18, 21 );
 		put_string( ":", 20, 21 );
-		put_number( ss + 100, 2, 21, 21 );
+		put_number( __ls_time_ss + 100, 2, 21, 21 );
 	}
 
 	put_string( "GEMS:", 8, 22 );
@@ -259,7 +260,10 @@ void	start_game_level( u8 _new_level )
 
 		// reset level stats
 		__ls_attempts	= 1;
-		__ls_time_sec	= 0;
+		__ls_time_hh	= 0;
+		__ls_time_mm	= 0;
+		__ls_time_ss	= 0;
+		__ls_time_tt	= 0;
 
 		disp_on();
 		wait_vsync();
@@ -506,7 +510,10 @@ void	scene_restore_player( s16 _x, s16 _y, u8 _reinit_player )
 
 void	scene_save_curr_time()
 {
-	__ls_time_sec += clock_ss() + ( clock_mm() * 60 ) + ( clock_hh() * 3600 );
+	__ls_time_hh	+= clock_hh();
+	__ls_time_mm	+= clock_mm();
+	__ls_time_ss	+= clock_ss();
+	__ls_time_tt	+= clock_tt();
 }
 
 //~~~~~~~~~~~~~~~~~~~~//
