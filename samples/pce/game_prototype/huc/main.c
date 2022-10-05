@@ -1,4 +1,4 @@
-//##################################################################
+//#######################################################################################
 //
 // Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
 //
@@ -16,12 +16,13 @@
 // - 2-level entities cache, +collisions cache
 // - infinite credits to complete the game! )))
 //
-//##################################################################
+//#######################################################################################
 
 /*
 History:
 
 v0.2
+- [MPD fix] fixed getting a tile property with negative coordinates (fixed head collisions at the top, sky part of a map)
 - fixed the player/platform collision bug that led to incorrect drawing of map tiles
 - added ability to restart a passed level
 - added a passed level stats: attempts, time, gems
@@ -30,7 +31,7 @@ v0.2
 
 v0.1
 - fixed auto-jumps
-- replaced solid brick tiles with decorative ones in the grass platforms
+- [maps fix] replaced solid brick tiles with decorative ones in the grass platforms
 - fixed a bug in jumps
 - fixed mid-frame palette update
 - initial release

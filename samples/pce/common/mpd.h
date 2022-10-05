@@ -8,6 +8,8 @@
 /*/	MPD-render v0.7
 History:
 
+2022.10.04 - asm optimization - 'get_property(...)'
+
 v0.7
 2022.09.27 - updated 'Working with screens/entities - General information' / item 2
 2022.09.27 - removed deprecated functions
@@ -484,6 +486,16 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 
 	bcc .cont\@
 	inc high_byte \1
+.cont\@:
+	.endm
+
+; if( xa < 0 ) { xa = 0; }
+	.macro	mpd_clamp_neg_xa
+	bit #$80
+	beq .cont\@
+
+	cla
+	clx
 .cont\@:
 	.endm
 
@@ -1209,6 +1221,11 @@ union mpd_var16
 	{
 		u8	l;
 		u8	b;
+	};
+
+	struct
+	{
+		s16	ws;
 	};
 };
 
@@ -3460,21 +3477,24 @@ u8	mpd_get_property( u16 _x, u16 _y )
 //	FLAG_MODE_BIDIR_STAT_SCR
 //	FLAG_MODE_STAT_SCR
 
-	u16	tiles_offset;
-	u8	tile_id;
+//	u16	tiles_offset;	// mpd_cx
+//	u8	tile_id;	// mpd_dx
 
-	u8	block_pos_x;
-	u8	block_pos_y;
-	u8	CHR_pos_x;
-	u8	CHR_pos_y;
+				// _x = __cx
+				// _y = __dx
+
+//	u8	block_pos_x;	// mpd_ax.l
+//	u8	block_pos_y;	// mpd_ax.h
+//	u8	CHR_pos_x;	// mpd_bx.l
+//	u8	CHR_pos_y;	// mpd_bx.h
 
 #if	FLAG_MODE_BIDIR_SCROLL		/* !!! */
 
 	mpd_SCREEN	tmp_scr;
-	u16		scr_offs;
+//	u16		scr_offs;	// mpd_ex
 
-	s16		dx;
-	s16		dy;
+//	s16		dx;		// mpd_ax.ws
+//	s16		dy;		// mpd_bx.ws
 #endif
 
 #asm
@@ -3487,17 +3507,17 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 #if	FLAG_MODE_BIDIR_SCROLL		/* !!! */
 
-	scr_offs	= __scr_offset;
+	mpd_ex	= __scr_offset;
 
 	if( !__horiz_dir_pos && __vert_dir_pos )
 	{
-		dy = _y - ( ScrPixelsHeight - __vert_dir_pos );
+		mpd_bx.ws = _y - ( ScrPixelsHeight - __vert_dir_pos );
 
-		if( dy >= 0 )
+		if( mpd_bx.ws >= 0 )
 		{
 			__mpd_get_screen_data( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_DOWN ), &tmp_scr );
-			scr_offs	= tmp_scr.scr_ind * __c_scr_tiles_size;
-			_y		= dy;
+			mpd_ex	= tmp_scr.scr_ind * __c_scr_tiles_size;
+			_y	= mpd_bx.ws;
 		}
 		else
 		{
@@ -3507,13 +3527,13 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	else
 	if( !__vert_dir_pos && __horiz_dir_pos )
 	{
-		dx = _x - ( ScrPixelsWidth - __horiz_dir_pos );
+		mpd_ax.ws = _x - ( ScrPixelsWidth - __horiz_dir_pos );
 
-		if( dx >= 0 )
+		if( mpd_ax.ws >= 0 )
 		{
 			__mpd_get_screen_data( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_RIGHT ), &tmp_scr );
-			scr_offs	= tmp_scr.scr_ind * __c_scr_tiles_size;
-			_x		= dx;
+			mpd_ex	= tmp_scr.scr_ind * __c_scr_tiles_size;
+			_x	= mpd_ax.ws;
 		}
 		else
 		{
@@ -3522,97 +3542,483 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	}
 #endif
 
+	// _x = __cx
+	// _y = __dx
+
 #if	FLAG_TILES4X4
 #if	FLAG_PROP_ID_PER_BLOCK
-	_x >>= 4;
-	_y >>= 4;
+//	_x >>= 4;
+//	block_pos_x = _x & 0x01;
+//	_x >>= 1;
 
-	block_pos_x = _x & 0x01;
-	block_pos_y = _y & 0x01;
+#asm
+	__ldw_s 2	; _x
 
-	_x >>= 1;
-	_y >>= 1;
+	mpd_clamp_neg_xa
+
+	__lsrw
+	__lsrw
+	__lsrw
+	__lsrw
+
+	tay
+	txa
+	and #1
+	sta _mpd_ax	; block_pos_x
+	tya
+	
+	__lsrw
+
+	stx <__cl
+	sta <__ch	; _x
+#endasm
+
+//	_y >>= 4;
+//	block_pos_y = _y & 0x01;
+//	_y >>= 1;
+
+#asm
+	__ldw_s 0	; _y
+
+	mpd_clamp_neg_xa
+
+	__lsrw
+	__lsrw
+	__lsrw
+	__lsrw
+	
+	tay
+	txa
+	and #1
+	sta _mpd_ax + 1	; block_pos_y
+	tya
+	
+	__lsrw
+
+	stx <__dl
+	sta <__dh	; _y
+#endasm
+
 #else	//FLAG_PROP_ID_PER_CHR
-	_x >>= 3;
-	_y >>= 3;
+//	_x >>= 3;
+//	CHR_pos_x = _x & 0x01;
+//	_x >>= 1;
+//	block_pos_x = _x & 0x01;
+//	_x >>= 1;
 
-	CHR_pos_x = _x & 0x01;
-	CHR_pos_y = _y & 0x01;
+#asm
+	__ldw_s 2	; _x
 
-	_x >>= 1;
-	_y >>= 1;
+	mpd_clamp_neg_xa
 
-	block_pos_x = _x & 0x01;
-	block_pos_y = _y & 0x01;
+	__lsrw
+	__lsrw
+	__lsrw
 
-	_x >>= 1;
-	_y >>= 1;
+	tay
+	txa
+	and #1
+	sta _mpd_bx	; CHR_pos_x
+	tya
+
+	__lsrw
+
+	tay
+	txa
+	and #1
+	sta _mpd_ax	; block_pos_x
+	tya
+	
+	__lsrw
+
+	stx <__cl
+	sta <__ch	; _x
+#endasm
+
+//	_y >>= 3;
+//	CHR_pos_y = _y & 0x01;
+//	_y >>= 1;
+//	block_pos_y = _y & 0x01;
+//	_y >>= 1;
+
+#asm
+	__ldw_s 0	; _y
+
+	mpd_clamp_neg_xa
+
+	__lsrw
+	__lsrw
+	__lsrw
+
+	tay
+	txa
+	and #1
+	sta _mpd_bx + 1	; CHR_pos_y
+	tya
+
+	__lsrw
+	
+	tay
+	txa
+	and #1
+	sta _mpd_ax + 1	; block_pos_y
+	tya
+	
+	__lsrw
+
+	stx <__dl
+	sta <__dh	; _y
+#endasm
 #endif	
-#else
+#else	//FLAG_TILES2X2
 #if	FLAG_PROP_ID_PER_BLOCK
-	_x >>= 4;
-	_y >>= 4;
+//	_x >>= 4;
+
+#asm
+	__ldw_s 2	; _x
+
+	mpd_clamp_neg_xa
+
+	__lsrw
+	__lsrw
+	__lsrw
+	__lsrw
+
+	stx <__cl
+	sta <__ch	; _x
+#endasm
+
+//	_y >>= 4;
+
+#asm
+	__ldw_s 0	; _y
+
+	mpd_clamp_neg_xa
+
+	__lsrw
+	__lsrw
+	__lsrw
+	__lsrw
+
+	stx <__dl
+	sta <__dh	; _y
+#endasm
 #else	//FLAG_PROP_ID_PER_CHR
-	_x >>= 3;
-	_y >>= 3;
+//	_x >>= 3;
+//	CHR_pos_x = _x & 0x01;
+//	_x >>= 1;
 
-	CHR_pos_x = _x & 0x01;
-	CHR_pos_y = _y & 0x01;
+#asm
+	__ldw_s 2	; _x
 
-	_x >>= 1;
-	_y >>= 1;
+	mpd_clamp_neg_xa
+
+	__lsrw
+	__lsrw
+	__lsrw
+
+	tay
+	txa
+	and #1
+	sta _mpd_bx	; CHR_pos_x
+	tya
+
+	__lsrw
+
+	stx <__cl
+	sta <__ch	; _x
+#endasm
+
+//	_y >>= 3;
+//	CHR_pos_y = _y & 0x01;
+//	_y >>= 1;
+
+#asm
+	__ldw_s 0	; _y
+
+	mpd_clamp_neg_xa
+
+	__lsrw
+	__lsrw
+	__lsrw
+
+	tay
+	txa
+	and #1
+	sta _mpd_bx + 1	; CHR_pos_y
+	tya
+
+	__lsrw
+
+	stx <__dl
+	sta <__dh	; _y
+#endasm
 #endif
 #endif
 
 #if	FLAG_MODE_MULTIDIR_SCROLL	/* !!! */
 
 #if	FLAG_DIR_ROWS
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( _y << 1 ) ) + _x;
-#else
-	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( _x << 1 ) ) + _y;
-#endif
-	tiles_offset	+= __maps_offset;
+//	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( _y << 1 ) ) + _x;
+#asm
+	__farptr _mpd_MapsTbl, __bl, __si
 
-	tile_id		= mpd_farpeekb( mpd_Maps, tiles_offset );
+	; __ax = __maps_tbl_offset + ( _y << 1 )
+
+	lda <__dl
+	asl a
+	sta <__al
+	lda <__dh
+	rol a
+	sta <__ah					; __ax = _y << 1
+
+	mpd_add_word_to_word ___maps_tbl_offset, <__ax	; __maps_tbl_offset + ( _y << 1 )
+
+	call _mpd_farpeekw.2
+
+	sax
+
+	clc
+	adc <__cl		; _x.l
+	sta _mpd_cx		; tiles_offset.l
+
+	sax
+
+	adc <__ch		; _x.h
+	sta _mpd_cx + 1		; tiles_offset.h
+#endasm
+#else
+//	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( _x << 1 ) ) + _y;
+#asm
+	__farptr _mpd_MapsTbl, __bl, __si
+
+	; __ax = __maps_tbl_offset + ( _x << 1 )
+
+	lda <__cl
+	asl a
+	sta <__al
+	lda <__ch
+	rol a
+	sta <__ah					; __ax = _x << 1
+
+	mpd_add_word_to_word ___maps_tbl_offset, <__ax	; __maps_tbl_offset + ( _x << 1 )
+
+	call _mpd_farpeekw.2
+
+	sax
+
+	clc
+	adc <__dl		; _y.l
+	sta _mpd_cx		; tiles_offset.l
+
+	sax
+
+	adc <__dh		; _y.h
+	sta _mpd_cx + 1		; tiles_offset.h
+#endasm
+#endif
+//	tiles_offset	+= __maps_offset;
+
+//	tile_id		= mpd_farpeekb( mpd_Maps, tiles_offset );
+#asm
+	mpd_add_word_to_word ___maps_offset, _mpd_cx
+
+	__farptr _mpd_Maps, __bl, __si
+
+	stw _mpd_cx, <__ax	; tiles_offset
+
+	call _mpd_farptr_add_offset
+
+	lda	<__bl
+	tam	#3
+
+	lda [<__si]
+	tax			; x = tile_id
+#endasm
 
 #elif	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR + FLAG_MODE_STAT_SCR	/* !!! */
 
 #if	FLAG_DIR_ROWS
-	tiles_offset	= __scr_tiles_width_tbl[ _y ] + _x;
+//	tiles_offset	= __scr_tiles_width_tbl[ _y ] + _x;
+#asm
+	lda <__dl
+	asl a
+	sta <__al
+	lda <__dh
+	rol a
+	sta <__ah		; __ax = _y << 1
+
+	mpd_add_word_to_word #___scr_tiles_width_tbl, <__ax
+
+	lda [<__ax]
+
+	clc
+	adc <__cl
+	sta _mpd_cx
+
+	ldy #1
+	lda [<__ax], y
+
+	adc <__ch
+	sta _mpd_cx + 1		; tiles_offset = __scr_tiles_width_tbl[ _y ] + _x
+#endasm
 #else
-	tiles_offset	= __scr_tiles_height_tbl[ _x ] + _y;
+//	tiles_offset	= __scr_tiles_height_tbl[ _x ] + _y;
+#asm
+	lda <__cl
+	asl a
+	sta <__al
+	lda <__ch
+	rol a
+	sta <__ah		; __ax = _x << 1
+
+	mpd_add_word_to_word #___scr_tiles_height_tbl, <__ax
+
+	lda [<__ax]
+
+	clc
+	adc <__dl
+	sta _mpd_cx
+
+	ldy #1
+	lda [<__ax], y
+
+	adc <__dh
+	sta _mpd_cx + 1		; tiles_offset = __scr_tiles_height_tbl[ _x ] + _y
+#endasm
 #endif
 
 #if	FLAG_MODE_BIDIR_SCROLL
-	tile_id		= mpd_farpeekb( mpd_TilesScr, scr_offs + tiles_offset );
+//	tile_id		= mpd_farpeekb( mpd_TilesScr, mpd_ex(scr_offs) + tiles_offset );
+#asm
+	__farptr _mpd_TilesScr, __bl, __si
+
+	mpd_add_word_to_word2 _mpd_ex, _mpd_cx, <__ax	; scr_offs + tiles_offset
+
+	call _mpd_farptr_add_offset
+
+	lda	<__bl
+	tam	#3
+
+	lda [<__si]
+	tax					; x = tile_id
+#endasm
 #else
-	tile_id		= mpd_farpeekb( mpd_TilesScr, __scr_offset + tiles_offset );
+//	tile_id		= mpd_farpeekb( mpd_TilesScr, __scr_offset + tiles_offset );
+#asm
+	__farptr _mpd_TilesScr, __bl, __si
+
+	mpd_add_word_to_word2 ___scr_offset, _mpd_cx, <__ax	; __scr_offset + tiles_offset
+
+	call _mpd_farptr_add_offset
+
+	lda	<__bl
+	tam	#3
+
+	lda [<__si]
+	tax					; x = tile_id
+#endasm
 #endif
 #endif
 
 #if	FLAG_TILES4X4
-	tile_id		= mpd_farpeekb( mpd_Tiles, __tiles_offset + ( tile_id << 2 ) + ( block_pos_y << 1 ) + block_pos_x );
+//	tile_id		= mpd_farpeekb( mpd_Tiles, __tiles_offset + ( tile_id << 2 ) + ( block_pos_y << 1 ) + block_pos_x );
+#asm
+	__farptr _mpd_Tiles, __bl, __si
+
+	stw ___tiles_offset, <__ax		; __tiles_offset
+
+	lda _mpd_ax + 1				; block_pos_y << 1
+	asl a
+
+	clc
+	adc _mpd_ax				; block_pos_x
+
+	mpd_add_a_to_word <__ax			; __tiles_offset + ( block_pos_y << 1 ) + block_pos_x
+
+	cla
+	sta _mpd_dx + 1
+
+	txa					; a = tile_id
+	asl a
+	rol _mpd_dx + 1
+	asl a
+	rol _mpd_dx + 1
+	sta _mpd_dx				; tile_id << 2
+
+	mpd_add_word_to_word _mpd_dx, <__ax	; __tiles_offset + ( tile_id << 2 ) + ( block_pos_y << 1 ) + block_pos_x
+
+	call _mpd_farptr_add_offset
+
+	lda	<__bl
+	tam	#3
+
+	lda [<__si]
+	tax					; x = tile_id
+#endasm
+#endif
+
+#if	FLAG_PROP_ID_PER_BLOCK
+//	tile_id		= mpd_farpeekb( mpd_Props, __props_offset + tile_id );
+#asm
+	__farptr _mpd_Props, __bl, __si
+
+	stw ___props_offset, <__ax
+
+	txa					; a = tile_id
+	mpd_add_a_to_word <__ax			; __props_offset + tile_id
+
+	call _mpd_farptr_add_offset
+
+	lda	<__bl
+	tam	#3
+
+	lda [<__si]
+	sta _mpd_dx				; tile_id
+#endasm
+#else	//FLAG_PROP_ID_PER_CHR
+//	tile_id		= mpd_farpeekb( mpd_Props, __props_offset + ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x );
+#asm
+	__farptr _mpd_Props, __bl, __si
+
+	stw ___props_offset, <__ax		; __props_offset
+
+	lda _mpd_bx + 1				; CHR_pos_y << 1
+	asl a
+
+	clc
+	adc _mpd_bx				; CHR_pos_x
+
+	mpd_add_a_to_word <__ax			; __props_offset + ( CHR_pos_y << 1 ) + CHR_pos_x
+
+	cla
+	sta _mpd_dx + 1
+
+	txa					; a = tile_id
+	asl a
+	rol _mpd_dx + 1
+	asl a
+	rol _mpd_dx + 1
+	sta _mpd_dx				; tile_id << 2
+
+	mpd_add_word_to_word _mpd_dx, <__ax	; __props_offset + ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x
+
+	call _mpd_farptr_add_offset
+
+	lda	<__bl
+	tam	#3
+
+	lda [<__si]
+	sta _mpd_dx				; tile_id
+#endasm
 #endif
 
 #asm
 .ifdef MPD_DEBUG
 #endasm
-#if	FLAG_PROP_ID_PER_BLOCK
-	tile_id		= mpd_farpeekb( mpd_Props, __props_offset + tile_id );
-#else	//FLAG_PROP_ID_PER_CHR
-	tile_id		= mpd_farpeekb( mpd_Props, __props_offset + ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x );
-#endif
 	DBG_BORDER_COLOR_RESET
-	return tile_id;
-#asm
-.else
-#endasm
-#if	FLAG_PROP_ID_PER_BLOCK
-	return mpd_farpeekb( mpd_Props, __props_offset + tile_id );
-#else	//FLAG_PROP_ID_PER_CHR
-	return mpd_farpeekb( mpd_Props, __props_offset + ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x );
-#endif
 #asm
 .endif
 #endasm
+	return mpd_dx.l;//tile_id;
 }
