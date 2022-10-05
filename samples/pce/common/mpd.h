@@ -8,7 +8,8 @@
 /*/	MPD-render v0.7
 History:
 
-2022.10.04 - asm optimization - 'get_property(...)'
+2022.10.05 - asm optimization - '__mpd_get_VRAM_addr(...)'
+2022.10.04 - asm optimization - 'mpd_get_property(...)'
 
 v0.7
 2022.09.27 - updated 'Working with screens/entities - General information' / item 2
@@ -444,6 +445,10 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 
 /* void mpd_get_ptr24( far void* _addr, u8 _ind, void* _dst_addr ) */
 #pragma	fastcall mpd_get_ptr24( farptr __bl:__si, byte __al, word __dx )
+
+// FOR INTERNAL USE:
+
+u16	__fastcall __mpd_get_VRAM_addr( u16 _x<__ax>, u16 _y<acc> );
 
 /* asm implementations */
 
@@ -3458,10 +3463,67 @@ CHRs_proc_exit:
 }
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 
-u16	__mpd_get_VRAM_addr( u16 _x, u16 _y )
-{
-	return ( ( ( _x >> 3 ) & __BAT_width_dec1 ) + ( ( ( _y >> 3 ) & __BAT_height_dec1 ) << __BAT_width_pow2 ) ) & __BAT_size_dec1;
-}
+#asm
+
+;//u16	__mpd_get_VRAM_addr( u16 _x<__ax>, u16 _y<acc> )
+
+; HuC	return ( ( ( _x >> 3 ) & __BAT_width_dec1 ) + ( ( ( _y >> 3 ) & __BAT_height_dec1 ) << __BAT_width_pow2 ) ) & __BAT_size_dec1;
+
+	.proc ___mpd_get_VRAM_addr.2
+
+	; _y
+
+	__lsrw
+	__lsrw
+	__lsrw
+
+	sax
+	and ___BAT_height_dec1
+
+	clx
+	sax
+
+	ldy ___BAT_width_pow2
+.loop:
+	__aslw
+
+	dey
+	bne .loop
+
+	sta <__bh
+	stx <__bl
+
+	; _x
+
+	lda <__ah
+	ldx <__al
+
+	__lsrw
+	__lsrw
+	__lsrw
+
+	sax
+	and ___BAT_width_dec1
+
+	clc
+	adc <__bl
+	sax
+
+	cla
+
+	adc <__bh
+
+	and ___BAT_size_dec1 + 1
+
+	sax
+	and ___BAT_size_dec1
+
+	sax
+
+	rts
+
+	.endp
+#endasm
 
 u8	mpd_get_property( u16 _x, u16 _y )
 {
