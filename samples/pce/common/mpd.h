@@ -8,7 +8,7 @@
 /*/	MPD-render v0.7
 History:
 
-2022.10.05 - asm optimization - '__mpd_get_VRAM_addr(...)'
+2022.10.06 - asm optimization - '__mpd_calc_skip_CHRs_cnt(...)' and __mpd_get_VRAM_addr(...)'
 2022.10.04 - asm optimization - 'mpd_get_property(...)'
 
 v0.7
@@ -449,6 +449,10 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 // FOR INTERNAL USE:
 
 u16	__fastcall __mpd_get_VRAM_addr( u16 _x<__ax>, u16 _y<acc> );
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+u8	__fastcall __mpd_calc_skip_CHRs_cnt( u8 _pos<acc> );
+#endif
 
 /* asm implementations */
 
@@ -2558,14 +2562,63 @@ void	__mpd_draw_down_tiles_row()
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-u8	__mpd_calc_skip_CHRs_cnt( u8 _pos )
-{
+
+// u8	__mpd_calc_skip_CHRs_cnt( u8 _pos<acc> )
+
 #if	FLAG_TILES4X4
-	return ( ( ( _pos >> 4 ) & 0x01 ) << 1 ) + ( ( _pos >> 3 ) & 0x01 );
+// HuC	return ( ( ( _pos >> 4 ) & 0x01 ) << 1 ) + ( ( _pos >> 3 ) & 0x01 );
+#asm
+	.proc ___mpd_calc_skip_CHRs_cnt.1
+
+	txa
+	tay
+
+	lsr a
+	lsr a
+	lsr a
+	lsr a
+	and #1
+	asl a
+
+	sta <__al		; ( ( ( _pos >> 4 ) & 0x01 ) << 1 )
+
+	tya
+
+	lsr a
+	lsr a
+	lsr a
+	and #1			; ( ( _pos >> 3 ) & 0x01 )
+
+	clc
+	adc <__al
+
+	tax
+	cla
+
+	rts
+
+	.endp
+#endasm
 #else
-	return ( ( _pos >> 3 ) & 0x01 );
+// HuC	return ( ( _pos >> 3 ) & 0x01 );
+#asm
+	.proc ___mpd_calc_skip_CHRs_cnt.1
+
+	txa
+
+	lsr a
+	lsr a
+	lsr a
+	and #1
+
+	tax
+	cla
+
+	rts
+
+	.endp
+#endasm
 #endif
-}
 
 void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt, u8 _skip_CHRs_cnt )
 #else
