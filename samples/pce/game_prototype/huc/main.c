@@ -22,6 +22,7 @@
 History:
 
 v0.2
+- fixed the falling platform logic, now it is deactivated at the bottom side of the screen
 - [MPD fix] fixed getting a tile property with negative coordinates (fixed head collisions at the top, sky part of a map)
 - fixed the player/platform collision bug that led to incorrect drawing of map tiles
 - added ability to restart a passed level

@@ -615,18 +615,18 @@ void	update_cached_logs()
 			{
 				ent_ptr->prop2 += 5;
 
-				if( ent_ptr->prop2 > ScrPixelsHeight )
+				mpd_ax.ws = ent_y_unmasked + ent_ptr->prop2;
+
+				if( ( mpd_ax.ws > ( ScrPixelsHeight - 8 ) ) || ( ( ( mpd_ax.ws + mpd_scroll_y ) % ScrPixelsHeight ) > ( ScrPixelsHeight - 8 ) ) )
 				{
+					// deactivate entity at the bottom side of the screen
+
 					ent_ptr->prop1 |= 0x20;	// deactivate
 				}
 			}
 			else
-			if( !--ent_ptr->prop0 )
 			{
-				ent_ptr->prop1 |= 0x40;	// time is over, start falling
-			}
-
-			mpd_ax = ent_ptr->prop0;
+				mpd_ax = --ent_ptr->prop0;
 #asm	; apply shake
 
 	lda _mpd_ax
@@ -642,6 +642,11 @@ void	update_cached_logs()
 	inc _ent_y_unmasked + 1
 .skip_hb:
 #endasm
+				if( !ent_ptr->prop0 )
+				{
+					ent_ptr->prop1 |= 0x40;	// time is over, start falling
+				}
+			}
 		}
 
 		ENT_NEXT_SATB_POS
