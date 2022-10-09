@@ -153,17 +153,11 @@ namespace MAPeD
 			/* fix an entity position inside a screen */
 			if( _fix_inside_screen )
 			{
-				int			CHRs_in_tile = ( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? 32:16;
-				Rectangle	prj_scr_rect = project_data_converter_provider.get_converter().get_prj_scr_rect();
-				
-				y += prj_scr_rect.Y * CHRs_in_tile;
-				x += prj_scr_rect.X * CHRs_in_tile;
-				
 				y = y < 0 ? 0:y;
-				y = ( y >= platform_data.get_screen_height_pixels() ) ? ( platform_data.get_screen_height_pixels() - 1 ):y;
+				y = ( ( y + base_entity.height ) >= platform_data.get_screen_height_pixels() ) ? ( platform_data.get_screen_height_pixels() - base_entity.height ):y;
 				
 				x = x < 0 ? 0:x;
-				x = ( x >= platform_data.get_screen_width_pixels() ) ? ( platform_data.get_screen_width_pixels() - 1 ):x;
+				x = ( ( x + base_entity.width ) >= platform_data.get_screen_width_pixels() ) ? ( platform_data.get_screen_width_pixels() - base_entity.width ):x;
 			}
 
 			// extra data ( reserved for future purposes )
