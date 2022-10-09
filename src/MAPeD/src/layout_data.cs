@@ -84,7 +84,7 @@ namespace MAPeD
 			});
 		}
 		
-		public void load( BinaryReader _br, byte _ver, Func< string, entity_data > _get_ent, data_sets_manager.EScreenDataType _scr_type )
+		public void load( BinaryReader _br, byte _ver, Func< string, entity_data > _get_ent, data_sets_manager.EScreenDataType _scr_type, bool _fix_inside_scr )
 		{
 			m_marks	  = _br.ReadUInt16();
 			
@@ -97,7 +97,7 @@ namespace MAPeD
 			for( int ent_n = 0; ent_n < ents_cnt; ent_n++ )
 			{
 				ent_inst = new entity_instance();
-				ent_inst.load( _br, _ver,_get_ent, _scr_type );
+				ent_inst.load( _br, _ver, _get_ent, _scr_type, _fix_inside_scr );
 				
 				m_ents.Add( ent_inst );
 			}
@@ -852,7 +852,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void load( BinaryReader _br, byte _ver, Func< string, entity_data > _get_ent, data_sets_manager.EScreenDataType _scr_type )
+		public void load( BinaryReader _br, byte _ver, Func< string, entity_data > _get_ent, data_sets_manager.EScreenDataType _scr_type, bool _fix_ent_inside_scr )
 		{
 			int i;
 			int j;
@@ -873,7 +873,7 @@ namespace MAPeD
 			{
 				for( j = 0; j < width; j++ )
 				{
-					m_layout[ i ][ j ].load( _br, _ver, _get_ent, _scr_type );
+					m_layout[ i ][ j ].load( _br, _ver, _get_ent, _scr_type, _fix_ent_inside_scr );
 				}
 			}
 		}

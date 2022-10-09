@@ -881,12 +881,14 @@ namespace MAPeD
 				{
 					_status.Report( "Layouts" );
 					
+					bool fix_ent_inside_scr = ( _prj_data.m_scr_blocks_width > platform_data.get_screen_blocks_width() ) || ( _prj_data.m_scr_blocks_height > platform_data.get_screen_blocks_height() );
+					
 					int layouts_data_cnt = _br.ReadInt32();
 					
 					for( int i = 0; i < layouts_data_cnt; i++ )
 					{
 						layout_data_create();
-						get_layout_data( layouts_data_pos ).load( _br, _prj_data.m_ver, get_entity_by_name, screen_data_type );
+						get_layout_data( layouts_data_pos ).load( _br, _prj_data.m_ver, get_entity_by_name, screen_data_type, fix_ent_inside_scr );
 					}
 					
 					entity_instance.load_instances_counter( _br );

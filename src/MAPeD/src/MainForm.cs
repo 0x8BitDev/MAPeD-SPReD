@@ -607,7 +607,7 @@ namespace MAPeD
 			CheckBoxShowCoords.Checked		= true;
 			
 			CheckBoxPalettePerCHR.Checked	= false;
-#if DEF_NES || DEF_SMS || DEF_ZX
+#if DEF_NES || DEF_SMS || DEF_ZX || DEF_PCE
 			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
 #else
 			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
