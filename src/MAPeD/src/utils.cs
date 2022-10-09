@@ -179,9 +179,9 @@ namespace MAPeD
 		public const int CONST_TILE_SIZE					= 4;	// ushorts
 		
 #if DEF_PLATFORM_16BIT
-		public const int CONST_MAX_ENT_INST_CNT				= 0xffff;	// max number of entities instances in a map
+		public const int CONST_MAX_ENT_INST_CNT				= 0x10000;	// max number of entities instances in a map
 #else
-		public const int CONST_MAX_ENT_INST_CNT				= 0xff;		// max number of entities instances in a map
+		public const int CONST_MAX_ENT_INST_CNT				= 0x100;	// max number of entities instances in a map
 #endif
 
 		public const byte CONST_CHR_ATTR_FLAG_HFLIP			= 0x01;
