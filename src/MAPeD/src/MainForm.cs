@@ -662,9 +662,9 @@ namespace MAPeD
 				tabControlMainLayout.SelectTab( TabMain );
 			}
 			
-			if( tabControlScreensEntities.Contains( TabScreenList ) )
+			if( tabControlScreensEntities.Contains( TabBuilder ) )
 			{
-				tabControlScreensEntities.SelectTab( TabScreenList );
+				tabControlScreensEntities.SelectTab( TabBuilder );
 			}
 			
 			if( tabControlTilesScreens.Contains( TabTiles ) )
