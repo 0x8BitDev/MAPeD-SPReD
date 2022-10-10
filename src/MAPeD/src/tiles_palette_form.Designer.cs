@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 26.11.2018
  * Time: 17:38
  */
@@ -150,6 +150,7 @@ namespace MAPeD
 			this.Name = "tiles_palette_form";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Palette";
+			this.TopMost = true;
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Closing_Event);
 			this.Load += new System.EventHandler(this.BtnCloseClick_Event);
 			this.splitContainer1.Panel1.ResumeLayout(false);

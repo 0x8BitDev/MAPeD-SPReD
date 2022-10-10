@@ -177,13 +177,13 @@ namespace MAPeD
 		
 		protected override void Resize_Event(object sender, EventArgs e)
 		{
-			base.Resize_Event(sender, e);
-			
 			m_scr_half_width  = m_pix_box.Width >> 1;
 			m_scr_half_height = m_pix_box.Height >> 1;
 			
 			m_pbox_rect.Width	= m_pix_box.Width;
 			m_pbox_rect.Height	= m_pix_box.Height;
+
+			base.Resize_Event(sender, e);
 		}
 		
 		public void reset( bool _init )

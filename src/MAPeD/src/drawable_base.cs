@@ -78,7 +78,7 @@ namespace MAPeD
 			m_pbox_rect.Width	= m_pix_box.Width;
 			m_pbox_rect.Height	= m_pix_box.Height;
 			
-			m_main_bmp = new Bitmap( m_pix_box.Width, m_pix_box.Height, PixelFormat.Format32bppPArgb );
+			m_main_bmp = new Bitmap( ( m_pix_box.Width != 0 ? m_pix_box.Width:1 ), ( m_pix_box.Height != 0 ? m_pix_box.Height:1 ), PixelFormat.Format32bppPArgb );
 			
 			m_gfx = Graphics.FromImage( m_main_bmp );
 			enable_smoothing_mode( false );

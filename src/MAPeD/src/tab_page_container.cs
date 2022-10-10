@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 09.05.2017
  * Time: 12:35
  */
@@ -22,7 +22,7 @@ namespace MAPeD
 		
 		private MainForm	m_parent	= null;
 		
-		public tab_page_container( TabControl _tab_cntrl, MainForm _parent )
+		public tab_page_container( TabControl _tab_cntrl, MainForm _parent, bool _resizable )
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -30,6 +30,13 @@ namespace MAPeD
 			InitializeComponent();
 			
 			m_parent = _parent;
+			
+			if( _resizable )
+			{
+				this.FormBorderStyle = FormBorderStyle.Sizable;
+				this.MaximizeBox = true;
+				this.MinimizeBox = true;
+			}
 			
 			if( _tab_cntrl.SelectedTab != null )
 			{

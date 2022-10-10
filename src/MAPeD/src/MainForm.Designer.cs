@@ -251,30 +251,31 @@ namespace MAPeD
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.TabLayout = new System.Windows.Forms.TabPage();
 			this.splitContainer5 = new System.Windows.Forms.SplitContainer();
-			this.tabControlScreensEntities = new System.Windows.Forms.TabControl();
+			this.tabControlLayoutTools = new System.Windows.Forms.TabControl();
 			this.TabBuilder = new System.Windows.Forms.TabPage();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.BtnLayoutMoveDown = new System.Windows.Forms.Button();
+			this.BtnLayoutMoveUp = new System.Windows.Forms.Button();
+			this.ListBoxLayouts = new System.Windows.Forms.ListBox();
+			this.LayoutLabel = new System.Windows.Forms.Label();
 			this.groupBox13 = new System.Windows.Forms.GroupBox();
 			this.CheckBoxShowCoords = new System.Windows.Forms.CheckBox();
 			this.CheckBoxShowTargets = new System.Windows.Forms.CheckBox();
 			this.CheckBoxShowMarks = new System.Windows.Forms.CheckBox();
 			this.CheckBoxShowEntities = new System.Windows.Forms.CheckBox();
-			this.BtnLayoutRemoveRightColumn = new System.Windows.Forms.Button();
-			this.groupBox7 = new System.Windows.Forms.GroupBox();
-			this.BtnLayoutMoveDown = new System.Windows.Forms.Button();
-			this.BtnLayoutMoveUp = new System.Windows.Forms.Button();
-			this.ListBoxLayouts = new System.Windows.Forms.ListBox();
-			this.BtnLayoutAddRightColumn = new System.Windows.Forms.Button();
 			this.BtnCreateLayout = new System.Windows.Forms.Button();
-			this.BtnLayoutRemoveLeftColumn = new System.Windows.Forms.Button();
-			this.BtnCopyLayout = new System.Windows.Forms.Button();
-			this.BtnLayoutAddLeftColumn = new System.Windows.Forms.Button();
-			this.LayoutLabel = new System.Windows.Forms.Label();
-			this.BtnLayoutRemoveDownRow = new System.Windows.Forms.Button();
-			this.BtnDeleteLayout = new System.Windows.Forms.Button();
+			this.BtnLayoutRemoveRightColumn = new System.Windows.Forms.Button();
+			this.BtnLayoutRemoveUpRow = new System.Windows.Forms.Button();
 			this.BtnLayoutAddDownRow = new System.Windows.Forms.Button();
 			this.BtnCreateLayoutWxH = new System.Windows.Forms.Button();
-			this.BtnLayoutRemoveUpRow = new System.Windows.Forms.Button();
+			this.BtnLayoutAddRightColumn = new System.Windows.Forms.Button();
+			this.BtnCopyLayout = new System.Windows.Forms.Button();
 			this.BtnLayoutAddUpRow = new System.Windows.Forms.Button();
+			this.BtnDeleteLayout = new System.Windows.Forms.Button();
+			this.BtnLayoutRemoveDownRow = new System.Windows.Forms.Button();
+			this.BtnLayoutAddLeftColumn = new System.Windows.Forms.Button();
+			this.BtnLayoutRemoveLeftColumn = new System.Windows.Forms.Button();
 			this.TabScreenList = new System.Windows.Forms.TabPage();
 			this.CheckBoxLayoutEditorAllBanks = new System.Windows.Forms.CheckBox();
 			this.LabelLayoutEditorCHRBankID = new System.Windows.Forms.Label();
@@ -375,7 +376,7 @@ namespace MAPeD
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.splitContainer6 = new System.Windows.Forms.SplitContainer();
 			this.ContextMenuEntitiesTreeGroup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
 			this.tabControlMainLayout.SuspendLayout();
@@ -427,10 +428,11 @@ namespace MAPeD
 			this.splitContainer5.Panel1.SuspendLayout();
 			this.splitContainer5.Panel2.SuspendLayout();
 			this.splitContainer5.SuspendLayout();
-			this.tabControlScreensEntities.SuspendLayout();
+			this.tabControlLayoutTools.SuspendLayout();
 			this.TabBuilder.SuspendLayout();
-			this.groupBox13.SuspendLayout();
+			this.groupBox1.SuspendLayout();
 			this.groupBox7.SuspendLayout();
+			this.groupBox13.SuspendLayout();
 			this.TabScreenList.SuspendLayout();
 			this.TabEntities.SuspendLayout();
 			this.groupBoxEntitiesTreeView.SuspendLayout();
@@ -453,7 +455,10 @@ namespace MAPeD
 			this.ContextMenuBlocksList.SuspendLayout();
 			this.StatusBar.SuspendLayout();
 			this.ContextMenuEntitiesTreeEntity.SuspendLayout();
-			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer6)).BeginInit();
+			this.splitContainer6.Panel1.SuspendLayout();
+			this.splitContainer6.Panel2.SuspendLayout();
+			this.splitContainer6.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ContextMenuEntitiesTreeGroup
@@ -2499,7 +2504,7 @@ namespace MAPeD
 			// 
 			// splitContainer5.Panel1
 			// 
-			this.splitContainer5.Panel1.Controls.Add(this.tabControlScreensEntities);
+			this.splitContainer5.Panel1.Controls.Add(this.tabControlLayoutTools);
 			// 
 			// splitContainer5.Panel2
 			// 
@@ -2508,18 +2513,18 @@ namespace MAPeD
 			this.splitContainer5.SplitterDistance = 302;
 			this.splitContainer5.TabIndex = 0;
 			// 
-			// tabControlScreensEntities
+			// tabControlLayoutTools
 			// 
-			this.tabControlScreensEntities.Controls.Add(this.TabBuilder);
-			this.tabControlScreensEntities.Controls.Add(this.TabScreenList);
-			this.tabControlScreensEntities.Controls.Add(this.TabEntities);
-			this.tabControlScreensEntities.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tabControlScreensEntities.Location = new System.Drawing.Point(0, 0);
-			this.tabControlScreensEntities.Name = "tabControlScreensEntities";
-			this.tabControlScreensEntities.SelectedIndex = 0;
-			this.tabControlScreensEntities.Size = new System.Drawing.Size(302, 615);
-			this.tabControlScreensEntities.TabIndex = 61;
-			this.tabControlScreensEntities.Selected += new System.Windows.Forms.TabControlEventHandler(this.TabControlScreensEntitiesSelected_Event);
+			this.tabControlLayoutTools.Controls.Add(this.TabBuilder);
+			this.tabControlLayoutTools.Controls.Add(this.TabScreenList);
+			this.tabControlLayoutTools.Controls.Add(this.TabEntities);
+			this.tabControlLayoutTools.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabControlLayoutTools.Location = new System.Drawing.Point(0, 0);
+			this.tabControlLayoutTools.Name = "tabControlLayoutTools";
+			this.tabControlLayoutTools.SelectedIndex = 0;
+			this.tabControlLayoutTools.Size = new System.Drawing.Size(302, 615);
+			this.tabControlLayoutTools.TabIndex = 61;
+			this.tabControlLayoutTools.Selected += new System.Windows.Forms.TabControlEventHandler(this.TabControlLayoutToolsSelected_Event);
 			// 
 			// TabBuilder
 			// 
@@ -2530,6 +2535,80 @@ namespace MAPeD
 			this.TabBuilder.Size = new System.Drawing.Size(294, 589);
 			this.TabBuilder.TabIndex = 2;
 			this.TabBuilder.Text = "Builder";
+			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.groupBox7);
+			this.groupBox1.Controls.Add(this.groupBox13);
+			this.groupBox1.Controls.Add(this.BtnCreateLayout);
+			this.groupBox1.Controls.Add(this.BtnLayoutRemoveRightColumn);
+			this.groupBox1.Controls.Add(this.BtnLayoutRemoveUpRow);
+			this.groupBox1.Controls.Add(this.BtnLayoutAddDownRow);
+			this.groupBox1.Controls.Add(this.BtnCreateLayoutWxH);
+			this.groupBox1.Controls.Add(this.BtnLayoutAddRightColumn);
+			this.groupBox1.Controls.Add(this.BtnCopyLayout);
+			this.groupBox1.Controls.Add(this.BtnLayoutAddUpRow);
+			this.groupBox1.Controls.Add(this.BtnDeleteLayout);
+			this.groupBox1.Controls.Add(this.BtnLayoutRemoveDownRow);
+			this.groupBox1.Controls.Add(this.BtnLayoutAddLeftColumn);
+			this.groupBox1.Controls.Add(this.BtnLayoutRemoveLeftColumn);
+			this.groupBox1.Location = new System.Drawing.Point(5, 0);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(284, 323);
+			this.groupBox1.TabIndex = 114;
+			this.groupBox1.TabStop = false;
+			// 
+			// groupBox7
+			// 
+			this.groupBox7.Controls.Add(this.BtnLayoutMoveDown);
+			this.groupBox7.Controls.Add(this.BtnLayoutMoveUp);
+			this.groupBox7.Controls.Add(this.ListBoxLayouts);
+			this.groupBox7.Controls.Add(this.LayoutLabel);
+			this.groupBox7.Location = new System.Drawing.Point(100, 13);
+			this.groupBox7.Name = "groupBox7";
+			this.groupBox7.Size = new System.Drawing.Size(85, 299);
+			this.groupBox7.TabIndex = 104;
+			this.groupBox7.TabStop = false;
+			this.groupBox7.Text = "Layouts:";
+			// 
+			// BtnLayoutMoveDown
+			// 
+			this.BtnLayoutMoveDown.Location = new System.Drawing.Point(9, 266);
+			this.BtnLayoutMoveDown.Name = "BtnLayoutMoveDown";
+			this.BtnLayoutMoveDown.Size = new System.Drawing.Size(67, 23);
+			this.BtnLayoutMoveDown.TabIndex = 72;
+			this.BtnLayoutMoveDown.Text = "Move Dn";
+			this.BtnLayoutMoveDown.UseVisualStyleBackColor = true;
+			this.BtnLayoutMoveDown.Click += new System.EventHandler(this.BtnLayoutMoveDownClick_Event);
+			// 
+			// BtnLayoutMoveUp
+			// 
+			this.BtnLayoutMoveUp.Location = new System.Drawing.Point(9, 239);
+			this.BtnLayoutMoveUp.Name = "BtnLayoutMoveUp";
+			this.BtnLayoutMoveUp.Size = new System.Drawing.Size(67, 23);
+			this.BtnLayoutMoveUp.TabIndex = 71;
+			this.BtnLayoutMoveUp.Text = "Move Up";
+			this.BtnLayoutMoveUp.UseVisualStyleBackColor = true;
+			this.BtnLayoutMoveUp.Click += new System.EventHandler(this.BtnLayoutMoveUpClick_Event);
+			// 
+			// ListBoxLayouts
+			// 
+			this.ListBoxLayouts.BackColor = System.Drawing.Color.LightGray;
+			this.ListBoxLayouts.FormattingEnabled = true;
+			this.ListBoxLayouts.Location = new System.Drawing.Point(9, 43);
+			this.ListBoxLayouts.Name = "ListBoxLayouts";
+			this.ListBoxLayouts.Size = new System.Drawing.Size(67, 186);
+			this.ListBoxLayouts.TabIndex = 70;
+			this.ListBoxLayouts.SelectedIndexChanged += new System.EventHandler(this.ListBoxLayoutsClick_Event);
+			// 
+			// LayoutLabel
+			// 
+			this.LayoutLabel.Location = new System.Drawing.Point(6, 19);
+			this.LayoutLabel.Name = "LayoutLabel";
+			this.LayoutLabel.Size = new System.Drawing.Size(73, 14);
+			this.LayoutLabel.TabIndex = 99;
+			this.LayoutLabel.Text = "...";
+			this.LayoutLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// groupBox13
 			// 
@@ -2584,69 +2663,6 @@ namespace MAPeD
 			this.CheckBoxShowEntities.UseVisualStyleBackColor = true;
 			this.CheckBoxShowEntities.CheckedChanged += new System.EventHandler(this.CheckBoxShowEntitiesChecked_Event);
 			// 
-			// BtnLayoutRemoveRightColumn
-			// 
-			this.BtnLayoutRemoveRightColumn.Location = new System.Drawing.Point(236, 105);
-			this.BtnLayoutRemoveRightColumn.Name = "BtnLayoutRemoveRightColumn";
-			this.BtnLayoutRemoveRightColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveRightColumn.TabIndex = 112;
-			this.BtnLayoutRemoveRightColumn.Text = "-R";
-			this.BtnLayoutRemoveRightColumn.UseVisualStyleBackColor = true;
-			this.BtnLayoutRemoveRightColumn.Click += new System.EventHandler(this.BtnLayoutRemoveRightColumnClick_Event);
-			// 
-			// groupBox7
-			// 
-			this.groupBox7.Controls.Add(this.BtnLayoutMoveDown);
-			this.groupBox7.Controls.Add(this.BtnLayoutMoveUp);
-			this.groupBox7.Controls.Add(this.ListBoxLayouts);
-			this.groupBox7.Controls.Add(this.LayoutLabel);
-			this.groupBox7.Location = new System.Drawing.Point(100, 13);
-			this.groupBox7.Name = "groupBox7";
-			this.groupBox7.Size = new System.Drawing.Size(85, 299);
-			this.groupBox7.TabIndex = 104;
-			this.groupBox7.TabStop = false;
-			this.groupBox7.Text = "Layouts:";
-			// 
-			// BtnLayoutMoveDown
-			// 
-			this.BtnLayoutMoveDown.Location = new System.Drawing.Point(9, 266);
-			this.BtnLayoutMoveDown.Name = "BtnLayoutMoveDown";
-			this.BtnLayoutMoveDown.Size = new System.Drawing.Size(67, 23);
-			this.BtnLayoutMoveDown.TabIndex = 72;
-			this.BtnLayoutMoveDown.Text = "Move Dn";
-			this.BtnLayoutMoveDown.UseVisualStyleBackColor = true;
-			this.BtnLayoutMoveDown.Click += new System.EventHandler(this.BtnLayoutMoveDownClick_Event);
-			// 
-			// BtnLayoutMoveUp
-			// 
-			this.BtnLayoutMoveUp.Location = new System.Drawing.Point(9, 239);
-			this.BtnLayoutMoveUp.Name = "BtnLayoutMoveUp";
-			this.BtnLayoutMoveUp.Size = new System.Drawing.Size(67, 23);
-			this.BtnLayoutMoveUp.TabIndex = 71;
-			this.BtnLayoutMoveUp.Text = "Move Up";
-			this.BtnLayoutMoveUp.UseVisualStyleBackColor = true;
-			this.BtnLayoutMoveUp.Click += new System.EventHandler(this.BtnLayoutMoveUpClick_Event);
-			// 
-			// ListBoxLayouts
-			// 
-			this.ListBoxLayouts.BackColor = System.Drawing.Color.LightGray;
-			this.ListBoxLayouts.FormattingEnabled = true;
-			this.ListBoxLayouts.Location = new System.Drawing.Point(9, 43);
-			this.ListBoxLayouts.Name = "ListBoxLayouts";
-			this.ListBoxLayouts.Size = new System.Drawing.Size(67, 186);
-			this.ListBoxLayouts.TabIndex = 70;
-			this.ListBoxLayouts.SelectedIndexChanged += new System.EventHandler(this.ListBoxLayoutsClick_Event);
-			// 
-			// BtnLayoutAddRightColumn
-			// 
-			this.BtnLayoutAddRightColumn.Location = new System.Drawing.Point(192, 105);
-			this.BtnLayoutAddRightColumn.Name = "BtnLayoutAddRightColumn";
-			this.BtnLayoutAddRightColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutAddRightColumn.TabIndex = 111;
-			this.BtnLayoutAddRightColumn.Text = "+R";
-			this.BtnLayoutAddRightColumn.UseVisualStyleBackColor = true;
-			this.BtnLayoutAddRightColumn.Click += new System.EventHandler(this.BtnLayoutAddRightColumnClick_Event);
-			// 
 			// BtnCreateLayout
 			// 
 			this.BtnCreateLayout.Location = new System.Drawing.Point(11, 18);
@@ -2657,64 +2673,25 @@ namespace MAPeD
 			this.BtnCreateLayout.UseVisualStyleBackColor = true;
 			this.BtnCreateLayout.Click += new System.EventHandler(this.BtnCreateLayoutClick_Event);
 			// 
-			// BtnLayoutRemoveLeftColumn
+			// BtnLayoutRemoveRightColumn
 			// 
-			this.BtnLayoutRemoveLeftColumn.Location = new System.Drawing.Point(236, 76);
-			this.BtnLayoutRemoveLeftColumn.Name = "BtnLayoutRemoveLeftColumn";
-			this.BtnLayoutRemoveLeftColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveLeftColumn.TabIndex = 110;
-			this.BtnLayoutRemoveLeftColumn.Text = "-L";
-			this.BtnLayoutRemoveLeftColumn.UseVisualStyleBackColor = true;
-			this.BtnLayoutRemoveLeftColumn.Click += new System.EventHandler(this.BtnLayoutRemoveLeftColumnClick_Event);
+			this.BtnLayoutRemoveRightColumn.Location = new System.Drawing.Point(236, 105);
+			this.BtnLayoutRemoveRightColumn.Name = "BtnLayoutRemoveRightColumn";
+			this.BtnLayoutRemoveRightColumn.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutRemoveRightColumn.TabIndex = 112;
+			this.BtnLayoutRemoveRightColumn.Text = "-R";
+			this.BtnLayoutRemoveRightColumn.UseVisualStyleBackColor = true;
+			this.BtnLayoutRemoveRightColumn.Click += new System.EventHandler(this.BtnLayoutRemoveRightColumnClick_Event);
 			// 
-			// BtnCopyLayout
+			// BtnLayoutRemoveUpRow
 			// 
-			this.BtnCopyLayout.Location = new System.Drawing.Point(11, 76);
-			this.BtnCopyLayout.Name = "BtnCopyLayout";
-			this.BtnCopyLayout.Size = new System.Drawing.Size(80, 23);
-			this.BtnCopyLayout.TabIndex = 102;
-			this.BtnCopyLayout.Text = "Copy";
-			this.BtnCopyLayout.UseVisualStyleBackColor = true;
-			this.BtnCopyLayout.Click += new System.EventHandler(this.BtnCopyLayoutClick_Event);
-			// 
-			// BtnLayoutAddLeftColumn
-			// 
-			this.BtnLayoutAddLeftColumn.Location = new System.Drawing.Point(192, 76);
-			this.BtnLayoutAddLeftColumn.Name = "BtnLayoutAddLeftColumn";
-			this.BtnLayoutAddLeftColumn.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutAddLeftColumn.TabIndex = 109;
-			this.BtnLayoutAddLeftColumn.Text = "+L";
-			this.BtnLayoutAddLeftColumn.UseVisualStyleBackColor = true;
-			this.BtnLayoutAddLeftColumn.Click += new System.EventHandler(this.BtnLayoutAddLeftColumnClick_Event);
-			// 
-			// LayoutLabel
-			// 
-			this.LayoutLabel.Location = new System.Drawing.Point(6, 19);
-			this.LayoutLabel.Name = "LayoutLabel";
-			this.LayoutLabel.Size = new System.Drawing.Size(73, 14);
-			this.LayoutLabel.TabIndex = 99;
-			this.LayoutLabel.Text = "...";
-			this.LayoutLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			// 
-			// BtnLayoutRemoveDownRow
-			// 
-			this.BtnLayoutRemoveDownRow.Location = new System.Drawing.Point(236, 47);
-			this.BtnLayoutRemoveDownRow.Name = "BtnLayoutRemoveDownRow";
-			this.BtnLayoutRemoveDownRow.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveDownRow.TabIndex = 108;
-			this.BtnLayoutRemoveDownRow.Text = "-D";
-			this.BtnLayoutRemoveDownRow.UseVisualStyleBackColor = true;
-			this.BtnLayoutRemoveDownRow.Click += new System.EventHandler(this.BtnLayoutRemoveBottomRowClick_Event);
-			// 
-			// BtnDeleteLayout
-			// 
-			this.BtnDeleteLayout.Location = new System.Drawing.Point(11, 105);
-			this.BtnDeleteLayout.Name = "BtnDeleteLayout";
-			this.BtnDeleteLayout.Size = new System.Drawing.Size(80, 23);
-			this.BtnDeleteLayout.TabIndex = 103;
-			this.BtnDeleteLayout.Text = "Delete";
-			this.BtnDeleteLayout.UseVisualStyleBackColor = true;
-			this.BtnDeleteLayout.Click += new System.EventHandler(this.BtnDeleteLayoutClick_Event);
+			this.BtnLayoutRemoveUpRow.Location = new System.Drawing.Point(236, 18);
+			this.BtnLayoutRemoveUpRow.Name = "BtnLayoutRemoveUpRow";
+			this.BtnLayoutRemoveUpRow.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutRemoveUpRow.TabIndex = 106;
+			this.BtnLayoutRemoveUpRow.Text = "-U";
+			this.BtnLayoutRemoveUpRow.UseVisualStyleBackColor = true;
+			this.BtnLayoutRemoveUpRow.Click += new System.EventHandler(this.BtnLayoutRemoveTopRowClick_Event);
 			// 
 			// BtnLayoutAddDownRow
 			// 
@@ -2736,15 +2713,25 @@ namespace MAPeD
 			this.BtnCreateLayoutWxH.UseVisualStyleBackColor = true;
 			this.BtnCreateLayoutWxH.Click += new System.EventHandler(this.BtnCreateLayoutWxHClick_Event);
 			// 
-			// BtnLayoutRemoveUpRow
+			// BtnLayoutAddRightColumn
 			// 
-			this.BtnLayoutRemoveUpRow.Location = new System.Drawing.Point(236, 18);
-			this.BtnLayoutRemoveUpRow.Name = "BtnLayoutRemoveUpRow";
-			this.BtnLayoutRemoveUpRow.Size = new System.Drawing.Size(40, 23);
-			this.BtnLayoutRemoveUpRow.TabIndex = 106;
-			this.BtnLayoutRemoveUpRow.Text = "-U";
-			this.BtnLayoutRemoveUpRow.UseVisualStyleBackColor = true;
-			this.BtnLayoutRemoveUpRow.Click += new System.EventHandler(this.BtnLayoutRemoveTopRowClick_Event);
+			this.BtnLayoutAddRightColumn.Location = new System.Drawing.Point(192, 105);
+			this.BtnLayoutAddRightColumn.Name = "BtnLayoutAddRightColumn";
+			this.BtnLayoutAddRightColumn.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutAddRightColumn.TabIndex = 111;
+			this.BtnLayoutAddRightColumn.Text = "+R";
+			this.BtnLayoutAddRightColumn.UseVisualStyleBackColor = true;
+			this.BtnLayoutAddRightColumn.Click += new System.EventHandler(this.BtnLayoutAddRightColumnClick_Event);
+			// 
+			// BtnCopyLayout
+			// 
+			this.BtnCopyLayout.Location = new System.Drawing.Point(11, 76);
+			this.BtnCopyLayout.Name = "BtnCopyLayout";
+			this.BtnCopyLayout.Size = new System.Drawing.Size(80, 23);
+			this.BtnCopyLayout.TabIndex = 102;
+			this.BtnCopyLayout.Text = "Copy";
+			this.BtnCopyLayout.UseVisualStyleBackColor = true;
+			this.BtnCopyLayout.Click += new System.EventHandler(this.BtnCopyLayoutClick_Event);
 			// 
 			// BtnLayoutAddUpRow
 			// 
@@ -2756,15 +2743,50 @@ namespace MAPeD
 			this.BtnLayoutAddUpRow.UseVisualStyleBackColor = true;
 			this.BtnLayoutAddUpRow.Click += new System.EventHandler(this.BtnLayoutAddUpRowClick_Event);
 			// 
+			// BtnDeleteLayout
+			// 
+			this.BtnDeleteLayout.Location = new System.Drawing.Point(11, 105);
+			this.BtnDeleteLayout.Name = "BtnDeleteLayout";
+			this.BtnDeleteLayout.Size = new System.Drawing.Size(80, 23);
+			this.BtnDeleteLayout.TabIndex = 103;
+			this.BtnDeleteLayout.Text = "Delete";
+			this.BtnDeleteLayout.UseVisualStyleBackColor = true;
+			this.BtnDeleteLayout.Click += new System.EventHandler(this.BtnDeleteLayoutClick_Event);
+			// 
+			// BtnLayoutRemoveDownRow
+			// 
+			this.BtnLayoutRemoveDownRow.Location = new System.Drawing.Point(236, 47);
+			this.BtnLayoutRemoveDownRow.Name = "BtnLayoutRemoveDownRow";
+			this.BtnLayoutRemoveDownRow.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutRemoveDownRow.TabIndex = 108;
+			this.BtnLayoutRemoveDownRow.Text = "-D";
+			this.BtnLayoutRemoveDownRow.UseVisualStyleBackColor = true;
+			this.BtnLayoutRemoveDownRow.Click += new System.EventHandler(this.BtnLayoutRemoveBottomRowClick_Event);
+			// 
+			// BtnLayoutAddLeftColumn
+			// 
+			this.BtnLayoutAddLeftColumn.Location = new System.Drawing.Point(192, 76);
+			this.BtnLayoutAddLeftColumn.Name = "BtnLayoutAddLeftColumn";
+			this.BtnLayoutAddLeftColumn.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutAddLeftColumn.TabIndex = 109;
+			this.BtnLayoutAddLeftColumn.Text = "+L";
+			this.BtnLayoutAddLeftColumn.UseVisualStyleBackColor = true;
+			this.BtnLayoutAddLeftColumn.Click += new System.EventHandler(this.BtnLayoutAddLeftColumnClick_Event);
+			// 
+			// BtnLayoutRemoveLeftColumn
+			// 
+			this.BtnLayoutRemoveLeftColumn.Location = new System.Drawing.Point(236, 76);
+			this.BtnLayoutRemoveLeftColumn.Name = "BtnLayoutRemoveLeftColumn";
+			this.BtnLayoutRemoveLeftColumn.Size = new System.Drawing.Size(40, 23);
+			this.BtnLayoutRemoveLeftColumn.TabIndex = 110;
+			this.BtnLayoutRemoveLeftColumn.Text = "-L";
+			this.BtnLayoutRemoveLeftColumn.UseVisualStyleBackColor = true;
+			this.BtnLayoutRemoveLeftColumn.Click += new System.EventHandler(this.BtnLayoutRemoveLeftColumnClick_Event);
+			// 
 			// TabScreenList
 			// 
 			this.TabScreenList.BackColor = System.Drawing.Color.LightGray;
-			this.TabScreenList.Controls.Add(this.CheckBoxLayoutEditorAllBanks);
-			this.TabScreenList.Controls.Add(this.LabelLayoutEditorCHRBankID);
-			this.TabScreenList.Controls.Add(this.ListViewScreens);
-			this.TabScreenList.Controls.Add(this.label9);
-			this.TabScreenList.Controls.Add(this.BtnUpdateScreens);
-			this.TabScreenList.Controls.Add(this.CheckBoxScreensAutoUpdate);
+			this.TabScreenList.Controls.Add(this.splitContainer6);
 			this.TabScreenList.Location = new System.Drawing.Point(4, 22);
 			this.TabScreenList.Name = "TabScreenList";
 			this.TabScreenList.Padding = new System.Windows.Forms.Padding(3);
@@ -2774,7 +2796,7 @@ namespace MAPeD
 			// 
 			// CheckBoxLayoutEditorAllBanks
 			// 
-			this.CheckBoxLayoutEditorAllBanks.Location = new System.Drawing.Point(219, 6);
+			this.CheckBoxLayoutEditorAllBanks.Location = new System.Drawing.Point(218, 5);
 			this.CheckBoxLayoutEditorAllBanks.Name = "CheckBoxLayoutEditorAllBanks";
 			this.CheckBoxLayoutEditorAllBanks.Size = new System.Drawing.Size(73, 20);
 			this.CheckBoxLayoutEditorAllBanks.TabIndex = 63;
@@ -2784,7 +2806,7 @@ namespace MAPeD
 			// 
 			// LabelLayoutEditorCHRBankID
 			// 
-			this.LabelLayoutEditorCHRBankID.Location = new System.Drawing.Point(185, 8);
+			this.LabelLayoutEditorCHRBankID.Location = new System.Drawing.Point(184, 7);
 			this.LabelLayoutEditorCHRBankID.Name = "LabelLayoutEditorCHRBankID";
 			this.LabelLayoutEditorCHRBankID.Size = new System.Drawing.Size(29, 15);
 			this.LabelLayoutEditorCHRBankID.TabIndex = 4;
@@ -2792,20 +2814,20 @@ namespace MAPeD
 			// 
 			// ListViewScreens
 			// 
-			this.ListViewScreens.Alignment = System.Windows.Forms.ListViewAlignment.Left;
 			this.ListViewScreens.BackColor = System.Drawing.Color.Silver;
+			this.ListViewScreens.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.ListViewScreens.HideSelection = false;
-			this.ListViewScreens.Location = new System.Drawing.Point(0, 31);
+			this.ListViewScreens.Location = new System.Drawing.Point(0, 0);
 			this.ListViewScreens.MultiSelect = false;
 			this.ListViewScreens.Name = "ListViewScreens";
-			this.ListViewScreens.Size = new System.Drawing.Size(293, 557);
+			this.ListViewScreens.Size = new System.Drawing.Size(288, 551);
 			this.ListViewScreens.TabIndex = 64;
 			this.ListViewScreens.UseCompatibleStateImageBehavior = false;
 			this.ListViewScreens.SelectedIndexChanged += new System.EventHandler(this.ListViewScreensClick_Event);
 			// 
 			// label9
 			// 
-			this.label9.Location = new System.Drawing.Point(152, 8);
+			this.label9.Location = new System.Drawing.Point(151, 7);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(39, 18);
 			this.label9.TabIndex = 3;
@@ -2814,7 +2836,7 @@ namespace MAPeD
 			// BtnUpdateScreens
 			// 
 			this.BtnUpdateScreens.BackColor = System.Drawing.Color.Coral;
-			this.BtnUpdateScreens.Location = new System.Drawing.Point(4, 4);
+			this.BtnUpdateScreens.Location = new System.Drawing.Point(3, 3);
 			this.BtnUpdateScreens.Name = "BtnUpdateScreens";
 			this.BtnUpdateScreens.Size = new System.Drawing.Size(94, 23);
 			this.BtnUpdateScreens.TabIndex = 61;
@@ -2824,7 +2846,7 @@ namespace MAPeD
 			// 
 			// CheckBoxScreensAutoUpdate
 			// 
-			this.CheckBoxScreensAutoUpdate.Location = new System.Drawing.Point(103, 4);
+			this.CheckBoxScreensAutoUpdate.Location = new System.Drawing.Point(102, 3);
 			this.CheckBoxScreensAutoUpdate.Name = "CheckBoxScreensAutoUpdate";
 			this.CheckBoxScreensAutoUpdate.Size = new System.Drawing.Size(50, 24);
 			this.CheckBoxScreensAutoUpdate.TabIndex = 62;
@@ -3699,27 +3721,29 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
 			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmap_openFileDialogFileOk);
 			// 
-			// groupBox1
+			// splitContainer6
 			// 
-			this.groupBox1.Controls.Add(this.groupBox7);
-			this.groupBox1.Controls.Add(this.groupBox13);
-			this.groupBox1.Controls.Add(this.BtnCreateLayout);
-			this.groupBox1.Controls.Add(this.BtnLayoutRemoveRightColumn);
-			this.groupBox1.Controls.Add(this.BtnLayoutRemoveUpRow);
-			this.groupBox1.Controls.Add(this.BtnLayoutAddDownRow);
-			this.groupBox1.Controls.Add(this.BtnCreateLayoutWxH);
-			this.groupBox1.Controls.Add(this.BtnLayoutAddRightColumn);
-			this.groupBox1.Controls.Add(this.BtnCopyLayout);
-			this.groupBox1.Controls.Add(this.BtnLayoutAddUpRow);
-			this.groupBox1.Controls.Add(this.BtnDeleteLayout);
-			this.groupBox1.Controls.Add(this.BtnLayoutRemoveDownRow);
-			this.groupBox1.Controls.Add(this.BtnLayoutAddLeftColumn);
-			this.groupBox1.Controls.Add(this.BtnLayoutRemoveLeftColumn);
-			this.groupBox1.Location = new System.Drawing.Point(5, 0);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(284, 323);
-			this.groupBox1.TabIndex = 114;
-			this.groupBox1.TabStop = false;
+			this.splitContainer6.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer6.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+			this.splitContainer6.IsSplitterFixed = true;
+			this.splitContainer6.Location = new System.Drawing.Point(3, 3);
+			this.splitContainer6.Name = "splitContainer6";
+			this.splitContainer6.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// splitContainer6.Panel1
+			// 
+			this.splitContainer6.Panel1.Controls.Add(this.CheckBoxLayoutEditorAllBanks);
+			this.splitContainer6.Panel1.Controls.Add(this.BtnUpdateScreens);
+			this.splitContainer6.Panel1.Controls.Add(this.LabelLayoutEditorCHRBankID);
+			this.splitContainer6.Panel1.Controls.Add(this.label9);
+			this.splitContainer6.Panel1.Controls.Add(this.CheckBoxScreensAutoUpdate);
+			// 
+			// splitContainer6.Panel2
+			// 
+			this.splitContainer6.Panel2.Controls.Add(this.ListViewScreens);
+			this.splitContainer6.Size = new System.Drawing.Size(288, 583);
+			this.splitContainer6.SplitterDistance = 28;
+			this.splitContainer6.TabIndex = 0;
 			// 
 			// MainForm
 			// 
@@ -3791,10 +3815,11 @@ namespace MAPeD
 			this.splitContainer5.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).EndInit();
 			this.splitContainer5.ResumeLayout(false);
-			this.tabControlScreensEntities.ResumeLayout(false);
+			this.tabControlLayoutTools.ResumeLayout(false);
 			this.TabBuilder.ResumeLayout(false);
-			this.groupBox13.ResumeLayout(false);
+			this.groupBox1.ResumeLayout(false);
 			this.groupBox7.ResumeLayout(false);
+			this.groupBox13.ResumeLayout(false);
 			this.TabScreenList.ResumeLayout(false);
 			this.TabEntities.ResumeLayout(false);
 			this.groupBoxEntitiesTreeView.ResumeLayout(false);
@@ -3819,10 +3844,14 @@ namespace MAPeD
 			this.StatusBar.ResumeLayout(false);
 			this.StatusBar.PerformLayout();
 			this.ContextMenuEntitiesTreeEntity.ResumeLayout(false);
-			this.groupBox1.ResumeLayout(false);
+			this.splitContainer6.Panel1.ResumeLayout(false);
+			this.splitContainer6.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer6)).EndInit();
+			this.splitContainer6.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.SplitContainer splitContainer6;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.TabPage TabBuilder;
 		private System.Windows.Forms.ToolStripMenuItem reorderBanksToolStripMenuItem;
@@ -4037,7 +4066,7 @@ namespace MAPeD
 		private System.Windows.Forms.FlowLayoutPanel PanelBlocks;
 		private System.Windows.Forms.TabPage TabEntities;
 		private System.Windows.Forms.TabPage TabScreenList;
-		private System.Windows.Forms.TabControl tabControlScreensEntities;
+		private System.Windows.Forms.TabControl tabControlLayoutTools;
 		private System.Windows.Forms.Button BtnOptimization;
 		private System.Windows.Forms.Button BtnTilesBlocks;
 		private System.Windows.Forms.CheckBox CheckBoxScreensAutoUpdate;

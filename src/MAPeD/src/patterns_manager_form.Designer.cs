@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 03.09.2020
  * Time: 16:34
  */
@@ -289,6 +289,7 @@ namespace MAPeD
 			this.Name = "patterns_manager_form";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Patterns Manager";
+			this.TopMost = true;
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Closing_event);
 			this.Load += new System.EventHandler(this.BtnCloseClick_event);
 			((System.ComponentModel.ISupportInitialize)(this.PixBoxPreview)).EndInit();

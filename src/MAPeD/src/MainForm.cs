@@ -559,7 +559,7 @@ namespace MAPeD
 			m_tiles_palette_form.enable( _on );
 			m_patterns_manager_form.enable( _on );
 			
-			tabControlScreensEntities.Enabled = _on;
+			tabControlLayoutTools.Enabled = _on;
 			
 			RBtnScreenDataTiles.Enabled = RBtnScreenDataBlocks.Enabled = _on;
 			
@@ -662,9 +662,9 @@ namespace MAPeD
 				tabControlMainLayout.SelectTab( TabMain );
 			}
 			
-			if( tabControlScreensEntities.Contains( TabBuilder ) )
+			if( tabControlLayoutTools.Contains( TabBuilder ) )
 			{
-				tabControlScreensEntities.SelectTab( TabBuilder );
+				tabControlLayoutTools.SelectTab( TabBuilder );
 			}
 			
 			if( tabControlTilesScreens.Contains( TabTiles ) )
@@ -1389,8 +1389,16 @@ namespace MAPeD
 		{
 			TabControl tab_cntrl = sender as TabControl;
 			
-			( new tab_page_container( tab_cntrl, this ) ).Show();
+			if( tab_cntrl.SelectedTab == TabLayout )
+			{
+				( new tab_page_container( tab_cntrl, this, true ) ).Show();
+			}
+			else
+			{
+				( new tab_page_container( tab_cntrl, this, false ) ).Show();
+			}
 		}
+		
 		/*
 		void detachTabToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
@@ -3625,7 +3633,7 @@ namespace MAPeD
 
 		void TreeViewEntitiesSelect_Event(object sender, TreeViewEventArgs e)
 		{
-			if( tabControlScreensEntities.SelectedTab == TabEntities )
+			if( tabControlLayoutTools.SelectedTab == TabEntities )
 			{
 				entity_data ent = get_selected_entity();
 				
@@ -4238,7 +4246,7 @@ namespace MAPeD
 		
 		void BtnEntitiesEditInstancesModeClick_Event(object sender, EventArgs e)
 		{
-			if( tabControlScreensEntities.SelectedTab == TabEntities )
+			if( tabControlLayoutTools.SelectedTab == TabEntities )
 			{
 				layout_editor_set_mode( layout_editor.EMode.em_EditInstances );
 			}
@@ -4310,7 +4318,7 @@ namespace MAPeD
 			}
 		}
 		
-		void TabControlScreensEntitiesSelected_Event(object sender, TabControlEventArgs e)
+		void TabControlLayoutToolsSelected_Event(object sender, TabControlEventArgs e)
 		{
 			TabPage curr_tab = ( sender as TabControl ).SelectedTab;
 			
