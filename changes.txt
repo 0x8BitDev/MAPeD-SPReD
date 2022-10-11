@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+11.10.2022 - Added a tooltip with a selected color index on the main palette
 16.09.2022 - PCE: added 'Game Prototype' demo: fully playable game prototype, run'n'jump platformer, 40 screens scrollable multidirectional map with 200+ entities, +bonus level
 23.08.2022 - PCE: MPD-render: optimized screen scrolling, re-written in assembler
 21.07.2022 - Improved colors swapping
@@ -106,6 +107,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+11.10.2022 - Added a tooltip with a selected color index on the main palette
 22.07.2022 - PCE: added red markers to active palettes
 22.07.2022 - PCE: added palettes manager
 21.07.2022 - Improved colors swapping

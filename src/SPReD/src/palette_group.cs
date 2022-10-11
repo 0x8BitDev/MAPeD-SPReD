@@ -21,6 +21,9 @@ namespace SPReD
 	public class palette_group : drawable_base
 	{
 		public event EventHandler UpdateColor;
+
+		private ToolTip	m_clr_ttip;
+		private Point	m_mouse_old_pos = Point.Empty;
 		
 		private bool m_mouse_capt		= false;
 		
@@ -120,6 +123,10 @@ namespace SPReD
 			m_pix_box.MouseUp		+= new MouseEventHandler(this.Palette_MouseUp);
 			m_pix_box.MouseClick	+= new MouseEventHandler(this.Palette_MouseClick);
 			
+			m_pix_box.MouseLeave	+= new EventHandler( this.Palette_MouseLeave );
+			
+			m_clr_ttip = new ToolTip();
+			
 			update();
 		}
 		
@@ -188,15 +195,43 @@ namespace SPReD
 		
 		private void Palette_MouseMove(object sender, MouseEventArgs e)
 		{
-			if( m_mouse_capt )
+			if( m_mouse_capt && ( e.X > 0 && e.X < m_pix_box.Bounds.Width && e.Y > 0 && e.Y < m_pix_box.Bounds.Height ) )
 			{
 				check_color( e.X, e.Y );
+				
+				if( e.Location != m_mouse_old_pos )
+				{
+					m_mouse_old_pos = e.Location;
+				
+					m_clr_ttip.Show( utils.hex( "#", get_sel_clr_ind( e.X, e.Y ) ), m_pix_box, e.X, e.Y - 28 );
+				}
 			}
 		}
 		
 		private void Palette_MouseClick(object sender, MouseEventArgs e)
 		{
 			check_color( e.X, e.Y );
+			
+			m_clr_ttip.Show( utils.hex( "#", get_sel_clr_ind( e.X, e.Y ) ), m_pix_box, e.X, e.Y - 28 );
+		}
+		
+		private void Palette_MouseLeave(object sender, EventArgs e)
+		{
+			m_clr_ttip.Hide( m_pix_box );
+		}
+		
+		private int get_sel_clr_ind( int _x, int _y )
+		{
+#if DEF_NES	
+			// row ordered data
+			return ( _x >> 4 ) + ( ( _y >> 4 ) << 4 );
+#elif DEF_SMS
+			// column ordered data
+			return (( _x >> 4 ) << 2 ) + ( _y >> 4 );
+#elif DEF_PCE
+			// column ordered data
+			return (( _x >> 2 ) << 3 ) + ( _y >> 3 );
+#endif
 		}
 		
 		private void check_color( int _x, int _y )
@@ -206,13 +241,8 @@ namespace SPReD
 				return;
 			}
 			
-#if DEF_NES		// row ordered data				
-			m_sel_clr_ind = ( _x >> 4 ) + ( ( _y >> 4 ) << 4 );
-#elif DEF_SMS	// column ordered data
-			m_sel_clr_ind = ( ( _x >> 4 ) << 2 ) + ( _y >> 4 );
-#elif DEF_PCE	// column ordered data
-			m_sel_clr_ind = ( ( _x >> 2 ) << 3 ) + ( _y >> 3 );
-#endif
+			m_sel_clr_ind = get_sel_clr_ind( _x, _y );
+			
 			update();
 			
 			// dispatch an index of a selected color to the active palette

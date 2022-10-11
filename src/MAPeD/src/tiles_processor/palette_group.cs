@@ -21,6 +21,9 @@ namespace MAPeD
 		public event EventHandler NeedGFXUpdate;
 #if !DEF_ZX
 		public event EventHandler UpdateColor;
+		
+		private ToolTip	m_clr_ttip;
+		private Point	m_mouse_old_pos = Point.Empty;
 #endif
 		
 		private bool m_mouse_capt		= false;
@@ -139,6 +142,12 @@ namespace MAPeD
 			m_pix_box.MouseClick	+= new MouseEventHandler( this.Palette_MouseClick );
 			
 			m_main_palette = platform_data.get_palette_by_platform_type( platform_data.get_platform_type() );
+			
+#if 	!DEF_ZX
+			m_pix_box.MouseLeave	+= new EventHandler( this.Palette_MouseLeave );
+			
+			m_clr_ttip = new ToolTip();
+#endif	//!DEF_ZX
 			
 			update();
 		}
@@ -261,17 +270,49 @@ namespace MAPeD
 		
 		private void Palette_MouseMove(object sender, MouseEventArgs e)
 		{
-			if( m_mouse_capt )
+			if( m_mouse_capt && ( e.X > 0 && e.X < m_pix_box.Bounds.Width && e.Y > 0 && e.Y < m_pix_box.Bounds.Height ) )
 			{
 				check_color( e.X, e.Y );
+#if !DEF_ZX
+				if( e.Location != m_mouse_old_pos )
+				{
+					m_mouse_old_pos = e.Location;
+				
+					m_clr_ttip.Show( utils.hex( "#", get_sel_clr_ind( e.X, e.Y ) ), m_pix_box, e.X, e.Y - 28 );
+				}
+#endif //!DEF_ZX
 			}
 		}
 		
 		private void Palette_MouseClick(object sender, MouseEventArgs e)
 		{
 			check_color( e.X, e.Y );
+#if !DEF_ZX
+			m_clr_ttip.Show( utils.hex( "#", get_sel_clr_ind( e.X, e.Y ) ), m_pix_box, e.X, e.Y - 28 );
+#endif //!DEF_ZX
 		}
 		
+#if !DEF_ZX
+		private void Palette_MouseLeave(object sender, EventArgs e)
+		{
+			m_clr_ttip.Hide( m_pix_box );
+		}
+		
+		private int get_sel_clr_ind( int _x, int _y )
+		{
+#if DEF_NES	
+			// row ordered data
+			return ( _x >> 4 ) + ( ( _y >> 4 ) << 4 );
+#elif DEF_SMS
+			// column ordered data
+			return (( _x >> 4 ) << 2 ) + ( _y >> 4 );
+#elif DEF_PCE || DEF_SMD
+			// column ordered data
+			return (( _x >> 2 ) << 3 ) + ( _y >> 3 );
+#endif
+		}
+#endif	//!DEF_ZX
+	
 		private void check_color( int _x, int _y )
 		{
 			if( _x < 0 || _y < 0 || _x >= m_pix_box.Width || _y >= m_pix_box.Height )
@@ -280,19 +321,8 @@ namespace MAPeD
 			}
 			
 #if !DEF_ZX
-		
-#if DEF_NES	
-			// row ordered data
-			int sel_clr_ind = ( _x >> 4 ) + ( ( _y >> 4 ) << 4 );
-#elif DEF_SMS
-			// column ordered data
-			int sel_clr_ind = (( _x >> 4 ) << 2 ) + ( _y >> 4 );
-#elif DEF_PCE || DEF_SMD
-			// column ordered data
-			int sel_clr_ind = (( _x >> 2 ) << 3 ) + ( _y >> 3 );
-#endif
-			MainForm.set_status_msg( utils.hex( "Selected color: #", sel_clr_ind ) );
-
+			int sel_clr_ind = get_sel_clr_ind( _x, _y );
+	
 			if( m_sel_clr_ind >= 0 && sel_clr_ind != m_sel_clr_ind && m_plt_arr[ 0 ].get_color_inds() != null )
 			{
 				dispatch_event_need_gfx_update();
