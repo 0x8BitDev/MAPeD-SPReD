@@ -147,7 +147,7 @@ namespace MAPeD
 
 		private void BlockEditor_MouseMove(object sender, MouseEventArgs e)
 		{
-			if( m_drawing_state )
+			if( m_drawing_state && ( e.X >= 0 && e.X < m_pix_box.Bounds.Width && e.Y >= 0 && e.Y < m_pix_box.Bounds.Height ) )
 			{
 				sel_quad_and_draw( e.X, e.Y, true );
 			}
