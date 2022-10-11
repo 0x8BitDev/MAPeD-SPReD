@@ -146,7 +146,6 @@ namespace MAPeD
 			this.Icon = global::MAPeD.Properties.Resources.MAPeD_icon;
 			this.IsMdiContainer = true;
 			this.MaximizeBox = false;
-			this.MinimizeBox = false;
 			this.Name = "tiles_palette_form";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Palette";

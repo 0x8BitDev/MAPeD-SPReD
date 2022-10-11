@@ -724,6 +724,8 @@ namespace MAPeD
 			
 			if( _on )
 			{
+				this.WindowState = FormWindowState.Normal;
+
 				TreeViewPatterns.SelectedNode = null;
 				
 				update();

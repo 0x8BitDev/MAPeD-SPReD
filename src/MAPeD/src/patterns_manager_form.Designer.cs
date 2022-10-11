@@ -285,7 +285,6 @@ namespace MAPeD
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = global::MAPeD.Properties.Resources.MAPeD_icon;
 			this.MaximizeBox = false;
-			this.MinimizeBox = false;
 			this.Name = "patterns_manager_form";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Patterns Manager";

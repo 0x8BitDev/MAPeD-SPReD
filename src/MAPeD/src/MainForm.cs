@@ -2757,7 +2757,7 @@ namespace MAPeD
 		
 		void BtnTilesBlocksClick_Event(object sender, EventArgs e)
 		{
-			m_tiles_palette_form.Visible = true;
+			m_tiles_palette_form.show_wnd();
 			
 			BtnTilesBlocks.Enabled = false;
 		}

@@ -146,6 +146,13 @@ namespace MAPeD
 			}
 		}
 		
+		public void show_wnd()
+		{
+			Visible = true;
+
+			this.WindowState = FormWindowState.Normal;
+		}
+		
 		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
 		{
 			PanelPaletteTiles.Enabled = ( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
