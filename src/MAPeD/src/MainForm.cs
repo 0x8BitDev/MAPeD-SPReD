@@ -361,6 +361,8 @@ namespace MAPeD
 				CHRBankPageBtnsToolStripSeparator.Visible = BtnCHRBankNextPage.Visible = BtnCHRBankPrevPage.Visible = false;
 				prevPageToolStripMenuItem.Visible = nextPageToolStripMenuItem.Visible = false;
 			}
+			
+			CheckBoxScreensAutoUpdate.Checked = true;
 
 			reset();
 			
@@ -703,18 +705,21 @@ namespace MAPeD
 
 		void CBoxTileViewTypeChanged_Event(object sender, EventArgs e)
 		{
-			m_view_type = ( utils.ETileViewType )CBoxTileViewType.SelectedIndex;
-#if DEF_ZX
-			if( m_view_type == utils.ETileViewType.tvt_BW || m_view_type == utils.ETileViewType.tvt_Inv_BW || m_view_type == utils.ETileViewType.tvt_Graphics )
-			{
-				enable_update_screens_btn( true );
-			}
+			progress_bar_show( true, "GFX updating...", false );
 			
+			m_view_type = ( utils.ETileViewType )CBoxTileViewType.SelectedIndex;
+			
+			enable_update_screens_btn( true );
+#if DEF_ZX
 			m_tiles_processor.set_view_type( m_view_type );
 #endif
 			update_graphics( false );
 			
 			m_screen_editor.clear_active_tile_img();
+
+			set_status_msg( "View type changed" );
+			
+			progress_bar_show( false, "", false );
 		}
 
 #region load save import export
@@ -840,7 +845,15 @@ namespace MAPeD
 					{
 						progress_bar_status( "Data updating..." );
 
-						m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type );
+						// update tiles and screens
+						{
+							tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+							
+							m_imagelist_manager.update_blocks( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );
+							m_imagelist_manager.update_tiles( m_view_type, data, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated blocks gfx to speed up drawing
+							
+							m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type );
+						}
 						
 						int tiles_cnt = m_data_manager.tiles_data_cnt;
 						
@@ -856,7 +869,6 @@ namespace MAPeD
 						update_layouts_list_box();
 					
 						m_layout_editor.update();
-						update_graphics( false );
 					}
 #if !DEF_NES
 					palette_group.Instance.active_palette = 0;
@@ -1059,6 +1071,8 @@ namespace MAPeD
 											// reset the layout mode
 											RBtnScreenEditModeSingle.Checked = true;
 											
+											update_graphics( true );
+
 											update_screens( true, false );
 											
 											m_layout_editor.update_dimension_changes();
@@ -1066,9 +1080,9 @@ namespace MAPeD
 										else
 										{
 											progress_bar_status( "Data updating..." );
+
+											update_graphics( true );
 										}
-										
-										update_graphics( true );
 									}
 								}
 								else
@@ -1484,7 +1498,7 @@ namespace MAPeD
 			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 			
 			m_imagelist_manager.update_blocks( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );
-			m_imagelist_manager.update_tiles( m_view_type, data, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated gfx of blocks to speed up drawing
+			m_imagelist_manager.update_tiles( m_view_type, data, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated blocks gfx to speed up drawing
 			
 			m_tile_list_manager.update_all();
 

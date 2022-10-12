@@ -4,6 +4,8 @@
  * Date: 04.05.2017
  * Time: 16:20
  */
+#define DEF_SCREEN_DRAW_FAST
+ 
 using System;
 using System.Windows.Forms;
 using System.Drawing;
@@ -12,7 +14,6 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
-//#define DEF_SCREEN_DRAW_FAST
 
 namespace MAPeD
 {
@@ -517,10 +518,11 @@ namespace MAPeD
 		private Bitmap create_screen_image( int _screen_n, tiles_data _data, data_sets_manager.EScreenDataType _scr_type, utils.ETileViewType _view_type )
 		{
 #if DEF_SCREEN_DRAW_FAST
-			Image	block_img;
-#endif			
-			int tile_n;
+			Image	tile_img;
+#else
 			int block_n;
+#endif
+			int tile_n;
 			
 			ushort tile_id;
 			
@@ -529,7 +531,7 @@ namespace MAPeD
 			
 			palette_group.Instance.set_palette( _data );
 
-			Bitmap bmp = new Bitmap( platform_data.get_screen_width_pixels(), platform_data.get_screen_height_pixels(), PixelFormat.Format32bppPArgb );
+			Bitmap bmp = new Bitmap( platform_data.get_screen_width_pixels() << 1, platform_data.get_screen_height_pixels() << 1, PixelFormat.Format32bppPArgb );
 			
 			Graphics gfx = Graphics.FromImage( bmp );
 			
@@ -544,23 +546,23 @@ namespace MAPeD
 				{
 					tile_id = _data.get_screen_tile( _screen_n, tile_n );
 					
-					tile_offs_x = ( tile_n % platform_data.get_screen_tiles_width() ) << 5;
-					tile_offs_y = ( tile_n / platform_data.get_screen_tiles_width() ) << 5;
+					tile_offs_x = ( tile_n % platform_data.get_screen_tiles_width() ) << 6;
+					tile_offs_y = ( tile_n / platform_data.get_screen_tiles_width() ) << 6;
 					
+#if DEF_SCREEN_DRAW_FAST
+					tile_img = m_imagelist_tiles.Images[ tile_id ];
+					
+					gfx.DrawImage( tile_img, tile_offs_x, tile_offs_y, tile_img.Width, tile_img.Height );
+#else
 					for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 					{
-#if DEF_SCREEN_DRAW_FAST
-						block_img = m_imagelist_blocks.Images[ _data.get_tile_block( tile_id, block_n ) ];
-						
-						gfx.DrawImage( block_img, ( ( block_n % 2 ) << 4 ) + tile_offs_x, ( ( block_n >> 1 ) << 4 ) + tile_offs_y, block_img.Width >> 1, block_img.Height >> 1 );
-#else
 #if DEF_ZX
-						utils.update_block_gfx( _data.get_tile_block( tile_id, block_n ), _data, gfx, 8, 8, ( ( block_n % 2 ) << 4 ) + tile_offs_x, ( ( block_n >> 1 ) << 4 ) + tile_offs_y, utils.get_draw_block_flags_by_view_type( _view_type ) );
+						utils.update_block_gfx( _data.get_tile_block( tile_id, block_n ), _data, gfx, 8, 8, ( ( block_n % 2 ) << 5 ) + tile_offs_x, ( ( block_n >> 1 ) << 5 ) + tile_offs_y, utils.get_draw_block_flags_by_view_type( _view_type ) );
 #else
-						utils.update_block_gfx( _data.get_tile_block( tile_id, block_n ), _data, gfx, 8, 8, ( ( block_n % 2 ) << 4 ) + tile_offs_x, ( ( block_n >> 1 ) << 4 ) + tile_offs_y );
-#endif
+						utils.update_block_gfx( _data.get_tile_block( tile_id, block_n ), _data, gfx, 8, 8, ( ( block_n % 2 ) << 5 ) + tile_offs_x, ( ( block_n >> 1 ) << 5 ) + tile_offs_y );
 #endif
 					}
+#endif
 				}
 			}
 			else
@@ -568,14 +570,14 @@ namespace MAPeD
 				for( tile_n = 0; tile_n < platform_data.get_screen_blocks_cnt(); tile_n++ )
 				{
 #if DEF_SCREEN_DRAW_FAST
-					block_img = m_imagelist_blocks.Images[ _data.get_screen_tile( _screen_n, tile_n ) ];
+					tile_img = m_imagelist_blocks.Images[ _data.get_screen_tile( _screen_n, tile_n ) ];
 					
-					gfx.DrawImage( block_img, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 4 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 4 ), block_img.Width >> 1, block_img.Height >> 1 );
+					gfx.DrawImage( tile_img, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 5 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 5 ), tile_img.Width, tile_img.Height );
 #else
 #if DEF_ZX
-					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 8, 8, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 4 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 4 ), utils.get_draw_block_flags_by_view_type( _view_type ) );
+					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 8, 8, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 5 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 5 ), utils.get_draw_block_flags_by_view_type( _view_type ) );
 #else
-					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 8, 8, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 4 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 4 ) );
+					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 8, 8, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 5 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 5 ) );
 #endif
 #endif
 				}
