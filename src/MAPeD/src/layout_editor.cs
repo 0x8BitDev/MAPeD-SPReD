@@ -1218,7 +1218,7 @@ namespace MAPeD
 							m_scr_img_rect.Width	= scr_size_width;
 							m_scr_img_rect.Height 	= scr_size_height;
 							
-							m_gfx.DrawImage( m_scr_list.get( m_active_screen_index ), m_scr_img_rect, 0, 0, platform_data.get_screen_width_pixels(), platform_data.get_screen_height_pixels(), GraphicsUnit.Pixel, m_scr_img_attr );
+							m_gfx.DrawImage( m_scr_list.get( m_active_screen_index ), m_scr_img_rect, 0, 0, platform_data.get_screen_width_pixels() << 1, platform_data.get_screen_height_pixels() << 1, GraphicsUnit.Pixel, m_scr_img_attr );
 						}
 					}
 					
