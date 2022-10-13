@@ -4298,10 +4298,13 @@ namespace MAPeD
 					
 				case layout_editor.EMode.em_EditInstances:
 					{
+						ListViewScreens.SelectedItems.Clear();
+						
 						TreeViewEntities.SelectedNode = null;
 			
 						m_layout_editor.reset_entity_instance();
 						m_layout_editor.set_active_entity( null );
+						m_layout_editor.set_active_screen( -1 );
 						
 						m_layout_editor.mode = _mode;
 						
@@ -4319,8 +4322,12 @@ namespace MAPeD
 					}
 					break;
 					
+				case layout_editor.EMode.em_Builder:
 				case layout_editor.EMode.em_Screens:
 					{
+						TreeViewEntities.SelectedNode = null;
+						fill_entity_data( get_selected_entity() );
+						
 						m_layout_editor.reset_entity_instance();
 						m_layout_editor.set_active_entity( null );
 						
@@ -4329,6 +4336,11 @@ namespace MAPeD
 						CheckBoxPickupTargetEntity.Checked = false;
 					}
 					break;
+					
+				default:
+					{
+						throw new Exception( "Unknown mode detected!\n\n[MainForm.layout_editor_set_mode]" );
+					}
 			}
 		}
 		
@@ -4338,18 +4350,21 @@ namespace MAPeD
 			
 			if( curr_tab == TabEntities )
 			{
-				ListViewScreens.SelectedItems.Clear();
-				m_layout_editor.set_active_screen( -1 );
-				
 				layout_editor_set_mode( layout_editor.EMode.em_EditInstances );
 			}
 			else
 			if( curr_tab == TabScreenList )
 			{
-				TreeViewEntities.SelectedNode = null;
-				fill_entity_data( get_selected_entity() );
-				
 				layout_editor_set_mode( layout_editor.EMode.em_Screens );
+			}
+			else
+			if( curr_tab == TabBuilder )
+			{
+				layout_editor_set_mode( layout_editor.EMode.em_Builder );
+			}
+			else
+			{
+				throw new Exception( "Unknown mode detected!\n\n[MainForm.TabControlLayoutToolsSelected_Event]" );
 			}
 		}
 		

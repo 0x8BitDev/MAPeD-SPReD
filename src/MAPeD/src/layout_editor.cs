@@ -118,6 +118,7 @@ namespace MAPeD
 		
 		public enum EMode
 		{
+			em_Builder,
 			em_Screens,
 			em_EditInstances,
 			em_EditEntities,
