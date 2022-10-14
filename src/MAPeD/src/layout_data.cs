@@ -171,7 +171,7 @@ namespace MAPeD
 		[DataMember]
 		private List< List< layout_screen_data > >	m_layout	= null;
 
-		public const int	CONST_EMPTY_CELL_ID		= 255;
+		public const int	CONST_EMPTY_CELL_ID		= -1;
 		
 		public static readonly int[] adj_scr_slots	= new int[]{ -1, -1, 0, -1, 1, -1, -1, 1, 0, 1, 1, 1, -1, 0, 1, 0 };
 		

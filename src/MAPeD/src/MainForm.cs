@@ -1666,7 +1666,7 @@ namespace MAPeD
 						{
 							update_screens_labels_by_bank_id();
 							
-							m_layout_editor.set_active_screen( -1 );
+							m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
 						}
 
 						m_layout_editor.update_dimension_changes();
@@ -2420,7 +2420,7 @@ namespace MAPeD
 	
 							enable_update_screens_btn( false );
 							
-							m_layout_editor.set_active_screen( -1 );
+							m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
 							m_layout_editor.update();
 							
 							progress_bar_show( false );
@@ -2477,7 +2477,7 @@ namespace MAPeD
 			
 			if( m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, _scr_local_ind ) )
 			{
-				m_layout_editor.set_active_screen( -1 );
+				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
 				
 				update_screens_labels_by_bank_id();
 			}
@@ -2682,12 +2682,12 @@ namespace MAPeD
 				{
 					m_layout_editor.update_dimension_changes();
 
-					m_layout_editor.set_active_screen( -1 );
+					m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
 					
 					update_screens_labels_by_bank_id();
 					
 					// reset an entity editor data
-					m_layout_editor.reset_entity_instance();
+					m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
 					fill_entity_data( null );
 					CheckBoxPickupTargetEntity.Checked = false;
 				}
@@ -3189,13 +3189,13 @@ namespace MAPeD
 		
 		void LayoutDeleteAllEntityInstancesToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			entity_instance ent_inst = m_layout_editor.get_selected_entity_instance();
+			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED );
 			
 			if( m_data_manager.layouts_data_cnt > 0 && message_box( "Are you sure?", "Delete All Entity Instances", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				m_data_manager.get_layout_data( m_data_manager.layouts_data_pos ).delete_all_entities();
 				
-				m_layout_editor.reset_entity_instance();
+				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
 				
 				if( ent_inst != null )
 				{
@@ -3220,11 +3220,11 @@ namespace MAPeD
 		
 		void LayoutDeleteScreenToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			entity_instance ent_inst = m_layout_editor.get_selected_entity_instance();
+			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED );
 			
 			if( m_layout_editor.delete_screen_from_layout() == true )
 			{
-				if( ent_inst != m_layout_editor.get_selected_entity_instance() )
+				if( ent_inst != ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED ) )
 				{
 					fill_entity_data( null );
 					
@@ -3285,13 +3285,13 @@ namespace MAPeD
 			
 			if( lv.SelectedItems.Count > 0 )
 			{
-				m_layout_editor.set_active_screen( lv.SelectedItems[ 0 ].ImageIndex );
+				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, lv.SelectedItems[ 0 ].ImageIndex );
 			
 				set_status_msg( "Layout Editor: screen - " + lv.SelectedItems[ 0 ].Text );
 			}
 			else
 			{
-				m_layout_editor.set_active_screen( layout_data.CONST_EMPTY_CELL_ID );
+				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, layout_data.CONST_EMPTY_CELL_ID );
 			
 				set_status_msg( "" );
 			}
@@ -3303,7 +3303,7 @@ namespace MAPeD
 		{
 			ListViewScreens.SelectedItems.Clear();
 		
-			m_layout_editor.set_active_screen( layout_data.CONST_EMPTY_CELL_ID );
+			m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, layout_data.CONST_EMPTY_CELL_ID );
 			m_layout_editor.update();
 
 			set_status_msg( "" );
@@ -3412,7 +3412,7 @@ namespace MAPeD
 		{
 			if( m_layout_editor.mode == layout_editor.EMode.em_EditInstances )
 			{
-				m_layout_editor.reset_entity_instance();
+				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
 			
 				fill_entity_data( null );
 			}
@@ -3487,7 +3487,7 @@ namespace MAPeD
 			
 			ListViewScreens.SelectedItems.Clear();
 			ListViewScreens.Enabled = false;
-			m_layout_editor.set_active_screen( -1 );
+			m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
 			m_layout_editor.update();
 			
 			set_status_msg( "Screen edit mode: Layout" );
@@ -4195,7 +4195,7 @@ namespace MAPeD
 
 		void TextBoxEntityInstancePropTextKeyUp_Event(object sender, KeyEventArgs e)
 		{
-			entity_instance ent_inst = m_layout_editor.get_selected_entity_instance();
+			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED );
 			
 			entity_data ent = get_selected_entity();
 
@@ -4239,7 +4239,7 @@ namespace MAPeD
 		
 		void update_entity_preview( bool _force_disable = false )
 		{
-			entity_instance ent_inst = m_layout_editor.get_selected_entity_instance();
+			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED );
 			
 			entity_data ent = ( ent_inst != null && _force_disable == false ) ? ent_inst.base_entity:get_selected_entity();
 			
@@ -4276,7 +4276,7 @@ namespace MAPeD
 			}
 			else
 			{
-				m_layout_editor.set_active_entity( sel_ent );
+				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_ACTIVE, sel_ent );
 				m_layout_editor.update();
 			}
 		}
@@ -4287,8 +4287,8 @@ namespace MAPeD
 			{
 				case layout_editor.EMode.em_EditEntities:
 					{
-						m_layout_editor.reset_entity_instance();
-						m_layout_editor.set_active_entity( get_selected_entity() );
+						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
+						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_ACTIVE, get_selected_entity() );
 						
 						m_layout_editor.mode = _mode;
 						
@@ -4302,9 +4302,9 @@ namespace MAPeD
 						
 						TreeViewEntities.SelectedNode = null;
 			
-						m_layout_editor.reset_entity_instance();
-						m_layout_editor.set_active_entity( null );
-						m_layout_editor.set_active_screen( -1 );
+						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
+						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_ACTIVE, null );
+						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
 						
 						m_layout_editor.mode = _mode;
 						
@@ -4316,7 +4316,7 @@ namespace MAPeD
 					
 				case layout_editor.EMode.em_PickupTargetEntity:
 					{
-						m_layout_editor.set_active_entity( null );
+						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_ACTIVE, null );
 						
 						m_layout_editor.mode = _mode;
 					}
@@ -4328,8 +4328,8 @@ namespace MAPeD
 						TreeViewEntities.SelectedNode = null;
 						fill_entity_data( get_selected_entity() );
 						
-						m_layout_editor.reset_entity_instance();
-						m_layout_editor.set_active_entity( null );
+						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
+						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_ACTIVE, null );
 						
 						m_layout_editor.mode = _mode;
 						
@@ -4388,7 +4388,7 @@ namespace MAPeD
 			else
 			if( m_layout_editor.mode == layout_editor.EMode.em_PickupTargetEntity )
 			{
-				entity_instance edit_ent_inst = m_layout_editor.get_selected_entity_instance();
+				entity_instance edit_ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED );
 				
 				if( edit_ent_inst != null )
 				{

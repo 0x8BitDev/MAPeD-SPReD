@@ -28,6 +28,13 @@ namespace MAPeD
 		public event EventHandler EntityInstanceSelected;
 		public event EventHandler ResetSelectedScreen;
 
+		// set_param/get_param constants
+		public const uint	CONST_SET_PARAM_ENT_INST_RESET		= 0x01;
+		public const uint	CONST_SET_PARAM_ENT_ACTIVE			= 0x02;
+		public const uint	CONST_SET_PARAM_SCR_ACTIVE			= 0x04;
+
+		public const uint	CONST_GET_PARAM_ENT_INST_SELECTED	= 0x01;
+		
 		private bool 	m_dispatch_selection_mode			= false;
 		private int		m_dispatch_mode_sel_screen_slot_id	= -1;
 
@@ -125,7 +132,7 @@ namespace MAPeD
 			em_PickupTargetEntity,
 		}
 		
-		private EMode	m_mode	= EMode.em_Screens;
+		private EMode	m_mode	= EMode.em_Builder;
 		
 		public EMode mode
 		{
@@ -209,9 +216,9 @@ namespace MAPeD
 			
 			m_dispatch_mode_sel_screen_slot_id = -1;
 			
-			set_active_screen( -1 );
+			set_param( CONST_SET_PARAM_SCR_ACTIVE, -1 );
 			
-			reset_entity_instance();
+			set_param( CONST_SET_PARAM_ENT_INST_RESET, null );
 			
 			update();
 		}
@@ -477,7 +484,7 @@ namespace MAPeD
 					else
 					if( !m_ent_inst_captured && m_ent_inst != null )
 					{
-						reset_entity_instance();
+						set_param( CONST_SET_PARAM_ENT_INST_RESET, null );
 						
                 		if( EntityInstanceSelected != null )
                 		{
@@ -622,7 +629,7 @@ namespace MAPeD
 							
 							if( !ent_placed )
 							{
-								reset_entity_instance();
+								set_param( CONST_SET_PARAM_ENT_INST_RESET, null );
 								
 		                		if( EntityInstanceSelected != null )
 		                		{
@@ -826,7 +833,7 @@ namespace MAPeD
 			
 			if( show_entities && mode == EMode.em_EditInstances && m_ent_inst_captured == true )
 			{
-				reset_entity_instance();
+				set_param( CONST_SET_PARAM_ENT_INST_RESET, null );
 				
         		if( EntityInstanceSelected != null )
         		{
@@ -1482,7 +1489,7 @@ namespace MAPeD
 					
 					layout_screen_data scr_data = m_layout.get_data( scr_pos_x, scr_pos_y );
 					
-					scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) { if( m_ent_inst != null && _ent_inst == m_ent_inst ) { reset_entity_instance(); } } );
+					scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) { if( m_ent_inst != null && _ent_inst == m_ent_inst ) { set_param( CONST_SET_PARAM_ENT_INST_RESET, null ); } } );
 					
 					m_layout.delete_screen_by_pos( scr_pos_x, scr_pos_y );
 
@@ -1529,7 +1536,7 @@ namespace MAPeD
 						{
 							m_layout.entity_instance_reset_target_uid( m_ent_inst.uid );
 							
-							reset_entity_instance();
+							set_param( CONST_SET_PARAM_ENT_INST_RESET, null );
 							
 							res = true;
 							
@@ -1546,37 +1553,11 @@ namespace MAPeD
 			return res;
 		}
 
-		public void reset_entity_instance()
-		{
-			m_ent_inst 					= null;
-			m_ent_inst_screen_slot_id 	= -1;
-			
-			m_ent_inst_captured 		= false;
-			
-			m_ent_inst_capture_offs_x	= -1;
-			m_ent_inst_capture_offs_y	= -1;
-		}
-		
-		public entity_instance get_selected_entity_instance()
-		{
-			return m_ent_inst;
-		}
-		
-		public void set_active_entity( entity_data _ent )
-		{
-			m_ent_data = _ent;
-		}
-		
-		public void set_active_screen( int _index )
-		{
-			m_active_screen_index = unchecked( (byte)_index );
-		}
-
 		private void update_layout_data( object sender, EventArgs e )
 		{
 			data_sets_manager data_mngr = sender as data_sets_manager;
 			
-			reset_entity_instance();
+			set_param( CONST_SET_PARAM_ENT_INST_RESET, null );
 			
 			m_layout = data_mngr.get_layout_data( data_mngr.layouts_data_pos );
 			
@@ -1862,6 +1843,57 @@ namespace MAPeD
 		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
 		{
 			m_screen_data_type = _type;
+		}
+		
+		public Object get_param( uint _param )
+		{
+			switch( _param )
+			{
+				case CONST_GET_PARAM_ENT_INST_SELECTED:
+				{
+					return m_ent_inst;
+				}
+				
+				default:
+				{
+					throw new Exception( "Unknown parameter detected!\n\n[layout_editor.get_param]" );
+				}
+			}
+		}
+		
+		public void set_param( uint _param, Object _val )
+		{
+			switch( _param )
+			{
+				case CONST_SET_PARAM_ENT_INST_RESET:
+				{
+					m_ent_inst 					= null;
+					m_ent_inst_screen_slot_id 	= -1;
+					
+					m_ent_inst_captured 		= false;
+					
+					m_ent_inst_capture_offs_x	= -1;
+					m_ent_inst_capture_offs_y	= -1;
+				}
+				break;
+				
+				case CONST_SET_PARAM_ENT_ACTIVE:
+				{
+					m_ent_data = ( entity_data )_val;
+				}
+				break;
+				
+				case CONST_SET_PARAM_SCR_ACTIVE:
+				{
+					m_active_screen_index = unchecked( Convert.ToInt32( _val ) );
+				}
+				break;
+					
+				default:
+				{
+					throw new Exception( "Unknown parameter detected!\n\n[layout_editor.set_param]" );
+				}
+			}
 		}
 	}
 }
