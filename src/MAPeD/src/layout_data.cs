@@ -74,7 +74,7 @@ namespace MAPeD
 		{
 			_bw.Write( m_marks );
 			
-			_bw.Write( ( byte )m_scr_ind );
+			_bw.Write( m_scr_ind );
 			
 			_bw.Write( m_ents.Count );
 			
@@ -88,7 +88,15 @@ namespace MAPeD
 		{
 			m_marks	  = _br.ReadUInt16();
 			
-			m_scr_ind = _br.ReadByte();
+			if( _ver <= 7 )
+			{
+				m_scr_ind = _br.ReadByte();
+				m_scr_ind = ( m_scr_ind == 0xff ) ? -1:m_scr_ind; 
+			}
+			else
+			{
+				m_scr_ind = _br.ReadInt32();
+			}
 			
 			int ents_cnt = _br.ReadInt32();
 			

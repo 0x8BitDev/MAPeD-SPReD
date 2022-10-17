@@ -27,6 +27,8 @@ namespace MAPeD
 		private readonly IProgress< int >	m_progress_val			= null;
 		private readonly IProgress< string >	m_progress_status	= null;
 		
+		private bool	m_disable_status_wnd	= false;
+		
 		private readonly exporter_zx_sjasm 	m_exp_zx_asm	= null;
 #if !DEF_ZX
 		private readonly exporter_asm 		m_exp_asm		= null;
@@ -404,6 +406,11 @@ namespace MAPeD
 
 		private void progress_bar_show( bool _on, string _operation = "", bool _show_progress_bar = true )
 		{
+			if( m_disable_status_wnd )
+			{
+				return;
+			}
+			
 			if( _on )
 			{
 				m_progress_form.Left	= this.Left + ( this.Width >> 1 ) - ( m_progress_form.Width >> 1 );
@@ -441,11 +448,21 @@ namespace MAPeD
 		
 		private void progress_bar_value( int _val )
 		{
+			if( m_disable_status_wnd )
+			{
+				return;
+			}
+			
 			m_progress_form.progress_value = _val;
 		}
 		
 		private void progress_bar_status( string _status )
 		{
+			if( m_disable_status_wnd )
+			{
+				return;
+			}
+			
 			m_progress_form.status_msg = _status; 
 			m_progress_form.Update();
 		}
@@ -592,6 +609,8 @@ namespace MAPeD
 		
 		private void reset()
 		{
+			m_disable_status_wnd = true;
+			
 			m_data_manager.reset();
 			fill_entity_data( null );
 
@@ -649,7 +668,7 @@ namespace MAPeD
 			ComboBoxEntityZoom.SelectedIndex = 0;
 
 			m_layout_editor.reset( false );
-			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type );
+			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), -1, m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 			
 			enable_copy_paste_action( false, ECopyPasteType.cpt_All );
 			
@@ -682,6 +701,7 @@ namespace MAPeD
 			m_palette_copy_ind = -1;
 			BtnPltCopy.Text = "Copy";
 #endif
+			m_disable_status_wnd = false;
 		}
 		
 		void ExitToolStripMenuItemClick_Event(object sender, EventArgs e)
@@ -850,9 +870,9 @@ namespace MAPeD
 							tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 							
 							m_imagelist_manager.update_blocks( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );
-							m_imagelist_manager.update_tiles( m_view_type, data, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated blocks gfx to speed up drawing
+							m_imagelist_manager.update_tiles( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated blocks gfx to speed up drawing
 							
-							m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type );
+							m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), m_data_manager.tiles_data_pos, m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 						}
 						
 						int tiles_cnt = m_data_manager.tiles_data_cnt;
@@ -1498,7 +1518,7 @@ namespace MAPeD
 			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 			
 			m_imagelist_manager.update_blocks( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );
-			m_imagelist_manager.update_tiles( m_view_type, data, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated blocks gfx to speed up drawing
+			m_imagelist_manager.update_tiles( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated blocks gfx to speed up drawing
 			
 			m_tile_list_manager.update_all();
 
@@ -2091,7 +2111,7 @@ namespace MAPeD
 					
 					if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 					{
-						m_imagelist_manager.update_tiles( m_view_type, data, m_data_manager.screen_data_type );
+						m_imagelist_manager.update_tiles( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );
 						m_tile_list_manager.update_tiles( tile_list.EType.t_Tiles );
 					}
 					
@@ -2411,11 +2431,11 @@ namespace MAPeD
 							progress_bar_show( true, "Updating screens...", false );
 							
 							// update screens images
-							m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, -1 );
+							m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, -1 );
 							
 							if( !CheckBoxLayoutEditorAllBanks.Checked )
 							{
-								m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, CBoxCHRBanks.SelectedIndex );
+								m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CBoxCHRBanks.SelectedIndex );
 							}
 	
 							enable_update_screens_btn( false );
@@ -2804,7 +2824,7 @@ namespace MAPeD
 			int tile_ind 	= event_args.tile_ind;
 			tiles_data data = event_args.data;
 			
-			m_imagelist_manager.update_tile( tile_ind, m_view_type, data, null, null, m_data_manager.screen_data_type );
+			m_imagelist_manager.update_tile( tile_ind, m_view_type, data, true, PropertyPerBlockToolStripMenuItem.Checked, null, null, m_data_manager.screen_data_type );
 			m_tile_list_manager.update_tile( tile_list.EType.t_Tiles, tile_ind );
 		}
 		
@@ -2943,7 +2963,7 @@ namespace MAPeD
 							scr_global_ind = _data.get_data( x, y ).m_scr_ind;
 							scr_local_ind = m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, scr_global_ind );
 							
-							m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type );
+							m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 							
 							ListBoxScreens.Items.Add( ListBoxScreens.Items.Count );
 						}
@@ -2971,7 +2991,7 @@ namespace MAPeD
 			
 			if( scr_global_ind < utils.CONST_SCREEN_MAX_CNT )
 			{
-				m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, _scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type );
+				m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, _scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 				
 				palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
 				
@@ -3032,7 +3052,7 @@ namespace MAPeD
 		{
 			if( need_update_screens() )
 			{
-				m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, m_data_manager.tiles_data_pos );
+				m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, m_data_manager.tiles_data_pos );
 				
 				return true;
 			}
@@ -3064,7 +3084,7 @@ namespace MAPeD
 
 		void update_all_screens( bool _disable_upd_scr_btn, bool _show_status_msg = true )
 		{
-			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type );
+			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), CBoxCHRBanks.SelectedIndex, m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 			
 			// renew a palette
 			palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
@@ -3549,7 +3569,7 @@ namespace MAPeD
 		
 		void update_screens_by_bank_id( bool _disable_upd_scr_btn, bool _update_images )
 		{
-			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, _update_images, m_view_type, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
+			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, _update_images, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 			
 			// renew a palette
 			palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );

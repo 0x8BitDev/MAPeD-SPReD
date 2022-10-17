@@ -8,7 +8,7 @@
 /*
 defines:
 ~~~~~~~~
-DEF_TILE_DRAW_FAST
+DEF_TILE_DRAW_FAST				- DEPRECATED!
 DEF_FLIP_BLOCKS_SPR_BY_FLAGS	(SMS/SMD)
 DEF_PALETTE16_PER_CHR			(PCE/SMS/ZX/SMD)
 DEF_FIXED_LEN_PALETTE16_ARR		(PCE/SMS/ZX/SMD)
@@ -99,7 +99,7 @@ namespace MAPeD
 		public static readonly string CONST_FULL_APP_NAME	= CONST_FULL_APP_NAMES_ARR[ ( int )platform_data.get_platform_type() ];
 		
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'M';
-		public const byte CONST_PROJECT_FILE_VER	= 7;
+		public const byte CONST_PROJECT_FILE_VER	= 8;
 		// v1: initial data format
 		// v2: added palettes array
 		// v3: blocks data USHORT -> UINT; palette index BYTE -> INT
@@ -107,6 +107,7 @@ namespace MAPeD
 		// v5: screen data -> USHORT
 		// v6: tiles 4x4 data -> ULONG
 		// v7: save palette in a project file for all platforms
+		// v8: layout screen index BYTE -> INT
 
 		public const uint CONST_SPRED_FILE_MAGIC		= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
 		public const uint CONST_SPRED_PROJECT_FILE_VER	= 1;
@@ -154,7 +155,7 @@ namespace MAPeD
 		public const int CONST_SCREEN_TILES_SIZE		= 64;	// pixels
 		public const int CONST_SCREEN_BLOCKS_SIZE		= 32;	// pixels
 		
-		public const int CONST_SCREEN_MAX_CNT			= 255;	// 1...255
+		public const int CONST_SCREEN_MAX_CNT			= 255;	// 1...255 [zero-based index 0..254; 255 - empty screen]
 		
 		public const int CONST_LAYOUT_MAX_CNT			= 256;
 

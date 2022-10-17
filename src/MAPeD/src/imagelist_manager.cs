@@ -133,7 +133,7 @@ namespace MAPeD
 			return il;
 		}
 		
-		public void update_tiles( utils.ETileViewType _view_type, tiles_data _tiles_data, data_sets_manager.EScreenDataType _scr_type )
+		public void update_tiles( utils.ETileViewType _view_type, tiles_data _tiles_data, bool _prop_per_block, data_sets_manager.EScreenDataType _scr_type )
 		{
 			Image 		img;
 			Graphics	gfx;
@@ -148,7 +148,7 @@ namespace MAPeD
 					
 					if( _tiles_data != null )
 					{
-						update_tile( i, _view_type, _tiles_data, gfx, img, _scr_type );
+						update_tile( i, _view_type, _tiles_data, true, _prop_per_block, gfx, img, _scr_type );
 					}
 					else
 					{
@@ -164,13 +164,13 @@ namespace MAPeD
 			}
 		}
 
-		public void update_tile( int _tile_ind, utils.ETileViewType _view_type, tiles_data _tiles_data, Graphics _gfx, Image _img, data_sets_manager.EScreenDataType _scr_type )
+		public void update_tile( int _tile_ind, utils.ETileViewType _view_type, tiles_data _tiles_data, bool _active_bank, bool _prop_per_block, Graphics _gfx, Image _img, data_sets_manager.EScreenDataType _scr_type )
 		{
-#if DEF_TILE_DRAW_FAST
 			Image	block_img;
-#else
-			ushort[] 	blocks_arr 	= null;
-			byte[] 		CHR_data 	= null;
+			
+#if !DEF_TILE_DRAW_FAST
+			uint[] 	blocks_arr 	= null;
+			byte[] 	CHR_data 	= null;
 
 			// draw a block from CHR bank sprites
 			if( _tiles_data != null )
@@ -203,9 +203,10 @@ namespace MAPeD
 			}
 			
 			gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
+			
+#if DEF_TILE_DRAW_FAST
 			gfx.PixelOffsetMode 	= PixelOffsetMode.None;
 
-#if DEF_TILE_DRAW_FAST					
 			for( int j = 0; j < utils.CONST_TILE_SIZE; j++ )
 			{
 				block_img = m_imagelist_blocks.Images[ _tiles_data.get_tile_block( _tile_ind, j ) ];
@@ -213,10 +214,35 @@ namespace MAPeD
 				gfx.DrawImage( block_img, ( ( j % 2 ) << 5 ), ( ( j >> 1 ) << 5 ), block_img.Width, block_img.Height );
 			}
 #else
-			// draw a block from CHR bank sprites
-			for( int j = 0; j < utils.CONST_TILE_SIZE; j++ )
+			if( _active_bank )
 			{
-				utils.update_block_gfx( _tiles_data.get_tile_block( _tile_ind, j ), blocks_arr, CHR_data, gfx, utils.CONST_BLOCKS_IMG_SIZE >> 1, utils.CONST_BLOCKS_IMG_SIZE >> 1, ( ( j % 2 ) << 5 ), ( ( j >> 1 ) << 5 ) );
+				gfx.PixelOffsetMode 	= PixelOffsetMode.None;
+	
+				for( int j = 0; j < utils.CONST_TILE_SIZE; j++ )
+				{
+					block_img = m_imagelist_blocks.Images[ _tiles_data.get_tile_block( _tile_ind, j ) ];
+					
+					gfx.DrawImage( block_img, ( ( j % 2 ) << 5 ), ( ( j >> 1 ) << 5 ), block_img.Width, block_img.Height );
+				}
+			}
+			else
+			{
+				gfx.PixelOffsetMode 	= PixelOffsetMode.Half;
+				
+				block_img = new Bitmap( utils.CONST_SCREEN_BLOCKS_SIZE, utils.CONST_SCREEN_BLOCKS_SIZE, PixelFormat.Format32bppPArgb );
+				
+				Graphics block_gfx = Graphics.FromImage( block_img );
+				
+				// draw a block from CHR bank sprites
+				for( int j = 0; j < utils.CONST_TILE_SIZE; j++ )
+				{
+//					update block gfx from tiles_data:
+//					utils.update_block_gfx( _tiles_data.get_tile_block( _tile_ind, j ), _tiles_data, gfx, utils.CONST_BLOCKS_IMG_SIZE >> 1, utils.CONST_BLOCKS_IMG_SIZE >> 1, ( ( j % 2 ) << 5 ), ( ( j >> 1 ) << 5 ) );
+
+					update_block( _tiles_data.get_tile_block( _tile_ind, j ), _view_type, _tiles_data, _prop_per_block, block_gfx, block_img, _scr_type );
+					
+					gfx.DrawImage( block_img, ( ( j % 2 ) << 5 ), ( ( j >> 1 ) << 5 ), block_img.Width, block_img.Height );
+				}
 			}
 #endif //DEF_TILE_DRAW_FAST
 
@@ -425,7 +451,7 @@ namespace MAPeD
 			return false;
 		}
 		
-		public void update_all_screens( List< tiles_data > _tiles_data, data_sets_manager.EScreenDataType _scr_type, utils.ETileViewType _view_type )
+		public void update_all_screens( List< tiles_data > _tiles_data, int _curr_bank_id, data_sets_manager.EScreenDataType _scr_type, utils.ETileViewType _view_type, bool _prop_per_block )
 		{
 			m_listview_screens.BeginUpdate();
 			
@@ -452,7 +478,7 @@ namespace MAPeD
 				
 				for( int screen_n = 0; screen_n < screens_cnt; screen_n++ )
 				{
-					m_scr_list.add( create_screen_image( screen_n, data, _scr_type, _view_type ) );
+					m_scr_list.add( create_screen_image( screen_n, data, _curr_bank_id == bank_n, _scr_type, _view_type, _prop_per_block ) );
 					
 				 	lst 				= new ListViewItem();
 				 	lst.Name = lst.Text = utils.get_screen_id_str( bank_n, screen_n );
@@ -467,7 +493,7 @@ namespace MAPeD
 			m_listview_screens.EndUpdate();
 		}
 
-		public void update_screens( List< tiles_data > _tiles_data, data_sets_manager.EScreenDataType _scr_type, bool _update_images, utils.ETileViewType _view_type, int _bank_id = -1 )
+		public void update_screens( List< tiles_data > _tiles_data, data_sets_manager.EScreenDataType _scr_type, bool _update_images, utils.ETileViewType _view_type, bool _prop_per_block, int _curr_bank_id, int _bank_id = -1 )
 		{
 			m_listview_screens.BeginUpdate();
 			
@@ -498,7 +524,7 @@ namespace MAPeD
 						if( _update_images )
 						{
 							m_scr_list.get( img_ind ).Dispose();
-							m_scr_list.replace( img_ind, create_screen_image( screen_n, data, _scr_type, _view_type ) );
+							m_scr_list.replace( img_ind, create_screen_image( screen_n, data, _curr_bank_id == bank_n, _scr_type, _view_type, _prop_per_block ) );
 						}
 						
 					 	lst 				= new ListViewItem();
@@ -515,10 +541,19 @@ namespace MAPeD
 			m_listview_screens.EndUpdate();
 		}
 		
-		private Bitmap create_screen_image( int _screen_n, tiles_data _data, data_sets_manager.EScreenDataType _scr_type, utils.ETileViewType _view_type )
+		private Bitmap create_screen_image( int _screen_n, tiles_data _data, bool _active_bank, data_sets_manager.EScreenDataType _scr_type, utils.ETileViewType _view_type, bool _prop_per_block )
 		{
 #if DEF_SCREEN_DRAW_FAST
-			Image	tile_img;
+			Image		tile_img = null;
+			Graphics	tile_gfx = null;
+			
+			if( !_active_bank )
+			{
+				int tile_size = ( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? utils.CONST_SCREEN_TILES_SIZE:utils.CONST_SCREEN_BLOCKS_SIZE;
+				
+				tile_img = new Bitmap( tile_size, tile_size, PixelFormat.Format32bppPArgb );
+				tile_gfx = Graphics.FromImage( tile_img );
+			}
 #else
 			int block_n;
 #endif
@@ -536,8 +571,11 @@ namespace MAPeD
 			Graphics gfx = Graphics.FromImage( bmp );
 			
 			gfx.InterpolationMode 	= InterpolationMode.NearestNeighbor;
+#if DEF_SCREEN_DRAW_FAST
 			gfx.PixelOffsetMode 	= PixelOffsetMode.None;
-			
+#else
+			gfx.PixelOffsetMode 	= PixelOffsetMode.Half;
+#endif			
 			gfx.Clear( utils.CONST_COLOR_SCREEN_CLEAR );
 			
 			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
@@ -550,16 +588,23 @@ namespace MAPeD
 					tile_offs_y = ( tile_n / platform_data.get_screen_tiles_width() ) << 6;
 					
 #if DEF_SCREEN_DRAW_FAST
-					tile_img = m_imagelist_tiles.Images[ tile_id ];
+					if( _active_bank )
+					{
+						tile_img = m_imagelist_tiles.Images[ tile_id ];
+					}
+					else
+					{
+						update_tile( tile_id, _view_type, _data, _active_bank, _prop_per_block, tile_gfx, tile_img, _scr_type );
+					}
 					
 					gfx.DrawImage( tile_img, tile_offs_x, tile_offs_y, tile_img.Width, tile_img.Height );
 #else
 					for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 					{
 #if DEF_ZX
-						utils.update_block_gfx( _data.get_tile_block( tile_id, block_n ), _data, gfx, 8, 8, ( ( block_n % 2 ) << 5 ) + tile_offs_x, ( ( block_n >> 1 ) << 5 ) + tile_offs_y, utils.get_draw_block_flags_by_view_type( _view_type ) );
+						utils.update_block_gfx( _data.get_tile_block( tile_id, block_n ), _data, gfx, 16, 16, ( ( block_n % 2 ) << 5 ) + tile_offs_x, ( ( block_n >> 1 ) << 5 ) + tile_offs_y, utils.get_draw_block_flags_by_view_type( _view_type ) );
 #else
-						utils.update_block_gfx( _data.get_tile_block( tile_id, block_n ), _data, gfx, 8, 8, ( ( block_n % 2 ) << 5 ) + tile_offs_x, ( ( block_n >> 1 ) << 5 ) + tile_offs_y );
+						utils.update_block_gfx( _data.get_tile_block( tile_id, block_n ), _data, gfx, 16, 16, ( ( block_n % 2 ) << 5 ) + tile_offs_x, ( ( block_n >> 1 ) << 5 ) + tile_offs_y );
 #endif
 					}
 #endif
@@ -570,14 +615,21 @@ namespace MAPeD
 				for( tile_n = 0; tile_n < platform_data.get_screen_blocks_cnt(); tile_n++ )
 				{
 #if DEF_SCREEN_DRAW_FAST
-					tile_img = m_imagelist_blocks.Images[ _data.get_screen_tile( _screen_n, tile_n ) ];
+					if( _active_bank )
+					{
+						tile_img = m_imagelist_blocks.Images[ _data.get_screen_tile( _screen_n, tile_n ) ];
+					}
+					else
+					{
+						update_block( _data.get_screen_tile( _screen_n, tile_n ), _view_type, _data, _prop_per_block, tile_gfx, tile_img, _scr_type );
+					}
 					
 					gfx.DrawImage( tile_img, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 5 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 5 ), tile_img.Width, tile_img.Height );
 #else
 #if DEF_ZX
-					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 8, 8, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 5 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 5 ), utils.get_draw_block_flags_by_view_type( _view_type ) );
+					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 16, 16, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 5 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 5 ), utils.get_draw_block_flags_by_view_type( _view_type ) );
 #else
-					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 8, 8, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 5 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 5 ) );
+					utils.update_block_gfx( _data.get_screen_tile( _screen_n, tile_n ), _data, gfx, 16, 16, ( ( tile_n % platform_data.get_screen_blocks_width() ) << 5 ), ( ( tile_n / platform_data.get_screen_blocks_width() ) << 5 ) );
 #endif
 #endif
 				}
@@ -653,14 +705,14 @@ namespace MAPeD
 			return res;
 		}
 		
-		public void insert_screen( bool _all_banks_list, int _CHR_bank_ind, int _scr_local_ind, int _scr_global_ind, List< tiles_data > _tiles_data, data_sets_manager.EScreenDataType _scr_type, utils.ETileViewType _view_type )
+		public void insert_screen( bool _all_banks_list, int _CHR_bank_ind, int _scr_local_ind, int _scr_global_ind, List< tiles_data > _tiles_data, data_sets_manager.EScreenDataType _scr_type, utils.ETileViewType _view_type, bool _prop_per_block )
 		{
 			int i;
 			int size;
 			
 			m_listview_screens.BeginUpdate();
 
-			Bitmap bmp = create_screen_image( _scr_local_ind, _tiles_data[ _CHR_bank_ind ], _scr_type, _view_type );
+			Bitmap bmp = create_screen_image( _scr_local_ind, _tiles_data[ _CHR_bank_ind ], true, _scr_type, _view_type, _prop_per_block );
 			
 			if( _scr_global_ind == m_scr_list.count() )
 			{
