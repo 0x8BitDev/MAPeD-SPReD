@@ -69,9 +69,9 @@ namespace MAPeD
 		
 		private readonly Label m_label				= null;
 		
-		private entity_data			m_ent_data			= null;
-		private entity_instance		m_ent_inst			= null;
-		private layout_screen_data	m_ent_inst_scr_data	= null;
+		private entity_data			m_ent_data						= null;
+		private entity_instance		m_ent_inst						= null;
+		private int					m_ent_inst_init_screen_slot_id	= -1;
 
 		private int 	m_ent_inst_screen_slot_id	= -1;
 		
@@ -536,8 +536,8 @@ namespace MAPeD
                     		
                     		if( mode == EMode.em_EditInstances )
                     		{
-								m_ent_inst 			= ent_inst;
-								m_ent_inst_scr_data = scr_data;
+								m_ent_inst						= ent_inst;
+								m_ent_inst_init_screen_slot_id	= m_sel_screen_slot_id;
 #if DEF_SNAPPING_BY_PIVOT
 								m_ent_inst_capture_offs_x	= _cursor_pos_x - ( ent_inst.x + ent_inst.base_entity.pivot_x );
 								m_ent_inst_capture_offs_y	= _cursor_pos_y - ( ent_inst.y + ent_inst.base_entity.pivot_y );
@@ -588,7 +588,7 @@ namespace MAPeD
 						// delete dragged entity if it releases out of a map
 						if( m_ent_inst != null )
 						{
-							m_ent_inst_scr_data.m_ents.Remove( m_ent_inst );
+							get_ent_inst_init_screen_data().m_ents.Remove( m_ent_inst );
 							
 							set_param( CONST_SET_PARAM_ENT_INST_RESET, null );
 							
@@ -744,10 +744,12 @@ namespace MAPeD
 			    	_ent_inst.x = ent_pos_x;
 			    	_ent_inst.y = ent_pos_y;
 #endif
-					if( m_ent_inst_scr_data != scr_data )
+					layout_screen_data ent_inst_init_scr_data = get_ent_inst_init_screen_data();
+					
+					if( ent_inst_init_scr_data != scr_data )
 					{
 						// remove an entity from the old screen...
-						m_ent_inst_scr_data.m_ents.Remove( _ent_inst );
+						ent_inst_init_scr_data.m_ents.Remove( _ent_inst );
 						// ... and add to the new one
 						scr_data.m_ents.Add( _ent_inst );
 					}
@@ -1374,8 +1376,15 @@ namespace MAPeD
 											m_gfx.DrawRectangle( m_pen, x, y, scr_size_width, scr_size_height );
 										}
 
-										m_pen.Color = utils.CONST_COLOR_SELECTED_ENTITY_BORDER;
-										m_gfx.DrawRectangle( m_pen, x + ( m_ent_inst.x * m_scale ), y + ( m_ent_inst.y * m_scale ), ent_width, ent_height );
+										// draw initial entity position as a border
+										{
+											m_pen.Color = utils.CONST_COLOR_SELECTED_ENTITY_BORDER;
+											
+											x = screen_pos_x_by_slot_id( m_ent_inst_init_screen_slot_id % get_width() );
+											y = screen_pos_y_by_slot_id( m_ent_inst_init_screen_slot_id / get_width() );
+											
+											m_gfx.DrawRectangle( m_pen, x + ( m_ent_inst.x * m_scale ), y + ( m_ent_inst.y * m_scale ), ent_width, ent_height );
+										}
 										
 										m_pen.Color = utils.CONST_COLOR_ENTITY_BORDER_EDIT_INST_MODE;
 										m_gfx.DrawRectangle( m_pen, capt_pos_x, capt_pos_y, ent_width, ent_height );
@@ -1871,6 +1880,11 @@ namespace MAPeD
 			m_screen_data_type = _type;
 		}
 		
+		private layout_screen_data get_ent_inst_init_screen_data()
+		{
+			return m_layout.get_data( m_ent_inst_init_screen_slot_id % get_width(), m_ent_inst_init_screen_slot_id / get_width() );
+		}
+		
 		public Object get_param( uint _param )
 		{
 			switch( _param )
@@ -1893,9 +1907,9 @@ namespace MAPeD
 			{
 				case CONST_SET_PARAM_ENT_INST_RESET:
 				{
-					m_ent_inst 					= null;
-					m_ent_inst_scr_data			= null;
-					m_ent_inst_screen_slot_id 	= -1;
+					m_ent_inst 						= null;
+					m_ent_inst_init_screen_slot_id	= -1;
+					m_ent_inst_screen_slot_id		= -1;
 					
 					m_ent_inst_captured 		= false;
 					
