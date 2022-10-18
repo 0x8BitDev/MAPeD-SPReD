@@ -1,6 +1,8 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+18.10.2022 - Fixed dragging of entities now it happens without reordering; also added drawing of active screen border when dragging an entity
+17.10.2022 - Added drawing of a tile properties (the View Type combobox) on a whole map in the layout viewport
 11.10.2022 - Added a tooltip with a selected color index on the main palette
 16.09.2022 - PCE: added 'Game Prototype' demo: fully playable game prototype, run'n'jump platformer, 40 screens scrollable multidirectional map with 200+ entities, +bonus level
 23.08.2022 - PCE: MPD-render: optimized screen scrolling, re-written in assembler

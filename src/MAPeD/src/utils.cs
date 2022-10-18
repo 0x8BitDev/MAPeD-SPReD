@@ -211,6 +211,7 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_SCREEN_GHOST_IMAGE_INNER_BORDER	= Color.White;
 		public static readonly Color	CONST_COLOR_SCREEN_GHOST_IMAGE_OUTER_BORDER	= Color.Red;
 		public static readonly Color	CONST_COLOR_SCREEN_SELECTED_LAYOUT_MODE		= Color.LimeGreen;
+		public static readonly Color	CONST_COLOR_SCREEN_ACTIVE					= Color.Red;
 		public static readonly Color	CONST_COLOR_STRING_DEFAULT					= Color.White;
 		public static readonly Color	CONST_COLOR_ENTITY_BORDER_EDIT_ENT_MODE		= Color.LimeGreen;
 		public static readonly Color	CONST_COLOR_SELECTED_ENTITY_BORDER			= Color.Red;

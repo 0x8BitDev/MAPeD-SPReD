@@ -69,8 +69,9 @@ namespace MAPeD
 		
 		private readonly Label m_label				= null;
 		
-		private entity_data		m_ent_data			= null;
-		private entity_instance	m_ent_inst			= null;
+		private entity_data			m_ent_data			= null;
+		private entity_instance		m_ent_inst			= null;
+		private layout_screen_data	m_ent_inst_scr_data	= null;
 
 		private int 	m_ent_inst_screen_slot_id	= -1;
 		
@@ -535,22 +536,21 @@ namespace MAPeD
                     		
                     		if( mode == EMode.em_EditInstances )
                     		{
-                        		scr_data.m_ents.Remove( ent_inst );
-                        		
-                        		m_ent_inst = ent_inst;
+								m_ent_inst 			= ent_inst;
+								m_ent_inst_scr_data = scr_data;
 #if DEF_SNAPPING_BY_PIVOT
-                        		m_ent_inst_capture_offs_x	= _cursor_pos_x - ( ent_inst.x + ent_inst.base_entity.pivot_x );
-                                m_ent_inst_capture_offs_y	= _cursor_pos_y - ( ent_inst.y + ent_inst.base_entity.pivot_y );
+								m_ent_inst_capture_offs_x	= _cursor_pos_x - ( ent_inst.x + ent_inst.base_entity.pivot_x );
+								m_ent_inst_capture_offs_y	= _cursor_pos_y - ( ent_inst.y + ent_inst.base_entity.pivot_y );
 #else
-                        		m_ent_inst_capture_offs_x	= _cursor_pos_x - ent_inst.x;
-                        		m_ent_inst_capture_offs_y	= _cursor_pos_y - ent_inst.y;
+								m_ent_inst_capture_offs_x	= _cursor_pos_x - ent_inst.x;
+								m_ent_inst_capture_offs_y	= _cursor_pos_y - ent_inst.y;
 #endif                  		
-                        		m_ent_inst_screen_slot_id = m_sel_screen_slot_id;
-                        		
-                        		m_ent_inst_captured = true;
-                        		
-                        		m_pix_box.Capture 	= false;
-                    		}
+								m_ent_inst_screen_slot_id = m_sel_screen_slot_id;
+								
+								m_ent_inst_captured = true;
+								
+								m_pix_box.Capture 	= false;
+							}
 
                     		if( EntityInstanceSelected != null )
                     		{
@@ -727,8 +727,14 @@ namespace MAPeD
 #else			    	
 			    	_ent_inst.x = ent_pos_x;
 			    	_ent_inst.y = ent_pos_y;
-#endif					
-					scr_data.m_ents.Add( _ent_inst );
+#endif
+					if( m_ent_inst_scr_data != scr_data )
+					{
+						// remove an entity from the old screen...
+						m_ent_inst_scr_data.m_ents.Remove( _ent_inst );
+						// ... and add to the new one
+						scr_data.m_ents.Add( _ent_inst );
+					}
 					
 					update();
 					
@@ -1111,7 +1117,10 @@ namespace MAPeD
 						{ 
 							_scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst )
 							{
-								m_gfx.DrawImage( _ent_inst.base_entity.bitmap, _scr_x + ( int )( _ent_inst.x * m_scale ), _scr_y + ( int )( _ent_inst.y * m_scale ), ( int )_ent_inst.base_entity.width * m_scale, ( int )_ent_inst.base_entity.height * m_scale );
+								if( !( m_ent_inst_captured && ( _ent_inst == m_ent_inst ) ) )
+								{
+									m_gfx.DrawImage( _ent_inst.base_entity.bitmap, _scr_x + ( int )( _ent_inst.x * m_scale ), _scr_y + ( int )( _ent_inst.y * m_scale ), ( int )_ent_inst.base_entity.width * m_scale, ( int )_ent_inst.base_entity.height * m_scale );
+								}
 							});
 						});
 					}
@@ -1346,6 +1355,16 @@ namespace MAPeD
 									
 									if( m_ent_inst_captured )
 									{
+										// draw active screen border
+										{
+											x = screen_pos_x_by_slot_id( get_sel_scr_pos_x() );
+											y = screen_pos_y_by_slot_id( get_sel_scr_pos_y() );
+											
+											m_pen.Color = utils.CONST_COLOR_SCREEN_ACTIVE;
+											m_pen.Width = 2;
+											m_gfx.DrawRectangle( m_pen, x, y, scr_size_width, scr_size_height );
+										}
+										
 										if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 										{
 											m_gfx.DrawImage( m_ent_inst.base_entity.bitmap, capt_pos_x, capt_pos_y, ent_width, ent_height );
@@ -1868,6 +1887,7 @@ namespace MAPeD
 				case CONST_SET_PARAM_ENT_INST_RESET:
 				{
 					m_ent_inst 					= null;
+					m_ent_inst_scr_data			= null;
 					m_ent_inst_screen_slot_id 	= -1;
 					
 					m_ent_inst_captured 		= false;
