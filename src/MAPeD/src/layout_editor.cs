@@ -583,6 +583,22 @@ namespace MAPeD
 				}
 				else
 				{
+					if( mode == EMode.em_EditInstances )
+					{
+						// delete dragged entity if it releases out of a map
+						if( m_ent_inst != null )
+						{
+							m_ent_inst_scr_data.m_ents.Remove( m_ent_inst );
+							
+							set_param( CONST_SET_PARAM_ENT_INST_RESET, null );
+							
+							if( EntityInstanceSelected != null )
+							{
+								EntityInstanceSelected( this, new EventArg2Params( m_ent_inst, null ) );
+							}
+						}
+					}
+					
 					// reset selection
 					if( ResetSelectedScreen != null )
 					{
@@ -1093,7 +1109,6 @@ namespace MAPeD
 				int scr_size_width 	= (int)( platform_data.get_screen_width_pixels() * m_scale );
 				int scr_size_height = (int)( platform_data.get_screen_height_pixels() * m_scale );
 				
-				layout_screen_data scr_data = null;
 				int x;
 				int y;
 				int i;
@@ -1117,10 +1132,7 @@ namespace MAPeD
 						{ 
 							_scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst )
 							{
-								if( !( m_ent_inst_captured && ( _ent_inst == m_ent_inst ) ) )
-								{
-									m_gfx.DrawImage( _ent_inst.base_entity.bitmap, _scr_x + ( int )( _ent_inst.x * m_scale ), _scr_y + ( int )( _ent_inst.y * m_scale ), ( int )_ent_inst.base_entity.width * m_scale, ( int )_ent_inst.base_entity.height * m_scale );
-								}
+								m_gfx.DrawImage( _ent_inst.base_entity.bitmap, _scr_x + ( int )( _ent_inst.x * m_scale ), _scr_y + ( int )( _ent_inst.y * m_scale ), ( int )_ent_inst.base_entity.width * m_scale, ( int )_ent_inst.base_entity.height * m_scale );
 							});
 						});
 					}
@@ -1342,7 +1354,7 @@ namespace MAPeD
 							}
 							
 							int ent_width	= ( int )( m_ent_inst.base_entity.width * m_scale );
-							int ent_height 	= ( int )( m_ent_inst.base_entity.height * m_scale );							
+							int ent_height 	= ( int )( m_ent_inst.base_entity.height * m_scale );
 							
 							if( m_ent_inst_screen_slot_id >= 0 )
 							{
@@ -1350,8 +1362,6 @@ namespace MAPeD
 								{
 									int scr_pos_x = m_ent_inst_screen_slot_id % get_width();
 									int scr_pos_y = m_ent_inst_screen_slot_id / get_width();
-									
-									scr_data = m_layout.get_data( scr_pos_x, scr_pos_y );
 									
 									if( m_ent_inst_captured )
 									{
@@ -1361,14 +1371,11 @@ namespace MAPeD
 											y = screen_pos_y_by_slot_id( get_sel_scr_pos_y() );
 											
 											m_pen.Color = utils.CONST_COLOR_SCREEN_ACTIVE;
-											m_pen.Width = 2;
 											m_gfx.DrawRectangle( m_pen, x, y, scr_size_width, scr_size_height );
 										}
-										
-										if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
-										{
-											m_gfx.DrawImage( m_ent_inst.base_entity.bitmap, capt_pos_x, capt_pos_y, ent_width, ent_height );
-										}
+
+										m_pen.Color = utils.CONST_COLOR_SELECTED_ENTITY_BORDER;
+										m_gfx.DrawRectangle( m_pen, x + ( m_ent_inst.x * m_scale ), y + ( m_ent_inst.y * m_scale ), ent_width, ent_height );
 										
 										m_pen.Color = utils.CONST_COLOR_ENTITY_BORDER_EDIT_INST_MODE;
 										m_gfx.DrawRectangle( m_pen, capt_pos_x, capt_pos_y, ent_width, ent_height );
