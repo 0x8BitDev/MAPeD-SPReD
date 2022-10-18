@@ -523,7 +523,7 @@ namespace MAPeD
 			
 			if( valid_pos == true )
 			{
-				for( int ent_n = 0; ent_n < scr_data.m_ents.Count; ent_n++ )				
+				for( int ent_n = scr_data.m_ents.Count - 1; ent_n >= 0; --ent_n )
                 {
 					ent_inst = scr_data.m_ents[ ent_n ];
 					
@@ -537,7 +537,7 @@ namespace MAPeD
                     		{
                         		scr_data.m_ents.Remove( ent_inst );
                         		
-                        		m_ent_inst = ent_inst;                        		
+                        		m_ent_inst = ent_inst;
 #if DEF_SNAPPING_BY_PIVOT
                         		m_ent_inst_capture_offs_x	= _cursor_pos_x - ( ent_inst.x + ent_inst.base_entity.pivot_x );
                                 m_ent_inst_capture_offs_y	= _cursor_pos_y - ( ent_inst.y + ent_inst.base_entity.pivot_y );
