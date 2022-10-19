@@ -4415,8 +4415,17 @@ namespace MAPeD
 				if( edit_ent_inst != null )
 				{
 					edit_ent_inst.target_uid = ( ent_inst != null ) ? ( ( ent_inst != edit_ent_inst ) ? ent_inst.uid:-1 ):-1;
+
+					if( ent_inst == null )
+					{
+						// reset selected entity if user clicked on empty space
+						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, 0 );
+					}
 					
 					fill_entity_data( edit_ent_inst.base_entity, edit_ent_inst.properties, edit_ent_inst.name, edit_ent_inst.target_uid );
+					
+					// auto disable the 'target entity' mode
+					CheckBoxPickupTargetEntity.Checked = false;
 				}
 			}
 		}
