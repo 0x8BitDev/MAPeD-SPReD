@@ -3989,7 +3989,7 @@ namespace MAPeD
 #region entity properties editor
 		void fill_entity_data( entity_data _ent, string _inst_prop = "", string _inst_name = "", int _targ_uid = -1 )
 		{
-			groupBoxEntityEditor.Enabled = ( _ent != null );
+			LayoutEntityOrderToolStripMenuItem.Enabled = groupBoxEntityEditor.Enabled = ( _ent != null );
 			
 			if( _ent != null )
 			{
@@ -4303,6 +4303,8 @@ namespace MAPeD
 		
 		void layout_editor_set_mode( layout_editor.EMode _mode )
 		{
+			LayoutEntityOrderToolStripMenuItem.Enabled = false;
+			
 			switch( _mode )
 			{
 				case layout_editor.EMode.em_EditEntities:
@@ -4433,7 +4435,17 @@ namespace MAPeD
 				}
 			}			
 		}
-#endregion		
+
+		void LayoutBringFrontToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_SEL_BRING_FRONT, 0 );
+		}
+		
+		void LayoutSendBackToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_SEL_SEND_BACK, 0 );
+		}
+#endregion
 // 	PALETTE ******************************************************************************************//
 #region palette
 		void CheckBoxPalettePerCHRChecked_Event(object sender, EventArgs e)

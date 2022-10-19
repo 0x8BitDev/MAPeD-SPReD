@@ -31,7 +31,9 @@ namespace MAPeD
 		// set_param/get_param constants
 		public const uint	CONST_SET_PARAM_ENT_INST_RESET		= 0x01;
 		public const uint	CONST_SET_PARAM_ENT_ACTIVE			= 0x02;
-		public const uint	CONST_SET_PARAM_SCR_ACTIVE			= 0x04;
+		public const uint	CONST_SET_PARAM_ENT_SEL_BRING_FRONT	= 0x04;
+		public const uint	CONST_SET_PARAM_ENT_SEL_SEND_BACK	= 0x08;
+		public const uint	CONST_SET_PARAM_SCR_ACTIVE			= 0x10;
 
 		public const uint	CONST_GET_PARAM_ENT_INST_SELECTED	= 0x01;
 		
@@ -792,7 +794,7 @@ namespace MAPeD
 					
 					m_pix_box.Cursor = can_dispatch_selection() ? Cursors.Hand:Cursors.Arrow;
 					
-					MainForm.set_status_msg( String.Format( "Layout Editor: screen pos: {0};{1}", get_sel_scr_pos_x(), get_sel_scr_pos_y() ) );
+					MainForm.set_status_msg( String.Format( "Layout Editor: screen pos: {0};{1} / slot: {2}", get_sel_scr_pos_x(), get_sel_scr_pos_y(), m_sel_screen_slot_id ) );
 				}
 				else
 				{
@@ -1929,7 +1931,29 @@ namespace MAPeD
 					m_active_screen_index = unchecked( Convert.ToInt32( _val ) );
 				}
 				break;
+				
+				case CONST_SET_PARAM_ENT_SEL_BRING_FRONT:
+				{
+					layout_screen_data scr_data = get_ent_inst_init_screen_data();
 					
+					scr_data.m_ents.RemoveAt( scr_data.m_ents.FindIndex( delegate( entity_instance _ent ) { return m_ent_inst == _ent; } ) );
+					scr_data.m_ents.Add( m_ent_inst );
+					
+					update();
+				}
+				break;
+
+				case CONST_SET_PARAM_ENT_SEL_SEND_BACK:
+				{
+					layout_screen_data scr_data = get_ent_inst_init_screen_data();
+					
+					scr_data.m_ents.RemoveAt( scr_data.m_ents.FindIndex( delegate( entity_instance _ent ) { return m_ent_inst == _ent; } ) );
+					scr_data.m_ents.Insert( 0, m_ent_inst );
+					
+					update();
+				}
+				break;
+				
 				default:
 				{
 					throw new Exception( "Unknown parameter detected!\n\n[layout_editor.set_param]" );
