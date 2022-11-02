@@ -394,7 +394,14 @@ namespace MAPeD
 		{
 			if( e.Button == MouseButtons.Left )
 			{
+				pix_box_reset_capture();
+				
 				set_high_quality_render_mode( true );
+				
+				if( show_grid )
+				{
+					update();
+				}
 			}
 
 			if( !map_panning_enabled() )
@@ -761,7 +768,7 @@ namespace MAPeD
 						m_gfx.DrawImage( m_shared.m_scr_list.get( _scr_data.m_scr_ind ), _x, _y, scr_size_width, scr_size_height );
 					});
 
-					if( show_grid )
+					if( show_grid && !m_shared.pix_box_captured() )
 					{
 						// draw tiles grid
 						if( m_shared.m_scale >= 1.0 )
