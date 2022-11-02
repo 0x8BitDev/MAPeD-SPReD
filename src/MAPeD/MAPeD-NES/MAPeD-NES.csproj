@@ -155,8 +155,20 @@
     <Compile Include="..\src\layout_data.cs">
       <Link>layout_data.cs</Link>
     </Compile>
-    <Compile Include="..\src\layout_editor.cs">
-      <Link>layout_editor.cs</Link>
+    <Compile Include="..\src\layout_editor\layout_editor_base.cs">
+      <Link>layout_editor\layout_editor_base.cs</Link>
+    </Compile>
+    <Compile Include="..\src\layout_editor\layout_editor_builder.cs">
+      <Link>layout_editor\layout_editor_builder.cs</Link>
+    </Compile>
+    <Compile Include="..\src\layout_editor\layout_editor_entities.cs">
+      <Link>layout_editor\layout_editor_entities.cs</Link>
+    </Compile>
+    <Compile Include="..\src\layout_editor\layout_editor_painter.cs">
+      <Link>layout_editor\layout_editor_painter.cs</Link>
+    </Compile>
+    <Compile Include="..\src\layout_editor\layout_editor_screen_list.cs">
+      <Link>layout_editor\layout_editor_screen_list.cs</Link>
     </Compile>
     <Compile Include="..\src\MainForm.cs">
       <SubType>Form</SubType>
@@ -224,9 +236,6 @@
     </Compile>
     <Compile Include="..\src\screen_data.cs">
       <Link>screen_data.cs</Link>
-    </Compile>
-    <Compile Include="..\src\screen_editor.cs">
-      <Link>screen_editor.cs</Link>
     </Compile>
     <Compile Include="..\src\screen_list.cs">
       <Link>screen_list.cs</Link>
@@ -378,6 +387,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="layout_editor" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

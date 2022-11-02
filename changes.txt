@@ -1,18 +1,21 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+02.11.2022 - Application window, detached tabs and the tiles/blocks palette window can be resized and maximized
+	   - The layout options moved to the layout tabs; they are now called the 'Builder' tab
+	   - Removed the screen editor tab; instead the 'Painter' tab has been added to the layout tabs; now you can fill your maps with tiles in the layout viewport
+	   - Painter/Screen List/Entities modes: hold down the 'Ctrl' key to pan the viewport
 19.10.2022 - Added 'Entity Order' item to the layout context menu ('Bring to Front' and 'Send to Back' actions are available)
 18.10.2022 - Fixed dragging of entities, now it happens without reordering; also added drawing of active screen border when dragging an entity
 17.10.2022 - Added drawing of a tile properties (the View Type combobox) on a whole map in the layout viewport
 11.10.2022 - Added a tooltip with a selected color index on the main palette
-10.10.2022 - Detached layout window can be resized and maximized
 16.09.2022 - PCE: added 'Game Prototype' demo: fully playable game prototype, run'n'jump platformer, 40 screens scrollable multidirectional map with 200+ entities, +bonus level
 23.08.2022 - PCE: MPD-render: optimized screen scrolling, re-written in assembler
 21.07.2022 - Improved colors swapping
 22.06.2022 - Added sorting option for entities (Left->Right, Bottom->Top) to the data export dialog
 18.05.2022 - Added dialog for reordering CHR banks (Main Menu->CHR Banks->Reorder Banks)
 06.05.2022 - Added deletion of multiple selected screens
-29.04.2022 - Optimized rendering of maps; Now it's really fast
+29.04.2022 - Optimized rendering of maps in the layout window
 08.04.2022 - Changed project file format (v7): palette in a project file for all platforms
 08.04.2022 - ZX/PCE/SMD: added an import of a custom palette
 

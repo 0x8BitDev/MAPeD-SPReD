@@ -126,7 +126,7 @@ namespace MAPeD
 			if( _on )
 			{
 				m_gfx.SmoothingMode 	= SmoothingMode.HighSpeed;
-				m_gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				m_gfx.InterpolationMode = InterpolationMode.Bilinear;//HighQualityBicubic;
 				m_gfx.PixelOffsetMode 	= PixelOffsetMode.HighQuality;
 			}
 			else

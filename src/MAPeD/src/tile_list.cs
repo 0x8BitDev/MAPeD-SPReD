@@ -181,6 +181,7 @@ namespace MAPeD
 		private void calc_pix_box_size( PictureBox _pbox )
 		{
 			m_tiles_width_cnt	= ( m_owner.ClientSize.Width - 1 ) / ( m_img_list.ImageSize.Width + 1 );
+			m_tiles_width_cnt	= ( m_tiles_width_cnt > 0 ) ? m_tiles_width_cnt:1;
 			m_tiles_height_cnt	= ( m_img_list.Images.Count / m_tiles_width_cnt ) + ( ( m_img_list.Images.Count % m_tiles_width_cnt > 0 ) ? 1:0 );
 			
 			_pbox.Width		= ( m_tiles_width_cnt * ( m_img_list.ImageSize.Width + 1 ) ) + 1;	// +1 right vertical border line

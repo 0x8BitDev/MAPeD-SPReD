@@ -213,11 +213,15 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_SCREEN_SELECTED_LAYOUT_MODE		= Color.LimeGreen;
 		public static readonly Color	CONST_COLOR_SCREEN_ACTIVE					= Color.Red;
 		public static readonly Color	CONST_COLOR_STRING_DEFAULT					= Color.White;
+		public static readonly Color	CONST_COLOR_STRING_DEFAULT_SHADOW			= Color.Black;
 		public static readonly Color	CONST_COLOR_ENTITY_BORDER_EDIT_ENT_MODE		= Color.LimeGreen;
 		public static readonly Color	CONST_COLOR_SELECTED_ENTITY_BORDER			= Color.Red;
 		public static readonly Color	CONST_COLOR_ENTITY_BORDER_EDIT_INST_MODE	= Color.Orange;
 		public static readonly Color	CONST_COLOR_TARGET_LINK						= Color.LightGreen;
 		public static readonly Color	CONST_COLOR_ENTITY_PIVOT					= Color.LightGreen;
+		public static readonly Color	CONST_COLOR_GRID_BLOCKS						= Color.FromArgb( unchecked( (int)0x90a0a0a0 ) );
+		public static readonly Color	CONST_COLOR_GRID_TILES_BRIGHT				= Color.FromArgb( unchecked( (int)0x90e0e0e0 ) );
+		public static readonly Color	CONST_COLOR_GRID_TILES_DARK					= Color.FromArgb( unchecked( (int)0x88a0a0a0 ) );
 		// image list manager
 		public static readonly Color	CONST_COLOR_TILE_CLEAR						= Color.Black;
 		public static readonly Color	CONST_COLOR_BLOCK_CLEAR						= Color.Black;

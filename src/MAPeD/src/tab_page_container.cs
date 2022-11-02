@@ -22,7 +22,7 @@ namespace MAPeD
 		
 		private MainForm	m_parent	= null;
 		
-		public tab_page_container( TabControl _tab_cntrl, MainForm _parent, bool _resizable )
+		public tab_page_container( TabControl _tab_cntrl, MainForm _parent )
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -30,13 +30,6 @@ namespace MAPeD
 			InitializeComponent();
 			
 			m_parent = _parent;
-			
-			if( _resizable )
-			{
-				this.FormBorderStyle = FormBorderStyle.Sizable;
-				this.MaximizeBox = true;
-				this.MinimizeBox = true;
-			}
 			
 			if( _tab_cntrl.SelectedTab != null )
 			{

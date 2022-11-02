@@ -100,19 +100,6 @@ namespace MAPeD
 			this.updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScreensAutoUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScreensShowAllBanksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
-			this.editorToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.createScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.copyScreenToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteEmptyScreensToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
-			this.openTilesBlocksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
-			this.ScreenEditModeSingleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ScreenEditModeLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
-			this.ScreenEditShowGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.layoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -123,6 +110,7 @@ namespace MAPeD
 			this.LayoutShowEntitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LayoutShowTargetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LayoutShowCoordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.LayoutShowGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.LayoutDeleteAllEntityInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LayoutDeleteAllScreenMarksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -141,37 +129,16 @@ namespace MAPeD
 			this.quickGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator27 = new System.Windows.Forms.ToolStripSeparator();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.tabControlMainLayout = new System.Windows.Forms.TabControl();
-			this.TabMain = new System.Windows.Forms.TabPage();
+			this.tabControlTilesLayout = new System.Windows.Forms.TabControl();
+			this.TabTiles = new System.Windows.Forms.TabPage();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-			this.BtnOptimization = new System.Windows.Forms.Button();
+			this.splitContainer4 = new System.Windows.Forms.SplitContainer();
 			this.CBoxTileViewType = new System.Windows.Forms.ComboBox();
 			this.label6 = new System.Windows.Forms.Label();
+			this.BtnOptimization = new System.Windows.Forms.Button();
 			this.PanelTiles = new System.Windows.Forms.FlowLayoutPanel();
-			this.tabControlTilesScreens = new System.Windows.Forms.TabControl();
-			this.TabTiles = new System.Windows.Forms.TabPage();
 			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
-			this.GrpBoxCHRBank = new System.Windows.Forms.GroupBox();
-			this.BtnCHRBankNextPage = new System.Windows.Forms.Button();
-			this.BtnCHRBankPrevPage = new System.Windows.Forms.Button();
-			this.CBoxCHRBanks = new System.Windows.Forms.ComboBox();
-			this.BtnDeleteCHRBank = new System.Windows.Forms.Button();
-			this.BtnCHRRotate = new System.Windows.Forms.Button();
-			this.BtnCHRHFlip = new System.Windows.Forms.Button();
-			this.BtnCopyCHRBank = new System.Windows.Forms.Button();
-			this.BtnAddCHRBank = new System.Windows.Forms.Button();
-			this.BtnCHRVFlip = new System.Windows.Forms.Button();
-			this.label5 = new System.Windows.Forms.Label();
-			this.PBoxCHRBank = new System.Windows.Forms.PictureBox();
-			this.ContextMenuCHRBank = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.copyCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pasteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.separatorToolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-			this.fillWithColorCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
-			this.insertLeftCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GrpBoxPalettes = new System.Windows.Forms.GroupBox();
 			this.BtnSwapColors = new System.Windows.Forms.Button();
 			this.CBoxPalettes = new System.Windows.Forms.ComboBox();
@@ -226,45 +193,45 @@ namespace MAPeD
 			this.RBtnScreenDataTiles = new System.Windows.Forms.RadioButton();
 			this.label13 = new System.Windows.Forms.Label();
 			this.label12 = new System.Windows.Forms.Label();
+			this.GrpBoxCHRBank = new System.Windows.Forms.GroupBox();
+			this.BtnCHRBankNextPage = new System.Windows.Forms.Button();
+			this.BtnCHRBankPrevPage = new System.Windows.Forms.Button();
+			this.CBoxCHRBanks = new System.Windows.Forms.ComboBox();
+			this.BtnDeleteCHRBank = new System.Windows.Forms.Button();
+			this.BtnCHRRotate = new System.Windows.Forms.Button();
+			this.BtnCHRHFlip = new System.Windows.Forms.Button();
+			this.BtnCopyCHRBank = new System.Windows.Forms.Button();
+			this.BtnAddCHRBank = new System.Windows.Forms.Button();
+			this.BtnCHRVFlip = new System.Windows.Forms.Button();
+			this.label5 = new System.Windows.Forms.Label();
+			this.PBoxCHRBank = new System.Windows.Forms.PictureBox();
+			this.ContextMenuCHRBank = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.copyCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pasteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.separatorToolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+			this.fillWithColorCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
+			this.insertLeftCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.PanelBlocks = new System.Windows.Forms.FlowLayoutPanel();
-			this.TabScreenEditor = new System.Windows.Forms.TabPage();
-			this.splitContainer4 = new System.Windows.Forms.SplitContainer();
-			this.PBoxScreen = new System.Windows.Forms.PictureBox();
-			this.ScreenDataTypeLabel = new System.Windows.Forms.Label();
-			this.label11 = new System.Windows.Forms.Label();
-			this.BtnPatterns = new System.Windows.Forms.Button();
-			this.BtnTilesBlocks = new System.Windows.Forms.Button();
-			this.groupBox8 = new System.Windows.Forms.GroupBox();
-			this.RBtnScreenEditModeLayout = new System.Windows.Forms.RadioButton();
-			this.RBtnScreenEditModeSingle = new System.Windows.Forms.RadioButton();
-			this.GrpBoxActiveTile = new System.Windows.Forms.GroupBox();
-			this.PBoxActiveTile = new System.Windows.Forms.PictureBox();
-			this.BtnResetTile = new System.Windows.Forms.Button();
-			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.ListBoxScreens = new System.Windows.Forms.ListBox();
-			this.BtnCreateScreen = new System.Windows.Forms.Button();
-			this.BtnCopyScreen = new System.Windows.Forms.Button();
-			this.BtnDeleteEmptyScreens = new System.Windows.Forms.Button();
-			this.BtnDeleteScreen = new System.Windows.Forms.Button();
-			this.CheckBoxScreenShowGrid = new System.Windows.Forms.CheckBox();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.TabLayout = new System.Windows.Forms.TabPage();
 			this.splitContainer5 = new System.Windows.Forms.SplitContainer();
 			this.tabControlLayoutTools = new System.Windows.Forms.TabControl();
 			this.TabBuilder = new System.Windows.Forms.TabPage();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.BtnLayoutDeleteEmptyScreens = new System.Windows.Forms.Button();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
 			this.BtnLayoutMoveDown = new System.Windows.Forms.Button();
 			this.BtnLayoutMoveUp = new System.Windows.Forms.Button();
 			this.ListBoxLayouts = new System.Windows.Forms.ListBox();
 			this.LayoutLabel = new System.Windows.Forms.Label();
 			this.groupBox13 = new System.Windows.Forms.GroupBox();
+			this.CheckBoxShowGrid = new System.Windows.Forms.CheckBox();
 			this.CheckBoxShowCoords = new System.Windows.Forms.CheckBox();
 			this.CheckBoxShowTargets = new System.Windows.Forms.CheckBox();
 			this.CheckBoxShowMarks = new System.Windows.Forms.CheckBox();
 			this.CheckBoxShowEntities = new System.Windows.Forms.CheckBox();
-			this.BtnCreateLayout = new System.Windows.Forms.Button();
 			this.BtnLayoutRemoveRightColumn = new System.Windows.Forms.Button();
 			this.BtnLayoutRemoveUpRow = new System.Windows.Forms.Button();
 			this.BtnLayoutAddDownRow = new System.Windows.Forms.Button();
@@ -276,6 +243,16 @@ namespace MAPeD
 			this.BtnLayoutRemoveDownRow = new System.Windows.Forms.Button();
 			this.BtnLayoutAddLeftColumn = new System.Windows.Forms.Button();
 			this.BtnLayoutRemoveLeftColumn = new System.Windows.Forms.Button();
+			this.TabPainter = new System.Windows.Forms.TabPage();
+			this.GrpBoxPainter = new System.Windows.Forms.GroupBox();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.RBtnMapScaleX2 = new System.Windows.Forms.RadioButton();
+			this.RBtnMapScaleX1 = new System.Windows.Forms.RadioButton();
+			this.GrpBoxActiveTile = new System.Windows.Forms.GroupBox();
+			this.PBoxActiveTile = new System.Windows.Forms.PictureBox();
+			this.BtnResetTile = new System.Windows.Forms.Button();
+			this.BtnPatterns = new System.Windows.Forms.Button();
+			this.BtnTilesBlocks = new System.Windows.Forms.Button();
 			this.TabScreenList = new System.Windows.Forms.TabPage();
 			this.splitContainer6 = new System.Windows.Forms.SplitContainer();
 			this.CheckBoxLayoutEditorAllBanks = new System.Windows.Forms.CheckBox();
@@ -285,23 +262,24 @@ namespace MAPeD
 			this.CheckBoxScreensAutoUpdate = new System.Windows.Forms.CheckBox();
 			this.ListViewScreens = new System.Windows.Forms.ListView();
 			this.TabEntities = new System.Windows.Forms.TabPage();
-			this.groupBoxEntitiesTreeView = new System.Windows.Forms.GroupBox();
-			this.BtnEntityRename = new System.Windows.Forms.Button();
-			this.BtnEntitiesEditInstancesMode = new System.Windows.Forms.Button();
-			this.groupBox10 = new System.Windows.Forms.GroupBox();
-			this.BtnEntityAdd = new System.Windows.Forms.Button();
-			this.BtnEntityDelete = new System.Windows.Forms.Button();
+			this.splitContainer7 = new System.Windows.Forms.SplitContainer();
+			this.splitContainer8 = new System.Windows.Forms.SplitContainer();
 			this.TreeViewEntities = new System.Windows.Forms.TreeView();
 			this.ContextMenuEntitiesTree = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.addGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.splitContainer9 = new System.Windows.Forms.SplitContainer();
+			this.BtnEntityRename = new System.Windows.Forms.Button();
 			this.groupBox9 = new System.Windows.Forms.GroupBox();
 			this.BtnEntityGroupAdd = new System.Windows.Forms.Button();
 			this.BtnEntityGroupDelete = new System.Windows.Forms.Button();
+			this.groupBox10 = new System.Windows.Forms.GroupBox();
+			this.BtnEntityAdd = new System.Windows.Forms.Button();
+			this.BtnEntityDelete = new System.Windows.Forms.Button();
+			this.BtnEntitiesEditInstancesMode = new System.Windows.Forms.Button();
 			this.CheckBoxEntitySnapping = new System.Windows.Forms.CheckBox();
 			this.groupBoxEntityEditor = new System.Windows.Forms.GroupBox();
 			this.ComboBoxEntityZoom = new System.Windows.Forms.ComboBox();
-			this.label7 = new System.Windows.Forms.Label();
 			this.CheckBoxPickupTargetEntity = new System.Windows.Forms.CheckBox();
 			this.PBoxEntityPreview = new System.Windows.Forms.PictureBox();
 			this.NumericUpDownEntityUID = new System.Windows.Forms.NumericUpDown();
@@ -319,6 +297,7 @@ namespace MAPeD
 			this.LabelEntityName = new System.Windows.Forms.Label();
 			this.TextBoxEntityProperties = new System.Windows.Forms.TextBox();
 			this.TextBoxEntityInstanceProp = new System.Windows.Forms.TextBox();
+			this.label7 = new System.Windows.Forms.Label();
 			this.PBoxLayout = new System.Windows.Forms.PictureBox();
 			this.ContextMenuLayoutEditor = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.LayoutEntityOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -382,8 +361,8 @@ namespace MAPeD
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.ContextMenuEntitiesTreeGroup.SuspendLayout();
 			this.MenuStrip.SuspendLayout();
-			this.tabControlMainLayout.SuspendLayout();
-			this.TabMain.SuspendLayout();
+			this.tabControlTilesLayout.SuspendLayout();
+			this.TabTiles.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -392,15 +371,14 @@ namespace MAPeD
 			this.splitContainer2.Panel1.SuspendLayout();
 			this.splitContainer2.Panel2.SuspendLayout();
 			this.splitContainer2.SuspendLayout();
-			this.tabControlTilesScreens.SuspendLayout();
-			this.TabTiles.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
+			this.splitContainer4.Panel1.SuspendLayout();
+			this.splitContainer4.Panel2.SuspendLayout();
+			this.splitContainer4.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
 			this.splitContainer3.Panel1.SuspendLayout();
 			this.splitContainer3.Panel2.SuspendLayout();
 			this.splitContainer3.SuspendLayout();
-			this.GrpBoxCHRBank.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.PBoxCHRBank)).BeginInit();
-			this.ContextMenuCHRBank.SuspendLayout();
 			this.GrpBoxPalettes.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Palette3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette2)).BeginInit();
@@ -415,17 +393,10 @@ namespace MAPeD
 			this.GrpBoxScreenData.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownScrBlocksHeight)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownScrBlocksWidth)).BeginInit();
+			this.GrpBoxCHRBank.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.PBoxCHRBank)).BeginInit();
+			this.ContextMenuCHRBank.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			this.TabScreenEditor.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
-			this.splitContainer4.Panel1.SuspendLayout();
-			this.splitContainer4.Panel2.SuspendLayout();
-			this.splitContainer4.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.PBoxScreen)).BeginInit();
-			this.groupBox8.SuspendLayout();
-			this.GrpBoxActiveTile.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.PBoxActiveTile)).BeginInit();
-			this.groupBox6.SuspendLayout();
 			this.TabLayout.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).BeginInit();
 			this.splitContainer5.Panel1.SuspendLayout();
@@ -436,16 +407,32 @@ namespace MAPeD
 			this.groupBox1.SuspendLayout();
 			this.groupBox7.SuspendLayout();
 			this.groupBox13.SuspendLayout();
+			this.TabPainter.SuspendLayout();
+			this.GrpBoxPainter.SuspendLayout();
+			this.groupBox3.SuspendLayout();
+			this.GrpBoxActiveTile.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.PBoxActiveTile)).BeginInit();
 			this.TabScreenList.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer6)).BeginInit();
 			this.splitContainer6.Panel1.SuspendLayout();
 			this.splitContainer6.Panel2.SuspendLayout();
 			this.splitContainer6.SuspendLayout();
 			this.TabEntities.SuspendLayout();
-			this.groupBoxEntitiesTreeView.SuspendLayout();
-			this.groupBox10.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer7)).BeginInit();
+			this.splitContainer7.Panel1.SuspendLayout();
+			this.splitContainer7.Panel2.SuspendLayout();
+			this.splitContainer7.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer8)).BeginInit();
+			this.splitContainer8.Panel1.SuspendLayout();
+			this.splitContainer8.Panel2.SuspendLayout();
+			this.splitContainer8.SuspendLayout();
 			this.ContextMenuEntitiesTree.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer9)).BeginInit();
+			this.splitContainer9.Panel1.SuspendLayout();
+			this.splitContainer9.Panel2.SuspendLayout();
+			this.splitContainer9.SuspendLayout();
 			this.groupBox9.SuspendLayout();
+			this.groupBox10.SuspendLayout();
 			this.groupBoxEntityEditor.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBoxEntityPreview)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownEntityUID)).BeginInit();
@@ -513,7 +500,7 @@ namespace MAPeD
 									this.helpToolStripMenuItem});
 			this.MenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.MenuStrip.Name = "MenuStrip";
-			this.MenuStrip.Size = new System.Drawing.Size(1032, 24);
+			this.MenuStrip.Size = new System.Drawing.Size(1244, 24);
 			this.MenuStrip.TabIndex = 0;
 			this.MenuStrip.Text = "MenuStrip";
 			// 
@@ -943,9 +930,7 @@ namespace MAPeD
 			this.screensToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.updateToolStripMenuItem,
 									this.ScreensAutoUpdateToolStripMenuItem,
-									this.ScreensShowAllBanksToolStripMenuItem,
-									this.toolStripSeparator19,
-									this.editorToolStripMenuItem1});
+									this.ScreensShowAllBanksToolStripMenuItem});
 			this.screensToolStripMenuItem.Name = "screensToolStripMenuItem";
 			this.screensToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
 			this.screensToolStripMenuItem.Text = "&Screens";
@@ -972,102 +957,6 @@ namespace MAPeD
 			this.ScreensShowAllBanksToolStripMenuItem.Text = "&Show All Banks";
 			this.ScreensShowAllBanksToolStripMenuItem.Click += new System.EventHandler(this.ScreensShowAllBanksToolStripMenuItemClick_Event);
 			// 
-			// toolStripSeparator19
-			// 
-			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(151, 6);
-			// 
-			// editorToolStripMenuItem1
-			// 
-			this.editorToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.createScreenToolStripMenuItem,
-									this.copyScreenToolStripMenuItem3,
-									this.deleteScreenToolStripMenuItem,
-									this.deleteEmptyScreensToolStripMenuItem,
-									this.toolStripSeparator16,
-									this.openTilesBlocksToolStripMenuItem,
-									this.toolStripSeparator17,
-									this.ScreenEditModeSingleToolStripMenuItem,
-									this.ScreenEditModeLayoutToolStripMenuItem,
-									this.toolStripSeparator18,
-									this.ScreenEditShowGridToolStripMenuItem});
-			this.editorToolStripMenuItem1.Name = "editorToolStripMenuItem1";
-			this.editorToolStripMenuItem1.Size = new System.Drawing.Size(154, 22);
-			this.editorToolStripMenuItem1.Text = "E&ditor";
-			// 
-			// createScreenToolStripMenuItem
-			// 
-			this.createScreenToolStripMenuItem.Name = "createScreenToolStripMenuItem";
-			this.createScreenToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.createScreenToolStripMenuItem.Text = "&C&reate";
-			this.createScreenToolStripMenuItem.Click += new System.EventHandler(this.BtnCreateScreenClick_Event);
-			// 
-			// copyScreenToolStripMenuItem3
-			// 
-			this.copyScreenToolStripMenuItem3.Name = "copyScreenToolStripMenuItem3";
-			this.copyScreenToolStripMenuItem3.Size = new System.Drawing.Size(187, 22);
-			this.copyScreenToolStripMenuItem3.Text = "&Copy";
-			this.copyScreenToolStripMenuItem3.Click += new System.EventHandler(this.BtnCopyScreenClick_Event);
-			// 
-			// deleteScreenToolStripMenuItem
-			// 
-			this.deleteScreenToolStripMenuItem.Name = "deleteScreenToolStripMenuItem";
-			this.deleteScreenToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.deleteScreenToolStripMenuItem.Text = "&Delete";
-			this.deleteScreenToolStripMenuItem.Click += new System.EventHandler(this.BtnDeleteScreenClick_Event);
-			// 
-			// deleteEmptyScreensToolStripMenuItem
-			// 
-			this.deleteEmptyScreensToolStripMenuItem.Name = "deleteEmptyScreensToolStripMenuItem";
-			this.deleteEmptyScreensToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.deleteEmptyScreensToolStripMenuItem.Text = "D&elete Empty Screens";
-			this.deleteEmptyScreensToolStripMenuItem.Click += new System.EventHandler(this.BtnDeleteEmptyScreensClick_Event);
-			// 
-			// toolStripSeparator16
-			// 
-			this.toolStripSeparator16.Name = "toolStripSeparator16";
-			this.toolStripSeparator16.Size = new System.Drawing.Size(184, 6);
-			// 
-			// openTilesBlocksToolStripMenuItem
-			// 
-			this.openTilesBlocksToolStripMenuItem.Name = "openTilesBlocksToolStripMenuItem";
-			this.openTilesBlocksToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.openTilesBlocksToolStripMenuItem.Text = "&Open Tiles/Blocks";
-			this.openTilesBlocksToolStripMenuItem.Click += new System.EventHandler(this.BtnTilesBlocksClick_Event);
-			// 
-			// toolStripSeparator17
-			// 
-			this.toolStripSeparator17.Name = "toolStripSeparator17";
-			this.toolStripSeparator17.Size = new System.Drawing.Size(184, 6);
-			// 
-			// ScreenEditModeSingleToolStripMenuItem
-			// 
-			this.ScreenEditModeSingleToolStripMenuItem.Name = "ScreenEditModeSingleToolStripMenuItem";
-			this.ScreenEditModeSingleToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.ScreenEditModeSingleToolStripMenuItem.Text = "Mode &Single";
-			this.ScreenEditModeSingleToolStripMenuItem.Click += new System.EventHandler(this.ScreenEditModeSingleToolStripMenuItemClick_Event);
-			// 
-			// ScreenEditModeLayoutToolStripMenuItem
-			// 
-			this.ScreenEditModeLayoutToolStripMenuItem.Name = "ScreenEditModeLayoutToolStripMenuItem";
-			this.ScreenEditModeLayoutToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.ScreenEditModeLayoutToolStripMenuItem.Text = "Mode &Layout";
-			this.ScreenEditModeLayoutToolStripMenuItem.Click += new System.EventHandler(this.ScreenEditModeLayoutToolStripMenuItemClick_Event);
-			// 
-			// toolStripSeparator18
-			// 
-			this.toolStripSeparator18.Name = "toolStripSeparator18";
-			this.toolStripSeparator18.Size = new System.Drawing.Size(184, 6);
-			// 
-			// ScreenEditShowGridToolStripMenuItem
-			// 
-			this.ScreenEditShowGridToolStripMenuItem.Checked = true;
-			this.ScreenEditShowGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.ScreenEditShowGridToolStripMenuItem.Name = "ScreenEditShowGridToolStripMenuItem";
-			this.ScreenEditShowGridToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.ScreenEditShowGridToolStripMenuItem.Text = "&Show Grid";
-			this.ScreenEditShowGridToolStripMenuItem.Click += new System.EventHandler(this.ScreenEditShowGridToolStripMenuItemClick_Event);
-			// 
 			// layoutToolStripMenuItem
 			// 
 			this.layoutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1087,8 +976,8 @@ namespace MAPeD
 			// 
 			this.createToolStripMenuItem1.Name = "createToolStripMenuItem1";
 			this.createToolStripMenuItem1.Size = new System.Drawing.Size(209, 22);
-			this.createToolStripMenuItem1.Text = "C&reate";
-			this.createToolStripMenuItem1.Click += new System.EventHandler(this.BtnCreateLayoutClick_Event);
+			this.createToolStripMenuItem1.Text = "C&reate WxH";
+			this.createToolStripMenuItem1.Click += new System.EventHandler(this.BtnCreateLayoutWxHClick_Event);
 			// 
 			// copyToolStripMenuItem
 			// 
@@ -1115,7 +1004,8 @@ namespace MAPeD
 									this.LayoutShowMarksToolStripMenuItem,
 									this.LayoutShowEntitiesToolStripMenuItem,
 									this.LayoutShowTargetsToolStripMenuItem,
-									this.LayoutShowCoordsToolStripMenuItem});
+									this.LayoutShowCoordsToolStripMenuItem,
+									this.LayoutShowGridToolStripMenuItem});
 			this.showToolStripMenuItem.Name = "showToolStripMenuItem";
 			this.showToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
 			this.showToolStripMenuItem.Text = "&Show";
@@ -1147,6 +1037,13 @@ namespace MAPeD
 			this.LayoutShowCoordsToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
 			this.LayoutShowCoordsToolStripMenuItem.Text = "&Coordinates";
 			this.LayoutShowCoordsToolStripMenuItem.Click += new System.EventHandler(this.LayoutShowCoordsToolStripMenuItemClick_Event);
+			// 
+			// LayoutShowGridToolStripMenuItem
+			// 
+			this.LayoutShowGridToolStripMenuItem.Name = "LayoutShowGridToolStripMenuItem";
+			this.LayoutShowGridToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.LayoutShowGridToolStripMenuItem.Text = "&Grid";
+			this.LayoutShowGridToolStripMenuItem.Click += new System.EventHandler(this.LayoutShowGridToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator10
 			// 
@@ -1279,53 +1176,53 @@ namespace MAPeD
 			this.aboutToolStripMenuItem.Text = "&About";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItemClick_Event);
 			// 
-			// tabControlMainLayout
+			// tabControlTilesLayout
 			// 
-			this.tabControlMainLayout.Controls.Add(this.TabMain);
-			this.tabControlMainLayout.Controls.Add(this.TabLayout);
-			this.tabControlMainLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tabControlMainLayout.Location = new System.Drawing.Point(0, 24);
-			this.tabControlMainLayout.Name = "tabControlMainLayout";
-			this.tabControlMainLayout.SelectedIndex = 0;
-			this.tabControlMainLayout.Size = new System.Drawing.Size(1032, 647);
-			this.tabControlMainLayout.TabIndex = 60;
-			this.tabControlMainLayout.DoubleClick += new System.EventHandler(this.TabCntrlDblClick_Event);
+			this.tabControlTilesLayout.Controls.Add(this.TabTiles);
+			this.tabControlTilesLayout.Controls.Add(this.TabLayout);
+			this.tabControlTilesLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabControlTilesLayout.Location = new System.Drawing.Point(0, 24);
+			this.tabControlTilesLayout.Name = "tabControlTilesLayout";
+			this.tabControlTilesLayout.SelectedIndex = 0;
+			this.tabControlTilesLayout.Size = new System.Drawing.Size(1244, 647);
+			this.tabControlTilesLayout.TabIndex = 60;
+			this.tabControlTilesLayout.DoubleClick += new System.EventHandler(this.TabCntrlDblClick_Event);
 			// 
-			// TabMain
+			// TabTiles
 			// 
-			this.TabMain.Controls.Add(this.splitContainer1);
-			this.TabMain.Location = new System.Drawing.Point(4, 22);
-			this.TabMain.Name = "TabMain";
-			this.TabMain.Padding = new System.Windows.Forms.Padding(3);
-			this.TabMain.Size = new System.Drawing.Size(1024, 621);
-			this.TabMain.TabIndex = 0;
-			this.TabMain.Text = "Main";
-			this.TabMain.UseVisualStyleBackColor = true;
+			this.TabTiles.Controls.Add(this.splitContainer1);
+			this.TabTiles.Location = new System.Drawing.Point(4, 22);
+			this.TabTiles.Name = "TabTiles";
+			this.TabTiles.Padding = new System.Windows.Forms.Padding(3);
+			this.TabTiles.Size = new System.Drawing.Size(1236, 621);
+			this.TabTiles.TabIndex = 0;
+			this.TabTiles.Text = "Tiles";
+			this.TabTiles.UseVisualStyleBackColor = true;
 			// 
 			// splitContainer1
 			// 
-			this.splitContainer1.BackColor = System.Drawing.Color.Gainsboro;
+			this.splitContainer1.BackColor = System.Drawing.Color.Silver;
 			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-			this.splitContainer1.IsSplitterFixed = true;
 			this.splitContainer1.Location = new System.Drawing.Point(3, 3);
 			this.splitContainer1.Name = "splitContainer1";
 			// 
 			// splitContainer1.Panel1
 			// 
 			this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
-			this.splitContainer1.Panel1MinSize = 242;
+			this.splitContainer1.Panel1MinSize = 290;
 			// 
 			// splitContainer1.Panel2
 			// 
-			this.splitContainer1.Panel2.Controls.Add(this.tabControlTilesScreens);
-			this.splitContainer1.Size = new System.Drawing.Size(1018, 615);
-			this.splitContainer1.SplitterDistance = 242;
+			this.splitContainer1.Panel2.Controls.Add(this.splitContainer3);
+			this.splitContainer1.Size = new System.Drawing.Size(1230, 615);
+			this.splitContainer1.SplitterDistance = 290;
 			this.splitContainer1.TabIndex = 19;
 			// 
 			// splitContainer2
 			// 
 			this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
 			this.splitContainer2.IsSplitterFixed = true;
 			this.splitContainer2.Location = new System.Drawing.Point(0, 0);
 			this.splitContainer2.Name = "splitContainer2";
@@ -1333,29 +1230,35 @@ namespace MAPeD
 			// 
 			// splitContainer2.Panel1
 			// 
-			this.splitContainer2.Panel1.BackColor = System.Drawing.Color.LightGray;
-			this.splitContainer2.Panel1.Controls.Add(this.BtnOptimization);
-			this.splitContainer2.Panel1.Controls.Add(this.CBoxTileViewType);
-			this.splitContainer2.Panel1.Controls.Add(this.label6);
+			this.splitContainer2.Panel1.BackColor = System.Drawing.Color.Silver;
+			this.splitContainer2.Panel1.Controls.Add(this.splitContainer4);
 			// 
 			// splitContainer2.Panel2
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.PanelTiles);
-			this.splitContainer2.Size = new System.Drawing.Size(242, 615);
+			this.splitContainer2.Size = new System.Drawing.Size(290, 615);
 			this.splitContainer2.SplitterDistance = 26;
 			this.splitContainer2.TabIndex = 1;
 			// 
-			// BtnOptimization
+			// splitContainer4
 			// 
-			this.BtnOptimization.BackColor = System.Drawing.Color.Gainsboro;
-			this.BtnOptimization.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.BtnOptimization.Location = new System.Drawing.Point(151, 3);
-			this.BtnOptimization.Name = "BtnOptimization";
-			this.BtnOptimization.Size = new System.Drawing.Size(89, 23);
-			this.BtnOptimization.TabIndex = 2;
-			this.BtnOptimization.Text = "Optimization";
-			this.BtnOptimization.UseVisualStyleBackColor = true;
-			this.BtnOptimization.Click += new System.EventHandler(this.BtnOptimizationClick_Event);
+			this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer4.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.splitContainer4.IsSplitterFixed = true;
+			this.splitContainer4.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer4.Name = "splitContainer4";
+			// 
+			// splitContainer4.Panel1
+			// 
+			this.splitContainer4.Panel1.Controls.Add(this.CBoxTileViewType);
+			this.splitContainer4.Panel1.Controls.Add(this.label6);
+			// 
+			// splitContainer4.Panel2
+			// 
+			this.splitContainer4.Panel2.Controls.Add(this.BtnOptimization);
+			this.splitContainer4.Size = new System.Drawing.Size(290, 26);
+			this.splitContainer4.SplitterDistance = 144;
+			this.splitContainer4.TabIndex = 0;
 			// 
 			// CBoxTileViewType
 			// 
@@ -1367,7 +1270,7 @@ namespace MAPeD
 									"Number",
 									"Tiles Usage",
 									"Blocks Usage"});
-			this.CBoxTileViewType.Location = new System.Drawing.Point(60, 4);
+			this.CBoxTileViewType.Location = new System.Drawing.Point(58, 3);
 			this.CBoxTileViewType.Name = "CBoxTileViewType";
 			this.CBoxTileViewType.Size = new System.Drawing.Size(85, 21);
 			this.CBoxTileViewType.TabIndex = 1;
@@ -1375,11 +1278,23 @@ namespace MAPeD
 			// 
 			// label6
 			// 
-			this.label6.Location = new System.Drawing.Point(2, 8);
+			this.label6.Location = new System.Drawing.Point(0, 7);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(62, 19);
 			this.label6.TabIndex = 0;
 			this.label6.Text = "View Type:";
+			// 
+			// BtnOptimization
+			// 
+			this.BtnOptimization.BackColor = System.Drawing.Color.Gainsboro;
+			this.BtnOptimization.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.BtnOptimization.Location = new System.Drawing.Point(1, 2);
+			this.BtnOptimization.Name = "BtnOptimization";
+			this.BtnOptimization.Size = new System.Drawing.Size(140, 23);
+			this.BtnOptimization.TabIndex = 2;
+			this.BtnOptimization.Text = "Optimization";
+			this.BtnOptimization.UseVisualStyleBackColor = true;
+			this.BtnOptimization.Click += new System.EventHandler(this.BtnOptimizationClick_Event);
 			// 
 			// PanelTiles
 			// 
@@ -1391,248 +1306,33 @@ namespace MAPeD
 			this.PanelTiles.ForeColor = System.Drawing.SystemColors.ControlLight;
 			this.PanelTiles.Location = new System.Drawing.Point(0, 0);
 			this.PanelTiles.Name = "PanelTiles";
-			this.PanelTiles.Size = new System.Drawing.Size(242, 585);
+			this.PanelTiles.Size = new System.Drawing.Size(290, 585);
 			this.PanelTiles.TabIndex = 3;
-			// 
-			// tabControlTilesScreens
-			// 
-			this.tabControlTilesScreens.Controls.Add(this.TabTiles);
-			this.tabControlTilesScreens.Controls.Add(this.TabScreenEditor);
-			this.tabControlTilesScreens.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tabControlTilesScreens.Location = new System.Drawing.Point(0, 0);
-			this.tabControlTilesScreens.Name = "tabControlTilesScreens";
-			this.tabControlTilesScreens.SelectedIndex = 0;
-			this.tabControlTilesScreens.Size = new System.Drawing.Size(772, 615);
-			this.tabControlTilesScreens.TabIndex = 40;
-			this.tabControlTilesScreens.DoubleClick += new System.EventHandler(this.TabCntrlDblClick_Event);
-			// 
-			// TabTiles
-			// 
-			this.TabTiles.AutoScroll = true;
-			this.TabTiles.BackColor = System.Drawing.Color.Silver;
-			this.TabTiles.Controls.Add(this.splitContainer3);
-			this.TabTiles.Location = new System.Drawing.Point(4, 22);
-			this.TabTiles.Name = "TabTiles";
-			this.TabTiles.Padding = new System.Windows.Forms.Padding(3);
-			this.TabTiles.Size = new System.Drawing.Size(764, 589);
-			this.TabTiles.TabIndex = 0;
-			this.TabTiles.Text = "Tiles";
 			// 
 			// splitContainer3
 			// 
+			this.splitContainer3.BackColor = System.Drawing.Color.Silver;
 			this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitContainer3.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
 			this.splitContainer3.IsSplitterFixed = true;
-			this.splitContainer3.Location = new System.Drawing.Point(3, 3);
+			this.splitContainer3.Location = new System.Drawing.Point(0, 0);
 			this.splitContainer3.Name = "splitContainer3";
 			// 
 			// splitContainer3.Panel1
 			// 
-			this.splitContainer3.Panel1.Controls.Add(this.GrpBoxCHRBank);
+			this.splitContainer3.Panel1.BackColor = System.Drawing.Color.Silver;
 			this.splitContainer3.Panel1.Controls.Add(this.GrpBoxPalettes);
 			this.splitContainer3.Panel1.Controls.Add(this.GrpBoxBlockEditor);
 			this.splitContainer3.Panel1.Controls.Add(this.GrpBoxTileEditor);
 			this.splitContainer3.Panel1.Controls.Add(this.GrpBoxScreenData);
+			this.splitContainer3.Panel1.Controls.Add(this.GrpBoxCHRBank);
 			// 
 			// splitContainer3.Panel2
 			// 
 			this.splitContainer3.Panel2.Controls.Add(this.groupBox2);
-			this.splitContainer3.Size = new System.Drawing.Size(758, 583);
+			this.splitContainer3.Size = new System.Drawing.Size(936, 615);
 			this.splitContainer3.SplitterDistance = 563;
 			this.splitContainer3.TabIndex = 0;
-			// 
-			// GrpBoxCHRBank
-			// 
-			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRBankNextPage);
-			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRBankPrevPage);
-			this.GrpBoxCHRBank.Controls.Add(this.CBoxCHRBanks);
-			this.GrpBoxCHRBank.Controls.Add(this.BtnDeleteCHRBank);
-			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRRotate);
-			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRHFlip);
-			this.GrpBoxCHRBank.Controls.Add(this.BtnCopyCHRBank);
-			this.GrpBoxCHRBank.Controls.Add(this.BtnAddCHRBank);
-			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRVFlip);
-			this.GrpBoxCHRBank.Controls.Add(this.label5);
-			this.GrpBoxCHRBank.Controls.Add(this.PBoxCHRBank);
-			this.GrpBoxCHRBank.Location = new System.Drawing.Point(2, 6);
-			this.GrpBoxCHRBank.Name = "GrpBoxCHRBank";
-			this.GrpBoxCHRBank.Size = new System.Drawing.Size(276, 336);
-			this.GrpBoxCHRBank.TabIndex = 5;
-			this.GrpBoxCHRBank.TabStop = false;
-			this.GrpBoxCHRBank.Text = "CHR Bank:";
-			// 
-			// BtnCHRBankNextPage
-			// 
-			this.BtnCHRBankNextPage.Location = new System.Drawing.Point(130, 283);
-			this.BtnCHRBankNextPage.Name = "BtnCHRBankNextPage";
-			this.BtnCHRBankNextPage.Size = new System.Drawing.Size(28, 23);
-			this.BtnCHRBankNextPage.TabIndex = 10;
-			this.BtnCHRBankNextPage.Text = ">>";
-			this.BtnCHRBankNextPage.UseVisualStyleBackColor = true;
-			this.BtnCHRBankNextPage.Click += new System.EventHandler(this.BtnCHRBankNextPageClick_Event);
-			// 
-			// BtnCHRBankPrevPage
-			// 
-			this.BtnCHRBankPrevPage.Location = new System.Drawing.Point(100, 283);
-			this.BtnCHRBankPrevPage.Name = "BtnCHRBankPrevPage";
-			this.BtnCHRBankPrevPage.Size = new System.Drawing.Size(28, 23);
-			this.BtnCHRBankPrevPage.TabIndex = 9;
-			this.BtnCHRBankPrevPage.Text = "<<";
-			this.BtnCHRBankPrevPage.UseVisualStyleBackColor = true;
-			this.BtnCHRBankPrevPage.Click += new System.EventHandler(this.BtnCHRBankPrevPageClick_Event);
-			// 
-			// CBoxCHRBanks
-			// 
-			this.CBoxCHRBanks.BackColor = System.Drawing.SystemColors.Window;
-			this.CBoxCHRBanks.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.CBoxCHRBanks.FormattingEnabled = true;
-			this.CBoxCHRBanks.Location = new System.Drawing.Point(164, 309);
-			this.CBoxCHRBanks.Name = "CBoxCHRBanks";
-			this.CBoxCHRBanks.Size = new System.Drawing.Size(47, 21);
-			this.CBoxCHRBanks.TabIndex = 13;
-			this.CBoxCHRBanks.SelectedIndexChanged += new System.EventHandler(this.CHRBankChanged_Event);
-			// 
-			// BtnDeleteCHRBank
-			// 
-			this.BtnDeleteCHRBank.BackColor = System.Drawing.Color.Wheat;
-			this.BtnDeleteCHRBank.Location = new System.Drawing.Point(217, 309);
-			this.BtnDeleteCHRBank.Name = "BtnDeleteCHRBank";
-			this.BtnDeleteCHRBank.Size = new System.Drawing.Size(48, 20);
-			this.BtnDeleteCHRBank.TabIndex = 14;
-			this.BtnDeleteCHRBank.Text = "Bank-";
-			this.BtnDeleteCHRBank.UseVisualStyleBackColor = false;
-			this.BtnDeleteCHRBank.Click += new System.EventHandler(this.BtnDeleteCHRBankClick_Event);
-			// 
-			// BtnCHRRotate
-			// 
-			this.BtnCHRRotate.BackColor = System.Drawing.Color.LightSteelBlue;
-			this.BtnCHRRotate.Location = new System.Drawing.Point(10, 309);
-			this.BtnCHRRotate.Name = "BtnCHRRotate";
-			this.BtnCHRRotate.Size = new System.Drawing.Size(84, 20);
-			this.BtnCHRRotate.TabIndex = 8;
-			this.BtnCHRRotate.Text = "Rotate";
-			this.BtnCHRRotate.UseVisualStyleBackColor = false;
-			this.BtnCHRRotate.Click += new System.EventHandler(this.BtnCHRRotateClick_Event);
-			// 
-			// BtnCHRHFlip
-			// 
-			this.BtnCHRHFlip.BackColor = System.Drawing.Color.LightSteelBlue;
-			this.BtnCHRHFlip.Location = new System.Drawing.Point(55, 283);
-			this.BtnCHRHFlip.Name = "BtnCHRHFlip";
-			this.BtnCHRHFlip.Size = new System.Drawing.Size(39, 20);
-			this.BtnCHRHFlip.TabIndex = 7;
-			this.BtnCHRHFlip.Text = "HFlip";
-			this.BtnCHRHFlip.UseVisualStyleBackColor = false;
-			this.BtnCHRHFlip.Click += new System.EventHandler(this.BtnCHRHFlipClick_Event);
-			// 
-			// BtnCopyCHRBank
-			// 
-			this.BtnCopyCHRBank.BackColor = System.Drawing.Color.LemonChiffon;
-			this.BtnCopyCHRBank.Location = new System.Drawing.Point(164, 283);
-			this.BtnCopyCHRBank.Name = "BtnCopyCHRBank";
-			this.BtnCopyCHRBank.Size = new System.Drawing.Size(48, 20);
-			this.BtnCopyCHRBank.TabIndex = 11;
-			this.BtnCopyCHRBank.Text = "Copy";
-			this.BtnCopyCHRBank.UseVisualStyleBackColor = true;
-			this.BtnCopyCHRBank.Click += new System.EventHandler(this.BtnCopyCHRBankClick_Event);
-			// 
-			// BtnAddCHRBank
-			// 
-			this.BtnAddCHRBank.BackColor = System.Drawing.Color.Wheat;
-			this.BtnAddCHRBank.Location = new System.Drawing.Point(217, 283);
-			this.BtnAddCHRBank.Name = "BtnAddCHRBank";
-			this.BtnAddCHRBank.Size = new System.Drawing.Size(48, 20);
-			this.BtnAddCHRBank.TabIndex = 12;
-			this.BtnAddCHRBank.Text = "Bank+";
-			this.BtnAddCHRBank.UseVisualStyleBackColor = false;
-			this.BtnAddCHRBank.Click += new System.EventHandler(this.BtnAddCHRBankClick_Event);
-			// 
-			// BtnCHRVFlip
-			// 
-			this.BtnCHRVFlip.BackColor = System.Drawing.Color.LightSteelBlue;
-			this.BtnCHRVFlip.Location = new System.Drawing.Point(10, 283);
-			this.BtnCHRVFlip.Name = "BtnCHRVFlip";
-			this.BtnCHRVFlip.Size = new System.Drawing.Size(39, 20);
-			this.BtnCHRVFlip.TabIndex = 6;
-			this.BtnCHRVFlip.Text = "VFlip";
-			this.BtnCHRVFlip.UseVisualStyleBackColor = false;
-			this.BtnCHRVFlip.Click += new System.EventHandler(this.BtnCHRVFlipClick_Event);
-			// 
-			// label5
-			// 
-			this.label5.Location = new System.Drawing.Point(123, 313);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(40, 16);
-			this.label5.TabIndex = 0;
-			this.label5.Text = "Banks:";
-			// 
-			// PBoxCHRBank
-			// 
-			this.PBoxCHRBank.BackColor = System.Drawing.Color.Black;
-			this.PBoxCHRBank.ContextMenuStrip = this.ContextMenuCHRBank;
-			this.PBoxCHRBank.Location = new System.Drawing.Point(10, 18);
-			this.PBoxCHRBank.Name = "PBoxCHRBank";
-			this.PBoxCHRBank.Size = new System.Drawing.Size(256, 256);
-			this.PBoxCHRBank.TabIndex = 5;
-			this.PBoxCHRBank.TabStop = false;
-			// 
-			// ContextMenuCHRBank
-			// 
-			this.ContextMenuCHRBank.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.copyCHRToolStripMenuItem,
-									this.pasteCHRToolStripMenuItem,
-									this.separatorToolStripMenuItem2,
-									this.fillWithColorCHRToolStripMenuItem,
-									this.toolStripSeparator23,
-									this.insertLeftCHRToolStripMenuItem,
-									this.deleteCHRToolStripMenuItem});
-			this.ContextMenuCHRBank.Name = "contextMenuCHRBank";
-			this.ContextMenuCHRBank.Size = new System.Drawing.Size(150, 126);
-			// 
-			// copyCHRToolStripMenuItem
-			// 
-			this.copyCHRToolStripMenuItem.Name = "copyCHRToolStripMenuItem";
-			this.copyCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-			this.copyCHRToolStripMenuItem.Text = "Copy";
-			this.copyCHRToolStripMenuItem.Click += new System.EventHandler(this.CopyCHRToolStripMenuItemClick_Event);
-			// 
-			// pasteCHRToolStripMenuItem
-			// 
-			this.pasteCHRToolStripMenuItem.Name = "pasteCHRToolStripMenuItem";
-			this.pasteCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-			this.pasteCHRToolStripMenuItem.Text = "Paste";
-			this.pasteCHRToolStripMenuItem.Click += new System.EventHandler(this.PasteCHRToolStripMenuItemClick_Event);
-			// 
-			// separatorToolStripMenuItem2
-			// 
-			this.separatorToolStripMenuItem2.Name = "separatorToolStripMenuItem2";
-			this.separatorToolStripMenuItem2.Size = new System.Drawing.Size(146, 6);
-			// 
-			// fillWithColorCHRToolStripMenuItem
-			// 
-			this.fillWithColorCHRToolStripMenuItem.Name = "fillWithColorCHRToolStripMenuItem";
-			this.fillWithColorCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-			this.fillWithColorCHRToolStripMenuItem.Text = "Fill With Color";
-			this.fillWithColorCHRToolStripMenuItem.Click += new System.EventHandler(this.FillWithColorCHRToolStripMenuItemClick_Event);
-			// 
-			// toolStripSeparator23
-			// 
-			this.toolStripSeparator23.Name = "toolStripSeparator23";
-			this.toolStripSeparator23.Size = new System.Drawing.Size(146, 6);
-			// 
-			// insertLeftCHRToolStripMenuItem
-			// 
-			this.insertLeftCHRToolStripMenuItem.Name = "insertLeftCHRToolStripMenuItem";
-			this.insertLeftCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-			this.insertLeftCHRToolStripMenuItem.Text = "Insert Left";
-			this.insertLeftCHRToolStripMenuItem.Click += new System.EventHandler(this.InsertLeftCHRToolStripMenuItemClick_Event);
-			// 
-			// deleteCHRToolStripMenuItem
-			// 
-			this.deleteCHRToolStripMenuItem.Name = "deleteCHRToolStripMenuItem";
-			this.deleteCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-			this.deleteCHRToolStripMenuItem.Text = "Delete";
-			this.deleteCHRToolStripMenuItem.Click += new System.EventHandler(this.DeleteCHRToolStripMenuItemClick_Event);
 			// 
 			// GrpBoxPalettes
 			// 
@@ -1652,7 +1352,7 @@ namespace MAPeD
 			this.GrpBoxPalettes.Controls.Add(this.label1);
 			this.GrpBoxPalettes.Controls.Add(this.LabelPalette12);
 			this.GrpBoxPalettes.Controls.Add(this.LabelPalette34);
-			this.GrpBoxPalettes.Location = new System.Drawing.Point(2, 348);
+			this.GrpBoxPalettes.Location = new System.Drawing.Point(3, 342);
 			this.GrpBoxPalettes.Name = "GrpBoxPalettes";
 			this.GrpBoxPalettes.Size = new System.Drawing.Size(276, 231);
 			this.GrpBoxPalettes.TabIndex = 24;
@@ -1835,7 +1535,7 @@ namespace MAPeD
 			this.GrpBoxBlockEditor.Controls.Add(this.BtnBlockHFlip);
 			this.GrpBoxBlockEditor.Controls.Add(this.BtnBlockVFlip);
 			this.GrpBoxBlockEditor.Controls.Add(this.label10);
-			this.GrpBoxBlockEditor.Location = new System.Drawing.Point(284, 6);
+			this.GrpBoxBlockEditor.Location = new System.Drawing.Point(283, 0);
 			this.GrpBoxBlockEditor.Name = "GrpBoxBlockEditor";
 			this.GrpBoxBlockEditor.Size = new System.Drawing.Size(276, 364);
 			this.GrpBoxBlockEditor.TabIndex = 15;
@@ -2075,7 +1775,7 @@ namespace MAPeD
 			this.GrpBoxTileEditor.Controls.Add(this.BtnTileReserveBlocks);
 			this.GrpBoxTileEditor.Controls.Add(this.CheckBoxTileEditorLock);
 			this.GrpBoxTileEditor.Controls.Add(this.PBoxTilePreview);
-			this.GrpBoxTileEditor.Location = new System.Drawing.Point(285, 376);
+			this.GrpBoxTileEditor.Location = new System.Drawing.Point(283, 370);
 			this.GrpBoxTileEditor.Name = "GrpBoxTileEditor";
 			this.GrpBoxTileEditor.Size = new System.Drawing.Size(148, 203);
 			this.GrpBoxTileEditor.TabIndex = 30;
@@ -2121,7 +1821,7 @@ namespace MAPeD
 			this.GrpBoxScreenData.Controls.Add(this.RBtnScreenDataTiles);
 			this.GrpBoxScreenData.Controls.Add(this.label13);
 			this.GrpBoxScreenData.Controls.Add(this.label12);
-			this.GrpBoxScreenData.Location = new System.Drawing.Point(439, 376);
+			this.GrpBoxScreenData.Location = new System.Drawing.Point(437, 370);
 			this.GrpBoxScreenData.Name = "GrpBoxScreenData";
 			this.GrpBoxScreenData.Size = new System.Drawing.Size(122, 140);
 			this.GrpBoxScreenData.TabIndex = 33;
@@ -2225,14 +1925,208 @@ namespace MAPeD
 			this.label12.Text = "Blocks W:";
 			this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// GrpBoxCHRBank
+			// 
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRBankNextPage);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRBankPrevPage);
+			this.GrpBoxCHRBank.Controls.Add(this.CBoxCHRBanks);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnDeleteCHRBank);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRRotate);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRHFlip);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCopyCHRBank);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnAddCHRBank);
+			this.GrpBoxCHRBank.Controls.Add(this.BtnCHRVFlip);
+			this.GrpBoxCHRBank.Controls.Add(this.label5);
+			this.GrpBoxCHRBank.Controls.Add(this.PBoxCHRBank);
+			this.GrpBoxCHRBank.Location = new System.Drawing.Point(3, 0);
+			this.GrpBoxCHRBank.Name = "GrpBoxCHRBank";
+			this.GrpBoxCHRBank.Size = new System.Drawing.Size(276, 336);
+			this.GrpBoxCHRBank.TabIndex = 5;
+			this.GrpBoxCHRBank.TabStop = false;
+			this.GrpBoxCHRBank.Text = "CHR Bank:";
+			// 
+			// BtnCHRBankNextPage
+			// 
+			this.BtnCHRBankNextPage.Location = new System.Drawing.Point(130, 283);
+			this.BtnCHRBankNextPage.Name = "BtnCHRBankNextPage";
+			this.BtnCHRBankNextPage.Size = new System.Drawing.Size(28, 23);
+			this.BtnCHRBankNextPage.TabIndex = 10;
+			this.BtnCHRBankNextPage.Text = ">>";
+			this.BtnCHRBankNextPage.UseVisualStyleBackColor = true;
+			this.BtnCHRBankNextPage.Click += new System.EventHandler(this.BtnCHRBankNextPageClick_Event);
+			// 
+			// BtnCHRBankPrevPage
+			// 
+			this.BtnCHRBankPrevPage.Location = new System.Drawing.Point(100, 283);
+			this.BtnCHRBankPrevPage.Name = "BtnCHRBankPrevPage";
+			this.BtnCHRBankPrevPage.Size = new System.Drawing.Size(28, 23);
+			this.BtnCHRBankPrevPage.TabIndex = 9;
+			this.BtnCHRBankPrevPage.Text = "<<";
+			this.BtnCHRBankPrevPage.UseVisualStyleBackColor = true;
+			this.BtnCHRBankPrevPage.Click += new System.EventHandler(this.BtnCHRBankPrevPageClick_Event);
+			// 
+			// CBoxCHRBanks
+			// 
+			this.CBoxCHRBanks.BackColor = System.Drawing.SystemColors.Window;
+			this.CBoxCHRBanks.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.CBoxCHRBanks.FormattingEnabled = true;
+			this.CBoxCHRBanks.Location = new System.Drawing.Point(164, 309);
+			this.CBoxCHRBanks.Name = "CBoxCHRBanks";
+			this.CBoxCHRBanks.Size = new System.Drawing.Size(47, 21);
+			this.CBoxCHRBanks.TabIndex = 13;
+			this.CBoxCHRBanks.SelectedIndexChanged += new System.EventHandler(this.CHRBankChanged_Event);
+			// 
+			// BtnDeleteCHRBank
+			// 
+			this.BtnDeleteCHRBank.BackColor = System.Drawing.Color.Wheat;
+			this.BtnDeleteCHRBank.Location = new System.Drawing.Point(217, 309);
+			this.BtnDeleteCHRBank.Name = "BtnDeleteCHRBank";
+			this.BtnDeleteCHRBank.Size = new System.Drawing.Size(48, 20);
+			this.BtnDeleteCHRBank.TabIndex = 14;
+			this.BtnDeleteCHRBank.Text = "Bank-";
+			this.BtnDeleteCHRBank.UseVisualStyleBackColor = false;
+			this.BtnDeleteCHRBank.Click += new System.EventHandler(this.BtnDeleteCHRBankClick_Event);
+			// 
+			// BtnCHRRotate
+			// 
+			this.BtnCHRRotate.BackColor = System.Drawing.Color.LightSteelBlue;
+			this.BtnCHRRotate.Location = new System.Drawing.Point(10, 309);
+			this.BtnCHRRotate.Name = "BtnCHRRotate";
+			this.BtnCHRRotate.Size = new System.Drawing.Size(84, 20);
+			this.BtnCHRRotate.TabIndex = 8;
+			this.BtnCHRRotate.Text = "Rotate";
+			this.BtnCHRRotate.UseVisualStyleBackColor = false;
+			this.BtnCHRRotate.Click += new System.EventHandler(this.BtnCHRRotateClick_Event);
+			// 
+			// BtnCHRHFlip
+			// 
+			this.BtnCHRHFlip.BackColor = System.Drawing.Color.LightSteelBlue;
+			this.BtnCHRHFlip.Location = new System.Drawing.Point(55, 283);
+			this.BtnCHRHFlip.Name = "BtnCHRHFlip";
+			this.BtnCHRHFlip.Size = new System.Drawing.Size(39, 20);
+			this.BtnCHRHFlip.TabIndex = 7;
+			this.BtnCHRHFlip.Text = "HFlip";
+			this.BtnCHRHFlip.UseVisualStyleBackColor = false;
+			this.BtnCHRHFlip.Click += new System.EventHandler(this.BtnCHRHFlipClick_Event);
+			// 
+			// BtnCopyCHRBank
+			// 
+			this.BtnCopyCHRBank.BackColor = System.Drawing.Color.LemonChiffon;
+			this.BtnCopyCHRBank.Location = new System.Drawing.Point(164, 283);
+			this.BtnCopyCHRBank.Name = "BtnCopyCHRBank";
+			this.BtnCopyCHRBank.Size = new System.Drawing.Size(48, 20);
+			this.BtnCopyCHRBank.TabIndex = 11;
+			this.BtnCopyCHRBank.Text = "Copy";
+			this.BtnCopyCHRBank.UseVisualStyleBackColor = true;
+			this.BtnCopyCHRBank.Click += new System.EventHandler(this.BtnCopyCHRBankClick_Event);
+			// 
+			// BtnAddCHRBank
+			// 
+			this.BtnAddCHRBank.BackColor = System.Drawing.Color.Wheat;
+			this.BtnAddCHRBank.Location = new System.Drawing.Point(217, 283);
+			this.BtnAddCHRBank.Name = "BtnAddCHRBank";
+			this.BtnAddCHRBank.Size = new System.Drawing.Size(48, 20);
+			this.BtnAddCHRBank.TabIndex = 12;
+			this.BtnAddCHRBank.Text = "Bank+";
+			this.BtnAddCHRBank.UseVisualStyleBackColor = false;
+			this.BtnAddCHRBank.Click += new System.EventHandler(this.BtnAddCHRBankClick_Event);
+			// 
+			// BtnCHRVFlip
+			// 
+			this.BtnCHRVFlip.BackColor = System.Drawing.Color.LightSteelBlue;
+			this.BtnCHRVFlip.Location = new System.Drawing.Point(10, 283);
+			this.BtnCHRVFlip.Name = "BtnCHRVFlip";
+			this.BtnCHRVFlip.Size = new System.Drawing.Size(39, 20);
+			this.BtnCHRVFlip.TabIndex = 6;
+			this.BtnCHRVFlip.Text = "VFlip";
+			this.BtnCHRVFlip.UseVisualStyleBackColor = false;
+			this.BtnCHRVFlip.Click += new System.EventHandler(this.BtnCHRVFlipClick_Event);
+			// 
+			// label5
+			// 
+			this.label5.Location = new System.Drawing.Point(123, 313);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(40, 16);
+			this.label5.TabIndex = 0;
+			this.label5.Text = "Banks:";
+			// 
+			// PBoxCHRBank
+			// 
+			this.PBoxCHRBank.BackColor = System.Drawing.Color.Black;
+			this.PBoxCHRBank.ContextMenuStrip = this.ContextMenuCHRBank;
+			this.PBoxCHRBank.Location = new System.Drawing.Point(10, 18);
+			this.PBoxCHRBank.Name = "PBoxCHRBank";
+			this.PBoxCHRBank.Size = new System.Drawing.Size(256, 256);
+			this.PBoxCHRBank.TabIndex = 5;
+			this.PBoxCHRBank.TabStop = false;
+			// 
+			// ContextMenuCHRBank
+			// 
+			this.ContextMenuCHRBank.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.copyCHRToolStripMenuItem,
+									this.pasteCHRToolStripMenuItem,
+									this.separatorToolStripMenuItem2,
+									this.fillWithColorCHRToolStripMenuItem,
+									this.toolStripSeparator23,
+									this.insertLeftCHRToolStripMenuItem,
+									this.deleteCHRToolStripMenuItem});
+			this.ContextMenuCHRBank.Name = "contextMenuCHRBank";
+			this.ContextMenuCHRBank.Size = new System.Drawing.Size(150, 126);
+			// 
+			// copyCHRToolStripMenuItem
+			// 
+			this.copyCHRToolStripMenuItem.Name = "copyCHRToolStripMenuItem";
+			this.copyCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.copyCHRToolStripMenuItem.Text = "Copy";
+			this.copyCHRToolStripMenuItem.Click += new System.EventHandler(this.CopyCHRToolStripMenuItemClick_Event);
+			// 
+			// pasteCHRToolStripMenuItem
+			// 
+			this.pasteCHRToolStripMenuItem.Name = "pasteCHRToolStripMenuItem";
+			this.pasteCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.pasteCHRToolStripMenuItem.Text = "Paste";
+			this.pasteCHRToolStripMenuItem.Click += new System.EventHandler(this.PasteCHRToolStripMenuItemClick_Event);
+			// 
+			// separatorToolStripMenuItem2
+			// 
+			this.separatorToolStripMenuItem2.Name = "separatorToolStripMenuItem2";
+			this.separatorToolStripMenuItem2.Size = new System.Drawing.Size(146, 6);
+			// 
+			// fillWithColorCHRToolStripMenuItem
+			// 
+			this.fillWithColorCHRToolStripMenuItem.Name = "fillWithColorCHRToolStripMenuItem";
+			this.fillWithColorCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.fillWithColorCHRToolStripMenuItem.Text = "Fill With Color";
+			this.fillWithColorCHRToolStripMenuItem.Click += new System.EventHandler(this.FillWithColorCHRToolStripMenuItemClick_Event);
+			// 
+			// toolStripSeparator23
+			// 
+			this.toolStripSeparator23.Name = "toolStripSeparator23";
+			this.toolStripSeparator23.Size = new System.Drawing.Size(146, 6);
+			// 
+			// insertLeftCHRToolStripMenuItem
+			// 
+			this.insertLeftCHRToolStripMenuItem.Name = "insertLeftCHRToolStripMenuItem";
+			this.insertLeftCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.insertLeftCHRToolStripMenuItem.Text = "Insert Left";
+			this.insertLeftCHRToolStripMenuItem.Click += new System.EventHandler(this.InsertLeftCHRToolStripMenuItemClick_Event);
+			// 
+			// deleteCHRToolStripMenuItem
+			// 
+			this.deleteCHRToolStripMenuItem.Name = "deleteCHRToolStripMenuItem";
+			this.deleteCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.deleteCHRToolStripMenuItem.Text = "Delete";
+			this.deleteCHRToolStripMenuItem.Click += new System.EventHandler(this.DeleteCHRToolStripMenuItemClick_Event);
+			// 
 			// groupBox2
 			// 
+			this.groupBox2.BackColor = System.Drawing.Color.Silver;
 			this.groupBox2.Controls.Add(this.PanelBlocks);
 			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupBox2.Location = new System.Drawing.Point(0, 0);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Padding = new System.Windows.Forms.Padding(6, 3, 6, 6);
-			this.groupBox2.Size = new System.Drawing.Size(191, 583);
+			this.groupBox2.Size = new System.Drawing.Size(369, 615);
 			this.groupBox2.TabIndex = 42;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Blocks:";
@@ -2246,245 +2140,8 @@ namespace MAPeD
 			this.PanelBlocks.ForeColor = System.Drawing.SystemColors.ControlLightLight;
 			this.PanelBlocks.Location = new System.Drawing.Point(6, 16);
 			this.PanelBlocks.Name = "PanelBlocks";
-			this.PanelBlocks.Size = new System.Drawing.Size(179, 561);
+			this.PanelBlocks.Size = new System.Drawing.Size(357, 593);
 			this.PanelBlocks.TabIndex = 43;
-			// 
-			// TabScreenEditor
-			// 
-			this.TabScreenEditor.AutoScroll = true;
-			this.TabScreenEditor.BackColor = System.Drawing.Color.Silver;
-			this.TabScreenEditor.Controls.Add(this.splitContainer4);
-			this.TabScreenEditor.Location = new System.Drawing.Point(4, 22);
-			this.TabScreenEditor.Name = "TabScreenEditor";
-			this.TabScreenEditor.Padding = new System.Windows.Forms.Padding(3);
-			this.TabScreenEditor.Size = new System.Drawing.Size(764, 589);
-			this.TabScreenEditor.TabIndex = 1;
-			this.TabScreenEditor.Text = "Screens";
-			// 
-			// splitContainer4
-			// 
-			this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer4.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-			this.splitContainer4.IsSplitterFixed = true;
-			this.splitContainer4.Location = new System.Drawing.Point(3, 3);
-			this.splitContainer4.Name = "splitContainer4";
-			// 
-			// splitContainer4.Panel1
-			// 
-			this.splitContainer4.Panel1.Controls.Add(this.PBoxScreen);
-			this.splitContainer4.Panel1.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);
-			// 
-			// splitContainer4.Panel2
-			// 
-			this.splitContainer4.Panel2.Controls.Add(this.ScreenDataTypeLabel);
-			this.splitContainer4.Panel2.Controls.Add(this.label11);
-			this.splitContainer4.Panel2.Controls.Add(this.BtnPatterns);
-			this.splitContainer4.Panel2.Controls.Add(this.BtnTilesBlocks);
-			this.splitContainer4.Panel2.Controls.Add(this.groupBox8);
-			this.splitContainer4.Panel2.Controls.Add(this.GrpBoxActiveTile);
-			this.splitContainer4.Panel2.Controls.Add(this.groupBox6);
-			this.splitContainer4.Panel2.Controls.Add(this.CheckBoxScreenShowGrid);
-			this.splitContainer4.Panel2.Controls.Add(this.groupBox3);
-			this.splitContainer4.Size = new System.Drawing.Size(758, 583);
-			this.splitContainer4.SplitterDistance = 575;
-			this.splitContainer4.TabIndex = 0;
-			// 
-			// PBoxScreen
-			// 
-			this.PBoxScreen.BackColor = System.Drawing.Color.Black;
-			this.PBoxScreen.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.PBoxScreen.Location = new System.Drawing.Point(0, 4);
-			this.PBoxScreen.Name = "PBoxScreen";
-			this.PBoxScreen.Size = new System.Drawing.Size(575, 575);
-			this.PBoxScreen.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-			this.PBoxScreen.TabIndex = 56;
-			this.PBoxScreen.TabStop = false;
-			// 
-			// ScreenDataTypeLabel
-			// 
-			this.ScreenDataTypeLabel.Location = new System.Drawing.Point(98, 9);
-			this.ScreenDataTypeLabel.Name = "ScreenDataTypeLabel";
-			this.ScreenDataTypeLabel.Size = new System.Drawing.Size(71, 16);
-			this.ScreenDataTypeLabel.TabIndex = 67;
-			this.ScreenDataTypeLabel.Text = "...";
-			// 
-			// label11
-			// 
-			this.label11.Location = new System.Drawing.Point(35, 9);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(64, 16);
-			this.label11.TabIndex = 66;
-			this.label11.Text = "Data Type:";
-			// 
-			// BtnPatterns
-			// 
-			this.BtnPatterns.Location = new System.Drawing.Point(95, 130);
-			this.BtnPatterns.Name = "BtnPatterns";
-			this.BtnPatterns.Size = new System.Drawing.Size(80, 23);
-			this.BtnPatterns.TabIndex = 72;
-			this.BtnPatterns.Text = "Patterns";
-			this.BtnPatterns.UseVisualStyleBackColor = true;
-			this.BtnPatterns.Click += new System.EventHandler(this.BtnPatternsClick_Event);
-			// 
-			// BtnTilesBlocks
-			// 
-			this.BtnTilesBlocks.Location = new System.Drawing.Point(95, 102);
-			this.BtnTilesBlocks.Name = "BtnTilesBlocks";
-			this.BtnTilesBlocks.Size = new System.Drawing.Size(80, 23);
-			this.BtnTilesBlocks.TabIndex = 71;
-			this.BtnTilesBlocks.Text = "Tiles/Blocks";
-			this.BtnTilesBlocks.UseVisualStyleBackColor = true;
-			this.BtnTilesBlocks.Click += new System.EventHandler(this.BtnTilesBlocksClick_Event);
-			// 
-			// groupBox8
-			// 
-			this.groupBox8.Controls.Add(this.RBtnScreenEditModeLayout);
-			this.groupBox8.Controls.Add(this.RBtnScreenEditModeSingle);
-			this.groupBox8.Location = new System.Drawing.Point(94, 32);
-			this.groupBox8.Name = "groupBox8";
-			this.groupBox8.Size = new System.Drawing.Size(83, 64);
-			this.groupBox8.TabIndex = 70;
-			this.groupBox8.TabStop = false;
-			this.groupBox8.Text = "Edit Mode:";
-			// 
-			// RBtnScreenEditModeLayout
-			// 
-			this.RBtnScreenEditModeLayout.Location = new System.Drawing.Point(12, 39);
-			this.RBtnScreenEditModeLayout.Name = "RBtnScreenEditModeLayout";
-			this.RBtnScreenEditModeLayout.Size = new System.Drawing.Size(62, 21);
-			this.RBtnScreenEditModeLayout.TabIndex = 51;
-			this.RBtnScreenEditModeLayout.TabStop = true;
-			this.RBtnScreenEditModeLayout.Text = "Layout";
-			this.RBtnScreenEditModeLayout.UseVisualStyleBackColor = true;
-			this.RBtnScreenEditModeLayout.CheckedChanged += new System.EventHandler(this.RBtnScreenEditModeLayoutChanged_Event);
-			// 
-			// RBtnScreenEditModeSingle
-			// 
-			this.RBtnScreenEditModeSingle.Location = new System.Drawing.Point(12, 19);
-			this.RBtnScreenEditModeSingle.Name = "RBtnScreenEditModeSingle";
-			this.RBtnScreenEditModeSingle.Size = new System.Drawing.Size(62, 20);
-			this.RBtnScreenEditModeSingle.TabIndex = 50;
-			this.RBtnScreenEditModeSingle.TabStop = true;
-			this.RBtnScreenEditModeSingle.Text = "Single";
-			this.RBtnScreenEditModeSingle.UseVisualStyleBackColor = true;
-			this.RBtnScreenEditModeSingle.CheckedChanged += new System.EventHandler(this.RBtnScreenEditModeSingleChanged_Event);
-			// 
-			// GrpBoxActiveTile
-			// 
-			this.GrpBoxActiveTile.Controls.Add(this.PBoxActiveTile);
-			this.GrpBoxActiveTile.Controls.Add(this.BtnResetTile);
-			this.GrpBoxActiveTile.Location = new System.Drawing.Point(5, 32);
-			this.GrpBoxActiveTile.Name = "GrpBoxActiveTile";
-			this.GrpBoxActiveTile.Size = new System.Drawing.Size(81, 121);
-			this.GrpBoxActiveTile.TabIndex = 68;
-			this.GrpBoxActiveTile.TabStop = false;
-			this.GrpBoxActiveTile.Text = "...";
-			// 
-			// PBoxActiveTile
-			// 
-			this.PBoxActiveTile.BackColor = System.Drawing.Color.Black;
-			this.PBoxActiveTile.Location = new System.Drawing.Point(8, 20);
-			this.PBoxActiveTile.Name = "PBoxActiveTile";
-			this.PBoxActiveTile.Size = new System.Drawing.Size(64, 64);
-			this.PBoxActiveTile.TabIndex = 6;
-			this.PBoxActiveTile.TabStop = false;
-			// 
-			// BtnResetTile
-			// 
-			this.BtnResetTile.Location = new System.Drawing.Point(8, 91);
-			this.BtnResetTile.Name = "BtnResetTile";
-			this.BtnResetTile.Size = new System.Drawing.Size(64, 23);
-			this.BtnResetTile.TabIndex = 42;
-			this.BtnResetTile.Text = "Reset";
-			this.BtnResetTile.UseVisualStyleBackColor = true;
-			this.BtnResetTile.Click += new System.EventHandler(this.BtnResetTileClick_Event);
-			// 
-			// groupBox6
-			// 
-			this.groupBox6.Controls.Add(this.ListBoxScreens);
-			this.groupBox6.Controls.Add(this.BtnCreateScreen);
-			this.groupBox6.Controls.Add(this.BtnCopyScreen);
-			this.groupBox6.Controls.Add(this.BtnDeleteEmptyScreens);
-			this.groupBox6.Controls.Add(this.BtnDeleteScreen);
-			this.groupBox6.Location = new System.Drawing.Point(5, 158);
-			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(81, 421);
-			this.groupBox6.TabIndex = 69;
-			this.groupBox6.TabStop = false;
-			this.groupBox6.Text = "Screens:";
-			// 
-			// ListBoxScreens
-			// 
-			this.ListBoxScreens.BackColor = System.Drawing.Color.LightGray;
-			this.ListBoxScreens.FormattingEnabled = true;
-			this.ListBoxScreens.Location = new System.Drawing.Point(8, 20);
-			this.ListBoxScreens.Name = "ListBoxScreens";
-			this.ListBoxScreens.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.ListBoxScreens.Size = new System.Drawing.Size(64, 277);
-			this.ListBoxScreens.TabIndex = 44;
-			this.ListBoxScreens.SelectedIndexChanged += new System.EventHandler(this.ListBoxScreensClick_Event);
-			// 
-			// BtnCreateScreen
-			// 
-			this.BtnCreateScreen.Location = new System.Drawing.Point(8, 304);
-			this.BtnCreateScreen.Name = "BtnCreateScreen";
-			this.BtnCreateScreen.Size = new System.Drawing.Size(64, 23);
-			this.BtnCreateScreen.TabIndex = 45;
-			this.BtnCreateScreen.Text = "Create";
-			this.BtnCreateScreen.UseVisualStyleBackColor = true;
-			this.BtnCreateScreen.Click += new System.EventHandler(this.BtnCreateScreenClick_Event);
-			// 
-			// BtnCopyScreen
-			// 
-			this.BtnCopyScreen.Location = new System.Drawing.Point(8, 333);
-			this.BtnCopyScreen.Name = "BtnCopyScreen";
-			this.BtnCopyScreen.Size = new System.Drawing.Size(64, 23);
-			this.BtnCopyScreen.TabIndex = 46;
-			this.BtnCopyScreen.Text = "Copy";
-			this.BtnCopyScreen.UseVisualStyleBackColor = true;
-			this.BtnCopyScreen.Click += new System.EventHandler(this.BtnCopyScreenClick_Event);
-			// 
-			// BtnDeleteEmptyScreens
-			// 
-			this.BtnDeleteEmptyScreens.Location = new System.Drawing.Point(8, 391);
-			this.BtnDeleteEmptyScreens.Name = "BtnDeleteEmptyScreens";
-			this.BtnDeleteEmptyScreens.Size = new System.Drawing.Size(64, 23);
-			this.BtnDeleteEmptyScreens.TabIndex = 48;
-			this.BtnDeleteEmptyScreens.Text = "Clean Up";
-			this.BtnDeleteEmptyScreens.UseVisualStyleBackColor = true;
-			this.BtnDeleteEmptyScreens.Click += new System.EventHandler(this.BtnDeleteEmptyScreensClick_Event);
-			// 
-			// BtnDeleteScreen
-			// 
-			this.BtnDeleteScreen.Location = new System.Drawing.Point(8, 362);
-			this.BtnDeleteScreen.Name = "BtnDeleteScreen";
-			this.BtnDeleteScreen.Size = new System.Drawing.Size(64, 23);
-			this.BtnDeleteScreen.TabIndex = 47;
-			this.BtnDeleteScreen.Text = "Delete";
-			this.BtnDeleteScreen.UseVisualStyleBackColor = true;
-			this.BtnDeleteScreen.Click += new System.EventHandler(this.BtnDeleteScreenClick_Event);
-			// 
-			// CheckBoxScreenShowGrid
-			// 
-			this.CheckBoxScreenShowGrid.Checked = true;
-			this.CheckBoxScreenShowGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CheckBoxScreenShowGrid.Location = new System.Drawing.Point(94, 557);
-			this.CheckBoxScreenShowGrid.Name = "CheckBoxScreenShowGrid";
-			this.CheckBoxScreenShowGrid.Size = new System.Drawing.Size(81, 22);
-			this.CheckBoxScreenShowGrid.TabIndex = 73;
-			this.CheckBoxScreenShowGrid.Text = "Show Grid";
-			this.CheckBoxScreenShowGrid.UseVisualStyleBackColor = true;
-			this.CheckBoxScreenShowGrid.CheckedChanged += new System.EventHandler(this.CheckBoxScreenShowGridChecked_Event);
-			// 
-			// groupBox3
-			// 
-			this.groupBox3.Location = new System.Drawing.Point(5, -2);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-			this.groupBox3.Size = new System.Drawing.Size(172, 31);
-			this.groupBox3.TabIndex = 65;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "[!]";
 			// 
 			// TabLayout
 			// 
@@ -2493,7 +2150,7 @@ namespace MAPeD
 			this.TabLayout.Location = new System.Drawing.Point(4, 22);
 			this.TabLayout.Name = "TabLayout";
 			this.TabLayout.Padding = new System.Windows.Forms.Padding(3);
-			this.TabLayout.Size = new System.Drawing.Size(1024, 621);
+			this.TabLayout.Size = new System.Drawing.Size(1236, 621);
 			this.TabLayout.TabIndex = 1;
 			this.TabLayout.Text = "Layout";
 			// 
@@ -2512,13 +2169,14 @@ namespace MAPeD
 			// splitContainer5.Panel2
 			// 
 			this.splitContainer5.Panel2.Controls.Add(this.PBoxLayout);
-			this.splitContainer5.Size = new System.Drawing.Size(1018, 615);
+			this.splitContainer5.Size = new System.Drawing.Size(1230, 615);
 			this.splitContainer5.SplitterDistance = 302;
 			this.splitContainer5.TabIndex = 0;
 			// 
 			// tabControlLayoutTools
 			// 
 			this.tabControlLayoutTools.Controls.Add(this.TabBuilder);
+			this.tabControlLayoutTools.Controls.Add(this.TabPainter);
 			this.tabControlLayoutTools.Controls.Add(this.TabScreenList);
 			this.tabControlLayoutTools.Controls.Add(this.TabEntities);
 			this.tabControlLayoutTools.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -2541,9 +2199,9 @@ namespace MAPeD
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.BtnLayoutDeleteEmptyScreens);
 			this.groupBox1.Controls.Add(this.groupBox7);
 			this.groupBox1.Controls.Add(this.groupBox13);
-			this.groupBox1.Controls.Add(this.BtnCreateLayout);
 			this.groupBox1.Controls.Add(this.BtnLayoutRemoveRightColumn);
 			this.groupBox1.Controls.Add(this.BtnLayoutRemoveUpRow);
 			this.groupBox1.Controls.Add(this.BtnLayoutAddDownRow);
@@ -2555,11 +2213,21 @@ namespace MAPeD
 			this.groupBox1.Controls.Add(this.BtnLayoutRemoveDownRow);
 			this.groupBox1.Controls.Add(this.BtnLayoutAddLeftColumn);
 			this.groupBox1.Controls.Add(this.BtnLayoutRemoveLeftColumn);
-			this.groupBox1.Location = new System.Drawing.Point(5, 0);
+			this.groupBox1.Location = new System.Drawing.Point(5, 5);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(284, 323);
 			this.groupBox1.TabIndex = 114;
 			this.groupBox1.TabStop = false;
+			// 
+			// BtnLayoutDeleteEmptyScreens
+			// 
+			this.BtnLayoutDeleteEmptyScreens.Location = new System.Drawing.Point(192, 134);
+			this.BtnLayoutDeleteEmptyScreens.Name = "BtnLayoutDeleteEmptyScreens";
+			this.BtnLayoutDeleteEmptyScreens.Size = new System.Drawing.Size(84, 23);
+			this.BtnLayoutDeleteEmptyScreens.TabIndex = 48;
+			this.BtnLayoutDeleteEmptyScreens.Text = "Clean Up";
+			this.BtnLayoutDeleteEmptyScreens.UseVisualStyleBackColor = true;
+			this.BtnLayoutDeleteEmptyScreens.Click += new System.EventHandler(this.BtnLayoutDeleteEmptyScreensClick_Event);
 			// 
 			// groupBox7
 			// 
@@ -2615,16 +2283,27 @@ namespace MAPeD
 			// 
 			// groupBox13
 			// 
+			this.groupBox13.Controls.Add(this.CheckBoxShowGrid);
 			this.groupBox13.Controls.Add(this.CheckBoxShowCoords);
 			this.groupBox13.Controls.Add(this.CheckBoxShowTargets);
 			this.groupBox13.Controls.Add(this.CheckBoxShowMarks);
 			this.groupBox13.Controls.Add(this.CheckBoxShowEntities);
-			this.groupBox13.Location = new System.Drawing.Point(194, 211);
+			this.groupBox13.Location = new System.Drawing.Point(196, 190);
 			this.groupBox13.Name = "groupBox13";
-			this.groupBox13.Size = new System.Drawing.Size(80, 101);
+			this.groupBox13.Size = new System.Drawing.Size(80, 122);
 			this.groupBox13.TabIndex = 113;
 			this.groupBox13.TabStop = false;
 			this.groupBox13.Text = "Show";
+			// 
+			// CheckBoxShowGrid
+			// 
+			this.CheckBoxShowGrid.Location = new System.Drawing.Point(11, 99);
+			this.CheckBoxShowGrid.Name = "CheckBoxShowGrid";
+			this.CheckBoxShowGrid.Size = new System.Drawing.Size(60, 17);
+			this.CheckBoxShowGrid.TabIndex = 73;
+			this.CheckBoxShowGrid.Text = "Grid";
+			this.CheckBoxShowGrid.UseVisualStyleBackColor = true;
+			this.CheckBoxShowGrid.CheckedChanged += new System.EventHandler(this.CheckBoxShowGridChecked_Event);
 			// 
 			// CheckBoxShowCoords
 			// 
@@ -2666,16 +2345,6 @@ namespace MAPeD
 			this.CheckBoxShowEntities.UseVisualStyleBackColor = true;
 			this.CheckBoxShowEntities.CheckedChanged += new System.EventHandler(this.CheckBoxShowEntitiesChecked_Event);
 			// 
-			// BtnCreateLayout
-			// 
-			this.BtnCreateLayout.Location = new System.Drawing.Point(11, 18);
-			this.BtnCreateLayout.Name = "BtnCreateLayout";
-			this.BtnCreateLayout.Size = new System.Drawing.Size(80, 23);
-			this.BtnCreateLayout.TabIndex = 100;
-			this.BtnCreateLayout.Text = "Create";
-			this.BtnCreateLayout.UseVisualStyleBackColor = true;
-			this.BtnCreateLayout.Click += new System.EventHandler(this.BtnCreateLayoutClick_Event);
-			// 
 			// BtnLayoutRemoveRightColumn
 			// 
 			this.BtnLayoutRemoveRightColumn.Location = new System.Drawing.Point(236, 105);
@@ -2708,7 +2377,7 @@ namespace MAPeD
 			// 
 			// BtnCreateLayoutWxH
 			// 
-			this.BtnCreateLayoutWxH.Location = new System.Drawing.Point(11, 47);
+			this.BtnCreateLayoutWxH.Location = new System.Drawing.Point(11, 19);
 			this.BtnCreateLayoutWxH.Name = "BtnCreateLayoutWxH";
 			this.BtnCreateLayoutWxH.Size = new System.Drawing.Size(80, 23);
 			this.BtnCreateLayoutWxH.TabIndex = 101;
@@ -2728,7 +2397,7 @@ namespace MAPeD
 			// 
 			// BtnCopyLayout
 			// 
-			this.BtnCopyLayout.Location = new System.Drawing.Point(11, 76);
+			this.BtnCopyLayout.Location = new System.Drawing.Point(11, 48);
 			this.BtnCopyLayout.Name = "BtnCopyLayout";
 			this.BtnCopyLayout.Size = new System.Drawing.Size(80, 23);
 			this.BtnCopyLayout.TabIndex = 102;
@@ -2748,7 +2417,7 @@ namespace MAPeD
 			// 
 			// BtnDeleteLayout
 			// 
-			this.BtnDeleteLayout.Location = new System.Drawing.Point(11, 105);
+			this.BtnDeleteLayout.Location = new System.Drawing.Point(11, 77);
 			this.BtnDeleteLayout.Name = "BtnDeleteLayout";
 			this.BtnDeleteLayout.Size = new System.Drawing.Size(80, 23);
 			this.BtnDeleteLayout.TabIndex = 103;
@@ -2785,6 +2454,112 @@ namespace MAPeD
 			this.BtnLayoutRemoveLeftColumn.Text = "-L";
 			this.BtnLayoutRemoveLeftColumn.UseVisualStyleBackColor = true;
 			this.BtnLayoutRemoveLeftColumn.Click += new System.EventHandler(this.BtnLayoutRemoveLeftColumnClick_Event);
+			// 
+			// TabPainter
+			// 
+			this.TabPainter.BackColor = System.Drawing.Color.Silver;
+			this.TabPainter.Controls.Add(this.GrpBoxPainter);
+			this.TabPainter.Location = new System.Drawing.Point(4, 22);
+			this.TabPainter.Name = "TabPainter";
+			this.TabPainter.Size = new System.Drawing.Size(294, 589);
+			this.TabPainter.TabIndex = 3;
+			this.TabPainter.Text = "Painter";
+			// 
+			// GrpBoxPainter
+			// 
+			this.GrpBoxPainter.Controls.Add(this.groupBox3);
+			this.GrpBoxPainter.Controls.Add(this.GrpBoxActiveTile);
+			this.GrpBoxPainter.Controls.Add(this.BtnPatterns);
+			this.GrpBoxPainter.Controls.Add(this.BtnTilesBlocks);
+			this.GrpBoxPainter.Location = new System.Drawing.Point(5, 5);
+			this.GrpBoxPainter.Name = "GrpBoxPainter";
+			this.GrpBoxPainter.Size = new System.Drawing.Size(284, 148);
+			this.GrpBoxPainter.TabIndex = 115;
+			this.GrpBoxPainter.TabStop = false;
+			this.GrpBoxPainter.Text = "Data Type: ...";
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.RBtnMapScaleX2);
+			this.groupBox3.Controls.Add(this.RBtnMapScaleX1);
+			this.groupBox3.Location = new System.Drawing.Point(105, 72);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(80, 63);
+			this.groupBox3.TabIndex = 116;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "Map Scale";
+			// 
+			// RBtnMapScaleX2
+			// 
+			this.RBtnMapScaleX2.Location = new System.Drawing.Point(14, 38);
+			this.RBtnMapScaleX2.Name = "RBtnMapScaleX2";
+			this.RBtnMapScaleX2.Size = new System.Drawing.Size(44, 17);
+			this.RBtnMapScaleX2.TabIndex = 1;
+			this.RBtnMapScaleX2.Text = "x2";
+			this.RBtnMapScaleX2.UseVisualStyleBackColor = true;
+			this.RBtnMapScaleX2.CheckedChanged += new System.EventHandler(this.RBtnMapScaleX2CheckedChanged_Event);
+			// 
+			// RBtnMapScaleX1
+			// 
+			this.RBtnMapScaleX1.Checked = true;
+			this.RBtnMapScaleX1.Location = new System.Drawing.Point(14, 17);
+			this.RBtnMapScaleX1.Name = "RBtnMapScaleX1";
+			this.RBtnMapScaleX1.Size = new System.Drawing.Size(44, 17);
+			this.RBtnMapScaleX1.TabIndex = 0;
+			this.RBtnMapScaleX1.TabStop = true;
+			this.RBtnMapScaleX1.Text = "x1";
+			this.RBtnMapScaleX1.UseVisualStyleBackColor = true;
+			this.RBtnMapScaleX1.CheckedChanged += new System.EventHandler(this.RBtnMapScaleX1CheckedChanged_Event);
+			// 
+			// GrpBoxActiveTile
+			// 
+			this.GrpBoxActiveTile.Controls.Add(this.PBoxActiveTile);
+			this.GrpBoxActiveTile.Controls.Add(this.BtnResetTile);
+			this.GrpBoxActiveTile.Location = new System.Drawing.Point(191, 14);
+			this.GrpBoxActiveTile.Name = "GrpBoxActiveTile";
+			this.GrpBoxActiveTile.Size = new System.Drawing.Size(81, 121);
+			this.GrpBoxActiveTile.TabIndex = 68;
+			this.GrpBoxActiveTile.TabStop = false;
+			this.GrpBoxActiveTile.Text = "...";
+			// 
+			// PBoxActiveTile
+			// 
+			this.PBoxActiveTile.BackColor = System.Drawing.Color.Black;
+			this.PBoxActiveTile.Location = new System.Drawing.Point(8, 20);
+			this.PBoxActiveTile.Name = "PBoxActiveTile";
+			this.PBoxActiveTile.Size = new System.Drawing.Size(64, 64);
+			this.PBoxActiveTile.TabIndex = 6;
+			this.PBoxActiveTile.TabStop = false;
+			// 
+			// BtnResetTile
+			// 
+			this.BtnResetTile.Location = new System.Drawing.Point(8, 91);
+			this.BtnResetTile.Name = "BtnResetTile";
+			this.BtnResetTile.Size = new System.Drawing.Size(64, 23);
+			this.BtnResetTile.TabIndex = 42;
+			this.BtnResetTile.Text = "Reset";
+			this.BtnResetTile.UseVisualStyleBackColor = true;
+			this.BtnResetTile.Click += new System.EventHandler(this.BtnResetTileClick_Event);
+			// 
+			// BtnPatterns
+			// 
+			this.BtnPatterns.Location = new System.Drawing.Point(105, 46);
+			this.BtnPatterns.Name = "BtnPatterns";
+			this.BtnPatterns.Size = new System.Drawing.Size(80, 23);
+			this.BtnPatterns.TabIndex = 72;
+			this.BtnPatterns.Text = "Patterns";
+			this.BtnPatterns.UseVisualStyleBackColor = true;
+			this.BtnPatterns.Click += new System.EventHandler(this.BtnPatternsClick_Event);
+			// 
+			// BtnTilesBlocks
+			// 
+			this.BtnTilesBlocks.Location = new System.Drawing.Point(105, 19);
+			this.BtnTilesBlocks.Name = "BtnTilesBlocks";
+			this.BtnTilesBlocks.Size = new System.Drawing.Size(80, 23);
+			this.BtnTilesBlocks.TabIndex = 71;
+			this.BtnTilesBlocks.Text = "Tiles/Blocks";
+			this.BtnTilesBlocks.UseVisualStyleBackColor = true;
+			this.BtnTilesBlocks.Click += new System.EventHandler(this.BtnTilesBlocksClick_Event);
 			// 
 			// TabScreenList
 			// 
@@ -2884,8 +2659,7 @@ namespace MAPeD
 			// TabEntities
 			// 
 			this.TabEntities.BackColor = System.Drawing.Color.Silver;
-			this.TabEntities.Controls.Add(this.groupBoxEntitiesTreeView);
-			this.TabEntities.Controls.Add(this.groupBoxEntityEditor);
+			this.TabEntities.Controls.Add(this.splitContainer7);
 			this.TabEntities.Location = new System.Drawing.Point(4, 22);
 			this.TabEntities.Name = "TabEntities";
 			this.TabEntities.Padding = new System.Windows.Forms.Padding(3);
@@ -2893,71 +2667,46 @@ namespace MAPeD
 			this.TabEntities.TabIndex = 1;
 			this.TabEntities.Text = "Entities";
 			// 
-			// groupBoxEntitiesTreeView
+			// splitContainer7
 			// 
-			this.groupBoxEntitiesTreeView.Controls.Add(this.BtnEntityRename);
-			this.groupBoxEntitiesTreeView.Controls.Add(this.BtnEntitiesEditInstancesMode);
-			this.groupBoxEntitiesTreeView.Controls.Add(this.groupBox10);
-			this.groupBoxEntitiesTreeView.Controls.Add(this.TreeViewEntities);
-			this.groupBoxEntitiesTreeView.Controls.Add(this.groupBox9);
-			this.groupBoxEntitiesTreeView.Controls.Add(this.CheckBoxEntitySnapping);
-			this.groupBoxEntitiesTreeView.Location = new System.Drawing.Point(5, 0);
-			this.groupBoxEntitiesTreeView.Name = "groupBoxEntitiesTreeView";
-			this.groupBoxEntitiesTreeView.Size = new System.Drawing.Size(283, 293);
-			this.groupBoxEntitiesTreeView.TabIndex = 100;
-			this.groupBoxEntitiesTreeView.TabStop = false;
+			this.splitContainer7.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer7.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.splitContainer7.IsSplitterFixed = true;
+			this.splitContainer7.Location = new System.Drawing.Point(3, 3);
+			this.splitContainer7.Name = "splitContainer7";
+			this.splitContainer7.Orientation = System.Windows.Forms.Orientation.Horizontal;
 			// 
-			// BtnEntityRename
+			// splitContainer7.Panel1
 			// 
-			this.BtnEntityRename.Location = new System.Drawing.Point(211, 179);
-			this.BtnEntityRename.Name = "BtnEntityRename";
-			this.BtnEntityRename.Size = new System.Drawing.Size(59, 23);
-			this.BtnEntityRename.TabIndex = 108;
-			this.BtnEntityRename.Text = "Rename";
-			this.BtnEntityRename.UseVisualStyleBackColor = true;
-			this.BtnEntityRename.Click += new System.EventHandler(this.BtnEntityRenameClick_Event);
+			this.splitContainer7.Panel1.Controls.Add(this.splitContainer8);
+			this.splitContainer7.Panel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			// 
-			// BtnEntitiesEditInstancesMode
+			// splitContainer7.Panel2
 			// 
-			this.BtnEntitiesEditInstancesMode.BackColor = System.Drawing.Color.LightSteelBlue;
-			this.BtnEntitiesEditInstancesMode.Location = new System.Drawing.Point(203, 224);
-			this.BtnEntitiesEditInstancesMode.Name = "BtnEntitiesEditInstancesMode";
-			this.BtnEntitiesEditInstancesMode.Size = new System.Drawing.Size(74, 37);
-			this.BtnEntitiesEditInstancesMode.TabIndex = 109;
-			this.BtnEntitiesEditInstancesMode.Text = "Edit Instances";
-			this.BtnEntitiesEditInstancesMode.UseVisualStyleBackColor = false;
-			this.BtnEntitiesEditInstancesMode.Click += new System.EventHandler(this.BtnEntitiesEditInstancesModeClick_Event);
+			this.splitContainer7.Panel2.Controls.Add(this.groupBoxEntityEditor);
+			this.splitContainer7.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
+			this.splitContainer7.Size = new System.Drawing.Size(288, 583);
+			this.splitContainer7.SplitterDistance = 289;
+			this.splitContainer7.TabIndex = 0;
 			// 
-			// groupBox10
+			// splitContainer8
 			// 
-			this.groupBox10.Controls.Add(this.BtnEntityAdd);
-			this.groupBox10.Controls.Add(this.BtnEntityDelete);
-			this.groupBox10.Location = new System.Drawing.Point(203, 93);
-			this.groupBox10.Name = "groupBox10";
-			this.groupBox10.Size = new System.Drawing.Size(74, 80);
-			this.groupBox10.TabIndex = 105;
-			this.groupBox10.TabStop = false;
-			this.groupBox10.Text = "Entity";
+			this.splitContainer8.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer8.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+			this.splitContainer8.IsSplitterFixed = true;
+			this.splitContainer8.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer8.Name = "splitContainer8";
 			// 
-			// BtnEntityAdd
+			// splitContainer8.Panel1
 			// 
-			this.BtnEntityAdd.Location = new System.Drawing.Point(8, 19);
-			this.BtnEntityAdd.Name = "BtnEntityAdd";
-			this.BtnEntityAdd.Size = new System.Drawing.Size(59, 23);
-			this.BtnEntityAdd.TabIndex = 106;
-			this.BtnEntityAdd.Text = "Add";
-			this.BtnEntityAdd.UseVisualStyleBackColor = true;
-			this.BtnEntityAdd.Click += new System.EventHandler(this.BtnEntityAddClick_Event);
+			this.splitContainer8.Panel1.Controls.Add(this.TreeViewEntities);
 			// 
-			// BtnEntityDelete
+			// splitContainer8.Panel2
 			// 
-			this.BtnEntityDelete.Location = new System.Drawing.Point(8, 48);
-			this.BtnEntityDelete.Name = "BtnEntityDelete";
-			this.BtnEntityDelete.Size = new System.Drawing.Size(59, 23);
-			this.BtnEntityDelete.TabIndex = 107;
-			this.BtnEntityDelete.Text = "Delete";
-			this.BtnEntityDelete.UseVisualStyleBackColor = true;
-			this.BtnEntityDelete.Click += new System.EventHandler(this.BtnEntityDeleteClick_Event);
+			this.splitContainer8.Panel2.Controls.Add(this.splitContainer9);
+			this.splitContainer8.Size = new System.Drawing.Size(288, 289);
+			this.splitContainer8.SplitterDistance = 203;
+			this.splitContainer8.TabIndex = 0;
 			// 
 			// TreeViewEntities
 			// 
@@ -2965,11 +2714,12 @@ namespace MAPeD
 			this.TreeViewEntities.BackColor = System.Drawing.Color.LightGray;
 			this.TreeViewEntities.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.TreeViewEntities.ContextMenuStrip = this.ContextMenuEntitiesTree;
+			this.TreeViewEntities.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.TreeViewEntities.HideSelection = false;
 			this.TreeViewEntities.LabelEdit = true;
-			this.TreeViewEntities.Location = new System.Drawing.Point(7, 13);
+			this.TreeViewEntities.Location = new System.Drawing.Point(0, 0);
 			this.TreeViewEntities.Name = "TreeViewEntities";
-			this.TreeViewEntities.Size = new System.Drawing.Size(190, 274);
+			this.TreeViewEntities.Size = new System.Drawing.Size(203, 289);
 			this.TreeViewEntities.TabIndex = 101;
 			this.TreeViewEntities.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeViewEntitiesLabelEdit_Event);
 			this.TreeViewEntities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewEntitiesSelect_Event);
@@ -2996,11 +2746,44 @@ namespace MAPeD
 			this.removeGroupToolStripMenuItem.Text = "&Delete Group";
 			this.removeGroupToolStripMenuItem.Click += new System.EventHandler(this.BtnEntityGroupDeleteClick_Event);
 			// 
+			// splitContainer9
+			// 
+			this.splitContainer9.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer9.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.splitContainer9.IsSplitterFixed = true;
+			this.splitContainer9.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer9.Name = "splitContainer9";
+			this.splitContainer9.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// splitContainer9.Panel1
+			// 
+			this.splitContainer9.Panel1.Controls.Add(this.BtnEntityRename);
+			this.splitContainer9.Panel1.Controls.Add(this.groupBox9);
+			this.splitContainer9.Panel1.Controls.Add(this.groupBox10);
+			// 
+			// splitContainer9.Panel2
+			// 
+			this.splitContainer9.Panel2.Controls.Add(this.BtnEntitiesEditInstancesMode);
+			this.splitContainer9.Panel2.Controls.Add(this.CheckBoxEntitySnapping);
+			this.splitContainer9.Size = new System.Drawing.Size(81, 289);
+			this.splitContainer9.SplitterDistance = 217;
+			this.splitContainer9.TabIndex = 0;
+			// 
+			// BtnEntityRename
+			// 
+			this.BtnEntityRename.Location = new System.Drawing.Point(12, 171);
+			this.BtnEntityRename.Name = "BtnEntityRename";
+			this.BtnEntityRename.Size = new System.Drawing.Size(59, 23);
+			this.BtnEntityRename.TabIndex = 108;
+			this.BtnEntityRename.Text = "Rename";
+			this.BtnEntityRename.UseVisualStyleBackColor = true;
+			this.BtnEntityRename.Click += new System.EventHandler(this.BtnEntityRenameClick_Event);
+			// 
 			// groupBox9
 			// 
 			this.groupBox9.Controls.Add(this.BtnEntityGroupAdd);
 			this.groupBox9.Controls.Add(this.BtnEntityGroupDelete);
-			this.groupBox9.Location = new System.Drawing.Point(203, 11);
+			this.groupBox9.Location = new System.Drawing.Point(4, 3);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(74, 80);
 			this.groupBox9.TabIndex = 102;
@@ -3027,11 +2810,53 @@ namespace MAPeD
 			this.BtnEntityGroupDelete.UseVisualStyleBackColor = true;
 			this.BtnEntityGroupDelete.Click += new System.EventHandler(this.BtnEntityGroupDeleteClick_Event);
 			// 
+			// groupBox10
+			// 
+			this.groupBox10.Controls.Add(this.BtnEntityAdd);
+			this.groupBox10.Controls.Add(this.BtnEntityDelete);
+			this.groupBox10.Location = new System.Drawing.Point(4, 85);
+			this.groupBox10.Name = "groupBox10";
+			this.groupBox10.Size = new System.Drawing.Size(74, 80);
+			this.groupBox10.TabIndex = 105;
+			this.groupBox10.TabStop = false;
+			this.groupBox10.Text = "Entity";
+			// 
+			// BtnEntityAdd
+			// 
+			this.BtnEntityAdd.Location = new System.Drawing.Point(8, 19);
+			this.BtnEntityAdd.Name = "BtnEntityAdd";
+			this.BtnEntityAdd.Size = new System.Drawing.Size(59, 23);
+			this.BtnEntityAdd.TabIndex = 106;
+			this.BtnEntityAdd.Text = "Add";
+			this.BtnEntityAdd.UseVisualStyleBackColor = true;
+			this.BtnEntityAdd.Click += new System.EventHandler(this.BtnEntityAddClick_Event);
+			// 
+			// BtnEntityDelete
+			// 
+			this.BtnEntityDelete.Location = new System.Drawing.Point(8, 48);
+			this.BtnEntityDelete.Name = "BtnEntityDelete";
+			this.BtnEntityDelete.Size = new System.Drawing.Size(59, 23);
+			this.BtnEntityDelete.TabIndex = 107;
+			this.BtnEntityDelete.Text = "Delete";
+			this.BtnEntityDelete.UseVisualStyleBackColor = true;
+			this.BtnEntityDelete.Click += new System.EventHandler(this.BtnEntityDeleteClick_Event);
+			// 
+			// BtnEntitiesEditInstancesMode
+			// 
+			this.BtnEntitiesEditInstancesMode.BackColor = System.Drawing.Color.LightSteelBlue;
+			this.BtnEntitiesEditInstancesMode.Location = new System.Drawing.Point(4, 4);
+			this.BtnEntitiesEditInstancesMode.Name = "BtnEntitiesEditInstancesMode";
+			this.BtnEntitiesEditInstancesMode.Size = new System.Drawing.Size(74, 37);
+			this.BtnEntitiesEditInstancesMode.TabIndex = 109;
+			this.BtnEntitiesEditInstancesMode.Text = "Edit Instances";
+			this.BtnEntitiesEditInstancesMode.UseVisualStyleBackColor = false;
+			this.BtnEntitiesEditInstancesMode.Click += new System.EventHandler(this.BtnEntitiesEditInstancesModeClick_Event);
+			// 
 			// CheckBoxEntitySnapping
 			// 
 			this.CheckBoxEntitySnapping.Checked = true;
 			this.CheckBoxEntitySnapping.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CheckBoxEntitySnapping.Location = new System.Drawing.Point(203, 273);
+			this.CheckBoxEntitySnapping.Location = new System.Drawing.Point(4, 53);
 			this.CheckBoxEntitySnapping.Name = "CheckBoxEntitySnapping";
 			this.CheckBoxEntitySnapping.Size = new System.Drawing.Size(75, 17);
 			this.CheckBoxEntitySnapping.TabIndex = 110;
@@ -3042,7 +2867,6 @@ namespace MAPeD
 			// groupBoxEntityEditor
 			// 
 			this.groupBoxEntityEditor.Controls.Add(this.ComboBoxEntityZoom);
-			this.groupBoxEntityEditor.Controls.Add(this.label7);
 			this.groupBoxEntityEditor.Controls.Add(this.CheckBoxPickupTargetEntity);
 			this.groupBoxEntityEditor.Controls.Add(this.PBoxEntityPreview);
 			this.groupBoxEntityEditor.Controls.Add(this.NumericUpDownEntityUID);
@@ -3056,7 +2880,8 @@ namespace MAPeD
 			this.groupBoxEntityEditor.Controls.Add(this.LabelEntityName);
 			this.groupBoxEntityEditor.Controls.Add(this.TextBoxEntityProperties);
 			this.groupBoxEntityEditor.Controls.Add(this.TextBoxEntityInstanceProp);
-			this.groupBoxEntityEditor.Location = new System.Drawing.Point(5, 295);
+			this.groupBoxEntityEditor.Controls.Add(this.label7);
+			this.groupBoxEntityEditor.Location = new System.Drawing.Point(3, 3);
 			this.groupBoxEntityEditor.Name = "groupBoxEntityEditor";
 			this.groupBoxEntityEditor.Size = new System.Drawing.Size(283, 283);
 			this.groupBoxEntityEditor.TabIndex = 111;
@@ -3078,14 +2903,6 @@ namespace MAPeD
 			this.ComboBoxEntityZoom.Size = new System.Drawing.Size(44, 21);
 			this.ComboBoxEntityZoom.TabIndex = 125;
 			this.ComboBoxEntityZoom.SelectedIndexChanged += new System.EventHandler(this.ComboBoxEntityZoomChanged_Event);
-			// 
-			// label7
-			// 
-			this.label7.Location = new System.Drawing.Point(176, 257);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(55, 20);
-			this.label7.TabIndex = 124;
-			this.label7.Text = "Zoom:";
 			// 
 			// CheckBoxPickupTargetEntity
 			// 
@@ -3309,6 +3126,14 @@ namespace MAPeD
 			this.TextBoxEntityInstanceProp.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBoxEntityPropertiesKeyPress_Event);
 			this.TextBoxEntityInstanceProp.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TextBoxEntityInstancePropTextKeyUp_Event);
 			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(176, 257);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(49, 20);
+			this.label7.TabIndex = 124;
+			this.label7.Text = "Zoom:";
+			// 
 			// PBoxLayout
 			// 
 			this.PBoxLayout.BackColor = System.Drawing.Color.Black;
@@ -3316,7 +3141,7 @@ namespace MAPeD
 			this.PBoxLayout.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.PBoxLayout.Location = new System.Drawing.Point(0, 0);
 			this.PBoxLayout.Name = "PBoxLayout";
-			this.PBoxLayout.Size = new System.Drawing.Size(712, 615);
+			this.PBoxLayout.Size = new System.Drawing.Size(924, 615);
 			this.PBoxLayout.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.PBoxLayout.TabIndex = 99;
 			this.PBoxLayout.TabStop = false;
@@ -3333,7 +3158,7 @@ namespace MAPeD
 									this.SetScreenMarkToolStripMenuItem,
 									this.adjacentScreensDirectionToolStripMenuItem});
 			this.ContextMenuLayoutEditor.Name = "ContextMenuLayoutEditor";
-			this.ContextMenuLayoutEditor.Size = new System.Drawing.Size(196, 170);
+			this.ContextMenuLayoutEditor.Size = new System.Drawing.Size(196, 148);
 			// 
 			// LayoutEntityOrderToolStripMenuItem
 			// 
@@ -3347,14 +3172,14 @@ namespace MAPeD
 			// LayoutBringFrontToolStripMenuItem
 			// 
 			this.LayoutBringFrontToolStripMenuItem.Name = "LayoutBringFrontToolStripMenuItem";
-			this.LayoutBringFrontToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.LayoutBringFrontToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.LayoutBringFrontToolStripMenuItem.Text = "Bring to Front";
 			this.LayoutBringFrontToolStripMenuItem.Click += new System.EventHandler(this.LayoutBringFrontToolStripMenuItemClick_Event);
 			// 
 			// LayoutSendBackToolStripMenuItem
 			// 
 			this.LayoutSendBackToolStripMenuItem.Name = "LayoutSendBackToolStripMenuItem";
-			this.LayoutSendBackToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.LayoutSendBackToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.LayoutSendBackToolStripMenuItem.Text = "Send to Back";
 			this.LayoutSendBackToolStripMenuItem.Click += new System.EventHandler(this.LayoutSendBackToolStripMenuItemClick_Event);
 			// 
@@ -3697,7 +3522,7 @@ namespace MAPeD
 									this.StatusBarLabel});
 			this.StatusBar.Location = new System.Drawing.Point(0, 671);
 			this.StatusBar.Name = "StatusBar";
-			this.StatusBar.Size = new System.Drawing.Size(1032, 22);
+			this.StatusBar.Size = new System.Drawing.Size(1244, 22);
 			this.StatusBar.SizingGrip = false;
 			this.StatusBar.TabIndex = 4;
 			this.StatusBar.Text = "...";
@@ -3775,15 +3600,13 @@ namespace MAPeD
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(1032, 693);
-			this.Controls.Add(this.tabControlMainLayout);
+			this.ClientSize = new System.Drawing.Size(1244, 693);
+			this.Controls.Add(this.tabControlTilesLayout);
 			this.Controls.Add(this.MenuStrip);
 			this.Controls.Add(this.StatusBar);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = global::MAPeD.Properties.Resources.MAPeD_icon;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.MenuStrip;
-			this.MaximizeBox = false;
 			this.Name = "MainForm";
 			this.Text = "MAPeD-NES";
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown_Event);
@@ -3791,8 +3614,8 @@ namespace MAPeD
 			this.ContextMenuEntitiesTreeGroup.ResumeLayout(false);
 			this.MenuStrip.ResumeLayout(false);
 			this.MenuStrip.PerformLayout();
-			this.tabControlMainLayout.ResumeLayout(false);
-			this.TabMain.ResumeLayout(false);
+			this.tabControlTilesLayout.ResumeLayout(false);
+			this.TabTiles.ResumeLayout(false);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -3801,15 +3624,14 @@ namespace MAPeD
 			this.splitContainer2.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
 			this.splitContainer2.ResumeLayout(false);
-			this.tabControlTilesScreens.ResumeLayout(false);
-			this.TabTiles.ResumeLayout(false);
+			this.splitContainer4.Panel1.ResumeLayout(false);
+			this.splitContainer4.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
+			this.splitContainer4.ResumeLayout(false);
 			this.splitContainer3.Panel1.ResumeLayout(false);
 			this.splitContainer3.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
 			this.splitContainer3.ResumeLayout(false);
-			this.GrpBoxCHRBank.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.PBoxCHRBank)).EndInit();
-			this.ContextMenuCHRBank.ResumeLayout(false);
 			this.GrpBoxPalettes.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.Palette3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette2)).EndInit();
@@ -3824,18 +3646,10 @@ namespace MAPeD
 			this.GrpBoxScreenData.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownScrBlocksHeight)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDownScrBlocksWidth)).EndInit();
+			this.GrpBoxCHRBank.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.PBoxCHRBank)).EndInit();
+			this.ContextMenuCHRBank.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
-			this.TabScreenEditor.ResumeLayout(false);
-			this.splitContainer4.Panel1.ResumeLayout(false);
-			this.splitContainer4.Panel1.PerformLayout();
-			this.splitContainer4.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
-			this.splitContainer4.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.PBoxScreen)).EndInit();
-			this.groupBox8.ResumeLayout(false);
-			this.GrpBoxActiveTile.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.PBoxActiveTile)).EndInit();
-			this.groupBox6.ResumeLayout(false);
 			this.TabLayout.ResumeLayout(false);
 			this.splitContainer5.Panel1.ResumeLayout(false);
 			this.splitContainer5.Panel2.ResumeLayout(false);
@@ -3847,16 +3661,32 @@ namespace MAPeD
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox13.ResumeLayout(false);
+			this.TabPainter.ResumeLayout(false);
+			this.GrpBoxPainter.ResumeLayout(false);
+			this.groupBox3.ResumeLayout(false);
+			this.GrpBoxActiveTile.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.PBoxActiveTile)).EndInit();
 			this.TabScreenList.ResumeLayout(false);
 			this.splitContainer6.Panel1.ResumeLayout(false);
 			this.splitContainer6.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer6)).EndInit();
 			this.splitContainer6.ResumeLayout(false);
 			this.TabEntities.ResumeLayout(false);
-			this.groupBoxEntitiesTreeView.ResumeLayout(false);
-			this.groupBox10.ResumeLayout(false);
+			this.splitContainer7.Panel1.ResumeLayout(false);
+			this.splitContainer7.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer7)).EndInit();
+			this.splitContainer7.ResumeLayout(false);
+			this.splitContainer8.Panel1.ResumeLayout(false);
+			this.splitContainer8.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer8)).EndInit();
+			this.splitContainer8.ResumeLayout(false);
 			this.ContextMenuEntitiesTree.ResumeLayout(false);
+			this.splitContainer9.Panel1.ResumeLayout(false);
+			this.splitContainer9.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer9)).EndInit();
+			this.splitContainer9.ResumeLayout(false);
 			this.groupBox9.ResumeLayout(false);
+			this.groupBox10.ResumeLayout(false);
 			this.groupBoxEntityEditor.ResumeLayout(false);
 			this.groupBoxEntityEditor.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBoxEntityPreview)).EndInit();
@@ -3878,6 +3708,15 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.RadioButton RBtnMapScaleX1;
+		private System.Windows.Forms.RadioButton RBtnMapScaleX2;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.GroupBox GrpBoxPainter;
+		private System.Windows.Forms.SplitContainer splitContainer4;
+		private System.Windows.Forms.TabPage TabPainter;
+		private System.Windows.Forms.SplitContainer splitContainer9;
+		private System.Windows.Forms.SplitContainer splitContainer8;
+		private System.Windows.Forms.SplitContainer splitContainer7;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator29;
 		private System.Windows.Forms.ToolStripMenuItem LayoutSendBackToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LayoutBringFrontToolStripMenuItem;
@@ -3902,11 +3741,7 @@ namespace MAPeD
 		private System.Windows.Forms.Label LabelPalette34;
 		private System.Windows.Forms.Label LabelPalette12;
 		private System.Windows.Forms.SplitContainer splitContainer5;
-		private System.Windows.Forms.SplitContainer splitContainer4;
 		private System.Windows.Forms.SplitContainer splitContainer3;
-		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.Label label11;
-		private System.Windows.Forms.Label ScreenDataTypeLabel;
 		private System.Windows.Forms.Button BtnScreenDataInfo;
 		private System.Windows.Forms.RadioButton RBtnScreenDataTiles;
 		private System.Windows.Forms.RadioButton RBtnScreenDataBlocks;
@@ -3921,8 +3756,7 @@ namespace MAPeD
 		private System.Windows.Forms.Button BtnSwapColors;
 		private System.Windows.Forms.ToolStripMenuItem statisticsToolStripMenuItem;
 		private System.Windows.Forms.Button BtnCreateLayoutWxH;
-		private System.Windows.Forms.ToolStripMenuItem deleteEmptyScreensToolStripMenuItem;
-		private System.Windows.Forms.Button BtnDeleteEmptyScreens;
+		private System.Windows.Forms.Button BtnLayoutDeleteEmptyScreens;
 		private System.Windows.Forms.ToolStripMenuItem nextPageToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem prevPageToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator CHRBankPageBtnsToolStripSeparator;
@@ -3985,8 +3819,6 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripMenuItem LayoutShowEntitiesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LayoutShowMarksToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ScreenEditModeSingleToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ScreenEditModeLayoutToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LayoutDeleteAllScreenMarksToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LayoutDeleteAllEntityInstancesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
@@ -4007,19 +3839,10 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator20;
 		private System.Windows.Forms.ToolStripMenuItem shiftColorsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem shiftTransparencyToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem editorToolStripMenuItem1;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
 		private System.Windows.Forms.ToolStripMenuItem updateToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem ScreenEditShowGridToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator18;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;
-		private System.Windows.Forms.ToolStripMenuItem openTilesBlocksToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
-		private System.Windows.Forms.ToolStripMenuItem deleteScreenToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem copyScreenToolStripMenuItem3;
-		private System.Windows.Forms.ToolStripMenuItem createScreenToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem LayoutShowGridToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem TilesLockEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem optimizationToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem rotateToolStripMenuItem1;
@@ -4044,7 +3867,6 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripMenuItem cHRToolStripMenuItem;
 		private System.Windows.Forms.NumericUpDown NumericUpDownEntityUID;
 		private System.Windows.Forms.GroupBox groupBoxEntityEditor;
-		private System.Windows.Forms.GroupBox groupBoxEntitiesTreeView;
 		private System.Windows.Forms.Label LabelEntityName;
 		private System.Windows.Forms.TextBox TextBoxEntityInstanceProp;
 		private System.Windows.Forms.Label LabelEntityInstanceProperty;
@@ -4108,10 +3930,6 @@ namespace MAPeD
 		private System.Windows.Forms.CheckBox CheckBoxLayoutEditorAllBanks;
 		private System.Windows.Forms.Button BtnLayoutMoveUp;
 		private System.Windows.Forms.Button BtnLayoutMoveDown;
-		private System.Windows.Forms.RadioButton RBtnScreenEditModeSingle;
-		private System.Windows.Forms.RadioButton RBtnScreenEditModeLayout;
-		private System.Windows.Forms.GroupBox groupBox8;
-		private System.Windows.Forms.Button BtnCreateLayout;
 		private System.Windows.Forms.Button BtnDeleteLayout;
 		private System.Windows.Forms.ListBox ListBoxLayouts;
 		private System.Windows.Forms.GroupBox groupBox7;
@@ -4158,8 +3976,6 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripMenuItem CHRSelectToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem blockEditModesToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip ContextMenuBlockEditor;
-		private System.Windows.Forms.Button BtnCopyScreen;
-		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.PictureBox PBoxActiveTile;
 		private System.Windows.Forms.OpenFileDialog Project_openFileDialog;
 		private System.Windows.Forms.SaveFileDialog Project_saveFileDialog;
@@ -4174,11 +3990,7 @@ namespace MAPeD
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.ToolStripStatusLabel StatusBarLabel;
 		private System.Windows.Forms.StatusStrip StatusBar;
-		private System.Windows.Forms.Button BtnCreateScreen;
-		private System.Windows.Forms.Button BtnDeleteScreen;
-		private System.Windows.Forms.CheckBox CheckBoxScreenShowGrid;
-		private System.Windows.Forms.ListBox ListBoxScreens;
-		private System.Windows.Forms.PictureBox PBoxScreen;
+		private System.Windows.Forms.CheckBox CheckBoxShowGrid;
 		private System.Windows.Forms.Button BtnCHRVFlip;
 		private System.Windows.Forms.Button BtnCHRHFlip;
 		private System.Windows.Forms.Button BtnCHRRotate;
@@ -4206,12 +4018,9 @@ namespace MAPeD
 		private System.Windows.Forms.PictureBox Palette3;
 		private System.Windows.Forms.GroupBox GrpBoxPalettes;
 		private System.Windows.Forms.TabPage TabLayout;
-		private System.Windows.Forms.TabPage TabScreenEditor;
-		private System.Windows.Forms.TabControl tabControlTilesScreens;
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.TabPage TabTiles;
-		private System.Windows.Forms.TabPage TabMain;
-		private System.Windows.Forms.TabControl tabControlMainLayout;
+		private System.Windows.Forms.TabControl tabControlTilesLayout;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;

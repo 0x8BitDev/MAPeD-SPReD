@@ -271,13 +271,13 @@ namespace MAPeD
 				TreeViewPatterns.SelectedNode = null;
 			}
 		}
-
+/*
 		public void subscribe_event( screen_editor _scr_editor )
 		{
 			_scr_editor.CreatePatternEnd		+= new EventHandler( create_pattern_end );
 			_scr_editor.CancelPatternPlacing	+= new EventHandler( cancel_pattern_placing );
 		}
-		
+*/
 		private void create_pattern_end(object sender, EventArgs e)
 		{
 			if( sender != this )

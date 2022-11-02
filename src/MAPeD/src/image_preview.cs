@@ -20,7 +20,7 @@ namespace MAPeD
 		
 		private Rectangle m_rect;
 		
-		public image_preview( PictureBox _PBoxCHRBank ) : base( _PBoxCHRBank )
+		public image_preview( PictureBox _pbox ) : base( _pbox )
 		{
 			m_scr_half_width  = m_pix_box.Width >> 1;
 			m_scr_half_height = m_pix_box.Height >> 1;
@@ -33,11 +33,11 @@ namespace MAPeD
 			return ( float )( ( _pos - _half_scr ) * _scale + ( float )_half_scr );
 		}
 		
-		public void update( Bitmap _bmp, int _width, int _height, int _pivot_x, int _pivot_y, int _scale, bool _draw_pivot, bool _invalidate = true )
+		public void update( Image _img, int _width, int _height, int _pivot_x, int _pivot_y, int _scale, bool _draw_pivot, bool _invalidate = true )
 		{
 			clear_background( CONST_BACKGROUND_COLOR );
 			
-			if( _bmp != null )
+			if( _img != null )
 			{
 				m_rect.Width	= _width;
 				m_rect.Height	= _height;
@@ -76,7 +76,7 @@ namespace MAPeD
 					int scr_pos_x = ( int )Math.Round( transform_to_scr_pos( offset_x, _scale, m_scr_half_width ) );
 					int scr_pos_y = ( int )Math.Round( transform_to_scr_pos( offset_y, _scale, m_scr_half_height ) );
 					
-					m_gfx.DrawImage( _bmp, scr_pos_x, scr_pos_y, _scale * _width, _scale * _height );
+					m_gfx.DrawImage( _img, scr_pos_x, scr_pos_y, _scale * _width, _scale * _height );
 					
 					// draw a pivot
 					if( _draw_pivot )
@@ -114,16 +114,16 @@ namespace MAPeD
 			}
 		}
 
-		public void update( Bitmap _bmp, int _width, int _height, int _x, int _y, bool _invalidate = true, bool _clear_background = true )
+		public void update( Image _img, int _width, int _height, int _x, int _y, bool _invalidate = true, bool _clear_background = true )
 		{
 			if( _clear_background )
 			{
 				clear_background( CONST_BACKGROUND_COLOR );
 			}
 			
-			if( _bmp != null )
+			if( _img != null )
 			{
-				m_gfx.DrawImage( _bmp, _x, _y, _width, _height );
+				m_gfx.DrawImage( _img, _x, _y, _width, _height );
 				
 				m_pen.Width = 1;
 				draw_border( Color.Black );

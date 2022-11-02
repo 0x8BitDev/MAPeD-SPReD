@@ -727,6 +727,17 @@ namespace MAPeD
 			return ent_cnt;
 		}
 		
+		public void layout_data_proc( Action< layout_screen_data > _act )
+		{
+			m_layout.ForEach( delegate( List< layout_screen_data > _list ) 
+			{ 
+				_list.ForEach( delegate( layout_screen_data _data ) 
+				{
+					_act( _data );
+				}); 
+			});
+		}
+		
 		public int export_asm( StreamWriter _sw, string _data_mark, string _define, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr, layout_screen_data.EEntSortType _sort_type, bool _compact_layout = true )
 		{
 			int max_props_cnt = 0;

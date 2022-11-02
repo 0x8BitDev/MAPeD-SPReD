@@ -586,6 +586,24 @@ namespace MAPeD
 			return scr_ind;
 		}
 		
+		public int get_bank_ind_by_global_screen_ind( int _global_scr_ind )
+		{
+			int n_screens = 0;
+			int bank_ind;
+			
+			for( bank_ind = 0; bank_ind < get_tiles_data().Count; bank_ind++ )
+			{
+				n_screens += get_tiles_data()[ bank_ind ].screen_data_cnt();
+				
+				if( _global_scr_ind < n_screens )
+				{
+					break;
+				}
+			}
+			
+			return bank_ind;
+		}
+		
 		public bool screen_data_create()
 		{
 			if( tiles_data_pos >= 0 )

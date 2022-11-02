@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 24.03.2021
  * Time: 11:54
  */
@@ -50,6 +50,7 @@ namespace MAPeD
 		{
 			if( _ind >= 0 && _ind < m_img_list.Images.Count )
 			{
+				m_img_list.Images[ _ind ].Dispose();
 				m_img_list.Images[ _ind ] = _img;
 				
 				return true;
@@ -128,6 +129,7 @@ namespace MAPeD
 		{
 			if( base.replace( _ind, scale_img( _img ) ) )
 			{
+				m_os_img_list[ _ind ].Dispose();
 				m_os_img_list[ _ind ] = _img;
 				
 				return true;

@@ -38,10 +38,11 @@ namespace MAPeD
 #endif
 		private readonly data_conversion_options_form m_data_conversion_options_form	= null;
 		
-		private readonly data_sets_manager m_data_manager	= null;
-		private readonly tiles_processor m_tiles_processor	= null;	
-		private readonly screen_editor m_screen_editor		= null;
-		private readonly layout_editor m_layout_editor		= null;
+		private readonly data_sets_manager	m_data_manager		= null;
+		private readonly tiles_processor	m_tiles_processor	= null;	
+		private readonly layout_editor_base	m_layout_editor		= null;
+		
+		private readonly image_preview		m_tile_preview		= null;
 		
 		private readonly tiles_palette_form		m_tiles_palette_form		= null;
 		private readonly patterns_manager_form	m_patterns_manager_form		= null;
@@ -109,9 +110,6 @@ namespace MAPeD
 			//
 			InitializeComponent();
 
-			// scale the main window horizontaly
-			this.Width += ( 3 * utils.CONST_SCREEN_TILES_SIZE ) - 14;
-
 			m_data_manager 	= new data_sets_manager();
 			
 			m_progress_val		= new Progress< int >( percent => { progress_bar_value( percent ); } );
@@ -145,14 +143,24 @@ namespace MAPeD
 			
 			m_imagelist_manager	= new imagelist_manager( PanelTiles, PanelTilesClick_Event, ContextMenuTilesList, PanelBlocks, PanelBlocksClick_Event, ContextMenuBlocksList, ListViewScreens, m_tile_list_manager );
 			
-			m_screen_editor = new screen_editor( PBoxScreen, m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list(), PBoxActiveTile, GrpBoxActiveTile );
-			m_screen_editor.subscribe_event( m_data_manager );
-			
-			m_layout_editor = new layout_editor( PBoxLayout, LayoutLabel, m_data_manager.get_tiles_data(), m_imagelist_manager.get_screen_list() );
-			m_layout_editor.subscribe_event( m_data_manager );
-			m_layout_editor.subscribe_event( m_screen_editor );
-			m_layout_editor.EntityInstanceSelected	+= new EventHandler( MainForm_EntityInstanceSelected );
-			m_layout_editor.ResetSelectedScreen		+= new EventHandler( MainForm_ResetSelectedScreen );
+			// layout editor init
+			{
+				m_layout_editor = new layout_editor_base( m_data_manager, PBoxLayout, LayoutLabel, m_imagelist_manager );
+				m_layout_editor.subscribe_event( m_data_manager );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SUBSCR_ENT_INST_SELECT, MainForm_EntityInstanceSelected );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SUBSCR_SCR_RESET_SELECTED, MainForm_ResetSelectedScreen );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE, update_tile_image );
+				
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_SUBSCR_DATA_MNGR, m_data_manager );
+				
+				m_layout_editor.MapScaleX1 += new EventHandler( MainForm_MapScaleX1 );
+				m_layout_editor.MapScaleX2 += new EventHandler( MainForm_MapScaleX2 );
+				
+				// set the builder mode by default
+				m_layout_editor.mode = layout_editor_base.EMode.em_Builder;
+				
+				m_tile_preview = new image_preview( PBoxActiveTile );
+			}
 			
 			m_data_manager.SetEntitiesData += new EventHandler( TreeViewEntities_update_data );
 			m_data_manager.AddEntity 	+= TreeViewEntities_add_entity;
@@ -161,9 +169,6 @@ namespace MAPeD
 			m_data_manager.DeleteGroup 	+= TreeViewEntities_delete_group;
 			
 			m_entity_preview = new image_preview( PBoxEntityPreview );
-			
-			m_screen_editor.subscribe_event( m_layout_editor );
-			m_screen_editor.UpdateTileImage += new EventHandler( update_tile_image );
 			
 			m_status_bar_label = StatusBarLabel;
 			
@@ -188,8 +193,8 @@ namespace MAPeD
 			m_patterns_manager_form = new patterns_manager_form( m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list() );
 			m_patterns_manager_form.PatternsManagerClosed 	+= new EventHandler( MainForm_PatternsManagerClosed );
 			
-			m_patterns_manager_form.subscribe_event( m_screen_editor );
-			m_screen_editor.subscribe_event( m_patterns_manager_form );
+//!!!			m_patterns_manager_form.subscribe_event( m_screen_editor );
+//!!!			m_screen_editor.subscribe_event( m_patterns_manager_form );
 			
 			m_optimization_form = new optimization_form( m_data_manager, progress_bar_show );
 			m_optimization_form.UpdateGraphics += new EventHandler( MainForm_UpdateGraphicsAfterOptimization );
@@ -198,12 +203,10 @@ namespace MAPeD
 			m_tiles_processor.UpdatePaletteListPos	+= new EventHandler( update_palette_list_pos );
 #endif
 			m_tiles_processor.NeedGFXUpdate 	+= new EventHandler( enable_update_gfx_btn_Event );
-			m_screen_editor.NeedScreensUpdate	+= new EventHandler( enable_update_screens_btn_Event );
 			
 			TabTiles.Tag 		= new Point( TabTiles.Width,	TabTiles.Height		);
-			TabScreenEditor.Tag = new Point( TabTiles.Width,	TabTiles.Height		);
 			TabLayout.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
-			TabMain.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
+			TabTiles.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
 			
 			CBoxPalettes.DrawItem += new DrawItemEventHandler( CBoxPalettesDrawItem_Event );
 
@@ -211,8 +214,7 @@ namespace MAPeD
 
 			// setup tooltips
 			{
-				SToolTipData[] tooltips = new SToolTipData[]{ 	new SToolTipData( tabControlTilesScreens, "Double Click to detach the tab page" ),
-																new SToolTipData( tabControlMainLayout, "Double Click to detach the tab page" ),
+				SToolTipData[] tooltips = new SToolTipData[]{ 	new SToolTipData( tabControlTilesLayout, "Double Click to detach the tab page" ),
 																new SToolTipData( CheckBoxScreensAutoUpdate, "Automatically updates the screen list when \"Update GFX\" button is pressed" ),
 																new SToolTipData( CheckBoxLayoutEditorAllBanks, "Show screens of all CHR banks" ),
 																new SToolTipData( CheckBoxPickupTargetEntity, "Pickup target entity" ),
@@ -241,6 +243,7 @@ namespace MAPeD
 																new SToolTipData( CheckBoxShowEntities, "Show layout entities" ),
 																new SToolTipData( CheckBoxShowTargets, "Show entity targets" ),
 																new SToolTipData( CheckBoxShowCoords, "Show coordinates of a selected entity" ),
+																new SToolTipData( CheckBoxShowGrid, "Show tile grid" ),
 																new SToolTipData( CheckBoxPalettePerCHR, "MMC5 extended attributes mode" ),																
 																new SToolTipData( CBoxPalettes, "Palettes array" ),
 #if DEF_FIXED_LEN_PALETTE16_ARR
@@ -252,10 +255,7 @@ namespace MAPeD
 																new SToolTipData( BtnSwapColors, "Swap two selected colors without changing graphics" ),
 																new SToolTipData( BtnBlockReserveCHRs, "Make links to empty CHRs" ),
 																new SToolTipData( BtnTileReserveBlocks, "Make links to empty blocks" ),
-																new SToolTipData( RBtnScreenEditModeSingle, "Single screen edit mode" ),
-																new SToolTipData( RBtnScreenEditModeLayout, "Layout's screen editing with moving to adjacent screens" ),
-																new SToolTipData( BtnDeleteEmptyScreens, "Delete all one tile filled screens" ),																
-																new SToolTipData( BtnCreateLayout, "Create an empty layout with one cell" ),
+																new SToolTipData( BtnLayoutDeleteEmptyScreens, "Delete all one tile filled screens in selected layout" ),																
 																new SToolTipData( BtnCreateLayoutWxH, "Create a layout (width x height) filled with empty screens" ),																
 																new SToolTipData( BtnLayoutMoveUp, "Move selected layout up" ),
 																new SToolTipData( BtnLayoutMoveDown, "Move selected layout down" ),
@@ -580,6 +580,11 @@ namespace MAPeD
 			
 			tabControlLayoutTools.Enabled = _on;
 			
+			if( _on )
+			{
+				layoutToolStripMenuItem.Enabled = _on;
+			}
+			
 			RBtnScreenDataTiles.Enabled = RBtnScreenDataBlocks.Enabled = _on;
 			
 			NumericUpDownScrBlocksWidth.Enabled = NumericUpDownScrBlocksHeight.Enabled = !_on;
@@ -643,7 +648,7 @@ namespace MAPeD
 
 			enable_main_UI( false );
 			
-			CheckBoxScreenShowGrid.Checked = true;
+			CheckBoxShowGrid.Checked = true;
 			
 			TilesLockEditorToolStripMenuItem.Checked = CheckBoxTileEditorLock.Checked = true;
 
@@ -655,11 +660,10 @@ namespace MAPeD
 			enable_update_gfx_btn( false );
 			enable_update_screens_btn( false );
 
-			m_screen_editor.clear_active_tile_img();
+			clear_active_tile_img();
 			
 			CBoxCHRBanks.Items.Clear();
 			CBoxPalettes.Items.Clear();
-			ListBoxScreens.Items.Clear();
 			ListBoxLayouts.Items.Clear();
 			
 			CBoxBlockObjId.SelectedIndex = 0;
@@ -676,11 +680,9 @@ namespace MAPeD
 			
 			PropertyPerBlockToolStripMenuItemClick_Event( null, null );
 			
-			RBtnScreenEditModeSingle.Checked = true;
-			
-			if( tabControlMainLayout.Contains( TabMain ) )
+			if( tabControlTilesLayout.Contains( TabTiles ) )
 			{
-				tabControlMainLayout.SelectTab( TabMain );
+				tabControlTilesLayout.SelectTab( TabTiles );
 			}
 			
 			if( tabControlLayoutTools.Contains( TabBuilder ) )
@@ -688,11 +690,8 @@ namespace MAPeD
 				tabControlLayoutTools.SelectTab( TabBuilder );
 			}
 			
-			if( tabControlTilesScreens.Contains( TabTiles ) )
-			{
-				tabControlTilesScreens.SelectTab( TabTiles );
-			}
-
+			screensToolStripMenuItem.Enabled = layoutToolStripMenuItem.Enabled = entitiesToolStripMenuItem.Enabled = false;
+			
 			set_title_name( null );
 			
 			m_description_form.edit_text = "";
@@ -735,7 +734,7 @@ namespace MAPeD
 #endif
 			update_graphics( false );
 			
-			m_screen_editor.clear_active_tile_img();
+			clear_active_tile_img();
 
 			set_status_msg( "View type changed" );
 			
@@ -1048,7 +1047,7 @@ namespace MAPeD
 										progress_bar_show( true, "Image Data Importing..." );
 										
 										// needed to properly remove screens of invalid layout
-										m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
+										m_data_manager.scr_data_pos = m_data_manager.scr_data_cnt - 1;
 										m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;										
 										
 										await Task.Run( () => m_import_tiles_form.data_processing( bmp, m_data_manager, create_layout_with_empty_screens_beg, m_progress_val, m_progress_status ) );
@@ -1078,18 +1077,10 @@ namespace MAPeD
 											{
 												progress_bar_status( "Empty screens deletion..." );
 												
-												if( delete_empty_screens() > 0 )
-												{
-													update_screens_list_box();
-													
-													ListBoxScreens.SelectedIndex = m_data_manager.scr_data_pos;
-												}
+												delete_empty_screens();
 											}
 											
 											progress_bar_status( "Screens data init..." );
-											
-											// reset the layout mode
-											RBtnScreenEditModeSingle.Checked = true;
 											
 											update_graphics( true );
 
@@ -1213,7 +1204,7 @@ namespace MAPeD
 									}
 									progress_bar_show( false, "", false );
 									
-									m_screen_editor.clear_active_tile_img();
+									clear_active_tile_img();
 									
 									set_status_msg( "Palette imported" );
 								}
@@ -1413,37 +1404,20 @@ namespace MAPeD
 		public void KeyUp_Event(object sender, KeyEventArgs e)
 		{
 			m_tiles_processor.key_event( sender, e );
+			m_layout_editor.key_up_event( sender, e );
 		}
 
 		public void KeyDown_Event(object sender, KeyEventArgs e)
 		{
+			m_layout_editor.key_down_event( sender, e );
 		}
 		
 		void TabCntrlDblClick_Event(object sender, EventArgs e)
 		{
 			TabControl tab_cntrl = sender as TabControl;
 			
-			if( tab_cntrl.SelectedTab == TabLayout )
-			{
-				( new tab_page_container( tab_cntrl, this, true ) ).Show();
-			}
-			else
-			{
-				( new tab_page_container( tab_cntrl, this, false ) ).Show();
-			}
+			( new tab_page_container( tab_cntrl, this ) ).Show();
 		}
-		
-		/*
-		void detachTabToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			TabControl tab_cntrl = ( (sender as ToolStripMenuItem ).Owner as ContextMenuStrip ).SourceControl.Parent as TabControl;
-
-			if( !( tab_cntrl.SelectedTab.Parent.Parent is tab_page_container ) )
-			{
-				( new tab_page_container( tab_cntrl, this ) ).Show();
-			}
-		}
-		*/
 #endregion		
 // TILES EDITOR **************************************************************************************//
 #region tiles editor
@@ -1466,9 +1440,6 @@ namespace MAPeD
 			// force update of screens if needed
 			update_screens_if_needed();
 
-			// reset the layout mode
-			RBtnScreenEditModeSingle.Checked = true;
-			
 			m_data_manager.scr_data_pos 	= -1;
 			m_data_manager.tiles_data_pos 	= chr_bank_cbox.SelectedIndex;
 			
@@ -1486,14 +1457,7 @@ namespace MAPeD
 			
 			enable_copy_paste_action( false, ECopyPasteType.cpt_All );
 			
-			// reset the screen editor controls
-			{
-				m_screen_editor.clear_active_tile_img();
-				
-				update_screens_list_box();
-				
-				ListBoxScreens.SelectedIndex = -1;
-			}
+			clear_active_tile_img();
 			
 			update_screens_by_bank_id( true, false );
 			
@@ -1506,7 +1470,7 @@ namespace MAPeD
 			
 			update_graphics( false );
 			
-			m_screen_editor.clear_active_tile_img();
+			clear_active_tile_img();
 			
 			set_status_msg( "GFX updated" );
 			
@@ -1521,8 +1485,6 @@ namespace MAPeD
 			m_imagelist_manager.update_tiles( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated blocks gfx to speed up drawing
 			
 			m_tile_list_manager.update_all();
-
-			m_screen_editor.update();
 
 			if( CheckBoxScreensAutoUpdate.Checked )
 			{
@@ -1686,7 +1648,7 @@ namespace MAPeD
 						{
 							update_screens_labels_by_bank_id();
 							
-							m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
+							m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 						}
 
 						m_layout_editor.update_dimension_changes();
@@ -1802,7 +1764,10 @@ namespace MAPeD
 		{
 			if( _ind >= 0 && m_data_manager.tiles_data_pos >= 0 )
 			{
-				m_screen_editor.set_active_tile( _ind, screen_editor.EFillMode.efm_Tile );
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_TILE, _ind );
+				
+				m_tile_preview.update( m_imagelist_manager.get_tiles_image_list().Images[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
+				GrpBoxActiveTile.Text = "Tile: " + String.Format( "${0:X2}", _ind );
 			}
 		}
 
@@ -1810,8 +1775,19 @@ namespace MAPeD
 		{
 			if( _ind >= 0 && m_data_manager.tiles_data_pos >= 0 )
 			{
-				m_screen_editor.set_active_tile( _ind, screen_editor.EFillMode.efm_Block );
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_BLOCK, _ind );
+				
+				m_tile_preview.update( m_imagelist_manager.get_blocks_image_list().Images[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
+				GrpBoxActiveTile.Text = "Block: " + String.Format( "${0:X2}", _ind );
 			}
+		}
+		
+		private void clear_active_tile_img()
+		{
+			m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_CLEAR_ACTIVE_TILE, null );
+			
+			m_tile_preview.update( null, 0, 0, 0, 0, true, true );
+			GrpBoxActiveTile.Text = "...";
 		}
 		
 		private void update_selected_block()
@@ -1825,7 +1801,6 @@ namespace MAPeD
 				m_tile_list_manager.update_tile( tile_list.EType.t_Blocks, sel_block_id );
 				
 				update_active_block_img( sel_block_id );
-				m_screen_editor.update();
 				m_patterns_manager_form.update();
 			}
 		}
@@ -2116,7 +2091,6 @@ namespace MAPeD
 					}
 					
 					update_active_block_img( _sel_ind );
-					m_screen_editor.update();
 					m_patterns_manager_form.update();
 					m_tiles_processor.update_graphics();
 					
@@ -2178,7 +2152,7 @@ namespace MAPeD
 					set_status_msg( String.Format( "Block List: block #{0:X2} references are cleared", _sel_ind ) );
 				}
 				
-				m_screen_editor.clear_active_tile_img();
+				clear_active_tile_img();
 				
 				enable_update_gfx_btn( true );
 				enable_update_screens_btn( true );
@@ -2236,7 +2210,7 @@ namespace MAPeD
 						data.inc_patterns_tiles( ( ushort )sel_ind );
 					}
 					
-					m_screen_editor.clear_active_tile_img();
+					clear_active_tile_img();
 					
 					enable_update_screens_btn( true );
 					update_graphics( true );
@@ -2271,7 +2245,7 @@ namespace MAPeD
 						}
 						data.clear_block( data.tiles.Length - 1 );
 						
-						m_screen_editor.clear_active_tile_img();
+						clear_active_tile_img();
 						
 						enable_update_screens_btn( true );
 						update_graphics( true );
@@ -2312,7 +2286,6 @@ namespace MAPeD
 					m_tile_list_manager.copy_tile( tile_list.EType.t_Tiles, m_tile_copy_item_ind, sel_ind );
 					
 					update_active_tile_img( sel_ind );
-					m_screen_editor.update();
 					m_patterns_manager_form.update();
 					m_tiles_processor.update_graphics();
 					
@@ -2336,7 +2309,7 @@ namespace MAPeD
 
 					data.clear_tile( sel_ind );
 					
-					m_screen_editor.clear_active_tile_img();
+					clear_active_tile_img();
 	
 					set_status_msg( String.Format( "Tile List: tile #{0:X2} references are cleared", sel_ind ) );
 					
@@ -2354,7 +2327,7 @@ namespace MAPeD
 				
 				data.clear_tiles();
 				
-				m_screen_editor.clear_active_tile_img();
+				clear_active_tile_img();
 				
 				set_status_msg( String.Format( "Tile List: all the tile references are cleared" ) );
 				
@@ -2379,7 +2352,7 @@ namespace MAPeD
 					data.inc_screen_tiles( ( ushort )sel_ind );
 					data.inc_patterns_tiles( ( ushort )sel_ind );
 					
-					m_screen_editor.clear_active_tile_img();
+					clear_active_tile_img();
 					
 					enable_update_screens_btn( true );
 					update_graphics( true );
@@ -2405,7 +2378,7 @@ namespace MAPeD
 						data.dec_patterns_tiles( ( ushort )sel_ind );
 						data.clear_tile( data.tiles.Length - 1 );
 						
-						m_screen_editor.clear_active_tile_img();
+						clear_active_tile_img();
 						
 						enable_update_screens_btn( true );
 						update_graphics( true );
@@ -2440,7 +2413,7 @@ namespace MAPeD
 	
 							enable_update_screens_btn( false );
 							
-							m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
+							m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 							m_layout_editor.update();
 							
 							progress_bar_show( false );
@@ -2450,9 +2423,7 @@ namespace MAPeD
 						
 						// need to be reset to avoid incorrect tiles array filling
 						// when drawing by blocks 2x2 when the 'Tiles (4x4)' mode is active
-						m_screen_editor.clear_active_tile_img();
-						
-						m_screen_editor.update_adjacent_screens();
+						clear_active_tile_img();
 					}
 					ListViewScreens.EndUpdate();
 				}
@@ -2486,8 +2457,148 @@ namespace MAPeD
 			}
 		}
 #endregion		
-// SCREEN EDITOR *************************************************************************************//
-#region screen editor
+// LAYOUT PAINTER *************************************************************************************//
+#region layout painter
+		void MainForm_MapScaleX1(object sender, EventArgs e)
+		{
+			RBtnMapScaleX1.Checked = true;
+		}
+		
+		void MainForm_MapScaleX2(object sender, EventArgs e)
+		{
+			RBtnMapScaleX2.Checked = true;
+		}
+		
+		void RBtnMapScaleX1CheckedChanged_Event(object sender, EventArgs e)
+		{
+			if( RBtnMapScaleX1.Checked )
+			{
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_BASE_MAP_SCALE_X1, null );
+			}
+		}
+		
+		void RBtnMapScaleX2CheckedChanged_Event(object sender, EventArgs e)
+		{
+			if( RBtnMapScaleX2.Checked )
+			{
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_BASE_MAP_SCALE_X2, null );
+			}
+		}
+		
+		void BtnPatternsClick_Event(object sender, EventArgs e)
+		{
+			m_patterns_manager_form.visible( true );
+			m_patterns_manager_form.update();
+			
+			BtnPatterns.Enabled = false;
+		}
+
+		void MainForm_PatternsManagerClosed(object sender, EventArgs e)
+		{
+			BtnPatterns.Enabled = true;
+		}
+		
+		void BtnTilesBlocksClick_Event(object sender, EventArgs e)
+		{
+			m_tiles_palette_form.show_wnd();
+			
+			BtnTilesBlocks.Enabled = false;
+		}
+		
+		void MainForm_TilesBlocksClosed(object sender, EventArgs e)
+		{
+			BtnTilesBlocks.Enabled = true;
+		}
+		
+		void MainForm_TileSelected(object sender, EventArgs e)
+		{
+			select_tile( ( sender as tiles_palette_form ).active_item_id );
+		}
+
+		void MainForm_BlockSelected(object sender, EventArgs e)
+		{
+			select_block( ( sender as tiles_palette_form ).active_item_id, true, true );
+		}
+		
+		void MainForm_BlockQuadSelected(object sender, EventArgs e)
+		{
+			// show property
+			select_block( m_tiles_processor.get_selected_block(), false, true );
+		}
+		
+		private void update_tile_image( object sender, EventArgs e )
+		{
+			NewTileEventArg event_args = e as NewTileEventArg;
+			
+			int tile_ind 	= event_args.tile_ind;
+			tiles_data data = event_args.data;
+			
+			m_imagelist_manager.update_tile( tile_ind, m_view_type, data, true, PropertyPerBlockToolStripMenuItem.Checked, null, null, m_data_manager.screen_data_type );
+			m_tile_list_manager.update_tile( tile_list.EType.t_Tiles, tile_ind );
+		}
+		
+		void MainForm_UpdateGraphicsAfterOptimization(object sender, EventArgs e)
+		{
+			update_graphics( true );
+			
+			if( CheckBoxScreensAutoUpdate.Checked == false )
+			{
+				enable_update_screens_btn( true );
+			}
+		}
+		
+		void BtnResetTileClick_Event(object sender, EventArgs e)
+		{
+			clear_active_tile_img();
+		}
+		
+		void BtnSwapInkPaperClick_Event(object sender, EventArgs e)
+		{
+#if DEF_ZX
+			m_tiles_processor.zx_swap_ink_paper( true );
+#endif
+		}
+		
+		void BtnInvInkClick_Event(object sender, EventArgs e)
+		{
+#if DEF_ZX
+			m_tiles_processor.zx_swap_ink_paper( false );
+#endif		
+		}
+#endregion		
+// LAYOUT EDITOR *************************************************************************************//		
+#region layout editor
+		int create_screen()
+		{
+			int scr_glob_ind = -1;
+			
+			if( m_data_manager.screen_data_create() == true )
+			{
+				if( ( scr_glob_ind = insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 ) ) >= 0 )
+				{
+					m_data_manager.scr_data_pos = m_data_manager.scr_data_cnt - 1;
+				}
+				else
+				{
+					m_data_manager.screen_data_delete();
+					
+					message_box( "Can't create screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Failed to Create Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+				}
+			}
+			
+			return scr_glob_ind;
+		}
+
+		void delete_screen( layout_screen_data _scr_data )
+		{
+			if( _scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
+			{
+				int bank_ind = m_data_manager.get_bank_ind_by_global_screen_ind( _scr_data.m_scr_ind );
+				
+				delete_screen_by_bank_id( bank_ind, m_data_manager.get_local_screen_ind( bank_ind, _scr_data.m_scr_ind ) );
+			}
+		}
+		
 		void delete_screen( int _scr_local_ind )
 		{
 			m_data_manager.scr_data_pos = _scr_local_ind ;
@@ -2497,7 +2608,21 @@ namespace MAPeD
 			
 			if( m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, _scr_local_ind ) )
 			{
-				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
+				
+				update_screens_labels_by_bank_id();
+			}
+		}
+
+		void delete_screen_by_bank_id( int _bank_ind, int _scr_local_ind )
+		{
+			m_data_manager.get_tiles_data( _bank_ind ).delete_screen( _scr_local_ind );
+
+			m_data_manager.remove_screen_from_layouts( _bank_ind, _scr_local_ind  );
+			
+			if( m_imagelist_manager.remove_screen( _bank_ind, _scr_local_ind ) )
+			{
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 				
 				update_screens_labels_by_bank_id();
 			}
@@ -2531,7 +2656,7 @@ namespace MAPeD
 					tile_offs_y = ( tile_n / platform_data.get_screen_tiles_width() );
 
 					block_offs_x = tile_offs_x << 1;
-					block_offs_y = tile_offs_y << 1;						
+					block_offs_y = tile_offs_y << 1;
 					
 					for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 					{
@@ -2602,273 +2727,38 @@ namespace MAPeD
 			return res;
 		}
 
-		private void update_screens_list_box()
+		int layout_delete_empty_screens()
 		{
-			ListBoxScreens.Items.Clear();
-			
-			int size = m_data_manager.scr_data_cnt;
-			
-			for( int i = 0; i < size; i++ )
-			{
-				ListBoxScreens.Items.Add( i );
-			}
-		}
+			int res = 0;
+			int bank_ind;
 
-		void BtnCreateScreenClick_Event(object sender, EventArgs e)
-		{
-			if( m_data_manager.screen_data_create() == true )
+			bool all_banks_screens = CheckBoxLayoutEditorAllBanks.Checked;
+			
+			// unlock all the screens
+			CheckBoxLayoutEditorAllBanks.Checked = true;
+			
+			m_data_manager.get_layout_data( m_data_manager.layouts_data_pos ).layout_data_proc( delegate( layout_screen_data _scr_data )
 			{
-				if( insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 ) >= 0 )
+				if( _scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 				{
-					ListBoxScreens.SelectedIndices.Clear();
+					bank_ind = m_data_manager.get_bank_ind_by_global_screen_ind( _scr_data.m_scr_ind );
 					
-					ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
-					m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
-					
-					enable_update_screens_btn( true );
-					
-					set_status_msg( "Added screen" );
-				}
-				else
-				{
-					m_data_manager.screen_data_delete();
-					
-					set_status_msg( "Failed to create screen" );
-					
-					message_box( "Can't create screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Failed to Create Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-				}
-			}
-		}
-
-		void BtnCopyScreenClick_Event(object sender, EventArgs e)
-		{
-			if( ListBoxScreens.SelectedIndices.Count == 1 )
-			{
-				if( m_data_manager.screen_data_copy() == true )
-				{
-					if( insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 ) >= 0 )
+					tiles_data data	= m_data_manager.get_tiles_data( bank_ind );
+	
+					if( check_empty_screen( data.tiles, data.get_screen_data( m_data_manager.get_local_screen_ind( bank_ind, _scr_data.m_scr_ind ) ) ) )
 					{
-						ListBoxScreens.SelectedIndices.Clear();
-						
-						ListBoxScreens.Items.Add( m_data_manager.scr_data_cnt - 1 );
-						m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
-						
-						enable_update_screens_btn( true );
-						
-						set_status_msg( "Screen copied" );
-					}
-					else
-					{
-						m_data_manager.screen_data_delete();
-						
-						set_status_msg( "Failed to copy screen" );
-						
-						message_box( "Can't copy the screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Failed to Copy Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+						delete_screen_by_bank_id( bank_ind, m_data_manager.get_local_screen_ind( bank_ind, _scr_data.m_scr_ind ) );
+	
+						++res;
 					}
 				}
-			}
-			else
-			{
-				message_box( "Please, select one screen!", "Failed to Copy Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-			}
-		}
-		
-		void BtnDeleteScreenClick_Event(object sender, EventArgs e)
-		{
-			if( ListBoxScreens.SelectedIndex >= 0 && ListBoxScreens.Items.Count > 0 && message_box( "Are you sure, you want to delete " + ListBoxScreens.SelectedIndices.Count + " screen(s) ?", "Delete Screen", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
-			{
-				bool scr_removed	= false;
-				
-				int del_scr_ind;
-				int scr_cnt			= ListBoxScreens.SelectedIndices.Count;
-				int[] del_scr_arr	= new int[ scr_cnt ];
-				
-				ListBoxScreens.SelectedIndices.CopyTo( del_scr_arr, 0 );
-				Array.Reverse( del_scr_arr );
-				
-				for( int i = 0; i < scr_cnt; i++ )
-				{
-					del_scr_ind = del_scr_arr[ i ];
-					
-					m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ).delete_screen( del_scr_ind );
-					m_data_manager.scr_data_pos = del_scr_ind - 1;
-					
-					m_data_manager.remove_screen_from_layouts( CBoxCHRBanks.SelectedIndex, del_scr_ind );
-					
-					scr_removed |= m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, del_scr_ind );
-				}
-
-				if( scr_removed )
-				{
-					m_layout_editor.update_dimension_changes();
-
-					m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
-					
-					update_screens_labels_by_bank_id();
-					
-					// reset an entity editor data
-					m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
-					fill_entity_data( null );
-					CheckBoxPickupTargetEntity.Checked = false;
-				}
-				
-				update_screens_list_box();
-
-				ListBoxScreens.SelectedIndex = m_data_manager.scr_data_pos;
-				
-				if( m_data_manager.scr_data_cnt == 0 )
-				{
-					update_graphics( false );
-				}
-
-				enable_update_screens_btn( true );
-				
-				set_status_msg( scr_cnt + " Screen(s) deleted" );
-			}
-		}
-		
-		void BtnDeleteEmptyScreensClick_Event(object sender, EventArgs e)
-		{
-			if( ListBoxScreens.Items.Count > 0 && message_box( "Delete all one tile filled screens?", "Clean Up", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
-			{
-				int deleted_screens_cnt;
-				
-				progress_bar_show( true, "Empty screens deletion...", false );
-				
-				if( ( deleted_screens_cnt = delete_empty_screens() ) > 0 )
-				{
-					m_layout_editor.update_dimension_changes();
-					
-					update_screens_list_box();
-
-					if( m_data_manager.scr_data_cnt == 0 )
-					{
-						update_graphics( false );
-					}
-					
-					enable_update_screens_btn( true );
-
-					ListBoxScreens.SelectedIndex = m_data_manager.scr_data_pos;
-					
-					set_status_msg( "Clean up: " + deleted_screens_cnt + " screens deleted" );
-				}
-				else
-				{
-					set_status_msg( "Clean up: no empty screens found" );
-				}
-				
-				progress_bar_show( false );
-			}
-		}
-		
-		void ListBoxScreensClick_Event(object sender, EventArgs e)
-		{
-			m_data_manager.scr_data_pos = ( sender as ListBox ).SelectedIndex;
-		}
-		
-		void ScreenEditShowGridToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			ScreenEditShowGridToolStripMenuItem.Checked = CheckBoxScreenShowGrid.Checked = !( sender as ToolStripMenuItem ).Checked;
-		}
-		
-		void CheckBoxScreenShowGridChecked_Event(object sender, EventArgs e)
-		{
-			m_screen_editor.draw_grid_flag = ScreenEditShowGridToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
-		}
-		
-		void BtnPatternsClick_Event(object sender, EventArgs e)
-		{
-			m_patterns_manager_form.visible( true );
-			m_patterns_manager_form.update();
+			});
 			
-			BtnPatterns.Enabled = false;
+			CheckBoxLayoutEditorAllBanks.Checked = all_banks_screens;
+			
+			return res;
 		}
 
-		void MainForm_PatternsManagerClosed(object sender, EventArgs e)
-		{
-			BtnPatterns.Enabled = true;
-		}
-		
-		void BtnTilesBlocksClick_Event(object sender, EventArgs e)
-		{
-			m_tiles_palette_form.show_wnd();
-			
-			BtnTilesBlocks.Enabled = false;
-		}
-		
-		void MainForm_TilesBlocksClosed(object sender, EventArgs e)
-		{
-			BtnTilesBlocks.Enabled = true;
-		}
-		
-		void MainForm_TileSelected(object sender, EventArgs e)
-		{
-			select_tile( ( sender as tiles_palette_form ).active_item_id );
-		}
-
-		void MainForm_BlockSelected(object sender, EventArgs e)
-		{
-			select_block( ( sender as tiles_palette_form ).active_item_id, true, true );
-		}
-		
-		void MainForm_BlockQuadSelected(object sender, EventArgs e)
-		{
-			// show property
-			select_block( m_tiles_processor.get_selected_block(), false, true );
-		}
-		
-		private void update_tile_image( object sender, EventArgs e )
-		{
-			NewTileEventArg event_args = e as NewTileEventArg;
-			
-			int tile_ind 	= event_args.tile_ind;
-			tiles_data data = event_args.data;
-			
-			m_imagelist_manager.update_tile( tile_ind, m_view_type, data, true, PropertyPerBlockToolStripMenuItem.Checked, null, null, m_data_manager.screen_data_type );
-			m_tile_list_manager.update_tile( tile_list.EType.t_Tiles, tile_ind );
-		}
-		
-		void MainForm_UpdateGraphicsAfterOptimization(object sender, EventArgs e)
-		{
-			int last_scr_cnt = ListBoxScreens.Items.Count;
-			
-			update_screens_list_box();				
-			
-			if( ListBoxScreens.Items.Count != last_scr_cnt )
-			{
-				ListBoxScreens.SelectedIndices.Clear();
-				m_data_manager.scr_data_pos = -1;
-			}
-			
-			update_graphics( true );
-			
-			if( CheckBoxScreensAutoUpdate.Checked == false )
-			{
-				enable_update_screens_btn( true );
-			}
-		}
-		
-		void BtnResetTileClick_Event(object sender, EventArgs e)
-		{
-			m_screen_editor.clear_active_tile_img();
-		}
-		
-		void BtnSwapInkPaperClick_Event(object sender, EventArgs e)
-		{
-#if DEF_ZX
-			m_tiles_processor.zx_swap_ink_paper( true );
-#endif
-		}
-		
-		void BtnInvInkClick_Event(object sender, EventArgs e)
-		{
-#if DEF_ZX
-			m_tiles_processor.zx_swap_ink_paper( false );
-#endif		
-		}
-#endregion		
-// LAYOUT EDITOR *************************************************************************************//		
-#region layout editor
 		void delete_last_layout_and_screens()
 		{
 			layout_data layout = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
@@ -2964,8 +2854,6 @@ namespace MAPeD
 							scr_local_ind = m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, scr_global_ind );
 							
 							m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
-							
-							ListBoxScreens.Items.Add( ListBoxScreens.Items.Count );
 						}
 					}
 				}
@@ -2977,7 +2865,7 @@ namespace MAPeD
 				
 				palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
 				
-				m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
+				m_data_manager.scr_data_pos = m_data_manager.scr_data_cnt - 1;
 				
 				return true;
 			}
@@ -3104,6 +2992,36 @@ namespace MAPeD
 			}
 		}
 		
+		void BtnLayoutDeleteEmptyScreensClick_Event(object sender, EventArgs e)
+		{
+			if( ListBoxLayouts.SelectedIndex >= 0 && message_box( "Delete all one tile filled screens?", "Clean Up", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			{
+				int deleted_screens_cnt;
+				
+				progress_bar_show( true, "Empty screens deletion...", false );
+				
+				if( ( deleted_screens_cnt = layout_delete_empty_screens() ) > 0 )
+				{
+					m_layout_editor.update_dimension_changes();
+					
+					if( m_data_manager.scr_data_cnt == 0 )
+					{
+						update_graphics( false );
+					}
+					
+					enable_update_screens_btn( true );
+
+					set_status_msg( "Clean up: " + deleted_screens_cnt + " screens deleted" );
+				}
+				else
+				{
+					set_status_msg( "Clean up: no empty screens found" );
+				}
+				
+				progress_bar_show( false );
+			}
+		}
+
 		void BtnLayoutAddUpRowClick_Event(object sender, EventArgs e)
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 )
@@ -3114,7 +3032,11 @@ namespace MAPeD
 				{
 					data.add_up();
 					
-					m_layout_editor.reset_selected_screen();
+					for( int cell_n = 0; cell_n < data.get_width(); cell_n++ )
+					{
+						data.get_data( cell_n, 0 ).m_scr_ind = create_screen();
+					}
+					
 					m_layout_editor.update_dimension_changes();
 				}
 			}
@@ -3122,7 +3044,15 @@ namespace MAPeD
 		
 		void BtnLayoutRemoveTopRowClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data ) { return _data.remove_up(); }, "Remove Top Row" );
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data )
+			{
+				for( int cell_n = 0; cell_n < _data.get_width(); cell_n++ )
+				{
+					delete_screen( _data.get_data( cell_n, 0 ) );
+				}
+				
+				return _data.remove_up();
+			}, "Remove Top Row" );
 		}
 		
 		void BtnLayoutAddDownRowClick_Event(object sender, EventArgs e)
@@ -3134,8 +3064,12 @@ namespace MAPeD
 				if( data != null )
 				{
 					data.add_down();
-				
-					m_layout_editor.reset_selected_screen();
+
+					for( int cell_n = 0; cell_n < data.get_width(); cell_n++ )
+					{
+						data.get_data( cell_n, data.get_height() - 1 ).m_scr_ind = create_screen();
+					}
+					
 					m_layout_editor.update_dimension_changes();
 				}
 			}
@@ -3143,7 +3077,15 @@ namespace MAPeD
 		
 		void BtnLayoutRemoveBottomRowClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data ) { return _data.remove_down(); }, "Remove Bottom Row" );
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data )
+			{ 
+				for( int cell_n = 0; cell_n < _data.get_width(); cell_n++ )
+				{
+					delete_screen( _data.get_data( cell_n, _data.get_height() - 1 ) );
+				}
+
+				return _data.remove_down();
+			}, "Remove Bottom Row" );
 		}
 		
 		void BtnLayoutAddLeftColumnClick_Event(object sender, EventArgs e)
@@ -3156,7 +3098,11 @@ namespace MAPeD
 				{
 					data.add_left();
 					
-					m_layout_editor.reset_selected_screen();
+					for( int cell_n = 0; cell_n < data.get_height(); cell_n++ )
+					{
+						data.get_data( 0, cell_n ).m_scr_ind = create_screen();
+					}
+
 					m_layout_editor.update_dimension_changes();
 				}
 			}
@@ -3164,7 +3110,15 @@ namespace MAPeD
 		
 		void BtnLayoutRemoveLeftColumnClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data ) { return _data.remove_left(); }, "Remove Left Column" );
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data )
+			{
+				for( int cell_n = 0; cell_n < _data.get_height(); cell_n++ )
+				{
+					delete_screen( _data.get_data( 0, cell_n ) );
+				}
+
+				return _data.remove_left();
+			}, "Remove Left Column" );
 		}
 		
 		void BtnLayoutAddRightColumnClick_Event(object sender, EventArgs e)
@@ -3176,8 +3130,12 @@ namespace MAPeD
 				if( data != null )
 				{
 					data.add_right();
+
+					for( int cell_n = 0; cell_n < data.get_height(); cell_n++ )
+					{
+						data.get_data( data.get_width() - 1, cell_n ).m_scr_ind = create_screen();
+					}
 					
-					m_layout_editor.reset_selected_screen();
 					m_layout_editor.update_dimension_changes();
 				}
 			}
@@ -3185,7 +3143,15 @@ namespace MAPeD
 	
 		void BtnLayoutRemoveRightColumnClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data ) { return _data.remove_right(); }, "Remove Right Column" );				
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data )
+			{
+				for( int cell_n = 0; cell_n < _data.get_height(); cell_n++ )
+				{
+					delete_screen( _data.get_data( _data.get_width() - 1, cell_n ) );
+				}
+				
+				return _data.remove_right();
+			}, "Remove Right Column" );
 		}
 
 		void delete_layout_row_column( Func< layout_data, bool > _condition, Func< layout_data, bool > _act, string _caption_msg )
@@ -3198,9 +3164,6 @@ namespace MAPeD
 				{
 					if( _act( data ) )
 					{
-						reset_entity_instance_preview();
-						
-						m_layout_editor.reset_selected_screen();
 						m_layout_editor.update_dimension_changes();
 					}
 				}
@@ -3209,13 +3172,13 @@ namespace MAPeD
 		
 		void LayoutDeleteAllEntityInstancesToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED );
+			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 			
 			if( m_data_manager.layouts_data_cnt > 0 && message_box( "Are you sure?", "Delete All Entity Instances", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				m_data_manager.get_layout_data( m_data_manager.layouts_data_pos ).delete_all_entities();
 				
-				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 				
 				if( ent_inst != null )
 				{
@@ -3240,11 +3203,16 @@ namespace MAPeD
 		
 		void LayoutDeleteScreenToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED );
+			entity_instance ent_inst = null;
 			
+			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
+			{
+				ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
+			}
+
 			if( m_layout_editor.delete_screen_from_layout() == true )
 			{
-				if( ent_inst != ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED ) )
+				if( ent_inst != ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED ) )
 				{
 					fill_entity_data( null );
 					
@@ -3264,7 +3232,7 @@ namespace MAPeD
 		
 		void LayoutDeleteEntityToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( m_layout_editor.delete_entity_instance_from_layout() == true )
+			if( m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_DELETE, null ) == true )
 			{
 				fill_entity_data( null );
 				
@@ -3305,13 +3273,13 @@ namespace MAPeD
 			
 			if( lv.SelectedItems.Count > 0 )
 			{
-				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, lv.SelectedItems[ 0 ].ImageIndex );
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, lv.SelectedItems[ 0 ].ImageIndex );
 			
 				set_status_msg( "Layout Editor: screen - " + lv.SelectedItems[ 0 ].Text );
 			}
 			else
 			{
-				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, layout_data.CONST_EMPTY_CELL_ID );
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, layout_data.CONST_EMPTY_CELL_ID );
 			
 				set_status_msg( "" );
 			}
@@ -3323,47 +3291,23 @@ namespace MAPeD
 		{
 			ListViewScreens.SelectedItems.Clear();
 		
-			m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, layout_data.CONST_EMPTY_CELL_ID );
+			m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, layout_data.CONST_EMPTY_CELL_ID );
 			m_layout_editor.update();
 
 			set_status_msg( "" );
 		}
 		
-		void BtnCreateLayoutClick_Event(object sender, EventArgs e)
-		{
-			if( m_data_manager.tiles_data_pos >= 0 )
-			{
-				if( m_data_manager.layout_data_create() == true )
-				{
-					ListBoxLayouts.Items.Add( m_data_manager.layouts_data_cnt - 1 );
-					m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;
-					
-					reset_entity_instance_preview();
-					
-					set_status_msg( "Added layout" );
-				}
-				else
-				{
-					set_status_msg( "Failed to create layout" );
-					
-					message_box( "Can't create layout!\nThe maximum allowed number of layouts - " + utils.CONST_LAYOUT_MAX_CNT, "Failed to Create Layout", MessageBoxButtons.OK, MessageBoxIcon.Error );
-				}
-			}
-		}
-
 		void BtnCreateLayoutWxHClick_Event(object sender, EventArgs e)
 		{
 			try
 			{
 				if( m_data_manager.tiles_data_pos >= 0 && m_create_layout_form.ShowDialog() == DialogResult.OK )
 				{
-					m_data_manager.scr_data_pos = ListBoxScreens.SelectedIndex = m_data_manager.scr_data_cnt - 1;
+					m_data_manager.scr_data_pos = m_data_manager.scr_data_cnt - 1;
 					m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;
 					
 					if( create_layout_with_empty_screens_end( create_layout_with_empty_screens_beg( m_create_layout_form.layout_width, m_create_layout_form.layout_height ) ) != false )
 					{
-						reset_entity_instance_preview();
-						
 						m_layout_editor.update_dimension_changes();
 							
 						set_status_msg( "Added layout " + m_create_layout_form.layout_width + "x" + m_create_layout_form.layout_height );
@@ -3392,8 +3336,6 @@ namespace MAPeD
 				
 				ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_pos;
 				
-				reset_entity_instance_preview();
-					
 				set_status_msg( "Layout removed" );
 			}
 		}
@@ -3407,8 +3349,6 @@ namespace MAPeD
 					update_layouts_list_box();
 					
 					m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_pos;
-					
-					reset_entity_instance_preview();
 					
 					set_status_msg( "Layout copied" );
 				}
@@ -3424,93 +3364,6 @@ namespace MAPeD
 		void ListBoxLayoutsClick_Event(object sender, EventArgs e)
 		{
 			m_data_manager.layouts_data_pos = ( sender as ListBox ).SelectedIndex;
-			
-			reset_entity_instance_preview();
-		}
-
-		void reset_entity_instance_preview()
-		{
-			if( m_layout_editor.mode == layout_editor.EMode.em_EditInstances )
-			{
-				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
-			
-				fill_entity_data( null );
-			}
-			else
-			if( m_layout_editor.mode == layout_editor.EMode.em_PickupTargetEntity )
-			{
-				layout_editor_set_mode( layout_editor.EMode.em_EditInstances );
-			}
-		}
-		
-		void ScreenEditModeSingleToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			bool checked_state = ( sender as ToolStripMenuItem ).Checked;
-			
-			set_menu_item_screen_edit_layout_mode( checked_state );
-			
-			RBtnScreenEditModeSingle.Checked = !checked_state;
-			RBtnScreenEditModeLayout.Checked = checked_state; 
-		}
-		
-		void ScreenEditModeLayoutToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			bool checked_state = ( sender as ToolStripMenuItem ).Checked;
-			
-			set_menu_item_screen_edit_layout_mode( !checked_state );
-			
-			RBtnScreenEditModeLayout.Checked = !checked_state; 
-			RBtnScreenEditModeSingle.Checked = checked_state;
-		}
-		
-		void set_menu_item_screen_edit_layout_mode( bool _on )
-		{
-			ScreenEditModeLayoutToolStripMenuItem.Checked = _on;
-			ScreenEditModeSingleToolStripMenuItem.Checked = !_on; 
-		}
-		
-		void enable_screen_edit_controls( bool  _on )
-		{
-			BtnCreateScreen.Enabled 		= _on;
-			BtnCopyScreen.Enabled 			= _on;
-			BtnDeleteScreen.Enabled 		= _on;
-			BtnDeleteEmptyScreens.Enabled	= _on;
-			ListBoxScreens.Enabled			= _on;
-			
-			ListBoxScreens.SelectedIndex = -1;
-		}
-		
-		void RBtnScreenEditModeSingleChanged_Event(object sender, EventArgs e)
-		{
-			bool checked_state = ( sender as RadioButton ).Checked;
-			
-			set_menu_item_screen_edit_layout_mode( !checked_state );
-			
-			enable_screen_edit_controls( true );
-			
-			m_screen_editor.mode = screen_editor.EMode.em_Single;
-			
-			ListViewScreens.Enabled = true;
-			
-			set_status_msg( "Screen edit mode: Single" );
-		}
-		
-		void RBtnScreenEditModeLayoutChanged_Event(object sender, EventArgs e)
-		{
-			bool checked_state = ( sender as RadioButton ).Checked;
-			
-			set_menu_item_screen_edit_layout_mode( checked_state );
-			
-			enable_screen_edit_controls( false );
-			
-			m_screen_editor.mode = screen_editor.EMode.em_Layout;
-			
-			ListViewScreens.SelectedItems.Clear();
-			ListViewScreens.Enabled = false;
-			m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
-			m_layout_editor.update();
-			
-			set_status_msg( "Screen edit mode: Layout" );
 		}
 		
 		void BtnLayoutMoveDownClick_Event(object sender, EventArgs e)
@@ -3609,6 +3462,11 @@ namespace MAPeD
 			LayoutShowCoordsToolStripMenuItem.Checked = CheckBoxShowCoords.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
+		void LayoutShowGridToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			LayoutShowGridToolStripMenuItem.Checked = CheckBoxShowGrid.Checked = !( sender as ToolStripMenuItem ).Checked;
+		}
+		
 		void CheckBoxShowMarksChecked_Event(object sender, EventArgs e)
 		{
 			bool show_marks = ( sender as CheckBox ).Checked;
@@ -3634,7 +3492,12 @@ namespace MAPeD
 		{
 			m_layout_editor.show_coords = LayoutShowCoordsToolStripMenuItem.Checked = ( sender as CheckBox ).Checked; 
 		}
-#endregion		
+
+		void CheckBoxShowGridChecked_Event(object sender, EventArgs e)
+		{
+			m_layout_editor.show_grid = LayoutShowGridToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
+		}
+#endregion
 // ENTITY EDITOR *************************************************************************************//
 #region entity editor
 		void TreeViewEntitiesLabelEdit_Event(object sender, NodeLabelEditEventArgs e)
@@ -3673,7 +3536,7 @@ namespace MAPeD
 				
 				if( ent != null )
 				{
-					layout_editor_set_mode( layout_editor.EMode.em_EditEntities );
+					layout_editor_set_entity_mode( layout_editor_param.CONST_SET_ENT_EDIT );
 				}
 				
 				fill_entity_data( ent );
@@ -3761,7 +3624,7 @@ namespace MAPeD
 				
 				set_status_msg( "Added entity" );
 				
-				layout_editor_set_mode( layout_editor.EMode.em_EditEntities );
+				layout_editor_set_entity_mode( layout_editor_param.CONST_SET_ENT_EDIT );
 				
 				fill_entity_data( get_selected_entity() );
 			}
@@ -3982,62 +3845,65 @@ namespace MAPeD
 
 		void CheckBoxEntitySnappingChanged_Event(object sender, EventArgs e)
 		{
-			m_layout_editor.entity_snapping = ( sender as CheckBox ).Checked;
+			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SNAPPING, ( sender as CheckBox ).Checked );
 		}
 #endregion
 // 	ENTITY PROPERTIES EDITOR *************************************************************************//
 #region entity properties editor
 		void fill_entity_data( entity_data _ent, string _inst_prop = "", string _inst_name = "", int _targ_uid = -1 )
 		{
-			LayoutEntityOrderToolStripMenuItem.Enabled = groupBoxEntityEditor.Enabled = ( _ent != null );
+			LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = groupBoxEntityEditor.Enabled = ( _ent != null );
 			
-			if( _ent != null )
+			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
 			{
-				bool edit_inst_mode = ( m_layout_editor.mode == layout_editor.EMode.em_EditInstances || m_layout_editor.mode == layout_editor.EMode.em_PickupTargetEntity );
-
-				NumericUpDownEntityUID.Value 	= _ent.uid;
-				NumericUpDownEntityWidth.Value 	= _ent.width;
-				NumericUpDownEntityHeight.Value = _ent.height;
-				NumericUpDownEntityPivotX.Value = _ent.pivot_x;
-				NumericUpDownEntityPivotY.Value = _ent.pivot_y;
-				PBoxColor.BackColor				= _ent.color;
-				TextBoxEntityProperties.Text	= _ent.properties;
-				LabelEntityName.Text			= edit_inst_mode ? _ent.name + "/" + _inst_name:_ent.name;
-				
-				TextBoxEntityInstanceProp.Text	= edit_inst_mode ? _inst_prop:_ent.inst_properties;
-				
-				TextBoxEntityProperties.BackColor = edit_inst_mode ? Color.Gainsboro:Color.FromName( "Window" );
-				
-				NumericUpDownEntityUID.Enabled 		= !edit_inst_mode;
-				NumericUpDownEntityPivotX.Enabled 	= !edit_inst_mode;
-				NumericUpDownEntityPivotY.Enabled 	= !edit_inst_mode;
-				PBoxColor.Enabled					= !edit_inst_mode;
-				TextBoxEntityProperties.Enabled		= !edit_inst_mode;
-				BtnEntityLoadBitmap.Enabled			= !edit_inst_mode;
-				
-				CheckBoxPickupTargetEntity.Enabled	= edit_inst_mode;
-				
-				NumericUpDownEntityWidth.Enabled = NumericUpDownEntityHeight.Enabled = edit_inst_mode ? false:( _ent.image_flag ? false:true );
-			}
-			else
-			{
-				NumericUpDownEntityUID.Value 	= 0;
-				NumericUpDownEntityWidth.Value 	= 1;
-				NumericUpDownEntityHeight.Value = 1;
-				NumericUpDownEntityPivotX.Value = 0;
-				NumericUpDownEntityPivotY.Value = 0;
-				PBoxColor.BackColor				= utils.CONST_COLOR_ENTITY_PIXBOX_INACTIVE;
+				if( _ent != null )
+				{
+					bool edit_inst_mode = ( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_INST_EDIT || ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_PICKUP_TARGET );
+	
+					NumericUpDownEntityUID.Value 	= _ent.uid;
+					NumericUpDownEntityWidth.Value 	= _ent.width;
+					NumericUpDownEntityHeight.Value = _ent.height;
+					NumericUpDownEntityPivotX.Value = _ent.pivot_x;
+					NumericUpDownEntityPivotY.Value = _ent.pivot_y;
+					PBoxColor.BackColor				= _ent.color;
+					TextBoxEntityProperties.Text	= _ent.properties;
+					LabelEntityName.Text			= edit_inst_mode ? _ent.name + "/" + _inst_name:_ent.name;
+					
+					TextBoxEntityInstanceProp.Text	= edit_inst_mode ? _inst_prop:_ent.inst_properties;
+					
+					TextBoxEntityProperties.BackColor = edit_inst_mode ? Color.Gainsboro:Color.FromName( "Window" );
+					
+					NumericUpDownEntityUID.Enabled 		= !edit_inst_mode;
+					NumericUpDownEntityPivotX.Enabled 	= !edit_inst_mode;
+					NumericUpDownEntityPivotY.Enabled 	= !edit_inst_mode;
+					PBoxColor.Enabled					= !edit_inst_mode;
+					TextBoxEntityProperties.Enabled		= !edit_inst_mode;
+					BtnEntityLoadBitmap.Enabled			= !edit_inst_mode;
+					
+					CheckBoxPickupTargetEntity.Enabled	= edit_inst_mode;
+					
+					NumericUpDownEntityWidth.Enabled = NumericUpDownEntityHeight.Enabled = edit_inst_mode ? false:( _ent.image_flag ? false:true );
+				}
+				else
+				{
+					NumericUpDownEntityUID.Value 	= 0;
+					NumericUpDownEntityWidth.Value 	= 1;
+					NumericUpDownEntityHeight.Value = 1;
+					NumericUpDownEntityPivotX.Value = 0;
+					NumericUpDownEntityPivotY.Value = 0;
+					PBoxColor.BackColor				= utils.CONST_COLOR_ENTITY_PIXBOX_INACTIVE;
 #if DEF_PLATFORM_16BIT
-				TextBoxEntityInstanceProp.Text	= TextBoxEntityProperties.Text	= "space separated 16-bit HEX values: 20a8 1f00 ...";
+					TextBoxEntityInstanceProp.Text	= TextBoxEntityProperties.Text	= "space separated 16-bit HEX values: 20a8 1f00 ...";
 #else
-				TextBoxEntityInstanceProp.Text	= TextBoxEntityProperties.Text	= "space separated 8-bit HEX values: 20 a8 ...";
+					TextBoxEntityInstanceProp.Text	= TextBoxEntityProperties.Text	= "space separated 8-bit HEX values: 20 a8 ...";
 #endif
-				LabelEntityName.Text			= "ENTITY NAME";
+					LabelEntityName.Text			= "ENTITY NAME";
+				}
+	
+				CheckBoxPickupTargetEntity.Text		= "Target UID: " + ( _targ_uid < 0 ? "none":_targ_uid.ToString() );
+				
+				update_entity_preview( _ent == null );
 			}
-
-			CheckBoxPickupTargetEntity.Text		= "Target UID: " + ( _targ_uid < 0 ? "none":_targ_uid.ToString() );
-			
-			update_entity_preview( _ent == null );
 		}
 
 		void PBoxColorClick(object sender, EventArgs e)
@@ -4215,7 +4081,7 @@ namespace MAPeD
 
 		void TextBoxEntityInstancePropTextKeyUp_Event(object sender, KeyEventArgs e)
 		{
-			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED );
+			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 			
 			entity_data ent = get_selected_entity();
 
@@ -4259,7 +4125,7 @@ namespace MAPeD
 		
 		void update_entity_preview( bool _force_disable = false )
 		{
-			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED );
+			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 			
 			entity_data ent = ( ent_inst != null && _force_disable == false ) ? ent_inst.base_entity:get_selected_entity();
 			
@@ -4282,7 +4148,7 @@ namespace MAPeD
 		{
 			if( tabControlLayoutTools.SelectedTab == TabEntities )
 			{
-				layout_editor_set_mode( layout_editor.EMode.em_EditInstances );
+				layout_editor_set_entity_mode( layout_editor_param.CONST_SET_ENT_INST_EDIT );
 			}
 		}
 		
@@ -4292,43 +4158,40 @@ namespace MAPeD
 			
 			if( sel_ent == null )
 			{
-				layout_editor_set_mode( layout_editor.EMode.em_EditInstances );
+				layout_editor_set_entity_mode( layout_editor_param.CONST_SET_ENT_INST_EDIT );
 			}
 			else
 			{
-				m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_ACTIVE, sel_ent );
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, sel_ent );
 				m_layout_editor.update();
 			}
 		}
 		
-		void layout_editor_set_mode( layout_editor.EMode _mode )
+		void layout_editor_set_entity_mode( uint _mode )
 		{
-			LayoutEntityOrderToolStripMenuItem.Enabled = false;
-			
 			switch( _mode )
 			{
-				case layout_editor.EMode.em_EditEntities:
+				case layout_editor_param.CONST_SET_ENT_EDIT:
 					{
-						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
-						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_ACTIVE, get_selected_entity() );
+						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
+						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, get_selected_entity() );
 						
-						m_layout_editor.mode = _mode;
+						m_layout_editor.set_param( _mode, null );
 						
 						CheckBoxPickupTargetEntity.Checked = false;
 					}
 					break;
 					
-				case layout_editor.EMode.em_EditInstances:
+				case layout_editor_param.CONST_SET_ENT_INST_EDIT:
 					{
 						ListViewScreens.SelectedItems.Clear();
 						
 						TreeViewEntities.SelectedNode = null;
 			
-						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
-						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_ACTIVE, null );
-						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_SCR_ACTIVE, -1 );
+						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
+						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, null );
 						
-						m_layout_editor.mode = _mode;
+						m_layout_editor.set_param( _mode, null );
 						
 						fill_entity_data( get_selected_entity() );
 						
@@ -4336,24 +4199,86 @@ namespace MAPeD
 					}
 					break;
 					
-				case layout_editor.EMode.em_PickupTargetEntity:
+				case layout_editor_param.CONST_SET_ENT_PICKUP_TARGET:
 					{
-						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_ACTIVE, null );
+						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, null );
 						
+						m_layout_editor.set_param( _mode, null );
+					}
+					break;
+
+				default:
+					{
+						throw new Exception( "Unknown mode detected!\n\n[MainForm.layout_editor_set_entity_mode]" );
+					}
+			}
+		}
+		
+		void layout_editor_set_mode( layout_editor_base.EMode _mode )
+		{
+			LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = false;
+
+			screensToolStripMenuItem.Enabled = layoutToolStripMenuItem.Enabled = entitiesToolStripMenuItem.Enabled = false;
+			
+			switch( _mode )
+			{
+				case layout_editor_base.EMode.em_Builder:
+					{
+						layoutToolStripMenuItem.Enabled = true;
+
+						ListViewScreens.SelectedItems.Clear();
+						
+						TreeViewEntities.SelectedNode = null;
+
 						m_layout_editor.mode = _mode;
+						
+						CheckBoxPickupTargetEntity.Checked = false;
 					}
 					break;
 					
-				case layout_editor.EMode.em_Builder:
-				case layout_editor.EMode.em_Screens:
+				case layout_editor_base.EMode.em_Painter:
 					{
-						TreeViewEntities.SelectedNode = null;
-						fill_entity_data( get_selected_entity() );
+						ListViewScreens.SelectedItems.Clear();
 						
-						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, null );
-						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_ACTIVE, null );
+						TreeViewEntities.SelectedNode = null;
+
+						m_layout_editor.mode = _mode;
+						
+						CheckBoxPickupTargetEntity.Checked = false;
+					}
+					break;
+
+				case layout_editor_base.EMode.em_Screens:
+					{
+						screensToolStripMenuItem.Enabled = true;
+						
+						ListViewScreens.SelectedItems.Clear();
+						
+						TreeViewEntities.SelectedNode = null;
+
+						m_layout_editor.mode = _mode;
+						
+						m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
+						
+						CheckBoxPickupTargetEntity.Checked = false;
+					}
+					break;
+
+				case layout_editor_base.EMode.em_Entities:
+					{
+						entitiesToolStripMenuItem.Enabled = true;
+						
+						ListViewScreens.SelectedItems.Clear();
+						
+						TreeViewEntities.SelectedNode = null;
 						
 						m_layout_editor.mode = _mode;
+						
+						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
+						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, null );
+						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_EDIT, null );
+
+						fill_entity_data( get_selected_entity() );
 						
 						CheckBoxPickupTargetEntity.Checked = false;
 					}
@@ -4370,19 +4295,24 @@ namespace MAPeD
 		{
 			TabPage curr_tab = ( sender as TabControl ).SelectedTab;
 			
-			if( curr_tab == TabEntities )
+			if( curr_tab == TabBuilder )
 			{
-				layout_editor_set_mode( layout_editor.EMode.em_EditInstances );
+				layout_editor_set_mode( layout_editor_base.EMode.em_Builder );
+			}
+			else
+			if( curr_tab == TabPainter )
+			{
+				layout_editor_set_mode( layout_editor_base.EMode.em_Painter );
 			}
 			else
 			if( curr_tab == TabScreenList )
 			{
-				layout_editor_set_mode( layout_editor.EMode.em_Screens );
+				layout_editor_set_mode( layout_editor_base.EMode.em_Screens );
 			}
 			else
-			if( curr_tab == TabBuilder )
+			if( curr_tab == TabEntities )
 			{
-				layout_editor_set_mode( layout_editor.EMode.em_Builder );
+				layout_editor_set_mode( layout_editor_base.EMode.em_Entities );
 			}
 			else
 			{
@@ -4396,7 +4326,7 @@ namespace MAPeD
 
 			entity_instance ent_inst = args.param1 as entity_instance;
 			
-			if( m_layout_editor.mode == layout_editor.EMode.em_EditInstances )
+			if( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_INST_EDIT )
 			{
 				if( ent_inst != null )
 				{
@@ -4408,9 +4338,9 @@ namespace MAPeD
 				}
 			}
 			else
-			if( m_layout_editor.mode == layout_editor.EMode.em_PickupTargetEntity )
+			if( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_PICKUP_TARGET )
 			{
-				entity_instance edit_ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor.CONST_GET_PARAM_ENT_INST_SELECTED );
+				entity_instance edit_ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 				
 				if( edit_ent_inst != null )
 				{
@@ -4419,7 +4349,7 @@ namespace MAPeD
 					if( ent_inst == null )
 					{
 						// reset selected entity if user clicked on empty space
-						m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_INST_RESET, 0 );
+						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, 0 );
 					}
 					
 					fill_entity_data( edit_ent_inst.base_entity, edit_ent_inst.properties, edit_ent_inst.name, edit_ent_inst.target_uid );
@@ -4432,27 +4362,30 @@ namespace MAPeD
 		
 		void CheckBoxPickupTargetEntityChanged_Event(object sender, EventArgs e)
 		{
-			if( ( sender as CheckBox ).Checked )
+			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
 			{
-				layout_editor_set_mode( layout_editor.EMode.em_PickupTargetEntity );
-			}
-			else
-			{
-				if( m_layout_editor.mode == layout_editor.EMode.em_PickupTargetEntity )
+				if( ( sender as CheckBox ).Checked )
 				{
-					m_layout_editor.mode = layout_editor.EMode.em_EditInstances;
+					layout_editor_set_entity_mode( layout_editor_param.CONST_SET_ENT_PICKUP_TARGET );
 				}
-			}			
+				else
+				{
+					if( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_PICKUP_TARGET )
+					{
+						layout_editor_set_entity_mode( layout_editor_param.CONST_SET_ENT_INST_EDIT );
+					}
+				}
+			}
 		}
 
 		void LayoutBringFrontToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_SEL_BRING_FRONT, 0 );
+			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SEL_BRING_FRONT, 0 );
 		}
 		
 		void LayoutSendBackToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			m_layout_editor.set_param( layout_editor.CONST_SET_PARAM_ENT_SEL_SEND_BACK, 0 );
+			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SEL_SEND_BACK, 0 );
 		}
 #endregion
 // 	PALETTE ******************************************************************************************//
@@ -4711,7 +4644,8 @@ namespace MAPeD
 						
 						GrpBoxTileEditor.Enabled = true;
 						
-						ScreenDataTypeLabel.Text = "Tiles4x4";
+						GrpBoxPainter.Text = "Data Type: Tiles4x4";
+						clear_active_tile_img();
 						
 						m_tile_list_manager.visible( tile_list.EType.t_Tiles, true );
 						m_tile_list_manager.reset( tile_list.EType.t_Tiles );
@@ -4727,7 +4661,8 @@ namespace MAPeD
 						
 						GrpBoxTileEditor.Enabled = false;
 						
-						ScreenDataTypeLabel.Text = "Blocks2x2";
+						GrpBoxPainter.Text = "Data Type: Blocks2x2";
+						clear_active_tile_img();
 						
 						m_tiles_processor.tile_select_event( -1, null );
 						
@@ -4736,19 +4671,17 @@ namespace MAPeD
 					break;
 			}
 			
-			m_screen_editor.set_screen_data_type( _type );
 			m_tiles_palette_form.set_screen_data_type( _type );
 			m_optimization_form.set_screen_data_type( _type );
 			m_layout_editor.set_screen_data_type( _type );
+			m_layout_editor.update();
 			
 			m_patterns_manager_form.set_data( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
 			m_patterns_manager_form.set_screen_data_type( _type );
-			
-			RBtnScreenEditModeSingle.Checked = true;
-			
+
 			return true;
 		}
 		
-#endregion				
+#endregion
 	}
 }

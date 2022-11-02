@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 26.03.2021
  * Time: 12:02
  */
@@ -614,18 +614,6 @@ namespace MAPeD
 			else
 			{
 				return utils.CONST_SCREEN_BLOCKS_SIZE;
-			}
-		}
-		
-		public static screen_editor.EFillMode get_screen_fill_mode_uni( data_sets_manager.EScreenDataType _type )
-		{
-			if( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-			{
-				return screen_editor.EFillMode.efm_Tile;
-			}
-			else
-			{
-				return screen_editor.EFillMode.efm_Block;
 			}
 		}
 	}
