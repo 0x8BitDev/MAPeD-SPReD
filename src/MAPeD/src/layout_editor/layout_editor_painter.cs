@@ -112,9 +112,11 @@ namespace MAPeD
 				{
 					m_tile_x = -1;
 					m_tile_y = -1;
+					
+					return false;
 				}
 				
-				return false;
+				return true;
 			}
 			else
 			{
