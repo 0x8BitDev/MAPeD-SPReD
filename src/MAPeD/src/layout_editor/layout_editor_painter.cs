@@ -51,8 +51,8 @@ namespace MAPeD
 		
 		private readonly HashSet< int >	m_changed_screens		= null;
 		
-		private int			m_tile_x			= -1;
-		private int			m_tile_y			= -1;
+		private int			m_tile_x;
+		private int			m_tile_y;
 		
 		private int			m_ghost_tile_block_x	= -1;
 		private int			m_ghost_tile_block_y	= -1;
@@ -74,6 +74,8 @@ namespace MAPeD
 			m_block_tiles_cache = new List< int >( platform_data.get_max_tiles_cnt() );
 			
 			m_changed_screens	= new HashSet< int >();
+			
+			hide_tile();
 		}
 		
 		public override void reset()
@@ -87,11 +89,7 @@ namespace MAPeD
 			{
 				m_changed_screens.Clear();
 				
-				if( put_tile( e.X, e.Y ) )
-				{				
-					m_tile_x = -1;
-					m_tile_y = -1;
-				}
+				put_tile( e.X, e.Y );
 			}
 		}
 		
@@ -108,12 +106,19 @@ namespace MAPeD
 		{
 			if( m_shared.pix_box_captured() )
 			{
-				if( put_tile( e.X, e.Y ) )
+				if( e.Button == MouseButtons.Left )
 				{
-					m_tile_x = -1;
-					m_tile_y = -1;
-					
-					return false;
+					if( put_tile( e.X, e.Y ) )
+					{
+						hide_tile();
+						
+						return false;
+					}
+				
+					if( m_active_tile_id >= 0 )
+					{
+						return false;
+					}
 				}
 				
 				return true;
@@ -147,8 +152,7 @@ namespace MAPeD
 		{
 			if( m_active_tile_id >= 0 )
 			{
-				m_tile_x = -10000;
-				m_tile_y = -10000;
+				hide_tile();
 				
 				update_changed_screens();
 				
@@ -158,8 +162,7 @@ namespace MAPeD
 		
 		public override void mouse_wheel( object sender, EventArgs e )
 		{
-			m_tile_x = -10000;
-			m_tile_y = -10000;
+			hide_tile();
 		}
 		
 		private void update_changed_screens()
@@ -176,6 +179,12 @@ namespace MAPeD
 			}
 			
 			m_changed_screens.Clear();
+		}
+		
+		private void hide_tile()
+		{
+			m_tile_x = -10000;
+			m_tile_y = -10000;
 		}
 		
 		private int mode_tiles4x4_get_tile4x4_ind_by_pos( int _x, int _y, ref int _scr_tile_pos_x, ref int _scr_tile_pos_y, ref int _block_ind )
@@ -213,13 +222,16 @@ namespace MAPeD
 			{
 				int scr_glob_ind = m_shared.m_layout.get_data( m_shared.get_sel_scr_pos_x(), m_shared.get_sel_scr_pos_y() ).m_scr_ind;
 				
-				if( m_shared.get_bank_ind_by_global_screen_ind( scr_glob_ind ) == m_curr_CHR_bank_id )
+				if( scr_glob_ind != layout_data.CONST_EMPTY_CELL_ID )
 				{
-					return scr_glob_ind;
-				}
-				else
-				{
-					m_shared.m_sys_msg = "DATA FROM ANOTHER CHR BANK";
+					if( m_shared.get_bank_ind_by_global_screen_ind( scr_glob_ind ) == m_curr_CHR_bank_id )
+					{
+						return scr_glob_ind;
+					}
+					else
+					{
+						m_shared.m_sys_msg = "DATA FROM ANOTHER CHR BANK";
+					}
 				}
 			}
 			
@@ -228,8 +240,8 @@ namespace MAPeD
 		
 		private bool get_tile_xy( int _x, int _y, out int _tile_x, out int _tile_y )
 		{
-			_tile_x = -1;
-			_tile_y = -1;
+			_tile_x = -10000;
+			_tile_y = -10000;
 			
 			if( get_sel_screen_ind() >= 0 )
 			{
@@ -601,8 +613,7 @@ namespace MAPeD
 						
 						m_tile_mode	= ETileMode.etm_Tile;
 						
-						m_tile_x = -1;
-						m_tile_y = -1;
+						hide_tile();
 					}
 					break;
 
@@ -612,8 +623,7 @@ namespace MAPeD
 						
 						m_tile_mode	= ETileMode.etm_Block;
 
-						m_tile_x = -1;
-						m_tile_y = -1;
+						hide_tile();
 						
 						if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 						{
