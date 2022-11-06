@@ -1507,6 +1507,10 @@ namespace MAPeD
 			{
 				update_screens( false );
 			}
+			else
+			{
+				m_layout_editor.update();
+			}
 			
 			if( _update_tile_processor_gfx )
 			{
@@ -3294,11 +3298,6 @@ namespace MAPeD
 		void MainForm_ResetSelectedScreen(object sender, EventArgs e)
 		{
 			ListViewScreens.SelectedItems.Clear();
-		
-			m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, layout_data.CONST_EMPTY_CELL_ID );
-			m_layout_editor.update();
-
-			set_status_msg( "" );
 		}
 		
 		void BtnCreateLayoutWxHClick_Event(object sender, EventArgs e)
@@ -4188,8 +4187,6 @@ namespace MAPeD
 					
 				case layout_editor_param.CONST_SET_ENT_INST_EDIT:
 					{
-						ListViewScreens.SelectedItems.Clear();
-						
 						TreeViewEntities.SelectedNode = null;
 			
 						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
@@ -4255,8 +4252,6 @@ namespace MAPeD
 				screensToolStripMenuItem.Enabled = true;
 				
 				m_layout_editor.mode = layout_editor_base.EMode.em_Screens;
-				
-				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 			}
 			else
 			if( curr_tab == TabEntities )
@@ -4638,7 +4633,6 @@ namespace MAPeD
 			m_tiles_palette_form.set_screen_data_type( _type );
 			m_optimization_form.set_screen_data_type( _type );
 			m_layout_editor.set_screen_data_type( _type );
-			m_layout_editor.update();
 			
 			return true;
 		}

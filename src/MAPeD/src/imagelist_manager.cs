@@ -458,6 +458,7 @@ namespace MAPeD
 			// clear items
 			{
 				m_scr_list.clear();
+				m_listview_screens.SelectedIndices.Clear();
 				m_listview_screens.Items.Clear();
 			}
 			
@@ -497,6 +498,7 @@ namespace MAPeD
 		{
 			m_listview_screens.BeginUpdate();
 			
+			m_listview_screens.SelectedIndices.Clear();
 			m_listview_screens.Items.Clear();
 			
 			tiles_data 		data;
