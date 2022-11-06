@@ -39,9 +39,13 @@ namespace MAPeD
 		public const uint	CONST_SET_PNT_UPD_ACTIVE_TILE		= 0x001000;
 		public const uint	CONST_SET_PNT_UPD_ACTIVE_BLOCK		= 0x002000;
 		public const uint	CONST_SET_PNT_SUBSCR_DATA_MNGR		= 0x004000;
+
+		public const uint	CONST_SET_PTTRN_CREATE_BEGIN		= 0x008000;
+		public const uint	CONST_SET_PTTRN_PLACING				= 0x010000;
+		public const uint	CONST_SET_PTTRN_IDLE_STATE			= 0x020000;
 		
-		public const uint	CONST_SET_BASE_MAP_SCALE_X1			= 0x008000;
-		public const uint	CONST_SET_BASE_MAP_SCALE_X2			= 0x010000;
+		public const uint	CONST_SET_BASE_MAP_SCALE_X1			= 0x040000;
+		public const uint	CONST_SET_BASE_MAP_SCALE_X2			= 0x080000;
 
 		// get
 		public const uint	CONST_GET_ENT_INST_SELECTED			= 0x01;
@@ -53,6 +57,9 @@ namespace MAPeD
 		public const uint	CONST_SUBSCR_SCR_RESET_SELECTED		= 0x02;
 		
 		public const uint	CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE	= 0x04;
+		
+		public const uint	CONST_SUBSCR_PTTRN_CREATE_END		= 0x08;
+		public const uint	CONST_SUBSCR_PTTRN_CANCEL_PLACING	= 0x10;
 	}
 	
 	/// <summary>
@@ -217,6 +224,7 @@ namespace MAPeD
 			em_Painter,
 			em_Screens,
 			em_Entities,
+			em_Patterns,
 			em_MAX,
 			em_Unknown,
 		}
@@ -314,7 +322,8 @@ namespace MAPeD
 					new layout_editor_builder( "builder", m_shared, this ),
 					new layout_editor_painter( "painter", m_shared, this ),
 					new layout_editor_screen_list( "screen list", m_shared, this ), 
-					new layout_editor_entities( "entities", m_shared, this )
+					new layout_editor_entities( "entities", m_shared, this ),
+					new layout_editor_patterns( "patterns", m_shared, this )
 				};
 			}
 			

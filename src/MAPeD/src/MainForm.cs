@@ -43,9 +43,13 @@ namespace MAPeD
 		private readonly layout_editor_base	m_layout_editor		= null;
 		
 		private readonly image_preview		m_tile_preview		= null;
+		private readonly image_preview		m_pattern_preview	= null;
+		
+		private int	m_pattern_scale_pow		= 0;
+		private readonly Bitmap		m_pattern_image	= null;
+		private readonly Graphics	m_pattern_gfx	= null;
 		
 		private readonly tiles_palette_form		m_tiles_palette_form		= null;
-		private readonly patterns_manager_form	m_patterns_manager_form		= null;
 		private readonly optimization_form		m_optimization_form			= null;
 		private readonly object_name_form		m_object_name_form			= null;
 		private readonly import_tiles_form		m_import_tiles_form			= null;
@@ -150,6 +154,8 @@ namespace MAPeD
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SUBSCR_ENT_INST_SELECT, MainForm_EntityInstanceSelected );
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SUBSCR_SCR_RESET_SELECTED, MainForm_ResetSelectedScreen );
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE, update_tile_image );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_CREATE_END, MainForm_create_pattern_end );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_CANCEL_PLACING, MainForm_cancel_pattern_placing );
 				
 				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_SUBSCR_DATA_MNGR, m_data_manager );
 				
@@ -160,6 +166,21 @@ namespace MAPeD
 				m_layout_editor.mode = layout_editor_base.EMode.em_Builder;
 				
 				m_tile_preview = new image_preview( PBoxActiveTile );
+			}
+			
+			// patterns manager
+			{
+				m_pattern_preview = new image_preview( PBoxPatternPreview );
+				
+				PBoxPatternPreview.MouseWheel += new MouseEventHandler( PatternsMngr_MouseWheel );
+				PBoxPatternPreview.MouseEnter += new EventHandler( PatternsMngr_MouseEnter );
+				PBoxPatternPreview.MouseLeave += new EventHandler( PatternsMngr_MouseLeave );
+				
+				// create graphics for drawing patterns
+				int scr_tile_size = utils.CONST_SCREEN_TILES_SIZE >> 1;
+				
+				m_pattern_image	= new Bitmap( scr_tile_size * platform_data.get_screen_tiles_width(), scr_tile_size * platform_data.get_screen_tiles_height(), PixelFormat.Format32bppPArgb );
+				m_pattern_gfx	= Graphics.FromImage( m_pattern_image );
 			}
 			
 			m_data_manager.SetEntitiesData += new EventHandler( TreeViewEntities_update_data );
@@ -189,12 +210,6 @@ namespace MAPeD
 			m_tiles_palette_form.TileSelected 		+= new EventHandler( MainForm_TileSelected );
 			m_tiles_palette_form.BlockSelected 		+= new EventHandler( MainForm_BlockSelected );
 			m_tiles_palette_form.ResetActiveTile 	+= new EventHandler( BtnResetTileClick_Event );
-			
-			m_patterns_manager_form = new patterns_manager_form( m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list() );
-			m_patterns_manager_form.PatternsManagerClosed 	+= new EventHandler( MainForm_PatternsManagerClosed );
-			
-//!!!			m_patterns_manager_form.subscribe_event( m_screen_editor );
-//!!!			m_screen_editor.subscribe_event( m_patterns_manager_form );
 			
 			m_optimization_form = new optimization_form( m_data_manager, progress_bar_show );
 			m_optimization_form.UpdateGraphics += new EventHandler( MainForm_UpdateGraphicsAfterOptimization );
@@ -227,7 +242,6 @@ namespace MAPeD
 																new SToolTipData( BtnOptimization, "Delete unused screens\\tiles\\blocks\\CHRs" ),
 																new SToolTipData( CheckBoxTileEditorLock, "Enable\\disable tile editing" ),
 																new SToolTipData( BtnTilesBlocks, "Arrays of tiles and blocks to build screens" ),
-																new SToolTipData( BtnPatterns, "Tiles patterns manager" ),
 																new SToolTipData( Palette0, "Shift+1 / Ctrl+1,2,3,4 to select a color" ),
 																new SToolTipData( Palette1, "Shift+2 / Ctrl+1,2,3,4 to select a color" ),
 #if DEF_ZX
@@ -576,7 +590,6 @@ namespace MAPeD
 			}
 			
 			m_tiles_palette_form.enable( _on );
-			m_patterns_manager_form.enable( _on );
 			
 			tabControlLayoutTools.Enabled = _on;
 			
@@ -610,6 +623,11 @@ namespace MAPeD
 		void update_screen_size_label()
 		{
 			LabelScreenResolution.Text = "[" + ( ( int )NumericUpDownScrBlocksWidth.Value << 4 ).ToString() + "x" + ( ( int )NumericUpDownScrBlocksHeight.Value << 4 ).ToString() + "]";
+		}
+		
+		tiles_data get_curr_tiles_data()
+		{
+			return m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 		}
 		
 		private void reset()
@@ -653,7 +671,6 @@ namespace MAPeD
 			TilesLockEditorToolStripMenuItem.Checked = CheckBoxTileEditorLock.Checked = true;
 
 			m_tiles_palette_form.reset();
-			m_patterns_manager_form.reset();
 			
 			update_graphics( false );
 			
@@ -866,7 +883,7 @@ namespace MAPeD
 
 						// update tiles and screens
 						{
-							tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+							tiles_data data = get_curr_tiles_data();
 							
 							m_imagelist_manager.update_blocks( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );
 							m_imagelist_manager.update_tiles( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated blocks gfx to speed up drawing
@@ -1158,7 +1175,7 @@ namespace MAPeD
 								
 								while( true )
 								{
-									added_CHRs += project_data_converter_provider.get_converter().merge_CHR_bin( br, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+									added_CHRs += project_data_converter_provider.get_converter().merge_CHR_bin( br, get_curr_tiles_data() );
 
 									if( br.BaseStream.Position + platform_data.get_native_CHR_size_bytes() <= br.BaseStream.Length )
 									{
@@ -1282,7 +1299,7 @@ namespace MAPeD
 							{
 								update_graphics( false );
 
-								m_export_active_tile_block_set_form.export( filename, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list() );
+								m_export_active_tile_block_set_form.export( filename, get_curr_tiles_data(), m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list() );
 							}
 						}
 						break;
@@ -1447,11 +1464,13 @@ namespace MAPeD
 			
 			// update palettes
 			{
-				update_palettes_arr( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), false );
+				update_palettes_arr( get_curr_tiles_data(), false );
 				
-				CBoxPalettes.Tag = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ).palettes_arr;
+				CBoxPalettes.Tag = get_curr_tiles_data().palettes_arr;
 				CBoxPalettes.SelectedIndex = 0;
 			}
+
+			patterns_manager_update_data();
 			
 			update_graphics( false );
 			
@@ -1460,8 +1479,6 @@ namespace MAPeD
 			clear_active_tile_img();
 			
 			update_screens_by_bank_id( true, false );
-			
-			m_patterns_manager_form.set_data( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
 		}
 
 		void BtnUpdateGFXClick_Event(object sender, EventArgs e)
@@ -1479,7 +1496,7 @@ namespace MAPeD
 		
 		private void update_graphics( bool _update_tile_processor_gfx )
 		{
-			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			tiles_data data = get_curr_tiles_data();
 			
 			m_imagelist_manager.update_blocks( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );
 			m_imagelist_manager.update_tiles( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );	// called after update_blocks, because it uses updated blocks gfx to speed up drawing
@@ -1497,10 +1514,10 @@ namespace MAPeD
 			}
 			
 			m_tiles_palette_form.update();
-			m_patterns_manager_form.update();
+			patterns_manager_update_preview();
 			
 			enable_update_gfx_btn( false );
-//			enable_update_screens_btn( false );			
+//			enable_update_screens_btn( false );
 		}
 		
 		void BtnCHRBankNextPageClick_Event(object sender, EventArgs e)
@@ -1727,7 +1744,7 @@ namespace MAPeD
 		{
 			if( _send_event && _id >= 0 )
 			{
-				m_tiles_processor.block_select_event( _id, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+				m_tiles_processor.block_select_event( _id, get_curr_tiles_data() );
 			}
 
 			// update an object index
@@ -1752,7 +1769,7 @@ namespace MAPeD
 		{
 			if( _id >= 0 )
 			{
-				m_tiles_processor.tile_select_event( _id, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+				m_tiles_processor.tile_select_event( _id, get_curr_tiles_data() );
 			
 				update_active_tile_img( _id );
 			}
@@ -1797,11 +1814,11 @@ namespace MAPeD
 			
 			if( sel_block_id >= 0 )
 			{
-				m_imagelist_manager.update_block( sel_block_id, m_view_type, m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ), PropertyPerBlockToolStripMenuItem.Checked, null, null, m_data_manager.screen_data_type );
+				m_imagelist_manager.update_block( sel_block_id, m_view_type, get_curr_tiles_data(), PropertyPerBlockToolStripMenuItem.Checked, null, null, m_data_manager.screen_data_type );
 				m_tile_list_manager.update_tile( tile_list.EType.t_Blocks, sel_block_id );
 				
 				update_active_block_img( sel_block_id );
-				m_patterns_manager_form.update();
+				patterns_manager_update_preview();
 			}
 		}
 		
@@ -1939,7 +1956,7 @@ namespace MAPeD
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
-				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+				tiles_data data = get_curr_tiles_data();
 
 				int sel_ind = m_tiles_processor.CHR_bank_get_selected_CHR_ind();
 				
@@ -1970,7 +1987,7 @@ namespace MAPeD
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
-				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+				tiles_data data = get_curr_tiles_data();
 
 				int sel_ind = m_tiles_processor.CHR_bank_get_selected_CHR_ind();
 				
@@ -2034,7 +2051,7 @@ namespace MAPeD
 		{
 			if( _sel_ind >= 0 && m_block_copy_item_ind >= 0 )
 			{
-				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+				tiles_data data = get_curr_tiles_data();
 				
 				uint 	block_val;
 				int 	chr_ind;
@@ -2091,7 +2108,7 @@ namespace MAPeD
 					}
 					
 					update_active_block_img( _sel_ind );
-					m_patterns_manager_form.update();
+					patterns_manager_update_preview();
 					m_tiles_processor.update_graphics();
 					
 					if( CheckBoxScreensAutoUpdate.Checked )
@@ -2122,7 +2139,7 @@ namespace MAPeD
 		{
 			if( _sel_ind >= 0 )
 			{
-				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+				tiles_data data = get_curr_tiles_data();
 				
 				uint 	block_val;
 				int 	chr_ind;
@@ -2167,7 +2184,7 @@ namespace MAPeD
 			{
 				if( message_box( "Are you sure?\n\nWARNING: ALL the blocks properties will be set to zero!", "Clear Blocks Properties", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
-					tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+					tiles_data data = get_curr_tiles_data();
 					
 					int ff_block = data.get_first_free_block_id( false );
 					
@@ -2188,7 +2205,7 @@ namespace MAPeD
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
-				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+				tiles_data data = get_curr_tiles_data();
 
 				int sel_ind = get_context_menu_sender_index( sender );
 				
@@ -2224,7 +2241,7 @@ namespace MAPeD
 			{
 				if( m_data_manager.tiles_data_pos >= 0 )
 				{
-					tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+					tiles_data data = get_curr_tiles_data();
 	
 					int sel_ind = get_context_menu_sender_index( sender );
 					
@@ -2268,7 +2285,7 @@ namespace MAPeD
 			
 			if( sel_ind >= 0 && m_tile_copy_item_ind >= 0 )
 			{
-				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+				tiles_data data = get_curr_tiles_data();
 				
 				for( int i = 0; i < utils.CONST_TILE_SIZE; i++ )
 				{
@@ -2286,7 +2303,7 @@ namespace MAPeD
 					m_tile_list_manager.copy_tile( tile_list.EType.t_Tiles, m_tile_copy_item_ind, sel_ind );
 					
 					update_active_tile_img( sel_ind );
-					m_patterns_manager_form.update();
+					patterns_manager_update_preview();
 					m_tiles_processor.update_graphics();
 					
 					if( CheckBoxScreensAutoUpdate.Checked )
@@ -2305,7 +2322,7 @@ namespace MAPeD
 				
 				if( sel_ind >= 0 )
 				{
-					tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+					tiles_data data = get_curr_tiles_data();
 
 					data.clear_tile( sel_ind );
 					
@@ -2323,7 +2340,7 @@ namespace MAPeD
 		{
 			if( message_box( "Are you sure?\n\nWARNING: ALL the blocks references for all the tiles will be set to zero!", "Clear All Tiles", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
-				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+				tiles_data data = get_curr_tiles_data();
 				
 				data.clear_tiles();
 				
@@ -2340,7 +2357,7 @@ namespace MAPeD
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
-				tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+				tiles_data data = get_curr_tiles_data();
 
 				int sel_ind = get_context_menu_sender_index( sender );
 				
@@ -2366,7 +2383,7 @@ namespace MAPeD
 			{
 				if( m_data_manager.tiles_data_pos >= 0 )
 				{
-					tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+					tiles_data data = get_curr_tiles_data();
 	
 					int sel_ind = get_context_menu_sender_index( sender );
 					
@@ -2483,19 +2500,6 @@ namespace MAPeD
 			{
 				m_layout_editor.set_param( layout_editor_param.CONST_SET_BASE_MAP_SCALE_X2, null );
 			}
-		}
-		
-		void BtnPatternsClick_Event(object sender, EventArgs e)
-		{
-			m_patterns_manager_form.visible( true );
-			m_patterns_manager_form.update();
-			
-			BtnPatterns.Enabled = false;
-		}
-
-		void MainForm_PatternsManagerClosed(object sender, EventArgs e)
-		{
-			BtnPatterns.Enabled = true;
 		}
 		
 		void BtnTilesBlocksClick_Event(object sender, EventArgs e)
@@ -2708,7 +2712,7 @@ namespace MAPeD
 		{
 			int res = 0;
 
-			tiles_data data	= m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			tiles_data data	= get_curr_tiles_data();
 
 			int scr_n;
 			
@@ -2863,7 +2867,7 @@ namespace MAPeD
 				ListBoxLayouts.Items.Add( m_data_manager.layouts_data_pos );
 				ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_pos;
 				
-				palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+				palette_group.Instance.set_palette( get_curr_tiles_data() );
 				
 				m_data_manager.scr_data_pos = m_data_manager.scr_data_cnt - 1;
 				
@@ -2881,7 +2885,7 @@ namespace MAPeD
 			{
 				m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, _scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 				
-				palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+				palette_group.Instance.set_palette( get_curr_tiles_data() );
 				
 				m_data_manager.insert_screen_into_layouts( scr_global_ind );
 				
@@ -2975,7 +2979,7 @@ namespace MAPeD
 			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), CBoxCHRBanks.SelectedIndex, m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 			
 			// renew a palette
-			palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+			palette_group.Instance.set_palette( get_curr_tiles_data() );
 			
 			LabelLayoutEditorCHRBankID.Text = CheckBoxLayoutEditorAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
 		
@@ -3425,7 +3429,7 @@ namespace MAPeD
 			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, _update_images, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 			
 			// renew a palette
-			palette_group.Instance.set_palette( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
+			palette_group.Instance.set_palette( get_curr_tiles_data() );
 			
 			LabelLayoutEditorCHRBankID.Text = CheckBoxLayoutEditorAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
 		
@@ -4214,105 +4218,65 @@ namespace MAPeD
 			}
 		}
 		
-		void layout_editor_set_mode( layout_editor_base.EMode _mode )
-		{
-			LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = false;
-
-			screensToolStripMenuItem.Enabled = layoutToolStripMenuItem.Enabled = entitiesToolStripMenuItem.Enabled = false;
-			
-			switch( _mode )
-			{
-				case layout_editor_base.EMode.em_Builder:
-					{
-						layoutToolStripMenuItem.Enabled = true;
-
-						ListViewScreens.SelectedItems.Clear();
-						
-						TreeViewEntities.SelectedNode = null;
-
-						m_layout_editor.mode = _mode;
-						
-						CheckBoxPickupTargetEntity.Checked = false;
-					}
-					break;
-					
-				case layout_editor_base.EMode.em_Painter:
-					{
-						ListViewScreens.SelectedItems.Clear();
-						
-						TreeViewEntities.SelectedNode = null;
-
-						m_layout_editor.mode = _mode;
-						
-						CheckBoxPickupTargetEntity.Checked = false;
-					}
-					break;
-
-				case layout_editor_base.EMode.em_Screens:
-					{
-						screensToolStripMenuItem.Enabled = true;
-						
-						ListViewScreens.SelectedItems.Clear();
-						
-						TreeViewEntities.SelectedNode = null;
-
-						m_layout_editor.mode = _mode;
-						
-						m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
-						
-						CheckBoxPickupTargetEntity.Checked = false;
-					}
-					break;
-
-				case layout_editor_base.EMode.em_Entities:
-					{
-						entitiesToolStripMenuItem.Enabled = true;
-						
-						ListViewScreens.SelectedItems.Clear();
-						
-						TreeViewEntities.SelectedNode = null;
-						
-						m_layout_editor.mode = _mode;
-						
-						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
-						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, null );
-						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_EDIT, null );
-
-						fill_entity_data( get_selected_entity() );
-						
-						CheckBoxPickupTargetEntity.Checked = false;
-					}
-					break;
-					
-				default:
-					{
-						throw new Exception( "Unknown mode detected!\n\n[MainForm.layout_editor_set_mode]" );
-					}
-			}
-		}
-		
 		void TabControlLayoutToolsSelected_Event(object sender, TabControlEventArgs e)
 		{
 			TabPage curr_tab = ( sender as TabControl ).SelectedTab;
 			
+			// reset common states
+			{
+				LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = false;
+				
+				screensToolStripMenuItem.Enabled = layoutToolStripMenuItem.Enabled = entitiesToolStripMenuItem.Enabled = false;
+				
+				ListViewScreens.SelectedItems.Clear();
+				
+				TreeViewEntities.SelectedNode = null;
+				TreeViewPatterns.SelectedNode = null;
+				
+				CheckBoxPickupTargetEntity.Checked = false;
+				
+				patterns_manager_reset_state();
+			}
+			
 			if( curr_tab == TabBuilder )
 			{
-				layout_editor_set_mode( layout_editor_base.EMode.em_Builder );
+				layoutToolStripMenuItem.Enabled = true;
+
+				m_layout_editor.mode = layout_editor_base.EMode.em_Builder;
 			}
 			else
 			if( curr_tab == TabPainter )
 			{
-				layout_editor_set_mode( layout_editor_base.EMode.em_Painter );
+				m_layout_editor.mode = layout_editor_base.EMode.em_Painter;
 			}
 			else
 			if( curr_tab == TabScreenList )
 			{
-				layout_editor_set_mode( layout_editor_base.EMode.em_Screens );
+				screensToolStripMenuItem.Enabled = true;
+				
+				m_layout_editor.mode = layout_editor_base.EMode.em_Screens;
+				
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 			}
 			else
 			if( curr_tab == TabEntities )
 			{
-				layout_editor_set_mode( layout_editor_base.EMode.em_Entities );
+				entitiesToolStripMenuItem.Enabled = true;
+				
+				m_layout_editor.mode = layout_editor_base.EMode.em_Entities;
+				
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, null );
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_EDIT, null );
+
+				fill_entity_data( get_selected_entity() );
+			}
+			else
+			if( curr_tab == TabPatterns )
+			{
+				patternsToolStripMenuItem.Enabled = true;
+				
+				m_layout_editor.mode = layout_editor_base.EMode.em_Patterns;
 			}
 			else
 			{
@@ -4402,7 +4366,7 @@ namespace MAPeD
 #if !DEF_NES
 			if( m_data_manager.tiles_data_cnt > 0 )
 			{
-				if( m_swap_colors_form.ShowDialog( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) ) == DialogResult.OK )
+				if( m_swap_colors_form.ShowDialog( get_curr_tiles_data() ) == DialogResult.OK )
 				{
 					BtnUpdateGFXClick_Event( null, null );
 					
@@ -4414,7 +4378,7 @@ namespace MAPeD
 		
 		void CBoxPalettesChanged_Event(object sender, EventArgs e)
 		{
-			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			tiles_data data = get_curr_tiles_data();
 			data.palette_pos = CBoxPalettes.SelectedIndex; 
 			
 			update_palette_related_data( data );
@@ -4424,7 +4388,7 @@ namespace MAPeD
 		
 		void BtnPltCopyClick_Event(object sender, EventArgs e)
 		{
-			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			tiles_data data = get_curr_tiles_data();
 			
 			if( data != null )
 			{
@@ -4463,7 +4427,7 @@ namespace MAPeD
 		
 		void BtnPltDeleteClick_Event(object sender, EventArgs e)
 		{
-			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			tiles_data data = get_curr_tiles_data();
 			
 			if( data != null )
 			{
@@ -4517,7 +4481,7 @@ namespace MAPeD
 #if DEF_PALETTE16_PER_CHR
 		void update_palette_list_pos( object sender, EventArgs e )
 		{
-			tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
+			tiles_data data = get_curr_tiles_data();
 			
 			if( data != null )
 			{
@@ -4676,12 +4640,596 @@ namespace MAPeD
 			m_layout_editor.set_screen_data_type( _type );
 			m_layout_editor.update();
 			
-			m_patterns_manager_form.set_data( m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos ) );
-			m_patterns_manager_form.set_screen_data_type( _type );
-
 			return true;
 		}
 		
+#endregion
+//	PATTERNS MANAGER *********************************************************************************//
+#region patterns manager
+		void patterns_manager_reset_active_pattern()
+		{
+			TreeViewPatterns.SelectedNode = TreeViewPatterns.TopNode;
+		}
+		
+		void patterns_manager_update_data()
+		{
+			m_pattern_scale_pow = 0;
+			
+			patterns_manager_reset_state();
+			
+			patterns_manager_update_tree_view();
+			
+			patterns_manager_update_preview();
+		}
+
+		void patterns_manager_reset_state()
+		{
+			CheckBoxPatternAdd.Checked = false;
+			patterns_manager_enable( true );
+		}
+		
+		void patterns_manager_enable( bool _on )
+		{
+			TreeViewPatterns.Enabled		= _on;
+			
+			BtnPatternGroupAdd.Enabled		= _on;
+			BtnPatternGroupDelete.Enabled	= _on;
+			
+			CheckBoxPatternAdd.Enabled		= _on;
+			BtnPatternDelete.Enabled 		= _on;
+			
+			BtnPatternRename.Enabled		= _on;
+			
+			BtnPatternReset.Enabled			= _on;
+			
+			patternsToolStripMenuItem.Enabled	= _on;
+		}
+
+		void patterns_manager_update_tree_view()
+		{
+			TreeViewPatterns.BeginUpdate();
+			{
+				TreeViewPatterns.Nodes.Clear();
+			}
+			TreeViewPatterns.EndUpdate();
+
+			int ptrns_cnt = 0;
+			
+			tiles_data data = get_curr_tiles_data();
+			
+			if( data != null )
+			{
+				foreach( var key in data.patterns_data.Keys )
+				{ 
+					patterns_manager_pattern_group_add( key, false );
+					
+					( data.patterns_data[ key ] as List< pattern_data > ).ForEach( delegate( pattern_data _pattern ) { ++ptrns_cnt; patterns_manager_pattern_add( key, _pattern, false ); } );
+				}
+			}
+			
+			// on Linux TreeViewPatterns.SelectedNode is not reset when clearing nodes
+			if( ptrns_cnt > 0 )
+			{
+				patterns_manager_reset_active_pattern();
+			}
+			else
+			{
+				TreeViewPatterns.SelectedNode = null;
+			}
+		}
+		
+		bool patterns_manager_pattern_rename( string _grp_name, string _old_name, string _new_name )
+		{
+			tiles_data data = get_curr_tiles_data();
+			
+			List< pattern_data > patterns = data.patterns_data[ _grp_name ];
+			
+			if( patterns != null )
+			{
+				patterns.ForEach( delegate( pattern_data _pattern ) { if( _pattern.name == _old_name ) { _pattern.name = _new_name; return; } } );
+				
+				return true;
+			}
+			
+			return false;
+		}
+		
+		bool patterns_manager_pattern_add( string _grp_name, pattern_data _pattern, bool _add_to_data_bank )
+		{
+			TreeNode[] nodes_arr = TreeViewPatterns.Nodes.Find( _pattern.name, true );
+
+			if( nodes_arr.Length > 0 )
+			{
+				MainForm.message_box( "A pattern with the same name (" + _pattern.name +  ") is already exist!", "Add Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				
+				return false;
+			}
+			
+			nodes_arr = TreeViewPatterns.Nodes.Find( _grp_name, true );
+			
+			if( nodes_arr.Length > 0 )
+			{
+				if( _add_to_data_bank )
+				{
+					List< pattern_data > patterns = get_curr_tiles_data().patterns_data[ _grp_name ];
+					
+					if( patterns != null )
+					{
+						patterns.Add( _pattern );
+					}
+				}
+				
+				TreeNode node = new TreeNode( _pattern.name );
+				node.Name = _pattern.name;
+				node.ContextMenuStrip = ContextMenuStripPatternItem;
+				
+				TreeViewPatterns.BeginUpdate();
+				{
+					nodes_arr[ 0 ].Nodes.Add( node );
+					
+					nodes_arr[ 0 ].Expand();
+					
+					TreeViewPatterns.SelectedNode = node;
+				}
+				TreeViewPatterns.EndUpdate();
+				
+				return true;
+			}
+			
+			return false;
+		}
+		
+		bool patterns_manager_pattern_delete( string _pattern_name, string _grp_name )
+		{
+			TreeNode[] nodes_arr = TreeViewPatterns.Nodes.Find( _pattern_name, true );
+			
+			if( nodes_arr.Length > 0 )
+			{
+				List< pattern_data > patterns = get_curr_tiles_data().patterns_data[ _grp_name ];
+				
+				if( patterns != null )
+				{
+					pattern_data pattern;
+					
+					for( int ent_n = 0; ent_n < patterns.Count; ent_n++ )
+					{
+						pattern = patterns[ ent_n ];
+						
+						if( pattern.name == _pattern_name ) 
+						{
+							pattern.reset();
+
+							patterns.Remove( pattern );
+
+							break; 
+						} 
+					}
+				}
+
+				TreeNode node = new TreeNode( _pattern_name );
+				node.Name = _pattern_name;
+				node.ContextMenuStrip = ContextMenuStripPatternItem;
+				
+				TreeViewPatterns.BeginUpdate();
+				{
+					nodes_arr[ 0 ].Remove();
+				}
+				TreeViewPatterns.EndUpdate();
+				
+				return true;
+			}
+			
+			return false;
+		}
+		
+		bool patterns_manager_pattern_group_rename( string _old_name, string _new_name )
+		{
+			tiles_data data = get_curr_tiles_data();
+			
+			if( data.patterns_data.ContainsKey( _old_name ) )
+			{
+				List< pattern_data > patterns = data.patterns_data[ _old_name ];
+	
+				data.patterns_data.Remove( _old_name );
+				data.patterns_data.Add( _new_name, patterns );
+					
+				return true;
+			}
+			
+			return false;
+		}
+		
+		bool patterns_manager_pattern_group_add( string _name, bool _add_to_data_bank )
+		{
+			TreeNode[] nodes_arr = TreeViewPatterns.Nodes.Find( _name, true );
+			
+			if( nodes_arr.Length > 0 )
+			{
+				MainForm.message_box( "An item with the same name (" + _name +  ") is already exist!", "Add Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				
+				return false;
+			}
+			
+			TreeNode node = new TreeNode( _name );
+			node.Name = _name;
+			node.ContextMenuStrip = ContextMenuStripGroupItem;
+				
+			TreeViewPatterns.BeginUpdate();
+			{
+				TreeViewPatterns.Nodes.Add( node );
+				
+				TreeViewPatterns.SelectedNode = node;
+			}
+			TreeViewPatterns.EndUpdate();
+			
+			if( _add_to_data_bank )
+			{
+				get_curr_tiles_data().patterns_data.Add( _name, new List< pattern_data >() );
+			}
+			
+			return true;
+		}
+		
+		public bool patterns_manager_pattern_group_delete( string _name )
+		{
+			if( TreeViewPatterns.Nodes.ContainsKey( _name ) )
+			{
+				tiles_data data = get_curr_tiles_data();
+					
+				TreeNode[] nodes_arr = TreeViewPatterns.Nodes.Find( _name, true );
+				
+				if( nodes_arr.Length > 0 )
+				{
+					if( nodes_arr[ 0 ].FirstNode != null )
+					{
+						if( MainForm.message_box( "The selected group is not empty!\n\nRemove all child patterns?", "Delete Group", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+						{
+							TreeViewPatterns.BeginUpdate();
+							{
+								TreeViewPatterns.Nodes.RemoveByKey( _name );
+							}
+							TreeViewPatterns.EndUpdate();
+						}
+						else
+						{
+							return false;
+						}
+					}
+					else
+					{
+						TreeViewPatterns.BeginUpdate();
+						{
+							TreeViewPatterns.Nodes.RemoveByKey( _name );
+						}
+						TreeViewPatterns.EndUpdate();
+					}
+					
+					if( data.patterns_data.ContainsKey( _name ) )
+					{
+						List< pattern_data > patterns = data.patterns_data[ _name ];
+
+						data.patterns_data.Remove( _name );
+						
+						if( patterns != null )
+						{
+							patterns.ForEach( delegate( pattern_data _pattern ) { _pattern.reset(); } );
+						}
+						
+						return true;
+					}
+				}
+			}
+			
+			return false;
+		}
+
+		void patterns_manager_update_preview()
+		{
+			if( TreeViewPatterns.SelectedNode == null )
+			{
+				// redraw a current selected pattern
+				m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
+				
+				m_pattern_preview.draw_string( "Patterns are often-used combinations of tiles.\nHere you can create and manage them.\n\n- Select or create a new patterns group\n\n- Click the 'Add' pattern button to add a new one.\n\n- Select a pattern in the tree view to put it on a map.\n\n- Scale selected pattern using a mouse wheel.", 0, 0 );
+			}
+			else
+			{
+				if( CheckBoxPatternAdd.Checked )
+				{
+					// redraw a current selected pattern
+					m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
+					
+					m_pattern_preview.draw_string( "Select rectangle area in the layout viewport\nto create a pattern.", 0, 0 );
+				}
+				else
+				{
+					TreeNode node = TreeViewPatterns.SelectedNode;
+					
+					if( node == null || node.Parent == null )
+					{
+						m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
+					
+						m_pattern_preview.draw_string( "Select a pattern or create a new one.", 0, 0 );
+					}
+					else
+					{
+						// draw a pattern
+						patterns_manager_update_pattern_image( node.Name );
+						m_pattern_preview.update( m_pattern_image, m_pattern_image.Width, m_pattern_image.Height, 0, 0, ( int )Math.Pow( 2.0, ( double )m_pattern_scale_pow ), false, false );
+						
+						m_pattern_preview.draw_string( "Put the <" + node.Name + "> on a map.", 0, 0 );
+					}
+				}
+			}
+			
+			m_pattern_preview.invalidate();
+		}
+		
+		private pattern_data patterns_manager_update_pattern_image( string _name )
+		{
+			pattern_data pattern = get_curr_tiles_data().get_pattern_by_name( _name );
+			
+			if( pattern != null )
+			{
+				m_pattern_gfx.Clear( Color.FromArgb( 0 ) );
+
+				int scr_tile_size	= utils.CONST_SCREEN_TILES_SIZE >> 1;
+				ImageList img_list;
+				
+				if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+				{
+					img_list = m_imagelist_manager.get_tiles_image_list();
+				}
+				else
+				{
+					img_list = m_imagelist_manager.get_blocks_image_list();
+					scr_tile_size >>= 1;
+				}
+				
+				int start_pos_x = ( m_pattern_image.Width >> 1 ) - ( ( pattern.width * scr_tile_size ) >> 1 );
+				int start_pos_y = ( m_pattern_image.Height >> 1 ) - ( ( pattern.height * scr_tile_size ) >> 1 );
+				
+				for( int tile_y = 0; tile_y < pattern.height; tile_y++ )
+				{
+					for( int tile_x = 0; tile_x < pattern.width; tile_x++ )
+					{
+						m_pattern_gfx.DrawImage( img_list.Images[ pattern.data.get_tile( tile_y * pattern.width + tile_x ) ], start_pos_x + tile_x * scr_tile_size, start_pos_y + tile_y * scr_tile_size, scr_tile_size, scr_tile_size );
+					}
+				}
+
+				return pattern;
+			}
+			
+			MainForm.message_box( "UNEXPECTED ERROR!\n\nCan't find the pattern <" + _name + ">!", "Pattern Image Update", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			
+			return null;
+		}
+		
+		void BtnPatternGroupAddClick_Event(object sender, EventArgs e)
+		{
+			m_object_name_form.Text = "Add Group";
+			
+			m_object_name_form.edit_str = "GROUP";
+			
+			if( m_object_name_form.ShowWindow() == DialogResult.OK )
+			{
+				patterns_manager_pattern_group_add( m_object_name_form.edit_str, true );
+			}
+		}
+		
+		void BtnPatternGroupDeleteClick_Event(object sender, EventArgs e)
+		{
+			TreeNode sel_node = TreeViewPatterns.SelectedNode;
+			
+			if( sel_node != null )
+			{
+				if( sel_node.Parent == null )
+				{
+					patterns_manager_pattern_group_delete( sel_node.Name );
+
+					patterns_manager_update_preview();
+				}
+				else
+				{
+					MainForm.message_box( "Please, select a group!", "Delete Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
+			}
+			else
+			{
+				if( TreeViewPatterns.Nodes.Count > 0 )
+				{
+					MainForm.message_box( "Please, select a group!", "Delete Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
+				else
+				{
+					MainForm.message_box( "No data!", "Delete Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
+			}
+		}
+		
+		void BtnPatternAddClick_Event(object sender, EventArgs e)
+		{
+			TreeNode sel_node = TreeViewPatterns.SelectedNode;
+			
+			if( sel_node == null || sel_node.Parent != null )
+			{
+				MainForm.message_box( "Please, select a group!", "Add Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				
+				CheckBoxPatternAdd.Checked = false;
+				
+				return;
+			}
+			
+			CheckBoxPatternAdd.Checked ^= true;
+			
+			patterns_manager_enable( !CheckBoxPatternAdd.Checked );
+			CheckBoxPatternAdd.Enabled = true;
+			
+			patterns_manager_update_preview();
+		}
+
+		void BtnPatternAddChanged_Event(object sender, EventArgs e)
+		{
+			if( CheckBoxPatternAdd.Checked )
+			{
+				CheckBoxPatternAdd.FlatStyle = FlatStyle.Standard;
+				CheckBoxPatternAdd.Text = "Cancel";
+
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_CREATE_BEGIN, null );
+			}
+			else
+			{
+				CheckBoxPatternAdd.FlatStyle = FlatStyle.System;
+				CheckBoxPatternAdd.Text = "Add";
+				
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
+			}
+		}
+		
+		void MainForm_create_pattern_end(object sender, EventArgs e)
+		{
+			m_object_name_form.Text = "Add Pattern";
+			
+			m_object_name_form.edit_str = "PATTERN";
+			
+			if( m_object_name_form.ShowWindow() == DialogResult.OK )
+			{
+				patterns_manager_reset_state();
+				
+				PatternEventArg pattern_event = e as PatternEventArg;
+				
+				pattern_data data = pattern_event.data;
+				data.name = m_object_name_form.edit_str;
+				
+				patterns_manager_pattern_add( TreeViewPatterns.SelectedNode.Name, data, true );
+				
+				MainForm.set_status_msg( "Added tiles pattern <" + m_object_name_form.edit_str + ">" );
+				
+				patterns_manager_update_preview();
+			}
+			else
+			{
+				patterns_manager_reset_state();
+			}
+		}
+		
+		void MainForm_cancel_pattern_placing(object sender, EventArgs e)
+		{
+			patterns_manager_reset_active_pattern();
+		}
+		
+		void BtnPatternDeleteClick_Event(object sender, EventArgs e)
+		{
+			TreeNode sel_node = TreeViewPatterns.SelectedNode;
+			
+			if( sel_node != null )
+			{
+				if( sel_node.Parent != null )
+				{
+					if( MainForm.message_box( "Are you sure?", "Delete Pattern", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+					{
+						if( patterns_manager_pattern_delete( sel_node.Name, sel_node.Parent.Name ) )
+						{
+							MainForm.set_status_msg( "Deleted tiles pattern <" + sel_node.Name + ">" );
+							
+							patterns_manager_update_preview();
+						}
+					}
+				}
+				else
+				{
+					MainForm.message_box( "Please, select a pattern!", "Delete Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
+			}
+			else
+			{
+				if( TreeViewPatterns.Nodes.Count > 0 )
+				{
+					MainForm.message_box( "Please, select a pattern!", "Delete Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
+				else
+				{
+					MainForm.message_box( "No data!", "Delete Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
+			}
+		}
+		
+		void BtnPatternRenameClick_Event(object sender, EventArgs e)
+		{
+			TreeNode sel_node = TreeViewPatterns.SelectedNode;
+			
+			if( sel_node != null )
+			{
+				sel_node.BeginEdit();
+			}
+			else
+			{
+				MainForm.message_box( "Please, select an item!", "Rename Item", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+		}
+		
+		void BtnPatternResetClick_Event(object sender, EventArgs e)
+		{
+			patterns_manager_reset_active_pattern();
+		}
+		
+		void PatternsTreeViewNodeSelect_Event(object sender, TreeViewEventArgs e)
+		{
+			if( TreeViewPatterns.SelectedNode.Parent != null )
+			{
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_PLACING, get_curr_tiles_data().get_pattern_by_name( TreeViewPatterns.SelectedNode.Name ) );
+			}
+			
+			patterns_manager_update_preview();
+		}
+		
+		void PatternsTreeViewNodeRename_Event(object sender, NodeLabelEditEventArgs e)
+		{
+			if( e.Label != null )
+			{
+				if( e.Node.Parent == null )
+				{
+					patterns_manager_pattern_group_rename( e.Node.Text, e.Label );
+					e.Node.Name = e.Label;
+				}
+				else
+				{
+					patterns_manager_pattern_rename( e.Node.Parent.Text, e.Node.Text, e.Label );
+					e.Node.Name = e.Label;
+					
+					patterns_manager_update_preview();
+				}
+			}
+		}
+
+		private void PatternsMngr_MouseWheel(object sender, MouseEventArgs e)
+		{
+			if( TreeViewPatterns.Enabled )
+			{
+				m_pattern_scale_pow += Math.Sign( e.Delta );
+				
+				m_pattern_scale_pow = m_pattern_scale_pow < 0 ? 0:m_pattern_scale_pow;
+				m_pattern_scale_pow = m_pattern_scale_pow > 3 ? 3:m_pattern_scale_pow;
+				
+				patterns_manager_update_preview();
+			}
+		}
+		
+		private void PatternsMngr_MouseEnter(object sender, EventArgs e)
+		{
+			if( TreeViewPatterns.Enabled )
+			{
+				m_pattern_preview.set_focus();
+			}
+		}
+
+		private void PatternsMngr_MouseLeave(object sender, EventArgs e)
+		{
+			if( TreeViewPatterns.Enabled )
+			{
+				TreeViewPatterns.Focus();
+			}
+		}
 #endregion
 	}
 }

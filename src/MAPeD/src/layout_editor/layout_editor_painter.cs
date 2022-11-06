@@ -657,7 +657,10 @@ namespace MAPeD
 					}
 					break;
 					
-				//...
+				default:
+				{
+					throw new Exception( "Unknown parameter detected!\n\n[layout_editor_painter.subscribe]" );
+				}
 			}
 		}
 	}

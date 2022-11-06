@@ -167,6 +167,9 @@
     <Compile Include="..\src\layout_editor\layout_editor_painter.cs">
       <Link>layout_editor\layout_editor_painter.cs</Link>
     </Compile>
+    <Compile Include="..\src\layout_editor\layout_editor_patterns.cs">
+      <Link>layout_editor\layout_editor_patterns.cs</Link>
+    </Compile>
     <Compile Include="..\src\layout_editor\layout_editor_screen_list.cs">
       <Link>layout_editor\layout_editor_screen_list.cs</Link>
     </Compile>
@@ -196,13 +199,6 @@
     <Compile Include="..\src\optimization_form.Designer.cs">
       <Link>optimization_form.Designer.cs</Link>
       <DependentUpon>optimization_form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="..\src\patterns_manager_form.cs">
-      <Link>patterns_manager_form.cs</Link>
-    </Compile>
-    <Compile Include="..\src\patterns_manager_form.Designer.cs">
-      <Link>patterns_manager_form.Designer.cs</Link>
-      <DependentUpon>patterns_manager_form.cs</DependentUpon>
     </Compile>
     <Compile Include="..\src\pattern_data.cs">
       <Link>pattern_data.cs</Link>
@@ -350,10 +346,6 @@
     <EmbeddedResource Include="..\src\optimization_form.resx">
       <Link>optimization_form.resx</Link>
       <DependentUpon>optimization_form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\src\patterns_manager_form.resx">
-      <Link>patterns_manager_form.resx</Link>
-      <DependentUpon>patterns_manager_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\progress_form.resx">
       <Link>progress_form.resx</Link>
