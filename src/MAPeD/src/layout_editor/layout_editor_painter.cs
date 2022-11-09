@@ -57,9 +57,6 @@ namespace MAPeD
 		private int			m_ghost_tile_block_x	= -1;
 		private int			m_ghost_tile_block_y	= -1;
 		
-		private int			m_curr_CHR_bank_id	= -1;
-		private tiles_data 	m_tiles_data		= null;
-		
 		private enum ETileMode
 		{
 			etm_Unknown,
@@ -85,7 +82,7 @@ namespace MAPeD
 		
 		public override void mouse_down( object sender, MouseEventArgs e )
 		{
-			if( ( m_tiles_data != null && get_sel_screen_ind() >= 0 && m_active_tile_id >= 0 ) && e.Button == MouseButtons.Left )
+			if( ( m_shared.m_tiles_data != null && m_shared.get_sel_screen_ind( true ) >= 0 && m_active_tile_id >= 0 ) && e.Button == MouseButtons.Left )
 			{
 				m_changed_screens.Clear();
 				
@@ -175,7 +172,7 @@ namespace MAPeD
 				glob_scr_ind	= scr_id & 0x0000ffff;
 				local_scr_ind	= scr_id >> 16;
 				
-				m_shared.update_active_bank_screen( glob_scr_ind, local_scr_ind, m_tiles_data, m_shared.m_screen_data_type );
+				m_shared.update_active_bank_screen( glob_scr_ind, local_scr_ind, m_shared.m_tiles_data, m_shared.m_screen_data_type );
 			}
 			
 			m_changed_screens.Clear();
@@ -214,36 +211,12 @@ namespace MAPeD
 			return ( ( x - scr_pos_x ) >> 4 ) + ( ( ( y - scr_pos_y ) >> 4 ) * platform_data.get_screen_blocks_width( false ) );
 		}
 		
-		private int get_sel_screen_ind()
-		{
-			int res = -1;
-			
-			if( m_shared.m_sel_screen_slot_id >= 0 )
-			{
-				int scr_glob_ind = m_shared.m_layout.get_data( m_shared.get_sel_scr_pos_x(), m_shared.get_sel_scr_pos_y() ).m_scr_ind;
-				
-				if( scr_glob_ind != layout_data.CONST_EMPTY_CELL_ID )
-				{
-					if( m_shared.get_bank_ind_by_global_screen_ind( scr_glob_ind ) == m_curr_CHR_bank_id )
-					{
-						return scr_glob_ind;
-					}
-					else
-					{
-						m_shared.m_sys_msg = "DATA FROM ANOTHER CHR BANK";
-					}
-				}
-			}
-			
-			return res;
-		}
-		
 		private bool get_tile_xy( int _x, int _y, out int _tile_x, out int _tile_y )
 		{
 			_tile_x = -10000;
 			_tile_y = -10000;
 			
-			if( get_sel_screen_ind() >= 0 )
+			if( m_shared.get_sel_screen_ind( true ) >= 0 )
 			{
 				// image space screen position
 				int scr_pos_x = platform_data.get_screen_width_pixels() * m_shared.get_sel_scr_pos_x();
@@ -298,8 +271,8 @@ namespace MAPeD
 			
 			m_shared.gfx_context().Clip = new Region( m_shared.m_scr_img_rect );
 			
-			int scr_glob_ind	= get_sel_screen_ind();
-			int scr_local_ind	= m_shared.get_local_screen_ind( m_curr_CHR_bank_id, scr_glob_ind );
+			int scr_glob_ind	= m_shared.get_sel_screen_ind( true );
+			int scr_local_ind	= m_shared.get_local_screen_ind( m_shared.m_CHR_bank_ind, scr_glob_ind );
 
 			m_changed_screens.Add( scr_glob_ind | ( scr_local_ind << 16 ) );
 			
@@ -314,7 +287,7 @@ namespace MAPeD
 				
 				if( m_tile_mode == ETileMode.etm_Block )
 				{
-					ulong old_tile = m_tiles_data.tiles[ m_tiles_data.get_screen_tile( scr_local_ind, tile_index ) ];
+					ulong old_tile = m_shared.m_tiles_data.tiles[ m_shared.m_tiles_data.get_screen_tile( scr_local_ind, tile_index ) ];
 					ulong new_tile = utils.set_ushort_to_ulong( old_tile, block_ind, ( ushort )m_active_tile_id );
 
 					int tile_ind = check_tile( new_tile );
@@ -336,7 +309,7 @@ namespace MAPeD
 					}
 				}
 				
-				m_tiles_data.set_screen_tile( scr_local_ind, tile_index, ( ushort )tile_id );
+				m_shared.m_tiles_data.set_screen_tile( scr_local_ind, tile_index, ( ushort )tile_id );
 				
 				draw_tile( m_tile_x, m_tile_y, scr_tile_pos_x, scr_tile_pos_y, tile_id );
 
@@ -344,7 +317,7 @@ namespace MAPeD
 			}
 			else
 			{
-				m_tiles_data.set_screen_tile( scr_local_ind, mode_blocks2x2_get_block2x2_ind_by_pos( _x, _y ), ( ushort )m_active_tile_id );
+				m_shared.m_tiles_data.set_screen_tile( scr_local_ind, mode_blocks2x2_get_block2x2_ind_by_pos( _x, _y ), ( ushort )m_active_tile_id );
 				
 				draw_block( m_tile_x, m_tile_y, m_active_tile_id );
 				
@@ -364,9 +337,9 @@ namespace MAPeD
 			{
 				for( int i = m_last_empty_tile_ind; i < platform_data.get_max_tiles_cnt(); i++ )
 				{
-					if( m_tiles_data.tiles[ i ] == 0 )
+					if( m_shared.m_tiles_data.tiles[ i ] == 0 )
 					{
-						m_tiles_data.tiles[ i ] = _tile;
+						m_shared.m_tiles_data.tiles[ i ] = _tile;
 						
 						// add the tile to the cache
 						m_block_tiles_cache.Add( i );
@@ -374,7 +347,7 @@ namespace MAPeD
 						// redraw tile image here...
 						if( UpdateTileImage != null )
 						{
-							UpdateTileImage( this, new NewTileEventArg( i, m_tiles_data ) );
+							UpdateTileImage( this, new NewTileEventArg( i, m_shared.m_tiles_data ) );
 						}
 						
 						m_last_empty_tile_ind = i;
@@ -404,7 +377,7 @@ namespace MAPeD
 			{
 				tile_ind = m_block_tiles_cache[ i ];
 				
-				if( m_tiles_data.tiles[ tile_ind ] == _tile_data )
+				if( m_shared.m_tiles_data.tiles[ tile_ind ] == _tile_data )
 				{
 					return tile_ind;
 				}
@@ -420,14 +393,14 @@ namespace MAPeD
 
 			ulong tile_data;
 			
-			m_last_empty_tile_ind = m_tiles_data.get_first_free_tile_id( false );
+			m_last_empty_tile_ind = m_shared.m_tiles_data.get_first_free_tile_id( false );
 			m_last_empty_tile_ind = ( m_last_empty_tile_ind == 0 ) ? 1:m_last_empty_tile_ind;	// skip zero tile as reserved for an empty space
 			
 			m_block_tiles_cache.Clear();
 			
 			for( i = 0; i < platform_data.get_max_tiles_cnt(); i++ )
 			{
-				tile_data = m_tiles_data.tiles[ i ];
+				tile_data = m_shared.m_tiles_data.tiles[ i ];
 
 				for( j = 0; j < utils.CONST_TILE_SIZE; j++ )
 				{
@@ -472,17 +445,14 @@ namespace MAPeD
 			}
 		}
 		
-		private void new_data_set( object sender, EventArgs e )
-		{
-			data_sets_manager data_mngr = sender as data_sets_manager;
-			
-			m_curr_CHR_bank_id	= data_mngr.tiles_data_pos;
-			m_tiles_data		= data_mngr.get_tiles_data( data_mngr.tiles_data_pos );
-		}
-		
 		public override bool block_free_map_panning()
 		{
 			return true;
+		}
+
+		public override bool force_map_drawing()
+		{
+			return false;
 		}
 
 		public override void draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height )
@@ -629,12 +599,6 @@ namespace MAPeD
 						{
 							calc_common_blocks( ( byte )m_active_tile_id );
 						}
-					}
-					break;
-					
-				case layout_editor_param.CONST_SET_PNT_SUBSCR_DATA_MNGR:
-					{
-						( ( data_sets_manager )_val ).SetTilesData += new EventHandler( new_data_set );
 					}
 					break;
 					

@@ -38,14 +38,14 @@ namespace MAPeD
 		public const uint	CONST_SET_PNT_CLEAR_ACTIVE_TILE		= 0x000800;
 		public const uint	CONST_SET_PNT_UPD_ACTIVE_TILE		= 0x001000;
 		public const uint	CONST_SET_PNT_UPD_ACTIVE_BLOCK		= 0x002000;
-		public const uint	CONST_SET_PNT_SUBSCR_DATA_MNGR		= 0x004000;
 
-		public const uint	CONST_SET_PTTRN_CREATE_BEGIN		= 0x008000;
-		public const uint	CONST_SET_PTTRN_PLACING				= 0x010000;
-		public const uint	CONST_SET_PTTRN_IDLE_STATE			= 0x020000;
+		public const uint	CONST_SET_PTTRN_EXTRACT_BEGIN		= 0x004000;
+		public const uint	CONST_SET_PTTRN_PUT					= 0x008000;
+		public const uint	CONST_SET_PTTRN_IDLE_STATE			= 0x010000;
 		
-		public const uint	CONST_SET_BASE_MAP_SCALE_X1			= 0x040000;
-		public const uint	CONST_SET_BASE_MAP_SCALE_X2			= 0x080000;
+		public const uint	CONST_SET_BASE_MAP_SCALE_X1			= 0x020000;
+		public const uint	CONST_SET_BASE_MAP_SCALE_X2			= 0x040000;
+		public const uint	CONST_SET_BASE_SUBSCR_DATA_MNGR		= 0x080000;
 
 		// get
 		public const uint	CONST_GET_ENT_INST_SELECTED			= 0x01;
@@ -58,8 +58,8 @@ namespace MAPeD
 		
 		public const uint	CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE	= 0x04;
 		
-		public const uint	CONST_SUBSCR_PTTRN_CREATE_END		= 0x08;
-		public const uint	CONST_SUBSCR_PTTRN_CANCEL_PLACING	= 0x10;
+		public const uint	CONST_SUBSCR_PTTRN_EXTRACT_END		= 0x08;
+		public const uint	CONST_SUBSCR_PTTRN_PUT_CANCEL		= 0x10;
 	}
 	
 	/// <summary>
@@ -93,6 +93,7 @@ namespace MAPeD
 		public abstract void	mouse_wheel( object sender, EventArgs e );
 		
 		public abstract bool	block_free_map_panning();
+		public abstract bool	force_map_drawing();
 		
 		public abstract void	draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height );
 
@@ -132,6 +133,9 @@ namespace MAPeD
 
 		public string	m_sys_msg = "";
 		
+		public int			m_CHR_bank_ind	= -1;
+		public tiles_data 	m_tiles_data 	= null;
+		
 		public data_sets_manager.EScreenDataType	m_screen_data_type = data_sets_manager.EScreenDataType.sdt_Tiles4x4;
 		
 		// methods
@@ -150,6 +154,7 @@ namespace MAPeD
 		public Func< int >					get_sel_scr_pos_y;
 		public Func< int, int >				screen_pos_x_by_slot_id;
 		public Func< int, int >				screen_pos_y_by_slot_id;
+		public Func< bool, int >			get_sel_screen_ind;
 		
 		public Func< int, int, int >		transform_to_scr_pos;
 		public Func< int, int, int, int >	transform_to_img_pos;
@@ -280,6 +285,7 @@ namespace MAPeD
 				
 				m_shared.get_sel_scr_pos_x				= get_sel_scr_pos_x; 
 				m_shared.get_sel_scr_pos_y 				= get_sel_scr_pos_y;
+				m_shared.get_sel_screen_ind				= get_sel_screen_ind;
 				m_shared.screen_pos_x_by_slot_id		= screen_pos_x_by_slot_id;
 				m_shared.screen_pos_y_by_slot_id		= screen_pos_y_by_slot_id;
 				m_shared.transform_to_scr_pos			= transform_to_scr_pos;
@@ -458,8 +464,6 @@ namespace MAPeD
 				}
 			}
 			
-			m_shared.m_sys_msg = "";
-			
 			if( !map_panning_enabled() )
 			{
 				if( pan_viewport_user_input )
@@ -483,6 +487,8 @@ namespace MAPeD
 					invalidate();
 				}
 			}
+
+			m_shared.m_sys_msg = "";
 		}
 		
 		private bool map_panning_enabled()
@@ -659,16 +665,16 @@ namespace MAPeD
 						
 						if( m_pbox_rect.IntersectsWith( m_shared.m_scr_img_rect ) )
 						{
-							if( !m_shared.m_high_quality_render )
+							if( m_shared.m_high_quality_render || m_behaviour.force_map_drawing() )
+							{
+								_act( ( ( i * _scr_width ) + j ), scr_data, scr_x, scr_y );
+							}
+							else
 							{
 								m_pen.Color = utils.CONST_COLOR_SIMPLE_SCREEN_CROSS;
 								
 								m_gfx.DrawLine( m_pen, scr_x, scr_y, scr_x + _scr_size_width, scr_y + _scr_size_height );
 								m_gfx.DrawLine( m_pen, scr_x + _scr_size_width, scr_y, scr_x, scr_y + _scr_size_height );
-							}
-							else
-							{
-								_act( ( ( i * _scr_width ) + j ), scr_data, scr_x, scr_y );
 							}
 						}
 					}
@@ -779,7 +785,7 @@ namespace MAPeD
 						m_gfx.DrawImage( m_shared.m_scr_list.get( _scr_data.m_scr_ind ), _x, _y, scr_size_width, scr_size_height );
 					});
 
-					if( show_grid && !m_shared.pix_box_captured() )
+					if( show_grid && ( !m_shared.pix_box_captured() || m_behaviour.force_map_drawing() ) )
 					{
 						// draw tiles grid
 						if( m_shared.m_scale >= 1.0 )
@@ -1047,6 +1053,33 @@ namespace MAPeD
 			return ( m_shared.m_sel_screen_slot_id / get_width() );
 		}
 		
+		private int get_sel_screen_ind( bool _show_sys_msg )
+		{
+			int res = -1;
+			
+			if( m_shared.m_sel_screen_slot_id >= 0 )
+			{
+				int scr_glob_ind = m_shared.m_layout.get_data( m_shared.get_sel_scr_pos_x(), m_shared.get_sel_scr_pos_y() ).m_scr_ind;
+				
+				if( scr_glob_ind != layout_data.CONST_EMPTY_CELL_ID )
+				{
+					if( m_shared.get_bank_ind_by_global_screen_ind( scr_glob_ind ) == m_shared.m_CHR_bank_ind )
+					{
+						return scr_glob_ind;
+					}
+					else
+					{
+						if( _show_sys_msg )
+						{
+							m_shared.m_sys_msg = "WRONG CHR BANK";
+						}
+					}
+				}
+			}
+			
+			return res;
+		}
+		
 		private int get_width()
 		{
 			return m_shared.m_layout.get_width();
@@ -1222,7 +1255,15 @@ namespace MAPeD
 		{
 			m_shared.m_screen_data_type = _type;
 		}
-
+		
+		private void new_data_set( object sender, EventArgs e )
+		{
+			data_sets_manager data_mngr = sender as data_sets_manager;
+			
+			m_shared.m_CHR_bank_ind	= data_mngr.tiles_data_pos;
+			m_shared.m_tiles_data	= data_mngr.get_tiles_data( data_mngr.tiles_data_pos );
+		}
+		
 		public Object get_param( uint _param )
 		{
 			return m_behaviour.get_param( _param );
@@ -1256,6 +1297,13 @@ namespace MAPeD
 						clamp_offsets();
 						
 						update();
+						
+						return true;
+					}
+					
+				case layout_editor_param.CONST_SET_BASE_SUBSCR_DATA_MNGR:
+					{
+						( ( data_sets_manager )_val ).SetTilesData += new EventHandler( new_data_set );
 						
 						return true;
 					}

@@ -154,10 +154,10 @@ namespace MAPeD
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SUBSCR_ENT_INST_SELECT, MainForm_EntityInstanceSelected );
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SUBSCR_SCR_RESET_SELECTED, MainForm_ResetSelectedScreen );
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE, update_tile_image );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_CREATE_END, MainForm_create_pattern_end );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_CANCEL_PLACING, MainForm_cancel_pattern_placing );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_EXTRACT_END, MainForm_pattern_extract_end );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_PUT_CANCEL, MainForm_pattern_put_cancel );
 				
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_SUBSCR_DATA_MNGR, m_data_manager );
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_BASE_SUBSCR_DATA_MNGR, m_data_manager );
 				
 				m_layout_editor.MapScaleX1 += new EventHandler( MainForm_MapScaleX1 );
 				m_layout_editor.MapScaleX2 += new EventHandler( MainForm_MapScaleX2 );
@@ -4232,7 +4232,7 @@ namespace MAPeD
 				
 				CheckBoxPickupTargetEntity.Checked = false;
 				
-				patterns_manager_reset_state();
+				patterns_manager_reset_active_pattern();
 			}
 			
 			if( curr_tab == TabBuilder )
@@ -4634,6 +4634,8 @@ namespace MAPeD
 			m_optimization_form.set_screen_data_type( _type );
 			m_layout_editor.set_screen_data_type( _type );
 			
+			patterns_manager_reset_active_pattern();
+			
 			return true;
 		}
 		
@@ -4642,6 +4644,8 @@ namespace MAPeD
 #region patterns manager
 		void patterns_manager_reset_active_pattern()
 		{
+			patterns_manager_reset_state();
+			
 			TreeViewPatterns.SelectedNode = TreeViewPatterns.TopNode;
 		}
 		
@@ -4659,6 +4663,7 @@ namespace MAPeD
 		void patterns_manager_reset_state()
 		{
 			CheckBoxPatternAdd.Checked = false;
+			
 			patterns_manager_enable( true );
 		}
 		
@@ -4948,10 +4953,17 @@ namespace MAPeD
 					else
 					{
 						// draw a pattern
-						patterns_manager_update_pattern_image( node.Name );
+						pattern_data pattern = get_curr_tiles_data().get_pattern_by_name( node.Name );
+
+						if( pattern == null )
+						{
+							throw new Exception( "UNEXPECTED ERROR!\n\nCan't find the pattern <" + node.Name + ">!" );
+						}
+						
+						patterns_manager_update_pattern_image( pattern );
 						m_pattern_preview.update( m_pattern_image, m_pattern_image.Width, m_pattern_image.Height, 0, 0, ( int )Math.Pow( 2.0, ( double )m_pattern_scale_pow ), false, false );
 						
-						m_pattern_preview.draw_string( "Put the <" + node.Name + "> on a map.", 0, 0 );
+						m_pattern_preview.draw_string( "Put the <" + node.Name + " [" + pattern.width + "x" + pattern.height + "]> on a map.", 0, 0 );
 					}
 				}
 			}
@@ -4959,44 +4971,33 @@ namespace MAPeD
 			m_pattern_preview.invalidate();
 		}
 		
-		private pattern_data patterns_manager_update_pattern_image( string _name )
+		private void patterns_manager_update_pattern_image( pattern_data _pttrn )
 		{
-			pattern_data pattern = get_curr_tiles_data().get_pattern_by_name( _name );
+			m_pattern_gfx.Clear( Color.FromArgb( 0 ) );
+
+			int scr_tile_size	= utils.CONST_SCREEN_TILES_SIZE >> 1;
+			ImageList img_list;
 			
-			if( pattern != null )
+			if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				m_pattern_gfx.Clear( Color.FromArgb( 0 ) );
-
-				int scr_tile_size	= utils.CONST_SCREEN_TILES_SIZE >> 1;
-				ImageList img_list;
-				
-				if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
-				{
-					img_list = m_imagelist_manager.get_tiles_image_list();
-				}
-				else
-				{
-					img_list = m_imagelist_manager.get_blocks_image_list();
-					scr_tile_size >>= 1;
-				}
-				
-				int start_pos_x = ( m_pattern_image.Width >> 1 ) - ( ( pattern.width * scr_tile_size ) >> 1 );
-				int start_pos_y = ( m_pattern_image.Height >> 1 ) - ( ( pattern.height * scr_tile_size ) >> 1 );
-				
-				for( int tile_y = 0; tile_y < pattern.height; tile_y++ )
-				{
-					for( int tile_x = 0; tile_x < pattern.width; tile_x++ )
-					{
-						m_pattern_gfx.DrawImage( img_list.Images[ pattern.data.get_tile( tile_y * pattern.width + tile_x ) ], start_pos_x + tile_x * scr_tile_size, start_pos_y + tile_y * scr_tile_size, scr_tile_size, scr_tile_size );
-					}
-				}
-
-				return pattern;
+				img_list = m_imagelist_manager.get_tiles_image_list();
+			}
+			else
+			{
+				img_list = m_imagelist_manager.get_blocks_image_list();
+				scr_tile_size >>= 1;
 			}
 			
-			MainForm.message_box( "UNEXPECTED ERROR!\n\nCan't find the pattern <" + _name + ">!", "Pattern Image Update", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			int start_pos_x = ( m_pattern_image.Width >> 1 ) - ( ( _pttrn.width * scr_tile_size ) >> 1 );
+			int start_pos_y = ( m_pattern_image.Height >> 1 ) - ( ( _pttrn.height * scr_tile_size ) >> 1 );
 			
-			return null;
+			for( int tile_y = 0; tile_y < _pttrn.height; tile_y++ )
+			{
+				for( int tile_x = 0; tile_x < _pttrn.width; tile_x++ )
+				{
+					m_pattern_gfx.DrawImage( img_list.Images[ _pttrn.data.get_tile( tile_y * _pttrn.width + tile_x ) ], start_pos_x + tile_x * scr_tile_size, start_pos_y + tile_y * scr_tile_size, scr_tile_size, scr_tile_size );
+				}
+			}
 		}
 		
 		void BtnPatternGroupAddClick_Event(object sender, EventArgs e)
@@ -5069,7 +5070,7 @@ namespace MAPeD
 				CheckBoxPatternAdd.FlatStyle = FlatStyle.Standard;
 				CheckBoxPatternAdd.Text = "Cancel";
 
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_CREATE_BEGIN, null );
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_EXTRACT_BEGIN, null );
 			}
 			else
 			{
@@ -5080,7 +5081,7 @@ namespace MAPeD
 			}
 		}
 		
-		void MainForm_create_pattern_end(object sender, EventArgs e)
+		void MainForm_pattern_extract_end(object sender, EventArgs e)
 		{
 			m_object_name_form.Text = "Add Pattern";
 			
@@ -5107,7 +5108,7 @@ namespace MAPeD
 			}
 		}
 		
-		void MainForm_cancel_pattern_placing(object sender, EventArgs e)
+		void MainForm_pattern_put_cancel(object sender, EventArgs e)
 		{
 			patterns_manager_reset_active_pattern();
 		}
@@ -5171,7 +5172,11 @@ namespace MAPeD
 		{
 			if( TreeViewPatterns.SelectedNode.Parent != null )
 			{
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_PLACING, get_curr_tiles_data().get_pattern_by_name( TreeViewPatterns.SelectedNode.Name ) );
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_PUT, get_curr_tiles_data().get_pattern_by_name( TreeViewPatterns.SelectedNode.Name ) );
+			}
+			else
+			{
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
 			}
 			
 			patterns_manager_update_preview();

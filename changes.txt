@@ -1,10 +1,11 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+09.11.2022 - The tile patterns manager moved to the layout tabs ("Patterns" tab)
 02.11.2022 - Application window, detached tabs and the tiles/blocks palette window can be resized and maximized
 	   - The layout options moved to the layout tabs; they are now called the 'Builder' tab
 	   - Removed the screen editor tab; instead the 'Painter' tab has been added to the layout tabs; now you can fill your maps with tiles in the layout viewport
-	   - Painter/Screen List/Entities modes: hold down the 'Ctrl' key to pan the viewport
+	   - Painter/Screen List/Entities/Patterns modes: hold down the 'Ctrl' key to pan the viewport
 19.10.2022 - Added 'Entity Order' item to the layout context menu ('Bring to Front' and 'Send to Back' actions are available)
 18.10.2022 - Fixed dragging of entities, now it happens without reordering; also added drawing of active screen border when dragging an entity
 17.10.2022 - Added drawing of a tile properties (the View Type combobox) on a whole map in the layout viewport
@@ -17,7 +18,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 06.05.2022 - Added deletion of multiple selected screens
 29.04.2022 - Optimized rendering of maps in the layout window
 08.04.2022 - Changed project file format (v7): palette in a project file for all platforms
-08.04.2022 - ZX/PCE/SMD: added an import of a custom palette
+08.04.2022 - ZX/PCE/SMD: added import of a custom palette
 
 05.04.2022 v0.69b
 
@@ -128,7 +129,7 @@ SPReD-NES/SMS/PCE:
 07.06.2022 - PCE: added VRAM address field to the export options dialog
 21.04.2022 - PCE: added library for rendering of simple sprites and meta-sprites using the HuC (SPD-render/spd.h)
 14.04.2022 - Added export to C for all platforms
-08.04.2022 - PCE: added an import of a custom palette
+08.04.2022 - PCE: added import of a custom palette
 
 05.04.2022 v0.62b
 

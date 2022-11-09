@@ -110,6 +110,11 @@ namespace MAPeD
 			return true;
 		}
 
+		public override bool force_map_drawing()
+		{
+			return false;
+		}
+
 		public override void draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height )
 		{
 			if( m_active_screen_index != layout_data.CONST_EMPTY_CELL_ID && m_shared.m_sel_screen_slot_id >= 0 )

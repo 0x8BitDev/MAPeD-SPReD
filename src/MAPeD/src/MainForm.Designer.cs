@@ -122,8 +122,6 @@ namespace MAPeD
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteEntityGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-			this.renameEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
 			this.editInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.patternsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addPatternToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -133,7 +131,6 @@ namespace MAPeD
 			this.addPatternGroupToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.deletePatternGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
-			this.renamePatternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.quickGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator27 = new System.Windows.Forms.ToolStripSeparator();
@@ -1118,8 +1115,6 @@ namespace MAPeD
 									this.toolStripSeparator4,
 									this.addGroupToolStripMenuItem1,
 									this.toolStripSeparator6,
-									this.renameEntityToolStripMenuItem,
-									this.toolStripSeparator26,
 									this.editInstancesToolStripMenuItem});
 			this.entitiesToolStripMenuItem.Name = "entitiesToolStripMenuItem";
 			this.entitiesToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
@@ -1172,18 +1167,6 @@ namespace MAPeD
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
 			this.toolStripSeparator6.Size = new System.Drawing.Size(179, 6);
 			// 
-			// renameEntityToolStripMenuItem
-			// 
-			this.renameEntityToolStripMenuItem.Name = "renameEntityToolStripMenuItem";
-			this.renameEntityToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-			this.renameEntityToolStripMenuItem.Text = "&Rename";
-			this.renameEntityToolStripMenuItem.Click += new System.EventHandler(this.BtnEntityRenameClick_Event);
-			// 
-			// toolStripSeparator26
-			// 
-			this.toolStripSeparator26.Name = "toolStripSeparator26";
-			this.toolStripSeparator26.Size = new System.Drawing.Size(179, 6);
-			// 
 			// editInstancesToolStripMenuItem
 			// 
 			this.editInstancesToolStripMenuItem.Name = "editInstancesToolStripMenuItem";
@@ -1199,8 +1182,7 @@ namespace MAPeD
 									this.deletePatternToolStripMenuItem,
 									this.toolStripSeparator5,
 									this.groupPatternToolStripMenuItem,
-									this.toolStripSeparator16,
-									this.renamePatternToolStripMenuItem});
+									this.toolStripSeparator16});
 			this.patternsToolStripMenuItem.Name = "patternsToolStripMenuItem";
 			this.patternsToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
 			this.patternsToolStripMenuItem.Text = "&Patterns";
@@ -1208,21 +1190,21 @@ namespace MAPeD
 			// addPatternToolStripMenuItem1
 			// 
 			this.addPatternToolStripMenuItem1.Name = "addPatternToolStripMenuItem1";
-			this.addPatternToolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+			this.addPatternToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.addPatternToolStripMenuItem1.Text = "&Add";
 			this.addPatternToolStripMenuItem1.Click += new System.EventHandler(this.BtnPatternAddClick_Event);
 			// 
 			// deletePatternToolStripMenuItem
 			// 
 			this.deletePatternToolStripMenuItem.Name = "deletePatternToolStripMenuItem";
-			this.deletePatternToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.deletePatternToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.deletePatternToolStripMenuItem.Text = "&Delete";
 			this.deletePatternToolStripMenuItem.Click += new System.EventHandler(this.BtnPatternDeleteClick_Event);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(114, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
 			// 
 			// groupPatternToolStripMenuItem
 			// 
@@ -1230,7 +1212,7 @@ namespace MAPeD
 									this.addPatternGroupToolStripMenuItem1,
 									this.deletePatternGroupToolStripMenuItem});
 			this.groupPatternToolStripMenuItem.Name = "groupPatternToolStripMenuItem";
-			this.groupPatternToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.groupPatternToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.groupPatternToolStripMenuItem.Text = "&Group";
 			// 
 			// addPatternGroupToolStripMenuItem1
@@ -1250,14 +1232,7 @@ namespace MAPeD
 			// toolStripSeparator16
 			// 
 			this.toolStripSeparator16.Name = "toolStripSeparator16";
-			this.toolStripSeparator16.Size = new System.Drawing.Size(114, 6);
-			// 
-			// renamePatternToolStripMenuItem
-			// 
-			this.renamePatternToolStripMenuItem.Name = "renamePatternToolStripMenuItem";
-			this.renamePatternToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-			this.renamePatternToolStripMenuItem.Text = "&Rename";
-			this.renamePatternToolStripMenuItem.Click += new System.EventHandler(this.BtnPatternRenameClick_Event);
+			this.toolStripSeparator16.Size = new System.Drawing.Size(149, 6);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -4066,7 +4041,6 @@ namespace MAPeD
 		private System.Windows.Forms.ContextMenuStrip ContextMenuStripPatternItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
 		private System.Windows.Forms.ContextMenuStrip ContextMenuStripPatternsTreeViewGroup;
-		private System.Windows.Forms.ToolStripMenuItem renamePatternToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
 		private System.Windows.Forms.ToolStripMenuItem deletePatternGroupToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addPatternGroupToolStripMenuItem1;
@@ -4146,7 +4120,6 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripMenuItem quickGuideToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exportScriptEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editInstancesToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
 		private System.Windows.Forms.ToolStripMenuItem reserveCHRsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator24;
 		private System.Windows.Forms.ToolStripMenuItem reserveBlocksToolStripMenuItem;
@@ -4276,7 +4249,6 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripMenuItem screensToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem blocksToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem tilesToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem renameEntityToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteEntityToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addEntityToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;

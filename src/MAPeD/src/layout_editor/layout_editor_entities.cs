@@ -528,6 +528,11 @@ namespace MAPeD
 			return true;
 		}
 
+		public override bool force_map_drawing()
+		{
+			return false;
+		}
+
 		public override void draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height )
 		{
 			int x;
