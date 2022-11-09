@@ -51,7 +51,6 @@ namespace MAPeD
 		
 		public event EventHandler SetLayoutData;
 		public event EventHandler SetTilesData;
-		public event EventHandler SetScreenData;
 		public event EventHandler SetEntitiesData;
 		
 		public event ReturnBoolEvent AddEntity;
@@ -136,7 +135,6 @@ namespace MAPeD
 		[DataMember]
 		private readonly List< tiles_data >	m_tiles_data	= null;
 		private int m_tiles_data_pos				= -1;
-		private int m_scr_data_pos					= -1;
 		
 		public int tiles_data_pos
 		{
@@ -158,25 +156,6 @@ namespace MAPeD
 			set {}
 		}
 
-		public int scr_data_pos
-		{
-			get 
-			{
-				if( tiles_data_pos < 0 )
-				{
-					m_scr_data_pos = -1;
-				}
-				
-				return m_scr_data_pos; 
-			}
-			set 
-			{
-				m_scr_data_pos = value; 
-	
-				dispatch_event_set_screen_data(); 
-			}
-		}
-		
 		public int scr_data_cnt
 		{
 			get { return ( tiles_data_pos >= 0 ) ? get_tiles_data( tiles_data_pos ).screen_data_cnt():-1; }
@@ -213,7 +192,6 @@ namespace MAPeD
 			
 			m_layouts_data_pos	= -1;
 			m_tiles_data_pos 	= -1;
-			m_scr_data_pos		= -1;
 			
 			dispatch_event_set_layout_data();
 			dispatch_event_set_tiles_data();
@@ -604,45 +582,43 @@ namespace MAPeD
 			return bank_ind;
 		}
 		
-		public bool screen_data_create()
+		public int screen_data_create()
 		{
 			if( tiles_data_pos >= 0 )
 			{
-				get_tiles_data( tiles_data_pos ).create_screen( screen_data_type );
-				++m_scr_data_pos;
+				tiles_data data = get_tiles_data( tiles_data_pos );
 				
-				return true;
+				data.create_screen( screen_data_type );
+				
+				// return local index
+				return data.screen_data_cnt() - 1;
+			}
+			
+			return -1;
+		}
+		
+		public bool screen_data_copy( int _local_scr_ind )
+		{
+			if( tiles_data_pos >= 0 && _local_scr_ind >= 0 )
+			{
+				tiles_data data = get_tiles_data( tiles_data_pos );
+				
+				if( _local_scr_ind < data.screen_data_cnt() )
+				{
+					data.copy_screen( _local_scr_ind );
+				
+					return true;
+				}
 			}
 			
 			return false;
 		}
 		
-		public bool screen_data_copy()
+		public void screen_data_delete( int _local_scr_pos )
 		{
-			if( tiles_data_pos >= 0 && scr_data_pos >= 0 && scr_data_cnt > 0 )
+			if( tiles_data_pos >= 0 && _local_scr_pos >= 0 )
 			{
-				get_tiles_data( tiles_data_pos ).copy_screen( scr_data_pos );
-				
-				return true;
-			}
-			
-			return false;
-		}
-		
-		public void screen_data_delete( bool _global_update = true )
-		{
-			if( tiles_data_pos >= 0 && scr_data_pos >= 0 )
-			{
-				get_tiles_data( tiles_data_pos ).delete_screen( scr_data_pos );
-				
-				if( _global_update )
-				{
-					--scr_data_pos;		// here is a global data update
-				}
-				else
-				{
-					--m_scr_data_pos;	// just a class's variable decrement ( silent screen deletion )
-				}
+				get_tiles_data( tiles_data_pos ).delete_screen( _local_scr_pos );
 			}
 		}
 		
@@ -712,19 +688,9 @@ namespace MAPeD
 		
 		private void dispatch_event_set_tiles_data()
 		{
-			dispatch_event_set_screen_data();			
-			
 			if( SetTilesData != null )
 			{
 				SetTilesData( this, null );
-			}
-		}
-		
-		private void dispatch_event_set_screen_data()
-		{
-			if( SetScreenData != null )
-			{
-				SetScreenData( this, null );
 			}
 		}
 		

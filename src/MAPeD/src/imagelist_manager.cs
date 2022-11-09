@@ -525,7 +525,7 @@ namespace MAPeD
 						
 						if( _update_images )
 						{
-							m_scr_list.replace( img_ind, create_screen_image( screen_n, data, _curr_bank_id == bank_n, _scr_type, _view_type, _prop_per_block ) );
+							m_scr_list.replace( img_ind, create_screen_image( screen_n, data, _curr_bank_id == bank_n, _scr_type, _view_type, _prop_per_block ), true );
 						}
 						
 					 	lst 				= new ListViewItem();
@@ -544,7 +544,7 @@ namespace MAPeD
 		
 		public void update_active_bank_screen( int _glob_screen_n, int _local_screen_n, tiles_data _data, data_sets_manager.EScreenDataType _scr_type )
 		{
-			m_scr_list.replace( _glob_screen_n, create_screen_image( _local_screen_n, _data, true, _scr_type, utils.ETileViewType.tvt_Graphics, false ) );
+			m_scr_list.replace( _glob_screen_n, create_screen_image( _local_screen_n, _data, true, _scr_type, utils.ETileViewType.tvt_Graphics, false ), true );
 		}
 		
 		private Bitmap create_screen_image( int _screen_n, tiles_data _data, bool _active_bank, data_sets_manager.EScreenDataType _scr_type, utils.ETileViewType _view_type, bool _prop_per_block )
@@ -734,10 +734,10 @@ namespace MAPeD
 				
 				for( i = size - 1; i > _scr_global_ind; i-- )
 				{
-					m_scr_list.replace( i, m_scr_list.get( i - 1 ) );
+					m_scr_list.replace( i, m_scr_list.get( i - 1 ), false );
 				}
 				
-				m_scr_list.replace( _scr_global_ind, bmp );
+				m_scr_list.replace( _scr_global_ind, bmp, false );
 			}			
 					
 		 	ListViewItem lst 	= new ListViewItem();

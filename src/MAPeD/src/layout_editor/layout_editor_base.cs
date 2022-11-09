@@ -568,8 +568,6 @@ namespace MAPeD
 				
 				m_behaviour.mouse_leave( sender, e );
 				
-				m_shared.m_sel_screen_slot_id = -1;
-				
 				update();
 			}
 		}

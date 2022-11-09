@@ -20,7 +20,7 @@ namespace MAPeD
 	{
 		void	set_image_list_size( Size _size );
 		void 	add( Image _img );
-		bool	replace( int _ind, Image _img );
+		bool	replace( int _ind, Image _img, bool _dispose_old );
 		Image	get( int _ind );
 		bool	remove( int _ind );
 		int		count();
@@ -46,11 +46,15 @@ namespace MAPeD
 			m_img_list.Images.Add( _img );
 		}
 
-		public virtual bool	replace( int _ind, Image _img )
+		public virtual bool	replace( int _ind, Image _img, bool _dispose_old )
 		{
 			if( _ind >= 0 && _ind < m_img_list.Images.Count )
 			{
-				m_img_list.Images[ _ind ].Dispose();
+				if( _dispose_old )
+				{
+					m_img_list.Images[ _ind ].Dispose();
+				}
+				
 				m_img_list.Images[ _ind ] = _img;
 				
 				return true;
@@ -105,7 +109,7 @@ namespace MAPeD
 		
 		private Bitmap scale_img( Image _img )
 		{
-			Bitmap bmp = new Bitmap( m_img_list.ImageSize.Width, m_img_list.ImageSize.Height, PixelFormat.Format24bppRgb );
+			Bitmap bmp = new Bitmap( m_img_list.ImageSize.Width, m_img_list.ImageSize.Height, PixelFormat.Format32bppPArgb );
 			
 			Graphics gfx = Graphics.FromImage( bmp );
 			
@@ -125,11 +129,15 @@ namespace MAPeD
 			base.add( scale_img( _img ) );
 		}
 
-		public override bool replace( int _ind, Image _img )
+		public override bool replace( int _ind, Image _img, bool _dispose_old )
 		{
-			if( base.replace( _ind, scale_img( _img ) ) )
+			if( base.replace( _ind, scale_img( _img ), _dispose_old ) )
 			{
-				m_os_img_list[ _ind ].Dispose();
+				if( _dispose_old )
+				{
+					m_os_img_list[ _ind ].Dispose();
+				}
+				
 				m_os_img_list[ _ind ] = _img;
 				
 				return true;

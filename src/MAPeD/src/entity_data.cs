@@ -317,7 +317,7 @@ namespace MAPeD
 				
 				if( m_bmp == null )
 				{
-					m_bmp = new Bitmap( width, height, PixelFormat.Format24bppRgb );
+					m_bmp = new Bitmap( width, height, PixelFormat.Format32bppPArgb );
 				}
 				
 				Graphics.FromImage( m_bmp ).Clear( m_color );

@@ -1064,7 +1064,6 @@ namespace MAPeD
 										progress_bar_show( true, "Image Data Importing..." );
 										
 										// needed to properly remove screens of invalid layout
-										m_data_manager.scr_data_pos = m_data_manager.scr_data_cnt - 1;
 										m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;										
 										
 										await Task.Run( () => m_import_tiles_form.data_processing( bmp, m_data_manager, create_layout_with_empty_screens_beg, m_progress_val, m_progress_status ) );
@@ -1457,7 +1456,6 @@ namespace MAPeD
 			// force update of screens if needed
 			update_screens_if_needed();
 
-			m_data_manager.scr_data_pos 	= -1;
 			m_data_manager.tiles_data_pos 	= chr_bank_cbox.SelectedIndex;
 			
 			palette_group.Instance.active_palette = 0;
@@ -2574,21 +2572,18 @@ namespace MAPeD
 #endif		
 		}
 #endregion		
-// LAYOUT EDITOR *************************************************************************************//		
+// LAYOUT EDITOR *************************************************************************************//
 #region layout editor
 		int create_screen()
 		{
-			int scr_glob_ind = -1;
+			int scr_glob_ind	= -1;
+			int scr_local_ind	= -1;
 			
-			if( m_data_manager.screen_data_create() == true )
+			if( ( scr_local_ind = m_data_manager.screen_data_create() ) >= 0 )
 			{
-				if( ( scr_glob_ind = insert_screen_into_layouts( m_data_manager.scr_data_cnt - 1 ) ) >= 0 )
+				if( ( scr_glob_ind = insert_screen_into_layouts( scr_local_ind ) ) < 0 )
 				{
-					m_data_manager.scr_data_pos = m_data_manager.scr_data_cnt - 1;
-				}
-				else
-				{
-					m_data_manager.screen_data_delete();
+					m_data_manager.screen_data_delete( scr_local_ind );
 					
 					message_box( "Can't create screen!\nThe maximum allowed number of screens - " + utils.CONST_SCREEN_MAX_CNT, "Failed to Create Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 				}
@@ -2609,8 +2604,7 @@ namespace MAPeD
 		
 		void delete_screen( int _scr_local_ind )
 		{
-			m_data_manager.scr_data_pos = _scr_local_ind ;
-			m_data_manager.screen_data_delete();
+			m_data_manager.screen_data_delete( _scr_local_ind );
 
 			m_data_manager.remove_screen_from_layouts( CBoxCHRBanks.SelectedIndex, _scr_local_ind  );
 			
@@ -2769,17 +2763,11 @@ namespace MAPeD
 
 		void delete_last_layout_and_screens()
 		{
-			layout_data layout = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
+			int size = m_data_manager.scr_data_cnt;
 			
-			for( int y = 0; y < layout.get_height(); y++ )
+			for( int scr_n = 0; scr_n < size; scr_n++ )
 			{
-				for( int x = 0; x < layout.get_width(); x++ )
-				{
-					if( layout.get_data( x, y ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
-					{
-						m_data_manager.screen_data_delete( false );
-					}
-				}
+				delete_screen( 0 );
 			}
 			
 			m_data_manager.layout_data_delete( false );
@@ -2807,15 +2795,17 @@ namespace MAPeD
 				// create screens and fill the layout
 				{
 					int scr_global_ind;
+					int scr_local_ind;
+					
 					layout_screen_data scr_data;
 					
 					for( int y = 0; y < _scr_height; y++ )
 					{
 						for( int x = 0; x < _scr_width; x++ )
 						{
-							m_data_manager.screen_data_create();
+							scr_local_ind = m_data_manager.screen_data_create();
 							
-							scr_global_ind = m_data_manager.get_global_screen_ind( m_data_manager.tiles_data_pos, m_data_manager.scr_data_cnt - 1 );
+							scr_global_ind = m_data_manager.get_global_screen_ind( m_data_manager.tiles_data_pos, scr_local_ind );
 							
 							if( scr_global_ind < utils.CONST_SCREEN_MAX_CNT )
 							{
@@ -2828,7 +2818,7 @@ namespace MAPeD
 							else
 							{
 								// delete the last screen manually, cause it wasn't added to the layout
-								m_data_manager.screen_data_delete( false );
+								m_data_manager.screen_data_delete( scr_local_ind );
 								
 								// clear all created screens and layout
 								delete_last_layout_and_screens();
@@ -2872,8 +2862,6 @@ namespace MAPeD
 				ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_pos;
 				
 				palette_group.Instance.set_palette( get_curr_tiles_data() );
-				
-				m_data_manager.scr_data_pos = m_data_manager.scr_data_cnt - 1;
 				
 				return true;
 			}
@@ -3306,7 +3294,6 @@ namespace MAPeD
 			{
 				if( m_data_manager.tiles_data_pos >= 0 && m_create_layout_form.ShowDialog() == DialogResult.OK )
 				{
-					m_data_manager.scr_data_pos = m_data_manager.scr_data_cnt - 1;
 					m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;
 					
 					if( create_layout_with_empty_screens_end( create_layout_with_empty_screens_beg( m_create_layout_form.layout_width, m_create_layout_form.layout_height ) ) != false )
