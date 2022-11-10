@@ -596,7 +596,7 @@ namespace MAPeD
 			
 			if( _on )
 			{
-				layoutToolStripMenuItem.Enabled = _on;
+				builderToolStripMenuItem.Enabled = _on;
 			}
 			
 			RBtnScreenDataTiles.Enabled = RBtnScreenDataBlocks.Enabled = _on;
@@ -709,7 +709,10 @@ namespace MAPeD
 				tabControlLayoutTools.SelectTab( TabBuilder );
 			}
 			
-			screensToolStripMenuItem.Enabled = layoutToolStripMenuItem.Enabled = entitiesToolStripMenuItem.Enabled = false;
+			builderToolStripMenuItem.Enabled	= 
+			screensToolStripMenuItem.Enabled	= 
+			entitiesToolStripMenuItem.Enabled	= 
+			patternsToolStripMenuItem.Enabled	= false;
 			
 			set_title_name( null );
 			
@@ -3168,27 +3171,6 @@ namespace MAPeD
 			}
 		}
 		
-		void LayoutDeleteAllEntityInstancesToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
-			
-			if( m_data_manager.layouts_data_cnt > 0 && message_box( "Are you sure?", "Delete All Entity Instances", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
-			{
-				m_data_manager.get_layout_data( m_data_manager.layouts_data_pos ).delete_all_entities();
-				
-				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
-				
-				if( ent_inst != null )
-				{
-					fill_entity_data( null );
-					
-					CheckBoxPickupTargetEntity.Checked = false;
-				}
-				
-				set_status_msg( "Layout Editor: all entity instances deleted" );
-			}
-		}
-		
 		void LayoutDeleteAllScreenMarksToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			if( m_data_manager.layouts_data_cnt > 0 && message_box( "Are you sure?", "Delete All Screen Marks", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
@@ -4144,6 +4126,27 @@ namespace MAPeD
 			}
 		}
 		
+		void EntitiesDeleteAllEntityInstancesToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
+			
+			if( m_data_manager.layouts_data_cnt > 0 && message_box( "Are you sure?", "Delete All Entity Instances", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			{
+				m_data_manager.get_layout_data( m_data_manager.layouts_data_pos ).delete_all_entities();
+				
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
+				
+				if( ent_inst != null )
+				{
+					fill_entity_data( null );
+					
+					CheckBoxPickupTargetEntity.Checked = false;
+				}
+				
+				set_status_msg( "Entities Editor: all entity instances deleted" );
+			}
+		}
+		
 		void update_active_entity()
 		{
 			entity_data sel_ent = get_selected_entity();
@@ -4212,7 +4215,10 @@ namespace MAPeD
 			{
 				LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = false;
 				
-				screensToolStripMenuItem.Enabled = layoutToolStripMenuItem.Enabled = entitiesToolStripMenuItem.Enabled = false;
+				screensToolStripMenuItem.Enabled	= 
+				builderToolStripMenuItem.Enabled	= 
+				entitiesToolStripMenuItem.Enabled	= 
+				patternsToolStripMenuItem.Enabled	= false;
 				
 				ListViewScreens.SelectedItems.Clear();
 				
@@ -4226,7 +4232,7 @@ namespace MAPeD
 			
 			if( curr_tab == TabBuilder )
 			{
-				layoutToolStripMenuItem.Enabled = true;
+				builderToolStripMenuItem.Enabled = true;
 
 				m_layout_editor.mode = layout_editor_base.EMode.em_Builder;
 			}
@@ -4685,8 +4691,6 @@ namespace MAPeD
 			BtnPatternRename.Enabled		= _on;
 			
 			BtnPatternReset.Enabled			= _on;
-			
-			patternsToolStripMenuItem.Enabled	= _on;
 		}
 
 		void patterns_manager_update_tree_view()
