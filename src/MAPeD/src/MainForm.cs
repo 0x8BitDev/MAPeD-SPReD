@@ -45,7 +45,6 @@ namespace MAPeD
 		private readonly image_preview		m_tile_preview		= null;
 		private readonly image_preview		m_pattern_preview	= null;
 		
-		private int	m_pattern_scale_pow		= 0;
 		private readonly Bitmap		m_pattern_image	= null;
 		private readonly Graphics	m_pattern_gfx	= null;
 		
@@ -165,14 +164,13 @@ namespace MAPeD
 				// set the builder mode by default
 				m_layout_editor.mode = layout_editor_base.EMode.em_Builder;
 				
-				m_tile_preview = new image_preview( PBoxActiveTile );
+				m_tile_preview = new image_preview( PBoxActiveTile, false );
 			}
 			
 			// patterns manager
 			{
-				m_pattern_preview = new image_preview( PBoxPatternPreview );
+				m_pattern_preview = new image_preview( PBoxPatternPreview, true );
 				
-				PBoxPatternPreview.MouseWheel += new MouseEventHandler( PatternsMngr_MouseWheel );
 				PBoxPatternPreview.MouseEnter += new EventHandler( PatternsMngr_MouseEnter );
 				PBoxPatternPreview.MouseLeave += new EventHandler( PatternsMngr_MouseLeave );
 				
@@ -189,7 +187,10 @@ namespace MAPeD
 			m_data_manager.AddGroup		+= TreeViewEntities_add_group;
 			m_data_manager.DeleteGroup 	+= TreeViewEntities_delete_group;
 			
-			m_entity_preview = new image_preview( PBoxEntityPreview );
+			m_entity_preview = new image_preview( PBoxEntityPreview, true );
+
+			PBoxEntityPreview.MouseEnter += new EventHandler( EntitiesMngr_MouseEnter );
+			PBoxEntityPreview.MouseLeave += new EventHandler( EntitiesMngr_MouseLeave );
 			
 			m_status_bar_label = StatusBarLabel;
 			
@@ -686,7 +687,8 @@ namespace MAPeD
 			CBoxBlockObjId.SelectedIndex = 0;
 			CBoxBlockObjId.Tag = null;
 			
-			ComboBoxEntityZoom.SelectedIndex = 0;
+			m_entity_preview.reset_scale();
+			m_pattern_preview.reset_scale();
 
 			m_layout_editor.reset( false );
 			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), -1, m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
@@ -1733,7 +1735,7 @@ namespace MAPeD
 			}
 			else
 			{
-				message_box( "There are no CHR banks!", "Reorder CHR Banks", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "No data!", "Reorder CHR Banks", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
@@ -2408,9 +2410,9 @@ namespace MAPeD
 
 		void BtnOptimizationClick_Event(object sender, EventArgs e)
 		{
-			if( m_data_manager.tiles_data_cnt == 0 )			
+			if( m_data_manager.tiles_data_cnt == 0 )
 			{
-				message_box( "There is no data!", "Data Optimization", MessageBoxButtons.OK );
+				message_box( "No data!", "Data Optimization", MessageBoxButtons.OK );
 			}
 			else
 			{
@@ -4108,11 +4110,6 @@ namespace MAPeD
 		    }
 		}
 
-		void ComboBoxEntityZoomChanged_Event(object sender, EventArgs e)
-		{
-			update_entity_preview();
-		}
-		
 		void update_entity_preview( bool _force_disable = false )
 		{
 			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
@@ -4121,11 +4118,16 @@ namespace MAPeD
 			
 			if( ent != null )
 			{
-				m_entity_preview.update( ent.bitmap, ent.width, ent.height, ent.pivot_x, ent.pivot_y, ( int )Math.Pow( 2.0, ComboBoxEntityZoom.SelectedIndex ), true );
+				m_entity_preview.set_scaled_image( ent.bitmap );
+				m_entity_preview.set_scaled_image_pivot( ent.pivot_x, ent.pivot_y );
+				m_entity_preview.scale_enabled( true );
+				m_entity_preview.update_scaled( true );
 			}
 			else
 			{
-				m_entity_preview.update( null, -1, -1, -1, -1, -1, false );
+				m_entity_preview.set_scaled_image( null );
+				m_entity_preview.scale_enabled( false );
+				m_entity_preview.update_scaled( true );
 			}
 			
 			if( CheckBoxShowEntities.Checked )
@@ -4321,6 +4323,22 @@ namespace MAPeD
 						layout_editor_set_entity_mode( layout_editor_param.CONST_SET_ENT_INST_EDIT );
 					}
 				}
+			}
+		}
+		
+		private void EntitiesMngr_MouseEnter(object sender, EventArgs e)
+		{
+			if( TreeViewEntities.Enabled )
+			{
+				m_entity_preview.set_focus();
+			}
+		}
+
+		private void EntitiesMngr_MouseLeave(object sender, EventArgs e)
+		{
+			if( TreeViewEntities.Enabled )
+			{
+				TreeViewEntities.Focus();
 			}
 		}
 
@@ -4638,7 +4656,7 @@ namespace MAPeD
 		
 		void patterns_manager_update_data()
 		{
-			m_pattern_scale_pow = 0;
+			m_pattern_preview.reset_scale();
 			
 			patterns_manager_reset_state();
 			
@@ -4911,10 +4929,13 @@ namespace MAPeD
 
 		void patterns_manager_update_preview()
 		{
+			m_pattern_preview.set_scaled_image( null );
+			m_pattern_preview.scale_enabled( false );
+			
 			if( TreeViewPatterns.SelectedNode == null )
 			{
 				// redraw a current selected pattern
-				m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
+				m_pattern_preview.update_scaled( true );
 				
 				m_pattern_preview.draw_string( "Patterns are often-used combinations of tiles.\nHere you can create and manage them.\n\n- Select or create a new patterns group\n\n- Click the 'Add' pattern button to add a new one.\n\n- Select a pattern in the tree view to put it on a map.\n\n- Scale selected pattern using a mouse wheel.", 0, 0 );
 			}
@@ -4923,7 +4944,7 @@ namespace MAPeD
 				if( CheckBoxPatternAdd.Checked )
 				{
 					// redraw a current selected pattern
-					m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
+					m_pattern_preview.update_scaled( true );
 					
 					m_pattern_preview.draw_string( "Select rectangle area in the layout viewport\nto create a pattern.", 0, 0 );
 				}
@@ -4933,7 +4954,7 @@ namespace MAPeD
 					
 					if( node == null || node.Parent == null )
 					{
-						m_pattern_preview.update( null, -1, -1, -1, -1, -1, false, false );
+						m_pattern_preview.update_scaled( true );
 					
 						m_pattern_preview.draw_string( "Select a pattern or create a new one.", 0, 0 );
 					}
@@ -4948,14 +4969,15 @@ namespace MAPeD
 						}
 						
 						patterns_manager_update_pattern_image( pattern );
-						m_pattern_preview.update( m_pattern_image, m_pattern_image.Width, m_pattern_image.Height, 0, 0, ( int )Math.Pow( 2.0, ( double )m_pattern_scale_pow ), false, false );
+						
+						m_pattern_preview.set_scaled_image( m_pattern_image );
+						m_pattern_preview.scale_enabled( true );
+						m_pattern_preview.update_scaled( true );
 						
 						m_pattern_preview.draw_string( "Put the <" + node.Name + " [" + pattern.width + "x" + pattern.height + "]> on a map.", 0, 0 );
 					}
 				}
 			}
-			
-			m_pattern_preview.invalidate();
 		}
 		
 		private void patterns_manager_update_pattern_image( pattern_data _pttrn )
@@ -5188,19 +5210,6 @@ namespace MAPeD
 			}
 		}
 
-		private void PatternsMngr_MouseWheel(object sender, MouseEventArgs e)
-		{
-			if( TreeViewPatterns.Enabled )
-			{
-				m_pattern_scale_pow += Math.Sign( e.Delta );
-				
-				m_pattern_scale_pow = m_pattern_scale_pow < 0 ? 0:m_pattern_scale_pow;
-				m_pattern_scale_pow = m_pattern_scale_pow > 3 ? 3:m_pattern_scale_pow;
-				
-				patterns_manager_update_preview();
-			}
-		}
-		
 		private void PatternsMngr_MouseEnter(object sender, EventArgs e)
 		{
 			if( TreeViewPatterns.Enabled )

@@ -60,6 +60,7 @@ namespace MAPeD
 			this.addBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.reorderBanksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CHRBankPageBtnsToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.prevPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -283,7 +284,6 @@ namespace MAPeD
 			this.BtnEntitiesEditInstancesMode = new System.Windows.Forms.Button();
 			this.CheckBoxEntitySnapping = new System.Windows.Forms.CheckBox();
 			this.groupBoxEntityEditor = new System.Windows.Forms.GroupBox();
-			this.ComboBoxEntityZoom = new System.Windows.Forms.ComboBox();
 			this.CheckBoxPickupTargetEntity = new System.Windows.Forms.CheckBox();
 			this.PBoxEntityPreview = new System.Windows.Forms.PictureBox();
 			this.NumericUpDownEntityUID = new System.Windows.Forms.NumericUpDown();
@@ -301,7 +301,6 @@ namespace MAPeD
 			this.LabelEntityName = new System.Windows.Forms.Label();
 			this.TextBoxEntityProperties = new System.Windows.Forms.TextBox();
 			this.TextBoxEntityInstanceProp = new System.Windows.Forms.TextBox();
-			this.label7 = new System.Windows.Forms.Label();
 			this.TabPatterns = new System.Windows.Forms.TabPage();
 			this.splitContainer10 = new System.Windows.Forms.SplitContainer();
 			this.splitContainer11 = new System.Windows.Forms.SplitContainer();
@@ -657,6 +656,7 @@ namespace MAPeD
 									this.addBankToolStripMenuItem,
 									this.deleteBankToolStripMenuItem,
 									this.copyBankToolStripMenuItem,
+									this.toolStripSeparator18,
 									this.reorderBanksToolStripMenuItem,
 									this.CHRBankPageBtnsToolStripSeparator,
 									this.prevPageToolStripMenuItem,
@@ -687,6 +687,11 @@ namespace MAPeD
 			this.copyBankToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.copyBankToolStripMenuItem.Text = "&Copy Bank";
 			this.copyBankToolStripMenuItem.Click += new System.EventHandler(this.BtnCopyCHRBankClick_Event);
+			// 
+			// toolStripSeparator18
+			// 
+			this.toolStripSeparator18.Name = "toolStripSeparator18";
+			this.toolStripSeparator18.Size = new System.Drawing.Size(187, 6);
 			// 
 			// reorderBanksToolStripMenuItem
 			// 
@@ -1190,21 +1195,21 @@ namespace MAPeD
 			// addPatternToolStripMenuItem1
 			// 
 			this.addPatternToolStripMenuItem1.Name = "addPatternToolStripMenuItem1";
-			this.addPatternToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.addPatternToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
 			this.addPatternToolStripMenuItem1.Text = "&Add";
 			this.addPatternToolStripMenuItem1.Click += new System.EventHandler(this.BtnPatternAddClick_Event);
 			// 
 			// deletePatternToolStripMenuItem
 			// 
 			this.deletePatternToolStripMenuItem.Name = "deletePatternToolStripMenuItem";
-			this.deletePatternToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.deletePatternToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.deletePatternToolStripMenuItem.Text = "&Delete";
 			this.deletePatternToolStripMenuItem.Click += new System.EventHandler(this.BtnPatternDeleteClick_Event);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(104, 6);
 			// 
 			// groupPatternToolStripMenuItem
 			// 
@@ -1212,7 +1217,7 @@ namespace MAPeD
 									this.addPatternGroupToolStripMenuItem1,
 									this.deletePatternGroupToolStripMenuItem});
 			this.groupPatternToolStripMenuItem.Name = "groupPatternToolStripMenuItem";
-			this.groupPatternToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.groupPatternToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.groupPatternToolStripMenuItem.Text = "&Group";
 			// 
 			// addPatternGroupToolStripMenuItem1
@@ -1232,7 +1237,7 @@ namespace MAPeD
 			// toolStripSeparator16
 			// 
 			this.toolStripSeparator16.Name = "toolStripSeparator16";
-			this.toolStripSeparator16.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator16.Size = new System.Drawing.Size(104, 6);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -1912,7 +1917,7 @@ namespace MAPeD
 			this.GrpBoxScreenData.Controls.Add(this.label12);
 			this.GrpBoxScreenData.Location = new System.Drawing.Point(437, 370);
 			this.GrpBoxScreenData.Name = "GrpBoxScreenData";
-			this.GrpBoxScreenData.Size = new System.Drawing.Size(122, 140);
+			this.GrpBoxScreenData.Size = new System.Drawing.Size(122, 203);
 			this.GrpBoxScreenData.TabIndex = 33;
 			this.GrpBoxScreenData.TabStop = false;
 			this.GrpBoxScreenData.Text = "Screen Data:";
@@ -2937,7 +2942,6 @@ namespace MAPeD
 			// 
 			// groupBoxEntityEditor
 			// 
-			this.groupBoxEntityEditor.Controls.Add(this.ComboBoxEntityZoom);
 			this.groupBoxEntityEditor.Controls.Add(this.CheckBoxPickupTargetEntity);
 			this.groupBoxEntityEditor.Controls.Add(this.PBoxEntityPreview);
 			this.groupBoxEntityEditor.Controls.Add(this.NumericUpDownEntityUID);
@@ -2951,29 +2955,12 @@ namespace MAPeD
 			this.groupBoxEntityEditor.Controls.Add(this.LabelEntityName);
 			this.groupBoxEntityEditor.Controls.Add(this.TextBoxEntityProperties);
 			this.groupBoxEntityEditor.Controls.Add(this.TextBoxEntityInstanceProp);
-			this.groupBoxEntityEditor.Controls.Add(this.label7);
 			this.groupBoxEntityEditor.Location = new System.Drawing.Point(3, 3);
 			this.groupBoxEntityEditor.Name = "groupBoxEntityEditor";
 			this.groupBoxEntityEditor.Size = new System.Drawing.Size(283, 283);
 			this.groupBoxEntityEditor.TabIndex = 111;
 			this.groupBoxEntityEditor.TabStop = false;
 			this.groupBoxEntityEditor.Text = "Active Entity";
-			// 
-			// ComboBoxEntityZoom
-			// 
-			this.ComboBoxEntityZoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.ComboBoxEntityZoom.FormattingEnabled = true;
-			this.ComboBoxEntityZoom.Items.AddRange(new object[] {
-									"x1",
-									"x2",
-									"x4",
-									"x8",
-									"x16"});
-			this.ComboBoxEntityZoom.Location = new System.Drawing.Point(222, 254);
-			this.ComboBoxEntityZoom.Name = "ComboBoxEntityZoom";
-			this.ComboBoxEntityZoom.Size = new System.Drawing.Size(44, 21);
-			this.ComboBoxEntityZoom.TabIndex = 125;
-			this.ComboBoxEntityZoom.SelectedIndexChanged += new System.EventHandler(this.ComboBoxEntityZoomChanged_Event);
 			// 
 			// CheckBoxPickupTargetEntity
 			// 
@@ -3196,14 +3183,6 @@ namespace MAPeD
 			this.TextBoxEntityInstanceProp.TabIndex = 115;
 			this.TextBoxEntityInstanceProp.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBoxEntityPropertiesKeyPress_Event);
 			this.TextBoxEntityInstanceProp.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TextBoxEntityInstancePropTextKeyUp_Event);
-			// 
-			// label7
-			// 
-			this.label7.Location = new System.Drawing.Point(176, 257);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(49, 20);
-			this.label7.TabIndex = 124;
-			this.label7.Text = "Zoom:";
 			// 
 			// TabPatterns
 			// 
@@ -4030,6 +4009,7 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator18;
 		private System.Windows.Forms.CheckBox CheckBoxPatternAdd;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;
 		private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem1;
@@ -4103,8 +4083,6 @@ namespace MAPeD
 		private System.Windows.Forms.Button BtnPltDelete;
 		private System.Windows.Forms.ComboBox CBoxPalettes;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator28;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.ComboBox ComboBoxEntityZoom;
 		private System.Windows.Forms.Button BtnSwapColors;
 		private System.Windows.Forms.ToolStripMenuItem statisticsToolStripMenuItem;
 		private System.Windows.Forms.Button BtnCreateLayoutWxH;

@@ -993,8 +993,9 @@ namespace MAPeD
 				disable( true );
 				
 				print( "[ Pan the viewport using a LEFT mouse button and scale it using a mouse wheel ]", 0, 0 );
-				print( "Painter/Screen List/Entities modes:", 0, 20 );
+				print( "Painter/Screens/Entities/Patterns modes:", 0, 20 );
 				print( "- Hold down the 'Ctrl' key to pan the viewport", 0, 30 );
+				print( "Use a mouse wheel to scale an entity/pattern preview", 0, 50 );
 			}
 			
 			invalidate();

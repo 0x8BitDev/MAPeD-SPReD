@@ -43,7 +43,7 @@ namespace MAPeD
 			//
 			InitializeComponent();
 			
-			m_blocks_preview	= new image_preview( PBoxBlocks2x2 );
+			m_blocks_preview	= new image_preview( PBoxBlocks2x2, false );
 			m_blocks_preview.enable_smoothing_mode( false );
 		}
 		
