@@ -131,7 +131,6 @@ namespace MAPeD
 			this.groupPatternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addPatternGroupToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.deletePatternGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.quickGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator27 = new System.Windows.Forms.ToolStripSeparator();
@@ -1186,8 +1185,7 @@ namespace MAPeD
 									this.addPatternToolStripMenuItem1,
 									this.deletePatternToolStripMenuItem,
 									this.toolStripSeparator5,
-									this.groupPatternToolStripMenuItem,
-									this.toolStripSeparator16});
+									this.groupPatternToolStripMenuItem});
 			this.patternsToolStripMenuItem.Name = "patternsToolStripMenuItem";
 			this.patternsToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
 			this.patternsToolStripMenuItem.Text = "&Patterns";
@@ -1195,21 +1193,21 @@ namespace MAPeD
 			// addPatternToolStripMenuItem1
 			// 
 			this.addPatternToolStripMenuItem1.Name = "addPatternToolStripMenuItem1";
-			this.addPatternToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+			this.addPatternToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.addPatternToolStripMenuItem1.Text = "&Add";
 			this.addPatternToolStripMenuItem1.Click += new System.EventHandler(this.BtnPatternAddClick_Event);
 			// 
 			// deletePatternToolStripMenuItem
 			// 
 			this.deletePatternToolStripMenuItem.Name = "deletePatternToolStripMenuItem";
-			this.deletePatternToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+			this.deletePatternToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.deletePatternToolStripMenuItem.Text = "&Delete";
 			this.deletePatternToolStripMenuItem.Click += new System.EventHandler(this.BtnPatternDeleteClick_Event);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(104, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
 			// 
 			// groupPatternToolStripMenuItem
 			// 
@@ -1217,7 +1215,7 @@ namespace MAPeD
 									this.addPatternGroupToolStripMenuItem1,
 									this.deletePatternGroupToolStripMenuItem});
 			this.groupPatternToolStripMenuItem.Name = "groupPatternToolStripMenuItem";
-			this.groupPatternToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+			this.groupPatternToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.groupPatternToolStripMenuItem.Text = "&Group";
 			// 
 			// addPatternGroupToolStripMenuItem1
@@ -1233,11 +1231,6 @@ namespace MAPeD
 			this.deletePatternGroupToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.deletePatternGroupToolStripMenuItem.Text = "&Delete";
 			this.deletePatternGroupToolStripMenuItem.Click += new System.EventHandler(this.BtnPatternGroupDeleteClick_Event);
-			// 
-			// toolStripSeparator16
-			// 
-			this.toolStripSeparator16.Name = "toolStripSeparator16";
-			this.toolStripSeparator16.Size = new System.Drawing.Size(104, 6);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -4022,7 +4015,6 @@ namespace MAPeD
 		private System.Windows.Forms.ContextMenuStrip ContextMenuStripPatternItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
 		private System.Windows.Forms.ContextMenuStrip ContextMenuStripPatternsTreeViewGroup;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
 		private System.Windows.Forms.ToolStripMenuItem deletePatternGroupToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addPatternGroupToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem groupPatternToolStripMenuItem;

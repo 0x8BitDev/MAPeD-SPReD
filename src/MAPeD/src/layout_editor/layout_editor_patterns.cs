@@ -556,7 +556,7 @@ namespace MAPeD
 					}
 					break;
 					
-				case layout_editor_param.CONST_SET_PTTRN_PUT:
+				case layout_editor_param.CONST_SET_PTTRN_PLACE:
 					{
 						m_mode = EMode.em_Pattern_Put;
 						
@@ -591,7 +591,7 @@ namespace MAPeD
 					}
 					break;
 
-				case layout_editor_param.CONST_SUBSCR_PTTRN_PUT_CANCEL:
+				case layout_editor_param.CONST_SUBSCR_PTTRN_PLACE_CANCEL:
 					{
 						this.PatternPutCancel += new EventHandler( _method );
 					}

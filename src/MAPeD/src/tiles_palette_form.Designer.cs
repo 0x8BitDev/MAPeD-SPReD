@@ -37,10 +37,10 @@ namespace MAPeD
 			this.PanelPaletteTiles = new System.Windows.Forms.FlowLayoutPanel();
 			this.PanelPaletteBlocks = new System.Windows.Forms.FlowLayoutPanel();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.BtnBlocks = new System.Windows.Forms.Button();
 			this.BtnTiles = new System.Windows.Forms.Button();
 			this.BtnClose = new System.Windows.Forms.Button();
-			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -98,6 +98,26 @@ namespace MAPeD
 			this.splitContainer1.SplitterDistance = 537;
 			this.splitContainer1.TabIndex = 5;
 			// 
+			// splitContainer2
+			// 
+			this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.splitContainer2.IsSplitterFixed = true;
+			this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer2.Name = "splitContainer2";
+			// 
+			// splitContainer2.Panel1
+			// 
+			this.splitContainer2.Panel1.Controls.Add(this.BtnBlocks);
+			this.splitContainer2.Panel1.Controls.Add(this.BtnTiles);
+			// 
+			// splitContainer2.Panel2
+			// 
+			this.splitContainer2.Panel2.Controls.Add(this.BtnClose);
+			this.splitContainer2.Size = new System.Drawing.Size(554, 32);
+			this.splitContainer2.SplitterDistance = 459;
+			this.splitContainer2.TabIndex = 0;
+			// 
 			// BtnBlocks
 			// 
 			this.BtnBlocks.Location = new System.Drawing.Point(93, 4);
@@ -129,26 +149,6 @@ namespace MAPeD
 			this.BtnClose.UseVisualStyleBackColor = true;
 			this.BtnClose.Click += new System.EventHandler(this.BtnCloseClick_Event);
 			// 
-			// splitContainer2
-			// 
-			this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-			this.splitContainer2.IsSplitterFixed = true;
-			this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-			this.splitContainer2.Name = "splitContainer2";
-			// 
-			// splitContainer2.Panel1
-			// 
-			this.splitContainer2.Panel1.Controls.Add(this.BtnBlocks);
-			this.splitContainer2.Panel1.Controls.Add(this.BtnTiles);
-			// 
-			// splitContainer2.Panel2
-			// 
-			this.splitContainer2.Panel2.Controls.Add(this.BtnClose);
-			this.splitContainer2.Size = new System.Drawing.Size(554, 32);
-			this.splitContainer2.SplitterDistance = 459;
-			this.splitContainer2.TabIndex = 0;
-			// 
 			// tiles_palette_form
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -158,7 +158,7 @@ namespace MAPeD
 			this.IsMdiContainer = true;
 			this.Name = "tiles_palette_form";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Palette";
+			this.Text = "Tiles/Blocks Palette";
 			this.TopMost = true;
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Closing_Event);
 			this.Load += new System.EventHandler(this.BtnCloseClick_Event);

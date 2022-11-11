@@ -154,7 +154,7 @@ namespace MAPeD
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SUBSCR_SCR_RESET_SELECTED, MainForm_ResetSelectedScreen );
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE, update_tile_image );
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_EXTRACT_END, MainForm_pattern_extract_end );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_PUT_CANCEL, MainForm_pattern_put_cancel );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_PLACE_CANCEL, MainForm_pattern_place_cancel );
 				
 				m_layout_editor.set_param( layout_editor_param.CONST_SET_BASE_SUBSCR_DATA_MNGR, m_data_manager );
 				
@@ -4223,7 +4223,6 @@ namespace MAPeD
 				ListViewScreens.SelectedItems.Clear();
 				
 				TreeViewEntities.SelectedNode = null;
-				TreeViewPatterns.SelectedNode = null;
 				
 				CheckBoxPickupTargetEntity.Checked = false;
 				
@@ -4657,7 +4656,11 @@ namespace MAPeD
 		{
 			patterns_manager_reset_state();
 			
-			TreeViewPatterns.SelectedNode = TreeViewPatterns.TopNode;
+			TreeViewPatterns.SelectedNode = null;
+			
+			m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
+			
+			patterns_manager_update_preview();
 		}
 		
 		void patterns_manager_update_data()
@@ -4941,7 +4944,7 @@ namespace MAPeD
 				// redraw a current selected pattern
 				m_pattern_preview.update_scaled( true );
 				
-				m_pattern_preview.draw_string( "Patterns are often-used combinations of tiles.\nHere you can create and manage them.\n\n- Select or create a new patterns group\n\n- Click the 'Add' pattern button to add a new one.\n\n- Select a pattern in the tree view to put it on a map.\n\n- Scale selected pattern using a mouse wheel.", 0, 0 );
+				m_pattern_preview.draw_string( "Tile patterns are often-used combinations of tiles.\nHere you can create and manage them.\n\n- Select or create a new patterns group\n\n- Click the 'Add' pattern button to add a new one.\n\n- Select a pattern in the tree view to place it on a map.\n\n- Scale selected pattern using a mouse wheel.", 0, 0 );
 			}
 			else
 			{
@@ -4978,7 +4981,7 @@ namespace MAPeD
 						m_pattern_preview.scale_enabled( true );
 						m_pattern_preview.update_scaled( true );
 						
-						m_pattern_preview.draw_string( "Put the <" + node.Name + " [" + pattern.width + "x" + pattern.height + "]> on a map.", 0, 0 );
+						m_pattern_preview.draw_string( "Place the <" + node.Name + " [" + pattern.width + "x" + pattern.height + "]> on a map.", 0, 0 );
 					}
 				}
 			}
@@ -5121,7 +5124,7 @@ namespace MAPeD
 			}
 		}
 		
-		void MainForm_pattern_put_cancel(object sender, EventArgs e)
+		void MainForm_pattern_place_cancel(object sender, EventArgs e)
 		{
 			patterns_manager_reset_active_pattern();
 		}
@@ -5185,7 +5188,7 @@ namespace MAPeD
 		{
 			if( TreeViewPatterns.SelectedNode.Parent != null )
 			{
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_PUT, get_curr_tiles_data().get_pattern_by_name( TreeViewPatterns.SelectedNode.Name ) );
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_PLACE, get_curr_tiles_data().get_pattern_by_name( TreeViewPatterns.SelectedNode.Name ) );
 			}
 			else
 			{

@@ -40,7 +40,7 @@ namespace MAPeD
 		public const uint	CONST_SET_PNT_UPD_ACTIVE_BLOCK		= 0x002000;
 
 		public const uint	CONST_SET_PTTRN_EXTRACT_BEGIN		= 0x004000;
-		public const uint	CONST_SET_PTTRN_PUT					= 0x008000;
+		public const uint	CONST_SET_PTTRN_PLACE				= 0x008000;
 		public const uint	CONST_SET_PTTRN_IDLE_STATE			= 0x010000;
 		
 		public const uint	CONST_SET_BASE_MAP_SCALE_X1			= 0x020000;
@@ -59,7 +59,7 @@ namespace MAPeD
 		public const uint	CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE	= 0x04;
 		
 		public const uint	CONST_SUBSCR_PTTRN_EXTRACT_END		= 0x08;
-		public const uint	CONST_SUBSCR_PTTRN_PUT_CANCEL		= 0x10;
+		public const uint	CONST_SUBSCR_PTTRN_PLACE_CANCEL		= 0x10;
 	}
 	
 	/// <summary>
@@ -344,10 +344,7 @@ namespace MAPeD
 			m_pbox_rect.Width	= m_pix_box.Width;
 			m_pbox_rect.Height	= m_pix_box.Height;
 			
-			if( m_shared.m_layout != null )
-			{
-				clamp_offsets();
-			}
+			clamp_offsets();
 
 			base.Resize_Event(sender, e);
 		}
@@ -574,33 +571,36 @@ namespace MAPeD
 
 		private void clamp_offsets()
 		{
-			int width	= get_width() * platform_data.get_screen_width_pixels();
-			int height	= get_height() * platform_data.get_screen_height_pixels();
-			
-			int width_scaled	= ( int )( m_shared.m_scale * width );
-			int height_scaled	= ( int )( m_shared.m_scale * height );
-			
-			int tx = m_shared.m_scr_half_width - ( int )( m_shared.m_scr_half_width / m_shared.m_scale );
-			int ty = m_shared.m_scr_half_height - ( int )( m_shared.m_scr_half_height / m_shared.m_scale );
-
-			if( width_scaled < m_pix_box.Width )
+			if( m_shared.m_layout != null )
 			{
-				m_shared.m_offset_x = m_shared.m_scr_half_width - ( width >> 1 );
-			}
-			else
-			{
-				m_shared.m_offset_x = ( ( m_shared.m_offset_x + width + tx ) < m_pix_box.Width ) ? ( m_pix_box.Width - width - tx ):m_shared.m_offset_x;
-				m_shared.m_offset_x = m_shared.m_offset_x > tx ? tx:m_shared.m_offset_x;
-			}
-			
-			if( height_scaled < m_pix_box.Height )
-			{
-				m_shared.m_offset_y = m_shared.m_scr_half_height - ( height >> 1 );
-			}
-			else
-			{
-				m_shared.m_offset_y = ( ( m_shared.m_offset_y + height + ty ) < m_pix_box.Height ) ? ( m_pix_box.Height - height - ty ):m_shared.m_offset_y;
-				m_shared.m_offset_y = m_shared.m_offset_y > ty ? ty:m_shared.m_offset_y;
+				int width	= get_width() * platform_data.get_screen_width_pixels();
+				int height	= get_height() * platform_data.get_screen_height_pixels();
+				
+				int width_scaled	= ( int )( m_shared.m_scale * width );
+				int height_scaled	= ( int )( m_shared.m_scale * height );
+				
+				int tx = m_shared.m_scr_half_width - ( int )( m_shared.m_scr_half_width / m_shared.m_scale );
+				int ty = m_shared.m_scr_half_height - ( int )( m_shared.m_scr_half_height / m_shared.m_scale );
+	
+				if( width_scaled < m_pix_box.Width )
+				{
+					m_shared.m_offset_x = m_shared.m_scr_half_width - ( width >> 1 );
+				}
+				else
+				{
+					m_shared.m_offset_x = ( ( m_shared.m_offset_x + width + tx ) < m_pix_box.Width ) ? ( m_pix_box.Width - width - tx ):m_shared.m_offset_x;
+					m_shared.m_offset_x = m_shared.m_offset_x > tx ? tx:m_shared.m_offset_x;
+				}
+				
+				if( height_scaled < m_pix_box.Height )
+				{
+					m_shared.m_offset_y = m_shared.m_scr_half_height - ( height >> 1 );
+				}
+				else
+				{
+					m_shared.m_offset_y = ( ( m_shared.m_offset_y + height + ty ) < m_pix_box.Height ) ? ( m_pix_box.Height - height - ty ):m_shared.m_offset_y;
+					m_shared.m_offset_y = m_shared.m_offset_y > ty ? ty:m_shared.m_offset_y;
+				}
 			}
 		}
 
