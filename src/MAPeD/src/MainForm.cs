@@ -172,7 +172,6 @@ namespace MAPeD
 				m_pattern_preview = new image_preview( PBoxPatternPreview, true );
 				
 				PBoxPatternPreview.MouseEnter += new EventHandler( PatternsMngr_MouseEnter );
-				PBoxPatternPreview.MouseLeave += new EventHandler( PatternsMngr_MouseLeave );
 				
 				// create graphics for drawing patterns
 				int scr_tile_size = utils.CONST_SCREEN_TILES_SIZE >> 1;
@@ -190,7 +189,6 @@ namespace MAPeD
 			m_entity_preview = new image_preview( PBoxEntityPreview, true );
 
 			PBoxEntityPreview.MouseEnter += new EventHandler( EntitiesMngr_MouseEnter );
-			PBoxEntityPreview.MouseLeave += new EventHandler( EntitiesMngr_MouseLeave );
 			
 			m_status_bar_label = StatusBarLabel;
 			
@@ -4279,7 +4277,9 @@ namespace MAPeD
 
 			entity_instance ent_inst = args.param1 as entity_instance;
 			
-			if( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_INST_EDIT )
+			uint ent_mode = ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE );
+			
+			if( ent_mode == layout_editor_param.CONST_SET_ENT_INST_EDIT )
 			{
 				if( ent_inst != null )
 				{
@@ -4291,7 +4291,7 @@ namespace MAPeD
 				}
 			}
 			else
-			if( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_PICKUP_TARGET )
+			if( ent_mode == layout_editor_param.CONST_SET_ENT_PICKUP_TARGET )
 			{
 				entity_instance edit_ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 				
@@ -4338,15 +4338,7 @@ namespace MAPeD
 				m_entity_preview.set_focus();
 			}
 		}
-
-		private void EntitiesMngr_MouseLeave(object sender, EventArgs e)
-		{
-			if( TreeViewEntities.Enabled )
-			{
-				TreeViewEntities.Focus();
-			}
-		}
-
+		
 		void LayoutBringFrontToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
 			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SEL_BRING_FRONT, 0 );
@@ -5222,14 +5214,6 @@ namespace MAPeD
 			if( TreeViewPatterns.Enabled )
 			{
 				m_pattern_preview.set_focus();
-			}
-		}
-
-		private void PatternsMngr_MouseLeave(object sender, EventArgs e)
-		{
-			if( TreeViewPatterns.Enabled )
-			{
-				TreeViewPatterns.Focus();
 			}
 		}
 #endregion
