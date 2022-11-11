@@ -9,11 +9,11 @@ The MAPeD is a tool for building a game levels from scratch.
 **The main features are:**
 - tiles drawing/composing tools
 - building a game map using 2x2 or/and 4x4 tiles
-- tiles patterns manager
+- entities editor
+- tile patterns manager
 - data optimization tool
 - several game maps in one project
 - detachable UI
-- entities editor
 - tile properties editing ( can be used as collisions data etc )
 - **NES:** palette per 1x1 tile support ( MMC5 )
 - import of tiles and game maps from images*
@@ -37,7 +37,7 @@ The MAPeD is a tool for building a game levels from scratch.
 
 \** Each MAPeD can export data to the **SjASMPlus** with additional options.
 
-\*** You can load any platform project into any MAPeD editor with automatic data conversion. So it's easy to adapt graphics and data when creating a cross-platform project.
+\*** You can load any platform project into any MAPeD editor with automatic data conversion. So it's easy to adapt your graphics and data when creating a cross-platform project.
 
 **Examples of tiles and maps images:** `./data/tiles-maps`
 
@@ -154,7 +154,7 @@ As mentioned before, you need to install Mono on your computer. To run the tools
  - `./samples/pce/tilemap_render/multidir_scroll_multimap/huc/`	- multidirectional scroller
  - `./samples/pce/tilemap_render/multidir_stat_scr_multimap/huc/`	- screens switching with double-buffering for multidirectional maps
  - `./samples/pce/tilemap_render/stat_scr_VDC_data_multimap/huc/`	- static screens switching using VDC-ready data (raw BAT data)
- - `./samples/pce/game_prototype/huc/` - fully playable game prototype demo, run'n'jump platformer, 40 screens multidir scrollable map, 201 entities +bonus level
+ - `./samples/pce/game_prototype/huc/` - fully playable game prototype demo, run'n'jump platformer, 40 screens multidir scrollable map, 200+ entities +bonus level
 
 * All samples are written in HuC (C-like language) and support all export options
 
