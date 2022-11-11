@@ -5,7 +5,7 @@
 	<TITLE></TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.7  (Win32)">
 	<META NAME="CREATED" CONTENT="20190708;11162720">
-	<META NAME="CHANGED" CONTENT="20210907;19481638">
+	<META NAME="CHANGED" CONTENT="20221111;17151131">
 	<STYLE TYPE="text/css">
 	<!--
 		p { margin:0; }
@@ -50,19 +50,18 @@
 		<A HREF="#The Steps to Quick Start|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>The
 		Steps to Quick Start</B></SPAN></FONT></FONT></A></P>
 	</UL>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Screen Editor|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Screen
-	Editor</B></SPAN></FONT></FONT></A></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Layout Editor|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Layout
 	Editor</B></SPAN></FONT></FONT></A></P>
 	<UL>
 		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Layout Window|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Layout
 		Window</B></SPAN></FONT></FONT></A></P>
-		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Screen List|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Screen
-		List</B></SPAN></FONT></FONT></A></P>
-		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Entity Editor|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Entity
-		Editor</B></SPAN></FONT></FONT></A></P>
-		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#A Few Steps to Create a Game Level|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>A
-		Few Steps to Create a Game Level</B></SPAN></FONT></FONT></A></P>
+		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Builder|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Builder</B></SPAN></FONT></FONT></A></P>
+		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Painter|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Painter</B></SPAN></FONT></FONT></A></P>
+		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Screen List|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Screens</B></SPAN></FONT></FONT></A></P>
+		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Entity Editor|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Entities</B></SPAN></FONT></FONT></A></P>
+		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Patterns|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Patterns</B></SPAN></FONT></FONT></A></P>
+		<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#A Few Steps to Create a Game Level|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>The
+		Steps to Create a Game Map</B></SPAN></FONT></FONT></A></P>
 	</UL>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Load Save|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=4><SPAN LANG="en-US"><B>Load
 	/ Save</B></SPAN></FONT></FONT></A></P>
@@ -99,7 +98,9 @@ from scratch.</FONT></FONT></P>
 	drawing/composing tools</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>building
 	a game map using 2x2 or/and 4x4 tiles</FONT></FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>tiles
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>entities
+	editor</FONT></FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>tile
 	patterns manager</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>data
 	optimization tool</FONT></FONT></P>
@@ -107,8 +108,6 @@ from scratch.</FONT></FONT></P>
 	game maps in one project</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>detachable
 	UI *</FONT></FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>entities
-	editor</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>tile
 	properties editing ( can be used as collisions data etc )</FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>import
@@ -143,8 +142,10 @@ from scratch.</FONT></FONT></P>
 <UL>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>built-in
 	<B>Python</B> script editor for writing custom data export scripts</FONT></FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">export to the <B>JSON</B> format</FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">export to the <B>SjASMPlus</B> (ZX-Spectrum) ***</FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">export
+	to the <B>JSON</B> format</FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">export
+	to the <B>SjASMPlus</B> (ZX-Spectrum) ***</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">easy
 	data conversion ****</FONT></P>
 </UL>
@@ -152,21 +153,21 @@ from scratch.</FONT></FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">*
 <SPAN LANG="en-US">Double-click on the following tabs to detach them:
-</SPAN><SPAN LANG="en-US"><B>Main</B></SPAN><SPAN LANG="en-US">,
 </SPAN><SPAN LANG="en-US"><B>Layout</B></SPAN><SPAN LANG="en-US">,
-</SPAN><SPAN LANG="en-US"><B>Tiles</B></SPAN><SPAN LANG="en-US">,
-</SPAN><SPAN LANG="en-US"><B>Screens</B></SPAN><SPAN LANG="en-US">.
-Close detached tab container to return the tab to its place.</SPAN></FONT></P>
+</SPAN><SPAN LANG="en-US"><B>Tiles</B></SPAN><SPAN LANG="en-US">.
+Close detached tab container to return the tab to its place. The tabs
+can also be resized or maximized.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">** Smart import of tiles and game maps
 from images with checking of duplicate CHRs/blocks/tiles and flipped
 CHRs. Automatic applying of palettes is supported for all platforms.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">*** Each <B>MAPeD</B> can export data to the <B>SjASMPlus</B> with additional options.</FONT></P>
+<FONT FACE="Arial, sans-serif">*** Each <B>MAPeD</B> can export data
+to the <B>SjASMPlus</B> with additional options.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">**** You can load any platform project
-into any <B>MAPeD</B> editor with automatic data conversion. So it's easy to
-adapt graphics from one platform to another.</FONT></P>
+into any <B>MAPeD</B> editor with automatic data conversion. So it's
+easy to adapt your graphics from one platform to another.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -196,10 +197,10 @@ datasets:</FONT></FONT></P>
 		layouts available in a project is 256.</SPAN></SPAN></FONT></FONT></P>
 	</OL>
 </OL>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>* When you begin your
-project, you can choose the screen data type: Tiles(4x4) or
-Blocks(2x2) (see <A HREF="#Block Editor|region">the image below</A>). </FONT></FONT>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">*
+When you begin your project, you can choose the screen data type:
+Tiles(4x4) or Blocks(2x2) (see <A HREF="#Tile Editor|region">the
+image below</A>). </SPAN></SPAN></FONT></FONT>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Tiles(4x4)</B> are the
@@ -217,9 +218,9 @@ overflow when converting Blocks(2x2) to Tiles(4x4).</FONT></FONT></P>
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>The switching operation
 affects all CHR banks in your project.</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Also you can set up a screen size in blocks.
-You can do that once for whole project, before clicking the "Bank+" button or loading another
-project.</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Also you can set up a
+screen size in blocks. You can do that once for whole project, before
+clicking the &quot;Bank+&quot; button or loading another project.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -238,11 +239,10 @@ project.</FONT></FONT></P>
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>CHR
 	Bank</B></FONT></FONT></P>
 </DIV>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/CHR_bank.png" NAME="Графический объект4" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=288 HEIGHT=349 BORDER=0><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Main</B> Tab &rarr; <B>Tiles</B>
-Tab</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Tiles</B> Tab</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -255,8 +255,8 @@ graphics data bank, which contains 1x1 tiles data.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<IMG SRC="res/CHR_bank.png" NAME="Графический объект4" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=288 HEIGHT=349 BORDER=0><FONT FACE="Arial, sans-serif">The
-main operations are ( select a CHR you want to work with ):</FONT></P>
+<FONT FACE="Arial, sans-serif">The main operations are ( select a CHR
+you want to work with ):</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -301,7 +301,8 @@ a selected CHR and shifts the rest to the left.</SPAN></FONT></FONT></P>
 button ), delete an active bank ( the &ldquo;Bank-&rdquo; button ),
 make a copy of an active bank ( the &ldquo;Copy&rdquo; button ). Also
 you can switch between banks by selecting an appropriate bank from
-the &ldquo;Banks&rdquo; list and reorder them ( <B>Main Menu</B> &rarr; <B>CHR Bank</B> &rarr; <B>Reorder Banks</B> ).</FONT></P>
+the &ldquo;Banks&rdquo; list and reorder them ( <B>Main Menu</B> &rarr;
+<B>CHR Bank</B> &rarr; <B>Reorder Banks</B> ).</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>SMS/PCE/ZX/SMD:</B></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
@@ -312,17 +313,14 @@ between CHR bank's pages. Each page consists of 16x16 CHRs.</SPAN></SPAN></FONT>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
 <DIV ID="Palette" DIR="LTR"><A NAME="Palette|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
-	<IMG SRC="res/palette.png" NAME="Графический объект5" ALIGN=LEFT HSPACE=19 VSPACE=9 WIDTH=286 HEIGHT=224 BORDER=0><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Palette</B></FONT></FONT></P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Palette</B></FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+	</P>
 </DIV>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Main</B> Tab &rarr; <B>Tiles</B>
-Tab</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/palette.png" NAME="Графический объект5" ALIGN=LEFT HSPACE=19 VSPACE=9 WIDTH=286 HEIGHT=224 BORDER=0><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Tiles</B></SPAN></FONT>
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">Tab</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
@@ -333,7 +331,8 @@ active palette.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">To assign a new color to an active
 palette, just select a color slot inside the palette and click on any
-color in the main palette. Also you can select a color inside the main palette by pressing the left mouse button + mouse move.</FONT></P>
+color in the main palette. Also you can select a color inside the
+main palette by pressing the left mouse button + mouse move.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -345,8 +344,8 @@ leftmost color of the first 4 colors palette is a transparent color.</SPAN></FON
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Custom palettes are stored in an array
-in a separate list. You can copy or delete (<B>NES</B>) an active
+<FONT FACE="Arial, sans-serif">Custom palettes are stored in array in
+a separate list. You can copy or delete (<B>NES</B>) an active
 palette.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>NES:</B> &quot;plt#00&quot; is the
@@ -368,21 +367,22 @@ palette per block only.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>SMS/PCE/SMD:</B> <SPAN STYLE="font-weight: normal">Sometimes
 you may need to change colors order without changing graphics. For
-example, after importing graphics from images, you may need to
-back in place a transparent color. You can do that by pressing the
-</SPAN><B>&quot;Swap Colors&quot;</B> <SPAN STYLE="font-weight: normal">button.</SPAN></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/tile-block_editors.png" NAME="Графический объект1" ALIGN=LEFT HSPACE=38 VSPACE=19 WIDTH=286 HEIGHT=584 BORDER=0><BR>
+example, after importing graphics from images, you may need to back
+in place a transparent color. You can do that by pressing the </SPAN><B>&quot;Swap
+Colors&quot;</B> <SPAN STYLE="font-weight: normal">button.</SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <DIV ID="Block Editor" DIR="LTR"><A NAME="Block Editor|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Block
 	Editor</B></FONT></FONT></P>
 </DIV>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/block_editor.png" NAME="Графический объект1" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=284 HEIGHT=370 BORDER=0><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Main</B> Tab &rarr; <B>Tiles</B>
-Tab</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Tiles</B> Tab</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -420,7 +420,8 @@ selected block from <A HREF="#CHR Bank|region">CHR bank</A>. To do
 that, you should select one of four CHR slots in the &ldquo;Block
 Editor&rdquo; field and click on a CHR in the <A HREF="#CHR Bank|region">CHR
 bank</A>. All assigned CHRs will be highlighted in the <A HREF="#CHR Bank|region">CHR
-bank</A>. Also in this mode you can assign a palette to the selected CHR.</SPAN></FONT></P>
+bank</A>. Also in this mode you can assign a palette to the selected
+CHR.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">The &ldquo;Draw&rdquo; mode allows you
 to draw pixels. When it's active, select a color and draw using a
@@ -470,12 +471,13 @@ per&rdquo; section ) or in the <B>Main Menu</B> &rarr; <B>Blocks</B>
 <FONT FACE="Arial, sans-serif"><B>Graphics data updating:</B></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">When you make any changes to graphics
-content ( drawing, changing colors ) you must update all dependent
+content ( drawing, changing colors ) you should update all dependent
 content to see the result by pressing the &ldquo;Update GFX&rdquo;
 button.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><B>Tip:</B> All block data will be updated
-automatically when the &ldquo;Blocks (2x2)&rdquo; mode is active.</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Tip:</B> All block data will be
+updated automatically when the &ldquo;Blocks (2x2)&rdquo; mode is
+active.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -512,7 +514,7 @@ and white mode</B></SPAN></FONT> <FONT FACE="Arial, sans-serif"><SPAN LANG="en-U
 ( <A HREF="#Additional Operations|region">View Type</A>: &ldquo;B/W&rdquo;
 or &ldquo;Inv B/W&rdquo; ). For example, when you import a game level
 from an image, you can't control an ink/paper order, so some CHRs can
-be inverted and you can find it by switching to the black and white
+be inverted and you can find them by switching to the black and white
 mode. Using this button you can fix the issue.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">&ldquo;<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Invert&rdquo;</B></SPAN></FONT>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">-
@@ -526,16 +528,17 @@ mode is active, these buttons invert a selected CHR and when the
 &ldquo;Draw&rdquo; mode is active, a whole block will be inverted.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <DIV ID="Tile Editor" DIR="LTR"><A NAME="Tile Editor|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Tile
 	Editor</B></FONT></FONT></P>
 </DIV>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/tile_editor.png" NAME="Графический объект1" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=283 HEIGHT=212 BORDER=0><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Main</B> Tab &rarr; <B>Tiles</B>
-Tab</FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Tiles</B> Tab</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -575,14 +578,14 @@ The first block is reserved for an empty space and is ignored by the
 operation.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/block_operations.png" NAME="Графический объект2" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=227 HEIGHT=248 BORDER=0><BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <DIV ID="Block Operations" DIR="LTR"><A NAME="Block Operations|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Block
 	Operations</B></FONT></FONT></P>
 </DIV>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/block_operations.png" NAME="Графический объект2" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=227 HEIGHT=248 BORDER=0><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><B>Copy:</B> Copies a <SPAN STYLE="font-weight: normal">selected
@@ -622,7 +625,9 @@ a selected block and shifts the rest to the left.</SPAN></FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/tile_operations.png" NAME="Графический объект3" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=255 HEIGHT=257 BORDER=0><BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <DIV ID="Tile Operations" DIR="LTR"><A NAME="Tile Operations|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent; page-break-before: auto; page-break-after: auto">
@@ -630,7 +635,7 @@ a selected block and shifts the rest to the left.</SPAN></FONT></P>
 	Operations</B></FONT></FONT></P>
 </DIV>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
-<BR>
+<IMG SRC="res/tile_operations.png" NAME="Графический объект3" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=302 HEIGHT=256 BORDER=0><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <FONT FACE="Arial, sans-serif"><B>Copy:</B> <SPAN STYLE="font-weight: normal">Copies
@@ -660,6 +665,9 @@ a selected tile and shifts the rest to the left.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <BR>
 </P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
+<BR>
+</P>
 <DIV ID="Additional Operations" DIR="LTR"><A NAME="Additional Operations|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Additional
@@ -673,8 +681,8 @@ a selected tile and shifts the rest to the left.</SPAN></FONT></P>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">It
 allows you to show the additional information: graphics ( by default
 ), property Id ( numbers/colors ) on both tiles and blocks, tile
-numbers or usage of tiles or blocks. It also affects on graphics in
-the <A HREF="#Screen Editor|region">screen editor</A>.</SPAN></SPAN></FONT></P>
+numbers or usage of tiles or blocks. It also affects on a map
+graphics in the layout viewport.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>ZX:</B></SPAN></FONT>
 <FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">There
@@ -682,7 +690,7 @@ are two additional modes: &ldquo;B/W&rdquo;, &ldquo;Inv B/W&rdquo;.
 &ldquo;B/W&rdquo; - black and white mode ( all inks &ndash; black,
 all papers &ndash; white ). &ldquo;Inv B/W&rdquo; - inverted black
 and white mode ( all inks &ndash; white, all papers - black ). Using
-these modes you can find inverted CHR glitches and fix them using
+these modes you can find inverted CHR glitches and fix them using the
 &ldquo;I&lt;-&gt;P&rdquo; button.</SPAN></SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; background: transparent">
 <BR>
@@ -703,8 +711,9 @@ Also you can check matched blocks (2x2) to identify similar data.</SPAN></FONT><
 	Steps to Quick Start</B></FONT></FONT></P>
 </DIV>
 <OL>
-	<LI VALUE=1><P STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
-	<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">Set up screen dimensions in blocks 2x2.</SPAN></FONT></P>
+	<LI VALUE=1><P LANG="en-US" STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
+	<FONT FACE="Arial, sans-serif">Set up screen dimensions in blocks
+	2x2.</FONT></P>
 	<LI><P STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">Press the &ldquo;Bank+&rdquo;
 	button to create a new <A HREF="#CHR Bank|region">CHR bank</A> data
@@ -750,125 +759,10 @@ Also you can check matched blocks (2x2) to identify similar data.</SPAN></FONT><
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 	<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">When you have
 	prepared your tiles/blocks you can <A HREF="#A Few Steps to Create a Game Level|region">build
-	a game levels</A> and <A HREF="#Screen Editor|region">screens</A>.</SPAN></FONT></P>
+	a game map</A>.</SPAN></FONT></P>
 </OL>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
 <BR>
-</P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<DIV ID="Screen Editor" DIR="LTR"><A NAME="Screen Editor|region"></A>
-	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=5><U><B>Screen Editor</B></U></FONT></FONT></P>
-</DIV>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Main</B> Tab &rarr; <B>Screens</B>
-Tab</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>Screens</B>
-&rarr; <B>Editor</B></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">The
-&ldquo;Screen Editor&rdquo; is a tool that allows you to create a
-game screens using tiles and/or blocks. When you use blocks, the tile
-list will automatically fill up. And when it overflows, you need to
-<A HREF="#Tile Operations|region">optimize</A> it to reduce the
-amount of unnecessary tiles created during a screen building process.</SPAN></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">An
-image of each created screen will appear in the <A HREF="#Screen List|region">&ldquo;Screens&rdquo;
-list</A> at the </SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Layout
-</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Tab
-&rarr; </SPAN></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Screens</B></SPAN></FONT>
-<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Tab.</SPAN></SPAN></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<IMG SRC="res/screen_editor.png" NAME="Графический объект6" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=185 HEIGHT=398 BORDER=0><FONT FACE="Arial, sans-serif">At
-the top of the tool panel you can see the current screen data type:
-Tiles(4x4) or Blocks(2x2).</FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">When the Tiles(4x4) mode is active,
-you can build screens using Tiles(4x4) and Blocks(2x2) (blocks data
-is used for building tiles).</FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">When the Blocks(2x2) mode is active,
-you can use blocks data only.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">The main operations are:</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">It shows a selected tile. Click on any
-place inside the red border of the screen area to place the tile on a
-game screen.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">Press the &quot;Reset&quot; button to
-reset an active tile.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Note:</B> <SPAN STYLE="font-weight: normal">To
-simplify the process of working with tiles and blocks you can press
-the &quot;Tiles/Blocks&quot; button to display them in a separate
-window. There you can easily select a tile or block to place it on a
-game screen.</SPAN></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Screens Management:</B></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">You can create, make a copy and delete
-screens. Press the appropriate buttons for that.</FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">The &quot;Clean Up&quot; button allows
-you to delete all one tile filled screens at once.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Edit Modes Switching:</B></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">There are two modes available for
-screen editing. </FONT>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">The first one is the &ldquo;Single&rdquo;
-mode. It's enabled by default. You can't see adjacent screens and you
-can't navigate to them. It's convenient when your game map is
-completely located on one screen.</FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">The second one is the &ldquo;Layout&rdquo;
-mode. In this mode you can see the adjacent screens and navigate to
-them by clicking on their visible parts. To enable the mode, you need
-to click on the &ldquo;Layout&rdquo; flag at the &ldquo;Edit Mode:&rdquo;
-box. Then select an active layout and click on any of its screen.
-After that, the selected screen will appear in the screen editor
-window.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Tiles Patterns Management:</B></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">You can manage often-used patterns of
-tiles via the &quot;Patterns Manager&quot; ( the &quot;Patterns&quot;
-button ).</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Note:</B> <SPAN STYLE="font-weight: normal">When
-the &quot;Layout&quot; mode is active, you'll see an active CHR
-bank's screens only! The other ones will be blank.</SPAN></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -884,14 +778,22 @@ bank's screens only! The other ones will be blank.</SPAN></FONT></P>
 <FONT FACE="Arial, sans-serif"><B>Layout</B> Tab</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Main Menu</B> &rarr; <B>Layout</B></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">The
+&ldquo;Layout Editor&rdquo; is a set of tools that allow you to
+create a game levels.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif">The &ldquo;Layout Editor&rdquo; is a
-set of tools that allow you to create a game levels and edit / place
-entities.</FONT></P>
+<FONT FACE="Arial, sans-serif">The available tools are:</FONT></P>
+<UL>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Builder|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Builder</B></SPAN></FONT></A></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Painter|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Painter</B></SPAN></FONT></A></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Screen List|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Screens</B></SPAN></FONT></A></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Entity Editor|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Entities</B></SPAN></FONT></A></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="#Patterns|region"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Patterns</B></SPAN></FONT></A></P>
+</UL>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <DIV ID="Layout Window" DIR="LTR"><A NAME="Layout Window|region"></A>
@@ -899,83 +801,24 @@ entities.</FONT></P>
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Layout
 	Window</B></FONT></FONT></P>
 </DIV>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/layout_editor.png" NAME="Графический объект8" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=339 HEIGHT=520 BORDER=0><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">The layout window contains the
-viewport where you can build your game levels and at the right side
-of the viewport you can see the options panel to manage a game
-levels.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Note:</B></SPAN></FONT>
-<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">When the <A HREF="#Screen List|region">&ldquo;Screens&rdquo;</A>
-tab is active, you can work with screens and can't work with entities
-and vice versa, you can't work with screens when the <A HREF="#Entity Editor|region">&ldquo;Entities&rdquo;</A>
-tab is active.</SPAN></FONT></P>
+viewport where you can build your game levels.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">Pan the viewport by a LEFT mouse
-button and scale it by a mouse wheel.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
+button and scale it by a mouse wheel when the &ldquo;Builder&rdquo;
+tab is active.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">When
+the </SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Painter</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">/</SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Screens</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">/</SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Entities</B></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">/</SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Patterns</B></SPAN></FONT>
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">tabs are active,
+hold down the &ldquo;Ctrl&rdquo; key to pan the viewport.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<IMG SRC="res/layout_editor.png" NAME="Графический объект8" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=405 HEIGHT=505 BORDER=0><FONT FACE="Arial, sans-serif">The
-main operations are:</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>The options panel:</B></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif">It allows you to create, make a copy,
-delete your game levels, move them up/down in the level list, work
-with screen cells in a level. Also it allows you to control a
-visibility of a level items. Click the appropriate flags for that.</FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<DIV ID="Working with screen cells" DIR="LTR"><A NAME="Working with screen cells|region"></A>
-	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Working with screen
-	cells:</B></FONT></FONT></P>
-</DIV>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Each level represents a
-matrix of cells X*Y regardless of your level's topology. So, at
-first, when you start building a game level, you must create a matrix
-of screen cells which bounds your level. </FONT></FONT>
-</P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>The buttons to work
-with a screen cells matrix are:</B></FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>- &ldquo;+U&rdquo; to add
-a row at the top of a cells matrix.</FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>- &ldquo;-U&rdquo; to
-delete a row at the top of a cells matrix.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>- &ldquo;+D&rdquo; to add
-a row at the bottom of a cells matrix.</FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>- &ldquo;-D&rdquo; to
-delete a row at the bottom of a cells matrix.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>- &ldquo;+L&rdquo; to add
-a column at the left side of a cells matrix.</FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>- &ldquo;-L&rdquo; to
-delete a column at the left side of a cells matrix.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
-</P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>- &ldquo;+R&rdquo; to add
-a column at the right side of a cells matrix.</FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>- &ldquo;-R&rdquo; to
-delete a column at the right side of a cells matrix.</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif">Also you can scale an entity/pattern
+preview by a mouse wheel.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -984,45 +827,50 @@ menu options:</B></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Right-clicking in the
 viewport shows the context menu that you can see at the picture.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">The
+&ldquo;Entity Order&rdquo; ( bring to front or send to back ) and
+&ldquo;Delete Entity&rdquo; options are available when the </SPAN></SPAN></FONT></FONT><A HREF="#Entity Editor|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Entities</B></SPAN></FONT></FONT></A>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab
+is active.</SPAN></SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">To
+change an entity order or delete it, you should select it. Open the
+</SPAN></SPAN></FONT></FONT><A HREF="#Entity Editor|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Entities</B></SPAN></FONT></FONT></A>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab
+to do that. Make sure that the &ldquo;Edit Instances&rdquo; mode is
+enabled ( if no, click the appropriate button to enable it ). Then
+click on an entity you want to work with, and after that you can
+change the entity order or delete it via the context menu.</SPAN></SPAN></FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Click the &ldquo;Delete
-Screen&rdquo; item to delete a screen the cursor points to. You can
-delete screens when the &ldquo;Screens&rdquo; or &ldquo;Entities&rdquo;
-tab is active.</FONT></FONT></P>
+Screen&rdquo; item to delete a screen the cursor points to.</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>To delete an entity, you
-must select it. Open the &ldquo;Entities&rdquo; tab to do that. Make
-sure that the &ldquo;Edit Instances&rdquo; mode is enabled ( if no,
-press the appropriate button to enable it ). Then click on an entity
-you want to delete, and after that you can delete it via the context
-menu.</FONT></FONT></P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Each game level must have
-a start screen. Click the &ldquo;Set Start Screen Mark&rdquo; item to
-mark a screen the cursor points to as a start one.</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Each game level should
+have a start screen. Click the &ldquo;Set Start Screen Mark&rdquo;
+item to mark a screen the cursor points to as a start one.</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>Also you can assign a
 property to your screen. It's a numeric value from 0 to 15. Click the
 &ldquo;Set Screen Property&rdquo; item to assign it.</FONT></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>When creating a level of
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>When creating a map of
 static screens or bi- or unidirectional scroller level there may be
 cases when you don't need to navigate to an adjacent screen. Take a
-look at the picture with white arrows. This is an example of such
-case. There is an obstacle in the middle bottom part of the level. To
-make such level playable, according to its topology, you can use
-adjacent screen masks which define the path you can navigate. To
-avoid ambiguity, you have to define the adjacent screen masks for
-each screen in your level. You can do that through the appropriate
+look at the picture with white arrows below. This is an example of
+such case. There is an obstacle in the middle bottom part of the
+level. To make such level playable, according to its topology, you
+can use adjacent screen masks which define the path you can navigate.
+To avoid ambiguity, you have to define the adjacent screen masks for
+each screen in your map. You can do that through the appropriate
 viewport context menu item. Each letter ( L/U/R/D ) means a valid
 direction you can navigate from the current screen.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3>You can delete all screen
-marks ( start screen / screen property / adjacent screen mask ) in
-active level by clicking the <B>Main Menu</B> &rarr; <B>Layout</B> &rarr;
-<B>Delete All Screen Marks</B> item.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">You
+can delete all screen marks ( start screen / screen property /
+adjacent screen mask ) in active level by clicking the </SPAN></SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Main
+Menu</B></SPAN></FONT></FONT> &rarr; <FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Builder</B></SPAN></FONT></FONT>
+&rarr; <FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Delete
+All Screen Marks</B></SPAN></FONT></FONT> <FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">item.</SPAN></SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/adjacent_screen_mask_example.png" NAME="Графический объект9" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=355 HEIGHT=170 BORDER=0><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -1047,14 +895,151 @@ active level by clicking the <B>Main Menu</B> &rarr; <B>Layout</B> &rarr;
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/screen_list.png" NAME="Графический объект7" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=327 HEIGHT=330 BORDER=0><BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<DIV ID="Builder" DIR="LTR"><A NAME="Builder|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Builder</B></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/builder.png" NAME="Графический объект11" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=309 HEIGHT=385 BORDER=0><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Layout</B> Tab &rarr;
+<B>Builder</B> Tab</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Main Menu</B> &rarr;
+<B>Builder</B></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>The builder tab allows
+you to create and manage your maps.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">The main operations are:</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">The <B>Builder</B> tab allows you to
+create, make copies, delete your game maps, move them up/down in the
+level list, work with screen cells in a map. Also it allows you to
+control a visibility of a map items. Click the appropriate flags for
+that.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<DIV ID="Working with screen cells" DIR="LTR">
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Working with screen
+	cells:</B></FONT></FONT></P>
+</DIV>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Each level represents a
+matrix of cells X*Y regardless of your map topology. So, at first,
+when you start building a game map, you should create a matrix of
+screen cells which bounds your map by clicking the &ldquo;Create WxH&rdquo;
+button.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Also you can add/remove a
+column/row of screens to your map by clicking the
+<B>+U</B>/<B>-U</B>/<B>+D</B>/<B>-D</B>/<B>+L</B>/<B>-L</B>/<B>+R</B>/<B>-R</B>
+buttons.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>The &ldquo;Clean Up&rdquo;
+button allows you to delete all one-tile filled screens in active
+layout at once.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<DIV ID="Painter" DIR="LTR"><A NAME="Painter|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Painter</B></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/painter.png" NAME="Графический объект12" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=311 HEIGHT=209 BORDER=0><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Layout</B> Tab &rarr;
+<B>Painter</B> Tab</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>The painter tab allows
+you to fill your map with tiles/blocks.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>The main operations are:</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">When the painter tab shows a selected
+tile/block, you can place it on screens of an active map.</FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Note:</B> You can only place a tile
+on screens that belong to an active CHR bank. Otherwise you will get
+a warning message.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">There
+are two ways to select an active tile\block: by clicking the
+tiles\blocks on the </SPAN></SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Tiles</B></SPAN></FONT>
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab
+or by clicking the &ldquo;Tiles/Blocks&rdquo; button that opens a new
+window with a tiles/blocks palette. Where you can easily select a
+tile or block to place it on a map screen.</SPAN></SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">The &quot;Reset&quot; button resets an
+active tile.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">At the top of the tab you can see the
+current screen data type: <B>Tiles(4x4)</B> or <B>Blocks(2x2)</B>.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">When
+the </SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Tiles(4x4)</B></SPAN></FONT>
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">mode is active, you
+can paint a map using </SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Tiles(4x4)</B></SPAN></FONT>
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">and </SPAN></FONT><FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>Blocks(2x2)</B></SPAN></FONT>
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US">(blocks data is
+used for building tiles). When you use blocks, the tile list will
+automatically fill up. And when it overflows, you need to <A HREF="#Tile Operations|region">optimize</A>
+it to reduce the amount of unnecessary tiles created during a
+painting process.</SPAN></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif">When the <B>Blocks(2x2)</B> mode is
+active, you can use blocks data only.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <DIV ID="Screen List" DIR="LTR"><A NAME="Screen List|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Screen
-	List</B></FONT></FONT></P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Screens</B></FONT></FONT></P>
 </DIV>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/screen_list.png" NAME="Графический объект7" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=311 HEIGHT=356 BORDER=0><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Layout</B> Tab &rarr;
@@ -1085,7 +1070,8 @@ some changes are done.</FONT></FONT></P>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>The &ldquo;Auto&rdquo;
-flag allows you to automatically update all changes when it's active.</FONT></FONT></P>
+flag allows you to automatically update all changes when it's active
+without clicking the &ldquo;Update Screens&rdquo; button.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Also
@@ -1105,26 +1091,28 @@ description:</B> </FONT></FONT>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>At the picture you can
-see the following name &ndash; &ldquo;B:0/S:0&rdquo; it means a zero
+see the following name <b>&ndash; &ldquo;B:0/S:0&rdquo;</b> it means a zero
 bank (B) and a zero screen (S).</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>To place a screen into a
-game level, just click on a screen image and click on a level's cell.</FONT></FONT></P>
+game level, just click on a screen image and click on a map's cell.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Tip:</B> To reset a selected screen, click on any empty space
-inside the screen list or on an empty space outside a cells matrix.</FONT></FONT></P>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Tip:</B> To reset a
+selected screen, click on any empty space inside the screen list or
+on an empty space outside an active map.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <DIV ID="Entity Editor" DIR="LTR"><A NAME="Entity Editor|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Entity
-	Editor</B></FONT></FONT></P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Entities</B></FONT></FONT></P>
 </DIV>
-<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/entity_editor.png" NAME="Графический объект10" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=313 HEIGHT=647 BORDER=0><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Layout</B> Tab &rarr;
@@ -1139,12 +1127,11 @@ inside the screen list or on an empty space outside a cells matrix.</FONT></FONT
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>The entity editor was
 designed for creating / editing entities, grouping them by type and
-placing on a game level.</FONT></FONT></P>
+placing on a game map.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<IMG SRC="res/entity_editor.png" NAME="Графический объект10" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=324 HEIGHT=609 BORDER=0><FONT FACE="Arial, sans-serif">The
-main operations are:</FONT></P>
+<FONT FACE="Arial, sans-serif">The main operations are:</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -1164,7 +1151,7 @@ Menu</B> &rarr; <B>Entities</B>.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">Clicking on any entity in the tree
 view leads to display its parameters in the entity editor ( the
-&ldquo;Active Entity&rdquo; box ). </FONT>
+&ldquo;Active Entity&rdquo; group box ). </FONT>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
@@ -1180,7 +1167,7 @@ bottom:</FONT></P>
 	properties are inherited by all instances )**;</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif">An instance property ( can be unique
-	to all instances )**;</FONT></P>
+	for all instances )**;</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif">A target entity UID ( each entity can
 	refer to any other one by its UID ); press the &ldquo;Target UID&rdquo;
@@ -1194,36 +1181,44 @@ bottom:</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
 	<FONT FACE="Arial, sans-serif">An entity image; there are two ways
 	to display an entity: as a color rectangle ( click on the color box
-	near the &ldquo;Bitmap&rdquo; button to select a color ) or a bitmap
-	image ( press the &ldquo;Bitmap&rdquo; button to load an image );</FONT></P>
+	near the &ldquo;Bitmap&rdquo; button to select a color ) or as a
+	bitmap image ( click the &ldquo;Bitmap&rdquo; button to load an
+	image );</FONT></P>
 </UL>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">Use a mouse wheel to scale an entity
+image in the preview window.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>Working with a game level:</B></FONT></P>
+<FONT FACE="Arial, sans-serif"><B>Working with a game map:</B></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">When the &ldquo;Edit Entities&rdquo;
-mode is active, you can place a current editable entity on a game
-level ( you can see the current edit mode at the left top corner of
-the layout viewport ). Just click on any screen cell with a screen
-image inside to put the entity on a game level.</FONT></P>
+mode is active, you can place a current editable entity on a game map
+( you can see the current edit mode at the left top corner of the
+layout viewport ). Just click on any screen cell with a screen image
+inside to put the entity on a game map.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">If you want to edit an entity instance
 you need to switch to the &ldquo;Edit Instances&rdquo; mode by
-pressing the &ldquo;Edit Instances --&gt;&rdquo; button. After that
-you can select your entity in the layout viewport. Move it using a
-LEFT mouse button and edit its parameters in the entity editor.</FONT></P>
+pressing the &ldquo;Edit Instances&rdquo; button. After that you can
+select your entity in the layout viewport. Move it using a LEFT mouse
+button and edit its parameters in the entity editor.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=3>You can delete all
-instances of entities from an active level by clicking the <B>Main
-Menu</B> &rarr; <B>Layout</B> &rarr; <B>Delete All Entity Instances</B>
+instances of entities from an active map by clicking the <B>Main Menu</B>
+&rarr; <B>Entities</B> &rarr; <B>Delete All Entity Instances</B>
 item.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">* Base entity is an entity created in
 the tree view control. An entity instance is a base entity placed on
-a game level.</FONT></P>
+a game map.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
 <FONT FACE="Arial, sans-serif">** Properties are space separated
 8-bit hexadecimal values ( 80 f6 1e ... etc ). <B>SMD: </B>16-bit
@@ -1232,24 +1227,144 @@ values are supported.</FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
+<DIV ID="Patterns" DIR="LTR"><A NAME="Patterns|region"></A>
+	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Patterns</B></FONT></FONT></P>
+</DIV>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><IMG SRC="res/patterns_editor.png" NAME="Графический объект6" ALIGN=LEFT HSPACE=19 VSPACE=19 WIDTH=312 HEIGHT=645 BORDER=0><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Layout</B> Tab &rarr;
+<B>Patterns</B> Tab</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Main Menu</B> &rarr;
+<B>Patterns</B></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Tile patterns are
+often-used combinations of tiles. The tile patterns manager was
+designed for creating tile patterns, grouping them by type and
+placing on a game map.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=3>The main operations are:</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Add/Delete/Rename of a group or a
+single tile pattern:</B></FONT></P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">You can add, delete, rename a tile
+patterns group, as well as a single tile pattern within the group.
+There are three ways to do that: using the context menu inside the
+tree view, the buttons at the right side of the tree view or via the
+<B>Main Menu</B> &rarr; <B>Patterns</B>.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Creating a tile pattern:</B></FONT></P>
+<UL STYLE="overflow: hidden">
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
+	<FONT FACE="Arial, sans-serif">Create or select the tile pattern
+	group;</FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
+	<FONT FACE="Arial, sans-serif">Click the &ldquo;Add&rdquo; pattern
+	button or item in the context menu;</FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
+	<FONT FACE="Arial, sans-serif">Select the tile pattern area on
+	active map; only current CHR bank data can be used for creating a
+	tile pattern;</FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
+	<FONT FACE="Arial, sans-serif">Enter the tile pattern name in the
+	opened window;</FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
+	<FONT FACE="Arial, sans-serif">To cancel the operation, click the
+	&ldquo;Cancel&rdquo; button;</FONT></P>
+</UL>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
+<FONT FACE="Arial, sans-serif"><B>Placing a tile pattern on a map:</B></FONT></P>
+<UL STYLE="overflow: hidden">
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
+	<FONT FACE="Arial, sans-serif">Select the tile pattern in the tree
+	view;</FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
+	<FONT FACE="Arial, sans-serif">Place the tile pattern on active map;
+	only current CHR bank data can be used to place the tile pattern on
+	a map;</FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
+	<FONT FACE="Arial, sans-serif">To cancel the operation, click the
+	&ldquo;Reset&rdquo; button on the tile pattern preview window;</FONT></P>
+</UL>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
+<FONT FACE="Arial, sans-serif">Use a mouse wheel to scale a tile
+pattern image in the preview window.</FONT></P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <DIV ID="A Few Steps to Create a Game Level" DIR="LTR"><A NAME="A Few Steps to Create a Game Level|region"></A>
 	<P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>A
-	Few Steps to Create a Game Level</B></FONT></FONT></P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>The
+	Steps to Create a Game Map</B></FONT></FONT></P>
 </DIV>
-<OL STYLE="overflow: hidden">
+<OL>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Press
-	the &ldquo;Create WxH&rdquo; button at the right side of the <A HREF="#Layout Window|region">layout
-	viewport</A> to create a cells matrix with assigned empty screens.</SPAN></SPAN></FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">Or
-	you can press the &quot;Create&quot; button and start with one empty
-	cell. And then manually <A HREF="#Working with screen cells|region">create
-	a screen cells matrix</A> of your level and assign screens from the
-	<A HREF="#Screen List|region">screen list</A>.</SPAN></SPAN></FONT></FONT></P>
+	<A HREF="#Tile / Block Editing|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Tiles</B></SPAN></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab</SPAN></SPAN></FONT></FONT></A><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">:
+	Select a screen size of your project.</SPAN></SPAN></FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Tiles</B></SPAN></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab:
+	Click the &ldquo;Bank+&rdquo; button.</SPAN></SPAN></FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; page-break-before: auto; page-break-after: auto">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Tiles</B></SPAN></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab:
+	Draw tiles or import them from an external image source.</SPAN></SPAN></FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Layout</B></SPAN></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab
+	&rarr; </SPAN></SPAN></FONT></FONT><A HREF="#Builder|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Builder</B></SPAN></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab</SPAN></SPAN></FONT></FONT></A><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">:
+	Click the &ldquo;Create WxH&rdquo; button to create an empty map.</SPAN></SPAN></FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Layout</B></SPAN></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab
+	&rarr; </SPAN></SPAN></FONT></FONT><A HREF="#Painter|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Painter</B></SPAN></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab</SPAN></SPAN></FONT></FONT></A><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">:
+	Fill up your map with tiles.</SPAN></SPAN></FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Layout</B></SPAN></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab
+	&rarr; </SPAN></SPAN></FONT></FONT><A HREF="#Entity Editor|region"><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><B>Entities</B></SPAN></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">tab</SPAN></SPAN></FONT></FONT></A><FONT FACE="Arial, sans-serif"><FONT SIZE=3><SPAN LANG="en-US"><SPAN STYLE="font-weight: normal">:
+	Create and place entities on your map.</SPAN></SPAN></FONT></FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=3>Then you can place
-	entities and screen marks.</FONT></FONT></P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=3><B>Layout</B> tab: Set
+	the start screen mark using the <A HREF="#Layout Window|region">context
+	menu</A> of the layout viewport.</FONT></FONT></P>
 </OL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
@@ -1285,9 +1400,9 @@ values are supported.</FONT></P>
 <SPAN LANG="en-US">project file has a </SPAN><SPAN LANG="en-US"><B>.mapedzx</B></SPAN>
 <SPAN LANG="en-US">extension.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm; font-weight: normal">
-<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMD</B></SPAN><SPAN LANG="en-US">
-project file has a </SPAN><SPAN LANG="en-US"><B>.mapedsmd</B></SPAN><SPAN LANG="en-US">
-extension.</SPAN></FONT></P>
+<FONT FACE="Arial, sans-serif"><SPAN LANG="en-US"><B>SMD</B></SPAN>
+<SPAN LANG="en-US">project file has a </SPAN><SPAN LANG="en-US"><B>.mapedsmd</B></SPAN>
+<SPAN LANG="en-US">extension.</SPAN></FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
@@ -1311,8 +1426,8 @@ for import:</FONT></P>
 <UL>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES/SMS
 	</B>.sprednes/.spredsms CHR banks and a palette data</FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">
-	Raw CHR data ( .bin or .chr )</FONT></P>
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Raw
+	CHR data ( .bin or .chr )</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Tiles/Game
 	Map data 2/4/8 bpp ( .bmp ) *</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal">
@@ -1327,8 +1442,7 @@ maps from images. It's recommended that an imported image size must
 be a multiple of a game screen size.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">Automatic applying of palettes is also
-supported. You can import native indexed <B>NES</B> images &quot;as
-is&quot;. The same with <B>SMS/PCE/ZX/SMD</B> images.</FONT></P>
+supported for all platforms.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
@@ -1348,20 +1462,20 @@ colors should not be duplicated in a palette.</FONT></P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><B>NES:</B> For successful applying of
-palettes, an importing image must meets the following requirements:</FONT></P>
+<FONT FACE="Arial, sans-serif">For successful applying of palettes,
+an importing image must meets the following requirements:</FONT></P>
 <UL>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">NES
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">platform
 	compatible graphics</FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">no
-	more than 13 colors</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">one
 	CHR bank data</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">static
 	palette</FONT></P>
-	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">tiles
+	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">tile
 	aligned</FONT></P>
 </UL>
+<P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
+</P>
 <P ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm"><BR>
 </P>
 <DIV ID="Export" DIR="LTR"><A NAME="Export|region"></A>
@@ -1384,7 +1498,7 @@ for export:</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><B>NES:</B>
 	CA65/NESasm / <B>SMS: </B>WLA-DX / <B>PCE:</B> <SPAN STYLE="font-weight: normal">CA65/PCEAS/HuC
 	/ </SPAN><B>ZX:</B> <SPAN STYLE="font-weight: normal">SjASMPlus</SPAN>
-	/ <B>SMD:</B><SPAN STYLE="font-weight: normal"> vasm/SGDK ( .asm )</SPAN>*</FONT></P>
+	/ <B>SMD:</B> <SPAN STYLE="font-weight: normal">vasm/SGDK ( .asm )</SPAN>*</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">ZX
 	Asm ( .zxa ) - SjASMPlus data **</FONT></P>
 	<LI><P LANG="en-US" ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif">Active
@@ -1396,14 +1510,14 @@ for export:</FONT></P>
 </UL>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">* See exported .asm / .zxa files to
-get more info. <B>SMD:</B><SPAN STYLE="font-weight: normal"> When
+get more info. <B>SMD:</B> <SPAN STYLE="font-weight: normal">When
 exporting data to the SGDK you should select a ROOT directory of your
 project and all files will be copied automatically to the
 'data/inc/src' directories.</SPAN></FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">** The same as in the ZX version, but
 with dithering. To achieve the best result, try to change the &quot;Ink
-Factor&quot; value. So there are two ways to export ZX data: using
+Factor&quot; value. So, there are two ways to export ZX data: using
 MAPeD-ZX or any other MAPeD editor.</FONT></P>
 <P LANG="en-US" ALIGN=LEFT STYLE="text-indent: 1cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif">*** Just an image of an active layout

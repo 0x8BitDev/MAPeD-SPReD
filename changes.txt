@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+11.11.2022 - Updated documentation
 09.11.2022 - The tile patterns manager moved to the layout tabs ("Patterns" tab)
 02.11.2022 - Application window, detached tabs and the tiles/blocks palette window can be resized and maximized
 	   - The layout options moved to the layout tabs; they are now called the 'Builder' tab
