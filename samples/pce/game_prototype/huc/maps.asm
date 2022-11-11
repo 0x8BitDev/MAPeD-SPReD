@@ -758,8 +758,8 @@ _Lev0Scr13EntsArr:
 	.word Instance155
 	.word Instance156
 	.word Instance154
-	.word Instance150
 	.word Instance149
+	.word Instance150
 Instance133:
 	.byte $4D
 	.word logs_32x16
@@ -797,21 +797,21 @@ Instance154:
 	.word $108
 	.byte $02
 	.byte $E0, $00
-Instance150:
-	.byte $52
-	.word switch
-	.word Instance153
-	.word $340
-	.word $1B0
-	.byte $00
 Instance149:
-	.byte $53
+	.byte $52
 	.word enemy_walking96
 	.word $00
 	.word $310
 	.word $1A0
 	.byte $03
 	.byte $60, $60, $20
+Instance150:
+	.byte $53
+	.word switch
+	.word Instance153
+	.word $340
+	.word $1B0
+	.byte $00
 
 _Lev0Scr14:
 _Lev0Scr14EntsArr:
