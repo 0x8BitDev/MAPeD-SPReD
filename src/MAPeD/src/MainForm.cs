@@ -231,7 +231,7 @@ namespace MAPeD
 				SToolTipData[] tooltips = new SToolTipData[]{ 	new SToolTipData( tabControlTilesLayout, "Double Click to detach the tab page" ),
 																new SToolTipData( CheckBoxScreensAutoUpdate, "Automatically updates the screen list when \"Update GFX\" button is pressed" ),
 																new SToolTipData( CheckBoxLayoutEditorAllBanks, "Show screens of all CHR banks" ),
-																new SToolTipData( CheckBoxPickupTargetEntity, "Pickup target entity" ),
+																new SToolTipData( CheckBoxSelectTargetEntity, "Select target entity" ),
 																new SToolTipData( BtnCopyCHRBank, "Add copy of active CHR bank" ),
 																new SToolTipData( BtnAddCHRBank, "Add new CHR bank" ),
 																new SToolTipData( BtnDeleteCHRBank, "Delete active CHR Bank" ),																
@@ -3194,7 +3194,7 @@ namespace MAPeD
 				{
 					fill_entity_data( null );
 					
-					CheckBoxPickupTargetEntity.Checked = false;
+					CheckBoxSelectTargetEntity.Checked = false;
 				}
 				else
 				{
@@ -3213,6 +3213,8 @@ namespace MAPeD
 			if( m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_DELETE, null ) == true )
 			{
 				fill_entity_data( null );
+				
+				CheckBoxSelectTargetEntity.Checked = false;
 				
 				set_status_msg( "Layout Editor: entity deleted" );
 			}
@@ -3830,7 +3832,7 @@ namespace MAPeD
 			{
 				if( _ent != null )
 				{
-					bool edit_inst_mode = ( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_INST_EDIT || ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_PICKUP_TARGET );
+					bool edit_inst_mode = ( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_INST_EDIT || ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_SELECT_TARGET );
 	
 					NumericUpDownEntityUID.Value 	= _ent.uid;
 					NumericUpDownEntityWidth.Value 	= _ent.width;
@@ -3852,7 +3854,7 @@ namespace MAPeD
 					TextBoxEntityProperties.Enabled		= !edit_inst_mode;
 					BtnEntityLoadBitmap.Enabled			= !edit_inst_mode;
 					
-					CheckBoxPickupTargetEntity.Enabled	= edit_inst_mode;
+					CheckBoxSelectTargetEntity.Enabled	= edit_inst_mode;
 					
 					NumericUpDownEntityWidth.Enabled = NumericUpDownEntityHeight.Enabled = edit_inst_mode ? false:( _ent.image_flag ? false:true );
 				}
@@ -3872,7 +3874,7 @@ namespace MAPeD
 					LabelEntityName.Text			= "ENTITY NAME";
 				}
 	
-				CheckBoxPickupTargetEntity.Text		= "Target UID: " + ( _targ_uid < 0 ? "none":_targ_uid.ToString() );
+				CheckBoxSelectTargetEntity.Text		= "Target UID: " + ( _targ_uid < 0 ? "none":_targ_uid.ToString() );
 				
 				update_entity_preview( _ent == null );
 			}
@@ -4138,7 +4140,7 @@ namespace MAPeD
 				{
 					fill_entity_data( null );
 					
-					CheckBoxPickupTargetEntity.Checked = false;
+					CheckBoxSelectTargetEntity.Checked = false;
 				}
 				
 				set_status_msg( "Entities Editor: all entity instances deleted" );
@@ -4166,31 +4168,31 @@ namespace MAPeD
 			{
 				case layout_editor_param.CONST_SET_ENT_EDIT:
 					{
+						CheckBoxSelectTargetEntity.Checked = false;
+						
 						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, get_selected_entity() );
-						
+
 						m_layout_editor.set_param( _mode, null );
-						
-						CheckBoxPickupTargetEntity.Checked = false;
 					}
 					break;
 					
 				case layout_editor_param.CONST_SET_ENT_INST_EDIT:
 					{
 						TreeViewEntities.SelectedNode = null;
-			
+
+						CheckBoxSelectTargetEntity.Checked = false;
+						
 						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, null );
-						
+
 						m_layout_editor.set_param( _mode, null );
 						
 						fill_entity_data( get_selected_entity() );
-						
-						CheckBoxPickupTargetEntity.Checked = false;
 					}
 					break;
 					
-				case layout_editor_param.CONST_SET_ENT_PICKUP_TARGET:
+				case layout_editor_param.CONST_SET_ENT_SELECT_TARGET:
 					{
 						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, null );
 						
@@ -4222,7 +4224,7 @@ namespace MAPeD
 				
 				TreeViewEntities.SelectedNode = null;
 				
-				CheckBoxPickupTargetEntity.Checked = false;
+				CheckBoxSelectTargetEntity.Checked = false;
 				
 				patterns_manager_reset_active_pattern();
 			}
@@ -4291,42 +4293,44 @@ namespace MAPeD
 				}
 			}
 			else
-			if( ent_mode == layout_editor_param.CONST_SET_ENT_PICKUP_TARGET )
+			if( ent_mode == layout_editor_param.CONST_SET_ENT_SELECT_TARGET )
 			{
 				entity_instance edit_ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 				
 				if( edit_ent_inst != null )
 				{
-					edit_ent_inst.target_uid = ( ent_inst != null ) ? ( ( ent_inst != edit_ent_inst ) ? ent_inst.uid:-1 ):-1;
-
 					if( ent_inst == null )
 					{
 						// reset selected entity if user clicked on empty space
 						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, 0 );
+						
+						fill_entity_data( null, null );
+						
+						// auto disable the 'target entity' mode
+						CheckBoxSelectTargetEntity.Checked = false;
 					}
-					
-					fill_entity_data( edit_ent_inst.base_entity, edit_ent_inst.properties, edit_ent_inst.name, edit_ent_inst.target_uid );
-					
-					// auto disable the 'target entity' mode
-					CheckBoxPickupTargetEntity.Checked = false;
+					else
+					{
+						edit_ent_inst.target_uid = ( ent_inst != edit_ent_inst ) ? ent_inst.uid:-1;
+
+						fill_entity_data( edit_ent_inst.base_entity, edit_ent_inst.properties, edit_ent_inst.name, edit_ent_inst.target_uid );
+					}
 				}
 			}
 		}
 		
-		void CheckBoxPickupTargetEntityChanged_Event(object sender, EventArgs e)
+		void CheckBoxSelectTargetEntityChanged_Event(object sender, EventArgs e)
 		{
 			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
 			{
 				if( ( sender as CheckBox ).Checked )
 				{
-					layout_editor_set_entity_mode( layout_editor_param.CONST_SET_ENT_PICKUP_TARGET );
+					layout_editor_set_entity_mode( layout_editor_param.CONST_SET_ENT_SELECT_TARGET );
 				}
 				else
 				{
-					if( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_PICKUP_TARGET )
-					{
-						layout_editor_set_entity_mode( layout_editor_param.CONST_SET_ENT_INST_EDIT );
-					}
+					// return to the edit instances mode
+					m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_EDIT, null );
 				}
 			}
 		}

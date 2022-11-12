@@ -62,7 +62,9 @@ namespace MAPeD
 				
 				bool entity_picked = false;
 				
-				if( m_owner.show_entities && m_ent_mode == layout_editor_param.CONST_SET_ENT_INST_EDIT || m_ent_mode == layout_editor_param.CONST_SET_ENT_PICKUP_TARGET )
+				uint last_ent_mode = m_ent_mode;
+				
+				if( m_owner.show_entities && ( last_ent_mode == layout_editor_param.CONST_SET_ENT_INST_EDIT || last_ent_mode == layout_editor_param.CONST_SET_ENT_SELECT_TARGET ) )
 				{
 					// select entity
 					if( m_shared.m_sel_screen_slot_id >= 0 )
@@ -76,7 +78,7 @@ namespace MAPeD
 						int mouse_scr_pos_x = ( int )( ( e.X - scr_pos_x_pix ) / m_shared.m_scale );
 						int mouse_scr_pos_y = ( int )( ( e.Y - scr_pos_y_pix ) / m_shared.m_scale );
 
-						if( !( entity_picked = pickup_entity( mouse_scr_pos_x, mouse_scr_pos_y, scr_pos_x, scr_pos_y, m_shared.m_sel_screen_slot_id ) ) )
+						if( !( entity_picked = select_entity( mouse_scr_pos_x, mouse_scr_pos_y, scr_pos_x, scr_pos_y, m_shared.m_sel_screen_slot_id ) ) )
 						{
 							// try to pick at adjacent screens
 							int scr_cnt_x = m_shared.m_layout.get_width();
@@ -141,7 +143,7 @@ namespace MAPeD
 										mouse_scr_pos_x = ( int )( ( e.X - scr_pos_x_pix ) / m_shared.m_scale );
 										mouse_scr_pos_y = ( int )( ( e.Y - scr_pos_y_pix ) / m_shared.m_scale );
 										
-										if( ( entity_picked = pickup_entity( mouse_scr_pos_x, mouse_scr_pos_y, scr_mod_x_ind, scr_mod_y_ind, scr_ind ) ) == true )
+										if( ( entity_picked = select_entity( mouse_scr_pos_x, mouse_scr_pos_y, scr_mod_x_ind, scr_mod_y_ind, scr_ind ) ) == true )
 										{
 											break;
 										}
@@ -151,7 +153,7 @@ namespace MAPeD
 						}
 					}
 					
-					if( m_ent_mode == layout_editor_param.CONST_SET_ENT_PICKUP_TARGET )
+					if( last_ent_mode == layout_editor_param.CONST_SET_ENT_SELECT_TARGET )
 					{
 						if( !entity_picked )
 						{
@@ -193,7 +195,7 @@ namespace MAPeD
 			}
 		}
 		
-		private bool pickup_entity( int _cursor_pos_x, int _cursor_pos_y, int _scr_pos_x, int _scr_pos_y, int _scr_ind )
+		private bool select_entity( int _cursor_pos_x, int _cursor_pos_y, int _scr_pos_x, int _scr_pos_y, int _scr_ind )
 		{
 			entity_instance ent_inst;
 			
@@ -291,7 +293,7 @@ namespace MAPeD
 							{
 								if( place_old_entity_instance( m_ent_inst ) == true )
 								{
-									m_ent_inst_screen_slot_id = m_shared.m_sel_screen_slot_id;
+									m_ent_inst_init_screen_slot_id = m_ent_inst_screen_slot_id = m_shared.m_sel_screen_slot_id;
 									
 									ent_placed = true;
 								}
@@ -698,7 +700,7 @@ namespace MAPeD
 					m_shared.print( "edit: instances", 0, 10 );
 				}
 				else
-				if( m_ent_mode == layout_editor_param.CONST_SET_ENT_PICKUP_TARGET )
+				if( m_ent_mode == layout_editor_param.CONST_SET_ENT_SELECT_TARGET )
 				{
 					if( m_ent_inst != null && m_shared.m_high_quality_render )
 					{
@@ -713,15 +715,28 @@ namespace MAPeD
 							int scr_pos_x_pix = m_shared.screen_pos_x_by_slot_id( scr_pos_x );
 							int scr_pos_y_pix = m_shared.screen_pos_y_by_slot_id( scr_pos_y );
 							
+							int ent_scr_pos_x = scr_pos_x_pix + ( int )( m_ent_inst.x * m_shared.m_scale );
+							int ent_scr_pos_y = scr_pos_y_pix + ( int )( m_ent_inst.y * m_shared.m_scale );
+							
 							_pen.Color = utils.CONST_COLOR_SELECTED_ENTITY_BORDER;
 							_pen.Width = 2;
 							{
-								_gfx.DrawRectangle( _pen, scr_pos_x_pix + ( int )( m_ent_inst.x * m_shared.m_scale ), scr_pos_y_pix + ( int )( m_ent_inst.y * m_shared.m_scale ), ent_width, ent_height );
+								_gfx.DrawRectangle( _pen, ent_scr_pos_x, ent_scr_pos_y, ent_width, ent_height );
+							}
+							
+							int pivot_x = ( int )( m_ent_inst.base_entity.pivot_x * m_shared.m_scale );
+							int pivot_y = ( int )( m_ent_inst.base_entity.pivot_y * m_shared.m_scale );
+							
+							m_shared.draw_pivot( ent_scr_pos_x + pivot_x, ent_scr_pos_y + pivot_y );
+							
+							if( m_owner.show_coords )
+							{
+								m_shared.show_pivot_coords( ( scr_pos_x * platform_data.get_screen_width_pixels() ) + m_ent_inst.x + m_ent_inst.base_entity.pivot_x, ( scr_pos_y * platform_data.get_screen_height_pixels() ) + m_ent_inst.y + m_ent_inst.base_entity.pivot_y, ent_scr_pos_x, ent_scr_pos_y );
 							}
 						}
 					}
 					
-					m_shared.print( "pickup target entity", 0, 10 );
+					m_shared.print( "select target entity", 0, 10 );
 				}
 			}
 			else
@@ -835,7 +850,7 @@ namespace MAPeD
 				
 				case layout_editor_param.CONST_SET_ENT_EDIT:
 				case layout_editor_param.CONST_SET_ENT_INST_EDIT:
-				case layout_editor_param.CONST_SET_ENT_PICKUP_TARGET:
+				case layout_editor_param.CONST_SET_ENT_SELECT_TARGET:
 					{
 						m_ent_mode = _param;
 						

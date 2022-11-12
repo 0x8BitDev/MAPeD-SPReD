@@ -29,7 +29,7 @@ namespace MAPeD
 		public const uint	CONST_SET_ENT_EDIT					= 0x000010;
 		public const uint	CONST_SET_ENT_INST_EDIT				= 0x000020;
 		public const uint	CONST_SET_ENT_INST_DELETE			= 0x000040;
-		public const uint	CONST_SET_ENT_PICKUP_TARGET			= 0x000080;
+		public const uint	CONST_SET_ENT_SELECT_TARGET			= 0x000080;
 		public const uint	CONST_SET_ENT_INST_RESET_IF_EQUAL	= 0x000100;
 		public const uint	CONST_SET_ENT_SNAPPING				= 0x000200;
 

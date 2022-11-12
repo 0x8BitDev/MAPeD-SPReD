@@ -283,7 +283,7 @@ namespace MAPeD
 			this.BtnEntitiesEditInstancesMode = new System.Windows.Forms.Button();
 			this.CheckBoxEntitySnapping = new System.Windows.Forms.CheckBox();
 			this.groupBoxEntityEditor = new System.Windows.Forms.GroupBox();
-			this.CheckBoxPickupTargetEntity = new System.Windows.Forms.CheckBox();
+			this.CheckBoxSelectTargetEntity = new System.Windows.Forms.CheckBox();
 			this.PBoxEntityPreview = new System.Windows.Forms.PictureBox();
 			this.NumericUpDownEntityUID = new System.Windows.Forms.NumericUpDown();
 			this.PBoxColor = new System.Windows.Forms.PictureBox();
@@ -2935,7 +2935,7 @@ namespace MAPeD
 			// 
 			// groupBoxEntityEditor
 			// 
-			this.groupBoxEntityEditor.Controls.Add(this.CheckBoxPickupTargetEntity);
+			this.groupBoxEntityEditor.Controls.Add(this.CheckBoxSelectTargetEntity);
 			this.groupBoxEntityEditor.Controls.Add(this.PBoxEntityPreview);
 			this.groupBoxEntityEditor.Controls.Add(this.NumericUpDownEntityUID);
 			this.groupBoxEntityEditor.Controls.Add(this.PBoxColor);
@@ -2955,16 +2955,16 @@ namespace MAPeD
 			this.groupBoxEntityEditor.TabStop = false;
 			this.groupBoxEntityEditor.Text = "Active Entity";
 			// 
-			// CheckBoxPickupTargetEntity
+			// CheckBoxSelectTargetEntity
 			// 
-			this.CheckBoxPickupTargetEntity.Appearance = System.Windows.Forms.Appearance.Button;
-			this.CheckBoxPickupTargetEntity.Location = new System.Drawing.Point(176, 87);
-			this.CheckBoxPickupTargetEntity.Name = "CheckBoxPickupTargetEntity";
-			this.CheckBoxPickupTargetEntity.Size = new System.Drawing.Size(100, 29);
-			this.CheckBoxPickupTargetEntity.TabIndex = 116;
-			this.CheckBoxPickupTargetEntity.Text = "Target UID:";
-			this.CheckBoxPickupTargetEntity.UseVisualStyleBackColor = true;
-			this.CheckBoxPickupTargetEntity.CheckedChanged += new System.EventHandler(this.CheckBoxPickupTargetEntityChanged_Event);
+			this.CheckBoxSelectTargetEntity.Appearance = System.Windows.Forms.Appearance.Button;
+			this.CheckBoxSelectTargetEntity.Location = new System.Drawing.Point(176, 87);
+			this.CheckBoxSelectTargetEntity.Name = "CheckBoxSelectTargetEntity";
+			this.CheckBoxSelectTargetEntity.Size = new System.Drawing.Size(100, 29);
+			this.CheckBoxSelectTargetEntity.TabIndex = 116;
+			this.CheckBoxSelectTargetEntity.Text = "Target UID:";
+			this.CheckBoxSelectTargetEntity.UseVisualStyleBackColor = true;
+			this.CheckBoxSelectTargetEntity.CheckedChanged += new System.EventHandler(this.CheckBoxSelectTargetEntityChanged_Event);
 			// 
 			// PBoxEntityPreview
 			// 
@@ -4149,7 +4149,7 @@ namespace MAPeD
 		private System.Windows.Forms.CheckBox CheckBoxShowMarks;
 		private System.Windows.Forms.CheckBox CheckBoxShowTargets;
 		private System.Windows.Forms.GroupBox groupBox13;
-		private System.Windows.Forms.CheckBox CheckBoxPickupTargetEntity;
+		private System.Windows.Forms.CheckBox CheckBoxSelectTargetEntity;
 		private System.Windows.Forms.Button BtnCopyLayout;
 		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
 		private System.Windows.Forms.CheckBox CheckBoxEntitySnapping;
