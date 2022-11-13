@@ -4325,10 +4325,14 @@ namespace MAPeD
 			{
 				if( ( sender as CheckBox ).Checked )
 				{
+					CheckBoxSelectTargetEntity.FlatStyle = FlatStyle.Standard;
+
 					layout_editor_set_entity_mode( layout_editor_param.CONST_SET_ENT_SELECT_TARGET );
 				}
 				else
 				{
+					CheckBoxSelectTargetEntity.FlatStyle = FlatStyle.System;
+					
 					// return to the edit instances mode
 					m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_EDIT, null );
 				}

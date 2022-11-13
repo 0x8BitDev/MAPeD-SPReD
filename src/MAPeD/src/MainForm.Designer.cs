@@ -2958,12 +2958,14 @@ namespace MAPeD
 			// CheckBoxSelectTargetEntity
 			// 
 			this.CheckBoxSelectTargetEntity.Appearance = System.Windows.Forms.Appearance.Button;
+			this.CheckBoxSelectTargetEntity.BackColor = System.Drawing.Color.Orange;
+			this.CheckBoxSelectTargetEntity.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.CheckBoxSelectTargetEntity.Location = new System.Drawing.Point(176, 87);
 			this.CheckBoxSelectTargetEntity.Name = "CheckBoxSelectTargetEntity";
 			this.CheckBoxSelectTargetEntity.Size = new System.Drawing.Size(100, 29);
 			this.CheckBoxSelectTargetEntity.TabIndex = 116;
 			this.CheckBoxSelectTargetEntity.Text = "Target UID:";
-			this.CheckBoxSelectTargetEntity.UseVisualStyleBackColor = true;
+			this.CheckBoxSelectTargetEntity.UseVisualStyleBackColor = false;
 			this.CheckBoxSelectTargetEntity.CheckedChanged += new System.EventHandler(this.CheckBoxSelectTargetEntityChanged_Event);
 			// 
 			// PBoxEntityPreview
