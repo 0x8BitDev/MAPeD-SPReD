@@ -1064,6 +1064,12 @@ namespace MAPeD
 								{
 									if( m_import_tiles_form.ShowDialog() == DialogResult.OK )
 									{
+										// switch to the builder tab
+										if( tabControlLayoutTools.Contains( TabBuilder ) )
+										{
+											tabControlLayoutTools.SelectTab( TabBuilder );
+										}
+										
 										progress_bar_show( true, "Image Data Importing..." );
 										
 										// needed to properly remove screens of invalid layout
@@ -2479,7 +2485,7 @@ namespace MAPeD
 			}
 		}
 #endregion		
-// LAYOUT PAINTER *************************************************************************************//
+// LAYOUT PAINTER ************************************************************************************//
 #region layout painter
 		void MainForm_MapScaleX1(object sender, EventArgs e)
 		{
@@ -2577,6 +2583,68 @@ namespace MAPeD
 #endregion		
 // LAYOUT EDITOR *************************************************************************************//
 #region layout editor
+		void TabControlLayoutToolsSelected_Event(object sender, TabControlEventArgs e)
+		{
+			TabPage curr_tab = ( sender as TabControl ).SelectedTab;
+			
+			// reset common states
+			{
+				LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = false;
+				
+				screensToolStripMenuItem.Enabled	= 
+				builderToolStripMenuItem.Enabled	= 
+				entitiesToolStripMenuItem.Enabled	= 
+				patternsToolStripMenuItem.Enabled	= false;
+				
+				ListViewScreens.SelectedItems.Clear();
+				
+				TreeViewEntities.SelectedNode = null;
+				
+				CheckBoxSelectTargetEntity.Checked = false;
+				
+				patterns_manager_reset_active_pattern();
+			}
+			
+			if( curr_tab == TabBuilder )
+			{
+				builderToolStripMenuItem.Enabled = true;
+
+				m_layout_editor.mode = layout_editor_base.EMode.em_Builder;
+			}
+			else
+			if( curr_tab == TabPainter )
+			{
+				m_layout_editor.mode = layout_editor_base.EMode.em_Painter;
+			}
+			else
+			if( curr_tab == TabScreenList )
+			{
+				screensToolStripMenuItem.Enabled = true;
+				
+				m_layout_editor.mode = layout_editor_base.EMode.em_Screens;
+			}
+			else
+			if( curr_tab == TabEntities )
+			{
+				entitiesToolStripMenuItem.Enabled = true;
+				
+				m_layout_editor.mode = layout_editor_base.EMode.em_Entities;
+				
+				fill_entity_data( get_selected_entity() );
+			}
+			else
+			if( curr_tab == TabPatterns )
+			{
+				patternsToolStripMenuItem.Enabled = true;
+				
+				m_layout_editor.mode = layout_editor_base.EMode.em_Patterns;
+			}
+			else
+			{
+				throw new Exception( "Unknown mode detected!\n\n[MainForm.TabControlLayoutToolsSelected_Event]" );
+			}
+		}
+		
 		int create_screen()
 		{
 			int scr_glob_ind	= -1;
@@ -2613,7 +2681,7 @@ namespace MAPeD
 			
 			if( m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, _scr_local_ind ) )
 			{
-				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 				
 				update_screens_labels_by_bank_id();
 			}
@@ -2627,7 +2695,7 @@ namespace MAPeD
 			
 			if( m_imagelist_manager.remove_screen( _bank_ind, _scr_local_ind ) )
 			{
-				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 				
 				update_screens_labels_by_bank_id();
 			}
@@ -2902,95 +2970,6 @@ namespace MAPeD
 			}
 		}
 
-		void ScreensAutoUpdateToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			bool on = ( sender as ToolStripMenuItem ).Checked;
-			ScreensAutoUpdateToolStripMenuItem.Checked = CheckBoxScreensAutoUpdate.Checked = !on;
-			
-			set_status_msg( "Screens auto update " + ( !on ? "enabled":"disabled" ) );
-		}
-		
-		void CheckBoxScreensAutoUpdateChanged_Event(object sender, EventArgs e)
-		{
-			CheckBox obj = sender as CheckBox;
-			
-			ScreensAutoUpdateToolStripMenuItem.Checked = obj.Checked;
-			
-			BtnUpdateScreens.Enabled = !obj.Checked;
-			
-			set_status_msg( "Screens auto update " + ( obj.Checked ? "enabled":"disabled" ) );
-		}
-		
-		private void enable_update_screens_btn( bool _on )
-		{
-			if( CheckBoxScreensAutoUpdate.Checked == false )
-			{
-				BtnUpdateScreens.Enabled = _on;
-				BtnUpdateScreens.UseVisualStyleBackColor = !_on;
-			}
-		}
-		
-		private bool need_update_screens()
-		{
-			return BtnUpdateScreens.Enabled;
-		}
-
-		private bool update_screens_if_needed()
-		{
-			if( need_update_screens() )
-			{
-				m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, m_data_manager.tiles_data_pos );
-				
-				return true;
-			}
-			
-			return false;
-		}
-
-		void BtnUpdateScreensClick_Event(object sender, EventArgs e)
-		{
-			progress_bar_show( true, "Updating screens...", false );
-			{
-				update_screens( true );
-			}
-			progress_bar_show( false );
-		}
-		
-		void update_screens( bool _disable_upd_scr_btn, bool _show_status_msg = true )
-		{
-			// update_screens - may change a current palette
-			update_screens_by_bank_id( _disable_upd_scr_btn, true );
-			
-			m_layout_editor.update();
-			
-			if( _show_status_msg )
-			{
-				set_status_msg( "Screen list updated" );
-			}
-		}
-
-		void update_all_screens( bool _disable_upd_scr_btn, bool _show_status_msg = true )
-		{
-			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), CBoxCHRBanks.SelectedIndex, m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
-			
-			// renew a palette
-			palette_group.Instance.set_palette( get_curr_tiles_data() );
-			
-			LabelLayoutEditorCHRBankID.Text = CheckBoxLayoutEditorAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
-		
-			if( _disable_upd_scr_btn )
-			{
-				enable_update_screens_btn( false );
-			}
-			
-			m_layout_editor.update();
-			
-			if( _show_status_msg )
-			{
-				set_status_msg( "Screen list updated" );
-			}
-		}
-		
 		void BtnLayoutDeleteEmptyScreensClick_Event(object sender, EventArgs e)
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 && message_box( "Delete all one tile filled screens?", "Clean Up", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
@@ -3177,7 +3156,17 @@ namespace MAPeD
 				
 				set_status_msg( "Layout Editor: all screen marks deleted" );
 			}
-		}		
+		}
+		
+		void LayoutBringFrontToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SEL_BRING_FRONT, 0 );
+		}
+		
+		void LayoutSendBackToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SEL_SEND_BACK, 0 );
+		}
 		
 		void LayoutDeleteScreenToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
@@ -3245,31 +3234,6 @@ namespace MAPeD
 			{
 				message_box( "Please, select a valid screen!", "Adjacent Screen Mask Setting Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
-		}
-		
-		void ListViewScreensClick_Event(object sender, EventArgs e)
-		{
-			ListView lv = sender as ListView;
-			
-			if( lv.SelectedItems.Count > 0 )
-			{
-				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, lv.SelectedItems[ 0 ].ImageIndex );
-			
-				set_status_msg( "Layout Editor: screen - " + lv.SelectedItems[ 0 ].Text );
-			}
-			else
-			{
-				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, layout_data.CONST_EMPTY_CELL_ID );
-			
-				set_status_msg( "" );
-			}
-			
-			m_layout_editor.update();
-		}
-		
-		void MainForm_ResetSelectedScreen(object sender, EventArgs e)
-		{
-			ListViewScreens.SelectedItems.Clear();
 		}
 		
 		void BtnCreateLayoutWxHClick_Event(object sender, EventArgs e)
@@ -3380,11 +3344,6 @@ namespace MAPeD
 			}
 		}
 		
-		void ScreensShowAllBanksToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			ScreensShowAllBanksToolStripMenuItem.Checked = CheckBoxLayoutEditorAllBanks.Checked = !( sender as ToolStripMenuItem ).Checked;
-		}
-		
 		void CheckBoxLayoutEditorAllBanksCheckChanged_Event(object sender, EventArgs e)
 		{
 			ScreensShowAllBanksToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
@@ -3392,26 +3351,6 @@ namespace MAPeD
 			update_screens_by_bank_id( true, need_update_screens() );
 			
 			m_layout_editor.update();
-		}
-		
-		void update_screens_by_bank_id( bool _disable_upd_scr_btn, bool _update_images )
-		{
-			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, _update_images, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
-			
-			// renew a palette
-			palette_group.Instance.set_palette( get_curr_tiles_data() );
-			
-			LabelLayoutEditorCHRBankID.Text = CheckBoxLayoutEditorAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
-		
-			if( _disable_upd_scr_btn )
-			{
-				enable_update_screens_btn( false );
-			}
-		}
-		
-		void update_screens_labels_by_bank_id()
-		{
-			m_imagelist_manager.update_screens_labels( m_data_manager.get_tiles_data(), CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 		}
 		
 		void LayoutShowMarksToolStripMenuItemClick_Event(object sender, EventArgs e)
@@ -3470,6 +3409,147 @@ namespace MAPeD
 		void CheckBoxShowGridChecked_Event(object sender, EventArgs e)
 		{
 			m_layout_editor.show_grid = LayoutShowGridToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
+		}
+#endregion
+// LAYOUT SCREENS ************************************************************************************//
+#region layout screens
+		void ScreensAutoUpdateToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			bool on = ( sender as ToolStripMenuItem ).Checked;
+			ScreensAutoUpdateToolStripMenuItem.Checked = CheckBoxScreensAutoUpdate.Checked = !on;
+			
+			set_status_msg( "Screens auto update " + ( !on ? "enabled":"disabled" ) );
+		}
+		
+		void CheckBoxScreensAutoUpdateChanged_Event(object sender, EventArgs e)
+		{
+			CheckBox obj = sender as CheckBox;
+			
+			ScreensAutoUpdateToolStripMenuItem.Checked = obj.Checked;
+			
+			BtnUpdateScreens.Enabled = !obj.Checked;
+			
+			set_status_msg( "Screens auto update " + ( obj.Checked ? "enabled":"disabled" ) );
+		}
+		
+		void ScreensShowAllBanksToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			ScreensShowAllBanksToolStripMenuItem.Checked = CheckBoxLayoutEditorAllBanks.Checked = !( sender as ToolStripMenuItem ).Checked;
+		}
+		
+		void ListViewScreensClick_Event(object sender, EventArgs e)
+		{
+			ListView lv = sender as ListView;
+			
+			if( lv.SelectedItems.Count > 0 )
+			{
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, lv.SelectedItems[ 0 ].ImageIndex );
+			
+				set_status_msg( "Layout Editor: screen - " + lv.SelectedItems[ 0 ].Text );
+			}
+			else
+			{
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, layout_data.CONST_EMPTY_CELL_ID );
+			
+				set_status_msg( "" );
+			}
+			
+			m_layout_editor.update();
+		}
+		
+		void MainForm_ResetSelectedScreen(object sender, EventArgs e)
+		{
+			ListViewScreens.SelectedItems.Clear();
+		}
+		
+		private void enable_update_screens_btn( bool _on )
+		{
+			if( CheckBoxScreensAutoUpdate.Checked == false )
+			{
+				BtnUpdateScreens.Enabled = _on;
+				BtnUpdateScreens.UseVisualStyleBackColor = !_on;
+			}
+		}
+		
+		private bool need_update_screens()
+		{
+			return BtnUpdateScreens.Enabled;
+		}
+
+		private bool update_screens_if_needed()
+		{
+			if( need_update_screens() )
+			{
+				m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, m_data_manager.tiles_data_pos );
+				
+				return true;
+			}
+			
+			return false;
+		}
+
+		void BtnUpdateScreensClick_Event(object sender, EventArgs e)
+		{
+			progress_bar_show( true, "Updating screens...", false );
+			{
+				update_screens( true );
+			}
+			progress_bar_show( false );
+		}
+		
+		void update_screens( bool _disable_upd_scr_btn, bool _show_status_msg = true )
+		{
+			// update_screens - may change a current palette
+			update_screens_by_bank_id( _disable_upd_scr_btn, true );
+			
+			m_layout_editor.update();
+			
+			if( _show_status_msg )
+			{
+				set_status_msg( "Screen list updated" );
+			}
+		}
+
+		void update_all_screens( bool _disable_upd_scr_btn, bool _show_status_msg = true )
+		{
+			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), CBoxCHRBanks.SelectedIndex, m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
+			
+			// renew a palette
+			palette_group.Instance.set_palette( get_curr_tiles_data() );
+			
+			LabelLayoutEditorCHRBankID.Text = CheckBoxLayoutEditorAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
+		
+			if( _disable_upd_scr_btn )
+			{
+				enable_update_screens_btn( false );
+			}
+			
+			m_layout_editor.update();
+			
+			if( _show_status_msg )
+			{
+				set_status_msg( "Screen list updated" );
+			}
+		}
+
+		void update_screens_by_bank_id( bool _disable_upd_scr_btn, bool _update_images )
+		{
+			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, _update_images, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
+			
+			// renew a palette
+			palette_group.Instance.set_palette( get_curr_tiles_data() );
+			
+			LabelLayoutEditorCHRBankID.Text = CheckBoxLayoutEditorAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
+		
+			if( _disable_upd_scr_btn )
+			{
+				enable_update_screens_btn( false );
+			}
+		}
+		
+		void update_screens_labels_by_bank_id()
+		{
+			m_imagelist_manager.update_screens_labels( m_data_manager.get_tiles_data(), CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 		}
 #endregion
 // ENTITY EDITOR *************************************************************************************//
@@ -3822,7 +3902,7 @@ namespace MAPeD
 			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SNAPPING, ( sender as CheckBox ).Checked );
 		}
 #endregion
-// 	ENTITY PROPERTIES EDITOR *************************************************************************//
+// ENTITY PROPERTIES EDITOR **************************************************************************//
 #region entity properties editor
 		void fill_entity_data( entity_data _ent, string _inst_prop = "", string _inst_name = "", int _targ_uid = -1 )
 		{
@@ -4207,68 +4287,6 @@ namespace MAPeD
 			}
 		}
 		
-		void TabControlLayoutToolsSelected_Event(object sender, TabControlEventArgs e)
-		{
-			TabPage curr_tab = ( sender as TabControl ).SelectedTab;
-			
-			// reset common states
-			{
-				LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = false;
-				
-				screensToolStripMenuItem.Enabled	= 
-				builderToolStripMenuItem.Enabled	= 
-				entitiesToolStripMenuItem.Enabled	= 
-				patternsToolStripMenuItem.Enabled	= false;
-				
-				ListViewScreens.SelectedItems.Clear();
-				
-				TreeViewEntities.SelectedNode = null;
-				
-				CheckBoxSelectTargetEntity.Checked = false;
-				
-				patterns_manager_reset_active_pattern();
-			}
-			
-			if( curr_tab == TabBuilder )
-			{
-				builderToolStripMenuItem.Enabled = true;
-
-				m_layout_editor.mode = layout_editor_base.EMode.em_Builder;
-			}
-			else
-			if( curr_tab == TabPainter )
-			{
-				m_layout_editor.mode = layout_editor_base.EMode.em_Painter;
-			}
-			else
-			if( curr_tab == TabScreenList )
-			{
-				screensToolStripMenuItem.Enabled = true;
-				
-				m_layout_editor.mode = layout_editor_base.EMode.em_Screens;
-			}
-			else
-			if( curr_tab == TabEntities )
-			{
-				entitiesToolStripMenuItem.Enabled = true;
-				
-				m_layout_editor.mode = layout_editor_base.EMode.em_Entities;
-				
-				fill_entity_data( get_selected_entity() );
-			}
-			else
-			if( curr_tab == TabPatterns )
-			{
-				patternsToolStripMenuItem.Enabled = true;
-				
-				m_layout_editor.mode = layout_editor_base.EMode.em_Patterns;
-			}
-			else
-			{
-				throw new Exception( "Unknown mode detected!\n\n[MainForm.TabControlLayoutToolsSelected_Event]" );
-			}
-		}
-		
 		void MainForm_EntityInstanceSelected( object sender, EventArgs e )
 		{
 			EventArg2Params args = e as EventArg2Params;
@@ -4342,18 +4360,8 @@ namespace MAPeD
 				m_entity_preview.set_focus();
 			}
 		}
-		
-		void LayoutBringFrontToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SEL_BRING_FRONT, 0 );
-		}
-		
-		void LayoutSendBackToolStripMenuItemClick_Event(object sender, EventArgs e)
-		{
-			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SEL_SEND_BACK, 0 );
-		}
 #endregion
-// 	PALETTE ******************************************************************************************//
+// PALETTE *******************************************************************************************//
 #region palette
 		void CheckBoxPalettePerCHRChecked_Event(object sender, EventArgs e)
 		{
@@ -4531,7 +4539,7 @@ namespace MAPeD
 			}
 		}
 #endregion		
-//	SCREEN DATA CONVERTER ****************************************************************************//
+// SCREEN DATA CONVERTER *****************************************************************************//
 #region screen data converter
 		void BtnScreenDataInfoClick_Event(object sender, EventArgs e)
 		{
@@ -4646,7 +4654,7 @@ namespace MAPeD
 		}
 		
 #endregion
-//	PATTERNS MANAGER *********************************************************************************//
+// PATTERNS MANAGER **********************************************************************************//
 #region patterns manager
 		void patterns_manager_reset_active_pattern()
 		{
