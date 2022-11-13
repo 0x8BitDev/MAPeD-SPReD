@@ -250,8 +250,11 @@ namespace MAPeD
 				
 				m_behaviour = m_behaviour_arr[ ( int )value ];
 				
-				m_shared.m_sys_msg = "";
+				m_behaviour.reset();
 				
+				m_shared.m_sys_msg		= "";
+				m_enable_map_panning	= false;
+
 				update();
 			}
 		}
@@ -374,6 +377,8 @@ namespace MAPeD
 			{
 				bhv.reset();
 			}
+			
+			m_enable_map_panning = false;
 			
 			update();
 		}

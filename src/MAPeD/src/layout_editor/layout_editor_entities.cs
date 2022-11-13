@@ -52,6 +52,7 @@ namespace MAPeD
 		{
 			set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 			set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, null );
+			set_param( layout_editor_param.CONST_SET_ENT_INST_EDIT, null );
 		}
 		
 		public override void mouse_down( object sender, MouseEventArgs e )

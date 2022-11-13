@@ -4254,10 +4254,6 @@ namespace MAPeD
 				
 				m_layout_editor.mode = layout_editor_base.EMode.em_Entities;
 				
-				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
-				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, null );
-				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_EDIT, null );
-
 				fill_entity_data( get_selected_entity() );
 			}
 			else
