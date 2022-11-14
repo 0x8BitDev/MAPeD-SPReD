@@ -145,7 +145,7 @@ namespace MAPeD
 			{
 				if( !m_shared.pix_box_captured() )
 				{
-					get_tile_xy( true, e.X, e.Y, out m_tile_x, out m_tile_y );
+					get_tile_xy( true, false, e.X, e.Y, out m_tile_x, out m_tile_y );
 				}
 			}
 			else
@@ -189,13 +189,15 @@ namespace MAPeD
 			m_tile_y = -10000;
 		}
 
-		private void get_tile_xy( bool _scr_space, int _x, int _y, out int _tile_x, out int _tile_y )
+		private void get_tile_xy( bool _scr_space, bool _add_img_space_delta, int _x, int _y, out int _tile_x, out int _tile_y )
 		{
 			int tile_size_uni = platform_data.get_screen_tiles_size_uni( m_shared.m_screen_data_type ) >> 1;
 			
+			int img_space_delta = _add_img_space_delta ? 2:0;
+			
 			// image space tile position
-			_tile_x = m_shared.transform_to_img_pos( _x, m_shared.m_offset_x, m_shared.m_scr_half_width ) + 2;
-			_tile_y = m_shared.transform_to_img_pos( _y, m_shared.m_offset_y, m_shared.m_scr_half_height ) + 2;
+			_tile_x = m_shared.transform_to_img_pos( _x, m_shared.m_offset_x, m_shared.m_scr_half_width ) + img_space_delta;
+			_tile_y = m_shared.transform_to_img_pos( _y, m_shared.m_offset_y, m_shared.m_scr_half_height ) + img_space_delta;
 			
 			int scr_pos_x = _tile_x / platform_data.get_screen_width_pixels();
 			int scr_pos_y = _tile_y / platform_data.get_screen_height_pixels();
@@ -230,8 +232,8 @@ namespace MAPeD
 			int end_x;
 			int end_y;
 			
-			get_tile_xy( false, m_pttrn_rect_beg_x, m_pttrn_rect_beg_y, out beg_x, out beg_y );
-			get_tile_xy( false, m_pttrn_rect_end_x, m_pttrn_rect_end_y, out end_x, out end_y );
+			get_tile_xy( false, true, m_pttrn_rect_beg_x, m_pttrn_rect_beg_y, out beg_x, out beg_y );
+			get_tile_xy( false, true, m_pttrn_rect_end_x, m_pttrn_rect_end_y, out end_x, out end_y );
 
 			int tile_size_uni = platform_data.get_screen_tiles_size_uni( m_shared.m_screen_data_type ) >> 1;
 			
