@@ -2834,11 +2834,34 @@ namespace MAPeD
 
 		void delete_last_layout_and_screens()
 		{
-			int size = m_data_manager.scr_data_cnt;
+			layout_screen_data lt_scr_data;
 			
-			for( int scr_n = 0; scr_n < size; scr_n++ )
+			List< int > scr_inds_data = new List< int >( m_data_manager.scr_data_cnt );
+			
+			layout_data layout = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
+			
+			for( int y = 0; y < layout.get_height(); y++ )
 			{
-				delete_screen( 0 );
+				for( int x = 0; x < layout.get_width(); x++ )
+				{
+					lt_scr_data = layout.get_data( x, y );
+					
+					if( lt_scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
+					{
+						scr_inds_data.Add( lt_scr_data.m_scr_ind );
+					}
+				}
+			}
+			
+			if( scr_inds_data.Count > 0 )
+			{
+				scr_inds_data.Sort();
+				scr_inds_data.Reverse();
+				
+				foreach( int scr_n in scr_inds_data )
+				{
+					delete_screen( m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, scr_n ) );
+				}
 			}
 			
 			m_data_manager.layout_data_delete( false );
