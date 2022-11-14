@@ -176,6 +176,9 @@ namespace MAPeD
 		
 		private float 	m_tmp_scale		= 1;
 		
+		private float	m_fl_offset_x;
+		private float	m_fl_offset_y;
+		
 		private bool	m_enable_map_panning	= false;
 		
 		private layout_editor_shared_data	m_shared = null;
@@ -369,6 +372,9 @@ namespace MAPeD
 			m_shared.m_scale 	= 1;
 			m_shared.m_offset_x	= 0;
 			m_shared.m_offset_y	= 0;
+			
+			m_fl_offset_x = 0;
+			m_fl_offset_y = 0;
 
 			set_high_quality_render_mode( true );
 
@@ -437,8 +443,11 @@ namespace MAPeD
 			
 			if( need_pan_viewport )
 			{
-				m_shared.m_offset_x += ( int )( Math.Round( ( m_shared.m_mouse_x - m_shared.m_last_mouse_x ) / m_shared.m_scale ) );
-				m_shared.m_offset_y += ( int )( Math.Round( ( m_shared.m_mouse_y - m_shared.m_last_mouse_y ) / m_shared.m_scale ) );
+				m_fl_offset_x += ( m_shared.m_mouse_x - m_shared.m_last_mouse_x ) / m_shared.m_scale;
+				m_fl_offset_y += ( m_shared.m_mouse_y - m_shared.m_last_mouse_y ) / m_shared.m_scale;
+				
+				m_shared.m_offset_x = ( int )m_fl_offset_x;
+				m_shared.m_offset_y = ( int )m_fl_offset_y;
 				
 				clamp_offsets();
 				
@@ -578,34 +587,40 @@ namespace MAPeD
 		{
 			if( m_shared.m_layout != null )
 			{
-				int width	= get_width() * platform_data.get_screen_width_pixels();
-				int height	= get_height() * platform_data.get_screen_height_pixels();
+				float width		= ( float )( get_width() * platform_data.get_screen_width_pixels() );
+				float height	= ( float )( get_height() * platform_data.get_screen_height_pixels() );
 				
-				int width_scaled	= ( int )( m_shared.m_scale * width );
-				int height_scaled	= ( int )( m_shared.m_scale * height );
+				float width_scaled	= m_shared.m_scale * width;
+				float height_scaled	= m_shared.m_scale * height;
 				
-				int tx = m_shared.m_scr_half_width - ( int )( m_shared.m_scr_half_width / m_shared.m_scale );
-				int ty = m_shared.m_scr_half_height - ( int )( m_shared.m_scr_half_height / m_shared.m_scale );
+				float tx = ( float )m_shared.m_scr_half_width - ( m_shared.m_scr_half_width / m_shared.m_scale );
+				float ty = ( float )m_shared.m_scr_half_height - ( m_shared.m_scr_half_height / m_shared.m_scale );
+				
+				float pbox_width	= ( float )m_pix_box.Width;
+				float pbox_height	= ( float )m_pix_box.Height;
 	
-				if( width_scaled < m_pix_box.Width )
+				if( width_scaled < pbox_width )
 				{
-					m_shared.m_offset_x = m_shared.m_scr_half_width - ( width >> 1 );
+					m_fl_offset_x = ( float )m_shared.m_scr_half_width - ( width * 0.5f );
 				}
 				else
 				{
-					m_shared.m_offset_x = ( ( m_shared.m_offset_x + width + tx ) < m_pix_box.Width ) ? ( m_pix_box.Width - width - tx ):m_shared.m_offset_x;
-					m_shared.m_offset_x = m_shared.m_offset_x > tx ? tx:m_shared.m_offset_x;
+					m_fl_offset_x = ( ( m_fl_offset_x + width + tx ) < pbox_width ) ? ( pbox_width - width - tx ):m_fl_offset_x;
+					m_fl_offset_x = m_fl_offset_x > tx ? tx:m_fl_offset_x;
 				}
 				
-				if( height_scaled < m_pix_box.Height )
+				if( height_scaled < pbox_height )
 				{
-					m_shared.m_offset_y = m_shared.m_scr_half_height - ( height >> 1 );
+					m_fl_offset_y = ( float )m_shared.m_scr_half_height - ( height * 0.5f );
 				}
 				else
 				{
-					m_shared.m_offset_y = ( ( m_shared.m_offset_y + height + ty ) < m_pix_box.Height ) ? ( m_pix_box.Height - height - ty ):m_shared.m_offset_y;
-					m_shared.m_offset_y = m_shared.m_offset_y > ty ? ty:m_shared.m_offset_y;
+					m_fl_offset_y = ( ( m_fl_offset_y + height + ty ) < pbox_height ) ? ( pbox_height - height - ty ):m_fl_offset_y;
+					m_fl_offset_y = m_fl_offset_y > ty ? ty:m_fl_offset_y;
 				}
+				
+				m_shared.m_offset_x = ( int )m_fl_offset_x;
+				m_shared.m_offset_y = ( int )m_fl_offset_y;
 			}
 		}
 
