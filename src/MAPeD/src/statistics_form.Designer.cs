@@ -41,7 +41,7 @@ namespace MAPeD
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(200, 239);
+			this.BtnOk.Location = new System.Drawing.Point(201, 335);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
 			this.BtnOk.TabIndex = 2;
@@ -54,7 +54,7 @@ namespace MAPeD
 			this.richTextBox.Name = "richTextBox";
 			this.richTextBox.ReadOnly = true;
 			this.richTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-			this.richTextBox.Size = new System.Drawing.Size(264, 212);
+			this.richTextBox.Size = new System.Drawing.Size(264, 305);
 			this.richTextBox.TabIndex = 1;
 			this.richTextBox.Text = "";
 			// 
@@ -63,7 +63,7 @@ namespace MAPeD
 			this.AcceptButton = this.BtnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(288, 274);
+			this.ClientSize = new System.Drawing.Size(288, 370);
 			this.Controls.Add(this.richTextBox);
 			this.Controls.Add(this.BtnOk);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
