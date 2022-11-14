@@ -437,8 +437,8 @@ namespace MAPeD
 			
 			if( need_pan_viewport )
 			{
-				m_shared.m_offset_x += m_shared.m_mouse_x - m_shared.m_last_mouse_x;
-				m_shared.m_offset_y += m_shared.m_mouse_y - m_shared.m_last_mouse_y;
+				m_shared.m_offset_x += ( int )( Math.Round( ( m_shared.m_mouse_x - m_shared.m_last_mouse_x ) / m_shared.m_scale ) );
+				m_shared.m_offset_y += ( int )( Math.Round( ( m_shared.m_mouse_y - m_shared.m_last_mouse_y ) / m_shared.m_scale ) );
 				
 				clamp_offsets();
 				
