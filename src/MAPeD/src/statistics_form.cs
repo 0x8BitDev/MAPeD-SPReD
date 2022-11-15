@@ -65,8 +65,20 @@ namespace MAPeD
 				richTextBox.Text += "\nScreens: " + screens_cnt + " (Max: " + utils.CONST_SCREEN_MAX_CNT + ")";
 			}
 			
-			richTextBox.Text += "\nCHR banks: " + m_data_manager.tiles_data_cnt + " (Max: " + utils.CONST_CHR_BANK_MAX_CNT + ")";
+			richTextBox.Text += "\nCHR banks: " + m_data_manager.tiles_data_cnt + " (Max: " + utils.CONST_CHR_BANK_MAX_CNT + ")\n";
 
+			// run through layouts
+			{
+				layout_data lt_data;
+				
+				for( int layout_n = 0; layout_n < m_data_manager.layouts_data_cnt; layout_n++ )
+				{
+					lt_data = m_data_manager.get_layout_data( layout_n );
+					
+					richTextBox.Text += "\n*** Layout " + layout_n + ": [" + lt_data.get_width() + "x" + lt_data.get_height() + "]\tentities: " + lt_data.get_ent_instances_cnt();
+				}
+			}
+			
 			// run through CHR banks
 			{
 				int ff_CHR;
@@ -79,7 +91,7 @@ namespace MAPeD
 				{
 					data = m_data_manager.get_tiles_data()[ CHR_bank_n ];
 					
-					richTextBox.Text += "\n\n*** CHR bank " + CHR_bank_n + ": ***";
+					richTextBox.Text += "\n\n*** CHR bank " + CHR_bank_n + ":";
 					
 					ff_CHR		= data.get_first_free_spr8x8_id( false );
 					ff_block	= data.get_first_free_block_id( false );
