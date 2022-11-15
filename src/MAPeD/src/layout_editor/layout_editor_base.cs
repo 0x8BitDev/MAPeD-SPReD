@@ -1025,7 +1025,7 @@ namespace MAPeD
 		{
 			if( m_shared.m_sel_screen_slot_id >= 0 )
 			{
-				if( MainForm.message_box( "Are you sure?", "Delete Screen", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
+				if( MainForm.message_box( "Are you sure?", "Delete Screen", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning ) == DialogResult.Yes )
 				{
 					int scr_pos_x = get_sel_scr_pos_x();
 					int scr_pos_y = get_sel_scr_pos_y();
@@ -1047,6 +1047,37 @@ namespace MAPeD
 			else
 			{
 				MainForm.message_box( "Please, select a screen!", "Delete Screen", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			
+			return false;
+		}
+		
+		public bool delete_screen_entities()
+		{
+			if( m_shared.m_sel_screen_slot_id >= 0 )
+			{
+				if( MainForm.message_box( "Are you sure?", "Delete Screen Entities", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning ) == DialogResult.Yes )
+				{
+					int scr_pos_x = get_sel_scr_pos_x();
+					int scr_pos_y = get_sel_scr_pos_y();
+					
+					layout_screen_data scr_data = m_shared.m_layout.get_data( scr_pos_x, scr_pos_y );
+					
+					if( mode == EMode.em_Entities )
+					{
+						scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
+					}
+
+					m_shared.m_layout.delete_entity_instances( scr_data );
+					
+					update();
+					
+					return true;
+				}
+			}
+			else
+			{
+				MainForm.message_box( "Please, select a screen!", "Delete Screen Entities", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
 			return false;

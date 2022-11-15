@@ -75,7 +75,7 @@ namespace MAPeD
 				{
 					lt_data = m_data_manager.get_layout_data( layout_n );
 					
-					richTextBox.Text += "\n*** Layout " + layout_n + ": [" + lt_data.get_width() + "x" + lt_data.get_height() + "]\tentities: " + lt_data.get_ent_instances_cnt();
+					richTextBox.Text += "\n*** Layout " + layout_n + ": [" + lt_data.get_width() + "x" + lt_data.get_height() + "]\tEntities: " + lt_data.get_ent_instances_cnt();
 				}
 			}
 			

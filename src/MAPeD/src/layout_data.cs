@@ -698,6 +698,83 @@ namespace MAPeD
 			});
 		}
 		
+		public int delete_entity_instances( int _scr_slot_ind )
+		{
+			return delete_entity_instances( get_data( _scr_slot_ind % get_width(), _scr_slot_ind / get_width() ) );
+		}
+		
+		public int delete_entity_instances( layout_screen_data _data )
+		{
+			int ent_n;
+			int ents_cnt = _data.m_ents.Count;
+			
+			entity_instance ent_inst;
+			
+			for( ent_n = 0; ent_n < ents_cnt; ent_n++ )
+			{
+				ent_inst = _data.m_ents[ ent_n ];
+			
+				entity_instance_reset_target_uid( ent_inst.uid );
+				
+				ent_inst.reset();
+			}
+			
+			_data.m_ents.Clear();
+			
+			return ents_cnt;
+		}
+		
+		public int delete_entity_instances( string _base_ent_name )
+		{
+			int size;
+			int ent_n;
+			int ent_ind;
+			int ents_cnt = 0;
+			
+			entity_instance ent_inst;
+			
+			List< int > ent_inds = new List< int >( 200 );
+			
+			m_layout.ForEach( delegate( List< layout_screen_data > _list ) 
+			{ 
+				_list.ForEach( delegate( layout_screen_data _data ) 
+				{
+					ent_inds.Clear();
+					
+					for( ent_n = 0; ent_n < _data.m_ents.Count; ent_n++ )
+					{
+						if( _data.m_ents[ ent_n ].base_entity.name == _base_ent_name )
+						{
+							ent_inds.Add( ent_n );
+						}
+					}
+					
+					if( ent_inds.Count > 0 )
+					{
+						ents_cnt += ent_inds.Count;
+						
+						ent_inds.Reverse();
+						
+						size = ent_inds.Count;
+						
+						for( ent_n = 0; ent_n < size; ent_n++ )
+						{
+							ent_ind = ent_inds[ ent_n ];
+							
+							ent_inst = _data.m_ents[ ent_ind ];
+						
+							entity_instance_reset_target_uid( ent_inst.uid );
+							
+							ent_inst.reset();
+							_data.m_ents.RemoveAt( ent_ind );
+						}
+					}
+				}); 
+			});
+			
+			return ents_cnt;
+		}
+		
 		public void delete_all_screen_marks()
 		{
 			m_start_scr_ind = -1;

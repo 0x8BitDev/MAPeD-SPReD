@@ -123,7 +123,7 @@ namespace MAPeD
 			this.deleteEntityGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.editInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteAllEntityInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteAllEntitiesInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.patternsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addPatternToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.deletePatternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -323,6 +323,8 @@ namespace MAPeD
 			this.toolStripSeparator29 = new System.Windows.Forms.ToolStripSeparator();
 			this.LayoutDeleteEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LayoutDeleteScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
+			this.LayoutDeleteScreenEntitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.SetStartScreenMarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SetScreenMarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -374,6 +376,8 @@ namespace MAPeD
 			this.ContextMenuEntitiesTreeEntity = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
+			this.deleteAllInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
 			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.ContextMenuStripPatternItem = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -1112,7 +1116,7 @@ namespace MAPeD
 									this.entitiesGroupToolStripMenuItem,
 									this.toolStripSeparator6,
 									this.editInstancesToolStripMenuItem,
-									this.deleteAllEntityInstancesToolStripMenuItem});
+									this.deleteAllEntitiesInstancesToolStripMenuItem});
 			this.entitiesToolStripMenuItem.Name = "entitiesToolStripMenuItem";
 			this.entitiesToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
 			this.entitiesToolStripMenuItem.Text = "&Entities";
@@ -1120,21 +1124,21 @@ namespace MAPeD
 			// addEntityToolStripMenuItem1
 			// 
 			this.addEntityToolStripMenuItem1.Name = "addEntityToolStripMenuItem1";
-			this.addEntityToolStripMenuItem1.Size = new System.Drawing.Size(209, 22);
+			this.addEntityToolStripMenuItem1.Size = new System.Drawing.Size(231, 22);
 			this.addEntityToolStripMenuItem1.Text = "&Add";
 			this.addEntityToolStripMenuItem1.Click += new System.EventHandler(this.BtnEntityAddClick_Event);
 			// 
 			// deleteEntityToolStripMenuItem
 			// 
 			this.deleteEntityToolStripMenuItem.Name = "deleteEntityToolStripMenuItem";
-			this.deleteEntityToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+			this.deleteEntityToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.deleteEntityToolStripMenuItem.Text = "&Delete";
 			this.deleteEntityToolStripMenuItem.Click += new System.EventHandler(this.BtnEntityDeleteClick_Event);
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(206, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(228, 6);
 			// 
 			// entitiesGroupToolStripMenuItem
 			// 
@@ -1142,7 +1146,7 @@ namespace MAPeD
 									this.addEntityGroupToolStripMenuItem,
 									this.deleteEntityGroupToolStripMenuItem});
 			this.entitiesGroupToolStripMenuItem.Name = "entitiesGroupToolStripMenuItem";
-			this.entitiesGroupToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+			this.entitiesGroupToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.entitiesGroupToolStripMenuItem.Text = "&Group";
 			// 
 			// addEntityGroupToolStripMenuItem
@@ -1162,22 +1166,22 @@ namespace MAPeD
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(206, 6);
+			this.toolStripSeparator6.Size = new System.Drawing.Size(228, 6);
 			// 
 			// editInstancesToolStripMenuItem
 			// 
 			this.editInstancesToolStripMenuItem.Name = "editInstancesToolStripMenuItem";
 			this.editInstancesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.E)));
-			this.editInstancesToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+			this.editInstancesToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
 			this.editInstancesToolStripMenuItem.Text = "&Edit Instances";
 			this.editInstancesToolStripMenuItem.Click += new System.EventHandler(this.BtnEntitiesEditInstancesModeClick_Event);
 			// 
-			// deleteAllEntityInstancesToolStripMenuItem
+			// deleteAllEntitiesInstancesToolStripMenuItem
 			// 
-			this.deleteAllEntityInstancesToolStripMenuItem.Name = "deleteAllEntityInstancesToolStripMenuItem";
-			this.deleteAllEntityInstancesToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-			this.deleteAllEntityInstancesToolStripMenuItem.Text = "Delete All Entity &Instances";
-			this.deleteAllEntityInstancesToolStripMenuItem.Click += new System.EventHandler(this.EntitiesDeleteAllEntityInstancesToolStripMenuItemClick_Event);
+			this.deleteAllEntitiesInstancesToolStripMenuItem.Name = "deleteAllEntitiesInstancesToolStripMenuItem";
+			this.deleteAllEntitiesInstancesToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+			this.deleteAllEntitiesInstancesToolStripMenuItem.Text = "Delete &Instances of All Entities";
+			this.deleteAllEntitiesInstancesToolStripMenuItem.Click += new System.EventHandler(this.EntitiesDeleteInstancesOfAllEntitiesToolStripMenuItemClick_Event);
 			// 
 			// patternsToolStripMenuItem
 			// 
@@ -1193,21 +1197,21 @@ namespace MAPeD
 			// addPatternToolStripMenuItem1
 			// 
 			this.addPatternToolStripMenuItem1.Name = "addPatternToolStripMenuItem1";
-			this.addPatternToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.addPatternToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
 			this.addPatternToolStripMenuItem1.Text = "&Add";
 			this.addPatternToolStripMenuItem1.Click += new System.EventHandler(this.BtnPatternAddClick_Event);
 			// 
 			// deletePatternToolStripMenuItem
 			// 
 			this.deletePatternToolStripMenuItem.Name = "deletePatternToolStripMenuItem";
-			this.deletePatternToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.deletePatternToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.deletePatternToolStripMenuItem.Text = "&Delete";
 			this.deletePatternToolStripMenuItem.Click += new System.EventHandler(this.BtnPatternDeleteClick_Event);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(104, 6);
 			// 
 			// groupPatternToolStripMenuItem
 			// 
@@ -1215,7 +1219,7 @@ namespace MAPeD
 									this.addPatternGroupToolStripMenuItem1,
 									this.deletePatternGroupToolStripMenuItem});
 			this.groupPatternToolStripMenuItem.Name = "groupPatternToolStripMenuItem";
-			this.groupPatternToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.groupPatternToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.groupPatternToolStripMenuItem.Text = "&Group";
 			// 
 			// addPatternGroupToolStripMenuItem1
@@ -2800,6 +2804,7 @@ namespace MAPeD
 			this.TreeViewEntities.TabIndex = 101;
 			this.TreeViewEntities.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeViewEntitiesLabelEdit_Event);
 			this.TreeViewEntities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewEntitiesSelect_Event);
+			this.TreeViewEntities.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeViewMouseDown_Event);
 			// 
 			// ContextMenuEntitiesTree
 			// 
@@ -3244,6 +3249,7 @@ namespace MAPeD
 			this.TreeViewPatterns.TabIndex = 8;
 			this.TreeViewPatterns.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.PatternsTreeViewNodeRename_Event);
 			this.TreeViewPatterns.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.PatternsTreeViewNodeSelect_Event);
+			this.TreeViewPatterns.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeViewMouseDown_Event);
 			// 
 			// ContextMenuStripPatternsTreeViewGroup
 			// 
@@ -3376,12 +3382,14 @@ namespace MAPeD
 									this.toolStripSeparator29,
 									this.LayoutDeleteEntityToolStripMenuItem,
 									this.LayoutDeleteScreenToolStripMenuItem,
+									this.toolStripSeparator19,
+									this.LayoutDeleteScreenEntitiesToolStripMenuItem,
 									this.toolStripSeparator7,
 									this.SetStartScreenMarkToolStripMenuItem,
 									this.SetScreenMarkToolStripMenuItem,
 									this.adjacentScreensDirectionToolStripMenuItem});
 			this.ContextMenuLayoutEditor.Name = "ContextMenuLayoutEditor";
-			this.ContextMenuLayoutEditor.Size = new System.Drawing.Size(196, 148);
+			this.ContextMenuLayoutEditor.Size = new System.Drawing.Size(196, 176);
 			// 
 			// LayoutEntityOrderToolStripMenuItem
 			// 
@@ -3424,6 +3432,18 @@ namespace MAPeD
 			this.LayoutDeleteScreenToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.LayoutDeleteScreenToolStripMenuItem.Text = "Delete Screen";
 			this.LayoutDeleteScreenToolStripMenuItem.Click += new System.EventHandler(this.LayoutDeleteScreenToolStripMenuItemClick_Event);
+			// 
+			// toolStripSeparator19
+			// 
+			this.toolStripSeparator19.Name = "toolStripSeparator19";
+			this.toolStripSeparator19.Size = new System.Drawing.Size(192, 6);
+			// 
+			// LayoutDeleteScreenEntitiesToolStripMenuItem
+			// 
+			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Name = "LayoutDeleteScreenEntitiesToolStripMenuItem";
+			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Text = "Delete Screen Entities";
+			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Click += new System.EventHandler(this.LayoutDeleteScreenEntitiesToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator7
 			// 
@@ -3790,23 +3810,37 @@ namespace MAPeD
 			// 
 			this.ContextMenuEntitiesTreeEntity.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.toolStripMenuItem1,
-									this.toolStripMenuItem2});
+									this.toolStripMenuItem2,
+									this.toolStripSeparator16,
+									this.deleteAllInstancesToolStripMenuItem});
 			this.ContextMenuEntitiesTreeEntity.Name = "ContextMenuStripEntitiesTreeGoup";
-			this.ContextMenuEntitiesTreeEntity.Size = new System.Drawing.Size(118, 48);
+			this.ContextMenuEntitiesTreeEntity.Size = new System.Drawing.Size(177, 76);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(117, 22);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(176, 22);
 			this.toolStripMenuItem1.Text = "&Delete";
 			this.toolStripMenuItem1.Click += new System.EventHandler(this.BtnEntityDeleteClick_Event);
 			// 
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(117, 22);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(176, 22);
 			this.toolStripMenuItem2.Text = "Re&name";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.BtnEntityRenameClick_Event);
+			// 
+			// toolStripSeparator16
+			// 
+			this.toolStripSeparator16.Name = "toolStripSeparator16";
+			this.toolStripSeparator16.Size = new System.Drawing.Size(173, 6);
+			// 
+			// deleteAllInstancesToolStripMenuItem
+			// 
+			this.deleteAllInstancesToolStripMenuItem.Name = "deleteAllInstancesToolStripMenuItem";
+			this.deleteAllInstancesToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+			this.deleteAllInstancesToolStripMenuItem.Text = "Delete All &Instances";
+			this.deleteAllInstancesToolStripMenuItem.Click += new System.EventHandler(this.DeleteAllInstancesToolStripMenuItemClick_Event);
 			// 
 			// colorDialogEntity
 			// 
@@ -4004,7 +4038,11 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
-		private System.Windows.Forms.ToolStripMenuItem deleteAllEntityInstancesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
+		private System.Windows.Forms.ToolStripMenuItem LayoutDeleteScreenEntitiesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem deleteAllInstancesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
+		private System.Windows.Forms.ToolStripMenuItem deleteAllEntitiesInstancesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator18;
 		private System.Windows.Forms.CheckBox CheckBoxPatternAdd;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;

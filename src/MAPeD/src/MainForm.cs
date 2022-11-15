@@ -761,6 +761,19 @@ namespace MAPeD
 			progress_bar_show( false, "", false );
 		}
 
+		void TreeViewMouseDown_Event(object sender, MouseEventArgs e)
+		{
+			if( e.Button == MouseButtons.Right )
+			{
+				TreeView tree_view = sender as TreeView;
+				
+				if( tree_view != null )
+				{
+					tree_view.SelectedNode = tree_view.GetNodeAt( e.X, e.Y );
+				}
+			}
+		}
+
 #region load save import export
 		void LoadToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
@@ -3204,6 +3217,7 @@ namespace MAPeD
 			{
 				if( ent_inst != ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED ) )
 				{
+					// selected entity has been deleted
 					fill_entity_data( null );
 					
 					CheckBoxSelectTargetEntity.Checked = false;
@@ -3217,6 +3231,36 @@ namespace MAPeD
 				}
 				
 				set_status_msg( "Layout Editor: screen deleted" );
+			}
+		}
+		
+		void LayoutDeleteScreenEntitiesToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			entity_instance ent_inst = null;
+			
+			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
+			{
+				ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
+			}
+
+			if( m_layout_editor.delete_screen_entities() == true )
+			{
+				if( ent_inst != ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED ) )
+				{
+					// selected entity has been deleted
+					fill_entity_data( null );
+					
+					CheckBoxSelectTargetEntity.Checked = false;
+				}
+				else
+				{
+					if( ent_inst != null )
+					{
+						fill_entity_data( ent_inst.base_entity, ent_inst.properties, ent_inst.name, ent_inst.target_uid );
+					}
+				}
+				
+				set_status_msg( "Entities Editor: all the screen entities are deleted" );
 			}
 		}
 		
@@ -4229,24 +4273,43 @@ namespace MAPeD
 			}
 		}
 		
-		void EntitiesDeleteAllEntityInstancesToolStripMenuItemClick_Event(object sender, EventArgs e)
+		void EntitiesDeleteInstancesOfAllEntitiesToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
+			entity_instance ent_inst = null;
 			
-			if( m_data_manager.layouts_data_cnt > 0 && message_box( "Are you sure?", "Delete All Entity Instances", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
+			{
+				ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
+			}
+			
+			if( m_data_manager.layouts_data_cnt > 0 && message_box( "Are you sure?", "Delete Instances of All Entities", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
 			{
 				m_data_manager.get_layout_data( m_data_manager.layouts_data_pos ).delete_all_entities();
 				
-				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
-				
 				if( ent_inst != null )
 				{
+					m_layout_editor.set_param( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SET_ENT_INST_RESET, null );
+					
 					fill_entity_data( null );
 					
 					CheckBoxSelectTargetEntity.Checked = false;
 				}
 				
-				set_status_msg( "Entities Editor: all entity instances deleted" );
+				set_status_msg( "Entities Editor: the instances of all entities are deleted" );
+			}
+		}
+		
+		void DeleteAllInstancesToolStripMenuItemClick_Event(object sender, EventArgs e)
+		{
+			string ent_name = TreeViewEntities.SelectedNode.Name;
+			
+			if( m_data_manager.layouts_data_cnt > 0 && message_box( "All the entity <" + ent_name + "> instances will be deleted!\nAre you sure?", "Delete All Entity Instances", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
+			{
+				int ents_cnt = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos ).delete_entity_instances( ent_name );
+				
+				m_layout_editor.update();
+				
+				set_status_msg( "Entities Editor: all the entity <" + ent_name + "> instances are deleted [" + ents_cnt + "]" );
 			}
 		}
 		
