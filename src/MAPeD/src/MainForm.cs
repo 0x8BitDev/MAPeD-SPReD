@@ -3896,12 +3896,12 @@ namespace MAPeD
 			{
 				if( nodes_arr[ 0 ].Parent == null )
 				{
-					message_box( "Please, select an entity!", "Entity Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "Please, select an entity!", "Base Entity Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 					
 					return false;
 				}
 				
-				if( message_box( "Are you sure?", "Delete Entity", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+				if( message_box( "All the entity instances in all layouts will be deleted!\nAre you sure?", "Delete Base Entity", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
 				{
 					TreeViewEntities.BeginUpdate();
 					{
@@ -3915,7 +3915,7 @@ namespace MAPeD
 				return false;
 			}
 			
-			message_box( "Can't find entity (" + ent_name +  ")!", "Entity Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );			
+			message_box( "Can't find entity (" + ent_name +  ")!", "Base Entity Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			
 			return false;
 		}
