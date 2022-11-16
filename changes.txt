@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+16.11.2022 - Layout tab -> Entities tab: added the number of entities in active map at the top left corner of the viewport
 15.11.2022 - Layout viewport context menu: added "Delete Screen Entities" item
            - Layout tab -> Entities tab: added "Delete All Instances" item to the entities tree view
 11.11.2022 - Updated documentation

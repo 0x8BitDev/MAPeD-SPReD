@@ -75,7 +75,7 @@ namespace MAPeD
 			hide_tile();
 		}
 		
-		public override void reset()
+		public override void reset( bool _init )
 		{
 			//...
 		}

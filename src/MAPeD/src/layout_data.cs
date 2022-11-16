@@ -19,6 +19,9 @@ namespace MAPeD
 	[DataContract]
 	public class layout_screen_data
 	{
+		public static event EventHandler EntityAdded;
+		public static event EventHandler EntityRemoved;
+		
 		[DataMember]
 		private ushort	m_marks = 0;	// 8 bits currently in use. the rest are reserved for future purposes.
 		
@@ -51,12 +54,93 @@ namespace MAPeD
 		public int 					m_scr_ind;
 		
 		[DataMember]
-		public List< entity_instance > 	m_ents;
+		private List< entity_instance > 	m_ents;
 		
 		public layout_screen_data( int _scr_ind )
 		{
 			m_scr_ind = _scr_ind;
 			m_ents = new List< entity_instance >();
+		}
+		
+		public int get_entities_cnt()
+		{
+			return m_ents.Count;
+		}
+		
+		public entity_instance get_entity( int _ent_id )
+		{
+			return m_ents[ _ent_id ];
+		}
+		
+		public void add_entity( entity_instance _ent )
+		{
+			m_ents.Add( _ent );
+			
+			dispatch_event_entity_added();
+		}
+		
+		public void remove_entity( int _pos )
+		{
+			m_ents.RemoveAt( _pos );
+			
+			dispatch_event_entity_removed();
+		}
+
+		public bool remove_entity( entity_instance _ent )
+		{
+			if( m_ents.Remove( _ent ) )
+			{
+				dispatch_event_entity_removed();
+				
+				return true;
+			}
+			
+			return false;
+		}
+		
+		public void insert_entity( int _ind, entity_instance _ent )
+		{
+			m_ents.Insert( _ind, _ent );
+			
+			dispatch_event_entity_added();
+		}
+		
+		public void clear_entities( bool _null )
+		{
+			m_ents.Clear();
+			
+			if( _null )
+			{
+				m_ents = null;
+			}
+			
+			dispatch_event_entity_removed();
+		}
+		
+		public void entities_proc( Action< entity_instance > _act )
+		{
+			m_ents.ForEach( _act );
+		}
+		
+		public int entities_find_index( Predicate< entity_instance > _pred )
+		{
+			return m_ents.FindIndex( _pred );
+		}
+		
+		private void dispatch_event_entity_added()
+		{
+			if( EntityAdded != null )
+			{
+				EntityAdded( this, null );
+			}
+		}
+		
+		private void dispatch_event_entity_removed()
+		{
+			if( EntityRemoved != null )
+			{
+				EntityRemoved( this, null );
+			}
 		}
 		
 		public layout_screen_data copy()
@@ -196,15 +280,14 @@ namespace MAPeD
 			{ 
 				_list.ForEach( delegate( layout_screen_data _data ) 
 				{
- 	              	_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) 
+					_data.entities_proc( delegate( entity_instance _ent_inst ) 
 					{
 						_ent_inst.reset();
- 	              	});
-			                 	              	
-					_data.m_ents.Clear(); 
-					_data.m_ents = null; 
+					});
+					
+					_data.clear_entities( true );
 				}); 
-			                 	
+				
 				_list.Clear(); 
 			});
 			
@@ -256,18 +339,18 @@ namespace MAPeD
 				entity_instance ent;
 				entity_instance targ_ent;
 				
-				List< entity_instance > ents;
-				List< entity_instance > targ_ents;
-
+				layout_screen_data scr_data;
+				layout_screen_data targ_scr_data;
+				
 				for( scr_y = 0; scr_y < m_layout.Count; scr_y++ )
 				{
 					for( scr_x = 0; scr_x < m_layout[ scr_y ].Count; scr_x++ )
 					{
-						ents = m_layout[ scr_y ][ scr_x ].m_ents;
+						scr_data = m_layout[ scr_y ][ scr_x ];
 						
-						for( ent_n = 0; ent_n < ents.Count; ent_n++ )
+						for( ent_n = 0; ent_n < scr_data.get_entities_cnt(); ent_n++ )
 						{
-							ent = ents[ ent_n ];
+							ent = scr_data.get_entity( ent_n );
 							
 							if( ent.target_uid >= 0 )
 							{
@@ -278,17 +361,17 @@ namespace MAPeD
 								{
 									for( targ_scr_x = 0; targ_scr_x < m_layout[ targ_scr_y ].Count; targ_scr_x++ )
 									{
-										targ_ents = m_layout[ targ_scr_y ][ targ_scr_x ].m_ents;
+										targ_scr_data = m_layout[ targ_scr_y ][ targ_scr_x ];
 										
-										for( targ_ent_n = 0; targ_ent_n < targ_ents.Count; targ_ent_n++ )
+										for( targ_ent_n = 0; targ_ent_n < targ_scr_data.get_entities_cnt(); targ_ent_n++ )
 										{
-											targ_ent = targ_ents[ targ_ent_n ];
+											targ_ent = targ_scr_data.get_entity( targ_ent_n );
 											
 											if( ent.target_uid == targ_ent.uid )
 											{
-												new_data.m_layout[ scr_y ][ scr_x ].m_ents[ ent_n ].target_uid = new_data.m_layout[ targ_scr_y ][ targ_scr_x ].m_ents[ targ_ent_n ].uid;
+												new_data.m_layout[ scr_y ][ scr_x ].get_entity( ent_n ).target_uid = new_data.m_layout[ targ_scr_y ][ targ_scr_x ].get_entity( targ_ent_n ).uid;
 
-												target_find = true;												
+												target_find = true;
 												
 												break;
 											}
@@ -390,7 +473,7 @@ namespace MAPeD
 			{ 
 				_list.ForEach( delegate( layout_screen_data _scr_data ) 
 				{
- 	              	_scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) 
+					_scr_data.entities_proc( delegate( entity_instance _ent_inst ) 
 					{
 						if( _ent_inst.uid == _uid )
 						{
@@ -399,22 +482,22 @@ namespace MAPeD
 
 							res = true;
 
-							return;							
+							return;
 						}
- 	              	});
-			                 	              	
- 	              	if( res )
- 	              	{
- 	              		return;
- 	              	}
-			                 	              	
+					});
+					
+					if( res )
+					{
+						return;
+					}
+					
 					++scr_ind;
 				});
-			                 	
-              	if( res )
-              	{
-              		return;
-              	}
+				
+				if( res )
+				{
+					return;
+				}
 			});
 			
 			_ent 		= ent;
@@ -429,8 +512,8 @@ namespace MAPeD
 			{ 
 				_scr_data_list.ForEach( delegate( layout_screen_data _scr_data ) 
 				{
-					_scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst )
-		            {
+					_scr_data.entities_proc( delegate( entity_instance _ent_inst )
+					{
 						if( _ent_inst.target_uid == _uid )
 						{
 							_ent_inst.target_uid = -1;
@@ -455,8 +538,8 @@ namespace MAPeD
 			_data.m_scr_ind = layout_data.CONST_EMPTY_CELL_ID;
 			_data.mark = _data.adj_scr_mask = 0;
 			
-			_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) { entity_instance_reset_target_uid( _ent_inst.uid ); _ent_inst.reset(); } );
-			_data.m_ents.Clear();
+			_data.entities_proc( delegate( entity_instance _ent_inst ) { entity_instance_reset_target_uid( _ent_inst.uid ); _ent_inst.reset(); } );
+			_data.clear_entities( false );
 
 			if( get_start_screen_ind() == _scr_ind )
 			{
@@ -692,8 +775,8 @@ namespace MAPeD
 			{ 
 				_list.ForEach( delegate( layout_screen_data _data ) 
 				{
- 	              	_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) { _ent_inst.reset(); } );
- 	              	_data.m_ents.Clear();
+					_data.entities_proc( delegate( entity_instance _ent_inst ) { _ent_inst.reset(); } );
+					_data.clear_entities( false );
 				}); 
 			});
 		}
@@ -706,20 +789,20 @@ namespace MAPeD
 		public int delete_entity_instances( layout_screen_data _data )
 		{
 			int ent_n;
-			int ents_cnt = _data.m_ents.Count;
+			int ents_cnt = _data.get_entities_cnt();
 			
 			entity_instance ent_inst;
 			
 			for( ent_n = 0; ent_n < ents_cnt; ent_n++ )
 			{
-				ent_inst = _data.m_ents[ ent_n ];
+				ent_inst = _data.get_entity( ent_n );
 			
 				entity_instance_reset_target_uid( ent_inst.uid );
 				
 				ent_inst.reset();
 			}
 			
-			_data.m_ents.Clear();
+			_data.clear_entities( false );
 			
 			return ents_cnt;
 		}
@@ -741,9 +824,9 @@ namespace MAPeD
 				{
 					ent_inds.Clear();
 					
-					for( ent_n = 0; ent_n < _data.m_ents.Count; ent_n++ )
+					for( ent_n = 0; ent_n < _data.get_entities_cnt(); ent_n++ )
 					{
-						if( _data.m_ents[ ent_n ].base_entity.name == _base_ent_name )
+						if( _data.get_entity( ent_n ).base_entity.name == _base_ent_name )
 						{
 							ent_inds.Add( ent_n );
 						}
@@ -761,12 +844,12 @@ namespace MAPeD
 						{
 							ent_ind = ent_inds[ ent_n ];
 							
-							ent_inst = _data.m_ents[ ent_ind ];
+							ent_inst = _data.get_entity( ent_ind );
 						
 							entity_instance_reset_target_uid( ent_inst.uid );
 							
 							ent_inst.reset();
-							_data.m_ents.RemoveAt( ent_ind );
+							_data.remove_entity( ent_ind );
 						}
 					}
 				}); 
@@ -797,7 +880,7 @@ namespace MAPeD
 			{ 
 				_list.ForEach( delegate( layout_screen_data _data ) 
 				{
-					ent_cnt += _data.m_ents.Count;
+					ent_cnt += _data.get_entities_cnt();
 				}); 
 			});
 			

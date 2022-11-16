@@ -80,7 +80,7 @@ namespace MAPeD
 			Graphics.FromImage( m_sel_area_tile ).Clear( utils.CONST_COLOR_SCREEN_SELECTION_TILE );
 		}
 		
-		public override void reset()
+		public override void reset( bool _init )
 		{
 			set_param( layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
 			

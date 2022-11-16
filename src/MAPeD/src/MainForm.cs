@@ -165,6 +165,9 @@ namespace MAPeD
 				m_layout_editor.mode = layout_editor_base.EMode.em_Builder;
 				
 				m_tile_preview = new image_preview( PBoxActiveTile, false );
+
+				layout_screen_data.EntityAdded		+= new EventHandler( MainForm_entities_counter_update );
+				layout_screen_data.EntityRemoved	+= new EventHandler( MainForm_entities_counter_update );
 			}
 			
 			// patterns manager
@@ -2454,7 +2457,11 @@ namespace MAPeD
 	
 							enable_update_screens_btn( false );
 							
-							m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
+							if( m_layout_editor.mode == layout_editor_base.EMode.em_Screens )
+							{
+								m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
+							}
+							
 							m_layout_editor.update();
 							
 							progress_bar_show( false );
@@ -2655,6 +2662,14 @@ namespace MAPeD
 			else
 			{
 				throw new Exception( "Unknown mode detected!\n\n[MainForm.TabControlLayoutToolsSelected_Event]" );
+			}
+		}
+		
+		void MainForm_entities_counter_update(object sender, EventArgs e)
+		{
+			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
+			{
+				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_UPDATE_ENTS_CNT, null );
 			}
 		}
 		

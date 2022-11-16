@@ -27,7 +27,7 @@ namespace MAPeD
 			//...
 		}
 		
-		public override void reset()
+		public override void reset( bool _init )
 		{
 			set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 		}

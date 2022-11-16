@@ -32,20 +32,21 @@ namespace MAPeD
 		public const uint	CONST_SET_ENT_SELECT_TARGET			= 0x000080;
 		public const uint	CONST_SET_ENT_INST_RESET_IF_EQUAL	= 0x000100;
 		public const uint	CONST_SET_ENT_SNAPPING				= 0x000200;
+		public const uint	CONST_SET_ENT_UPDATE_ENTS_CNT		= 0x000400;
 
-		public const uint	CONST_SET_SCR_ACTIVE				= 0x000400;
+		public const uint	CONST_SET_SCR_ACTIVE				= 0x000800;
 		
-		public const uint	CONST_SET_PNT_CLEAR_ACTIVE_TILE		= 0x000800;
-		public const uint	CONST_SET_PNT_UPD_ACTIVE_TILE		= 0x001000;
-		public const uint	CONST_SET_PNT_UPD_ACTIVE_BLOCK		= 0x002000;
+		public const uint	CONST_SET_PNT_CLEAR_ACTIVE_TILE		= 0x001000;
+		public const uint	CONST_SET_PNT_UPD_ACTIVE_TILE		= 0x002000;
+		public const uint	CONST_SET_PNT_UPD_ACTIVE_BLOCK		= 0x004000;
 
-		public const uint	CONST_SET_PTTRN_EXTRACT_BEGIN		= 0x004000;
-		public const uint	CONST_SET_PTTRN_PLACE				= 0x008000;
-		public const uint	CONST_SET_PTTRN_IDLE_STATE			= 0x010000;
+		public const uint	CONST_SET_PTTRN_EXTRACT_BEGIN		= 0x008000;
+		public const uint	CONST_SET_PTTRN_PLACE				= 0x010000;
+		public const uint	CONST_SET_PTTRN_IDLE_STATE			= 0x020000;
 		
-		public const uint	CONST_SET_BASE_MAP_SCALE_X1			= 0x020000;
-		public const uint	CONST_SET_BASE_MAP_SCALE_X2			= 0x040000;
-		public const uint	CONST_SET_BASE_SUBSCR_DATA_MNGR		= 0x080000;
+		public const uint	CONST_SET_BASE_MAP_SCALE_X1			= 0x040000;
+		public const uint	CONST_SET_BASE_MAP_SCALE_X2			= 0x080000;
+		public const uint	CONST_SET_BASE_SUBSCR_DATA_MNGR		= 0x100000;
 
 		// get
 		public const uint	CONST_GET_ENT_INST_SELECTED			= 0x01;
@@ -83,7 +84,7 @@ namespace MAPeD
 
 		public string	name()	{ return m_name; }
 		
-		public abstract void	reset();
+		public abstract void	reset( bool _init );
 		
 		public abstract void	mouse_down( object sender, MouseEventArgs e );
 		public abstract void	mouse_up( object sender, MouseEventArgs e );
@@ -246,14 +247,14 @@ namespace MAPeD
 			{
 				if( m_behaviour != null )
 				{
-					m_behaviour.reset();
+					m_behaviour.reset( false );
 				}
 				
 				m_mode = value;
 				
 				m_behaviour = m_behaviour_arr[ ( int )value ];
 				
-				m_behaviour.reset();
+				m_behaviour.reset( true );
 				
 				m_shared.m_sys_msg		= "";
 				m_enable_map_panning	= false;
@@ -381,7 +382,7 @@ namespace MAPeD
 			// reset all behaviours
 			foreach( var bhv in m_behaviour_arr )
 			{
-				bhv.reset();
+				bhv.reset( _init );
 			}
 			
 			m_enable_map_panning = false;
@@ -727,7 +728,7 @@ namespace MAPeD
 					{
 						scr_x = screen_pos_x_by_slot_id( j );
 
-						scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst )
+						scr_data.entities_proc( delegate( entity_instance _ent_inst )
 						{
 							if( _ent_inst.target_uid >= 0 )
 							{
@@ -916,7 +917,7 @@ namespace MAPeD
 						
 						draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_ind, layout_screen_data _scr_data, int _scr_x, int _scr_y ) 
 						{ 
-							_scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst )
+							_scr_data.entities_proc( delegate( entity_instance _ent_inst )
 							{
 								m_gfx.DrawImage( _ent_inst.base_entity.bitmap, _scr_x + ( int )( _ent_inst.x * m_shared.m_scale ), _scr_y + ( int )( _ent_inst.y * m_shared.m_scale ), ( int )_ent_inst.base_entity.width * m_shared.m_scale, ( int )_ent_inst.base_entity.height * m_shared.m_scale );
 							});
@@ -1034,7 +1035,7 @@ namespace MAPeD
 					
 					if( mode == EMode.em_Entities )
 					{
-						scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
+						scr_data.entities_proc( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
 					}
 					
 					m_shared.m_layout.delete_screen_by_pos( scr_pos_x, scr_pos_y );
@@ -1065,7 +1066,7 @@ namespace MAPeD
 					
 					if( mode == EMode.em_Entities )
 					{
-						scr_data.m_ents.ForEach( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
+						scr_data.entities_proc( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
 					}
 
 					m_shared.m_layout.delete_entity_instances( scr_data );

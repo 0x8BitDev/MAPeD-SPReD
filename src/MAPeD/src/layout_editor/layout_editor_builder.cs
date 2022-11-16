@@ -21,7 +21,7 @@ namespace MAPeD
 			//...
 		}
 		
-		public override void reset()
+		public override void reset( bool _init )
 		{
 			//...
 		}

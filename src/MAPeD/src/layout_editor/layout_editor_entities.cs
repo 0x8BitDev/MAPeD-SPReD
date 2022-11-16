@@ -41,15 +41,22 @@ namespace MAPeD
 			set { m_ent_snapping = value; }
 		}
 
-		private uint m_ent_mode = 0xff;
+		private uint	m_ent_mode			= 0xff;
+		private int		m_map_ents_cnt		= 0;
+		private bool	m_need_upd_ents_cnt	= false;
 		
 		public layout_editor_entities( string _name, layout_editor_shared_data _shared, layout_editor_base _owner ) : base( _name, _shared, _owner )
 		{
 			m_adj_scr_ind_arr = new int[]{ -1, /*( -width - 1 )*/0, /*-width*/0, /*( -width + 1 )*/0, +1, /*( width + 1 )*/0, /*width*/0, /*( width - 1 )*/0, -1 };
 		}
 		
-		public override void reset()
+		public override void reset( bool _init )
 		{
+			if( _init )
+			{
+				set_param( layout_editor_param.CONST_SET_ENT_UPDATE_ENTS_CNT, null );
+			}
+			
 			set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 			set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, null );
 			set_param( layout_editor_param.CONST_SET_ENT_INST_EDIT, null );
@@ -208,9 +215,9 @@ namespace MAPeD
 			
 			if( valid_pos == true )
 			{
-				for( int ent_n = scr_data.m_ents.Count - 1; ent_n >= 0; --ent_n )
+				for( int ent_n = scr_data.get_entities_cnt() - 1; ent_n >= 0; --ent_n )
                 {
-					ent_inst = scr_data.m_ents[ ent_n ];
+					ent_inst = scr_data.get_entity( ent_n );
 					
                 	if( _cursor_pos_x >= ent_inst.x && _cursor_pos_x <= ent_inst.x + ent_inst.base_entity.width )
                 	{
@@ -263,7 +270,7 @@ namespace MAPeD
 						// delete dragged entity if it releases out of a map
 						if( m_ent_inst != null )
 						{
-							get_ent_inst_init_screen_data().m_ents.Remove( m_ent_inst );
+							get_ent_inst_init_screen_data().remove_entity( m_ent_inst );
 							
 							set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 							
@@ -354,7 +361,7 @@ namespace MAPeD
 					ent_pos_x -= _ent_data.pivot_x;
 					ent_pos_y -= _ent_data.pivot_y;
 #endif					
-					scr_data.m_ents.Add( new entity_instance( m_ent_data.inst_properties, ent_pos_x, ent_pos_y, m_ent_data ) );
+					scr_data.add_entity( new entity_instance( m_ent_data.inst_properties, ent_pos_x, ent_pos_y, m_ent_data ) );
 					
 					m_owner.update();
 					
@@ -406,9 +413,9 @@ namespace MAPeD
 					if( ent_inst_init_scr_data != scr_data )
 					{
 						// remove an entity from the old screen...
-						ent_inst_init_scr_data.m_ents.Remove( _ent_inst );
+						ent_inst_init_scr_data.remove_entity( _ent_inst );
 						// ... and add to the new one
-						scr_data.m_ents.Add( _ent_inst );
+						scr_data.add_entity( _ent_inst );
 					}
 					
 					m_owner.update();
@@ -739,6 +746,15 @@ namespace MAPeD
 					
 					m_shared.print( "select target entity", 0, 10 );
 				}
+				
+				if( m_need_upd_ents_cnt )
+				{
+					m_map_ents_cnt = m_shared.m_layout.get_ent_instances_cnt();
+					
+					m_need_upd_ents_cnt = false;
+				}
+				
+				m_shared.print( "[" + m_map_ents_cnt + "]", 80, 0 );
 			}
 			else
 			{
@@ -758,7 +774,7 @@ namespace MAPeD
 					{
 						layout_screen_data scr_data = m_shared.m_layout.get_data( m_ent_inst_screen_slot_id % m_shared.m_layout.get_width(), m_ent_inst_screen_slot_id / m_shared.m_layout.get_width() );
 					
-						if( scr_data.m_ents.Remove( m_ent_inst ) == false )
+						if( scr_data.remove_entity( m_ent_inst ) == false )
 						{
 							MainForm.message_box( "Unexpected error!\n\nCan't delete the entity!", "Delete Entity Instance", MessageBoxButtons.OK, MessageBoxIcon.Error );
 						}
@@ -831,8 +847,8 @@ namespace MAPeD
 					{
 						layout_screen_data scr_data = get_ent_inst_init_screen_data();
 						
-						scr_data.m_ents.RemoveAt( scr_data.m_ents.FindIndex( delegate( entity_instance _ent ) { return m_ent_inst == _ent; } ) );
-						scr_data.m_ents.Add( m_ent_inst );
+						scr_data.remove_entity( scr_data.entities_find_index( delegate( entity_instance _ent ) { return m_ent_inst == _ent; } ) );
+						scr_data.add_entity( m_ent_inst );
 						
 						m_owner.update();
 					}
@@ -842,8 +858,8 @@ namespace MAPeD
 					{
 						layout_screen_data scr_data = get_ent_inst_init_screen_data();
 						
-						scr_data.m_ents.RemoveAt( scr_data.m_ents.FindIndex( delegate( entity_instance _ent ) { return m_ent_inst == _ent; } ) );
-						scr_data.m_ents.Insert( 0, m_ent_inst );
+						scr_data.remove_entity( scr_data.entities_find_index( delegate( entity_instance _ent ) { return m_ent_inst == _ent; } ) );
+						scr_data.insert_entity( 0, m_ent_inst );
 						
 						m_owner.update();
 					}
@@ -876,6 +892,12 @@ namespace MAPeD
 				case layout_editor_param.CONST_SET_ENT_SNAPPING:
 					{
 						entity_snapping = ( bool )_val;
+					}
+					break;
+					
+				case layout_editor_param.CONST_SET_ENT_UPDATE_ENTS_CNT:
+					{
+						m_need_upd_ents_cnt = true;
 					}
 					break;
 				

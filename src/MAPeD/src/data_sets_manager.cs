@@ -226,22 +226,22 @@ namespace MAPeD
 				{ 
 					_scr_data_list.ForEach( delegate( layout_screen_data _scr_data ) 
 					{
-			            for( int ent_n = 0; ent_n < _scr_data.m_ents.Count; ent_n++ )
-			            {
-			            	ent_inst = _scr_data.m_ents[ ent_n ];
-			            	
+						for( int ent_n = 0; ent_n < _scr_data.get_entities_cnt(); ent_n++ )
+						{
+							ent_inst = _scr_data.get_entity( ent_n );
+							
 							if( ent_inst.base_entity.name == _name )
 							{
 								_layout.entity_instance_reset_target_uid( ent_inst.uid );
 								
 								ent_inst.reset();
-								_scr_data.m_ents.Remove( ent_inst );
+								_scr_data.remove_entity( ent_inst );
 								
 								--ent_n;
 								
 								res = true;
 							}
-			            }
+						}
 					}); 
 				});
 			});

@@ -253,7 +253,7 @@ namespace MAPeD
 			
 			if( data != null )
 			{
-				return data.m_ents.Count;
+				return data.get_entities_cnt();
 			}
 			
 			return -1;
@@ -263,9 +263,9 @@ namespace MAPeD
 		{
 			layout_screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
 			
-			if( data != null && _ent_ind >= 0 && _ent_ind < data.m_ents.Count )
+			if( data != null && _ent_ind >= 0 && _ent_ind < data.get_entities_cnt() )
 			{
-				entity_instance ent = data.m_ents[ _ent_ind ];
+				entity_instance ent = data.get_entity( _ent_ind );
 				
 				mpd_inst_entity inst_ent = new mpd_inst_entity();
 				
