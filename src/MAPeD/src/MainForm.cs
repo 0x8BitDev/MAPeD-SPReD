@@ -1108,7 +1108,7 @@ namespace MAPeD
 												for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
 												{
 													plt_grp.get_palettes_arr()[ i ].update();
-												}				
+												}
 
 												// update selected palette color
 												plt_grp.active_palette = 0;
@@ -1116,7 +1116,7 @@ namespace MAPeD
 											
 											if( m_import_tiles_form.delete_empty_screens )
 											{
-												progress_bar_status( "Empty screens deletion..." );
+												progress_bar_status( "Empty screens deleting..." );
 												
 												delete_empty_screens();
 											}
@@ -1273,7 +1273,7 @@ namespace MAPeD
 					
 					if( layout != null )
 					{
-						progress_bar_status( "Invalid layout deletion..." );
+						progress_bar_status( "Invalid layout deleting..." );
 						
 						delete_last_layout_and_screens();
 					}
@@ -1662,7 +1662,7 @@ namespace MAPeD
 			{
 				if( platform_data.get_max_blocks_cnt() > 256 )
 				{
-					progress_bar_show( true, "CHR bank deletion...", false );
+					progress_bar_show( true, "CHR bank deleting...", false );
 				}
 				
 				if( m_data_manager.tiles_data_cnt == 1 )
@@ -2445,7 +2445,7 @@ namespace MAPeD
 					{
 						if( m_optimization_form.need_update_screen_list )
 						{
-							progress_bar_show( true, "Updating screens...", false );
+							progress_bar_show( true, "Screens updating...", false );
 							
 							// update screens images
 							m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, -1 );
@@ -3027,7 +3027,7 @@ namespace MAPeD
 			{
 				int deleted_screens_cnt;
 				
-				progress_bar_show( true, "Empty screens deletion...", false );
+				progress_bar_show( true, "Empty screens deleting...", false );
 				
 				if( ( deleted_screens_cnt = layout_delete_empty_screens() ) > 0 )
 				{
@@ -3572,7 +3572,7 @@ namespace MAPeD
 
 		void BtnUpdateScreensClick_Event(object sender, EventArgs e)
 		{
-			progress_bar_show( true, "Updating screens...", false );
+			progress_bar_show( true, "Screens updating...", false );
 			{
 				update_screens( true );
 			}
@@ -4701,7 +4701,7 @@ namespace MAPeD
 			}
 			catch( Exception _err ) 
 			{
-				set_status_msg( "Screen data coversion canceled!" );
+				set_status_msg( "Screen data conversion canceled!" );
 				message_box( _err.Message, "Data Conversion Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				
 				return false;
