@@ -208,8 +208,7 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_SIMPLE_SCREEN_CROSS				= Color.Red;
 		public static readonly Color	CONST_COLOR_SCREEN_LIST_NOT_EMPTY			= Color.White;
 		public static readonly Color	CONST_COLOR_SCREEN_LIST_EMPTY 				= Color.Red;
-		public static readonly Color	CONST_COLOR_SCREEN_GHOST_IMAGE_INNER_BORDER	= Color.White;
-		public static readonly Color	CONST_COLOR_SCREEN_GHOST_IMAGE_OUTER_BORDER	= Color.Red;
+		public static readonly Color	CONST_COLOR_SCREEN_GHOST_IMAGE_BORDER		= Color.Red;
 		public static readonly Color	CONST_COLOR_SCREEN_SELECTED_LAYOUT_MODE		= Color.LimeGreen;
 		public static readonly Color	CONST_COLOR_SCREEN_ACTIVE					= Color.Red;
 		public static readonly Color	CONST_COLOR_STRING_DEFAULT					= Color.White;

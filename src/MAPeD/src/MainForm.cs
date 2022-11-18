@@ -1495,7 +1495,7 @@ namespace MAPeD
 
 			patterns_manager_update_data();
 			
-			update_graphics( false );
+			update_graphics( false, false );
 			
 			enable_copy_paste_action( false, ECopyPasteType.cpt_All );
 			
@@ -1517,7 +1517,7 @@ namespace MAPeD
 			progress_bar_show( false, "", false );
 		}
 		
-		private void update_graphics( bool _update_tile_processor_gfx )
+		private void update_graphics( bool _update_tile_processor_gfx, bool _update_screens = true )
 		{
 			tiles_data data = get_curr_tiles_data();
 			
@@ -1526,7 +1526,7 @@ namespace MAPeD
 			
 			m_tile_list_manager.update_all();
 
-			if( CheckBoxScreensAutoUpdate.Checked )
+			if( CheckBoxScreensAutoUpdate.Checked && _update_screens )
 			{
 				update_screens( false );
 			}
