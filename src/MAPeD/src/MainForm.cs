@@ -636,9 +636,19 @@ namespace MAPeD
 		{
 			m_disable_status_wnd = true;
 			
+			if( tabControlTilesLayout.Contains( TabTiles ) )
+			{
+				tabControlTilesLayout.SelectTab( TabTiles );
+			}
+			
+			if( tabControlLayoutTools.Contains( TabBuilder ) )
+			{
+				tabControlLayoutTools.SelectTab( TabBuilder );
+			}
+			
 			m_data_manager.reset();
 			fill_entity_data( null );
-
+			
 			m_tile_list_manager.select( tile_list.EType.t_Tiles, -1 );
 			m_tile_list_manager.select( tile_list.EType.t_Blocks, -1 );
 			
@@ -699,16 +709,6 @@ namespace MAPeD
 			SelectCHRToolStripMenuItemClick_Event( null, null );
 			
 			PropertyPerBlockToolStripMenuItemClick_Event( null, null );
-			
-			if( tabControlTilesLayout.Contains( TabTiles ) )
-			{
-				tabControlTilesLayout.SelectTab( TabTiles );
-			}
-			
-			if( tabControlLayoutTools.Contains( TabBuilder ) )
-			{
-				tabControlLayoutTools.SelectTab( TabBuilder );
-			}
 			
 			builderToolStripMenuItem.Enabled	= 
 			screensToolStripMenuItem.Enabled	= 
@@ -2670,6 +2670,8 @@ namespace MAPeD
 			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
 			{
 				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_UPDATE_ENTS_CNT, null );
+				
+				TreeViewEntities.Refresh();
 			}
 		}
 		
@@ -3205,6 +3207,8 @@ namespace MAPeD
 			{
 				m_data_manager.get_layout_data( m_data_manager.layouts_data_pos ).delete_all_screen_marks();
 				
+				m_layout_editor.update();
+				
 				set_status_msg( "Layout Editor: all screen marks deleted" );
 			}
 		}
@@ -3636,28 +3640,94 @@ namespace MAPeD
 #endregion
 // ENTITY EDITOR *************************************************************************************//
 #region entity editor
-		void TreeViewEntitiesLabelEdit_Event(object sender, NodeLabelEditEventArgs e)
+		private bool m_rename_ent_tree_node = true;
+		
+		void TreeViewEntitiesDrawNode_Event(object sender, DrawTreeNodeEventArgs e)
 		{
+			if( e.Node.Parent != null )
+			{
+				if( m_rename_ent_tree_node )
+				{
+					int ent_inst_cnt = ( ListBoxLayouts.SelectedIndex >= 0 ) ? m_data_manager.get_num_ent_instances_by_name( e.Node.Name ):0;
+					
+					string tag_str = "[" + ent_inst_cnt + "]  ";
+					
+					e.Node.Tag = tag_str;
+					
+					if( e.Node.Text.IndexOf( tag_str ) < 0 )
+					{
+						e.Node.Text = tag_str + e.Node.Name;
+					}
+				}
+			}
+			
+			e.DrawDefault = true;
+		}
+		
+		void TreeViewEntitiesNodeMouseClick_Event(object sender, TreeNodeMouseClickEventArgs e)
+		{
+			if( e.Button == MouseButtons.Left )
+			{
+				if( e.Node.IsSelected )
+				{
+					m_rename_ent_tree_node = false;
+					{
+						e.Node.Text = e.Node.Name;
+						
+						e.Node.TreeView.Refresh();
+					}
+					m_rename_ent_tree_node = true;
+				}
+			}
+		}
+		
+		void TreeViewEntitiesBeforeLabelEdit_Event(object sender, NodeLabelEditEventArgs e)
+		{
+			m_rename_ent_tree_node = false;
+			
+			e.Node.Text = e.Node.Name;
+			
+			e.Node.TreeView.Refresh();
+		}
+		
+		void TreeViewEntitiesAfterLabelEdit_Event(object sender, NodeLabelEditEventArgs e)
+		{
+			m_rename_ent_tree_node = true;
+			
 			if( e.Label != null )
 			{
-				if( TreeViewEntities.Nodes.Find( e.Label, true ).Length > 0 )
+				string new_label = e.Label;
+				
+				// remove tag from the e.Label
+				{
+					string tag_str = e.Node.Tag.ToString();
+					
+					if( new_label.IndexOf( tag_str ) == 0 )
+					{
+						new_label = new_label.Substring( tag_str.Length );
+					}
+				}
+				
+				TreeNode[] nodes_arr = TreeViewEntities.Nodes.Find( new_label, true );
+				
+				if( ( nodes_arr.Length > 0 ) && ( nodes_arr[ 0 ] != e.Node ) )
 				{
 					e.CancelEdit = true;
 					
-					message_box( "An item with the same name (" + e.Label +  ") is already exist!", "Renaming Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "An item with the same name (" + new_label +  ") is already exist!", "Renaming Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 					
 					return;
 				}
 				
 				if( e.Node.Parent == null )
 				{
-					m_data_manager.group_rename( e.Node.Text, e.Label );
-					e.Node.Name = e.Label;
+					m_data_manager.group_rename( e.Node.Text, new_label );
+					e.Node.Name = new_label;
 				}
 				else
 				{
-					m_data_manager.entity_rename( e.Node.Parent.Text, e.Node.Text, e.Label );
-					e.Node.Name = e.Label;
+					m_data_manager.entity_rename( e.Node.Parent.Text, e.Node.Text, new_label );
+					e.Node.Name = new_label;
 					
 					fill_entity_data( get_selected_entity() );
 				}
@@ -3804,6 +3874,14 @@ namespace MAPeD
 			
 			if( sel_node != null )
 			{
+				m_rename_ent_tree_node = false;
+				{
+					sel_node.Text = sel_node.Name;
+					
+					sel_node.TreeView.Refresh();
+				}
+				m_rename_ent_tree_node = true;
+				
 				sel_node.BeginEdit();
 			}
 			else
@@ -4309,6 +4387,8 @@ namespace MAPeD
 					
 					CheckBoxSelectTargetEntity.Checked = false;
 				}
+				
+				m_layout_editor.update();
 				
 				set_status_msg( "Entities Editor: the instances of all entities are deleted" );
 			}
@@ -5307,6 +5387,17 @@ namespace MAPeD
 		{
 			if( e.Label != null )
 			{
+				TreeNode[] nodes_arr = TreeViewPatterns.Nodes.Find( e.Label, true );
+				
+				if( ( nodes_arr.Length > 0 ) && ( nodes_arr[ 0 ] != e.Node ) )
+				{
+					e.CancelEdit = true;
+					
+					message_box( "An item with the same name (" + e.Label +  ") is already exist!", "Renaming Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					
+					return;
+				}
+				
 				if( e.Node.Parent == null )
 				{
 					patterns_manager_pattern_group_rename( e.Node.Text, e.Label );

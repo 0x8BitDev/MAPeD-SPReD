@@ -253,7 +253,7 @@ namespace MAPeD
 			
 			if( data != null )
 			{
-				return data.get_entities_cnt();
+				return data.get_num_entities();
 			}
 			
 			return -1;
@@ -263,7 +263,7 @@ namespace MAPeD
 		{
 			layout_screen_data data = get_layout_screen_data( _layout_ind, _scr_pos_x, _scr_pos_y );
 			
-			if( data != null && _ent_ind >= 0 && _ent_ind < data.get_entities_cnt() )
+			if( data != null && _ent_ind >= 0 && _ent_ind < data.get_num_entities() )
 			{
 				entity_instance ent = data.get_entity( _ent_ind );
 				

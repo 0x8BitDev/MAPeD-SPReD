@@ -215,7 +215,7 @@ namespace MAPeD
 			
 			if( valid_pos == true )
 			{
-				for( int ent_n = scr_data.get_entities_cnt() - 1; ent_n >= 0; --ent_n )
+				for( int ent_n = scr_data.get_num_entities() - 1; ent_n >= 0; --ent_n )
                 {
 					ent_inst = scr_data.get_entity( ent_n );
 					
@@ -749,7 +749,7 @@ namespace MAPeD
 				
 				if( m_need_upd_ents_cnt )
 				{
-					m_map_ents_cnt = m_shared.m_layout.get_ent_instances_cnt();
+					m_map_ents_cnt = m_shared.m_layout.get_num_ent_instances();
 					
 					m_need_upd_ents_cnt = false;
 				}

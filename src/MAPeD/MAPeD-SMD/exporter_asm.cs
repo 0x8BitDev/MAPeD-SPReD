@@ -241,7 +241,7 @@ namespace MAPeD
 		{
 			if( CheckBoxExportEntities.Checked )
 			{
-				if( _layout.get_ent_instances_cnt() > utils.CONST_MAX_ENT_INST_CNT )
+				if( _layout.get_num_ent_instances() > utils.CONST_MAX_ENT_INST_CNT )
 				{
 					throw new Exception( "The number of entity instances is out of range!\nThe maximum number allowed to export: " + utils.CONST_MAX_ENT_INST_CNT + "\n\n[" + _lev_pref_str + "]" );
 				}
@@ -2096,7 +2096,7 @@ namespace MAPeD
 						m_C_writer.WriteLine( "const u16\t" + level_prefix_str + "_WScrCnt = " + level_data.get_width() + ";\t// number of screens in width" );
 						m_C_writer.WriteLine( "const u16\t" + level_prefix_str + "_HScrCnt = " + level_data.get_height() + ";\t// number of screens in height" );
 						
-						m_C_writer.WriteLine( "const u16\t" + level_prefix_str + "_EntInstCnt = " + level_data.get_ent_instances_cnt() + ";\t// number of entities instances" );
+						m_C_writer.WriteLine( "const u16\t" + level_prefix_str + "_EntInstCnt = " + level_data.get_num_ent_instances() + ";\t// number of entities instances" );
 					}
 				}
 				else

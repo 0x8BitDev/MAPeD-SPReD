@@ -214,6 +214,18 @@ namespace MAPeD
 			return ent;
 		}
 		
+		public int get_num_ent_instances_by_name( string _name )
+		{
+			int num_ents = 0;
+			
+			if( layouts_data_pos >= 0 )
+			{
+				num_ents = get_layout_data( layouts_data_pos ).get_num_ent_instances_by_name( _name );
+			}
+			
+			return num_ents;
+		}
+		
 		private bool delete_entity_instances( string _name )
 		{
 			bool res = false;
@@ -226,7 +238,7 @@ namespace MAPeD
 				{ 
 					_scr_data_list.ForEach( delegate( layout_screen_data _scr_data ) 
 					{
-						for( int ent_n = 0; ent_n < _scr_data.get_entities_cnt(); ent_n++ )
+						for( int ent_n = 0; ent_n < _scr_data.get_num_entities(); ent_n++ )
 						{
 							ent_inst = _scr_data.get_entity( ent_n );
 							

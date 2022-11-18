@@ -1314,11 +1314,11 @@ namespace MAPeD
 				{
 					if( m_C_writer != null )
 					{
-						m_C_writer.WriteLine( "\t" + level_data.get_ent_instances_cnt() + ( level_n < ( n_levels - 1 ) ? ",":"") );
+						m_C_writer.WriteLine( "\t" + level_data.get_num_ent_instances() + ( level_n < ( n_levels - 1 ) ? ",":"") );
 					}
 					else
 					{
-						_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_EntInstCnt\t = " + level_data.get_ent_instances_cnt() + "\t; number of entities instances\n" );
+						_sw.WriteLine( CONST_FILENAME_LEVEL_PREFIX + level_n + "_EntInstCnt\t = " + level_data.get_num_ent_instances() + "\t; number of entities instances\n" );
 					}
 				}
 			}
@@ -2261,7 +2261,7 @@ namespace MAPeD
 		{
 			if( CheckBoxExportEntities.Checked )
 			{
-				if( _layout.get_ent_instances_cnt() > utils.CONST_MAX_ENT_INST_CNT )
+				if( _layout.get_num_ent_instances() > utils.CONST_MAX_ENT_INST_CNT )
 				{
 					throw new Exception( "The number of entity instances is out of range!\nThe maximum number allowed to export: " + utils.CONST_MAX_ENT_INST_CNT + "\n\n[" + _lev_pref_str + "]" );
 				}

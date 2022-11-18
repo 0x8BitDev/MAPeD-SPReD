@@ -2796,14 +2796,18 @@ namespace MAPeD
 			this.TreeViewEntities.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.TreeViewEntities.ContextMenuStrip = this.ContextMenuEntitiesTree;
 			this.TreeViewEntities.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.TreeViewEntities.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
 			this.TreeViewEntities.HideSelection = false;
 			this.TreeViewEntities.LabelEdit = true;
 			this.TreeViewEntities.Location = new System.Drawing.Point(0, 0);
 			this.TreeViewEntities.Name = "TreeViewEntities";
 			this.TreeViewEntities.Size = new System.Drawing.Size(203, 289);
 			this.TreeViewEntities.TabIndex = 101;
-			this.TreeViewEntities.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeViewEntitiesLabelEdit_Event);
+			this.TreeViewEntities.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeViewEntitiesBeforeLabelEdit_Event);
+			this.TreeViewEntities.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeViewEntitiesAfterLabelEdit_Event);
+			this.TreeViewEntities.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.TreeViewEntitiesDrawNode_Event);
 			this.TreeViewEntities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewEntitiesSelect_Event);
+			this.TreeViewEntities.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeViewEntitiesNodeMouseClick_Event);
 			this.TreeViewEntities.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeViewMouseDown_Event);
 			// 
 			// ContextMenuEntitiesTree
