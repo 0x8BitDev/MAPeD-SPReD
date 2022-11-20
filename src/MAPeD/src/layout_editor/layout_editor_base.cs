@@ -107,6 +107,7 @@ namespace MAPeD
 	public class layout_editor_shared_data
 	{
 		public int				m_sel_screen_slot_id		= -1;
+		public HashSet< int >	m_sel_screens_slot_ids		= null;
 		
 		public layout_data		m_layout				= null;
 		
@@ -174,6 +175,8 @@ namespace MAPeD
 	{
 		public event EventHandler MapScaleX1;
 		public event EventHandler MapScaleX2;
+
+		private readonly screen_mark_form m_screen_mark_form = null;
 		
 		private float 	m_tmp_scale		= 1;
 		
@@ -182,9 +185,9 @@ namespace MAPeD
 		
 		private bool	m_enable_map_panning	= false;
 		
-		private layout_editor_shared_data	m_shared = null;
+		private readonly layout_editor_shared_data	m_shared = null;
 		
-		private Label	m_label				= null;
+		private readonly Label m_label		= null;
 		
 		private bool 	m_show_marks		= true;
 		private bool 	m_show_entities		= true;
@@ -192,8 +195,8 @@ namespace MAPeD
 		private bool 	m_show_coords		= true;
 		private bool 	m_show_grid			= true;
 
-		private Bitmap		m_scr_mark_img	= null;
-		private Graphics	m_scr_mark_gfx	= null;
+		private readonly Bitmap		m_scr_mark_img	= null;
+		private readonly Graphics	m_scr_mark_gfx	= null;
 		
 		private const float CONST_MIN_SCALE	= 0.1f;
 		
@@ -264,7 +267,7 @@ namespace MAPeD
 		}
 		
 		private layout_editor_behaviour_base	m_behaviour		= null;
-		private layout_editor_behaviour_base[]	m_behaviour_arr	= null;
+		private readonly layout_editor_behaviour_base[]	m_behaviour_arr	= null;
 		
 		public layout_editor_base( data_sets_manager _data_mngr, PictureBox _pbox, Label _label, imagelist_manager _img_list_mngr ) : base( _pbox )
 		{
@@ -278,6 +281,8 @@ namespace MAPeD
 				m_shared.m_scr_list			= _img_list_mngr.get_screen_list();
 				m_shared.m_tiles_imagelist	= _img_list_mngr.get_tiles_image_list();
 				m_shared.m_blocks_imagelist	= _img_list_mngr.get_blocks_image_list();
+				
+				m_shared.m_sel_screens_slot_ids			= new HashSet< int >();
 	
 				// method
 				m_shared.set_high_quality_render_mode	= set_high_quality_render_mode;
@@ -310,8 +315,24 @@ namespace MAPeD
 			m_pix_box.MouseMove		+= new MouseEventHandler( Layout_MouseMove );
 			m_pix_box.MouseWheel	+= new MouseEventHandler( Layout_MouseWheel );
 			
-			m_pix_box.MouseEnter 	+= new EventHandler( Layout_MouseEnter );			
+			m_pix_box.MouseEnter 	+= new EventHandler( Layout_MouseEnter );
 			m_pix_box.MouseLeave	+= new EventHandler( Layout_MouseLeave );
+			
+			m_pix_box.ContextMenuStrip.Opened			+= new EventHandler( Layout_ContextMenuOpened );
+			m_pix_box.ContextMenuStrip.Closed			+= new ToolStripDropDownClosedEventHandler( Layout_ContextMenuClosed );
+			m_pix_box.ContextMenuStrip.PreviewKeyDown	+= new PreviewKeyDownEventHandler( Layout_ContextMenuPreviewKeyDown );
+			
+			m_screen_mark_form		= new screen_mark_form();
+			
+			// screen mark data
+			{
+				m_scr_mark_img = new Bitmap( platform_data.get_screen_mark_image_size(), platform_data.get_screen_mark_image_size(), PixelFormat.Format32bppPArgb );
+				m_scr_mark_gfx = Graphics.FromImage( m_scr_mark_img );
+				
+				m_scr_mark_gfx.SmoothingMode 		= SmoothingMode.HighSpeed;
+				m_scr_mark_gfx.InterpolationMode 	= InterpolationMode.HighQualityBilinear;
+				m_scr_mark_gfx.PixelOffsetMode 		= PixelOffsetMode.HighQuality;
+			}
 			
 			m_shared.m_scr_half_width  = m_pix_box.Width >> 1;
 			m_shared.m_scr_half_height = m_pix_box.Height >> 1;
@@ -406,6 +427,12 @@ namespace MAPeD
 				{
 					set_high_quality_render_mode( false );
 				}
+			}
+			else
+			if( e.Button == MouseButtons.Right )
+			{
+				// to avoid one frame map image without grid (mouse_down->mouse_move->map_update)
+				pix_box_reset_capture();
 			}
 
 			if( !map_panning_enabled() )
@@ -569,11 +596,12 @@ namespace MAPeD
 			m_behaviour.mouse_enter( sender, e );
 		}
 		
-		protected virtual void Layout_MouseLeave(object sender, EventArgs e)
+		private void Layout_MouseLeave(object sender, EventArgs e)
 		{
 			m_label.Focus();
 			
-			// hide mouse position to hide an active entity in the "edit entity" mode
+			// hide mouse position to hide an active object
+			if( !m_pix_box.ContextMenuStrip.Visible )
 			{
 				m_shared.m_mouse_x = 10000;
 				m_shared.m_mouse_y = 10000;
@@ -583,7 +611,46 @@ namespace MAPeD
 				update();
 			}
 		}
+		
+		private void Layout_ContextMenuOpened(object sender, EventArgs e)
+		{
+			draw_sel_screen_border();
+		}
 
+		private void Layout_ContextMenuClosed(object sender, EventArgs e)
+		{
+			// hide the selected screen border
+			update();
+		}
+		
+		private void Layout_ContextMenuPreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+			if( e.KeyCode == Keys.Escape )
+			{
+				// hide the selected screen border
+				update();
+			}
+		}
+		
+		public void draw_sel_screen_border()
+		{
+			if( m_shared.m_sel_screens_slot_ids.Count == 0 && m_shared.m_sel_screen_slot_id >= 0 )
+			{
+				// draw a selected screen border
+				int scr_size_width 	= ( int )( platform_data.get_screen_width_pixels() * m_shared.m_scale );
+				int scr_size_height = ( int )( platform_data.get_screen_height_pixels() * m_shared.m_scale );
+				
+				int x = screen_pos_x_by_slot_id( get_sel_scr_pos_x() );
+				int y = screen_pos_y_by_slot_id( get_sel_scr_pos_y() );
+				
+				m_pen.Width = 2;
+				m_pen.Color = utils.CONST_COLOR_SCREEN_GHOST_IMAGE_BORDER;
+				m_gfx.DrawRectangle( m_pen, x, y, scr_size_width, scr_size_height );
+				
+				invalidate();
+			}
+		}
+		
 		private void clamp_offsets()
 		{
 			if( m_shared.m_layout != null )
@@ -1022,66 +1089,103 @@ namespace MAPeD
 			invalidate();
 		}
 		
-		public bool delete_screen_from_layout()
+		private void selected_screens_proc( Action< int > _act )
 		{
+			if( m_shared.m_sel_screens_slot_ids.Count > 0 )
+			{
+				foreach( int scr_ind in m_shared.m_sel_screens_slot_ids )
+				{
+					_act( scr_ind );
+				}
+				
+				m_shared.m_sel_screens_slot_ids.Clear();
+			}
+			else
 			if( m_shared.m_sel_screen_slot_id >= 0 )
 			{
-				if( MainForm.message_box( "Are you sure?", "Delete Screen", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning ) == DialogResult.Yes )
+				_act( m_shared.m_sel_screen_slot_id );
+			}
+		}
+		
+		private bool selected_screens()
+		{
+			return ( m_shared.m_sel_screens_slot_ids.Count > 0 ) || ( m_shared.m_sel_screen_slot_id >= 0 );
+		}
+		
+		public bool delete_screen_from_layout()
+		{
+			bool res = false;
+			
+			if( selected_screens() )
+			{
+				draw_sel_screen_border();
+				
+				if( MainForm.message_box( "Are you sure?", "Delete Screens", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning ) == DialogResult.Yes )
 				{
-					int scr_pos_x = get_sel_scr_pos_x();
-					int scr_pos_y = get_sel_scr_pos_y();
-					
-					layout_screen_data scr_data = m_shared.m_layout.get_data( scr_pos_x, scr_pos_y );
-					
-					if( mode == EMode.em_Entities )
+					selected_screens_proc( delegate( int _scr_slot_ind )
 					{
-						scr_data.entities_proc( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
-					}
+						int scr_pos_x = _scr_slot_ind % get_width();
+						int scr_pos_y = _scr_slot_ind / get_width();
+						
+						layout_screen_data scr_data = m_shared.m_layout.get_data( scr_pos_x, scr_pos_y );
+						
+						if( mode == EMode.em_Entities )
+						{
+							scr_data.entities_proc( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
+						}
+						
+						m_shared.m_layout.delete_screen_by_pos( scr_pos_x, scr_pos_y );
+					});
 					
-					m_shared.m_layout.delete_screen_by_pos( scr_pos_x, scr_pos_y );
-
-					update();
-					
-					return true;
+					res = true;
 				}
 			}
 			else
 			{
-				MainForm.message_box( "Please, select a screen!", "Delete Screen", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( "Please, select screen(s)!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
-			return false;
+			update();
+			
+			return res;
 		}
 		
 		public bool delete_screen_entities()
 		{
-			if( m_shared.m_sel_screen_slot_id >= 0 )
+			bool res = false;
+			
+			if( selected_screens() )
 			{
+				draw_sel_screen_border();
+				
 				if( MainForm.message_box( "Are you sure?", "Delete Screen Entities", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning ) == DialogResult.Yes )
 				{
-					int scr_pos_x = get_sel_scr_pos_x();
-					int scr_pos_y = get_sel_scr_pos_y();
-					
-					layout_screen_data scr_data = m_shared.m_layout.get_data( scr_pos_x, scr_pos_y );
-					
-					if( mode == EMode.em_Entities )
+					selected_screens_proc( delegate( int _scr_slot_ind )
 					{
-						scr_data.entities_proc( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
-					}
-
-					m_shared.m_layout.delete_entity_instances( scr_data );
+						int scr_pos_x = _scr_slot_ind % get_width();
+						int scr_pos_y = _scr_slot_ind / get_width();
+						
+						layout_screen_data scr_data = m_shared.m_layout.get_data( scr_pos_x, scr_pos_y );
+						
+						if( mode == EMode.em_Entities )
+						{
+							scr_data.entities_proc( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
+						}
+						
+						m_shared.m_layout.delete_entity_instances( scr_data );
+					});
 					
-					update();
-					
-					return true;
+					res = true;
 				}
 			}
 			else
 			{
-				MainForm.message_box( "Please, select a screen!", "Delete Screen Entities", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( "Please, select screen(s)!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
+
+			update();
 			
-			return false;
+			return res;
 		}
 
 		private int screen_pos_x_by_slot_id( int _slot_id )
@@ -1141,7 +1245,7 @@ namespace MAPeD
 			return m_shared.m_layout.get_height();
 		}
 
-		protected virtual void update_layout_data( object sender, EventArgs e )
+		private void update_layout_data( object sender, EventArgs e )
 		{
 			data_sets_manager data_mngr = sender as data_sets_manager;
 			
@@ -1188,16 +1292,6 @@ namespace MAPeD
 
 		private void update_mark( Color _color, Action _act, bool _clear = true )
 		{
-			if( m_scr_mark_img == null )
-			{
-				m_scr_mark_img = new Bitmap( platform_data.get_screen_mark_image_size(), platform_data.get_screen_mark_image_size(), PixelFormat.Format32bppPArgb );
-				m_scr_mark_gfx = Graphics.FromImage( m_scr_mark_img );
-				
-				m_scr_mark_gfx.SmoothingMode 		= SmoothingMode.HighSpeed;
-				m_scr_mark_gfx.InterpolationMode 	= InterpolationMode.HighQualityBilinear;
-				m_scr_mark_gfx.PixelOffsetMode 		= PixelOffsetMode.HighQuality;
-			}
-				
 			if( _clear )
 			{
 				m_scr_mark_gfx.Clear( _color );
@@ -1227,16 +1321,28 @@ namespace MAPeD
 			return res;
 		}
 		
-		public bool set_screen_mark( int _mark )
+		public bool set_screen_mark()
 		{
 			bool res = false;
-			
-			if( m_shared.m_sel_screen_slot_id >= 0 && m_shared.m_layout != null )
+		
+			if( selected_screens() )
 			{
-				res = m_shared.m_layout.set_screen_mark( m_shared.m_sel_screen_slot_id, _mark );
+				draw_sel_screen_border();
 				
-				update();
+				if( m_screen_mark_form.ShowDialog() == DialogResult.OK )
+				{
+					selected_screens_proc( delegate( int _scr_slot_ind )
+					{
+						res |= m_shared.m_layout.set_screen_mark( _scr_slot_ind, m_screen_mark_form.mark );
+					});
+				}
 			}
+			else
+			{
+				MainForm.message_box( "Please, select screen(s)!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			
+			update();
 			
 			return res;
 		}
@@ -1247,7 +1353,7 @@ namespace MAPeD
 			
 			int mask = 0;
 			
-			if( m_shared.m_sel_screen_slot_id >= 0 && m_shared.m_layout != null )
+			if( selected_screens() )
 			{
 				if( _mask.IndexOf( 'L' ) >= 0 )
 				{
@@ -1269,9 +1375,16 @@ namespace MAPeD
 					mask |= 0x08;
 				}
 				
-				res = m_shared.m_layout.set_adjacent_screen_mask( m_shared.m_sel_screen_slot_id, mask );
+				selected_screens_proc( delegate( int _scr_slot_ind )
+				{
+					res |= m_shared.m_layout.set_adjacent_screen_mask( _scr_slot_ind, mask );
+				});
 				
 				update();
+			}
+			else
+			{
+				MainForm.message_box( "Please, select screen(s)!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
 			return res;

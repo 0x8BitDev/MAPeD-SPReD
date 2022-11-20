@@ -155,6 +155,8 @@ namespace MAPeD
 				case layout_editor_param.CONST_SET_SCR_ACTIVE:
 					{
 						m_active_screen_index = unchecked( Convert.ToInt32( _val ) );
+						
+						m_sel_scr_msg = "[...]";
 					}
 					break;
 					

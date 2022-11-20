@@ -52,7 +52,6 @@ namespace MAPeD
 		private readonly optimization_form		m_optimization_form			= null;
 		private readonly object_name_form		m_object_name_form			= null;
 		private readonly import_tiles_form		m_import_tiles_form			= null;
-		private readonly screen_mark_form		m_screen_mark_form			= null;
 		private readonly description_form		m_description_form			= null;
 		private readonly statistics_form		m_statistics_form			= null;
 		private readonly create_layout_form		m_create_layout_form		= null;
@@ -197,7 +196,6 @@ namespace MAPeD
 			
 			m_object_name_form					= new object_name_form();
 			m_import_tiles_form					= new import_tiles_form();
-			m_screen_mark_form					= new screen_mark_form();
 			m_description_form					= new description_form();
 			m_statistics_form					= new statistics_form( m_data_manager );
 			m_create_layout_form				= new create_layout_form();
@@ -3299,27 +3297,18 @@ namespace MAPeD
 		{
 			if( m_layout_editor.set_start_screen_mark() == false )
 			{
-				message_box( "Please, select a valid screen!", "Start Screen Mark Setting Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "Please, select a valid screen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
 		void SetScreenMarkToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( m_screen_mark_form.ShowDialog() == DialogResult.OK )
-			{
-				if( m_layout_editor.set_screen_mark( m_screen_mark_form.mark ) == false )
-				{
-					message_box( "Please, select a valid screen!", "Screen Property Setting Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
-				}
-			}
+			m_layout_editor.set_screen_mark();
 		}
 		
 		void AdjScrMaskClick_Event(object sender, EventArgs e)
 		{
-			if( m_layout_editor.set_adjacent_screen_mask( ( sender as ToolStripMenuItem ).Text ) == false )
-			{
-				message_box( "Please, select a valid screen!", "Adjacent Screen Mask Setting Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
-			}
+			m_layout_editor.set_adjacent_screen_mask( ( sender as ToolStripMenuItem ).Text );
 		}
 		
 		void BtnCreateLayoutWxHClick_Event(object sender, EventArgs e)
