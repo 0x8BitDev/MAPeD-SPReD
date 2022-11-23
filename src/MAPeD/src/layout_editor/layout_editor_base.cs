@@ -1257,9 +1257,10 @@ namespace MAPeD
 				
 				print( "For all the tabs:", 0, 0 );
 				print( "- Use a mouse wheel to scale a map in the viewport", 0, 10 );
-				print( "- Hold down the 'Ctrl' key to pan a map in the viewport", 0, 20 );
-				print( "- Hold down the 'Shift' key to select multiple screens", 0, 30 );
-				print( "Use a mouse wheel to scale an entity/pattern preview", 0, 50 );
+				print( "- A quick roll of the mouse wheel scales an active map up to 2x", 0, 20 );
+				print( "- Hold down the 'Ctrl' key to pan a map in the viewport", 0, 30 );
+				print( "- Hold down the 'Shift' key to select multiple screens", 0, 40 );
+				print( "Use a mouse wheel to scale an entity/pattern preview", 0, 60 );
 			}
 			
 			invalidate();
