@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+23.11.2022 - Layout tab: for all the tabs: hold down the 'Ctrl' key to pan the viewport and the 'Shift' key to select multiple screens
 18.11.2022 - Layout tab -> Entities tab: added the number of an entity instances in active map to the entities tree view [N]
 16.11.2022 - Layout tab -> Entities tab: added the number of entities in active map at the top left corner of the viewport
 15.11.2022 - Layout viewport context menu: added "Delete Screen Entities" item
@@ -10,7 +11,6 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 02.11.2022 - Application window, detached tabs and the tiles/blocks palette window can be resized and maximized
            - The layout options moved to the layout tabs ('Builder' tab)
            - Removed the screen editor tab; instead the 'Painter' tab has been added to the layout tabs; now you can fill your maps with tiles in the layout viewport
-           - Painter/Screens/Entities/Patterns modes: hold down the 'Ctrl' key to pan the viewport
 19.10.2022 - Added 'Entity Order' item to the layout context menu ('Bring to Front' and 'Send to Back' actions are available)
 18.10.2022 - Fixed dragging of entities, now it happens without reordering; also added drawing of active screen border when dragging an entity
 17.10.2022 - All the View Type combobox stuff: tile properties, tiles/blocks usage etc. are displayed on a whole map in the layout viewport

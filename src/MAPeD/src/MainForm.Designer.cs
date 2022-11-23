@@ -3427,14 +3427,14 @@ namespace MAPeD
 			// 
 			this.LayoutDeleteEntityToolStripMenuItem.Name = "LayoutDeleteEntityToolStripMenuItem";
 			this.LayoutDeleteEntityToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.LayoutDeleteEntityToolStripMenuItem.Text = "Delete Entity";
+			this.LayoutDeleteEntityToolStripMenuItem.Text = "Delete Selected Entity";
 			this.LayoutDeleteEntityToolStripMenuItem.Click += new System.EventHandler(this.LayoutDeleteEntityToolStripMenuItemClick_Event);
 			// 
 			// LayoutDeleteScreenToolStripMenuItem
 			// 
 			this.LayoutDeleteScreenToolStripMenuItem.Name = "LayoutDeleteScreenToolStripMenuItem";
 			this.LayoutDeleteScreenToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.LayoutDeleteScreenToolStripMenuItem.Text = "Delete Screen";
+			this.LayoutDeleteScreenToolStripMenuItem.Text = "Delete Selected Screen(s)";
 			this.LayoutDeleteScreenToolStripMenuItem.Click += new System.EventHandler(this.LayoutDeleteScreenToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator19
@@ -3446,7 +3446,7 @@ namespace MAPeD
 			// 
 			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Name = "LayoutDeleteScreenEntitiesToolStripMenuItem";
 			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Text = "Delete Screen Entities";
+			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Text = "Delete Selected Screen Entities";
 			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Click += new System.EventHandler(this.LayoutDeleteScreenEntitiesToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator7

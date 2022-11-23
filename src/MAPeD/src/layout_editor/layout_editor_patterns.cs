@@ -93,7 +93,11 @@ namespace MAPeD
 			{
 				if( m_mode == EMode.em_Pattern_Put )
 				{
-					pattern_put( e.X, e.Y );
+					if( pattern_put( e.X, e.Y ) == false )
+					{
+						// update scene with error message
+						m_owner.update();
+					}
 				}
 				else
 				if( m_mode == EMode.em_Pattern_Extract_Begin )
@@ -132,6 +136,9 @@ namespace MAPeD
 					{
 						// empty pattern - try again!
 						m_mode = EMode.em_Pattern_Extract_Begin;
+						
+						// update scene with error message
+						m_owner.update();
 					}
 					
 					m_force_map_drawing = false;
@@ -280,8 +287,10 @@ namespace MAPeD
 			}
 		}
 		
-		private void pattern_put( int _x, int _y )
+		private bool pattern_put( int _x, int _y )
 		{
+			bool res = true;
+			
 			ushort pttrn_tile_id;
 			
 			int tile_ind;
@@ -367,12 +376,16 @@ namespace MAPeD
 			
 			if( !put_tiles && wrong_CHR_bank )
 			{
-				m_shared.m_sys_msg = "WRONG CHR BANK";
+				m_shared.err_msg( "WRONG CHR BANK" );
+				
+				res = false;
 			}
 			else
 			{
-				m_shared.m_sys_msg = "";
+				m_shared.err_msg( "" );
 			}
+			
+			return res;
 		}
 		
 		private pattern_data pattern_extract()
@@ -465,17 +478,17 @@ namespace MAPeD
 				}
 				else
 				{
-					m_shared.m_sys_msg = "INVALID PATTERN DATA";
+					m_shared.err_msg( "INVALID PATTERN DATA" );
 				}
 			}
 			else
 			if( wrong_CHR_bank )
 			{
-				m_shared.m_sys_msg = "WRONG CHR BANK";
+				m_shared.err_msg( "WRONG CHR BANK" );
 			}
 			else
 			{
-				m_shared.m_sys_msg = "";
+				m_shared.err_msg( "" );
 			}
 			
 			return pttrn;
@@ -488,11 +501,11 @@ namespace MAPeD
 			return m_shared.m_layout.get_data( slot_ind % m_shared.m_layout.get_width(), slot_ind / m_shared.m_layout.get_width() ).m_scr_ind;
 		}
 		
-		public override bool block_free_map_panning()
+		public override layout_editor_base.EHelper	default_helper()
 		{
-			return true;
+			return layout_editor_base.EHelper.eh_Unknown;
 		}
-
+		
 		public override bool force_map_drawing()
 		{
 			return m_force_map_drawing;
@@ -604,6 +617,16 @@ namespace MAPeD
 					throw new Exception( "Unknown parameter detected!\n\n[layout_editor_patterns.subscribe]" );
 				}
 			}
+		}
+
+		public override void key_down_event( object sender, KeyEventArgs e )
+		{
+			//...
+		}
+		
+		public override void key_up_event( object sender, KeyEventArgs e )
+		{
+			//...
 		}
 	}
 }

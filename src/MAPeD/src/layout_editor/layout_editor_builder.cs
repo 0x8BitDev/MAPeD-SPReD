@@ -58,11 +58,11 @@ namespace MAPeD
 			//...
 		}
 		
-		public override bool block_free_map_panning()
+		public override layout_editor_base.EHelper	default_helper()
 		{
-			return false;
+			return layout_editor_base.EHelper.eh_Unknown;
 		}
-
+		
 		public override bool force_map_drawing()
 		{
 			return false;
@@ -86,6 +86,16 @@ namespace MAPeD
 		}
 		
 		public override void subscribe( uint _param, Action< object, EventArgs > _method )
+		{
+			//...
+		}
+
+		public override void key_down_event( object sender, KeyEventArgs e )
+		{
+			//...
+		}
+		
+		public override void key_up_event( object sender, KeyEventArgs e )
 		{
 			//...
 		}

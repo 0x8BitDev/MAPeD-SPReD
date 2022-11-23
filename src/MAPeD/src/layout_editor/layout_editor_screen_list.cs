@@ -32,6 +32,16 @@ namespace MAPeD
 			set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 		}
 		
+		private void reset_selected_screen()
+		{
+			if( ResetSelectedScreen != null )
+			{
+				ResetSelectedScreen( this, null );
+				
+				m_shared.set_high_quality_render_mode( true );
+			}
+		}
+		
 		public override void mouse_down( object sender, MouseEventArgs e )
 		{
 			//...
@@ -53,13 +63,7 @@ namespace MAPeD
 				else
 				{
 					// reset selection
-					if( ResetSelectedScreen != null )
-					{
-						ResetSelectedScreen( this, null );
-						
-						m_shared.set_high_quality_render_mode( true );
-						return;
-					}
+					reset_selected_screen();
 				}
 			}
 		}
@@ -105,11 +109,11 @@ namespace MAPeD
 			//...
 		}
 		
-		public override bool block_free_map_panning()
+		public override layout_editor_base.EHelper	default_helper()
 		{
-			return true;
+			return layout_editor_base.EHelper.eh_Unknown;
 		}
-
+		
 		public override bool force_map_drawing()
 		{
 			return false;
@@ -136,6 +140,7 @@ namespace MAPeD
 				// draw screen border 
 				_pen.Width = 2;
 				_pen.Color = utils.CONST_COLOR_SCREEN_GHOST_IMAGE_BORDER;
+				
 				_gfx.DrawRectangle( _pen, x, y, _scr_size_width, _scr_size_height );
 			}
 
@@ -183,6 +188,19 @@ namespace MAPeD
 				{
 					throw new Exception( "Unknown parameter detected!\n\n[layout_editor_screen_list.subscribe]" );
 				}
+			}
+		}
+
+		public override void key_down_event( object sender, KeyEventArgs e )
+		{
+			//...
+		}
+		
+		public override void key_up_event( object sender, KeyEventArgs e )
+		{
+			if( e.KeyCode == Keys.Escape )
+			{
+				reset_selected_screen();
 			}
 		}
 	}

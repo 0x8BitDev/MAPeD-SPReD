@@ -164,6 +164,12 @@
     <Compile Include="..\src\layout_editor\layout_editor_entities.cs">
       <Link>layout_editor\layout_editor_entities.cs</Link>
     </Compile>
+    <Compile Include="..\src\layout_editor\layout_editor_helper_panning.cs">
+      <Link>layout_editor\layout_editor_helper_panning.cs</Link>
+    </Compile>
+    <Compile Include="..\src\layout_editor\layout_editor_helper_scr_multisel.cs">
+      <Link>layout_editor\layout_editor_helper_scr_multisel.cs</Link>
+    </Compile>
     <Compile Include="..\src\layout_editor\layout_editor_painter.cs">
       <Link>layout_editor\layout_editor_painter.cs</Link>
     </Compile>

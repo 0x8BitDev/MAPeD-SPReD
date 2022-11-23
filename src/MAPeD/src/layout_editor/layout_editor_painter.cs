@@ -445,11 +445,11 @@ namespace MAPeD
 			}
 		}
 		
-		public override bool block_free_map_panning()
+		public override layout_editor_base.EHelper	default_helper()
 		{
-			return true;
+			return layout_editor_base.EHelper.eh_Unknown;
 		}
-
+		
 		public override bool force_map_drawing()
 		{
 			return false;
@@ -626,6 +626,16 @@ namespace MAPeD
 					throw new Exception( "Unknown parameter detected!\n\n[layout_editor_painter.subscribe]" );
 				}
 			}
+		}
+
+		public override void key_down_event( object sender, KeyEventArgs e )
+		{
+			//...
+		}
+		
+		public override void key_up_event( object sender, KeyEventArgs e )
+		{
+			//...
 		}
 	}
 }

@@ -92,8 +92,7 @@ namespace MAPeD
 		public abstract void	mouse_enter( object sender, EventArgs e );
 		public abstract void	mouse_leave( object sender, EventArgs e );
 		public abstract void	mouse_wheel( object sender, EventArgs e );
-		
-		public abstract bool	block_free_map_panning();
+
 		public abstract bool	force_map_drawing();
 		
 		public abstract void	draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height );
@@ -102,6 +101,43 @@ namespace MAPeD
 		public abstract bool	set_param( uint _param, Object _val );
 		
 		public abstract void	subscribe( uint _param, Action< object, EventArgs > _method );
+
+		public abstract void	key_down_event( object sender, KeyEventArgs e );
+		public abstract void	key_up_event( object sender, KeyEventArgs e );
+		
+		public abstract layout_editor_base.EHelper	default_helper();
+	}
+
+	/// <summary>
+	/// Description of layout_editor_helper_base.
+	/// </summary>
+	/// 
+	
+	public abstract class layout_editor_helper_base
+	{
+		protected readonly layout_editor_shared_data	m_shared;
+		protected readonly layout_editor_base 			m_owner;
+		
+		protected readonly string	m_name;
+		
+		public layout_editor_helper_base( string _name, layout_editor_shared_data _shared, layout_editor_base _owner )
+		{
+			m_name		= _name;
+			m_shared	= _shared;
+			m_owner		= _owner;
+		}
+
+		public string	name()	{ return m_name; }
+		
+		public abstract void	reset( bool _init );
+		
+		public abstract void	mouse_down( object sender, MouseEventArgs e );
+		public abstract void	mouse_up( object sender, MouseEventArgs e );
+		public abstract void	mouse_move( object sender, MouseEventArgs e );
+		
+		public abstract void	draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height );
+		
+		public abstract bool	check_key_code( KeyEventArgs e );
 	}
 
 	public class layout_editor_shared_data
@@ -122,6 +158,9 @@ namespace MAPeD
 		public int 		m_offset_x			= 0;
 		public int 		m_offset_y			= 0;
  
+		public float	m_fl_offset_x		= 0;
+		public float	m_fl_offset_y		= 0;
+		
 		public int		m_mouse_x			= 10000;
 		public int		m_mouse_y			= 10000;
  
@@ -146,8 +185,11 @@ namespace MAPeD
 		public Action< int, int, int, int >	show_pivot_coords;
 		public Action< string, int, int >	print;
 		public Action						pix_box_reset_capture;
+		public Action						clamp_offsets;
+		public Action< string >				err_msg;
 		
 		public Action< int, int, tiles_data, data_sets_manager.EScreenDataType >	update_active_bank_screen;
+		public Action< Action< int, layout_screen_data, Rectangle > >				visible_screens_data_proc;
 		
 		public Func< bool >					pix_box_captured;
 		public Func< int >					pix_box_width;
@@ -177,17 +219,16 @@ namespace MAPeD
 		public event EventHandler MapScaleX2;
 
 		private readonly screen_mark_form m_screen_mark_form = null;
-		
-		private float 	m_tmp_scale		= 1;
-		
-		private float	m_fl_offset_x;
-		private float	m_fl_offset_y;
-		
-		private bool	m_enable_map_panning	= false;
-		
 		private readonly layout_editor_shared_data	m_shared = null;
 		
 		private readonly Label m_label		= null;
+
+		private string	m_err_msg			= "";
+		private int		m_err_msg_upd_cnt	= 0;
+		
+		private const int CONST_ERR_MSG_UPD_CNT	= 5;
+		
+		private float 	m_tmp_scale			= 1;
 		
 		private bool 	m_show_marks		= true;
 		private bool 	m_show_entities		= true;
@@ -259,15 +300,27 @@ namespace MAPeD
 				
 				m_behaviour.reset( true );
 				
-				m_shared.m_sys_msg		= "";
-				m_enable_map_panning	= false;
+				apply_default_helper();
+				
+				m_err_msg = m_shared.m_sys_msg = "";
 
 				update();
 			}
 		}
 		
-		private layout_editor_behaviour_base	m_behaviour		= null;
+		private layout_editor_behaviour_base			m_behaviour		= null;
 		private readonly layout_editor_behaviour_base[]	m_behaviour_arr	= null;
+
+		public enum EHelper
+		{
+			eh_Panning = 0,
+			eh_ScrMultisel,
+			eh_MAX,
+			eh_Unknown,
+		}
+		
+		private layout_editor_helper_base				m_helper		= null;
+		private readonly layout_editor_helper_base[]	m_helper_arr	= null;
 		
 		public layout_editor_base( data_sets_manager _data_mngr, PictureBox _pbox, Label _label, imagelist_manager _img_list_mngr ) : base( _pbox )
 		{
@@ -293,7 +346,11 @@ namespace MAPeD
 				m_shared.draw_pivot						= draw_pivot;
 				m_shared.show_pivot_coords				= show_pivot_coords;
 				m_shared.print							= print;
+				m_shared.clamp_offsets					= clamp_offsets;
+				m_shared.err_msg						= err_msg;
+				
 				m_shared.update_active_bank_screen		= _img_list_mngr.update_active_bank_screen;
+				m_shared.visible_screens_data_proc		= visible_screens_data_proc; 
 				
 				m_shared.get_sel_scr_pos_x				= get_sel_scr_pos_x; 
 				m_shared.get_sel_scr_pos_y 				= get_sel_scr_pos_y;
@@ -349,6 +406,15 @@ namespace MAPeD
 			
 			m_shared.m_scr_img_rect = new Rectangle();
 			
+			// init helpers
+			{
+				m_helper_arr = new layout_editor_helper_base[ ( int )EHelper.eh_MAX ]
+				{
+					new layout_editor_helper_panning( "VIEWPORT PANNING MODE", m_shared, this ),
+					new layout_editor_helper_scr_multisel( "MULTIPLE SCREEN SELECTION MODE", m_shared, this )
+				};
+			}
+			
 			// init available behaviours
 			{
 				m_behaviour_arr = new layout_editor_behaviour_base[ ( int )EMode.em_MAX ]
@@ -389,24 +455,32 @@ namespace MAPeD
 			
 			m_shared.m_last_mouse_x	 = 0;
 			m_shared.m_last_mouse_y	 = 0;
-		
+			
 			m_tmp_scale = 1;
 			m_shared.m_scale 	= 1;
 			m_shared.m_offset_x	= 0;
 			m_shared.m_offset_y	= 0;
 			
-			m_fl_offset_x = 0;
-			m_fl_offset_y = 0;
-
+			m_shared.m_fl_offset_x = 0;
+			m_shared.m_fl_offset_y = 0;
+			
 			set_high_quality_render_mode( true );
-
+			
 			// reset all behaviours
 			foreach( var bhv in m_behaviour_arr )
 			{
 				bhv.reset( _init );
 			}
 			
-			m_enable_map_panning = false;
+			// reset helpers
+			foreach( var hlp in m_helper_arr )
+			{
+				hlp.reset( _init );
+			}
+			
+			m_err_msg = m_shared.m_sys_msg = "";
+			
+			reset_selected_screens();
 			
 			update();
 		}
@@ -427,6 +501,15 @@ namespace MAPeD
 				{
 					set_high_quality_render_mode( false );
 				}
+				
+				if( m_helper != null )
+				{
+					m_helper.mouse_down( sender, e );
+				}
+				else
+				{
+					reset_selected_screens();
+				}
 			}
 			else
 			if( e.Button == MouseButtons.Right )
@@ -435,7 +518,7 @@ namespace MAPeD
 				pix_box_reset_capture();
 			}
 
-			if( !map_panning_enabled() )
+			if( m_helper == null )
 			{
 				m_behaviour.mouse_down( sender, e );
 			}
@@ -449,13 +532,20 @@ namespace MAPeD
 				
 				set_high_quality_render_mode( true );
 				
-				if( show_grid )
+				if( m_helper != null )
 				{
-					update();
+					m_helper.mouse_up( sender, e );
+				}
+				else
+				{
+					if( show_grid )
+					{
+						update();
+					}
 				}
 			}
-
-			if( !map_panning_enabled() )
+			
+			if( m_helper == null )
 			{
 				m_behaviour.mouse_up( sender, e );
 			}
@@ -465,23 +555,6 @@ namespace MAPeD
 		{
 			m_shared.m_mouse_x = e.X;
 			m_shared.m_mouse_y = e.Y;
-			
-			bool pan_viewport_user_input	= m_pix_box.Capture && e.Button == MouseButtons.Left;
-			bool need_pan_viewport 			= pan_viewport_user_input && map_panning_enabled(); 
-			
-			if( need_pan_viewport )
-			{
-				m_fl_offset_x += ( m_shared.m_mouse_x - m_shared.m_last_mouse_x ) / m_shared.m_scale;
-				m_fl_offset_y += ( m_shared.m_mouse_y - m_shared.m_last_mouse_y ) / m_shared.m_scale;
-				
-				m_shared.m_offset_x = ( int )m_fl_offset_x;
-				m_shared.m_offset_y = ( int )m_fl_offset_y;
-				
-				clamp_offsets();
-				
-				m_shared.m_last_mouse_x	 = m_shared.m_mouse_x;
-				m_shared.m_last_mouse_y	 = m_shared.m_mouse_y;
-			}
 			
 			// calculate selected screen position
 			{
@@ -503,21 +576,14 @@ namespace MAPeD
 				}
 			}
 			
-			if( !map_panning_enabled() )
+			if( m_helper == null )
 			{
-				if( pan_viewport_user_input )
+				if( m_pix_box.Capture && e.Button == MouseButtons.Left )
 				{
-					m_shared.m_sys_msg = "Hold down the 'Ctrl' key to pan the viewport";
+					m_shared.m_sys_msg = "Hold down: 'Ctrl' to pan the viewport, 'Shift' to select multiple screens";
 				}
-
+				
 				if( m_behaviour.mouse_move( sender, e ) )
-				{
-					update();
-				}
-			}
-			else
-			{
-				if( need_pan_viewport )
 				{
 					update();
 				}
@@ -526,15 +592,14 @@ namespace MAPeD
 					invalidate();
 				}
 			}
-
-			m_shared.m_sys_msg = "";
+			else
+			{
+				m_helper.mouse_move( sender, e );
+				
+				update();
+			}
 		}
 		
-		private bool map_panning_enabled()
-		{
-			return ( m_enable_map_panning && m_behaviour.block_free_map_panning() ) || !m_behaviour.block_free_map_panning();
-		}
-
 		private void Layout_MouseWheel(object sender, MouseEventArgs e)
 		{
 			m_tmp_scale += ( float )e.Delta / 2000;
@@ -644,7 +709,8 @@ namespace MAPeD
 				int y = screen_pos_y_by_slot_id( get_sel_scr_pos_y() );
 				
 				m_pen.Width = 2;
-				m_pen.Color = utils.CONST_COLOR_SCREEN_GHOST_IMAGE_BORDER;
+				m_pen.Color = utils.CONST_COLOR_SCREEN_SELECTED_BORDER;
+				
 				m_gfx.DrawRectangle( m_pen, x, y, scr_size_width, scr_size_height );
 				
 				invalidate();
@@ -669,26 +735,26 @@ namespace MAPeD
 	
 				if( width_scaled < pbox_width )
 				{
-					m_fl_offset_x = ( float )m_shared.m_scr_half_width - ( width * 0.5f );
+					m_shared.m_fl_offset_x = ( float )m_shared.m_scr_half_width - ( width * 0.5f );
 				}
 				else
 				{
-					m_fl_offset_x = ( ( m_fl_offset_x + width + tx ) < pbox_width ) ? ( pbox_width - width - tx ):m_fl_offset_x;
-					m_fl_offset_x = m_fl_offset_x > tx ? tx:m_fl_offset_x;
+					m_shared.m_fl_offset_x = ( ( m_shared.m_fl_offset_x + width + tx ) < pbox_width ) ? ( pbox_width - width - tx ):m_shared.m_fl_offset_x;
+					m_shared.m_fl_offset_x = m_shared.m_fl_offset_x > tx ? tx:m_shared.m_fl_offset_x;
 				}
 				
 				if( height_scaled < pbox_height )
 				{
-					m_fl_offset_y = ( float )m_shared.m_scr_half_height - ( height * 0.5f );
+					m_shared.m_fl_offset_y = ( float )m_shared.m_scr_half_height - ( height * 0.5f );
 				}
 				else
 				{
-					m_fl_offset_y = ( ( m_fl_offset_y + height + ty ) < pbox_height ) ? ( pbox_height - height - ty ):m_fl_offset_y;
-					m_fl_offset_y = m_fl_offset_y > ty ? ty:m_fl_offset_y;
+					m_shared.m_fl_offset_y = ( ( m_shared.m_fl_offset_y + height + ty ) < pbox_height ) ? ( pbox_height - height - ty ):m_shared.m_fl_offset_y;
+					m_shared.m_fl_offset_y = m_shared.m_fl_offset_y > ty ? ty:m_shared.m_fl_offset_y;
 				}
 				
-				m_shared.m_offset_x = ( int )m_fl_offset_x;
-				m_shared.m_offset_y = ( int )m_fl_offset_y;
+				m_shared.m_offset_x = ( int )m_shared.m_fl_offset_x;
+				m_shared.m_offset_y = ( int )m_shared.m_fl_offset_y;
 			}
 		}
 
@@ -700,6 +766,68 @@ namespace MAPeD
 		private int transform_to_img_pos( int _pos, int _offset, int _half_scr )
 		{
 			return ( int )( ( float )( _pos - _offset ) / m_shared.m_scale - ( m_shared.m_scale - 1 ) * ( ( float )( _offset - _half_scr ) / m_shared.m_scale ) );
+		}
+		
+		private void visible_screens_data_proc( Action< int, layout_screen_data, Rectangle > _act )
+		{
+			layout_screen_data scr_data;
+			
+			int beg_scr_x;
+			int end_scr_x;
+			int beg_scr_y;
+			int end_scr_y;
+			int scr_x;
+			int scr_y;
+			int i;
+			int j;
+			
+			int scr_width	= get_width();
+			int scr_height	= get_height();
+			
+			int scr_size_width 	= ( int )( platform_data.get_screen_width_pixels() * m_shared.m_scale );
+			int scr_size_height = ( int )( platform_data.get_screen_height_pixels() * m_shared.m_scale );
+			
+			// calculate visible region of screens
+			{
+				int offs_x		= transform_to_scr_pos( m_shared.m_offset_x, m_shared.m_scr_half_width );
+				int offs_y		= transform_to_scr_pos( m_shared.m_offset_y, m_shared.m_scr_half_height );
+				
+				int vp_width	= m_pix_box.Width;
+				int vp_height	= m_pix_box.Height;
+				
+				float scr_size_width_flt	= ( float )scr_size_width;
+				float scr_size_height_flt	= ( float )scr_size_height;
+				
+				beg_scr_x = Math.Max( 0, -( int )Math.Ceiling( offs_x / scr_size_width_flt ) );
+				end_scr_x = Math.Min( scr_width - 1, beg_scr_x + ( int )Math.Ceiling( vp_width / scr_size_width_flt ) );
+				beg_scr_y = Math.Max( 0, -( int )Math.Ceiling( offs_y / scr_size_height_flt ) );
+				end_scr_y = Math.Min( scr_height - 1, beg_scr_y + ( int )Math.Ceiling( vp_height / scr_size_height_flt ) );
+			}
+			
+			for( i = beg_scr_y; i <= end_scr_y; i++ )
+			{
+				scr_y = screen_pos_y_by_slot_id( i );
+				
+				for( j = beg_scr_x; j <= end_scr_x; j++ )
+				{
+					scr_data = m_shared.m_layout.get_data( j, i );
+					
+					if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
+					{
+						scr_x = screen_pos_x_by_slot_id( j );
+						
+						m_shared.m_scr_img_rect.X 		= scr_x;
+						m_shared.m_scr_img_rect.Y 		= scr_y;
+						m_shared.m_scr_img_rect.Width	= scr_size_width;
+						m_shared.m_scr_img_rect.Height	= scr_size_height;
+						
+						if( m_pbox_rect.IntersectsWith( m_shared.m_scr_img_rect ) )
+						{
+							_act( ( ( i * scr_width ) + j ), scr_data, m_shared.m_scr_img_rect );
+						}
+					}
+				}
+			}
 		}
 		
 		private void draw_screen_data( int _scr_width, int _scr_height, int _scr_size_width, int _scr_size_height, Action< int, layout_screen_data, int, int > _act )
@@ -833,6 +961,12 @@ namespace MAPeD
 			utils.brush.Color = utils.CONST_COLOR_STRING_DEFAULT;
 			m_gfx.DrawString( _text, utils.fnt8_Arial, utils.brush, _x, _y );
 		}
+		
+		private void err_msg( string _msg )
+		{
+			m_err_msg = _msg;
+			m_err_msg_upd_cnt = CONST_ERR_MSG_UPD_CNT;
+		}
 
 		private void draw_pivot( int _pivot_x, int _pivot_y )
 		{
@@ -866,7 +1000,7 @@ namespace MAPeD
 				
 				if( m_shared.m_scr_list.count() > 0 )
 				{
-					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_ind, layout_screen_data _scr_data, int _x, int _y ) 
+					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, int _x, int _y ) 
 					{ 
 						m_gfx.DrawImage( m_shared.m_scr_list.get( _scr_data.m_scr_ind ), _x, _y, scr_size_width, scr_size_height );
 					});
@@ -982,7 +1116,7 @@ namespace MAPeD
 							draw_targets( width, height );
 						}
 						
-						draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_ind, layout_screen_data _scr_data, int _scr_x, int _scr_y ) 
+						draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, int _scr_x, int _scr_y ) 
 						{ 
 							_scr_data.entities_proc( delegate( entity_instance _ent_inst )
 							{
@@ -993,9 +1127,9 @@ namespace MAPeD
 					
 					if( show_marks )
 					{
-						draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_ind, layout_screen_data _scr_data, int _x, int _y )
+						draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, int _x, int _y )
 						{ 
-							if( m_shared.m_layout.get_start_screen_ind() == _scr_ind )
+							if( m_shared.m_layout.get_start_screen_ind() == _scr_slot_ind )
 							{
 								update_mark( Color.FromArgb( 0x7fff0000 ), delegate() { m_scr_mark_gfx.DrawString( "S", utils.fnt64_Arial, Brushes.White, 20, 15 ); } );
 								
@@ -1056,8 +1190,29 @@ namespace MAPeD
 								
 								draw_mark( m_scr_mark_img, _x + scr_half_width, _y, scr_half_width, scr_half_height );
 							}
-							});
+						});
+					}
+					
+					// draw selected screens
+					if( m_shared.m_sel_screens_slot_ids.Count > 0 )
+					{
+						m_pen.Width = 2;
+						m_pen.Color = utils.CONST_COLOR_SCREEN_SELECTED_BORDER;
+						
+						foreach( int scr_slot_ind in m_shared.m_sel_screens_slot_ids )
+						{
+							x = screen_pos_x_by_slot_id( scr_slot_ind % get_width() );
+							y = screen_pos_y_by_slot_id( scr_slot_ind / get_width() );
+							
+							m_gfx.DrawRectangle( m_pen, x, y, scr_size_width, scr_size_height );
 						}
+					}
+					
+					// draw a helper specific data
+					if( m_helper != null )
+					{
+						m_helper.draw( m_gfx, m_pen, scr_size_width, scr_size_height );
+					}
 					
 					m_pen.Color = utils.CONST_COLOR_SCREEN_LIST_NOT_EMPTY;
 				}
@@ -1065,24 +1220,45 @@ namespace MAPeD
 				{
 					m_pen.Color = utils.CONST_COLOR_SCREEN_LIST_EMPTY;
 				}
-
+				
 				// draw data specific to active behaviour
 				m_behaviour.draw( m_gfx, m_pen, scr_size_width, scr_size_height );
 				
 				print( "mode: " + m_behaviour.name(), 0, 0 );
-
+				
 				// print system message
-				print( m_shared.m_sys_msg, ( m_pix_box.Width >> 1 ) - ( ( int )( Graphics.FromImage( m_main_bmp ).MeasureString( m_shared.m_sys_msg, utils.fnt8_Arial ).Width ) >> 1 ), 0 );
-
+				{
+					if( m_shared.m_sys_msg.Length == 0 )
+					{
+						if( m_helper != null )
+						{
+							m_shared.m_sys_msg = m_helper.name();
+						}
+					}
+					
+					print( m_shared.m_sys_msg, ( m_pix_box.Width >> 1 ) - ( ( int )( Graphics.FromImage( m_main_bmp ).MeasureString( m_shared.m_sys_msg, utils.fnt8_Arial ).Width ) >> 1 ), 0 );
+					
+					m_shared.m_sys_msg = "";
+				}
+				
+				// print error message
+				if( m_err_msg_upd_cnt > 0 )
+				{
+					print( m_err_msg, ( m_pix_box.Width >> 1 ) - ( ( int )( Graphics.FromImage( m_main_bmp ).MeasureString( m_err_msg, utils.fnt8_Arial ).Width ) >> 1 ), m_pix_box.Height - ( utils.fnt8_Arial.Height + 1 ) );
+					
+					--m_err_msg_upd_cnt;
+				}
+				
 				disable( false );
 			}
 			else
 			{
 				disable( true );
 				
-				print( "[ Pan the viewport using a LEFT mouse button and scale it using a mouse wheel ]", 0, 0 );
-				print( "Painter/Screens/Entities/Patterns modes:", 0, 20 );
-				print( "- Hold down the 'Ctrl' key to pan the viewport", 0, 30 );
+				print( "For all the tabs:", 0, 0 );
+				print( "- Use a mouse wheel to scale a map in the viewport", 0, 10 );
+				print( "- Hold down the 'Ctrl' key to pan a map in the viewport", 0, 20 );
+				print( "- Hold down the 'Shift' key to select multiple screens", 0, 30 );
 				print( "Use a mouse wheel to scale an entity/pattern preview", 0, 50 );
 			}
 			
@@ -1098,7 +1274,7 @@ namespace MAPeD
 					_act( scr_ind );
 				}
 				
-				m_shared.m_sel_screens_slot_ids.Clear();
+				reset_selected_screens();
 			}
 			else
 			if( m_shared.m_sel_screen_slot_id >= 0 )
@@ -1110,6 +1286,11 @@ namespace MAPeD
 		private bool selected_screens()
 		{
 			return ( m_shared.m_sel_screens_slot_ids.Count > 0 ) || ( m_shared.m_sel_screen_slot_id >= 0 );
+		}
+		
+		private void reset_selected_screens()
+		{
+			m_shared.m_sel_screens_slot_ids.Clear();
 		}
 		
 		public bool delete_screen_from_layout()
@@ -1226,7 +1407,7 @@ namespace MAPeD
 					{
 						if( _show_sys_msg )
 						{
-							m_shared.m_sys_msg = "WRONG CHR BANK";
+							err_msg( "WRONG CHR BANK" );
 						}
 					}
 				}
@@ -1250,6 +1431,8 @@ namespace MAPeD
 			data_sets_manager data_mngr = sender as data_sets_manager;
 			
 			m_shared.m_layout = data_mngr.get_layout_data( data_mngr.layouts_data_pos );
+			
+			reset_selected_screens();
 			
 			if( mode == EMode.em_Entities )
 			{
@@ -1488,18 +1671,83 @@ namespace MAPeD
 		
 		public void key_up_event( object sender, KeyEventArgs e )
 		{
-			if( e.KeyCode == Keys.ControlKey )
+			foreach( var helper in m_helper_arr )
 			{
-				m_enable_map_panning = false;
+				if( helper.check_key_code( e ) )
+				{
+					if( m_helper == helper )
+					{
+						m_helper.reset( false );
+						
+						apply_default_helper();
+						
+						update();
+					}
+				}
+			}
+			
+			if( m_behaviour != null )
+			{
+				m_behaviour.key_up_event( sender, e );
 			}
 		}
 
 		public void key_down_event( object sender, KeyEventArgs e )
 		{
-			if( e.KeyCode == Keys.ControlKey )
+			foreach( var helper in m_helper_arr )
 			{
-				m_enable_map_panning = true;
+				if( helper.check_key_code( e ) )
+				{
+					if( m_helper != helper )
+					{
+						m_helper = helper;
+						
+						m_helper.reset( true );
+						
+						update();
+					}
+				}
 			}
+			
+			if( m_behaviour != null )
+			{
+				m_behaviour.key_down_event( sender, e );
+			}
+		}
+		
+		private bool apply_default_helper()
+		{
+			layout_editor_helper_base def_helper = get_default_helper();
+			
+			if( def_helper != null )
+			{
+				m_helper = def_helper;
+				
+				m_helper.reset( true );
+				
+				return true;
+			}
+			else
+			{
+				m_helper = null;
+			}
+			
+			return false;
+		}
+		
+		private layout_editor_helper_base get_default_helper()
+		{
+			if( m_behaviour != null )
+			{
+				layout_editor_base.EHelper helper = m_behaviour.default_helper();
+				
+				if( helper != EHelper.eh_Unknown )
+				{
+					return m_helper_arr[ ( int )helper ];
+				}
+			}
+			
+			return null;
 		}
 	}
 }
