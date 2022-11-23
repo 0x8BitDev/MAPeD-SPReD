@@ -40,8 +40,6 @@ namespace MAPeD
 		{
 			m_scr_multiselect_start = true;
 			
-			m_shared.pix_box_reset_capture();
-		
 			m_scr_multisel_rect_end_x = e.X;
 			m_scr_multisel_rect_end_y = e.Y;
 		}
