@@ -2498,7 +2498,7 @@ BaseEntities:
 	.word logs_32x16
 	.word platform_32x10_vert64
 	.word platform_32x10_horiz32
-	.word door_open
+	.word door_opened
 	.word door_closed
 	.word heavy_load_lifted
 	.word heavy_load_lowered
@@ -2639,7 +2639,7 @@ platform_32x10_horiz32:
 	.byte $00
 	.byte $00
 
-door_open:
+door_opened:
 	.byte $08
 	.byte $10
 	.byte $40
