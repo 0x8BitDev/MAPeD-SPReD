@@ -235,9 +235,9 @@ namespace MAPeD
 																new SToolTipData( CheckBoxSelectTargetEntity, "Select target entity" ),
 																new SToolTipData( BtnCopyCHRBank, "Add copy of active CHR bank" ),
 																new SToolTipData( BtnAddCHRBank, "Add new CHR bank" ),
-																new SToolTipData( BtnDeleteCHRBank, "Delete active CHR Bank" ),																
+																new SToolTipData( BtnDeleteCHRBank, "Delete active CHR Bank" ),
 																new SToolTipData( BtnCHRBankPrevPage, "Previous CHR Bank's page" ),
-																new SToolTipData( BtnCHRBankNextPage, "Next CHR Bank's page" ),																
+																new SToolTipData( BtnCHRBankNextPage, "Next CHR Bank's page" ),
 																new SToolTipData( BtnUpdateGFX, "Update tiles\\blocks and screens ( if auto update is enabled )" ),
 																new SToolTipData( BtnOptimization, "Delete unused screens\\tiles\\blocks\\CHRs" ),
 																new SToolTipData( CheckBoxTileEditorLock, "Enable\\disable tile editing" ),
@@ -251,26 +251,26 @@ namespace MAPeD
 																new SToolTipData( BtnInvInk, "Invert image" ),
 #else
 																new SToolTipData( Palette2, "Shift+3 / Ctrl+1,2,3,4 to select a color" ),
-																new SToolTipData( Palette3, "Shift+4 / Ctrl+1,2,3,4 to select a color" ),																
+																new SToolTipData( Palette3, "Shift+4 / Ctrl+1,2,3,4 to select a color" ),
 #endif
 																new SToolTipData( CheckBoxShowMarks, "Show screen marks" ),
 																new SToolTipData( CheckBoxShowEntities, "Show layout entities" ),
 																new SToolTipData( CheckBoxShowTargets, "Show entity targets" ),
 																new SToolTipData( CheckBoxShowCoords, "Show coordinates of a selected entity" ),
 																new SToolTipData( CheckBoxShowGrid, "Show tile grid" ),
-																new SToolTipData( CheckBoxPalettePerCHR, "MMC5 extended attributes mode" ),																
+																new SToolTipData( CheckBoxPalettePerCHR, "MMC5 extended attributes mode" ),
 																new SToolTipData( CBoxPalettes, "Palettes array" ),
 #if DEF_FIXED_LEN_PALETTE16_ARR
 																new SToolTipData( BtnPltCopy, "Copy palette to selected slot" ),
 #else
 																new SToolTipData( BtnPltCopy, "Add copy of active palette" ),
 #endif
-																new SToolTipData( BtnPltDelete, "Delete active palette" ),																
+																new SToolTipData( BtnPltDelete, "Delete active palette" ),
 																new SToolTipData( BtnSwapColors, "Swap two selected colors without changing graphics" ),
 																new SToolTipData( BtnBlockReserveCHRs, "Make links to empty CHRs" ),
 																new SToolTipData( BtnTileReserveBlocks, "Make links to empty blocks" ),
-																new SToolTipData( BtnLayoutDeleteEmptyScreens, "Delete all one tile filled screens in selected layout" ),																
-																new SToolTipData( BtnCreateLayoutWxH, "Create a layout (width x height) filled with empty screens" ),																
+																new SToolTipData( BtnLayoutDeleteEmptyScreens, "Delete all one-block filled screens in active layout" ),
+																new SToolTipData( BtnCreateLayoutWxH, "Create a layout (width x height) filled with empty screens" ),
 																new SToolTipData( BtnLayoutMoveUp, "Move selected layout up" ),
 																new SToolTipData( BtnLayoutMoveDown, "Move selected layout down" ),
 																new SToolTipData( CBoxBlockObjId, "Assign property to selected block or CHR" ),
@@ -733,7 +733,7 @@ namespace MAPeD
 		{
 			if( message_box( "Are you sure?", "Close Project", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
-				progress_bar_show( true, "Project closing...", false );
+				progress_bar_show( true, "Closing project...", false );
 				
 				reset();
 				
@@ -745,7 +745,7 @@ namespace MAPeD
 
 		void CBoxTileViewTypeChanged_Event(object sender, EventArgs e)
 		{
-			progress_bar_show( true, "GFX updating...", false );
+			progress_bar_show( true, "Updating graphics...", false );
 			
 			m_view_type = ( utils.ETileViewType )CBoxTileViewType.SelectedIndex;
 			
@@ -815,7 +815,7 @@ namespace MAPeD
 				int load_scr_data_len 	= platform_data.get_screen_tiles_cnt( prj_data.m_file_ext, true );
 				int scr_data_len 		= platform_data.get_screen_tiles_cnt();
 				
-				progress_bar_show( true, "Project loading..." );
+				progress_bar_show( true, "Loading project..." );
 
 				reset();
 				
@@ -896,7 +896,7 @@ namespace MAPeD
 					
 					// update data
 					{
-						progress_bar_status( "Data updating..." );
+						progress_bar_status( "Updating data..." );
 
 						// update tiles and screens
 						{
@@ -984,7 +984,7 @@ namespace MAPeD
 			
 			try
 			{
-				progress_bar_show( true, "Project saving...", false );
+				progress_bar_show( true, "Saving project...", false );
 				
 				fs = new FileStream( filename, FileMode.Create, FileAccess.Write );
 				{
@@ -1084,7 +1084,7 @@ namespace MAPeD
 											tabControlLayoutTools.SelectTab( TabBuilder );
 										}
 										
-										progress_bar_show( true, "Image Data Importing..." );
+										progress_bar_show( true, "Importing image data..." );
 										
 										// needed to properly remove screens of invalid layout
 										m_data_manager.layouts_data_pos = ListBoxLayouts.SelectedIndex = m_data_manager.layouts_data_cnt - 1;										
@@ -1093,7 +1093,7 @@ namespace MAPeD
 										
 										if( m_import_tiles_form.import_game_map )
 										{
-											progress_bar_status( "Layout init..." );
+											progress_bar_status( "Initializing layout..." );
 											
 											// add layout to UI
 											create_layout_with_empty_screens_end( m_import_tiles_form.level_layout );
@@ -1114,12 +1114,12 @@ namespace MAPeD
 											
 											if( m_import_tiles_form.delete_empty_screens )
 											{
-												progress_bar_status( "Empty screens deleting..." );
+												progress_bar_status( "Deleting empty screens..." );
 												
 												delete_empty_screens();
 											}
 											
-											progress_bar_status( "Screens data init..." );
+											progress_bar_status( "Initializing screens data..." );
 											
 											update_graphics( true );
 
@@ -1129,7 +1129,7 @@ namespace MAPeD
 										}
 										else
 										{
-											progress_bar_status( "Data updating..." );
+											progress_bar_status( "Updating data..." );
 
 											update_graphics( true );
 										}
@@ -1236,7 +1236,7 @@ namespace MAPeD
 									// update selected palette color
 									plt_grp.active_palette = 0;
 									
-									progress_bar_show( true, "Graphics updating...", false );
+									progress_bar_show( true, "Updating graphics...", false );
 									{
 										update_graphics( true );
 										update_all_screens( false );
@@ -1271,7 +1271,7 @@ namespace MAPeD
 					
 					if( layout != null )
 					{
-						progress_bar_status( "Invalid layout deleting..." );
+						progress_bar_status( "Deleting invalid layout..." );
 						
 						delete_last_layout_and_screens();
 					}
@@ -1504,13 +1504,13 @@ namespace MAPeD
 
 		void BtnUpdateGFXClick_Event(object sender, EventArgs e)
 		{
-			progress_bar_show( true, "GFX updating...", false );
+			progress_bar_show( true, "Updating graphics...", false );
 			
 			update_graphics( false );
 			
 			clear_active_tile_img();
 			
-			set_status_msg( "GFX updated" );
+			set_status_msg( "Graphics updated" );
 			
 			progress_bar_show( false, "", false );
 		}
@@ -1567,7 +1567,7 @@ namespace MAPeD
 			{
 				if( platform_data.get_max_blocks_cnt() > 256 )
 				{
-					progress_bar_show( true, "CHR bank copying...", false );
+					progress_bar_show( true, "Copying CHR bank...", false );
 				}
 				
 				if( m_data_manager.tiles_data_copy() == true )
@@ -1618,7 +1618,7 @@ namespace MAPeD
 		{
 			if( platform_data.get_max_blocks_cnt() > 256 )
 			{
-				progress_bar_show( true, "CHR bank initialization...", false );
+				progress_bar_show( true, "Initializing CHR bank...", false );
 			}
 			
 			if( m_data_manager.tiles_data_create() )
@@ -1660,7 +1660,7 @@ namespace MAPeD
 			{
 				if( platform_data.get_max_blocks_cnt() > 256 )
 				{
-					progress_bar_show( true, "CHR bank deleting...", false );
+					progress_bar_show( true, "Deleting CHR bank...", false );
 				}
 				
 				if( m_data_manager.tiles_data_cnt == 1 )
@@ -1735,7 +1735,7 @@ namespace MAPeD
 				
 				if( ( CBoxCHRBanks.SelectedIndex != m_reorder_CHR_banks_form.selected_CHR_bank ) || m_reorder_CHR_banks_form.data_changed )
 				{
-					progress_bar_show( true, "Data updating...", false );
+					progress_bar_show( true, "Updating data...", false );
 
 					CBoxCHRBanks.SelectedIndex = -1;	// this guarantees switching between different banks with the same index
 					CBoxCHRBanks.SelectedIndex = m_reorder_CHR_banks_form.selected_CHR_bank;
@@ -2443,7 +2443,7 @@ namespace MAPeD
 					{
 						if( m_optimization_form.need_update_screen_list )
 						{
-							progress_bar_show( true, "Screens updating...", false );
+							progress_bar_show( true, "Updating screens...", false );
 							
 							// update screens images
 							m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, -1 );
@@ -3023,11 +3023,11 @@ namespace MAPeD
 
 		void BtnLayoutDeleteEmptyScreensClick_Event(object sender, EventArgs e)
 		{
-			if( ListBoxLayouts.SelectedIndex >= 0 && message_box( "Delete all one tile filled screens?", "Clean Up", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			if( ListBoxLayouts.SelectedIndex >= 0 && message_box( "Delete all one-block filled screens?", "Clean Up", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
 				int deleted_screens_cnt;
 				
-				progress_bar_show( true, "Empty screens deleting...", false );
+				progress_bar_show( true, "Deleting empty screens...", false );
 				
 				if( ( deleted_screens_cnt = layout_delete_empty_screens() ) > 0 )
 				{
@@ -3565,7 +3565,7 @@ namespace MAPeD
 
 		void BtnUpdateScreensClick_Event(object sender, EventArgs e)
 		{
-			progress_bar_show( true, "Screens updating...", false );
+			progress_bar_show( true, "Updating screens...", false );
 			{
 				update_screens( true );
 			}
@@ -4027,7 +4027,7 @@ namespace MAPeD
 					return false;
 				}
 				
-				if( message_box( "All the entity instances in all layouts will be deleted!\nAre you sure?", "Delete Base Entity", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
+				if( message_box( "All the entity <" + ent_name + "> instances will be deleted from all maps!\nAre you sure?", "Delete Base Entity", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
 				{
 					TreeViewEntities.BeginUpdate();
 					{
@@ -4364,7 +4364,7 @@ namespace MAPeD
 				ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 			}
 			
-			if( m_data_manager.layouts_data_cnt > 0 && message_box( "Are you sure?", "Delete Instances of All Entities", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
+			if( m_data_manager.layouts_data_cnt > 0 && message_box( "All the entities will be deleted from the active map!\nAre you sure?", "Delete All Entities", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
 			{
 				m_data_manager.get_layout_data( m_data_manager.layouts_data_pos ).delete_all_entities();
 				
@@ -4387,7 +4387,7 @@ namespace MAPeD
 		{
 			string ent_name = TreeViewEntities.SelectedNode.Name;
 			
-			if( m_data_manager.layouts_data_cnt > 0 && message_box( "All the entity <" + ent_name + "> instances will be deleted!\nAre you sure?", "Delete All Entity Instances", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
+			if( m_data_manager.layouts_data_cnt > 0 && message_box( "All the entity <" + ent_name + "> instances will be deleted from the active map!\nAre you sure?", "Delete Entities", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
 			{
 				int ents_cnt = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos ).delete_entity_instances( ent_name );
 				
