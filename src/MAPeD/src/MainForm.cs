@@ -3295,10 +3295,7 @@ namespace MAPeD
 		
 		void SetStartScreenMarkToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
-			if( m_layout_editor.set_start_screen_mark() == false )
-			{
-				message_box( "Please, select a valid screen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
-			}
+			m_layout_editor.set_start_screen_mark();
 		}
 		
 		void SetScreenMarkToolStripMenuItemClick_Event(object sender, EventArgs e)

@@ -1004,221 +1004,215 @@ namespace MAPeD
 					{ 
 						m_gfx.DrawImage( m_shared.m_scr_list.get( _scr_data.m_scr_ind ), _x, _y, scr_size_width, scr_size_height );
 					});
-
-					if( show_grid && ( !m_shared.pix_box_captured() || m_behaviour.force_map_drawing() ) )
-					{
-						// draw tiles grid
-						if( m_shared.m_scale >= 1.0 )
-						{
-							int x_pos;
-							int y_pos;
-							
-							int step = utils.CONST_SCREEN_BLOCKS_SIZE >> 1;
-							
-							int x_max = m_pix_box.Width - m_shared.m_offset_x;
-							int x_min = x_max - m_pix_box.Width;
-							
-							int y_max = m_pix_box.Height - m_shared.m_offset_y;
-							int y_min = y_max - m_pix_box.Height;
-							
-							int n8_x = x_min & -( int )( step * m_shared.m_scale );
-							int n8_y = y_min & -( int )( step * m_shared.m_scale );
-							
-							int x_line_offset = n8_x - x_min;
-							int y_line_offset = n8_y - y_min;
-							
-							int n_lines_x = ( int )( m_pix_box.Width / step / m_shared.m_scale ) + 2;
-							int n_lines_y = ( int )( m_pix_box.Height / step / m_shared.m_scale ) + 2;
-							
-							float offs_x = 0;
-							float offs_y = 0;
-	
-							int x_line_beg = ( int )( ( ( m_shared.m_scale - 1.0f ) / 2.0f ) * n_lines_x );
-							int y_line_beg = ( int )( ( ( m_shared.m_scale - 1.0f ) / 2.0f ) * n_lines_y );
-							
-							m_pen.Color = utils.CONST_COLOR_GRID_BLOCKS;
-							
-							bool tile4x4_grid = ( ( platform_data.get_screen_blocks_height( false ) & 0x01 ) != 0x01 ) && ( ( platform_data.get_screen_blocks_width( false ) & 0x01 ) != 0x01 ) && ( m_shared.m_screen_data_type != data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
-							
-							for( i = x_line_beg; i < n_lines_x + x_line_beg; i++ )
-							{
-								x_pos = x_line_offset + i*step;
-								
-								offs_x = transform_to_scr_pos( x_pos, m_shared.m_scr_half_width );
-	
-								if( tile4x4_grid )
-								{
-									if( ( ( x_pos - m_shared.m_offset_x ) % utils.CONST_SCREEN_BLOCKS_SIZE ) == 0 )
-									{
-										m_pen.Color = utils.CONST_COLOR_GRID_TILES_BRIGHT;
-									}
-									else
-									{
-										m_pen.Color = utils.CONST_COLOR_GRID_TILES_DARK;
-									}
-								}
-								
-								m_gfx.DrawLine( m_pen, offs_x, 0, offs_x, m_pix_box.Height );
-							}
-							
-							for( i = y_line_beg; i < n_lines_y + y_line_beg; i++ )
-							{
-								y_pos = y_line_offset + i*step;
-								
-								offs_y = transform_to_scr_pos( y_pos, m_shared.m_scr_half_height );
-	
-								if( tile4x4_grid )
-								{
-									if( ( ( y_pos - m_shared.m_offset_y ) % utils.CONST_SCREEN_BLOCKS_SIZE ) == 0 )
-									{
-										m_pen.Color = utils.CONST_COLOR_GRID_TILES_BRIGHT;
-									}
-									else
-									{
-										m_pen.Color = utils.CONST_COLOR_GRID_TILES_DARK;
-									}
-								}
-								
-								m_gfx.DrawLine( m_pen, 0, offs_y, m_pix_box.Width, offs_y );
-							}
-						}
-					}
-					
-					// draw screens grid
-					{
-						m_pen.Color = Color.White;
-						
-						for( i = 0; i < height + 1; i++ )
-						{
-							y = screen_pos_y_by_slot_id( i );
-							
-							if( y >= 0 && y < m_pix_box.Height )
-							{
-								m_gfx.DrawLine( m_pen, transform_to_scr_pos( m_shared.m_offset_x, m_shared.m_scr_half_width ), y, screen_pos_x_by_slot_id( width ), y );
-							}
-						}
-						
-						for( j = 0; j < width + 1; j++ )
-						{
-							x = screen_pos_x_by_slot_id( j );
-							
-							if( x >= 0 && x < m_pix_box.Width )
-							{
-								m_gfx.DrawLine( m_pen, x, transform_to_scr_pos( m_shared.m_offset_y, m_shared.m_scr_half_height ), x, screen_pos_y_by_slot_id( height ) );
-							}
-						}
-					}
-
-					if( show_entities )
-					{
-						if( show_targets && m_shared.m_high_quality_render )
-						{
-							draw_targets( width, height );
-						}
-						
-						draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, int _scr_x, int _scr_y ) 
-						{ 
-							_scr_data.entities_proc( delegate( entity_instance _ent_inst )
-							{
-								m_gfx.DrawImage( _ent_inst.base_entity.bitmap, _scr_x + ( int )( _ent_inst.x * m_shared.m_scale ), _scr_y + ( int )( _ent_inst.y * m_shared.m_scale ), ( int )_ent_inst.base_entity.width * m_shared.m_scale, ( int )_ent_inst.base_entity.height * m_shared.m_scale );
-							});
-						});
-					}
-					
-					if( show_marks )
-					{
-						draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, int _x, int _y )
-						{ 
-							if( m_shared.m_layout.get_start_screen_ind() == _scr_slot_ind )
-							{
-								update_mark( Color.FromArgb( 0x7fff0000 ), delegate() { m_scr_mark_gfx.DrawString( "S", utils.fnt64_Arial, Brushes.White, 20, 15 ); } );
-								
-								draw_mark( m_scr_mark_img, _x, _y, scr_size_width >> 1, scr_size_height >> 1 );
-							}
-							
-							int scr_half_width 	= scr_size_width >> 1;
-							int scr_half_height = scr_size_height >> 1;
-							
-							if( _scr_data.mark > 0 )
-							{
-								update_mark( Color.FromArgb( 0x7f0000ff ), delegate() { m_scr_mark_gfx.DrawString( _scr_data.mark.ToString( "D2" ), utils.fnt42_Arial, Brushes.White, 1, 1 ); } );
-								
-								draw_mark( m_scr_mark_img, _x + scr_half_width, _y + scr_half_height, scr_half_width, scr_half_height );
-							}
-							
-							if( _scr_data.adj_scr_mask > 0 )
-							{
-								update_mark( Color.FromArgb( 0x7f00ff00 ), delegate(){}, true );
-								
-								m_pen.Color = utils.CONST_COLOR_PIXBOX_DEFAULT;
-								{
-									int img_center 	= platform_data.get_screen_mark_image_size() >> 1;
-									int radius		= 12;
-									int arrow_len	= 45;
-									
-									// o
-									m_pen.Width = 4;
-									m_scr_mark_gfx.DrawEllipse( m_pen, img_center - radius, img_center - radius, radius << 1, radius << 1 );
-									
-									m_pen.Width = 15;
-									m_pen.EndCap = LineCap.ArrowAnchor;
-									
-									if( ( _scr_data.adj_scr_mask & 0x01 ) != 0 )
-									{
-										// L
-										m_scr_mark_gfx.DrawLine( m_pen, img_center - radius, img_center,  img_center - arrow_len - radius, img_center );
-									}
-									if( ( _scr_data.adj_scr_mask & 0x02 ) != 0 )
-									{
-										// U
-										m_scr_mark_gfx.DrawLine( m_pen, img_center, img_center - radius,  img_center, img_center - arrow_len - radius );
-									}
-									if( ( _scr_data.adj_scr_mask & 0x04 ) != 0 )
-									{
-										// R
-										m_scr_mark_gfx.DrawLine( m_pen, img_center + radius, img_center,  img_center + arrow_len + radius, img_center );
-									}
-									if( ( _scr_data.adj_scr_mask & 0x08 ) != 0 )
-									{
-										// D
-										m_scr_mark_gfx.DrawLine( m_pen, img_center, img_center + radius,  img_center, img_center + arrow_len + radius );
-									}
-									
-									m_pen.EndCap	= LineCap.NoAnchor;
-									m_pen.Width		= 1;
-								}
-								
-								draw_mark( m_scr_mark_img, _x + scr_half_width, _y, scr_half_width, scr_half_height );
-							}
-						});
-					}
-					
-					// draw selected screens
-					if( m_shared.m_sel_screens_slot_ids.Count > 0 )
-					{
-						m_pen.Width = 2;
-						m_pen.Color = utils.CONST_COLOR_SCREEN_SELECTED_BORDER;
-						
-						foreach( int scr_slot_ind in m_shared.m_sel_screens_slot_ids )
-						{
-							x = screen_pos_x_by_slot_id( scr_slot_ind % get_width() );
-							y = screen_pos_y_by_slot_id( scr_slot_ind / get_width() );
-							
-							m_gfx.DrawRectangle( m_pen, x, y, scr_size_width, scr_size_height );
-						}
-					}
-					
-					// draw a helper specific data
-					if( m_helper != null )
-					{
-						m_helper.draw( m_gfx, m_pen, scr_size_width, scr_size_height );
-					}
-					
-					m_pen.Color = utils.CONST_COLOR_SCREEN_LIST_NOT_EMPTY;
 				}
-				else
+				
+				if( show_grid && ( !m_shared.pix_box_captured() || m_behaviour.force_map_drawing() ) )
 				{
-					m_pen.Color = utils.CONST_COLOR_SCREEN_LIST_EMPTY;
+					// draw tiles grid
+					if( m_shared.m_scale >= 1.0 )
+					{
+						int x_pos;
+						int y_pos;
+						
+						int step = utils.CONST_SCREEN_BLOCKS_SIZE >> 1;
+						
+						int x_max = m_pix_box.Width - m_shared.m_offset_x;
+						int x_min = x_max - m_pix_box.Width;
+						
+						int y_max = m_pix_box.Height - m_shared.m_offset_y;
+						int y_min = y_max - m_pix_box.Height;
+						
+						int n8_x = x_min & -( int )( step * m_shared.m_scale );
+						int n8_y = y_min & -( int )( step * m_shared.m_scale );
+						
+						int x_line_offset = n8_x - x_min;
+						int y_line_offset = n8_y - y_min;
+						
+						int n_lines_x = ( int )( m_pix_box.Width / step / m_shared.m_scale ) + 2;
+						int n_lines_y = ( int )( m_pix_box.Height / step / m_shared.m_scale ) + 2;
+						
+						float offs_x = 0;
+						float offs_y = 0;
+						
+						int x_line_beg = ( int )( ( ( m_shared.m_scale - 1.0f ) / 2.0f ) * n_lines_x );
+						int y_line_beg = ( int )( ( ( m_shared.m_scale - 1.0f ) / 2.0f ) * n_lines_y );
+						
+						m_pen.Color = utils.CONST_COLOR_GRID_BLOCKS;
+						
+						bool tile4x4_grid = ( ( platform_data.get_screen_blocks_height( false ) & 0x01 ) != 0x01 ) && ( ( platform_data.get_screen_blocks_width( false ) & 0x01 ) != 0x01 ) && ( m_shared.m_screen_data_type != data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+						
+						for( i = x_line_beg; i < n_lines_x + x_line_beg; i++ )
+						{
+							x_pos = x_line_offset + i*step;
+							
+							offs_x = transform_to_scr_pos( x_pos, m_shared.m_scr_half_width );
+
+							if( tile4x4_grid )
+							{
+								if( ( ( x_pos - m_shared.m_offset_x ) % utils.CONST_SCREEN_BLOCKS_SIZE ) == 0 )
+								{
+									m_pen.Color = utils.CONST_COLOR_GRID_TILES_BRIGHT;
+								}
+								else
+								{
+									m_pen.Color = utils.CONST_COLOR_GRID_TILES_DARK;
+								}
+							}
+							
+							m_gfx.DrawLine( m_pen, offs_x, 0, offs_x, m_pix_box.Height );
+						}
+						
+						for( i = y_line_beg; i < n_lines_y + y_line_beg; i++ )
+						{
+							y_pos = y_line_offset + i*step;
+							
+							offs_y = transform_to_scr_pos( y_pos, m_shared.m_scr_half_height );
+							
+							if( tile4x4_grid )
+							{
+								if( ( ( y_pos - m_shared.m_offset_y ) % utils.CONST_SCREEN_BLOCKS_SIZE ) == 0 )
+								{
+									m_pen.Color = utils.CONST_COLOR_GRID_TILES_BRIGHT;
+								}
+								else
+								{
+									m_pen.Color = utils.CONST_COLOR_GRID_TILES_DARK;
+								}
+							}
+							
+							m_gfx.DrawLine( m_pen, 0, offs_y, m_pix_box.Width, offs_y );
+						}
+					}
+				}
+				
+				// draw screens grid
+				{
+					m_pen.Color = ( m_shared.m_scr_list.count() > 0 ) ? utils.CONST_COLOR_SCREEN_LIST_NOT_EMPTY:utils.CONST_COLOR_SCREEN_LIST_EMPTY;
+					
+					for( i = 0; i < height + 1; i++ )
+					{
+						y = screen_pos_y_by_slot_id( i );
+						
+						if( y >= 0 && y < m_pix_box.Height )
+						{
+							m_gfx.DrawLine( m_pen, transform_to_scr_pos( m_shared.m_offset_x, m_shared.m_scr_half_width ), y, screen_pos_x_by_slot_id( width ), y );
+						}
+					}
+					
+					for( j = 0; j < width + 1; j++ )
+					{
+						x = screen_pos_x_by_slot_id( j );
+						
+						if( x >= 0 && x < m_pix_box.Width )
+						{
+							m_gfx.DrawLine( m_pen, x, transform_to_scr_pos( m_shared.m_offset_y, m_shared.m_scr_half_height ), x, screen_pos_y_by_slot_id( height ) );
+						}
+					}
+				}
+
+				if( show_entities )
+				{
+					if( show_targets && m_shared.m_high_quality_render )
+					{
+						draw_targets( width, height );
+					}
+					
+					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, int _scr_x, int _scr_y ) 
+					{ 
+						_scr_data.entities_proc( delegate( entity_instance _ent_inst )
+						{
+							m_gfx.DrawImage( _ent_inst.base_entity.bitmap, _scr_x + ( int )( _ent_inst.x * m_shared.m_scale ), _scr_y + ( int )( _ent_inst.y * m_shared.m_scale ), ( int )_ent_inst.base_entity.width * m_shared.m_scale, ( int )_ent_inst.base_entity.height * m_shared.m_scale );
+						});
+					});
+				}
+					
+				if( show_marks )
+				{
+					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, int _x, int _y )
+					{ 
+						if( m_shared.m_layout.get_start_screen_ind() == _scr_slot_ind )
+						{
+							update_mark( Color.FromArgb( 0x7fff0000 ), delegate() { m_scr_mark_gfx.DrawString( "S", utils.fnt64_Arial, Brushes.White, 20, 15 ); } );
+							
+							draw_mark( m_scr_mark_img, _x, _y, scr_size_width >> 1, scr_size_height >> 1 );
+						}
+						
+						int scr_half_width 	= scr_size_width >> 1;
+						int scr_half_height = scr_size_height >> 1;
+						
+						if( _scr_data.mark > 0 )
+						{
+							update_mark( Color.FromArgb( 0x7f0000ff ), delegate() { m_scr_mark_gfx.DrawString( _scr_data.mark.ToString( "D2" ), utils.fnt42_Arial, Brushes.White, 1, 1 ); } );
+							
+							draw_mark( m_scr_mark_img, _x + scr_half_width, _y + scr_half_height, scr_half_width, scr_half_height );
+						}
+						
+						if( _scr_data.adj_scr_mask > 0 )
+						{
+							update_mark( Color.FromArgb( 0x7f00ff00 ), delegate(){}, true );
+							
+							m_pen.Color = utils.CONST_COLOR_PIXBOX_DEFAULT;
+							{
+								int img_center 	= platform_data.get_screen_mark_image_size() >> 1;
+								int radius		= 12;
+								int arrow_len	= 45;
+								
+								// o
+								m_pen.Width = 4;
+								m_scr_mark_gfx.DrawEllipse( m_pen, img_center - radius, img_center - radius, radius << 1, radius << 1 );
+								
+								m_pen.Width = 15;
+								m_pen.EndCap = LineCap.ArrowAnchor;
+								
+								if( ( _scr_data.adj_scr_mask & 0x01 ) != 0 )
+								{
+									// L
+									m_scr_mark_gfx.DrawLine( m_pen, img_center - radius, img_center,  img_center - arrow_len - radius, img_center );
+								}
+								if( ( _scr_data.adj_scr_mask & 0x02 ) != 0 )
+								{
+									// U
+									m_scr_mark_gfx.DrawLine( m_pen, img_center, img_center - radius,  img_center, img_center - arrow_len - radius );
+								}
+								if( ( _scr_data.adj_scr_mask & 0x04 ) != 0 )
+								{
+									// R
+									m_scr_mark_gfx.DrawLine( m_pen, img_center + radius, img_center,  img_center + arrow_len + radius, img_center );
+								}
+								if( ( _scr_data.adj_scr_mask & 0x08 ) != 0 )
+								{
+									// D
+									m_scr_mark_gfx.DrawLine( m_pen, img_center, img_center + radius,  img_center, img_center + arrow_len + radius );
+								}
+								
+								m_pen.EndCap	= LineCap.NoAnchor;
+								m_pen.Width		= 1;
+							}
+							
+							draw_mark( m_scr_mark_img, _x + scr_half_width, _y, scr_half_width, scr_half_height );
+						}
+					});
+				}
+					
+				// draw selected screens
+				if( m_shared.m_sel_screens_slot_ids.Count > 0 )
+				{
+					m_pen.Width = 2;
+					m_pen.Color = utils.CONST_COLOR_SCREEN_SELECTED_BORDER;
+					
+					foreach( int scr_slot_ind in m_shared.m_sel_screens_slot_ids )
+					{
+						x = screen_pos_x_by_slot_id( scr_slot_ind % get_width() );
+						y = screen_pos_y_by_slot_id( scr_slot_ind / get_width() );
+						
+						m_gfx.DrawRectangle( m_pen, x, y, scr_size_width, scr_size_height );
+					}
+				}
+				
+				// draw a helper specific data
+				if( m_helper != null )
+				{
+					m_helper.draw( m_gfx, m_pen, scr_size_width, scr_size_height );
 				}
 				
 				// draw data specific to active behaviour
@@ -1502,6 +1496,11 @@ namespace MAPeD
 				update();
 			}
 			
+			if( res == false )
+			{
+				MainForm.message_box( "Please, select a valid screen!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			
 			return res;
 		}
 		
@@ -1519,14 +1518,23 @@ namespace MAPeD
 					{
 						res |= m_shared.m_layout.set_screen_mark( _scr_slot_ind, m_screen_mark_form.mark );
 					});
+					
+					update();
+					
+					if( res == false )
+					{
+						MainForm.message_box( "Please, select valid screen(s)!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					}
+				}
+				else
+				{
+					update();
 				}
 			}
 			else
 			{
 				MainForm.message_box( "Please, select screen(s)!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
-			
-			update();
 			
 			return res;
 		}
@@ -1565,6 +1573,11 @@ namespace MAPeD
 				});
 				
 				update();
+				
+				if( res == false )
+				{
+					MainForm.message_box( "Please, select valid screen(s)!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				}
 			}
 			else
 			{
