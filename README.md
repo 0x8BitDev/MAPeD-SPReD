@@ -205,7 +205,7 @@ coming soon...
 **SMS: WLA-DX assembler v9.10**
 - Github: https://github.com/vhelin/wla-dx
 
-**PCE: HuC - PC Engine C development toolkit (v3.99-master-0-g20ba36e)**
+**PCE: HuC - PC Engine C development toolkit (v4.00.4.gb95184f)**
 - Github: https://github.com/jbrandwood/huc
 
 **ZX Spectrum: SjASMPlus - Z80 Assembly Cross-Compiler (v1.18.3)**
