@@ -144,10 +144,16 @@ bool	__check_map_properties( u8 _map_ind )
 	u16	beg_offset;
 	u16	end_offset;
 
+	mpd_SCR_DATA	scr_data;
+
+
 #if	FLAG_MODE_MULTIDIR_SCROLL
 	chr_id_mul2	= mpd_farpeekb( mpd_MapsCHRBanks, _map_ind ) << 1;
 #else
-	chr_id_mul2	= ( *mpd_MapsArr[ _map_ind ] )->chr_id << 1;
+	mpd_init_screen_arr( &scr_data, _map_ind );
+	mpd_get_start_screen( &scr_data );
+
+	chr_id_mul2	= scr_data.scr.chr_id << 1;
 #endif
 
 	beg_offset = mpd_farpeekw( mpd_PropsOffs, chr_id_mul2 );

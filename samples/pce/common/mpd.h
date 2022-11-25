@@ -8,7 +8,8 @@
 /*/	MPD-render v0.7
 History:
 
-2022.10.06 - asm optimization - '__mpd_calc_skip_CHRs_cnt(...)' and __mpd_get_VRAM_addr(...)'
+2022.11.25 - fixed bug when 'mpd_init_screen_arr' is called before 'mpd_init(...)'
+2022.10.06 - asm optimization - '__mpd_calc_skip_CHRs_cnt(...)' and '__mpd_get_VRAM_addr(...)'
 2022.10.04 - asm optimization - 'mpd_get_property(...)'
 
 v0.7
@@ -867,6 +868,14 @@ void	mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u16 _scr_ind )
 
 void	mpd_init_screen_arr( mpd_SCR_DATA* _scr_data, u8 _map_ind )
 {
+	// init MPD's TII
+	#asm
+	lda #$73
+	sta __mTII
+	lda #$60
+	sta __mtiirts
+	#endasm
+
 	mpd_get_ptr24( mpd_MapsArr, _map_ind, _scr_data->scr_arr_ptr );
 }
 
