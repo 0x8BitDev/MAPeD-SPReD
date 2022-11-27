@@ -203,7 +203,7 @@ namespace MAPeD
 			m_reorder_CHR_banks_form			= new reorder_CHR_banks_form( m_data_manager );
 
 			enable_update_gfx_btn( false );
-			enable_update_screens_btn( true );
+			mark_update_screens_btn( true );
 
 			m_tiles_palette_form = new tiles_palette_form( m_imagelist_manager.get_tiles_image_list(), ContextMenuTilesList, m_imagelist_manager.get_blocks_image_list(), ContextMenuBlocksList, m_tile_list_manager );
 			m_tiles_palette_form.TilesBlocksClosed 	+= new EventHandler( MainForm_TilesBlocksClosed );
@@ -544,15 +544,7 @@ namespace MAPeD
 		{
 			enable_update_gfx_btn( true );
 			
-			if( CheckBoxScreensAutoUpdate.Checked == false )
-			{
-				enable_update_screens_btn( true );
-			}
-		}
-		
-		private void enable_update_screens_btn_Event( object sender, EventArgs e )
-		{
-			enable_update_screens_btn( true );
+			mark_update_screens_btn( true );
 		}
 		
 		private void enable_copy_paste_action( bool _on, ECopyPasteType _type )
@@ -685,7 +677,7 @@ namespace MAPeD
 			update_graphics( false );
 			
 			enable_update_gfx_btn( false );
-			enable_update_screens_btn( false );
+			mark_update_screens_btn( false );
 
 			clear_active_tile_img();
 			
@@ -749,7 +741,7 @@ namespace MAPeD
 			
 			m_view_type = ( utils.ETileViewType )CBoxTileViewType.SelectedIndex;
 			
-			enable_update_screens_btn( true );
+			mark_update_screens_btn( true );
 #if DEF_ZX
 			m_tiles_processor.set_view_type( m_view_type );
 #endif
@@ -1180,7 +1172,7 @@ namespace MAPeD
 			
 								update_graphics( true );
 								
-								enable_update_screens_btn( true );
+								mark_update_screens_btn( true );
 							}
 							break;
 #endif //DEF_NES || DEF_SMS
@@ -1476,7 +1468,7 @@ namespace MAPeD
 		{
 			ComboBox chr_bank_cbox = sender as ComboBox;
 			
-			// force update of screens if needed
+			// force update of OLD screens if needed
 			update_screens_if_needed();
 
 			m_data_manager.tiles_data_pos 	= chr_bank_cbox.SelectedIndex;
@@ -1526,7 +1518,7 @@ namespace MAPeD
 
 			if( CheckBoxScreensAutoUpdate.Checked && _update_screens )
 			{
-				update_screens( false );
+				update_screens( true );
 			}
 			else
 			{
@@ -1542,7 +1534,6 @@ namespace MAPeD
 			patterns_manager_update_preview();
 			
 			enable_update_gfx_btn( false );
-//			enable_update_screens_btn( false );
 		}
 		
 		void BtnCHRBankNextPageClick_Event(object sender, EventArgs e)
@@ -1572,26 +1563,16 @@ namespace MAPeD
 				
 				if( m_data_manager.tiles_data_copy() == true )
 				{
-					update_screens_if_needed();
-					
-					// copy screens of a current CHR bank 
-					// to the end of the screen images list
-					// before CHR bank switching
-					m_imagelist_manager.copy_screens_to_the_end( m_data_manager.get_tiles_data(), m_data_manager.tiles_data_pos );
+					int prev_tiles_data_pos	= m_data_manager.tiles_data_pos;
 					
 					tiles_data data = m_data_manager.get_tiles_data( m_data_manager.tiles_data_cnt - 1 );
 					
 					CBoxCHRBanks.Items.Add( data );
 					CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_cnt - 1;
-					
-					palette_group.Instance.active_palette = 0;
-					
-					enable_copy_paste_action( false, ECopyPasteType.cpt_All );
-					
-					if( ScreensShowAllBanksToolStripMenuItem.Checked )
-					{
-						update_screens_by_bank_id( true, false );
-					}
+
+					// copy screens of the previous CHR bank 
+					// to the end of the screen images list
+					m_imagelist_manager.copy_screens_to_the_end( m_data_manager.get_tiles_data(), prev_tiles_data_pos );
 					
 					set_status_msg( "CHR bank copied" );
 				}
@@ -1998,7 +1979,7 @@ namespace MAPeD
 					
 					data.inc_blocks_CHRs( sel_ind );
 					
-					enable_update_screens_btn( true );
+					mark_update_screens_btn( true );
 					update_graphics( true );
 				}
 				else
@@ -2031,7 +2012,7 @@ namespace MAPeD
 						
 						data.dec_blocks_CHRs( sel_ind );
 						
-						enable_update_screens_btn( true );
+						mark_update_screens_btn( true );
 						update_graphics( true );
 					}
 				}
@@ -2118,7 +2099,7 @@ namespace MAPeD
 					set_status_msg( String.Format( "Block List: block #{0:X2} references are copied to block #{1:X2}", m_block_copy_item_ind, _sel_ind ) );
 				}
 
-				enable_update_screens_btn( true );
+				mark_update_screens_btn( true );
 				
 //				update_graphics( true );
 				
@@ -2197,7 +2178,7 @@ namespace MAPeD
 				clear_active_tile_img();
 				
 				enable_update_gfx_btn( true );
-				enable_update_screens_btn( true );
+				mark_update_screens_btn( true );
 				
 				update_graphics( true );
 			}
@@ -2254,7 +2235,7 @@ namespace MAPeD
 					
 					clear_active_tile_img();
 					
-					enable_update_screens_btn( true );
+					mark_update_screens_btn( true );
 					update_graphics( true );
 				}
 			}
@@ -2289,7 +2270,7 @@ namespace MAPeD
 						
 						clear_active_tile_img();
 						
-						enable_update_screens_btn( true );
+						mark_update_screens_btn( true );
 						update_graphics( true );
 					}
 				}
@@ -2319,7 +2300,7 @@ namespace MAPeD
 
 				set_status_msg( String.Format( "Tile List: tile #{0:X2} is copied to #{1:X2}", m_tile_copy_item_ind, sel_ind ) );
 				
-				enable_update_screens_btn( true );
+				mark_update_screens_btn( true );
 				
 //				update_graphics( true );
 				
@@ -2355,7 +2336,7 @@ namespace MAPeD
 	
 					set_status_msg( String.Format( "Tile List: tile #{0:X2} references are cleared", sel_ind ) );
 					
-					enable_update_screens_btn( true );
+					mark_update_screens_btn( true );
 					update_graphics( true );
 				}
 			}
@@ -2373,7 +2354,7 @@ namespace MAPeD
 				
 				set_status_msg( String.Format( "Tile List: all the tile references are cleared" ) );
 				
-				enable_update_screens_btn( true );
+				mark_update_screens_btn( true );
 				update_graphics( true );
 			}
 		}
@@ -2396,7 +2377,7 @@ namespace MAPeD
 					
 					clear_active_tile_img();
 					
-					enable_update_screens_btn( true );
+					mark_update_screens_btn( true );
 					update_graphics( true );
 				}
 			}
@@ -2422,7 +2403,7 @@ namespace MAPeD
 						
 						clear_active_tile_img();
 						
-						enable_update_screens_btn( true );
+						mark_update_screens_btn( true );
 						update_graphics( true );
 					}
 				}
@@ -2453,7 +2434,7 @@ namespace MAPeD
 								m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CBoxCHRBanks.SelectedIndex );
 							}
 	
-							enable_update_screens_btn( false );
+							mark_update_screens_btn( false );
 							
 							if( m_layout_editor.mode == layout_editor_base.EMode.em_Screens )
 							{
@@ -2488,7 +2469,7 @@ namespace MAPeD
 			if( m_tiles_processor.block_reserve_CHRs( m_tiles_processor.get_selected_block(), m_data_manager ) > 0 )
 			{
 				enable_update_gfx_btn( true );
-				enable_update_screens_btn( true );
+				mark_update_screens_btn( true );
 			}
 		}
 		
@@ -2499,7 +2480,7 @@ namespace MAPeD
 			if( ( block_ind = m_tiles_processor.tile_reserve_blocks( m_data_manager ) ) >= 0 )
 			{
 				enable_update_gfx_btn( true );
-				enable_update_screens_btn( true );
+				mark_update_screens_btn( true );
 			}
 		}
 #endregion		
@@ -2576,7 +2557,7 @@ namespace MAPeD
 			
 			if( CheckBoxScreensAutoUpdate.Checked == false )
 			{
-				enable_update_screens_btn( true );
+				mark_update_screens_btn( true );
 			}
 		}
 		
@@ -3038,7 +3019,7 @@ namespace MAPeD
 						update_graphics( false );
 					}
 					
-					enable_update_screens_btn( true );
+					mark_update_screens_btn( true );
 
 					set_status_msg( "Clean up: " + deleted_screens_cnt + " screens deleted" );
 				}
@@ -3534,25 +3515,27 @@ namespace MAPeD
 			ListViewScreens.SelectedItems.Clear();
 		}
 		
-		private void enable_update_screens_btn( bool _on )
+		private void mark_update_screens_btn( bool _on )
 		{
-			if( CheckBoxScreensAutoUpdate.Checked == false )
-			{
-				BtnUpdateScreens.Enabled = _on;
-				BtnUpdateScreens.UseVisualStyleBackColor = !_on;
-			}
+			BtnUpdateScreens.UseVisualStyleBackColor = !_on;
 		}
 		
 		private bool need_update_screens()
 		{
-			return BtnUpdateScreens.Enabled;
+			return !BtnUpdateScreens.UseVisualStyleBackColor;
 		}
 
 		private bool update_screens_if_needed()
 		{
 			if( need_update_screens() )
 			{
-				m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, m_data_manager.tiles_data_pos );
+				progress_bar_show( true, "Updating the bank:" + m_data_manager.tiles_data_pos + " screens...", false );
+				{
+					m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, m_data_manager.tiles_data_pos );
+					
+					mark_update_screens_btn( false );
+				}
+				progress_bar_show( false );
 				
 				return true;
 			}
@@ -3569,10 +3552,10 @@ namespace MAPeD
 			progress_bar_show( false );
 		}
 		
-		void update_screens( bool _disable_upd_scr_btn, bool _show_status_msg = true )
+		void update_screens( bool _unmark_upd_scr_btn, bool _show_status_msg = true )
 		{
 			// update_screens - may change a current palette
-			update_screens_by_bank_id( _disable_upd_scr_btn, true );
+			update_screens_by_bank_id( _unmark_upd_scr_btn, true );
 			
 			m_layout_editor.update();
 			
@@ -3582,7 +3565,7 @@ namespace MAPeD
 			}
 		}
 
-		void update_all_screens( bool _disable_upd_scr_btn, bool _show_status_msg = true )
+		void update_all_screens( bool _unmark_upd_scr_btn, bool _show_status_msg = true )
 		{
 			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), CBoxCHRBanks.SelectedIndex, m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 			
@@ -3591,9 +3574,9 @@ namespace MAPeD
 			
 			LabelLayoutEditorCHRBankID.Text = CheckBoxLayoutEditorAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
 		
-			if( _disable_upd_scr_btn )
+			if( _unmark_upd_scr_btn )
 			{
-				enable_update_screens_btn( false );
+				mark_update_screens_btn( false );
 			}
 			
 			m_layout_editor.update();
@@ -3604,7 +3587,7 @@ namespace MAPeD
 			}
 		}
 
-		void update_screens_by_bank_id( bool _disable_upd_scr_btn, bool _update_images )
+		void update_screens_by_bank_id( bool _unmark_upd_scr_btn, bool _update_images )
 		{
 			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, _update_images, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 			
@@ -3613,9 +3596,9 @@ namespace MAPeD
 			
 			LabelLayoutEditorCHRBankID.Text = CheckBoxLayoutEditorAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
 		
-			if( _disable_upd_scr_btn )
+			if( _unmark_upd_scr_btn )
 			{
-				enable_update_screens_btn( false );
+				mark_update_screens_btn( false );
 			}
 		}
 		
@@ -4634,7 +4617,7 @@ namespace MAPeD
 			m_tiles_processor.block_editor_update_sel_CHR_palette();
 #else
 			enable_update_gfx_btn( true );
-			enable_update_screens_btn( true );
+			mark_update_screens_btn( true );
 #endif
 			m_tiles_processor.update_graphics();
 		}
