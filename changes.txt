@@ -8,7 +8,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 16.11.2022 - Layout tab -> Entities tab: added the number of entities in active map at the top left corner of the viewport
 15.11.2022 - Layout viewport context menu: added "Delete Selected Screen Entities" item
            - Layout tab -> Entities tab: added "Delete All Instances" item to the entities context menu in the tree view
-11.11.2022 - Updated documentation
+11.11.2022 - Updated Quick Guide
 09.11.2022 - The tile patterns manager moved to the layout tabs ('Patterns' tab)
 02.11.2022 - Application window, detached tabs and the tiles/blocks palette window can be resized and maximized
            - The layout options moved to the layout tabs ('Builder' tab)
@@ -121,6 +121,10 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+30.11.2022 v0.65b
+
+30.11.2022 - Updated Quick Guide
+30.11.2022 - Added "Remove Prefix/Postfix" item to the sprite list context menu and to the 'Main Menu -> Sprites'
 29.11.2022 - Added reserved prefixes for sprite names: #SE - skip graphics and palette (PCE) export, PCE: #EP - skip graphics and export palette only
 11.10.2022 - Added a tooltip with a selected color index on the main palette
 22.07.2022 - PCE: added red markers to active palettes

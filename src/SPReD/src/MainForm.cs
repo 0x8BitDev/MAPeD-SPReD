@@ -18,6 +18,8 @@ namespace SPReD
 	/// </summary>
 	public partial class MainForm : Form
 	{
+		private delegate string add_remove_pref_postf_func( bool _postfix, string _pref_postf, sprite_data _spr, ref bool _changed );
+		
 		private sprite_processor m_sprites_proc = null;
 		
 		private create_sprite_form 			m_create_sprite_form 		= new create_sprite_form();
@@ -480,7 +482,7 @@ namespace SPReD
 				{
 					m_new_sprite_name_form.Text = "Create Ref";
 					
-					sprite_names_processing( delegate( string _name, sprite_data _spr, int _ind )
+					sprite_names_processing( add_pref_postf_func, delegate( string _name, sprite_data _spr, int _ind )
 	                {
 						SpriteList.Items.Add( _spr.copy( _name, null, null ) );
 	                });
@@ -509,7 +511,7 @@ namespace SPReD
 				{
 					m_new_sprite_name_form.Text = "Create Copy";
 					
-					sprite_names_processing( delegate( string _name, sprite_data _spr, int _ind )
+					sprite_names_processing( add_pref_postf_func, delegate( string _name, sprite_data _spr, int _ind )
 	                {
 						SpriteList.Items.Add( _spr.copy( _name, 
 						                                 m_sprites_proc.extract_and_create_CHR_data_group( _spr, CBoxMode8x16.Checked ), 
@@ -531,7 +533,7 @@ namespace SPReD
 				
 				SpriteList.BeginUpdate();
 				{
-					sprite_names_processing( delegate( string _name, sprite_data _spr, int _spr_ind ) 
+					sprite_names_processing( add_pref_postf_func, delegate( string _name, sprite_data _spr, int _spr_ind ) 
                     { 
 						_spr.name = _name; 
 						SpriteList.Items[ _spr_ind ] = _spr;
@@ -545,7 +547,29 @@ namespace SPReD
 			}
 		}
 		
-		void sprite_names_processing( Action< string, sprite_data, int > _act )
+		void BtnRemovePrefixPostfix_Event(object sender, EventArgs e)
+		{
+			if( SpriteList.SelectedIndices.Count > 0 )
+			{
+				m_new_sprite_name_form.Text = "Remove Prefix\\Postfix";
+				
+				SpriteList.BeginUpdate();
+				{
+					sprite_names_processing( remove_pref_postf_func, delegate( string _name, sprite_data _spr, int _spr_ind ) 
+					{
+						_spr.name = _name; 
+						SpriteList.Items[ _spr_ind ] = _spr;
+					});
+				}
+				SpriteList.EndUpdate();
+			}
+			else
+			{
+				message_box( "Please, select sprite(s)!", "Remove Prefix\\Postfix", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+			}
+		}
+		
+		void sprite_names_processing( add_remove_pref_postf_func _pref_postf_func, Action< string, sprite_data, int > _act )
 		{
 			if( m_new_sprite_name_form.ShowDialog() == DialogResult.Cancel )
 			{
@@ -562,6 +586,7 @@ namespace SPReD
 			string pref_postf = m_new_sprite_name_form.edit_str;
 			
 			bool postfix = m_new_sprite_name_form.is_postfix_selected();
+			bool name_changed = false;
 			
 			sprite_data spr;
 			
@@ -573,7 +598,7 @@ namespace SPReD
 			{
 				spr = SpriteList.Items[ sel_inds[ i ] ] as sprite_data;
 				
-				new_name = postfix ? ( spr.name + pref_postf ):( pref_postf + spr.name );
+				new_name = _pref_postf_func( postfix, pref_postf, spr, ref name_changed );
 				
 				if( !check_duplicate( new_name ) )
 				{
@@ -581,13 +606,54 @@ namespace SPReD
 				}
 				else
 				{
-					message_box( new_name + " - A sprite with the same name already exists! Ignored!", "Copy Sprite", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+					if( name_changed )
+					{
+						message_box( new_name + " - A sprite with the same name already exists! Ignored!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+					}
 				}
 			}
 			
 			m_sprites_proc.rearrange_CHR_data_ids();
 			
 			m_sprites_proc.update_sprite( SpriteList.Items[ SpriteList.SelectedIndices[ 0 ] ] as sprite_data, false );
+		}
+		
+		string add_pref_postf_func( bool _postfix, string _pref_postf, sprite_data _spr, ref bool _changed )
+		{
+			_changed = true;
+			
+			return _postfix ? ( _spr.name + _pref_postf ):( _pref_postf + _spr.name );
+		}
+		
+		string remove_pref_postf_func( bool _postfix, string _pref_postf, sprite_data _spr, ref bool _changed )
+		{
+			string spr_name = _spr.name;
+			
+			_changed = false;
+			
+			if( _postfix )
+			{
+				int clean_name_length = spr_name.Length - _pref_postf.Length;
+				
+				if( spr_name.LastIndexOf( _pref_postf ) == clean_name_length )
+				{
+					_changed = true;
+					
+					return spr_name.Substring( 0, clean_name_length );
+				}
+				
+				return spr_name;
+			}
+			
+			// check prefix
+			if( spr_name.IndexOf( _pref_postf ) == 0 )
+			{
+				_changed = true;
+				
+				return spr_name.Substring( _pref_postf.Length );
+			}
+			
+			return spr_name;
 		}
 		
 		void BtnDelete_Event(object sender, System.EventArgs e)

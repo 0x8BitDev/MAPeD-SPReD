@@ -60,7 +60,9 @@ namespace SPReD
 			this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
 			this.renameToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
 			this.addPrefixPostfixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.removePrefixPostfixToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.createCopyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createRefToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,6 +104,7 @@ namespace SPReD
 			this.rotateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.swapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.managerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.quickGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -176,7 +179,9 @@ namespace SPReD
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
 			this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.addPrefixPostfixToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.removePrefixPostfixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.createRefToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -186,7 +191,6 @@ namespace SPReD
 			this.PasteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.separatorToolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.FillWithColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.managerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SpriteLayout)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.CHRBank)).BeginInit();
@@ -290,21 +294,21 @@ namespace SPReD
 			// ExportASMToolStripMenuItem
 			// 
 			this.ExportASMToolStripMenuItem.Name = "ExportASMToolStripMenuItem";
-			this.ExportASMToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ExportASMToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
 			this.ExportASMToolStripMenuItem.Text = "C&A65\\NESasm";
 			this.ExportASMToolStripMenuItem.Click += new System.EventHandler(this.ExportASMToolStripMenuItemClick);
 			// 
 			// ExportCToolStripMenuItem
 			// 
 			this.ExportCToolStripMenuItem.Name = "ExportCToolStripMenuItem";
-			this.ExportCToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ExportCToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
 			this.ExportCToolStripMenuItem.Text = "&C";
 			this.ExportCToolStripMenuItem.Click += new System.EventHandler(this.ExportCToolStripMenuItemClick);
 			// 
 			// ExportImagesToolStripMenuItem
 			// 
 			this.ExportImagesToolStripMenuItem.Name = "ExportImagesToolStripMenuItem";
-			this.ExportImagesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ExportImagesToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
 			this.ExportImagesToolStripMenuItem.Text = "&Images";
 			this.ExportImagesToolStripMenuItem.Click += new System.EventHandler(this.ExportImagesToolStripMenuItemClick);
 			// 
@@ -371,7 +375,9 @@ namespace SPReD
 									this.deleteToolStripMenuItem1,
 									this.toolStripSeparator13,
 									this.renameToolStripMenuItem1,
+									this.toolStripSeparator19,
 									this.addPrefixPostfixToolStripMenuItem,
+									this.removePrefixPostfixToolStripMenuItem1,
 									this.toolStripSeparator6,
 									this.createCopyToolStripMenuItem,
 									this.createRefToolStripMenuItem1,
@@ -416,12 +422,24 @@ namespace SPReD
 			this.renameToolStripMenuItem1.Text = "&Rename";
 			this.renameToolStripMenuItem1.Click += new System.EventHandler(this.BtnRename_Event);
 			// 
+			// toolStripSeparator19
+			// 
+			this.toolStripSeparator19.Name = "toolStripSeparator19";
+			this.toolStripSeparator19.Size = new System.Drawing.Size(191, 6);
+			// 
 			// addPrefixPostfixToolStripMenuItem
 			// 
 			this.addPrefixPostfixToolStripMenuItem.Name = "addPrefixPostfixToolStripMenuItem";
 			this.addPrefixPostfixToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
 			this.addPrefixPostfixToolStripMenuItem.Text = "Add Pre&fix/Postfix";
 			this.addPrefixPostfixToolStripMenuItem.Click += new System.EventHandler(this.BtnAddPrefixPostfix_Event);
+			// 
+			// removePrefixPostfixToolStripMenuItem1
+			// 
+			this.removePrefixPostfixToolStripMenuItem1.Name = "removePrefixPostfixToolStripMenuItem1";
+			this.removePrefixPostfixToolStripMenuItem1.Size = new System.Drawing.Size(194, 22);
+			this.removePrefixPostfixToolStripMenuItem1.Text = "Remove Prefix/Postfix";
+			this.removePrefixPostfixToolStripMenuItem1.Click += new System.EventHandler(this.BtnRemovePrefixPostfix_Event);
 			// 
 			// toolStripSeparator6
 			// 
@@ -749,6 +767,14 @@ namespace SPReD
 			this.swapToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.swapToolStripMenuItem.Text = "&Swap Colors";
 			this.swapToolStripMenuItem.Click += new System.EventHandler(this.BtnSwapColorsClick_Event);
+			// 
+			// managerToolStripMenuItem
+			// 
+			this.managerToolStripMenuItem.Name = "managerToolStripMenuItem";
+			this.managerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
+			this.managerToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+			this.managerToolStripMenuItem.Text = "&Manager";
+			this.managerToolStripMenuItem.Click += new System.EventHandler(this.PalettesManagerClick_Event);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -1487,62 +1513,76 @@ namespace SPReD
 									this.deleteToolStripMenuItem,
 									this.toolStripSeparator14,
 									this.renameToolStripMenuItem,
+									this.toolStripSeparator18,
 									this.addPrefixPostfixToolStripMenuItem1,
+									this.removePrefixPostfixToolStripMenuItem,
 									this.toolStripSeparator4,
 									this.toolStripMenuItem2,
 									this.createRefToolStripMenuItem});
 			this.SpriteListContextMenu.Name = "SpriteListContextMenu";
-			this.SpriteListContextMenu.Size = new System.Drawing.Size(169, 148);
+			this.SpriteListContextMenu.Size = new System.Drawing.Size(190, 176);
 			// 
 			// createToolStripMenuItem
 			// 
 			this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-			this.createToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+			this.createToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.createToolStripMenuItem.Text = "Create New";
 			this.createToolStripMenuItem.Click += new System.EventHandler(this.BtnCreate_Event);
 			// 
 			// deleteToolStripMenuItem
 			// 
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.deleteToolStripMenuItem.Text = "Delete";
 			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.BtnDelete_Event);
 			// 
 			// toolStripSeparator14
 			// 
 			this.toolStripSeparator14.Name = "toolStripSeparator14";
-			this.toolStripSeparator14.Size = new System.Drawing.Size(165, 6);
+			this.toolStripSeparator14.Size = new System.Drawing.Size(186, 6);
 			// 
 			// renameToolStripMenuItem
 			// 
 			this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-			this.renameToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+			this.renameToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.renameToolStripMenuItem.Text = "Rename";
 			this.renameToolStripMenuItem.Click += new System.EventHandler(this.BtnRename_Event);
+			// 
+			// toolStripSeparator18
+			// 
+			this.toolStripSeparator18.Name = "toolStripSeparator18";
+			this.toolStripSeparator18.Size = new System.Drawing.Size(186, 6);
 			// 
 			// addPrefixPostfixToolStripMenuItem1
 			// 
 			this.addPrefixPostfixToolStripMenuItem1.Name = "addPrefixPostfixToolStripMenuItem1";
-			this.addPrefixPostfixToolStripMenuItem1.Size = new System.Drawing.Size(168, 22);
+			this.addPrefixPostfixToolStripMenuItem1.Size = new System.Drawing.Size(189, 22);
 			this.addPrefixPostfixToolStripMenuItem1.Text = "Add Prefix/Postfix";
 			this.addPrefixPostfixToolStripMenuItem1.Click += new System.EventHandler(this.BtnAddPrefixPostfix_Event);
+			// 
+			// removePrefixPostfixToolStripMenuItem
+			// 
+			this.removePrefixPostfixToolStripMenuItem.Name = "removePrefixPostfixToolStripMenuItem";
+			this.removePrefixPostfixToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.removePrefixPostfixToolStripMenuItem.Text = "Remove Prefix/Postfix";
+			this.removePrefixPostfixToolStripMenuItem.Click += new System.EventHandler(this.BtnRemovePrefixPostfix_Event);
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(165, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(186, 6);
 			// 
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(168, 22);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(189, 22);
 			this.toolStripMenuItem2.Text = "Create Copy";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.BtnCreateCopy_Event);
 			// 
 			// createRefToolStripMenuItem
 			// 
 			this.createRefToolStripMenuItem.Name = "createRefToolStripMenuItem";
-			this.createRefToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+			this.createRefToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.createRefToolStripMenuItem.Text = "Create Ref";
 			this.createRefToolStripMenuItem.Click += new System.EventHandler(this.BtnCreateRef_Event);
 			// 
@@ -1588,14 +1628,6 @@ namespace SPReD
 			this.FillWithColorToolStripMenuItem.Text = "Fill With Color";
 			this.FillWithColorToolStripMenuItem.Click += new System.EventHandler(this.FillWithColorToolStripMenuItemClick_Event);
 			// 
-			// managerToolStripMenuItem
-			// 
-			this.managerToolStripMenuItem.Name = "managerToolStripMenuItem";
-			this.managerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
-			this.managerToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-			this.managerToolStripMenuItem.Text = "&Manager";
-			this.managerToolStripMenuItem.Click += new System.EventHandler(this.PalettesManagerClick_Event);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1639,6 +1671,10 @@ namespace SPReD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem removePrefixPostfixToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator18;
+		private System.Windows.Forms.ToolStripMenuItem removePrefixPostfixToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
 		private System.Windows.Forms.ToolStripMenuItem managerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem swapToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;

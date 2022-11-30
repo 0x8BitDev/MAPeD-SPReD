@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 21.03.2017
  * Time: 18:13
  */
@@ -50,7 +50,7 @@ namespace SPReD
 			this.BtnOk.Location = new System.Drawing.Point(4, 111);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 4;
+			this.BtnOk.TabIndex = 5;
 			this.BtnOk.Text = "Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			// 
@@ -60,7 +60,7 @@ namespace SPReD
 			this.BtnCancel.Location = new System.Drawing.Point(85, 111);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
-			this.BtnCancel.TabIndex = 5;
+			this.BtnCancel.TabIndex = 6;
 			this.BtnCancel.Text = "Cancel";
 			this.BtnCancel.UseVisualStyleBackColor = true;
 			// 
@@ -69,8 +69,8 @@ namespace SPReD
 			this.label1.Location = new System.Drawing.Point(12, 6);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(104, 20);
-			this.label1.TabIndex = 2;
-			this.label1.Text = "Append to Name(s):";
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Enter Name:";
 			// 
 			// EditNewName
 			// 
@@ -78,14 +78,14 @@ namespace SPReD
 			this.EditNewName.MaxLength = 64;
 			this.EditNewName.Name = "EditNewName";
 			this.EditNewName.Size = new System.Drawing.Size(143, 20);
-			this.EditNewName.TabIndex = 0;
+			this.EditNewName.TabIndex = 1;
 			// 
 			// RadionBtnPrefix
 			// 
 			this.RadionBtnPrefix.Location = new System.Drawing.Point(13, 17);
 			this.RadionBtnPrefix.Name = "RadionBtnPrefix";
 			this.RadionBtnPrefix.Size = new System.Drawing.Size(57, 24);
-			this.RadionBtnPrefix.TabIndex = 2;
+			this.RadionBtnPrefix.TabIndex = 3;
 			this.RadionBtnPrefix.Text = "Prefix";
 			this.RadionBtnPrefix.UseVisualStyleBackColor = true;
 			// 
@@ -95,7 +95,7 @@ namespace SPReD
 			this.RadioBtnPostfix.Location = new System.Drawing.Point(76, 17);
 			this.RadioBtnPostfix.Name = "RadioBtnPostfix";
 			this.RadioBtnPostfix.Size = new System.Drawing.Size(59, 24);
-			this.RadioBtnPostfix.TabIndex = 3;
+			this.RadioBtnPostfix.TabIndex = 4;
 			this.RadioBtnPostfix.TabStop = true;
 			this.RadioBtnPostfix.Text = "Postfix";
 			this.RadioBtnPostfix.UseVisualStyleBackColor = true;
@@ -107,9 +107,9 @@ namespace SPReD
 			this.Append.Location = new System.Drawing.Point(12, 49);
 			this.Append.Name = "Append";
 			this.Append.Size = new System.Drawing.Size(143, 47);
-			this.Append.TabIndex = 1;
+			this.Append.TabIndex = 2;
 			this.Append.TabStop = false;
-			this.Append.Text = "Append as";
+			this.Append.Text = "Use it as:";
 			// 
 			// copy_sprite_new_name_form
 			// 
