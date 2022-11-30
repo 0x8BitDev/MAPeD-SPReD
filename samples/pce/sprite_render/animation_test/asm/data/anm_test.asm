@@ -9,7 +9,7 @@ ANM_TEST_SPR_VADDR	= $2000
 ;anm_test_chr0:	.incbin "anm_test_chr0.bin"	; 9600 bytes
 
 ;anm_test_SG_arr:	
-;	.word 9600, anm_test_chr0
+;	.word 9600, anm_test_chr0, bank(anm_test_chr0)
 
 
 anm_test_palette:

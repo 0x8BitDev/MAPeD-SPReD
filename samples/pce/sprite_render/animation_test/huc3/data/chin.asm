@@ -9,7 +9,6 @@ _chin_chr1:	.incbin "data/_chin_chr1.bin"	; 1664 bytes
 _chin_chr2:	.incbin "data/_chin_chr2.bin"	; 1536 bytes
 _chin_chr3:	.incbin "data/_chin_chr3.bin"	; 1536 bytes
 _chin_chr4:	.incbin "data/_chin_chr4.bin"	; 1536 bytes
-_chin_chr5:	.incbin "data/_chin_chr5.bin"	; 128 bytes
 
 _chin_SG_arr:	
 	.word 1920, _chin_chr0, bank(_chin_chr0)
@@ -17,7 +16,7 @@ _chin_SG_arr:
 	.word 1536, _chin_chr2, bank(_chin_chr2)
 	.word 1536, _chin_chr3, bank(_chin_chr3)
 	.word 1536, _chin_chr4, bank(_chin_chr4)
-	.word 128, _chin_chr5, bank(_chin_chr5)
+	.word 0, 0, 0	; skipped data
 
 
 _chin_palette:
@@ -30,7 +29,7 @@ _chin_palette_slot2:
 _chin_palette_end:
 
 _chin_num_frames:
-	.byte $0B
+	.byte $0A
 _chin_frames_data:
 _chin_idle01_RIGHT_frame:
 	.word _chin_idle01_RIGHT
@@ -62,9 +61,6 @@ _chin_walk03_LEFT_frame:
 _chin_walk04_LEFT_frame:
 	.word _chin_walk04_LEFT
 	.byte bank(_chin_walk04_LEFT)
-_chin_dummy_sprite_for_palettes_frame:
-	.word _chin_dummy_sprite_for_palettes
-	.byte bank(_chin_dummy_sprite_for_palettes)
 
 
 	; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc
@@ -176,13 +172,4 @@ _chin_walk04_LEFT:
 	.word $FFC0, $FFE4, $114, $880
 	.word $FFD0, $FFE4, $116, $880
 _chin_walk04_LEFT_end:
-
-_chin_dummy_sprite_for_palettes:
-	.word _chin_dummy_sprite_for_palettes_end - _chin_dummy_sprite_for_palettes - 3	; data size
-	.byte 5		; GFX bank index (chr5)
-
-	.word $00, $00, $100, $80
-	.word $00, $10, $102, $81
-	.word $00, $20, $104, $82
-_chin_dummy_sprite_for_palettes_end:
 

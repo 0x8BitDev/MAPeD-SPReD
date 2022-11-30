@@ -96,6 +96,10 @@ namespace SPReD
 		
 		public const int CONST_CHR_BANK_SIDE				= 256;
 		
+		// sprite export flags
+		public const string CONST_SPR_EXPORT_SKIP_ALL		= "#se";	// skip graphics and palette(s) export
+		public const string CONST_SPR_EXPORT_PALETTE_ONLY	= "#ep";	// skip graphics and export palette(s)
+		
 #if DEF_NES || DEF_SMS
 		public const int CONST_CHR_SIDE_PIXELS_CNT			= 8;
 		public const int CONST_CHR_SIDE_PIXELS_CNT_POW_BITS	= 3;

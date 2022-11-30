@@ -124,11 +124,11 @@ namespace SPReD
 		}
 		
 #if DEF_NES
-		public void export( StreamWriter _sw, string _data_dir, string _filename, bool _commented, bool _need_padding )
+		public void export( StreamWriter _sw, string _data_dir, string _filename, bool _commented, HashSet< int > skipped_banks_id, bool _need_padding )
 #elif DEF_SMS
-		public void export( StreamWriter _sw, string _data_dir, string _filename, bool _commented, int _CHR_size )
+		public void export( StreamWriter _sw, string _data_dir, string _filename, bool _commented, HashSet< int > skipped_banks_id, int _CHR_size )
 #elif DEF_PCE
-		public void export( StreamWriter _sw, string _data_dir, string _filename, bool _commented, bool _asm_data )
+		public void export( StreamWriter _sw, string _data_dir, string _filename, bool _commented, HashSet< int > skipped_banks_id, bool _asm_data )
 #else
 ...
 #endif
@@ -148,31 +148,40 @@ namespace SPReD
 			{
 				label_name = _filename + "_" + m_data[ i ].name;
 				
+				if( !skipped_banks_id.Contains( i ) )
+				{
 #if DEF_NES || DEF_PCE
-				CHR_data_size = m_data[ i ].get_size_bytes();
+					CHR_data_size = m_data[ i ].get_size_bytes();
 #elif DEF_SMS
-				CHR_data_size = m_data[ i ].get_data().Count * _CHR_size;
+					CHR_data_size = m_data[ i ].get_data().Count * _CHR_size;
 #else
 ...
 #endif
 
 #if DEF_NES
-				_sw.WriteLine( ( _commented ? ";":"" ) + label_name + ":\t.incbin \"" + _data_dir + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );
+					_sw.WriteLine( ( _commented ? ";":"" ) + label_name + ":\t.incbin \"" + _data_dir + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + ( _need_padding ? " of " + ( CHR_data_size + utils.get_padding( CHR_data_size ) ):"" ) + " bytes" );
 #elif DEF_SMS || DEF_PCE
-				_sw.WriteLine( ( _commented ? ";":"" ) + label_name + ":\t.incbin \"" + _data_dir + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + " bytes" );
+					_sw.WriteLine( ( _commented ? ";":"" ) + label_name + ":\t.incbin \"" + _data_dir + _filename + "_" + m_data[ i ].get_filename() + "\"\t; " + CHR_data_size + " bytes" );
 #else
 ...
 #endif
-
+				
 #if DEF_SMS || DEF_PCE
-				CHR_data_arr += "\n" + ( _commented ? ";":"" ) + "\t.word " + CHR_data_size + ", " + label_name;
+					CHR_data_arr += "\n" + ( _commented ? ";":"" ) + "\t.word " + CHR_data_size + ", " + label_name;
 #endif
 #if DEF_PCE
-				if( !_asm_data )
-				{
 					CHR_data_arr += ", bank(" + label_name + ")";
-				}
 #endif
+				}
+				else
+				{
+#if DEF_SMS
+					CHR_data_arr += "\n" + ( _commented ? ";":"" ) + "\t.word 0, 0\t; skipped data";
+#endif
+#if DEF_PCE
+					CHR_data_arr += "\n" + ( _commented ? ";":"" ) + "\t.word 0, 0, 0\t; skipped data";
+#endif
+				}
 			}
 			
 #if DEF_SMS || DEF_PCE

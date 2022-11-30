@@ -1029,5 +1029,15 @@ namespace SPReD
 			// reserved data for future purposes
 			int reserved = _br.ReadInt32();
 		}
+		
+		public bool export_graphics()
+		{
+			return ( name.ToLower().IndexOf( utils.CONST_SPR_EXPORT_SKIP_ALL ) < 0 ) && ( name.ToLower().IndexOf( utils.CONST_SPR_EXPORT_PALETTE_ONLY ) < 0 );
+		}
+		
+		public bool export_palette()
+		{
+			return ( name.ToLower().IndexOf( utils.CONST_SPR_EXPORT_PALETTE_ONLY ) == 0 ) || ( name.ToLower().IndexOf( utils.CONST_SPR_EXPORT_SKIP_ALL ) < 0 );
+		}
 	}
 }

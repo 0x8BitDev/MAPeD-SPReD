@@ -18,16 +18,16 @@ PLAYER_GFX_SPR_VADDR	= $2000
 ;player_gfx_chr9:	.incbin "player_gfx_chr9.bin"	; 3200 bytes
 
 ;player_gfx_SG_arr:	
-;	.word 2944, player_gfx_chr0
-;	.word 2304, player_gfx_chr1
-;	.word 2432, player_gfx_chr2
-;	.word 2944, player_gfx_chr3
-;	.word 2560, player_gfx_chr4
-;	.word 2304, player_gfx_chr5
-;	.word 2560, player_gfx_chr6
-;	.word 3200, player_gfx_chr7
-;	.word 2176, player_gfx_chr8
-;	.word 3200, player_gfx_chr9
+;	.word 2944, player_gfx_chr0, bank(player_gfx_chr0)
+;	.word 2304, player_gfx_chr1, bank(player_gfx_chr1)
+;	.word 2432, player_gfx_chr2, bank(player_gfx_chr2)
+;	.word 2944, player_gfx_chr3, bank(player_gfx_chr3)
+;	.word 2560, player_gfx_chr4, bank(player_gfx_chr4)
+;	.word 2304, player_gfx_chr5, bank(player_gfx_chr5)
+;	.word 2560, player_gfx_chr6, bank(player_gfx_chr6)
+;	.word 3200, player_gfx_chr7, bank(player_gfx_chr7)
+;	.word 2176, player_gfx_chr8, bank(player_gfx_chr8)
+;	.word 3200, player_gfx_chr9, bank(player_gfx_chr9)
 
 
 player_gfx_palette:

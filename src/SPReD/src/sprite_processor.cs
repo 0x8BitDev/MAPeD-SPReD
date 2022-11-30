@@ -332,19 +332,19 @@ namespace SPReD
 		}
 		
 #if DEF_NES
-		public void export_CHR( StreamWriter _sw, string _data_dir, string _filename, bool _commented, bool _need_padding )
+		public void export_CHR( StreamWriter _sw, string _data_dir, string _filename, bool _commented, HashSet< int > skipped_banks_id, bool _need_padding )
 		{
-			m_CHR_data_storage.export( _sw, _data_dir, _filename, _commented, _need_padding );
+			m_CHR_data_storage.export( _sw, _data_dir, _filename, _commented, skipped_banks_id, _need_padding );
 		}
 #elif DEF_SMS
-		public void export_CHR( StreamWriter _sw, string _data_dir, string _filename, bool _commented, int _CHR_size )
+		public void export_CHR( StreamWriter _sw, string _data_dir, string _filename, bool _commented, HashSet< int > skipped_banks_id, int _CHR_size )
 		{
-			m_CHR_data_storage.export( _sw, _data_dir, _filename, _commented, _CHR_size );
+			m_CHR_data_storage.export( _sw, _data_dir, _filename, _commented, skipped_banks_id, _CHR_size );
 		}
 #elif DEF_PCE
-		public void export_CHR( StreamWriter _sw, string _data_dir, string _filename, bool _commented, bool _asm_data )
+		public void export_CHR( StreamWriter _sw, string _data_dir, string _filename, bool _commented, HashSet< int > skipped_banks_id, bool _asm_data )
 		{
-			m_CHR_data_storage.export( _sw, _data_dir, _filename, _commented, _asm_data );
+			m_CHR_data_storage.export( _sw, _data_dir, _filename, _commented, skipped_banks_id, _asm_data );
 		}
 #else
 ...

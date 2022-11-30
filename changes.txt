@@ -22,7 +22,6 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 21.07.2022 - Improved colors swapping
 22.06.2022 - Added sorting option for entities (Left->Right, Bottom->Top) to the data export dialog
 18.05.2022 - Added dialog for reordering CHR banks (Main Menu->CHR Banks->Reorder Banks)
-06.05.2022 - Added deletion of multiple selected screens
 29.04.2022 - Optimized rendering of maps in the layout window
 08.04.2022 - Changed project file format (v7): palette in a project file for all platforms
 08.04.2022 - ZX/PCE/SMD: added import of a custom palette
@@ -122,6 +121,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+29.11.2022 - Added reserved prefixes for sprite names: #SE - skip graphics and palette (PCE) export, PCE: #EP - skip graphics and export palette only
 11.10.2022 - Added a tooltip with a selected color index on the main palette
 22.07.2022 - PCE: added red markers to active palettes
 22.07.2022 - PCE: added palettes manager

@@ -1433,12 +1433,12 @@ namespace SPReD
 			
 			if( bw != null )
 			{
-				bw.Close();
+				bw.Dispose();
 			}
 			
 			if( fs != null )
 			{
-				fs.Close();
+				fs.Dispose();
 			}
 		}
 		
@@ -1581,12 +1581,12 @@ namespace SPReD
 			
 			if( br != null )
 			{
-				br.Close();
+				br.Dispose();
 			}
 			
 			if( fs != null )
 			{
-				fs.Close();
+				fs.Dispose();
 			}
 		}
 
@@ -1767,12 +1767,12 @@ namespace SPReD
 			
 			if( br != null )
 			{
-				br.Close();
+				br.Dispose();
 			}
 			
 			if( fs != null )
 			{
-				fs.Close();
+				fs.Dispose();
 			}
 			
 			SpriteList.EndUpdate();
@@ -1979,12 +1979,14 @@ namespace SPReD
 					// CHR incbins 
 					m_sprites_proc.rearrange_CHR_data_ids();
 					
+					HashSet< int > skipped_banks_id = get_skipped_banks_id( _spr_cnt, _get_spr );
+					
 #if DEF_NES
-					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, comment_CHR_data, save_padding_data );
+					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, comment_CHR_data, skipped_banks_id, save_padding_data );
 #elif DEF_SMS
-					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, comment_CHR_data, m_SMS_export_form.bpp << 3 );
+					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, comment_CHR_data, skipped_banks_id, m_SMS_export_form.bpp << 3 );
 #elif DEF_PCE
-					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, comment_CHR_data, _asm_file );
+					m_sprites_proc.export_CHR( sw, data_dir, prefix_filename, comment_CHR_data, skipped_banks_id, _asm_file );
 #else
 ...
 #endif
@@ -2008,16 +2010,21 @@ namespace SPReD
 					
 					for( int i = 0; i < _spr_cnt; i++ )
 					{
-						foreach( var attr in _get_spr( i ).get_CHR_attr() )
+						spr = _get_spr( i );
+						
+						if( spr.export_palette() )
 						{
-							if( max_palettes < attr.palette_ind )
+							foreach( var attr in spr.get_CHR_attr() )
 							{
-								max_palettes = attr.palette_ind;
-							}
-							
-							if( min_palettes > attr.palette_ind )
-							{
-								min_palettes = attr.palette_ind;
+								if( max_palettes < attr.palette_ind )
+								{
+									max_palettes = attr.palette_ind;
+								}
+								
+								if( min_palettes > attr.palette_ind )
+								{
+									min_palettes = attr.palette_ind;
+								}
 							}
 						}
 					}
@@ -2056,7 +2063,7 @@ namespace SPReD
 					// save common sprites data
 					{
 						// sprites array
-						sw.WriteLine( "\n" + prefix_filename + "_num_frames:\n\t." + ( _spr_cnt > 255 ? "word ":"byte " ) + String.Format( "${0:X2}\n" + prefix_filename + "_frames_data:", _spr_cnt ) );
+						sw.WriteLine( "\n" + prefix_filename + "_num_frames:\n\t." + ( _spr_cnt > 255 ? "word ":"byte " ) + String.Format( "${0:X2}\n" + prefix_filename + "_frames_data:", get_exported_sprites_cnt( _spr_cnt, _get_spr ) ) );
 						
 						if( !_asm_file )
 						{
@@ -2069,6 +2076,11 @@ namespace SPReD
 						for( int i = 0; i < _spr_cnt; i++ )
 						{
 							spr = _get_spr( i );
+							
+							if( !spr.export_graphics() )
+							{
+								continue;
+							}
 							
 							sprite_name = sprite_prefix + spr.name; 
 							
@@ -2116,7 +2128,12 @@ namespace SPReD
 					// save the sprites data
 					for( int i = 0; i < _spr_cnt; i++ )
 					{
-						_get_spr( i ).export( sw, data_prefix + sprite_prefix );
+						spr = _get_spr( i );
+						
+						if( spr.export_graphics() )
+						{
+							spr.export( sw, data_prefix + sprite_prefix );
+						}
 					}
 #elif DEF_SMS
 					sw.WriteLine( "\t; #1: Y pos, #2: X pos, #3: CHR index\n" );
@@ -2124,7 +2141,12 @@ namespace SPReD
 					// save the sprites data
 					for( int i = 0; i < _spr_cnt; i++ )
 					{
-						_get_spr( i ).export( sw, m_SMS_export_form.CHRs_offset, data_prefix + sprite_prefix );
+						spr = _get_spr( i );
+						
+						if( spr.export_graphics() )
+						{
+							spr.export( sw, m_SMS_export_form.CHRs_offset, data_prefix + sprite_prefix );
+						}
 					}
 #elif DEF_PCE
 					sw.WriteLine( "\t; #1: Y pos, #2: X pos, #3: CHR index, #4: CHR desc\n" );
@@ -2134,13 +2156,16 @@ namespace SPReD
 					{
 						spr = _get_spr( i );
 						
-						if( !m_PCE_export_form.non_packed_sprites_opt || ( spr.is_packed( CBoxMode8x16.Checked ) || spr.check_16x32_64_mode() ) )
+						if( spr.export_graphics() )
 						{
-							spr.export( sw, m_PCE_export_form.CHRs_offset, m_PCE_export_form.palette_slot, data_prefix + sprite_prefix );
-						}
-						else
-						{
-							PCE_metasprite_exporter.export_sprite( sw, spr, m_PCE_export_form.CHRs_offset, m_PCE_export_form.palette_slot, data_prefix + sprite_prefix );
+							if( !m_PCE_export_form.non_packed_sprites_opt || ( spr.is_packed( CBoxMode8x16.Checked ) || spr.check_16x32_64_mode() ) )
+							{
+								spr.export( sw, m_PCE_export_form.CHRs_offset, m_PCE_export_form.palette_slot, data_prefix + sprite_prefix );
+							}
+							else
+							{
+								PCE_metasprite_exporter.export_sprite( sw, spr, m_PCE_export_form.CHRs_offset, m_PCE_export_form.palette_slot, data_prefix + sprite_prefix );
+							}
 						}
 					}
 #else
@@ -2165,6 +2190,69 @@ namespace SPReD
 					c_sw.Dispose();
 				}
 			}
+		}
+		
+		int get_exported_sprites_cnt( int _spr_cnt, Func< int, sprite_data > _get_spr )
+		{
+			int spr_cnt = 0;
+			
+			for( int i = 0; i < _spr_cnt; i++ )
+			{
+				if( _get_spr( i ).export_graphics() )
+				{
+					++spr_cnt;
+				}
+			}
+			
+			return spr_cnt;
+		}
+		
+		HashSet< int > get_skipped_banks_id( int _spr_cnt, Func< int, sprite_data > _get_spr )
+		{
+			int i;
+			int spr_bank_id;
+			
+			sprite_data spr;
+			
+			Dictionary< int, int >	sprite_bank_id		= new Dictionary< int, int >( _spr_cnt );
+			HashSet< int >			skipped_banks_id	= new HashSet< int >();
+			
+			for( i = 0; i < _spr_cnt; i++ )
+			{
+				spr = _get_spr( i );
+				
+				if( !spr.export_graphics() )
+				{
+					skipped_banks_id.Add( spr.get_CHR_data().id );
+					
+					sprite_bank_id[ spr.get_CHR_data().id ] = i;
+				}
+			}
+			
+			// check the skipped_banks_id data for sprites that share the same bank but one should be skipped while another one should not
+			for( i = 0; i < _spr_cnt; i++ )
+			{
+				spr = _get_spr( i );
+				
+				if( spr.export_graphics() )
+				{
+					spr_bank_id = spr.get_CHR_data().id;
+					
+					foreach( int bank_id in skipped_banks_id )
+					{
+						if( spr_bank_id == bank_id )
+						{
+							skipped_banks_id.Remove( bank_id );
+							
+							message_box( "The following sprites share the same CHR bank:\n\n'" + _get_spr( sprite_bank_id[ bank_id ] ).name + "' and '" + spr.name + "'\n\nTip: Split the '" + _get_spr( sprite_bank_id[ bank_id ] ).name + "' sprite data for optimal data export.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+							
+							break;
+						}
+					}
+				}
+			}
+			
+			return skipped_banks_id;
 		}
 		
 		void ExportScriptEditorToolStripMenuItemClick(object sender, EventArgs e)

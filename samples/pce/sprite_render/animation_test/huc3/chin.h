@@ -43,7 +43,6 @@ extern unsigned char*	chin_frames_data;
 #define	SPR_CHIN_WALK02_LEFT	7
 #define	SPR_CHIN_WALK03_LEFT	8
 #define	SPR_CHIN_WALK04_LEFT	9
-#define	SPR_CHIN_DUMMY_SPRITE_FOR_PALETTES	10
 
 extern spd_SPRITE*	chin_idle01_RIGHT;
 extern spd_SPRITE*	chin_walk01_RIGHT;
@@ -55,5 +54,4 @@ extern spd_SPRITE*	chin_walk01_LEFT;
 extern spd_SPRITE*	chin_walk02_LEFT;
 extern spd_SPRITE*	chin_walk03_LEFT;
 extern spd_SPRITE*	chin_walk04_LEFT;
-extern spd_SPRITE*	chin_dummy_sprite_for_palettes;
 
