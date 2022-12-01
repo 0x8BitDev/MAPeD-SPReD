@@ -674,7 +674,7 @@ namespace MAPeD
 
 			m_tiles_palette_form.reset();
 			
-			update_graphics( false );
+			update_graphics( false, true, false );
 			
 			enable_update_gfx_btn( false );
 			mark_update_screens_btn( false );
@@ -737,21 +737,17 @@ namespace MAPeD
 
 		void CBoxTileViewTypeChanged_Event(object sender, EventArgs e)
 		{
-			progress_bar_show( true, "Updating graphics...", false );
-			
 			m_view_type = ( utils.ETileViewType )CBoxTileViewType.SelectedIndex;
 			
 			mark_update_screens_btn( true );
 #if DEF_ZX
 			m_tiles_processor.set_view_type( m_view_type );
 #endif
-			update_graphics( false );
+			update_graphics( false, true, true );
 			
 			clear_active_tile_img();
 
 			set_status_msg( "View type changed" );
-			
-			progress_bar_show( false, "", false );
 		}
 
 		void TreeViewMouseDown_Event(object sender, MouseEventArgs e)
@@ -1113,7 +1109,7 @@ namespace MAPeD
 											
 											progress_bar_status( "Initializing screens data..." );
 											
-											update_graphics( true );
+											update_graphics( true, false, false );
 
 											update_screens( true, false );
 											
@@ -1123,7 +1119,7 @@ namespace MAPeD
 										{
 											progress_bar_status( "Updating data..." );
 
-											update_graphics( true );
+											update_graphics( true, true, false );
 										}
 									}
 								}
@@ -1169,10 +1165,12 @@ namespace MAPeD
 								{
 									throw new Exception( "Invalid file!" );
 								}
-			
-								update_graphics( true );
 								
 								mark_update_screens_btn( true );
+								
+								// update the tiles processor data and screens data too
+								// you could import a palette into a current active map
+								update_graphics( true, true, true );
 							}
 							break;
 #endif //DEF_NES || DEF_SMS
@@ -1211,7 +1209,9 @@ namespace MAPeD
 									set_status_msg( string.Format( "Merged: {0} CHRs / {1} CHR bank(s)", added_CHRs, CHR_banks ) );
 								}
 								
-								update_graphics( true );
+								// there is no need to update screens
+								// so update the tiles processor data only
+								update_graphics( true, false, false );
 							}
 							break;
 							
@@ -1230,10 +1230,12 @@ namespace MAPeD
 									
 									progress_bar_show( true, "Updating graphics...", false );
 									{
-										update_graphics( true );
-										update_all_screens( false );
+										// update the tiles processor only
+										update_graphics( true, false, false );
+										// and then update all the available screens
+										update_all_screens( true );
 									}
-									progress_bar_show( false, "", false );
+									progress_bar_show( false );
 									
 									clear_active_tile_img();
 									
@@ -1311,8 +1313,9 @@ namespace MAPeD
 						{
 							if( m_export_active_tile_block_set_form.ShowDialog() == DialogResult.OK )
 							{
-								update_graphics( false );
-
+								// update screens data if some changes has been made in the tiles editor
+								update_graphics( false, BtnUpdateGFX.Enabled, false );
+								
 								m_export_active_tile_block_set_form.export( filename, get_curr_tiles_data(), m_imagelist_manager.get_tiles_image_list(), m_imagelist_manager.get_blocks_image_list() );
 							}
 						}
@@ -1485,7 +1488,7 @@ namespace MAPeD
 
 			patterns_manager_update_data();
 			
-			update_graphics( false, false );
+			update_graphics( false, false, false );
 			
 			enable_copy_paste_action( false, ECopyPasteType.cpt_All );
 			
@@ -1496,19 +1499,20 @@ namespace MAPeD
 
 		void BtnUpdateGFXClick_Event(object sender, EventArgs e)
 		{
-			progress_bar_show( true, "Updating graphics...", false );
-			
-			update_graphics( false );
+			update_graphics( false, true, true );
 			
 			clear_active_tile_img();
 			
 			set_status_msg( "Graphics updated" );
-			
-			progress_bar_show( false, "", false );
 		}
 		
-		private void update_graphics( bool _update_tile_processor_gfx, bool _update_screens = true )
+		private void update_graphics( bool _update_tile_processor_gfx, bool _update_screens, bool _show_status_wnd )
 		{
+			if( _show_status_wnd )
+			{
+				progress_bar_show( true, "Updating graphics...", false );
+			}
+			
 			tiles_data data = get_curr_tiles_data();
 			
 			m_imagelist_manager.update_blocks( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );
@@ -1534,6 +1538,11 @@ namespace MAPeD
 			patterns_manager_update_preview();
 			
 			enable_update_gfx_btn( false );
+			
+			if( _show_status_wnd )
+			{
+				progress_bar_show( false );
+			}
 		}
 		
 		void BtnCHRBankNextPageClick_Event(object sender, EventArgs e)
@@ -1894,7 +1903,9 @@ namespace MAPeD
 		
 			if( m_view_type == utils.ETileViewType.tvt_ObjectId )
 			{
-				update_graphics( false );
+				mark_update_screens_btn( true );
+				
+				update_graphics( false, true, true );
 			}
 			
 			select_block( m_tiles_processor.get_selected_block(), true, false );
@@ -1914,7 +1925,7 @@ namespace MAPeD
 			BtnEditModeSelectCHR.Enabled 	= _on;
 			
 			BlockEditorModeDrawToolStripMenuItem.Checked	= _on;
-			BlockEditorModeSelectToolStripMenuItem.Checked	= !_on;			
+			BlockEditorModeSelectToolStripMenuItem.Checked	= !_on;
 			
 			m_tiles_processor.set_block_editor_mode( _on ?  block_editor.EMode.bem_draw:block_editor.EMode.bem_CHR_select );
 		}
@@ -1980,7 +1991,8 @@ namespace MAPeD
 					data.inc_blocks_CHRs( sel_ind );
 					
 					mark_update_screens_btn( true );
-					update_graphics( true );
+					
+					update_graphics( true, true, true );
 				}
 				else
 				{
@@ -2013,7 +2025,8 @@ namespace MAPeD
 						data.dec_blocks_CHRs( sel_ind );
 						
 						mark_update_screens_btn( true );
-						update_graphics( true );
+						
+						update_graphics( true, true, true );
 					}
 				}
 				else
@@ -2101,9 +2114,8 @@ namespace MAPeD
 
 				mark_update_screens_btn( true );
 				
-//				update_graphics( true );
-				
 				// optimized update_graphics
+				progress_bar_show( true, "Updating graphics...", false );
 				{
 					m_tile_list_manager.copy_tile( tile_list.EType.t_Blocks, m_block_copy_item_ind, _sel_ind );
 					
@@ -2119,9 +2131,10 @@ namespace MAPeD
 					
 					if( CheckBoxScreensAutoUpdate.Checked )
 					{
-						update_screens( false );
+						update_screens( true );
 					}
 				}
+				progress_bar_show( false );
 			}
 		}
 
@@ -2177,10 +2190,9 @@ namespace MAPeD
 				
 				clear_active_tile_img();
 				
-				enable_update_gfx_btn( true );
 				mark_update_screens_btn( true );
 				
-				update_graphics( true );
+				update_graphics( true, true, true );
 			}
 		}
 		
@@ -2201,11 +2213,13 @@ namespace MAPeD
 					
 					if( CBoxTileViewType.SelectedIndex == ( int )utils.ETileViewType.tvt_ObjectId )
 					{
-						update_graphics( true );
+						mark_update_screens_btn( true );
+						
+						update_graphics( true, true, true );
 					}
 				}
 			}
-		}		
+		}
 		
 		void InsertLeftBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
 		{
@@ -2236,7 +2250,8 @@ namespace MAPeD
 					clear_active_tile_img();
 					
 					mark_update_screens_btn( true );
-					update_graphics( true );
+					
+					update_graphics( true, true, true );
 				}
 			}
 		}
@@ -2271,7 +2286,8 @@ namespace MAPeD
 						clear_active_tile_img();
 						
 						mark_update_screens_btn( true );
-						update_graphics( true );
+						
+						update_graphics( true, true, true );
 					}
 				}
 			}
@@ -2302,9 +2318,8 @@ namespace MAPeD
 				
 				mark_update_screens_btn( true );
 				
-//				update_graphics( true );
-				
 				// optimized update_graphics
+				progress_bar_show( true, "Updating graphics...", false );
 				{
 					m_tile_list_manager.copy_tile( tile_list.EType.t_Tiles, m_tile_copy_item_ind, sel_ind );
 					
@@ -2314,9 +2329,10 @@ namespace MAPeD
 					
 					if( CheckBoxScreensAutoUpdate.Checked )
 					{
-						update_screens( false );
+						update_screens( true );
 					}
 				}
+				progress_bar_show( false );
 			}
 		}
 		
@@ -2337,7 +2353,8 @@ namespace MAPeD
 					set_status_msg( String.Format( "Tile List: tile #{0:X2} references are cleared", sel_ind ) );
 					
 					mark_update_screens_btn( true );
-					update_graphics( true );
+					
+					update_graphics( true, true, true );
 				}
 			}
 		}
@@ -2355,7 +2372,8 @@ namespace MAPeD
 				set_status_msg( String.Format( "Tile List: all the tile references are cleared" ) );
 				
 				mark_update_screens_btn( true );
-				update_graphics( true );
+				
+				update_graphics( true, true, true );
 			}
 		}
 
@@ -2378,7 +2396,8 @@ namespace MAPeD
 					clear_active_tile_img();
 					
 					mark_update_screens_btn( true );
-					update_graphics( true );
+					
+					update_graphics( true, true, true );
 				}
 			}
 		}
@@ -2404,7 +2423,8 @@ namespace MAPeD
 						clear_active_tile_img();
 						
 						mark_update_screens_btn( true );
-						update_graphics( true );
+						
+						update_graphics( true, true, true );
 					}
 				}
 			}
@@ -2426,9 +2446,10 @@ namespace MAPeD
 						{
 							progress_bar_show( true, "Updating screens...", false );
 							
-							// update screens images
+							// update a global screen list
 							m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, -1 );
 							
+							// update a local screen list if needed
 							if( !CheckBoxLayoutEditorAllBanks.Checked )
 							{
 								m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CBoxCHRBanks.SelectedIndex );
@@ -2553,12 +2574,9 @@ namespace MAPeD
 		
 		void MainForm_UpdateGraphicsAfterOptimization(object sender, EventArgs e)
 		{
-			update_graphics( true );
+			mark_update_screens_btn( true );
 			
-			if( CheckBoxScreensAutoUpdate.Checked == false )
-			{
-				mark_update_screens_btn( true );
-			}
+			update_graphics( true, true, true );
 		}
 		
 		void BtnResetTileClick_Event(object sender, EventArgs e)
@@ -3014,13 +3032,6 @@ namespace MAPeD
 				{
 					m_layout_editor.update_dimension_changes();
 					
-					if( m_data_manager.scr_data_cnt == 0 )
-					{
-						update_graphics( false );
-					}
-					
-					mark_update_screens_btn( true );
-
 					set_status_msg( "Clean up: " + deleted_screens_cnt + " screens deleted" );
 				}
 				else
@@ -4710,7 +4721,7 @@ namespace MAPeD
 						
 						if( set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) )
 						{
-							update_graphics( false );
+							update_graphics( false, true, false );
 						}
 						
 						progress_bar_show( false );
@@ -4733,7 +4744,7 @@ namespace MAPeD
 						
 						if( set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) )
 						{
-							update_graphics( false );
+							update_graphics( false, true, false );
 						}
 						
 						progress_bar_show( false );
