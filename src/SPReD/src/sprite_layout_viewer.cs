@@ -81,6 +81,9 @@ namespace SPReD
 		private int m_offset_x = 0;
 		private int m_offset_y = 0;
 		
+		private float m_fl_offset_x = 0;
+		private float m_fl_offset_y = 0;
+		
 		private float	m_scale 	= 2;
 		private float	m_CHR_size	= 0;	// current calculated CHR side size depending on a current m_scale
 		
@@ -135,6 +138,9 @@ namespace SPReD
 			m_offset_x = m_scr_half_width;
 			m_offset_y = m_scr_half_height;
 
+			m_fl_offset_x = ( float )m_scr_half_width;
+			m_fl_offset_y = ( float )m_scr_half_height;
+			
 			m_changed_pixel_x = -1;
 			m_changed_pixel_y = -1;
 			
@@ -199,8 +205,11 @@ namespace SPReD
 				{
 					if( m_mode == EMode.m_build )
 					{
-						m_offset_x += e.X - m_last_mouse_x;
-						m_offset_y += e.Y - m_last_mouse_y;
+						m_fl_offset_x += ( e.X - m_last_mouse_x ) / m_scale;
+						m_fl_offset_y += ( e.Y - m_last_mouse_y ) / m_scale;
+						
+						m_offset_x = ( int )m_fl_offset_x;
+						m_offset_y = ( int )m_fl_offset_y;
 
 						clamp_offsets();
 		
@@ -360,17 +369,20 @@ namespace SPReD
 		{
 			int ws_half_side_scaled = ( int )( utils.CONST_LAYOUT_WORKSPACE_HALF_SIDE * m_scale );
 			
-			int width_border_val 	= transform_to_img_pos( ws_half_side_scaled, m_scr_half_width, 0 );
-			int height_border_val 	= transform_to_img_pos( ws_half_side_scaled, m_scr_half_height, 0 );
+			float width_border_val 		= ( float )transform_to_img_pos( ws_half_side_scaled, m_scr_half_width, 0 );
+			float height_border_val 	= ( float )transform_to_img_pos( ws_half_side_scaled, m_scr_half_height, 0 );
 			
-			int width_pbox_border_dt	= m_pix_box.Width - width_border_val;
-			int height_pbox_border_dt 	= m_pix_box.Height - height_border_val;
+			float width_pbox_border_dt	= ( float )m_pix_box.Width - width_border_val;
+			float height_pbox_border_dt = ( float )m_pix_box.Height - height_border_val;
 			
-			m_offset_x = m_offset_x > width_border_val ? width_border_val:m_offset_x;
-			m_offset_x = m_offset_x < width_pbox_border_dt ? width_pbox_border_dt:m_offset_x;
+			m_fl_offset_x = m_fl_offset_x > width_border_val ? width_border_val:m_fl_offset_x;
+			m_fl_offset_x = m_fl_offset_x < width_pbox_border_dt ? width_pbox_border_dt:m_fl_offset_x;
 
-			m_offset_y = m_offset_y > height_border_val ? height_border_val:m_offset_y;
-			m_offset_y = m_offset_y < height_pbox_border_dt ? height_pbox_border_dt:m_offset_y;
+			m_fl_offset_y = m_fl_offset_y > height_border_val ? height_border_val:m_fl_offset_y;
+			m_fl_offset_y = m_fl_offset_y < height_pbox_border_dt ? height_pbox_border_dt:m_fl_offset_y;
+			
+			m_offset_x = ( int )m_fl_offset_x;
+			m_offset_y = ( int )m_fl_offset_y;
 		}
 		
 		private void check_and_update_pixel( int _X, int _Y )
@@ -585,7 +597,7 @@ namespace SPReD
 				{
 					if( step < utils.CONST_CHR_SIDE_PIXELS_CNT )
 					{
-						// highlight lines that are multiples of 8 by more brighter color
+						// highlight lines that are multiple of 8 by more brighter color
 						// to highlight CHRs aligned by sprite's offset.
 						// draw the main grid by a more darker color
 						if( ( ( x_pos - spr_offs_x ) % utils.CONST_CHR_SIDE_PIXELS_CNT ) == 0 )
@@ -598,7 +610,10 @@ namespace SPReD
 						}
 					}
 					
-					m_gfx.DrawLine( m_pen, offs_x, 0, offs_x, m_pix_box.Height );
+					if( offs_x >= 0 && offs_x < m_pix_box.Width )
+					{
+						m_gfx.DrawLine( m_pen, offs_x, 0, offs_x, m_pix_box.Height );
+					}
 				}
 				else
 				{
@@ -624,7 +639,7 @@ namespace SPReD
 					
 					if( step < utils.CONST_CHR_SIDE_PIXELS_CNT )
 					{
-						// highlight lines that are multiples of 8 by more brighter color
+						// highlight lines that are multiple of 8 by more brighter color
 						// to highlight CHRs aligned by sprite's offset.
 						// draw the main grid by a more darker color
 						if( ( ( y_pos - spr_offs_y ) % utils.CONST_CHR_SIDE_PIXELS_CNT ) == 0 )
@@ -637,7 +652,10 @@ namespace SPReD
 						}
 					}
 					
-					m_gfx.DrawLine( m_pen, 0, offs_y, m_pix_box.Height, offs_y );
+					if( offs_y >= 0 && offs_y < m_pix_box.Height )
+					{
+						m_gfx.DrawLine( m_pen, 0, offs_y, m_pix_box.Width, offs_y );
+					}
 				}
 			}
 		}
@@ -665,11 +683,14 @@ namespace SPReD
 						rect.Height += utils.CONST_CHR_SIDE_PIXELS_CNT;
 					}
 					
-					int spr_center_x = rect.X + ( rect.Width >> 1 );
-					int spr_center_y = rect.Y + ( rect.Height >> 1 );
+					float spr_center_x = ( float )( rect.X + ( rect.Width >> 1 ) );
+					float spr_center_y = ( float )( rect.Y + ( rect.Height >> 1 ) );
 					
-					m_offset_x = m_scr_half_width - spr_center_x;
-					m_offset_y = m_scr_half_height - spr_center_y;
+					m_fl_offset_x = ( float )m_scr_half_width - spr_center_x;
+					m_fl_offset_y = ( float )m_scr_half_height - spr_center_y;
+					
+					m_offset_x = ( int )m_fl_offset_x;
+					m_offset_y = ( int )m_fl_offset_y;
 					
 					update();
 				}
