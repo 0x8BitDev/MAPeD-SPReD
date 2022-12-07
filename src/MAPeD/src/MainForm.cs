@@ -5117,8 +5117,6 @@ namespace MAPeD
 				{
 					// redraw a current selected pattern
 					m_pattern_preview.update_scaled( true );
-					
-					m_pattern_preview.draw_string( "Select rectangle area in the layout viewport\nto create a pattern.", 0, 0 );
 				}
 				else
 				{
@@ -5250,7 +5248,7 @@ namespace MAPeD
 			{
 				CheckBoxPatternAdd.FlatStyle = FlatStyle.Standard;
 				CheckBoxPatternAdd.Text = "Cancel";
-
+				
 				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_EXTRACT_BEGIN, null );
 			}
 			else
@@ -5260,6 +5258,8 @@ namespace MAPeD
 				
 				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
 			}
+			
+			m_layout_editor.update();
 		}
 		
 		void MainForm_pattern_extract_end(object sender, EventArgs e)

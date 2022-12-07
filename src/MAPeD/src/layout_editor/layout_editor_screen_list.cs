@@ -121,27 +121,32 @@ namespace MAPeD
 
 		public override void draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height )
 		{
-			if( m_active_screen_index != layout_data.CONST_EMPTY_CELL_ID && m_shared.m_sel_screen_slot_id >= 0 )
+			if( m_active_screen_index != layout_data.CONST_EMPTY_CELL_ID )
 			{
-				int x = m_shared.screen_pos_x_by_slot_id( m_shared.get_sel_scr_pos_x() );
-				int y = m_shared.screen_pos_y_by_slot_id( m_shared.get_sel_scr_pos_y() );
+				m_shared.m_sys_msg = "'Esc' - cancel selection";
 				
-				// draw a transparent screen image
-				if( m_shared.m_scr_list.count() > 0 )
+				if( m_shared.m_sel_screen_slot_id >= 0 )
 				{
-					m_shared.m_scr_img_rect.X 		= x;
-					m_shared.m_scr_img_rect.Y 		= y;
-					m_shared.m_scr_img_rect.Width	= _scr_size_width;
-					m_shared.m_scr_img_rect.Height 	= _scr_size_height;
+					int x = m_shared.screen_pos_x_by_slot_id( m_shared.get_sel_scr_pos_x() );
+					int y = m_shared.screen_pos_y_by_slot_id( m_shared.get_sel_scr_pos_y() );
 					
-					_gfx.DrawImage( m_shared.m_scr_list.get( m_active_screen_index ), m_shared.m_scr_img_rect, 0, 0, platform_data.get_screen_width_pixels() << 1, platform_data.get_screen_height_pixels() << 1, GraphicsUnit.Pixel, m_shared.m_scr_img_attr );
+					// draw a transparent screen image
+					if( m_shared.m_scr_list.count() > 0 )
+					{
+						m_shared.m_scr_img_rect.X 		= x;
+						m_shared.m_scr_img_rect.Y 		= y;
+						m_shared.m_scr_img_rect.Width	= _scr_size_width;
+						m_shared.m_scr_img_rect.Height 	= _scr_size_height;
+						
+						_gfx.DrawImage( m_shared.m_scr_list.get( m_active_screen_index ), m_shared.m_scr_img_rect, 0, 0, platform_data.get_screen_width_pixels() << 1, platform_data.get_screen_height_pixels() << 1, GraphicsUnit.Pixel, m_shared.m_scr_img_attr );
+					}
+					
+					// draw screen border 
+					_pen.Width = 2;
+					_pen.Color = utils.CONST_COLOR_SCREEN_GHOST_IMAGE_BORDER;
+					
+					_gfx.DrawRectangle( _pen, x, y, _scr_size_width, _scr_size_height );
 				}
-
-				// draw screen border 
-				_pen.Width = 2;
-				_pen.Color = utils.CONST_COLOR_SCREEN_GHOST_IMAGE_BORDER;
-				
-				_gfx.DrawRectangle( _pen, x, y, _scr_size_width, _scr_size_height );
 			}
 
 			m_shared.print( m_sel_scr_msg, 0, 10 );

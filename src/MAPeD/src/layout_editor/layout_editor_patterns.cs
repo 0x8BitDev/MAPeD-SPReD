@@ -554,6 +554,11 @@ namespace MAPeD
 				
 				_gfx.DrawImage( m_sel_area_tile, m_shared.m_scr_img_rect, 0, 0, tile_size_uni, tile_size_uni, GraphicsUnit.Pixel, m_shared.m_scr_img_attr );
 			}
+			else
+			if( m_mode == EMode.em_Pattern_Extract_Begin )
+			{
+				m_shared.m_sys_msg = "Select rectangular area, 'Esc' - cancel";
+			}
 		}
 
 		public override Object get_param( uint _param )
@@ -626,7 +631,16 @@ namespace MAPeD
 		
 		public override void key_up_event( object sender, KeyEventArgs e )
 		{
-			//...
+			if( e.KeyCode == Keys.Escape )
+			{
+				if( m_mode == EMode.em_Pattern_Extract_Begin )
+				{
+					if( PatternPutCancel != null )
+					{
+						PatternPutCancel( this, null );
+					}
+				}
+			}
 		}
 	}
 }
