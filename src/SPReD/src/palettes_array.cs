@@ -16,11 +16,10 @@ namespace SPReD
 	/// </summary>
 	public class palettes_array
 	{
-		private palette16_data[]	m_plts	= new palette16_data[ utils.CONST_PALETTE16_ARR_LEN ];
+		private readonly palette16_data[]	m_plts	= new palette16_data[ utils.CONST_PALETTE16_ARR_LEN ];
 
-		private ListBox.ObjectCollection m_sprites	= null;
-		
-		private ComboBox	m_cbox	= null;
+		private readonly ListBox.ObjectCollection	m_sprites;
+		private readonly ComboBox					m_cbox;
 		
 		public int palette_index
 		{
@@ -244,7 +243,7 @@ namespace SPReD
 	{
 		private const int CONST_DATA_SIZE	= 16;
 		
-		private int[] m_data;
+		private readonly int[] m_data;
 		
 		public int[] data
 		{

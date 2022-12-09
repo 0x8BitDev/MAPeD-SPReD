@@ -22,8 +22,9 @@ namespace SPReD
 	{
 		public event EventHandler ActivePalette;
 		
-		private bool 	m_active	= false;
-		private int 	m_id 		= -1;
+		private bool m_active = false;
+		
+		private readonly int m_id;
 		
 		public int id
 		{

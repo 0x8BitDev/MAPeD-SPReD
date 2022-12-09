@@ -31,15 +31,16 @@ namespace SPReD
 		
 		private int m_selected_ind	= -1;
 		
-		private Label m_label 		= null;
+		private readonly Label m_label;
 		
 		private bool m_mode8x16		= false;
 		
 		private Point m_mouse_down_start;
 		
 		// local clipboard data
-		private CHR_data[] 	m_cb_data		= new CHR_data[ 2 ]{ new CHR_data(), new CHR_data() };
-		private int 			m_cb_data_cnt	= -1;
+		private readonly CHR_data[] m_cb_data	= new CHR_data[ 2 ]{ new CHR_data(), new CHR_data() };
+		
+		private int m_cb_data_cnt	= -1;
 		
 		public CHR_bank_viewer( PictureBox _pix_box, Label _label ) : base( _pix_box )
 		{

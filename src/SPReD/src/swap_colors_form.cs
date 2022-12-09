@@ -17,8 +17,8 @@ namespace SPReD
 	/// </summary>
 	public partial class swap_colors_form : Form
 	{
-		private Graphics 	m_main_gfx		= null;
-		private Pen			m_pen			= null;
+		private readonly Graphics	m_main_gfx;
+		private readonly Pen		m_pen;
 		
 		public static readonly Color	CONST_COLOR_PALETTE_SELECTED_INNER_BORDER		= Color.White;
 		public static readonly Color	CONST_COLOR_PALETTE_SELECTED_OUTER_BORDER		= Color.Black; 
@@ -48,7 +48,7 @@ namespace SPReD
 			
 			m_main_gfx		= Graphics.FromImage( PixBoxPalette.Image );
 			
-			m_pen = new Pen( CONST_COLOR_PIXBOX_DEFAULT );
+			m_pen			= new Pen( CONST_COLOR_PIXBOX_DEFAULT );
 			m_pen.EndCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;
 			m_pen.StartCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;
 			m_pen.Width		= 1;
@@ -85,14 +85,6 @@ namespace SPReD
 			update();
 			
 			return ShowDialog();
-		}
-		
-		private Color get_color( int _ind )
-		{
-			palette_group plt_grp		= palette_group.Instance;
-			palette_small[] sm_plts_arr	= plt_grp.get_palettes_arr();
-			
-			return Color.FromArgb( plt_grp.main_palette[ sm_plts_arr[ _ind >> 2 ].get_color_inds()[ _ind & 0x03 ] ] );
 		}
 		
 		private void draw_sel_border( int _color_ind )

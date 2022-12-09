@@ -22,25 +22,25 @@ namespace SPReD
 		
 		private sprite_processor m_sprites_proc = null;
 		
-		private create_sprite_form 			m_create_sprite_form 		= new create_sprite_form();
-		private rename_sprite_form 			m_rename_sprite_form 		= new rename_sprite_form();
-		private copy_sprite_new_name_form 	m_new_sprite_name_form 		= new copy_sprite_new_name_form();
-		private image_export_options_form 	m_img_export_options_form	= new image_export_options_form();
-		private image_import_options_form 	m_img_import_options_form	= new image_import_options_form();
-		private description_form			m_description_form			= new description_form();
-		
+		private readonly create_sprite_form			m_create_sprite_form 		= new create_sprite_form();
+		private readonly rename_sprite_form			m_rename_sprite_form 		= new rename_sprite_form();
+		private readonly copy_sprite_new_name_form	m_new_sprite_name_form 		= new copy_sprite_new_name_form();
+		private readonly image_export_options_form	m_img_export_options_form	= new image_export_options_form();
+		private readonly image_import_options_form	m_img_import_options_form	= new image_import_options_form();
+		private readonly description_form			m_description_form			= new description_form();
+
 #if DEF_SMS
-		private SMS_sprite_flipping_form	m_SMS_sprite_flip_form		= null;
-		private SMS_export_form				m_SMS_export_form			= null;
-		private swap_colors_form			m_swap_colors_form			= new swap_colors_form();
+		private readonly SMS_sprite_flipping_form	m_SMS_sprite_flip_form;
+		private readonly SMS_export_form			m_SMS_export_form			= new SMS_export_form();
+		private readonly swap_colors_form			m_swap_colors_form			= new swap_colors_form();
 #elif DEF_PCE
-		private PCE_export_form				m_PCE_export_form			= null;
-		private swap_colors_form			m_swap_colors_form			= new swap_colors_form();
+		private readonly PCE_export_form			m_PCE_export_form			= new PCE_export_form();
+		private readonly swap_colors_form			m_swap_colors_form			= new swap_colors_form();
 #endif
 
 #if DEF_FIXED_LEN_PALETTE16_ARR
-		private palettes_array				m_palettes_arr				= null;
-		private palettes_manager_form		m_palettes_mngr_form		= null;
+		private readonly palettes_array				m_palettes_arr;
+		private readonly palettes_manager_form		m_palettes_mngr_form;
 #endif
 		private SPSeD.py_editor	m_py_editor	= null;
 		
@@ -162,7 +162,7 @@ namespace SPReD
 
 #if DEF_NES
 			this.Project_openFileDialog.DefaultExt = "spredsms";
-			this.Project_openFileDialog.Filter = this.Project_openFileDialog.Filter + "|SPReD-SMS (*.spredsms)|*.spredsms";
+			this.Project_openFileDialog.Filter += "|SPReD-SMS (*.spredsms)|*.spredsms";
 			
 			paletteToolStripMenuItem.Visible = false;
 			
@@ -192,7 +192,6 @@ namespace SPReD
 			CHRFlippingGroupBox.Enabled = false;
 			
 			m_SMS_sprite_flip_form  = new SMS_sprite_flipping_form( SpriteList, m_sprites_proc );
-			m_SMS_export_form		= new SMS_export_form();
 			
 			CBoxCHRPackingType.Items.Add( "8KB" );
 			
@@ -219,8 +218,6 @@ namespace SPReD
 			BtnShiftColors.Enabled = shiftColorsToolStripMenuItem.Enabled = CBoxShiftTransp.Enabled = false;
 
 			CBoxMode8x16.Visible	= false;
-			
-			m_PCE_export_form		= new PCE_export_form();
 			
 			CBoxCHRPackingType.Items.Add( "8KB" );
 			CBoxCHRPackingType.Items.Add( "16KB" );
@@ -328,18 +325,18 @@ namespace SPReD
 			
 			if( utils.is_win )
 			{
-				System.Diagnostics.Process process = System.Diagnostics.Process.Start( doc_path );
+				System.Diagnostics.Process.Start( doc_path );
 			}
 			else
 			if( utils.is_linux )
 			{
-				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "xdg-open", doc_path );
+				System.Diagnostics.Process.Start( "xdg-open", doc_path );
 			}
 			else
 			if( utils.is_macos )
 			{
 				// need to test it...
-				System.Diagnostics.Process process = System.Diagnostics.Process.Start( "open", doc_path );
+				System.Diagnostics.Process.Start( "open", doc_path );
 			}
 		}
 		
@@ -430,7 +427,7 @@ namespace SPReD
 				
 				string new_sprite_name = m_rename_sprite_form.edit_str;
 				
-				sprite_data spr = null;
+				sprite_data spr;
 				
 				if(!check_duplicate( new_sprite_name ) )
 				{
@@ -448,7 +445,7 @@ namespace SPReD
 					{
 						SpriteList.BeginUpdate();
 						{
-							spr = ( SpriteList.SelectedItem as sprite_data );
+							spr = SpriteList.SelectedItem as sprite_data;
 							spr.name = new_sprite_name;
 							
 							SpriteList.Items[ SpriteList.SelectedIndices[ 0 ] ] = spr;
@@ -1197,7 +1194,7 @@ namespace SPReD
 							
 							if( CHR_data_group.can_merge( chr_1, chr_2, packing_type ) )
 							{
-								if( m_sprites_proc.merge_CHR( spr_1, spr_2, packing_type, CBoxMode8x16.Checked ) )
+								if( m_sprites_proc.merge_CHR( spr_1, spr_2, CBoxMode8x16.Checked ) )
 								{
 									new_chr = spr_1.get_CHR_data();
 									
@@ -1348,7 +1345,7 @@ namespace SPReD
 					// check all sprites with the same CHR index
 					int size = SpriteList.Items.Count;
 					
-					sprite_data verif_spr = null;
+					sprite_data verif_spr;
 					
 					for( int i = 0; i < size; i++ )
 					{

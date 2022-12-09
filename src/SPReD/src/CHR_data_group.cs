@@ -61,7 +61,7 @@ namespace SPReD
 #endif
 		};
 		
-		private List< CHR_data > m_CHR_arr	= null;
+		private readonly List< CHR_data > m_CHR_arr;
 	
 		private static int m_num_ids	= -1;
 		

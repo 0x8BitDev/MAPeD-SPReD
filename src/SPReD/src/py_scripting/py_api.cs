@@ -19,7 +19,7 @@ namespace SPReD
 		private ListBox			m_spr_list	= null;
 		private CheckBox		m_8x16_mode	= null;
 #if DEF_PCE
-		private palettes_array	m_plts_arr	= null;
+		private readonly palettes_array m_plts_arr;
 #endif
 		public const string CONST_PREFIX	= "spd_"; 
 #if DEF_PCE
@@ -115,7 +115,7 @@ namespace SPReD
 		
 		public spd_sprite_data get_sprite_data( int _spr_ind )
 		{
-			spd_sprite_data py_data = null;
+			spd_sprite_data py_data;
 			
 			if( _spr_ind >= 0 && _spr_ind < m_spr_list.Items.Count )
 			{
@@ -231,7 +231,7 @@ namespace SPReD
 			
 			palette_ind = _data.palette_ind;
 			CHR_ind		= _data.CHR_ind;
-			flip_flag	= _data.flip_flag;			
+			flip_flag	= _data.flip_flag;
 		}
 	}
 	
@@ -267,7 +267,7 @@ namespace SPReD
 		
 		public spd_CHR_data( CHR_data _data )
 		{
-			data = new byte[ utils.CONST_CHR_TOTAL_PIXELS_CNT ];			
+			data = new byte[ utils.CONST_CHR_TOTAL_PIXELS_CNT ];
 			Array.Copy( _data.get_data(), data, utils.CONST_CHR_TOTAL_PIXELS_CNT );
 		}
 	}

@@ -15,12 +15,11 @@ namespace SPReD
 	/// </summary>
 	public partial class palettes_manager_form : Form
 	{
-		private palettes_array				m_palettes_array	= null;
-		private ListBox.ObjectCollection 	m_sprites			= null;
+		private readonly palettes_array				m_palettes_array;
+		private readonly ListBox.ObjectCollection	m_sprites;
+		private readonly Action						m_upd_viewport;
 		
 		private int	m_copy_slot_ind	= -1;
-		
-		private Action m_upd_viewport	= null;
 		
 		public palettes_manager_form( palettes_array _plts_arr, ListBox.ObjectCollection _sprites, Action _upd_viewport )
 		{

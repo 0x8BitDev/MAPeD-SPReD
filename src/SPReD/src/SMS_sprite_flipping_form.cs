@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 11.06.2019
  * Time: 15:53
  */
@@ -15,8 +15,8 @@ namespace SPReD
 	/// </summary>
 	public partial class SMS_sprite_flipping_form : Form
 	{
-		private ListBox 			m_spr_list	= null;
-		private sprite_processor 	m_spr_proc	= null;
+		private readonly ListBox			m_spr_list;
+		private readonly sprite_processor	m_spr_proc;
 		
 		private bool m_vert_flip	= false;
 		private bool m_8x16_mode	= false;

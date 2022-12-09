@@ -19,7 +19,7 @@ namespace SPReD
 	/// </summary>
 	public class CHR_data_storage
 	{
-		private List< CHR_data_group >	m_data	= null;
+		private readonly List< CHR_data_group >	m_data;
 		
 		public CHR_data_storage()
 		{

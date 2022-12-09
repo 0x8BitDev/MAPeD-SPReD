@@ -15,7 +15,7 @@ namespace SPReD
 	/// </summary>
 	public static class PCE_metasprite_exporter
 	{
-		private	static int[]	pattern_arr = 
+		private readonly static int[] pattern_arr = 
 		{	
 			0, 0,  16, 0,
 			0, 16, 16, 16,
@@ -180,9 +180,6 @@ namespace SPReD
 			int[]	exp_attrs			= new int[ attrs.Count ];
 			int		exp_attrs_pos		= 0;
 			bool[]	attr_usage			= new bool[ attrs.Count ];	// used attributes
-			
-			int offset_x	= _spr.offset_x;
-			int offset_y	= _spr.offset_y;
 			
 			CHR_data_attr	chr_attr;
 			

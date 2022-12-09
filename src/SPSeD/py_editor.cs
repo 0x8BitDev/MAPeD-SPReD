@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2019-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2019-2022 ( MIT license. See LICENSE.txt )
  * Date: 20.05.2019
  * Time: 16:19
  */
@@ -775,8 +775,8 @@ namespace SPSeD
 	
 	class py_output : TextWriter
 	{
-		private readonly RichTextBox	m_txt_box	= null;
-		private readonly bool			m_is_win	= false;
+		private readonly RichTextBox	m_txt_box;
+		private readonly bool			m_is_win;
 		
 		public py_output( RichTextBox _txt_box, bool _is_win )
 		{

@@ -20,10 +20,10 @@ namespace SPReD
 	/// </summary>
 	public class sprite_processor
 	{
-		private sprite_layout_viewer	m_sprite_layout_viewer	= null;
-		private CHR_bank_viewer 		m_CHR_bank_viewer 		= null;
-		private CHR_data_storage		m_CHR_data_storage		= null;
-		private palette_group			m_palette_grp			= null;
+		private readonly sprite_layout_viewer	m_sprite_layout_viewer;
+		private readonly CHR_bank_viewer		m_CHR_bank_viewer;
+		private readonly CHR_data_storage		m_CHR_data_storage;
+		private readonly palette_group			m_palette_grp;
 		
 		int m_opt_stats_empty_CHRs 		= 0;
 		int m_opt_stats_unused_CHRs 	= 0;
@@ -355,13 +355,12 @@ namespace SPReD
 		}
 		
 		public bool merge_CHR( 	sprite_data _spr_1, 
-		                      	sprite_data _spr_2, 
-		                      	SPReD.CHR_data_group.ECHRPackingType _packing_type,
+								sprite_data _spr_2, 
 								bool _mode8x16 )
 		{
 			CHR_data_group spr2_chr_data = _spr_2.get_CHR_data();
 			{
-				if( _spr_1.merge_CHR( _spr_2, _packing_type, _mode8x16 ) )
+				if( _spr_1.merge_CHR( _spr_2, _mode8x16 ) )
 				{
 					m_CHR_data_storage.remove( spr2_chr_data );
 					
@@ -420,8 +419,8 @@ namespace SPReD
 			bool CHR_used;
 			
 			int nCHR_n;
-			CHR_data CHR_a = null;
-			CHR_data CHR_b = null;
+			CHR_data CHR_a;
+			CHR_data CHR_b;
 			
 			// remove not empty duplicates
 			for( CHR_n = 0; CHR_n < CHR_cnt; CHR_n++ )

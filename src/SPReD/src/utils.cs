@@ -83,12 +83,13 @@ namespace SPReD
 		    }
 		}
 
-		private static Version ver			= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-		public static string build_str		= "Build: " + ver.Build;
-		public static DateTime build_date 	= new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
+		private readonly static Version ver	= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+		
+		public readonly static string	build_str	= "Build: " + ver.Build;
+		public readonly static DateTime	build_date 	= new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
 
-		public static string CONST_APP_VER	= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev":"" ) + CONST_BUILD_CFG;
-		public const string CONST_APP_NAME	= "SPReD-" + CONST_PLATFORM;
+		public static	string CONST_APP_VER	= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev":"" ) + CONST_BUILD_CFG;
+		public const	string CONST_APP_NAME	= "SPReD-" + CONST_PLATFORM;
 		
 		public const uint CONST_PROJECT_FILE_MAGIC			= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
 		public const byte CONST_PROJECT_FILE_VER			= 1;
@@ -299,34 +300,34 @@ namespace SPReD
 				padding = 4096 - _size;
 			}
 
-			return padding;			
+			return padding;
 		}
 		
 		public static int find_nearest_color_ind( int _color )
 		{
-			int app_color = 0;
+			int platform_color;
 			
-			double 	fi				= 0.0;
+			double 	fi;
 			double 	fi_min 			= 1000000.0;
-			int 	best_color_ind 	= -1;			
+			int 	best_color_ind 	= -1;
 			
 			double r;
 			double g;
-			double b;			
+			double b;
 			
 			double in_r = ( double )( ( _color >> 16 ) & 0xff );
 			double in_g = ( double )( ( _color >> 8 ) & 0xff );
-			double in_b = ( double )( _color & 0xff );			
+			double in_b = ( double )( _color & 0xff );
 			
 			int[] main_palette = palette_group.Instance.main_palette;
 			
 			for( int i = 0; i < main_palette.Length; i++ )
 			{
-				app_color = main_palette[ i ];
+				platform_color = main_palette[ i ];
 				
-				r = ( double )( ( app_color >> 16 ) & 0xff );
-				g = ( double )( ( app_color >> 8 ) & 0xff );
-				b = ( double )( app_color & 0xff );
+				r = ( double )( ( platform_color >> 16 ) & 0xff );
+				g = ( double )( ( platform_color >> 8 ) & 0xff );
+				b = ( double )( platform_color & 0xff );
 				
 				fi = 30.0 * Math.Pow( r - in_r, 2.0 ) + 59.0 * Math.Pow( g - in_g, 2.0 ) + 11.0 * Math.Pow( b - in_b, 2.0 );
 				//fi = Math.Sqrt( Math.Pow( r - in_r, 2.0 ) + Math.Pow( g - in_g, 2.0 ) + Math.Pow( b - in_b, 2.0 ) );

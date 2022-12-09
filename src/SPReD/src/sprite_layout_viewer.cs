@@ -47,11 +47,11 @@ namespace SPReD
 		
 		private palette_group	m_palette_group	= null;
 		
-		private Label 		m_label 	= null;
-		private GroupBox	m_grp_box 	= null;
+		private readonly Label			m_label;
+		private readonly GroupBox		m_grp_box;
+		private readonly List< Bitmap >	m_bmp_list;
 		
 		private sprite_data 			m_spr_data	= null;
-		private List< Bitmap > 			m_bmp_list	= null;
 		
 		private int m_selected_CHR = -1;
 
@@ -87,8 +87,8 @@ namespace SPReD
 		private float	m_scale 	= 2;
 		private float	m_CHR_size	= 0;	// current calculated CHR side size depending on a current m_scale
 		
-		private int m_scr_half_width  = 0;
-		private int m_scr_half_height = 0;
+		private readonly int m_scr_half_width;
+		private readonly int m_scr_half_height;
 		
 		private int	m_last_mouse_x	 = 0;
 		private int	m_last_mouse_y	 = 0;
@@ -98,8 +98,6 @@ namespace SPReD
 		private const string CONST_MODE_STR_BUILD		= "MODE:BUILD";
 		private const string CONST_MODE_STR_EDIT		= "MODE:DRAW";
 		
-		private string m_mode_str	= null;
-
 		public enum EMode
 		{
 			m_unknown = 0,
@@ -534,12 +532,6 @@ namespace SPReD
 					m_gfx.DrawLine( m_pen, offs_x, 0, offs_x, m_pix_box.Height );
 					m_gfx.DrawLine( m_pen, 0, offs_y, m_pix_box.Height, offs_y );
 				}
-				
-				if( m_mode_str != null )
-				{
-					utils.brush.Color = Color.White;
-					m_gfx.DrawString( m_mode_str, utils.fnt10_Arial, utils.brush, 0, 0 );
-				}
 			}
 			else
 			{
@@ -576,11 +568,11 @@ namespace SPReD
 			
 			m_pen.Color = Color.FromArgb( 0x78808080 );
 
-			int x_pos = 0;
-			int y_pos = 0;
+			int x_pos;
+			int y_pos;
 				
-			float offs_x = 0;
-			float offs_y = 0;
+			float offs_x;
+			float offs_y;
 			
 			float last_offs_x = 0;
 			

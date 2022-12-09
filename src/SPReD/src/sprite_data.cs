@@ -405,7 +405,7 @@ namespace SPReD
 			int attr_cnt = get_CHR_attr().Count;
 			
 			int chr_ind = ( attr_cnt > 0 ) ? get_CHR_attr()[ 0 ].CHR_ind:-1;
-			int attr_CHR_ind = -1;
+			int attr_CHR_ind;
 			
 			for( int attr_n = 0; attr_n < attr_cnt; attr_n++ )
 			{
@@ -460,7 +460,7 @@ namespace SPReD
 			return get_CHR_data().get_data().Count > get_CHR_attr().Count * ( _mode8x16 ? 2:1 );
 		}
 		
-		public bool merge_CHR( sprite_data _spr, SPReD.CHR_data_group.ECHRPackingType _packing_type, bool _mode8x16 )
+		public bool merge_CHR( sprite_data _spr, bool _mode8x16 )
 		{
 			// check if data were already packed
 			if( _spr.is_packed( _mode8x16 ) )
@@ -1027,7 +1027,7 @@ namespace SPReD
 			}
 			
 			// reserved data for future purposes
-			int reserved = _br.ReadInt32();
+			/*int reserved =*/ _br.ReadInt32();
 		}
 		
 		public bool export_graphics()
