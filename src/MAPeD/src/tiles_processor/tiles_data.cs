@@ -128,7 +128,7 @@ namespace MAPeD
 		[DataMember]
 		private List< screen_data >	m_scr_data	= null;
 		
-		private readonly Dictionary< string, List< pattern_data > >	m_patterns_data	= null;	// key = group name / value = List< pattern_data >
+		private readonly Dictionary< string, List< pattern_data > >	m_patterns_data;	// key = group name / value = List< pattern_data >
 
 		public Dictionary< string, List< pattern_data > > patterns_data
 		{

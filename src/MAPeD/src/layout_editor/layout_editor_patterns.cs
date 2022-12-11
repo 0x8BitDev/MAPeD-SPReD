@@ -70,7 +70,7 @@ namespace MAPeD
 		private int m_pttrn_rect_end_x	= -1;
 		private int m_pttrn_rect_end_y	= -1;
 		
-		private readonly Bitmap m_sel_area_tile	= null;
+		private readonly Bitmap m_sel_area_tile;
 		
 		private bool m_force_map_drawing	= false;
 		

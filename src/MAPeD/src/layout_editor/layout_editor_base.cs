@@ -217,12 +217,12 @@ namespace MAPeD
 	{
 		public event EventHandler MapScaleX1;
 		public event EventHandler MapScaleX2;
-
-		private readonly screen_mark_form m_screen_mark_form = null;
-		private readonly layout_editor_shared_data	m_shared = null;
 		
-		private readonly Label m_label		= null;
-
+		private readonly screen_mark_form			m_screen_mark_form	= new screen_mark_form();
+		private readonly layout_editor_shared_data	m_shared;
+		
+		private readonly Label m_label;
+		
 		private string	m_err_msg			= "";
 		private int		m_err_msg_upd_cnt	= 0;
 		
@@ -236,8 +236,8 @@ namespace MAPeD
 		private bool 	m_show_coords		= true;
 		private bool 	m_show_grid			= true;
 
-		private readonly Bitmap		m_scr_mark_img	= null;
-		private readonly Graphics	m_scr_mark_gfx	= null;
+		private readonly Bitmap		m_scr_mark_img;
+		private readonly Graphics	m_scr_mark_gfx;
 		
 		private const float CONST_MIN_SCALE	= 0.1f;
 		
@@ -309,7 +309,7 @@ namespace MAPeD
 		}
 		
 		private layout_editor_behaviour_base			m_behaviour		= null;
-		private readonly layout_editor_behaviour_base[]	m_behaviour_arr	= null;
+		private readonly layout_editor_behaviour_base[]	m_behaviour_arr;
 
 		public enum EHelper
 		{
@@ -320,7 +320,7 @@ namespace MAPeD
 		}
 		
 		private layout_editor_helper_base				m_helper		= null;
-		private readonly layout_editor_helper_base[]	m_helper_arr	= null;
+		private readonly layout_editor_helper_base[]	m_helper_arr;
 		
 		public layout_editor_base( data_sets_manager _data_mngr, PictureBox _pbox, Label _label, imagelist_manager _img_list_mngr ) : base( _pbox )
 		{
@@ -336,7 +336,7 @@ namespace MAPeD
 				m_shared.m_blocks_imagelist	= _img_list_mngr.get_blocks_image_list();
 				
 				m_shared.m_sel_screens_slot_ids			= new HashSet< int >();
-	
+				
 				// method
 				m_shared.set_high_quality_render_mode	= set_high_quality_render_mode;
 				m_shared.pix_box_reset_capture			= pix_box_reset_capture;
@@ -378,8 +378,6 @@ namespace MAPeD
 			m_pix_box.ContextMenuStrip.Opened			+= new EventHandler( Layout_ContextMenuOpened );
 			m_pix_box.ContextMenuStrip.Closed			+= new ToolStripDropDownClosedEventHandler( Layout_ContextMenuClosed );
 			m_pix_box.ContextMenuStrip.PreviewKeyDown	+= new PreviewKeyDownEventHandler( Layout_ContextMenuPreviewKeyDown );
-			
-			m_screen_mark_form		= new screen_mark_form();
 			
 			// screen mark data
 			{
@@ -1134,7 +1132,7 @@ namespace MAPeD
 						{
 							update_mark( Color.FromArgb( 0x7fff0000 ), delegate() { m_scr_mark_gfx.DrawString( "S", utils.fnt64_Arial, Brushes.White, 20, 15 ); } );
 							
-							draw_mark( m_scr_mark_img, _x, _y, scr_size_width >> 1, scr_size_height >> 1 );
+							draw_mark( _x, _y, scr_size_width >> 1, scr_size_height >> 1 );
 						}
 						
 						int scr_half_width 	= scr_size_width >> 1;
@@ -1144,7 +1142,7 @@ namespace MAPeD
 						{
 							update_mark( Color.FromArgb( 0x7f0000ff ), delegate() { m_scr_mark_gfx.DrawString( _scr_data.mark.ToString( "D2" ), utils.fnt42_Arial, Brushes.White, 1, 1 ); } );
 							
-							draw_mark( m_scr_mark_img, _x + scr_half_width, _y + scr_half_height, scr_half_width, scr_half_height );
+							draw_mark( _x + scr_half_width, _y + scr_half_height, scr_half_width, scr_half_height );
 						}
 						
 						if( _scr_data.adj_scr_mask > 0 )
@@ -1189,7 +1187,7 @@ namespace MAPeD
 								m_pen.Width		= 1;
 							}
 							
-							draw_mark( m_scr_mark_img, _x + scr_half_width, _y, scr_half_width, scr_half_height );
+							draw_mark( _x + scr_half_width, _y, scr_half_width, scr_half_height );
 						}
 					});
 				}
@@ -1480,7 +1478,7 @@ namespace MAPeD
 			m_scr_mark_gfx.Flush();
 		}
 		
-		private void draw_mark( Bitmap _bmp, int _x, int _y, int _width, int _height )
+		private void draw_mark( int _x, int _y, int _width, int _height )
 		{
 			m_gfx.DrawImage( m_scr_mark_img, _x, _y, _width, _height );
 		}

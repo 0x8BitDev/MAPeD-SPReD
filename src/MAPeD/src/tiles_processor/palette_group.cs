@@ -22,7 +22,8 @@ namespace MAPeD
 #if !DEF_ZX
 		public event EventHandler UpdateColor;
 		
-		private ToolTip	m_clr_ttip;
+		private readonly ToolTip	m_clr_ttip;
+		
 		private Point	m_mouse_old_pos = Point.Empty;
 #endif
 		
@@ -97,9 +98,8 @@ namespace MAPeD
 			}
 		}
 		
-		private readonly palette_small[] m_plt_arr	= null;
-		
-		private readonly int[] m_main_palette = null;
+		private readonly palette_small[]	m_plt_arr;
+		private readonly int[]				m_main_palette;
 		
 		public int[] main_palette
 		{

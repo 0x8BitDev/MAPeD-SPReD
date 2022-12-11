@@ -22,8 +22,8 @@ namespace MAPeD
 
 	public class EventArg2Params : EventArgs
 	{
-		private readonly object	m_param1	= null;
-		private readonly object	m_param2	= null;
+		private readonly object	m_param1;
+		private readonly object	m_param2;
 		
 		public object param1
 		{
@@ -112,8 +112,8 @@ namespace MAPeD
 		}
 		
 		[DataMember]
-		private readonly List< layout_data >	m_layouts_data	= null;
-		private int m_layouts_data_pos				= -1;
+		private readonly List< layout_data >	m_layouts_data;
+		private int m_layouts_data_pos	= -1;
 		
 		public int layouts_data_pos
 		{
@@ -133,8 +133,8 @@ namespace MAPeD
 		}
 		
 		[DataMember]
-		private readonly List< tiles_data >	m_tiles_data	= null;
-		private int m_tiles_data_pos				= -1;
+		private readonly List< tiles_data >	m_tiles_data;
+		private int m_tiles_data_pos	= -1;
 		
 		public int tiles_data_pos
 		{
@@ -162,7 +162,7 @@ namespace MAPeD
 			set {}
 		}
 		
-		private readonly Dictionary< string, List< entity_data > >	m_entities_data	= null;	// key = group name / value = List< entity_data >
+		private readonly Dictionary< string, List< entity_data > >	m_entities_data;	// key = group name / value = List< entity_data >
 		
 		[DataMember]
 		public Dictionary< string, List< entity_data > > entities_data
@@ -1136,10 +1136,10 @@ namespace MAPeD
 
 		private void tiles_to_blocks()
 		{
-			tiles_data data = null;
+			tiles_data data;
 			
-			screen_data		new_pattern	= null;
-			pattern_data	pattern		= null;
+			screen_data		new_pattern;
+			pattern_data	pattern;
 			
 			screen_data new_scr;
 			
@@ -1240,7 +1240,6 @@ namespace MAPeD
 			List< screen_data >	screens;
 			ulong[] 			tiles;
 			
-			int half_tile_x = platform_data.get_half_tile_x();
 			int half_tile_y = platform_data.get_half_tile_y();
 			
 			Dictionary< int, List< screen_data > > 	bank_id_screens	= new Dictionary< int, List< screen_data > >( tiles_data_cnt );
@@ -1346,10 +1345,10 @@ namespace MAPeD
 						else
 						{
 							ptrn_width	= pattern.width >> 1;
-							ptrn_height	= pattern.height >> 1;							
+							ptrn_height	= pattern.height >> 1;
 							
 							new_pattern = new screen_data( ptrn_width, ptrn_height );
-	
+							
 							for( tile_n = 0; tile_n < new_pattern.length; tile_n++ )
 							{
 								tile_x = tile_n % ptrn_width;
@@ -1393,7 +1392,7 @@ namespace MAPeD
 				if( ptrn_invalid_size_str.Length > 0 || ptrn_invalid_tile_str.Length > 0 )
 				{
 					MainForm.message_box( ( ptrn_invalid_size_str.Length > 0 ? "Invalid size:\n\n" + ptrn_invalid_size_str + "\n":"" ) + ( ptrn_invalid_tile_str.Length > 0 ? "Invalid data:\n\n" + ptrn_invalid_tile_str + "\n":"" ) + "Invalid pattern(s) will be market as 'BAD~'", "Invalid Tiles Patterns Detected", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-				}				
+				}
 			}
 
 			// commit new data

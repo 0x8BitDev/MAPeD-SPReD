@@ -203,9 +203,6 @@ namespace MAPeD
 				
 				uint[] block_data = new uint[ utils.CONST_BLOCK_SIZE ];
 				
-				int dup_block_ind;
-				int dup_tile_ind;
-				
 				int beg_tile_ind	= -1;
 				int tile_ind		= -1;
 				
@@ -232,14 +229,30 @@ namespace MAPeD
 					{
 						_progress_val.Report( utils.calc_progress_val( ref progress, tile_cnt, tile_n ) );
 					}
-					++tile_n;									
+					++tile_n;
 				};
 				
 				if( import_tiles )
 				{
-					ulong tile_data = 0;
+					int dup_block_ind;
+					int dup_tile_ind;
 					
-					tile_ind 		= 0;
+					int block_offset_x;
+					int block_offset_y;
+					
+					int block_num = 0;
+					
+					int scr_x_cnt;
+					int scr_y_cnt;
+					
+					int scr_x;
+					int scr_y;
+					
+					bool	valid_block;
+					ulong	tile_mask;
+					
+					ulong	tile_data;
+					
 					beg_tile_ind	= _data.get_first_free_tile_id( true );
 					
 					if( beg_tile_ind < 0 )
@@ -247,24 +260,10 @@ namespace MAPeD
 						throw new Exception( "There is no free space in the tiles list!" );
 					}
 					
-					int block_offset_x = 0;
-					int block_offset_y = 0;
-					
-					int block_num = 0;
-					
-					bool	valid_block;
-					ulong	tile_mask;
-					
 					tile_ind = beg_tile_ind;
 					
 					bmp_width	= ( import_game_map && !_import_game_map_as_is ) ? ( ( bmp_width / platform_data.get_screen_width_pixels() ) * platform_data.get_screen_width_pixels() ):bmp_width;
 					bmp_height	= ( import_game_map && !_import_game_map_as_is ) ? ( ( bmp_height / platform_data.get_screen_height_pixels() ) * platform_data.get_screen_height_pixels() ):bmp_height;
-					
-					int scr_x_cnt = 0;
-					int scr_y_cnt = 0;
-
-					int scr_x;
-					int scr_y;
 					
 					if( import_game_map )
 					{
@@ -492,7 +491,7 @@ namespace MAPeD
 							// check duplicate blocks
 							if( CheckBoxBlocks.Checked )
 							{
-								if( ( dup_block_ind = _data.contains_block( block_data, block_ind ) ) < 0 )
+								if( _data.contains_block( block_data, block_ind ) < 0 )
 								{
 									if( ( block_ind >> 2 ) >= platform_data.get_max_blocks_cnt() )
 									{

@@ -31,7 +31,7 @@ namespace MAPeD
 		private int		m_ent_inst_capture_offs_x	= -1;
 		private int		m_ent_inst_capture_offs_y	= -1;
 
-		private readonly int[] 	m_adj_scr_ind_arr	= null;
+		private readonly int[] 	m_adj_scr_ind_arr;
 
 		private bool	m_ent_snapping				= true;
 		

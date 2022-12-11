@@ -26,7 +26,7 @@ namespace MAPeD
 
 	public partial class exporter_asm : Form
 	{
-		private readonly data_sets_manager m_data_mngr = null;
+		private readonly data_sets_manager m_data_mngr;
 		
 		private string	m_filename			= null;
 		private string	m_path				= null;
@@ -40,8 +40,8 @@ namespace MAPeD
 		
 		private int  m_VDP_ready_scr_data_size = -1;
 
-		private int[] m_CHR_offset	= { 32, 64, 128, 64, 128, 256 };
-		private int[] m_BAT_index	= { 0, 1, 3, 4, 5, 7 };
+		private readonly int[] m_CHR_offset	= { 32, 64, 128, 64, 128, 256 };
+		private readonly int[] m_BAT_index	= { 0, 1, 3, 4, 5, 7 };
 		
 		private StreamWriter	m_C_writer	= null;
 		
@@ -542,80 +542,80 @@ namespace MAPeD
 		
 		private void save_single_screen_mode( StreamWriter _sw )
 		{
-			BinaryWriter 	bw 			= null;
-			BinaryWriter	bw_props	= null;
+			BinaryWriter 	bw;
+			BinaryWriter	bw_props;
 			
-			layout_data level_data = null;
+			layout_data level_data;
 
 			List< tiles_data > scr_tiles_data = m_data_mngr.get_tiles_data();
 			
-			int n_banks				= scr_tiles_data.Count;
-			int n_levels 			= m_data_mngr.layouts_data_cnt;
-			int n_scr_X 			= 0;
-			int n_scr_Y				= 0;
-			int n_screens 			= 0;
-			int scr_ind				= 0;
-			int scr_ind_opt			= 0;
-			int bank_ind			= 0;
-			int scr_key				= 0;
-			int tile_n				= 0;
-			int tiles_cnt			= 0;
-			int tile_offs_x			= 0;
-			int tile_offs_y			= 0;
-			int block_n				= 0;
-			int bank_n				= 0;
-			int blocks_props_size	= 0;
-			int blocks_size			= 0;
-			int data_offset 		= 0;
-			int common_scr_ind		= 0;
-			int max_scr_tile		= 0;
-			int max_tile_ind		= 0;
-			int max_scr_block		= 0;
-			int max_block_ind		= 0;
-			int start_scr_ind		= 0;
+			int n_banks		= scr_tiles_data.Count;
+			int n_levels 	= m_data_mngr.layouts_data_cnt;
+			int n_scr_X;
+			int n_scr_Y;
+			int n_screens;
+			int scr_ind;
+			int scr_ind_opt;
+			int bank_ind;
+			int scr_key;
+			int tile_n;
+			int tiles_cnt;
+			int tile_offs_x;
+			int tile_offs_y;
+			int block_n;
+			int bank_n;
+			int blocks_props_size;
+			int blocks_size;
+			int data_offset;
+			int common_scr_ind;
+			int max_scr_tile;
+			int max_tile_ind;
+			int max_scr_block;
+			int max_block_ind;
+			int start_scr_ind;
 			int ents_cnt;
 			
-			int scr_width_blocks_mul2 	= 0;
-			int scr_height_blocks_mul2 	= 0;
-			int scr_height_blocks_mul4 	= 0;
+			int scr_width_blocks_mul2;
+			int scr_height_blocks_mul2;
+			int scr_height_blocks_mul4;
 			
 			int scr_width_blocks 	= platform_data.get_screen_blocks_width();
 			int scr_height_blocks 	= platform_data.get_screen_blocks_height();
 			
-			int max_props_cnt	= 0;
+			int max_props_cnt = 0;
 			int props_cnt;
 
-			uint block_data		= 0;
+			uint block_data;
 			
-			ushort tile_id			= 0;
-			ushort block_id			= 0;
+			ushort tile_id	= 0;
+			ushort block_id	= 0;
 			
-			screen_data tile_inds		= null;
+			screen_data tile_inds;
 			ushort[] tile_attrs_arr		= new ushort[ 16 ];
 			ushort[] block_attrs_arr	= new ushort[ 8 ];
 			
-			long data_size 			= 0;
-			long exp_data_size		= 0;
+			long data_size;
+			long exp_data_size	= 0;
 
 			bool valid_bank;
 			bool enable_comments;
 			
-			string label 			= null;
-			string level_prefix_str	= null;
-			string label_props		= null;
-			string scr_arr			= null;
-			string data_offset_str	= null;
-			string maps_arr			= null;
-			string maps_scr_arr		= null;
+			string label;
+			string level_prefix_str;
+			string label_props;
+			string data_offset_str;
+			string maps_arr;
+			string maps_scr_arr	= null;
+			string scr_arr		= null;
 			
-			string c_comment		= CheckBoxGenerateHFile.Checked ? "//":";";
+			string c_comment = CheckBoxGenerateHFile.Checked ? "//":";";
 			
 			string c_data_prefix		= get_C_data_prefix();
 			string c_data_prefix_no_exp = ( m_C_writer != null ) ? skip_exp_pref( c_data_prefix ):c_data_prefix;
 			
 			exp_scr_data		exp_scr;
 			layout_screen_data	scr_data;
-			tiles_data 			tiles = null;
+			tiles_data 			tiles;
 			
 			List< tiles_data > 	banks 			= new List< tiles_data >( 10 );			
 			List< int >			max_tile_inds	= new List< int >( 10 );
@@ -1473,16 +1473,16 @@ namespace MAPeD
 		                                       	int 			_scr_height_blocks_mul4,
 		                                       	screen_data		_block_inds )
 		{
-			ushort tile_id			= 0;
+			ushort tile_id;
 			
-			int tile_x				= 0;
-			int tile_y				= 0;
-			int block_x				= 0;
-			int block_y				= 0;
-			int chr_x				= 0;
-			int chr_y				= 0;
-			int tile_offs_x			= 0;
-			int tile_offs_y			= 0;
+			int tile_x;
+			int tile_y;
+			int block_x;
+			int block_y;
+			int chr_x;
+			int chr_y;
+			int tile_offs_x;
+			int tile_offs_y;
 			
 			int tile_n;
 			int block_n;
@@ -1616,56 +1616,56 @@ namespace MAPeD
 		
 		private void save_multidir_scroll_mode( StreamWriter _sw )
 		{
-			BinaryWriter 	bw			= null;
-			BinaryWriter 	bw_Tiles	= null;
-			BinaryWriter 	bw_Attrs	= null;
-			BinaryWriter 	bw_Props	= null;
-			BinaryWriter 	bw_Maps		= null;
-			BinaryWriter 	bw_MapsTbl	= null;
-			BinaryWriter 	bw_Plts		= null;
+			BinaryWriter	bw;
+			BinaryWriter	bw_Tiles	= null;
+			BinaryWriter	bw_Attrs	= null;
+			BinaryWriter	bw_Props	= null;
+			BinaryWriter	bw_Maps		= null;
+			BinaryWriter	bw_MapsTbl	= null;
+			BinaryWriter	bw_Plts		= null;
 			
-			layout_data level_data = null;
+			layout_data level_data;
 			
-			byte[]	map_data_arr		= null;
-			byte[]	map_tiles_arr		= null;
-			byte[]	map_blocks_arr		= null;
-			byte[]	block_props_arr		= null;
+			byte[]	map_data_arr;
+			byte[]	map_tiles_arr;
+			byte[]	block_props_arr;
+			byte[]	map_blocks_arr	= null;
 
 			List< tiles_data > scr_tiles_data = m_data_mngr.get_tiles_data();
 			
-			int n_levels 			= m_data_mngr.layouts_data_cnt;
-			int n_scr_X 			= 0;
-			int n_scr_Y				= 0;
-			int tile_n				= 0;
-			int block_n				= 0;
-			int n_Y_tiles			= 0;
-			int n_screens 			= 0;
-			int scr_ind				= 0;
-			int bank_ind			= 0;
-			int chk_bank_ind		= 0;
-			int n_banks				= scr_tiles_data.Count;
-			int bank_n				= 0;
-			int tile_offs_x			= 0;
-			int tile_offs_y			= 0;
-			int max_tile_ind 		= 0;
-			int max_block_ind 		= 0;
-			int blocks_props_size	= 0;
-			ushort tile_id			= 0;
-			byte block_id			= 0;
-			uint block_data			= 0;
+			int n_levels	= m_data_mngr.layouts_data_cnt;
+			int n_banks		= scr_tiles_data.Count;
+			int n_scr_X;
+			int n_scr_Y;
+			int tile_n;
+			int block_n;
+			int n_Y_tiles;
+			int n_screens;
+			int scr_ind;
+			int bank_ind;
+			int chk_bank_ind;
+			int bank_n;
+			int tile_offs_x;
+			int tile_offs_y;
+			int max_tile_ind;
+			int max_block_ind;
+			int blocks_props_size;
+			ushort tile_id;
+			byte block_id;
+			uint block_data;
 			
-			int max_props_cnt		= 0;
+			int max_props_cnt	= 0;
 			int props_cnt;
 			
 			layout_screen_data	scr_data;
 			
-			long 	data_size 		= 0;
+			long 	data_size;
 			long	CHR_data_size	= 0;
 			long	exp_data_size	= 0;
 			
-			string 	label 		= null;
+			string 	label;
 			
-			string level_prefix_str	= null;
+			string level_prefix_str;
 
 			string c_data_prefix		= get_C_data_prefix();
 			string c_data_prefix_no_exp = ( m_C_writer != null ) ? skip_exp_pref( c_data_prefix ):c_data_prefix;
@@ -1686,7 +1686,7 @@ namespace MAPeD
 			int scr_width_blocks 	= platform_data.get_screen_blocks_width();
 			int scr_height_blocks 	= platform_data.get_screen_blocks_height();
 			
-			tiles_data tiles = null;
+			tiles_data tiles;
 
 			for( bank_n = 0; bank_n < n_banks; bank_n++ )
 			{
@@ -2247,14 +2247,6 @@ namespace MAPeD
 		int get_tiles_cnt_height( int _scr_cnt_y )
 		{
 			return RBtnTiles2x2.Checked ? _scr_cnt_y * platform_data.get_screen_blocks_height():_scr_cnt_y * platform_data.get_screen_tiles_height();
-		}
-		
-		void fill_palette_str( int[] _plt, ref string _str, bool _end )
-		{
-			for( int j = 0; j < utils.CONST_PALETTE_SMALL_NUM_COLORS; j++ )
-			{
-				_str += String.Format( "${0:X2}", _plt[ j ] ) + ( !( _end && j == 3 ) ? ", ":"" );
-			}
 		}
 		
 		void check_ent_instances_cnt( layout_data _layout, string _lev_pref_str )

@@ -81,11 +81,6 @@ namespace MAPeD
 			return ShowDialog();
 		}
 		
-		private Color get_color( int _ind )
-		{
-			return Color.FromArgb( palette_group.Instance.main_palette[ m_tiles_data.subpalettes[ _ind >> 2 ][ _ind & 0x03 ] ] );
-		}
-		
 		private void draw_sel_border( int _color_ind )
 		{
 			int x = _color_ind * 16;

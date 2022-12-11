@@ -23,39 +23,39 @@ namespace MAPeD
 	
 	public partial class MainForm : Form
 	{
-		private readonly progress_form m_progress_form				= null;
-		private readonly IProgress< int >	m_progress_val			= null;
-		private readonly IProgress< string >	m_progress_status	= null;
+		private readonly progress_form			m_progress_form;
+		private readonly IProgress< int >		m_progress_val;
+		private readonly IProgress< string >	m_progress_status;
 		
 		private bool	m_disable_status_wnd	= false;
 		
-		private readonly exporter_zx_sjasm 	m_exp_zx_asm	= null;
+		private readonly exporter_zx_sjasm 	m_exp_zx_asm;
 #if !DEF_ZX
-		private readonly exporter_asm 		m_exp_asm		= null;
+		private readonly exporter_asm 		m_exp_asm;
 #endif
 #if !DEF_NES
-		private readonly swap_colors_form m_swap_colors_form	= null;
+		private readonly swap_colors_form m_swap_colors_form;
 #endif
-		private readonly data_conversion_options_form m_data_conversion_options_form	= null;
+		private readonly data_conversion_options_form m_data_conversion_options_form;
 		
-		private readonly data_sets_manager	m_data_manager		= null;
-		private readonly tiles_processor	m_tiles_processor	= null;	
-		private readonly layout_editor_base	m_layout_editor		= null;
+		private readonly data_sets_manager	m_data_manager;
+		private readonly tiles_processor	m_tiles_processor;	
+		private readonly layout_editor_base	m_layout_editor;
 		
-		private readonly image_preview		m_tile_preview		= null;
-		private readonly image_preview		m_pattern_preview	= null;
+		private readonly image_preview		m_tile_preview;
+		private readonly image_preview		m_pattern_preview;
 		
-		private readonly Bitmap		m_pattern_image	= null;
-		private readonly Graphics	m_pattern_gfx	= null;
+		private readonly Bitmap		m_pattern_image;
+		private readonly Graphics	m_pattern_gfx;
 		
-		private readonly tiles_palette_form		m_tiles_palette_form		= null;
-		private readonly optimization_form		m_optimization_form			= null;
-		private readonly object_name_form		m_object_name_form			= null;
-		private readonly import_tiles_form		m_import_tiles_form			= null;
-		private readonly description_form		m_description_form			= null;
-		private readonly statistics_form		m_statistics_form			= null;
-		private readonly create_layout_form		m_create_layout_form		= null;
-		private readonly reorder_CHR_banks_form m_reorder_CHR_banks_form	= null;
+		private readonly tiles_palette_form		m_tiles_palette_form;
+		private readonly optimization_form		m_optimization_form;
+		private readonly object_name_form		m_object_name_form;
+		private readonly import_tiles_form		m_import_tiles_form;
+		private readonly description_form		m_description_form;
+		private readonly statistics_form		m_statistics_form;
+		private readonly create_layout_form		m_create_layout_form;
+		private readonly reorder_CHR_banks_form m_reorder_CHR_banks_form;
 		
 		private SPSeD.py_editor		m_py_editor	= null;
 		
@@ -64,15 +64,15 @@ namespace MAPeD
 #if DEF_FIXED_LEN_PALETTE16_ARR
 		private int	m_palette_copy_ind	= -1;
 #endif
-		private readonly export_active_tile_block_set_form m_export_active_tile_block_set_form	= null;
+		private readonly export_active_tile_block_set_form m_export_active_tile_block_set_form;
 		
-		private readonly image_preview m_entity_preview	= null;
+		private readonly image_preview m_entity_preview;
 		
 		private int	m_block_copy_item_ind	= -1;
 		private int	m_tile_copy_item_ind	= -1;
 		
-		private readonly imagelist_manager 	m_imagelist_manager	= null;
-		private readonly tile_list_manager	m_tile_list_manager	= null;
+		private readonly imagelist_manager 	m_imagelist_manager;
+		private readonly tile_list_manager	m_tile_list_manager;
 		
 		private static ToolStripStatusLabel	m_status_bar_label = null;
 		
@@ -241,7 +241,7 @@ namespace MAPeD
 																new SToolTipData( BtnUpdateGFX, "Update tiles\\blocks and screens ( if auto update is enabled )" ),
 																new SToolTipData( BtnOptimization, "Delete unused screens\\tiles\\blocks\\CHRs" ),
 																new SToolTipData( CheckBoxTileEditorLock, "Enable\\disable tile editing" ),
-																new SToolTipData( BtnTilesBlocks, "Arrays of tiles and blocks to build screens" ),
+																new SToolTipData( BtnTilesBlocks, "Arrays of tiles and blocks for a map building" ),
 																new SToolTipData( Palette0, "Shift+1 / Ctrl+1,2,3,4 to select a color" ),
 																new SToolTipData( Palette1, "Shift+2 / Ctrl+1,2,3,4 to select a color" ),
 #if DEF_ZX
@@ -270,13 +270,13 @@ namespace MAPeD
 																new SToolTipData( BtnBlockReserveCHRs, "Make links to empty CHRs" ),
 																new SToolTipData( BtnTileReserveBlocks, "Make links to empty blocks" ),
 																new SToolTipData( BtnLayoutDeleteEmptyScreens, "Delete all one-block filled screens in active layout" ),
-																new SToolTipData( BtnCreateLayoutWxH, "Create a layout (width x height) filled with empty screens" ),
+																new SToolTipData( BtnCreateLayoutWxH, "Create layout (width x height) filled with empty screens" ),
 																new SToolTipData( BtnLayoutMoveUp, "Move selected layout up" ),
 																new SToolTipData( BtnLayoutMoveDown, "Move selected layout down" ),
 																new SToolTipData( CBoxBlockObjId, "Assign property to selected block or CHR" ),
 																new SToolTipData( LabelObjId, "Assign property to selected block or CHR" ),
 																new SToolTipData( LabelEntityProperty, "Entity properties are inherited by all instances" ),
-																new SToolTipData( LabelEntityInstanceProperty, "Instance properties are unique to all instances" ),
+																new SToolTipData( LabelEntityInstanceProperty, "Instance properties are unique for all instances" ),
 																new SToolTipData( CheckBoxEntitySnapping, "Snap an entity to 8x8 grid" ),
 															};
 				SToolTipData data;
@@ -2496,9 +2496,7 @@ namespace MAPeD
 		
 		void BtnTileReserveBlocksClick_Event(object sender, EventArgs e)
 		{
-			int block_ind;
-			
-			if( ( block_ind = m_tiles_processor.tile_reserve_blocks( m_data_manager ) ) >= 0 )
+			if( m_tiles_processor.tile_reserve_blocks( m_data_manager ) >= 0 )
 			{
 				enable_update_gfx_btn( true );
 				mark_update_screens_btn( true );
@@ -2675,7 +2673,7 @@ namespace MAPeD
 		int create_screen()
 		{
 			int scr_glob_ind	= -1;
-			int scr_local_ind	= -1;
+			int scr_local_ind;
 			
 			if( ( scr_local_ind = m_data_manager.screen_data_create() ) >= 0 )
 			{
@@ -2737,10 +2735,6 @@ namespace MAPeD
 				int block_n;
 				int tile_offs_x;
 				int tile_offs_y;
-				int block_offs_x;
-				int block_offs_y;
-				int block_x;
-				int block_y;
 				
 				int half_tile_x = platform_data.get_half_tile_x();
 				int half_tile_y = platform_data.get_half_tile_y();
@@ -2755,14 +2749,8 @@ namespace MAPeD
 					tile_offs_x = ( tile_n % platform_data.get_screen_tiles_width() );
 					tile_offs_y = ( tile_n / platform_data.get_screen_tiles_width() );
 
-					block_offs_x = tile_offs_x << 1;
-					block_offs_y = tile_offs_y << 1;
-					
 					for( block_n = 0; block_n < utils.CONST_BLOCK_SIZE; block_n++ )
 					{
-						block_x = block_offs_x + ( ( ( block_n & 0x01 ) != 0 ) ? 1:0 );
-						block_y = block_offs_y + ( ( ( block_n & 0x02 ) != 0 ) ? 1:0 );
-						
 						if( ( half_tile_x == tile_offs_x ) && ( block_n & 0x01 ) != 0 )
 						{
 							continue;

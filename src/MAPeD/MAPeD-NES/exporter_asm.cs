@@ -27,7 +27,7 @@ namespace MAPeD
 
 	public partial class exporter_asm : Form
 	{
-		private readonly data_sets_manager m_data_mngr = null;
+		private readonly data_sets_manager m_data_mngr;
 		
 		private string	m_filename			= null;
 		private string	m_path				= null;
@@ -48,7 +48,7 @@ namespace MAPeD
 			public screen_data	m_scr_blocks;
 			
 			public int			m_tiles_offset;
-			public int			m_blocks_offset;			
+			public int			m_blocks_offset;
 			
 			public int			m_PPU_scr_offset;
 			public int			m_MMC5_scr_attrs_offset;
@@ -432,84 +432,83 @@ namespace MAPeD
 		
 		private void save_single_screen_mode( StreamWriter _sw )
 		{
-			BinaryWriter 	bw 			= null;
+			BinaryWriter 	bw;
+			BinaryWriter	bw_props;
 			BinaryWriter	bw_blocks	= null;
-			BinaryWriter	bw_props	= null;
 			
-			layout_data level_data = null;
+			layout_data level_data;
 
 			List< tiles_data > scr_tiles_data = m_data_mngr.get_tiles_data();
 			
-			int n_banks				= scr_tiles_data.Count;
-			int n_levels 			= m_data_mngr.layouts_data_cnt;
-			int n_scr_X 			= 0;
-			int n_scr_Y				= 0;
-			int n_screens 			= 0;
-			int scr_ind				= 0;
-			int scr_ind_opt			= 0;
-			int bank_ind			= 0;
-			int scr_key				= 0;
-			int tile_n				= 0;
-			int tiles_cnt			= 0;
-			int tile_offs_x			= 0;
-			int tile_offs_y			= 0;
-			int block_n				= 0;
-			int chr_n				= 0;
-			int bank_n				= 0;
-			int blocks_props_size	= 0;
-			int data_offset 		= 0;
-			int attr				= 0;
-			int common_scr_ind		= 0;
-			int max_scr_tile		= 0;
-			int max_tile_ind		= 0;
-			int start_scr_ind		= 0;
-			int CHR_id				= 0;
+			int n_banks		= scr_tiles_data.Count;
+			int n_levels	= m_data_mngr.layouts_data_cnt;
+			int n_scr_X;
+			int n_scr_Y;
+			int n_screens;
+			int scr_ind;
+			int scr_ind_opt;
+			int bank_ind;
+			int scr_key;
+			int tile_n;
+			int tiles_cnt;
+			int tile_offs_x;
+			int tile_offs_y;
+			int block_n;
+			int chr_n;
+			int bank_n;
+			int blocks_props_size;
+			int data_offset;
+			int attr;
+			int common_scr_ind;
+			int max_scr_tile;
+			int max_tile_ind;
+			int start_scr_ind;
+			int CHR_id;
 			int ents_cnt;
-
-			int block_x				= 0;
-			int block_y				= 0;
-			int chr_x				= 0;
-			int chr_y				= 0;
 			
-			int scr_width_blocks_mul2 	= 0;
-			int scr_height_blocks_mul2 	= 0;
-			int scr_height_blocks_mul4 	= 0;
+			int block_x;
+			int block_y;
+			int chr_x;
+			int chr_y;
+			
+			int scr_width_blocks_mul2;
+			int scr_height_blocks_mul2;
+			int scr_height_blocks_mul4;
 			
 			int scr_width_blocks 	= platform_data.get_screen_blocks_width();
 			int scr_height_blocks 	= platform_data.get_screen_blocks_height();
 
-			uint block_data		= 0;
+			uint block_data;
 			
-			ushort tile_id			= 0;
-			ushort block_id			= 0;
+			ushort tile_id	= 0;
+			ushort block_id	= 0;
 			
-			screen_data tile_inds	= null;
+			screen_data tile_inds;
 			byte[] tile_attrs_arr	= new byte[ 16 ];
 			
-			long data_size 			= 0;
+			long data_size 	= 0;
 
 			bool valid_bank;
 			bool enable_comments;
 			
-			string label 			= null;
-			string level_prefix_str	= null;
-			string label_blocks		= null;
-			string label_props		= null;
-			string scr_arr			= null;
-			string data_offset_str	= null;
-			string maps_arr			= null;
+			string label;
+			string level_prefix_str;
+			string label_props;
+			string data_offset_str;
+			string maps_arr;
+			string label_blocks	= null;
+			string scr_arr		= null;
 			
 			exp_screen_data		exp_scr;
 			layout_screen_data	scr_data;
-			tiles_data 			tiles = null;
-#if DEF_NES
-			tiles_data		cntrl_tiles_data = null;
+			tiles_data 			tiles;
+			
+			tiles_data			cntrl_tiles_data;
 			
 			bool diff_banks_in_layout 		= false;
 			bool more_than_1_plt_in_bank 	= false;
-#endif
 			
-			List< tiles_data > 	banks 			= new List< tiles_data >( 10 );			
+			List< tiles_data > 	banks 			= new List< tiles_data >( 10 );
 			List< int >			max_tile_inds	= new List< int >( 10 );
 			List< int >			max_block_inds	= new List< int >( 10 );
 			
@@ -791,7 +790,6 @@ namespace MAPeD
 								                          	tile_inds, 
 								                          	false/*force_swapping*/, 
 								                          	scr_width_blocks_mul2,
-															scr_height_blocks,
 								                          	scr_height_blocks_mul2, 
 								                          	scr_height_blocks_mul4,
 								                          	exp_scr.m_scr_blocks );
@@ -972,7 +970,6 @@ namespace MAPeD
 														tile_inds, 
 														true/*force_swapping*/,
 														native_scr_width_blocks_mul2,
-														native_scr_height_blocks,
 														native_scr_height_blocks_mul2,
 														native_scr_height_blocks_mul4,
 														exp_scr.m_scr_blocks );
@@ -1094,9 +1091,9 @@ namespace MAPeD
 					for( bank_n = 0; bank_n < banks.Count; bank_n++ )
 					{
 						tiles = banks[ bank_n ];
-#if DEF_NES
+						
 						more_than_1_plt_in_bank |= ( tiles.palettes_arr.Count > 1 ) ? true:false;
-#endif
+						
 						for( int i = 0; i < tiles.palettes_arr.Count; i++ )
 						{
 							utils.write_int_as_byte_arr( bw, tiles.palettes_arr[ i ].m_palette0 );
@@ -1136,9 +1133,9 @@ namespace MAPeD
 				{
 					scr_arr = level_prefix_str + "_ScrArr:";
 				}
-#if DEF_NES
+				
 				cntrl_tiles_data = null;
-#endif
+				
 				ents_cnt = 0;
 				
 				for( int scr_n_Y = 0; scr_n_Y < n_scr_Y; scr_n_Y++ )
@@ -1194,7 +1191,7 @@ namespace MAPeD
 								}
 								
 								exp_scr = screens[ scr_key ];
-#if DEF_NES
+								
 								if( cntrl_tiles_data == null )
 								{
 									cntrl_tiles_data = exp_scr.m_tiles;
@@ -1204,7 +1201,7 @@ namespace MAPeD
 								{
 									diff_banks_in_layout |= true;
 								}
-#endif
+								
 								_sw.WriteLine( level_prefix_str + "Scr" + common_scr_ind + ":" );
 								_sw.WriteLine( "\t.byte " + banks.IndexOf( exp_scr.m_tiles ) + ( enable_comments ? "\t; chr_id":"" ) );
 								
@@ -1286,12 +1283,12 @@ namespace MAPeD
 			}
 			
 			foreach( var key in screens.Keys ) { screens[ key ].destroy(); }
-#if DEF_NES
+			
 			if( diff_banks_in_layout && more_than_1_plt_in_bank )
 			{
 				MainForm.message_box( "The exported layout contains more than one CHR bank data and at least one CHR bank has more than one palette!\n\nThis can make it difficult to get correct palette data in your code!", "Data Export", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 			}
-#endif
+			
 		}
 
 		private byte get_tile_attribute( int _tile_n, exp_screen_data _exp_scr, int _scr_height_blocks )
@@ -1445,21 +1442,20 @@ namespace MAPeD
 												screen_data		_tile_inds, 
 												bool 			_force_swapping,
 												int 			_scr_width_blocks_mul2, 
-												int 			_scr_height_blocks,
 												int 			_scr_height_blocks_mul2, 
 												int 			_scr_height_blocks_mul4,
 												screen_data		_block_inds )
 		{
-			ushort tile_id			= 0;
+			ushort tile_id;
 			
-			int tile_x				= 0;
-			int tile_y				= 0;
-			int block_x				= 0;
-			int block_y				= 0;
-			int chr_x				= 0;
-			int chr_y				= 0;
-			int tile_offs_x			= 0;
-			int tile_offs_y			= 0;
+			int tile_x;
+			int tile_y;
+			int block_x;
+			int block_y;
+			int chr_x;
+			int chr_y;
+			int tile_offs_x;
+			int tile_offs_y;
 			
 			int tile_n;
 			int block_n;

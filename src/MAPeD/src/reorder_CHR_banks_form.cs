@@ -17,8 +17,8 @@ namespace MAPeD
 	/// </summary>
 	public partial class reorder_CHR_banks_form : Form
 	{
-		private readonly data_sets_manager	m_data_manager		= null;
-		private readonly image_preview		m_blocks_preview	= null;
+		private readonly data_sets_manager	m_data_manager;
+		private readonly image_preview		m_blocks_preview;
 		
 		private bool m_data_changed = false;
 		

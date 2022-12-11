@@ -22,14 +22,14 @@ namespace MAPeD
 		public event EventHandler BlockSelected;
 		public event EventHandler ResetActiveTile;
 		
-		private readonly ImageList m_tiles_image_list 	= null;
-		private readonly ImageList m_blocks_image_list	= null;
+		private readonly ImageList m_tiles_image_list;
+		private readonly ImageList m_blocks_image_list;
 		
-		private readonly ContextMenuStrip m_cm_tiles	= null;
-		private readonly ContextMenuStrip m_cm_blocks	= null;
+		private readonly ContextMenuStrip m_cm_tiles;
+		private readonly ContextMenuStrip m_cm_blocks;
 		
-		private readonly tile_list	m_tile_list		= null;
-		private readonly tile_list	m_block_list	= null;
+		private readonly tile_list	m_tile_list;
+		private readonly tile_list	m_block_list;
 		
 		private int m_active_item_id = -1;
 		

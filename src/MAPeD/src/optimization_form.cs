@@ -21,9 +21,8 @@ namespace MAPeD
 	{
 		public event EventHandler UpdateGraphics;
 		
-		private readonly data_sets_manager m_data_sets 	= null;
-		
-		private readonly Action< bool, string, bool >	m_show_progress_wnd	= null;
+		private readonly data_sets_manager				m_data_sets;
+		private readonly Action< bool, string, bool >	m_show_progress_wnd;
 		
 		private bool m_need_update_screen_list	= false;
 		

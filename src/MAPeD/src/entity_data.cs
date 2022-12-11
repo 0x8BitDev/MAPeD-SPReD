@@ -161,7 +161,7 @@ namespace MAPeD
 			}
 
 			// extra data ( reserved for future purposes )
-			int extra_data_size = _br.ReadInt32();
+			/*int extra_data_size = */_br.ReadInt32();
 		}
 	}
 	
@@ -402,7 +402,7 @@ namespace MAPeD
 			}
 			
 			// extra data ( reserved for future purposes )
-			int extra_data_size = _br.ReadInt32();
+			/*int extra_data_size = */_br.ReadInt32();
 		}
 	}
 }

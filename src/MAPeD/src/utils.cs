@@ -134,8 +134,8 @@ namespace MAPeD
 		private const uint CONST_ZX_PALETTE_BW				= 0;	// black and white mode
 		private const uint CONST_ZX_PALETTE_INV_BW			= 1;	// inverse black and white mode
 		
-		private static palette16_data[] zx_alt_palettes	= new palette16_data[ 2 ]{	new palette16_data( new int[ 16 ]{ 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 7, 7, 7 } ),
-																					new palette16_data( new int[ 16 ]{ 7, 7, 7, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0 } ) };
+		private readonly static palette16_data[] zx_alt_palettes	= new palette16_data[ 2 ]{	new palette16_data( new int[ 16 ]{ 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 7, 7, 7 } ),
+																								new palette16_data( new int[ 16 ]{ 7, 7, 7, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0 } ) };
 		public static uint get_draw_block_flags_by_view_type( ETileViewType _view_type )
 		{
 			return ( _view_type == ETileViewType.tvt_BW ) ? CONST_DRAW_BLOCK_FLAGS_BW:( _view_type == ETileViewType.tvt_Inv_BW ) ? CONST_DRAW_BLOCK_FLAGS_INV_BW:0;

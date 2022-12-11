@@ -917,7 +917,7 @@ namespace MAPeD
 			int width	= get_width();
 			int height	= get_height();
 			
-			string data_str = "";
+			string data_str;
 
 			// export layout
 			{

@@ -215,10 +215,10 @@ namespace MAPeD
 		public virtual void palettes_processing( byte _ver, platform_data.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main )
 		{
 			int				i;
-			int 			plt_n;
+			int				plt_n;
 			int				data_n;
-			tiles_data 		data;
-			List< int[] > 	palettes = null;
+			tiles_data		data;
+			List< int[] >	palettes;
 			
 			int plt_clrs_cnt = platform_data.get_main_palette_colors_cnt();
 			

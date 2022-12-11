@@ -22,18 +22,19 @@ namespace MAPeD
 	/// </summary>
 	public class imagelist_manager
 	{
-		private readonly ListView	m_listview_screens	= null;
+		private readonly ListView	m_listview_screens;
+		
 		private i_screen_list		m_scr_list			= null;
 		private Size				m_scr_img_size		= new Size( 0, 0 );
 		
-		private readonly FlowLayoutPanel m_panel_tiles	= null;
-		private readonly FlowLayoutPanel m_panel_blocks	= null;
+		private readonly FlowLayoutPanel m_panel_tiles;
+		private readonly FlowLayoutPanel m_panel_blocks;
 		
-		private readonly ImageList m_imagelist_blocks	= null;
-		private readonly ImageList m_imagelist_tiles	= null;
+		private readonly ImageList	m_imagelist_blocks;
+		private readonly ImageList	m_imagelist_tiles;
 		
-		private readonly tile_list	m_tile_list		= null;
-		private readonly tile_list	m_block_list	= null;
+		private readonly tile_list	m_tile_list;
+		private readonly tile_list	m_block_list;
 		
 		private static Rectangle	m_block_rect	= new Rectangle( 0, 0, utils.CONST_BLOCKS_IMG_SIZE, utils.CONST_BLOCKS_IMG_SIZE );
 		private static Rectangle	m_tile_rect		= new Rectangle( 0, 0, utils.CONST_TILES_IMG_SIZE, utils.CONST_TILES_IMG_SIZE );

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 16:59
  */
@@ -21,7 +21,8 @@ namespace MAPeD
 		public event EventHandler ActivePalette;
 		
 		private bool 	m_active	= false;
-		private readonly int m_id 	= -1;
+		
+		private readonly int m_id;
 		
 		public int id
 		{

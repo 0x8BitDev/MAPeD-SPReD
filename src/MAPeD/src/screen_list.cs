@@ -100,7 +100,7 @@ namespace MAPeD
 	
 	public class screen_list_scaled : screen_list_normal
 	{
-		private List< Image >	m_os_img_list = new List<Image>();
+		private readonly List< Image >	m_os_img_list = new List<Image>();
 			
 		public screen_list_scaled( ImageList _img_list ) : base( _img_list )
 		{

@@ -92,7 +92,7 @@ namespace MAPeD
 		
 		private static int clr_ind_remap_arr_pos = 0;
 		
-		private readonly List< int > m_CHR_ids = null;		
+		private readonly List< int > m_CHR_ids;
 #if DEF_NES
 		private bool m_palette_per_CHR_mode	= false;
 		

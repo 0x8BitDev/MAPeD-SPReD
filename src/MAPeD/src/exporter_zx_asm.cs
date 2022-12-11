@@ -21,7 +21,7 @@ namespace MAPeD
 	/// </summary>
 	public partial class exporter_zx_sjasm : Form
 	{
-		private readonly data_sets_manager m_data_mngr = null;
+		private readonly data_sets_manager m_data_mngr;
 		
 		private string 	m_path_filename_ext		= null;
 		private string 	m_path_filename			= null;
@@ -40,9 +40,9 @@ namespace MAPeD
 		private string	m_tiles_data_filename	= null;
 		private string	m_filename				= null;
 		private string	m_path					= null;
-				
+		
 		// 7: flashing, 6: brightness, 3-5: paper color, 0-2: ink color
-		private readonly int[] zx_palette = null;
+		private readonly int[] zx_palette;
 		
 		private struct exp_screen_data
 		{
@@ -54,7 +54,7 @@ namespace MAPeD
 			public screen_data	m_scr_blocks;
 			
 			public int			m_tiles_offset;
-			public int			m_blocks_offset;			
+			public int			m_blocks_offset;
 			
 			public static int	_tiles_offset;
 			public static int	_blocks_offset;
@@ -128,7 +128,7 @@ namespace MAPeD
 		private void RBtnModeMultidirScrollChanged_Event(object sender, EventArgs e)
 		{
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = false;
-			RBtnLayoutMatrix.Checked 	= true;
+			RBtnLayoutMatrix.Checked = true;
 			
 			CheckBoxExportMarks.Enabled = ( CheckBoxExportEntities.Checked == false && RBtnModeMultidirScroll.Checked ) ? false:true;
 			CheckBoxExportMarks.Checked = CheckBoxExportMarks.Enabled ? CheckBoxExportMarks.Checked:false;
@@ -152,7 +152,7 @@ namespace MAPeD
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = true;
 			RBtnLayoutAdjacentScreens.Checked	= true;
 			
-			CheckBoxExportMarks.Enabled 	= true;			
+			CheckBoxExportMarks.Enabled 	= true;
 			RBtnEntityCoordScreen.Checked	= true;
 			
 			CheckBoxRLE.Checked = CheckBoxRLE.Enabled = false;
@@ -343,18 +343,18 @@ namespace MAPeD
 			// tile colors
 			// level map
 			
-			BinaryWriter 	bw = null;
+			BinaryWriter	bw;
 			
-			byte[]	map_tiles_arr	= null;
-			byte[]	tile_props_arr	= null;
-			byte[]	tile_colors_arr	= null;
+			byte[]	map_tiles_arr;
+			byte[]	tile_props_arr;
+			byte[]	tile_colors_arr;
 			
-			int[] 	img_buff 		= new int[ 64*4 ];
+			int[]	img_buff = new int[ 64*4 ];
 
-			layout_data level_data	= null;
+			layout_data level_data;
 			
-			Bitmap 		level_bmp 	= null;
-			Graphics 	level_gfx	= null;
+			Bitmap		level_bmp;
+			Graphics	level_gfx;
 			
 			int n_levels = m_data_mngr.layouts_data_cnt;
 			int n_scr_X;
@@ -363,7 +363,7 @@ namespace MAPeD
 			
 			List< tiles_data > scr_tiles_data = m_data_mngr.get_tiles_data();
 			
-			tiles_data bank_data = null;
+			tiles_data bank_data;
 			
 			int n_banks	= scr_tiles_data.Count;
 			int bank_n;
@@ -688,11 +688,11 @@ namespace MAPeD
 		
 		private void save_single_screen_mode( StreamWriter _sw )
 		{
-			BinaryWriter 	bw			= null;
+			BinaryWriter	bw;
 
-			int[]			img_buff	= new int[ 64*4 ];
+			int[] img_buff = new int[ 64*4 ];
 			
-			layout_data level_data = null;
+			layout_data level_data;
 			
 			List< tiles_data > scr_tiles_data = m_data_mngr.get_tiles_data();
 			
@@ -725,7 +725,7 @@ namespace MAPeD
 			ushort tile_id;
 			ushort block_id;
 			
-			screen_data tile_inds	= null;
+			screen_data tile_inds;
 			
 			long data_size;
 
@@ -742,17 +742,17 @@ namespace MAPeD
 			int		props_arr_offset;
 			int		props_size;
 			
-			string label 			= null;
-			string level_prefix_str	= null;
-			string scr_arr			= null;
-			string data_offset_str	= null;
-			string maps_arr			= null;
+			string label;
+			string level_prefix_str;
+			string data_offset_str;
+			string maps_arr;
+			string scr_arr	= null;
 			
 			exp_screen_data			exp_scr;
 			layout_screen_data		scr_data;
-			tiles_data 				tiles = null;
+			tiles_data 				tiles;
 			
-			List< tiles_data > 	banks 			= new List< tiles_data >( 10 );			
+			List< tiles_data > 	banks 			= new List< tiles_data >( 10 );
 			List< int >			max_tile_inds	= new List< int >( 10 );
 			
 			exp_screen_data._tiles_offset  = 0;
@@ -761,7 +761,7 @@ namespace MAPeD
 			SortedDictionary< int, exp_screen_data > screens = new SortedDictionary< int, exp_screen_data >();
 
 			scr_ind = 0;		// global screen index
-			scr_ind_opt = 0;	// optimized screen index			
+			scr_ind_opt = 0;	// optimized screen index
 #if !DEF_ZX
 			platform_data.EPlatformType platform_type = platform_data.get_platform_type();
 			

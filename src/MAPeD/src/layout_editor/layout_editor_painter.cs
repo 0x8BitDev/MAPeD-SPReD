@@ -14,8 +14,8 @@ namespace MAPeD
 {
 	public class NewTileEventArg : EventArgs
 	{
-		private readonly tiles_data m_data 	= null;
-		private readonly int m_tile_ind 	= -1;
+		private readonly tiles_data	m_data;
+		private readonly int		m_tile_ind;
 		
 		public int tile_ind
 		{
@@ -46,10 +46,10 @@ namespace MAPeD
 		// screen editor
 		private int	m_active_tile_id	= -1;
 		
-		private readonly List< int >	m_block_tiles_cache		= null;
+		private readonly List< int >	m_block_tiles_cache;
 		private int						m_last_empty_tile_ind	= -1;
 		
-		private readonly HashSet< int >	m_changed_screens		= null;
+		private readonly HashSet< int >	m_changed_screens;
 		
 		private int			m_tile_x;
 		private int			m_tile_y;
@@ -184,7 +184,7 @@ namespace MAPeD
 			m_tile_y = -10000;
 		}
 		
-		private int mode_tiles4x4_get_tile4x4_ind_by_pos( int _x, int _y, ref int _scr_tile_pos_x, ref int _scr_tile_pos_y, ref int _block_ind )
+		private int mode_tiles4x4_get_tile4x4_ind_by_pos( int _x, int _y, ref int _block_ind )
 		{
 			int x = m_shared.transform_to_img_pos( _x, m_shared.m_offset_x, m_shared.m_scr_half_width );
 			int y = m_shared.transform_to_img_pos( _y, m_shared.m_offset_y, m_shared.m_scr_half_height );
@@ -194,10 +194,10 @@ namespace MAPeD
 			
 			_block_ind = ( ( x % 32 ) >> 4 ) + ( ( ( y % 32 ) >> 4 ) << 1 );
 			
-			_scr_tile_pos_x = ( x - scr_pos_x ) >> 5;
-			_scr_tile_pos_y = ( y - scr_pos_y ) >> 5;
+			int scr_tile_pos_x = ( x - scr_pos_x ) >> 5;
+			int scr_tile_pos_y = ( y - scr_pos_y ) >> 5;
 				
-			return _scr_tile_pos_x + ( _scr_tile_pos_y * platform_data.get_screen_tiles_width( false ) );
+			return scr_tile_pos_x + ( scr_tile_pos_y * platform_data.get_screen_tiles_width( false ) );
 		}
 
 		private int mode_blocks2x2_get_block2x2_ind_by_pos( int _x, int _y )
@@ -234,16 +234,16 @@ namespace MAPeD
 					m_ghost_tile_block_x = _tile_x % 32;
 					m_ghost_tile_block_y = _tile_y % 32;
 					
-					_tile_x = _tile_x - m_ghost_tile_block_x;
-					_tile_y = _tile_y - m_ghost_tile_block_y;
+					_tile_x -= m_ghost_tile_block_x;
+					_tile_y -= m_ghost_tile_block_y;
 					
 					m_ghost_tile_block_x >>= 4;
 					m_ghost_tile_block_y >>= 4;
 				}
 				else
 				{
-					_tile_x = _tile_x - ( _tile_x % 16 );
-					_tile_y = _tile_y - ( _tile_y % 16 );
+					_tile_x -= ( _tile_x % 16 );
+					_tile_y -= ( _tile_y % 16 );
 				}
 
 				_tile_x += scr_pos_x;
@@ -278,10 +278,8 @@ namespace MAPeD
 			
 			if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
-				int scr_tile_pos_x	= 0;
-				int scr_tile_pos_y	= 0;
 				int block_ind		= 0;
-				int tile_index		= mode_tiles4x4_get_tile4x4_ind_by_pos( _x, _y, ref scr_tile_pos_x, ref scr_tile_pos_y, ref block_ind );
+				int tile_index		= mode_tiles4x4_get_tile4x4_ind_by_pos( _x, _y, ref block_ind );
 				
 				int tile_id = m_active_tile_id;
 				
@@ -311,7 +309,7 @@ namespace MAPeD
 				
 				m_shared.m_tiles_data.set_screen_tile( scr_local_ind, tile_index, ( ushort )tile_id );
 				
-				draw_tile( m_tile_x, m_tile_y, scr_tile_pos_x, scr_tile_pos_y, tile_id );
+				draw_tile( m_tile_x, m_tile_y, tile_id );
 
 				draw_tile_grid( 32, utils.CONST_COLOR_GRID_TILES_BRIGHT );
 			}
@@ -522,7 +520,7 @@ namespace MAPeD
 			_gfx.DrawImage( m_shared.m_blocks_imagelist.Images[ m_active_tile_id ], m_shared.m_scr_img_rect, 0, 0, utils.CONST_BLOCKS_IMG_SIZE, utils.CONST_BLOCKS_IMG_SIZE, GraphicsUnit.Pixel, m_shared.m_scr_img_attr );
 		}
 
-		private void draw_tile( int _x, int _y, int _tile_pos_x, int _tile_pos_y, int _tile_id )
+		private void draw_tile( int _x, int _y, int _tile_id )
 		{
 			int size = ( int )( m_shared.m_scale * 32.0f );
 			

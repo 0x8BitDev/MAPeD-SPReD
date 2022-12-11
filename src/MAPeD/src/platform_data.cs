@@ -546,8 +546,8 @@ namespace MAPeD
 		private static int[] PCE_SMD_palette = null;
 		
 		// 7: flashing, 6: brightness, 3-5: paper color, 0-2: ink color
-		private static int[] ZX_palette = new int[]{  0x000000, 0x0022c7, 0xd62816, 0xd433c7, 0x00c525, 0x00c7c9, 0xccc82a, 0xcacaca,	// not bright
-													  0x000000, 0x002bfb, 0xff331c, 0xff40fc, 0x00f92f, 0x00fbfe, 0xfffc36, 0xffffff };	// bright
+		private readonly static int[] ZX_palette = new int[]{ 0x000000, 0x0022c7, 0xd62816, 0xd433c7, 0x00c525, 0x00c7c9, 0xccc82a, 0xcacaca,	// not bright
+															  0x000000, 0x002bfb, 0xff331c, 0xff40fc, 0x00f92f, 0x00fbfe, 0xfffc36, 0xffffff };	// bright
 
 		public static int[] get_palette_by_file_ext( string _file_ext )
 		{

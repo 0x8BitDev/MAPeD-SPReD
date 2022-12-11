@@ -24,10 +24,10 @@ namespace MAPeD
 #if DEF_PALETTE16_PER_CHR		
 		public event EventHandler UpdatePaletteListPos;
 #endif		
-		private readonly CHR_bank_viewer m_CHR_bank_viewer	= null;
-		private readonly block_editor m_block_editor		= null;
-		private readonly tile_editor m_tile_editor			= null;
-		private readonly palette_group m_palette_grp		= null;
+		private readonly CHR_bank_viewer	m_CHR_bank_viewer;
+		private readonly block_editor		m_block_editor;
+		private readonly tile_editor		m_tile_editor;
+		private readonly palette_group		m_palette_grp;
 		
 		public tiles_processor( PictureBox 			_PBoxCHRBank,
 		                       GroupBox				_CHRBankGrpBox,

@@ -15,8 +15,8 @@ namespace MAPeD
 	/// </summary>
 	public class image_preview : drawable_base
 	{
-		private readonly int m_scr_half_width  = 0;
-		private readonly int m_scr_half_height = 0;
+		private readonly int m_scr_half_width;
+		private readonly int m_scr_half_height;
 
 		private int		m_scale_pow		= 0;
 		private bool	m_scale_enabled	= false;
