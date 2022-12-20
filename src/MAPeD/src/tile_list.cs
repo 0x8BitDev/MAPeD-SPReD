@@ -122,10 +122,13 @@ namespace MAPeD
 		}
 		
 		private readonly Control		m_owner;
-		private readonly ImageList		m_img_list;
+		private readonly List< Bitmap >	m_img_list;
 		private readonly EventHandler	m_event_handler;
 		
 		private readonly Label			m_label;
+		
+		private readonly int	m_img_width;
+		private readonly int	m_img_height;
 
 		private int m_cursor_tile_ind		= -1;
 		private int m_sel_tile_ind			= -1;
@@ -135,12 +138,15 @@ namespace MAPeD
 		
 		private bool m_need_update	= false;
 		
-		public tile_list( EType _type, FlowLayoutPanel _panel, ImageList _il, EventHandler _e, ContextMenuStrip _cm, tile_list_manager _tl_cntnr )
+		public tile_list( EType _type, FlowLayoutPanel _panel, List< Bitmap > _il, EventHandler _e, ContextMenuStrip _cm, tile_list_manager _tl_cntnr )
 		{
 			m_type			= _type;
 			m_owner			= _panel;
 			m_img_list		= _il;
 			m_event_handler	= _e;
+			
+			m_img_width		= _il[ 0 ].Width;
+			m_img_height	= _il[ 0 ].Height;
 			
 			_tl_cntnr.register( this );
 			
@@ -180,12 +186,12 @@ namespace MAPeD
 		
 		private void calc_pix_box_size( PictureBox _pbox )
 		{
-			m_tiles_width_cnt	= ( m_owner.ClientSize.Width - 1 ) / ( m_img_list.ImageSize.Width + 1 );
+			m_tiles_width_cnt	= ( m_owner.ClientSize.Width - 1 ) / ( m_img_width + 1 );
 			m_tiles_width_cnt	= ( m_tiles_width_cnt > 0 ) ? m_tiles_width_cnt:1;
-			m_tiles_height_cnt	= ( m_img_list.Images.Count / m_tiles_width_cnt ) + ( ( m_img_list.Images.Count % m_tiles_width_cnt > 0 ) ? 1:0 );
+			m_tiles_height_cnt	= ( m_img_list.Count / m_tiles_width_cnt ) + ( ( m_img_list.Count % m_tiles_width_cnt > 0 ) ? 1:0 );
 			
-			_pbox.Width		= ( m_tiles_width_cnt * ( m_img_list.ImageSize.Width + 1 ) ) + 1;	// +1 right vertical border line
-			_pbox.Height	= ( m_tiles_height_cnt * ( m_img_list.ImageSize.Height + 1 ) ) + 1;	// +1 bottom horizontal border line    
+			_pbox.Width		= ( m_tiles_width_cnt * ( m_img_width + 1 ) ) + 1;	// +1 right vertical border line
+			_pbox.Height	= ( m_tiles_height_cnt * ( m_img_height + 1 ) ) + 1;	// +1 bottom horizontal border line
 		}
 		
 		private void ResizeOwner_Event( object sender, EventArgs e )
@@ -246,9 +252,9 @@ namespace MAPeD
 				update_tile( m_cursor_tile_ind, false );
 			}
 			
-			m_cursor_tile_ind = ( pos_x / ( m_img_list.ImageSize.Width + 1 ) ) + ( pos_y / ( ( m_img_list.ImageSize.Height + 1 ) ) ) * m_tiles_width_cnt;
+			m_cursor_tile_ind = ( pos_x / ( m_img_width + 1 ) ) + ( pos_y / ( ( m_img_height + 1 ) ) ) * m_tiles_width_cnt;
 			
-			m_cursor_tile_ind = ( m_cursor_tile_ind > m_img_list.Images.Count - 1 ) ? -1:m_cursor_tile_ind;
+			m_cursor_tile_ind = ( m_cursor_tile_ind > m_img_list.Count - 1 ) ? -1:m_cursor_tile_ind;
 
 			if( ( m_cursor_tile_ind >= 0 ) && ( m_sel_tile_ind != m_cursor_tile_ind ) )
 			{
@@ -283,17 +289,14 @@ namespace MAPeD
 			m_pen.Width = 1.0f;
 			m_pen.Color = utils.CONST_COLOR_TILE_LIST_SELECTION;
 			
-			int tile_width	= m_img_list.ImageSize.Width;
-			int tile_height	= m_img_list.ImageSize.Height;
-				
-			int pos_x = ( _ind % m_tiles_width_cnt ) * ( tile_width + 1 );
-			int pos_y = ( _ind / m_tiles_width_cnt ) * ( tile_height + 1 );
+			int pos_x = ( _ind % m_tiles_width_cnt ) * ( m_img_width + 1 );
+			int pos_y = ( _ind / m_tiles_width_cnt ) * ( m_img_height + 1 );
 			
-			m_gfx.DrawRectangle( m_pen, pos_x + 2, pos_y + 2, tile_width - 1, tile_height - 1 );
+			m_gfx.DrawRectangle( m_pen, pos_x + 2, pos_y + 2, m_img_width - 1, m_img_height - 1 );
 			
 			// draw info
 			{
-				int str_pos_y = pos_y + m_img_list.ImageSize.Height - utils.fnt10_Arial.Height;
+				int str_pos_y = pos_y + m_img_height - utils.fnt10_Arial.Height;
 				
 				string info = String.Format( "{0:X2}", _ind );
 				
@@ -309,29 +312,23 @@ namespace MAPeD
 		
 		public void copy_tile( int _from_ind, int _to_ind )
 		{
-			int tile_width	= m_img_list.ImageSize.Width;
-			int tile_height	= m_img_list.ImageSize.Height;
-				
-			int pos_x = ( _to_ind % m_tiles_width_cnt ) * ( tile_width + 1 );
-			int pos_y = ( _to_ind / m_tiles_width_cnt ) * ( tile_height + 1 );
+			int pos_x = ( _to_ind % m_tiles_width_cnt ) * ( m_img_width + 1 );
+			int pos_y = ( _to_ind / m_tiles_width_cnt ) * ( m_img_height + 1 );
 			
-			m_img_list.Images[ _to_ind ].Dispose();
-			m_img_list.Images[ _to_ind ] = ( Image )m_img_list.Images[ _from_ind ].Clone();
+			m_img_list[ _to_ind ].Dispose();
+			m_img_list[ _to_ind ] = ( Bitmap )m_img_list[ _from_ind ].Clone();
 			
-			m_gfx.DrawImageUnscaled( m_img_list.Images[ _to_ind ], pos_x + 1, pos_y + 1 );
+			m_gfx.DrawImageUnscaled( m_img_list[ _to_ind ], pos_x + 1, pos_y + 1 );
 			
 			invalidate();
 		}
 
 		public void update_tile( int _ind, bool _draw_selection = true )
 		{
-			int tile_width	= m_img_list.ImageSize.Width;
-			int tile_height	= m_img_list.ImageSize.Height;
-				
-			int pos_x = ( _ind % m_tiles_width_cnt ) * ( tile_width + 1 );
-			int pos_y = ( _ind / m_tiles_width_cnt ) * ( tile_height + 1 );
+			int pos_x = ( _ind % m_tiles_width_cnt ) * ( m_img_width + 1 );
+			int pos_y = ( _ind / m_tiles_width_cnt ) * ( m_img_height + 1 );
 			
-			m_gfx.DrawImageUnscaled( m_img_list.Images[ _ind ], pos_x + 1, pos_y + 1 );
+			m_gfx.DrawImageUnscaled( m_img_list[ _ind ], pos_x + 1, pos_y + 1 );
 			
 			if( _draw_selection )
 			{
@@ -373,16 +370,16 @@ namespace MAPeD
 			
 			// draw tiles
 			{
-				int step_x = m_img_list.ImageSize.Width + 1;
-				int step_y = m_img_list.ImageSize.Height + 1;
+				int step_x = m_img_width + 1;
+				int step_y = m_img_height + 1;
 				
-				for( int i = 0; i < m_img_list.Images.Count; i++ )
+				for( int i = 0; i < m_img_list.Count; i++ )
 				{
-					m_gfx.DrawImage( 	m_img_list.Images[ i ], 
+					m_gfx.DrawImage( 	m_img_list[ i ], 
 										( ( i % m_tiles_width_cnt ) * ( step_x ) ) + 1,
 										( ( i / m_tiles_width_cnt ) * ( step_y ) ) + 1,
-										m_img_list.ImageSize.Width, 
-										m_img_list.ImageSize.Height );
+										m_img_width, 
+										m_img_height );
 				}
 
 				draw_selection();
@@ -402,14 +399,14 @@ namespace MAPeD
 			
 			for( i = 0; i < m_tiles_width_cnt + 1; i++ )
 			{
-				x = i * ( m_img_list.ImageSize.Width + 1 ) + 1;
+				x = i * ( m_img_width + 1 ) + 1;
 				
 				m_gfx.DrawLine( m_pen, x, 0, x, m_pix_box.Height );
 			}
 			
 			for( i = 0; i < m_tiles_height_cnt + 1; i++ )
 			{
-				y = i * ( m_img_list.ImageSize.Height + 1 ) + 1;
+				y = i * ( m_img_height + 1 ) + 1;
 				
 				m_gfx.DrawLine( m_pen, 0, y, m_pix_box.Width, y );
 			}

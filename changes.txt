@@ -1,6 +1,8 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+20.12.2022 - Layout viewport: hardware-accelerated rendering using OpenGL (OpenTK/SkiaSharp)
+
 24.11.2022 v0.75b
 
 23.11.2022 - Layout tab: for all the tabs: hold down the 'Ctrl' key to pan the viewport and the 'Shift' key to select multiple screens

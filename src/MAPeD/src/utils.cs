@@ -27,6 +27,9 @@ using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 
+using SkiaSharp;
+using SkiaSharp.Views.Desktop;
+
 namespace MAPeD
 {
 	/// <summary>
@@ -34,8 +37,8 @@ namespace MAPeD
 	/// </summary>
 	public static class utils
 	{
-		private const bool CONST_DEV_BUILD_FLAG	= true;
-		private const bool CONST_BETA_FLAG		= true; 
+		public	const bool CONST_DEV_BUILD_FLAG	= true;
+		private	const bool CONST_BETA_FLAG		= true; 
 
 		public const string CONST_APP_NAME		= "MAPeD";
 		
@@ -91,12 +94,12 @@ namespace MAPeD
 		    }
 		}
 
-		private static readonly Version ver	= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-		public static readonly string build_str		= "Build: " + ver.Build;
-		public static readonly DateTime build_date 	= new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
+		private static readonly	Version 	ver			= System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+		public static readonly	string		build_str	= "Build: " + ver.Build;
+		public static readonly	DateTime 	build_date 	= new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
 
-		public static readonly string CONST_APP_VER		= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev":"" ) + CONST_BUILD_CFG;
-		public static readonly string CONST_FULL_APP_NAME	= CONST_FULL_APP_NAMES_ARR[ ( int )platform_data.get_platform_type() ];
+		public static readonly string CONST_APP_VER			= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev":"" ) + CONST_BUILD_CFG;
+		public static readonly string CONST_FULL_APP_NAME	= CONST_FULL_APP_NAMES_ARR[ ( int )platform_data.get_platform_type() ] + ( Environment.Is64BitProcess ? " (x64)":" (x86)" );
 		
 		public const uint CONST_PROJECT_FILE_MAGIC	= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'M';
 		public const byte CONST_PROJECT_FILE_VER	= 8;
@@ -188,6 +191,8 @@ namespace MAPeD
 		public const byte CONST_CHR_ATTR_FLAG_HFLIP			= 0x01;
 		public const byte CONST_CHR_ATTR_FLAG_VFLIP			= 0x02;
 		
+		public const SKColorType CONST_BMP_FORMAT			= SKColorType.Rgba8888;
+		
 		public static Pen			pen				= new Pen( CONST_COLOR_PEN_DEFAULT );
 		public static SolidBrush 	brush		 	= new SolidBrush( CONST_COLOR_BRUSH_DEFAULT );
 		public static readonly Font fnt8_Arial		= new Font( "Arial", 8, 	FontStyle.Bold );
@@ -195,6 +200,33 @@ namespace MAPeD
 		public static readonly Font fnt12_Arial		= new Font( "Arial", 12, 	FontStyle.Bold );
 		public static readonly Font fnt42_Arial		= new Font( "Arial", 42, 	FontStyle.Bold );
 		public static readonly Font fnt64_Arial		= new Font( "Arial", 64, 	FontStyle.Bold );
+		
+		private static readonly Dictionary< uint, SKPaint > _fonts = new Dictionary< uint, SKPaint >( 10 );
+		
+		public static SKPaint get_font( uint _size, bool _bold )
+		{
+			uint key = ( uint )( ( int )_size | ( ( _bold ? 1:0 ) << 8 ) );
+			
+			if( _fonts.ContainsKey( key ) )
+			{
+				return _fonts[ key ];
+			}
+			
+			SKFontStyle font_style = new SKFontStyle( SKFontStyleWeight.Bold, SKFontStyleWidth.ExtraExpanded, SKFontStyleSlant.Upright );
+			
+			SKTypeface type_face = SKFontManager.Default.MatchCharacter( "Arial", font_style, new string[]{}, 'a' );
+			
+			SKFont fnt = new SKFont( type_face, _size, 1 );
+			
+			SKPaint font_paint		= new SKPaint( fnt );
+			font_paint.Color		= new SKColor( 0xffffffff );
+			font_paint.IsAntialias	= true;
+			font_paint.SubpixelText	= true;
+			
+			_fonts[ key ] = font_paint;
+			
+			return font_paint;
+		}
 		
 		public static byte[] tmp_spr8x8_buff = new byte[ CONST_SPR8x8_TOTAL_PIXELS_CNT ];
 
@@ -205,23 +237,28 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_NULL							= Color.Empty;
 		public static readonly Color	CONST_COLOR_ENTITY_PIXBOX_INACTIVE			= Color.Black;
 		// layout
-		public static readonly Color	CONST_COLOR_SIMPLE_SCREEN_CROSS				= Color.Red;
-		public static readonly Color	CONST_COLOR_SCREEN_LIST_NOT_EMPTY			= Color.White;
-		public static readonly Color	CONST_COLOR_SCREEN_LIST_EMPTY 				= Color.Red;
-		public static readonly Color	CONST_COLOR_SCREEN_GHOST_IMAGE_BORDER		= Color.Red;
-		public static readonly Color	CONST_COLOR_SCREEN_SELECTED_BORDER			= Color.Red;
-		public static readonly Color	CONST_COLOR_SCREEN_ACTIVE					= Color.Red;
-		public static readonly Color	CONST_COLOR_SCREEN_SELECTION_AREA			= Color.SkyBlue;
-		public static readonly Color	CONST_COLOR_STRING_DEFAULT					= Color.White;
-		public static readonly Color	CONST_COLOR_STRING_DEFAULT_SHADOW			= Color.Black;
-		public static readonly Color	CONST_COLOR_ENTITY_BORDER_EDIT_ENT_MODE		= Color.LimeGreen;
-		public static readonly Color	CONST_COLOR_SELECTED_ENTITY_BORDER			= Color.Red;
-		public static readonly Color	CONST_COLOR_ENTITY_BORDER_EDIT_INST_MODE	= Color.Orange;
-		public static readonly Color	CONST_COLOR_TARGET_LINK						= Color.LightGreen;
-		public static readonly Color	CONST_COLOR_ENTITY_PIVOT					= Color.LightGreen;
-		public static readonly Color	CONST_COLOR_GRID_BLOCKS						= Color.FromArgb( unchecked( (int)0x90a0a0a0 ) );
-		public static readonly Color	CONST_COLOR_GRID_TILES_BRIGHT				= Color.FromArgb( unchecked( (int)0x90e0e0e0 ) );
-		public static readonly Color	CONST_COLOR_GRID_TILES_DARK					= Color.FromArgb( unchecked( (int)0x88a0a0a0 ) );
+		public static readonly SKColor	CONST_COLOR_SIMPLE_SCREEN_CROSS				= Extensions.ToSKColor( Color.Red );
+		public static readonly SKColor	CONST_COLOR_SCREEN_LIST_NOT_EMPTY			= Extensions.ToSKColor( Color.White );
+		public static readonly SKColor	CONST_COLOR_SCREEN_LIST_EMPTY 				= Extensions.ToSKColor( Color.Red );
+		public static readonly SKColor	CONST_COLOR_SCREEN_TRANSPARENT_BORDER		= Extensions.ToSKColor( Color.Red );
+		public static readonly SKColor	CONST_COLOR_SCREEN_SELECTED_BORDER			= Extensions.ToSKColor( Color.Red );
+		public static readonly SKColor	CONST_COLOR_SCREEN_ACTIVE					= Extensions.ToSKColor( Color.Red );
+		public static readonly SKColor	CONST_COLOR_SCREEN_SELECTION_AREA			= Extensions.ToSKColor( Color.SkyBlue );
+		public static readonly SKColor	CONST_COLOR_LAYOUT_STRING_DEFAULT			= Extensions.ToSKColor( Color.White );
+		public static readonly SKColor	CONST_COLOR_LAYOUT_STRING_DEFAULT_SHADOW	= Extensions.ToSKColor( Color.Black );
+		public static readonly SKColor	CONST_COLOR_ENTITY_BORDER_EDIT_ENT_MODE		= Extensions.ToSKColor( Color.LimeGreen );
+		public static readonly SKColor	CONST_COLOR_SELECTED_ENTITY_BORDER			= Extensions.ToSKColor( Color.Red );
+		public static readonly SKColor	CONST_COLOR_ENTITY_BORDER_EDIT_INST_MODE	= Extensions.ToSKColor( Color.Orange );
+		public static readonly SKColor	CONST_COLOR_TARGET_LINK						= Extensions.ToSKColor( Color.LightGreen );
+		public static readonly SKColor	CONST_COLOR_ENTITY_PIVOT					= Extensions.ToSKColor( Color.LightGreen );
+		public static readonly SKColor	CONST_COLOR_GRID_BLOCKS						= new SKColor( 0x90a0a0a0 );
+		public static readonly SKColor	CONST_COLOR_GRID_TILES_BRIGHT				= new SKColor( 0x90e0e0e0 );
+		public static readonly SKColor	CONST_COLOR_GRID_TILES_DARK					= new SKColor( 0x88a0a0a0 );
+		public static readonly SKColor	CONST_COLOR_MARK_START_SCREEN				= new SKColor( 0x7fff0000 );
+		public static readonly SKColor	CONST_COLOR_MARK_SCREEN_MARK				= new SKColor( 0x7f0000ff );
+		public static readonly SKColor	CONST_COLOR_MARK_ADJ_SCREEN_MARK			= new SKColor( 0x7f00ff00 );
+		public static readonly SKColor	CONST_COLOR_LAYOUT_PIXBOX_DEFAULT			= Extensions.ToSKColor( Color.White );
+		public static readonly SKColor	CONST_COLOR_LAYOUT_PIXBOX_INACTIVE_CROSS	= Extensions.ToSKColor( Color.Red );
 		// image list manager
 		public static readonly Color	CONST_COLOR_TILE_CLEAR						= Color.Black;
 		public static readonly Color	CONST_COLOR_BLOCK_CLEAR						= Color.Black;
@@ -235,7 +272,7 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_SCREEN_BORDER					= Color.Red;
 		public static readonly Color	CONST_COLOR_SCREEN_PATTERN_BORDER			= Color.Orange;
 		public static readonly Color	CONST_COLOR_SCREEN_SELECTION_RECTANGLE		= Color.White;
-		public static readonly Color	CONST_COLOR_SCREEN_SELECTION_TILE			= Color.DeepSkyBlue;
+		public static readonly SKColor	CONST_COLOR_SCREEN_SELECTION_TILE			= Extensions.ToSKColor( Color.DeepSkyBlue );
 		public static readonly Color	CONST_COLOR_SCREEN_TRANSLUCENT_QUAD			= Color.FromArgb( unchecked( (int)0x40000000 ) );
 		// block editor
 		public static readonly Color	CONST_COLOR_BLOCK_EDITOR_GRID						= Color.FromArgb( 0x78808080 );
@@ -251,8 +288,8 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_CHR_BANK_SELECTED_INNER_BORDER_SELECT_MODE	= Color.Orange;
 		public static readonly Color	CONST_COLOR_CHR_BANK_SELECTED_INNER_BORDER_DRAW_MODE	= Color.White;
 		// palette group
-		public static readonly Color	CONST_COLOR_PALETTE_SELECTED_OUTER_BORDER	= Color.Black; 
-		public static readonly Color	CONST_COLOR_PALETTE_SELECTED_INNER_BORDER	= Color.White;
+		public static readonly Color	CONST_COLOR_PALETTE_SELECTED_OUTER_BORDER		= Color.Black; 
+		public static readonly Color	CONST_COLOR_PALETTE_SELECTED_INNER_BORDER		= Color.White;
 		public static readonly Color	CONST_COLOR_PALETTE_SWAP_COLOR_ACTIVE_BORDER	= Color.Red;
 		public static readonly Color	CONST_COLOR_PALETTE_SWAP_COLOR_INACTIVE_BORDER	= Color.Black;
 		public static readonly Color	CONST_COLOR_PALETTE_SWAP_COLOR_TEXT_DEFAULT		= Color.Black;
@@ -266,10 +303,11 @@ namespace MAPeD
 		// other
 		public static readonly Color	CONST_COLOR_BRUSH_DEFAULT						= Color.White;
 		public static readonly Color	CONST_COLOR_PEN_DEFAULT							= Color.Black;
-		public static readonly Color	CONST_COLOR_PIXBOX_INACTIVE_CROSS				= Color.Red;		
+		public static readonly Color	CONST_COLOR_PIXBOX_INACTIVE_CROSS				= Color.Red;
 		public static readonly Color	CONST_COLOR_PIXBOX_DEFAULT						= Color.White;
 		public static readonly Color	CONST_COLOR_IMG_PREVIEW_PIVOT_CROSS				= Color.OrangeRed;
 		public static readonly Color	CONST_COLOR_IMG_PREVIEW_PIVOT_RECT 				= Color.LimeGreen;
+		public static readonly Color	CONST_COLOR_STRING_DEFAULT						= Color.White;
 		// tile list
 		public static readonly Color	CONST_COLOR_TILE_LIST_BACKGROUND				= Color.LightGray;
 		public static readonly Color	CONST_COLOR_TILE_LIST_GRID						= Color.White;
@@ -296,6 +334,18 @@ namespace MAPeD
 			tvt_Inv_BW		= 6,
 #endif
 		};
+		
+		private static SKRect tmp_rect = new SKRect();
+		
+		public static void draw_skbitmap( SKCanvas _canvas, SKBitmap _bmp, float _x, float _y, float _w, float _h, SKPaint _paint )
+		{
+			tmp_rect.Left	= _x;
+			tmp_rect.Top	= _y;
+			tmp_rect.Right	= _x + _w;
+			tmp_rect.Bottom	= _y + _h;
+			
+			_canvas.DrawBitmap( _bmp, tmp_rect, _paint );
+		}
 		
 		private static void flip_bmp( Bitmap _bmp, byte _flags )
 		{

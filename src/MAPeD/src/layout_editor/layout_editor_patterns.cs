@@ -5,11 +5,11 @@
  * Time: 13:35
  */
 using System;
-using System.Windows.Forms;
 using System.Drawing;
-using System.Drawing.Imaging;
+using System.Windows.Forms;
 using System.Collections.Generic;
 
+using SkiaSharp;
 
 namespace MAPeD
 {
@@ -70,14 +70,17 @@ namespace MAPeD
 		private int m_pttrn_rect_end_x	= -1;
 		private int m_pttrn_rect_end_y	= -1;
 		
-		private readonly Bitmap m_sel_area_tile;
+		private readonly SKBitmap m_sel_area_tile;
 		
 		private bool m_force_map_drawing	= false;
 		
 		public layout_editor_patterns( string _name, layout_editor_shared_data _shared, layout_editor_base _owner ) : base( _name, _shared, _owner )
 		{
-			m_sel_area_tile = new Bitmap( utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE, PixelFormat.Format32bppPArgb );
-			Graphics.FromImage( m_sel_area_tile ).Clear( utils.CONST_COLOR_SCREEN_SELECTION_TILE );
+			m_sel_area_tile = new SKBitmap( utils.CONST_SCREEN_TILES_SIZE, utils.CONST_SCREEN_TILES_SIZE, utils.CONST_BMP_FORMAT, SKAlphaType.Premul );
+			using( SKCanvas canvas = new SKCanvas( m_sel_area_tile ) )
+			{
+				canvas.Clear( utils.CONST_COLOR_SCREEN_SELECTION_TILE );
+			}
 		}
 		
 		public override void reset( bool _init )
@@ -226,8 +229,8 @@ namespace MAPeD
 			
 			if( _scr_space )
 			{
-				_tile_x = m_shared.transform_to_scr_pos( _tile_x + m_shared.m_offset_x, m_shared.m_scr_half_width );
-				_tile_y = m_shared.transform_to_scr_pos( _tile_y + m_shared.m_offset_y, m_shared.m_scr_half_height );
+				_tile_x = ( int )m_shared.transform_to_scr_pos( _tile_x + m_shared.m_offset_x, m_shared.m_scr_half_width );
+				_tile_y = ( int )m_shared.transform_to_scr_pos( _tile_y + m_shared.m_offset_y, m_shared.m_scr_half_height );
 			}
 		}
 		
@@ -279,11 +282,11 @@ namespace MAPeD
 			
 			// transform tile coords back into screen space
 			{
-				m_pttrn_rect_beg_x = m_shared.transform_to_scr_pos( beg_x + m_shared.m_offset_x, m_shared.m_scr_half_width );
-				m_pttrn_rect_beg_y = m_shared.transform_to_scr_pos( beg_y + m_shared.m_offset_y, m_shared.m_scr_half_height );
+				m_pttrn_rect_beg_x = ( int )m_shared.transform_to_scr_pos( beg_x + m_shared.m_offset_x, m_shared.m_scr_half_width );
+				m_pttrn_rect_beg_y = ( int )m_shared.transform_to_scr_pos( beg_y + m_shared.m_offset_y, m_shared.m_scr_half_height );
 				
-				m_pttrn_rect_end_x = m_shared.transform_to_scr_pos( end_x + m_shared.m_offset_x, m_shared.m_scr_half_width );
-				m_pttrn_rect_end_y = m_shared.transform_to_scr_pos( end_y + m_shared.m_offset_y, m_shared.m_scr_half_height );
+				m_pttrn_rect_end_x = ( int )m_shared.transform_to_scr_pos( end_x + m_shared.m_offset_x, m_shared.m_scr_half_width );
+				m_pttrn_rect_end_y = ( int )m_shared.transform_to_scr_pos( end_y + m_shared.m_offset_y, m_shared.m_scr_half_height );
 			}
 		}
 		
@@ -511,7 +514,7 @@ namespace MAPeD
 			return m_force_map_drawing;
 		}
 	
-		public override void draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height )
+		public override void draw( SKSurface _surface, SKPaint _line_paint, SKPaint _image_paint, float _scr_size_width, float _scr_size_height )
 		{
 			int tile_size_uni	= platform_data.get_screen_tiles_size_uni( m_shared.m_screen_data_type );
 			int tile_size		= ( int )( m_shared.m_scale * ( tile_size_uni >> 1 ) );
@@ -520,12 +523,12 @@ namespace MAPeD
 			{
 				if( m_pattern_data != null )
 				{
-					Image img;
+					Bitmap bmp;
 					
 					int pttrn_tile_id;
 					int tile_ind = 0;
 					
-					m_shared.m_scr_img_rect.Width = m_shared.m_scr_img_rect.Height = tile_size;
+					_image_paint.ColorFilter = m_shared.m_color_filter;
 					
 					for( int i = 0; i < m_pattern_data.height; i++ )
 					{
@@ -533,31 +536,40 @@ namespace MAPeD
 						{
 							pttrn_tile_id = m_pattern_data.data.get_tile( tile_ind++ );
 							
-							m_shared.m_scr_img_rect.X	= m_tile_x + ( j * tile_size );
-							m_shared.m_scr_img_rect.Y	= m_tile_y + ( i * tile_size );
-						
-							img = ( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? m_shared.m_tiles_imagelist.Images[ pttrn_tile_id ]:m_shared.m_blocks_imagelist.Images[ pttrn_tile_id ];
+							bmp = ( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? m_shared.m_tiles_imagelist[ pttrn_tile_id ]:m_shared.m_blocks_imagelist[ pttrn_tile_id ];
 							
-							_gfx.DrawImage( img, m_shared.m_scr_img_rect, 0, 0, tile_size_uni, tile_size_uni, GraphicsUnit.Pixel, m_shared.m_scr_img_attr );
+							utils.draw_skbitmap(	_surface.Canvas,
+													m_shared.m_image_cache.get( bmp ),
+													m_tile_x + ( j * tile_size ),
+													m_tile_y + ( i * tile_size ),
+													tile_size,
+													tile_size,
+													_image_paint );
 						}
 					}
+					
+					_image_paint.ColorFilter = null;
 				}
 			}
 			else
 			if( m_mode == EMode.em_Pattern_Extract_Resize )
 			{
-				m_shared.m_scr_img_rect.X = Math.Min( m_pttrn_rect_beg_x, m_pttrn_rect_end_x );
-				m_shared.m_scr_img_rect.Y = Math.Min( m_pttrn_rect_beg_y, m_pttrn_rect_end_y );
+				_image_paint.ColorFilter = m_shared.m_color_filter;
 				
-				m_shared.m_scr_img_rect.Width	= Math.Abs( m_pttrn_rect_beg_x - m_pttrn_rect_end_x ) + tile_size;
-				m_shared.m_scr_img_rect.Height	= Math.Abs( m_pttrn_rect_beg_y - m_pttrn_rect_end_y ) + tile_size;
+				utils.draw_skbitmap(	_surface.Canvas, 
+										m_sel_area_tile, 
+										Math.Min( m_pttrn_rect_beg_x, m_pttrn_rect_end_x ),
+										Math.Min( m_pttrn_rect_beg_y, m_pttrn_rect_end_y ),
+										Math.Abs( m_pttrn_rect_beg_x - m_pttrn_rect_end_x ) + tile_size,
+										Math.Abs( m_pttrn_rect_beg_y - m_pttrn_rect_end_y ) + tile_size,
+										_image_paint );
 				
-				_gfx.DrawImage( m_sel_area_tile, m_shared.m_scr_img_rect, 0, 0, tile_size_uni, tile_size_uni, GraphicsUnit.Pixel, m_shared.m_scr_img_attr );
+				_image_paint.ColorFilter = null;
 			}
 			else
 			if( m_mode == EMode.em_Pattern_Extract_Begin )
 			{
-				m_shared.m_sys_msg = "Select rectangular area, 'Esc' - cancel";
+				m_shared.sys_msg( "Select rectangular area, 'Esc' - cancel" );
 			}
 		}
 

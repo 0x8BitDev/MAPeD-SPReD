@@ -1798,7 +1798,7 @@ namespace MAPeD
 			{
 				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_TILE, _ind );
 				
-				m_tile_preview.update( m_imagelist_manager.get_tiles_image_list().Images[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
+				m_tile_preview.update( m_imagelist_manager.get_tiles_image_list()[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
 				GrpBoxActiveTile.Text = "Tile: " + String.Format( "${0:X2}", _ind );
 			}
 		}
@@ -1809,7 +1809,7 @@ namespace MAPeD
 			{
 				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_BLOCK, _ind );
 				
-				m_tile_preview.update( m_imagelist_manager.get_blocks_image_list().Images[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
+				m_tile_preview.update( m_imagelist_manager.get_blocks_image_list()[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
 				GrpBoxActiveTile.Text = "Block: " + String.Format( "${0:X2}", _ind );
 			}
 		}
@@ -2598,6 +2598,16 @@ namespace MAPeD
 #endregion		
 // LAYOUT EDITOR *************************************************************************************//
 #region layout editor
+		void TabCntrlLayoutTilesChanged_Event(object sender, EventArgs e)
+		{
+			TabPage curr_tab = ( sender as TabControl ).SelectedTab;
+			
+			if( curr_tab == TabLayout )
+			{
+				m_layout_editor.update();
+			}
+		}
+		
 		void TabControlLayoutToolsSelected_Event(object sender, TabControlEventArgs e)
 		{
 			TabPage curr_tab = ( sender as TabControl ).SelectedTab;
@@ -5143,7 +5153,7 @@ namespace MAPeD
 			m_pattern_gfx.Clear( Color.FromArgb( 0 ) );
 
 			int scr_tile_size	= utils.CONST_SCREEN_TILES_SIZE >> 1;
-			ImageList img_list;
+			List< Bitmap > img_list;
 			
 			if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 			{
@@ -5162,7 +5172,7 @@ namespace MAPeD
 			{
 				for( int tile_x = 0; tile_x < _pttrn.width; tile_x++ )
 				{
-					m_pattern_gfx.DrawImage( img_list.Images[ _pttrn.data.get_tile( tile_y * _pttrn.width + tile_x ) ], start_pos_x + tile_x * scr_tile_size, start_pos_y + tile_y * scr_tile_size, scr_tile_size, scr_tile_size );
+					m_pattern_gfx.DrawImage( img_list[ _pttrn.data.get_tile( tile_y * _pttrn.width + tile_x ) ], start_pos_x + tile_x * scr_tile_size, start_pos_y + tile_y * scr_tile_size, scr_tile_size, scr_tile_size );
 				}
 			}
 		}

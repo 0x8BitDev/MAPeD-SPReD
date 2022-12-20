@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Collections.Generic;
 
+using SkiaSharp;
 
 namespace MAPeD
 {
@@ -54,8 +55,10 @@ namespace MAPeD
 		private int			m_tile_x;
 		private int			m_tile_y;
 		
-		private int			m_ghost_tile_block_x	= -1;
-		private int			m_ghost_tile_block_y	= -1;
+		private int			m_transp_tile_block_x	= -1;
+		private int			m_transp_tile_block_y	= -1;
+		
+		private SKRectI		m_recti = new SKRectI();
 		
 		private enum ETileMode
 		{
@@ -65,7 +68,7 @@ namespace MAPeD
 		};
 		
 		private ETileMode	m_tile_mode	= ETileMode.etm_Unknown;
-
+		
 		public layout_editor_painter( string _name, layout_editor_shared_data _shared, layout_editor_base _owner ) : base( _name, _shared, _owner )
 		{
 			m_block_tiles_cache = new List< int >( platform_data.get_max_tiles_cnt() );
@@ -95,6 +98,8 @@ namespace MAPeD
 			m_shared.pix_box_reset_capture();
 			
 			update_changed_screens();
+			
+			m_shared.sys_msg( "" );
 			
 			m_owner.update();
 		}
@@ -192,10 +197,13 @@ namespace MAPeD
 			int scr_pos_x = platform_data.get_screen_width_pixels( false ) * ( m_shared.m_sel_screen_slot_id % m_shared.m_layout.get_width() );
 			int scr_pos_y = platform_data.get_screen_height_pixels( false ) * ( m_shared.m_sel_screen_slot_id / m_shared.m_layout.get_width() );
 			
-			_block_ind = ( ( x % 32 ) >> 4 ) + ( ( ( y % 32 ) >> 4 ) << 1 );
+			int dx = x - scr_pos_x;
+			int dy = y - scr_pos_y;
 			
-			int scr_tile_pos_x = ( x - scr_pos_x ) >> 5;
-			int scr_tile_pos_y = ( y - scr_pos_y ) >> 5;
+			_block_ind = ( ( dx % 32 ) >> 4 ) + ( ( ( dy % 32 ) >> 4 ) << 1 );
+			
+			int scr_tile_pos_x = dx >> 5;
+			int scr_tile_pos_y = dy >> 5;
 				
 			return scr_tile_pos_x + ( scr_tile_pos_y * platform_data.get_screen_tiles_width( false ) );
 		}
@@ -231,14 +239,14 @@ namespace MAPeD
 				
 				if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 				{
-					m_ghost_tile_block_x = _tile_x % 32;
-					m_ghost_tile_block_y = _tile_y % 32;
+					m_transp_tile_block_x = _tile_x % 32;
+					m_transp_tile_block_y = _tile_y % 32;
 					
-					_tile_x -= m_ghost_tile_block_x;
-					_tile_y -= m_ghost_tile_block_y;
+					_tile_x -= m_transp_tile_block_x;
+					_tile_y -= m_transp_tile_block_y;
 					
-					m_ghost_tile_block_x >>= 4;
-					m_ghost_tile_block_y >>= 4;
+					m_transp_tile_block_x >>= 4;
+					m_transp_tile_block_y >>= 4;
 				}
 				else
 				{
@@ -249,8 +257,8 @@ namespace MAPeD
 				_tile_x += scr_pos_x;
 				_tile_y += scr_pos_y;
 				
-				_tile_x = m_shared.transform_to_scr_pos( _tile_x + m_shared.m_offset_x, m_shared.m_scr_half_width );
-				_tile_y = m_shared.transform_to_scr_pos( _tile_y + m_shared.m_offset_y, m_shared.m_scr_half_height );
+				_tile_x = ( int )m_shared.transform_to_scr_pos( _tile_x + m_shared.m_offset_x, m_shared.m_scr_half_width );
+				_tile_y = ( int )m_shared.transform_to_scr_pos( _tile_y + m_shared.m_offset_y, m_shared.m_scr_half_height );
 				
 				return true;
 			}
@@ -265,11 +273,9 @@ namespace MAPeD
 				return false;
 			}
 
-			Region old_region = m_shared.gfx_context().Clip;
+			m_shared.gfx_context().Canvas.Save();
 			
-			build_sel_screen_rect();
-			
-			m_shared.gfx_context().Clip = new Region( m_shared.m_scr_img_rect );
+			apply_sel_screen_rect();
 			
 			int scr_glob_ind	= m_shared.get_sel_screen_ind( true );
 			int scr_local_ind	= m_shared.get_local_screen_ind( m_shared.m_CHR_bank_ind, scr_glob_ind );
@@ -300,7 +306,7 @@ namespace MAPeD
 						
 						if( tile_id < 0 )
 						{
-							m_shared.gfx_context().Clip = old_region;
+							m_shared.gfx_context().Canvas.Restore();
 							
 							return false;
 						}
@@ -309,23 +315,34 @@ namespace MAPeD
 				
 				m_shared.m_tiles_data.set_screen_tile( scr_local_ind, tile_index, ( ushort )tile_id );
 				
-				draw_tile( m_tile_x, m_tile_y, tile_id );
-
-				draw_tile_grid( 32, utils.CONST_COLOR_GRID_TILES_BRIGHT );
+				// fill the first back buffer
+				draw_tile( m_tile_x, m_tile_y, tile_id, m_shared.gfx_context().Canvas, m_shared.paint_image() );
+				draw_tile_grid( 32, utils.CONST_COLOR_GRID_TILES_BRIGHT, m_shared.gfx_context().Canvas, m_shared.paint_line() );
+				
+				// show the first back buffer and switch to the second one
+				m_owner.invalidate();
+				
+				// fill the second back buffer
+				draw_tile( m_tile_x, m_tile_y, tile_id, m_shared.gfx_context().Canvas, m_shared.paint_image() );
+				draw_tile_grid( 32, utils.CONST_COLOR_GRID_TILES_BRIGHT, m_shared.gfx_context().Canvas, m_shared.paint_line() );
 			}
 			else
 			{
 				m_shared.m_tiles_data.set_screen_tile( scr_local_ind, mode_blocks2x2_get_block2x2_ind_by_pos( _x, _y ), ( ushort )m_active_tile_id );
 				
-				draw_block( m_tile_x, m_tile_y, m_active_tile_id );
+				// fill the first back buffer
+				draw_block( m_tile_x, m_tile_y, m_active_tile_id, m_shared.gfx_context().Canvas, m_shared.paint_image() );
+				draw_tile_grid( 16, utils.CONST_COLOR_GRID_BLOCKS, m_shared.gfx_context().Canvas, m_shared.paint_line() );
 				
-				draw_tile_grid( 16, utils.CONST_COLOR_GRID_BLOCKS );
+				// show the first back buffer and switch to the second one
+				m_owner.invalidate();
+				
+				draw_block( m_tile_x, m_tile_y, m_active_tile_id, m_shared.gfx_context().Canvas, m_shared.paint_image() );
+				draw_tile_grid( 16, utils.CONST_COLOR_GRID_BLOCKS, m_shared.gfx_context().Canvas, m_shared.paint_line() );
 			}
 			
-			m_owner.invalidate();
-				
-			m_shared.gfx_context().Clip = old_region;
-
+			m_shared.gfx_context().Canvas.Restore();
+			
 			return true;
 		}
 		
@@ -388,7 +405,7 @@ namespace MAPeD
 		{
 			int i;
 			int j;	
-
+			
 			ulong tile_data;
 			
 			m_last_empty_tile_ind = m_shared.m_tiles_data.get_first_free_tile_id( false );
@@ -399,48 +416,28 @@ namespace MAPeD
 			for( i = 0; i < platform_data.get_max_tiles_cnt(); i++ )
 			{
 				tile_data = m_shared.m_tiles_data.tiles[ i ];
-
+				
 				for( j = 0; j < utils.CONST_TILE_SIZE; j++ )
 				{
 					if( utils.get_ushort_from_ulong( tile_data, j ) == _block_ind )
 					{
 						m_block_tiles_cache.Add( i );
-			
+						
 						break;
 					}
 				}
 			}
 		}
 
-		private void build_sel_screen_rect()
+		private void apply_sel_screen_rect()
 		{
-			m_shared.m_scr_img_rect.X = m_shared.screen_pos_x_by_slot_id( m_shared.get_sel_scr_pos_x() );
-			m_shared.m_scr_img_rect.Y = m_shared.screen_pos_y_by_slot_id( m_shared.get_sel_scr_pos_y() );						
+			m_recti.Left	= ( int )m_shared.screen_pos_x_by_slot_id( m_shared.get_sel_scr_pos_x() );
+			m_recti.Top		= ( int )m_shared.screen_pos_y_by_slot_id( m_shared.get_sel_scr_pos_y() );
 			
-			m_shared.m_scr_img_rect.Width	= ( int )( platform_data.get_screen_width_pixels() * m_shared.m_scale ); 
-			m_shared.m_scr_img_rect.Height	= ( int )( platform_data.get_screen_height_pixels() * m_shared.m_scale );
-
-			if( m_shared.m_scr_img_rect.X < 0 )
-			{
-				m_shared.m_scr_img_rect.Width -= -m_shared.m_scr_img_rect.X;
-				m_shared.m_scr_img_rect.X = 0;
-			}
+			m_recti.Right	= m_recti.Left + ( int )( platform_data.get_screen_width_pixels() * m_shared.m_scale );
+			m_recti.Bottom	= m_recti.Top + ( int )( platform_data.get_screen_height_pixels() * m_shared.m_scale );
 			
-			if( m_shared.m_scr_img_rect.Y < 0 )
-			{
-				m_shared.m_scr_img_rect.Height -= -m_shared.m_scr_img_rect.Y;
-				m_shared.m_scr_img_rect.Y = 0;
-			}
-			
-			if( m_shared.m_scr_img_rect.Width > m_shared.pix_box_width() )
-			{
-				m_shared.m_scr_img_rect.Width = m_shared.pix_box_width();
-			}
-
-			if( m_shared.m_scr_img_rect.Height > m_shared.pix_box_height() )
-			{
-				m_shared.m_scr_img_rect.Height = m_shared.pix_box_height();
-			}
+			m_shared.gfx_context().Canvas.ClipRect( m_recti );
 		}
 		
 		public override layout_editor_base.EHelper	default_helper()
@@ -453,109 +450,102 @@ namespace MAPeD
 			return false;
 		}
 
-		public override void draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height )
+		public override void draw( SKSurface _surface, SKPaint _line_paint, SKPaint _image_paint, float _scr_size_width, float _scr_size_height )
 		{
 			// draw ghost tile image
 			if( m_active_tile_id >= 0 )
 			{
-				Region old_region = m_shared.gfx_context().Clip;
+				_surface.Canvas.Save();
 				
-				build_sel_screen_rect();
-				
-				m_shared.gfx_context().Clip = new Region( m_shared.m_scr_img_rect );
+				apply_sel_screen_rect();
 				
 				if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 				{
 					if( m_tile_mode == ETileMode.etm_Tile )
 					{
-						draw_ghost_tile( _gfx );
+						draw_transparent_tile( _surface.Canvas, _image_paint );
 					}
 					else
 					{
-						draw_ghost_tile_block( _gfx );
+						draw_transparent_tile_block( _surface.Canvas, _image_paint );
 					}
 				}
 				else
 				{
-					draw_ghost_block( _gfx );
+					draw_transparent_block( _surface.Canvas, _image_paint );
 				}
 				
-				m_shared.gfx_context().Clip = old_region;
+				_surface.Canvas.Restore();
 			}
 		}
 
-		private void draw_ghost_tile( Graphics _gfx )
+		private void draw_transparent_tile( SKCanvas _canvas, SKPaint _image_paint )
 		{
 			int tile_size = ( int )( m_shared.m_scale * 32.0f );
 			
-			m_shared.m_scr_img_rect.X = m_tile_x;
-			m_shared.m_scr_img_rect.Y = m_tile_y;
-			
-			m_shared.m_scr_img_rect.Width = m_shared.m_scr_img_rect.Height = tile_size;
-			
-			_gfx.DrawImage( m_shared.m_tiles_imagelist.Images[ m_active_tile_id ], m_shared.m_scr_img_rect, 0, 0, utils.CONST_TILES_IMG_SIZE, utils.CONST_TILES_IMG_SIZE, GraphicsUnit.Pixel, m_shared.m_scr_img_attr );
+			_image_paint.ColorFilter = m_shared.m_color_filter;
+			{
+				utils.draw_skbitmap( _canvas, m_shared.m_image_cache.get( m_shared.m_tiles_imagelist[ m_active_tile_id ] ), m_tile_x, m_tile_y, tile_size, tile_size, _image_paint );
+			}
+			_image_paint.ColorFilter = null;
 		}
 		
-		private void draw_ghost_tile_block( Graphics _gfx )
+		private void draw_transparent_tile_block( SKCanvas _canvas, SKPaint _image_paint )
 		{
 			int tile_size = ( int )( m_shared.m_scale * 16.0f );
 			
-			m_shared.m_scr_img_rect.X	= m_tile_x + ( m_ghost_tile_block_x * tile_size );
-			m_shared.m_scr_img_rect.Y	= m_tile_y + ( m_ghost_tile_block_y * tile_size );
-			
-			m_shared.m_scr_img_rect.Width = m_shared.m_scr_img_rect.Height = tile_size;
-
-			_gfx.DrawImage( m_shared.m_blocks_imagelist.Images[ m_active_tile_id ], m_shared.m_scr_img_rect, 0, 0, utils.CONST_BLOCKS_IMG_SIZE, utils.CONST_BLOCKS_IMG_SIZE, GraphicsUnit.Pixel, m_shared.m_scr_img_attr );
+			_image_paint.ColorFilter = m_shared.m_color_filter;
+			{
+				utils.draw_skbitmap(_canvas,
+									m_shared.m_image_cache.get( m_shared.m_blocks_imagelist[ m_active_tile_id ] ),
+									m_tile_x + ( m_transp_tile_block_x * tile_size ),
+									m_tile_y + ( m_transp_tile_block_y * tile_size ),
+									tile_size,
+									tile_size,
+									_image_paint );
+			}
+			_image_paint.ColorFilter = null;
 		}
 		
-		private void draw_ghost_block( Graphics _gfx )
+		private void draw_transparent_block( SKCanvas _canvas, SKPaint _image_paint )
 		{
 			int tile_size = ( int )( m_shared.m_scale * 16.0f );
 			
-			m_shared.m_scr_img_rect.X	= m_tile_x;
-			m_shared.m_scr_img_rect.Y	= m_tile_y;
-			
-			m_shared.m_scr_img_rect.Width = m_shared.m_scr_img_rect.Height = tile_size;
-			
-			_gfx.DrawImage( m_shared.m_blocks_imagelist.Images[ m_active_tile_id ], m_shared.m_scr_img_rect, 0, 0, utils.CONST_BLOCKS_IMG_SIZE, utils.CONST_BLOCKS_IMG_SIZE, GraphicsUnit.Pixel, m_shared.m_scr_img_attr );
+			_image_paint.ColorFilter = m_shared.m_color_filter;
+			{
+				utils.draw_skbitmap( _canvas, m_shared.m_image_cache.get( m_shared.m_blocks_imagelist[ m_active_tile_id ] ), m_tile_x, m_tile_y, tile_size, tile_size, _image_paint );
+			}
+			_image_paint.ColorFilter = null;
 		}
 
-		private void draw_tile( int _x, int _y, int _tile_id )
+		private void draw_tile( int _x, int _y, int _tile_id, SKCanvas _canvas, SKPaint _image_paint )
 		{
 			int size = ( int )( m_shared.m_scale * 32.0f );
 			
-			m_shared.gfx_context().DrawImage(	m_shared.m_tiles_imagelist.Images[ _tile_id ],
-												_x,
-												_y,
-												size,
-												size );
+			utils.draw_skbitmap( _canvas, m_shared.m_image_cache.get( m_shared.m_tiles_imagelist[ _tile_id ] ), _x, _y, size, size, _image_paint );
 		}
 		
-		private void draw_block( int _x, int _y, int _tile_id )
+		private void draw_block( int _x, int _y, int _tile_id, SKCanvas _canvas, SKPaint _image_paint )
 		{
 			int size = ( int )( m_shared.m_scale * 16.0f );
 			
-			m_shared.gfx_context().DrawImage(	m_shared.m_blocks_imagelist.Images[ _tile_id ],
-												_x,
-												_y,
-												size,
-												size );
+			utils.draw_skbitmap( _canvas, m_shared.m_image_cache.get( m_shared.m_blocks_imagelist[ _tile_id ] ), _x, _y, size, size, _image_paint );
 		}
 		
-		private void draw_tile_grid( int _tile_size, Color _clr )
+		private void draw_tile_grid( int _tile_size, SKColor _clr, SKCanvas _canvas, SKPaint _line_paint )
 		{
 			if( m_owner.show_grid && ( m_shared.m_scale >= 1.0 ) )
 			{
-				utils.pen.Width = 1;
-				utils.pen.Color = _clr;
+				_line_paint.StrokeWidth = 1;
+				_line_paint.Color = _clr;
 				
 				int tile_size = ( int )( m_shared.m_scale * _tile_size );
 				
 				int pdx = m_tile_x + tile_size;
 				int pdy = m_tile_y + tile_size;
 				
-				m_shared.gfx_context().DrawLine( utils.pen, m_tile_x, pdy, pdx, pdy );
-				m_shared.gfx_context().DrawLine( utils.pen, pdx, m_tile_y, pdx, pdy );
+				_canvas.DrawLine( m_tile_x, m_tile_y, pdx, m_tile_y, _line_paint );
+				_canvas.DrawLine( pdx, m_tile_y, pdx, pdy, _line_paint );
 			}
 		}
 		

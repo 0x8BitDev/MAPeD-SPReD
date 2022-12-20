@@ -315,7 +315,7 @@ namespace MAPeD
 			this.BtnPatternDelete = new System.Windows.Forms.Button();
 			this.BtnPatternReset = new System.Windows.Forms.Button();
 			this.PBoxPatternPreview = new System.Windows.Forms.PictureBox();
-			this.PBoxLayout = new System.Windows.Forms.PictureBox();
+			this.PBoxLayout = new SkiaSharp.Views.Desktop.SKGLControl();
 			this.ContextMenuLayoutEditor = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.LayoutEntityOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LayoutBringFrontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -485,7 +485,6 @@ namespace MAPeD
 			this.groupBox4.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PBoxPatternPreview)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.PBoxLayout)).BeginInit();
 			this.ContextMenuLayoutEditor.SuspendLayout();
 			this.ContextMenuTilesList.SuspendLayout();
 			this.ContextMenuBlocksList.SuspendLayout();
@@ -1276,6 +1275,7 @@ namespace MAPeD
 			this.tabControlTilesLayout.SelectedIndex = 0;
 			this.tabControlTilesLayout.Size = new System.Drawing.Size(1244, 647);
 			this.tabControlTilesLayout.TabIndex = 60;
+			this.tabControlTilesLayout.SelectedIndexChanged += new System.EventHandler(this.TabCntrlLayoutTilesChanged_Event);
 			this.tabControlTilesLayout.DoubleClick += new System.EventHandler(this.TabCntrlDblClick_Event);
 			// 
 			// TabTiles
@@ -3375,9 +3375,8 @@ namespace MAPeD
 			this.PBoxLayout.Location = new System.Drawing.Point(0, 0);
 			this.PBoxLayout.Name = "PBoxLayout";
 			this.PBoxLayout.Size = new System.Drawing.Size(924, 615);
-			this.PBoxLayout.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-			this.PBoxLayout.TabIndex = 99;
-			this.PBoxLayout.TabStop = false;
+			this.PBoxLayout.TabIndex = 0;
+			this.PBoxLayout.VSync = false;
 			// 
 			// ContextMenuLayoutEditor
 			// 
@@ -3393,7 +3392,7 @@ namespace MAPeD
 									this.SetScreenMarkToolStripMenuItem,
 									this.adjacentScreensDirectionToolStripMenuItem});
 			this.ContextMenuLayoutEditor.Name = "ContextMenuLayoutEditor";
-			this.ContextMenuLayoutEditor.Size = new System.Drawing.Size(196, 176);
+			this.ContextMenuLayoutEditor.Size = new System.Drawing.Size(234, 176);
 			// 
 			// LayoutEntityOrderToolStripMenuItem
 			// 
@@ -3401,7 +3400,7 @@ namespace MAPeD
 									this.LayoutBringFrontToolStripMenuItem,
 									this.LayoutSendBackToolStripMenuItem});
 			this.LayoutEntityOrderToolStripMenuItem.Name = "LayoutEntityOrderToolStripMenuItem";
-			this.LayoutEntityOrderToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.LayoutEntityOrderToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.LayoutEntityOrderToolStripMenuItem.Text = "Entity Order";
 			// 
 			// LayoutBringFrontToolStripMenuItem
@@ -3421,50 +3420,50 @@ namespace MAPeD
 			// toolStripSeparator29
 			// 
 			this.toolStripSeparator29.Name = "toolStripSeparator29";
-			this.toolStripSeparator29.Size = new System.Drawing.Size(192, 6);
+			this.toolStripSeparator29.Size = new System.Drawing.Size(230, 6);
 			// 
 			// LayoutDeleteEntityToolStripMenuItem
 			// 
 			this.LayoutDeleteEntityToolStripMenuItem.Name = "LayoutDeleteEntityToolStripMenuItem";
-			this.LayoutDeleteEntityToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.LayoutDeleteEntityToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.LayoutDeleteEntityToolStripMenuItem.Text = "Delete Selected Entity";
 			this.LayoutDeleteEntityToolStripMenuItem.Click += new System.EventHandler(this.LayoutDeleteEntityToolStripMenuItemClick_Event);
 			// 
 			// LayoutDeleteScreenToolStripMenuItem
 			// 
 			this.LayoutDeleteScreenToolStripMenuItem.Name = "LayoutDeleteScreenToolStripMenuItem";
-			this.LayoutDeleteScreenToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.LayoutDeleteScreenToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.LayoutDeleteScreenToolStripMenuItem.Text = "Delete Selected Screen(s)";
 			this.LayoutDeleteScreenToolStripMenuItem.Click += new System.EventHandler(this.LayoutDeleteScreenToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator19
 			// 
 			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(192, 6);
+			this.toolStripSeparator19.Size = new System.Drawing.Size(230, 6);
 			// 
 			// LayoutDeleteScreenEntitiesToolStripMenuItem
 			// 
 			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Name = "LayoutDeleteScreenEntitiesToolStripMenuItem";
-			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Text = "Delete Selected Screen Entities";
 			this.LayoutDeleteScreenEntitiesToolStripMenuItem.Click += new System.EventHandler(this.LayoutDeleteScreenEntitiesToolStripMenuItemClick_Event);
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(192, 6);
+			this.toolStripSeparator7.Size = new System.Drawing.Size(230, 6);
 			// 
 			// SetStartScreenMarkToolStripMenuItem
 			// 
 			this.SetStartScreenMarkToolStripMenuItem.Name = "SetStartScreenMarkToolStripMenuItem";
-			this.SetStartScreenMarkToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.SetStartScreenMarkToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.SetStartScreenMarkToolStripMenuItem.Text = "Set Start Screen Mark";
 			this.SetStartScreenMarkToolStripMenuItem.Click += new System.EventHandler(this.SetStartScreenMarkToolStripMenuItemClick_Event);
 			// 
 			// SetScreenMarkToolStripMenuItem
 			// 
 			this.SetScreenMarkToolStripMenuItem.Name = "SetScreenMarkToolStripMenuItem";
-			this.SetScreenMarkToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.SetScreenMarkToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.SetScreenMarkToolStripMenuItem.Text = "Set Screen Property";
 			this.SetScreenMarkToolStripMenuItem.Click += new System.EventHandler(this.SetScreenMarkToolStripMenuItemClick_Event);
 			// 
@@ -3488,7 +3487,7 @@ namespace MAPeD
 									this.AdjScrMaskLUDToolStripMenuItem,
 									this.AdjScrMaskLURDToolStripMenuItem});
 			this.adjacentScreensDirectionToolStripMenuItem.Name = "adjacentScreensDirectionToolStripMenuItem";
-			this.adjacentScreensDirectionToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.adjacentScreensDirectionToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.adjacentScreensDirectionToolStripMenuItem.Text = "Adjacent Screens Mask";
 			// 
 			// AdjScrMaskNoneToolStripMenuItem
@@ -3972,7 +3971,6 @@ namespace MAPeD
 			this.TabLayout.ResumeLayout(false);
 			this.splitContainer5.Panel1.ResumeLayout(false);
 			this.splitContainer5.Panel2.ResumeLayout(false);
-			this.splitContainer5.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).EndInit();
 			this.splitContainer5.ResumeLayout(false);
 			this.tabControlLayoutTools.ResumeLayout(false);
@@ -4030,7 +4028,6 @@ namespace MAPeD
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PBoxPatternPreview)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.PBoxLayout)).EndInit();
 			this.ContextMenuLayoutEditor.ResumeLayout(false);
 			this.ContextMenuTilesList.ResumeLayout(false);
 			this.ContextMenuBlocksList.ResumeLayout(false);
@@ -4042,6 +4039,7 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private SkiaSharp.Views.Desktop.SKGLControl PBoxLayout;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
 		private System.Windows.Forms.ToolStripMenuItem LayoutDeleteScreenEntitiesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteAllInstancesToolStripMenuItem;
@@ -4308,7 +4306,6 @@ namespace MAPeD
 		private System.Windows.Forms.Button BtnLayoutRemoveRightColumn;
 		private System.Windows.Forms.Button BtnUpdateScreens;
 		private System.Windows.Forms.ListView ListViewScreens;
-		private System.Windows.Forms.PictureBox PBoxLayout;
 		private System.Windows.Forms.Button BtnLayoutAddUpRow;
 		private System.Windows.Forms.ToolStripMenuItem clearRefsBlockToolStripMenuItem;
 		private System.Windows.Forms.SaveFileDialog Project_exportFileDialog;

@@ -6,8 +6,8 @@
  */
 using System;
 using System.Windows.Forms;
-using System.Drawing;
 
+using SkiaSharp;
 
 namespace MAPeD
 {
@@ -119,39 +119,38 @@ namespace MAPeD
 			return false;
 		}
 
-		public override void draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height )
+		public override void draw( SKSurface _surface, SKPaint _line_paint, SKPaint _image_paint, float _scr_size_width, float _scr_size_height )
 		{
 			if( m_active_screen_index != layout_data.CONST_EMPTY_CELL_ID )
 			{
-				m_shared.m_sys_msg = "'Esc' - cancel selection";
+				m_shared.sys_msg( "'Esc' - cancel selection" );
 				
 				if( m_shared.m_sel_screen_slot_id >= 0 )
 				{
-					int x = m_shared.screen_pos_x_by_slot_id( m_shared.get_sel_scr_pos_x() );
-					int y = m_shared.screen_pos_y_by_slot_id( m_shared.get_sel_scr_pos_y() );
+					int x = ( int )m_shared.screen_pos_x_by_slot_id( m_shared.get_sel_scr_pos_x() );
+					int y = ( int )m_shared.screen_pos_y_by_slot_id( m_shared.get_sel_scr_pos_y() );
 					
 					// draw a transparent screen image
 					if( m_shared.m_scr_list.count() > 0 )
 					{
-						m_shared.m_scr_img_rect.X 		= x;
-						m_shared.m_scr_img_rect.Y 		= y;
-						m_shared.m_scr_img_rect.Width	= _scr_size_width;
-						m_shared.m_scr_img_rect.Height 	= _scr_size_height;
+						_image_paint.ColorFilter = m_shared.m_color_filter;
 						
-						_gfx.DrawImage( m_shared.m_scr_list.get( m_active_screen_index ), m_shared.m_scr_img_rect, 0, 0, platform_data.get_screen_width_pixels() << 1, platform_data.get_screen_height_pixels() << 1, GraphicsUnit.Pixel, m_shared.m_scr_img_attr );
+						utils.draw_skbitmap( _surface.Canvas, m_shared.m_scr_list.get_skbitmap( m_active_screen_index ), x, y, _scr_size_width, _scr_size_height, _image_paint );
+						
+						_image_paint.ColorFilter = null;
 					}
 					
 					// draw screen border 
-					_pen.Width = 2;
-					_pen.Color = utils.CONST_COLOR_SCREEN_GHOST_IMAGE_BORDER;
+					_line_paint.StrokeWidth = 2;
+					_line_paint.Color = utils.CONST_COLOR_SCREEN_TRANSPARENT_BORDER;
 					
-					_gfx.DrawRectangle( _pen, x, y, _scr_size_width, _scr_size_height );
+					_surface.Canvas.DrawRect( x, y, _scr_size_width, _scr_size_height, _line_paint );
 				}
 			}
-
+			
 			m_shared.print( m_sel_scr_msg, 0, 10 );
 		}
-
+		
 		public override Object get_param( uint _param )
 		{
 			//throw new Exception( "Unknown parameter detected!\n\n[layout_editor_screen_list.get_param]" );

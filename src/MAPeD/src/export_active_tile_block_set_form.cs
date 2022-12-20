@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace MAPeD
 {
@@ -29,7 +30,7 @@ namespace MAPeD
 			//
 		}
 		
-		public void export( string _filename, tiles_data _data, ImageList _tiles_imgs, ImageList _blocks_imgs )
+		public void export( string _filename, tiles_data _data, List< Bitmap > _tiles_imgs, List< Bitmap > _blocks_imgs )
 		{
 			if( RBtnTiles.Checked )
 			{
@@ -41,7 +42,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void export_tiles_blocks_data( int _tiles_cnt, int _data_size, ImageList _image_list, string _filename )
+		private void export_tiles_blocks_data( int _tiles_cnt, int _data_size, List< Bitmap > _image_list, string _filename )
 		{
 			int num_active_tiles;
 			int tiles_width;
@@ -68,7 +69,7 @@ namespace MAPeD
 				x = i % tiles_width;
 				y = ( int )Math.Floor( ( float )i / tiles_width );
 				
-				gfx.DrawImage( _image_list.Images[ i ], x * _data_size, y * _data_size, _data_size, _data_size );
+				gfx.DrawImage( _image_list[ i ], x * _data_size, y * _data_size, _data_size, _data_size );
 			}
 			
 			bmp.Save( _filename, ImageFormat.Bmp );

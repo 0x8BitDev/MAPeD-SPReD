@@ -6,8 +6,8 @@
  */
 using System;
 using System.Windows.Forms;
-using System.Drawing;
 
+using SkiaSharp;
 
 namespace MAPeD
 {
@@ -68,7 +68,7 @@ namespace MAPeD
 			return false;
 		}
 
-		public override void draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height )
+		public override void draw( SKSurface _surface, SKPaint _line_paint, SKPaint _image_paint, float _scr_size_width, float _scr_size_height )
 		{
 			//...
 		}

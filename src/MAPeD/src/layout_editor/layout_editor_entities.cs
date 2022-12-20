@@ -8,8 +8,8 @@
  
 using System;
 using System.Windows.Forms;
-using System.Drawing;
 
+using SkiaSharp;
 
 namespace MAPeD
 {
@@ -80,8 +80,8 @@ namespace MAPeD
 						int scr_pos_x = m_shared.get_sel_scr_pos_x();
 						int scr_pos_y = m_shared.get_sel_scr_pos_y();
 						
-						int scr_pos_x_pix = m_shared.screen_pos_x_by_slot_id( scr_pos_x );
-						int scr_pos_y_pix = m_shared.screen_pos_y_by_slot_id( scr_pos_y );
+						int scr_pos_x_pix = ( int )m_shared.screen_pos_x_by_slot_id( scr_pos_x );
+						int scr_pos_y_pix = ( int )m_shared.screen_pos_y_by_slot_id( scr_pos_y );
 						
 						int mouse_scr_pos_x = ( int )( ( e.X - scr_pos_x_pix ) / m_shared.m_scale );
 						int mouse_scr_pos_y = ( int )( ( e.Y - scr_pos_y_pix ) / m_shared.m_scale );
@@ -145,8 +145,8 @@ namespace MAPeD
 										//System.Diagnostics.Debug.WriteLine( scr_ind );
 										
 										// convert a cursor position into checked screen space
-										scr_pos_x_pix = m_shared.screen_pos_x_by_slot_id( scr_mod_x_ind );
-										scr_pos_y_pix = m_shared.screen_pos_y_by_slot_id( scr_mod_y_ind );
+										scr_pos_x_pix = ( int )m_shared.screen_pos_x_by_slot_id( scr_mod_x_ind );
+										scr_pos_y_pix = ( int )m_shared.screen_pos_y_by_slot_id( scr_mod_y_ind );
 										
 										mouse_scr_pos_x = ( int )( ( e.X - scr_pos_x_pix ) / m_shared.m_scale );
 										mouse_scr_pos_y = ( int )( ( e.Y - scr_pos_y_pix ) / m_shared.m_scale );
@@ -349,8 +349,8 @@ namespace MAPeD
 				
 				if( valid_pos == true && check_entity_pos( ref ent_pos_x, ref ent_pos_y, _ent_data ) )
 				{
-					int scr_pos_x_pix = m_shared.screen_pos_x_by_slot_id( scr_pos_x );
-					int scr_pos_y_pix = m_shared.screen_pos_y_by_slot_id( scr_pos_y );
+					int scr_pos_x_pix = ( int )m_shared.screen_pos_x_by_slot_id( scr_pos_x );
+					int scr_pos_y_pix = ( int )m_shared.screen_pos_y_by_slot_id( scr_pos_y );
 					
 					ent_pos_x = ( int )( ( ent_pos_x - scr_pos_x_pix ) / m_shared.m_scale );
 					ent_pos_y = ( int )( ( ent_pos_y - scr_pos_y_pix ) / m_shared.m_scale );
@@ -393,8 +393,8 @@ namespace MAPeD
 				
 				if( valid_pos == true && check_entity_pos( ref ent_pos_x, ref ent_pos_y, _ent_inst.base_entity ) )
 				{
-					int scr_pos_x_pix = m_shared.screen_pos_x_by_slot_id( scr_pos_x );
-					int scr_pos_y_pix = m_shared.screen_pos_y_by_slot_id( scr_pos_y );
+					int scr_pos_x_pix = ( int )m_shared.screen_pos_x_by_slot_id( scr_pos_x );
+					int scr_pos_y_pix = ( int )m_shared.screen_pos_y_by_slot_id( scr_pos_y );
 					
 					ent_pos_x = ( int )( ( ent_pos_x - scr_pos_x_pix ) / m_shared.m_scale );
 					ent_pos_y = ( int )( ( ent_pos_y - scr_pos_y_pix ) / m_shared.m_scale );
@@ -439,22 +439,22 @@ namespace MAPeD
 			
 			if( ( ent_img_pos_x - _ent.pivot_x ) < 0 )
 			{
-				_ent_pos_x = m_shared.transform_to_scr_pos( _ent.pivot_x + m_shared.m_offset_x, m_shared.m_scr_half_width );
+				_ent_pos_x = ( int )m_shared.transform_to_scr_pos( _ent.pivot_x + m_shared.m_offset_x, m_shared.m_scr_half_width );
 			}
 			
 			if( ( ent_img_pos_x - _ent.pivot_x ) + _ent.width > layout_width )
 			{
-				_ent_pos_x = m_shared.transform_to_scr_pos( ( layout_width - _ent.width + _ent.pivot_x ) + m_shared.m_offset_x, m_shared.m_scr_half_width );
+				_ent_pos_x = ( int )m_shared.transform_to_scr_pos( ( layout_width - _ent.width + _ent.pivot_x ) + m_shared.m_offset_x, m_shared.m_scr_half_width );
 			}
 			
 			if( ( ent_img_pos_y - _ent.pivot_y ) < 0 )
 			{
-				_ent_pos_y = m_shared.transform_to_scr_pos( _ent.pivot_y + m_shared.m_offset_y, m_shared.m_scr_half_height );
+				_ent_pos_y = ( int )m_shared.transform_to_scr_pos( _ent.pivot_y + m_shared.m_offset_y, m_shared.m_scr_half_height );
 			}
 			
 			if( ( ent_img_pos_y - _ent.pivot_y ) + _ent.height > layout_height )
 			{
-				_ent_pos_y = m_shared.transform_to_scr_pos( ( layout_height - _ent.height + _ent.pivot_y ) + m_shared.m_offset_y, m_shared.m_scr_half_height );
+				_ent_pos_y = ( int )m_shared.transform_to_scr_pos( ( layout_height - _ent.height + _ent.pivot_y ) + m_shared.m_offset_y, m_shared.m_scr_half_height );
 			}
 			
 			return valid_pos;
@@ -478,8 +478,8 @@ namespace MAPeD
 				
 				if( _pix_space == true )
 				{
-					_x = m_shared.transform_to_scr_pos( img_x, m_shared.m_scr_half_width );
-					_y = m_shared.transform_to_scr_pos( img_y, m_shared.m_scr_half_height );
+					_x = ( int )m_shared.transform_to_scr_pos( img_x, m_shared.m_scr_half_width );
+					_y = ( int )m_shared.transform_to_scr_pos( img_y, m_shared.m_scr_half_height );
 					
 					_x += ( int )( m_shared.m_offset_x * m_shared.m_scale );
 					_y += ( int )( m_shared.m_offset_y * m_shared.m_scale );
@@ -543,7 +543,23 @@ namespace MAPeD
 			return false;
 		}
 
-		public override void draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height )
+		private void draw_pivot( int _pivot_x, int _pivot_y, SKCanvas _canvas, SKPaint _line_paint )
+		{
+			_line_paint.Color = utils.CONST_COLOR_ENTITY_PIVOT;
+			{
+				int line_scale = ( int )( 8 * m_shared.m_scale );
+				
+				_canvas.DrawLine( _pivot_x - line_scale, _pivot_y, _pivot_x + line_scale, _pivot_y, _line_paint );
+				_canvas.DrawLine( _pivot_x, _pivot_y - line_scale, _pivot_x, _pivot_y + line_scale, _line_paint );
+			}
+		}
+		
+		private void show_pivot_coords( int _ent_pivot_x, int _ent_pivot_y, int _ent_scr_pos_x, int _ent_scr_pos_y )
+		{
+			m_shared.print( "(" + _ent_pivot_x + "," + _ent_pivot_y + ")", _ent_scr_pos_x, _ent_scr_pos_y - 15 );
+		}
+		
+		public override void draw( SKSurface _surface, SKPaint _line_paint, SKPaint _image_paint, float _scr_size_width, float _scr_size_height )
 		{
 			int x;
 			int y;
@@ -575,33 +591,33 @@ namespace MAPeD
 #endif					
 						if( m_shared.m_sel_screen_slot_id >= 0 && m_shared.m_layout.get_data( m_shared.get_sel_scr_pos_x(), m_shared.get_sel_scr_pos_y() ).m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 						{
-							_gfx.DrawImage( m_ent_data.bitmap, ent_pos_x, ent_pos_y, ent_width, ent_height );
+							utils.draw_skbitmap( _surface.Canvas, m_shared.m_image_cache.get( m_ent_data.bitmap ), ent_pos_x, ent_pos_y, ent_width, ent_height, _image_paint );
 							
-							_pen.Color = utils.CONST_COLOR_ENTITY_BORDER_EDIT_ENT_MODE;
-							_pen.Width = 2;
+							_line_paint.Color = utils.CONST_COLOR_ENTITY_BORDER_EDIT_ENT_MODE;
+							_line_paint.StrokeWidth = 2;
 							{
-								_gfx.DrawRectangle( _pen, ent_pos_x, ent_pos_y, ent_width, ent_height );
+								_surface.Canvas.DrawRect( ent_pos_x, ent_pos_y, ent_width, ent_height, _line_paint );
 							}
 							
-							m_shared.draw_pivot( ent_pos_x + ent_pivot_x, ent_pos_y + ent_pivot_y );
+							draw_pivot( ent_pos_x + ent_pivot_x, ent_pos_y + ent_pivot_y, _surface.Canvas, _line_paint );
 							
 							if( m_owner.show_coords )
 							{
 								int img_ent_pos_x = m_shared.transform_to_img_pos( ent_pos_x, m_shared.m_offset_x, m_shared.m_scr_half_width );
 								int img_ent_pos_y = m_shared.transform_to_img_pos( ent_pos_y, m_shared.m_offset_y, m_shared.m_scr_half_height );
 								
-								m_shared.show_pivot_coords( img_ent_pos_x + m_ent_data.pivot_x, img_ent_pos_y + m_ent_data.pivot_y, ent_pos_x, ent_pos_y );
+								show_pivot_coords( img_ent_pos_x + m_ent_data.pivot_x, img_ent_pos_y + m_ent_data.pivot_y, ent_pos_x, ent_pos_y );
 							}
 						}
 						else
 						{
-							_pen.Color = utils.CONST_COLOR_ENTITY_BORDER_EDIT_ENT_MODE;
-							_pen.Width = 2;
+							_line_paint.Color = utils.CONST_COLOR_ENTITY_BORDER_EDIT_ENT_MODE;
+							_line_paint.StrokeWidth = 2;
 							{
-								_gfx.DrawRectangle( _pen, ent_pos_x, ent_pos_y, ent_width, ent_height );
+								_surface.Canvas.DrawRect( ent_pos_x, ent_pos_y, ent_width, ent_height, _line_paint );
 							}
 							
-							m_shared.draw_pivot( ent_pos_x + ent_pivot_x, ent_pos_y + ent_pivot_y );
+							draw_pivot( ent_pos_x + ent_pivot_x, ent_pos_y + ent_pivot_y, _surface.Canvas, _line_paint );
 						}
 					}
 					
@@ -632,7 +648,7 @@ namespace MAPeD
 						
 						if( m_ent_inst_screen_slot_id >= 0 )
 						{
-							_pen.Width = 2;
+							_line_paint.StrokeWidth = 2;
 							{
 								int scr_pos_x = m_ent_inst_screen_slot_id % m_shared.m_layout.get_width();
 								int scr_pos_y = m_ent_inst_screen_slot_id / m_shared.m_layout.get_width();
@@ -641,53 +657,53 @@ namespace MAPeD
 								{
 									// draw active screen border
 									{
-										x = m_shared.screen_pos_x_by_slot_id( m_shared.get_sel_scr_pos_x() );
-										y = m_shared.screen_pos_y_by_slot_id( m_shared.get_sel_scr_pos_y() );
+										x = ( int )m_shared.screen_pos_x_by_slot_id( m_shared.get_sel_scr_pos_x() );
+										y = ( int )m_shared.screen_pos_y_by_slot_id( m_shared.get_sel_scr_pos_y() );
 										
-										_pen.Color = utils.CONST_COLOR_SCREEN_ACTIVE;
-										_gfx.DrawRectangle( _pen, x, y, _scr_size_width, _scr_size_height );
+										_line_paint.Color = utils.CONST_COLOR_SCREEN_ACTIVE;
+										_surface.Canvas.DrawRect( x, y, _scr_size_width, _scr_size_height, _line_paint );
 									}
 
 									// draw initial entity position as a border
 									{
-										_pen.Color = utils.CONST_COLOR_SELECTED_ENTITY_BORDER;
+										_line_paint.Color = utils.CONST_COLOR_SELECTED_ENTITY_BORDER;
 										
-										x = m_shared.screen_pos_x_by_slot_id( m_ent_inst_init_screen_slot_id % m_shared.m_layout.get_width() );
-										y = m_shared.screen_pos_y_by_slot_id( m_ent_inst_init_screen_slot_id / m_shared.m_layout.get_width() );
+										x = ( int )m_shared.screen_pos_x_by_slot_id( m_ent_inst_init_screen_slot_id % m_shared.m_layout.get_width() );
+										y = ( int )m_shared.screen_pos_y_by_slot_id( m_ent_inst_init_screen_slot_id / m_shared.m_layout.get_width() );
 										
-										_gfx.DrawRectangle( _pen, x + ( m_ent_inst.x * m_shared.m_scale ), y + ( m_ent_inst.y * m_shared.m_scale ), ent_width, ent_height );
+										_surface.Canvas.DrawRect( x + ( m_ent_inst.x * m_shared.m_scale ), y + ( m_ent_inst.y * m_shared.m_scale ), ent_width, ent_height, _line_paint );
 									}
 									
-									_pen.Color = utils.CONST_COLOR_ENTITY_BORDER_EDIT_INST_MODE;
-									_gfx.DrawRectangle( _pen, capt_pos_x, capt_pos_y, ent_width, ent_height );
+									_line_paint.Color = utils.CONST_COLOR_ENTITY_BORDER_EDIT_INST_MODE;
+									_surface.Canvas.DrawRect( capt_pos_x, capt_pos_y, ent_width, ent_height, _line_paint );
 									
-									m_shared.draw_pivot( capt_pos_x + pivot_x, capt_pos_y + pivot_y );
+									draw_pivot( capt_pos_x + pivot_x, capt_pos_y + pivot_y, _surface.Canvas, _line_paint );
 									
 									if( m_owner.show_coords )
 									{
 										int img_capt_pos_x = m_shared.transform_to_img_pos( capt_pos_x, m_shared.m_offset_x, m_shared.m_scr_half_width );
 										int img_capt_pos_y = m_shared.transform_to_img_pos( capt_pos_y, m_shared.m_offset_y, m_shared.m_scr_half_height );
 										
-										m_shared.show_pivot_coords( img_capt_pos_x + m_ent_inst.base_entity.pivot_x, img_capt_pos_y + m_ent_inst.base_entity.pivot_y, capt_pos_x, capt_pos_y );
+										show_pivot_coords( img_capt_pos_x + m_ent_inst.base_entity.pivot_x, img_capt_pos_y + m_ent_inst.base_entity.pivot_y, capt_pos_x, capt_pos_y );
 									}
 								}
 								else
 								{
-									_pen.Color = utils.CONST_COLOR_SELECTED_ENTITY_BORDER;
+									_line_paint.Color = utils.CONST_COLOR_SELECTED_ENTITY_BORDER;
 									
-									int scr_pos_x_pix = m_shared.screen_pos_x_by_slot_id( scr_pos_x );
-									int scr_pos_y_pix = m_shared.screen_pos_y_by_slot_id( scr_pos_y );
+									int scr_pos_x_pix = ( int )m_shared.screen_pos_x_by_slot_id( scr_pos_x );
+									int scr_pos_y_pix = ( int )m_shared.screen_pos_y_by_slot_id( scr_pos_y );
 									
 									int ent_scr_pos_x = scr_pos_x_pix + ( int )( m_ent_inst.x * m_shared.m_scale );
 									int ent_scr_pos_y = scr_pos_y_pix + ( int )( m_ent_inst.y * m_shared.m_scale );
 									
-									_gfx.DrawRectangle( _pen, ent_scr_pos_x, ent_scr_pos_y, ent_width, ent_height );
+									_surface.Canvas.DrawRect( ent_scr_pos_x, ent_scr_pos_y, ent_width, ent_height, _line_paint );
 									
-									m_shared.draw_pivot( ent_scr_pos_x + pivot_x, ent_scr_pos_y + pivot_y );
+									draw_pivot( ent_scr_pos_x + pivot_x, ent_scr_pos_y + pivot_y, _surface.Canvas, _line_paint );
 									
 									if( m_owner.show_coords )
 									{
-										m_shared.show_pivot_coords( ( scr_pos_x * platform_data.get_screen_width_pixels() ) + m_ent_inst.x + m_ent_inst.base_entity.pivot_x, ( scr_pos_y * platform_data.get_screen_height_pixels() ) + m_ent_inst.y + m_ent_inst.base_entity.pivot_y, ent_scr_pos_x, ent_scr_pos_y );
+										show_pivot_coords( ( scr_pos_x * platform_data.get_screen_width_pixels() ) + m_ent_inst.x + m_ent_inst.base_entity.pivot_x, ( scr_pos_y * platform_data.get_screen_height_pixels() ) + m_ent_inst.y + m_ent_inst.base_entity.pivot_y, ent_scr_pos_x, ent_scr_pos_y );
 									}
 								}
 							}
@@ -696,10 +712,10 @@ namespace MAPeD
 						{
 							if( m_ent_inst_captured )
 							{
-								_pen.Color = utils.CONST_COLOR_ENTITY_BORDER_EDIT_INST_MODE;
-								_pen.Width = 2;
+								_line_paint.Color = utils.CONST_COLOR_ENTITY_BORDER_EDIT_INST_MODE;
+								_line_paint.StrokeWidth = 2;
 								{
-									_gfx.DrawRectangle( _pen, capt_pos_x, capt_pos_y, ent_width, ent_height );
+									_surface.Canvas.DrawRect( capt_pos_x, capt_pos_y, ent_width, ent_height, _line_paint );
 								}
 							}
 						}
@@ -720,26 +736,26 @@ namespace MAPeD
 							int scr_pos_x = m_ent_inst_screen_slot_id % m_shared.m_layout.get_width();
 							int scr_pos_y = m_ent_inst_screen_slot_id / m_shared.m_layout.get_width();
 							
-							int scr_pos_x_pix = m_shared.screen_pos_x_by_slot_id( scr_pos_x );
-							int scr_pos_y_pix = m_shared.screen_pos_y_by_slot_id( scr_pos_y );
+							int scr_pos_x_pix = ( int )m_shared.screen_pos_x_by_slot_id( scr_pos_x );
+							int scr_pos_y_pix = ( int )m_shared.screen_pos_y_by_slot_id( scr_pos_y );
 							
 							int ent_scr_pos_x = scr_pos_x_pix + ( int )( m_ent_inst.x * m_shared.m_scale );
 							int ent_scr_pos_y = scr_pos_y_pix + ( int )( m_ent_inst.y * m_shared.m_scale );
 							
-							_pen.Color = utils.CONST_COLOR_SELECTED_ENTITY_BORDER;
-							_pen.Width = 2;
+							_line_paint.Color = utils.CONST_COLOR_SELECTED_ENTITY_BORDER;
+							_line_paint.StrokeWidth = 2;
 							{
-								_gfx.DrawRectangle( _pen, ent_scr_pos_x, ent_scr_pos_y, ent_width, ent_height );
+								_surface.Canvas.DrawRect( ent_scr_pos_x, ent_scr_pos_y, ent_width, ent_height, _line_paint );
 							}
 							
 							int pivot_x = ( int )( m_ent_inst.base_entity.pivot_x * m_shared.m_scale );
 							int pivot_y = ( int )( m_ent_inst.base_entity.pivot_y * m_shared.m_scale );
 							
-							m_shared.draw_pivot( ent_scr_pos_x + pivot_x, ent_scr_pos_y + pivot_y );
+							draw_pivot( ent_scr_pos_x + pivot_x, ent_scr_pos_y + pivot_y, _surface.Canvas, _line_paint );
 							
 							if( m_owner.show_coords )
 							{
-								m_shared.show_pivot_coords( ( scr_pos_x * platform_data.get_screen_width_pixels() ) + m_ent_inst.x + m_ent_inst.base_entity.pivot_x, ( scr_pos_y * platform_data.get_screen_height_pixels() ) + m_ent_inst.y + m_ent_inst.base_entity.pivot_y, ent_scr_pos_x, ent_scr_pos_y );
+								show_pivot_coords( ( scr_pos_x * platform_data.get_screen_width_pixels() ) + m_ent_inst.x + m_ent_inst.base_entity.pivot_x, ( scr_pos_y * platform_data.get_screen_height_pixels() ) + m_ent_inst.y + m_ent_inst.base_entity.pivot_y, ent_scr_pos_x, ent_scr_pos_y );
 							}
 						}
 					}

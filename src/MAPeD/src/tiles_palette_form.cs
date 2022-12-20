@@ -7,6 +7,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace MAPeD
 {
@@ -22,8 +23,8 @@ namespace MAPeD
 		public event EventHandler BlockSelected;
 		public event EventHandler ResetActiveTile;
 		
-		private readonly ImageList m_tiles_image_list;
-		private readonly ImageList m_blocks_image_list;
+		private readonly List< Bitmap >	m_tiles_image_list;
+		private readonly List< Bitmap >	m_blocks_image_list;
 		
 		private readonly ContextMenuStrip m_cm_tiles;
 		private readonly ContextMenuStrip m_cm_blocks;
@@ -39,7 +40,7 @@ namespace MAPeD
 			set {}
 		}
 		
-		public tiles_palette_form( ImageList _tiles_image_list, ContextMenuStrip _cm_tiles, ImageList _blocks_image_list, ContextMenuStrip _cm_blocks, tile_list_manager _tl_cntnr )
+		public tiles_palette_form( List< Bitmap > _tiles_image_list, ContextMenuStrip _cm_tiles, List< Bitmap > _blocks_image_list, ContextMenuStrip _cm_blocks, tile_list_manager _tl_cntnr )
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.

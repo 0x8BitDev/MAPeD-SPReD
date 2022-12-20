@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
  * Date: 01.05.2017
  * Time: 15:24
  */
@@ -22,6 +22,11 @@ namespace MAPeD
 		{
 			try
 			{
+				if( !Environment.Is64BitProcess && !utils.CONST_DEV_BUILD_FLAG )
+				{
+					throw new Exception( "Re-compile the project for the x64 architecture!" );
+				}
+				
 				utils.check_os();
 				
 				if( utils.is_win )

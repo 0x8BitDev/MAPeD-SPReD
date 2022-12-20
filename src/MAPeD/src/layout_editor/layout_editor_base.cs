@@ -5,12 +5,12 @@
  * Time: 12:48
  */
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
 
+using SkiaSharp;
+using SkiaSharp.Views.Desktop;
 
 namespace MAPeD
 {
@@ -95,7 +95,7 @@ namespace MAPeD
 
 		public abstract bool	force_map_drawing();
 		
-		public abstract void	draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height );
+		public abstract void	draw( SKSurface _surface, SKPaint _line_paint, SKPaint _image_paint, float _scr_size_width, float _scr_size_height );
 
 		public abstract Object	get_param( uint _param );
 		public abstract bool	set_param( uint _param, Object _val );
@@ -135,24 +135,27 @@ namespace MAPeD
 		public abstract void	mouse_up( object sender, MouseEventArgs e );
 		public abstract void	mouse_move( object sender, MouseEventArgs e );
 		
-		public abstract void	draw( Graphics _gfx, Pen _pen, int _scr_size_width, int _scr_size_height );
+		public abstract void	draw( SKSurface _surface, SKPaint _line_paint, float _scr_size_width, float _scr_size_height );
 		
 		public abstract bool	check_key_code( KeyEventArgs e );
 	}
 
 	public class layout_editor_shared_data
 	{
-		public int				m_sel_screen_slot_id		= -1;
-		public HashSet< int >	m_sel_screens_slot_ids		= null;
+		public int				m_sel_screen_slot_id	= -1;
+		public HashSet< int >	m_sel_screens_slot_ids	= null;
 		
 		public layout_data		m_layout				= null;
 		
 		public i_screen_list	m_scr_list				= null;
-		public ImageList		m_tiles_imagelist		= null;
-		public ImageList		m_blocks_imagelist		= null;
+		public List< Bitmap >	m_tiles_imagelist		= null;
+		public List< Bitmap >	m_blocks_imagelist		= null;
 
-		public ImageAttributes	m_scr_img_attr			= null;
-		public Rectangle 		m_scr_img_rect;
+		public SKColorFilter	m_color_filter			= null;
+		
+		public SKRect			m_rect					= new SKRect();
+		
+		public image_cache		m_image_cache			= new image_cache();
 		
 		public float 	m_scale 			= 1;
 		public int 		m_offset_x			= 0;
@@ -172,48 +175,47 @@ namespace MAPeD
 		
 		public bool		m_high_quality_render	= true;
 
-		public string	m_sys_msg = "";
-		
 		public int			m_CHR_bank_ind	= -1;
 		public tiles_data 	m_tiles_data 	= null;
 		
 		public data_sets_manager.EScreenDataType	m_screen_data_type = data_sets_manager.EScreenDataType.sdt_Tiles4x4;
 		
 		// methods
-		public Action< bool >				set_high_quality_render_mode;
-		public Action< int, int >			draw_pivot;
-		public Action< int, int, int, int >	show_pivot_coords;
-		public Action< string, int, int >	print;
-		public Action						pix_box_reset_capture;
-		public Action						clamp_offsets;
-		public Action< string >				err_msg;
+		public Action< bool >					set_high_quality_render_mode;
+		public Action< string, int, int >		print;
+		public Action							pix_box_reset_capture;
+		public Action							clamp_offsets;
+		public Action< string >					err_msg;
+		public Action< string >					sys_msg;
 		
 		public Action< int, int, tiles_data, data_sets_manager.EScreenDataType >	update_active_bank_screen;
-		public Action< Action< int, layout_screen_data, Rectangle > >				visible_screens_data_proc;
+		public Action< Action< int, layout_screen_data, SKRect > >					visible_screens_data_proc;
 		
 		public Func< bool >					pix_box_captured;
 		public Func< int >					pix_box_width;
 		public Func< int >					pix_box_height;
 		public Func< int >					get_sel_scr_pos_x;
 		public Func< int >					get_sel_scr_pos_y;
-		public Func< int, int >				screen_pos_x_by_slot_id;
-		public Func< int, int >				screen_pos_y_by_slot_id;
+		public Func< int, float >			screen_pos_x_by_slot_id;
+		public Func< int, float >			screen_pos_y_by_slot_id;
 		public Func< bool, int >			get_sel_screen_ind;
 		
-		public Func< int, int, int >		transform_to_scr_pos;
-		public Func< int, int, int, int >	transform_to_img_pos;
+		public Func< int, int, float >		transform_to_scr_pos;
+		public Func< int, float, int, int >	transform_to_img_pos;
 		
 		public Func< int, int, int >		get_local_screen_ind;
 		public Func< int, int >				get_bank_ind_by_global_screen_ind;
 		
-		public Func< Graphics >				gfx_context;
+		public Func< SKSurface >			gfx_context;
+		public Func< SKPaint >				paint_line;
+		public Func< SKPaint >				paint_image;
 	}
 	
 	/// <summary>
 	/// Description of layout_editor_base.
 	/// </summary>
 	
-	public class layout_editor_base : drawable_base
+	public class layout_editor_base : drawable_SKGL
 	{
 		public event EventHandler MapScaleX1;
 		public event EventHandler MapScaleX2;
@@ -226,6 +228,8 @@ namespace MAPeD
 		private string	m_err_msg			= "";
 		private int		m_err_msg_upd_cnt	= 0;
 		
+		private string	m_sys_msg = "";
+		
 		private const int CONST_ERR_MSG_UPD_CNT	= 5;
 		
 		private float 	m_tmp_scale			= 1;
@@ -236,8 +240,8 @@ namespace MAPeD
 		private bool 	m_show_coords		= true;
 		private bool 	m_show_grid			= true;
 
-		private readonly Bitmap		m_scr_mark_img;
-		private readonly Graphics	m_scr_mark_gfx;
+		private readonly SKBitmap	m_scr_mark_img;
+		private readonly SKCanvas	m_scr_mark_canvas;
 		
 		private const float CONST_MIN_SCALE	= 0.1f;
 		
@@ -302,7 +306,7 @@ namespace MAPeD
 				
 				apply_default_helper();
 				
-				m_err_msg = m_shared.m_sys_msg = "";
+				m_err_msg = m_sys_msg = "";
 
 				update();
 			}
@@ -322,7 +326,7 @@ namespace MAPeD
 		private layout_editor_helper_base				m_helper		= null;
 		private readonly layout_editor_helper_base[]	m_helper_arr;
 		
-		public layout_editor_base( data_sets_manager _data_mngr, PictureBox _pbox, Label _label, imagelist_manager _img_list_mngr ) : base( _pbox )
+		public layout_editor_base( data_sets_manager _data_mngr, SKGLControl _pbox, Label _label, imagelist_manager _img_list_mngr ) : base( _pbox )
 		{
 			m_label		= _label;
 			
@@ -343,11 +347,10 @@ namespace MAPeD
 				m_shared.pix_box_captured				= pix_box_captured;
 				m_shared.pix_box_width					= pix_box_width;
 				m_shared.pix_box_height					= pix_box_height;
-				m_shared.draw_pivot						= draw_pivot;
-				m_shared.show_pivot_coords				= show_pivot_coords;
 				m_shared.print							= print;
 				m_shared.clamp_offsets					= clamp_offsets;
 				m_shared.err_msg						= err_msg;
+				m_shared.sys_msg						= sys_msg;
 				
 				m_shared.update_active_bank_screen		= _img_list_mngr.update_active_bank_screen;
 				m_shared.visible_screens_data_proc		= visible_screens_data_proc; 
@@ -364,6 +367,8 @@ namespace MAPeD
 				m_shared.get_bank_ind_by_global_screen_ind	= _data_mngr.get_bank_ind_by_global_screen_ind;
 				
 				m_shared.gfx_context					= gfx_context;
+				m_shared.paint_line						= paint_line;
+				m_shared.paint_image					= paint_image;
 			}
 			
 			m_pix_box.MouseDown 	+= new MouseEventHandler( Layout_MouseDown );
@@ -381,28 +386,14 @@ namespace MAPeD
 			
 			// screen mark data
 			{
-				m_scr_mark_img = new Bitmap( platform_data.get_screen_mark_image_size(), platform_data.get_screen_mark_image_size(), PixelFormat.Format32bppPArgb );
-				m_scr_mark_gfx = Graphics.FromImage( m_scr_mark_img );
-				
-				m_scr_mark_gfx.SmoothingMode 		= SmoothingMode.HighSpeed;
-				m_scr_mark_gfx.InterpolationMode 	= InterpolationMode.HighQualityBilinear;
-				m_scr_mark_gfx.PixelOffsetMode 		= PixelOffsetMode.HighQuality;
+				m_scr_mark_img		= new SKBitmap( platform_data.get_screen_mark_image_size(), platform_data.get_screen_mark_image_size(), utils.CONST_BMP_FORMAT, SKAlphaType.Premul );
+				m_scr_mark_canvas	= new SKCanvas( m_scr_mark_img );
 			}
 			
 			m_shared.m_scr_half_width  = m_pix_box.Width >> 1;
 			m_shared.m_scr_half_height = m_pix_box.Height >> 1;
 			
-			float[][] pts_arr = {	new float[] {1, 0, 0, 0, 0},
-									new float[] {0, 1, 0, 0, 0},
-									new float[] {0, 0, 1, 0, 0},
-									new float[] {0, 0, 0, 0.5f, 0},
-									new float[] {0, 0, 0, 0, 1} };
-			
-			ColorMatrix clr_mtx = new ColorMatrix( pts_arr );
-			m_shared.m_scr_img_attr		= new ImageAttributes();
-			m_shared.m_scr_img_attr.SetColorMatrix( clr_mtx, ColorMatrixFlag.Default, ColorAdjustType.Bitmap );
-			
-			m_shared.m_scr_img_rect = new Rectangle();
+			m_shared.m_color_filter = SKColorFilter.CreateBlendMode( SKColor.Parse( "#80ffffff" ), SKBlendMode.DstOut ); 
 			
 			// init helpers
 			{
@@ -433,11 +424,11 @@ namespace MAPeD
 			m_shared.m_scr_half_width  = m_pix_box.Width >> 1;
 			m_shared.m_scr_half_height = m_pix_box.Height >> 1;
 			
-			m_pbox_rect.Width	= m_pix_box.Width;
-			m_pbox_rect.Height	= m_pix_box.Height;
+			m_pbox_rect.Right	= m_pix_box.Width;
+			m_pbox_rect.Bottom	= m_pix_box.Height;
 			
 			clamp_offsets();
-
+			
 			base.Resize_Event(sender, e);
 		}
 
@@ -476,7 +467,7 @@ namespace MAPeD
 				hlp.reset( _init );
 			}
 			
-			m_err_msg = m_shared.m_sys_msg = "";
+			m_err_msg = m_sys_msg = "";
 			
 			reset_selected_screens();
 			
@@ -494,11 +485,6 @@ namespace MAPeD
 			{
 				m_shared.m_last_mouse_x	 = e.X;
 				m_shared.m_last_mouse_y	 = e.Y;
-				
-				if( m_shared.m_scale < 1.0 )
-				{
-					set_high_quality_render_mode( false );
-				}
 				
 				if( m_helper != null )
 				{
@@ -534,18 +520,22 @@ namespace MAPeD
 				{
 					m_helper.mouse_up( sender, e );
 				}
-				else
+			}
+			
+			if( m_helper == null )
+			{
+				m_behaviour.mouse_up( sender, e );
+			}
+			
+			if( e.Button == MouseButtons.Left )
+			{
+				if( m_helper == null )
 				{
 					if( show_grid )
 					{
 						update();
 					}
 				}
-			}
-			
-			if( m_helper == null )
-			{
-				m_behaviour.mouse_up( sender, e );
 			}
 		}
 		
@@ -555,6 +545,7 @@ namespace MAPeD
 			m_shared.m_mouse_y = e.Y;
 			
 			// calculate selected screen position
+			if( m_shared.m_layout != null )
 			{
 				int x = transform_to_img_pos( m_shared.m_mouse_x, m_shared.m_offset_x, m_shared.m_scr_half_width );
 				int y = transform_to_img_pos( m_shared.m_mouse_y, m_shared.m_offset_y, m_shared.m_scr_half_height );
@@ -578,7 +569,7 @@ namespace MAPeD
 			{
 				if( m_pix_box.Capture && e.Button == MouseButtons.Left )
 				{
-					m_shared.m_sys_msg = "Hold down: 'Ctrl' to pan the viewport, 'Shift' to select multiple screens";
+					sys_msg( "Hold down: 'Ctrl' to pan the viewport, 'Shift' to select multiple screens" );
 				}
 				
 				if( m_behaviour.mouse_move( sender, e ) )
@@ -600,14 +591,14 @@ namespace MAPeD
 		
 		private void Layout_MouseWheel(object sender, MouseEventArgs e)
 		{
-			m_tmp_scale += ( float )e.Delta / 2000;
+			m_tmp_scale += ( float )e.Delta / 6000;
 			
 			m_tmp_scale = m_shared.m_scale = m_tmp_scale < CONST_MIN_SCALE ? CONST_MIN_SCALE:m_tmp_scale;
 			
-			if( m_shared.m_scale > 1.1 )
+			if( m_shared.m_scale > 1.02f )
 			{
 				m_shared.m_scale = 2;
-				m_tmp_scale = 1.1f;
+				m_tmp_scale = 1.02f;
 				
 				enable_smoothing_mode( false );
 			}
@@ -618,7 +609,7 @@ namespace MAPeD
 			
 			if( e.Delta < 0 )
 			{
-				if( m_shared.m_scale < 1.1f && m_shared.m_scale > 1 )
+				if( m_shared.m_scale < 1.02f && m_shared.m_scale > 1 )
 				{
 					m_shared.m_scale = 1;
 				}
@@ -703,13 +694,13 @@ namespace MAPeD
 				int scr_size_width 	= ( int )( platform_data.get_screen_width_pixels() * m_shared.m_scale );
 				int scr_size_height = ( int )( platform_data.get_screen_height_pixels() * m_shared.m_scale );
 				
-				int x = screen_pos_x_by_slot_id( get_sel_scr_pos_x() );
-				int y = screen_pos_y_by_slot_id( get_sel_scr_pos_y() );
+				int x = ( int )screen_pos_x_by_slot_id( get_sel_scr_pos_x() );
+				int y = ( int )screen_pos_y_by_slot_id( get_sel_scr_pos_y() );
 				
-				m_pen.Width = 2;
-				m_pen.Color = utils.CONST_COLOR_SCREEN_SELECTED_BORDER;
+				m_line_paint.StrokeWidth = 2;
+				m_line_paint.Color = utils.CONST_COLOR_SCREEN_SELECTED_BORDER;
 				
-				m_gfx.DrawRectangle( m_pen, x, y, scr_size_width, scr_size_height );
+				m_surface.Canvas.DrawRect( x, y, scr_size_width, scr_size_height, m_line_paint );
 				
 				invalidate();
 			}
@@ -756,26 +747,27 @@ namespace MAPeD
 			}
 		}
 
-		private int transform_to_scr_pos( int _pos, int _half_scr )
+		private float transform_to_scr_pos( int _pos, int _half_scr )
 		{
-			return ( int )( ( _pos - _half_scr ) * m_shared.m_scale + _half_scr );
+			return ( ( _pos - _half_scr ) * m_shared.m_scale + _half_scr );
 		}
 
-		private int transform_to_img_pos( int _pos, int _offset, int _half_scr )
+		private int transform_to_img_pos( int _pos, float _offset, int _half_scr )
 		{
 			return ( int )( ( float )( _pos - _offset ) / m_shared.m_scale - ( m_shared.m_scale - 1 ) * ( ( float )( _offset - _half_scr ) / m_shared.m_scale ) );
 		}
 		
-		private void visible_screens_data_proc( Action< int, layout_screen_data, Rectangle > _act )
+		private void visible_screens_data_proc( Action< int, layout_screen_data, SKRect > _act )
 		{
 			layout_screen_data scr_data;
+			
+			float scr_x;
+			float scr_y;
 			
 			int beg_scr_x;
 			int end_scr_x;
 			int beg_scr_y;
 			int end_scr_y;
-			int scr_x;
-			int scr_y;
 			int i;
 			int j;
 			
@@ -787,8 +779,8 @@ namespace MAPeD
 			
 			// calculate visible region of screens
 			{
-				int offs_x		= transform_to_scr_pos( m_shared.m_offset_x, m_shared.m_scr_half_width );
-				int offs_y		= transform_to_scr_pos( m_shared.m_offset_y, m_shared.m_scr_half_height );
+				int offs_x		= ( int )transform_to_scr_pos( m_shared.m_offset_x, m_shared.m_scr_half_width );
+				int offs_y		= ( int )transform_to_scr_pos( m_shared.m_offset_y, m_shared.m_scr_half_height );
 				
 				int vp_width	= m_pix_box.Width;
 				int vp_height	= m_pix_box.Height;
@@ -814,21 +806,21 @@ namespace MAPeD
 					{
 						scr_x = screen_pos_x_by_slot_id( j );
 						
-						m_shared.m_scr_img_rect.X 		= scr_x;
-						m_shared.m_scr_img_rect.Y 		= scr_y;
-						m_shared.m_scr_img_rect.Width	= scr_size_width;
-						m_shared.m_scr_img_rect.Height	= scr_size_height;
+						m_shared.m_rect.Left	= scr_x;
+						m_shared.m_rect.Top 	= scr_y;
+						m_shared.m_rect.Right	= scr_x + scr_size_width;
+						m_shared.m_rect.Bottom	= scr_y + scr_size_height;
 						
-						if( m_pbox_rect.IntersectsWith( m_shared.m_scr_img_rect ) )
+						if( m_pbox_rect.IntersectsWith( m_shared.m_rect ) )
 						{
-							_act( ( ( i * scr_width ) + j ), scr_data, m_shared.m_scr_img_rect );
+							_act( ( ( i * scr_width ) + j ), scr_data, m_shared.m_rect );
 						}
 					}
 				}
 			}
 		}
 		
-		private void draw_screen_data( int _scr_width, int _scr_height, int _scr_size_width, int _scr_size_height, Action< int, layout_screen_data, int, int > _act )
+		private void draw_screen_data( int _scr_width, int _scr_height, float _scr_size_width, float _scr_size_height, Action< int, layout_screen_data, float, float > _act )
 		{
 			layout_screen_data scr_data;
 			
@@ -836,16 +828,17 @@ namespace MAPeD
 			int end_scr_x;
 			int beg_scr_y;
 			int end_scr_y;
-			int scr_x;
-			int scr_y;
 			int i;
 			int j;
 			
+			float scr_x;
+			float scr_y;
+			
 			// calculate visible region of screens
 			{
-				int offs_x		= transform_to_scr_pos( m_shared.m_offset_x, m_shared.m_scr_half_width );
-				int offs_y		= transform_to_scr_pos( m_shared.m_offset_y, m_shared.m_scr_half_height );
-	
+				float offs_x	= transform_to_scr_pos( m_shared.m_offset_x, m_shared.m_scr_half_width );
+				float offs_y	= transform_to_scr_pos( m_shared.m_offset_y, m_shared.m_scr_half_height );
+				
 				int vp_width	= m_pix_box.Width;
 				int vp_height	= m_pix_box.Height;
 				
@@ -870,24 +863,14 @@ namespace MAPeD
 					{
 						scr_x = screen_pos_x_by_slot_id( j );
 
-						m_shared.m_scr_img_rect.X 		= scr_x;
-						m_shared.m_scr_img_rect.Y 		= scr_y;
-						m_shared.m_scr_img_rect.Width	= _scr_size_width;
-						m_shared.m_scr_img_rect.Height	= _scr_size_height;
+						m_shared.m_rect.Left	= scr_x;
+						m_shared.m_rect.Top 	= scr_y;
+						m_shared.m_rect.Right	= m_shared.m_rect.Left + _scr_size_width;
+						m_shared.m_rect.Bottom	= m_shared.m_rect.Top + _scr_size_height;
 						
-						if( m_pbox_rect.IntersectsWith( m_shared.m_scr_img_rect ) )
+						if( m_pbox_rect.IntersectsWith( m_shared.m_rect ) )
 						{
-							if( m_shared.m_high_quality_render || m_behaviour.force_map_drawing() )
-							{
-								_act( ( ( i * _scr_width ) + j ), scr_data, scr_x, scr_y );
-							}
-							else
-							{
-								m_pen.Color = utils.CONST_COLOR_SIMPLE_SCREEN_CROSS;
-								
-								m_gfx.DrawLine( m_pen, scr_x, scr_y, scr_x + _scr_size_width, scr_y + _scr_size_height );
-								m_gfx.DrawLine( m_pen, scr_x + _scr_size_width, scr_y, scr_x, scr_y + _scr_size_height );
-							}
+							_act( ( ( i * _scr_width ) + j ), scr_data, scr_x, scr_y );
 						}
 					}
 				}
@@ -899,15 +882,15 @@ namespace MAPeD
 			layout_screen_data scr_data 	= null;
 			entity_instance	ent 	= null;
 			
-			int targ_scr_x;
-			int targ_scr_y;
+			float targ_scr_x;
+			float targ_scr_y;
+			float scr_x;
+			float scr_y;
+			
 			int i;
 			int j;
 			
 			int scr_ind = 0;
-			
-			int scr_x;
-			int scr_y;
 			
 			for( i = 0; i < _scr_height; i++ )
 			{
@@ -920,7 +903,7 @@ namespace MAPeD
 					if( scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 					{
 						scr_x = screen_pos_x_by_slot_id( j );
-
+						
 						scr_data.entities_proc( delegate( entity_instance _ent_inst )
 						{
 							if( _ent_inst.target_uid >= 0 )
@@ -930,13 +913,13 @@ namespace MAPeD
 									targ_scr_x = screen_pos_x_by_slot_id( scr_ind % get_width() );
 									targ_scr_y = screen_pos_y_by_slot_id( scr_ind / get_width() );
 									
-									m_pen.Color = utils.CONST_COLOR_TARGET_LINK;
+									m_line_paint.Color = utils.CONST_COLOR_TARGET_LINK;
 									{
-										m_gfx.DrawLine( m_pen, 
-										               scr_x + ( int )( ( _ent_inst.x + ( _ent_inst.base_entity.width >> 1 ) ) * m_shared.m_scale ),
-										               scr_y + ( int )( ( _ent_inst.y + ( _ent_inst.base_entity.height >> 1 ) ) * m_shared.m_scale ),
-										               targ_scr_x + ( int )( ( ent.x + ( ent.base_entity.width >> 1 ) ) * m_shared.m_scale ),
-										               targ_scr_y + ( int )( ( ent.y + ( ent.base_entity.height >> 1 ) ) * m_shared.m_scale ) );
+										m_surface.Canvas.DrawLine(	scr_x + ( ( _ent_inst.x + ( _ent_inst.base_entity.width >> 1 ) ) * m_shared.m_scale ),
+																	scr_y + ( ( _ent_inst.y + ( _ent_inst.base_entity.height >> 1 ) ) * m_shared.m_scale ),
+																	targ_scr_x + ( ( ent.x + ( ent.base_entity.width >> 1 ) ) * m_shared.m_scale ),
+																	targ_scr_y + ( ( ent.y + ( ent.base_entity.height >> 1 ) ) * m_shared.m_scale ),
+																	m_line_paint );
 									}
 								}
 							}
@@ -946,18 +929,19 @@ namespace MAPeD
 			}
 		}
 
-		private void show_pivot_coords( int _ent_pivot_x, int _ent_pivot_y, int _ent_scr_pos_x, int _ent_scr_pos_y )
-		{
-			print( "(" + _ent_pivot_x + "," + _ent_pivot_y + ")", _ent_scr_pos_x, _ent_scr_pos_y - 15 );
-		}
-		
 		private void print( string _text, int _x, int _y )
 		{
-			utils.brush.Color = utils.CONST_COLOR_STRING_DEFAULT_SHADOW;
-			m_gfx.DrawString( _text, utils.fnt8_Arial, utils.brush, _x + 1, _y + 1 );
+			uint font_size = 11;
 			
-			utils.brush.Color = utils.CONST_COLOR_STRING_DEFAULT;
-			m_gfx.DrawString( _text, utils.fnt8_Arial, utils.brush, _x, _y );
+			SKPaint font_paint = utils.get_font( font_size, true );
+			
+			int font_height = ( int )font_paint.FontSpacing;
+			
+			font_paint.Color = utils.CONST_COLOR_LAYOUT_STRING_DEFAULT_SHADOW;
+			m_surface.Canvas.DrawText( _text, _x + 1, _y + 1 + font_height, font_paint );
+			
+			font_paint.Color = utils.CONST_COLOR_LAYOUT_STRING_DEFAULT;
+			m_surface.Canvas.DrawText( _text, _x, _y + font_height, font_paint );
 		}
 		
 		private void err_msg( string _msg )
@@ -966,41 +950,42 @@ namespace MAPeD
 			m_err_msg_upd_cnt = CONST_ERR_MSG_UPD_CNT;
 		}
 
-		private void draw_pivot( int _pivot_x, int _pivot_y )
+		private void sys_msg( string _msg )
 		{
-			m_pen.Color = utils.CONST_COLOR_ENTITY_PIVOT;
-			{
-				int line_scale = ( int )( 8 * m_shared.m_scale );
-				
-				m_gfx.DrawLine( m_pen, _pivot_x - line_scale, _pivot_y, _pivot_x + line_scale, _pivot_y );
-				m_gfx.DrawLine( m_pen, _pivot_x, _pivot_y - line_scale, _pivot_x, _pivot_y + line_scale );
-			}
+			m_sys_msg = _msg;
 		}
-
+		
 		public override void update()
 		{
+			if( m_surface == null )
+			{
+				return;
+			}
+			
 			clear_background( CONST_BACKGROUND_COLOR );
 			
-			m_pen.Width = 1;
+			m_line_paint.StrokeWidth = 1;
 
 			if( m_shared.m_layout != null )
 			{
 				int width	= get_width();
 				int height	= get_height();
 				
-				int scr_size_width 	= ( int )( platform_data.get_screen_width_pixels() * m_shared.m_scale );
-				int scr_size_height = ( int )( platform_data.get_screen_height_pixels() * m_shared.m_scale );
+				float scr_size_width	= ( platform_data.get_screen_width_pixels() * m_shared.m_scale );
+				float scr_size_height	= ( platform_data.get_screen_height_pixels() * m_shared.m_scale );
 				
-				int x;
-				int y;
+				float x;
+				float y;
 				int i;
 				int j;
 				
+				bool line_antialias = m_line_paint.IsAntialias;
+				
 				if( m_shared.m_scr_list.count() > 0 )
 				{
-					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, int _x, int _y ) 
+					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, float _x, float _y )
 					{ 
-						m_gfx.DrawImage( m_shared.m_scr_list.get( _scr_data.m_scr_ind ), _x, _y, scr_size_width, scr_size_height );
+						utils.draw_skbitmap( m_surface.Canvas, m_shared.m_scr_list.get_skbitmap( _scr_data.m_scr_ind ), _x, _y, scr_size_width, scr_size_height, m_image_paint );
 					});
 				}
 				
@@ -1035,7 +1020,7 @@ namespace MAPeD
 						int x_line_beg = ( int )( ( ( m_shared.m_scale - 1.0f ) / 2.0f ) * n_lines_x );
 						int y_line_beg = ( int )( ( ( m_shared.m_scale - 1.0f ) / 2.0f ) * n_lines_y );
 						
-						m_pen.Color = utils.CONST_COLOR_GRID_BLOCKS;
+						m_line_paint.Color = utils.CONST_COLOR_GRID_BLOCKS;
 						
 						bool tile4x4_grid = ( ( platform_data.get_screen_blocks_height( false ) & 0x01 ) != 0x01 ) && ( ( platform_data.get_screen_blocks_width( false ) & 0x01 ) != 0x01 ) && ( m_shared.m_screen_data_type != data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
 						
@@ -1049,15 +1034,15 @@ namespace MAPeD
 							{
 								if( ( ( x_pos - m_shared.m_offset_x ) % utils.CONST_SCREEN_BLOCKS_SIZE ) == 0 )
 								{
-									m_pen.Color = utils.CONST_COLOR_GRID_TILES_BRIGHT;
+									m_line_paint.Color = utils.CONST_COLOR_GRID_TILES_BRIGHT;
 								}
 								else
 								{
-									m_pen.Color = utils.CONST_COLOR_GRID_TILES_DARK;
+									m_line_paint.Color = utils.CONST_COLOR_GRID_TILES_DARK;
 								}
 							}
 							
-							m_gfx.DrawLine( m_pen, offs_x, 0, offs_x, m_pix_box.Height );
+							m_surface.Canvas.DrawLine( offs_x, 0, offs_x, m_pix_box.Height, m_line_paint );
 						}
 						
 						for( i = y_line_beg; i < n_lines_y + y_line_beg; i++ )
@@ -1070,22 +1055,23 @@ namespace MAPeD
 							{
 								if( ( ( y_pos - m_shared.m_offset_y ) % utils.CONST_SCREEN_BLOCKS_SIZE ) == 0 )
 								{
-									m_pen.Color = utils.CONST_COLOR_GRID_TILES_BRIGHT;
+									m_line_paint.Color = utils.CONST_COLOR_GRID_TILES_BRIGHT;
 								}
 								else
 								{
-									m_pen.Color = utils.CONST_COLOR_GRID_TILES_DARK;
+									m_line_paint.Color = utils.CONST_COLOR_GRID_TILES_DARK;
 								}
 							}
 							
-							m_gfx.DrawLine( m_pen, 0, offs_y, m_pix_box.Width, offs_y );
+							m_surface.Canvas.DrawLine( 0, offs_y, m_pix_box.Width, offs_y, m_line_paint );
 						}
 					}
 				}
 				
 				// draw screens grid
 				{
-					m_pen.Color = ( m_shared.m_scr_list.count() > 0 ) ? utils.CONST_COLOR_SCREEN_LIST_NOT_EMPTY:utils.CONST_COLOR_SCREEN_LIST_EMPTY;
+					m_line_paint.Color = ( m_shared.m_scr_list.count() > 0 ) ? utils.CONST_COLOR_SCREEN_LIST_NOT_EMPTY:utils.CONST_COLOR_SCREEN_LIST_EMPTY;
+					m_line_paint.IsAntialias = m_shared.m_scale < 1;
 					
 					for( i = 0; i < height + 1; i++ )
 					{
@@ -1093,7 +1079,7 @@ namespace MAPeD
 						
 						if( y >= 0 && y < m_pix_box.Height )
 						{
-							m_gfx.DrawLine( m_pen, transform_to_scr_pos( m_shared.m_offset_x, m_shared.m_scr_half_width ), y, screen_pos_x_by_slot_id( width ), y );
+							m_surface.Canvas.DrawLine( transform_to_scr_pos( m_shared.m_offset_x, m_shared.m_scr_half_width ), y, screen_pos_x_by_slot_id( width ), y, m_line_paint );
 						}
 					}
 					
@@ -1103,149 +1089,171 @@ namespace MAPeD
 						
 						if( x >= 0 && x < m_pix_box.Width )
 						{
-							m_gfx.DrawLine( m_pen, x, transform_to_scr_pos( m_shared.m_offset_y, m_shared.m_scr_half_height ), x, screen_pos_y_by_slot_id( height ) );
+							m_surface.Canvas.DrawLine( x, transform_to_scr_pos( m_shared.m_offset_y, m_shared.m_scr_half_height ), x, screen_pos_y_by_slot_id( height ), m_line_paint );
 						}
 					}
+					
+					m_line_paint.IsAntialias = line_antialias;
 				}
 
 				if( show_entities )
 				{
-					if( show_targets && m_shared.m_high_quality_render )
+					if( show_targets )
 					{
+						m_line_paint.IsAntialias = true;
+						
 						draw_targets( width, height );
+						
+						m_line_paint.IsAntialias = line_antialias;
 					}
 					
-					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, int _scr_x, int _scr_y ) 
+					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, float _scr_x, float _scr_y ) 
 					{ 
 						_scr_data.entities_proc( delegate( entity_instance _ent_inst )
 						{
-							m_gfx.DrawImage( _ent_inst.base_entity.bitmap, _scr_x + ( int )( _ent_inst.x * m_shared.m_scale ), _scr_y + ( int )( _ent_inst.y * m_shared.m_scale ), ( int )_ent_inst.base_entity.width * m_shared.m_scale, ( int )_ent_inst.base_entity.height * m_shared.m_scale );
+							utils.draw_skbitmap( m_surface.Canvas, m_shared.m_image_cache.get( _ent_inst.base_entity.bitmap ), _scr_x + ( int )( _ent_inst.x * m_shared.m_scale ), _scr_y + ( int )( _ent_inst.y * m_shared.m_scale ), ( int )_ent_inst.base_entity.width * m_shared.m_scale, ( int )_ent_inst.base_entity.height * m_shared.m_scale, m_image_paint );
 						});
 					});
 				}
-					
+				
 				if( show_marks )
 				{
-					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, int _x, int _y )
+					float scr_half_width	= scr_size_width * 0.5f;
+					float scr_half_height	= scr_size_height * 0.5f;
+					
+					m_line_paint.IsAntialias = true;
+					
+					SKPaint start_scr_font	= utils.get_font( 82, true );
+					SKPaint scr_mark_font	= utils.get_font( 58, true );
+					
+					draw_screen_data( width, height, scr_size_width, scr_size_height, delegate( int _scr_slot_ind, layout_screen_data _scr_data, float _x, float _y )
 					{ 
 						if( m_shared.m_layout.get_start_screen_ind() == _scr_slot_ind )
 						{
-							update_mark( Color.FromArgb( 0x7fff0000 ), delegate() { m_scr_mark_gfx.DrawString( "S", utils.fnt64_Arial, Brushes.White, 20, 15 ); } );
+							update_mark( utils.CONST_COLOR_MARK_START_SCREEN, delegate() { m_scr_mark_canvas.DrawText( "S", 36, 90, start_scr_font ); } );
 							
-							draw_mark( _x, _y, scr_size_width >> 1, scr_size_height >> 1 );
+							draw_mark( _x, _y, scr_half_width, scr_half_height );
 						}
-						
-						int scr_half_width 	= scr_size_width >> 1;
-						int scr_half_height = scr_size_height >> 1;
 						
 						if( _scr_data.mark > 0 )
 						{
-							update_mark( Color.FromArgb( 0x7f0000ff ), delegate() { m_scr_mark_gfx.DrawString( _scr_data.mark.ToString( "D2" ), utils.fnt42_Arial, Brushes.White, 1, 1 ); } );
+							update_mark( utils.CONST_COLOR_MARK_SCREEN_MARK, delegate() { m_scr_mark_canvas.DrawText( _scr_data.mark.ToString( "D2" ), 10, 55, scr_mark_font ); } );
 							
 							draw_mark( _x + scr_half_width, _y + scr_half_height, scr_half_width, scr_half_height );
 						}
 						
 						if( _scr_data.adj_scr_mask > 0 )
 						{
-							update_mark( Color.FromArgb( 0x7f00ff00 ), delegate(){}, true );
+							update_mark( utils.CONST_COLOR_MARK_ADJ_SCREEN_MARK, delegate(){}, true );
 							
-							m_pen.Color = utils.CONST_COLOR_PIXBOX_DEFAULT;
+							m_line_paint.Color = utils.CONST_COLOR_LAYOUT_PIXBOX_DEFAULT;
 							{
 								int img_center 	= platform_data.get_screen_mark_image_size() >> 1;
 								int radius		= 12;
-								int arrow_len	= 45;
+								int arrow_len	= 35;
+								int offs		= 7;
 								
 								// o
-								m_pen.Width = 4;
-								m_scr_mark_gfx.DrawEllipse( m_pen, img_center - radius, img_center - radius, radius << 1, radius << 1 );
+								m_line_paint.StrokeWidth = 4;
+								m_scr_mark_canvas.DrawCircle( img_center, img_center, radius, m_line_paint );
 								
-								m_pen.Width = 15;
-								m_pen.EndCap = LineCap.ArrowAnchor;
+								m_line_paint.StrokeWidth	= 15;
+								m_line_paint.StrokeCap		= SKStrokeCap.Square;
 								
 								if( ( _scr_data.adj_scr_mask & 0x01 ) != 0 )
 								{
 									// L
-									m_scr_mark_gfx.DrawLine( m_pen, img_center - radius, img_center,  img_center - arrow_len - radius, img_center );
+									m_scr_mark_canvas.DrawLine( img_center - radius - offs, img_center,  img_center - arrow_len - radius, img_center, m_line_paint );
 								}
 								if( ( _scr_data.adj_scr_mask & 0x02 ) != 0 )
 								{
 									// U
-									m_scr_mark_gfx.DrawLine( m_pen, img_center, img_center - radius,  img_center, img_center - arrow_len - radius );
+									m_scr_mark_canvas.DrawLine( img_center, img_center - radius - offs,  img_center, img_center - arrow_len - radius, m_line_paint );
 								}
 								if( ( _scr_data.adj_scr_mask & 0x04 ) != 0 )
 								{
 									// R
-									m_scr_mark_gfx.DrawLine( m_pen, img_center + radius, img_center,  img_center + arrow_len + radius, img_center );
+									m_scr_mark_canvas.DrawLine( img_center + radius + offs, img_center,  img_center + arrow_len + radius, img_center, m_line_paint );
 								}
 								if( ( _scr_data.adj_scr_mask & 0x08 ) != 0 )
 								{
 									// D
-									m_scr_mark_gfx.DrawLine( m_pen, img_center, img_center + radius,  img_center, img_center + arrow_len + radius );
+									m_scr_mark_canvas.DrawLine( img_center, img_center + radius + offs,  img_center, img_center + arrow_len + radius, m_line_paint );
 								}
 								
-								m_pen.EndCap	= LineCap.NoAnchor;
-								m_pen.Width		= 1;
+								m_line_paint.StrokeWidth	= 1;
 							}
 							
 							draw_mark( _x + scr_half_width, _y, scr_half_width, scr_half_height );
 						}
 					});
-				}
 					
+					m_line_paint.IsAntialias = line_antialias;
+				}
+				
 				// draw selected screens
 				if( m_shared.m_sel_screens_slot_ids.Count > 0 )
 				{
-					m_pen.Width = 2;
-					m_pen.Color = utils.CONST_COLOR_SCREEN_SELECTED_BORDER;
+					m_line_paint.StrokeWidth = 2;
+					m_line_paint.Color = utils.CONST_COLOR_SCREEN_SELECTED_BORDER;
 					
 					foreach( int scr_slot_ind in m_shared.m_sel_screens_slot_ids )
 					{
 						x = screen_pos_x_by_slot_id( scr_slot_ind % get_width() );
 						y = screen_pos_y_by_slot_id( scr_slot_ind / get_width() );
 						
-						m_gfx.DrawRectangle( m_pen, x, y, scr_size_width, scr_size_height );
+						m_surface.Canvas.DrawRect( x, y, scr_size_width, scr_size_height, m_line_paint );
 					}
 				}
 				
 				// draw a helper specific data
 				if( m_helper != null )
 				{
-					m_helper.draw( m_gfx, m_pen, scr_size_width, scr_size_height );
+					m_helper.draw( m_surface, m_line_paint, scr_size_width, scr_size_height );
 				}
 				
 				// draw data specific to active behaviour
-				m_behaviour.draw( m_gfx, m_pen, scr_size_width, scr_size_height );
+				m_behaviour.draw( m_surface, m_line_paint, m_image_paint, scr_size_width, scr_size_height );
 				
-				print( "mode: " + m_behaviour.name(), 0, 0 );
+				print( "mode: " + m_behaviour.name(), 2, 0 );
+				
+				SKPaint sys_font = utils.get_font( 11, true );
 				
 				// print system message
 				{
-					if( m_shared.m_sys_msg.Length == 0 )
+					if( m_sys_msg.Length == 0 )
 					{
 						if( m_helper != null )
 						{
-							m_shared.m_sys_msg = m_helper.name();
+							sys_msg( m_helper.name() );
 						}
 					}
 					
-					print( m_shared.m_sys_msg, ( m_pix_box.Width >> 1 ) - ( ( int )( Graphics.FromImage( m_main_bmp ).MeasureString( m_shared.m_sys_msg, utils.fnt8_Arial ).Width ) >> 1 ), 0 );
+					print( m_sys_msg, ( m_pix_box.Width >> 1 ) - ( ( int )( sys_font.MeasureText( m_sys_msg ) ) >> 1 ), 0 );
 					
-					m_shared.m_sys_msg = "";
+					sys_msg( "" );
 				}
 				
 				// print error message
 				if( m_err_msg_upd_cnt > 0 )
 				{
-					print( m_err_msg, ( m_pix_box.Width >> 1 ) - ( ( int )( Graphics.FromImage( m_main_bmp ).MeasureString( m_err_msg, utils.fnt8_Arial ).Width ) >> 1 ), m_pix_box.Height - ( utils.fnt8_Arial.Height + 1 ) );
+					print( m_err_msg, ( m_pix_box.Width >> 1 ) - ( ( int )( sys_font.MeasureText( m_err_msg ) ) >> 1 ), m_pix_box.Height - ( ( int )sys_font.FontSpacing + 1 ) );
 					
 					--m_err_msg_upd_cnt;
 				}
 				
-				disable( false );
+				if( disable( false ) )
+				{
+					invalidate();
+				}
 			}
 			else
 			{
-				disable( true );
+				// draw the red cross as a sign of inactive state
+				m_line_paint.Color = utils.CONST_COLOR_LAYOUT_PIXBOX_INACTIVE_CROSS;
+				
+				m_surface.Canvas.DrawLine( 0, 0, m_pix_box.Width, m_pix_box.Height, m_line_paint );
+				m_surface.Canvas.DrawLine( m_pix_box.Width, 0, 0, m_pix_box.Height, m_line_paint );
 				
 				print( "For all the tabs:", 0, 0 );
 				print( "- Use a mouse wheel to scale a map in the viewport", 0, 10 );
@@ -1253,9 +1261,12 @@ namespace MAPeD
 				print( "- Hold down the 'Ctrl' key to pan a map in the viewport", 0, 30 );
 				print( "- Hold down the 'Shift' key to select multiple screens", 0, 40 );
 				print( "Use a mouse wheel to scale an entity/pattern preview", 0, 60 );
+				
+				if( !disable( true ) )
+				{
+					invalidate();
+				}
 			}
-			
-			invalidate();
 		}
 		
 		private void selected_screens_proc( Action< int > _act )
@@ -1362,12 +1373,12 @@ namespace MAPeD
 			return res;
 		}
 
-		private int screen_pos_x_by_slot_id( int _slot_id )
+		private float screen_pos_x_by_slot_id( int _slot_id )
 		{
 			return transform_to_scr_pos( _slot_id * platform_data.get_screen_width_pixels() + m_shared.m_offset_x, m_shared.m_scr_half_width );
 		}
 		
-		private int screen_pos_y_by_slot_id( int _slot_id )
+		private float screen_pos_y_by_slot_id( int _slot_id )
 		{
 			return transform_to_scr_pos( _slot_id * platform_data.get_screen_height_pixels() + m_shared.m_offset_y, m_shared.m_scr_half_height );
 		}
@@ -1466,21 +1477,19 @@ namespace MAPeD
 			enable_smoothing_mode( ( m_shared.m_scale < 1.0 ) ? _on:false );
 		}
 
-		private void update_mark( Color _color, Action _act, bool _clear = true )
+		private void update_mark( SKColor _color, Action _act, bool _clear = true )
 		{
 			if( _clear )
 			{
-				m_scr_mark_gfx.Clear( _color );
+				m_scr_mark_canvas.Clear( _color );
 			}
 			
 			_act();
-			
-			m_scr_mark_gfx.Flush();
 		}
 		
-		private void draw_mark( int _x, int _y, int _width, int _height )
+		private void draw_mark( float _x, float _y, float _width, float _height )
 		{
-			m_gfx.DrawImage( m_scr_mark_img, _x, _y, _width, _height );
+			utils.draw_skbitmap( m_surface.Canvas, m_scr_mark_img, _x, _y, _width, _height, m_line_paint );
 		}
 
 		public bool set_start_screen_mark()
@@ -1605,9 +1614,19 @@ namespace MAPeD
 			return m_pix_box.Height;
 		}
 		
-		private Graphics gfx_context()
+		private SKSurface gfx_context()
 		{
-			return m_gfx;
+			return m_surface;
+		}
+		
+		private SKPaint	paint_line()
+		{
+			return m_line_paint;
+		}
+		
+		private SKPaint	paint_image()
+		{
+			return m_image_paint;
 		}
 		
 		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
@@ -1683,47 +1702,53 @@ namespace MAPeD
 		
 		public void key_up_event( object sender, KeyEventArgs e )
 		{
-			foreach( var helper in m_helper_arr )
+			if( m_pix_box.Visible )
 			{
-				if( helper.check_key_code( e ) )
+				foreach( var helper in m_helper_arr )
 				{
-					if( m_helper == helper )
+					if( helper.check_key_code( e ) )
 					{
-						m_helper.reset( false );
-						
-						apply_default_helper();
-						
-						update();
+						if( m_helper == helper )
+						{
+							m_helper.reset( false );
+							
+							apply_default_helper();
+							
+							update();
+						}
 					}
 				}
-			}
-			
-			if( m_behaviour != null )
-			{
-				m_behaviour.key_up_event( sender, e );
+				
+				if( m_behaviour != null )
+				{
+					m_behaviour.key_up_event( sender, e );
+				}
 			}
 		}
 
 		public void key_down_event( object sender, KeyEventArgs e )
 		{
-			foreach( var helper in m_helper_arr )
+			if( m_pix_box.Visible )
 			{
-				if( helper.check_key_code( e ) )
+				foreach( var helper in m_helper_arr )
 				{
-					if( m_helper != helper )
+					if( helper.check_key_code( e ) )
 					{
-						m_helper = helper;
-						
-						m_helper.reset( true );
-						
-						update();
+						if( m_helper != helper )
+						{
+							m_helper = helper;
+							
+							m_helper.reset( true );
+							
+							update();
+						}
 					}
 				}
-			}
-			
-			if( m_behaviour != null )
-			{
-				m_behaviour.key_down_event( sender, e );
+				
+				if( m_behaviour != null )
+				{
+					m_behaviour.key_down_event( sender, e );
+				}
 			}
 		}
 		
