@@ -22,6 +22,11 @@ namespace SPReD
 		{
 			try
 			{
+				if( !Environment.Is64BitProcess && !utils.CONST_DEV_BUILD_FLAG )
+				{
+					throw new Exception( "Re-compile the project for the x64 architecture!" );
+				}
+				
 				if( utils.is_win )
 				{
 					FileAssociations.EnsureAssociationsSet();

@@ -24,7 +24,7 @@ namespace SPReD
 	/// </summary>
 	public static class utils
 	{
-		private const bool CONST_DEV_BUILD_FLAG	= true;
+		public	const bool CONST_DEV_BUILD_FLAG	= true;
 		private const bool CONST_BETA_FLAG		= true; 
 		
 #if	DEF_NES
@@ -88,8 +88,8 @@ namespace SPReD
 		public readonly static string	build_str	= "Build: " + ver.Build;
 		public readonly static DateTime	build_date 	= new DateTime(2000, 1, 1).AddDays(ver.Build).AddSeconds( ver.Revision * 2 );
 
-		public static	string CONST_APP_VER	= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev":"" ) + CONST_BUILD_CFG;
-		public const	string CONST_APP_NAME	= "SPReD-" + CONST_PLATFORM;
+		public readonly static string CONST_APP_VER			= "v" + ver.Major + "." + ver.Minor + ( CONST_BETA_FLAG ? "b ":" " ) + ( CONST_DEV_BUILD_FLAG ? "Dev":"" ) + CONST_BUILD_CFG;
+		public readonly static string CONST_APP_NAME	= "SPReD-" + CONST_PLATFORM + ( Environment.Is64BitProcess ? " (x64)":" (x86)" );
 		
 		public const uint CONST_PROJECT_FILE_MAGIC			= 'S'<<24 | 'N'<<16 | 'e'<<8 | 'S';
 		public const byte CONST_PROJECT_FILE_VER			= 1;
