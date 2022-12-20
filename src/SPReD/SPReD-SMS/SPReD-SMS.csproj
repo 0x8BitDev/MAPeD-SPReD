@@ -69,8 +69,9 @@
     <Reference Include="Microsoft.Scripting">
       <HintPath>..\..\lib\Microsoft.Scripting.dll</HintPath>
     </Reference>
-    <Reference Include="Pngcs">
-      <HintPath>..\lib\Pngcs.dll</HintPath>
+    <Reference Include="Pngcs, Version=1.1.4.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Pngcs.dll</HintPath>
     </Reference>
     <Reference Include="SPSeD">
       <HintPath>..\..\lib\SPSeD.dll</HintPath>
