@@ -8,6 +8,7 @@
 /src/MAPeD/MAPeD-SMD/obj/*
 /src/MAPeD/.vs/*
 /src/MAPeD/packages/*
+/src/SPReD/packages/*
 /src/lib/SPSeD.dll
 /src/SPSeD/obj/*
 /samples/samples.sublime-project
