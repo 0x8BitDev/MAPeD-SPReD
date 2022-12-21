@@ -54,7 +54,7 @@ The SPReD is a tool for converting prepared sprite images into a NES/SMS/PCE com
 - handy drawing mode
 - group operations on sprites
 - sprites data packing and optimization
-- 8x16 mode support
+- **NES/SMS:** 8x16 mode support
 - images import/export
 - export to **NES: CA65/NESasm/CC65** / **SMS: WLA-DX/SDCC** / **PCE: CA65/PCEAS/HuC(PCX)**
 - built-in **Python** script editor for writing custom data export scripts
@@ -84,46 +84,30 @@ Sample scripts of using the APIs:
 **Note:** It's not recommended to use the buit-in editor for script editing under **Mono** due to buggy implementation of RichTextBox. You can load your script into the editor and into any other editor where you can edit it. Then press **Ctrl+R** (reload script) and **F5** (run script).
 
 
-# Compiling
+# Compiling (Win/Linux)
 The solution files you can find here:
 - `./src/MAPeD/`
 - `./src/SPReD/`
 
-**Note:** **.Net 4.5.1** profile is required to build the tools.
+To compile the tools on Windows you can use the Microsoft Visual Studio.
 
-## Windows
-The tools were developed using **SharpDevelop 4.4.2.** 
-You can download it at: https://drive.google.com/file/d/1kX_h38VViI9akc1vdt1Um6YGolYPMNGm/view
+To compile/run the tools on Linux you need to install Mono on your computer. The latest stable release can be found here: https://www.mono-project.com/download/stable/ To run the tools you may need to configure your environment to allow it to automatically run .exe files through Mono, or manually run the tools in terminal: `mono <app.exe>`.
 
-1) Run SharpDevelop.
-2) Open solution file.
-3) Menu: `Build -> Build Solution`.
-4) `./bin` will contain output executable file.
+After loading the solution you need to reinstall all NuGet packages using the following command:
 
-Also you can use the Microsoft Visual Studio.
+`Update-Package -reinstall`
 
-## Linux
-The tools were tested on **Ubuntu 16.4.6** and **Debian 9.9.0** with **Mono v6.12.0 Stable (6.12.0.122)**.
+After that you can compile the project.
 
-To compile/run the applications on Linux you need to install Mono on your computer. The latest stable release can be found here: https://www.mono-project.com/download/stable/
+The tools use the following NuGet packages:
 
-The Linux versions were tested using **MonoDevelop 7.8.2 (build 2)**. The latest stable release can be found here: https://www.monodevelop.com/download/
+**MAPeD:**
+- `OpenTK -Version 3.1.0`
+- `SkiaSharp.Views.WindowsForms -Version 2.88.1`
+- `SkiaSharp.NativeAssets.Linux.NoDependencies -Version 2.88.1`
 
-1) Run MonoDevelop.
-2) Open solution file.
-3) Menu: `Build -> Build All`.
-4) `./bin` will contain output executable file.
-
-**Note:** It's not necessary to rebuild the tools on Linux if you don't want to make any changes in sources. You can use the same executables files on Windows and Linux ( with Mono ).
-
-
-# Releases
-## Windows
-**.Net 4.5.1** is required to run the applications.
-https://www.microsoft.com/en-us/download/details.aspx?id=40779
-
-## Linux
-As mentioned before, you need to install Mono on your computer. To run the tools you may need to configure your environment to allow it to automatically run .exe files through Mono, or manually run the tools in terminal: `mono <app.exe>`.
+**SPSeD:**
+- `IronPython -Version 2.7.9`
 
 
 # Samples
@@ -228,15 +212,20 @@ You can use/modify them for free at your own risk without any warranties.
 
 # Third-party libraries
 
-**MAPeD/SPReD:** IronPython.
-Copyright (c) .NET Foundation and Contributors ( Apache License, Version 2.0 )
+**MAPeD:**
++ **OpenTK** - Copyright (c) The Open Toolkit Team ( MIT License )
++ https://opentk.net/
 
-https://ironpython.net
+- **SkiaSharp** - Copyright (c) Xamarin Inc., Microsoft Corporation ( MIT License )
+- https://github.com/mono/SkiaSharp
 
-**SPReD:** PNGCS.
-Developed by Hernan J Gonzalez Copyright 2012 ( Apache License, Version 2.0 )
+**SPReD:**
+- **PNGCS** - Copyright (c) Hernan J Gonzalez ( Apache License, Version 2.0 )
+- https://github.com/leonbloy/pngcs
 
-https://github.com/leonbloy/pngcs
+**SPSeD:**
+- **IronPython** - Copyright (c) .NET Foundation and Contributors ( Apache License, Version 2.0 )
+- https://ironpython.net
 
 ---
 The tools sources: 
