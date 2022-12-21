@@ -6,11 +6,12 @@
 /src/MAPeD/MAPeD-PCE/obj/*
 /src/MAPeD/MAPeD-ZX/obj/*
 /src/MAPeD/MAPeD-SMD/obj/*
-/src/MAPeD/.vs/*
+/src/SPSeD/obj/*
 /src/MAPeD/packages/*
 /src/SPReD/packages/*
-/src/lib/SPSeD.dll
-/src/SPSeD/obj/*
+/src/MAPeD/.vs/*
+/src/SPReD/.vs/*
+/src/lib/*
 /samples/samples.sublime-project
 /samples/samples.sublime-workspace
 /samples/smd/tilemap_render/SGDK/exp_data_viewer/data/*
