@@ -202,7 +202,12 @@ namespace MAPeD
 		
 		public override void key_up_event( object sender, KeyEventArgs e )
 		{
-			if( e.KeyCode == Keys.Escape )
+			base.key_up_event( sender, e );
+		}
+		
+		protected override void cancel_operation()
+		{
+			if( m_shared.m_sel_screen_slot_id >= 0 )
 			{
 				reset_selected_screen();
 			}

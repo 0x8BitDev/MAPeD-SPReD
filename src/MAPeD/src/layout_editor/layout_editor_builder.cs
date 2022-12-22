@@ -97,6 +97,11 @@ namespace MAPeD
 		
 		public override void key_up_event( object sender, KeyEventArgs e )
 		{
+			base.key_up_event( sender, e );
+		}
+		
+		protected override void cancel_operation()
+		{
 			//...
 		}
 	}

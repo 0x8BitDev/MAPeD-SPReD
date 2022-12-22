@@ -1,7 +1,12 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+22.12.2022 - Layout tab -> Painter tab: 'Escape' to cancel an active tile
+	   - Layout tab -> Entities tab: 'Escape' to switch to the 'Edit Instance' mode, when the 'Edit Entity' mode is active
+	   - Layout tab -> Patterns tab: 'Escape' to cancel an active tile pattern
 20.12.2022 - Layout viewport: hardware-accelerated rendering using OpenGL (OpenTK/SkiaSharp)
+	   - Switched to x64 architecture
+	   - Layout tab -> Painter tab: fixed the bug with incorrect generation of 4x4 tiles, when painting using 2x2 blocks
 
 24.11.2022 v0.75b
 
@@ -122,6 +127,8 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
+
+20.12.2022 - Switched to x64 architecture
 
 30.11.2022 v0.65b
 

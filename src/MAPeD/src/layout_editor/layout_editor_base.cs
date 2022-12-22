@@ -60,7 +60,8 @@ namespace MAPeD
 		public const uint	CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE	= 0x04;
 		
 		public const uint	CONST_SUBSCR_PTTRN_EXTRACT_END		= 0x08;
-		public const uint	CONST_SUBSCR_PTTRN_PLACE_CANCEL		= 0x10;
+		
+		public const uint	CONST_SUBSCR_CANCEL_OPERATION		= 0x10;
 	}
 	
 	/// <summary>
@@ -103,9 +104,17 @@ namespace MAPeD
 		public abstract void	subscribe( uint _param, Action< object, EventArgs > _method );
 
 		public abstract void	key_down_event( object sender, KeyEventArgs e );
-		public abstract void	key_up_event( object sender, KeyEventArgs e );
+		public virtual	void	key_up_event( object sender, KeyEventArgs e )
+		{
+			if( e.KeyCode == Keys.Escape )
+			{
+				cancel_operation();
+			}
+		}
 		
 		public abstract layout_editor_base.EHelper	default_helper();
+		
+		protected abstract void	cancel_operation();
 	}
 
 	/// <summary>

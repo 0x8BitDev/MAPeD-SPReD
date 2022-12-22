@@ -2628,7 +2628,7 @@ namespace MAPeD
 			this.BtnResetTile.Name = "BtnResetTile";
 			this.BtnResetTile.Size = new System.Drawing.Size(64, 23);
 			this.BtnResetTile.TabIndex = 6;
-			this.BtnResetTile.Text = "Reset";
+			this.BtnResetTile.Text = "Cancel";
 			this.BtnResetTile.UseVisualStyleBackColor = true;
 			this.BtnResetTile.Click += new System.EventHandler(this.BtnResetTileClick_Event);
 			// 
@@ -3353,7 +3353,7 @@ namespace MAPeD
 			this.BtnPatternReset.Name = "BtnPatternReset";
 			this.BtnPatternReset.Size = new System.Drawing.Size(75, 23);
 			this.BtnPatternReset.TabIndex = 1;
-			this.BtnPatternReset.Text = "Reset";
+			this.BtnPatternReset.Text = "Cancel";
 			this.BtnPatternReset.UseVisualStyleBackColor = true;
 			this.BtnPatternReset.Click += new System.EventHandler(this.BtnPatternResetClick_Event);
 			// 

@@ -61,8 +61,8 @@ namespace MAPeD
 		
 		private EMode m_mode = EMode.em_Idle;
 		
-		private int m_tile_x	= -1;
-		private int m_tile_y	= -1;
+		private int m_tile_x	= -10000;
+		private int m_tile_y	= -10000;
 		
 		private int m_pttrn_rect_beg_x	= -1;
 		private int m_pttrn_rect_beg_y	= -1;
@@ -523,6 +523,8 @@ namespace MAPeD
 			{
 				if( m_pattern_data != null )
 				{
+					m_shared.sys_msg( "'Esc' - cancel tile pattern" );
+					
 					Bitmap bmp;
 					
 					int pttrn_tile_id;
@@ -622,20 +624,20 @@ namespace MAPeD
 						this.PatternExtractEnd += new EventHandler( _method );
 					}
 					break;
-
-				case layout_editor_param.CONST_SUBSCR_PTTRN_PLACE_CANCEL:
+					
+				case layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION:
 					{
 						this.PatternPutCancel += new EventHandler( _method );
 					}
 					break;
-
+					
 				default:
 				{
 					throw new Exception( "Unknown parameter detected!\n\n[layout_editor_patterns.subscribe]" );
 				}
 			}
 		}
-
+		
 		public override void key_down_event( object sender, KeyEventArgs e )
 		{
 			//...
@@ -643,14 +645,18 @@ namespace MAPeD
 		
 		public override void key_up_event( object sender, KeyEventArgs e )
 		{
-			if( e.KeyCode == Keys.Escape )
+			base.key_up_event( sender, e );
+		}
+		
+		protected override void cancel_operation()
+		{
+			if( m_mode == EMode.em_Pattern_Extract_Begin || m_mode == EMode.em_Pattern_Put )
 			{
-				if( m_mode == EMode.em_Pattern_Extract_Begin )
+				hide_tile();
+				
+				if( PatternPutCancel != null )
 				{
-					if( PatternPutCancel != null )
-					{
-						PatternPutCancel( this, null );
-					}
+					PatternPutCancel( this, null );
 				}
 			}
 		}

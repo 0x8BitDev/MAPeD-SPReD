@@ -150,10 +150,15 @@ namespace MAPeD
 				m_layout_editor = new layout_editor_base( m_data_manager, PBoxLayout, LayoutLabel, m_imagelist_manager );
 				m_layout_editor.subscribe_event( m_data_manager );
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SUBSCR_ENT_INST_SELECT, MainForm_EntityInstanceSelected );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, MainForm_edit_entity_cancel );
+				
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SUBSCR_SCR_RESET_SELECTED, MainForm_ResetSelectedScreen );
+				
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE, update_tile_image );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, MainForm_active_tile_cancel );
+				
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_EXTRACT_END, MainForm_pattern_extract_end );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_PLACE_CANCEL, MainForm_pattern_place_cancel );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, MainForm_pattern_place_cancel );
 				
 				m_layout_editor.set_param( layout_editor_param.CONST_SET_BASE_SUBSCR_DATA_MNGR, m_data_manager );
 				
@@ -1820,6 +1825,8 @@ namespace MAPeD
 			
 			m_tile_preview.update( null, 0, 0, 0, 0, true, true );
 			GrpBoxActiveTile.Text = "...";
+			
+			m_layout_editor.update();
 		}
 		
 		private void update_selected_block()
@@ -2505,6 +2512,11 @@ namespace MAPeD
 #endregion		
 // LAYOUT PAINTER ************************************************************************************//
 #region layout painter
+		void MainForm_active_tile_cancel(object sender, EventArgs e)
+		{
+			clear_active_tile_img();
+		}
+		
 		void MainForm_MapScaleX1(object sender, EventArgs e)
 		{
 			RBtnMapScaleX1.Checked = true;
@@ -3618,6 +3630,11 @@ namespace MAPeD
 #endregion
 // ENTITY EDITOR *************************************************************************************//
 #region entity editor
+		void MainForm_edit_entity_cancel( object sender, EventArgs e )
+		{
+			BtnEntitiesEditInstancesModeClick_Event( sender, e );
+		}
+		
 		private bool m_rename_ent_tree_node = true;
 		
 		void TreeViewEntitiesDrawNode_Event(object sender, DrawTreeNodeEventArgs e)
@@ -4411,7 +4428,7 @@ namespace MAPeD
 						
 						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, get_selected_entity() );
-
+						
 						m_layout_editor.set_param( _mode, null );
 					}
 					break;
@@ -4419,12 +4436,12 @@ namespace MAPeD
 				case layout_editor_param.CONST_SET_ENT_INST_EDIT:
 					{
 						TreeViewEntities.SelectedNode = null;
-
+						
 						CheckBoxSelectTargetEntity.Checked = false;
 						
 						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 						m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_ACTIVE, null );
-
+						
 						m_layout_editor.set_param( _mode, null );
 						
 						fill_entity_data( get_selected_entity() );
@@ -4438,18 +4455,20 @@ namespace MAPeD
 						m_layout_editor.set_param( _mode, null );
 					}
 					break;
-
+					
 				default:
 					{
 						throw new Exception( "Unknown mode detected!\n\n[MainForm.layout_editor_set_entity_mode]" );
 					}
 			}
+			
+			m_layout_editor.update();
 		}
 		
 		void MainForm_EntityInstanceSelected( object sender, EventArgs e )
 		{
 			EventArg2Params args = e as EventArg2Params;
-
+			
 			entity_instance ent_inst = args.param1 as entity_instance;
 			
 			uint ent_mode = ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE );
@@ -4824,6 +4843,8 @@ namespace MAPeD
 			m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
 			
 			patterns_manager_update_preview();
+			
+			m_layout_editor.update();
 		}
 		
 		void patterns_manager_update_data()
@@ -5359,6 +5380,8 @@ namespace MAPeD
 			}
 			
 			patterns_manager_update_preview();
+			
+			m_layout_editor.update();
 		}
 		
 		void PatternsTreeViewNodeRename_Event(object sender, NodeLabelEditEventArgs e)

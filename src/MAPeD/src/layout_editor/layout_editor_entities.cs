@@ -19,6 +19,7 @@ namespace MAPeD
 	public class layout_editor_entities : layout_editor_behaviour_base
 	{
 		private event EventHandler EntityInstanceSelected;
+		private event EventHandler EditEntityCancel;
 
 		private entity_data			m_ent_data						= null;
 		private entity_instance		m_ent_inst						= null;
@@ -570,9 +571,11 @@ namespace MAPeD
 				{
 					if( m_ent_data != null )
 					{
+						m_shared.sys_msg( "'Esc' - edit instances" );
+						
 						int ent_width	= ( int )( m_ent_data.width * m_shared.m_scale );
 						int ent_height 	= ( int )( m_ent_data.height * m_shared.m_scale );
-
+						
 						int ent_pivot_x	= ( int )( m_ent_data.pivot_x * m_shared.m_scale );
 						int ent_pivot_y = ( int )( m_ent_data.pivot_y * m_shared.m_scale );
 					
@@ -584,7 +587,7 @@ namespace MAPeD
 						int ent_pos_y = m_mouse_y - ent_pivot_y;
 #endif
 						get_snapped_pos( ref ent_pos_x, ref ent_pos_y );
-
+						
 #if DEF_SNAPPING_BY_PIVOT
 						ent_pos_x -= ent_pivot_x;
 						ent_pos_y -= ent_pivot_y;
@@ -936,13 +939,19 @@ namespace MAPeD
 					}
 					break;
 					
+				case layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION:
+					{
+						this.EditEntityCancel += new EventHandler( _method );
+					}
+					break;
+					
 				default:
 				{
 					throw new Exception( "Unknown parameter detected!\n\n[layout_editor_entities.subscribe]" );
 				}
 			}
 		}
-
+		
 		public override void key_down_event( object sender, KeyEventArgs e )
 		{
 			//...
@@ -950,7 +959,18 @@ namespace MAPeD
 		
 		public override void key_up_event( object sender, KeyEventArgs e )
 		{
-			//...
+			base.key_up_event( sender, e );
+		}
+		
+		protected override void cancel_operation()
+		{
+			if( m_ent_mode == layout_editor_param.CONST_SET_ENT_EDIT )
+			{
+				if( EditEntityCancel != null )
+				{
+					EditEntityCancel( this, null );
+				}
+			}
 		}
 	}
 }

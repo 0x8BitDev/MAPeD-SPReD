@@ -43,6 +43,7 @@ namespace MAPeD
 	public class layout_editor_painter : layout_editor_behaviour_base
 	{
 		private event EventHandler UpdateTileImage;
+		private event EventHandler CancelActiveTile;
 		
 		// screen editor
 		private int	m_active_tile_id	= -1;
@@ -455,6 +456,8 @@ namespace MAPeD
 			// draw ghost tile image
 			if( m_active_tile_id >= 0 )
 			{
+				m_shared.sys_msg( "'Esc' - cancel tile" );
+				
 				_surface.Canvas.Save();
 				
 				apply_sel_screen_rect();
@@ -609,6 +612,12 @@ namespace MAPeD
 					}
 					break;
 					
+				case layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION:
+					{
+						this.CancelActiveTile += new EventHandler( _method );
+					}
+					break;
+					
 				default:
 				{
 					throw new Exception( "Unknown parameter detected!\n\n[layout_editor_painter.subscribe]" );
@@ -623,7 +632,18 @@ namespace MAPeD
 		
 		public override void key_up_event( object sender, KeyEventArgs e )
 		{
-			//...
+			base.key_up_event( sender, e );
+		}
+		
+		protected override void cancel_operation()
+		{
+			if( m_active_tile_id >= 0 )
+			{
+				if( CancelActiveTile != null )
+				{
+					CancelActiveTile( this, null );
+				}
+			}
 		}
 	}
 }
