@@ -250,14 +250,17 @@ namespace MAPeD
 			this.BtnLayoutAddLeftColumn = new System.Windows.Forms.Button();
 			this.BtnLayoutRemoveLeftColumn = new System.Windows.Forms.Button();
 			this.TabPainter = new System.Windows.Forms.TabPage();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.BtnPainterReplaceTile = new System.Windows.Forms.Button();
+			this.BtnPainterFillWithTile = new System.Windows.Forms.Button();
 			this.GrpBoxPainter = new System.Windows.Forms.GroupBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.RBtnMapScaleX2 = new System.Windows.Forms.RadioButton();
 			this.RBtnMapScaleX1 = new System.Windows.Forms.RadioButton();
 			this.GrpBoxActiveTile = new System.Windows.Forms.GroupBox();
 			this.PBoxActiveTile = new System.Windows.Forms.PictureBox();
-			this.BtnResetTile = new System.Windows.Forms.Button();
 			this.BtnTilesBlocks = new System.Windows.Forms.Button();
+			this.BtnResetTile = new System.Windows.Forms.Button();
 			this.TabScreenList = new System.Windows.Forms.TabPage();
 			this.splitContainer6 = new System.Windows.Forms.SplitContainer();
 			this.CheckBoxLayoutEditorAllBanks = new System.Windows.Forms.CheckBox();
@@ -437,6 +440,7 @@ namespace MAPeD
 			this.groupBox7.SuspendLayout();
 			this.groupBox13.SuspendLayout();
 			this.TabPainter.SuspendLayout();
+			this.groupBox6.SuspendLayout();
 			this.GrpBoxPainter.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.GrpBoxActiveTile.SuspendLayout();
@@ -2550,6 +2554,7 @@ namespace MAPeD
 			// TabPainter
 			// 
 			this.TabPainter.BackColor = System.Drawing.Color.Silver;
+			this.TabPainter.Controls.Add(this.groupBox6);
 			this.TabPainter.Controls.Add(this.GrpBoxPainter);
 			this.TabPainter.Location = new System.Drawing.Point(4, 22);
 			this.TabPainter.Name = "TabPainter";
@@ -2557,14 +2562,44 @@ namespace MAPeD
 			this.TabPainter.TabIndex = 3;
 			this.TabPainter.Text = "Painter";
 			// 
+			// groupBox6
+			// 
+			this.groupBox6.Controls.Add(this.BtnPainterReplaceTile);
+			this.groupBox6.Controls.Add(this.BtnPainterFillWithTile);
+			this.groupBox6.Location = new System.Drawing.Point(5, 126);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(284, 52);
+			this.groupBox6.TabIndex = 7;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = "Selected Screens";
+			// 
+			// BtnPainterReplaceTile
+			// 
+			this.BtnPainterReplaceTile.Location = new System.Drawing.Point(144, 19);
+			this.BtnPainterReplaceTile.Name = "BtnPainterReplaceTile";
+			this.BtnPainterReplaceTile.Size = new System.Drawing.Size(130, 23);
+			this.BtnPainterReplaceTile.TabIndex = 9;
+			this.BtnPainterReplaceTile.Text = "Replace Tile";
+			this.BtnPainterReplaceTile.UseVisualStyleBackColor = true;
+			this.BtnPainterReplaceTile.Click += new System.EventHandler(this.BtnPainterReplaceTileClick_Event);
+			// 
+			// BtnPainterFillWithTile
+			// 
+			this.BtnPainterFillWithTile.Location = new System.Drawing.Point(10, 19);
+			this.BtnPainterFillWithTile.Name = "BtnPainterFillWithTile";
+			this.BtnPainterFillWithTile.Size = new System.Drawing.Size(130, 23);
+			this.BtnPainterFillWithTile.TabIndex = 8;
+			this.BtnPainterFillWithTile.Text = "Fill With Tile";
+			this.BtnPainterFillWithTile.UseVisualStyleBackColor = true;
+			this.BtnPainterFillWithTile.Click += new System.EventHandler(this.BtnPainterFillWithTileClick_Event);
+			// 
 			// GrpBoxPainter
 			// 
 			this.GrpBoxPainter.Controls.Add(this.groupBox3);
 			this.GrpBoxPainter.Controls.Add(this.GrpBoxActiveTile);
-			this.GrpBoxPainter.Controls.Add(this.BtnTilesBlocks);
 			this.GrpBoxPainter.Location = new System.Drawing.Point(5, 5);
 			this.GrpBoxPainter.Name = "GrpBoxPainter";
-			this.GrpBoxPainter.Size = new System.Drawing.Size(284, 148);
+			this.GrpBoxPainter.Size = new System.Drawing.Size(284, 115);
 			this.GrpBoxPainter.TabIndex = 0;
 			this.GrpBoxPainter.TabStop = false;
 			this.GrpBoxPainter.Text = "Data Type: ...";
@@ -2573,74 +2608,79 @@ namespace MAPeD
 			// 
 			this.groupBox3.Controls.Add(this.RBtnMapScaleX2);
 			this.groupBox3.Controls.Add(this.RBtnMapScaleX1);
-			this.groupBox3.Location = new System.Drawing.Point(105, 72);
+			this.groupBox3.Location = new System.Drawing.Point(10, 14);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(80, 63);
-			this.groupBox3.TabIndex = 2;
+			this.groupBox3.Size = new System.Drawing.Size(92, 91);
+			this.groupBox3.TabIndex = 1;
 			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Map Scale";
+			this.groupBox3.Text = "Scene Scale";
 			// 
 			// RBtnMapScaleX2
 			// 
-			this.RBtnMapScaleX2.Location = new System.Drawing.Point(14, 38);
+			this.RBtnMapScaleX2.Appearance = System.Windows.Forms.Appearance.Button;
+			this.RBtnMapScaleX2.Location = new System.Drawing.Point(9, 52);
 			this.RBtnMapScaleX2.Name = "RBtnMapScaleX2";
-			this.RBtnMapScaleX2.Size = new System.Drawing.Size(44, 17);
-			this.RBtnMapScaleX2.TabIndex = 4;
+			this.RBtnMapScaleX2.Size = new System.Drawing.Size(74, 30);
+			this.RBtnMapScaleX2.TabIndex = 3;
 			this.RBtnMapScaleX2.Text = "x2";
+			this.RBtnMapScaleX2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.RBtnMapScaleX2.UseVisualStyleBackColor = true;
 			this.RBtnMapScaleX2.CheckedChanged += new System.EventHandler(this.RBtnMapScaleX2CheckedChanged_Event);
 			// 
 			// RBtnMapScaleX1
 			// 
+			this.RBtnMapScaleX1.Appearance = System.Windows.Forms.Appearance.Button;
 			this.RBtnMapScaleX1.Checked = true;
-			this.RBtnMapScaleX1.Location = new System.Drawing.Point(14, 17);
+			this.RBtnMapScaleX1.Location = new System.Drawing.Point(9, 16);
 			this.RBtnMapScaleX1.Name = "RBtnMapScaleX1";
-			this.RBtnMapScaleX1.Size = new System.Drawing.Size(44, 17);
-			this.RBtnMapScaleX1.TabIndex = 3;
+			this.RBtnMapScaleX1.Size = new System.Drawing.Size(74, 30);
+			this.RBtnMapScaleX1.TabIndex = 2;
 			this.RBtnMapScaleX1.TabStop = true;
 			this.RBtnMapScaleX1.Text = "x1";
+			this.RBtnMapScaleX1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.RBtnMapScaleX1.UseVisualStyleBackColor = true;
 			this.RBtnMapScaleX1.CheckedChanged += new System.EventHandler(this.RBtnMapScaleX1CheckedChanged_Event);
 			// 
 			// GrpBoxActiveTile
 			// 
 			this.GrpBoxActiveTile.Controls.Add(this.PBoxActiveTile);
+			this.GrpBoxActiveTile.Controls.Add(this.BtnTilesBlocks);
 			this.GrpBoxActiveTile.Controls.Add(this.BtnResetTile);
-			this.GrpBoxActiveTile.Location = new System.Drawing.Point(191, 14);
+			this.GrpBoxActiveTile.Location = new System.Drawing.Point(108, 14);
 			this.GrpBoxActiveTile.Name = "GrpBoxActiveTile";
-			this.GrpBoxActiveTile.Size = new System.Drawing.Size(81, 121);
-			this.GrpBoxActiveTile.TabIndex = 5;
+			this.GrpBoxActiveTile.Size = new System.Drawing.Size(166, 91);
+			this.GrpBoxActiveTile.TabIndex = 4;
 			this.GrpBoxActiveTile.TabStop = false;
 			this.GrpBoxActiveTile.Text = "...";
 			// 
 			// PBoxActiveTile
 			// 
 			this.PBoxActiveTile.BackColor = System.Drawing.Color.Black;
-			this.PBoxActiveTile.Location = new System.Drawing.Point(8, 20);
+			this.PBoxActiveTile.Location = new System.Drawing.Point(91, 17);
 			this.PBoxActiveTile.Name = "PBoxActiveTile";
 			this.PBoxActiveTile.Size = new System.Drawing.Size(64, 64);
 			this.PBoxActiveTile.TabIndex = 6;
 			this.PBoxActiveTile.TabStop = false;
 			// 
+			// BtnTilesBlocks
+			// 
+			this.BtnTilesBlocks.Location = new System.Drawing.Point(9, 16);
+			this.BtnTilesBlocks.Name = "BtnTilesBlocks";
+			this.BtnTilesBlocks.Size = new System.Drawing.Size(75, 37);
+			this.BtnTilesBlocks.TabIndex = 5;
+			this.BtnTilesBlocks.Text = "Tiles/Blocks";
+			this.BtnTilesBlocks.UseVisualStyleBackColor = true;
+			this.BtnTilesBlocks.Click += new System.EventHandler(this.BtnTilesBlocksClick_Event);
+			// 
 			// BtnResetTile
 			// 
-			this.BtnResetTile.Location = new System.Drawing.Point(8, 91);
+			this.BtnResetTile.Location = new System.Drawing.Point(9, 59);
 			this.BtnResetTile.Name = "BtnResetTile";
-			this.BtnResetTile.Size = new System.Drawing.Size(64, 23);
+			this.BtnResetTile.Size = new System.Drawing.Size(75, 23);
 			this.BtnResetTile.TabIndex = 6;
 			this.BtnResetTile.Text = "Cancel";
 			this.BtnResetTile.UseVisualStyleBackColor = true;
 			this.BtnResetTile.Click += new System.EventHandler(this.BtnResetTileClick_Event);
-			// 
-			// BtnTilesBlocks
-			// 
-			this.BtnTilesBlocks.Location = new System.Drawing.Point(105, 19);
-			this.BtnTilesBlocks.Name = "BtnTilesBlocks";
-			this.BtnTilesBlocks.Size = new System.Drawing.Size(80, 47);
-			this.BtnTilesBlocks.TabIndex = 1;
-			this.BtnTilesBlocks.Text = "Tiles/Blocks";
-			this.BtnTilesBlocks.UseVisualStyleBackColor = true;
-			this.BtnTilesBlocks.Click += new System.EventHandler(this.BtnTilesBlocksClick_Event);
 			// 
 			// TabScreenList
 			// 
@@ -3979,6 +4019,7 @@ namespace MAPeD
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox13.ResumeLayout(false);
 			this.TabPainter.ResumeLayout(false);
+			this.groupBox6.ResumeLayout(false);
 			this.GrpBoxPainter.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.GrpBoxActiveTile.ResumeLayout(false);
@@ -4039,6 +4080,9 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Button BtnPainterFillWithTile;
+		private System.Windows.Forms.Button BtnPainterReplaceTile;
+		private System.Windows.Forms.GroupBox groupBox6;
 		private SkiaSharp.Views.Desktop.SKGLControl PBoxLayout;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
 		private System.Windows.Forms.ToolStripMenuItem LayoutDeleteScreenEntitiesToolStripMenuItem;

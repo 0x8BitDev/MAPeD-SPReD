@@ -1805,6 +1805,8 @@ namespace MAPeD
 				
 				m_tile_preview.update( m_imagelist_manager.get_tiles_image_list()[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
 				GrpBoxActiveTile.Text = "Tile: " + String.Format( "${0:X2}", _ind );
+				
+				BtnResetTile.Enabled = true;
 			}
 		}
 
@@ -1816,6 +1818,8 @@ namespace MAPeD
 				
 				m_tile_preview.update( m_imagelist_manager.get_blocks_image_list()[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
 				GrpBoxActiveTile.Text = "Block: " + String.Format( "${0:X2}", _ind );
+				
+				BtnResetTile.Enabled = true;
 			}
 		}
 		
@@ -1825,6 +1829,8 @@ namespace MAPeD
 			
 			m_tile_preview.update( null, 0, 0, 0, 0, true, true );
 			GrpBoxActiveTile.Text = "...";
+			
+			BtnResetTile.Enabled = false;
 			
 			m_layout_editor.update();
 		}
@@ -2512,6 +2518,16 @@ namespace MAPeD
 #endregion		
 // LAYOUT PAINTER ************************************************************************************//
 #region layout painter
+		void BtnPainterFillWithTileClick_Event(object sender, EventArgs e)
+		{
+			//...
+		}
+		
+		void BtnPainterReplaceTileClick_Event(object sender, EventArgs e)
+		{
+			//...
+		}
+		
 		void ActiveTileCancel_Event(object sender, EventArgs e)
 		{
 			clear_active_tile_img();
