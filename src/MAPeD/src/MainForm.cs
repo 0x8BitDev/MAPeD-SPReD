@@ -139,7 +139,7 @@ namespace MAPeD
 														Palette3,
 														m_data_manager );
 			
-			m_tiles_processor.subscribe_block_quad_selected_event( MainForm_BlockQuadSelected );
+			m_tiles_processor.subscribe_block_quad_selected_event( BlockQuadSelected_Event );
 
 			m_tile_list_manager = new tile_list_manager();
 			
@@ -149,29 +149,29 @@ namespace MAPeD
 			{
 				m_layout_editor = new layout_editor_base( m_data_manager, PBoxLayout, LayoutLabel, m_imagelist_manager );
 				m_layout_editor.subscribe_event( m_data_manager );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SUBSCR_ENT_INST_SELECT, MainForm_EntityInstanceSelected );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, MainForm_edit_entity_cancel );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SUBSCR_ENT_INST_SELECT, EntityInstanceSelected_Event );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, EditEntityCancel_Event );
 				
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SUBSCR_SCR_RESET_SELECTED, MainForm_ResetSelectedScreen );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SUBSCR_SCR_RESET_SELECTED, ResetSelectedScreen_Event );
 				
 				m_layout_editor.subscribe( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE, update_tile_image );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, MainForm_active_tile_cancel );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, ActiveTileCancel_Event );
 				
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_EXTRACT_END, MainForm_pattern_extract_end );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, MainForm_pattern_place_cancel );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_EXTRACT_END, PatternExtractEnd_Event );
+				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, PatternPlaceCancel_Event );
 				
 				m_layout_editor.set_param( layout_editor_param.CONST_SET_BASE_SUBSCR_DATA_MNGR, m_data_manager );
 				
-				m_layout_editor.MapScaleX1 += new EventHandler( MainForm_MapScaleX1 );
-				m_layout_editor.MapScaleX2 += new EventHandler( MainForm_MapScaleX2 );
+				m_layout_editor.MapScaleX1 += new EventHandler( MapScaleX1_Event );
+				m_layout_editor.MapScaleX2 += new EventHandler( MapScaleX2_Event );
 				
 				// set the builder mode by default
 				m_layout_editor.mode = layout_editor_base.EMode.em_Builder;
 				
 				m_tile_preview = new image_preview( PBoxActiveTile, false );
 
-				layout_screen_data.EntityAdded		+= new EventHandler( MainForm_entities_counter_update );
-				layout_screen_data.EntityRemoved	+= new EventHandler( MainForm_entities_counter_update );
+				layout_screen_data.EntityAdded		+= new EventHandler( EntitiesCounterUpdate_Event );
+				layout_screen_data.EntityRemoved	+= new EventHandler( EntitiesCounterUpdate_Event );
 			}
 			
 			// patterns manager
@@ -211,13 +211,13 @@ namespace MAPeD
 			mark_update_screens_btn( true );
 
 			m_tiles_palette_form = new tiles_palette_form( m_imagelist_manager.get_tiles_image_list(), ContextMenuTilesList, m_imagelist_manager.get_blocks_image_list(), ContextMenuBlocksList, m_tile_list_manager );
-			m_tiles_palette_form.TilesBlocksClosed 	+= new EventHandler( MainForm_TilesBlocksClosed );
-			m_tiles_palette_form.TileSelected 		+= new EventHandler( MainForm_TileSelected );
-			m_tiles_palette_form.BlockSelected 		+= new EventHandler( MainForm_BlockSelected );
+			m_tiles_palette_form.TilesBlocksClosed 	+= new EventHandler( TilesBlocksClosed_Event );
+			m_tiles_palette_form.TileSelected 		+= new EventHandler( TileSelected_Event );
+			m_tiles_palette_form.BlockSelected 		+= new EventHandler( BlockSelected_Event );
 			m_tiles_palette_form.ResetActiveTile 	+= new EventHandler( BtnResetTileClick_Event );
 			
 			m_optimization_form = new optimization_form( m_data_manager, progress_bar_show );
-			m_optimization_form.UpdateGraphics += new EventHandler( MainForm_UpdateGraphicsAfterOptimization );
+			m_optimization_form.UpdateGraphics += new EventHandler( UpdateGraphicsAfterOptimization_Event );
 			
 #if DEF_PALETTE16_PER_CHR
 			m_tiles_processor.UpdatePaletteListPos	+= new EventHandler( update_palette_list_pos );
@@ -2512,17 +2512,17 @@ namespace MAPeD
 #endregion		
 // LAYOUT PAINTER ************************************************************************************//
 #region layout painter
-		void MainForm_active_tile_cancel(object sender, EventArgs e)
+		void ActiveTileCancel_Event(object sender, EventArgs e)
 		{
 			clear_active_tile_img();
 		}
 		
-		void MainForm_MapScaleX1(object sender, EventArgs e)
+		void MapScaleX1_Event(object sender, EventArgs e)
 		{
 			RBtnMapScaleX1.Checked = true;
 		}
 		
-		void MainForm_MapScaleX2(object sender, EventArgs e)
+		void MapScaleX2_Event(object sender, EventArgs e)
 		{
 			RBtnMapScaleX2.Checked = true;
 		}
@@ -2550,22 +2550,22 @@ namespace MAPeD
 			BtnTilesBlocks.Enabled = false;
 		}
 		
-		void MainForm_TilesBlocksClosed(object sender, EventArgs e)
+		void TilesBlocksClosed_Event(object sender, EventArgs e)
 		{
 			BtnTilesBlocks.Enabled = true;
 		}
 		
-		void MainForm_TileSelected(object sender, EventArgs e)
+		void TileSelected_Event(object sender, EventArgs e)
 		{
 			select_tile( ( sender as tiles_palette_form ).active_item_id );
 		}
 
-		void MainForm_BlockSelected(object sender, EventArgs e)
+		void BlockSelected_Event(object sender, EventArgs e)
 		{
 			select_block( ( sender as tiles_palette_form ).active_item_id, true, true );
 		}
 		
-		void MainForm_BlockQuadSelected(object sender, EventArgs e)
+		void BlockQuadSelected_Event(object sender, EventArgs e)
 		{
 			// show property
 			select_block( m_tiles_processor.get_selected_block(), false, true );
@@ -2582,7 +2582,7 @@ namespace MAPeD
 			m_tile_list_manager.update_tile( tile_list.EType.t_Tiles, tile_ind );
 		}
 		
-		void MainForm_UpdateGraphicsAfterOptimization(object sender, EventArgs e)
+		void UpdateGraphicsAfterOptimization_Event(object sender, EventArgs e)
 		{
 			mark_update_screens_btn( true );
 			
@@ -2682,7 +2682,7 @@ namespace MAPeD
 			}
 		}
 		
-		void MainForm_entities_counter_update(object sender, EventArgs e)
+		void EntitiesCounterUpdate_Event(object sender, EventArgs e)
 		{
 			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
 			{
@@ -3531,7 +3531,7 @@ namespace MAPeD
 			m_layout_editor.update();
 		}
 		
-		void MainForm_ResetSelectedScreen(object sender, EventArgs e)
+		void ResetSelectedScreen_Event(object sender, EventArgs e)
 		{
 			ListViewScreens.SelectedItems.Clear();
 		}
@@ -3630,7 +3630,7 @@ namespace MAPeD
 #endregion
 // ENTITY EDITOR *************************************************************************************//
 #region entity editor
-		void MainForm_edit_entity_cancel( object sender, EventArgs e )
+		void EditEntityCancel_Event( object sender, EventArgs e )
 		{
 			BtnEntitiesEditInstancesModeClick_Event( sender, e );
 		}
@@ -4465,7 +4465,7 @@ namespace MAPeD
 			m_layout_editor.update();
 		}
 		
-		void MainForm_EntityInstanceSelected( object sender, EventArgs e )
+		void EntityInstanceSelected_Event( object sender, EventArgs e )
 		{
 			EventArg2Params args = e as EventArg2Params;
 			
@@ -5281,7 +5281,7 @@ namespace MAPeD
 			m_layout_editor.update();
 		}
 		
-		void MainForm_pattern_extract_end(object sender, EventArgs e)
+		void PatternExtractEnd_Event(object sender, EventArgs e)
 		{
 			m_object_name_form.Text = "Add Pattern";
 			
@@ -5308,7 +5308,7 @@ namespace MAPeD
 			}
 		}
 		
-		void MainForm_pattern_place_cancel(object sender, EventArgs e)
+		void PatternPlaceCancel_Event(object sender, EventArgs e)
 		{
 			patterns_manager_reset_active_pattern();
 		}
