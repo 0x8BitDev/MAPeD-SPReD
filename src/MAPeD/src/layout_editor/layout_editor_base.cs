@@ -1265,11 +1265,13 @@ namespace MAPeD
 				m_surface.Canvas.DrawLine( m_pix_box.Width, 0, 0, m_pix_box.Height, m_line_paint );
 				
 				print( "For all the tabs:", 0, 0 );
-				print( "- Use a mouse wheel to scale a map in the viewport", 0, 10 );
-				print( "- A quick roll of the mouse wheel scales an active map up to 2x", 0, 20 );
-				print( "- Hold down the 'Ctrl' key to pan a map in the viewport", 0, 30 );
-				print( "- Hold down the 'Shift' key to select multiple screens", 0, 40 );
-				print( "Use a mouse wheel to scale an entity/pattern preview", 0, 60 );
+				print( "- Map scaling:", 0, 10 );
+				print( "    a) Use a mouse wheel to scale a map in the viewport", 0, 20 );
+				print( "    b) A quick roll of the mouse wheel scales an active map up to 2x", 0, 30 );
+				print( "    c) Press '1' - 100%, '2' - 200%", 0, 40 );
+				print( "- Hold down the 'Ctrl' key to pan a map in the viewport", 0, 50 );
+				print( "- Hold down the 'Shift' key to select multiple screens", 0, 60 );
+				print( "Use a mouse wheel to scale an entity/pattern preview", 0, 80 );
 				
 				if( !disable( true ) )
 				{
@@ -1757,6 +1759,20 @@ namespace MAPeD
 				if( m_behaviour != null )
 				{
 					m_behaviour.key_down_event( sender, e );
+				}
+				
+				// map scaling
+				if( !e.Alt && !e.Shift && !e.Control )
+				{
+					if( e.KeyData == Keys.D1 || e.KeyData == Keys.NumPad1 )
+					{
+						set_param( layout_editor_param.CONST_SET_BASE_MAP_SCALE_X1, null );
+					}
+					else
+					if( e.KeyData == Keys.D2 || e.KeyData == Keys.NumPad2 )
+					{
+						set_param( layout_editor_param.CONST_SET_BASE_MAP_SCALE_X2, null );
+					}
 				}
 			}
 		}

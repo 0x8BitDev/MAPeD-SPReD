@@ -1,8 +1,9 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+24.12.2022 - Layout tab: Map scaling: Press '1' - 100%, '2' - 200%
 22.12.2022 - Layout tab -> Painter tab: 'Escape' to cancel an active tile
-	   - Layout tab -> Entities tab: 'Escape' to switch to the 'Edit Instance' mode, when the 'Edit Entity' mode is active
+	   - Layout tab -> Entities tab: 'Escape' to switch to the 'Edit Instances' mode, when the 'Edit Entity' mode is active
 	   - Layout tab -> Patterns tab: 'Escape' to cancel an active tile pattern
 20.12.2022 - Layout viewport: hardware-accelerated rendering using OpenGL (OpenTK/SkiaSharp)
 	   - Switched to x64 architecture
