@@ -259,6 +259,7 @@ namespace MAPeD
 		public static readonly SKColor	CONST_COLOR_MARK_ADJ_SCREEN_MARK			= new SKColor( 0x7f00ff00 );
 		public static readonly SKColor	CONST_COLOR_LAYOUT_PIXBOX_DEFAULT			= Extensions.ToSKColor( Color.White );
 		public static readonly SKColor	CONST_COLOR_LAYOUT_PIXBOX_INACTIVE_CROSS	= Extensions.ToSKColor( Color.Red );
+		public static readonly SKColor	CONST_COLOR_TILE_BORDER						= Extensions.ToSKColor( Color.Red );
 		// image list manager
 		public static readonly Color	CONST_COLOR_TILE_CLEAR						= Color.Black;
 		public static readonly Color	CONST_COLOR_BLOCK_CLEAR						= Color.Black;

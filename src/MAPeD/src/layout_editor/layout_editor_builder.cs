@@ -26,9 +26,11 @@ namespace MAPeD
 			//...
 		}
 		
-		public override void mouse_down( object sender, MouseEventArgs e )
+		public override bool mouse_down( object sender, MouseEventArgs e )
 		{
 			//...
+			
+			return true;
 		}
 		
 		public override void mouse_up( object sender, MouseEventArgs e )

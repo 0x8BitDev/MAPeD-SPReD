@@ -42,29 +42,28 @@ namespace MAPeD
 			}
 		}
 		
-		public override void mouse_down( object sender, MouseEventArgs e )
+		public override bool mouse_down( object sender, MouseEventArgs e )
 		{
 			//...
+			
+			return true;
 		}
 		
 		public override void mouse_up( object sender, MouseEventArgs e )
 		{
-			if( e.Button == MouseButtons.Left )
+			if( m_shared.m_sel_screen_slot_id >= 0 )
 			{
-				if( m_shared.m_sel_screen_slot_id >= 0 )
+				if( m_active_screen_index != layout_data.CONST_EMPTY_CELL_ID )
 				{
-					if( m_active_screen_index != layout_data.CONST_EMPTY_CELL_ID )
-					{
-						layout_screen_data scr_data = m_shared.m_layout.get_data( m_shared.get_sel_scr_pos_x(), m_shared.get_sel_scr_pos_y() );
-						
-						scr_data.m_scr_ind = m_active_screen_index;
-					}
+					layout_screen_data scr_data = m_shared.m_layout.get_data( m_shared.get_sel_scr_pos_x(), m_shared.get_sel_scr_pos_y() );
+					
+					scr_data.m_scr_ind = m_active_screen_index;
 				}
-				else
-				{
-					// reset selection
-					reset_selected_screen();
-				}
+			}
+			else
+			{
+				// reset selection
+				reset_selected_screen();
 			}
 		}
 		
@@ -101,7 +100,7 @@ namespace MAPeD
 
 		public override void mouse_leave( object sender, EventArgs e )
 		{
-			//...
+			m_sel_scr_msg = "[...]";
 		}
 		
 		public override void mouse_wheel( object sender, EventArgs e )

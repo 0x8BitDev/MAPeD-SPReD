@@ -90,62 +90,58 @@ namespace MAPeD
 			m_force_map_drawing = false;
 		}
 		
-		public override void mouse_down( object sender, MouseEventArgs e )
+		public override bool mouse_down( object sender, MouseEventArgs e )
 		{
-			if( e.Button == MouseButtons.Left )
+			if( m_mode == EMode.em_Pattern_Put )
 			{
-				if( m_mode == EMode.em_Pattern_Put )
+				if( pattern_put( e.X, e.Y ) == false )
 				{
-					if( pattern_put( e.X, e.Y ) == false )
-					{
-						// update scene with error message
-						m_owner.update();
-					}
-				}
-				else
-				if( m_mode == EMode.em_Pattern_Extract_Begin )
-				{
-					m_pttrn_rect_beg_x = m_pttrn_rect_end_x = e.X;
-					m_pttrn_rect_beg_y = m_pttrn_rect_end_y = e.Y;
-					
-					m_mode = EMode.em_Pattern_Extract_Resize;
-					
-					m_force_map_drawing = true;
-					
-					if( m_shared.m_scale < 1.0 )
-					{
-						m_shared.set_high_quality_render_mode( true );
-					}
+					// update scene with error message
+					m_owner.update();
 				}
 			}
+			else
+			if( m_mode == EMode.em_Pattern_Extract_Begin )
+			{
+				m_pttrn_rect_beg_x = m_pttrn_rect_end_x = e.X;
+				m_pttrn_rect_beg_y = m_pttrn_rect_end_y = e.Y;
+				
+				m_mode = EMode.em_Pattern_Extract_Resize;
+				
+				m_force_map_drawing = true;
+				
+				if( m_shared.m_scale < 1.0 )
+				{
+					m_shared.set_high_quality_render_mode( true );
+				}
+			}
+			
+			return true;
 		}
 		
 		public override void mouse_up( object sender, MouseEventArgs e )
 		{
-			if( e.Button == MouseButtons.Left )
+			if( m_mode == EMode.em_Pattern_Extract_Resize )
 			{
-				if( m_mode == EMode.em_Pattern_Extract_Resize )
+				pattern_data pttrn;
+				
+				if( ( pttrn = pattern_extract() ) != null )
 				{
-					pattern_data pttrn;
-					
-					if( ( pttrn = pattern_extract() ) != null )
+					if( this.PatternExtractEnd != null )
 					{
-						if( this.PatternExtractEnd != null )
-						{
-							this.PatternExtractEnd( this, new PatternEventArg( pttrn ) );
-						}
+						this.PatternExtractEnd( this, new PatternEventArg( pttrn ) );
 					}
-					else
-					{
-						// empty pattern - try again!
-						m_mode = EMode.em_Pattern_Extract_Begin;
-						
-						// update scene with error message
-						m_owner.update();
-					}
-					
-					m_force_map_drawing = false;
 				}
+				else
+				{
+					// empty pattern - try again!
+					m_mode = EMode.em_Pattern_Extract_Begin;
+					
+					// update scene with error message
+					m_owner.update();
+				}
+				
+				m_force_map_drawing = false;
 			}
 		}
 		
@@ -571,7 +567,7 @@ namespace MAPeD
 			else
 			if( m_mode == EMode.em_Pattern_Extract_Begin )
 			{
-				m_shared.sys_msg( "Select rectangular area, 'Esc' - cancel" );
+				m_shared.sys_msg( "SELECT RECTANGULAR AREA, 'Esc' - cancel" );
 			}
 		}
 

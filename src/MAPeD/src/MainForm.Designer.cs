@@ -251,7 +251,7 @@ namespace MAPeD
 			this.BtnLayoutRemoveLeftColumn = new System.Windows.Forms.Button();
 			this.TabPainter = new System.Windows.Forms.TabPage();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.BtnPainterReplaceTile = new System.Windows.Forms.Button();
+			this.CheckBoxPainterReplaceTiles = new System.Windows.Forms.CheckBox();
 			this.BtnPainterFillWithTile = new System.Windows.Forms.Button();
 			this.GrpBoxPainter = new System.Windows.Forms.GroupBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -2564,7 +2564,7 @@ namespace MAPeD
 			// 
 			// groupBox6
 			// 
-			this.groupBox6.Controls.Add(this.BtnPainterReplaceTile);
+			this.groupBox6.Controls.Add(this.CheckBoxPainterReplaceTiles);
 			this.groupBox6.Controls.Add(this.BtnPainterFillWithTile);
 			this.groupBox6.Location = new System.Drawing.Point(5, 126);
 			this.groupBox6.Name = "groupBox6";
@@ -2573,15 +2573,17 @@ namespace MAPeD
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Selected Screens";
 			// 
-			// BtnPainterReplaceTile
+			// CheckBoxPainterReplaceTiles
 			// 
-			this.BtnPainterReplaceTile.Location = new System.Drawing.Point(144, 19);
-			this.BtnPainterReplaceTile.Name = "BtnPainterReplaceTile";
-			this.BtnPainterReplaceTile.Size = new System.Drawing.Size(130, 23);
-			this.BtnPainterReplaceTile.TabIndex = 9;
-			this.BtnPainterReplaceTile.Text = "Replace Tile";
-			this.BtnPainterReplaceTile.UseVisualStyleBackColor = true;
-			this.BtnPainterReplaceTile.Click += new System.EventHandler(this.BtnPainterReplaceTileClick_Event);
+			this.CheckBoxPainterReplaceTiles.Appearance = System.Windows.Forms.Appearance.Button;
+			this.CheckBoxPainterReplaceTiles.Location = new System.Drawing.Point(144, 19);
+			this.CheckBoxPainterReplaceTiles.Name = "CheckBoxPainterReplaceTiles";
+			this.CheckBoxPainterReplaceTiles.Size = new System.Drawing.Size(130, 23);
+			this.CheckBoxPainterReplaceTiles.TabIndex = 9;
+			this.CheckBoxPainterReplaceTiles.Text = "Replace Tiles";
+			this.CheckBoxPainterReplaceTiles.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.CheckBoxPainterReplaceTiles.UseVisualStyleBackColor = true;
+			this.CheckBoxPainterReplaceTiles.CheckedChanged += new System.EventHandler(this.CheckBoxPainterReplaceTilesChecked_Event);
 			// 
 			// BtnPainterFillWithTile
 			// 
@@ -4080,8 +4082,8 @@ namespace MAPeD
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.CheckBox CheckBoxPainterReplaceTiles;
 		private System.Windows.Forms.Button BtnPainterFillWithTile;
-		private System.Windows.Forms.Button BtnPainterReplaceTile;
 		private System.Windows.Forms.GroupBox groupBox6;
 		private SkiaSharp.Views.Desktop.SKGLControl PBoxLayout;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;

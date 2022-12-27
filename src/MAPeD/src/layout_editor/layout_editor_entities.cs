@@ -63,145 +63,144 @@ namespace MAPeD
 			set_param( layout_editor_param.CONST_SET_ENT_INST_EDIT, null );
 		}
 		
-		public override void mouse_down( object sender, MouseEventArgs e )
+		public override bool mouse_down( object sender, MouseEventArgs e )
 		{
-			if( e.Button == MouseButtons.Left )
+			m_ent_inst_captured = false;
+			
+			bool entity_picked = false;
+			
+			uint last_ent_mode = m_ent_mode;
+			
+			if( m_owner.show_entities && ( last_ent_mode == layout_editor_param.CONST_SET_ENT_INST_EDIT || last_ent_mode == layout_editor_param.CONST_SET_ENT_SELECT_TARGET ) )
 			{
-				m_ent_inst_captured = false;
-				
-				bool entity_picked = false;
-				
-				uint last_ent_mode = m_ent_mode;
-				
-				if( m_owner.show_entities && ( last_ent_mode == layout_editor_param.CONST_SET_ENT_INST_EDIT || last_ent_mode == layout_editor_param.CONST_SET_ENT_SELECT_TARGET ) )
+				// select entity
+				if( m_shared.m_sel_screen_slot_id >= 0 )
 				{
-					// select entity
-					if( m_shared.m_sel_screen_slot_id >= 0 )
+					int scr_pos_x = m_shared.get_sel_scr_pos_x();
+					int scr_pos_y = m_shared.get_sel_scr_pos_y();
+					
+					int scr_pos_x_pix = ( int )m_shared.screen_pos_x_by_slot_id( scr_pos_x );
+					int scr_pos_y_pix = ( int )m_shared.screen_pos_y_by_slot_id( scr_pos_y );
+					
+					int mouse_scr_pos_x = ( int )( ( e.X - scr_pos_x_pix ) / m_shared.m_scale );
+					int mouse_scr_pos_y = ( int )( ( e.Y - scr_pos_y_pix ) / m_shared.m_scale );
+					
+					if( !( entity_picked = select_entity( mouse_scr_pos_x, mouse_scr_pos_y, scr_pos_x, scr_pos_y, m_shared.m_sel_screen_slot_id ) ) )
 					{
-						int scr_pos_x = m_shared.get_sel_scr_pos_x();
-						int scr_pos_y = m_shared.get_sel_scr_pos_y();
+						// try to pick at adjacent screens
+						int scr_cnt_x = m_shared.m_layout.get_width();
+						int scr_cnt_y = m_shared.m_layout.get_height();
 						
-						int scr_pos_x_pix = ( int )m_shared.screen_pos_x_by_slot_id( scr_pos_x );
-						int scr_pos_y_pix = ( int )m_shared.screen_pos_y_by_slot_id( scr_pos_y );
+						int max_scr_cnt = scr_cnt_x * scr_cnt_y;
 						
-						int mouse_scr_pos_x = ( int )( ( e.X - scr_pos_x_pix ) / m_shared.m_scale );
-						int mouse_scr_pos_y = ( int )( ( e.Y - scr_pos_y_pix ) / m_shared.m_scale );
+						m_adj_scr_ind_arr[ 1 ] = -scr_cnt_x - 1;
+						m_adj_scr_ind_arr[ 2 ] = -scr_cnt_x;
+						m_adj_scr_ind_arr[ 3 ] = -scr_cnt_x + 1;
 
-						if( !( entity_picked = select_entity( mouse_scr_pos_x, mouse_scr_pos_y, scr_pos_x, scr_pos_y, m_shared.m_sel_screen_slot_id ) ) )
+						m_adj_scr_ind_arr[ 5 ] = scr_cnt_x + 1;
+						m_adj_scr_ind_arr[ 6 ] = scr_cnt_x;
+						m_adj_scr_ind_arr[ 7 ] = scr_cnt_x - 1;
+						
+						int arr_ind = 0;
+						
+						if( mouse_scr_pos_x > platform_data.get_screen_width_pixels() >> 1 )
 						{
-							// try to pick at adjacent screens
-							int scr_cnt_x = m_shared.m_layout.get_width();
-							int scr_cnt_y = m_shared.m_layout.get_height();
+							arr_ind |= 0x01;
+						}
+						
+						if( mouse_scr_pos_y > platform_data.get_screen_height_pixels() >> 1 )
+						{
+							arr_ind |= 0x02;
 							
-							int max_scr_cnt = scr_cnt_x * scr_cnt_y;
+							arr_ind ^= 0x01;
+						}
+						
+						arr_ind <<= 1;
+						
+						int last_arr_ind = arr_ind + 3;
+						
+						int scr_ind;
+						int scr_mod_x_ind;
+						int scr_mod_y_ind;
+						int sel_scr_mod_x_ind = m_shared.m_sel_screen_slot_id % scr_cnt_x;
+						int sel_scr_mod_y_ind = m_shared.m_sel_screen_slot_id / scr_cnt_x;
+						
+						for( int i = arr_ind; i < last_arr_ind; i++ )
+						{
+							scr_ind = m_shared.m_sel_screen_slot_id + m_adj_scr_ind_arr[ i ];
 							
-							m_adj_scr_ind_arr[ 1 ] = -scr_cnt_x - 1;
-							m_adj_scr_ind_arr[ 2 ] = -scr_cnt_x;	
-							m_adj_scr_ind_arr[ 3 ] = -scr_cnt_x + 1;
-
-							m_adj_scr_ind_arr[ 5 ] = scr_cnt_x + 1;
-							m_adj_scr_ind_arr[ 6 ] = scr_cnt_x;	
-							m_adj_scr_ind_arr[ 7 ] = scr_cnt_x - 1;
-							
-							int arr_ind = 0;
-							
-							if( mouse_scr_pos_x > platform_data.get_screen_width_pixels() >> 1 )
+							if( scr_ind < 0 || scr_ind >= max_scr_cnt )
 							{
-								arr_ind |= 0x01;
+								continue;
 							}
 							
-							if( mouse_scr_pos_y > platform_data.get_screen_height_pixels() >> 1 )
+							scr_mod_x_ind = scr_ind % scr_cnt_x;
+							scr_mod_y_ind = scr_ind / scr_cnt_x;
+							
+							if( scr_mod_x_ind == ( sel_scr_mod_x_ind - 1 ) || scr_mod_x_ind == sel_scr_mod_x_ind || scr_mod_x_ind == ( sel_scr_mod_x_ind + 1 ) )
 							{
-								arr_ind |= 0x02;
-								
-								arr_ind ^= 0x01;
-							}
-							
-							arr_ind <<= 1;
-							
-							int last_arr_ind = arr_ind + 3;
-							
-							int scr_ind;
-							int scr_mod_x_ind;
-							int scr_mod_y_ind;
-							int sel_scr_mod_x_ind = m_shared.m_sel_screen_slot_id % scr_cnt_x;
-							int sel_scr_mod_y_ind = m_shared.m_sel_screen_slot_id / scr_cnt_x;
-							
-							for( int i = arr_ind; i < last_arr_ind; i++ )
-							{
-								scr_ind = m_shared.m_sel_screen_slot_id + m_adj_scr_ind_arr[ i ];
-								
-								if( scr_ind < 0 || scr_ind >= max_scr_cnt )
+								if( scr_mod_y_ind == ( sel_scr_mod_y_ind - 1 ) || scr_mod_y_ind == sel_scr_mod_y_ind || scr_mod_y_ind == ( sel_scr_mod_y_ind + 1 ) )
 								{
-									continue;
-								}
-								
-								scr_mod_x_ind = scr_ind % scr_cnt_x;
-								scr_mod_y_ind = scr_ind / scr_cnt_x;
-								
-								if( scr_mod_x_ind == ( sel_scr_mod_x_ind - 1 ) || scr_mod_x_ind == sel_scr_mod_x_ind || scr_mod_x_ind == ( sel_scr_mod_x_ind + 1 ) )
-								{
-									if( scr_mod_y_ind == ( sel_scr_mod_y_ind - 1 ) || scr_mod_y_ind == sel_scr_mod_y_ind || scr_mod_y_ind == ( sel_scr_mod_y_ind + 1 ) )
+									//System.Diagnostics.Debug.WriteLine( scr_ind );
+									
+									// convert a cursor position into checked screen space
+									scr_pos_x_pix = ( int )m_shared.screen_pos_x_by_slot_id( scr_mod_x_ind );
+									scr_pos_y_pix = ( int )m_shared.screen_pos_y_by_slot_id( scr_mod_y_ind );
+									
+									mouse_scr_pos_x = ( int )( ( e.X - scr_pos_x_pix ) / m_shared.m_scale );
+									mouse_scr_pos_y = ( int )( ( e.Y - scr_pos_y_pix ) / m_shared.m_scale );
+									
+									if( ( entity_picked = select_entity( mouse_scr_pos_x, mouse_scr_pos_y, scr_mod_x_ind, scr_mod_y_ind, scr_ind ) ) == true )
 									{
-										//System.Diagnostics.Debug.WriteLine( scr_ind );
-										
-										// convert a cursor position into checked screen space
-										scr_pos_x_pix = ( int )m_shared.screen_pos_x_by_slot_id( scr_mod_x_ind );
-										scr_pos_y_pix = ( int )m_shared.screen_pos_y_by_slot_id( scr_mod_y_ind );
-										
-										mouse_scr_pos_x = ( int )( ( e.X - scr_pos_x_pix ) / m_shared.m_scale );
-										mouse_scr_pos_y = ( int )( ( e.Y - scr_pos_y_pix ) / m_shared.m_scale );
-										
-										if( ( entity_picked = select_entity( mouse_scr_pos_x, mouse_scr_pos_y, scr_mod_x_ind, scr_mod_y_ind, scr_ind ) ) == true )
-										{
-											break;
-										}
+										break;
 									}
 								}
 							}
 						}
 					}
-					
-					if( last_ent_mode == layout_editor_param.CONST_SET_ENT_SELECT_TARGET )
+				}
+				
+				if( last_ent_mode == layout_editor_param.CONST_SET_ENT_SELECT_TARGET )
+				{
+					if( !entity_picked )
 					{
-						if( !entity_picked )
-						{
-	                		if( EntityInstanceSelected != null )
-	                		{
-	                			EntityInstanceSelected( this, new EventArg2Params( null, null ) );
-	                		}
-							
-							m_owner.update();
-						}
-					}
-					else
-					if( !m_ent_inst_captured && m_ent_inst != null )
-					{
-						set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
-						
                 		if( EntityInstanceSelected != null )
                 		{
-                			EntityInstanceSelected( this, new EventArg2Params( m_ent_inst, null ) );
+                			EntityInstanceSelected( this, new EventArg2Params( null, null ) );
                 		}
 						
 						m_owner.update();
 					}
-				}				
-				/*
-				if( !m_ent_inst_captured )
+				}
+				else
+				if( !m_ent_inst_captured && m_ent_inst != null )
 				{
-					m_shared.m_last_mouse_x	 = e.X;
-					m_shared.m_last_mouse_y	 = e.Y;
+					set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 					
-					int width_scaled	= ( int )( m_shared.m_scale * m_shared.m_layout.get_width() * platform_data.get_screen_width_pixels() );
-					int height_scaled	= ( int )( m_shared.m_scale * m_shared.m_layout.get_height() * platform_data.get_screen_height_pixels() );
+            		if( EntityInstanceSelected != null )
+            		{
+            			EntityInstanceSelected( this, new EventArg2Params( m_ent_inst, null ) );
+            		}
 					
-					if( width_scaled > m_shared.pix_box_width() || height_scaled > m_shared.pix_box_height() )
-					{
-						m_shared.set_high_quality_render_mode( false );
-					}
-				}*/
+					m_owner.update();
+				}
 			}
+			/*
+			if( !m_ent_inst_captured )
+			{
+				m_shared.m_last_mouse_x	 = e.X;
+				m_shared.m_last_mouse_y	 = e.Y;
+				
+				int width_scaled	= ( int )( m_shared.m_scale * m_shared.m_layout.get_width() * platform_data.get_screen_width_pixels() );
+				int height_scaled	= ( int )( m_shared.m_scale * m_shared.m_layout.get_height() * platform_data.get_screen_height_pixels() );
+				
+				if( width_scaled > m_shared.pix_box_width() || height_scaled > m_shared.pix_box_height() )
+				{
+					m_shared.set_high_quality_render_mode( false );
+				}
+			}*/
+			
+			return true;
 		}
 		
 		private bool select_entity( int _cursor_pos_x, int _cursor_pos_y, int _scr_pos_x, int _scr_pos_y, int _scr_ind )
@@ -259,20 +258,55 @@ namespace MAPeD
 			
 			return res;
 		}
-
+		
 		public override void mouse_up( object sender, MouseEventArgs e )
 		{
-			if( e.Button == MouseButtons.Left )
+			if( m_shared.m_sel_screen_slot_id < 0 )
 			{
-				if( m_shared.m_sel_screen_slot_id < 0 )
+				if( m_ent_mode == layout_editor_param.CONST_SET_ENT_INST_EDIT )
 				{
-					if( m_ent_mode == layout_editor_param.CONST_SET_ENT_INST_EDIT )
+					// delete dragged entity if it releases out of a map
+					if( m_ent_inst != null )
 					{
-						// delete dragged entity if it releases out of a map
-						if( m_ent_inst != null )
+						get_ent_inst_init_screen_data().remove_entity( m_ent_inst );
+						
+						set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
+						
+						if( EntityInstanceSelected != null )
 						{
-							get_ent_inst_init_screen_data().remove_entity( m_ent_inst );
-							
+							EntityInstanceSelected( this, new EventArg2Params( m_ent_inst, null ) );
+						}
+					}
+				}
+			}
+			
+			if( m_owner.show_entities )
+			{
+				if( m_ent_mode == layout_editor_param.CONST_SET_ENT_EDIT )
+				{
+					place_new_entity_instance( m_ent_data );
+				}
+				else
+				if( m_ent_mode == layout_editor_param.CONST_SET_ENT_INST_EDIT )
+				{
+					if( m_ent_inst != null )
+					{
+						m_ent_inst_captured = false;
+						
+						bool ent_placed = false;
+						
+						if( m_shared.m_sel_screen_slot_id >= 0 )
+						{
+							if( place_old_entity_instance( m_ent_inst ) == true )
+							{
+								m_ent_inst_init_screen_slot_id = m_ent_inst_screen_slot_id = m_shared.m_sel_screen_slot_id;
+								
+								ent_placed = true;
+							}
+						}
+						
+						if( !ent_placed )
+						{
 							set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 							
 							if( EntityInstanceSelected != null )
@@ -282,48 +316,10 @@ namespace MAPeD
 						}
 					}
 				}
-
-				if( m_owner.show_entities )
-				{
-					if( m_ent_mode == layout_editor_param.CONST_SET_ENT_EDIT )
-					{
-						place_new_entity_instance( m_ent_data );
-					}
-					else
-					if( m_ent_mode == layout_editor_param.CONST_SET_ENT_INST_EDIT )
-					{
-						if( m_ent_inst != null )
-						{
-							m_ent_inst_captured = false;
-							
-							bool ent_placed = false;
-							
-							if( m_shared.m_sel_screen_slot_id >= 0 )
-							{
-								if( place_old_entity_instance( m_ent_inst ) == true )
-								{
-									m_ent_inst_init_screen_slot_id = m_ent_inst_screen_slot_id = m_shared.m_sel_screen_slot_id;
-									
-									ent_placed = true;
-								}
-							}
-							
-							if( !ent_placed )
-							{
-								set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
-								
-		                		if( EntityInstanceSelected != null )
-		                		{
-		                			EntityInstanceSelected( this, new EventArg2Params( m_ent_inst, null ) );
-		                		}
-							}
-						}
-					}
-				}
-				else
-				{
-					m_owner.update();
-				}
+			}
+			else
+			{
+				m_owner.update();
 			}
 		}
 		

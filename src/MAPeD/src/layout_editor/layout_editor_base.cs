@@ -22,46 +22,48 @@ namespace MAPeD
 	public static class layout_editor_param
 	{
 		// set
-		public const uint	CONST_SET_ENT_INST_RESET			= 0x000001;
-		public const uint	CONST_SET_ENT_ACTIVE				= 0x000002;
-		public const uint	CONST_SET_ENT_SEL_BRING_FRONT		= 0x000004;
-		public const uint	CONST_SET_ENT_SEL_SEND_BACK			= 0x000008;
-		public const uint	CONST_SET_ENT_EDIT					= 0x000010;
-		public const uint	CONST_SET_ENT_INST_EDIT				= 0x000020;
-		public const uint	CONST_SET_ENT_INST_DELETE			= 0x000040;
-		public const uint	CONST_SET_ENT_SELECT_TARGET			= 0x000080;
-		public const uint	CONST_SET_ENT_INST_RESET_IF_EQUAL	= 0x000100;
-		public const uint	CONST_SET_ENT_SNAPPING				= 0x000200;
-		public const uint	CONST_SET_ENT_UPDATE_ENTS_CNT		= 0x000400;
+		public const uint	CONST_SET_ENT_INST_RESET			= 0;
+		public const uint	CONST_SET_ENT_ACTIVE				= 1;
+		public const uint	CONST_SET_ENT_SEL_BRING_FRONT		= 2;
+		public const uint	CONST_SET_ENT_SEL_SEND_BACK			= 3;
+		public const uint	CONST_SET_ENT_EDIT					= 4;
+		public const uint	CONST_SET_ENT_INST_EDIT				= 5;
+		public const uint	CONST_SET_ENT_INST_DELETE			= 6;
+		public const uint	CONST_SET_ENT_SELECT_TARGET			= 7;
+		public const uint	CONST_SET_ENT_INST_RESET_IF_EQUAL	= 8;
+		public const uint	CONST_SET_ENT_SNAPPING				= 9;
+		public const uint	CONST_SET_ENT_UPDATE_ENTS_CNT		= 10;
 
-		public const uint	CONST_SET_SCR_ACTIVE				= 0x000800;
+		public const uint	CONST_SET_SCR_ACTIVE				= 1000;
 		
-		public const uint	CONST_SET_PNT_CLEAR_ACTIVE_TILE		= 0x001000;
-		public const uint	CONST_SET_PNT_UPD_ACTIVE_TILE		= 0x002000;
-		public const uint	CONST_SET_PNT_UPD_ACTIVE_BLOCK		= 0x004000;
+		public const uint	CONST_SET_PNT_CLEAR_ACTIVE_TILE		= 2000;
+		public const uint	CONST_SET_PNT_UPD_ACTIVE_TILE		= 2001;
+		public const uint	CONST_SET_PNT_UPD_ACTIVE_BLOCK		= 2002;
+		public const uint	CONST_SET_PNT_FILL_WITH_TILE		= 2003;
+		public const uint	CONST_SET_PNT_REPLACE_TILES			= 2004;
 
-		public const uint	CONST_SET_PTTRN_EXTRACT_BEGIN		= 0x008000;
-		public const uint	CONST_SET_PTTRN_PLACE				= 0x010000;
-		public const uint	CONST_SET_PTTRN_IDLE_STATE			= 0x020000;
+		public const uint	CONST_SET_PTTRN_EXTRACT_BEGIN		= 3000;
+		public const uint	CONST_SET_PTTRN_PLACE				= 3001;
+		public const uint	CONST_SET_PTTRN_IDLE_STATE			= 3002;
 		
-		public const uint	CONST_SET_BASE_MAP_SCALE_X1			= 0x040000;
-		public const uint	CONST_SET_BASE_MAP_SCALE_X2			= 0x080000;
-		public const uint	CONST_SET_BASE_SUBSCR_DATA_MNGR		= 0x100000;
+		public const uint	CONST_SET_BASE_MAP_SCALE_X1			= 4000;
+		public const uint	CONST_SET_BASE_MAP_SCALE_X2			= 4001;
+		public const uint	CONST_SET_BASE_SUBSCR_DATA_MNGR		= 4002;
 
 		// get
-		public const uint	CONST_GET_ENT_INST_SELECTED			= 0x01;
-		public const uint	CONST_GET_ENT_MODE					= 0x02;
+		public const uint	CONST_GET_ENT_INST_SELECTED			= 0;
+		public const uint	CONST_GET_ENT_MODE					= 1;
 		
 		// subscribe
-		public const uint	CONST_SUBSCR_ENT_INST_SELECT		= 0x01;
+		public const uint	CONST_SUBSCR_ENT_INST_SELECT		= 0;
 
-		public const uint	CONST_SUBSCR_SCR_RESET_SELECTED		= 0x02;
+		public const uint	CONST_SUBSCR_SCR_RESET_SELECTED		= 1000;
 		
-		public const uint	CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE	= 0x04;
+		public const uint	CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE	= 2000;
 		
-		public const uint	CONST_SUBSCR_PTTRN_EXTRACT_END		= 0x08;
+		public const uint	CONST_SUBSCR_PTTRN_EXTRACT_END		= 3000;
 		
-		public const uint	CONST_SUBSCR_CANCEL_OPERATION		= 0x10;
+		public const uint	CONST_SUBSCR_CANCEL_OPERATION		= 4000;
 	}
 	
 	/// <summary>
@@ -87,7 +89,7 @@ namespace MAPeD
 		
 		public abstract void	reset( bool _init );
 		
-		public abstract void	mouse_down( object sender, MouseEventArgs e );
+		public abstract bool	mouse_down( object sender, MouseEventArgs e );	// OUT: true - reset selected screens; false - ignore reset
 		public abstract void	mouse_up( object sender, MouseEventArgs e );
 		public abstract bool	mouse_move( object sender, MouseEventArgs e );	// OUT: true - update(); false - invalidate();
 		public abstract void	mouse_enter( object sender, EventArgs e );
@@ -199,6 +201,9 @@ namespace MAPeD
 		
 		public Action< int, int, tiles_data, data_sets_manager.EScreenDataType >	update_active_bank_screen;
 		public Action< Action< int, layout_screen_data, SKRect > >					visible_screens_data_proc;
+		
+		public Action< Action< int > >		selected_screens_proc;
+		public Func< bool >					selected_screens;
 		
 		public Func< bool >					pix_box_captured;
 		public Func< int >					pix_box_width;
@@ -378,6 +383,9 @@ namespace MAPeD
 				m_shared.gfx_context					= gfx_context;
 				m_shared.paint_line						= paint_line;
 				m_shared.paint_image					= paint_image;
+				
+				m_shared.selected_screens_proc			= selected_screens_proc;
+				m_shared.selected_screens				= selected_screens;
 			}
 			
 			m_pix_box.MouseDown 	+= new MouseEventHandler( Layout_MouseDown );
@@ -501,22 +509,20 @@ namespace MAPeD
 				}
 				else
 				{
-					reset_selected_screens();
+					if( m_behaviour.mouse_down( sender, e ) )
+					{
+						reset_selected_screens();
+					}
 				}
 			}
 			else
 			if( e.Button == MouseButtons.Right )
 			{
-				// to avoid one frame map image without grid (mouse_down->mouse_move->map_update)
+				// to avoid flashing a single frame without grid (mouse_down->mouse_move->map_update)
 				pix_box_reset_capture();
 			}
-
-			if( m_helper == null )
-			{
-				m_behaviour.mouse_down( sender, e );
-			}
 		}
-
+		
 		private void Layout_MouseUp(object sender, MouseEventArgs e)
 		{
 			if( e.Button == MouseButtons.Left )
@@ -529,17 +535,10 @@ namespace MAPeD
 				{
 					m_helper.mouse_up( sender, e );
 				}
-			}
-			
-			if( m_helper == null )
-			{
-				m_behaviour.mouse_up( sender, e );
-			}
-			
-			if( e.Button == MouseButtons.Left )
-			{
-				if( m_helper == null )
+				else
 				{
+					m_behaviour.mouse_up( sender, e );
+					
 					if( show_grid )
 					{
 						update();
@@ -663,13 +662,19 @@ namespace MAPeD
 		{
 			m_label.Focus();
 			
-			// hide mouse position to hide an active object
-			if( !m_pix_box.ContextMenuStrip.Visible )
+			m_behaviour.mouse_leave( sender, e );
+			
+			if( m_pix_box.ContextMenuStrip.Visible )
 			{
+				draw_sel_screen_border();
+			}
+			else
+			{
+				// hide mouse position to hide an active object
 				m_shared.m_mouse_x = 10000;
 				m_shared.m_mouse_y = 10000;
 				
-				m_behaviour.mouse_leave( sender, e );
+				m_shared.m_sel_screen_slot_id = -1;
 				
 				update();
 			}
@@ -677,9 +682,9 @@ namespace MAPeD
 		
 		private void Layout_ContextMenuOpened(object sender, EventArgs e)
 		{
-			draw_sel_screen_border();
+			//...
 		}
-
+		
 		private void Layout_ContextMenuClosed(object sender, EventArgs e)
 		{
 			// hide the selected screen border
@@ -1288,8 +1293,6 @@ namespace MAPeD
 				{
 					_act( scr_ind );
 				}
-				
-				reset_selected_screens();
 			}
 			else
 			if( m_shared.m_sel_screen_slot_id >= 0 )
@@ -1333,6 +1336,8 @@ namespace MAPeD
 						m_shared.m_layout.delete_screen_by_pos( scr_pos_x, scr_pos_y );
 					});
 					
+					reset_selected_screens();
+					
 					res = true;
 				}
 			}
@@ -1370,6 +1375,8 @@ namespace MAPeD
 						
 						m_shared.m_layout.delete_entity_instances( scr_data );
 					});
+					
+					reset_selected_screens();
 					
 					res = true;
 				}
@@ -1767,11 +1774,21 @@ namespace MAPeD
 					if( e.KeyData == Keys.D1 || e.KeyData == Keys.NumPad1 )
 					{
 						set_param( layout_editor_param.CONST_SET_BASE_MAP_SCALE_X1, null );
+						
+						if( MapScaleX1 != null )
+						{
+							MapScaleX1( null, null );
+						}
 					}
 					else
 					if( e.KeyData == Keys.D2 || e.KeyData == Keys.NumPad2 )
 					{
 						set_param( layout_editor_param.CONST_SET_BASE_MAP_SCALE_X2, null );
+						
+						if( MapScaleX2 != null )
+						{
+							MapScaleX2( null, null );
+						}
 					}
 				}
 			}

@@ -59,7 +59,8 @@ namespace MAPeD
 		private int			m_transp_tile_block_x	= -1;
 		private int			m_transp_tile_block_y	= -1;
 		
-		private SKRectI		m_recti = new SKRectI();
+		private SKRectI		m_recti			= new SKRectI();
+		private SKRectI		m_tile_recti	= new SKRectI();
 		
 		private enum ETileMode
 		{
@@ -70,6 +71,15 @@ namespace MAPeD
 		
 		private ETileMode	m_tile_mode	= ETileMode.etm_Unknown;
 		
+		private enum EEditMode
+		{
+			em_Unknown,
+			em_Painting,
+			em_ReplaceTiles,
+		};
+		
+		private EEditMode	m_edit_mode = EEditMode.em_Unknown;
+		
 		public layout_editor_painter( string _name, layout_editor_shared_data _shared, layout_editor_base _owner ) : base( _name, _shared, _owner )
 		{
 			m_block_tiles_cache = new List< int >( platform_data.get_max_tiles_cnt() );
@@ -77,6 +87,8 @@ namespace MAPeD
 			m_changed_screens	= new HashSet< int >();
 			
 			hide_tile();
+			
+			m_edit_mode = EEditMode.em_Painting;
 		}
 		
 		public override void reset( bool _init )
@@ -84,49 +96,68 @@ namespace MAPeD
 			//...
 		}
 		
-		public override void mouse_down( object sender, MouseEventArgs e )
+		public override bool mouse_down( object sender, MouseEventArgs e )
 		{
-			if( ( m_shared.m_tiles_data != null && m_shared.get_sel_screen_ind( true ) >= 0 && m_active_tile_id >= 0 ) && e.Button == MouseButtons.Left )
+			if( m_edit_mode == EEditMode.em_Painting )
 			{
-				m_changed_screens.Clear();
-				
-				put_tile( e.X, e.Y );
+				if( m_shared.m_tiles_data != null && m_shared.get_sel_screen_ind( true ) >= 0 && m_active_tile_id >= 0 )
+				{
+					m_changed_screens.Clear();
+					
+					put_tile( e.X, e.Y );
+				}
 			}
+			else
+			if( m_edit_mode == EEditMode.em_ReplaceTiles )
+			{
+				selected_screens_replace_tiles();
+				
+				return false;
+			}
+			
+			return true;
 		}
 		
 		public override void mouse_up( object sender, MouseEventArgs e )
 		{
-			m_shared.pix_box_reset_capture();
-			
-			update_changed_screens();
-			
-			m_shared.sys_msg( "" );
-			
-			m_owner.update();
+			if( m_edit_mode == EEditMode.em_Painting )
+			{
+				m_shared.pix_box_reset_capture();
+				
+				update_changed_screens();
+				
+				m_shared.sys_msg( "" );
+				
+				m_owner.update();
+			}
 		}
 		
 		public override bool mouse_move( object sender, MouseEventArgs e )
 		{
-			if( m_shared.pix_box_captured() )
+			if( m_edit_mode == EEditMode.em_Painting )
 			{
-				if( e.Button == MouseButtons.Left )
+				if( m_shared.pix_box_captured() )
 				{
-					if( put_tile( e.X, e.Y ) )
+					if( e.Button == MouseButtons.Left )
 					{
-						hide_tile();
+						if( put_tile( e.X, e.Y ) )
+						{
+							hide_tile();
+							
+							return false;
+						}
 						
-						return false;
+						if( m_active_tile_id >= 0 )
+						{
+							return false;
+						}
 					}
-				
-					if( m_active_tile_id >= 0 )
-					{
-						return false;
-					}
+					
+					return true;
 				}
-				
-				return true;
 			}
-			else
+			
+			if( !m_shared.pix_box_captured() )
 			{
 				if( m_active_tile_id >= 0 )
 				{
@@ -145,7 +176,7 @@ namespace MAPeD
 			
 			return true;
 		}
-
+		
 		public override void mouse_enter( object sender, EventArgs e )
 		{
 			//...
@@ -276,7 +307,7 @@ namespace MAPeD
 
 			m_shared.gfx_context().Canvas.Save();
 			
-			apply_sel_screen_rect();
+			apply_sel_screen_rect( true );
 			
 			int scr_glob_ind	= m_shared.get_sel_screen_ind( true );
 			int scr_local_ind	= m_shared.get_local_screen_ind( m_shared.m_CHR_bank_ind, scr_glob_ind );
@@ -378,7 +409,7 @@ namespace MAPeD
 			m_last_empty_tile_ind = -1;
 				
 			// TILES ARRAY OVERFLOW !!!
-			MainForm.message_box( "Try to optimize the tiles data!", "Tiles Array Overflow", System.Windows.Forms.MessageBoxButtons.OK );
+			MainForm.message_box( "Try to optimize the tiles data!", "Tiles Array Overflow", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
 			
 			return -1;
 		}
@@ -430,7 +461,7 @@ namespace MAPeD
 			}
 		}
 
-		private void apply_sel_screen_rect()
+		private void apply_sel_screen_rect( bool _apply_rect_to_canvas )
 		{
 			m_recti.Left	= ( int )m_shared.screen_pos_x_by_slot_id( m_shared.get_sel_scr_pos_x() );
 			m_recti.Top		= ( int )m_shared.screen_pos_y_by_slot_id( m_shared.get_sel_scr_pos_y() );
@@ -438,7 +469,10 @@ namespace MAPeD
 			m_recti.Right	= m_recti.Left + ( int )( platform_data.get_screen_width_pixels() * m_shared.m_scale );
 			m_recti.Bottom	= m_recti.Top + ( int )( platform_data.get_screen_height_pixels() * m_shared.m_scale );
 			
-			m_shared.gfx_context().Canvas.ClipRect( m_recti );
+			if( _apply_rect_to_canvas )
+			{
+				m_shared.gfx_context().Canvas.ClipRect( m_recti );
+			}
 		}
 		
 		public override layout_editor_base.EHelper	default_helper()
@@ -456,29 +490,69 @@ namespace MAPeD
 			// draw ghost tile image
 			if( m_active_tile_id >= 0 )
 			{
-				m_shared.sys_msg( "'Esc' - cancel tile" );
-				
-				_surface.Canvas.Save();
-				
-				apply_sel_screen_rect();
-				
-				if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+				if( m_edit_mode == EEditMode.em_Painting )
 				{
-					if( m_tile_mode == ETileMode.etm_Tile )
+					m_shared.sys_msg( "'Esc' - cancel tile" );
+					
+					_surface.Canvas.Save();
+					
+					apply_sel_screen_rect( true );
+					
+					if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
 					{
-						draw_transparent_tile( _surface.Canvas, _image_paint );
+						if( m_tile_mode == ETileMode.etm_Tile )
+						{
+							draw_transparent_tile( _surface.Canvas, _image_paint );
+						}
+						else
+						{
+							draw_transparent_tile_block( _surface.Canvas, _image_paint );
+						}
 					}
 					else
 					{
-						draw_transparent_tile_block( _surface.Canvas, _image_paint );
+						draw_transparent_block( _surface.Canvas, _image_paint );
 					}
+					
+					_surface.Canvas.Restore();
 				}
 				else
+				if( m_edit_mode == EEditMode.em_ReplaceTiles )
 				{
-					draw_transparent_block( _surface.Canvas, _image_paint );
+					int tile_size;
+					
+					m_shared.sys_msg( "SELECT A TILE TO REPLACE, 'Esc' - cancel" );
+					
+					apply_sel_screen_rect( false );
+					
+					if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					{
+						if( m_tile_mode == ETileMode.etm_Tile )
+						{
+							tile_size = ( int )( m_shared.m_scale * 32.0f );
+						}
+						else
+						{
+							return;
+						}
+					}
+					else
+					{
+						tile_size = ( int )( m_shared.m_scale * 16.0f );
+					}
+					
+					m_tile_recti.Left	= m_tile_x;
+					m_tile_recti.Top	= m_tile_y;
+					m_tile_recti.Right	= m_tile_x + tile_size;
+					m_tile_recti.Bottom	= m_tile_y + tile_size;
+					
+					SKRectI int_rect = SKRectI.Intersect( m_tile_recti, m_recti );
+					
+					_line_paint.StrokeWidth	= 2;
+					_line_paint.Color		= utils.CONST_COLOR_TILE_BORDER;
+					
+					_surface.Canvas.DrawRect( int_rect.Left, int_rect.Top, int_rect.Width, int_rect.Height, _line_paint );
 				}
-				
-				_surface.Canvas.Restore();
 			}
 		}
 
@@ -552,6 +626,213 @@ namespace MAPeD
 			}
 		}
 		
+		private bool selected_screens_fill_with_tile()
+		{
+			bool res = false;
+			
+			if( m_shared.selected_screens() )
+			{
+				if( MainForm.message_box( "All selected screens will be filled with the active tile!\n\nAre you sure?", "Fill With Tiles", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning ) == DialogResult.Yes )
+				{
+					bool ignore_scr_data_enum = false;
+					
+					m_shared.selected_screens_proc( delegate( int _scr_slot_ind )
+					{
+						int scr_pos_x = _scr_slot_ind % m_shared.m_layout.get_width();
+						int scr_pos_y = _scr_slot_ind / m_shared.m_layout.get_width();
+						
+						layout_screen_data scr_data = m_shared.m_layout.get_data( scr_pos_x, scr_pos_y );
+						
+						if( m_shared.get_bank_ind_by_global_screen_ind( scr_data.m_scr_ind ) == m_shared.m_CHR_bank_ind )
+						{
+							if( ignore_scr_data_enum )
+							{
+								return;
+							}
+							
+							int scr_local_ind	= m_shared.get_local_screen_ind( m_shared.m_CHR_bank_ind, scr_data.m_scr_ind );
+							
+							if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+							{
+								if( m_tile_mode == ETileMode.etm_Tile )
+								{
+									ushort[] scr_arr = m_shared.m_tiles_data.get_screen_data( scr_local_ind ).m_arr;
+									
+									for( int arr_pos = 0; arr_pos < scr_arr.Length; arr_pos++ )
+									{
+										scr_arr[ arr_pos ] = ( ushort )m_active_tile_id;
+									}
+								}
+								else
+								{
+									// blocks
+									// generate a new tile from the current block
+									ulong block		= ( ushort )m_active_tile_id;
+									ulong new_tile	= ( block << 48 ) | ( block << 32 ) | ( block << 16 ) | block;
+									
+									int tile_ind = check_tile( new_tile );
+									int new_tile_id;
+									
+									if( tile_ind >= 0 )
+									{
+										new_tile_id = tile_ind;
+									}
+									else
+									{
+										new_tile_id = save_new_tile( new_tile );
+										
+										if( new_tile_id < 0 )
+										{
+											ignore_scr_data_enum = true;
+											
+											return;
+										}
+									}
+									
+									ushort[] scr_arr = m_shared.m_tiles_data.get_screen_data( scr_local_ind ).m_arr;
+									
+									for( int arr_pos = 0; arr_pos < scr_arr.Length; arr_pos++ )
+									{
+										scr_arr[ arr_pos ] = ( ushort )new_tile_id;
+									}
+								}
+							}
+							else
+							{
+								// blocks
+								ushort[] scr_arr = m_shared.m_tiles_data.get_screen_data( scr_local_ind ).m_arr;
+								
+								for( int arr_pos = 0; arr_pos < scr_arr.Length; arr_pos++ )
+								{
+									scr_arr[ arr_pos ] = ( ushort )m_active_tile_id;
+								}
+							}
+							
+							m_shared.update_active_bank_screen( scr_data.m_scr_ind, scr_local_ind, m_shared.m_tiles_data, m_shared.m_screen_data_type );
+						}
+					});
+					
+					res = true;
+				}
+			}
+			else
+			{
+				MainForm.message_box( "Please, select screen(s)!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			
+			m_owner.update();
+			
+			return res;
+		}
+		
+		private void enable_selected_screens_replace_tiles( bool _on )
+		{
+			if( _on )
+			{
+				m_edit_mode = EEditMode.em_ReplaceTiles;
+			}
+			else
+			{
+				m_edit_mode = EEditMode.em_Painting;
+			}
+			
+			m_owner.update();
+		}
+		
+		private bool selected_screens_replace_tiles()
+		{
+			bool res = false;
+			
+			if( m_shared.m_sel_screens_slot_ids.Count > 0 )
+			{
+				int tile_pos;
+				
+				// get a tile position in screen space the cursor points to
+				{
+					if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					{
+						int block_ind = 0;
+						
+						tile_pos = mode_tiles4x4_get_tile4x4_ind_by_pos( m_shared.m_mouse_x, m_shared.m_mouse_y, ref block_ind );
+					}
+					else
+					{
+						tile_pos = mode_blocks2x2_get_block2x2_ind_by_pos( m_shared.m_mouse_x, m_shared.m_mouse_y );
+					}
+				}
+				
+				int scr_glob_ind = m_shared.get_sel_screen_ind( true );
+				
+				if( scr_glob_ind >= 0 )
+				{
+					// wrong CHR bank already checked in the 'get_sel_screen_ind'
+					int scr_local_ind = m_shared.get_local_screen_ind( m_shared.m_CHR_bank_ind, scr_glob_ind );
+					
+					// get the tile index the cursor points to
+					ushort tile_ind = m_shared.m_tiles_data.get_screen_data( scr_local_ind ).m_arr[ tile_pos ];
+					
+					m_shared.selected_screens_proc( delegate( int _scr_slot_ind )
+					{
+						int scr_pos_x = _scr_slot_ind % m_shared.m_layout.get_width();
+						int scr_pos_y = _scr_slot_ind / m_shared.m_layout.get_width();
+						
+						layout_screen_data scr_data = m_shared.m_layout.get_data( scr_pos_x, scr_pos_y );
+						
+						if( m_shared.get_bank_ind_by_global_screen_ind( scr_data.m_scr_ind ) == m_shared.m_CHR_bank_ind )
+						{
+							scr_local_ind = m_shared.get_local_screen_ind( m_shared.m_CHR_bank_ind, scr_data.m_scr_ind );
+							
+							if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+							{
+								if( m_tile_mode == ETileMode.etm_Tile )
+								{
+									ushort[] scr_arr = m_shared.m_tiles_data.get_screen_data( scr_local_ind ).m_arr;
+									
+									for( int arr_pos = 0; arr_pos < scr_arr.Length; arr_pos++ )
+									{
+										if( scr_arr[ arr_pos ] == tile_ind )
+										{
+											scr_arr[ arr_pos ] = ( ushort )m_active_tile_id;
+										}
+									}
+								}
+								else
+								{
+									// blocks
+									throw new Exception( "UNSUPPORTED BEHAVIOUR!" );
+								}
+							}
+							else
+							{
+								// blocks
+								ushort[] scr_arr = m_shared.m_tiles_data.get_screen_data( scr_local_ind ).m_arr;
+								
+								for( int arr_pos = 0; arr_pos < scr_arr.Length; arr_pos++ )
+								{
+									if( scr_arr[ arr_pos ] == tile_ind )
+									{
+										scr_arr[ arr_pos ] = ( ushort )m_active_tile_id;
+									}
+								}
+							}
+							
+							m_shared.update_active_bank_screen( scr_data.m_scr_ind, scr_local_ind, m_shared.m_tiles_data, m_shared.m_screen_data_type );
+						}
+					});
+					
+					res = true;
+				}
+			}
+			else
+			{
+				MainForm.message_box( "Please, select screen(s)!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+			}
+			
+			m_owner.update();
+			
+			return res;
+		}
+		
 		public override Object get_param( uint _param )
 		{
 			return null;
@@ -590,6 +871,17 @@ namespace MAPeD
 						{
 							calc_common_blocks( ( byte )m_active_tile_id );
 						}
+					}
+					break;
+					
+				case layout_editor_param.CONST_SET_PNT_FILL_WITH_TILE:
+					{
+						return selected_screens_fill_with_tile();
+					}
+					
+				case layout_editor_param.CONST_SET_PNT_REPLACE_TILES:
+					{
+						enable_selected_screens_replace_tiles( ( bool )_val );
 					}
 					break;
 					

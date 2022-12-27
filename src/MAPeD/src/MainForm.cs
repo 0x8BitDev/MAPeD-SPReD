@@ -283,6 +283,8 @@ namespace MAPeD
 																new SToolTipData( LabelEntityProperty, "Entity properties are inherited by all instances" ),
 																new SToolTipData( LabelEntityInstanceProperty, "Instance properties are unique for all instances" ),
 																new SToolTipData( CheckBoxEntitySnapping, "Snap an entity to 8x8 grid" ),
+																new SToolTipData( BtnPainterFillWithTile, "Fill selected screens with active tile" ),
+																new SToolTipData( CheckBoxPainterReplaceTiles, "Replace a group of identical tiles on selected screens" ),
 															};
 				SToolTipData data;
 				
@@ -656,8 +658,12 @@ namespace MAPeD
 			CheckBoxShowEntities.Checked 	= true;
 			CheckBoxShowTargets.Checked 	= true;
 			CheckBoxShowCoords.Checked		= true;
+			CheckBoxShowGrid.Checked		= true;
+			
+			RBtnMapScaleX1.Checked			= true;
 			
 			CheckBoxPalettePerCHR.Checked	= false;
+			
 #if DEF_NES || DEF_SMS || DEF_ZX || DEF_PCE
 			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
 #else
@@ -672,8 +678,6 @@ namespace MAPeD
 			update_screen_size_label();
 
 			enable_main_UI( false );
-			
-			CheckBoxShowGrid.Checked = true;
 			
 			TilesLockEditorToolStripMenuItem.Checked = CheckBoxTileEditorLock.Checked = true;
 
@@ -1797,44 +1801,6 @@ namespace MAPeD
 			m_tile_list_manager.select( tile_list.EType.t_Tiles, _id );
 		}
 
-		private void update_active_tile_img( int _ind )
-		{
-			if( _ind >= 0 && m_data_manager.tiles_data_pos >= 0 )
-			{
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_TILE, _ind );
-				
-				m_tile_preview.update( m_imagelist_manager.get_tiles_image_list()[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
-				GrpBoxActiveTile.Text = "Tile: " + String.Format( "${0:X2}", _ind );
-				
-				BtnResetTile.Enabled = true;
-			}
-		}
-
-		private void update_active_block_img( int _ind )
-		{
-			if( _ind >= 0 && m_data_manager.tiles_data_pos >= 0 )
-			{
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_BLOCK, _ind );
-				
-				m_tile_preview.update( m_imagelist_manager.get_blocks_image_list()[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
-				GrpBoxActiveTile.Text = "Block: " + String.Format( "${0:X2}", _ind );
-				
-				BtnResetTile.Enabled = true;
-			}
-		}
-		
-		private void clear_active_tile_img()
-		{
-			m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_CLEAR_ACTIVE_TILE, null );
-			
-			m_tile_preview.update( null, 0, 0, 0, 0, true, true );
-			GrpBoxActiveTile.Text = "...";
-			
-			BtnResetTile.Enabled = false;
-			
-			m_layout_editor.update();
-		}
-		
 		private void update_selected_block()
 		{
 			// update selected block image
@@ -2520,12 +2486,14 @@ namespace MAPeD
 #region layout painter
 		void BtnPainterFillWithTileClick_Event(object sender, EventArgs e)
 		{
-			//...
+			CheckBoxPainterReplaceTiles.Checked = false;
+			
+			m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_FILL_WITH_TILE, null );
 		}
 		
-		void BtnPainterReplaceTileClick_Event(object sender, EventArgs e)
+		void CheckBoxPainterReplaceTilesChecked_Event(object sender, EventArgs e)
 		{
-			//...
+			m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_REPLACE_TILES, ( sender as CheckBox ).Checked );
 		}
 		
 		void ActiveTileCancel_Event(object sender, EventArgs e)
@@ -2623,7 +2591,64 @@ namespace MAPeD
 			m_tiles_processor.zx_swap_ink_paper( false );
 #endif		
 		}
-#endregion		
+		
+		private void update_active_tile_img( int _ind )
+		{
+			if( _ind >= 0 && m_data_manager.tiles_data_pos >= 0 )
+			{
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_TILE, _ind );
+				
+				m_tile_preview.update( m_imagelist_manager.get_tiles_image_list()[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
+				GrpBoxActiveTile.Text = "Tile: " + String.Format( "${0:X2}", _ind );
+				
+				BtnResetTile.Enabled = true;
+				
+				BtnPainterFillWithTile.Enabled = CheckBoxPainterReplaceTiles.Enabled = true;
+			}
+		}
+		
+		private void update_active_block_img( int _ind )
+		{
+			if( _ind >= 0 && m_data_manager.tiles_data_pos >= 0 )
+			{
+				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_BLOCK, _ind );
+				
+				m_tile_preview.update( m_imagelist_manager.get_blocks_image_list()[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
+				GrpBoxActiveTile.Text = "Block: " + String.Format( "${0:X2}", _ind );
+				
+				BtnResetTile.Enabled = true;
+				
+				if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+				{
+					// disable replacing of blocks when the Tiles4x4 mode is active
+					// because it requires generating a lot of 4x4 tiles
+					CheckBoxPainterReplaceTiles.Enabled = false;
+				}
+				else
+				{
+					CheckBoxPainterReplaceTiles.Enabled = true;
+				}
+				
+				BtnPainterFillWithTile.Enabled = true;
+			}
+		}
+		
+		private void clear_active_tile_img()
+		{
+			m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_CLEAR_ACTIVE_TILE, null );
+			
+			m_tile_preview.update( null, 0, 0, 0, 0, true, true );
+			GrpBoxActiveTile.Text = "...";
+			
+			BtnResetTile.Enabled = false;
+			
+			m_layout_editor.update();
+			
+			CheckBoxPainterReplaceTiles.Checked = false;
+			
+			BtnPainterFillWithTile.Enabled = CheckBoxPainterReplaceTiles.Enabled = false;
+		}
+#endregion
 // LAYOUT EDITOR *************************************************************************************//
 #region layout editor
 		void TabCntrlLayoutTilesChanged_Event(object sender, EventArgs e)
@@ -2654,6 +2679,8 @@ namespace MAPeD
 				TreeViewEntities.SelectedNode = null;
 				
 				CheckBoxSelectTargetEntity.Checked = false;
+				
+				CheckBoxPainterReplaceTiles.Checked = false;
 				
 				patterns_manager_reset_active_pattern();
 			}

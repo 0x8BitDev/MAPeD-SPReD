@@ -51,7 +51,7 @@ namespace MAPeD
 		};
 		
 		[DataMember]
-		public int 					m_scr_ind;
+		public int		m_scr_ind;	// global screen index
 		
 		[DataMember]
 		private List< entity_instance > 	m_ents;
