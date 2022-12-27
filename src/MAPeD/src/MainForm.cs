@@ -4104,14 +4104,23 @@ namespace MAPeD
 #region entity properties editor
 		void fill_entity_data( entity_data _ent, string _inst_prop = "", string _inst_name = "", int _targ_uid = -1 )
 		{
-			LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = groupBoxEntityEditor.Enabled = ( _ent != null );
+			groupBoxEntityEditor.Enabled = ( _ent != null );
 			
 			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
 			{
+				if( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_INST_EDIT )
+				{
+					LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = ( _ent != null );
+				}
+				else
+				{
+					LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = false;
+				}
+				
 				if( _ent != null )
 				{
 					bool edit_inst_mode = ( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_INST_EDIT || ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_SELECT_TARGET );
-	
+					
 					NumericUpDownEntityUID.Value 	= _ent.uid;
 					NumericUpDownEntityWidth.Value 	= _ent.width;
 					NumericUpDownEntityHeight.Value = _ent.height;
