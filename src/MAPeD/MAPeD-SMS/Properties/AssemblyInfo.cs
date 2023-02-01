@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("0x8BitDev")]
 [assembly: AssemblyProduct("MAPeD-SMS")]
-[assembly: AssemblyCopyright("Copyright © 2017-2022 by 0x8BitDev ( MIT license. See LICENSE.txt )")]
+[assembly: AssemblyCopyright("Copyright © 2017-present by 0x8BitDev ( MIT license. See LICENSE.txt )")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

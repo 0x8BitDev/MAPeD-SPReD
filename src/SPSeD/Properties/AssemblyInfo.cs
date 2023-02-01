@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("0x8BitDev")]
 [assembly: AssemblyProduct("SPSeD")]
-[assembly: AssemblyCopyright("Copyright © 2019 by 0x8BitDev ( MIT license. See LICENSE.txt )")]
+[assembly: AssemblyCopyright("Copyright © 2019-present by 0x8BitDev ( MIT license. See LICENSE.txt )")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

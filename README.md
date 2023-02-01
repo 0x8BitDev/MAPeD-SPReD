@@ -246,7 +246,7 @@ The latest development build can be found **[here](https://drive.google.com/open
 Are trademarks of their respective owners and I am not affiliated with these companies in any way. Therefore, you can use this software at your own risk and without warranty of any kind.
 
 ---
-Developed by 0x8BitDev Copyright © 2017-2022
+Developed by 0x8BitDev Copyright © 2017-present
 
 Released under the MIT license. See LICENSE.txt
 
