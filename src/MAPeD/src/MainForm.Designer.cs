@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 01.05.2017
  * Time: 15:24
  */
@@ -3286,6 +3286,7 @@ namespace MAPeD
 			// TreeViewPatterns
 			// 
 			this.TreeViewPatterns.BackColor = System.Drawing.Color.LightGray;
+			this.TreeViewPatterns.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.TreeViewPatterns.ContextMenuStrip = this.ContextMenuStripPatternsTreeViewGroup;
 			this.TreeViewPatterns.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.TreeViewPatterns.LabelEdit = true;

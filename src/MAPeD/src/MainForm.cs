@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 01.05.2017
  * Time: 15:24
  */
@@ -2779,16 +2779,23 @@ namespace MAPeD
 
 		void delete_screen_by_bank_id( int _bank_ind, int _scr_local_ind )
 		{
-			m_data_manager.get_tiles_data( _bank_ind ).delete_screen( _scr_local_ind );
-
-			m_data_manager.remove_screen_from_layouts( _bank_ind, _scr_local_ind  );
+			bool all_banks_screens = CheckBoxLayoutEditorAllBanks.Checked;
+			
+			// unlock all the screens
+			CheckBoxLayoutEditorAllBanks.Checked = true;
 			
 			if( m_imagelist_manager.remove_screen( _bank_ind, _scr_local_ind ) )
 			{
 				m_layout_editor.set_param( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
-				
-				update_screens_labels_by_bank_id();
 			}
+			
+			m_data_manager.get_tiles_data( _bank_ind ).delete_screen( _scr_local_ind );
+			
+			m_data_manager.remove_screen_from_layouts( _bank_ind, _scr_local_ind );
+			
+			update_screens_labels_by_bank_id();
+			
+			CheckBoxLayoutEditorAllBanks.Checked = all_banks_screens;
 		}
 
 		bool check_empty_screen( ulong[] _tiles, screen_data _scr_data )
@@ -3118,11 +3125,14 @@ namespace MAPeD
 		
 		void BtnLayoutRemoveTopRowClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data )
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data, bool _delete_scr_data )
 			{
-				for( int cell_n = 0; cell_n < _data.get_width(); cell_n++ )
+				if( _delete_scr_data )
 				{
-					delete_screen( _data.get_data( cell_n, 0 ) );
+					for( int cell_n = 0; cell_n < _data.get_width(); cell_n++ )
+					{
+						delete_screen( _data.get_data( cell_n, 0 ) );
+					}
 				}
 				
 				return _data.remove_up();
@@ -3151,13 +3161,16 @@ namespace MAPeD
 		
 		void BtnLayoutRemoveBottomRowClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data )
-			{ 
-				for( int cell_n = 0; cell_n < _data.get_width(); cell_n++ )
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data, bool _delete_scr_data )
+			{
+				if( _delete_scr_data )
 				{
-					delete_screen( _data.get_data( cell_n, _data.get_height() - 1 ) );
+					for( int cell_n = 0; cell_n < _data.get_width(); cell_n++ )
+					{
+						delete_screen( _data.get_data( cell_n, _data.get_height() - 1 ) );
+					}
 				}
-
+				
 				return _data.remove_down();
 			}, "Remove Bottom Row" );
 		}
@@ -3184,13 +3197,16 @@ namespace MAPeD
 		
 		void BtnLayoutRemoveLeftColumnClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data )
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data, bool _delete_scr_data )
 			{
-				for( int cell_n = 0; cell_n < _data.get_height(); cell_n++ )
+				if( _delete_scr_data )
 				{
-					delete_screen( _data.get_data( 0, cell_n ) );
+					for( int cell_n = 0; cell_n < _data.get_height(); cell_n++ )
+					{
+						delete_screen( _data.get_data( 0, cell_n ) );
+					}
 				}
-
+				
 				return _data.remove_left();
 			}, "Remove Left Column" );
 		}
@@ -3217,26 +3233,45 @@ namespace MAPeD
 	
 		void BtnLayoutRemoveRightColumnClick_Event(object sender, EventArgs e)
 		{
-			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data )
+			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data, bool _delete_scr_data )
 			{
-				for( int cell_n = 0; cell_n < _data.get_height(); cell_n++ )
+				if( _delete_scr_data )
 				{
-					delete_screen( _data.get_data( _data.get_width() - 1, cell_n ) );
+					for( int cell_n = 0; cell_n < _data.get_height(); cell_n++ )
+					{
+						delete_screen( _data.get_data( _data.get_width() - 1, cell_n ) );
+					}
 				}
 				
 				return _data.remove_right();
 			}, "Remove Right Column" );
 		}
 
-		void delete_layout_row_column( Func< layout_data, bool > _condition, Func< layout_data, bool > _act, string _caption_msg )
+		void delete_layout_row_column( Func< layout_data, bool > _condition, Func< layout_data, bool, bool > _act, string _caption_msg )
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 )
 			{
 				layout_data data = m_data_manager.get_layout_data( m_data_manager.layouts_data_pos );
 				
-				if( data != null && _condition( data ) && message_box( "Are you sure?", _caption_msg, MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+				if( data != null && _condition( data ) )
 				{
-					if( _act( data ) )
+					bool delete_scr_data = false;
+					
+					switch( message_box( "Delete the screens data?\n\n[YES] The screens data will be permanently deleted\n[NO] Delete the screen cells only", _caption_msg, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question ) )
+					{
+						case DialogResult.Yes:
+							{
+								delete_scr_data = true;
+							}
+							break;
+							
+						case DialogResult.Cancel:
+							{
+								return;
+							}
+					}
+					
+					if( _act( data, delete_scr_data ) )
 					{
 						m_layout_editor.update_dimension_changes();
 					}
@@ -3275,7 +3310,7 @@ namespace MAPeD
 				ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 			}
 
-			if( m_layout_editor.delete_screen_from_layout() == true )
+			if( m_layout_editor.delete_screen_from_layout( delegate( layout_screen_data _scr_data ) { delete_screen( _scr_data ); } ) == true )
 			{
 				if( ent_inst != ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED ) )
 				{

@@ -1,14 +1,15 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-27.12.2022 - Layout tab -> Painter tab: added functionality for user-selected screens: "Fill With Tile" ans "Replace Tiles"
+01.02.2023 - Layout tab: fixed bug with deleting of layout rows/columns, which led to shuffling of screens
+27.12.2022 - Layout tab -> Painter tab: added functionality for user-selected screens: "Fill With Tile" and "Replace Tiles"
 24.12.2022 - Layout tab: Map scaling: Press '1' - 100%, '2' - 200%
 22.12.2022 - Layout tab -> Painter tab: 'Escape' to cancel an active tile
 	   - Layout tab -> Entities tab: 'Escape' to switch to the 'Edit Instances' mode, when the 'Edit Entity' mode is active
 	   - Layout tab -> Patterns tab: 'Escape' to cancel an active tile pattern
 20.12.2022 - Layout viewport: hardware-accelerated rendering using OpenGL (OpenTK/SkiaSharp)
 	   - Switched to x64 architecture
-	   - Layout tab -> Painter tab: fixed the bug with incorrect generation of 4x4 tiles, when painting using 2x2 blocks
+	   - Layout tab -> Painter tab: fixed bug with incorrect generation of 4x4 tiles, when painting using 2x2 blocks
 
 24.11.2022 v0.75b
 

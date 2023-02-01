@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 20.10.2022
  * Time: 12:48
  */
@@ -1311,7 +1311,7 @@ namespace MAPeD
 			m_shared.m_sel_screens_slot_ids.Clear();
 		}
 		
-		public bool delete_screen_from_layout()
+		public bool delete_screen_from_layout( Action< layout_screen_data > _delete_scr_act )
 		{
 			bool res = false;
 			
@@ -1319,27 +1319,47 @@ namespace MAPeD
 			{
 				draw_sel_screen_border();
 				
-				if( MainForm.message_box( "Are you sure?", "Delete Screens", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning ) == DialogResult.Yes )
+				bool delete_scr_data = false;
+				
+				switch( MainForm.message_box( "Delete the screens data?\n\n[YES] The screens data will be permanently deleted\n[NO] Clear the screen cells only", "Delete Screen(s)", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question ) )
 				{
-					selected_screens_proc( delegate( int _scr_slot_ind )
-					{
-						int scr_pos_x = _scr_slot_ind % get_width();
-						int scr_pos_y = _scr_slot_ind / get_width();
-						
-						layout_screen_data scr_data = m_shared.m_layout.get_data( scr_pos_x, scr_pos_y );
-						
-						if( mode == EMode.em_Entities )
+					case DialogResult.Yes:
 						{
-							scr_data.entities_proc( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
+							delete_scr_data = true;
 						}
+						break;
 						
-						m_shared.m_layout.delete_screen_by_pos( scr_pos_x, scr_pos_y );
-					});
-					
-					reset_selected_screens();
-					
-					res = true;
+					case DialogResult.Cancel:
+						{
+							return false;
+						}
 				}
+				
+				selected_screens_proc( delegate( int _scr_slot_ind )
+				{
+					int scr_pos_x = _scr_slot_ind % get_width();
+					int scr_pos_y = _scr_slot_ind / get_width();
+					
+					layout_screen_data scr_data = m_shared.m_layout.get_data( scr_pos_x, scr_pos_y );
+					
+					if( mode == EMode.em_Entities )
+					{
+						scr_data.entities_proc( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
+					}
+					
+					if( delete_scr_data )
+					{
+						_delete_scr_act( m_shared.m_layout.get_data( scr_pos_x, scr_pos_y ) );
+					}
+					else
+					{
+						m_shared.m_layout.delete_screen_by_pos( scr_pos_x, scr_pos_y );
+					}
+				});
+				
+				reset_selected_screens();
+				
+				res = true;
 			}
 			else
 			{
