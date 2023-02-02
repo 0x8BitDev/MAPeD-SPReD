@@ -248,11 +248,11 @@ namespace MAPeD
 		
 		private float 	m_tmp_scale			= 1;
 		
-		private bool 	m_show_marks		= true;
-		private bool 	m_show_entities		= true;
-		private bool 	m_show_targets		= true;
-		private bool 	m_show_coords		= true;
-		private bool 	m_show_grid			= true;
+		private bool 	m_show_marks		= false;
+		private bool 	m_show_entities		= false;
+		private bool 	m_show_targets		= false;
+		private bool 	m_show_coords		= false;
+		private bool 	m_show_grid			= false;
 
 		private readonly SKBitmap	m_scr_mark_img;
 		private readonly SKCanvas	m_scr_mark_canvas;
