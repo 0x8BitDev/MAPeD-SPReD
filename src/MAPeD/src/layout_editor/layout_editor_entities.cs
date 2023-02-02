@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 20.10.2022
  * Time: 16:09
  */
@@ -725,6 +725,8 @@ namespace MAPeD
 				else
 				if( m_ent_mode == layout_editor_param.CONST_SET_ENT_SELECT_TARGET )
 				{
+					m_shared.sys_msg( "'Esc' - edit instances" );
+					
 					if( m_ent_inst != null && m_shared.m_high_quality_render )
 					{
 						int ent_width	= ( int )( m_ent_inst.base_entity.width * m_shared.m_scale );
@@ -960,7 +962,7 @@ namespace MAPeD
 		
 		protected override void cancel_operation()
 		{
-			if( m_ent_mode == layout_editor_param.CONST_SET_ENT_EDIT )
+			if( m_ent_mode == layout_editor_param.CONST_SET_ENT_EDIT || m_ent_mode == layout_editor_param.CONST_SET_ENT_SELECT_TARGET )
 			{
 				if( EditEntityCancel != null )
 				{

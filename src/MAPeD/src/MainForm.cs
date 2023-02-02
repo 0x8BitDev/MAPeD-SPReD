@@ -3727,7 +3727,20 @@ namespace MAPeD
 #region entity editor
 		void EditEntityCancel_Event( object sender, EventArgs e )
 		{
-			BtnEntitiesEditInstancesModeClick_Event( sender, e );
+			switch( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) )
+			{
+				case layout_editor_param.CONST_SET_ENT_EDIT:
+				{
+					BtnEntitiesEditInstancesModeClick_Event( sender, e );
+				}
+				break;
+				
+				case layout_editor_param.CONST_SET_ENT_SELECT_TARGET:
+				{
+					CheckBoxSelectTargetEntity.Checked = false;
+				}
+				break;
+			}
 		}
 		
 		private bool m_rename_ent_tree_node = true;
