@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 01.02.2019
  * Time: 19:34
  */
@@ -32,7 +32,7 @@ namespace MAPeD
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			
-			CBoxShowAfterLoading.Checked = MAPeD_CFG.Default.auto_show_description;
+			CBoxShowAfterLoading.Checked = MAPeD.Properties.Settings.Default.auto_show_description;
 		}
 		
 		void BtnCloseClick_Event(object sender, EventArgs e)
@@ -43,9 +43,9 @@ namespace MAPeD
 		void CBoxShowAfterLoadingChanged_Event(object sender, EventArgs e)
 		{
 			// save state
-			MAPeD_CFG.Default.auto_show_description = ( sender as CheckBox ).Checked;
+			MAPeD.Properties.Settings.Default.auto_show_description = ( sender as CheckBox ).Checked;
 			
-			MAPeD_CFG.Default.Save();
+			MAPeD.Properties.Settings.Default.Save();
 		}
 		
 		public bool auto_show()

@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+02.02.2023 - Layout tab: Show: Marks, Entities, Targets, Coords, Grid are saved in application settings
 01.02.2023 - Layout tab: fixed bug with deleting of layout rows/columns, which led to shuffling of screens
 27.12.2022 - Layout tab -> Painter tab: added functionality for user-selected screens: "Fill With Tile" and "Replace Tiles"
 24.12.2022 - Layout tab: Map scaling: Press '1' - 100%, '2' - 200%

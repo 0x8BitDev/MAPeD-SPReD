@@ -387,6 +387,12 @@ namespace MAPeD
 			
 			CheckBoxScreensAutoUpdate.Checked = true;
 
+			CheckBoxShowMarks.Checked		= MAPeD.Properties.Settings.Default.layout_show_marks;
+			CheckBoxShowEntities.Checked 	= MAPeD.Properties.Settings.Default.layout_show_entities;
+			CheckBoxShowTargets.Checked 	= MAPeD.Properties.Settings.Default.layout_show_targets;
+			CheckBoxShowCoords.Checked		= MAPeD.Properties.Settings.Default.layout_show_coords;
+			CheckBoxShowGrid.Checked		= MAPeD.Properties.Settings.Default.layout_show_grid;
+			
 			reset();
 			
 			if( _args.Length > 0 )
@@ -654,12 +660,6 @@ namespace MAPeD
 			CBoxTileViewType.SelectedIndex = ( int )utils.ETileViewType.tvt_Graphics;
 			
 			CheckBoxEntitySnapping.Checked 	= true;
-			CheckBoxShowMarks.Checked		= true;
-			CheckBoxShowEntities.Checked 	= true;
-			CheckBoxShowTargets.Checked 	= true;
-			CheckBoxShowCoords.Checked		= true;
-			CheckBoxShowGrid.Checked		= true;
-			
 			RBtnMapScaleX1.Checked			= true;
 			
 			CheckBoxPalettePerCHR.Checked	= false;
@@ -3536,31 +3536,41 @@ namespace MAPeD
 		{
 			bool show_marks = ( sender as CheckBox ).Checked;
 			
-			m_layout_editor.show_marks = LayoutShowMarksToolStripMenuItem.Checked = show_marks;
+			MAPeD.Properties.Settings.Default.layout_show_marks = m_layout_editor.show_marks = LayoutShowMarksToolStripMenuItem.Checked = show_marks;
+			
+			MAPeD.Properties.Settings.Default.Save();
 		}
 		
 		void CheckBoxShowEntitiesChecked_Event(object sender, EventArgs e)
 		{
 			bool show_ent = ( sender as CheckBox ).Checked;
 			
-			m_layout_editor.show_entities = LayoutShowEntitiesToolStripMenuItem.Checked = show_ent;
+			MAPeD.Properties.Settings.Default.layout_show_entities = m_layout_editor.show_entities = LayoutShowEntitiesToolStripMenuItem.Checked = show_ent;
+			
+			MAPeD.Properties.Settings.Default.Save();
 			
 			LayoutShowTargetsToolStripMenuItem.Enabled = LayoutShowCoordsToolStripMenuItem.Enabled = CheckBoxShowTargets.Enabled = CheckBoxShowCoords.Enabled = show_ent; 
 		}
 		
 		void CheckBoxShowTargetsChecked_Event(object sender, EventArgs e)
 		{
-			m_layout_editor.show_targets = LayoutShowTargetsToolStripMenuItem.Checked = ( sender as CheckBox ).Checked; 
+			MAPeD.Properties.Settings.Default.layout_show_targets = m_layout_editor.show_targets = LayoutShowTargetsToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
+			
+			MAPeD.Properties.Settings.Default.Save();
 		}
 		
 		void CheckBoxShowCoordsChecked_Event(object sender, EventArgs e)
 		{
-			m_layout_editor.show_coords = LayoutShowCoordsToolStripMenuItem.Checked = ( sender as CheckBox ).Checked; 
+			MAPeD.Properties.Settings.Default.layout_show_coords = m_layout_editor.show_coords = LayoutShowCoordsToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
+			
+			MAPeD.Properties.Settings.Default.Save();
 		}
-
+		
 		void CheckBoxShowGridChecked_Event(object sender, EventArgs e)
 		{
-			m_layout_editor.show_grid = LayoutShowGridToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
+			MAPeD.Properties.Settings.Default.layout_show_grid = m_layout_editor.show_grid = LayoutShowGridToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
+			
+			MAPeD.Properties.Settings.Default.Save();
 		}
 #endregion
 // LAYOUT SCREENS ************************************************************************************//
