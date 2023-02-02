@@ -664,6 +664,8 @@ namespace MAPeD
 			
 			CheckBoxPalettePerCHR.Checked	= false;
 			
+			LayoutContextMenuEntityItemsEnable( false );
+			
 #if DEF_NES || DEF_SMS || DEF_ZX || DEF_PCE
 			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
 #else
@@ -2651,6 +2653,11 @@ namespace MAPeD
 #endregion
 // LAYOUT EDITOR *************************************************************************************//
 #region layout editor
+		void LayoutContextMenuEntityItemsEnable( bool _on )
+		{
+			LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = _on;
+		}
+		
 		void TabCntrlLayoutTilesChanged_Event(object sender, EventArgs e)
 		{
 			TabPage curr_tab = ( sender as TabControl ).SelectedTab;
@@ -2667,7 +2674,7 @@ namespace MAPeD
 			
 			// reset common states
 			{
-				LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = false;
+				LayoutContextMenuEntityItemsEnable( false );
 				
 				screensToolStripMenuItem.Enabled	= 
 				builderToolStripMenuItem.Enabled	= 
@@ -4155,11 +4162,11 @@ namespace MAPeD
 			{
 				if( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_INST_EDIT )
 				{
-					LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = ( _ent != null );
+					LayoutContextMenuEntityItemsEnable( _ent != null );
 				}
 				else
 				{
-					LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = false;
+					LayoutContextMenuEntityItemsEnable( false );
 				}
 				
 				if( _ent != null )
