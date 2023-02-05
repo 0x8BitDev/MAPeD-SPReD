@@ -96,6 +96,8 @@ namespace MAPeD
 			}
 		};
 		
+		private static NativeWindow	m_native_wnd;
+		
 		private static Form m_form = null;
 		
 		private static Form form()
@@ -106,6 +108,10 @@ namespace MAPeD
 		public MainForm( string[] _args )
 		{
 			m_form = this;
+			
+			// for thread safe calls, ex: the message_box() can be called from another thread
+			m_native_wnd = new NativeWindow();
+			m_native_wnd.AssignHandle( this.Handle );
 			
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -532,15 +538,24 @@ namespace MAPeD
 		
 		public static void set_status_msg( string _msg )
 		{
-			if( m_status_bar_label != null )
+			UI_thread_safe_call( MainForm.form(), () => { m_status_bar_label.Text = _msg; } );
+		}
+		
+		public static void UI_thread_safe_call( Control _cntrl, Action _act )
+		{
+			if( _cntrl.InvokeRequired )
 			{
-				m_status_bar_label.Text = _msg;
+				_cntrl.Invoke( (MethodInvoker)( () => _act() ) );
+			}
+			else
+			{
+				_act();
 			}
 		}
 		
 		public static DialogResult message_box( string _msg, string _caption, MessageBoxButtons _buttons, MessageBoxIcon _icon = MessageBoxIcon.Warning )
 		{
-			return MessageBox.Show( MainForm.form(), _msg, _caption, _buttons, _icon );
+			return MessageBox.Show( MainForm.m_native_wnd, _msg, _caption, _buttons, _icon );
 		}
 
 		void DescriptionToolStripMenuItemClick_Event(object sender, EventArgs e)
