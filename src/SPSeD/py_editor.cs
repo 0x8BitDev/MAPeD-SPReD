@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2019-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2019-2023 ( MIT license. See LICENSE.txt )
  * Date: 20.05.2019
  * Time: 16:19
  */
@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using IronPython.Hosting;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
+using System.Threading;
 
 namespace SPSeD
 {
@@ -32,11 +33,15 @@ namespace SPSeD
 		private i_py_api		m_py_api		= null;
 		private py_api_doc		m_py_api_doc	= null;
 
-		private static	py_editor m_instance = null;
+		private py_output m_py_output = null;
 		
-		private string	m_api_doc_str			= null;
-		private string	m_api_doc_html_filename	= null;
-		private string	m_api_doc_title			= null;
+		private Thread m_script_exec_thread = null;
+		
+		private static py_editor m_instance = null;
+		
+		private string m_api_doc_str			= null;
+		private string m_api_doc_html_filename	= null;
+		private string m_api_doc_title			= null;
 		
 		private const int CONST_OS_WIN		= 0x01;
 		private const int CONST_OS_LINUX	= 0x02;
@@ -76,6 +81,9 @@ namespace SPSeD
 			FormClosing += new System.Windows.Forms.FormClosingEventHandler( OnFormClosing );
 			
 			OutputTextBox.Text = "Simple Python script editor ( IronPython " + m_py_engine.LanguageVersion.ToString() + " )";
+			
+			// enable the 'Run' script button and disable the 'Stop' button
+			run_script_btn_enable( true );
 			
 			py_editor_doc_page.static_data_init();
 			
@@ -174,7 +182,8 @@ namespace SPSeD
 			m_py_api.init( m_py_scope );
 			
 			// redirect Python output
-			m_py_engine.Runtime.IO.SetOutput( new MemoryStream(), new py_output( OutputTextBox, ( m_os_flag & CONST_OS_WIN ) != 0 ) );
+			m_py_output = new py_output( OutputTextBox, ( m_os_flag & CONST_OS_WIN ) != 0 );
+			m_py_engine.Runtime.IO.SetOutput( new MemoryStream(), m_py_output );
 			
 			// init scope
 			m_py_scope.SetVariable( m_py_api.get_prefix() + "msg_box", new VoidFunc( py_msg_box ) );
@@ -387,35 +396,55 @@ namespace SPSeD
 			if( doc_page != null )
 			{
 				SaveAllToolStripMenuItemClick( null, null );
+				doc_page.script_text_box.Focus();
 				
-				try
+				m_script_exec_thread = new Thread(() =>
 				{
-					update_status_msg( "script is running..." );
-					
-					OutputTextBox.Text = "";
-					doc_page.script_text_box.Focus();
-					
-					ScriptSource src = m_py_engine.CreateScriptSourceFromString( doc_page.script_text_box.Text, get_doc_page_filename( doc_page ), SourceCodeKind.File );
-					
-					object res = src.Execute( m_py_scope );
-	
-					if( res != null )
+					try
 					{
-						OutputTextBox.Text += res.ToString();
+						update_status_msg( "script is running..." );
+						
+						m_py_output.reset();
+						
+						ScriptSource src = m_py_engine.CreateScriptSourceFromString( UI_thread_safe_call_get_string( doc_page, () => { return doc_page.script_text_box.Text; } ), get_doc_page_filename(doc_page), SourceCodeKind.File );
+						
+						UI_thread_safe_call( this, () => { run_script_btn_enable( false ); } );
+						
+						object res = src.Execute( m_py_scope );
+						
+						if( res != null )
+						{
+							m_py_output.append_text( res.ToString() );
+						}
+						
+						m_py_output.append_text( "\nScript execution success!" );
+						
+						update_status_msg( "ok!.." );
+					}
+					catch( ThreadAbortException /*_err*/ )
+					{
+						m_py_output.append_text( "\nScript execution aborted!\n\n" );
+						
+						update_status_msg( "ok!.." );
+						
+						Thread.ResetAbort();
+					}
+					catch( Exception _err )
+					{
+						m_py_output.append_text( "\nScript execution failure!\n\n" );
+						update_status_msg( "error" );
+						
+						m_py_output.append_text( m_py_engine.GetService< ExceptionOperations >().FormatException( _err ) );
 					}
 					
-					OutputTextBox.Text += "\nScript execution success!";
-				}
-				catch( Exception _err )
-				{
-					OutputTextBox.Text += "Script execution failed!\n\n";
-					update_status_msg( "error" );
-					
-					OutputTextBox.Text += m_py_engine.GetService<ExceptionOperations>().FormatException( _err );
-				   	return;
-				}			
+					finally
+					{
+						UI_thread_safe_call( this, () => { run_script_btn_enable( true ); } );
+					}
+				});
 				
-				update_status_msg( "ok!.." );
+				m_script_exec_thread.IsBackground = true;
+				m_script_exec_thread.Start();
 			}
 			else
 			{
@@ -423,14 +452,62 @@ namespace SPSeD
 			}
 		}
 		
-		void ExitToolStripMenuItemClick(object sender, EventArgs e)
+		private void StopToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			if( m_script_exec_thread.IsAlive )
+			{
+				abort_script_thread();
+			}
+		}
+		
+		private bool abort_script_thread()
+		{
+			// deprecated, but we need to suspend the working thread to ask user a question
+			// just not to complicate the things. all .Suspend/.Resume calls in one place
+			m_script_exec_thread.Suspend();
+			
+			if( MessageBox.Show( this, "Abort the script execution thread?\n\nWarning: This can negatively affect the resources generated in the script!", "Stop Script", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+			{
+				// deprecated, but we need to resume the thread before aborting
+				m_script_exec_thread.Resume();
+				
+				// this is a really bad way to stop the script thread, but the IronPython
+				// doesn't provide any safe way to cancel a working script thread
+				// but it is much better than when the script thread finished when application was closed...
+				m_script_exec_thread.Abort();
+				
+				return true;
+			}
+			
+			m_script_exec_thread.Resume();
+			
+			return false;
+		}
+		
+		private void run_script_btn_enable( bool _on )
+		{
+			runToolStripMenuItem.Enabled	= runToolStripButton.Enabled	= _on;
+			stopToolStripMenuItem.Enabled	= stopToolStripButton.Enabled	= !_on;
+		}
+		
+		private void ExitToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			Close();
 		}
 		
 		private void OnFormClosing(object sender, FormClosingEventArgs e)
 		{
-			if( DocPagesContainer.TabPages.Count == 0 )
+			if( ( m_script_exec_thread != null ) && m_script_exec_thread.IsAlive )
+			{
+				if( abort_script_thread() == false )
+				{
+					e.Cancel = true;
+					
+					return;
+				}
+			}
+			
+			if ( DocPagesContainer.TabPages.Count == 0 )
 			{
 				e.Cancel = false;
 			}
@@ -475,14 +552,14 @@ namespace SPSeD
 		
 		void update_status_msg( string _msg )
 		{
-			toolStripStatus.Text = _msg;
+			UI_thread_safe_call( this, () => { toolStripStatus.Text = _msg; } );
 		}
 		
 		void InAppDocToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			if( !py_api_doc.is_active() )
 			{
-				m_py_api_doc = new py_api_doc( m_api_doc_str, this.Icon, m_api_doc_title );
+				m_py_api_doc = new py_api_doc( m_api_doc_str, this.Icon, m_api_doc_title, ( m_os_flag & CONST_OS_WIN ) != 0 );
 				m_py_api_doc.Show();
 			}
 			
@@ -553,12 +630,12 @@ namespace SPSeD
 			if( doc_page != null )
 			{
 				deleteToolStripButton.Enabled		=
-				deleteToolStripMenuItem.Enabled 	= 
+				deleteToolStripMenuItem.Enabled 	=
 				deleteToolStripMenuItem1.Enabled	=
-				copyToolStripButton.Enabled			= 
-				copyToolStripMenuItem.Enabled 		= 
-				copyToolStripMenuItem1.Enabled		= 				
-				cutToolStripButton.Enabled			= 
+				copyToolStripButton.Enabled			=
+				copyToolStripMenuItem.Enabled 		=
+				copyToolStripMenuItem1.Enabled		=
+				cutToolStripButton.Enabled			=
 				cutToolStripMenuItem.Enabled 		=
 				cutToolStripMenuItem1.Enabled		= ( doc_page.script_text_box.SelectedText.Length > 0 );
 			}
@@ -771,6 +848,30 @@ namespace SPSeD
 		        throw new Exception( CONST_EDITOR_NAME + ": Unsupported platform detected!" );
 		    }
 		}
+		
+		public static void UI_thread_safe_call( Control _cntrl, Action _act )
+		{
+			if( _cntrl.InvokeRequired )
+			{
+				_cntrl.Invoke( (MethodInvoker)( () => _act() ) );
+			}
+			else
+			{
+				_act();
+			}
+		}
+		
+		public static string UI_thread_safe_call_get_string( Control _cntrl, Func< string > _act )
+		{
+			if( _cntrl.InvokeRequired )
+			{
+				return ( string )_cntrl.Invoke( _act );
+			}
+			else
+			{
+				return _act();
+			}
+		}
 	}
 	
 	class py_output : TextWriter
@@ -793,12 +894,22 @@ namespace SPSeD
 				return;
 			}
 			
-			m_txt_box.AppendText( _val.ToString() );
+			append_text( _val.ToString() );
+		}
+		
+		public void append_text( string _str )
+		{
+			py_editor.UI_thread_safe_call( m_txt_box, () => m_txt_box.AppendText(_str) );
+		}
+		
+		public void reset()
+		{
+			py_editor.UI_thread_safe_call( m_txt_box, () => { m_txt_box.Text = ""; } );
 		}
 		
 		public override System.Text.Encoding Encoding
-        {
-            get { return System.Text.Encoding.UTF8; }
-        }		
-	}	
+		{
+			get { return System.Text.Encoding.UTF8; }
+		}
+	}
 }

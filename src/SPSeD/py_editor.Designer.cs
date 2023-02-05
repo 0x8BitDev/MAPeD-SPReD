@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 20.05.2019
  * Time: 16:19
  */
@@ -67,9 +67,12 @@ namespace SPSeD
 			this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.scriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.InBrowserDocToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.InAppDocToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+			this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.StandardToolStrip = new System.Windows.Forms.ToolStrip();
@@ -88,8 +91,8 @@ namespace SPSeD
 			this.redoToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.runToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-			this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.stopToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -340,7 +343,7 @@ namespace SPSeD
 			this.undoToolStripMenuItem.Image = global::SPSeD.Properties.Resources.undo;
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
 			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.undoToolStripMenuItem.Text = "&Undo";
 			this.undoToolStripMenuItem.Click += new System.EventHandler(this.UndoToolStripMenuItemClick);
 			// 
@@ -349,21 +352,21 @@ namespace SPSeD
 			this.redoToolStripMenuItem.Image = global::SPSeD.Properties.Resources.redo;
 			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
 			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.redoToolStripMenuItem.Text = "&Redo";
 			this.redoToolStripMenuItem.Click += new System.EventHandler(this.RedoToolStripMenuItemClick);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(141, 6);
 			// 
 			// cutToolStripMenuItem1
 			// 
 			this.cutToolStripMenuItem1.Image = global::SPSeD.Properties.Resources.cut;
 			this.cutToolStripMenuItem1.Name = "cutToolStripMenuItem1";
 			this.cutToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-			this.cutToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.cutToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
 			this.cutToolStripMenuItem1.Text = "Cu&t";
 			this.cutToolStripMenuItem1.Click += new System.EventHandler(this.CutToolStripMenuItemClick);
 			// 
@@ -372,7 +375,7 @@ namespace SPSeD
 			this.copyToolStripMenuItem1.Image = global::SPSeD.Properties.Resources.copy;
 			this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
 			this.copyToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
 			this.copyToolStripMenuItem1.Text = "&Copy";
 			this.copyToolStripMenuItem1.Click += new System.EventHandler(this.CopyToolStripMenuItemClick);
 			// 
@@ -381,7 +384,7 @@ namespace SPSeD
 			this.pasteToolStripMenuItem1.Image = global::SPSeD.Properties.Resources.paste;
 			this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
 			this.pasteToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
 			this.pasteToolStripMenuItem1.Text = "&Paste";
 			this.pasteToolStripMenuItem1.Click += new System.EventHandler(this.PasteToolStripMenuItemClick);
 			// 
@@ -390,14 +393,15 @@ namespace SPSeD
 			this.deleteToolStripMenuItem1.Image = global::SPSeD.Properties.Resources.delete;
 			this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
 			this.deleteToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
 			this.deleteToolStripMenuItem1.Text = "&Delete";
 			this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.DeleteToolStripMenuItemClick);
 			// 
 			// scriptToolStripMenuItem
 			// 
 			this.scriptToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.runToolStripMenuItem});
+									this.runToolStripMenuItem,
+									this.stopToolStripMenuItem});
 			this.scriptToolStripMenuItem.Name = "scriptToolStripMenuItem";
 			this.scriptToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
 			this.scriptToolStripMenuItem.Text = "&Script";
@@ -410,6 +414,14 @@ namespace SPSeD
 			this.runToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.runToolStripMenuItem.Text = "&Run";
 			this.runToolStripMenuItem.Click += new System.EventHandler(this.RunToolStripMenuItemClick);
+			// 
+			// stopToolStripMenuItem
+			// 
+			this.stopToolStripMenuItem.Image = global::SPSeD.Properties.Resources.stop;
+			this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+			this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.stopToolStripMenuItem.Text = "&Stop";
+			this.stopToolStripMenuItem.Click += new System.EventHandler(this.StopToolStripMenuItemClick);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -439,6 +451,18 @@ namespace SPSeD
 			this.InAppDocToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.InAppDocToolStripMenuItem.Text = "In-&App Doc";
 			this.InAppDocToolStripMenuItem.Click += new System.EventHandler(this.InAppDocToolStripMenuItemClick);
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(183, 6);
+			// 
+			// AboutToolStripMenuItem
+			// 
+			this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+			this.AboutToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.AboutToolStripMenuItem.Text = "About";
+			this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItemClick);
 			// 
 			// openFileDialog
 			// 
@@ -471,7 +495,9 @@ namespace SPSeD
 									this.undoToolStripButton,
 									this.redoToolStripButton,
 									this.toolStripSeparator4,
-									this.runToolStripButton});
+									this.runToolStripButton,
+									this.stopToolStripButton,
+									this.toolStripSeparator7});
 			this.StandardToolStrip.Location = new System.Drawing.Point(0, 24);
 			this.StandardToolStrip.Name = "StandardToolStrip";
 			this.StandardToolStrip.Size = new System.Drawing.Size(500, 25);
@@ -615,17 +641,20 @@ namespace SPSeD
 			this.runToolStripButton.Text = "Run script";
 			this.runToolStripButton.Click += new System.EventHandler(this.RunToolStripMenuItemClick);
 			// 
-			// toolStripSeparator6
+			// stopToolStripButton
 			// 
-			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(183, 6);
+			this.stopToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.stopToolStripButton.Image = global::SPSeD.Properties.Resources.stop;
+			this.stopToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.stopToolStripButton.Name = "stopToolStripButton";
+			this.stopToolStripButton.Size = new System.Drawing.Size(23, 22);
+			this.stopToolStripButton.Text = "Stop script";
+			this.stopToolStripButton.Click += new System.EventHandler(this.StopToolStripMenuItemClick);
 			// 
-			// AboutToolStripMenuItem
+			// toolStripSeparator7
 			// 
-			this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
-			this.AboutToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-			this.AboutToolStripMenuItem.Text = "About";
-			this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItemClick);
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
 			// 
 			// py_editor
 			// 
@@ -709,5 +738,8 @@ namespace SPSeD
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.MenuStrip menuStrip;
 		private System.Windows.Forms.SplitContainer splitContainer1;
+		private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
+		private System.Windows.Forms.ToolStripButton stopToolStripButton;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 	}
 }

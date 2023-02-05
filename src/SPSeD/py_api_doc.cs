@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 24.05.2019
  * Time: 18:57
  */
@@ -17,7 +17,7 @@ namespace SPSeD
 	{
 		private static py_api_doc m_instance = null;
 		
-		public py_api_doc( string _api_doc_str, Icon _icon, string _title )
+		public py_api_doc( string _api_doc_str, Icon _icon, string _title, bool _is_win )
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -36,17 +36,20 @@ namespace SPSeD
 			this.Icon = _icon;
 			this.Text = _title;
 			
-			try
+			if( !_is_win )
 			{
-				// check if browser component exists
-				HTMLBrowser.Refresh();
-			}
-			catch( Exception /*_err*/ )
-			{
-				this.Controls.Remove( HTMLBrowser );
-				this.Text = "Ooops!.. It seems like you need to install 'libgluezilla' to view the in-app document or try to select 'In-Browser Doc' option or press F1";
-				
-				return;
+				try
+				{
+					// check if browser component exists
+					HTMLBrowser.Refresh();
+				}
+				catch( Exception /*_err*/ )
+				{
+					this.Controls.Remove( HTMLBrowser );
+					this.Text = "Ooops!.. It seems like you need to install 'libgluezilla' to view the in-app document or try to select 'In-Browser Doc' option or press F1";
+					
+					return;
+				}
 			}
 			
 			this.HTMLBrowser.DocumentText = _api_doc_str;

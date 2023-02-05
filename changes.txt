@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+05.02.2023 - SPSeD v0.14: asynchronous script execution
 02.02.2023 - Layout tab: Entities tab: when selecting a target entity - 'Escape' - switch to the 'Edit Instances' mode
 02.02.2023 - Layout tab: Show: Marks, Entities, Targets, Coords, Grid are saved in application settings
 01.02.2023 - Layout tab: fixed bug with deleting of layout rows/columns, which led to shuffling of screens
@@ -133,6 +134,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+05.02.2023 - SPSeD v0.14: asynchronous script execution
 20.12.2022 - Switched to x64 architecture
 
 30.11.2022 v0.65b
