@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 30.07.2020
  * Time: 13:48
  */
@@ -53,13 +53,13 @@ namespace MAPeD
 		
 		public const string CONST_STR_EXP_MODE					= "\n\nMODE: "; 
 		public const string CONST_STR_EXP_MODE_MULTIDIR			= "Multidirectional scrolling\nAll screens data are stored in a common array of tiles. Suitable for map scrolling in any direction.";
-		public const string CONST_STR_EXP_MODE_BIDIR			= "Bidirectional scrolling\nAll screens data are stored sequentially as tiles in a common array. Suitable for [bi/uni]directional scrolling.";
+		public const string CONST_STR_EXP_MODE_BIDIR			= "Bidirectional scrolling (max screens: {0})\nAll screens data are stored sequentially as tiles in a common array. Suitable for [bi/uni]directional scrolling.";
 		
 		public const string CONST_STR_EXP_ZX_MODE_MULTIDIR		= "\nUnlike to other platforms, ZX version can merge screens from different data banks into a single map.";
 		
-		public const string CONST_STR_EXP_NES_MODE_STAT_SCR		= "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are PPU-ready - 1024 bytes per screen ( 960 bytes of CHR data and 64 bytes of attributes ). Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
+		public const string CONST_STR_EXP_NES_MODE_STAT_SCR		= "Static Screens (max screens: {0})\nAll screens data are stored sequentially in a common array. Graphics data are PPU-ready - 1024 bytes per screen ( 960 bytes of CHR data and 64 bytes of attributes ). Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
 		
-		public const string CONST_STR_EXP_MODE_STAT_SCR			= "Static Screens\nAll screens data are stored sequentially in a common array. Graphics data are <data> bytes per screen. The data can be compressed. Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
+		public const string CONST_STR_EXP_MODE_STAT_SCR			= "Static Screens (max screens: {0})\nAll screens data are stored sequentially in a common array. Graphics data are <data> bytes per screen. The data can be compressed. Suitable for static screens switching.\nSwitching between 2x2/4x4 tiles makes sense when using blocks or CHRs to store tile properties.";
 
 		public const string CONST_STR_EXP_LAYOUT				= "\n\nLAYOUT: "; 
 		public const string CONST_STR_EXP_LAYOUT_ADJ_SCR		= "Adjacent Screens\nEach screen description stores 4 labels of adjacent screens ( calculates automatically during the export process ).";

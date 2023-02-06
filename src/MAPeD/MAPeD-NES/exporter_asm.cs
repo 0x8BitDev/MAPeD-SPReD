@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 13.09.2018
  * Time: 17:59
  */
@@ -37,6 +37,8 @@ namespace MAPeD
 		private const string	CONST_FILENAME_LEVEL_PREFIX		= "Lev";
 		private const string	CONST_FILENAME_BANK_PREFIX		= "Bank";
 		private const string	CONST_BIN_EXT					= ".bin";
+		
+		private const int		CONST_BIDIR_MAP_SCREEN_MAX_CNT	= 255;	// 1...255 [zero-based index 0..254; 255 - empty screen]
 	
 		private struct exp_screen_data
 		{
@@ -237,11 +239,11 @@ namespace MAPeD
 			else
 			if( RBtnModeBidirScroll.Checked )
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE_BIDIR;
+				RichTextBoxExportDesc.Text += string.Format( strings.CONST_STR_EXP_MODE_BIDIR, CONST_BIDIR_MAP_SCREEN_MAX_CNT );
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_NES_MODE_STAT_SCR;
+				RichTextBoxExportDesc.Text += string.Format( strings.CONST_STR_EXP_NES_MODE_STAT_SCR, CONST_BIDIR_MAP_SCREEN_MAX_CNT );
 			}
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_LAYOUT;
@@ -542,9 +544,9 @@ namespace MAPeD
 				{
 					if( check_screen_layouts( scr_ind ) == true )
 					{
-						if( scr_ind_opt > utils.CONST_SCREEN_MAX_CNT - 1 )
+						if( scr_ind_opt > CONST_BIDIR_MAP_SCREEN_MAX_CNT - 1 )
 						{
-							throw new Exception( "The screen index is out of range!\nThe maximum number of screens allowed to export: " + utils.CONST_SCREEN_MAX_CNT );
+							throw new Exception( "The screen index is out of range!\nThe maximum number of screens allowed to export: " + CONST_BIDIR_MAP_SCREEN_MAX_CNT );
 						}
 						
 						valid_bank = true;

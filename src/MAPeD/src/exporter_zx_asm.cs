@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 29.08.2018
  * Time: 15:20
  */
@@ -32,6 +32,8 @@ namespace MAPeD
 		private const string	CONST_FILENAME_BANK_POSTFIX		= "_Bank";
 		private const string	CONST_FILENAME_BANK_PREFIX		= "Bank";
 		private const string	CONST_BIN_EXT					= ".bin";
+		
+		private const int		CONST_BIDIR_MAP_SCREEN_MAX_CNT	= 255;
 		
 		private string	m_gfx_data_filename		= null;
 		private string	m_tile_props_filename	= null;
@@ -200,7 +202,7 @@ namespace MAPeD
 			}
 			else
 			{
-				RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_MODE_BIDIR;
+				RichTextBoxExportDesc.Text += string.Format( strings.CONST_STR_EXP_MODE_BIDIR, CONST_BIDIR_MAP_SCREEN_MAX_CNT );
 			}
 			
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_PROP;
@@ -795,9 +797,9 @@ namespace MAPeD
 				{
 					if( check_screen_layouts( scr_ind ) == true )
 					{
-						if( scr_ind_opt > utils.CONST_SCREEN_MAX_CNT - 1 )
+						if( scr_ind_opt > CONST_BIDIR_MAP_SCREEN_MAX_CNT - 1 )
 						{
-							throw new Exception( "The screen index is out of range!\nThe maximum number of screens allowed to export: " + utils.CONST_SCREEN_MAX_CNT );
+							throw new Exception( "The screen index is out of range!\nThe maximum number of screens allowed to export: " + CONST_BIDIR_MAP_SCREEN_MAX_CNT );
 						}
 						
 						valid_bank = true;
