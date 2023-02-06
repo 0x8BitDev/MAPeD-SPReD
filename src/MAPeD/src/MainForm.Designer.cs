@@ -2272,9 +2272,9 @@ namespace MAPeD
 			// 
 			this.tabControlLayoutTools.Controls.Add(this.TabBuilder);
 			this.tabControlLayoutTools.Controls.Add(this.TabPainter);
-			this.tabControlLayoutTools.Controls.Add(this.TabScreenList);
-			this.tabControlLayoutTools.Controls.Add(this.TabEntities);
 			this.tabControlLayoutTools.Controls.Add(this.TabPatterns);
+			this.tabControlLayoutTools.Controls.Add(this.TabEntities);
+			this.tabControlLayoutTools.Controls.Add(this.TabScreenList);
 			this.tabControlLayoutTools.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControlLayoutTools.Location = new System.Drawing.Point(0, 0);
 			this.tabControlLayoutTools.Name = "tabControlLayoutTools";

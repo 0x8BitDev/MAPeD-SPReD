@@ -129,11 +129,11 @@
   <metadata name="ContextMenuCHRBank.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>1575, 17</value>
   </metadata>
-  <metadata name="ContextMenuEntitiesTree.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>374, 54</value>
-  </metadata>
   <metadata name="ContextMenuStripPatternsTreeViewGroup.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>963, 55</value>
+  </metadata>
+  <metadata name="ContextMenuEntitiesTree.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>374, 54</value>
   </metadata>
   <metadata name="ContextMenuLayoutEditor.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>192, 54</value>
