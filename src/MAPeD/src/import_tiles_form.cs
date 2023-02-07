@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 14.12.2018
  * Time: 19:38
  */
@@ -85,6 +85,17 @@ namespace MAPeD
 
 #if !DEF_PALETTE16_PER_CHR || DEF_ZX
 			BtnImportPaletteASIS.Enabled = CheckBoxImportPaletteASIS.Enabled = false;
+#endif
+			
+#if DEF_FIXED_LEN_PALETTE16_ARR && !DEF_ZX
+			for( int i = 0; i < platform_data.get_fixed_palette16_cnt(); i++ )
+			{
+				CBoxStartPalette.Items.Add( String.Format( "plt#{0:d2}", i ) );
+			}
+			
+			CBoxStartPalette.SelectedIndex = 0;
+#else
+			CBoxStartPalette.Enabled = labelStartPalette.Enabled = false;
 #endif
 		}
 		
@@ -1351,8 +1362,14 @@ namespace MAPeD
 						plt_ind = CHRs_plt[ CHR_ind ];
 					}
 					
-					block_data = tiles_data.set_block_flags_palette( Math.Min( platform_data.get_fixed_palette16_cnt(), plt_ind ), block_data );
-					_data.blocks[ block_n + CHR_n ] = block_data;
+					plt_ind += CBoxStartPalette.SelectedIndex;
+					
+					if( plt_ind >= platform_data.get_fixed_palette16_cnt() )
+					{
+						continue;
+					}
+					
+					_data.blocks[ block_n + CHR_n ] = tiles_data.set_block_flags_palette( plt_ind, block_data );
 				}
 			}
 
@@ -1361,7 +1378,12 @@ namespace MAPeD
 			
 			for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
 			{
-				plt16 = _data.palettes_arr[ plt_n ];
+				if( plt_n + CBoxStartPalette.SelectedIndex >= platform_data.get_fixed_palette16_cnt() )
+				{
+					break;
+				}
+				
+				plt16 = _data.palettes_arr[ plt_n + CBoxStartPalette.SelectedIndex ];
 				
 				for( ind_n = 0; ind_n < 16; ind_n++ )
 				{
@@ -1689,6 +1711,11 @@ namespace MAPeD
 			
 			for( plt_n = 0; plt_n < palettes_cnt; plt_n++ )
 			{
+				if( plt_n + CBoxStartPalette.SelectedIndex >= platform_data.get_fixed_palette16_cnt() )
+				{
+					break;
+				}
+				
 				// build remapping table
 				Array.Clear( clr_inds, 0, clr_inds.Length );
 				
@@ -1735,7 +1762,7 @@ namespace MAPeD
 							}
 							
 							// apply palette
-							_data.blocks[ block_ind ] = tiles_data.set_block_flags_palette( plt_n, _data.blocks[ block_ind ] );
+							_data.blocks[ block_ind ] = tiles_data.set_block_flags_palette( plt_n + CBoxStartPalette.SelectedIndex, _data.blocks[ block_ind ] );
 						}
 					}
 				}
@@ -1750,7 +1777,12 @@ namespace MAPeD
 			{
 				plt_clr_inds = palettes[ plt_n ];
 
-				plt16 = _data.palettes_arr[ plt_n ];
+				if( plt_n + CBoxStartPalette.SelectedIndex >= platform_data.get_fixed_palette16_cnt() )
+				{
+					break;
+				}
+				
+				plt16 = _data.palettes_arr[ plt_n + CBoxStartPalette.SelectedIndex ];
 
 				ind_n = 0;
 				plt_clr_inds.ForEach( delegate( int _val ) 

@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+07.02.2023 - SMS/PCE/SMD: Image import: added a start palette slot to the image import options
 05.02.2023 - SPSeD v0.14: asynchronous script execution
 02.02.2023 - Layout tab: Entities tab: when selecting a target entity - 'Escape' - switch to the 'Edit Instances' mode
 02.02.2023 - Layout tab: Show: Marks, Entities, Targets, Coords, Grid are saved in application settings

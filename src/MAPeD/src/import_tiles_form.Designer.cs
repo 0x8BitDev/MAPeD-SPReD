@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 14.12.2018
  * Time: 19:38
  */
@@ -46,6 +46,8 @@ namespace MAPeD
 			this.CheckBoxCHRs = new System.Windows.Forms.CheckBox();
 			this.CheckBoxImportPaletteASIS = new System.Windows.Forms.CheckBox();
 			this.BtnImportPaletteASIS = new System.Windows.Forms.Button();
+			this.labelStartPalette = new System.Windows.Forms.Label();
+			this.CBoxStartPalette = new System.Windows.Forms.ComboBox();
 			this.SuspendLayout();
 			// 
 			// CheckBoxBlocks
@@ -72,30 +74,30 @@ namespace MAPeD
 			// 
 			// CheckBoxSkipZeroCHRBlock
 			// 
-			this.CheckBoxSkipZeroCHRBlock.Location = new System.Drawing.Point(34, 189);
+			this.CheckBoxSkipZeroCHRBlock.Location = new System.Drawing.Point(34, 139);
 			this.CheckBoxSkipZeroCHRBlock.Name = "CheckBoxSkipZeroCHRBlock";
-			this.CheckBoxSkipZeroCHRBlock.Size = new System.Drawing.Size(131, 19);
-			this.CheckBoxSkipZeroCHRBlock.TabIndex = 6;
+			this.CheckBoxSkipZeroCHRBlock.Size = new System.Drawing.Size(130, 19);
+			this.CheckBoxSkipZeroCHRBlock.TabIndex = 5;
 			this.CheckBoxSkipZeroCHRBlock.Text = "Skip zero CHR\\Block";
 			this.CheckBoxSkipZeroCHRBlock.UseVisualStyleBackColor = true;
 			// 
 			// BtnOk
 			// 
 			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.BtnOk.Location = new System.Drawing.Point(22, 227);
+			this.BtnOk.Location = new System.Drawing.Point(22, 255);
 			this.BtnOk.Name = "BtnOk";
 			this.BtnOk.Size = new System.Drawing.Size(75, 23);
-			this.BtnOk.TabIndex = 8;
+			this.BtnOk.TabIndex = 12;
 			this.BtnOk.Text = "Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
 			// 
 			// BtnCancel
 			// 
 			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.BtnCancel.Location = new System.Drawing.Point(103, 227);
+			this.BtnCancel.Location = new System.Drawing.Point(103, 255);
 			this.BtnCancel.Name = "BtnCancel";
 			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
-			this.BtnCancel.TabIndex = 9;
+			this.BtnCancel.TabIndex = 13;
 			this.BtnCancel.Text = "Cancel";
 			this.BtnCancel.UseVisualStyleBackColor = true;
 			// 
@@ -122,20 +124,20 @@ namespace MAPeD
 			// 
 			// CheckBoxApplyPalette
 			// 
-			this.CheckBoxApplyPalette.Location = new System.Drawing.Point(34, 139);
+			this.CheckBoxApplyPalette.Location = new System.Drawing.Point(34, 164);
 			this.CheckBoxApplyPalette.Name = "CheckBoxApplyPalette";
-			this.CheckBoxApplyPalette.Size = new System.Drawing.Size(144, 19);
-			this.CheckBoxApplyPalette.TabIndex = 5;
+			this.CheckBoxApplyPalette.Size = new System.Drawing.Size(118, 19);
+			this.CheckBoxApplyPalette.TabIndex = 7;
 			this.CheckBoxApplyPalette.Text = "Apply palette (2x2)";
 			this.CheckBoxApplyPalette.UseVisualStyleBackColor = true;
 			this.CheckBoxApplyPalette.CheckedChanged += new System.EventHandler(this.CheckBoxApplyPaletteChanged_Event);
 			// 
 			// BtnApplyPaletteDesc
 			// 
-			this.BtnApplyPaletteDesc.Location = new System.Drawing.Point(158, 138);
+			this.BtnApplyPaletteDesc.Location = new System.Drawing.Point(158, 163);
 			this.BtnApplyPaletteDesc.Name = "BtnApplyPaletteDesc";
 			this.BtnApplyPaletteDesc.Size = new System.Drawing.Size(20, 20);
-			this.BtnApplyPaletteDesc.TabIndex = 7;
+			this.BtnApplyPaletteDesc.TabIndex = 6;
 			this.BtnApplyPaletteDesc.Text = "?";
 			this.BtnApplyPaletteDesc.UseVisualStyleBackColor = true;
 			this.BtnApplyPaletteDesc.Click += new System.EventHandler(this.BtnApplyPaletteDescClick_Event);
@@ -154,22 +156,39 @@ namespace MAPeD
 			// 
 			// CheckBoxImportPaletteASIS
 			// 
-			this.CheckBoxImportPaletteASIS.Location = new System.Drawing.Point(34, 164);
+			this.CheckBoxImportPaletteASIS.Location = new System.Drawing.Point(34, 189);
 			this.CheckBoxImportPaletteASIS.Name = "CheckBoxImportPaletteASIS";
 			this.CheckBoxImportPaletteASIS.Size = new System.Drawing.Size(131, 19);
-			this.CheckBoxImportPaletteASIS.TabIndex = 6;
+			this.CheckBoxImportPaletteASIS.TabIndex = 9;
 			this.CheckBoxImportPaletteASIS.Text = "Import palette \'AS IS\'";
 			this.CheckBoxImportPaletteASIS.UseVisualStyleBackColor = true;
 			// 
 			// BtnImportPaletteASIS
 			// 
-			this.BtnImportPaletteASIS.Location = new System.Drawing.Point(158, 163);
+			this.BtnImportPaletteASIS.Location = new System.Drawing.Point(158, 188);
 			this.BtnImportPaletteASIS.Name = "BtnImportPaletteASIS";
 			this.BtnImportPaletteASIS.Size = new System.Drawing.Size(20, 20);
-			this.BtnImportPaletteASIS.TabIndex = 7;
+			this.BtnImportPaletteASIS.TabIndex = 8;
 			this.BtnImportPaletteASIS.Text = "?";
 			this.BtnImportPaletteASIS.UseVisualStyleBackColor = true;
 			this.BtnImportPaletteASIS.Click += new System.EventHandler(this.BtnImportPaletteASISDescClick_Event);
+			// 
+			// labelStartPalette
+			// 
+			this.labelStartPalette.Location = new System.Drawing.Point(95, 216);
+			this.labelStartPalette.Name = "labelStartPalette";
+			this.labelStartPalette.Size = new System.Drawing.Size(69, 18);
+			this.labelStartPalette.TabIndex = 11;
+			this.labelStartPalette.Text = "Start Palette";
+			// 
+			// CBoxStartPalette
+			// 
+			this.CBoxStartPalette.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.CBoxStartPalette.FormattingEnabled = true;
+			this.CBoxStartPalette.Location = new System.Drawing.Point(34, 212);
+			this.CBoxStartPalette.Name = "CBoxStartPalette";
+			this.CBoxStartPalette.Size = new System.Drawing.Size(56, 21);
+			this.CBoxStartPalette.TabIndex = 10;
 			// 
 			// import_tiles_form
 			// 
@@ -177,9 +196,11 @@ namespace MAPeD
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
-			this.ClientSize = new System.Drawing.Size(202, 262);
-			this.Controls.Add(this.BtnImportPaletteASIS);
+			this.ClientSize = new System.Drawing.Size(202, 291);
 			this.Controls.Add(this.BtnApplyPaletteDesc);
+			this.Controls.Add(this.labelStartPalette);
+			this.Controls.Add(this.CBoxStartPalette);
+			this.Controls.Add(this.BtnImportPaletteASIS);
 			this.Controls.Add(this.BtnCancel);
 			this.Controls.Add(this.BtnOk);
 			this.Controls.Add(this.CheckBoxImportPaletteASIS);
@@ -198,6 +219,8 @@ namespace MAPeD
 			this.Text = "Image Import Options";
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.ComboBox CBoxStartPalette;
+		private System.Windows.Forms.Label labelStartPalette;
 		private System.Windows.Forms.Button BtnImportPaletteASIS;
 		private System.Windows.Forms.CheckBox CheckBoxImportPaletteASIS;
 		private System.Windows.Forms.CheckBox CheckBoxCHRs;
