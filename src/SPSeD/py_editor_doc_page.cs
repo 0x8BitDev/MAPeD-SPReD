@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 29.05.2019
  * Time: 18:27
  */
@@ -25,9 +25,11 @@ namespace SPSeD
 		
 		private bool	m_data_changed		= false;
 		
-		private static int m_line_height	= -1;
+		private int		m_line_height		= -1;
 		
 		private Graphics m_gfx 	= null;
+		
+		private Font m_font;
 		
 		private static Brush 	m_brush_white 		= null; 
 		private static Brush 	m_brush_gray 		= null;
@@ -63,6 +65,15 @@ namespace SPSeD
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			ScriptTextBox.ContextMenuStrip = _cm;
+			
+			m_font = ( Font )ScriptTextBox.Font.Clone();
+			
+			// calc the line height
+			ScriptTextBox.Text = "x\nx";
+			m_line_height = ScriptTextBox.GetPositionFromCharIndex( ScriptTextBox.GetFirstCharIndexFromLine( 1 ) ).Y - ScriptTextBox.GetPositionFromCharIndex( ScriptTextBox.GetFirstCharIndexFromLine( 0 ) ).Y;
+			ScriptTextBox.Text = "";
+			
+			update_line_number_pixbox_width();
 		}
 		
 		public void destroy()
@@ -71,6 +82,12 @@ namespace SPSeD
 			{
 				m_gfx.Dispose();
 				m_gfx = null;
+			}
+			
+			if( m_font != null )
+			{
+				m_font.Dispose();
+				m_font = null;
 			}
 			
 			if( LineNumberPixBox.Image != null )
@@ -82,18 +99,6 @@ namespace SPSeD
 			ScriptTextBox.ContextMenuStrip = null;
 			
 			m_script_filename = null;
-		}
-		
-		public void first_init()
-		{
-			if( m_line_height < 0 )
-			{
-				ScriptTextBox.Text = "x\nx";	
-				m_line_height = ScriptTextBox.GetPositionFromCharIndex( 2 ).Y - ScriptTextBox.GetPositionFromCharIndex( 0 ).Y;
-				ScriptTextBox.Text = "";
-			}
-
-			update_line_number_pixbox_width();
 		}
 		
 		public static void static_data_init()
@@ -201,11 +206,12 @@ namespace SPSeD
 			{
 				update_line_number_pixbox_width();
 				
-				int pix_offset = ( ScriptTextBox.GetPositionFromCharIndex( 0 ).Y % m_line_height );
-	
-				m_tmp_pos.X = m_tmp_pos.Y = 0;
+				m_tmp_pos.X = 0;
+				m_tmp_pos.Y = ( int )( m_gfx.VisibleClipBounds.Y + m_font.Height / 3 );
 				int first_ind	= ScriptTextBox.GetCharIndexFromPosition( m_tmp_pos );
 				int first_line	= ScriptTextBox.GetLineFromCharIndex( first_ind );
+				
+				int pix_offset = ScriptTextBox.GetPositionFromCharIndex( first_ind ).Y;
 
 				m_tmp_pos.X = ClientRectangle.Width;
 				m_tmp_pos.Y = ClientRectangle.Height;
@@ -221,7 +227,7 @@ namespace SPSeD
 					y_step 		= pix_offset + ( i * m_line_height );
 					
 					m_gfx.FillRectangle( ( ( line_offset & 0x01 ) == 0x01 ) ? m_brush_white:m_brush_gray, 0, y_step, LineNumberScriptFieldSplitContainer.SplitterDistance, m_line_height );
-					m_gfx.DrawString( ( line_offset + 1 ).ToString(), ScriptTextBox.Font, m_brush_dark_gray, 0, y_step );
+					m_gfx.DrawString( ( line_offset + 1 ).ToString(), m_font, m_brush_dark_gray, 0, y_step - ( int )( Math.Ceiling( ScriptTextBox.ZoomFactor ) ) );
 				}
 			}
 			
@@ -230,7 +236,7 @@ namespace SPSeD
 		
 		public void update_line_number_pixbox_width()
 		{
-			int width = ( int )( m_gfx.MeasureString( "0", ScriptTextBox.Font ).Width ) + 1;
+			int width = ( int )( m_gfx.MeasureString( "0", ScriptTextBox.Font ).Width );
 			int mul;
 			
 			int lines = ScriptTextBox.Lines.Length;
@@ -248,8 +254,8 @@ namespace SPSeD
 			{
 				mul = 4;
 			}
-
-			width *= mul;
+			
+			width = ( int )( width * mul * ScriptTextBox.ZoomFactor );
 			
 			LineNumberScriptFieldSplitContainer.IsSplitterFixed = false;
 			{
@@ -268,6 +274,27 @@ namespace SPSeD
 		public void reset_data_changed_flag()
 		{
 			m_data_changed = false;
+		}
+		
+		private void ScriptTextBoxContentsResized(object sender, ContentsResizedEventArgs e)
+		{
+			if( ScriptTextBox.Lines.Length > 1 )
+			{
+				m_line_height = ScriptTextBox.GetPositionFromCharIndex( ScriptTextBox.GetFirstCharIndexFromLine( 1 ) ).Y - ScriptTextBox.GetPositionFromCharIndex( ScriptTextBox.GetFirstCharIndexFromLine( 0 ) ).Y;
+			}
+			else
+			{
+				m_line_height = ( int )( Math.Floor( ( ScriptTextBox.PreferredHeight * ScriptTextBox.ZoomFactor ) + 1.5f ) );
+			}
+			
+			if( m_font != null )
+			{
+				m_font.Dispose();
+			}
+			
+			m_font = new Font( ScriptTextBox.Font.FontFamily.Name, ( ScriptTextBox.Font.Height - 4 ) * ScriptTextBox.ZoomFactor );
+			
+			update_line_numbers();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 29.05.2019
  * Time: 18:27
  */
@@ -90,6 +90,7 @@ namespace SPSeD
 			this.ScriptTextBox.TabIndex = 2;
 			this.ScriptTextBox.Text = "";
 			this.ScriptTextBox.WordWrap = false;
+			this.ScriptTextBox.ContentsResized += new System.Windows.Forms.ContentsResizedEventHandler(this.ScriptTextBoxContentsResized);
 			this.ScriptTextBox.SelectionChanged += new System.EventHandler(this.ScriptTextBoxSelectionChanged);
 			this.ScriptTextBox.VScroll += new System.EventHandler(this.ScriptTextBoxVScroll);
 			this.ScriptTextBox.SizeChanged += new System.EventHandler(this.ScriptTextBoxSizeChanged);

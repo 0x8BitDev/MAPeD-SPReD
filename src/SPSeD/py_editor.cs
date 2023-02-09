@@ -313,6 +313,8 @@ namespace SPSeD
 				update_tab_page_text( DocPagesContainer.SelectedTab, true );
 				
 				update_status_msg( "loaded" );
+				
+				update_ln_col_status_msg( null, null );
 			}
 			catch( System.Exception _err )
 			{
@@ -751,7 +753,6 @@ namespace SPSeD
 			
 			if( doc_page != null )
 			{
-				doc_page.first_init();
 				doc_page.script_text_box.Focus();
 			}
 			

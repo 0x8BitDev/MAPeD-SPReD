@@ -1,6 +1,7 @@
 MAPeD-NES/SMS/PCE/ZX/SMD:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+09.02.2023 - SPSeD: fixed drawing of line numbering when zooming a document
 07.02.2023 - SMS/PCE/SMD: Image import: added a start palette slot to the image import options
 05.02.2023 - SPSeD v0.14: asynchronous script execution
 02.02.2023 - Layout tab: Entities tab: when selecting a target entity - 'Escape' - switch to the 'Edit Instances' mode
@@ -135,6 +136,7 @@ MAPeD-NES/SMS/PCE/ZX/SMD:
 SPReD-NES/SMS/PCE:
 ~~~~~~~~~~~~~~~~~~~
 
+09.02.2023 - SPSeD: fixed drawing of line numbering when zooming a document
 05.02.2023 - SPSeD v0.14: asynchronous script execution
 20.12.2022 - Switched to x64 architecture
 
