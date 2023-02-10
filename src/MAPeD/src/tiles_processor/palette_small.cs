@@ -78,6 +78,8 @@ namespace MAPeD
 			item_paste_color.Click	+= new EventHandler( ContextMenuPaste_Click );
 			
 			m_pix_box.MouseDown += new MouseEventHandler( Palette_MouseDown );
+#else
+			_pbox.ContextMenuStrip = null;
 #endif
 		}
 #if DEF_COLORS_COPY_PASTE

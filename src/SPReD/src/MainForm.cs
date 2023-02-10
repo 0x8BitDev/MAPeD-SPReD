@@ -223,8 +223,6 @@ namespace SPReD
 			CBoxCHRPackingType.Items.Add( "16KB" );
 			CBoxCHRPackingType.Items.Add( "32KB" );
 #endif
-			palette_group.Instance.active_palette = 0;
-			
 			if( _args.Length > 0 )
 			{
 				project_load( _args[0] );
@@ -289,7 +287,7 @@ namespace SPReD
 			
 			m_sprites_proc.reset();
 			
-			// the build mode is active by defailt
+			// the build mode is active by default
 			BtnModeBuild_Event( null, null );
 			
 			OffsetX.Value = 0;
@@ -298,12 +296,14 @@ namespace SPReD
 			CBoxMode8x16.Checked = false;
 			
 #if DEF_FIXED_LEN_PALETTE16_ARR
+			palettes_array.Instance.reset();
+			palette_group.Instance.active_palette = 0;
+			
 			CBoxPalettes.Enabled = false;
 			CBoxPalettes.SelectedIndex = 0;
-			
-			palettes_array.Instance.reset();
 #else
 			palette_group.Instance.reset();
+			palette_group.Instance.active_palette = 0;
 #endif
 		}
 		
