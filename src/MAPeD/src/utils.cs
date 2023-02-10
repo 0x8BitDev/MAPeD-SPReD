@@ -944,5 +944,18 @@ namespace MAPeD
 			
 			return _progress_val;
 		}
+		
+		public static ToolStripItem get_context_menu_item_by_name( ContextMenuStrip _context_menu, string _item_name )
+		{
+			foreach( ToolStripItem item in _context_menu.Items ) 
+			{
+				if( item.Text == _item_name )
+				{
+					return item;
+				}
+			}
+			
+			return null;
+		}
 	}
 }

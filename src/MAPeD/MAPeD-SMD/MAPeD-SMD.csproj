@@ -39,7 +39,7 @@
     <DebugType>Full</DebugType>
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <DefineConstants>DEBUG;TRACE;DEF_PALETTE16_PER_CHR;DEF_FIXED_LEN_PALETTE16_ARR;DEF_FLIP_BLOCKS_SPR_BY_FLAGS;DEF_PLATFORM_16BIT;DEF_SMD</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;DEF_PALETTE16_PER_CHR;DEF_FIXED_LEN_PALETTE16_ARR;DEF_FLIP_BLOCKS_SPR_BY_FLAGS;DEF_PLATFORM_16BIT;DEF_COLORS_COPY_PASTE;DEF_SMD</DefineConstants>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <StartAction>Project</StartAction>
   </PropertyGroup>
@@ -49,7 +49,7 @@
     <DebugType>None</DebugType>
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-    <DefineConstants>TRACE;DEF_PALETTE16_PER_CHR;DEF_FIXED_LEN_PALETTE16_ARR;DEF_FLIP_BLOCKS_SPR_BY_FLAGS;DEF_PLATFORM_16BIT;DEF_SMD</DefineConstants>
+    <DefineConstants>TRACE;DEF_PALETTE16_PER_CHR;DEF_FIXED_LEN_PALETTE16_ARR;DEF_FLIP_BLOCKS_SPR_BY_FLAGS;DEF_PLATFORM_16BIT;DEF_COLORS_COPY_PASTE;DEF_SMD</DefineConstants>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
