@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 16.03.2017
  * Time: 16:35
  */
@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Windows.Forms;
 
 namespace SPReD
 {
@@ -356,6 +357,19 @@ namespace SPReD
 		public static string hex( string _prefix, int _val )
 		{
 			return _prefix + String.Format( "{0:X2}", _val );
+		}
+		
+		public static ToolStripItem get_context_menu_item_by_name( ContextMenuStrip _context_menu, string _item_name )
+		{
+			foreach( ToolStripItem item in _context_menu.Items ) 
+			{
+				if( item.Text == _item_name )
+				{
+					return item;
+				}
+			}
+			
+			return null;
 		}
 	}
 }

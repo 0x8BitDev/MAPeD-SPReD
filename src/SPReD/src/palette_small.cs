@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 16:59
  */
@@ -50,10 +50,7 @@ namespace SPReD
 						// the 1st color slot will be active by default
 						m_sel_clr_ind = 1;
 						
-						if( ActivePalette != null )
-						{
-							ActivePalette( this, null );
-						}
+						dispatch_event_active_palette();
 					}
 				}
 
@@ -61,6 +58,9 @@ namespace SPReD
 			}
 		}
 		
+#if DEF_COLORS_COPY_PASTE
+		private static int m_copied_clr_ind	 = -1;
+#endif
 		private int m_sel_clr_ind 	= -1;
 		private int[] m_clr_inds 	= null;
 		
@@ -75,10 +75,7 @@ namespace SPReD
 					
 					m_sel_clr_ind = value;
 					
-					if( ActivePalette != null )
-					{
-						ActivePalette( this, null );
-					}
+					dispatch_event_active_palette();
 		
 					update();
 				}
@@ -96,9 +93,57 @@ namespace SPReD
 #elif DEF_PCE
 			m_clr_inds = new int[ utils.CONST_PALETTE_SMALL_NUM_COLORS ];
 #endif
-			m_pix_box.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Layout_MouseClick);
+			m_pix_box.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Palette_MouseClick);
+			
+#if DEF_COLORS_COPY_PASTE
+			ToolStripItem item_copy_color	= utils.get_context_menu_item_by_name( _pbox.ContextMenuStrip, "Copy" );
+			ToolStripItem item_paste_color	= utils.get_context_menu_item_by_name( _pbox.ContextMenuStrip, "Paste" );
+			
+			item_paste_color.Enabled = false;	// disabled by default, there is nothing to paste
+			
+			item_copy_color.Click	+= new EventHandler( ContextMenuCopy_Click );
+			item_paste_color.Click	+= new EventHandler( ContextMenuPaste_Click );
+			
+			m_pix_box.MouseDown += new MouseEventHandler( Palette_MouseDown );
+#endif
+		}
+#if DEF_COLORS_COPY_PASTE
+		private void Palette_MouseDown(object sender, MouseEventArgs e)
+		{
+			if( e.Button == MouseButtons.Right )
+			{
+				if( ( sender as PictureBox ) == m_pix_box )
+				{
+					Palette_MouseClick( sender, e );
+					
+					if( m_copied_clr_ind >= 0 )
+					{
+						utils.get_context_menu_item_by_name( m_pix_box.ContextMenuStrip, "Paste" ).Enabled = true;
+					}
+				}
+			}
 		}
 		
+		private void ContextMenuCopy_Click(object sender, EventArgs e)
+		{
+			if( m_sel_clr_ind >= 0 )
+			{
+				m_copied_clr_ind = m_clr_inds[ m_sel_clr_ind ];
+			}
+		}
+		
+		private void ContextMenuPaste_Click(object sender, EventArgs e)
+		{
+			if( m_sel_clr_ind >= 0 )
+			{
+				m_clr_inds[ m_sel_clr_ind ] = m_copied_clr_ind;
+				
+				dispatch_event_active_palette();
+				
+				update();
+			}
+		}
+#endif
 		public void reset()
 		{
 #if DEF_NES
@@ -137,16 +182,13 @@ namespace SPReD
 			invalidate();
 		}
 		
-		private void Layout_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void Palette_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			active = true;
 			
 			m_sel_clr_ind = e.X / 20;
 			
-			if( ActivePalette != null )
-			{
-				ActivePalette( this, null );
-			}
+			dispatch_event_active_palette();
 
 			update();
 		}
@@ -197,6 +239,14 @@ namespace SPReD
 			}
 			
 			update();
+		}
+		
+		private void dispatch_event_active_palette()
+		{
+			if( ActivePalette != null )
+			{
+				ActivePalette( this, null );
+			}
 		}
 	}
 }
