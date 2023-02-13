@@ -469,14 +469,14 @@ namespace SPSeD
 			this.openFileDialog.DefaultExt = "py";
 			this.openFileDialog.Filter = "Python script ( *.py )|*.py";
 			this.openFileDialog.Title = "Load Script";
-			this.openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.LoadOk_Event);
+			this.openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.LoadOk);
 			// 
 			// saveFileDialog
 			// 
 			this.saveFileDialog.DefaultExt = "py";
 			this.saveFileDialog.Filter = "Python script ( *.py )|*.py";
 			this.saveFileDialog.Title = "Save Script";
-			this.saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.SaveOk_Event);
+			this.saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.SaveOk);
 			// 
 			// StandardToolStrip
 			// 
@@ -667,7 +667,7 @@ namespace SPSeD
 			this.MainMenuStrip = this.menuStrip;
 			this.Name = "py_editor";
 			this.Text = "SPSeD";
-			this.Shown += new System.EventHandler(this.py_editorShown);
+			this.Shown += new System.EventHandler(this.OnShown);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			this.splitContainer1.Panel2.PerformLayout();

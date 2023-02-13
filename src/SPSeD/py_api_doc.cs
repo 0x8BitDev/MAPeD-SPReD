@@ -68,7 +68,7 @@ namespace SPSeD
 			}
 		}
 		
-		void OnFormClosed(object sender, FormClosedEventArgs e)
+		private void OnFormClosed( object sender, FormClosedEventArgs e )
 		{
 			if( this.HTMLBrowser != null )
 			{

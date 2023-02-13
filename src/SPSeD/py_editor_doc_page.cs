@@ -132,12 +132,12 @@ namespace SPSeD
 			}
 		}
 		
-		void ScriptTextBoxVScroll(object sender, EventArgs e)
+		private void ScriptTextBoxVScroll( object sender, EventArgs e )
 		{
 			update_line_numbers();
 		}
 		
-		void ScriptTextBoxTextChanged(object sender, EventArgs e)
+		private void ScriptTextBoxTextChanged( object sender, EventArgs e )
 		{
 			m_data_changed = true;
 			
@@ -149,12 +149,12 @@ namespace SPSeD
 			}
 		}
 		
-		void ScriptTextBoxSizeChanged(object sender, EventArgs e)
+		private void ScriptTextBoxSizeChanged( object sender, EventArgs e )
 		{
 			update_line_numbers();
 		}
 		
-		void ScriptTextBoxSelectionChanged(object sender, EventArgs e)
+		private void ScriptTextBoxSelectionChanged( object sender, EventArgs e )
 		{
 			if( SelectionChangedEvent != null )
 			{
@@ -162,22 +162,22 @@ namespace SPSeD
 			}
 		}
 		
-		void ScriptTextBoxMouseDown(object sender, MouseEventArgs e)
+		private void ScriptTextBoxMouseDown( object sender, MouseEventArgs e )
 		{
 			update_ln_col_msg_event();
 		}
 
-		void ScriptTextBoxKeyUp(object sender, KeyEventArgs e)
+		private void ScriptTextBoxKeyUp( object sender, KeyEventArgs e )
 		{
 			update_ln_col_msg_event();
 		}
 
-		void ScriptTextBoxPreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		private void ScriptTextBoxPreviewKeyDown( object sender, PreviewKeyDownEventArgs e )
 		{
 			update_ln_col_msg_event();
 		}
 
-		void update_ln_col_msg_event()
+		private void update_ln_col_msg_event()
 		{
 			if( UpdateLnColMsgEvent != null )
 			{
@@ -185,7 +185,7 @@ namespace SPSeD
 			}
 		}
 		
-		void update_line_numbers()
+		private void update_line_numbers()
 		{
 			if( LineNumberPixBox.Image == null || ( LineNumberPixBox.Width != LineNumberPixBox.Image.Width || LineNumberPixBox.Height != LineNumberPixBox.Image.Height ) )
 			{
@@ -276,7 +276,7 @@ namespace SPSeD
 			m_data_changed = false;
 		}
 		
-		private void ScriptTextBoxContentsResized(object sender, ContentsResizedEventArgs e)
+		private void ScriptTextBoxContentsResized( object sender, ContentsResizedEventArgs e )
 		{
 			if( ScriptTextBox.Lines.Length > 1 )
 			{
