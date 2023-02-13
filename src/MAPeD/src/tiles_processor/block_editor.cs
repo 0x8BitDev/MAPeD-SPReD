@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 13:12
  */
@@ -25,15 +25,15 @@ namespace MAPeD
 #if DEF_PALETTE16_PER_CHR		
 		public event EventHandler UpdatePaletteListPos;
 #endif		
-		public enum EMode
+		public enum e_mode
 		{
-			bem_CHR_select,
-			bem_draw,
+			CHRSelect,
+			Draw,
 		}
 		
-		private EMode m_edit_mode	= EMode.bem_CHR_select;
+		private e_mode m_edit_mode	= e_mode.CHRSelect;
 		
-		public EMode edit_mode
+		public e_mode edit_mode
 		{
 			get { return m_edit_mode; }
 			set 
@@ -44,8 +44,8 @@ namespace MAPeD
 
 				switch( m_edit_mode )
 				{
-					case EMode.bem_CHR_select:	{ mode = "Select CHRs"; } break;
-					case EMode.bem_draw:		{ mode = "Draw"; } break;
+					case e_mode.CHRSelect:	{ mode = "Select CHRs"; } break;
+					case e_mode.Draw:		{ mode = "Draw"; } break;
 				}
 				
 				MainForm.set_status_msg( "Block Editor mode: " + mode );
@@ -54,9 +54,9 @@ namespace MAPeD
 			}
 		}
 #if DEF_ZX
-		private utils.ETileViewType	m_view_type		= utils.ETileViewType.tvt_Unknown;
+		private utils.e_tile_view_type	m_view_type		= utils.e_tile_view_type.UNKNOWN;
 		
-		public utils.ETileViewType view_type
+		public utils.e_tile_view_type view_type
 		{
 			get { return m_view_type; }
 			set { m_view_type = value; update(); }
@@ -104,20 +104,20 @@ namespace MAPeD
 #endif
 		public block_editor( PictureBox _pbox ) : base( _pbox )
 		{
-			m_pix_box.MouseDown 	+= new MouseEventHandler( this.BlockEditor_MouseDown );
-			m_pix_box.MouseUp 		+= new MouseEventHandler( this.BlockEditor_MouseUp );
-			m_pix_box.MouseMove		+= new MouseEventHandler( this.BlockEditor_MouseMove );
+			m_pix_box.MouseDown 	+= new MouseEventHandler( on_mouse_down );
+			m_pix_box.MouseUp 		+= new MouseEventHandler( on_mouse_up );
+			m_pix_box.MouseMove		+= new MouseEventHandler( on_mouse_move );
 			
-			m_pix_box.MouseClick	+= new MouseEventHandler( this.BlockEditor_MouseClick );
+			m_pix_box.MouseClick	+= new MouseEventHandler( on_mouse_click );
 			
 			m_CHR_ids = new List< int >( 4 );
 			
 			update();
 		}
 		
-		private void BlockEditor_MouseDown(object sender, MouseEventArgs e)
+		private void on_mouse_down( object sender, MouseEventArgs e )
 		{
-			if( e.Button == MouseButtons.Left && edit_mode == EMode.bem_draw )
+			if( e.Button == MouseButtons.Left && edit_mode == e_mode.Draw )
 			{
 				m_drawing_state		= true;
 				m_need_data_update	= false;
@@ -126,7 +126,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void BlockEditor_MouseUp(object sender, MouseEventArgs e)
+		private void on_mouse_up( object sender, MouseEventArgs e ) 
 		{
 			if( e.Button == MouseButtons.Left )
 			{
@@ -145,7 +145,7 @@ namespace MAPeD
 			}
 		}
 
-		private void BlockEditor_MouseMove(object sender, MouseEventArgs e)
+		private void on_mouse_move( object sender, MouseEventArgs e )
 		{
 			if( m_drawing_state && ( e.X >= 0 && e.X < m_pix_box.Bounds.Width && e.Y >= 0 && e.Y < m_pix_box.Bounds.Height ) )
 			{
@@ -153,7 +153,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void BlockEditor_MouseClick(object sender, MouseEventArgs e)
+		private void on_mouse_click( object sender, MouseEventArgs e )
 		{
 			sel_quad_and_draw( e.X, e.Y, false );
 		}
@@ -322,18 +322,18 @@ namespace MAPeD
 			}
 		}
 #endif
-		public void subscribe_event( CHR_bank_viewer _chr_bank )
+		public void subscribe( CHR_bank_viewer _chr_bank )
 		{
-			_chr_bank.DataChanged += new EventHandler( update_data );
-			_chr_bank.CHRSelected += new EventHandler( CHR_selected );
+			_chr_bank.DataChanged += new EventHandler( on_update_data );
+			_chr_bank.CHRSelected += new EventHandler( on_CHR_selected );
 		}
 
-		public void subscribe_event( tiles_processor _tiles_proc )
+		public void subscribe( tiles_processor _tiles_proc )
 		{
-			_tiles_proc.GFXUpdate += new EventHandler( update_gfx );
+			_tiles_proc.GFXUpdate += new EventHandler( on_update_gfx );
 		}
 		
-		private void update_gfx( object sender, EventArgs e )
+		private void on_update_gfx( object sender, EventArgs e )
 		{
 			if( m_sel_quad_ind >= 0 )
 			{
@@ -347,17 +347,17 @@ namespace MAPeD
 			update();
 		}
 		
-		public void subscribe_event( data_sets_manager _data_mngr )
+		public void subscribe( data_sets_manager _data_mngr )
 		{
-			_data_mngr.SetTilesData += new EventHandler( new_data_set );
+			_data_mngr.SetTilesData += new EventHandler( on_new_data_set );
 		}
 		
-		public void subscribe_event( tile_editor _tile_editor )
+		public void subscribe( tile_editor _tile_editor )
 		{
-			_tile_editor.UpdateSelectedBlock += new EventHandler( update_block );
+			_tile_editor.UpdateSelectedBlock += new EventHandler( on_update_block );
 		}
 		
-		private void update_block( object sender, EventArgs e )
+		private void on_update_block( object sender, EventArgs e )
 		{
 			EventArg2Params args = ( e as EventArg2Params );
 			
@@ -367,14 +367,14 @@ namespace MAPeD
 			set_selected_block( block_id, data );
 		}
 		
-		private void new_data_set( object sender, EventArgs e )
+		private void on_new_data_set( object sender, EventArgs e )
 		{
 			tiles_data data = null;
 			
 			set_selected_block( 0, data );
 		}
 		
-		private void update_data( object sender, EventArgs e )
+		private void on_update_data( object sender, EventArgs e )
 		{
 			if( m_sel_block_id >= 0 && palette_group.Instance.active_palette >= 0 )
 			{
@@ -413,9 +413,9 @@ namespace MAPeD
 			update();
 		}
 
-		private void CHR_selected( object sender, EventArgs e )
+		private void on_CHR_selected( object sender, EventArgs e )
 		{
-			if( edit_mode == EMode.bem_CHR_select && m_sel_block_id >= 0 )
+			if( edit_mode == e_mode.CHRSelect && m_sel_block_id >= 0 )
 			{
 				int selected_CHR = ( sender as CHR_bank_viewer ).get_selected_CHR_ind();
 
@@ -485,7 +485,7 @@ namespace MAPeD
 						m_gfx.DrawLine( m_pen, 0, pos, m_pix_box.Height, pos );
 					}
 					
-					if( m_edit_mode == EMode.bem_CHR_select )
+					if( m_edit_mode == e_mode.CHRSelect )
 					{
 						m_pen.Color = utils.CONST_COLOR_BLOCK_EDITOR_CHR_BORDER;
 					}
@@ -501,7 +501,7 @@ namespace MAPeD
 				
 				draw_border( Color.Black );
 				
-				if( ( m_edit_mode == EMode.bem_CHR_select ) && ( m_sel_quad_ind >= 0 ) )
+				if( ( m_edit_mode == e_mode.CHRSelect ) && ( m_sel_quad_ind >= 0 ) )
 				{
 					int x = ( ( m_sel_quad_ind % 2 ) << 7 );
 					int y = ( ( m_sel_quad_ind >> 1 ) << 7 );
@@ -537,13 +537,13 @@ namespace MAPeD
 				
 				dispatch_event_data_changed();
 				
-				update_status_bar();				
+				update_status_bar();
 			}
 			else
 			{
 				m_sel_block_id = -1;
 
-				m_data	= null;				
+				m_data	= null;
 			}
 
 			set_active_palette();
@@ -639,7 +639,7 @@ namespace MAPeD
 			}
 		}
 
-		private void dispatch_event_quad_selected()		
+		private void dispatch_event_quad_selected()
 		{
 			if( BlockQuadSelected != null )
 			{
@@ -655,13 +655,13 @@ namespace MAPeD
 			}
 		}
 
-		public void transform( utils.ETransformType _type )
+		public void transform( utils.e_transform_type _type )
 		{
 			if( m_sel_block_id >= 0 )
 			{
 				switch( _type )
 				{
-					case utils.ETransformType.tt_vflip: 	
+					case utils.e_transform_type.VFlip:
 						{ 
 							int[] vflip_remap = { 2, 3, 0, 1 };
 							
@@ -669,7 +669,7 @@ namespace MAPeD
 						} 	
 						break;
 						
-					case utils.ETransformType.tt_hflip: 	
+					case utils.e_transform_type.HFlip:
 						{ 
 							int[] hflip_remap = { 1, 0, 3, 2 };
 							
@@ -677,7 +677,7 @@ namespace MAPeD
 						} 	
 						break;
 						
-					case utils.ETransformType.tt_rotate:	
+					case utils.e_transform_type.Rotate:
 						{ 
 							int[] rotate_remap = { 2, 0, 3, 1 };
 							
@@ -688,17 +688,17 @@ namespace MAPeD
 			}
 		}
 		
-		private void block_transform( utils.ETransformType _type, int[] _remap_arr )
+		private void block_transform( utils.e_transform_type _type, int[] _remap_arr )
 		{
 			int i;
 			
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
-			if( m_edit_mode	== EMode.bem_CHR_select )
+			if( m_edit_mode	== e_mode.CHRSelect )
 			{
 				switch( _type )
 				{
-					case utils.ETransformType.tt_vflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_VFLIP, m_sel_block_id, m_sel_quad_ind );	} 	dispatch_event_need_gfx_update(); return;
-					case utils.ETransformType.tt_hflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_HFLIP, m_sel_block_id, m_sel_quad_ind );	} 	dispatch_event_need_gfx_update(); return;
+					case utils.e_transform_type.VFlip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_VFLIP, m_sel_block_id, m_sel_quad_ind );	} 	dispatch_event_need_gfx_update(); return;
+					case utils.e_transform_type.HFlip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_HFLIP, m_sel_block_id, m_sel_quad_ind );	} 	dispatch_event_need_gfx_update(); return;
 				}
 			}
 			else
@@ -707,8 +707,8 @@ namespace MAPeD
 				{
 					switch( _type )
 					{
-						case utils.ETransformType.tt_vflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_VFLIP, m_sel_block_id, i );	} 	break;
-						case utils.ETransformType.tt_hflip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_HFLIP, m_sel_block_id, i );	} 	break;
+						case utils.e_transform_type.VFlip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_VFLIP, m_sel_block_id, i );	} 	break;
+						case utils.e_transform_type.HFlip: 	{ set_flip_flag( utils.CONST_CHR_ATTR_FLAG_HFLIP, m_sel_block_id, i );	} 	break;
 					}
 				}
 			}
@@ -721,7 +721,7 @@ namespace MAPeD
 				blocks_data[ i ] = m_data.blocks[ ( m_sel_block_id << 2 ) + i ];
 				
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
-				if( _type == utils.ETransformType.tt_rotate && tiles_data.get_block_flags_flip( blocks_data[ i ] ) != 0 )
+				if( _type == utils.e_transform_type.Rotate && tiles_data.get_block_flags_flip( blocks_data[ i ] ) != 0 )
 				{
 					MainForm.message_box( "You can't rotate flipped CHRs!", "Block Transformation Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 					return;
@@ -735,15 +735,15 @@ namespace MAPeD
 			bool flip_by_flags = false;
 #endif //DEF_FLIP_BLOCKS_SPR_BY_FLAGS
 
-			if( flip_by_flags == false || _type == utils.ETransformType.tt_rotate )
+			if( flip_by_flags == false || _type == utils.e_transform_type.Rotate )
 			{
 				for( i = 0; i < utils.CONST_BLOCK_SIZE; i++ )
 				{
 					switch( _type )
 					{
-						case utils.ETransformType.tt_vflip: 	{ tiles_data.CHR_bank_vflip( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 		break;
-						case utils.ETransformType.tt_hflip: 	{ tiles_data.CHR_bank_hflip( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 		break;
-						case utils.ETransformType.tt_rotate: 	{ tiles_data.CHR_bank_rotate_cw( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	} 	break;
+						case utils.e_transform_type.VFlip: 	{ tiles_data.CHR_bank_vflip( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );		}	break;
+						case utils.e_transform_type.HFlip: 	{ tiles_data.CHR_bank_hflip( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );		}	break;
+						case utils.e_transform_type.Rotate: { tiles_data.CHR_bank_rotate_cw( m_data.CHR_bank, tiles_data.get_block_CHR_id( blocks_data[ i ] ) );	}	break;
 					}
 				}
 				
@@ -767,7 +767,7 @@ namespace MAPeD
 			{
 				m_CHR_ids.Clear();
 					
-				if( edit_mode == EMode.bem_CHR_select )
+				if( edit_mode == e_mode.CHRSelect )
 				{
 					m_CHR_ids.Add( tiles_data.get_block_CHR_id( m_data.blocks[ ( m_sel_block_id << 2 ) + m_sel_quad_ind ] ) );
 				}
@@ -854,7 +854,7 @@ namespace MAPeD
 					}
 				};
 				
-				if( m_edit_mode == EMode.bem_CHR_select )
+				if( m_edit_mode == e_mode.CHRSelect )
 				{
 					swap_ink_paper( get_selected_quad_CHR_id() );
 				}

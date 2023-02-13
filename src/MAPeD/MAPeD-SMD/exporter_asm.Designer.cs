@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 13.09.2018
  * Time: 17:59
  */
@@ -90,7 +90,7 @@ namespace MAPeD
 			this.BtnCancel.TabIndex = 34;
 			this.BtnCancel.Text = "Cancel";
 			this.BtnCancel.UseVisualStyleBackColor = true;
-			this.BtnCancel.Click += new System.EventHandler(this.event_cancel);
+			this.BtnCancel.Click += new System.EventHandler(this.BtnCancelClick);
 			// 
 			// BtnOk
 			// 
@@ -101,7 +101,7 @@ namespace MAPeD
 			this.BtnOk.TabIndex = 33;
 			this.BtnOk.Text = "Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
-			this.BtnOk.Click += new System.EventHandler(this.event_ok);
+			this.BtnOk.Click += new System.EventHandler(this.BtnOkClick);
 			// 
 			// groupBox1
 			// 
@@ -135,7 +135,7 @@ namespace MAPeD
 			this.RBtnTilesDirRows.TabIndex = 7;
 			this.RBtnTilesDirRows.Text = "Rows";
 			this.RBtnTilesDirRows.UseVisualStyleBackColor = true;
-			this.RBtnTilesDirRows.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnTilesDirRows.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// RBtnTilesDirColumns
 			// 
@@ -147,7 +147,7 @@ namespace MAPeD
 			this.RBtnTilesDirColumns.TabStop = true;
 			this.RBtnTilesDirColumns.Text = "Columns";
 			this.RBtnTilesDirColumns.UseVisualStyleBackColor = true;
-			this.RBtnTilesDirColumns.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnTilesDirColumns.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// CheckBoxRLE
 			// 
@@ -157,7 +157,7 @@ namespace MAPeD
 			this.CheckBoxRLE.TabIndex = 4;
 			this.CheckBoxRLE.Text = "RLE";
 			this.CheckBoxRLE.UseVisualStyleBackColor = true;
-			this.CheckBoxRLE.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.CheckBoxRLE.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// RBtnTiles4x4
 			// 
@@ -169,7 +169,7 @@ namespace MAPeD
 			this.RBtnTiles4x4.TabStop = true;
 			this.RBtnTiles4x4.Text = "4x4";
 			this.RBtnTiles4x4.UseVisualStyleBackColor = true;
-			this.RBtnTiles4x4.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnTiles4x4.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// RBtnTiles2x2
 			// 
@@ -179,7 +179,7 @@ namespace MAPeD
 			this.RBtnTiles2x2.TabIndex = 2;
 			this.RBtnTiles2x2.Text = "2x2";
 			this.RBtnTiles2x2.UseVisualStyleBackColor = true;
-			this.RBtnTiles2x2.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnTiles2x2.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// groupBox2
 			// 
@@ -206,7 +206,7 @@ namespace MAPeD
 			this.CheckBoxExportSGDKData.TabIndex = 26;
 			this.CheckBoxExportSGDKData.Text = "Export SGDK (.h, .s)";
 			this.CheckBoxExportSGDKData.UseVisualStyleBackColor = true;
-			this.CheckBoxExportSGDKData.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.CheckBoxExportSGDKData.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// groupBox6
 			// 
@@ -295,7 +295,7 @@ namespace MAPeD
 			this.RBtnPropPerCHR.TabIndex = 25;
 			this.RBtnPropPerCHR.Text = "CHR";
 			this.RBtnPropPerCHR.UseVisualStyleBackColor = true;
-			this.RBtnPropPerCHR.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnPropPerCHR.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// RBtnPropPerBlock
 			// 
@@ -307,7 +307,7 @@ namespace MAPeD
 			this.RBtnPropPerBlock.TabStop = true;
 			this.RBtnPropPerBlock.Text = "Block";
 			this.RBtnPropPerBlock.UseVisualStyleBackColor = true;
-			this.RBtnPropPerBlock.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnPropPerBlock.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// groupBox5
 			// 
@@ -334,7 +334,7 @@ namespace MAPeD
 			this.CBoxEntSortingType.Name = "CBoxEntSortingType";
 			this.CBoxEntSortingType.Size = new System.Drawing.Size(55, 21);
 			this.CBoxEntSortingType.TabIndex = 19;
-			this.CBoxEntSortingType.SelectedIndexChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.CBoxEntSortingType.SelectedIndexChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// groupBoxEntityCoordinates
 			// 
@@ -357,7 +357,7 @@ namespace MAPeD
 			this.RBtnEntityCoordMap.TabStop = true;
 			this.RBtnEntityCoordMap.Text = "Map";
 			this.RBtnEntityCoordMap.UseVisualStyleBackColor = true;
-			this.RBtnEntityCoordMap.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnEntityCoordMap.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// RBtnEntityCoordScreen
 			// 
@@ -367,7 +367,7 @@ namespace MAPeD
 			this.RBtnEntityCoordScreen.TabIndex = 21;
 			this.RBtnEntityCoordScreen.Text = "Screen";
 			this.RBtnEntityCoordScreen.UseVisualStyleBackColor = true;
-			this.RBtnEntityCoordScreen.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnEntityCoordScreen.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// CheckBoxExportEntities
 			// 
@@ -379,7 +379,7 @@ namespace MAPeD
 			this.CheckBoxExportEntities.TabIndex = 18;
 			this.CheckBoxExportEntities.Text = "Export";
 			this.CheckBoxExportEntities.UseVisualStyleBackColor = true;
-			this.CheckBoxExportEntities.CheckedChanged += new System.EventHandler(this.CheckBoxExportEntitiesChanged_Event);
+			this.CheckBoxExportEntities.CheckedChanged += new System.EventHandler(this.CheckBoxExportEntitiesChanged);
 			// 
 			// groupBox4
 			// 
@@ -403,7 +403,7 @@ namespace MAPeD
 			this.RBtnModeMultidirScroll.TabStop = true;
 			this.RBtnModeMultidirScroll.Text = "Multidir scrolling";
 			this.RBtnModeMultidirScroll.UseVisualStyleBackColor = true;
-			this.RBtnModeMultidirScroll.CheckedChanged += new System.EventHandler(this.RBtnModeMultidirScrollChanged_Event);
+			this.RBtnModeMultidirScroll.CheckedChanged += new System.EventHandler(this.RBtnModeMultidirScrollChanged);
 			// 
 			// RBtnModeBidirScroll
 			// 
@@ -413,7 +413,7 @@ namespace MAPeD
 			this.RBtnModeBidirScroll.TabIndex = 15;
 			this.RBtnModeBidirScroll.Text = "Bidir scrolling";
 			this.RBtnModeBidirScroll.UseVisualStyleBackColor = true;
-			this.RBtnModeBidirScroll.CheckedChanged += new System.EventHandler(this.RBtnModeScreenToScreenChanged_Event);
+			this.RBtnModeBidirScroll.CheckedChanged += new System.EventHandler(this.RBtnModeScreenToScreenChanged);
 			// 
 			// RBtnModeStaticScreen
 			// 
@@ -423,7 +423,7 @@ namespace MAPeD
 			this.RBtnModeStaticScreen.TabIndex = 16;
 			this.RBtnModeStaticScreen.Text = "Static screens";
 			this.RBtnModeStaticScreen.UseVisualStyleBackColor = true;
-			this.RBtnModeStaticScreen.CheckedChanged += new System.EventHandler(this.RBtnModeStaticScreensChanged_Event);
+			this.RBtnModeStaticScreen.CheckedChanged += new System.EventHandler(this.RBtnModeStaticScreensChanged);
 			// 
 			// groupBoxLayout
 			// 
@@ -448,7 +448,7 @@ namespace MAPeD
 			this.RBtnLayoutMatrix.TabStop = true;
 			this.RBtnLayoutMatrix.Text = "Layout matrix";
 			this.RBtnLayoutMatrix.UseVisualStyleBackColor = true;
-			this.RBtnLayoutMatrix.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnLayoutMatrix.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// RBtnLayoutAdjacentScreenIndices
 			// 
@@ -458,7 +458,7 @@ namespace MAPeD
 			this.RBtnLayoutAdjacentScreenIndices.TabIndex = 10;
 			this.RBtnLayoutAdjacentScreenIndices.Text = "Adjacent scr inds";
 			this.RBtnLayoutAdjacentScreenIndices.UseVisualStyleBackColor = true;
-			this.RBtnLayoutAdjacentScreenIndices.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnLayoutAdjacentScreenIndices.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// RBtnLayoutAdjacentScreens
 			// 
@@ -468,7 +468,7 @@ namespace MAPeD
 			this.RBtnLayoutAdjacentScreens.TabIndex = 9;
 			this.RBtnLayoutAdjacentScreens.Text = "Adjacent screens";
 			this.RBtnLayoutAdjacentScreens.UseVisualStyleBackColor = true;
-			this.RBtnLayoutAdjacentScreens.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.RBtnLayoutAdjacentScreens.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// CheckBoxExportMarks
 			// 
@@ -480,7 +480,7 @@ namespace MAPeD
 			this.CheckBoxExportMarks.TabIndex = 12;
 			this.CheckBoxExportMarks.Text = "Export marks";
 			this.CheckBoxExportMarks.UseVisualStyleBackColor = true;
-			this.CheckBoxExportMarks.CheckedChanged += new System.EventHandler(this.ParamChanged_Event);
+			this.CheckBoxExportMarks.CheckedChanged += new System.EventHandler(this.OnParamChanged);
 			// 
 			// RichTextBoxExportDesc
 			// 

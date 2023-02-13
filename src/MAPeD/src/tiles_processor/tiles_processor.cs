@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 12:36
  */
@@ -45,28 +45,28 @@ namespace MAPeD
 			m_block_editor		= new block_editor( _PBoxBlockEditor );
 			m_tile_editor		= new tile_editor( _PBoxTilePreview );
 
-			m_CHR_bank_viewer.subscribe_event( m_block_editor );
-			m_CHR_bank_viewer.subscribe_event( _data_mngr );
-			m_block_editor.subscribe_event( _data_mngr );
-			m_tile_editor.subscribe_event( _data_mngr );
-			m_palette_grp.subscribe_event( _data_mngr );
+			m_CHR_bank_viewer.subscribe( m_block_editor );
+			m_CHR_bank_viewer.subscribe( _data_mngr );
+			m_block_editor.subscribe( _data_mngr );
+			m_tile_editor.subscribe( _data_mngr );
+			m_palette_grp.subscribe( _data_mngr );
 			
-			m_CHR_bank_viewer.subscribe_event( m_palette_grp );
+			m_CHR_bank_viewer.subscribe( m_palette_grp );
 			
-			m_block_editor.subscribe_event( m_CHR_bank_viewer );
-			m_block_editor.subscribe_event( m_tile_editor );
-			m_tile_editor.subscribe_event( m_block_editor );
+			m_block_editor.subscribe( m_CHR_bank_viewer );
+			m_block_editor.subscribe( m_tile_editor );
+			m_tile_editor.subscribe( m_block_editor );
 			
 			m_CHR_bank_viewer.NeedGFXUpdate	+= new EventHandler( need_gfx_update_event );
 			m_block_editor.NeedGFXUpdate 	+= new EventHandler( need_gfx_update_event );
 			m_tile_editor.NeedGFXUpdate		+= new EventHandler( need_gfx_update_event );
 			m_palette_grp.NeedGFXUpdate		+= new EventHandler( need_gfx_update_event );
 #if DEF_PALETTE16_PER_CHR
-			m_block_editor.UpdatePaletteListPos	+= new EventHandler( update_palette_list_pos );
+			m_block_editor.UpdatePaletteListPos	+= new EventHandler( on_update_palette_list_pos );
 #endif
-			m_CHR_bank_viewer.subscribe_event( this );
-			m_block_editor.subscribe_event( this );
-			m_tile_editor.subscribe_event( this );
+			m_CHR_bank_viewer.subscribe( this );
+			m_block_editor.subscribe( this );
+			m_tile_editor.subscribe( this );
 		}
 		
 		private void need_gfx_update_event( object sender, EventArgs e )
@@ -86,7 +86,7 @@ namespace MAPeD
 		}
 		
 #if DEF_PALETTE16_PER_CHR
-		private void update_palette_list_pos( object sender, EventArgs e )
+		private void on_update_palette_list_pos( object sender, EventArgs e )
 		{
 			if( UpdatePaletteListPos != null )
 			{
@@ -145,26 +145,26 @@ namespace MAPeD
 			m_block_editor.update_sel_CHR_palette();
 		}
 #endif
-		public void transform_selected_CHR( utils.ETransformType _type )
+		public void transform_selected_CHR( utils.e_transform_type _type )
 		{
 			m_CHR_bank_viewer.transform_selected_CHR( _type );
 		}
 		
-		public void transform_block( utils.ETransformType _type )
+		public void transform_block( utils.e_transform_type _type )
 		{
 			m_block_editor.transform( _type );
 		}
 		
-		public void key_event(object sender, KeyEventArgs e)
+		public void on_key_up( object sender, KeyEventArgs e )
 		{
-			m_palette_grp.key_event( sender, e );
+			m_palette_grp.on_key_up( sender, e );
 		}
 		
-		public void set_block_editor_mode( block_editor.EMode _mode )
+		public void set_block_editor_mode( block_editor.e_mode _mode )
 		{
 			m_block_editor.edit_mode = _mode;
 			
-			m_CHR_bank_viewer.selection_color = ( _mode == block_editor.EMode.bem_CHR_select ) ? utils.CONST_COLOR_CHR_BANK_SELECTED_INNER_BORDER_SELECT_MODE:utils.CONST_COLOR_CHR_BANK_SELECTED_INNER_BORDER_DRAW_MODE;
+			m_CHR_bank_viewer.selection_color = ( _mode == block_editor.e_mode.CHRSelect ) ? utils.CONST_COLOR_CHR_BANK_SELECTED_INNER_BORDER_SELECT_MODE:utils.CONST_COLOR_CHR_BANK_SELECTED_INNER_BORDER_DRAW_MODE;
 		}
 #if DEF_NES
 		public void set_block_editor_palette_per_CHR_mode( bool _on )
@@ -372,7 +372,7 @@ namespace MAPeD
 			m_CHR_bank_viewer.prev_page();
 		}
 #if DEF_ZX
-		public void set_view_type( utils.ETileViewType _view_type )
+		public void set_view_type( utils.e_tile_view_type _view_type )
 		{
 			m_tile_editor.view_type = m_block_editor.view_type = m_CHR_bank_viewer.view_type = _view_type;
 		}

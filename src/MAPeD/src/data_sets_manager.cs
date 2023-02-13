@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 12:17
  */
@@ -71,16 +71,16 @@ namespace MAPeD
 		[DataMember]
 		private readonly string SMD_block_desc_bits = "[ property_id ](4) [x](1) [ palette ind ](2) [ hv_flip ](2) [CHR ind](11)";
 		
-		public enum EScreenDataType
+		public enum e_screen_data_type
 		{
-			sdt_Tiles4x4 = 0,
-			sdt_Blocks2x2,
+			Tiles4x4 = 0,
+			Blocks2x2,
 		};
 		
-		private EScreenDataType	m_screen_data_type	= EScreenDataType.sdt_Tiles4x4;
+		private e_screen_data_type	m_screen_data_type	= e_screen_data_type.Tiles4x4;
 		
 		[DataMember]
-		public EScreenDataType screen_data_type
+		public e_screen_data_type screen_data_type
 		{
 			get { return m_screen_data_type; }
 			set 
@@ -92,13 +92,13 @@ namespace MAPeD
 					{
 						switch( value )
 						{
-							case EScreenDataType.sdt_Tiles4x4:
+							case e_screen_data_type.Tiles4x4:
 								{
 									blocks_to_tiles();
 								}
 								break;
 								
-							case EScreenDataType.sdt_Blocks2x2:
+							case e_screen_data_type.Blocks2x2:
 								{
 									tiles_to_blocks();
 								}
@@ -202,7 +202,7 @@ namespace MAPeD
 			group_add( "BONUSES" );
 			group_add( "POWER-UPS" );
 			
-			screen_data_type = EScreenDataType.sdt_Tiles4x4;
+			screen_data_type = e_screen_data_type.Tiles4x4;
 		}
 		
 		public entity_data get_entity_by_name( string _name )
@@ -786,7 +786,7 @@ namespace MAPeD
 				// save in a project file
 				// the other ones can be generated
 				
-				if( ( ( utils.CONST_PROJECT_FILE_VER <= 6 ) && ( platform_data.get_platform_type() == platform_data.EPlatformType.pt_NES || platform_data.get_platform_type() == platform_data.EPlatformType.pt_SMS ) ) || ( utils.CONST_PROJECT_FILE_VER >= 7 ) )
+				if( ( ( utils.CONST_PROJECT_FILE_VER <= 6 ) && ( platform_data.get_platform_type() == platform_data.e_platform_type.NES || platform_data.get_platform_type() == platform_data.e_platform_type.SMS ) ) || ( utils.CONST_PROJECT_FILE_VER >= 7 ) )
 				{
 					palette_group.Instance.save_main_palette( _bw );
 				}
@@ -1158,7 +1158,7 @@ namespace MAPeD
 				// convert screens
 				for( scr_n = 0; scr_n < data.screen_data_cnt(); scr_n++ )
 				{
-					new_scr = new screen_data( EScreenDataType.sdt_Blocks2x2 );
+					new_scr = new screen_data( e_screen_data_type.Blocks2x2 );
 					
 					for( tile_n = 0; tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 					{
@@ -1258,7 +1258,7 @@ namespace MAPeD
 				// convert screens and fill tile arrays
 				for( scr_n = 0; scr_n < data.screen_data_cnt(); scr_n++ )
 				{
-					new_scr = new screen_data( EScreenDataType.sdt_Tiles4x4 );
+					new_scr = new screen_data( e_screen_data_type.Tiles4x4 );
 					
 					for( tile_n = 0; tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 					{

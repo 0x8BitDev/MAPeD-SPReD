@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 29.11.2018
  * Time: 16:49
  */
@@ -49,7 +49,7 @@ namespace MAPeD
 			NumUpDownMatcingPercent.Value = 90;
 		}
 		
-		void BtnOkClick_event(object sender, EventArgs e)
+		private void BtnOkClick( object sender, EventArgs e )
 		{
 			Close();
 
@@ -125,12 +125,12 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnCancelClick_event(object sender, EventArgs e)
+		private void BtnCancelClick( object sender, EventArgs e )
 		{
 			Close();
 		}
 		
-		void optimization( bool _check, tiles_data _data, ref int _stat_screens, ref int _stat_tiles, ref int _stat_blocks, ref int _stat_CHRs )
+		private void optimization( bool _check, tiles_data _data, ref int _stat_screens, ref int _stat_tiles, ref int _stat_blocks, ref int _stat_CHRs )
 		{
 			int res_screens	= 0;
 			int res_tiles	= 0;
@@ -170,7 +170,7 @@ namespace MAPeD
 			while( !_check && ( res_screens + res_tiles + res_blocks + res_CHRs ) != 0 );
 		}
 
-		int CHRs_optimization( tiles_data _data, bool _check )
+		private int CHRs_optimization( tiles_data _data, bool _check )
 		{
 			int deleted_CHRs_cnt = 0;
 			
@@ -231,7 +231,7 @@ namespace MAPeD
 			return deleted_CHRs_cnt;
 		}
 		
-		bool check_blocks_CHR( int _CHR_id, tiles_data _data )
+		private bool check_blocks_CHR( int _CHR_id, tiles_data _data )
 		{
 			int i;
 			int block_n;
@@ -279,7 +279,7 @@ namespace MAPeD
 			return false;
 		}
 
-		void shift_CHRs_data( int _CHR_id, tiles_data _data )
+		private void shift_CHRs_data( int _CHR_id, tiles_data _data )
 		{
 			int block_CHR_id;
 			
@@ -304,7 +304,7 @@ namespace MAPeD
 			}
 		}
 		
-		int Blocks_optimization( tiles_data _data, bool _check )
+		private int Blocks_optimization( tiles_data _data, bool _check )
 		{
 			int deleted_blocks_cnt = 0;
 			
@@ -351,7 +351,7 @@ namespace MAPeD
 						_data.blocks[ last_block_ind - 4 ] = 0;
 					}
 
-					if( m_data_sets.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					if( m_data_sets.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 					{
 						shift_tiles_data( block_n, _data );
 					}
@@ -369,9 +369,9 @@ namespace MAPeD
 			return deleted_blocks_cnt;
 		}
 
-		bool check_tiles_block( int _block_id, tiles_data _data )
+		private bool check_tiles_block( int _block_id, tiles_data _data )
 		{
-			if( m_data_sets.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			if( m_data_sets.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 			{
 				int tile_n;
 				int i;
@@ -428,7 +428,7 @@ namespace MAPeD
 			return false;
 		}
 		
-		bool check_screens_block( int _block_id, tiles_data _data )
+		private bool check_screens_block( int _block_id, tiles_data _data )
 		{
 			int block_n;
 			int scr_n;
@@ -470,10 +470,10 @@ namespace MAPeD
 				}
 			}
 
-			return false;			
+			return false;
 		}
 
-		void shift_tiles_data( int _block_id, tiles_data _data )
+		private void shift_tiles_data( int _block_id, tiles_data _data )
 		{
 			int tile_block_id;
 			
@@ -491,7 +491,7 @@ namespace MAPeD
 			}
 		}
 		
-		int Tiles_optimization( tiles_data _data, bool _check )
+		private int Tiles_optimization( tiles_data _data, bool _check )
 		{
 			int deleted_tiles_cnt = 0;
 			
@@ -528,7 +528,7 @@ namespace MAPeD
 			return deleted_tiles_cnt;
 		}
 
-		bool check_screens_tile( int _tile_id, tiles_data _data )
+		private bool check_screens_tile( int _tile_id, tiles_data _data )
 		{
 			int tile_n;
 			int scr_n;
@@ -573,7 +573,7 @@ namespace MAPeD
 			return false;			
 		}
 		
-		int Screens_optimization( tiles_data _data, bool _check )
+		private int Screens_optimization( tiles_data _data, bool _check )
 		{
 			int deleted_screens_cnt = 0;
 
@@ -604,7 +604,7 @@ namespace MAPeD
 			return deleted_screens_cnt;
 		}
 		
-		bool check_layouts_screen( int _scr_n, tiles_data _data )
+		private bool check_layouts_screen( int _scr_n, tiles_data _data )
 		{
 			int layout_n;
 			int tiles_data_n;
@@ -761,20 +761,20 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnCheckMatchedBlocksClick_Event(object sender, EventArgs e)
+		private void BtnCheckMatchedBlocksClick( object sender, EventArgs e )
 		{
 			check_matched_blocks( m_data_sets.get_tiles_data( m_data_sets.tiles_data_pos ), ( float )NumUpDownMatcingPercent.Value );
 		}
 		
-		void BtnMatchedBlocksInfoClick_Event(object sender, EventArgs e)
+		private void BtnMatchedBlocksInfoClick( object sender, EventArgs e )
 		{
 			MainForm.message_box( "By checking the matched blocks, you can identify similar data.\n\nEnter the boundary value (1-100%) and click the \"Check\" button.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 		
-		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
+		public void set_screen_data_type( data_sets_manager.e_screen_data_type _type )
 		{
-			CheckBoxOptimizeTiles.Enabled = ( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
-			CheckBoxOptimizeTiles.Checked = ( _type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) ? false:CheckBoxOptimizeTiles.Checked;
+			CheckBoxOptimizeTiles.Enabled = ( _type == data_sets_manager.e_screen_data_type.Tiles4x4 );
+			CheckBoxOptimizeTiles.Checked = ( _type == data_sets_manager.e_screen_data_type.Blocks2x2 ) ? false:CheckBoxOptimizeTiles.Checked;
 		}
 	}
 }

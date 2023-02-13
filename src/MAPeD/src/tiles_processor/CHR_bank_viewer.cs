@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 13:11
  */
@@ -22,9 +22,9 @@ namespace MAPeD
 		public event EventHandler NeedGFXUpdate;
 
 #if DEF_ZX
-		private utils.ETileViewType	m_view_type		= utils.ETileViewType.tvt_Unknown;
+		private utils.e_tile_view_type	m_view_type		= utils.e_tile_view_type.UNKNOWN;
 		
-		public utils.ETileViewType view_type
+		public utils.e_tile_view_type view_type
 		{
 			get { return m_view_type; }
 			set { m_view_type = value; update(); }
@@ -53,12 +53,12 @@ namespace MAPeD
 		{
 			m_CHR_bank_grp_box = _grp_box;
 			
-			m_pix_box.MouseClick 	+= new MouseEventHandler( this.CHRBank_MouseClick );
+			m_pix_box.MouseClick 	+= new MouseEventHandler( on_mouse_click );
 			
 			update();
 		}
 		
-		private void CHRBank_MouseClick(object sender, MouseEventArgs e)
+		private void on_mouse_click( object sender, MouseEventArgs e )
 		{
 			m_sel_ind = ( ( e.X >> 4 ) + 16 * ( e.Y >> 4 ) ) + ( utils.CONST_CHR_BANK_PAGE_SPRITES_CNT * m_active_page );
 			
@@ -74,23 +74,23 @@ namespace MAPeD
 			}
 		}
 
-		public void subscribe_event( block_editor _block_editor )
+		public void subscribe( block_editor _block_editor )
 		{
-			_block_editor.PixelChanged 		+= new EventHandler( pixel_changed );
-			_block_editor.BlockQuadSelected	+= new EventHandler( block_quad_selected );
+			_block_editor.PixelChanged 		+= new EventHandler( on_pixel_changed );
+			_block_editor.BlockQuadSelected	+= new EventHandler( on_block_quad_selected );
 		}
 		
-		public void subscribe_event( tiles_processor _tiles_proc )
+		public void subscribe( tiles_processor _tiles_proc )
 		{
-			_tiles_proc.GFXUpdate += new EventHandler( update_gfx );
+			_tiles_proc.GFXUpdate += new EventHandler( on_update_gfx );
 		}
 		
-		private void update_gfx( object sender, EventArgs e )
+		private void on_update_gfx( object sender, EventArgs e )
 		{
 			update();
 		}
 		
-		private void block_quad_selected( object sender, EventArgs e )
+		private void on_block_quad_selected( object sender, EventArgs e )
 		{
 			block_editor block_ed = sender as block_editor;
 			
@@ -100,17 +100,17 @@ namespace MAPeD
 			update();
 		}
 			
-		private void pixel_changed( object sender, EventArgs e )
+		private void on_pixel_changed( object sender, EventArgs e )
 		{
 			update();
 		}
 		
-		public void subscribe_event( data_sets_manager _data_mngr )
+		public void subscribe( data_sets_manager _data_mngr )
 		{
-			_data_mngr.SetTilesData += new EventHandler( new_data_set );
+			_data_mngr.SetTilesData += new EventHandler( on_new_data_set );
 		}
 		
-		private void new_data_set( object sender, EventArgs e )
+		private void on_new_data_set( object sender, EventArgs e )
 		{
 			data_sets_manager data_mngr = sender as data_sets_manager;
 			
@@ -229,20 +229,20 @@ namespace MAPeD
 			}
 		}
 		
-		public void subscribe_event( palette_group _plt )
+		public void subscribe( palette_group _plt )
 		{
 #if !DEF_ZX
-			_plt.UpdateColor += new EventHandler( update_color );
+			_plt.UpdateColor += new EventHandler( on_update_color );
 #endif
 			palette_small[] plt_arr = _plt.get_palettes_arr();
 			
-			plt_arr[ 0 ].ActivePalette += new EventHandler( update_color );
-			plt_arr[ 1 ].ActivePalette += new EventHandler( update_color );
-			plt_arr[ 2 ].ActivePalette += new EventHandler( update_color );
-			plt_arr[ 3 ].ActivePalette += new EventHandler( update_color );			
+			plt_arr[ 0 ].ActivePalette += new EventHandler( on_update_color );
+			plt_arr[ 1 ].ActivePalette += new EventHandler( on_update_color );
+			plt_arr[ 2 ].ActivePalette += new EventHandler( on_update_color );
+			plt_arr[ 3 ].ActivePalette += new EventHandler( on_update_color );
 		}
 		
-		private void update_color( object sender, EventArgs e )
+		private void on_update_color( object sender, EventArgs e )
 		{
 			dispatch_event_data_changed();
 			
@@ -278,15 +278,15 @@ namespace MAPeD
 			return m_sel_ind;
 		}
 		
-		public void transform_selected_CHR( utils.ETransformType _type )
+		public void transform_selected_CHR( utils.e_transform_type _type )
 		{
 			if( m_sel_ind >= 0 )
 			{
 				switch( _type )
 				{
-					case utils.ETransformType.tt_vflip: 	{ tiles_data.CHR_bank_vflip( m_data.CHR_bank, m_sel_ind );  	} 	break;
-					case utils.ETransformType.tt_hflip: 	{ tiles_data.CHR_bank_hflip( m_data.CHR_bank, m_sel_ind );  	} 	break;
-					case utils.ETransformType.tt_rotate:	{ tiles_data.CHR_bank_rotate_cw( m_data.CHR_bank, m_sel_ind ); 	}	break;
+					case utils.e_transform_type.VFlip: 	{ tiles_data.CHR_bank_vflip( m_data.CHR_bank, m_sel_ind );  	} 	break;
+					case utils.e_transform_type.HFlip: 	{ tiles_data.CHR_bank_hflip( m_data.CHR_bank, m_sel_ind );  	} 	break;
+					case utils.e_transform_type.Rotate:	{ tiles_data.CHR_bank_rotate_cw( m_data.CHR_bank, m_sel_ind ); 	}	break;
 					
 				default:
 					return;
@@ -307,7 +307,7 @@ namespace MAPeD
 				{
 					m_copy_spr_ind = m_sel_ind;
 					
-					return true;				
+					return true;
 				}
 				else
 				{

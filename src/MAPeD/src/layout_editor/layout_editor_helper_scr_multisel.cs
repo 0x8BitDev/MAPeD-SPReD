@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 22.11.2022
  * Time: 12:46
  */
@@ -37,7 +37,7 @@ namespace MAPeD
 			m_scr_multiselect_start = false;
 		}
 		
-		public override void	mouse_down( object sender, MouseEventArgs e )
+		public override void	on_mouse_down( object sender, MouseEventArgs e )
 		{
 			m_scr_multiselect_start = true;
 			
@@ -45,14 +45,14 @@ namespace MAPeD
 			m_scr_multisel_rect_end_y = e.Y;
 		}
 		
-		public override void	mouse_up( object sender, MouseEventArgs e )
+		public override void	on_mouse_up( object sender, MouseEventArgs e )
 		{
 			m_scr_multiselect_start = false;
 			
 			m_owner.update();
 		}
 		
-		public override void	mouse_move( object sender, MouseEventArgs e )
+		public override void	on_mouse_move( object sender, MouseEventArgs e )
 		{
 			if( m_scr_multiselect_start )
 			{

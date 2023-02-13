@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 09.05.2017
  * Time: 12:35
  */
@@ -45,9 +45,9 @@ namespace MAPeD
 			this.Name = "tab_page_container";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "TabPage Container";
-			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Closed_event);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.key_down_event);
-			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.key_up_event);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnClosed);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
+			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnKeyUp);
 			this.ResumeLayout(false);
 		}
 	}

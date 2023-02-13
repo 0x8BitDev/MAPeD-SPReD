@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 02.04.2021
  * Time: 18:24
  */
@@ -38,7 +38,7 @@ namespace MAPeD
 			m_objs.Add( _tl );
 		}
 		
-		public void copy_tile( tile_list.EType _type, int _from_ind, int _to_ind )
+		public void copy_tile( tile_list.e_data_type _type, int _from_ind, int _to_ind )
 		{
 			foreach( var obj in m_objs )
 			{
@@ -49,7 +49,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void update_tiles( tile_list.EType _type )
+		public void update_tiles( tile_list.e_data_type _type )
 		{
 			foreach( var obj in m_objs )
 			{
@@ -60,7 +60,7 @@ namespace MAPeD
 			}
 		}
 
-		public void update_tile( tile_list.EType _type, int _tile_id )
+		public void update_tile( tile_list.e_data_type _type, int _tile_id )
 		{
 			foreach( var obj in m_objs )
 			{
@@ -71,7 +71,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void visible( tile_list.EType _type, bool _on )
+		public void visible( tile_list.e_data_type _type, bool _on )
 		{
 			foreach( var obj in m_objs )
 			{
@@ -82,7 +82,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void reset( tile_list.EType _type )
+		public void reset( tile_list.e_data_type _type )
 		{
 			foreach( var obj in m_objs )
 			{
@@ -93,7 +93,7 @@ namespace MAPeD
 			}
 		}
 
-		public void select( tile_list.EType _type, int _id )
+		public void select( tile_list.e_data_type _type, int _id )
 		{
 			foreach( var obj in m_objs )
 			{
@@ -107,15 +107,15 @@ namespace MAPeD
 	
 	public class tile_list : drawable_base
 	{
-		public enum EType
+		public enum e_data_type
 		{
-			t_Blocks,
-			t_Tiles,
+			Blocks,
+			Tiles,
 		}
 		
-		private readonly EType			m_type;
+		private readonly e_data_type	m_type;
 		
-		public EType	type
+		public e_data_type	type
 		{
 			get { return m_type; }
 			set {}
@@ -138,7 +138,7 @@ namespace MAPeD
 		
 		private bool m_need_update	= false;
 		
-		public tile_list( EType _type, FlowLayoutPanel _panel, List< Bitmap > _il, EventHandler _e, ContextMenuStrip _cm, tile_list_manager _tl_cntnr )
+		public tile_list( e_data_type _type, FlowLayoutPanel _panel, List< Bitmap > _il, EventHandler _e, ContextMenuStrip _cm, tile_list_manager _tl_cntnr )
 		{
 			m_type			= _type;
 			m_owner			= _panel;
@@ -160,16 +160,16 @@ namespace MAPeD
 			calc_pix_box_size( pbox );
 			set_pix_box( pbox );
 
-			m_owner.Resize 		+= ResizeOwner_Event;
+			m_owner.Resize 		+= on_resize_owner;
 			
 			// unsubscribe resize event to avoid recursive resizing
-			pbox.Resize -= Resize_Event;
+			pbox.Resize -= on_resize;
 
-			pbox.MouseUp	+= TileList_MouseUp;
-			pbox.MouseMove	+= TileList_MouseMove;
-			pbox.MouseLeave	+= TileList_MouseLeave;
+			pbox.MouseUp	+= on_mouse_up;
+			pbox.MouseMove	+= on_mouse_move;
+			pbox.MouseLeave	+= on_mouse_leave;
 
-			pbox.VisibleChanged	+= VisibleChanged_Event;
+			pbox.VisibleChanged	+= on_visible_changed;
 			
 			pbox.ContextMenuStrip = _cm;
 			
@@ -194,7 +194,7 @@ namespace MAPeD
 			_pbox.Height	= ( m_tiles_height_cnt * ( m_img_height + 1 ) ) + 1;	// +1 bottom horizontal border line
 		}
 		
-		private void ResizeOwner_Event( object sender, EventArgs e )
+		private void on_resize_owner( object sender, EventArgs e )
 		{
 			prepare_pix_box();
 			
@@ -233,7 +233,7 @@ namespace MAPeD
 			m_label.Visible = !_on;
 		}
 		
-		private void TileList_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void on_mouse_up( object sender, System.Windows.Forms.MouseEventArgs e )
 		{
 			if( m_event_handler != null )
 			{
@@ -241,7 +241,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void TileList_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void on_mouse_move( object sender, System.Windows.Forms.MouseEventArgs e )
 		{
 			int pos_x = Math.Min( e.X, m_pix_box.Width - 2 );
 			int pos_y = Math.Min( e.Y, m_pix_box.Height - 2 );
@@ -263,7 +263,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void TileList_MouseLeave(object sender, System.EventArgs e)
+		private void on_mouse_leave( object sender, System.EventArgs e )
 		{
 			if( ( m_cursor_tile_ind >= 0 ) && ( m_sel_tile_ind != m_cursor_tile_ind ) )
 			{
@@ -274,7 +274,7 @@ namespace MAPeD
 			}
 		}
 
-		private void VisibleChanged_Event( object sender, System.EventArgs e )
+		private void on_visible_changed( object sender, System.EventArgs e )
 		{
 			if( m_pix_box.Visible && m_need_update )
 			{
@@ -282,7 +282,7 @@ namespace MAPeD
 				
 				m_need_update = false;
 			}
-		}			
+		}
 
 		private void draw_tile_border( int _ind )
 		{

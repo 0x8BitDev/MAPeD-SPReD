@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 01.02.2019
  * Time: 19:34
  */
@@ -47,7 +47,7 @@ namespace MAPeD
 			this.BtnClose.TabIndex = 1;
 			this.BtnClose.Text = "&Close";
 			this.BtnClose.UseVisualStyleBackColor = true;
-			this.BtnClose.Click += new System.EventHandler(this.BtnCloseClick_Event);
+			this.BtnClose.Click += new System.EventHandler(this.BtnCloseClick);
 			// 
 			// richTextBox
 			// 
@@ -70,7 +70,7 @@ namespace MAPeD
 			this.CBoxShowAfterLoading.TabIndex = 2;
 			this.CBoxShowAfterLoading.Text = "Show after loading a project";
 			this.CBoxShowAfterLoading.UseVisualStyleBackColor = true;
-			this.CBoxShowAfterLoading.CheckedChanged += new System.EventHandler(this.CBoxShowAfterLoadingChanged_Event);
+			this.CBoxShowAfterLoading.CheckedChanged += new System.EventHandler(this.CBoxShowAfterLoadingChanged);
 			// 
 			// description_form
 			// 

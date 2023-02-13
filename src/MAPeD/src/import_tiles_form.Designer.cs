@@ -60,7 +60,7 @@ namespace MAPeD
 			this.CheckBoxBlocks.TabIndex = 1;
 			this.CheckBoxBlocks.Text = "Blocks";
 			this.CheckBoxBlocks.UseVisualStyleBackColor = true;
-			this.CheckBoxBlocks.CheckedChanged += new System.EventHandler(this.CheckBoxBlocksChanged_Event);
+			this.CheckBoxBlocks.CheckedChanged += new System.EventHandler(this.CheckBoxBlocksChanged);
 			// 
 			// CheckBoxTiles
 			// 
@@ -70,7 +70,7 @@ namespace MAPeD
 			this.CheckBoxTiles.TabIndex = 2;
 			this.CheckBoxTiles.Text = "Tiles";
 			this.CheckBoxTiles.UseVisualStyleBackColor = true;
-			this.CheckBoxTiles.CheckedChanged += new System.EventHandler(this.CheckBoxTilesChanged_Event);
+			this.CheckBoxTiles.CheckedChanged += new System.EventHandler(this.CheckBoxTilesChanged);
 			// 
 			// CheckBoxSkipZeroCHRBlock
 			// 
@@ -109,7 +109,7 @@ namespace MAPeD
 			this.CheckBoxGameMap.TabIndex = 3;
 			this.CheckBoxGameMap.Text = "Game map";
 			this.CheckBoxGameMap.UseVisualStyleBackColor = true;
-			this.CheckBoxGameMap.CheckedChanged += new System.EventHandler(this.CheckBoxGameMapChanged_Event);
+			this.CheckBoxGameMap.CheckedChanged += new System.EventHandler(this.CheckBoxGameMapChanged);
 			// 
 			// CheckBoxDeleteEmptyScreens
 			// 
@@ -120,7 +120,7 @@ namespace MAPeD
 			this.CheckBoxDeleteEmptyScreens.TabIndex = 4;
 			this.CheckBoxDeleteEmptyScreens.Text = "Delete empty screens";
 			this.CheckBoxDeleteEmptyScreens.UseVisualStyleBackColor = true;
-			this.CheckBoxDeleteEmptyScreens.CheckedChanged += new System.EventHandler(this.CheckBoxGameMapChanged_Event);
+			this.CheckBoxDeleteEmptyScreens.CheckedChanged += new System.EventHandler(this.CheckBoxGameMapChanged);
 			// 
 			// CheckBoxApplyPalette
 			// 
@@ -130,7 +130,7 @@ namespace MAPeD
 			this.CheckBoxApplyPalette.TabIndex = 7;
 			this.CheckBoxApplyPalette.Text = "Apply palette (2x2)";
 			this.CheckBoxApplyPalette.UseVisualStyleBackColor = true;
-			this.CheckBoxApplyPalette.CheckedChanged += new System.EventHandler(this.CheckBoxApplyPaletteChanged_Event);
+			this.CheckBoxApplyPalette.CheckedChanged += new System.EventHandler(this.CheckBoxApplyPaletteChanged);
 			// 
 			// BtnApplyPaletteDesc
 			// 
@@ -140,7 +140,7 @@ namespace MAPeD
 			this.BtnApplyPaletteDesc.TabIndex = 6;
 			this.BtnApplyPaletteDesc.Text = "?";
 			this.BtnApplyPaletteDesc.UseVisualStyleBackColor = true;
-			this.BtnApplyPaletteDesc.Click += new System.EventHandler(this.BtnApplyPaletteDescClick_Event);
+			this.BtnApplyPaletteDesc.Click += new System.EventHandler(this.BtnApplyPaletteDescClick);
 			// 
 			// CheckBoxCHRs
 			// 
@@ -171,7 +171,7 @@ namespace MAPeD
 			this.BtnImportPaletteASIS.TabIndex = 8;
 			this.BtnImportPaletteASIS.Text = "?";
 			this.BtnImportPaletteASIS.UseVisualStyleBackColor = true;
-			this.BtnImportPaletteASIS.Click += new System.EventHandler(this.BtnImportPaletteASISDescClick_Event);
+			this.BtnImportPaletteASIS.Click += new System.EventHandler(this.BtnImportPaletteASISDescClick);
 			// 
 			// labelStartPalette
 			// 

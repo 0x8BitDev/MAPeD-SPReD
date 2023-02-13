@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 29.11.2018
  * Time: 16:49
  */
@@ -90,7 +90,7 @@ namespace MAPeD
 			this.BtnOk.TabIndex = 4;
 			this.BtnOk.Text = "Ok";
 			this.BtnOk.UseVisualStyleBackColor = true;
-			this.BtnOk.Click += new System.EventHandler(this.BtnOkClick_event);
+			this.BtnOk.Click += new System.EventHandler(this.BtnOkClick);
 			// 
 			// label2
 			// 
@@ -109,7 +109,7 @@ namespace MAPeD
 			this.BtnCancel.TabIndex = 5;
 			this.BtnCancel.Text = "Cancel";
 			this.BtnCancel.UseVisualStyleBackColor = true;
-			this.BtnCancel.Click += new System.EventHandler(this.BtnCancelClick_event);
+			this.BtnCancel.Click += new System.EventHandler(this.BtnCancelClick);
 			// 
 			// CheckBoxOptimizeCHRs
 			// 
@@ -159,7 +159,7 @@ namespace MAPeD
 			this.BtnMatchedBlocksInfo.TabIndex = 3;
 			this.BtnMatchedBlocksInfo.Text = "?";
 			this.BtnMatchedBlocksInfo.UseVisualStyleBackColor = true;
-			this.BtnMatchedBlocksInfo.Click += new System.EventHandler(this.BtnMatchedBlocksInfoClick_Event);
+			this.BtnMatchedBlocksInfo.Click += new System.EventHandler(this.BtnMatchedBlocksInfoClick);
 			// 
 			// NumUpDownMatcingPercent
 			// 
@@ -186,7 +186,7 @@ namespace MAPeD
 			this.BtnCheckMatchedBlocks.TabIndex = 2;
 			this.BtnCheckMatchedBlocks.Text = "Check";
 			this.BtnCheckMatchedBlocks.UseVisualStyleBackColor = true;
-			this.BtnCheckMatchedBlocks.Click += new System.EventHandler(this.BtnCheckMatchedBlocksClick_Event);
+			this.BtnCheckMatchedBlocks.Click += new System.EventHandler(this.BtnCheckMatchedBlocksClick);
 			// 
 			// label3
 			// 

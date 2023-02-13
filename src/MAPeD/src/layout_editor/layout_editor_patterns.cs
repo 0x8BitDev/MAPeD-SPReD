@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 03.11.2022
  * Time: 13:35
  */
@@ -51,15 +51,15 @@ namespace MAPeD
 
 		private pattern_data	m_pattern_data	= null;
 		
-		private enum EMode
+		private enum e_mode
 		{
-			em_Idle,
-			em_Pattern_Put,
-			em_Pattern_Extract_Begin,
-			em_Pattern_Extract_Resize,
+			Idle,
+			PatternPut,
+			PatternExtractBegin,
+			PatternExtractResize,
 		}
 		
-		private EMode m_mode = EMode.em_Idle;
+		private e_mode m_mode = e_mode.Idle;
 		
 		private int m_tile_x	= -10000;
 		private int m_tile_y	= -10000;
@@ -90,9 +90,9 @@ namespace MAPeD
 			m_force_map_drawing = false;
 		}
 		
-		public override bool mouse_down( object sender, MouseEventArgs e )
+		public override bool on_mouse_down( object sender, MouseEventArgs e )
 		{
-			if( m_mode == EMode.em_Pattern_Put )
+			if( m_mode == e_mode.PatternPut )
 			{
 				if( pattern_put( e.X, e.Y ) == false )
 				{
@@ -101,12 +101,12 @@ namespace MAPeD
 				}
 			}
 			else
-			if( m_mode == EMode.em_Pattern_Extract_Begin )
+			if( m_mode == e_mode.PatternExtractBegin )
 			{
 				m_pttrn_rect_beg_x = m_pttrn_rect_end_x = e.X;
 				m_pttrn_rect_beg_y = m_pttrn_rect_end_y = e.Y;
 				
-				m_mode = EMode.em_Pattern_Extract_Resize;
+				m_mode = e_mode.PatternExtractResize;
 				
 				m_force_map_drawing = true;
 				
@@ -119,9 +119,9 @@ namespace MAPeD
 			return true;
 		}
 		
-		public override void mouse_up( object sender, MouseEventArgs e )
+		public override void on_mouse_up( object sender, MouseEventArgs e )
 		{
-			if( m_mode == EMode.em_Pattern_Extract_Resize )
+			if( m_mode == e_mode.PatternExtractResize )
 			{
 				pattern_data pttrn;
 				
@@ -135,7 +135,7 @@ namespace MAPeD
 				else
 				{
 					// empty pattern - try again!
-					m_mode = EMode.em_Pattern_Extract_Begin;
+					m_mode = e_mode.PatternExtractBegin;
 					
 					// update scene with error message
 					m_owner.update();
@@ -145,9 +145,9 @@ namespace MAPeD
 			}
 		}
 		
-		public override bool mouse_move( object sender, MouseEventArgs e )
+		public override bool on_mouse_move( object sender, MouseEventArgs e )
 		{
-			if( m_mode == EMode.em_Pattern_Put )
+			if( m_mode == e_mode.PatternPut )
 			{
 				if( !m_shared.pix_box_captured() )
 				{
@@ -155,7 +155,7 @@ namespace MAPeD
 				}
 			}
 			else
-			if( m_mode == EMode.em_Pattern_Extract_Resize )
+			if( m_mode == e_mode.PatternExtractResize )
 			{
 				m_pttrn_rect_end_x = e.X;
 				m_pttrn_rect_end_y = e.Y;
@@ -166,14 +166,14 @@ namespace MAPeD
 			return true;
 		}
 
-		public override void mouse_enter( object sender, EventArgs e )
+		public override void on_mouse_enter( object sender, EventArgs e )
 		{
 			//...
 		}
 		
-		public override void mouse_leave( object sender, EventArgs e )
+		public override void on_mouse_leave( object sender, EventArgs e )
 		{
-			if( m_mode == EMode.em_Pattern_Put )
+			if( m_mode == e_mode.PatternPut )
 			{
 				if( m_pattern_data != null )
 				{
@@ -184,7 +184,7 @@ namespace MAPeD
 			}
 		}
 		
-		public override void mouse_wheel( object sender, EventArgs e )
+		public override void on_mouse_wheel( object sender, EventArgs e )
 		{
 			hide_tile();
 		}
@@ -500,9 +500,9 @@ namespace MAPeD
 			return m_shared.m_layout.get_data( slot_ind % m_shared.m_layout.get_width(), slot_ind / m_shared.m_layout.get_width() ).m_scr_ind;
 		}
 		
-		public override layout_editor_base.EHelper	default_helper()
+		public override layout_editor_base.e_helper	default_helper()
 		{
-			return layout_editor_base.EHelper.eh_Unknown;
+			return layout_editor_base.e_helper.UNKNOWN;
 		}
 		
 		public override bool force_map_drawing()
@@ -515,7 +515,7 @@ namespace MAPeD
 			int tile_size_uni	= platform_data.get_screen_tiles_size_uni( m_shared.m_screen_data_type );
 			int tile_size		= ( int )( m_shared.m_scale * ( tile_size_uni >> 1 ) );
 			
-			if( m_mode == EMode.em_Pattern_Put )
+			if( m_mode == e_mode.PatternPut )
 			{
 				if( m_pattern_data != null )
 				{
@@ -534,7 +534,7 @@ namespace MAPeD
 						{
 							pttrn_tile_id = m_pattern_data.data.get_tile( tile_ind++ );
 							
-							bmp = ( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? m_shared.m_tiles_imagelist[ pttrn_tile_id ]:m_shared.m_blocks_imagelist[ pttrn_tile_id ];
+							bmp = ( m_shared.m_screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 ) ? m_shared.m_tiles_imagelist[ pttrn_tile_id ]:m_shared.m_blocks_imagelist[ pttrn_tile_id ];
 							
 							utils.draw_skbitmap(	_surface.Canvas,
 													m_shared.m_image_cache.get( bmp ),
@@ -550,7 +550,7 @@ namespace MAPeD
 				}
 			}
 			else
-			if( m_mode == EMode.em_Pattern_Extract_Resize )
+			if( m_mode == e_mode.PatternExtractResize )
 			{
 				_image_paint.ColorFilter = m_shared.m_color_filter;
 				
@@ -565,7 +565,7 @@ namespace MAPeD
 				_image_paint.ColorFilter = null;
 			}
 			else
-			if( m_mode == EMode.em_Pattern_Extract_Begin )
+			if( m_mode == e_mode.PatternExtractBegin )
 			{
 				m_shared.sys_msg( "SELECT RECTANGULAR AREA, 'Esc' - cancel" );
 			}
@@ -582,13 +582,13 @@ namespace MAPeD
 			{
 				case layout_editor_param.CONST_SET_PTTRN_EXTRACT_BEGIN:
 					{
-						m_mode = EMode.em_Pattern_Extract_Begin;
+						m_mode = e_mode.PatternExtractBegin;
 					}
 					break;
 					
 				case layout_editor_param.CONST_SET_PTTRN_PLACE:
 					{
-						m_mode = EMode.em_Pattern_Put;
+						m_mode = e_mode.PatternPut;
 						
 						m_pattern_data = ( pattern_data )_val;
 					}
@@ -596,7 +596,7 @@ namespace MAPeD
 					
 				case layout_editor_param.CONST_SET_PTTRN_IDLE_STATE:
 					{
-						m_mode = EMode.em_Idle;
+						m_mode = e_mode.Idle;
 						
 						m_pattern_data = null;
 					}
@@ -634,19 +634,19 @@ namespace MAPeD
 			}
 		}
 		
-		public override void key_down_event( object sender, KeyEventArgs e )
+		public override void on_key_down( object sender, KeyEventArgs e )
 		{
 			//...
 		}
 		
-		public override void key_up_event( object sender, KeyEventArgs e )
+		public override void on_key_up( object sender, KeyEventArgs e )
 		{
-			base.key_up_event( sender, e );
+			base.on_key_up( sender, e );
 		}
 		
 		protected override void cancel_operation()
 		{
-			if( m_mode == EMode.em_Pattern_Extract_Begin || m_mode == EMode.em_Pattern_Put )
+			if( m_mode == e_mode.PatternExtractBegin || m_mode == e_mode.PatternPut )
 			{
 				hide_tile();
 				

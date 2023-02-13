@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 26.10.2022
  * Time: 13:23
  */
@@ -62,23 +62,23 @@ namespace MAPeD
 		private SKRectI		m_recti			= new SKRectI();
 		private SKRectI		m_tile_recti	= new SKRectI();
 		
-		private enum ETileMode
+		private enum e_draw_mode
 		{
-			etm_Unknown,
-			etm_Tile,
-			etm_Block,
+			UNKNOWN,
+			Tile,
+			Block,
 		};
 		
-		private ETileMode	m_tile_mode	= ETileMode.etm_Unknown;
+		private e_draw_mode	m_tile_mode	= e_draw_mode.UNKNOWN;
 		
-		private enum EEditMode
+		private enum e_edit_mode
 		{
-			em_Unknown,
-			em_Painting,
-			em_ReplaceTiles,
+			UNKNOWN,
+			Painting,
+			ReplaceTiles,
 		};
 		
-		private EEditMode	m_edit_mode = EEditMode.em_Unknown;
+		private e_edit_mode	m_edit_mode = e_edit_mode.UNKNOWN;
 		
 		public layout_editor_painter( string _name, layout_editor_shared_data _shared, layout_editor_base _owner ) : base( _name, _shared, _owner )
 		{
@@ -88,7 +88,7 @@ namespace MAPeD
 			
 			hide_tile();
 			
-			m_edit_mode = EEditMode.em_Painting;
+			m_edit_mode = e_edit_mode.Painting;
 		}
 		
 		public override void reset( bool _init )
@@ -96,9 +96,9 @@ namespace MAPeD
 			//...
 		}
 		
-		public override bool mouse_down( object sender, MouseEventArgs e )
+		public override bool on_mouse_down( object sender, MouseEventArgs e )
 		{
-			if( m_edit_mode == EEditMode.em_Painting )
+			if( m_edit_mode == e_edit_mode.Painting )
 			{
 				if( m_shared.m_tiles_data != null && m_shared.get_sel_screen_ind( true ) >= 0 && m_active_tile_id >= 0 )
 				{
@@ -108,7 +108,7 @@ namespace MAPeD
 				}
 			}
 			else
-			if( m_edit_mode == EEditMode.em_ReplaceTiles )
+			if( m_edit_mode == e_edit_mode.ReplaceTiles )
 			{
 				selected_screens_replace_tiles();
 				
@@ -118,9 +118,9 @@ namespace MAPeD
 			return true;
 		}
 		
-		public override void mouse_up( object sender, MouseEventArgs e )
+		public override void on_mouse_up( object sender, MouseEventArgs e )
 		{
-			if( m_edit_mode == EEditMode.em_Painting )
+			if( m_edit_mode == e_edit_mode.Painting )
 			{
 				m_shared.pix_box_reset_capture();
 				
@@ -132,9 +132,9 @@ namespace MAPeD
 			}
 		}
 		
-		public override bool mouse_move( object sender, MouseEventArgs e )
+		public override bool on_mouse_move( object sender, MouseEventArgs e )
 		{
-			if( m_edit_mode == EEditMode.em_Painting )
+			if( m_edit_mode == e_edit_mode.Painting )
 			{
 				if( m_shared.pix_box_captured() )
 				{
@@ -177,12 +177,12 @@ namespace MAPeD
 			return true;
 		}
 		
-		public override void mouse_enter( object sender, EventArgs e )
+		public override void on_mouse_enter( object sender, EventArgs e )
 		{
 			//...
 		}
 		
-		public override void mouse_leave( object sender, EventArgs e )
+		public override void on_mouse_leave( object sender, EventArgs e )
 		{
 			if( m_active_tile_id >= 0 )
 			{
@@ -194,7 +194,7 @@ namespace MAPeD
 			}
 		}
 		
-		public override void mouse_wheel( object sender, EventArgs e )
+		public override void on_mouse_wheel( object sender, EventArgs e )
 		{
 			hide_tile();
 		}
@@ -269,7 +269,7 @@ namespace MAPeD
 				_tile_x -= scr_pos_x;
 				_tile_y -= scr_pos_y;
 				
-				if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+				if( m_shared.m_screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 				{
 					m_transp_tile_block_x = _tile_x % 32;
 					m_transp_tile_block_y = _tile_y % 32;
@@ -314,14 +314,14 @@ namespace MAPeD
 
 			m_changed_screens.Add( scr_glob_ind | ( scr_local_ind << 16 ) );
 			
-			if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			if( m_shared.m_screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 			{
 				int block_ind		= 0;
 				int tile_index		= mode_tiles4x4_get_tile4x4_ind_by_pos( _x, _y, ref block_ind );
 				
 				int tile_id = m_active_tile_id;
 				
-				if( m_tile_mode == ETileMode.etm_Block )
+				if( m_tile_mode == e_draw_mode.Block )
 				{
 					ulong old_tile = m_shared.m_tiles_data.tiles[ m_shared.m_tiles_data.get_screen_tile( scr_local_ind, tile_index ) ];
 					ulong new_tile = utils.set_ushort_to_ulong( old_tile, block_ind, ( ushort )m_active_tile_id );
@@ -475,9 +475,9 @@ namespace MAPeD
 			}
 		}
 		
-		public override layout_editor_base.EHelper	default_helper()
+		public override layout_editor_base.e_helper	default_helper()
 		{
-			return layout_editor_base.EHelper.eh_Unknown;
+			return layout_editor_base.e_helper.UNKNOWN;
 		}
 		
 		public override bool force_map_drawing()
@@ -490,7 +490,7 @@ namespace MAPeD
 			// draw ghost tile image
 			if( m_active_tile_id >= 0 )
 			{
-				if( m_edit_mode == EEditMode.em_Painting )
+				if( m_edit_mode == e_edit_mode.Painting )
 				{
 					m_shared.sys_msg( "'Esc' - cancel tile" );
 					
@@ -498,9 +498,9 @@ namespace MAPeD
 					
 					apply_sel_screen_rect( true );
 					
-					if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					if( m_shared.m_screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 					{
-						if( m_tile_mode == ETileMode.etm_Tile )
+						if( m_tile_mode == e_draw_mode.Tile )
 						{
 							draw_transparent_tile( _surface.Canvas, _image_paint );
 						}
@@ -517,7 +517,7 @@ namespace MAPeD
 					_surface.Canvas.Restore();
 				}
 				else
-				if( m_edit_mode == EEditMode.em_ReplaceTiles )
+				if( m_edit_mode == e_edit_mode.ReplaceTiles )
 				{
 					int tile_size;
 					
@@ -525,9 +525,9 @@ namespace MAPeD
 					
 					apply_sel_screen_rect( false );
 					
-					if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					if( m_shared.m_screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 					{
-						if( m_tile_mode == ETileMode.etm_Tile )
+						if( m_tile_mode == e_draw_mode.Tile )
 						{
 							tile_size = ( int )( m_shared.m_scale * 32.0f );
 						}
@@ -652,9 +652,9 @@ namespace MAPeD
 							
 							int scr_local_ind	= m_shared.get_local_screen_ind( m_shared.m_CHR_bank_ind, scr_data.m_scr_ind );
 							
-							if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+							if( m_shared.m_screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 							{
-								if( m_tile_mode == ETileMode.etm_Tile )
+								if( m_tile_mode == e_draw_mode.Tile )
 								{
 									ushort[] scr_arr = m_shared.m_tiles_data.get_screen_data( scr_local_ind ).m_arr;
 									
@@ -729,11 +729,11 @@ namespace MAPeD
 		{
 			if( _on )
 			{
-				m_edit_mode = EEditMode.em_ReplaceTiles;
+				m_edit_mode = e_edit_mode.ReplaceTiles;
 			}
 			else
 			{
-				m_edit_mode = EEditMode.em_Painting;
+				m_edit_mode = e_edit_mode.Painting;
 			}
 			
 			m_owner.update();
@@ -749,7 +749,7 @@ namespace MAPeD
 				
 				// get a tile position in screen space the cursor points to
 				{
-					if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					if( m_shared.m_screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 					{
 						int block_ind = 0;
 						
@@ -782,9 +782,9 @@ namespace MAPeD
 						{
 							scr_local_ind = m_shared.get_local_screen_ind( m_shared.m_CHR_bank_ind, scr_data.m_scr_ind );
 							
-							if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+							if( m_shared.m_screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 							{
-								if( m_tile_mode == ETileMode.etm_Tile )
+								if( m_tile_mode == e_draw_mode.Tile )
 								{
 									ushort[] scr_arr = m_shared.m_tiles_data.get_screen_data( scr_local_ind ).m_arr;
 									
@@ -853,7 +853,7 @@ namespace MAPeD
 					{
 						m_active_tile_id = ( int )_val;
 						
-						m_tile_mode	= ETileMode.etm_Tile;
+						m_tile_mode	= e_draw_mode.Tile;
 						
 						hide_tile();
 					}
@@ -863,11 +863,11 @@ namespace MAPeD
 					{
 						m_active_tile_id = ( int )_val;
 						
-						m_tile_mode	= ETileMode.etm_Block;
+						m_tile_mode	= e_draw_mode.Block;
 
 						hide_tile();
 						
-						if( m_shared.m_screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+						if( m_shared.m_screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 						{
 							calc_common_blocks( ( byte )m_active_tile_id );
 						}
@@ -917,14 +917,14 @@ namespace MAPeD
 			}
 		}
 
-		public override void key_down_event( object sender, KeyEventArgs e )
+		public override void on_key_down( object sender, KeyEventArgs e )
 		{
 			//...
 		}
 		
-		public override void key_up_event( object sender, KeyEventArgs e )
+		public override void on_key_up( object sender, KeyEventArgs e )
 		{
-			base.key_up_event( sender, e );
+			base.on_key_up( sender, e );
 		}
 		
 		protected override void cancel_operation()

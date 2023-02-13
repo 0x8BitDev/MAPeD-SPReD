@@ -139,14 +139,14 @@ namespace MAPeD
 		
 		private readonly static palette16_data[] zx_alt_palettes	= new palette16_data[ 2 ]{	new palette16_data( new int[ 16 ]{ 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 7, 7, 7 } ),
 																								new palette16_data( new int[ 16 ]{ 7, 7, 7, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0 } ) };
-		public static uint get_draw_block_flags_by_view_type( ETileViewType _view_type )
+		public static uint get_draw_block_flags_by_view_type( e_tile_view_type _view_type )
 		{
-			return ( _view_type == ETileViewType.tvt_BW ) ? CONST_DRAW_BLOCK_FLAGS_BW:( _view_type == ETileViewType.tvt_Inv_BW ) ? CONST_DRAW_BLOCK_FLAGS_INV_BW:0;
+			return ( _view_type == e_tile_view_type.BW ) ? CONST_DRAW_BLOCK_FLAGS_BW:( _view_type == e_tile_view_type.InvBW ) ? CONST_DRAW_BLOCK_FLAGS_INV_BW:0;
 		}
 		
-		public static palette16_data get_draw_block_palette_by_view_type( ETileViewType _view_type, palette16_data _default_plt )
+		public static palette16_data get_draw_block_palette_by_view_type( e_tile_view_type _view_type, palette16_data _default_plt )
 		{
-			return ( _view_type == ETileViewType.tvt_BW ) ? zx_alt_palettes[ CONST_ZX_PALETTE_BW ]:( _view_type == ETileViewType.tvt_Inv_BW ) ? zx_alt_palettes[ CONST_ZX_PALETTE_INV_BW ]:_default_plt;
+			return ( _view_type == e_tile_view_type.BW ) ? zx_alt_palettes[ CONST_ZX_PALETTE_BW ]:( _view_type == e_tile_view_type.InvBW ) ? zx_alt_palettes[ CONST_ZX_PALETTE_INV_BW ]:_default_plt;
 		}
 		
 		public static palette16_data get_draw_block_palette_by_draw_block_flags( uint _flags )
@@ -314,25 +314,25 @@ namespace MAPeD
 		public static readonly Color	CONST_COLOR_TILE_LIST_GRID						= Color.White;
 		public static readonly Color	CONST_COLOR_TILE_LIST_SELECTION					= Color.Red;
 		
-		public enum ETransformType
+		public enum e_transform_type
 		{
-			tt_vflip,
-			tt_hflip,
-			tt_rotate,
+			VFlip,
+			HFlip,
+			Rotate,
 		};
 		
-		public enum ETileViewType
+		public enum e_tile_view_type
 		{
-			tvt_Unknown		= -1,
+			UNKNOWN		= -1,
 			
-			tvt_Graphics	= 0,
-			tvt_ObjectId	= 1,
-			tvt_Number		= 2,
-			tvt_TilesUsage	= 3,
-			tvt_BlocksUsage	= 4,
+			Graphics	= 0,
+			ObjectId	= 1,
+			Number		= 2,
+			TilesUsage	= 3,
+			BlocksUsage	= 4,
 #if DEF_ZX
-			tvt_BW			= 5,
-			tvt_Inv_BW		= 6,
+			BW			= 5,
+			InvBW		= 6,
 #endif
 		};
 		

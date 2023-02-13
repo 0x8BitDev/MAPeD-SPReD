@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 04.05.2017
  * Time: 13:12
  */
@@ -20,9 +20,9 @@ namespace MAPeD
 		public event EventHandler NeedGFXUpdate;
 		public event EventHandler UpdateSelectedBlock;
 #if DEF_ZX
-		private utils.ETileViewType	m_view_type		= utils.ETileViewType.tvt_Unknown;
+		private utils.e_tile_view_type	m_view_type		= utils.e_tile_view_type.UNKNOWN;
 		
-		public utils.ETileViewType view_type
+		public utils.e_tile_view_type view_type
 		{
 			get { return m_view_type; }
 			set { m_view_type = value; update(); }
@@ -40,7 +40,7 @@ namespace MAPeD
 		
 		public tile_editor( PictureBox _pbox ) : base( _pbox )
 		{
-			m_pix_box.MouseClick 	+= new MouseEventHandler( this.TileEditor_MouseClick );
+			m_pix_box.MouseClick 	+= new MouseEventHandler( on_mouse_click );
 			
 			m_tile_region = new Region( new Rectangle( 0, 0, m_pix_box.Width, m_pix_box.Height ) );
 			
@@ -54,7 +54,7 @@ namespace MAPeD
 			update();
 		}
 		
-		private void TileEditor_MouseClick(object sender, MouseEventArgs e)
+		private void on_mouse_click( object sender, MouseEventArgs e )
 		{
 			if( m_locked == false )
 			{
@@ -71,34 +71,34 @@ namespace MAPeD
 			}
 		}
 		
-		public void subscribe_event( block_editor _block_editor )
+		public void subscribe( block_editor _block_editor )
 		{
-			_block_editor.DataChanged += new EventHandler( update_data );
+			_block_editor.DataChanged += new EventHandler( on_update_data );
 		}
 		
-		private void update_data( object sender, EventArgs e )
+		private void on_update_data( object sender, EventArgs e )
 		{
 			update();
 			
 			update_status_bar();
 		}
 		
-		public void subscribe_event( tiles_processor _tiles_proc )
+		public void subscribe( tiles_processor _tiles_proc )
 		{
-			_tiles_proc.GFXUpdate += new EventHandler( update_gfx );
+			_tiles_proc.GFXUpdate += new EventHandler( on_update_gfx );
 		}
 		
-		private void update_gfx( object sender, EventArgs e )
+		private void on_update_gfx( object sender, EventArgs e )
 		{
 			update();
 		}
 		
-		public void subscribe_event( data_sets_manager _data_mngr )
+		public void subscribe( data_sets_manager _data_mngr )
 		{
-			_data_mngr.SetTilesData += new EventHandler( new_data_set );
+			_data_mngr.SetTilesData += new EventHandler( on_new_data_set );
 		}
 		
-		private void new_data_set( object sender, EventArgs e )
+		private void on_new_data_set( object sender, EventArgs e )
 		{
 			tiles_data data = null;
 			

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 15:20
  */
@@ -42,14 +42,14 @@ namespace MAPeD
 			
 			prepare_pix_box();
 
-			m_pix_box.Resize += Resize_Event;
+			m_pix_box.Resize += on_resize;
 			
 			m_pen = new Pen( utils.CONST_COLOR_PIXBOX_DEFAULT );
 			m_pen.EndCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;
-			m_pen.StartCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;			
+			m_pen.StartCap 	= System.Drawing.Drawing2D.LineCap.NoAnchor;
 		}
 		
-		protected virtual void Resize_Event( object sender, EventArgs e )
+		protected virtual void on_resize( object sender, EventArgs e )
 		{
 			prepare_pix_box();
 			

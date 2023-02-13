@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 28.05.2017
  * Time: 15:12
  */
@@ -43,11 +43,11 @@ namespace MAPeD
 			set {}
 		}
 		
-		public enum EEntSortType
+		public enum e_entity_sort_type
 		{
-			est_NoSorting	= 0,
-			est_LeftToRight = 1,
-			est_BottomToTop = 2,
+			NoSorting	= 0,
+			LeftToRight = 1,
+			BottomToTop = 2,
 		};
 		
 		[DataMember]
@@ -170,7 +170,7 @@ namespace MAPeD
 			});
 		}
 		
-		public void load( BinaryReader _br, byte _ver, Func< string, entity_data > _get_ent, data_sets_manager.EScreenDataType _scr_type, bool _fix_inside_scr )
+		public void load( BinaryReader _br, byte _ver, Func< string, entity_data > _get_ent, data_sets_manager.e_screen_data_type _scr_type, bool _fix_inside_scr )
 		{
 			m_marks	  = _br.ReadUInt16();
 			
@@ -197,7 +197,7 @@ namespace MAPeD
 			}
 		}
 
-		public int export_entities_asm( StreamWriter _sw, ref int _ent_id, string _label, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _ent_coords_scr, int _x, int _y, EEntSortType _sort_type, bool _enable_comments )
+		public int export_entities_asm( StreamWriter _sw, ref int _ent_id, string _label, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _ent_coords_scr, int _x, int _y, e_entity_sort_type _sort_type, bool _enable_comments )
 		{
 			int max_props_cnt = -1;
 			int props_cnt;
@@ -208,7 +208,7 @@ namespace MAPeD
 			_sw.WriteLine( "\t" + _def_num + " " + m_ents.Count );
 			
 			// entities sorting left to right and bottom to top
-			if( _sort_type == EEntSortType.est_LeftToRight )
+			if( _sort_type == e_entity_sort_type.LeftToRight )
 			{
 				m_ents.Sort( delegate( entity_instance _ent1, entity_instance _ent2 )
 				{
@@ -216,7 +216,7 @@ namespace MAPeD
 				});
 			}
 			else
-			if( _sort_type == EEntSortType.est_BottomToTop )
+			if( _sort_type == e_entity_sort_type.BottomToTop )
 			{
 				m_ents.Sort( delegate( entity_instance _ent1, entity_instance _ent2 )
 				{
@@ -232,7 +232,7 @@ namespace MAPeD
 				_sw.WriteLine( "\t" + _def_addr + " " + ent_inst.name );
 			}
 			
-			// ent data arr			
+			// ent data arr
 			for( int ent_n = 0; ent_n < m_ents.Count; ent_n++ )
 			{
 				ent_inst = m_ents[ ent_n ];
@@ -906,7 +906,7 @@ namespace MAPeD
 			});
 		}
 		
-		public int export_asm( StreamWriter _sw, string _data_mark, string _define, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr, layout_screen_data.EEntSortType _sort_type, bool _compact_layout = true )
+		public int export_asm( StreamWriter _sw, string _data_mark, string _define, string _def_num, string _def_addr, string _def_coord, string _num_pref, bool _export_scr_desc, bool _export_marks, bool _export_entities, bool _ent_coords_scr, layout_screen_data.e_entity_sort_type _sort_type, bool _compact_layout = true )
 		{
 			int max_props_cnt = 0;
 			int props_cnt;
@@ -1039,7 +1039,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void load( BinaryReader _br, byte _ver, Func< string, entity_data > _get_ent, data_sets_manager.EScreenDataType _scr_type, bool _fix_ent_inside_scr )
+		public void load( BinaryReader _br, byte _ver, Func< string, entity_data > _get_ent, data_sets_manager.e_screen_data_type _scr_type, bool _fix_ent_inside_scr )
 		{
 			int i;
 			int j;

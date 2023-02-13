@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 12.12.2018
  * Time: 18:27
  */
@@ -128,11 +128,11 @@ namespace MAPeD
 			_bw.Write( extra_data_size );
 		}
 		
-		public void load(	BinaryReader 						_br,
-							byte								_ver,
-							Func< string, entity_data > 		_get_ent, 
-							data_sets_manager.EScreenDataType 	_scr_type,
-							bool								_fix_inside_screen )
+		public void load(	BinaryReader							_br,
+							byte									_ver,
+							Func< string, entity_data >				_get_ent,
+							data_sets_manager.e_screen_data_type	_scr_type,
+							bool									_fix_inside_screen )
 		{
 			string base_ent_name;
 			

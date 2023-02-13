@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2020 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 12.12.2018
  * Time: 15:03
  */
@@ -33,7 +33,7 @@ namespace MAPeD
 			//
 		}
 		
-		public DialogResult ShowWindow()
+		public DialogResult show_window()
 		{
 			ActiveControl = textBox; 
 			textBox.SelectAll();

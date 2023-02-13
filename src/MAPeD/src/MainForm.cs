@@ -59,7 +59,7 @@ namespace MAPeD
 		
 		private SPSeD.py_editor		m_py_editor	= null;
 		
-		private utils.ETileViewType m_view_type	= utils.ETileViewType.tvt_Unknown;
+		private utils.e_tile_view_type m_view_type	= utils.e_tile_view_type.UNKNOWN;
 
 #if DEF_FIXED_LEN_PALETTE16_ARR
 		private int	m_palette_copy_ind	= -1;
@@ -76,20 +76,20 @@ namespace MAPeD
 		
 		private static ToolStripStatusLabel	m_status_bar_label = null;
 		
-		enum ECopyPasteType
+		enum e_copy_paste_type
 		{
-			cpt_CHR_bank	= 1,
-			cpt_Blocks_list	= 2,
-			cpt_Tiles_list	= 4,
-			cpt_All			= 7,
+			CHRBank		= 1,
+			BlocksList	= 2,
+			TilesList	= 4,
+			All			= 7,
 		};
 
-		private struct SToolTipData
+		private struct tooltip_data
 		{
 			public Control m_cntrl;
 			public string m_desc;
 			
-			public SToolTipData( Control _cntrl, string _desc )
+			public tooltip_data( Control _cntrl, string _desc )
 			{
 				m_cntrl	= _cntrl;
 				m_desc 	= _desc;
@@ -145,46 +145,46 @@ namespace MAPeD
 														Palette3,
 														m_data_manager );
 			
-			m_tiles_processor.subscribe_block_quad_selected_event( BlockQuadSelected_Event );
+			m_tiles_processor.subscribe_block_quad_selected_event( on_block_quad_selected );
 
 			m_tile_list_manager = new tile_list_manager();
 			
-			m_imagelist_manager	= new imagelist_manager( PanelTiles, PanelTilesClick_Event, ContextMenuTilesList, PanelBlocks, PanelBlocksClick_Event, ContextMenuBlocksList, ListViewScreens, m_tile_list_manager );
+			m_imagelist_manager	= new imagelist_manager( PanelTiles, PanelTilesClick, ContextMenuTilesList, PanelBlocks, PanelBlocksClick, ContextMenuBlocksList, ListViewScreens, m_tile_list_manager );
 			
 			// layout editor init
 			{
 				m_layout_editor = new layout_editor_base( m_data_manager, PBoxLayout, LayoutLabel, m_imagelist_manager );
-				m_layout_editor.subscribe_event( m_data_manager );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SUBSCR_ENT_INST_SELECT, EntityInstanceSelected_Event );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, EditEntityCancel_Event );
+				m_layout_editor.subscribe( m_data_manager );
+				m_layout_editor.subscribe( layout_editor_base.e_mode.Entities, layout_editor_param.CONST_SUBSCR_ENT_INST_SELECT, on_entity_instance_selected );
+				m_layout_editor.subscribe( layout_editor_base.e_mode.Entities, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, on_edit_entity_cancel );
 				
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SUBSCR_SCR_RESET_SELECTED, ResetSelectedScreen_Event );
+				m_layout_editor.subscribe( layout_editor_base.e_mode.Screens, layout_editor_param.CONST_SUBSCR_SCR_RESET_SELECTED, on_reset_selected_screen );
 				
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE, update_tile_image );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, ActiveTileCancel_Event );
+				m_layout_editor.subscribe( layout_editor_base.e_mode.Painter, layout_editor_param.CONST_SUBSCR_PNT_UPDATE_TILE_IMAGE, on_update_tile_image );
+				m_layout_editor.subscribe( layout_editor_base.e_mode.Painter, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, on_active_tile_cancel );
 				
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_EXTRACT_END, PatternExtractEnd_Event );
-				m_layout_editor.subscribe( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, PatternPlaceCancel_Event );
+				m_layout_editor.subscribe( layout_editor_base.e_mode.Patterns, layout_editor_param.CONST_SUBSCR_PTTRN_EXTRACT_END, on_pattern_extract_end );
+				m_layout_editor.subscribe( layout_editor_base.e_mode.Patterns, layout_editor_param.CONST_SUBSCR_CANCEL_OPERATION, on_pattern_place_cancel );
 				
 				m_layout_editor.set_param( layout_editor_param.CONST_SET_BASE_SUBSCR_DATA_MNGR, m_data_manager );
 				
-				m_layout_editor.MapScaleX1 += new EventHandler( MapScaleX1_Event );
-				m_layout_editor.MapScaleX2 += new EventHandler( MapScaleX2_Event );
+				m_layout_editor.MapScaleX1 += new EventHandler( on_map_scale_x1 );
+				m_layout_editor.MapScaleX2 += new EventHandler( on_map_scale_x2 );
 				
 				// set the builder mode by default
-				m_layout_editor.mode = layout_editor_base.EMode.em_Builder;
+				m_layout_editor.mode = layout_editor_base.e_mode.Builder;
 				
 				m_tile_preview = new image_preview( PBoxActiveTile, false );
 
-				layout_screen_data.EntityAdded		+= new EventHandler( EntitiesCounterUpdate_Event );
-				layout_screen_data.EntityRemoved	+= new EventHandler( EntitiesCounterUpdate_Event );
+				layout_screen_data.EntityAdded		+= new EventHandler( on_entities_counter_update );
+				layout_screen_data.EntityRemoved	+= new EventHandler( on_entities_counter_update );
 			}
 			
 			// patterns manager
 			{
 				m_pattern_preview = new image_preview( PBoxPatternPreview, true );
 				
-				PBoxPatternPreview.MouseEnter += new EventHandler( PatternsMngr_MouseEnter );
+				PBoxPatternPreview.MouseEnter += new EventHandler( on_patterns_manager_mouse_enter );
 				
 				// create graphics for drawing patterns
 				int scr_tile_size = utils.CONST_SCREEN_TILES_SIZE >> 1;
@@ -193,15 +193,15 @@ namespace MAPeD
 				m_pattern_gfx	= Graphics.FromImage( m_pattern_image );
 			}
 			
-			m_data_manager.SetEntitiesData += new EventHandler( TreeViewEntities_update_data );
-			m_data_manager.AddEntity 	+= TreeViewEntities_add_entity;
-			m_data_manager.DeleteEntity += TreeViewEntities_delete_entity;
-			m_data_manager.AddGroup		+= TreeViewEntities_add_group;
-			m_data_manager.DeleteGroup 	+= TreeViewEntities_delete_group;
+			m_data_manager.SetEntitiesData	+= new EventHandler( on_entities_tree_view_update_data );
+			m_data_manager.AddEntity		+= on_entities_tree_view_add_entity;
+			m_data_manager.DeleteEntity		+= on_entities_tree_view_delete_entity;
+			m_data_manager.AddGroup			+= on_entities_tree_view_add_group;
+			m_data_manager.DeleteGroup		+= on_entities_tree_view_delete_group;
 			
 			m_entity_preview = new image_preview( PBoxEntityPreview, true );
 
-			PBoxEntityPreview.MouseEnter += new EventHandler( EntitiesMngr_MouseEnter );
+			PBoxEntityPreview.MouseEnter += new EventHandler( on_entities_manager_mouse_enter );
 			
 			m_status_bar_label = StatusBarLabel;
 			
@@ -217,89 +217,89 @@ namespace MAPeD
 			mark_update_screens_btn( true );
 
 			m_tiles_palette_form = new tiles_palette_form( m_imagelist_manager.get_tiles_image_list(), ContextMenuTilesList, m_imagelist_manager.get_blocks_image_list(), ContextMenuBlocksList, m_tile_list_manager );
-			m_tiles_palette_form.TilesBlocksClosed 	+= new EventHandler( TilesBlocksClosed_Event );
-			m_tiles_palette_form.TileSelected 		+= new EventHandler( TileSelected_Event );
-			m_tiles_palette_form.BlockSelected 		+= new EventHandler( BlockSelected_Event );
-			m_tiles_palette_form.ResetActiveTile 	+= new EventHandler( BtnResetTileClick_Event );
+			m_tiles_palette_form.FormHided			+= new EventHandler( on_tiles_blocks_form_hided );
+			m_tiles_palette_form.TileSelected 		+= new EventHandler( on_tiles_blocks_form_tile_selected );
+			m_tiles_palette_form.BlockSelected 		+= new EventHandler( on_tiles_blocks_form_block_selected );
+			m_tiles_palette_form.ResetActiveTile 	+= new EventHandler( BtnResetTileClick );
 			
 			m_optimization_form = new optimization_form( m_data_manager, progress_bar_show );
-			m_optimization_form.UpdateGraphics += new EventHandler( UpdateGraphicsAfterOptimization_Event );
+			m_optimization_form.UpdateGraphics += new EventHandler( on_update_gfx_after_optimization );
 			
 #if DEF_PALETTE16_PER_CHR
-			m_tiles_processor.UpdatePaletteListPos	+= new EventHandler( update_palette_list_pos );
+			m_tiles_processor.UpdatePaletteListPos	+= new EventHandler( on_update_palette_list_pos );
 #endif
-			m_tiles_processor.NeedGFXUpdate 	+= new EventHandler( enable_update_gfx_btn_Event );
+			m_tiles_processor.NeedGFXUpdate 	+= new EventHandler( on_enable_update_gfx_btn );
 			
 			TabTiles.Tag 		= new Point( TabTiles.Width,	TabTiles.Height		);
 			TabLayout.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
 			TabTiles.Tag 		= new Point( TabLayout.Width,	TabLayout.Height	);
 			
-			CBoxPalettes.DrawItem += new DrawItemEventHandler( CBoxPalettesDrawItem_Event );
+			CBoxPalettes.DrawItem += new DrawItemEventHandler( CBoxPalettesDrawItem );
 
 			FormClosing += new FormClosingEventHandler( OnFormClosing );
 
 			// setup tooltips
 			{
-				SToolTipData[] tooltips = new SToolTipData[]{ 	new SToolTipData( tabControlTilesLayout, "Double Click to detach the tab page" ),
-																new SToolTipData( CheckBoxScreensAutoUpdate, "Automatically updates the screen list when \"Update GFX\" button is pressed" ),
-																new SToolTipData( CheckBoxLayoutEditorAllBanks, "Show screens of all CHR banks" ),
-																new SToolTipData( CheckBoxSelectTargetEntity, "Select target entity" ),
-																new SToolTipData( BtnCopyCHRBank, "Add copy of active CHR bank" ),
-																new SToolTipData( BtnAddCHRBank, "Add new CHR bank" ),
-																new SToolTipData( BtnDeleteCHRBank, "Delete active CHR Bank" ),
-																new SToolTipData( BtnCHRBankPrevPage, "Previous CHR Bank's page" ),
-																new SToolTipData( BtnCHRBankNextPage, "Next CHR Bank's page" ),
-																new SToolTipData( BtnUpdateGFX, "Update tiles\\blocks and screens ( if auto update is enabled )" ),
-																new SToolTipData( BtnOptimization, "Delete unused screens\\tiles\\blocks\\CHRs" ),
-																new SToolTipData( CheckBoxTileEditorLock, "Enable\\disable tile editing" ),
-																new SToolTipData( BtnTilesBlocks, "Arrays of tiles and blocks for a map building" ),
-																new SToolTipData( Palette0, "Shift+1 / Ctrl+1,2,3,4 to select a color" ),
-																new SToolTipData( Palette1, "Shift+2 / Ctrl+1,2,3,4 to select a color" ),
+				tooltip_data[] tooltips = new tooltip_data[]{ 	new tooltip_data( tabControlTilesLayout, "Double Click to detach the tab page" ),
+																new tooltip_data( CheckBoxScreensAutoUpdate, "Automatically updates the screen list when \"Update GFX\" button is pressed" ),
+																new tooltip_data( CheckBoxLayoutEditorAllBanks, "Show screens of all CHR banks" ),
+																new tooltip_data( CheckBoxSelectTargetEntity, "Select target entity" ),
+																new tooltip_data( BtnCopyCHRBank, "Add copy of active CHR bank" ),
+																new tooltip_data( BtnAddCHRBank, "Add new CHR bank" ),
+																new tooltip_data( BtnDeleteCHRBank, "Delete active CHR Bank" ),
+																new tooltip_data( BtnCHRBankPrevPage, "Previous CHR Bank's page" ),
+																new tooltip_data( BtnCHRBankNextPage, "Next CHR Bank's page" ),
+																new tooltip_data( BtnUpdateGFX, "Update tiles\\blocks and screens ( if auto update is enabled )" ),
+																new tooltip_data( BtnOptimization, "Delete unused screens\\tiles\\blocks\\CHRs" ),
+																new tooltip_data( CheckBoxTileEditorLock, "Enable\\disable tile editing" ),
+																new tooltip_data( BtnTilesBlocks, "Arrays of tiles and blocks for a map building" ),
+																new tooltip_data( Palette0, "Shift+1 / Ctrl+1,2,3,4 to select a color" ),
+																new tooltip_data( Palette1, "Shift+2 / Ctrl+1,2,3,4 to select a color" ),
 #if DEF_ZX
-																new SToolTipData( Palette2, "Shift+3" ),
-																new SToolTipData( Palette3, "Shift+4" ),
-																new SToolTipData( BtnSwapInkPaper, "Swap ink to paper. Visible in \'B/W\' mode." ),
-																new SToolTipData( BtnInvInk, "Invert image" ),
+																new tooltip_data( Palette2, "Shift+3" ),
+																new tooltip_data( Palette3, "Shift+4" ),
+																new tooltip_data( BtnSwapInkPaper, "Swap ink to paper. Visible in \'B/W\' mode." ),
+																new tooltip_data( BtnInvInk, "Invert image" ),
 #else
-																new SToolTipData( Palette2, "Shift+3 / Ctrl+1,2,3,4 to select a color" ),
-																new SToolTipData( Palette3, "Shift+4 / Ctrl+1,2,3,4 to select a color" ),
+																new tooltip_data( Palette2, "Shift+3 / Ctrl+1,2,3,4 to select a color" ),
+																new tooltip_data( Palette3, "Shift+4 / Ctrl+1,2,3,4 to select a color" ),
 #endif
-																new SToolTipData( CheckBoxShowMarks, "Show screen marks" ),
-																new SToolTipData( CheckBoxShowEntities, "Show layout entities" ),
-																new SToolTipData( CheckBoxShowTargets, "Show entity targets" ),
-																new SToolTipData( CheckBoxShowCoords, "Show coordinates of a selected entity" ),
-																new SToolTipData( CheckBoxShowGrid, "Show tile grid" ),
-																new SToolTipData( CheckBoxPalettePerCHR, "MMC5 extended attributes mode" ),
-																new SToolTipData( CBoxPalettes, "Palettes array" ),
+																new tooltip_data( CheckBoxShowMarks, "Show screen marks" ),
+																new tooltip_data( CheckBoxShowEntities, "Show layout entities" ),
+																new tooltip_data( CheckBoxShowTargets, "Show entity targets" ),
+																new tooltip_data( CheckBoxShowCoords, "Show coordinates of a selected entity" ),
+																new tooltip_data( CheckBoxShowGrid, "Show tile grid" ),
+																new tooltip_data( CheckBoxPalettePerCHR, "MMC5 extended attributes mode" ),
+																new tooltip_data( CBoxPalettes, "Palettes array" ),
 #if DEF_FIXED_LEN_PALETTE16_ARR
-																new SToolTipData( BtnPltCopy, "Copy palette to selected slot" ),
+																new tooltip_data( BtnPltCopy, "Copy palette to selected slot" ),
 #else
-																new SToolTipData( BtnPltCopy, "Add copy of active palette" ),
+																new tooltip_data( BtnPltCopy, "Add copy of active palette" ),
 #endif
-																new SToolTipData( BtnPltDelete, "Delete active palette" ),
-																new SToolTipData( BtnSwapColors, "Swap two selected colors without changing graphics" ),
-																new SToolTipData( BtnBlockReserveCHRs, "Make links to empty CHRs" ),
-																new SToolTipData( BtnTileReserveBlocks, "Make links to empty blocks" ),
-																new SToolTipData( BtnLayoutDeleteEmptyScreens, "Delete all one-block filled screens in active layout" ),
-																new SToolTipData( BtnCreateLayoutWxH, "Create layout (width x height) filled with empty screens" ),
-																new SToolTipData( BtnLayoutMoveUp, "Move selected layout up" ),
-																new SToolTipData( BtnLayoutMoveDown, "Move selected layout down" ),
-																new SToolTipData( CBoxBlockObjId, "Assign property to selected block or CHR" ),
-																new SToolTipData( LabelObjId, "Assign property to selected block or CHR" ),
-																new SToolTipData( LabelEntityProperty, "Entity properties are inherited by all instances" ),
-																new SToolTipData( LabelEntityInstanceProperty, "Instance properties are unique for all instances" ),
-																new SToolTipData( CheckBoxEntitySnapping, "Snap an entity to 8x8 grid" ),
-																new SToolTipData( BtnPainterFillWithTile, "Fill selected screens with active tile" ),
-																new SToolTipData( CheckBoxPainterReplaceTiles, "Replace a group of identical tiles on selected screens" ),
+																new tooltip_data( BtnPltDelete, "Delete active palette" ),
+																new tooltip_data( BtnSwapColors, "Swap two selected colors without changing graphics" ),
+																new tooltip_data( BtnBlockReserveCHRs, "Make links to empty CHRs" ),
+																new tooltip_data( BtnTileReserveBlocks, "Make links to empty blocks" ),
+																new tooltip_data( BtnLayoutDeleteEmptyScreens, "Delete all one-block filled screens in active layout" ),
+																new tooltip_data( BtnCreateLayoutWxH, "Create layout (width x height) filled with empty screens" ),
+																new tooltip_data( BtnLayoutMoveUp, "Move selected layout up" ),
+																new tooltip_data( BtnLayoutMoveDown, "Move selected layout down" ),
+																new tooltip_data( CBoxBlockObjId, "Assign property to selected block or CHR" ),
+																new tooltip_data( LabelObjId, "Assign property to selected block or CHR" ),
+																new tooltip_data( LabelEntityProperty, "Entity properties are inherited by all instances" ),
+																new tooltip_data( LabelEntityInstanceProperty, "Instance properties are unique for all instances" ),
+																new tooltip_data( CheckBoxEntitySnapping, "Snap an entity to 8x8 grid" ),
+																new tooltip_data( BtnPainterFillWithTile, "Fill selected screens with active tile" ),
+																new tooltip_data( CheckBoxPainterReplaceTiles, "Replace a group of identical tiles on selected screens" ),
 															};
-				SToolTipData data;
+				tooltip_data data;
 				
 				for( int i = 0; i < tooltips.Length; i++ )
 				{
 					data = tooltips[ i ];
 					
 					( new ToolTip(components) ).SetToolTip( data.m_cntrl, data.m_desc );
-				}			
+				}
 			}
 
 #if !DEF_NES
@@ -308,7 +308,7 @@ namespace MAPeD
 
 #if DEF_NES
 			Project_openFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_NES );
+			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.NES );
 			
 			BtnSwapColors.Visible = false;
 #elif DEF_SMS
@@ -317,7 +317,7 @@ namespace MAPeD
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "sms" );
 
 			Project_openFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_SMS );
+			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.SMS );
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "WLA-DX" );
 
@@ -332,7 +332,7 @@ namespace MAPeD
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "pce" );
 
 			Project_openFileDialog.DefaultExt = platform_data.CONST_PCE_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_PCE );
+			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.PCE );
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "CA65\\PCEAS\\HuC (*.asm;*.h)" );
 
@@ -345,7 +345,7 @@ namespace MAPeD
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "zx" );
 
 			Project_openFileDialog.DefaultExt = platform_data.CONST_ZX_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_ZX );
+			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.ZX );
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Substring( Project_exportFileDialog.Filter.IndexOf( "Z" ) );
 			Project_exportFileDialog.DefaultExt = "zxa";
@@ -373,7 +373,7 @@ namespace MAPeD
 			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "smd" );
 
 			Project_openFileDialog.DefaultExt = platform_data.CONST_SMD_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.EPlatformType.pt_SMD );
+			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.SMD );
 			
 			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "vasm\\SGDK (*.asm;*.h,*.s)" );
 
@@ -411,7 +411,7 @@ namespace MAPeD
 			}
 		}
 
-		private string get_all_projects_open_file_filter( platform_data.EPlatformType _type )
+		private string get_all_projects_open_file_filter( platform_data.e_platform_type _type )
 		{
 			string filter_str = "";
 			string platform_file_ext;
@@ -424,14 +424,14 @@ namespace MAPeD
 			{
 				ind = i % platform_data.get_platforms_cnt();
 				
-				platform_file_ext = platform_data.get_platform_file_ext( ( platform_data.EPlatformType )ind );
+				platform_file_ext = platform_data.get_platform_file_ext( ( platform_data.e_platform_type )ind );
 				
 				filter_str += utils.CONST_FULL_APP_NAMES_ARR[ ind ] + " (*." + platform_file_ext + ")|*." + platform_file_ext;
 				
 				if( i != size - 1 )
 				{
 					filter_str += "|";
-				}				
+				}
 			}
 			
 			return filter_str;
@@ -500,12 +500,12 @@ namespace MAPeD
 			m_progress_form.Update();
 		}
 		
-		async private void pause( int _msec )
+		private async void pause( int _msec )
 		{
 			await Task.Delay( _msec );
 		}
 		
-		private void OnFormClosing(object sender, FormClosingEventArgs e)
+		private void OnFormClosing( object sender, FormClosingEventArgs e )
 		{
 			e.Cancel = true;
 			
@@ -558,37 +558,37 @@ namespace MAPeD
 			return MessageBox.Show( MainForm.m_native_wnd, _msg, _caption, _buttons, _icon );
 		}
 
-		void DescriptionToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void DescriptionToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			m_description_form.ShowDialog();
 		}
 		
-		void StatisticsToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void StatisticsToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			m_statistics_form.ShowStats();
 		}
 		
-		private void enable_update_gfx_btn_Event( object sender, EventArgs e )
+		private void on_enable_update_gfx_btn( object sender, EventArgs e )
 		{
 			enable_update_gfx_btn( true );
 			
 			mark_update_screens_btn( true );
 		}
 		
-		private void enable_copy_paste_action( bool _on, ECopyPasteType _type )
+		private void enable_copy_paste_action( bool _on, e_copy_paste_type _type )
 		{
-			if( _type == ECopyPasteType.cpt_CHR_bank || _type == ECopyPasteType.cpt_All )
+			if( _type == e_copy_paste_type.CHRBank || _type == e_copy_paste_type.All )
 			{
 				pasteCHRToolStripMenuItem.Enabled = _on;
 			}
 			
-			if( _type == ECopyPasteType.cpt_Blocks_list || _type == ECopyPasteType.cpt_All )
+			if( _type == e_copy_paste_type.BlocksList || _type == e_copy_paste_type.All )
 			{
 				pasteBlockCloneToolStripMenuItem.Enabled 	= _on; 
 				pasteBlockRefsToolStripMenuItem.Enabled 	= _on;
 			}
 			
-			if( _type == ECopyPasteType.cpt_Tiles_list || _type == ECopyPasteType.cpt_All )
+			if( _type == e_copy_paste_type.TilesList || _type == e_copy_paste_type.All )
 			{
 				pasteTileToolStripMenuItem.Enabled = _on; 
 			}
@@ -604,7 +604,7 @@ namespace MAPeD
 			
 			PanelBlocks.Enabled = _on;
 			
-			if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			if( m_data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 			{
 				PanelTiles.Enabled	= _on;
 			}
@@ -635,17 +635,17 @@ namespace MAPeD
 			m_imagelist_manager.update_screen_image_size();
 		}
 		
-		void NumericUpDownScrBlocksChanged_Event(object sender, EventArgs e)
+		private void NumericUpDownScrBlocksChanged( object sender, EventArgs e )
 		{
 			 update_screen_size_label();
 		}
 		
-		void update_screen_size_label()
+		private void update_screen_size_label()
 		{
 			LabelScreenResolution.Text = "[" + ( ( int )NumericUpDownScrBlocksWidth.Value << 4 ).ToString() + "x" + ( ( int )NumericUpDownScrBlocksHeight.Value << 4 ).ToString() + "]";
 		}
 		
-		tiles_data get_curr_tiles_data()
+		private tiles_data get_curr_tiles_data()
 		{
 			return m_data_manager.get_tiles_data( m_data_manager.tiles_data_pos );
 		}
@@ -667,12 +667,12 @@ namespace MAPeD
 			m_data_manager.reset();
 			fill_entity_data( null );
 			
-			m_tile_list_manager.select( tile_list.EType.t_Tiles, -1 );
-			m_tile_list_manager.select( tile_list.EType.t_Blocks, -1 );
+			m_tile_list_manager.select( tile_list.e_data_type.Tiles, -1 );
+			m_tile_list_manager.select( tile_list.e_data_type.Blocks, -1 );
 			
 			entity_instance.reset_instances_counter();
 			
-			CBoxTileViewType.SelectedIndex = ( int )utils.ETileViewType.tvt_Graphics;
+			CBoxTileViewType.SelectedIndex = ( int )utils.e_tile_view_type.Graphics;
 			
 			CheckBoxEntitySnapping.Checked 	= true;
 			RBtnMapScaleX1.Checked			= true;
@@ -682,9 +682,9 @@ namespace MAPeD
 			LayoutContextMenuEntityItemsEnable( false );
 			
 #if DEF_NES || DEF_SMS || DEF_ZX || DEF_PCE
-			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
+			set_screen_data_type( data_sets_manager.e_screen_data_type.Tiles4x4 );
 #else
-			set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+			set_screen_data_type( data_sets_manager.e_screen_data_type.Blocks2x2 );
 #endif
 			NumericUpDownScrBlocksWidth.Maximum		= ( decimal )platform_data.get_screen_blocks_width( true );
 			NumericUpDownScrBlocksHeight.Maximum	= ( decimal )platform_data.get_screen_blocks_height( true );
@@ -720,11 +720,11 @@ namespace MAPeD
 			m_layout_editor.reset( false );
 			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), -1, m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 			
-			enable_copy_paste_action( false, ECopyPasteType.cpt_All );
+			enable_copy_paste_action( false, e_copy_paste_type.All );
 			
-			SelectCHRToolStripMenuItemClick_Event( null, null );
+			SelectCHRToolStripMenuItemClick( null, null );
 			
-			PropertyPerBlockToolStripMenuItemClick_Event( null, null );
+			PropertyPerBlockToolStripMenuItemClick( null, null );
 			
 			builderToolStripMenuItem.Enabled	= 
 			screensToolStripMenuItem.Enabled	= 
@@ -742,12 +742,12 @@ namespace MAPeD
 			m_disable_status_wnd = false;
 		}
 		
-		void ExitToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void ExitToolStripMenuItemClick( object sender, EventArgs e)
 		{
 			Close();
 		}
 		
-		void CloseToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void CloseToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( message_box( "Are you sure?", "Close Project", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -761,9 +761,9 @@ namespace MAPeD
 			}
 		}
 
-		void CBoxTileViewTypeChanged_Event(object sender, EventArgs e)
+		private void CBoxTileViewTypeChanged( object sender, EventArgs e )
 		{
-			m_view_type = ( utils.ETileViewType )CBoxTileViewType.SelectedIndex;
+			m_view_type = ( utils.e_tile_view_type )CBoxTileViewType.SelectedIndex;
 			
 			mark_update_screens_btn( true );
 #if DEF_ZX
@@ -776,7 +776,7 @@ namespace MAPeD
 			set_status_msg( "View type changed" );
 		}
 
-		void TreeViewMouseDown_Event(object sender, MouseEventArgs e)
+		private void TreeViewMouseDown( object sender, MouseEventArgs e )
 		{
 			if( e.Button == MouseButtons.Right )
 			{
@@ -790,7 +790,7 @@ namespace MAPeD
 		}
 
 #region load save import export
-		void LoadToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LoadToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.tiles_data_cnt > 0 )
 			{
@@ -805,13 +805,13 @@ namespace MAPeD
 			}
 		}
 
-		void ProjectLoadOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
+		private void ProjectLoadOk( object sender, System.ComponentModel.CancelEventArgs e )
 		{
 			// LOAD PROJECT...
 			project_load( ( ( FileDialog )sender ).FileName );
 		}
 
-		async void project_load( string _filename )
+		private async void project_load( string _filename )
 		{
 			FileStream 		fs = null;
 			BinaryReader 	br = null;
@@ -848,7 +848,7 @@ namespace MAPeD
 								
 								prj_data.m_scr_data_tiles4x4 = ( ( pre_flags & utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 ) == utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4 );
 								
-								set_screen_data_type( prj_data.m_scr_data_tiles4x4 ? data_sets_manager.EScreenDataType.sdt_Tiles4x4:data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+								set_screen_data_type( prj_data.m_scr_data_tiles4x4 ? data_sets_manager.e_screen_data_type.Tiles4x4:data_sets_manager.e_screen_data_type.Blocks2x2 );
 								
 								if( ( pre_flags & utils.CONST_IO_DATA_PRE_FLAG_SCR_BLOCKS_WH ) == utils.CONST_IO_DATA_PRE_FLAG_SCR_BLOCKS_WH )
 								{
@@ -861,7 +861,7 @@ namespace MAPeD
 							else
 							{
 								// early versions always work in the Tiles4x4 mode
-								set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
+								set_screen_data_type( data_sets_manager.e_screen_data_type.Tiles4x4 );
 							}
 
 							// check screen resolutions
@@ -874,7 +874,7 @@ namespace MAPeD
 										return;
 									}
 									
-									prj_data.m_scr_align					= m_data_conversion_options_form.screens_align_mode;
+									prj_data.m_scr_align					= m_data_conversion_options_form.screen_align_mode;
 									prj_data.m_convert_colors				= m_data_conversion_options_form.convert_colors;
 									prj_data.m_use_file_screen_resolution	= m_data_conversion_options_form.use_file_screen_resolution;
 								}
@@ -976,9 +976,9 @@ namespace MAPeD
 			}
 		}
 		
-		void SaveToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void SaveToolStripMenuItemClick( object sender, EventArgs e )
 		{
-			if( m_data_manager.tiles_data_cnt == 0 )			
+			if( m_data_manager.tiles_data_cnt == 0 )
 			{
 				message_box( "There is no data to save!", "Project Saving Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
@@ -988,7 +988,7 @@ namespace MAPeD
 			}
 		}
 		
-		void ProjectSaveOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
+		private void ProjectSaveOk( object sender, System.ComponentModel.CancelEventArgs e )
 		{
 			// SAVE PROJECT...
 			String filename = ( ( FileDialog )sender ).FileName;
@@ -1006,7 +1006,7 @@ namespace MAPeD
 					bw.Write( utils.CONST_PROJECT_FILE_MAGIC );
 					bw.Write( utils.CONST_PROJECT_FILE_VER );
 
-					uint pre_flags = ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) ? utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4:0;
+					uint pre_flags = ( m_data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 ) ? utils.CONST_IO_DATA_PRE_FLAG_SCR_TILES4X4:0;
 					pre_flags |= utils.CONST_IO_DATA_PRE_FLAG_SCR_BLOCKS_WH;
 					
 					bw.Write( pre_flags );
@@ -1052,7 +1052,7 @@ namespace MAPeD
 			}
 		}
 		
-		void ImportToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void ImportToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( CBoxCHRBanks.SelectedIndex >= 0 )
 			{
@@ -1064,7 +1064,7 @@ namespace MAPeD
 			}
 		}
 
-		async void DataImportOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
+		private async void DataImportOk( object sender, System.ComponentModel.CancelEventArgs e )
 		{
 			String filename = ( ( FileDialog )sender ).FileName;
 		
@@ -1314,7 +1314,7 @@ namespace MAPeD
 			}
 		}
 
-		void ExportToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void ExportToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( CBoxCHRBanks.Items.Count > 0 )
 			{
@@ -1326,7 +1326,7 @@ namespace MAPeD
 			}
 		}
 
-		void ProjectExportOk_Event(object sender, System.ComponentModel.CancelEventArgs e)
+		private void ProjectExportOk( object sender, System.ComponentModel.CancelEventArgs e )
 		{
 			// EXPORT PROJECT...
 			string filename = ( ( FileDialog )sender ).FileName;
@@ -1422,7 +1422,7 @@ namespace MAPeD
 			}
 		}
 
-		void ExportScriptEditorToolStripMenuItemClick(object sender, EventArgs e)
+		private void ExportScriptEditorToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( !SPSeD.py_editor.is_active() )
 			{
@@ -1433,12 +1433,12 @@ namespace MAPeD
 			SPSeD.py_editor.set_focus();
 		}
 		
-		void AboutToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void AboutToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			message_box( "Game Maps Editor (" + platform_data.CONST_PLATFORM + ")\n" + platform_data.CONST_PLATFORM_DESC + "\n\n" + utils.CONST_APP_VER + " " + utils.build_str + " pfv" + utils.CONST_PROJECT_FILE_VER + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 
-		void MenuHelpQuickGuideClick_Event(object sender, EventArgs e)
+		private void MenuHelpQuickGuideClick( object sender, EventArgs e )
 		{
 			string doc_path = Application.StartupPath.Substring( 0, Application.StartupPath.LastIndexOf( Path.DirectorySeparatorChar ) ) + Path.DirectorySeparatorChar + "doc" + Path.DirectorySeparatorChar + "MAPeD" + Path.DirectorySeparatorChar + "Quick_Guide.html";
 			
@@ -1461,18 +1461,18 @@ namespace MAPeD
 			}
 		}
 		
-		public void KeyUp_Event(object sender, KeyEventArgs e)
+		public void OnKeyUp( object sender, KeyEventArgs e )
 		{
-			m_tiles_processor.key_event( sender, e );
-			m_layout_editor.key_up_event( sender, e );
+			m_tiles_processor.on_key_up( sender, e );
+			m_layout_editor.on_key_up( sender, e );
 		}
 
-		public void KeyDown_Event(object sender, KeyEventArgs e)
+		public void OnKeyDown( object sender, KeyEventArgs e )
 		{
-			m_layout_editor.key_down_event( sender, e );
+			m_layout_editor.on_key_down( sender, e );
 		}
 		
-		void TabCntrlDblClick_Event(object sender, EventArgs e)
+		private void TabCntrlDblClick( object sender, EventArgs e )
 		{
 			TabControl tab_cntrl = sender as TabControl;
 			
@@ -1483,7 +1483,7 @@ namespace MAPeD
 #region tiles editor
 		private void enable_update_gfx_btn( bool _on )
 		{
-			if( _on && ( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) )
+			if( _on && ( m_data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Blocks2x2 ) )
 			{
 				update_selected_block();
 			}
@@ -1493,7 +1493,7 @@ namespace MAPeD
 			BtnUpdateGFX.UseVisualStyleBackColor = !_on;
 		}
 		
-		void CHRBankChanged_Event(object sender, EventArgs e)
+		private void CHRBankChanged( object sender, EventArgs e )
 		{
 			ComboBox chr_bank_cbox = sender as ComboBox;
 			
@@ -1516,14 +1516,14 @@ namespace MAPeD
 			
 			update_graphics( false, false, false );
 			
-			enable_copy_paste_action( false, ECopyPasteType.cpt_All );
+			enable_copy_paste_action( false, e_copy_paste_type.All );
 			
 			clear_active_tile_img();
 			
 			update_screens_by_bank_id( true, false );
 		}
 
-		void BtnUpdateGFXClick_Event(object sender, EventArgs e)
+		private void BtnUpdateGFXClick( object sender, EventArgs e )
 		{
 			update_graphics( false, true, true );
 			
@@ -1571,7 +1571,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnCHRBankNextPageClick_Event(object sender, EventArgs e)
+		private void BtnCHRBankNextPageClick( object sender, EventArgs e )
 		{
 			if( platform_data.get_CHR_bank_pages_cnt() > 1 )
 			{
@@ -1579,7 +1579,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnCHRBankPrevPageClick_Event(object sender, EventArgs e)
+		private void BtnCHRBankPrevPageClick( object sender, EventArgs e )
 		{
 			if( platform_data.get_CHR_bank_pages_cnt() > 1 )
 			{
@@ -1587,7 +1587,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnCopyCHRBankClick_Event(object sender, EventArgs e)
+		private void BtnCopyCHRBankClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
@@ -1625,12 +1625,12 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnAddCHRBankClick_Event(object sender, EventArgs e)
+		private void BtnAddCHRBankClick( object sender, EventArgs e )
 		{
 			add_CHR_bank();
 		}
 		
-		bool add_CHR_bank()
+		private bool add_CHR_bank()
 		{
 			if( platform_data.get_max_blocks_cnt() > 256 )
 			{
@@ -1649,7 +1649,7 @@ namespace MAPeD
 	
 				palette_group.Instance.active_palette = 0;
 	
-				enable_copy_paste_action( false, ECopyPasteType.cpt_All );
+				enable_copy_paste_action( false, e_copy_paste_type.All );
 				
 				set_status_msg( "Added CHR bank" );
 			}
@@ -1670,7 +1670,7 @@ namespace MAPeD
 			return true;
 		}
 		
-		void BtnDeleteCHRBankClick_Event(object sender, EventArgs e)
+		private void BtnDeleteCHRBankClick( object sender, EventArgs e )
 		{
 			if( CBoxCHRBanks.Items.Count > 0 && message_box( "Are you sure?", "Remove CHR Bank", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -1729,7 +1729,7 @@ namespace MAPeD
 					CBoxPalettes.Items.Clear();
 					CBoxCHRBanks.SelectedIndex = m_data_manager.tiles_data_pos;
 
-					enable_copy_paste_action( false, ECopyPasteType.cpt_All );
+					enable_copy_paste_action( false, e_copy_paste_type.All );
 
 					palette_group.Instance.active_palette = 0;
 					
@@ -1743,7 +1743,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnReorderCHRBanksClick_Event(object sender, EventArgs e)
+		private void BtnReorderCHRBanksClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.tiles_data_cnt > 0 )
 			{
@@ -1776,12 +1776,12 @@ namespace MAPeD
 			}
 		}
 		
-		void PanelBlocksClick_Event(object sender, EventArgs e)
+		private void PanelBlocksClick( object sender, EventArgs e )
 		{
 			select_block( get_sender_index( sender ), true, true );
 		}
 		
-		void select_block( int _id, bool _send_event, bool _update_active_tile )
+		private void select_block( int _id, bool _send_event, bool _update_active_tile )
 		{
 			if( _send_event && _id >= 0 )
 			{
@@ -1798,15 +1798,15 @@ namespace MAPeD
 				update_active_block_img( _id );
 			}
 			
-			m_tile_list_manager.select( tile_list.EType.t_Blocks, _id );
+			m_tile_list_manager.select( tile_list.e_data_type.Blocks, _id );
 		}
 		
-		void PanelTilesClick_Event(object sender, EventArgs e)
+		private void PanelTilesClick( object sender, EventArgs e )
 		{
 			select_tile( get_sender_index( sender ) );
 		}
 		
-		void select_tile( int _id )
+		private void select_tile( int _id )
 		{
 			if( _id >= 0 )
 			{
@@ -1815,7 +1815,7 @@ namespace MAPeD
 				update_active_tile_img( _id );
 			}
 			
-			m_tile_list_manager.select( tile_list.EType.t_Tiles, _id );
+			m_tile_list_manager.select( tile_list.e_data_type.Tiles, _id );
 		}
 
 		private void update_selected_block()
@@ -1826,78 +1826,78 @@ namespace MAPeD
 			if( sel_block_id >= 0 )
 			{
 				m_imagelist_manager.update_block( sel_block_id, m_view_type, get_curr_tiles_data(), PropertyPerBlockToolStripMenuItem.Checked, null, null, m_data_manager.screen_data_type );
-				m_tile_list_manager.update_tile( tile_list.EType.t_Blocks, sel_block_id );
+				m_tile_list_manager.update_tile( tile_list.e_data_type.Blocks, sel_block_id );
 				
 				update_active_block_img( sel_block_id );
 				patterns_manager_update_preview();
 			}
 		}
 		
-		void CBoxBlockObjIdChanged_Event(object sender, EventArgs e)
+		private void CBoxBlockObjIdChanged( object sender, EventArgs e )
 		{
 			m_tiles_processor.set_block_flags_obj_id( CBoxBlockObjId.SelectedIndex, PropertyPerBlockToolStripMenuItem.Checked );
 			
-			if( CBoxBlockObjId.Tag == null && m_view_type == utils.ETileViewType.tvt_ObjectId )
+			if( CBoxBlockObjId.Tag == null && m_view_type == utils.e_tile_view_type.ObjectId )
 			{
 				enable_update_gfx_btn( true );
 			}
 		}
 		
-		void BtnBlockVFlipClick_Event(object sender, EventArgs e)
+		private void BtnBlockVFlipClick( object sender, EventArgs e )
 		{
-			m_tiles_processor.transform_block( utils.ETransformType.tt_vflip );
+			m_tiles_processor.transform_block( utils.e_transform_type.VFlip );
 		}
 		
-		void BtnBlockHFlipClick_Event(object sender, EventArgs e)
+		private void BtnBlockHFlipClick( object sender, EventArgs e )
 		{
-			m_tiles_processor.transform_block( utils.ETransformType.tt_hflip );
+			m_tiles_processor.transform_block( utils.e_transform_type.HFlip );
 		}
 		
-		void BtnBlockRotateClick_Event(object sender, EventArgs e)
+		private void BtnBlockRotateClick( object sender, EventArgs e )
 		{
-			m_tiles_processor.transform_block( utils.ETransformType.tt_rotate );
+			m_tiles_processor.transform_block( utils.e_transform_type.Rotate );
 		}
 		
-		void BtnCHRVFlipClick_Event(object sender, EventArgs e)
+		private void BtnCHRVFlipClick( object sender, EventArgs e )
 		{
-			m_tiles_processor.transform_selected_CHR( utils.ETransformType.tt_vflip );
+			m_tiles_processor.transform_selected_CHR( utils.e_transform_type.VFlip );
 		}
 		
-		void BtnCHRHFlipClick_Event(object sender, EventArgs e)
+		private void BtnCHRHFlipClick( object sender, EventArgs e )
 		{
-			m_tiles_processor.transform_selected_CHR( utils.ETransformType.tt_hflip );
+			m_tiles_processor.transform_selected_CHR( utils.e_transform_type.HFlip );
 		}
 		
-		void BtnCHRRotateClick_Event(object sender, EventArgs e)
+		private void BtnCHRRotateClick( object sender, EventArgs e )
 		{
-			m_tiles_processor.transform_selected_CHR( utils.ETransformType.tt_rotate );
+			m_tiles_processor.transform_selected_CHR( utils.e_transform_type.Rotate );
 		}
 
-		void SelectCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void SelectCHRToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			block_editor_draw_mode( false );
 		}
 		
-		void PropertyPerBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void PropertyPerBlockToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			property_id_per_block( true );
 			
 			set_status_msg( "Property Id per BLOCK: on" );
 		}
 		
-		void PropertyPerCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void PropertyPerCHRToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			property_id_per_block( false );
 			
 			set_status_msg( "Property Id per CHR: on" );
 		}
 		
-		void property_id_per_block( bool _on )
+		private void property_id_per_block( bool _on )
 		{
 			PropIdPerBlockToolStripMenuItem.Checked = PropertyPerBlockToolStripMenuItem.Checked = _on;
 			PropIdPerCHRToolStripMenuItem.Checked	= PropertyPerCHRToolStripMenuItem.Checked	= !_on;
 		
-			if( m_view_type == utils.ETileViewType.tvt_ObjectId )
+			if( m_view_type == utils.e_tile_view_type.ObjectId )
 			{
 				mark_update_screens_btn( true );
 				
@@ -1907,12 +1907,12 @@ namespace MAPeD
 			select_block( m_tiles_processor.get_selected_block(), true, false );
 		}
 		
-		void DrawToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void DrawToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			block_editor_draw_mode( true );
 		}
 
-		void block_editor_draw_mode( bool _on )
+		private void block_editor_draw_mode( bool _on )
 		{
 			CHRSelectToolStripMenuItem.Checked	= !_on;
 			DrawToolStripMenuItem.Checked 		= _on;
@@ -1923,15 +1923,15 @@ namespace MAPeD
 			BlockEditorModeDrawToolStripMenuItem.Checked	= _on;
 			BlockEditorModeSelectToolStripMenuItem.Checked	= !_on;
 			
-			m_tiles_processor.set_block_editor_mode( _on ?  block_editor.EMode.bem_draw:block_editor.EMode.bem_CHR_select );
+			m_tiles_processor.set_block_editor_mode( _on ?  block_editor.e_mode.Draw:block_editor.e_mode.CHRSelect );
 		}
 		
-		void TilesLockEditorToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void TilesLockEditorToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			TilesLockEditorToolStripMenuItem.Checked = CheckBoxTileEditorLock.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
-		void CheckBoxTileEditorLockedChecked_Event(object sender, EventArgs e)
+		private void CheckBoxTileEditorLockedChecked( object sender, EventArgs e ) 
 		{
 			bool checked_state = ( sender as CheckBox ).Checked;
 			
@@ -1942,22 +1942,22 @@ namespace MAPeD
 			BtnTileReserveBlocks.Enabled = !checked_state;
 		}
 
-		void CopyCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void CopyCHRToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_tiles_processor.CHR_bank_copy_spr() )
 			{
-				enable_copy_paste_action( true, ECopyPasteType.cpt_CHR_bank );
+				enable_copy_paste_action( true, e_copy_paste_type.CHRBank );
 			}
 		}
 		
-		void PasteCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void PasteCHRToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			m_tiles_processor.CHR_bank_paste_spr();
 			
-//!!!		enable_copy_paste_action( false, ECopyPasteType.cpt_CHR_bank );
+//!!!		enable_copy_paste_action( false, e_copy_paste_type.CHRBank );
 		}
 		
-		void FillWithColorCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void FillWithColorCHRToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_tiles_processor.CHR_bank_fill_with_color_spr() == false )
 			{
@@ -1965,7 +1965,7 @@ namespace MAPeD
 			}
 		}
 
-		void InsertLeftCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void InsertLeftCHRToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
@@ -1997,7 +1997,7 @@ namespace MAPeD
 			}
 		}
 		
-		void DeleteCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void DeleteCHRToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
@@ -2032,37 +2032,37 @@ namespace MAPeD
 			}
 		}
 		
-		int get_context_menu_sender_index( object sender )
+		private int get_context_menu_sender_index( object sender )
 		{
 			Control cntrl = ( ( sender as ToolStripDropDownItem ).Owner as ContextMenuStrip ).SourceControl;
 			
 			return ( cntrl.Tag as tile_list ).cursor_tile_ind();
 		}
 
-		int get_sender_index( object sender )
+		private int get_sender_index( object sender )
 		{
 			return ( sender as tile_list ).cursor_tile_ind();
 		}
 		
-		void CopyBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void CopyBlockToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( ( m_block_copy_item_ind = get_context_menu_sender_index( sender ) ) >= 0 )
 			{
-				enable_copy_paste_action( true, ECopyPasteType.cpt_Blocks_list );
+				enable_copy_paste_action( true, e_copy_paste_type.BlocksList );
 			}
 		}
 		
-		void PasteBlockCloneToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void PasteBlockCloneToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			paste_block( true, get_context_menu_sender_index( sender ) );
 		}
 		
-		void PasteBlockRefsToolStripMenuItemClickEvent(object sender, EventArgs e)
+		private void PasteBlockRefsToolStripMenuItemClickEvent( object sender, EventArgs e )
 		{
 			paste_block( false, get_context_menu_sender_index( sender ) );
 		}
 
-		void paste_block( bool _paste_clone, int _sel_ind )
+		private void paste_block( bool _paste_clone, int _sel_ind )
 		{
 			if( _sel_ind >= 0 && m_block_copy_item_ind >= 0 )
 			{
@@ -2113,12 +2113,12 @@ namespace MAPeD
 				// optimized update_graphics
 				progress_bar_show( true, "Updating graphics...", false );
 				{
-					m_tile_list_manager.copy_tile( tile_list.EType.t_Blocks, m_block_copy_item_ind, _sel_ind );
+					m_tile_list_manager.copy_tile( tile_list.e_data_type.Blocks, m_block_copy_item_ind, _sel_ind );
 					
-					if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					if( m_data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 					{
 						m_imagelist_manager.update_tiles( m_view_type, data, PropertyPerBlockToolStripMenuItem.Checked, m_data_manager.screen_data_type );
-						m_tile_list_manager.update_tiles( tile_list.EType.t_Tiles );
+						m_tile_list_manager.update_tiles( tile_list.e_data_type.Tiles );
 					}
 					
 					update_active_block_img( _sel_ind );
@@ -2134,7 +2134,7 @@ namespace MAPeD
 			}
 		}
 
-		void ClearCHRsBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void ClearCHRsBlockToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( message_box( "Are you sure?\n\nWARNING: ALL the block's CHRs will be cleared!", "Clear Selected Block CHRs", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -2142,7 +2142,7 @@ namespace MAPeD
 			}
 		}
 		
-		void ClearRefsBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void ClearRefsBlockToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( message_box( "Are you sure?\n\nWARNING: ALL the block's CHR indices will be set to zero!", "Clear Selected Block Refs", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -2192,7 +2192,7 @@ namespace MAPeD
 			}
 		}
 		
-		void clearPropertiesToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void ClearPropertiesToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
@@ -2207,7 +2207,7 @@ namespace MAPeD
 						data.set_block_flags_obj_id( block_n, -1, 0, true );
 					}
 					
-					if( CBoxTileViewType.SelectedIndex == ( int )utils.ETileViewType.tvt_ObjectId )
+					if( CBoxTileViewType.SelectedIndex == ( int )utils.e_tile_view_type.ObjectId )
 					{
 						mark_update_screens_btn( true );
 						
@@ -2217,7 +2217,7 @@ namespace MAPeD
 			}
 		}
 		
-		void InsertLeftBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void InsertLeftBlockToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
@@ -2233,7 +2233,7 @@ namespace MAPeD
 					
 					data.clear_block( sel_ind );
 					
-					if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					if( m_data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 					{
 						data.inc_tiles_blocks( ( ushort )sel_ind );
 					}
@@ -2252,7 +2252,7 @@ namespace MAPeD
 			}
 		}
 		
-		void DeleteBlockToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void DeleteBlockToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( message_box( "Are you sure?", "Delete Block", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -2268,7 +2268,7 @@ namespace MAPeD
 						
 						Array.Copy( data.blocks, block_ind + utils.CONST_BLOCK_SIZE, data.blocks, block_ind, data.blocks.Length - block_ind - utils.CONST_BLOCK_SIZE );
 						
-						if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+						if( m_data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 						{
 							data.dec_tiles_blocks( ( ushort )sel_ind );
 						}
@@ -2289,15 +2289,15 @@ namespace MAPeD
 			}
 		}
 		
-		void CopyTileToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void CopyTileToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( ( m_tile_copy_item_ind = get_context_menu_sender_index( sender ) ) >= 0 )
 			{
-				enable_copy_paste_action( true, ECopyPasteType.cpt_Tiles_list );
+				enable_copy_paste_action( true, e_copy_paste_type.TilesList );
 			}
 		}
 		
-		void PasteTileToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void PasteTileToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			int sel_ind = get_context_menu_sender_index( sender );
 			
@@ -2317,7 +2317,7 @@ namespace MAPeD
 				// optimized update_graphics
 				progress_bar_show( true, "Updating graphics...", false );
 				{
-					m_tile_list_manager.copy_tile( tile_list.EType.t_Tiles, m_tile_copy_item_ind, sel_ind );
+					m_tile_list_manager.copy_tile( tile_list.e_data_type.Tiles, m_tile_copy_item_ind, sel_ind );
 					
 					update_active_tile_img( sel_ind );
 					patterns_manager_update_preview();
@@ -2332,7 +2332,7 @@ namespace MAPeD
 			}
 		}
 		
-		void ClearTileToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void ClearTileToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( message_box( "Are you sure?\n\nWARNING: ALL the tile's blocks references will be cleared!", "Clear Selected Tile Refs", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -2355,7 +2355,7 @@ namespace MAPeD
 			}
 		}
 		
-		void ClearAllTileToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void ClearAllTileToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( message_box( "Are you sure?\n\nWARNING: ALL the blocks references for all the tiles will be set to zero!", "Clear All Tiles", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -2373,7 +2373,7 @@ namespace MAPeD
 			}
 		}
 
-		void InsertLeftTileToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void InsertLeftTileToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.tiles_data_pos >= 0 )
 			{
@@ -2398,7 +2398,7 @@ namespace MAPeD
 			}
 		}
 		
-		void DeleteTileToolStripMenuItem3Click_Event(object sender, EventArgs e)
+		private void DeleteTileToolStripMenuItem3Click( object sender, EventArgs e )
 		{
 			if( message_box( "Are you sure?", "Delete Tile", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -2426,7 +2426,7 @@ namespace MAPeD
 			}
 		}
 
-		void BtnOptimizationClick_Event(object sender, EventArgs e)
+		private void BtnOptimizationClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.tiles_data_cnt == 0 )
 			{
@@ -2453,7 +2453,7 @@ namespace MAPeD
 	
 							mark_update_screens_btn( false );
 							
-							if( m_layout_editor.mode == layout_editor_base.EMode.em_Screens )
+							if( m_layout_editor.mode == layout_editor_base.e_mode.Screens )
 							{
 								m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 							}
@@ -2474,14 +2474,14 @@ namespace MAPeD
 			}
 		}
 		
-		void ShiftColorsToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void ShiftColorsToolStripMenuItemClick( object sender, EventArgs e )
 		{
 #if DEF_NES
 			m_tiles_processor.block_shift_colors( shiftTransparencyToolStripMenuItem.Checked );
 #endif
 		}
 
-		void BtnBlockReserveCHRsClick_Event(object sender, EventArgs e)
+		private void BtnBlockReserveCHRsClick( object sender, EventArgs e )
 		{
 			if( m_tiles_processor.block_reserve_CHRs( m_tiles_processor.get_selected_block(), m_data_manager ) > 0 )
 			{
@@ -2490,7 +2490,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnTileReserveBlocksClick_Event(object sender, EventArgs e)
+		private void BtnTileReserveBlocksClick( object sender, EventArgs e )
 		{
 			if( m_tiles_processor.tile_reserve_blocks( m_data_manager ) >= 0 )
 			{
@@ -2501,34 +2501,34 @@ namespace MAPeD
 #endregion		
 // LAYOUT PAINTER ************************************************************************************//
 #region layout painter
-		void BtnPainterFillWithTileClick_Event(object sender, EventArgs e)
+		private void BtnPainterFillWithTileClick( object sender, EventArgs e )
 		{
 			CheckBoxPainterReplaceTiles.Checked = false;
 			
-			m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_FILL_WITH_TILE, null );
+			m_layout_editor.set_param( layout_editor_base.e_mode.Painter, layout_editor_param.CONST_SET_PNT_FILL_WITH_TILE, null );
 		}
 		
-		void CheckBoxPainterReplaceTilesChecked_Event(object sender, EventArgs e)
+		private void CheckBoxPainterReplaceTilesChecked( object sender, EventArgs e )
 		{
-			m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_REPLACE_TILES, ( sender as CheckBox ).Checked );
+			m_layout_editor.set_param( layout_editor_base.e_mode.Painter, layout_editor_param.CONST_SET_PNT_REPLACE_TILES, ( sender as CheckBox ).Checked );
 		}
 		
-		void ActiveTileCancel_Event(object sender, EventArgs e)
+		private void on_active_tile_cancel( object sender, EventArgs e )
 		{
 			clear_active_tile_img();
 		}
 		
-		void MapScaleX1_Event(object sender, EventArgs e)
+		private void on_map_scale_x1( object sender, EventArgs e )
 		{
 			RBtnMapScaleX1.Checked = true;
 		}
 		
-		void MapScaleX2_Event(object sender, EventArgs e)
+		private void on_map_scale_x2( object sender, EventArgs e )
 		{
 			RBtnMapScaleX2.Checked = true;
 		}
 		
-		void RBtnMapScaleX1CheckedChanged_Event(object sender, EventArgs e)
+		private void RBtnMapScaleX1CheckedChanged( object sender, EventArgs e )
 		{
 			if( RBtnMapScaleX1.Checked )
 			{
@@ -2536,7 +2536,7 @@ namespace MAPeD
 			}
 		}
 		
-		void RBtnMapScaleX2CheckedChanged_Event(object sender, EventArgs e)
+		private void RBtnMapScaleX2CheckedChanged( object sender, EventArgs e )
 		{
 			if( RBtnMapScaleX2.Checked )
 			{
@@ -2544,35 +2544,35 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnTilesBlocksClick_Event(object sender, EventArgs e)
+		private void BtnTilesBlocksClick( object sender, EventArgs e )
 		{
-			m_tiles_palette_form.show_wnd();
+			m_tiles_palette_form.show_window();
 			
 			BtnTilesBlocks.Enabled = false;
 		}
 		
-		void TilesBlocksClosed_Event(object sender, EventArgs e)
+		private void on_tiles_blocks_form_hided( object sender, EventArgs e )
 		{
 			BtnTilesBlocks.Enabled = true;
 		}
 		
-		void TileSelected_Event(object sender, EventArgs e)
+		private void on_tiles_blocks_form_tile_selected( object sender, EventArgs e )
 		{
 			select_tile( ( sender as tiles_palette_form ).active_item_id );
 		}
 
-		void BlockSelected_Event(object sender, EventArgs e)
+		private void on_tiles_blocks_form_block_selected( object sender, EventArgs e )
 		{
 			select_block( ( sender as tiles_palette_form ).active_item_id, true, true );
 		}
 		
-		void BlockQuadSelected_Event(object sender, EventArgs e)
+		private void on_block_quad_selected( object sender, EventArgs e )
 		{
 			// show property
 			select_block( m_tiles_processor.get_selected_block(), false, true );
 		}
 		
-		private void update_tile_image( object sender, EventArgs e )
+		private void on_update_tile_image( object sender, EventArgs e )
 		{
 			NewTileEventArg event_args = e as NewTileEventArg;
 			
@@ -2580,29 +2580,29 @@ namespace MAPeD
 			tiles_data data = event_args.data;
 			
 			m_imagelist_manager.update_tile( tile_ind, m_view_type, data, true, PropertyPerBlockToolStripMenuItem.Checked, null, null, m_data_manager.screen_data_type );
-			m_tile_list_manager.update_tile( tile_list.EType.t_Tiles, tile_ind );
+			m_tile_list_manager.update_tile( tile_list.e_data_type.Tiles, tile_ind );
 		}
 		
-		void UpdateGraphicsAfterOptimization_Event(object sender, EventArgs e)
+		private void on_update_gfx_after_optimization( object sender, EventArgs e )
 		{
 			mark_update_screens_btn( true );
 			
 			update_graphics( true, true, true );
 		}
 		
-		void BtnResetTileClick_Event(object sender, EventArgs e)
+		private void BtnResetTileClick( object sender, EventArgs e )
 		{
 			clear_active_tile_img();
 		}
 		
-		void BtnSwapInkPaperClick_Event(object sender, EventArgs e)
+		private void BtnSwapInkPaperClick( object sender, EventArgs e )
 		{
 #if DEF_ZX
 			m_tiles_processor.zx_swap_ink_paper( true );
 #endif
 		}
 		
-		void BtnInvInkClick_Event(object sender, EventArgs e)
+		private void BtnInvInkClick( object sender, EventArgs e )
 		{
 #if DEF_ZX
 			m_tiles_processor.zx_swap_ink_paper( false );
@@ -2613,7 +2613,7 @@ namespace MAPeD
 		{
 			if( _ind >= 0 && m_data_manager.tiles_data_pos >= 0 )
 			{
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_TILE, _ind );
+				m_layout_editor.set_param( layout_editor_base.e_mode.Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_TILE, _ind );
 				
 				m_tile_preview.update( m_imagelist_manager.get_tiles_image_list()[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
 				GrpBoxActiveTile.Text = "Tile: " + String.Format( "${0:X2}", _ind );
@@ -2628,14 +2628,14 @@ namespace MAPeD
 		{
 			if( _ind >= 0 && m_data_manager.tiles_data_pos >= 0 )
 			{
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_BLOCK, _ind );
+				m_layout_editor.set_param( layout_editor_base.e_mode.Painter, layout_editor_param.CONST_SET_PNT_UPD_ACTIVE_BLOCK, _ind );
 				
 				m_tile_preview.update( m_imagelist_manager.get_blocks_image_list()[ _ind ], PBoxActiveTile.Width, PBoxActiveTile.Height, 0, 0, true, true );
 				GrpBoxActiveTile.Text = "Block: " + String.Format( "${0:X2}", _ind );
 				
 				BtnResetTile.Enabled = true;
 				
-				if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+				if( m_data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 				{
 					// disable replacing of blocks when the Tiles4x4 mode is active
 					// because it requires generating a lot of 4x4 tiles
@@ -2652,7 +2652,7 @@ namespace MAPeD
 		
 		private void clear_active_tile_img()
 		{
-			m_layout_editor.set_param( layout_editor_base.EMode.em_Painter, layout_editor_param.CONST_SET_PNT_CLEAR_ACTIVE_TILE, null );
+			m_layout_editor.set_param( layout_editor_base.e_mode.Painter, layout_editor_param.CONST_SET_PNT_CLEAR_ACTIVE_TILE, null );
 			
 			m_tile_preview.update( null, 0, 0, 0, 0, true, true );
 			GrpBoxActiveTile.Text = "...";
@@ -2668,12 +2668,12 @@ namespace MAPeD
 #endregion
 // LAYOUT EDITOR *************************************************************************************//
 #region layout editor
-		void LayoutContextMenuEntityItemsEnable( bool _on )
+		private void LayoutContextMenuEntityItemsEnable( bool _on )
 		{
 			LayoutDeleteEntityToolStripMenuItem.Enabled = LayoutEntityOrderToolStripMenuItem.Enabled = _on;
 		}
 		
-		void TabCntrlLayoutTilesChanged_Event(object sender, EventArgs e)
+		private void TabCntrlLayoutTilesChanged( object sender, EventArgs e )
 		{
 			TabPage curr_tab = ( sender as TabControl ).SelectedTab;
 			
@@ -2683,7 +2683,7 @@ namespace MAPeD
 			}
 		}
 		
-		void TabControlLayoutToolsSelected_Event(object sender, TabControlEventArgs e)
+		private void TabControlLayoutToolsSelected( object sender, TabControlEventArgs e )
 		{
 			TabPage curr_tab = ( sender as TabControl ).SelectedTab;
 			
@@ -2711,26 +2711,26 @@ namespace MAPeD
 			{
 				builderToolStripMenuItem.Enabled = true;
 
-				m_layout_editor.mode = layout_editor_base.EMode.em_Builder;
+				m_layout_editor.mode = layout_editor_base.e_mode.Builder;
 			}
 			else
 			if( curr_tab == TabPainter )
 			{
-				m_layout_editor.mode = layout_editor_base.EMode.em_Painter;
+				m_layout_editor.mode = layout_editor_base.e_mode.Painter;
 			}
 			else
 			if( curr_tab == TabScreenList )
 			{
 				screensToolStripMenuItem.Enabled = true;
 				
-				m_layout_editor.mode = layout_editor_base.EMode.em_Screens;
+				m_layout_editor.mode = layout_editor_base.e_mode.Screens;
 			}
 			else
 			if( curr_tab == TabEntities )
 			{
 				entitiesToolStripMenuItem.Enabled = true;
 				
-				m_layout_editor.mode = layout_editor_base.EMode.em_Entities;
+				m_layout_editor.mode = layout_editor_base.e_mode.Entities;
 				
 				fill_entity_data( get_selected_entity() );
 			}
@@ -2739,17 +2739,17 @@ namespace MAPeD
 			{
 				patternsToolStripMenuItem.Enabled = true;
 				
-				m_layout_editor.mode = layout_editor_base.EMode.em_Patterns;
+				m_layout_editor.mode = layout_editor_base.e_mode.Patterns;
 			}
 			else
 			{
-				throw new Exception( "Unknown mode detected!\n\n[MainForm.TabControlLayoutToolsSelected_Event]" );
+				throw new Exception( "Unknown mode detected!\n\n[MainForm.TabControlLayoutToolsSelected]" );
 			}
 		}
 		
-		void EntitiesCounterUpdate_Event(object sender, EventArgs e)
+		private void on_entities_counter_update( object sender, EventArgs e )
 		{
-			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
+			if( m_layout_editor.mode == layout_editor_base.e_mode.Entities )
 			{
 				m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_UPDATE_ENTS_CNT, null );
 				
@@ -2757,7 +2757,7 @@ namespace MAPeD
 			}
 		}
 		
-		int create_screen()
+		private int create_screen()
 		{
 			int scr_glob_ind	= -1;
 			int scr_local_ind;
@@ -2775,7 +2775,7 @@ namespace MAPeD
 			return scr_glob_ind;
 		}
 
-		void delete_screen( layout_screen_data _scr_data )
+		private void delete_screen( layout_screen_data _scr_data )
 		{
 			if( _scr_data.m_scr_ind != layout_data.CONST_EMPTY_CELL_ID )
 			{
@@ -2785,7 +2785,7 @@ namespace MAPeD
 			}
 		}
 		
-		void delete_screen( int _scr_local_ind )
+		private void delete_screen( int _scr_local_ind )
 		{
 			m_data_manager.screen_data_delete( _scr_local_ind );
 
@@ -2793,13 +2793,13 @@ namespace MAPeD
 			
 			if( m_imagelist_manager.remove_screen( CBoxCHRBanks.SelectedIndex, _scr_local_ind ) )
 			{
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
+				m_layout_editor.set_param( layout_editor_base.e_mode.Screens, layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 				
 				update_screens_labels_by_bank_id();
 			}
 		}
 
-		void delete_screen_by_bank_id( int _bank_ind, int _scr_local_ind )
+		private void delete_screen_by_bank_id( int _bank_ind, int _scr_local_ind )
 		{
 			bool all_banks_screens = CheckBoxLayoutEditorAllBanks.Checked;
 			
@@ -2808,7 +2808,7 @@ namespace MAPeD
 			
 			if( m_imagelist_manager.remove_screen( _bank_ind, _scr_local_ind ) )
 			{
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Screens, layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
+				m_layout_editor.set_param( layout_editor_base.e_mode.Screens, layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 			}
 			
 			m_data_manager.get_tiles_data( _bank_ind ).delete_screen( _scr_local_ind );
@@ -2820,11 +2820,11 @@ namespace MAPeD
 			CheckBoxLayoutEditorAllBanks.Checked = all_banks_screens;
 		}
 
-		bool check_empty_screen( ulong[] _tiles, screen_data _scr_data )
+		private bool check_empty_screen( ulong[] _tiles, screen_data _scr_data )
 		{
 			int tile_n;
 
-			if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			if( m_data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 			{
 				int block_n;
 				int tile_offs_x;
@@ -2886,7 +2886,7 @@ namespace MAPeD
 			return false;
 		}
 		
-		int delete_empty_screens()
+		private int delete_empty_screens()
 		{
 			int res = 0;
 
@@ -2909,7 +2909,7 @@ namespace MAPeD
 			return res;
 		}
 
-		int layout_delete_empty_screens()
+		private int layout_delete_empty_screens()
 		{
 			int res = 0;
 			int bank_ind;
@@ -2941,7 +2941,7 @@ namespace MAPeD
 			return res;
 		}
 
-		void delete_last_layout_and_screens()
+		private void delete_last_layout_and_screens()
 		{
 			layout_screen_data lt_scr_data;
 			
@@ -2976,7 +2976,7 @@ namespace MAPeD
 			m_data_manager.layout_data_delete( false );
 		}
 		
-		layout_data create_layout_with_empty_screens_beg( int _scr_width, int _scr_height )
+		private layout_data create_layout_with_empty_screens_beg( int _scr_width, int _scr_height )
 		{
 			if( m_data_manager.layout_data_create() == true )
 			{
@@ -3038,7 +3038,7 @@ namespace MAPeD
 			return null;
 		}
 
-		bool create_layout_with_empty_screens_end( layout_data _data )
+		private bool create_layout_with_empty_screens_end( layout_data _data )
 		{
 			if( _data != null )
 			{
@@ -3102,7 +3102,7 @@ namespace MAPeD
 			}
 		}
 
-		void BtnLayoutDeleteEmptyScreensClick_Event(object sender, EventArgs e)
+		private void BtnLayoutDeleteEmptyScreensClick( object sender, EventArgs e )
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 && message_box( "Delete all one-block filled screens?", "Clean Up", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -3125,7 +3125,7 @@ namespace MAPeD
 			}
 		}
 
-		void BtnLayoutAddUpRowClick_Event(object sender, EventArgs e)
+		private void BtnLayoutAddUpRowClick( object sender, EventArgs e )
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 )
 			{
@@ -3145,7 +3145,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnLayoutRemoveTopRowClick_Event(object sender, EventArgs e)
+		private void BtnLayoutRemoveTopRowClick( object sender, EventArgs e )
 		{
 			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data, bool _delete_scr_data )
 			{
@@ -3161,7 +3161,7 @@ namespace MAPeD
 			}, "Remove Top Row" );
 		}
 		
-		void BtnLayoutAddDownRowClick_Event(object sender, EventArgs e)
+		private void BtnLayoutAddDownRowClick( object sender, EventArgs e )
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 )
 			{
@@ -3181,7 +3181,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnLayoutRemoveBottomRowClick_Event(object sender, EventArgs e)
+		private void BtnLayoutRemoveBottomRowClick( object sender, EventArgs e )
 		{
 			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_height() > 1; }, delegate( layout_data _data, bool _delete_scr_data )
 			{
@@ -3197,7 +3197,7 @@ namespace MAPeD
 			}, "Remove Bottom Row" );
 		}
 		
-		void BtnLayoutAddLeftColumnClick_Event(object sender, EventArgs e)
+		private void BtnLayoutAddLeftColumnClick( object sender, EventArgs e )
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 )
 			{
@@ -3217,7 +3217,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnLayoutRemoveLeftColumnClick_Event(object sender, EventArgs e)
+		private void BtnLayoutRemoveLeftColumnClick( object sender, EventArgs e )
 		{
 			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data, bool _delete_scr_data )
 			{
@@ -3233,7 +3233,7 @@ namespace MAPeD
 			}, "Remove Left Column" );
 		}
 		
-		void BtnLayoutAddRightColumnClick_Event(object sender, EventArgs e)
+		private void BtnLayoutAddRightColumnClick( object sender, EventArgs e )
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 )
 			{
@@ -3253,7 +3253,7 @@ namespace MAPeD
 			}
 		}
 	
-		void BtnLayoutRemoveRightColumnClick_Event(object sender, EventArgs e)
+		private void BtnLayoutRemoveRightColumnClick( object sender, EventArgs e )
 		{
 			delete_layout_row_column( delegate( layout_data _data ) { return _data.get_width() > 1; }, delegate( layout_data _data, bool _delete_scr_data )
 			{
@@ -3269,7 +3269,7 @@ namespace MAPeD
 			}, "Remove Right Column" );
 		}
 
-		void delete_layout_row_column( Func< layout_data, bool > _condition, Func< layout_data, bool, bool > _act, string _caption_msg )
+		private void delete_layout_row_column( Func< layout_data, bool > _condition, Func< layout_data, bool, bool > _act, string _caption_msg )
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 )
 			{
@@ -3301,7 +3301,7 @@ namespace MAPeD
 			}
 		}
 		
-		void LayoutDeleteAllScreenMarksToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LayoutDeleteAllScreenMarksToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.layouts_data_cnt > 0 && message_box( "Are you sure?", "Delete All Screen Marks", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -3313,21 +3313,21 @@ namespace MAPeD
 			}
 		}
 		
-		void LayoutBringFrontToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LayoutBringFrontToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SEL_BRING_FRONT, 0 );
 		}
 		
-		void LayoutSendBackToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LayoutSendBackToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SEL_SEND_BACK, 0 );
 		}
 		
-		void LayoutDeleteScreenToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LayoutDeleteScreenToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			entity_instance ent_inst = null;
 			
-			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
+			if( m_layout_editor.mode == layout_editor_base.e_mode.Entities )
 			{
 				ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 			}
@@ -3353,11 +3353,11 @@ namespace MAPeD
 			}
 		}
 		
-		void LayoutDeleteScreenEntitiesToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LayoutDeleteScreenEntitiesToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			entity_instance ent_inst = null;
 			
-			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
+			if( m_layout_editor.mode == layout_editor_base.e_mode.Entities )
 			{
 				ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 			}
@@ -3383,7 +3383,7 @@ namespace MAPeD
 			}
 		}
 		
-		void LayoutDeleteEntityToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LayoutDeleteEntityToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_INST_DELETE, null ) == true )
 			{
@@ -3395,22 +3395,22 @@ namespace MAPeD
 			}
 		}
 		
-		void SetStartScreenMarkToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void SetStartScreenMarkToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			m_layout_editor.set_start_screen_mark();
 		}
 		
-		void SetScreenMarkToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void SetScreenMarkToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			m_layout_editor.set_screen_mark();
 		}
 		
-		void AdjScrMaskClick_Event(object sender, EventArgs e)
+		private void AdjScrMaskClick( object sender, EventArgs e )
 		{
 			m_layout_editor.set_adjacent_screen_mask( ( sender as ToolStripMenuItem ).Text );
 		}
 		
-		void BtnCreateLayoutWxHClick_Event(object sender, EventArgs e)
+		private void BtnCreateLayoutWxHClick( object sender, EventArgs e )
 		{
 			try
 			{
@@ -3438,7 +3438,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnDeleteLayoutClick_Event(object sender, EventArgs e)
+		private void BtnDeleteLayoutClick( object sender, EventArgs e )
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 && ListBoxLayouts.Items.Count > 0 && message_box( "Are you sure?", "Delete Layout", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -3452,7 +3452,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnCopyLayoutClick_Event(object sender, EventArgs e)
+		private void BtnCopyLayoutClick( object sender, EventArgs e )
 		{
 			if( ListBoxLayouts.SelectedIndex >= 0 && ListBoxLayouts.Items.Count > 0 && message_box( "Are you sure?", "Copy Layout", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 			{
@@ -3473,12 +3473,12 @@ namespace MAPeD
 			}
 		}
 
-		void ListBoxLayoutsClick_Event(object sender, EventArgs e)
+		private void ListBoxLayoutsClick( object sender, EventArgs e )
 		{
 			m_data_manager.layouts_data_pos = ( sender as ListBox ).SelectedIndex;
 		}
 		
-		void BtnLayoutMoveDownClick_Event(object sender, EventArgs e)
+		private void BtnLayoutMoveDownClick( object sender, EventArgs e )
 		{
 			if( ListBoxLayouts.Items.Count > 1 )
 			{
@@ -3498,7 +3498,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnLayoutMoveUpClick_Event(object sender, EventArgs e)
+		private void BtnLayoutMoveUpClick( object sender, EventArgs e )
 		{
 			if( ListBoxLayouts.Items.Count > 1 )
 			{
@@ -3518,7 +3518,7 @@ namespace MAPeD
 			}
 		}
 		
-		void CheckBoxLayoutEditorAllBanksCheckChanged_Event(object sender, EventArgs e)
+		private void CheckBoxLayoutEditorAllBanksCheckChanged( object sender, EventArgs e )
 		{
 			ScreensShowAllBanksToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
 			
@@ -3527,34 +3527,34 @@ namespace MAPeD
 			m_layout_editor.update();
 		}
 		
-		void LayoutShowMarksToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LayoutShowMarksToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			LayoutShowMarksToolStripMenuItem.Checked = CheckBoxShowMarks.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
-		void LayoutShowEntitiesToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LayoutShowEntitiesToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			LayoutShowEntitiesToolStripMenuItem.Checked = CheckBoxShowEntities.Checked = !( sender as ToolStripMenuItem ).Checked;
 			
 			LayoutShowTargetsToolStripMenuItem.Enabled = LayoutShowCoordsToolStripMenuItem.Enabled = LayoutShowEntitiesToolStripMenuItem.Checked; 
 		}
 		
-		void LayoutShowTargetsToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LayoutShowTargetsToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			LayoutShowTargetsToolStripMenuItem.Checked = CheckBoxShowTargets.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
-		void LayoutShowCoordsToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LayoutShowCoordsToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			LayoutShowCoordsToolStripMenuItem.Checked = CheckBoxShowCoords.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
-		void LayoutShowGridToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void LayoutShowGridToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			LayoutShowGridToolStripMenuItem.Checked = CheckBoxShowGrid.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
-		void CheckBoxShowMarksChecked_Event(object sender, EventArgs e)
+		private void CheckBoxShowMarksChecked( object sender, EventArgs e )
 		{
 			bool show_marks = ( sender as CheckBox ).Checked;
 			
@@ -3563,7 +3563,7 @@ namespace MAPeD
 			MAPeD.Properties.Settings.Default.Save();
 		}
 		
-		void CheckBoxShowEntitiesChecked_Event(object sender, EventArgs e)
+		private void CheckBoxShowEntitiesChecked( object sender, EventArgs e )
 		{
 			bool show_ent = ( sender as CheckBox ).Checked;
 			
@@ -3574,21 +3574,21 @@ namespace MAPeD
 			LayoutShowTargetsToolStripMenuItem.Enabled = LayoutShowCoordsToolStripMenuItem.Enabled = CheckBoxShowTargets.Enabled = CheckBoxShowCoords.Enabled = show_ent; 
 		}
 		
-		void CheckBoxShowTargetsChecked_Event(object sender, EventArgs e)
+		private void CheckBoxShowTargetsChecked( object sender, EventArgs e )
 		{
 			MAPeD.Properties.Settings.Default.layout_show_targets = m_layout_editor.show_targets = LayoutShowTargetsToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
 			
 			MAPeD.Properties.Settings.Default.Save();
 		}
 		
-		void CheckBoxShowCoordsChecked_Event(object sender, EventArgs e)
+		private void CheckBoxShowCoordsChecked( object sender, EventArgs e )
 		{
 			MAPeD.Properties.Settings.Default.layout_show_coords = m_layout_editor.show_coords = LayoutShowCoordsToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
 			
 			MAPeD.Properties.Settings.Default.Save();
 		}
 		
-		void CheckBoxShowGridChecked_Event(object sender, EventArgs e)
+		private void CheckBoxShowGridChecked( object sender, EventArgs e )
 		{
 			MAPeD.Properties.Settings.Default.layout_show_grid = m_layout_editor.show_grid = LayoutShowGridToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
 			
@@ -3597,7 +3597,7 @@ namespace MAPeD
 #endregion
 // LAYOUT SCREENS ************************************************************************************//
 #region layout screens
-		void ScreensAutoUpdateToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void ScreensAutoUpdateToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			bool on = ( sender as ToolStripMenuItem ).Checked;
 			ScreensAutoUpdateToolStripMenuItem.Checked = CheckBoxScreensAutoUpdate.Checked = !on;
@@ -3605,7 +3605,7 @@ namespace MAPeD
 			set_status_msg( "Screens auto update " + ( !on ? "enabled":"disabled" ) );
 		}
 		
-		void CheckBoxScreensAutoUpdateChanged_Event(object sender, EventArgs e)
+		private void CheckBoxScreensAutoUpdateChanged( object sender, EventArgs e )
 		{
 			CheckBox obj = sender as CheckBox;
 			
@@ -3616,12 +3616,12 @@ namespace MAPeD
 			set_status_msg( "Screens auto update " + ( obj.Checked ? "enabled":"disabled" ) );
 		}
 		
-		void ScreensShowAllBanksToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void ScreensShowAllBanksToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			ScreensShowAllBanksToolStripMenuItem.Checked = CheckBoxLayoutEditorAllBanks.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
-		void ListViewScreensClick_Event(object sender, EventArgs e)
+		private void ListViewScreensClick( object sender, EventArgs e )
 		{
 			ListView lv = sender as ListView;
 			
@@ -3641,7 +3641,7 @@ namespace MAPeD
 			m_layout_editor.update();
 		}
 		
-		void ResetSelectedScreen_Event(object sender, EventArgs e)
+		private void on_reset_selected_screen( object sender, EventArgs e )
 		{
 			ListViewScreens.SelectedItems.Clear();
 		}
@@ -3674,7 +3674,7 @@ namespace MAPeD
 			return false;
 		}
 
-		void BtnUpdateScreensClick_Event(object sender, EventArgs e)
+		private void BtnUpdateScreensClick( object sender, EventArgs e )
 		{
 			progress_bar_show( true, "Updating screens...", false );
 			{
@@ -3683,7 +3683,7 @@ namespace MAPeD
 			progress_bar_show( false );
 		}
 		
-		void update_screens( bool _unmark_upd_scr_btn, bool _show_status_msg = true )
+		private void update_screens( bool _unmark_upd_scr_btn, bool _show_status_msg = true )
 		{
 			// update_screens - may change a current palette
 			update_screens_by_bank_id( _unmark_upd_scr_btn, true );
@@ -3696,7 +3696,7 @@ namespace MAPeD
 			}
 		}
 
-		void update_all_screens( bool _unmark_upd_scr_btn, bool _show_status_msg = true )
+		private void update_all_screens( bool _unmark_upd_scr_btn, bool _show_status_msg = true )
 		{
 			m_imagelist_manager.update_all_screens( m_data_manager.get_tiles_data(), CBoxCHRBanks.SelectedIndex, m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 			
@@ -3718,7 +3718,7 @@ namespace MAPeD
 			}
 		}
 
-		void update_screens_by_bank_id( bool _unmark_upd_scr_btn, bool _update_images )
+		private void update_screens_by_bank_id( bool _unmark_upd_scr_btn, bool _update_images )
 		{
 			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, _update_images, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 			
@@ -3733,20 +3733,20 @@ namespace MAPeD
 			}
 		}
 		
-		void update_screens_labels_by_bank_id()
+		private void update_screens_labels_by_bank_id()
 		{
 			m_imagelist_manager.update_screens_labels( m_data_manager.get_tiles_data(), CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 		}
 #endregion
 // ENTITY EDITOR *************************************************************************************//
 #region entity editor
-		void EditEntityCancel_Event( object sender, EventArgs e )
+		private void on_edit_entity_cancel( object sender, EventArgs e )
 		{
 			switch( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) )
 			{
 				case layout_editor_param.CONST_SET_ENT_EDIT:
 				{
-					BtnEntitiesEditInstancesModeClick_Event( sender, e );
+					BtnEntitiesEditInstancesModeClick( sender, e );
 				}
 				break;
 				
@@ -3760,7 +3760,7 @@ namespace MAPeD
 		
 		private bool m_rename_ent_tree_node = true;
 		
-		void TreeViewEntitiesDrawNode_Event(object sender, DrawTreeNodeEventArgs e)
+		private void TreeViewEntitiesDrawNode( object sender, DrawTreeNodeEventArgs e )
 		{
 			if( e.Node.Parent != null )
 			{
@@ -3782,7 +3782,7 @@ namespace MAPeD
 			e.DrawDefault = true;
 		}
 		
-		void TreeViewEntitiesNodeMouseClick_Event(object sender, TreeNodeMouseClickEventArgs e)
+		private void TreeViewEntitiesNodeMouseClick( object sender, TreeNodeMouseClickEventArgs e )
 		{
 			if( e.Button == MouseButtons.Left )
 			{
@@ -3799,7 +3799,7 @@ namespace MAPeD
 			}
 		}
 		
-		void TreeViewEntitiesBeforeLabelEdit_Event(object sender, NodeLabelEditEventArgs e)
+		private void TreeViewEntitiesBeforeLabelEdit( object sender, NodeLabelEditEventArgs e )
 		{
 			m_rename_ent_tree_node = false;
 			
@@ -3808,7 +3808,7 @@ namespace MAPeD
 			e.Node.TreeView.Refresh();
 		}
 		
-		void TreeViewEntitiesAfterLabelEdit_Event(object sender, NodeLabelEditEventArgs e)
+		private void TreeViewEntitiesAfterLabelEdit( object sender, NodeLabelEditEventArgs e )
 		{
 			m_rename_ent_tree_node = true;
 			
@@ -3852,7 +3852,7 @@ namespace MAPeD
 			}
 		}
 
-		void TreeViewEntitiesSelect_Event(object sender, TreeViewEventArgs e)
+		private void TreeViewEntitiesSelect( object sender, TreeViewEventArgs e )
 		{
 			if( tabControlLayoutTools.SelectedTab == TabEntities )
 			{
@@ -3867,13 +3867,13 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnEntityGroupAddClick_Event(object sender, EventArgs e)
+		private void BtnEntityGroupAddClick( object sender, EventArgs e )
 		{
 			m_object_name_form.Text = "Add Group";
 			
 			m_object_name_form.edit_str = "GROUP";
 			
-			if( m_object_name_form.ShowWindow() == DialogResult.OK )
+			if( m_object_name_form.show_window() == DialogResult.OK )
 			{
 				m_data_manager.group_add( m_object_name_form.edit_str );
 				
@@ -3881,7 +3881,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnEntityGroupDeleteClick_Event(object sender, EventArgs e)
+		private void BtnEntityGroupDeleteClick( object sender, EventArgs e )
 		{
 			TreeNode sel_node = TreeViewEntities.SelectedNode;
 			
@@ -3913,7 +3913,7 @@ namespace MAPeD
 			}
 		}
 
-		void BtnEntityGroupRenameClick_Event(object sender, EventArgs e)
+		private void BtnEntityGroupRenameClick( object sender, EventArgs e )
 		{
 			TreeNode sel_node = TreeViewEntities.SelectedNode;
 			
@@ -3927,7 +3927,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnEntityAddClick_Event(object sender, EventArgs e)
+		private void BtnEntityAddClick( object sender, EventArgs e )
 		{
 			m_object_name_form.Text = "Add Entity";
 			
@@ -3942,7 +3942,7 @@ namespace MAPeD
 			
 			m_object_name_form.edit_str = "entity";
 			
-			if( m_object_name_form.ShowWindow() == DialogResult.OK )
+			if( m_object_name_form.show_window() == DialogResult.OK )
 			{
 				m_data_manager.entity_add( m_object_name_form.edit_str, ( sel_node.Parent != null ? sel_node.Parent.Name:sel_node.Name ) );
 				
@@ -3954,7 +3954,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnEntityDeleteClick_Event(object sender, EventArgs e)
+		private void BtnEntityDeleteClick( object sender, EventArgs e )
 		{
 			TreeNode sel_node = TreeViewEntities.SelectedNode;
 			
@@ -3986,7 +3986,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnEntityRenameClick_Event(object sender, EventArgs e)
+		private void BtnEntityRenameClick( object sender, EventArgs e )
 		{
 			TreeNode sel_node = TreeViewEntities.SelectedNode;
 			
@@ -4008,7 +4008,7 @@ namespace MAPeD
 			}
 		}
 
-		void TreeViewEntities_update_data( object sender, EventArgs e )
+		private void on_entities_tree_view_update_data( object sender, EventArgs e )
 		{
 			data_sets_manager data_mngr = sender as data_sets_manager;  
 			
@@ -4020,15 +4020,15 @@ namespace MAPeD
 				
 				foreach( var key in data_mngr.entities_data.Keys ) 
 				{
-					TreeViewEntities_add_group( null, new EventArg2Params( key, null ) );
-					          
-					( data_mngr.entities_data[ key ] as List< entity_data > ).ForEach( delegate( entity_data _ent ) { TreeViewEntities_add_entity( null, new EventArg2Params( _ent.name, key ) ); } );
+					on_entities_tree_view_add_group( null, new EventArg2Params( key, null ) );
+					
+					( data_mngr.entities_data[ key ] as List< entity_data > ).ForEach( delegate( entity_data _ent ) { on_entities_tree_view_add_entity( null, new EventArg2Params( _ent.name, key ) ); } );
 				}
 			}
 			TreeViewEntities.EndUpdate();
 		}
 
-		bool TreeViewEntities_add_group( object sender, EventArgs e )
+		private bool on_entities_tree_view_add_group( object sender, EventArgs e )
 		{
 			EventArg2Params args = ( e as EventArg2Params );
 			
@@ -4058,7 +4058,7 @@ namespace MAPeD
 			return true;
 		}
 		
-		bool TreeViewEntities_delete_group( object sender, EventArgs e )
+		private bool on_entities_tree_view_delete_group( object sender, EventArgs e )
 		{
 			EventArg2Params args = ( e as EventArg2Params );
 			
@@ -4099,7 +4099,7 @@ namespace MAPeD
 			return false;
 		}
 		
-		bool TreeViewEntities_add_entity( object sender, EventArgs e )
+		private bool on_entities_tree_view_add_entity( object sender, EventArgs e )
 		{
 			EventArg2Params args = ( e as EventArg2Params );
 			
@@ -4139,7 +4139,7 @@ namespace MAPeD
 			return false;
 		}
 
-		bool TreeViewEntities_delete_entity( object sender, EventArgs e )
+		private bool on_entities_tree_view_delete_entity( object sender, EventArgs e )
 		{
 			EventArg2Params args = ( e as EventArg2Params );
 			
@@ -4175,18 +4175,18 @@ namespace MAPeD
 			return false;
 		}
 
-		void CheckBoxEntitySnappingChanged_Event(object sender, EventArgs e)
+		private void CheckBoxEntitySnappingChanged( object sender, EventArgs e )
 		{
 			m_layout_editor.set_param( layout_editor_param.CONST_SET_ENT_SNAPPING, ( sender as CheckBox ).Checked );
 		}
 #endregion
 // ENTITY PROPERTIES EDITOR **************************************************************************//
 #region entity properties editor
-		void fill_entity_data( entity_data _ent, string _inst_prop = "", string _inst_name = "", int _targ_uid = -1 )
+		private void fill_entity_data( entity_data _ent, string _inst_prop = "", string _inst_name = "", int _targ_uid = -1 )
 		{
 			groupBoxEntityEditor.Enabled = ( _ent != null );
 			
-			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
+			if( m_layout_editor.mode == layout_editor_base.e_mode.Entities )
 			{
 				if( ( uint )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_MODE ) == layout_editor_param.CONST_SET_ENT_INST_EDIT )
 				{
@@ -4247,7 +4247,7 @@ namespace MAPeD
 			}
 		}
 
-		void PBoxColorClick(object sender, EventArgs e)
+		private void PBoxColorClick( object sender, EventArgs e )
 		{
 			entity_data ent = get_selected_entity();
 			
@@ -4264,7 +4264,7 @@ namespace MAPeD
 			}
 		}
 		
-		entity_data get_selected_entity()
+		private entity_data get_selected_entity()
 		{
 			entity_data ent = null;
 			
@@ -4280,7 +4280,7 @@ namespace MAPeD
 			return ent;
 		}
 		
-		void NumericUpDownEntityUIDChanged_Event(object sender, EventArgs e)
+		private void NumericUpDownEntityUIDChanged( object sender, EventArgs e )
 		{
 			entity_data ent = get_selected_entity();
 			
@@ -4290,7 +4290,7 @@ namespace MAPeD
 			}
 		}
 		
-		void NumericUpDownEntityWidthChanged_Event(object sender, EventArgs e)
+		private void NumericUpDownEntityWidthChanged( object sender, EventArgs e )
 		{
 			entity_data ent = get_selected_entity();
 			
@@ -4305,7 +4305,7 @@ namespace MAPeD
 			}
 		}
 		
-		void NumericUpDownEntityHeightChanged_Event(object sender, EventArgs e)
+		private void NumericUpDownEntityHeightChanged( object sender, EventArgs e )
 		{
 			entity_data ent = get_selected_entity();
 			
@@ -4320,7 +4320,7 @@ namespace MAPeD
 			}
 		}
 		
-		void NumericUpDownEntityPivotXChanged_Event(object sender, EventArgs e)
+		private void NumericUpDownEntityPivotXChanged( object sender, EventArgs e )
 		{
 			entity_data ent = get_selected_entity();
 			
@@ -4335,7 +4335,7 @@ namespace MAPeD
 			}
 		}
 		
-		void NumericUpDownEntityPivotYChanged_Event(object sender, EventArgs e)
+		private void NumericUpDownEntityPivotYChanged( object sender, EventArgs e )
 		{
 			entity_data ent = get_selected_entity();
 			
@@ -4350,12 +4350,12 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnEntityLoadBitmapClick(object sender, EventArgs e)
+		private void BtnEntityLoadBitmapClick( object sender, EventArgs e )
 		{
 			EntityLoadBitmap_openFileDialog.ShowDialog();
 		}
 		
-		void EntityLoadBitmap_openFileDialogFileOk(object sender, System.ComponentModel.CancelEventArgs e)
+		private void EntityLoadBitmapOpenFileDialogFileOk( object sender, System.ComponentModel.CancelEventArgs e )
 		{
 			String filename = ( ( FileDialog )sender ).FileName;
 			
@@ -4420,7 +4420,7 @@ namespace MAPeD
 			}
 		}
 
-		void TextBoxEntityInstancePropTextKeyUp_Event(object sender, KeyEventArgs e)
+		private void TextBoxEntityInstancePropTextKeyUp( object sender, KeyEventArgs e )
 		{
 			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 			
@@ -4439,7 +4439,7 @@ namespace MAPeD
 			}
 		}
 
-		void TextBoxEntityPropertiesTextKeyUp_Event(object sender, KeyEventArgs e)
+		private void TextBoxEntityPropertiesTextKeyUp( object sender, KeyEventArgs e )
 		{
 			entity_data ent = get_selected_entity();
 			
@@ -4451,7 +4451,7 @@ namespace MAPeD
 			}
 		}
 		
-		void TextBoxEntityPropertiesKeyPress_Event(object sender, KeyPressEventArgs e)
+		private void TextBoxEntityPropertiesKeyPress( object sender, KeyPressEventArgs e )
 		{
 			if( !char.IsControl( e.KeyChar ) && "0123456789abcdefABCDEF".IndexOf( e.KeyChar ) < 0 && ( e.KeyChar != ' ' ) )
 		    {
@@ -4459,7 +4459,7 @@ namespace MAPeD
 		    }
 		}
 
-		void update_entity_preview( bool _force_disable = false )
+		private void update_entity_preview( bool _force_disable = false )
 		{
 			entity_instance ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 			
@@ -4485,7 +4485,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnEntitiesEditInstancesModeClick_Event(object sender, EventArgs e)
+		private void BtnEntitiesEditInstancesModeClick( object sender, EventArgs e )
 		{
 			if( tabControlLayoutTools.SelectedTab == TabEntities )
 			{
@@ -4493,11 +4493,11 @@ namespace MAPeD
 			}
 		}
 		
-		void EntitiesDeleteInstancesOfAllEntitiesToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void EntitiesDeleteInstancesOfAllEntitiesToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			entity_instance ent_inst = null;
 			
-			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
+			if( m_layout_editor.mode == layout_editor_base.e_mode.Entities )
 			{
 				ent_inst = ( entity_instance )m_layout_editor.get_param( layout_editor_param.CONST_GET_ENT_INST_SELECTED );
 			}
@@ -4508,7 +4508,7 @@ namespace MAPeD
 				
 				if( ent_inst != null )
 				{
-					m_layout_editor.set_param( layout_editor_base.EMode.em_Entities, layout_editor_param.CONST_SET_ENT_INST_RESET, null );
+					m_layout_editor.set_param( layout_editor_base.e_mode.Entities, layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 					
 					fill_entity_data( null );
 					
@@ -4521,7 +4521,7 @@ namespace MAPeD
 			}
 		}
 		
-		void DeleteAllInstancesToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void DeleteAllInstancesToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			string ent_name = TreeViewEntities.SelectedNode.Name;
 			
@@ -4535,7 +4535,7 @@ namespace MAPeD
 			}
 		}
 		
-		void update_active_entity()
+		private void update_active_entity()
 		{
 			entity_data sel_ent = get_selected_entity();
 			
@@ -4550,7 +4550,7 @@ namespace MAPeD
 			}
 		}
 		
-		void layout_editor_set_entity_mode( uint _mode )
+		private void layout_editor_set_entity_mode( uint _mode )
 		{
 			switch( _mode )
 			{
@@ -4597,7 +4597,7 @@ namespace MAPeD
 			m_layout_editor.update();
 		}
 		
-		void EntityInstanceSelected_Event( object sender, EventArgs e )
+		private void on_entity_instance_selected( object sender, EventArgs e )
 		{
 			EventArg2Params args = e as EventArg2Params;
 			
@@ -4643,9 +4643,9 @@ namespace MAPeD
 			}
 		}
 		
-		void CheckBoxSelectTargetEntityChanged_Event(object sender, EventArgs e)
+		private void CheckBoxSelectTargetEntityChanged( object sender, EventArgs e )
 		{
-			if( m_layout_editor.mode == layout_editor_base.EMode.em_Entities )
+			if( m_layout_editor.mode == layout_editor_base.e_mode.Entities )
 			{
 				if( ( sender as CheckBox ).Checked )
 				{
@@ -4663,7 +4663,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void EntitiesMngr_MouseEnter(object sender, EventArgs e)
+		private void on_entities_manager_mouse_enter( object sender, EventArgs e )
 		{
 			if( TreeViewEntities.Enabled )
 			{
@@ -4673,21 +4673,21 @@ namespace MAPeD
 #endregion
 // PALETTE *******************************************************************************************//
 #region palette
-		void CheckBoxPalettePerCHRChecked_Event(object sender, EventArgs e)
+		private void CheckBoxPalettePerCHRChecked( object sender, EventArgs e )
 		{
 #if DEF_NES
 			m_tiles_processor.set_block_editor_palette_per_CHR_mode( ( sender as CheckBox ).Checked );
 #endif
 		}
 		
-		void BtnSwapColorsClick_Event(object sender, EventArgs e)
+		private void BtnSwapColorsClick( object sender, EventArgs e )
 		{
 #if !DEF_NES
 			if( m_data_manager.tiles_data_cnt > 0 )
 			{
 				if( m_swap_colors_form.ShowDialog( get_curr_tiles_data() ) == DialogResult.OK )
 				{
-					BtnUpdateGFXClick_Event( null, null );
+					BtnUpdateGFXClick( null, null );
 					
 					palette_group.Instance.update_selected_color();
 				}
@@ -4695,7 +4695,7 @@ namespace MAPeD
 #endif
 		}
 		
-		void CBoxPalettesChanged_Event(object sender, EventArgs e)
+		private void CBoxPalettesChanged( object sender, EventArgs e )
 		{
 			tiles_data data = get_curr_tiles_data();
 			data.palette_pos = CBoxPalettes.SelectedIndex; 
@@ -4705,7 +4705,7 @@ namespace MAPeD
 			set_status_msg( "Palette changed" );
 		}
 		
-		void BtnPltCopyClick_Event(object sender, EventArgs e)
+		private void BtnPltCopyClick( object sender, EventArgs e )
 		{
 			tiles_data data = get_curr_tiles_data();
 			
@@ -4734,7 +4734,7 @@ namespace MAPeD
 					palette_group.Instance.set_palette( data );
 					
 					update_palettes_arr( data, true );
-					enable_update_gfx_btn_Event( this, null );
+					on_enable_update_gfx_btn( this, null );
 				}
 				else
 				{
@@ -4744,7 +4744,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnPltDeleteClick_Event(object sender, EventArgs e)
+		private void BtnPltDeleteClick( object sender, EventArgs e )
 		{
 			tiles_data data = get_curr_tiles_data();
 			
@@ -4757,7 +4757,7 @@ namespace MAPeD
 						palette_group.Instance.set_palette( data );
 						
 						update_palettes_arr( data, true );
-						enable_update_gfx_btn_Event( this, null );
+						on_enable_update_gfx_btn( this, null );
 					}
 					else
 					{
@@ -4767,7 +4767,7 @@ namespace MAPeD
 			}
 		}
 
-		void update_palette_related_data( tiles_data _data )
+		private void update_palette_related_data( tiles_data _data )
 		{
 			palette_group plt_grp = palette_group.Instance;
 			plt_grp.set_palette( _data );
@@ -4782,7 +4782,7 @@ namespace MAPeD
 			m_tiles_processor.update_graphics();
 		}
 		
-		void update_palettes_arr( tiles_data _data, bool _update_pos )
+		private void update_palettes_arr( tiles_data _data, bool _update_pos )
 		{
 			CBoxPalettes.Items.Clear();
 			
@@ -4798,7 +4798,7 @@ namespace MAPeD
 		}
 		
 #if DEF_PALETTE16_PER_CHR
-		void update_palette_list_pos( object sender, EventArgs e )
+		private void on_update_palette_list_pos( object sender, EventArgs e )
 		{
 			tiles_data data = get_curr_tiles_data();
 			
@@ -4808,12 +4808,12 @@ namespace MAPeD
 			}
 		}
 #endif
-		void CBocPalettesAdjustWidthDropDown_Event( object sender, EventArgs e )
+		private void CBoxPalettesAdjustWidthDropDown( object sender, EventArgs e )
 		{
 			( sender as ComboBox ).DropDownWidth = 240;
 		}
 		
-		void CBoxPalettesDrawItem_Event( object sender, DrawItemEventArgs e )
+		private void CBoxPalettesDrawItem( object sender, DrawItemEventArgs e )
 		{
 			if( e.Index >= 0 )
 			{
@@ -4851,12 +4851,12 @@ namespace MAPeD
 #endregion		
 // SCREEN DATA CONVERTER *****************************************************************************//
 #region screen data converter
-		void BtnScreenDataInfoClick_Event(object sender, EventArgs e)
+		private void BtnScreenDataInfoClick( object sender, EventArgs e )
 		{
 			message_box( strings.CONST_SCREEN_DATA_TYPE_INFO, strings.CONST_SCREEN_DATA_TYPE_INFO_CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 		
-		void RBtnScreenDataTilesClick_Event(object sender, EventArgs e)
+		private void RBtnScreenDataTilesClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.tiles_data_cnt > 0 )
 			{
@@ -4868,7 +4868,7 @@ namespace MAPeD
 					{
 						progress_bar_show( true, "Blocks (2x2) -> Tiles (4x4)", false );
 						
-						if( set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) )
+						if( set_screen_data_type( data_sets_manager.e_screen_data_type.Tiles4x4 ) )
 						{
 							update_graphics( false, true, false );
 						}
@@ -4879,7 +4879,7 @@ namespace MAPeD
 			}
 		}
 		
-		void RBtnScreenDataBlocksClick_Event(object sender, EventArgs e)
+		private void RBtnScreenDataBlocksClick( object sender, EventArgs e )
 		{
 			if( m_data_manager.tiles_data_cnt > 0 )
 			{
@@ -4891,7 +4891,7 @@ namespace MAPeD
 					{
 						progress_bar_show( true, "Tiles (4x4) -> Blocks (2x2)", false );
 						
-						if( set_screen_data_type( data_sets_manager.EScreenDataType.sdt_Blocks2x2 ) )
+						if( set_screen_data_type( data_sets_manager.e_screen_data_type.Blocks2x2 ) )
 						{
 							update_graphics( false, true, false );
 						}
@@ -4902,7 +4902,7 @@ namespace MAPeD
 			}
 		}
 		
-		bool set_screen_data_type( data_sets_manager.EScreenDataType _type )
+		private bool set_screen_data_type( data_sets_manager.e_screen_data_type _type )
 		{
 			try
 			{
@@ -4918,7 +4918,7 @@ namespace MAPeD
 			
 			switch( _type )
 			{
-				case data_sets_manager.EScreenDataType.sdt_Tiles4x4:
+				case data_sets_manager.e_screen_data_type.Tiles4x4:
 					{
 						RBtnScreenDataTiles.Checked		= true;
 						RBtnScreenDataBlocks.Checked	= false;
@@ -4930,12 +4930,12 @@ namespace MAPeD
 						GrpBoxPainter.Text = "Data Type: Tiles4x4";
 						clear_active_tile_img();
 						
-						m_tile_list_manager.visible( tile_list.EType.t_Tiles, true );
-						m_tile_list_manager.reset( tile_list.EType.t_Tiles );
+						m_tile_list_manager.visible( tile_list.e_data_type.Tiles, true );
+						m_tile_list_manager.reset( tile_list.e_data_type.Tiles );
 					}
 					break;
 
-				case data_sets_manager.EScreenDataType.sdt_Blocks2x2:
+				case data_sets_manager.e_screen_data_type.Blocks2x2:
 					{
 						RBtnScreenDataTiles.Checked		= false;
 						RBtnScreenDataBlocks.Checked	= true;
@@ -4949,7 +4949,7 @@ namespace MAPeD
 						
 						m_tiles_processor.tile_select_event( -1, null );
 						
-						m_tile_list_manager.visible( tile_list.EType.t_Tiles, false );
+						m_tile_list_manager.visible( tile_list.e_data_type.Tiles, false );
 					}
 					break;
 			}
@@ -4966,20 +4966,20 @@ namespace MAPeD
 #endregion
 // PATTERNS MANAGER **********************************************************************************//
 #region patterns manager
-		void patterns_manager_reset_active_pattern()
+		private void patterns_manager_reset_active_pattern()
 		{
 			patterns_manager_reset_state();
 			
 			TreeViewPatterns.SelectedNode = null;
 			
-			m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
+			m_layout_editor.set_param( layout_editor_base.e_mode.Patterns, layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
 			
 			patterns_manager_update_preview();
 			
 			m_layout_editor.update();
 		}
 		
-		void patterns_manager_update_data()
+		private void patterns_manager_update_data()
 		{
 			m_pattern_preview.reset_scale();
 			
@@ -4990,14 +4990,14 @@ namespace MAPeD
 			patterns_manager_update_preview();
 		}
 
-		void patterns_manager_reset_state()
+		private void patterns_manager_reset_state()
 		{
 			CheckBoxPatternAdd.Checked = false;
 			
 			patterns_manager_enable( true );
 		}
 		
-		void patterns_manager_enable( bool _on )
+		private void patterns_manager_enable( bool _on )
 		{
 			TreeViewPatterns.Enabled		= _on;
 			
@@ -5012,7 +5012,7 @@ namespace MAPeD
 			BtnPatternReset.Enabled			= _on;
 		}
 
-		void patterns_manager_update_tree_view()
+		private void patterns_manager_update_tree_view()
 		{
 			TreeViewPatterns.BeginUpdate();
 			{
@@ -5045,7 +5045,7 @@ namespace MAPeD
 			}
 		}
 		
-		bool patterns_manager_pattern_rename( string _grp_name, string _old_name, string _new_name )
+		private bool patterns_manager_pattern_rename( string _grp_name, string _old_name, string _new_name )
 		{
 			tiles_data data = get_curr_tiles_data();
 			
@@ -5061,13 +5061,13 @@ namespace MAPeD
 			return false;
 		}
 		
-		bool patterns_manager_pattern_add( string _grp_name, pattern_data _pattern, bool _add_to_data_bank )
+		private bool patterns_manager_pattern_add( string _grp_name, pattern_data _pattern, bool _add_to_data_bank )
 		{
 			TreeNode[] nodes_arr = TreeViewPatterns.Nodes.Find( _pattern.name, true );
 
 			if( nodes_arr.Length > 0 )
 			{
-				MainForm.message_box( "A pattern with the same name (" + _pattern.name +  ") is already exist!", "Add Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "A pattern with the same name (" + _pattern.name +  ") is already exist!", "Add Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				
 				return false;
 			}
@@ -5106,7 +5106,7 @@ namespace MAPeD
 			return false;
 		}
 		
-		bool patterns_manager_pattern_delete( string _pattern_name, string _grp_name )
+		private bool patterns_manager_pattern_delete( string _pattern_name, string _grp_name )
 		{
 			TreeNode[] nodes_arr = TreeViewPatterns.Nodes.Find( _pattern_name, true );
 			
@@ -5149,7 +5149,7 @@ namespace MAPeD
 			return false;
 		}
 		
-		bool patterns_manager_pattern_group_rename( string _old_name, string _new_name )
+		private bool patterns_manager_pattern_group_rename( string _old_name, string _new_name )
 		{
 			tiles_data data = get_curr_tiles_data();
 			
@@ -5166,13 +5166,13 @@ namespace MAPeD
 			return false;
 		}
 		
-		bool patterns_manager_pattern_group_add( string _name, bool _add_to_data_bank )
+		private bool patterns_manager_pattern_group_add( string _name, bool _add_to_data_bank )
 		{
 			TreeNode[] nodes_arr = TreeViewPatterns.Nodes.Find( _name, true );
 			
 			if( nodes_arr.Length > 0 )
 			{
-				MainForm.message_box( "An item with the same name (" + _name +  ") is already exist!", "Add Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "An item with the same name (" + _name +  ") is already exist!", "Add Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				
 				return false;
 			}
@@ -5209,7 +5209,7 @@ namespace MAPeD
 				{
 					if( nodes_arr[ 0 ].FirstNode != null )
 					{
-						if( MainForm.message_box( "The selected group is not empty!\n\nRemove all child patterns?", "Delete Group", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+						if( message_box( "The selected group is not empty!\n\nRemove all child patterns?", "Delete Group", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 						{
 							TreeViewPatterns.BeginUpdate();
 							{
@@ -5250,7 +5250,7 @@ namespace MAPeD
 			return false;
 		}
 
-		void patterns_manager_update_preview()
+		private void patterns_manager_update_preview()
 		{
 			m_pattern_preview.set_scaled_image( null );
 			m_pattern_preview.scale_enabled( false );
@@ -5308,7 +5308,7 @@ namespace MAPeD
 			int scr_tile_size	= utils.CONST_SCREEN_TILES_SIZE >> 1;
 			List< Bitmap > img_list;
 			
-			if( m_data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			if( m_data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 			{
 				img_list = m_imagelist_manager.get_tiles_image_list();
 			}
@@ -5330,19 +5330,19 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnPatternGroupAddClick_Event(object sender, EventArgs e)
+		private void BtnPatternGroupAddClick( object sender, EventArgs e )
 		{
 			m_object_name_form.Text = "Add Group";
 			
 			m_object_name_form.edit_str = "GROUP";
 			
-			if( m_object_name_form.ShowWindow() == DialogResult.OK )
+			if( m_object_name_form.show_window() == DialogResult.OK )
 			{
 				patterns_manager_pattern_group_add( m_object_name_form.edit_str, true );
 			}
 		}
 		
-		void BtnPatternGroupDeleteClick_Event(object sender, EventArgs e)
+		private void BtnPatternGroupDeleteClick( object sender, EventArgs e )
 		{
 			TreeNode sel_node = TreeViewPatterns.SelectedNode;
 			
@@ -5356,29 +5356,29 @@ namespace MAPeD
 				}
 				else
 				{
-					MainForm.message_box( "Please, select a group!", "Delete Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "Please, select a group!", "Delete Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 			else
 			{
 				if( TreeViewPatterns.Nodes.Count > 0 )
 				{
-					MainForm.message_box( "Please, select a group!", "Delete Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "Please, select a group!", "Delete Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 				else
 				{
-					MainForm.message_box( "No data!", "Delete Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "No data!", "Delete Group", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 		}
 		
-		void BtnPatternAddClick_Event(object sender, EventArgs e)
+		private void BtnPatternAddClick( object sender, EventArgs e )
 		{
 			TreeNode sel_node = TreeViewPatterns.SelectedNode;
 			
 			if( sel_node == null || sel_node.Parent != null )
 			{
-				MainForm.message_box( "Please, select a group!", "Add Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "Please, select a group!", "Add Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				
 				CheckBoxPatternAdd.Checked = false;
 				
@@ -5393,33 +5393,33 @@ namespace MAPeD
 			patterns_manager_update_preview();
 		}
 
-		void BtnPatternAddChanged_Event(object sender, EventArgs e)
+		private void BtnPatternAddChanged( object sender, EventArgs e )
 		{
 			if( CheckBoxPatternAdd.Checked )
 			{
 				CheckBoxPatternAdd.FlatStyle = FlatStyle.Standard;
 				CheckBoxPatternAdd.Text = "Cancel";
 				
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_EXTRACT_BEGIN, null );
+				m_layout_editor.set_param( layout_editor_base.e_mode.Patterns, layout_editor_param.CONST_SET_PTTRN_EXTRACT_BEGIN, null );
 			}
 			else
 			{
 				CheckBoxPatternAdd.FlatStyle = FlatStyle.System;
 				CheckBoxPatternAdd.Text = "Add";
 				
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
+				m_layout_editor.set_param( layout_editor_base.e_mode.Patterns, layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
 			}
 			
 			m_layout_editor.update();
 		}
 		
-		void PatternExtractEnd_Event(object sender, EventArgs e)
+		private void on_pattern_extract_end( object sender, EventArgs e )
 		{
 			m_object_name_form.Text = "Add Pattern";
 			
 			m_object_name_form.edit_str = "PATTERN";
 			
-			if( m_object_name_form.ShowWindow() == DialogResult.OK )
+			if( m_object_name_form.show_window() == DialogResult.OK )
 			{
 				patterns_manager_reset_state();
 				
@@ -5440,12 +5440,12 @@ namespace MAPeD
 			}
 		}
 		
-		void PatternPlaceCancel_Event(object sender, EventArgs e)
+		private void on_pattern_place_cancel( object sender, EventArgs e )
 		{
 			patterns_manager_reset_active_pattern();
 		}
 		
-		void BtnPatternDeleteClick_Event(object sender, EventArgs e)
+		private void BtnPatternDeleteClick( object sender, EventArgs e )
 		{
 			TreeNode sel_node = TreeViewPatterns.SelectedNode;
 			
@@ -5453,7 +5453,7 @@ namespace MAPeD
 			{
 				if( sel_node.Parent != null )
 				{
-					if( MainForm.message_box( "Are you sure?", "Delete Pattern", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
+					if( message_box( "Are you sure?", "Delete Pattern", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
 						if( patterns_manager_pattern_delete( sel_node.Name, sel_node.Parent.Name ) )
 						{
@@ -5465,23 +5465,23 @@ namespace MAPeD
 				}
 				else
 				{
-					MainForm.message_box( "Please, select a pattern!", "Delete Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "Please, select a pattern!", "Delete Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 			else
 			{
 				if( TreeViewPatterns.Nodes.Count > 0 )
 				{
-					MainForm.message_box( "Please, select a pattern!", "Delete Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "Please, select a pattern!", "Delete Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 				else
 				{
-					MainForm.message_box( "No data!", "Delete Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
+					message_box( "No data!", "Delete Pattern", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 		}
 		
-		void BtnPatternRenameClick_Event(object sender, EventArgs e)
+		private void BtnPatternRenameClick( object sender, EventArgs e )
 		{
 			TreeNode sel_node = TreeViewPatterns.SelectedNode;
 			
@@ -5491,24 +5491,24 @@ namespace MAPeD
 			}
 			else
 			{
-				MainForm.message_box( "Please, select an item!", "Rename Item", MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "Please, select an item!", "Rename Item", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
-		void BtnPatternResetClick_Event(object sender, EventArgs e)
+		private void BtnPatternResetClick( object sender, EventArgs e )
 		{
 			patterns_manager_reset_active_pattern();
 		}
 		
-		void PatternsTreeViewNodeSelect_Event(object sender, TreeViewEventArgs e)
+		private void PatternsTreeViewNodeSelect( object sender, TreeViewEventArgs e )
 		{
 			if( TreeViewPatterns.SelectedNode.Parent != null )
 			{
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_PLACE, get_curr_tiles_data().get_pattern_by_name( TreeViewPatterns.SelectedNode.Name ) );
+				m_layout_editor.set_param( layout_editor_base.e_mode.Patterns, layout_editor_param.CONST_SET_PTTRN_PLACE, get_curr_tiles_data().get_pattern_by_name( TreeViewPatterns.SelectedNode.Name ) );
 			}
 			else
 			{
-				m_layout_editor.set_param( layout_editor_base.EMode.em_Patterns, layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
+				m_layout_editor.set_param( layout_editor_base.e_mode.Patterns, layout_editor_param.CONST_SET_PTTRN_IDLE_STATE, null );
 			}
 			
 			patterns_manager_update_preview();
@@ -5516,7 +5516,7 @@ namespace MAPeD
 			m_layout_editor.update();
 		}
 		
-		void PatternsTreeViewNodeRename_Event(object sender, NodeLabelEditEventArgs e)
+		private void PatternsTreeViewNodeRename( object sender, NodeLabelEditEventArgs e )
 		{
 			if( e.Label != null )
 			{
@@ -5546,7 +5546,7 @@ namespace MAPeD
 			}
 		}
 
-		private void PatternsMngr_MouseEnter(object sender, EventArgs e)
+		private void on_patterns_manager_mouse_enter( object sender, EventArgs e )
 		{
 			if( TreeViewPatterns.Enabled )
 			{

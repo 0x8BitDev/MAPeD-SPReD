@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 26.11.2018
  * Time: 17:38
  */
@@ -126,7 +126,7 @@ namespace MAPeD
 			this.BtnBlocks.TabIndex = 1;
 			this.BtnBlocks.Text = "&Blocks";
 			this.BtnBlocks.UseVisualStyleBackColor = true;
-			this.BtnBlocks.Click += new System.EventHandler(this.BtnBlocksClick_Event);
+			this.BtnBlocks.Click += new System.EventHandler(this.BtnBlocksClick);
 			// 
 			// BtnTiles
 			// 
@@ -136,7 +136,7 @@ namespace MAPeD
 			this.BtnTiles.TabIndex = 0;
 			this.BtnTiles.Text = "&Tiles";
 			this.BtnTiles.UseVisualStyleBackColor = true;
-			this.BtnTiles.Click += new System.EventHandler(this.BtnTilesClick_Event);
+			this.BtnTiles.Click += new System.EventHandler(this.BtnTilesClick);
 			// 
 			// BtnClose
 			// 
@@ -147,7 +147,7 @@ namespace MAPeD
 			this.BtnClose.TabIndex = 2;
 			this.BtnClose.Text = "&Close";
 			this.BtnClose.UseVisualStyleBackColor = true;
-			this.BtnClose.Click += new System.EventHandler(this.BtnCloseClick_Event);
+			this.BtnClose.Click += new System.EventHandler(this.BtnCloseClick);
 			// 
 			// tiles_palette_form
 			// 
@@ -160,8 +160,8 @@ namespace MAPeD
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Tiles/Blocks Palette";
 			this.TopMost = true;
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Closing_Event);
-			this.Load += new System.EventHandler(this.BtnCloseClick_Event);
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnClosing);
+			this.Load += new System.EventHandler(this.BtnCloseClick);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();

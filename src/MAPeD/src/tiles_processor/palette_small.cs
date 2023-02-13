@@ -64,7 +64,7 @@ namespace MAPeD
 		{
 			m_id = _id;
 			
-			m_pix_box.MouseClick += new MouseEventHandler( this.Palette_MouseClick );
+			m_pix_box.MouseClick += new MouseEventHandler( on_mouse_click );
 			
 			update();
 			
@@ -74,22 +74,22 @@ namespace MAPeD
 			
 			item_paste_color.Enabled = false;	// disabled by default, there is nothing to paste
 			
-			item_copy_color.Click	+= new EventHandler( ContextMenuCopy_Click );
-			item_paste_color.Click	+= new EventHandler( ContextMenuPaste_Click );
+			item_copy_color.Click	+= new EventHandler( on_context_menu_item_copy_click );
+			item_paste_color.Click	+= new EventHandler( on_context_menu_item_paste_click );
 			
-			m_pix_box.MouseDown += new MouseEventHandler( Palette_MouseDown );
+			m_pix_box.MouseDown += new MouseEventHandler( on_mouse_down );
 #else
 			_pbox.ContextMenuStrip = null;
 #endif
 		}
 #if DEF_COLORS_COPY_PASTE
-		private void Palette_MouseDown(object sender, MouseEventArgs e)
+		private void on_mouse_down( object sender, MouseEventArgs e )
 		{
 			if( e.Button == MouseButtons.Right )
 			{
 				if( ( sender as PictureBox ) == m_pix_box )
 				{
-					Palette_MouseClick( sender, e );
+					on_mouse_click( sender, e );
 					
 					if( m_copied_clr_ind >= 0 )
 					{
@@ -99,7 +99,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void ContextMenuCopy_Click(object sender, EventArgs e)
+		private void on_context_menu_item_copy_click( object sender, EventArgs e )
 		{
 			if( m_sel_clr_ind >= 0 )
 			{
@@ -107,7 +107,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void ContextMenuPaste_Click(object sender, EventArgs e)
+		private void on_context_menu_item_paste_click( object sender, EventArgs e )
 		{
 			if( m_sel_clr_ind >= 0 )
 			{
@@ -180,7 +180,7 @@ namespace MAPeD
 			invalidate();
 		}
 		
-		private void Palette_MouseClick(object sender, MouseEventArgs e)
+		private void on_mouse_click( object sender, MouseEventArgs e )
 		{
 			active = true;
 			

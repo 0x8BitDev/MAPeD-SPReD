@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 26.03.2021
  * Time: 13:05
  */
@@ -19,20 +19,20 @@ namespace MAPeD
 	
 	public interface i_project_data_converter
 	{
-		void load_CHR_bank( BinaryReader _br, byte _ver, platform_data.EPlatformType _prj_platform, ref byte[] _CHR_bank );
+		void load_CHR_bank( BinaryReader _br, byte _ver, platform_data.e_platform_type _prj_platform, ref byte[] _CHR_bank );
 
-		void load_palettes( BinaryReader _br, byte _ver, platform_data.EPlatformType _prj_platform, string _file_ext, tiles_data _data );
+		void load_palettes( BinaryReader _br, byte _ver, platform_data.e_platform_type _prj_platform, string _file_ext, tiles_data _data );
 		
-		void pre_load_block_data( platform_data.EPlatformType _prj_platform );
+		void pre_load_block_data( platform_data.e_platform_type _prj_platform );
 		void post_load_block_data( tiles_data _data );
-		uint convert_block_data( byte _ver, platform_data.EPlatformType _prj_platform, int _ind, uint _data );
+		uint convert_block_data( byte _ver, platform_data.e_platform_type _prj_platform, int _ind, uint _data );
 		
-		void palettes_processing( byte _ver, platform_data.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main );
+		void palettes_processing( byte _ver, platform_data.e_platform_type _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main );
 		
-		void load_screens(	BinaryReader 						_br, 
-							project_data_desc					_prj_data, 
-							data_sets_manager.EScreenDataType 	_scr_type, 
-							tiles_data 							_data );
+		void load_screens(	BinaryReader							_br,
+							project_data_desc						_prj_data,
+							data_sets_manager.e_screen_data_type	_scr_type,
+							tiles_data								_data );
 		
 		Rectangle get_native_scr_rect();
 		Rectangle get_prj_scr_rect();
@@ -56,12 +56,12 @@ namespace MAPeD
 		private Rectangle m_native_scr_rect	= new Rectangle( 0, 0, 0, 0 );
 		private Rectangle m_prj_scr_rect	= new Rectangle( 0, 0, 0, 0 );
 		
-		public virtual void load_CHR_bank( BinaryReader _br, byte _ver, platform_data.EPlatformType _prj_platform, ref byte[] _CHR_bank )
+		public virtual void load_CHR_bank( BinaryReader _br, byte _ver, platform_data.e_platform_type _prj_platform, ref byte[] _CHR_bank )
 		{
 			load_CHR_data( _br, _ver, _prj_platform, ref _CHR_bank, delegate( byte _val ) { return _val; });
 		}
 		
-		protected void load_CHR_data( BinaryReader _br, byte _ver, platform_data.EPlatformType _prj_platform, ref byte[] _CHR_bank, Func< byte, byte > _func )
+		protected void load_CHR_data( BinaryReader _br, byte _ver, platform_data.e_platform_type _prj_platform, ref byte[] _CHR_bank, Func< byte, byte > _func )
 		{
 			int app_data_len = platform_data.get_CHR_bank_pages_cnt() * utils.CONST_CHR_BANK_PAGE_SIZE;
 			int prj_data_len = platform_data.get_CHR_bank_pages_cnt( _prj_platform ) * utils.CONST_CHR_BANK_PAGE_SIZE;
@@ -80,7 +80,7 @@ namespace MAPeD
 			}
 		}
 
-		public virtual void load_palettes( BinaryReader _br, byte _ver, platform_data.EPlatformType _prj_platform, string _file_ext, tiles_data _data )
+		public virtual void load_palettes( BinaryReader _br, byte _ver, platform_data.e_platform_type _prj_platform, string _file_ext, tiles_data _data )
 		{
 			int i;
 #if DEF_NES
@@ -131,9 +131,9 @@ namespace MAPeD
 			}
 		}
 
-		public void pre_load_block_data( platform_data.EPlatformType _prj_platform )
+		public void pre_load_block_data( platform_data.e_platform_type _prj_platform )
 		{
-			if( _prj_platform == platform_data.EPlatformType.pt_NES && platform_data.get_platform_type() != platform_data.EPlatformType.pt_NES )
+			if( _prj_platform == platform_data.e_platform_type.NES && platform_data.get_platform_type() != platform_data.e_platform_type.NES )
 			{
 				m_dict_CHR_palette_ind = new Dictionary<int, int>( platform_data.get_max_blocks_UINT_cnt() );
 			}
@@ -177,11 +177,11 @@ namespace MAPeD
 			}
 		}
 		
-		public uint convert_block_data( byte _ver, platform_data.EPlatformType _prj_platform, int _ind, uint _data )
+		public uint convert_block_data( byte _ver, platform_data.e_platform_type _prj_platform, int _ind, uint _data )
 		{
 			tiles_data inner_data = get_last_tiles_data();
 
-			if( _ver <= 2 && _prj_platform == platform_data.EPlatformType.pt_SMS )
+			if( _ver <= 2 && _prj_platform == platform_data.e_platform_type.SMS )
 			{
 				// OLD SMS: [ property_id ](4) [ CHR bank ](2) [ hv_flip ](2) [CHR ind](8)
 				// NEW SMS: [ property_id ](4) [ hv_flip ](2) [ palette ind ](1) [CHR ind](9)
@@ -191,8 +191,8 @@ namespace MAPeD
 			
 			if( m_dict_CHR_palette_ind != null )
 			{
-				int CHR_id		= m_map_data_app_src.unpack_data( map_data_config_base.EData.ed_CHR_id,		_data );
-				int palette_ind	= m_map_data_app_src.unpack_data( map_data_config_base.EData.ed_Palette,	_data );
+				int CHR_id		= m_map_data_app_src.unpack_data( map_data_config_base.e_data_type.CHRId,	_data );
+				int palette_ind	= m_map_data_app_src.unpack_data( map_data_config_base.e_data_type.Palette,	_data );
 				
 				if( !m_dict_CHR_palette_ind.ContainsKey( CHR_id ) )
 				{
@@ -200,7 +200,7 @@ namespace MAPeD
 				}
 				
 				// reset palette index
-				_data = m_map_data_app_src.pack_data( map_data_config_base.EData.ed_Palette, 0, _data );
+				_data = m_map_data_app_src.pack_data( map_data_config_base.e_data_type.Palette, 0, _data );
 				
 				inner_data.blocks[ _ind ] = _data;
 			}
@@ -212,7 +212,7 @@ namespace MAPeD
 			return m_map_data_app_dst.repack( m_map_data_app_src, _data );
 		}
 
-		public virtual void palettes_processing( byte _ver, platform_data.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main )
+		public virtual void palettes_processing( byte _ver, platform_data.e_platform_type _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main )
 		{
 			int				i;
 			int				plt_n;
@@ -250,24 +250,24 @@ namespace MAPeD
 			return m_inner_tiles_data[ m_inner_tiles_data.Count - 1 ];
 		}
 		
-		public virtual void load_screens(	BinaryReader 						_br, 
-											project_data_desc					_prj_data, 
-											data_sets_manager.EScreenDataType 	_scr_type, 
-											tiles_data 							_data )
+		public virtual void load_screens(	BinaryReader							_br,
+											project_data_desc						_prj_data,
+											data_sets_manager.e_screen_data_type	_scr_type,
+											tiles_data								_data )
 		{
-			int prj_scr_tiles_width		= ( _prj_data.m_scr_blocks_width == 0xff ) ? platform_data.get_screen_tiles_width_by_file_ext_uni( _prj_data.m_file_ext, _scr_type, true ):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_width + 1 ) >> 1 ):_prj_data.m_scr_blocks_width );
-			int prj_scr_tiles_height	= ( _prj_data.m_scr_blocks_height == 0xff ) ? platform_data.get_screen_tiles_height_by_file_ext_uni( _prj_data.m_file_ext, _scr_type, true ):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_height + 1 ) >> 1 ):_prj_data.m_scr_blocks_height );
+			int prj_scr_tiles_width		= ( _prj_data.m_scr_blocks_width == 0xff ) ? platform_data.get_screen_tiles_width_by_file_ext_uni( _prj_data.m_file_ext, _scr_type, true ):( _scr_type == data_sets_manager.e_screen_data_type.Tiles4x4 ? ( ( _prj_data.m_scr_blocks_width + 1 ) >> 1 ):_prj_data.m_scr_blocks_width );
+			int prj_scr_tiles_height	= ( _prj_data.m_scr_blocks_height == 0xff ) ? platform_data.get_screen_tiles_height_by_file_ext_uni( _prj_data.m_file_ext, _scr_type, true ):( _scr_type == data_sets_manager.e_screen_data_type.Tiles4x4 ? ( ( _prj_data.m_scr_blocks_height + 1 ) >> 1 ):_prj_data.m_scr_blocks_height );
 			
 			load_screens( _br, _prj_data.m_ver, _scr_type, _prj_data.m_scr_align, prj_scr_tiles_width, prj_scr_tiles_height, _data );
 		}
 		
-		protected void load_screens(	BinaryReader 									_br, 
-										byte 											_ver, 
-										data_sets_manager.EScreenDataType 				_scr_type, 
-										data_conversion_options_form.EScreensAlignMode 	_scr_align_mode, 
-										int 											_prj_scr_tiles_width, 
-										int 											_prj_scr_tiles_height, 
-										tiles_data 										_data )
+		protected void load_screens(	BinaryReader										_br,
+										byte												_ver,
+										data_sets_manager.e_screen_data_type				_scr_type,
+										data_conversion_options_form.e_screen_align_mode	_scr_align_mode,
+										int													_prj_scr_tiles_width,
+										int													_prj_scr_tiles_height,
+										tiles_data											_data )
 		{
 			screen_data scr;
 			
@@ -358,8 +358,8 @@ namespace MAPeD
 			validate_screens( _scr_type, _data );
 		}
 		
-		private void validate_screens(	data_sets_manager.EScreenDataType 	_scr_type, 
-										tiles_data 							_data )
+		private void validate_screens(	data_sets_manager.e_screen_data_type	_scr_type,
+										tiles_data								_data )
 		{
 			int			scr_n;
 			int			tile_n;
@@ -376,7 +376,7 @@ namespace MAPeD
 				{
 					tile_val = scr.m_arr[ tile_n ];
 					
-					if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					if( _scr_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 					{
 						if( tile_val >= _data.tiles.Length )
 						{
@@ -455,7 +455,7 @@ namespace MAPeD
 			}
 			else
 			{
-				throw new Exception( "There is no free space in the active CHR bank!" );				
+				throw new Exception( "There is no free space in the active CHR bank!" );
 			}
 			
 			return added_CHRs;
@@ -463,7 +463,7 @@ namespace MAPeD
 		
 		protected virtual void convert_CHR( int _i, ref byte[] _tmp_data_arr, ref byte[] _CHR_data_arr )
 		{
-			throw new Exception( "Not implemented!" );				
+			throw new Exception( "Not implemented!" );
 		}
 	}
 #if DEF_NES
@@ -475,7 +475,7 @@ namespace MAPeD
 			//...
 		}
 		
-		public override void load_CHR_bank( BinaryReader _br, byte _ver, platform_data.EPlatformType _prj_platform, ref byte[] _CHR_bank )
+		public override void load_CHR_bank( BinaryReader _br, byte _ver, platform_data.e_platform_type _prj_platform, ref byte[] _CHR_bank )
 		{
 			load_CHR_data( _br, _ver, _prj_platform, ref _CHR_bank, delegate( byte _val ) { return ( byte )( _val & 0x03 ); });
 		}
@@ -551,15 +551,15 @@ namespace MAPeD
 			}
 		}
 		
-		public override void load_screens(	BinaryReader 						_br, 
-											project_data_desc					_prj_data, 
-											data_sets_manager.EScreenDataType	_scr_type, 
-											tiles_data 							_data )
+		public override void load_screens(	BinaryReader							_br,
+											project_data_desc						_prj_data,
+											data_sets_manager.e_screen_data_type	_scr_type,
+											tiles_data								_data )
 		{
 			if( platform_data.get_platform_type_by_file_ext( _prj_data.m_file_ext ) == platform_data.get_platform_type() )
 			{
-				int prj_scr_tiles_width		= ( _prj_data.m_scr_blocks_width == 0xff ) ? (_scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 8:16):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_width + 1 ) >> 1 ):_prj_data.m_scr_blocks_width );
-				int prj_scr_tiles_height	= ( _prj_data.m_scr_blocks_height == 0xff ) ? (_scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 7:14):( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( ( _prj_data.m_scr_blocks_height + 1 ) >> 1 ):_prj_data.m_scr_blocks_height );
+				int prj_scr_tiles_width		= ( _prj_data.m_scr_blocks_width == 0xff ) ? (_scr_type == data_sets_manager.e_screen_data_type.Tiles4x4 ? 8:16):( _scr_type == data_sets_manager.e_screen_data_type.Tiles4x4 ? ( ( _prj_data.m_scr_blocks_width + 1 ) >> 1 ):_prj_data.m_scr_blocks_width );
+				int prj_scr_tiles_height	= ( _prj_data.m_scr_blocks_height == 0xff ) ? (_scr_type == data_sets_manager.e_screen_data_type.Tiles4x4 ? 7:14):( _scr_type == data_sets_manager.e_screen_data_type.Tiles4x4 ? ( ( _prj_data.m_scr_blocks_height + 1 ) >> 1 ):_prj_data.m_scr_blocks_height );
 				
 				load_screens( _br, _prj_data.m_ver, _scr_type, _prj_data.m_scr_align, prj_scr_tiles_width, prj_scr_tiles_height, _data );
 			}
@@ -587,7 +587,7 @@ namespace MAPeD
 			//...
 		}
 		
-		public override void palettes_processing( byte _ver, platform_data.EPlatformType _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main )
+		public override void palettes_processing( byte _ver, platform_data.e_platform_type _prj_platform, bool _convert_colors, data_sets_manager _data_mngr, int[] _plt_main )
 		{
 			int				i;
 			int 			plt_n;
@@ -646,9 +646,9 @@ namespace MAPeD
 					{
 						block_data = inner_data.blocks[ block_n ];
 						
-						if( m_map_data_app_src.unpack_data( map_data_config_base.EData.ed_Palette, block_data ) == plt_n )
+						if( m_map_data_app_src.unpack_data( map_data_config_base.e_data_type.Palette, block_data ) == plt_n )
 						{
-							chr_id = m_map_data_app_src.unpack_data( map_data_config_base.EData.ed_CHR_id, block_data );
+							chr_id = m_map_data_app_src.unpack_data( map_data_config_base.e_data_type.CHRId, block_data );
 							
 							if( chr_id_flags[ chr_id ] == false )
 							{
@@ -822,7 +822,7 @@ namespace MAPeD
 		public byte		m_scr_blocks_width;
 		public byte		m_scr_blocks_height;
 
-		public data_conversion_options_form.EScreensAlignMode	m_scr_align;
+		public data_conversion_options_form.e_screen_align_mode	m_scr_align;
 		public bool												m_convert_colors;
 		public bool												m_use_file_screen_resolution;
 		
@@ -836,7 +836,7 @@ namespace MAPeD
 			m_scr_blocks_width	= 0xff;
 			m_scr_blocks_height	= 0xff;
 	
-			m_scr_align						= data_conversion_options_form.EScreensAlignMode.sam_MidCenter;
+			m_scr_align						= data_conversion_options_form.e_screen_align_mode.MidCenter;
 			m_convert_colors				= true;
 			m_use_file_screen_resolution	= false;
 			

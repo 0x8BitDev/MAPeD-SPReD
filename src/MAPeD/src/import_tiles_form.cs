@@ -99,20 +99,20 @@ namespace MAPeD
 #endif
 		}
 		
-		void CheckBoxBlocksChanged_Event(object sender, EventArgs e)
+		private void CheckBoxBlocksChanged( object sender, EventArgs e )
 		{
 			CheckBoxApplyPalette.Enabled = CheckBoxBlocks.Checked;
 			CheckBoxApplyPalette.Checked = false;
 			CheckBoxTiles.Checked = CheckBoxBlocks.Checked ? CheckBoxTiles.Checked:false;
 		}
 		
-		void CheckBoxTilesChanged_Event(object sender, EventArgs e)
+		private void CheckBoxTilesChanged( object sender, EventArgs e )
 		{
 			CheckBoxBlocks.Enabled = !CheckBoxTiles.Checked;
 			CheckBoxBlocks.Checked =  CheckBoxTiles.Checked ? true:CheckBoxBlocks.Checked;
 		}
 		
-		void CheckBoxGameMapChanged_Event(object sender, EventArgs e)
+		private void CheckBoxGameMapChanged( object sender, EventArgs e )
 		{
 			CheckBoxBlocks.Checked = CheckBoxTiles.Checked = CheckBoxGameMap.Checked ? true:CheckBoxTiles.Checked;
 			CheckBoxApplyPalette.Checked = CheckBoxGameMap.Checked ? true:CheckBoxApplyPalette.Checked;
@@ -120,7 +120,7 @@ namespace MAPeD
 			CheckBoxDeleteEmptyScreens.Checked = CheckBoxDeleteEmptyScreens.Enabled ? CheckBoxDeleteEmptyScreens.Checked:false;
 		}
 
-		void CheckBoxApplyPaletteChanged_Event(object sender, EventArgs e)
+		private void CheckBoxApplyPaletteChanged( object sender, EventArgs e )
 		{
 #if DEF_NES			
 			CheckBoxSkipZeroCHRBlock.Enabled = !CheckBoxApplyPalette.Checked;
@@ -142,7 +142,7 @@ namespace MAPeD
 		{
 			bool import_game_map_as_is = true;
 
-			int tile_size = ( ( platform_data.get_half_tile_x() < 0 ) && ( platform_data.get_half_tile_y() < 0 ) ) ? ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? 32:16 ):16;
+			int tile_size = ( ( platform_data.get_half_tile_x() < 0 ) && ( platform_data.get_half_tile_y() < 0 ) ) ? ( _data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 ? 32:16 ):16;
 
 			if( ( _bmp.Width % tile_size ) != 0 || ( _bmp.Height % tile_size ) != 0 )
 			{
@@ -227,8 +227,8 @@ namespace MAPeD
 				int half_tile_y_ind = platform_data.get_half_tile_y();
 
 				// clamp image to nearest tile/block multiple size
-				int bmp_width	= ( half_tile_x_ind < 0 ) ? ( _bmp.Width - ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( _bmp.Width % 32 ):( _bmp.Width % 16 ) ) ):( _bmp.Width - ( _bmp.Width % 16 ) );
-				int bmp_height	= ( half_tile_y_ind < 0 ) ? ( _bmp.Height - ( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ? ( _bmp.Height % 32 ):( _bmp.Height % 16 ) ) ):( _bmp.Height - ( _bmp.Height % 16 ) );
+				int bmp_width	= ( half_tile_x_ind < 0 ) ? ( _bmp.Width - ( _data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 ? ( _bmp.Width % 32 ):( _bmp.Width % 16 ) ) ):( _bmp.Width - ( _bmp.Width % 16 ) );
+				int bmp_height	= ( half_tile_y_ind < 0 ) ? ( _bmp.Height - ( _data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 ? ( _bmp.Height % 32 ):( _bmp.Height % 16 ) ) ):( _bmp.Height - ( _bmp.Height % 16 ) );
 
 				int tile_cnt	= ( bmp_width >> 4 ) * ( bmp_height >> 4 );
 				int tile_n		= 0;
@@ -298,7 +298,7 @@ namespace MAPeD
 						_progress_status.Report( "Tiles data" );
 					}
 
-					if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 && import_game_map )
+					if( _data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 && import_game_map )
 					{
 						if( half_tile_x_ind >= 0 )
 						{
@@ -321,7 +321,7 @@ namespace MAPeD
 							
 							for( int block_y = 0; block_y < 32; block_y += 16 )
 							{
-								if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
+								if( _data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Blocks2x2 )
 								{
 									if( tile_y + block_y >= bmp_height )
 									{
@@ -331,7 +331,7 @@ namespace MAPeD
 								
 								block_offset_y = tile_y + block_y;
 
-								if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 && ( half_tile_y_ind >= 0 ) )
+								if( _data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 && ( half_tile_y_ind >= 0 ) )
 								{
 									block_offset_y -= ( tile_y / ( platform_data.get_screen_tiles_height() << 5 ) ) << 4;
 								}
@@ -340,7 +340,7 @@ namespace MAPeD
 								{
 									valid_block	= true;
 									
-									if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
+									if( _data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Blocks2x2 )
 									{
 										if( tile_x + block_x >= bmp_width )
 										{
@@ -350,14 +350,14 @@ namespace MAPeD
 									
 									block_offset_x = tile_x + block_x;
 
-									if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 && ( half_tile_x_ind >= 0 ) )
+									if( _data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 && ( half_tile_x_ind >= 0 ) )
 									{
 										block_offset_x -= ( tile_x / ( platform_data.get_screen_tiles_width() << 5 ) ) << 4;
 									}
 									
 									if( ( block_offset_x < _bmp.Width ) && ( block_offset_y < _bmp.Height ) )
 									{
-										if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 && (
+										if( _data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 && (
 											( ( ( ( block_offset_x - block_x ) % platform_data.get_screen_width_pixels() ) >> 5 ) == platform_data.get_half_tile_x() && block_x > 0 ) ||
 											( ( ( ( block_offset_y - block_y ) % platform_data.get_screen_height_pixels() ) >> 5 ) == platform_data.get_half_tile_y() && block_y > 0 ) ) )
 										{
@@ -407,7 +407,7 @@ namespace MAPeD
 										}
 									}
 									
-									if( _data_manager.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+									if( _data_manager.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 									{
 										if( valid_block )
 										{
@@ -617,7 +617,7 @@ namespace MAPeD
 			return true;
 		}
 		
-		void fix_CHR_inds( byte[] _arr )
+		private void fix_CHR_inds( byte[] _arr )
 		{
 			for( int ind_n = 0; ind_n < _arr.Length; ind_n++ )
 			{
@@ -1818,7 +1818,7 @@ namespace MAPeD
 			}
 		}
 		
-		bool get_best_union_palettes_pair( List< SortedSet< int > > _palettes, out int _plt1_n, out int _plt2_n )
+		private bool get_best_union_palettes_pair( List< SortedSet< int > > _palettes, out int _plt1_n, out int _plt2_n )
 		{
 			SortedSet< int > tmp_palette = new SortedSet<int>();
 			
@@ -1861,7 +1861,7 @@ namespace MAPeD
 		}
 #endif //!DEF_ZX
 #endif //DEF_FIXED_LEN_PALETTE16_ARR
-		void BtnApplyPaletteDescClick_Event(object sender, EventArgs e)
+		private void BtnApplyPaletteDescClick( object sender, EventArgs e )
 		{
 #if DEF_NES
 			MainForm.message_box( "For best results, an importing image must meets the following requirements:\n\n- NES compatible graphics\n- no more than 13 colors\n- one CHR bank data\n- static palette\n- tiles aligned", "Automatic Applying of Palettes", MessageBoxButtons.OK, MessageBoxIcon.Information );
@@ -1870,12 +1870,12 @@ namespace MAPeD
 #endif
 		}
 
-		void BtnImportPaletteASISDescClick_Event(object sender, EventArgs e)
+		private void BtnImportPaletteASISDescClick( object sender, EventArgs e )
 		{
 			MainForm.message_box( "Checked: For indexed images with an ordered palettes array of 16-colors. So prepared palettes will be imported 'AS IS'.\n\nUnchecked: For indexed images with unordered palette colors. The whole palette will be optimized to minimize the number of 16-color palettes and colors, if it's possible.", "Applying of Image Palette", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 		
-		void fix_unremapped_CHRs( tiles_data _data, bool[] _remapped_CHRs )
+		private void fix_unremapped_CHRs( tiles_data _data, bool[] _remapped_CHRs )
 		{
 			// fix unremapped CHR's to avoid errors
 			int max_CHRs_cnt = _data.get_first_free_spr8x8_id( false );

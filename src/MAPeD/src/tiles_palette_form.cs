@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 26.11.2018
  * Time: 17:38
  */
@@ -18,7 +18,7 @@ namespace MAPeD
 	
 	public partial class tiles_palette_form : Form
 	{
-		public event EventHandler TilesBlocksClosed;
+		public event EventHandler FormHided;
 		public event EventHandler TileSelected;
 		public event EventHandler BlockSelected;
 		public event EventHandler ResetActiveTile;
@@ -56,10 +56,10 @@ namespace MAPeD
 			m_cm_tiles	= _cm_tiles;
 			m_cm_blocks	= _cm_blocks;
 			
-			m_tile_list		= new tile_list( tile_list.EType.t_Tiles, PanelPaletteTiles, m_tiles_image_list, BtnItemClick, m_cm_tiles, _tl_cntnr );
-			m_block_list	= new tile_list( tile_list.EType.t_Blocks, PanelPaletteBlocks, m_blocks_image_list, BtnItemClick, m_cm_blocks, _tl_cntnr );
+			m_tile_list		= new tile_list( tile_list.e_data_type.Tiles, PanelPaletteTiles, m_tiles_image_list, BtnItemClick, m_cm_tiles, _tl_cntnr );
+			m_block_list	= new tile_list( tile_list.e_data_type.Blocks, PanelPaletteBlocks, m_blocks_image_list, BtnItemClick, m_cm_blocks, _tl_cntnr );
 			
-			BtnTilesClick_Event( null, null );
+			BtnTilesClick( null, null );
 		}
 		
 		public void reset()
@@ -75,17 +75,17 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnTilesClick_Event(object sender, EventArgs e)
+		private void BtnTilesClick( object sender, EventArgs e )
 		{
 			enable_tiles_panel( true );
 		}
 		
-		void BtnBlocksClick_Event(object sender, EventArgs e)
+		private void BtnBlocksClick( object sender, EventArgs e )
 		{
 			enable_tiles_panel( false );
 		}
 		
-		void enable_tiles_panel( bool _on )
+		private void enable_tiles_panel( bool _on )
 		{
 			BtnTiles.Enabled  = !_on;
 			BtnBlocks.Enabled = _on;
@@ -125,38 +125,38 @@ namespace MAPeD
 			PanelPaletteBlocks.Enabled	= _on;
 		}
 
-		void BtnCloseClick_Event(object sender, EventArgs e)
+		private void BtnCloseClick( object sender, EventArgs e )
 		{
-			hide_wnd();
+			hide_window();
 		}
 		
-		void Closing_Event(object sender, FormClosingEventArgs e)
+		private void OnClosing( object sender, FormClosingEventArgs e )
 		{
 			e.Cancel = true;
 
-			hide_wnd();
+			hide_window();
 		}
 		
-		private void hide_wnd()
+		private void hide_window()
 		{
 			Visible = false;
 			
-			if( TilesBlocksClosed != null )
+			if( FormHided != null )
 			{
-				TilesBlocksClosed( this, null );
+				FormHided( this, null );
 			}
 		}
 		
-		public void show_wnd()
+		public void show_window()
 		{
 			Visible = true;
 
 			this.WindowState = FormWindowState.Normal;
 		}
 		
-		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
+		public void set_screen_data_type( data_sets_manager.e_screen_data_type _type )
 		{
-			PanelPaletteTiles.Enabled = ( _type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
+			PanelPaletteTiles.Enabled = ( _type == data_sets_manager.e_screen_data_type.Tiles4x4 );
 			
 			reset();
 		}

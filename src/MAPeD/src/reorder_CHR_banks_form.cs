@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 17.05.2022
  * Time: 14:59
  */
@@ -113,12 +113,12 @@ namespace MAPeD
 			}
 		}
 
-		void ListBoxCHRBanksChanged_Event(object sender, EventArgs e)
+		private void ListBoxCHRBanksChanged( object sender, EventArgs e )
 		{
 			update_bank_GFX();
 		}
 
-		void swap_layout_screens( int _from_ind, int _to_ind )
+		private void swap_layout_screens( int _from_ind, int _to_ind )
 		{
 			List< tiles_data > data_list	= m_data_manager.get_tiles_data();
 		
@@ -144,7 +144,7 @@ namespace MAPeD
 			});
 		}
 		
-		void BtnUp_Event(object sender, EventArgs e)
+		private void BtnUpClick( object sender, EventArgs e )
 		{
 			if( ListBoxCHRBanks.SelectedIndex > 0 )
 			{
@@ -164,7 +164,7 @@ namespace MAPeD
 			}
 		}
 		
-		void BtnDown_Event(object sender, EventArgs e)
+		private void BtnDownClick( object sender, EventArgs e )
 		{
 			if( ListBoxCHRBanks.SelectedIndex >= 0 && ListBoxCHRBanks.SelectedIndex < ( ListBoxCHRBanks.Items.Count - 1 ) )
 			{
@@ -184,7 +184,7 @@ namespace MAPeD
 			}
 		}
 		
-		void update_CHR_bank_names()
+		private void update_CHR_bank_names()
 		{
 			for( int i = 0; i < m_data_manager.tiles_data_cnt; i++ )
 			{

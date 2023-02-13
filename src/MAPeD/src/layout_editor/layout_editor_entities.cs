@@ -63,7 +63,7 @@ namespace MAPeD
 			set_param( layout_editor_param.CONST_SET_ENT_INST_EDIT, null );
 		}
 		
-		public override bool mouse_down( object sender, MouseEventArgs e )
+		public override bool on_mouse_down( object sender, MouseEventArgs e )
 		{
 			m_ent_inst_captured = false;
 			
@@ -259,7 +259,7 @@ namespace MAPeD
 			return res;
 		}
 		
-		public override void mouse_up( object sender, MouseEventArgs e )
+		public override void on_mouse_up( object sender, MouseEventArgs e )
 		{
 			if( m_shared.m_sel_screen_slot_id < 0 )
 			{
@@ -494,7 +494,7 @@ namespace MAPeD
 			return m_shared.m_layout.get_data( m_ent_inst_init_screen_slot_id % m_shared.m_layout.get_width(), m_ent_inst_init_screen_slot_id / m_shared.m_layout.get_width() );
 		}
 
-		public override bool mouse_move( object sender, MouseEventArgs e )
+		public override bool on_mouse_move( object sender, MouseEventArgs e )
 		{
 			if( m_ent_mode == layout_editor_param.CONST_SET_ENT_INST_EDIT && m_ent_inst_captured && m_ent_inst != null )
 			{
@@ -504,12 +504,12 @@ namespace MAPeD
 			return true;
 		}
 		
-		public override void mouse_enter( object sender, EventArgs e )
+		public override void on_mouse_enter( object sender, EventArgs e )
 		{
 			//...
 		}
 
-		public override void mouse_leave( object sender, EventArgs e )
+		public override void on_mouse_leave( object sender, EventArgs e )
 		{
 			if( m_owner.show_entities )
 			{
@@ -525,14 +525,14 @@ namespace MAPeD
 			}
 		}
 		
-		public override void mouse_wheel( object sender, EventArgs e )
+		public override void on_mouse_wheel( object sender, EventArgs e )
 		{
 			//...
 		}
 		
-		public override layout_editor_base.EHelper	default_helper()
+		public override layout_editor_base.e_helper	default_helper()
 		{
-			return layout_editor_base.EHelper.eh_Unknown;
+			return layout_editor_base.e_helper.UNKNOWN;
 		}
 		
 		public override bool force_map_drawing()
@@ -950,14 +950,14 @@ namespace MAPeD
 			}
 		}
 		
-		public override void key_down_event( object sender, KeyEventArgs e )
+		public override void on_key_down( object sender, KeyEventArgs e )
 		{
 			//...
 		}
 		
-		public override void key_up_event( object sender, KeyEventArgs e )
+		public override void on_key_up( object sender, KeyEventArgs e )
 		{
-			base.key_up_event( sender, e );
+			base.on_key_up( sender, e );
 		}
 		
 		protected override void cancel_operation()

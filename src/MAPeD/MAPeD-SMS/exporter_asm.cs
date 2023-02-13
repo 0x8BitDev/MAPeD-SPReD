@@ -64,8 +64,8 @@ namespace MAPeD
 				
 				m_tiles 		= _tiles;
 				
-				m_scr_tiles		= new screen_data( data_sets_manager.EScreenDataType.sdt_Tiles4x4 );
-				m_scr_blocks	= new screen_data( data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+				m_scr_tiles		= new screen_data( data_sets_manager.e_screen_data_type.Tiles4x4 );
+				m_scr_blocks	= new screen_data( data_sets_manager.e_screen_data_type.Blocks2x2 );
 				
 				m_tiles_offset	= _tiles_offset;
 				m_blocks_offset	= _blocks_offset;
@@ -105,7 +105,7 @@ namespace MAPeD
 			CBoxEntSortingType.SelectedIndex = 0;
 		}
 
-		void CheckBoxExportEntitiesChanged_Event(object sender, EventArgs e)
+		private void CheckBoxExportEntitiesChanged( object sender, EventArgs e )
 		{
 			bool enabled = ( sender as CheckBox ).Checked;
 			
@@ -117,7 +117,7 @@ namespace MAPeD
 			update_desc();
 		}
 
-		void RBtnModeMultidirScrollChanged_Event(object sender, EventArgs e)
+		private void RBtnModeMultidirScrollChanged( object sender, EventArgs e )
 		{
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = false;
 			RBtnLayoutMatrix.Checked 	= true;
@@ -132,7 +132,7 @@ namespace MAPeD
 			update_desc();
 		}
 		
-		void RBtnModeScreenToScreenChanged_Event(object sender, EventArgs e)
+		private void RBtnModeScreenToScreenChanged( object sender, EventArgs e )
 		{
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = true;
 			RBtnLayoutAdjacentScreens.Checked	= true;
@@ -145,7 +145,7 @@ namespace MAPeD
 			update_desc();
 		}
 
-		void RBtnModeStaticScreensChanged_Event(object sender, EventArgs e)
+		private void RBtnModeStaticScreensChanged( object sender, EventArgs e )
 		{
 			RBtnLayoutMatrix.Enabled = RBtnLayoutAdjacentScreenIndices.Enabled = RBtnLayoutAdjacentScreens.Enabled = true;
 			RBtnLayoutAdjacentScreens.Checked	= true;
@@ -158,7 +158,7 @@ namespace MAPeD
 			update_desc();
 		}
 
-		void CheckBoxMovePropsToScrMapChanged_Event(object sender, EventArgs e)
+		private void CheckBoxMovePropsToScrMapChanged( object sender, EventArgs e )
 		{
 			RBtnPropPerBlock.Enabled = RBtnPropPerCHR.Enabled = !CheckBoxMovePropsToScrMap.Checked;
 			
@@ -167,12 +167,12 @@ namespace MAPeD
 			update_desc();
 		}
 		
-		void ParamChanged_Event(object sender, EventArgs e)
+		private void OnParamChanged( object sender, EventArgs e )
 		{
 			update_desc();
 		}
 		
-		void update_desc()
+		private void update_desc()
 		{
 			if( RBtnTiles2x2.Checked )
 			{
@@ -290,7 +290,7 @@ namespace MAPeD
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_WARNING;
 		}
 
-		void event_cancel(object sender, System.EventArgs e)
+		private void BtnCancelClick( object sender, System.EventArgs e )
 		{
 			this.Close();
 		}
@@ -302,7 +302,7 @@ namespace MAPeD
 			m_path					= Path.GetDirectoryName( _full_path ) + Path.DirectorySeparatorChar;
 			m_path_filename			= m_path + m_filename;
 			
-			if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Blocks2x2 )
+			if( m_data_mngr.screen_data_type == data_sets_manager.e_screen_data_type.Blocks2x2 )
 			{
 				RBtnTiles2x2.Checked = true;
 				RBtnTiles2x2.Enabled = RBtnTiles4x4.Enabled = false;
@@ -318,7 +318,7 @@ namespace MAPeD
 			ShowDialog();
 		}
 		
-		void event_ok(object sender, System.EventArgs e)
+		private void BtnOkClick( object sender, System.EventArgs e )
 		{
 			this.Close();
 
@@ -544,7 +544,7 @@ namespace MAPeD
 						
 						screens[ ( bank_n << 8 ) | scr_n ] = exp_scr;
 						
-						if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 ) 
+						if( m_data_mngr.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 						{
 							for( tile_n = 0; tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 							{
@@ -688,7 +688,7 @@ namespace MAPeD
 						{
 							tiles = banks[ bank_n ];
 	
-							if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+							if( m_data_mngr.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 							{
 								blocks_props_size = ( 1 + utils.get_ulong_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
 							}
@@ -778,7 +778,7 @@ namespace MAPeD
 								
 								data_offset_str += "\t.word " + data_offset + "\t\t; (chr" + bank_n + ")\n";
 
-								if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+								if( m_data_mngr.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 								{
 									data_offset += ( 1 + utils.get_ulong_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 3;
 								}
@@ -870,7 +870,7 @@ namespace MAPeD
 					{
 						tiles = banks[ bank_n ];
 						
-						if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+						if( m_data_mngr.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 						{
 							blocks_props_size = ( 1 + utils.get_ulong_arr_max_val( tiles.tiles, max_tile_inds[ bank_n ] ) ) << 2;
 						}
@@ -1023,7 +1023,7 @@ namespace MAPeD
 									{
 										_sw.WriteLine( ".define " + level_prefix_str + "_StartScr\t" + start_scr_ind + "\n" );
 										
-										level_data.export_asm( _sw, level_prefix_str, ".define", ".byte", ".word", ".word", "$", false, false, false, false, ( layout_screen_data.EEntSortType )CBoxEntSortingType.SelectedIndex );
+										level_data.export_asm( _sw, level_prefix_str, ".define", ".byte", ".word", ".word", "$", false, false, false, false, ( layout_screen_data.e_entity_sort_type )CBoxEntSortingType.SelectedIndex );
 									}
 									else
 									{
@@ -1076,7 +1076,7 @@ namespace MAPeD
 								
 								if( CheckBoxExportEntities.Checked )
 								{
-									scr_data.export_entities_asm( _sw, ref ents_cnt, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, ( layout_screen_data.EEntSortType )CBoxEntSortingType.SelectedIndex, enable_comments );
+									scr_data.export_entities_asm( _sw, ref ents_cnt, level_prefix_str + "Scr" + common_scr_ind + "EntsArr", ".byte", ".word", ".word", "$", RBtnEntityCoordScreen.Checked, scr_n_X, scr_n_Y, ( layout_screen_data.e_entity_sort_type )CBoxEntSortingType.SelectedIndex, enable_comments );
 									
 									_sw.WriteLine( "" );
 								}
@@ -1226,7 +1226,7 @@ namespace MAPeD
 			int chr_n;
 			int tiles_cnt = _tile_inds.length;
 			
-			if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			if( m_data_mngr.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 			{
 				for( tile_n = 0; tile_n < tiles_cnt; tile_n++ )
 				{
@@ -1432,7 +1432,7 @@ namespace MAPeD
 				_sw.WriteLine( ".define " + bank_prefix_str + "_CHR_data_size\t" + CHR_data_size + "\n" );
 				_sw.WriteLine( label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t\t; (" + data_size + ")" );
 				
-				if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+				if( m_data_mngr.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 				{
 					max_tile_ind = tiles.get_first_free_tile_id( false );
 				}
@@ -1480,7 +1480,7 @@ namespace MAPeD
 				// blocks and properties
 				if( !CheckBoxMovePropsToScrMap.Checked )
 				{
-					if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+					if( m_data_mngr.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 					{
 						blocks_props_size = ( 1 + utils.get_ulong_arr_max_val( tiles.tiles, max_tile_ind ) ) << 2;
 					}
@@ -1592,7 +1592,7 @@ namespace MAPeD
 							// fill the map by tiles of a current screen
 							tiles = scr_tiles_data[ bank_ind ];
 							
-							if( m_data_mngr.screen_data_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+							if( m_data_mngr.screen_data_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 							{
 								for( tile_n = 0; tile_n < platform_data.get_screen_tiles_cnt(); tile_n++ )
 								{
@@ -1727,7 +1727,7 @@ namespace MAPeD
 
 				if( CheckBoxExportEntities.Checked )
 				{
-					level_data.export_asm( _sw, level_prefix_str, ".define", ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked, ( layout_screen_data.EEntSortType )CBoxEntSortingType.SelectedIndex );
+					level_data.export_asm( _sw, level_prefix_str, ".define", ".byte", ".word", ".word", "$", true, CheckBoxExportMarks.Checked, CheckBoxExportEntities.Checked, RBtnEntityCoordScreen.Checked, ( layout_screen_data.e_entity_sort_type )CBoxEntSortingType.SelectedIndex );
 				}
 				else
 				{
@@ -1746,17 +1746,17 @@ namespace MAPeD
 			}
 		}
 		
-		int get_tiles_cnt_width( int _scr_cnt_x )
+		private int get_tiles_cnt_width( int _scr_cnt_x )
 		{
 			return RBtnTiles2x2.Checked ? _scr_cnt_x * platform_data.get_screen_blocks_width():_scr_cnt_x * platform_data.get_screen_tiles_width();
 		}
 
-		int get_tiles_cnt_height( int _scr_cnt_y )
+		private int get_tiles_cnt_height( int _scr_cnt_y )
 		{
 			return RBtnTiles2x2.Checked ? _scr_cnt_y * platform_data.get_screen_blocks_height():_scr_cnt_y * platform_data.get_screen_tiles_height();
 		}
 		
-		void fill_palette_str( int[] _plt, ref string _str, bool _end )
+		private void fill_palette_str( int[] _plt, ref string _str, bool _end )
 		{
 			for( int j = 0; j < utils.CONST_PALETTE_SMALL_NUM_COLORS; j++ )
 			{
@@ -1764,12 +1764,12 @@ namespace MAPeD
 			}
 		}
 		
-		int get_CHRs_bpp()
+		private int get_CHRs_bpp()
 		{
 			return ComboBoxCHRsBPP.SelectedIndex + 1;
 		}
 
-		void check_ent_instances_cnt( layout_data _layout, string _lev_pref_str )
+		private void check_ent_instances_cnt( layout_data _layout, string _lev_pref_str )
 		{
 			if( CheckBoxExportEntities.Checked )
 			{

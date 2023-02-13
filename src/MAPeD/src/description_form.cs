@@ -35,12 +35,12 @@ namespace MAPeD
 			CBoxShowAfterLoading.Checked = MAPeD.Properties.Settings.Default.auto_show_description;
 		}
 		
-		void BtnCloseClick_Event(object sender, EventArgs e)
+		private void BtnCloseClick( object sender, EventArgs e )
 		{
 			Close();
 		}
 		
-		void CBoxShowAfterLoadingChanged_Event(object sender, EventArgs e)
+		private void CBoxShowAfterLoadingChanged( object sender, EventArgs e )
 		{
 			// save state
 			MAPeD.Properties.Settings.Default.auto_show_description = ( sender as CheckBox ).Checked;

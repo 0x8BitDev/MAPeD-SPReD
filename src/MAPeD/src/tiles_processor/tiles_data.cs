@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 03.05.2017
  * Time: 17:18
  */
@@ -606,32 +606,32 @@ namespace MAPeD
 #if DEF_FLIP_BLOCKS_SPR_BY_FLAGS
 		public static byte get_block_flags_flip( uint _block_chr_data )
 		{
-			return ( byte )m_map_data_config_app.unpack_data( map_data_config_base.EData.ed_VH_Flip, _block_chr_data );
+			return ( byte )m_map_data_config_app.unpack_data( map_data_config_base.e_data_type.VHFlip, _block_chr_data );
 		}
 		
 		public static uint set_block_flags_flip( byte _flip_flag, uint _block_chr_data )
 		{
-			return m_map_data_config_app.pack_data( map_data_config_base.EData.ed_VH_Flip, ( int )_flip_flag, _block_chr_data );
+			return m_map_data_config_app.pack_data( map_data_config_base.e_data_type.VHFlip, ( int )_flip_flag, _block_chr_data );
 		}
 #endif
 		public static int get_block_flags_palette( uint _block_chr_data )
 		{
-			return m_map_data_config_app.unpack_data( map_data_config_base.EData.ed_Palette, _block_chr_data );
+			return m_map_data_config_app.unpack_data( map_data_config_base.e_data_type.Palette, _block_chr_data );
 		}
 
 		public static uint set_block_flags_palette( int _plt_ind, uint _block_chr_data )
 		{
-			return m_map_data_config_app.pack_data( map_data_config_base.EData.ed_Palette, _plt_ind, _block_chr_data );
+			return m_map_data_config_app.pack_data( map_data_config_base.e_data_type.Palette, _plt_ind, _block_chr_data );
 		}
 
 		public static int get_block_flags_obj_id( uint _block_chr_data )
 		{
-			return m_map_data_config_app.unpack_data( map_data_config_base.EData.ed_Obj_id, _block_chr_data );
+			return m_map_data_config_app.unpack_data( map_data_config_base.e_data_type.ObjId, _block_chr_data );
 		}
 		
 		public static uint set_block_flags_obj_id( int _obj_id, uint _block_chr_data )
 		{
-			return m_map_data_config_app.pack_data( map_data_config_base.EData.ed_Obj_id, _obj_id, _block_chr_data );
+			return m_map_data_config_app.pack_data( map_data_config_base.e_data_type.ObjId, _obj_id, _block_chr_data );
 		}
 
 		public void set_block_flags_obj_id( int _block_id, int _CHR_id, int _prop_id, bool _per_block )
@@ -660,19 +660,19 @@ namespace MAPeD
 		
 		public static int get_block_CHR_id( uint _block_chr_data )
 		{
-			return m_map_data_config_app.unpack_data( map_data_config_base.EData.ed_CHR_id, _block_chr_data );
+			return m_map_data_config_app.unpack_data( map_data_config_base.e_data_type.CHRId, _block_chr_data );
 		}
 		
 		public static uint set_block_CHR_id( int _CHR_id, uint _block_chr_data )
 		{
-			return m_map_data_config_app.pack_data( map_data_config_base.EData.ed_CHR_id, _CHR_id, _block_chr_data );
+			return m_map_data_config_app.pack_data( map_data_config_base.e_data_type.CHRId, _CHR_id, _block_chr_data );
 		}
 		
 		public static uint block_data_repack_to_native( uint _block_chr_data, int _CHR_offset )
 		{
 			uint native_data = m_map_data_config_native.repack( m_map_data_config_app, _block_chr_data );
 			
-			bit_field bf_CHR_id = m_map_data_config_native.get_bit_field( map_data_config_base.EData.ed_CHR_id );
+			bit_field bf_CHR_id = m_map_data_config_native.get_bit_field( map_data_config_base.e_data_type.CHRId );
 			
 			return bf_CHR_id.overwrite( bf_CHR_id.unpack( native_data ) + _CHR_offset, native_data );
 		}
@@ -1130,11 +1130,11 @@ namespace MAPeD
 			return tile_id;
 		}
 		
-		public int get_tile_usage( ushort _tile_ind, data_sets_manager.EScreenDataType _scr_type )
+		public int get_tile_usage( ushort _tile_ind, data_sets_manager.e_screen_data_type _scr_type )
 		{
 			int res = 0;
 			
-			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			if( _scr_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 			{
 				int scr_n;
 				int tile_n;
@@ -1154,7 +1154,7 @@ namespace MAPeD
 			return res;
 		}
 
-		public int get_block_usage( ushort _block_ind, data_sets_manager.EScreenDataType _scr_type )
+		public int get_block_usage( ushort _block_ind, data_sets_manager.e_screen_data_type _scr_type )
 		{
 			int res = 0;
 			
@@ -1162,7 +1162,7 @@ namespace MAPeD
 			int tile_n;
 			int block_n;
 			
-			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			if( _scr_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 			{
 				for( tile_n = 0; tile_n < platform_data.get_max_tiles_cnt(); tile_n++ )
 				{
@@ -1222,7 +1222,7 @@ namespace MAPeD
 			m_scr_data[ _scr_ind ] = _data;
 		}
 		
-		public screen_data create_screen( data_sets_manager.EScreenDataType _type )
+		public screen_data create_screen( data_sets_manager.e_screen_data_type _type )
 		{
 			screen_data scr = new screen_data( _type );
 			
@@ -1540,7 +1540,7 @@ namespace MAPeD
 			}
 		}
 		
-		public void save( BinaryWriter _bw, data_sets_manager.EScreenDataType _scr_type )
+		public void save( BinaryWriter _bw, data_sets_manager.e_screen_data_type _scr_type )
 		{
 			int i;
 			int size;
@@ -1568,7 +1568,7 @@ namespace MAPeD
 				_bw.Write( m_blocks[ i ] );
 			}
 
-			if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+			if( _scr_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 			{
 				size = m_tiles.Length;
 				_bw.Write( ( ushort )size );
@@ -1588,12 +1588,12 @@ namespace MAPeD
 			}
 		}
 		
-		public void load( BinaryReader _br, project_data_desc _prj_data, data_sets_manager.EScreenDataType _scr_type )
+		public void load( BinaryReader _br, project_data_desc _prj_data, data_sets_manager.e_screen_data_type _scr_type )
 		{
 			int i;
 			uint val;
 
-			platform_data.EPlatformType	prj_platform	= platform_data.get_platform_type_by_file_ext( _prj_data.m_file_ext );
+			platform_data.e_platform_type	prj_platform	= platform_data.get_platform_type_by_file_ext( _prj_data.m_file_ext );
 			i_project_data_converter	data_converter	= project_data_converter_provider.get_converter();
 			
 			data_converter.load_CHR_bank( _br, _prj_data.m_ver, prj_platform, ref m_CHR_bank );
@@ -1647,7 +1647,7 @@ namespace MAPeD
 			
 			// tiles 4x4 data
 			{
-				if( _scr_type == data_sets_manager.EScreenDataType.sdt_Tiles4x4 )
+				if( _scr_type == data_sets_manager.e_screen_data_type.Tiles4x4 )
 				{
 					ulong tile_data;
 					

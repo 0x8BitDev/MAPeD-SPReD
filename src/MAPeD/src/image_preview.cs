@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 21.12.2018
  * Time: 16:34
  */
@@ -39,13 +39,13 @@ namespace MAPeD
 			
 			if( _need_mouse_events )
 			{
-				_pbox.MouseWheel += new MouseEventHandler( image_preview_MouseWheel );
+				_pbox.MouseWheel += new MouseEventHandler( on_mouse_wheel );
 
 				//...
 			}
 		}
 
-		private void image_preview_MouseWheel(object sender, MouseEventArgs e)
+		private void on_mouse_wheel( object sender, MouseEventArgs e )
 		{
 			if( m_scale_enabled )
 			{

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 22.11.2022
  * Time: 12:45
  */
@@ -28,17 +28,17 @@ namespace MAPeD
 			//...
 		}
 		
-		public override void	mouse_down( object sender, MouseEventArgs e )
+		public override void	on_mouse_down( object sender, MouseEventArgs e )
 		{
 			//...
 		}
 		
-		public override void	mouse_up( object sender, MouseEventArgs e )
+		public override void	on_mouse_up( object sender, MouseEventArgs e )
 		{
 			//...
 		}
 		
-		public override void	mouse_move( object sender, MouseEventArgs e )
+		public override void	on_mouse_move( object sender, MouseEventArgs e )
 		{
 			if( m_shared.pix_box_captured() )
 			{

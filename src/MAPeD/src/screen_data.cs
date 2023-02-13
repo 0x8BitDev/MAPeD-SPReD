@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 29.03.2021
  * Time: 15:12
  */
@@ -37,7 +37,7 @@ namespace MAPeD
 			get { return m_arr.Length; }
 		}
 
-		public screen_data( data_sets_manager.EScreenDataType _type )
+		public screen_data( data_sets_manager.e_screen_data_type _type )
 		{
 			alloc( platform_data.get_screen_tiles_width_uni( _type ), platform_data.get_screen_tiles_height_uni( _type ) );
 		}

@@ -89,12 +89,12 @@ namespace MAPeD
 		
 		public abstract void	reset( bool _init );
 		
-		public abstract bool	mouse_down( object sender, MouseEventArgs e );	// OUT: true - reset selected screens; false - ignore reset
-		public abstract void	mouse_up( object sender, MouseEventArgs e );
-		public abstract bool	mouse_move( object sender, MouseEventArgs e );	// OUT: true - update(); false - invalidate();
-		public abstract void	mouse_enter( object sender, EventArgs e );
-		public abstract void	mouse_leave( object sender, EventArgs e );
-		public abstract void	mouse_wheel( object sender, EventArgs e );
+		public abstract bool	on_mouse_down( object sender, MouseEventArgs e );	// OUT: true - reset selected screens; false - ignore reset
+		public abstract void	on_mouse_up( object sender, MouseEventArgs e );
+		public abstract bool	on_mouse_move( object sender, MouseEventArgs e );	// OUT: true - update(); false - invalidate();
+		public abstract void	on_mouse_enter( object sender, EventArgs e );
+		public abstract void	on_mouse_leave( object sender, EventArgs e );
+		public abstract void	on_mouse_wheel( object sender, EventArgs e );
 
 		public abstract bool	force_map_drawing();
 		
@@ -105,8 +105,8 @@ namespace MAPeD
 		
 		public abstract void	subscribe( uint _param, Action< object, EventArgs > _method );
 
-		public abstract void	key_down_event( object sender, KeyEventArgs e );
-		public virtual	void	key_up_event( object sender, KeyEventArgs e )
+		public abstract void	on_key_down( object sender, KeyEventArgs e );
+		public virtual	void	on_key_up( object sender, KeyEventArgs e )
 		{
 			if( e.KeyCode == Keys.Escape )
 			{
@@ -114,7 +114,7 @@ namespace MAPeD
 			}
 		}
 		
-		public abstract layout_editor_base.EHelper	default_helper();
+		public abstract layout_editor_base.e_helper	default_helper();
 		
 		protected abstract void	cancel_operation();
 	}
@@ -142,9 +142,9 @@ namespace MAPeD
 		
 		public abstract void	reset( bool _init );
 		
-		public abstract void	mouse_down( object sender, MouseEventArgs e );
-		public abstract void	mouse_up( object sender, MouseEventArgs e );
-		public abstract void	mouse_move( object sender, MouseEventArgs e );
+		public abstract void	on_mouse_down( object sender, MouseEventArgs e );
+		public abstract void	on_mouse_up( object sender, MouseEventArgs e );
+		public abstract void	on_mouse_move( object sender, MouseEventArgs e );
 		
 		public abstract void	draw( SKSurface _surface, SKPaint _line_paint, float _scr_size_width, float _scr_size_height );
 		
@@ -189,7 +189,7 @@ namespace MAPeD
 		public int			m_CHR_bank_ind	= -1;
 		public tiles_data 	m_tiles_data 	= null;
 		
-		public data_sets_manager.EScreenDataType	m_screen_data_type = data_sets_manager.EScreenDataType.sdt_Tiles4x4;
+		public data_sets_manager.e_screen_data_type	m_screen_data_type = data_sets_manager.e_screen_data_type.Tiles4x4;
 		
 		// methods
 		public Action< bool >					set_high_quality_render_mode;
@@ -199,7 +199,7 @@ namespace MAPeD
 		public Action< string >					err_msg;
 		public Action< string >					sys_msg;
 		
-		public Action< int, int, tiles_data, data_sets_manager.EScreenDataType >	update_active_bank_screen;
+		public Action< int, int, tiles_data, data_sets_manager.e_screen_data_type >	update_active_bank_screen;
 		public Action< Action< int, layout_screen_data, SKRect > >					visible_screens_data_proc;
 		
 		public Action< Action< int > >		selected_screens_proc;
@@ -289,20 +289,20 @@ namespace MAPeD
 			set { m_show_grid = value; update(); }
 		}
 	
-		public enum EMode
+		public enum e_mode
 		{
-			em_Builder = 0,
-			em_Painter,
-			em_Screens,
-			em_Entities,
-			em_Patterns,
-			em_MAX,
-			em_Unknown,
+			Builder = 0,
+			Painter,
+			Screens,
+			Entities,
+			Patterns,
+			MAX,
+			UNKNOWN,
 		}
 		
-		private EMode	m_mode	= EMode.em_Unknown;
+		private e_mode	m_mode	= e_mode.UNKNOWN;
 		
-		public EMode mode
+		public e_mode mode
 		{
 			get { return m_mode; }
 			set 
@@ -329,12 +329,12 @@ namespace MAPeD
 		private layout_editor_behaviour_base			m_behaviour		= null;
 		private readonly layout_editor_behaviour_base[]	m_behaviour_arr;
 
-		public enum EHelper
+		public enum e_helper
 		{
-			eh_Panning = 0,
-			eh_ScrMultisel,
-			eh_MAX,
-			eh_Unknown,
+			Panning = 0,
+			ScreenMultisel,
+			MAX,
+			UNKNOWN,
 		}
 		
 		private layout_editor_helper_base				m_helper		= null;
@@ -388,18 +388,18 @@ namespace MAPeD
 				m_shared.selected_screens				= selected_screens;
 			}
 			
-			m_pix_box.MouseDown 	+= new MouseEventHandler( Layout_MouseDown );
-			m_pix_box.MouseUp		+= new MouseEventHandler( Layout_MouseUp );
+			m_pix_box.MouseDown 	+= new MouseEventHandler( on_mouse_down );
+			m_pix_box.MouseUp		+= new MouseEventHandler( on_mouse_up );
 
-			m_pix_box.MouseMove		+= new MouseEventHandler( Layout_MouseMove );
-			m_pix_box.MouseWheel	+= new MouseEventHandler( Layout_MouseWheel );
+			m_pix_box.MouseMove		+= new MouseEventHandler( on_mouse_move );
+			m_pix_box.MouseWheel	+= new MouseEventHandler( on_mouse_wheel );
 			
-			m_pix_box.MouseEnter 	+= new EventHandler( Layout_MouseEnter );
-			m_pix_box.MouseLeave	+= new EventHandler( Layout_MouseLeave );
+			m_pix_box.MouseEnter 	+= new EventHandler( on_mouse_enter );
+			m_pix_box.MouseLeave	+= new EventHandler( on_mouse_leave );
 			
-			m_pix_box.ContextMenuStrip.Opened			+= new EventHandler( Layout_ContextMenuOpened );
-			m_pix_box.ContextMenuStrip.Closed			+= new ToolStripDropDownClosedEventHandler( Layout_ContextMenuClosed );
-			m_pix_box.ContextMenuStrip.PreviewKeyDown	+= new PreviewKeyDownEventHandler( Layout_ContextMenuPreviewKeyDown );
+			m_pix_box.ContextMenuStrip.Opened			+= new EventHandler( on_context_menu_opened );
+			m_pix_box.ContextMenuStrip.Closed			+= new ToolStripDropDownClosedEventHandler( on_context_menu_closed );
+			m_pix_box.ContextMenuStrip.PreviewKeyDown	+= new PreviewKeyDownEventHandler( on_context_menu_preview_key_down );
 			
 			// screen mark data
 			{
@@ -414,7 +414,7 @@ namespace MAPeD
 			
 			// init helpers
 			{
-				m_helper_arr = new layout_editor_helper_base[ ( int )EHelper.eh_MAX ]
+				m_helper_arr = new layout_editor_helper_base[ ( int )e_helper.MAX ]
 				{
 					new layout_editor_helper_panning( "VIEWPORT PANNING MODE", m_shared, this ),
 					new layout_editor_helper_scr_multisel( "MULTIPLE SCREEN SELECTION MODE", m_shared, this )
@@ -423,7 +423,7 @@ namespace MAPeD
 			
 			// init available behaviours
 			{
-				m_behaviour_arr = new layout_editor_behaviour_base[ ( int )EMode.em_MAX ]
+				m_behaviour_arr = new layout_editor_behaviour_base[ ( int )e_mode.MAX ]
 				{ 
 					new layout_editor_builder( "builder", m_shared, this ),
 					new layout_editor_painter( "painter", m_shared, this ),
@@ -436,7 +436,7 @@ namespace MAPeD
 			reset( true );
 		}
 		
-		protected override void Resize_Event(object sender, EventArgs e)
+		protected override void on_resize( object sender, EventArgs e )
 		{
 			m_shared.m_scr_half_width  = m_pix_box.Width >> 1;
 			m_shared.m_scr_half_height = m_pix_box.Height >> 1;
@@ -446,7 +446,7 @@ namespace MAPeD
 			
 			clamp_offsets();
 			
-			base.Resize_Event(sender, e);
+			base.on_resize( sender, e );
 		}
 
 		public void reset( bool _init )
@@ -491,12 +491,12 @@ namespace MAPeD
 			update();
 		}
 		
-		public void subscribe_event( data_sets_manager _data_mngr )
+		public void subscribe( data_sets_manager _data_mngr )
 		{
-			_data_mngr.SetLayoutData 	+= new EventHandler( update_layout_data );
+			_data_mngr.SetLayoutData	+= new EventHandler( on_update_layout_data );
 		}
 		
-		private void Layout_MouseDown(object sender, MouseEventArgs e)
+		private void on_mouse_down( object sender, MouseEventArgs e )
 		{
 			if( e.Button == MouseButtons.Left )
 			{
@@ -505,11 +505,11 @@ namespace MAPeD
 				
 				if( m_helper != null )
 				{
-					m_helper.mouse_down( sender, e );
+					m_helper.on_mouse_down( sender, e );
 				}
 				else
 				{
-					if( m_behaviour.mouse_down( sender, e ) )
+					if( m_behaviour.on_mouse_down( sender, e ) )
 					{
 						reset_selected_screens();
 					}
@@ -523,7 +523,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void Layout_MouseUp(object sender, MouseEventArgs e)
+		private void on_mouse_up( object sender, MouseEventArgs e )
 		{
 			if( e.Button == MouseButtons.Left )
 			{
@@ -533,11 +533,11 @@ namespace MAPeD
 				
 				if( m_helper != null )
 				{
-					m_helper.mouse_up( sender, e );
+					m_helper.on_mouse_up( sender, e );
 				}
 				else
 				{
-					m_behaviour.mouse_up( sender, e );
+					m_behaviour.on_mouse_up( sender, e );
 					
 					if( show_grid )
 					{
@@ -547,7 +547,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void Layout_MouseMove(object sender, MouseEventArgs e)
+		private void on_mouse_move( object sender, MouseEventArgs e )
 		{
 			m_shared.m_mouse_x = e.X;
 			m_shared.m_mouse_y = e.Y;
@@ -580,7 +580,7 @@ namespace MAPeD
 					sys_msg( "Hold down: 'Ctrl' to pan the viewport, 'Shift' to select multiple screens" );
 				}
 				
-				if( m_behaviour.mouse_move( sender, e ) )
+				if( m_behaviour.on_mouse_move( sender, e ) )
 				{
 					update();
 				}
@@ -591,13 +591,13 @@ namespace MAPeD
 			}
 			else
 			{
-				m_helper.mouse_move( sender, e );
+				m_helper.on_mouse_move( sender, e );
 				
 				update();
 			}
 		}
 		
-		private void Layout_MouseWheel(object sender, MouseEventArgs e)
+		private void on_mouse_wheel( object sender, MouseEventArgs e ) 
 		{
 			m_tmp_scale += ( float )e.Delta / 6000;
 			
@@ -646,23 +646,23 @@ namespace MAPeD
 			
 			clamp_offsets();
 			
-			m_behaviour.mouse_wheel( sender, e );
+			m_behaviour.on_mouse_wheel( sender, e );
 			
 			update();
 		}
 
-		private void Layout_MouseEnter(object sender, EventArgs e)
+		private void on_mouse_enter( object sender, EventArgs e )
 		{
 			m_pix_box.Focus();
 			
-			m_behaviour.mouse_enter( sender, e );
+			m_behaviour.on_mouse_enter( sender, e );
 		}
 		
-		private void Layout_MouseLeave(object sender, EventArgs e)
+		private void on_mouse_leave( object sender, EventArgs e )
 		{
 			m_label.Focus();
 			
-			m_behaviour.mouse_leave( sender, e );
+			m_behaviour.on_mouse_leave( sender, e );
 			
 			if( m_pix_box.ContextMenuStrip.Visible )
 			{
@@ -680,18 +680,18 @@ namespace MAPeD
 			}
 		}
 		
-		private void Layout_ContextMenuOpened(object sender, EventArgs e)
+		private void on_context_menu_opened( object sender, EventArgs e ) 
 		{
 			//...
 		}
 		
-		private void Layout_ContextMenuClosed(object sender, EventArgs e)
+		private void on_context_menu_closed( object sender, EventArgs e )
 		{
 			// hide the selected screen border
 			update();
 		}
 		
-		private void Layout_ContextMenuPreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		private void on_context_menu_preview_key_down( object sender, PreviewKeyDownEventArgs e )
 		{
 			if( e.KeyCode == Keys.Escape )
 			{
@@ -1036,7 +1036,7 @@ namespace MAPeD
 						
 						m_line_paint.Color = utils.CONST_COLOR_GRID_BLOCKS;
 						
-						bool tile4x4_grid = ( ( platform_data.get_screen_blocks_height( false ) & 0x01 ) != 0x01 ) && ( ( platform_data.get_screen_blocks_width( false ) & 0x01 ) != 0x01 ) && ( m_shared.m_screen_data_type != data_sets_manager.EScreenDataType.sdt_Blocks2x2 );
+						bool tile4x4_grid = ( ( platform_data.get_screen_blocks_height( false ) & 0x01 ) != 0x01 ) && ( ( platform_data.get_screen_blocks_width( false ) & 0x01 ) != 0x01 ) && ( m_shared.m_screen_data_type != data_sets_manager.e_screen_data_type.Blocks2x2 );
 						
 						for( i = x_line_beg; i < n_lines_x + x_line_beg; i++ )
 						{
@@ -1342,7 +1342,7 @@ namespace MAPeD
 					
 					layout_screen_data scr_data = m_shared.m_layout.get_data( scr_pos_x, scr_pos_y );
 					
-					if( mode == EMode.em_Entities )
+					if( mode == e_mode.Entities )
 					{
 						scr_data.entities_proc( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
 					}
@@ -1388,7 +1388,7 @@ namespace MAPeD
 						
 						layout_screen_data scr_data = m_shared.m_layout.get_data( scr_pos_x, scr_pos_y );
 						
-						if( mode == EMode.em_Entities )
+						if( mode == e_mode.Entities )
 						{
 							scr_data.entities_proc( delegate( entity_instance _ent_inst ) { set_param( layout_editor_param.CONST_SET_ENT_INST_RESET_IF_EQUAL, _ent_inst ); } );
 						}
@@ -1468,7 +1468,7 @@ namespace MAPeD
 			return m_shared.m_layout.get_height();
 		}
 
-		private void update_layout_data( object sender, EventArgs e )
+		private void on_update_layout_data( object sender, EventArgs e )
 		{
 			data_sets_manager data_mngr = sender as data_sets_manager;
 			
@@ -1476,7 +1476,7 @@ namespace MAPeD
 			
 			reset_selected_screens();
 			
-			if( mode == EMode.em_Entities )
+			if( mode == e_mode.Entities )
 			{
 				set_param( layout_editor_param.CONST_SET_ENT_INST_RESET, null );
 			}
@@ -1667,12 +1667,12 @@ namespace MAPeD
 			return m_image_paint;
 		}
 		
-		public void set_screen_data_type( data_sets_manager.EScreenDataType _type )
+		public void set_screen_data_type( data_sets_manager.e_screen_data_type _type )
 		{
 			m_shared.m_screen_data_type = _type;
 		}
 		
-		private void new_data_set( object sender, EventArgs e )
+		private void on_new_data_set( object sender, EventArgs e )
 		{
 			data_sets_manager data_mngr = sender as data_sets_manager;
 			
@@ -1719,7 +1719,7 @@ namespace MAPeD
 					
 				case layout_editor_param.CONST_SET_BASE_SUBSCR_DATA_MNGR:
 					{
-						( ( data_sets_manager )_val ).SetTilesData += new EventHandler( new_data_set );
+						( ( data_sets_manager )_val ).SetTilesData += new EventHandler( on_new_data_set );
 						
 						return true;
 					}
@@ -1728,17 +1728,17 @@ namespace MAPeD
 			return m_behaviour.set_param( _param, _val );
 		}
 		
-		public bool set_param( EMode _mode, uint _param, Object _val )
+		public bool set_param( e_mode _mode, uint _param, Object _val )
 		{
 			return m_behaviour_arr[ ( int )_mode ].set_param( _param, _val );
 		}
 		
-		public void subscribe( EMode _mode, uint _param, Action< object, EventArgs > _method )
+		public void subscribe( e_mode _mode, uint _param, Action< object, EventArgs > _method )
 		{
 			m_behaviour_arr[ ( int )_mode ].subscribe( _param, _method );
 		}
 		
-		public void key_up_event( object sender, KeyEventArgs e )
+		public void on_key_up( object sender, KeyEventArgs e )
 		{
 			if( m_pix_box.Visible )
 			{
@@ -1759,12 +1759,12 @@ namespace MAPeD
 				
 				if( m_behaviour != null )
 				{
-					m_behaviour.key_up_event( sender, e );
+					m_behaviour.on_key_up( sender, e );
 				}
 			}
 		}
 
-		public void key_down_event( object sender, KeyEventArgs e )
+		public void on_key_down( object sender, KeyEventArgs e )
 		{
 			if( m_pix_box.Visible )
 			{
@@ -1785,7 +1785,7 @@ namespace MAPeD
 				
 				if( m_behaviour != null )
 				{
-					m_behaviour.key_down_event( sender, e );
+					m_behaviour.on_key_down( sender, e );
 				}
 				
 				// map scaling
@@ -1838,9 +1838,9 @@ namespace MAPeD
 		{
 			if( m_behaviour != null )
 			{
-				layout_editor_base.EHelper helper = m_behaviour.default_helper();
+				layout_editor_base.e_helper helper = m_behaviour.default_helper();
 				
-				if( helper != EHelper.eh_Unknown )
+				if( helper != e_helper.UNKNOWN )
 				{
 					return m_helper_arr[ ( int )helper ];
 				}

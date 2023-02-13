@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 17.05.2022
  * Time: 14:59
  */
@@ -88,7 +88,7 @@ namespace MAPeD
 			this.BtnDown.TabIndex = 3;
 			this.BtnDown.Text = "&Down";
 			this.BtnDown.UseVisualStyleBackColor = true;
-			this.BtnDown.Click += new System.EventHandler(this.BtnDown_Event);
+			this.BtnDown.Click += new System.EventHandler(this.BtnDownClick);
 			// 
 			// BtnUp
 			// 
@@ -98,7 +98,7 @@ namespace MAPeD
 			this.BtnUp.TabIndex = 2;
 			this.BtnUp.Text = "&Up";
 			this.BtnUp.UseVisualStyleBackColor = true;
-			this.BtnUp.Click += new System.EventHandler(this.BtnUp_Event);
+			this.BtnUp.Click += new System.EventHandler(this.BtnUpClick);
 			// 
 			// ListBoxCHRBanks
 			// 
@@ -107,7 +107,7 @@ namespace MAPeD
 			this.ListBoxCHRBanks.Name = "ListBoxCHRBanks";
 			this.ListBoxCHRBanks.Size = new System.Drawing.Size(75, 160);
 			this.ListBoxCHRBanks.TabIndex = 1;
-			this.ListBoxCHRBanks.SelectedIndexChanged += new System.EventHandler(this.ListBoxCHRBanksChanged_Event);
+			this.ListBoxCHRBanks.SelectedIndexChanged += new System.EventHandler(this.ListBoxCHRBanksChanged);
 			// 
 			// groupBox2
 			// 

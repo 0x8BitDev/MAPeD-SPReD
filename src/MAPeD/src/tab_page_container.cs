@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 09.05.2017
  * Time: 12:35
  */
@@ -72,7 +72,7 @@ namespace MAPeD
 			}
 		}
 		
-		void Closed_event(object sender, FormClosedEventArgs e)
+		private void OnClosed( object sender, FormClosedEventArgs e )
 		{
 			if( m_tab_page != null && m_tab_cntrl != null )
 			{
@@ -92,19 +92,19 @@ namespace MAPeD
 			}
 		}
 		
-		void key_up_event(object sender, KeyEventArgs e)
+		private void OnKeyUp( object sender, KeyEventArgs e )
 		{
 			if( m_parent != null )
 			{
-				m_parent.KeyUp_Event( sender, e );
+				m_parent.OnKeyUp( sender, e );
 			}
 		}
 		
-		void key_down_event(object sender, KeyEventArgs e)
+		private void OnKeyDown( object sender, KeyEventArgs e )
 		{
 			if( m_parent != null )
 			{
-				m_parent.KeyDown_Event( sender, e );
+				m_parent.OnKeyDown( sender, e );
 			}
 		}
 	}

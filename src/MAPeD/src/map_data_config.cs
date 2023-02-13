@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2021 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 25.03.2021
  * Time: 12:48
  */
@@ -63,25 +63,25 @@ namespace MAPeD
 	
 	public class map_data_config_base
 	{
-		public enum EData
+		public enum e_data_type
 		{
-			ed_CHR_id = 0,
-			ed_Palette,
-			ed_VH_Flip,
-			ed_Obj_id,
-			ed_MAX
+			CHRId = 0,
+			Palette,
+			VHFlip,
+			ObjId,
+			MAX
 		};
 		
 		private bit_field[] m_data = null;
 		
-		protected platform_data.EPlatformType m_platform = platform_data.EPlatformType.pt_UNKNOWN;
+		protected platform_data.e_platform_type m_platform = platform_data.e_platform_type.UNKNOWN;
 		
 		protected map_data_config_base()
 		{
 			//...
 		}
 		
-		public platform_data.EPlatformType platform()
+		public platform_data.e_platform_type platform()
 		{
 			return m_platform;
 		}
@@ -94,12 +94,12 @@ namespace MAPeD
 			m_data = _data;
 		}
 		
-		public bit_field get_bit_field( EData _type )
+		public bit_field get_bit_field( e_data_type _type )
 		{
 			return m_data[ ( int )_type ];
 		}
 		
-		public uint pack_data( EData _id, int _val, uint _map_data )
+		public uint pack_data( e_data_type _id, int _val, uint _map_data )
 		{
 			bit_field bf = m_data[ ( int )_id ];
 			
@@ -111,7 +111,7 @@ namespace MAPeD
 			return 0xffffffff;
 		}
 		
-		public int unpack_data( EData _id, uint _map_data )
+		public int unpack_data( e_data_type _id, uint _map_data )
 		{
 			bit_field bf = m_data[ ( int )_id ];
 			
@@ -150,7 +150,7 @@ namespace MAPeD
 	{
 		public map_data_app_NES()
 		{
-			m_platform = platform_data.EPlatformType.pt_NES;
+			m_platform = platform_data.e_platform_type.NES;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 8, 0 ), 		// CHR id
@@ -165,7 +165,7 @@ namespace MAPeD
 	{
 		public map_data_native_NES()
 		{
-			m_platform = platform_data.EPlatformType.pt_NES;
+			m_platform = platform_data.e_platform_type.NES;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 8, 0 ), 		// CHR id
@@ -182,7 +182,7 @@ namespace MAPeD
 	{
 		public map_data_app_SMS()
 		{
-			m_platform = platform_data.EPlatformType.pt_SMS;
+			m_platform = platform_data.e_platform_type.SMS;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 9, 0 ), 		// CHR id
@@ -197,7 +197,7 @@ namespace MAPeD
 	{
 		public map_data_native_SMS()
 		{
-			m_platform = platform_data.EPlatformType.pt_SMS;
+			m_platform = platform_data.e_platform_type.SMS;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 9, 0 ), 		// CHR id
@@ -212,7 +212,7 @@ namespace MAPeD
 	{
 		public map_data_app_PCE()
 		{
-			m_platform = platform_data.EPlatformType.pt_PCE;
+			m_platform = platform_data.e_platform_type.PCE;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 12, 0 ), 	// CHR id
@@ -227,7 +227,7 @@ namespace MAPeD
 	{
 		public map_data_native_PCE()
 		{
-			m_platform = platform_data.EPlatformType.pt_PCE;
+			m_platform = platform_data.e_platform_type.PCE;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 12, 0 ), 	// CHR id
@@ -242,7 +242,7 @@ namespace MAPeD
 	{
 		public map_data_app_ZX()
 		{
-			m_platform = platform_data.EPlatformType.pt_ZX;
+			m_platform = platform_data.e_platform_type.ZX;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 11, 0 ), 	// CHR id
@@ -257,7 +257,7 @@ namespace MAPeD
 	{
 		public map_data_native_ZX()
 		{
-			m_platform = platform_data.EPlatformType.pt_ZX;
+			m_platform = platform_data.e_platform_type.ZX;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 11, 0 ), 	// CHR id
@@ -272,7 +272,7 @@ namespace MAPeD
 	{
 		public map_data_app_SMD()
 		{
-			m_platform = platform_data.EPlatformType.pt_SMD;
+			m_platform = platform_data.e_platform_type.SMD;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 11, 0 ), 	// CHR id
@@ -287,7 +287,7 @@ namespace MAPeD
 	{
 		public map_data_native_SMD()
 		{
-			m_platform = platform_data.EPlatformType.pt_SMD;
+			m_platform = platform_data.e_platform_type.SMD;
 			
 			set_data( new bit_field[]{ 
 			         	new bit_field( 11, 0 ), 	// CHR id
@@ -305,7 +305,7 @@ namespace MAPeD
 		private static readonly map_data_app_ZX	 m_map_data_app_ZX	= new map_data_app_ZX();
 		private static readonly map_data_app_SMD m_map_data_app_SMD	= new map_data_app_SMD();
 		
-		private static readonly Dictionary< platform_data.EPlatformType, map_data_config_base > m_map_data_app_dict = new Dictionary< platform_data.EPlatformType, map_data_config_base >();
+		private static readonly Dictionary< platform_data.e_platform_type, map_data_config_base > m_map_data_app_dict = new Dictionary< platform_data.e_platform_type, map_data_config_base >();
 
 		private static readonly map_data_native_NES m_map_data_native_NES	= new map_data_native_NES();
 		private static readonly map_data_native_SMS m_map_data_native_SMS	= new map_data_native_SMS();
@@ -313,7 +313,7 @@ namespace MAPeD
 		private static readonly map_data_native_ZX	m_map_data_native_ZX	= new map_data_native_ZX();
 		private static readonly map_data_native_SMD	m_map_data_native_SMD	= new map_data_native_SMD();
 		
-		private static readonly Dictionary< platform_data.EPlatformType, map_data_config_base > m_map_data_native_dict = new Dictionary< platform_data.EPlatformType, map_data_config_base >();
+		private static readonly Dictionary< platform_data.e_platform_type, map_data_config_base > m_map_data_native_dict = new Dictionary< platform_data.e_platform_type, map_data_config_base >();
 		
 		static map_data_config_provider()
 		{
@@ -335,7 +335,7 @@ namespace MAPeD
 			return m_map_data_app_dict[ platform_data.get_platform_type() ];
 		}
 
-		public static map_data_config_base config_app( platform_data.EPlatformType _platform )
+		public static map_data_config_base config_app( platform_data.e_platform_type _platform )
 		{
 			return m_map_data_app_dict[ _platform ];
 		}

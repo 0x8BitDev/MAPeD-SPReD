@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 12.12.2022
  * Time: 21:00
  */
@@ -55,12 +55,12 @@ namespace MAPeD
 			
 			prepare_pix_box();
 			
-			m_on_paint	= new EventHandler< SkiaSharp.Views.Desktop.SKPaintGLSurfaceEventArgs >( PixBox_PaintSurface );
+			m_on_paint	= new EventHandler< SkiaSharp.Views.Desktop.SKPaintGLSurfaceEventArgs >( on_paint_surface );
 			
-			m_pix_box.Resize += Resize_Event;
+			m_pix_box.Resize += on_resize;
 		}
 		
-		protected virtual void Resize_Event( object sender, EventArgs e )
+		protected virtual void on_resize( object sender, EventArgs e )
 		{
 			m_surface = null;
 			
@@ -74,7 +74,7 @@ namespace MAPeD
 			update();
 		}
 		
-		private void PixBox_PaintSurface( object sender, SkiaSharp.Views.Desktop.SKPaintGLSurfaceEventArgs e )
+		private void on_paint_surface( object sender, SkiaSharp.Views.Desktop.SKPaintGLSurfaceEventArgs e )
 		{
 			m_surface = e.Surface;
 			
