@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 01.05.2017
  * Time: 15:24
  */
@@ -41,7 +41,7 @@ namespace MAPeD
 			}
 			catch( System.Exception _err )
 			{
-				MainForm.message_box( _err.Message, "Unexpected Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( _err.Message, "Unexpected Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		

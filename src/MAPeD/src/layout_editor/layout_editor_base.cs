@@ -1379,7 +1379,7 @@ namespace MAPeD
 			{
 				draw_sel_screen_border();
 				
-				if( MainForm.message_box( "Are you sure?", "Delete Screen Entities", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning ) == DialogResult.Yes )
+				if( MainForm.message_box( "Are you sure?", "Delete Screen Entities", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
 				{
 					selected_screens_proc( delegate( int _scr_slot_ind )
 					{

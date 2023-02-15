@@ -78,7 +78,7 @@ namespace SPSeD
 
 			py_init();
 			
-			FormClosing += new System.Windows.Forms.FormClosingEventHandler( OnFormClosing );
+			FormClosing += new FormClosingEventHandler( OnFormClosing );
 			
 			OutputTextBox.Text = "Simple Python script editor ( IronPython " + m_py_engine.LanguageVersion.ToString() + " )";
 			
@@ -147,7 +147,7 @@ namespace SPSeD
 			return _doc_page.script_filename != null ? Path.GetFileName( _doc_page.script_filename ):"UNTITLED";
 		}
 		
-		public DialogResult message_box( string _msg, string _caption, MessageBoxButtons _buttons, System.Windows.Forms.MessageBoxIcon _icon = System.Windows.Forms.MessageBoxIcon.Warning )
+		public DialogResult message_box( string _msg, string _caption, MessageBoxButtons _buttons, MessageBoxIcon _icon = MessageBoxIcon.Warning )
 		{
 			return MessageBox.Show( this, _msg, _caption, _buttons, _icon );
 		}
@@ -517,7 +517,7 @@ namespace SPSeD
 			{
 				e.Cancel = true;
 				
-				if( message_box( "All unsaved data will be lost!\nAre you sure?", "Exit " + CONST_EDITOR_NAME, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "All unsaved data will be lost!\nAre you sure?", "Exit " + CONST_EDITOR_NAME, MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
 					e.Cancel = false;
 				}

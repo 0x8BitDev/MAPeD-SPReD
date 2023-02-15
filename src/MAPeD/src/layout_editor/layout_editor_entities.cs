@@ -787,7 +787,7 @@ namespace MAPeD
 			{
 				if( m_ent_inst_screen_slot_id >= 0 )
 				{
-					if( MainForm.message_box( "Are you sure?", "Delete Entity Instance", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == DialogResult.Yes )
+					if( MainForm.message_box( "Are you sure?", "Delete Entity Instance", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 					{
 						layout_screen_data scr_data = m_shared.m_layout.get_data( m_ent_inst_screen_slot_id % m_shared.m_layout.get_width(), m_ent_inst_screen_slot_id / m_shared.m_layout.get_width() );
 					

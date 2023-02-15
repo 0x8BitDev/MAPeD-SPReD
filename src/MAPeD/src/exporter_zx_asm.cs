@@ -325,7 +325,7 @@ namespace MAPeD
 			}
 			catch( System.Exception _err )
 			{
-				MainForm.message_box( _err.Message, "Data Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error ); 
+				MainForm.message_box( _err.Message, "Data Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error ); 
 			}
 			
 			finally

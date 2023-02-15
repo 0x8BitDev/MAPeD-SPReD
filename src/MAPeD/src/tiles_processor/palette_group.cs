@@ -368,7 +368,7 @@ namespace MAPeD
 			// update color event
 			if( UpdateColor != null )
 			{
-				UpdateColor( this, System.Windows.Forms.MouseEventArgs.Empty );
+				UpdateColor( this, MouseEventArgs.Empty );
 			}
 #endif
 		}

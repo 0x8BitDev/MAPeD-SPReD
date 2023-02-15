@@ -233,7 +233,7 @@ namespace MAPeD
 			m_label.Visible = !_on;
 		}
 		
-		private void on_mouse_up( object sender, System.Windows.Forms.MouseEventArgs e )
+		private void on_mouse_up( object sender, MouseEventArgs e )
 		{
 			if( m_event_handler != null )
 			{
@@ -241,7 +241,7 @@ namespace MAPeD
 			}
 		}
 		
-		private void on_mouse_move( object sender, System.Windows.Forms.MouseEventArgs e )
+		private void on_mouse_move( object sender, MouseEventArgs e )
 		{
 			int pos_x = Math.Min( e.X, m_pix_box.Width - 2 );
 			int pos_y = Math.Min( e.Y, m_pix_box.Height - 2 );

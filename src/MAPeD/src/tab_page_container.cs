@@ -48,7 +48,7 @@ namespace MAPeD
 				
 				_tab_cntrl.TabPages.Remove( m_tab_page );
 			
-				m_inner_tab_cntrl 		= new System.Windows.Forms.TabControl();
+				m_inner_tab_cntrl 		= new TabControl();
 				m_inner_tab_cntrl.Dock 	= DockStyle.Fill; 
 				m_inner_tab_cntrl.TabPages.Add( m_tab_page );
 

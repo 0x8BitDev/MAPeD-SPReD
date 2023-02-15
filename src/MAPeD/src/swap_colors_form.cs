@@ -48,7 +48,7 @@ namespace MAPeD
 			m_pen.Width		= 1;
 		}
 		
-		private void on_mouse_click( object sender, System.Windows.Forms.MouseEventArgs e )
+		private void on_mouse_click( object sender, MouseEventArgs e )
 		{
 			int sel_ind = e.X >> 4;
 			

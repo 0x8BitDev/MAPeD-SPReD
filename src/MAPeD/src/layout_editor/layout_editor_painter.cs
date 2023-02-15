@@ -409,7 +409,7 @@ namespace MAPeD
 			m_last_empty_tile_ind = -1;
 				
 			// TILES ARRAY OVERFLOW !!!
-			MainForm.message_box( "Try to optimize the tiles data!", "Tiles Array Overflow", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+			MainForm.message_box( "Try to optimize the tiles data!", "Tiles Array Overflow", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			
 			return -1;
 		}
@@ -632,7 +632,7 @@ namespace MAPeD
 			
 			if( m_shared.selected_screens() )
 			{
-				if( MainForm.message_box( "All selected screens will be filled with the active tile!\n\nAre you sure?", "Fill With Tiles", MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Warning ) == DialogResult.Yes )
+				if( MainForm.message_box( "All selected screens will be filled with the active tile!\n\nAre you sure?", "Fill With Tiles", MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
 				{
 					bool ignore_scr_data_enum = false;
 					
