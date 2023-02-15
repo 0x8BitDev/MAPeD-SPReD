@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 01.03.2022
  * Time: 18:28
  */
@@ -80,8 +80,8 @@ namespace SPReD
 			this.NumCHRsOffset.Name = "NumCHRsOffset";
 			this.NumCHRsOffset.Size = new System.Drawing.Size(61, 20);
 			this.NumCHRsOffset.TabIndex = 1;
-			this.NumCHRsOffset.ValueChanged += new System.EventHandler(this.NumCHRsOffsetChanged_Event);
-			this.NumCHRsOffset.KeyUp += new System.Windows.Forms.KeyEventHandler(this.NumCHRsOffsetChanged_Event);
+			this.NumCHRsOffset.ValueChanged += new System.EventHandler(this.NumCHRsOffsetChanged);
+			this.NumCHRsOffset.KeyUp += new System.Windows.Forms.KeyEventHandler(this.NumCHRsOffsetChanged);
 			// 
 			// LabelVADDR
 			// 
@@ -110,8 +110,8 @@ namespace SPReD
 			this.NumPaletteSlot.Name = "NumPaletteSlot";
 			this.NumPaletteSlot.Size = new System.Drawing.Size(61, 20);
 			this.NumPaletteSlot.TabIndex = 5;
-			this.NumPaletteSlot.ValueChanged += new System.EventHandler(this.NumCHRsOffsetChanged_Event);
-			this.NumPaletteSlot.KeyUp += new System.Windows.Forms.KeyEventHandler(this.NumCHRsOffsetChanged_Event);
+			this.NumPaletteSlot.ValueChanged += new System.EventHandler(this.NumCHRsOffsetChanged);
+			this.NumPaletteSlot.KeyUp += new System.Windows.Forms.KeyEventHandler(this.NumCHRsOffsetChanged);
 			// 
 			// CheckBoxCommentCHRData
 			// 
@@ -141,8 +141,8 @@ namespace SPReD
 			this.NumVADDR.Name = "NumVADDR";
 			this.NumVADDR.Size = new System.Drawing.Size(61, 20);
 			this.NumVADDR.TabIndex = 3;
-			this.NumVADDR.ValueChanged += new System.EventHandler(this.NumVADDRChanged_Event);
-			this.NumVADDR.KeyUp += new System.Windows.Forms.KeyEventHandler(this.NumVADDRKeyUp_Event);
+			this.NumVADDR.ValueChanged += new System.EventHandler(this.NumVADDRChanged);
+			this.NumVADDR.KeyUp += new System.Windows.Forms.KeyEventHandler(this.NumVADDRKeyUp);
 			// 
 			// TextBoxDataDir
 			// 

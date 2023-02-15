@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 14.03.2017
  * Time: 16:35
  */
@@ -15,11 +15,11 @@ namespace SPReD
 	
 	public class CHR_data
 	{
-		public enum ETransform
+		public enum e_transform
 		{
-			t_hflip,
-			t_vflip,
-			t_rotate,
+			HFlip,
+			VFlip,
+			Rotate,
 		};
 		
 		private byte[] 		m_data;
@@ -165,13 +165,13 @@ namespace SPReD
 			hflip();
 		}
 		
-		public void transform( ETransform _type )
+		public void transform( e_transform _type )
 		{
 			switch( _type )
 			{
-				case ETransform.t_hflip: 	{ hflip(); } 	break;
-				case ETransform.t_vflip:	{ vflip(); } 	break;
-				case ETransform.t_rotate: 	{ rot_cw(); } 	break;
+				case e_transform.HFlip:		{ hflip(); }	break;
+				case e_transform.VFlip:		{ vflip(); }	break;
+				case e_transform.Rotate:	{ rot_cw(); }	break;
 			}
 		}
 		

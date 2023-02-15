@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 13.03.2017
  * Time: 16:51
  */
@@ -46,16 +46,16 @@ namespace SPReD
 			m_CHR_data_storage		= new CHR_data_storage();
 			m_palette_grp			= new palette_group( _plt_main, _plt0, _plt1, _plt2, _plt3 );
 			
-			m_CHR_bank_viewer.subscribe_event( m_palette_grp );
-			m_CHR_bank_viewer.subscribe_event( m_sprite_layout_viewer );
-			m_sprite_layout_viewer.subscribe_event( m_palette_grp );
-			m_sprite_layout_viewer.subscribe_event( m_CHR_bank_viewer );
+			m_CHR_bank_viewer.subscribe( m_palette_grp );
+			m_CHR_bank_viewer.subscribe( m_sprite_layout_viewer );
+			m_sprite_layout_viewer.subscribe( m_palette_grp );
+			m_sprite_layout_viewer.subscribe( m_CHR_bank_viewer );
 		}
 #if DEF_FIXED_LEN_PALETTE16_ARR
-		public void subscribe_event( MainForm _mf )
+		public void subscribe( MainForm _mf )
 		{
-			m_sprite_layout_viewer.SetCHRPalette		+= _mf.SetCHRPalette_Event;
-			m_sprite_layout_viewer.ApplyPaletteToCHR	+= _mf.ApplyPaletteToCHR_Event;
+			m_sprite_layout_viewer.SetCHRPalette		+= _mf.SetCHRPalette;
+			m_sprite_layout_viewer.ApplyPaletteToCHR	+= _mf.ApplyPaletteToCHR;
 		}
 #endif
 		public void reset()
@@ -785,7 +785,7 @@ namespace SPReD
 			m_CHR_bank_viewer.set_mode8x16( _on );
 		}
 		
-		public void chr_transform( CHR_data.ETransform _type )
+		public void chr_transform( CHR_data.e_transform _type )
 		{
 			m_CHR_bank_viewer.transform_CHR( _type );
 		}
@@ -839,13 +839,13 @@ namespace SPReD
 			return spr;
 		}
 		
-		public void key_event(object sender, KeyEventArgs e)
+		public void on_key_up( object sender, KeyEventArgs e )
 		{
-			m_palette_grp.key_event( sender, e );
-			m_CHR_bank_viewer.key_event( sender, e );
+			m_palette_grp.on_key_up( sender, e );
+			m_CHR_bank_viewer.on_key_up( sender, e );
 		}		
 		
-		public void key_down_event(object sender, PreviewKeyDownEventArgs e)
+		public void on_key_down( object sender, PreviewKeyDownEventArgs e )
 		{
 			//...
 		}
@@ -855,12 +855,12 @@ namespace SPReD
 			return m_palette_grp;
 		}
 		
-		public void layout_set_mode( sprite_layout_viewer.EMode _mode )
+		public void layout_set_mode( sprite_layout_viewer.e_mode _mode )
 		{
 			m_sprite_layout_viewer.mode = _mode;
 		}
 		
-		public sprite_layout_viewer.EMode layout_get_mode()
+		public sprite_layout_viewer.e_mode layout_get_mode()
 		{
 			return m_sprite_layout_viewer.mode;
 		}

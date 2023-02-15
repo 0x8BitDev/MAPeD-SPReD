@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 01.03.2022
  * Time: 18:28
  */
@@ -71,12 +71,12 @@ namespace SPReD
 			update_vaddr_label();
 		}
 
-		void NumVADDRChanged_Event(object sender, EventArgs e)
+		private void NumVADDRChanged( object sender, EventArgs e )
 		{
 			update_chr_offset_label();
 		}
 
-		void NumVADDRKeyUp_Event(object sender, KeyEventArgs e)
+		private void NumVADDRKeyUp( object sender, KeyEventArgs e )
 		{
 			if( NumVADDR.Text.Length > 2 )
 			{
@@ -84,26 +84,26 @@ namespace SPReD
 			}
 		}
 		
-		void NumCHRsOffsetChanged_Event(object sender, EventArgs e)
+		private void NumCHRsOffsetChanged( object sender, EventArgs e )
 		{
 			update_vaddr_label();
 		}
 		
-		void update_vaddr_label()
+		private void update_vaddr_label()
 		{
 			NumVADDR.Value = CHRs_offset << 6;
 		}
 		
-		void update_chr_offset_label()
+		private void update_chr_offset_label()
 		{
 			NumCHRsOffset.Value = VADDR >> 6;
 		}
 		
-		public DialogResult ShowDialog( bool _asm_data )
+		public DialogResult show_window( bool _asm_data )
 		{
 			CheckBoxCommentCHRData.Checked = _asm_data;
 			
-			return base.ShowDialog();
+			return ShowDialog();
 		}
 	}
 }

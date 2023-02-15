@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 13.03.2017
  * Time: 11:24
  */
@@ -46,12 +46,12 @@ namespace SPReD
 		
 		private bool m_project_loaded	= false;
 		
-		private struct SToolTipData
+		private struct tooltip_data
 		{
-			public System.Windows.Forms.Control m_cntrl;
+			public Control m_cntrl;
 			public string m_desc;
 			
-			public SToolTipData( System.Windows.Forms.Control _cntrl, string _desc )
+			public tooltip_data( Control _cntrl, string _desc )
 			{
 				m_cntrl	= _cntrl;
 				m_desc 	= _desc;
@@ -79,7 +79,7 @@ namespace SPReD
 													Palette2,
 													Palette3 );
 #if DEF_FIXED_LEN_PALETTE16_ARR
-			m_sprites_proc.subscribe_event( this );
+			m_sprites_proc.subscribe( this );
 #endif
 			CBoxCHRPackingType.SelectedIndex = 0;
 			CBoxFlipType.SelectedIndex = 0;
@@ -87,57 +87,57 @@ namespace SPReD
 			SpriteList.ContextMenuStrip = SpriteListContextMenu;
 			CHRBank.ContextMenuStrip 	= ContextMenuCHRBank;
 			
-			SToolTipData[] tooltips = new SToolTipData[]{ 	new SToolTipData( BtnMoveItemUp, "Move selected item up" ),
-															new SToolTipData( BtnMoveItemDown, "Move selected item down" ),
-															new SToolTipData( BtnCHROptimization, "Remove unused/empty/duplicate CHRs in all CHR banks" ),
-															new SToolTipData( BtnCHRPack, "Merge selected sprites data into common CHR bank(s)" ),
-															new SToolTipData( BtnCHRSplit, "Extract all sprites data into separate CHR banks" ),
-															new SToolTipData( BtnOffset, "Apply offset to all selected sprites" ),
-															new SToolTipData( Palette0, "Shift+1 / Ctrl+1,2,3,4 to select a color" ),
-															new SToolTipData( Palette1, "Shift+2 / Ctrl+1,2,3,4 to select a color" ),
-															new SToolTipData( Palette2, "Shift+3 / Ctrl+1,2,3,4 to select a color" ),
-															new SToolTipData( Palette3, "Shift+4 / Ctrl+1,2,3,4 to select a color" ),
-															new SToolTipData( BtnZoomIn, "Zoom In" ),
-															new SToolTipData( BtnZoomOut, "Zoom Out" ),
-															new SToolTipData( BtnAddCHR, "Add new CHR" ),
-															new SToolTipData( BtnDeleteLastCHR, "Delete last CHR" ),
-															new SToolTipData( BtnDeleteCHR, "Delete selected CHR" ),
-															new SToolTipData( BtnCentering, "Place an active sprite in the middle of the viewport" ),
-															new SToolTipData( BtnShiftColors, "Cyclic shifting of active sprite color indices" ),
-															new SToolTipData( CBoxShiftTransp, "Use transparency when shifting color indices" ),
-															new SToolTipData( BtnApplyDefaultPalette, "Apply palette to all selected sprites" ),
-															new SToolTipData( BtnCHRVFlip, "Vertical flipping of selected CHR" ),
-															new SToolTipData( BtnCHRHFlip, "Horizontal flipping of selected CHR" ),
-															new SToolTipData( BtnCHRRotate, "Clockwise rotation of selected CHR" ),
-															new SToolTipData( BtnVFlip, "Vertical flipping of selected CHR" ),
-															new SToolTipData( BtnHFlip, "Horizontal flipping of selected CHR" ),
-															new SToolTipData( BtnSpriteVFlip, "Vertical flipping of all selected sprites" ),
-															new SToolTipData( BtnSpriteHFlip, "Horizontal flipping of all selected sprites" ),
-															new SToolTipData( CBoxAxesLayout, "Show X/Y axes" ),
-															new SToolTipData( CBoxGridLayout, "Show grid" ),
-															new SToolTipData( CBoxSnapLayout, "Snap CHRs to " + utils.CONST_CHR_SIDE_PIXELS_CNT + "x" + utils.CONST_CHR_SIDE_PIXELS_CNT + " grid" ),
-															new SToolTipData( CBoxMode8x16, "8x16 sprite mode" ),
+			tooltip_data[] tooltips = new tooltip_data[]{ 	new tooltip_data( BtnMoveItemUp, "Move selected item up" ),
+															new tooltip_data( BtnMoveItemDown, "Move selected item down" ),
+															new tooltip_data( BtnCHROptimization, "Remove unused/empty/duplicate CHRs in all CHR banks" ),
+															new tooltip_data( BtnCHRPack, "Merge selected sprites data into common CHR bank(s)" ),
+															new tooltip_data( BtnCHRSplit, "Extract all sprites data into separate CHR banks" ),
+															new tooltip_data( BtnOffset, "Apply offset to all selected sprites" ),
+															new tooltip_data( Palette0, "Shift+1 / Ctrl+1,2,3,4 to select a color" ),
+															new tooltip_data( Palette1, "Shift+2 / Ctrl+1,2,3,4 to select a color" ),
+															new tooltip_data( Palette2, "Shift+3 / Ctrl+1,2,3,4 to select a color" ),
+															new tooltip_data( Palette3, "Shift+4 / Ctrl+1,2,3,4 to select a color" ),
+															new tooltip_data( BtnZoomIn, "Zoom In" ),
+															new tooltip_data( BtnZoomOut, "Zoom Out" ),
+															new tooltip_data( BtnAddCHR, "Add new CHR" ),
+															new tooltip_data( BtnDeleteLastCHR, "Delete last CHR" ),
+															new tooltip_data( BtnDeleteCHR, "Delete selected CHR" ),
+															new tooltip_data( BtnCentering, "Place an active sprite in the middle of the viewport" ),
+															new tooltip_data( BtnShiftColors, "Cyclic shifting of active sprite color indices" ),
+															new tooltip_data( CBoxShiftTransp, "Use transparency when shifting color indices" ),
+															new tooltip_data( BtnApplyDefaultPalette, "Apply palette to all selected sprites" ),
+															new tooltip_data( BtnCHRVFlip, "Vertical flipping of selected CHR" ),
+															new tooltip_data( BtnCHRHFlip, "Horizontal flipping of selected CHR" ),
+															new tooltip_data( BtnCHRRotate, "Clockwise rotation of selected CHR" ),
+															new tooltip_data( BtnVFlip, "Vertical flipping of selected CHR" ),
+															new tooltip_data( BtnHFlip, "Horizontal flipping of selected CHR" ),
+															new tooltip_data( BtnSpriteVFlip, "Vertical flipping of all selected sprites" ),
+															new tooltip_data( BtnSpriteHFlip, "Horizontal flipping of all selected sprites" ),
+															new tooltip_data( CBoxAxesLayout, "Show X/Y axes" ),
+															new tooltip_data( CBoxGridLayout, "Show grid" ),
+															new tooltip_data( CBoxSnapLayout, "Snap CHRs to " + utils.CONST_CHR_SIDE_PIXELS_CNT + "x" + utils.CONST_CHR_SIDE_PIXELS_CNT + " grid" ),
+															new tooltip_data( CBoxMode8x16, "8x16 sprite mode" ),
 #if DEF_FIXED_LEN_PALETTE16_ARR
-															new SToolTipData( CBoxPalettes, "Palettes array" ),
-															new SToolTipData( BtnSwapColors, "Swap two selected colors without changing graphics" ),
+															new tooltip_data( CBoxPalettes, "Palettes array" ),
+															new tooltip_data( BtnSwapColors, "Swap two selected colors without changing graphics" ),
 #endif
 														};
-			SToolTipData data;
+			tooltip_data data;
 			
 			for( int i = 0; i < tooltips.Length; i++ )
 			{
 				data = tooltips[ i ];
 				
-				( new System.Windows.Forms.ToolTip(this.components) ).SetToolTip( data.m_cntrl, data.m_desc );
+				( new ToolTip(this.components) ).SetToolTip( data.m_cntrl, data.m_desc );
 			}
 			
 			// the build mode is active by default
-			BtnModeBuild_Event( null, null );
+			BtnModeBuildClick( null, null );
 			
 			// disable PASTE action by default
 			PasteCHRToolStripMenuItem.Enabled = false;
 			
-			FormClosing += new System.Windows.Forms.FormClosingEventHandler( OnFormClosing );
+			FormClosing += new FormClosingEventHandler( OnFormClosing );
 			
 			set_title_name( null );
 			
@@ -161,30 +161,30 @@ namespace SPReD
 #endif
 
 #if DEF_NES
-			this.Project_openFileDialog.DefaultExt = "spredsms";
-			this.Project_openFileDialog.Filter += "|SPReD-SMS (*.spredsms)|*.spredsms";
+			this.ProjectOpenFileDialog.DefaultExt = "spredsms";
+			this.ProjectOpenFileDialog.Filter += "|SPReD-SMS (*.spredsms)|*.spredsms";
 			
 			paletteToolStripMenuItem.Visible = false;
 			
 			this.ExportCToolStripMenuItem.Text = "&CC65";
-			this.ExportC_saveFileDialog.Title = "Export CC65: Select File";
-			this.ExportC_saveFileDialog.Filter = this.ExportC_saveFileDialog.Filter.Replace( "C", "CC65");
+			this.ExportCSaveFileDialog.Title = "Export CC65: Select File";
+			this.ExportCSaveFileDialog.Filter = this.ExportCSaveFileDialog.Filter.Replace( "C", "CC65");
 #elif DEF_SMS
-			this.Project_saveFileDialog.DefaultExt = "spredsms";
-			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "NES", "SMS" );
-			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "nes", "sms" );
+			this.ProjectSaveFileDialog.DefaultExt = "spredsms";
+			this.ProjectSaveFileDialog.Filter = this.ProjectSaveFileDialog.Filter.Replace( "NES", "SMS" );
+			this.ProjectSaveFileDialog.Filter = this.ProjectSaveFileDialog.Filter.Replace( "nes", "sms" );
 
-			this.Project_openFileDialog.DefaultExt = "spredsms";
-			this.Project_openFileDialog.Filter = "SPReD-SMS (*.spredsms)|*.spredsms|" + this.Project_openFileDialog.Filter;
+			this.ProjectOpenFileDialog.DefaultExt = "spredsms";
+			this.ProjectOpenFileDialog.Filter = "SPReD-SMS (*.spredsms)|*.spredsms|" + this.ProjectOpenFileDialog.Filter;
 
-			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "4 colors", "16/4 colors" );
+			this.ImportOpenFileDialog.Filter = this.ImportOpenFileDialog.Filter.Replace( "4 colors", "16/4 colors" );
 			
 			this.ExportASMToolStripMenuItem.Text = "&WLA-DX asm";
-			this.ExportASM_saveFileDialog.Filter = "WLA-DX (*.asm)|*.asm";
+			this.ExportASMSaveFileDialog.Filter = "WLA-DX (*.asm)|*.asm";
 
 			this.ExportCToolStripMenuItem.Text = "&SDCC";
-			this.ExportC_saveFileDialog.Title = "Export SDCC: Select File";
-			this.ExportC_saveFileDialog.Filter = this.ExportC_saveFileDialog.Filter.Replace( "C", "SDCC");
+			this.ExportCSaveFileDialog.Title = "Export SDCC: Select File";
+			this.ExportCSaveFileDialog.Filter = this.ExportCSaveFileDialog.Filter.Replace( "C", "SDCC");
 			
 			BtnApplyDefaultPalette.Enabled = applyPaletteToolStripMenuItem.Enabled = false;
 			BtnShiftColors.Enabled = shiftColorsToolStripMenuItem.Enabled = CBoxShiftTransp.Enabled = false;
@@ -198,22 +198,22 @@ namespace SPReD
 			managerToolStripMenuItem.Visible = false;
 			
 #elif DEF_PCE
-			this.Project_saveFileDialog.DefaultExt = "spredpce";
-			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "NES", "PCE" );
-			this.Project_saveFileDialog.Filter = this.Project_saveFileDialog.Filter.Replace( "nes", "pce" );
+			this.ProjectSaveFileDialog.DefaultExt = "spredpce";
+			this.ProjectSaveFileDialog.Filter = this.ProjectSaveFileDialog.Filter.Replace( "NES", "PCE" );
+			this.ProjectSaveFileDialog.Filter = this.ProjectSaveFileDialog.Filter.Replace( "nes", "pce" );
 
-			this.Project_openFileDialog.DefaultExt = "spredpce";
-			this.Project_openFileDialog.Filter = "SPReD-PCE (*.spredpce)|*.spredpce";//|" + this.Project_openFileDialog.Filter;
+			this.ProjectOpenFileDialog.DefaultExt = "spredpce";
+			this.ProjectOpenFileDialog.Filter = "SPReD-PCE (*.spredpce)|*.spredpce";//|" + this.ProjectOpenFileDialog.Filter;
 
-			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "4 colors", "16/4 colors" );
-			this.Import_openFileDialog.Filter = this.Import_openFileDialog.Filter.Replace( "Palette (192 bytes)", "Palette (1536 bytes)" );
+			this.ImportOpenFileDialog.Filter = this.ImportOpenFileDialog.Filter.Replace( "4 colors", "16/4 colors" );
+			this.ImportOpenFileDialog.Filter = this.ImportOpenFileDialog.Filter.Replace( "Palette (192 bytes)", "Palette (1536 bytes)" );
 			
 			this.ExportASMToolStripMenuItem.Text = "&CA65/PCEAS";
-			this.ExportASM_saveFileDialog.Filter = "CA65/PCEAS (*.asm)|*.asm";
+			this.ExportASMSaveFileDialog.Filter = "CA65/PCEAS (*.asm)|*.asm";
 			
 			this.ExportCToolStripMenuItem.Text = "&HuC";
-			this.ExportC_saveFileDialog.Title = "Export HuC: Select File";
-			this.ExportC_saveFileDialog.Filter = this.ExportC_saveFileDialog.Filter.Replace( "C", "HuC");
+			this.ExportCSaveFileDialog.Title = "Export HuC: Select File";
+			this.ExportCSaveFileDialog.Filter = this.ExportCSaveFileDialog.Filter.Replace( "C", "HuC");
 			
 			BtnShiftColors.Enabled = shiftColorsToolStripMenuItem.Enabled = CBoxShiftTransp.Enabled = false;
 
@@ -233,12 +233,12 @@ namespace SPReD
 			}
 		}
 		
-		public static System.Windows.Forms.DialogResult message_box( string _msg, string _title, System.Windows.Forms.MessageBoxButtons _buttons, System.Windows.Forms.MessageBoxIcon _icon = System.Windows.Forms.MessageBoxIcon.Warning )
+		public static DialogResult message_box( string _msg, string _title, MessageBoxButtons _buttons, MessageBoxIcon _icon = MessageBoxIcon.Warning )
 		{
-			return System.Windows.Forms.MessageBox.Show( _msg, _title, _buttons, _icon );
+			return MessageBox.Show( _msg, _title, _buttons, _icon );
 		}
 		
-		private void OnFormClosing(object sender, FormClosingEventArgs e)
+		private void OnFormClosing( object sender, FormClosingEventArgs e )
 		{
 			e.Cancel = true;
 
@@ -254,7 +254,7 @@ namespace SPReD
 				m_py_editor = null;
 			}
 			
-		    if( message_box( "All unsaved progress will be lost!\nAre you sure?", "Exit App", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+		    if( message_box( "All unsaved progress will be lost!\nAre you sure?", "Exit App", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 		    {
 				reset();
 				m_sprites_proc = null;
@@ -288,7 +288,7 @@ namespace SPReD
 			m_sprites_proc.reset();
 			
 			// the build mode is active by default
-			BtnModeBuild_Event( null, null );
+			BtnModeBuildClick( null, null );
 			
 			OffsetX.Value = 0;
 			OffsetY.Value = 0;
@@ -307,17 +307,17 @@ namespace SPReD
 #endif
 		}
 		
-		void ExitToolStripMenuItemClick(object sender, System.EventArgs e)
+		private void ExitToolStripMenuItemClick( object sender, System.EventArgs e )
 		{
 			Close();
 		}
 		
-		void MenuHelpAboutClick(object sender, System.EventArgs e)
+		private void MenuHelpAboutClick( object sender, System.EventArgs e )
 		{
-			message_box( "Sprites Editor (" + utils.CONST_PLATFORM + ")\n\n" + utils.CONST_APP_VER + " " + utils.build_str + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information );
+			message_box( "Sprites Editor (" + utils.CONST_PLATFORM + ")\n\n" + utils.CONST_APP_VER + " " + utils.build_str + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 		
-		void MenuHelpQuickGuideClick(object sender, EventArgs e)
+		private void MenuHelpQuickGuideClick( object sender, EventArgs e )
 		{
 			string doc_path = Application.StartupPath.Substring( 0, Application.StartupPath.LastIndexOf( Path.DirectorySeparatorChar ) ) + Path.DirectorySeparatorChar + "doc" + Path.DirectorySeparatorChar + "SPReD" + Path.DirectorySeparatorChar + "Quick_Guide.html";
 			
@@ -340,11 +340,11 @@ namespace SPReD
 			}
 		}
 		
-		void CloseToolStripMenuItemClick(object sender, EventArgs e)
+		private void CloseToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( SpriteList.Items.Count > 0 )
 			{
-				if( message_box( "Are you sure?", "Close Project", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure?", "Close Project", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
 					reset();
 					
@@ -355,12 +355,12 @@ namespace SPReD
 			}
 		}
 		
-		void DescriptionToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void DescriptionToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			m_description_form.ShowDialog();
 		}
 		
-		void StatisticsToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void StatisticsToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			m_sprites_proc.show_statistics( SpriteList.Items );
 		}
@@ -379,7 +379,7 @@ namespace SPReD
 				}
 			}
 			
-			return false;			
+			return false;
 		}
 		
 		private void update_selected_sprite( bool _new_sprite = false )
@@ -395,16 +395,16 @@ namespace SPReD
 			}
 		}
 		
-		void BtnRename_Event(object sender, EventArgs e)
+		private void BtnRenameClick( object sender, EventArgs e )
 		{
 			rename_copy_sprite( "Rename Sprite", null );
 		}
 		
-		void rename_copy_sprite( string _wnd_caption, Action< string, sprite_data > _copy_act )
+		private void rename_copy_sprite( string _wnd_caption, Action< string, sprite_data > _copy_act )
 		{
 			if( SpriteList.SelectedIndices.Count == 0 )
 			{
-				message_box( "Please, select a sprite!", _wnd_caption, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "Please, select a sprite!", _wnd_caption, MessageBoxButtons.OK, MessageBoxIcon.Error );
 				return;
 			}
 			
@@ -421,7 +421,7 @@ namespace SPReD
 				
 				if( m_rename_sprite_form.edit_str == "" )
 				{
-					message_box( "The sprite name is empty!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+					message_box( "The sprite name is empty!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 					return;
 				}
 				
@@ -455,16 +455,16 @@ namespace SPReD
 				}
 				else
 				{
-					message_box( new_sprite_name + " - A sprite with the same name already exists! Ignored!", _wnd_caption, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+					message_box( new_sprite_name + " - A sprite with the same name already exists! Ignored!", _wnd_caption, MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 			else
 			{
-				message_box( "Please, select one sprite!", _wnd_caption, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "Please, select one sprite!", _wnd_caption, MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
-		void BtnCreateRef_Event(object sender, System.EventArgs e)
+		private void BtnCreateRefClick( object sender, System.EventArgs e )
 		{
 			if( SpriteList.SelectedIndices.Count > 0 )
 			{
@@ -487,11 +487,11 @@ namespace SPReD
 			}
 			else
 			{
-				message_box( "Please, select sprite(s)!", "Create Ref", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "Please, select sprite(s)!", "Create Ref", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 
-		void BtnCreateCopy_Event(object sender, EventArgs e)
+		private void BtnCreateCopyClick( object sender, EventArgs e )
 		{
 			if( SpriteList.SelectedIndices.Count > 0 )
 			{
@@ -518,11 +518,11 @@ namespace SPReD
 			}
 			else
 			{
-				message_box( "Please, select sprite(s)!", "Create Copy", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "Please, select sprite(s)!", "Create Copy", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}		
 
-		void BtnAddPrefixPostfix_Event(object sender, EventArgs e)
+		private void BtnAddPrefixPostfixClick( object sender, EventArgs e )
 		{
 			if( SpriteList.SelectedIndices.Count > 0 )
 			{
@@ -540,11 +540,11 @@ namespace SPReD
 			}
 			else
 			{
-				message_box( "Please, select sprite(s)!", "Add Prefix\\Postfix", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "Please, select sprite(s)!", "Add Prefix\\Postfix", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
-		void BtnRemovePrefixPostfix_Event(object sender, EventArgs e)
+		private void BtnRemovePrefixPostfixClick( object sender, EventArgs e )
 		{
 			if( SpriteList.SelectedIndices.Count > 0 )
 			{
@@ -562,11 +562,11 @@ namespace SPReD
 			}
 			else
 			{
-				message_box( "Please, select sprite(s)!", "Remove Prefix\\Postfix", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "Please, select sprite(s)!", "Remove Prefix\\Postfix", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
-		void sprite_names_processing( add_remove_pref_postf_func _pref_postf_func, Action< string, sprite_data, int > _act )
+		private void sprite_names_processing( add_remove_pref_postf_func _pref_postf_func, Action< string, sprite_data, int > _act )
 		{
 			if( m_new_sprite_name_form.ShowDialog() == DialogResult.Cancel )
 			{
@@ -575,7 +575,7 @@ namespace SPReD
 			
 			if( m_new_sprite_name_form.edit_str == "" )
 			{
-				MainForm.message_box( "The Prefix\\Postfix field is empty!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "The Prefix\\Postfix field is empty!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				return;
 			}
 			
@@ -605,7 +605,7 @@ namespace SPReD
 				{
 					if( name_changed )
 					{
-						message_box( new_name + " - A sprite with the same name already exists! Ignored!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+						message_box( new_name + " - A sprite with the same name already exists! Ignored!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 					}
 				}
 			}
@@ -615,14 +615,14 @@ namespace SPReD
 			m_sprites_proc.update_sprite( SpriteList.Items[ SpriteList.SelectedIndices[ 0 ] ] as sprite_data, false );
 		}
 		
-		string add_pref_postf_func( bool _postfix, string _pref_postf, sprite_data _spr, ref bool _changed )
+		private string add_pref_postf_func( bool _postfix, string _pref_postf, sprite_data _spr, ref bool _changed )
 		{
 			_changed = true;
 			
 			return _postfix ? ( _spr.name + _pref_postf ):( _pref_postf + _spr.name );
 		}
 		
-		string remove_pref_postf_func( bool _postfix, string _pref_postf, sprite_data _spr, ref bool _changed )
+		private string remove_pref_postf_func( bool _postfix, string _pref_postf, sprite_data _spr, ref bool _changed )
 		{
 			string spr_name = _spr.name;
 			
@@ -653,11 +653,11 @@ namespace SPReD
 			return spr_name;
 		}
 		
-		void BtnDelete_Event(object sender, System.EventArgs e)
+		private void BtnDeleteClick( object sender, System.EventArgs e )
 		{
 			if( SpriteList.SelectedIndices.Count > 0 )
 			{
-				if( message_box( "Are you sure you want to delete " + SpriteList.SelectedIndices.Count + " sprite(s)?", "Delete Selected Sprite(s)", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to delete " + SpriteList.SelectedIndices.Count + " sprite(s)?", "Delete Selected Sprite(s)", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
 					if( !check_selected_sprites_data( "Delete Selected Sprite(s)" ) )
 					{
@@ -673,7 +673,7 @@ namespace SPReD
 					
 					for( i = 0; i < SpriteList.SelectedIndices.Count; i++ )
 					{
-						sprites.Add( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data );				
+						sprites.Add( SpriteList.Items[ SpriteList.SelectedIndices[ i ] ] as sprite_data );
 					}
 					
 					SpriteList.BeginUpdate();
@@ -715,11 +715,11 @@ namespace SPReD
 			}
 			else
 			{
-				message_box( "Please, select sprite(s)!", "Delete Sprite(s)", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "Please, select sprite(s)!", "Delete Sprite(s)", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
-		void BtnApplyDefaultPalette_Event(object sender, System.EventArgs e)
+		private void BtnApplyDefaultPaletteClick( object sender, System.EventArgs e )
 		{
 			int size = SpriteList.SelectedIndices.Count;
 			
@@ -733,7 +733,7 @@ namespace SPReD
 					
 					if( m_sprites_proc.apply_active_palette( spr ) == false )
 					{
-						message_box( "Please, select an active palette!", "Apply Default Palette", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+						message_box( "Please, select an active palette!", "Apply Default Palette", MessageBoxButtons.OK, MessageBoxIcon.Error );
 						break;
 					}
 				}
@@ -742,7 +742,7 @@ namespace SPReD
 			}
 		}
 		
-		void BtnOffset_Event(object sender, System.EventArgs e)
+		private void BtnOffsetClick( object sender, System.EventArgs e )
 		{
 			int size = SpriteList.SelectedIndices.Count;
 			
@@ -750,14 +750,14 @@ namespace SPReD
 			{
 				bool add_offset = false;
 				
-			    System.Windows.Forms.DialogResult dlg_res = message_box( "[Yes] - SET new value\n[No] - ADD offset", "Set Offset", System.Windows.Forms.MessageBoxButtons.YesNoCancel, System.Windows.Forms.MessageBoxIcon.Question );
+			    DialogResult dlg_res = message_box( "[Yes] - SET new value\n[No] - ADD offset", "Set Offset", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question );
 			    
-			    if( dlg_res == System.Windows.Forms.DialogResult.Cancel )
+			    if( dlg_res == DialogResult.Cancel )
 			    {
 			    	return;
 			    }
 			    
-			    if( dlg_res == System.Windows.Forms.DialogResult.No )
+			    if( dlg_res == DialogResult.No )
 			    {
 			    	add_offset = true;
 			    }
@@ -784,9 +784,9 @@ namespace SPReD
 			}
 		}
 		
-		void BtnVFlip_Event(object sender, System.EventArgs e)
+		private void BtnVFlipClick( object sender, System.EventArgs e )
 		{
-			if( m_sprites_proc.layout_get_mode() == sprite_layout_viewer.EMode.m_build )
+			if( m_sprites_proc.layout_get_mode() == sprite_layout_viewer.e_mode.Build )
 			{
 				if( SpriteList.SelectedIndices.Count > 0 )
 				{
@@ -794,14 +794,14 @@ namespace SPReD
 				}
 				else
 				{
-					message_box( "Please, select a CHR!", "Vertical Flipping", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+					message_box( "Please, select a CHR!", "Vertical Flipping", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 		}
 		
-		void BtnHFlip_Event(object sender, System.EventArgs e)
+		private void BtnHFlipClick( object sender, System.EventArgs e )
 		{
-			if( m_sprites_proc.layout_get_mode() == sprite_layout_viewer.EMode.m_build )
+			if( m_sprites_proc.layout_get_mode() == sprite_layout_viewer.e_mode.Build )
 			{
 				if( SpriteList.SelectedIndices.Count > 0 )
 				{
@@ -809,12 +809,12 @@ namespace SPReD
 				}
 				else
 				{
-					message_box( "Please, select a CHR!", "Horizontal Flipping", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+					message_box( "Please, select a CHR!", "Horizontal Flipping", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 		}
 		
-		void BtnSelectAll_Event(object sender, System.EventArgs e)
+		private void BtnSelectAllClick( object sender, System.EventArgs e )
 		{
 			int size = SpriteList.Items.Count;
 			
@@ -824,17 +824,17 @@ namespace SPReD
 			}
 		}
 		
-		void BtnUp_Event(object sender, System.EventArgs e)
+		private void BtnUpClick( object sender, System.EventArgs e )
 		{
 			move_item( delegate( int _ind ) { return _ind-1 < 0 ? 0:_ind-1; } );
 		}
 		
-		void BtnDown_Event(object sender, System.EventArgs e)
+		private void BtnDownClick( object sender, System.EventArgs e )
 		{
 			move_item( delegate( int _ind ) { return _ind+1 > SpriteList.Items.Count ? SpriteList.Items.Count:_ind+1; } );
 		}
 		
-		void move_item( Func< int, int > _act )
+		private void move_item( Func< int, int > _act )
 		{
 			if( SpriteList.SelectedIndices.Count == 1 )
 			{
@@ -851,7 +851,7 @@ namespace SPReD
 			}
 		}
 		
-		void SpriteListItemClick_Event(object sender, System.EventArgs e)
+		private void SpriteListItemClick( object sender, System.EventArgs e )
 		{
 			if( SpriteList.SelectedIndex >= 0 )
 			{
@@ -873,7 +873,7 @@ namespace SPReD
 			}
 		}
 		
-		void BtnCreate_Event(object sender, EventArgs e)
+		private void BtnCreateClick( object sender, EventArgs e )
 		{
 #if DEF_PCE
 			m_create_sprite_form.Text = "Create Sprite";
@@ -892,13 +892,13 @@ namespace SPReD
 			
 			if( CBoxMode8x16.Checked && ( m_create_sprite_form.sprite_height&0x01 ) == 1 )
 			{
-				MainForm.message_box( "The sprite height must be an even number!", "8x16 Mode Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "The sprite height must be an even number!", "8x16 Mode Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				return;
 			}
 			
 			if( m_create_sprite_form.edit_str == "" )
 			{
-				MainForm.message_box( "The sprite name is empty!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "The sprite name is empty!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				return;
 			}
 			
@@ -912,11 +912,11 @@ namespace SPReD
 			}
 			else
 			{
-				message_box( new_sprite_name + " - A sprite with the same name already exists! Ignored!", "Sprite Creating Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( new_sprite_name + " - A sprite with the same name already exists! Ignored!", "Sprite Creating Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 
-		void select_last_sprite()
+		private void select_last_sprite()
 		{
 			SpriteList.ClearSelected();
 			SpriteList.SetSelected( SpriteList.Items.Count - 1, true );
@@ -926,60 +926,60 @@ namespace SPReD
 			update_selected_sprite( true );
 		}
 #endregion
-//		LAYOUT		*****************************************************************************************//		
+//		LAYOUT		*****************************************************************************************//
 #region	Layout		
-		void CBoxAxisLayoutCheckedChanged_Event(object sender, EventArgs e)
+		private void CBoxAxisLayoutCheckedChanged( object sender, EventArgs e )
 		{
 			m_sprites_proc.set_sprite_layout_viewer_flags( CBoxAxesLayout.Checked, CBoxGridLayout.Checked );
 		}
 		
-		void CBoxGridLayoutCheckedChanged_Event(object sender, EventArgs e)
+		private void CBoxGridLayoutCheckedChanged( object sender, EventArgs e ) 
 		{
 			m_sprites_proc.set_sprite_layout_viewer_flags( CBoxAxesLayout.Checked, CBoxGridLayout.Checked );
 		}
 		
-		void CBoxSnapLayoutCheckedChanged_Event(object sender, EventArgs e)
+		private void CBoxSnapLayoutCheckedChanged( object sender, EventArgs e )
 		{
-			System.Windows.Forms.CheckBox cbox = sender as CheckBox;
+			CheckBox cbox = sender as CheckBox;
 
 			m_sprites_proc.layout_snap( cbox.Checked );
 		}
 		
-		void CBox8x16ModeCheckedChanged_Event(object sender, EventArgs e)
+		private void CBox8x16ModeCheckedChanged( object sender, EventArgs e )
 		{
 			m_sprites_proc.set_mode8x16( ( sender as CheckBox ).Checked );
 		}
 
-		void BtnCenteringClick_Event(object sender, EventArgs e)
+		private void BtnCenteringClick( object sender, EventArgs e )
 		{
 			m_sprites_proc.layout_sprite_centering();
 		}
 		
-		void BtnZoomInClick_Event(object sender, EventArgs e)
+		private void BtnZoomInClick( object sender, EventArgs e )
 		{
 			m_sprites_proc.layout_zoom_in();
 		}
 		
-		void BtnZoomOutClick_Event(object sender, EventArgs e)
+		private void BtnZoomOutClick( object sender, EventArgs e )
 		{
 			m_sprites_proc.layout_zoom_out();
 		}
 		
-		void BtnSpriteVFlip_Event(object sender, EventArgs e)
+		private void BtnSpriteVFlipClick( object sender, EventArgs e )
 		{
 #if DEF_NES
-			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_vert( ( sprite_data.EAxesFlipType )( CBoxFlipType.SelectedIndex ), CBoxMode8x16.Checked ); } );
+			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_vert( ( sprite_data.e_axes_flip_type )( CBoxFlipType.SelectedIndex ), CBoxMode8x16.Checked ); } );
 #elif DEF_SMS
 			flip_sprites( "Vertical Flipping", true );
 #elif DEF_PCE
-			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_vert( ( sprite_data.EAxesFlipType )( CBoxFlipType.SelectedIndex ) ); } );
+			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_vert( ( sprite_data.e_axes_flip_type )( CBoxFlipType.SelectedIndex ) ); } );
 #endif
 		}
 		
-		void BtnSpriteHFlip_Event(object sender, EventArgs e)
+		private void BtnSpriteHFlipClick( object sender, EventArgs e )
 		{
 #if DEF_NES || DEF_PCE
-			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_horiz( ( sprite_data.EAxesFlipType )( CBoxFlipType.SelectedIndex ) ); } );
+			flip_sprites( delegate( sprite_data _spr ) { _spr.flip_horiz( ( sprite_data.e_axes_flip_type )( CBoxFlipType.SelectedIndex ) ); } );
 #elif DEF_SMS
 			flip_sprites( "Horizontal Flipping", false );
 #endif
@@ -1013,7 +1013,7 @@ namespace SPReD
 					return;
 				}
 				
-				m_SMS_sprite_flip_form.ShowDialog( _title, _vert_flip, CBoxMode8x16.Checked, ( sprite_data.EAxesFlipType )CBoxFlipType.SelectedIndex );
+				m_SMS_sprite_flip_form.show_window( _title, _vert_flip, CBoxMode8x16.Checked, ( sprite_data.e_axes_flip_type )CBoxFlipType.SelectedIndex );
 
 				if( m_SMS_sprite_flip_form.copy_CHR_data )
 				{
@@ -1038,7 +1038,7 @@ namespace SPReD
 			}
 		}
 #endif
-		void BtnShiftColors_Event(object sender, EventArgs e)
+		private void BtnShiftColorsClick( object sender, EventArgs e )
 		{
 #if DEF_NES
 			if( SpriteList.SelectedIndex >= 0 )
@@ -1051,7 +1051,7 @@ namespace SPReD
 #endif
 		}
 
-		void BtnModeBuild_Event(object sender, EventArgs e)
+		private void BtnModeBuildClick( object sender, EventArgs e )
 		{
 			GroupBoxModeName.Text = "Mode: Build";
 			
@@ -1067,10 +1067,10 @@ namespace SPReD
 			
 			BtnLayoutModeDraw.Focus();
 			
-			m_sprites_proc.layout_set_mode( sprite_layout_viewer.EMode.m_build );
+			m_sprites_proc.layout_set_mode( sprite_layout_viewer.e_mode.Build );
 		}
 
-		void BtnModeDraw_Event(object sender, EventArgs e)
+		private void BtnModeDrawClick( object sender, EventArgs e )
 		{
 			GroupBoxModeName.Text = "Mode: Draw";
 			
@@ -1086,16 +1086,16 @@ namespace SPReD
 			
 			BtnLayoutModeBuild.Focus();
 			
-			m_sprites_proc.layout_set_mode( sprite_layout_viewer.EMode.m_draw );
+			m_sprites_proc.layout_set_mode( sprite_layout_viewer.e_mode.Draw );
 		}
 #endregion		
 //		CHR DATA PACKING, SPLITTING, OPTIMIZATION		*****************************************************//
 #region CHR data packing, splitting, optimization	
-		void BtnCHRSplit_Event(object sender, EventArgs e)
+		private void BtnCHRSplitClick( object sender, EventArgs e )
 		{
 			if( SpriteList.SelectedIndices.Count > 0 )
 			{
-				if( message_box( "Are you sure you want to split the CHR data?\n\nAll sprite groups with selected sprite(s) will be splitted!\n\nWARNING: ALL sprites, including Ref ones, will have their own unique CHR banks!", "CHR Data Splitting", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to split the CHR data?\n\nAll sprite groups with selected sprite(s) will be splitted!\n\nWARNING: ALL sprites, including Ref ones, will have their own unique CHR banks!", "CHR Data Splitting", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
 					if( check_selected_sprites_data( "CHR Data Splitting" ) )
 					{
@@ -1136,22 +1136,22 @@ namespace SPReD
 			}
 			else
 			{
-				message_box( "No data!", "CHR Data Splitting", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "No data!", "CHR Data Splitting", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
-		void BtnCHRPack_Event(object sender, EventArgs e)
+		private void BtnCHRPackClick( object sender, EventArgs e )
 		{
 			if( CBoxCHRPackingType.SelectedIndex ==  0 )
 			{
-				message_box( "Please, select data block size!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "Please, select data block size!", "CHR Data Packing", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				
 				return;
 			}
 			
 			if( SpriteList.SelectedIndices.Count > 0 )
 			{
-				if( message_box( "Are you sure you want to pack the selected sprites?\n\nAlready packed sprites will be ignored!\n\nWARNING: Irreversible operation for Ref sprites!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to pack the selected sprites?\n\nAlready packed sprites will be ignored!\n\nWARNING: Irreversible operation for Ref sprites!", "CHR Data Packing", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
 					if( !check_selected_sprites_data( "CHR Data Packing" ) )
 					{
@@ -1174,9 +1174,9 @@ namespace SPReD
 					int size;
 					int spr_1_last_CHR_cnt;
 					
-					SPReD.CHR_data_group.ECHRPackingType packing_type = ( SPReD.CHR_data_group.ECHRPackingType )( CBoxCHRPackingType.SelectedIndex );
+					SPReD.CHR_data_group.e_CHR_packing_type packing_type = ( SPReD.CHR_data_group.e_CHR_packing_type )( CBoxCHRPackingType.SelectedIndex );
 					
-					System.Windows.Forms.ListBox.SelectedIndexCollection tmp_inds_list = SpriteList.SelectedIndices;
+					ListBox.SelectedIndexCollection tmp_inds_list = SpriteList.SelectedIndices;
 					
 //					m_sprites_proc.CHR_bank_optimization_begin();
 					
@@ -1240,20 +1240,20 @@ namespace SPReD
 			{
 				if( SpriteList.Items.Count > 0 )
 				{
-					message_box( "Please, select sprites!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+					message_box( "Please, select sprites!", "CHR Data Packing", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 				else
 				{
-					message_box( "No data!", "CHR Data Packing", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+					message_box( "No data!", "CHR Data Packing", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 		}
 
-		void BtnCHROpt_Event(object sender, EventArgs e)
+		private void BtnCHROptClick( object sender, EventArgs e )
 		{
 			if( SpriteList.Items.Count > 0 )
 			{
-				if( message_box( "Are you sure you want to optimize all sprites data?\n\nWARNING: All unused/empty/duplicate CHRs will be lost!", "CHR Data Optimization", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to optimize all sprites data?\n\nWARNING: All unused/empty/duplicate CHRs will be lost!", "CHR Data Optimization", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
 					if( check_all_sprites_data( "CHR Data Optimization" ) )
 					{
@@ -1274,13 +1274,13 @@ namespace SPReD
 			}
 			else
 			{
-				message_box( "No data!", "CHR Data Optimization", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+				message_box( "No data!", "CHR Data Optimization", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 		
-		void CBoxCHRPackingType_ChangedEvent(object sender, EventArgs e)
+		private void CBoxCHRPackingTypeChanged( object sender, EventArgs e )
 		{
-			System.Windows.Forms.ComboBox cbox = sender as System.Windows.Forms.ComboBox;
+			ComboBox cbox = sender as ComboBox;
 			
 			CHRPackToolStripMenuItem.Enabled = BtnCHRPack.Enabled = ( cbox.SelectedIndex != 0 ) ? true:false;
 		}
@@ -1322,7 +1322,7 @@ namespace SPReD
 #endregion		
 //		CHR TOOLS	*****************************************************************************************//
 #region CHR tools		
-		void BtnAddCHRClick_Event(object sender, EventArgs e)
+		private void BtnAddCHRClick( object sender, EventArgs e )
 		{
 			if( SpriteList.SelectedIndices.Count == 1 )
 			{
@@ -1332,13 +1332,13 @@ namespace SPReD
 			}
 		}
 		
-		void BtnDeleteLastCHRClick_Event(object sender, EventArgs e)
+		private void BtnDeleteLastCHRClick( object sender, EventArgs e )
 		{
 			if( SpriteList.SelectedIndices.Count == 1 )
 			{
 				sprite_data spr = SpriteList.Items[ SpriteList.SelectedIndices[ 0 ] ] as sprite_data;
 				
-				if( message_box( "Are you sure you want to delete the last CHR?", "Delete Last CHR", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to delete the last CHR?", "Delete Last CHR", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
 					m_sprites_proc.delete_last_CHR( spr );
 					
@@ -1360,30 +1360,30 @@ namespace SPReD
 			}
 		}
 		
-		void BtnDeleteCHR_Event(object sender, EventArgs e)
+		private void BtnDeleteCHRClick( object sender, EventArgs e )
 		{
-			if( m_sprites_proc.layout_get_mode() == sprite_layout_viewer.EMode.m_build )
+			if( m_sprites_proc.layout_get_mode() == sprite_layout_viewer.e_mode.Build )
 			{
 				m_sprites_proc.layout_delete_CHR();
 			}
 		}
 		
-		void BtnCHREditorVFlipClick_Event(object sender, EventArgs e)
+		private void BtnCHREditorVFlipClick( object sender, EventArgs e )
 		{
-			m_sprites_proc.chr_transform( CHR_data.ETransform.t_vflip );
+			m_sprites_proc.chr_transform( CHR_data.e_transform.VFlip );
 		}
 		
-		void BtnCHREditorHFlipClick_Event(object sender, EventArgs e)
+		private void BtnCHREditorHFlipClick( object sender, EventArgs e )
 		{
-			m_sprites_proc.chr_transform( CHR_data.ETransform.t_hflip );
+			m_sprites_proc.chr_transform( CHR_data.e_transform.HFlip );
 		}
 		
-		void BtnCHREditorRotateClick_Event(object sender, EventArgs e)
+		private void BtnCHREditorRotateClick( object sender, EventArgs e )
 		{
-			m_sprites_proc.chr_transform( CHR_data.ETransform.t_rotate );
+			m_sprites_proc.chr_transform( CHR_data.e_transform.Rotate );
 		}
 		
-		void FillWithColorToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void FillWithColorToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_sprites_proc.CHR_fill_with_color() == false )
 			{
@@ -1391,7 +1391,7 @@ namespace SPReD
 			}
 		}
 		
-		void CopyCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void CopyCHRToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_sprites_proc.CHR_copy() == false )
 			{
@@ -1403,7 +1403,7 @@ namespace SPReD
 			}
 		}
 		
-		void PasteCHRToolStripMenuItemClick_Event(object sender, EventArgs e)
+		private void PasteCHRToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( m_sprites_proc.CHR_paste() == false )
 			{
@@ -1413,20 +1413,20 @@ namespace SPReD
 #endregion		
 //		PROJECT: LOAD, SAVE, IMPORT, EXPORT		*************************************************************//
 #region project: load, save export, import
-		void LoadToolStripMenuItemClick(object sender, System.EventArgs e)
+		private void LoadToolStripMenuItemClick( object sender, System.EventArgs e )
 		{
 			m_project_loaded = false;
 			
 			if( SpriteList.Items.Count > 0 )
 			{
-				if( message_box( "Are you sure you want to close the current project?", "Load Project", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question ) == System.Windows.Forms.DialogResult.Yes )
+				if( message_box( "Are you sure you want to close the current project?", "Load Project", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
-					Project_openFileDialog.ShowDialog();
+					ProjectOpenFileDialog.ShowDialog();
 				}
 			}
 			else
 			{
-				Project_openFileDialog.ShowDialog();
+				ProjectOpenFileDialog.ShowDialog();
 			}
 			
 			if( m_project_loaded )
@@ -1438,22 +1438,22 @@ namespace SPReD
 			}
 		}
 
-		void SaveToolStripMenuItemClick(object sender, System.EventArgs e)
+		private void SaveToolStripMenuItemClick( object sender, System.EventArgs e )
 		{
-			if( SpriteList.Items.Count == 0 )			
+			if( SpriteList.Items.Count == 0 )
 			{
-				message_box( "There is no data to save!", "Project Saving Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There is no data to save!", "Project Saving Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			else
 			{
-				Project_saveFileDialog.ShowDialog();
+				ProjectSaveFileDialog.ShowDialog();
 			}
 		}
 		
-		void ProjectSave_OK(object sender, System.ComponentModel.CancelEventArgs e)
+		private void ProjectSaveOK( object sender, System.ComponentModel.CancelEventArgs e )
 		{
 			// SAVE PROJECT...
-			System.String filename = ( ( System.Windows.Forms.FileDialog )sender ).FileName;
+			System.String filename = ( ( FileDialog )sender ).FileName;
 		
 			FileStream 		fs = null;
 			BinaryWriter 	bw = null;
@@ -1491,7 +1491,7 @@ namespace SPReD
 			}
 			catch( Exception _err )
 			{
-				message_box( _err.Message, "Project Saving Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Project Saving Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
 			if( bw != null )
@@ -1505,13 +1505,13 @@ namespace SPReD
 			}
 		}
 		
-		void ProjectLoad_OK(object sender, System.ComponentModel.CancelEventArgs e)
+		private void ProjectLoadOK( object sender, System.ComponentModel.CancelEventArgs e )
 		{
 			// LOAD PROJECT...
-			project_load( ( ( System.Windows.Forms.FileDialog )sender ).FileName );
+			project_load( ( ( FileDialog )sender ).FileName );
 		}
 
-		void project_load( string _filename )
+		private void project_load( string _filename )
 		{
 			reset();
 			
@@ -1639,7 +1639,7 @@ namespace SPReD
 			{
 				reset();
 				
-				message_box( _err.Message, "Project Loading Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Project Loading Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
 			if( br != null )
@@ -1653,14 +1653,14 @@ namespace SPReD
 			}
 		}
 
-		void ImportToolStripMenuItemClick(object sender, System.EventArgs e)
+		private void ImportToolStripMenuItemClick( object sender, System.EventArgs e )
 		{
-			Import_openFileDialog.ShowDialog();
+			ImportOpenFileDialog.ShowDialog();
 		}
 
-		void Import_OK(object sender, System.ComponentModel.CancelEventArgs e)
+		private void ImportOK( object sender, System.ComponentModel.CancelEventArgs e )
 		{
-			System.String[] filenames = ( ( System.Windows.Forms.FileDialog )sender ).FileNames;
+			System.String[] filenames = ( ( FileDialog )sender ).FileNames;
 			
 			FileStream 		fs = null;
 			BinaryReader 	br = null;
@@ -1728,7 +1728,7 @@ namespace SPReD
 							{
 								filename = filenames[ i ];
 								
-								ext = Path.GetExtension( filename );								
+								ext = Path.GetExtension( filename );
 			
 								spr_name = System.IO.Path.GetFileNameWithoutExtension( filename );
 								
@@ -1746,7 +1746,7 @@ namespace SPReD
 												else
 												{	// otherwise - .bmp
 													spr = m_sprites_proc.load_sprite_bmp( filename, spr_name, apply_palette, palette_slot );
-												}												
+												}
 #if DEF_NES
 												if( apply_palette )
 												{
@@ -1809,7 +1809,7 @@ namespace SPReD
 								
 								palette_group plt_grp = palette_group.Instance;
 								plt_grp.update_selected_color();
-#if DEF_NES								
+#if DEF_NES
 								// copy transparent color of the first palette to the rest transparent color slots
 								palette_small[] plt_arr = plt_grp.get_palettes_arr();
 								
@@ -1825,7 +1825,7 @@ namespace SPReD
 			}
 			catch( System.Exception _err )
 			{
-				message_box( _err.Message, "Data Import Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Data Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			
 			if( br != null )
@@ -1841,15 +1841,15 @@ namespace SPReD
 			SpriteList.EndUpdate();
 		}
 		
-		void ExportImagesToolStripMenuItemClick(object sender, EventArgs e)
+		private void ExportImagesToolStripMenuItemClick( object sender, EventArgs e )
 		{
-			if( SpriteList.Items.Count == 0 )			
+			if( SpriteList.Items.Count == 0 )
 			{
-				message_box( "There is no data to export!", "Images Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There is no data to export!", "Images Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			else
 			{
-				if( ExportImages_folderBrowserDialog.ShowDialog() == DialogResult.OK && m_img_export_options_form.ShowDialog() == DialogResult.OK )
+				if( ExportImagesFolderBrowserDialog.ShowDialog() == DialogResult.OK && m_img_export_options_form.ShowDialog() == DialogResult.OK )
 				{
 					try
 					{
@@ -1861,58 +1861,58 @@ namespace SPReD
 						{
 							spr = SpriteList.Items[ i ] as sprite_data;
 							
-							if( m_img_export_options_form.format == image_export_options_form.EImgFormat.PCX )
+							if( m_img_export_options_form.format == image_export_options_form.e_img_format.PCX )
 							{
-								spr.save_image_PCX( ExportImages_folderBrowserDialog.SelectedPath, m_sprites_proc.get_palette_group().get_palettes_arr(), CBoxMode8x16.Checked );
+								spr.save_image_PCX( ExportImagesFolderBrowserDialog.SelectedPath, m_sprites_proc.get_palette_group().get_palettes_arr(), CBoxMode8x16.Checked );
 							}
 							else
 							{
-								spr.save_image_BMP_PNG( ExportImages_folderBrowserDialog.SelectedPath, m_img_export_options_form.alpha_channel, m_sprites_proc.get_palette_group().get_palettes_arr(), m_img_export_options_form.format, CBoxMode8x16.Checked );
+								spr.save_image_BMP_PNG( ExportImagesFolderBrowserDialog.SelectedPath, m_img_export_options_form.alpha_channel, m_sprites_proc.get_palette_group().get_palettes_arr(), m_img_export_options_form.format, CBoxMode8x16.Checked );
 							}
 						}
 					}
 					catch( Exception _err )
 					{
-						message_box( _err.Message, "Images Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+						message_box( _err.Message, "Images Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 					}
 				}
 			}
 		}
 		
-		void ExportASMToolStripMenuItemClick(object sender, System.EventArgs e)
+		private void ExportASMToolStripMenuItemClick( object sender, System.EventArgs e )
 		{
 			if( SpriteList.Items.Count == 0 )
 			{
-				message_box( "There is no data to export!", utils.CONST_PLATFORM + " ASM Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There is no data to export!", utils.CONST_PLATFORM + "ASM Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			else
 			{
-				ExportASM_saveFileDialog.ShowDialog();
+				ExportASMSaveFileDialog.ShowDialog();
 			}
 		}
 		
-		void ExportASM_OK(object sender, System.ComponentModel.CancelEventArgs e)
+		private void ExportASMOK( object sender, System.ComponentModel.CancelEventArgs e )
 		{
-			System.String filename = ( ( System.Windows.Forms.FileDialog )sender ).FileName;
+			System.String filename = ( ( FileDialog )sender ).FileName;
 		
 			data_export( filename, SpriteList.Items.Count, delegate( int _ind ) { return SpriteList.Items[ _ind ] as sprite_data; }, true );
 		}
 
-		void ExportCToolStripMenuItemClick(object sender, System.EventArgs e)
+		private void ExportCToolStripMenuItemClick( object sender, System.EventArgs e )
 		{
 			if( SpriteList.Items.Count == 0 )
 			{
-				message_box( "There is no data to export!", utils.CONST_PLATFORM + " C Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( "There is no data to export!", utils.CONST_PLATFORM + "C Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 			else
 			{
-				ExportC_saveFileDialog.ShowDialog();
+				ExportCSaveFileDialog.ShowDialog();
 			}
 		}
 		
-		void ExportC_OK(object sender, System.ComponentModel.CancelEventArgs e)
+		private void ExportCOK( object sender, System.ComponentModel.CancelEventArgs e )
 		{
-			System.String filename = ( ( System.Windows.Forms.FileDialog )sender ).FileName;
+			System.String filename = ( ( FileDialog )sender ).FileName;
 		
 			data_export( filename, SpriteList.Items.Count, delegate( int _ind ) { return SpriteList.Items[ _ind ] as sprite_data; }, false );
 		}
@@ -1956,7 +1956,7 @@ namespace SPReD
 				
 				comment_CHR_data = m_SMS_export_form.comment_CHR_data;
 #elif DEF_PCE
-				if( m_PCE_export_form.ShowDialog( _asm_file ) == DialogResult.Cancel )
+				if( m_PCE_export_form.show_window( _asm_file ) == DialogResult.Cancel )
 				{
 					return;
 				}
@@ -1994,7 +1994,7 @@ namespace SPReD
 					}
 				}
 				
-				sw = File.CreateText( path + System.IO.Path.DirectorySeparatorChar + data_dir + filename + "." + this.ExportASM_saveFileDialog.DefaultExt );
+				sw = File.CreateText( path + System.IO.Path.DirectorySeparatorChar + data_dir + filename + "." + this.ExportASMSaveFileDialog.DefaultExt );
 				{
 					sw.WriteLine( utils.get_file_title( ";" ) );
 					
@@ -2014,7 +2014,7 @@ namespace SPReD
 					}
 					else
 					{
-						c_sw = File.CreateText( path + System.IO.Path.DirectorySeparatorChar + filename + "." + this.ExportC_saveFileDialog.DefaultExt );
+						c_sw = File.CreateText( path + System.IO.Path.DirectorySeparatorChar + filename + "." + this.ExportCSaveFileDialog.DefaultExt );
 						
 						c_sw.WriteLine( utils.get_file_title( "//" ) );
 #if DEF_NES
@@ -2024,7 +2024,7 @@ namespace SPReD
 						c_sw.WriteLine( "#define " + filename_upper + "_SPR_CHR_BPP\t" + m_SMS_export_form.bpp );
 						c_sw.WriteLine( "#define " + filename_upper + "_SPR_CHRS_OFFSET\t" + m_SMS_export_form.CHRs_offset + "\t// first CHR index in a CHR bank\n\n" );
 #elif DEF_PCE
-						c_sw.WriteLine( "#incasm( \"" + data_dir + filename + "." + this.ExportASM_saveFileDialog.DefaultExt + "\" )\n" );
+						c_sw.WriteLine( "#incasm( \"" + data_dir + filename + "." + this.ExportASMSaveFileDialog.DefaultExt + "\" )\n" );
 						c_sw.WriteLine( "#define " + filename_upper + "_SPR_VADDR\t" + utils.hex( "0x", m_PCE_export_form.VADDR ) + "\n" );
 #else
 ...
@@ -2238,7 +2238,7 @@ namespace SPReD
 			}
 			catch( Exception _err )
 			{
-				message_box( _err.Message, "Data Export Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				message_box( _err.Message, "Data Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 
 			finally
@@ -2255,7 +2255,7 @@ namespace SPReD
 			}
 		}
 		
-		int get_exported_sprites_cnt( int _spr_cnt, Func< int, sprite_data > _get_spr )
+		private int get_exported_sprites_cnt( int _spr_cnt, Func< int, sprite_data > _get_spr )
 		{
 			int spr_cnt = 0;
 			
@@ -2270,7 +2270,7 @@ namespace SPReD
 			return spr_cnt;
 		}
 		
-		HashSet< int > get_skipped_banks_id( int _spr_cnt, Func< int, sprite_data > _get_spr )
+		private HashSet< int > get_skipped_banks_id( int _spr_cnt, Func< int, sprite_data > _get_spr )
 		{
 			int i;
 			int spr_bank_id;
@@ -2318,7 +2318,7 @@ namespace SPReD
 			return skipped_banks_id;
 		}
 		
-		void ExportScriptEditorToolStripMenuItemClick(object sender, EventArgs e)
+		private void ExportScriptEditorToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			if( !SPSeD.py_editor.is_active() )
 			{
@@ -2335,14 +2335,14 @@ namespace SPReD
 #endregion
 //		PALETTES ARRAY		*********************************************************************************//
 #region	palettes array
-		void update_selected_color()
+		private void update_selected_color()
 		{
 			palette_group plt_grp = palette_group.Instance;
 			
 			plt_grp.get_palettes_arr()[ plt_grp.active_palette ].color_slot = plt_grp.get_palettes_arr()[ plt_grp.active_palette ].color_slot;
 		}
 
-		void CBoxPalettesChanged_Event(object sender, EventArgs e)
+		private void CBoxPalettesChanged( object sender, EventArgs e )
 		{
 #if DEF_FIXED_LEN_PALETTE16_ARR
 			m_palettes_arr.update_palette();
@@ -2351,7 +2351,7 @@ namespace SPReD
 #endif
 		}
 		
-		void CBoxPalettesAdjustWidthDropDown_Event(object sender, EventArgs e)
+		private void CBoxPalettesAdjustWidthDropDown( object sender, EventArgs e )
 		{
 #if DEF_FIXED_LEN_PALETTE16_ARR
 			( sender as ComboBox ).DropDownWidth = 230;
@@ -2359,45 +2359,45 @@ namespace SPReD
 		}
 		
 #if DEF_FIXED_LEN_PALETTE16_ARR
-		public void SetCHRPalette_Event(object sender, EventArgs e)
+		public void SetCHRPalette( object sender, EventArgs e )
 		{
 			m_palettes_arr.palette_index = ( sender as sprite_layout_viewer ).get_selected_CHR_attr().palette_ind;
 		}
 		
-		public void ApplyPaletteToCHR_Event(object sender, EventArgs e)
+		public void ApplyPaletteToCHR( object sender, EventArgs e )
 		{
 			m_sprites_proc.apply_palette_to_selected_CHR( m_palettes_arr.palette_index );
 		}
 #endif
-		void BtnSwapColorsClick_Event(object sender, EventArgs e)
+		private void BtnSwapColorsClick( object sender, EventArgs e )
 		{
 #if DEF_SMS || DEF_PCE
 			if( SpriteList.Items.Count > 0 )
 			{
-				m_swap_colors_form.ShowDialog( SpriteList.Items );
+				m_swap_colors_form.show_window( SpriteList.Items );
 				update_selected_sprite();
 			}
 #endif
 		}
 
-		void PalettesManagerClick_Event(object sender, EventArgs e)
+		private void PalettesManagerClick( object sender, EventArgs e )
 		{
 #if DEF_PCE
 			if( SpriteList.Items.Count > 0 )
 			{
-				m_palettes_mngr_form.Open();
+				m_palettes_mngr_form.show_window();
 			}
 #endif
 		}
 
 #endregion
 
-		void KeyUp_Event(object sender, KeyEventArgs e)
+		private void OnKeyUp( object sender, KeyEventArgs e )
 		{
-			m_sprites_proc.key_event( sender, e );
+			m_sprites_proc.on_key_up( sender, e );
 		}
 
-		void PreviewKeyDown_Event(object sender, PreviewKeyDownEventArgs e)
+		private void OnPreviewKeyDown( object sender, PreviewKeyDownEventArgs e )
 		{
 			//...
 		}

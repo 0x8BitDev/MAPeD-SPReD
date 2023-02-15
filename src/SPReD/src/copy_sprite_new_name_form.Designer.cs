@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 21.03.2017
  * Time: 18:13
  */
@@ -38,8 +38,8 @@ namespace SPReD
 			this.BtnCancel = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.EditNewName = new System.Windows.Forms.TextBox();
-			this.RadionBtnPrefix = new System.Windows.Forms.RadioButton();
-			this.RadioBtnPostfix = new System.Windows.Forms.RadioButton();
+			this.RBtnPrefix = new System.Windows.Forms.RadioButton();
+			this.RBtnPostfix = new System.Windows.Forms.RadioButton();
 			this.Append = new System.Windows.Forms.GroupBox();
 			this.Append.SuspendLayout();
 			this.SuspendLayout();
@@ -80,30 +80,30 @@ namespace SPReD
 			this.EditNewName.Size = new System.Drawing.Size(143, 20);
 			this.EditNewName.TabIndex = 1;
 			// 
-			// RadionBtnPrefix
+			// RBtnPrefix
 			// 
-			this.RadionBtnPrefix.Location = new System.Drawing.Point(13, 17);
-			this.RadionBtnPrefix.Name = "RadionBtnPrefix";
-			this.RadionBtnPrefix.Size = new System.Drawing.Size(57, 24);
-			this.RadionBtnPrefix.TabIndex = 3;
-			this.RadionBtnPrefix.Text = "Prefix";
-			this.RadionBtnPrefix.UseVisualStyleBackColor = true;
+			this.RBtnPrefix.Location = new System.Drawing.Point(13, 17);
+			this.RBtnPrefix.Name = "RBtnPrefix";
+			this.RBtnPrefix.Size = new System.Drawing.Size(57, 24);
+			this.RBtnPrefix.TabIndex = 3;
+			this.RBtnPrefix.Text = "Prefix";
+			this.RBtnPrefix.UseVisualStyleBackColor = true;
 			// 
-			// RadioBtnPostfix
+			// RBtnPostfix
 			// 
-			this.RadioBtnPostfix.Checked = true;
-			this.RadioBtnPostfix.Location = new System.Drawing.Point(76, 17);
-			this.RadioBtnPostfix.Name = "RadioBtnPostfix";
-			this.RadioBtnPostfix.Size = new System.Drawing.Size(59, 24);
-			this.RadioBtnPostfix.TabIndex = 4;
-			this.RadioBtnPostfix.TabStop = true;
-			this.RadioBtnPostfix.Text = "Postfix";
-			this.RadioBtnPostfix.UseVisualStyleBackColor = true;
+			this.RBtnPostfix.Checked = true;
+			this.RBtnPostfix.Location = new System.Drawing.Point(76, 17);
+			this.RBtnPostfix.Name = "RBtnPostfix";
+			this.RBtnPostfix.Size = new System.Drawing.Size(59, 24);
+			this.RBtnPostfix.TabIndex = 4;
+			this.RBtnPostfix.TabStop = true;
+			this.RBtnPostfix.Text = "Postfix";
+			this.RBtnPostfix.UseVisualStyleBackColor = true;
 			// 
 			// Append
 			// 
-			this.Append.Controls.Add(this.RadioBtnPostfix);
-			this.Append.Controls.Add(this.RadionBtnPrefix);
+			this.Append.Controls.Add(this.RBtnPostfix);
+			this.Append.Controls.Add(this.RBtnPrefix);
 			this.Append.Location = new System.Drawing.Point(12, 49);
 			this.Append.Name = "Append";
 			this.Append.Size = new System.Drawing.Size(143, 47);
@@ -134,8 +134,8 @@ namespace SPReD
 			this.PerformLayout();
 		}
 		private System.Windows.Forms.GroupBox Append;
-		private System.Windows.Forms.RadioButton RadioBtnPostfix;
-		private System.Windows.Forms.RadioButton RadionBtnPrefix;
+		private System.Windows.Forms.RadioButton RBtnPostfix;
+		private System.Windows.Forms.RadioButton RBtnPrefix;
 		private System.Windows.Forms.TextBox EditNewName;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button BtnCancel;

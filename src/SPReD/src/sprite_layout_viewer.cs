@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 16.03.2017
  * Time: 12:32
  */
@@ -16,8 +16,6 @@ namespace SPReD
 	/// </summary>
 	/// 
 	
-	public delegate void SetSelectedCHR();
-	
 	public class sprite_layout_viewer : drawable_base
 	{
 		public event EventHandler SetSelectedCHR;
@@ -26,9 +24,9 @@ namespace SPReD
 		public event EventHandler SetCHRPalette;
 		public event EventHandler ApplyPaletteToCHR;
 #endif
-		private EMode	m_mode = EMode.m_unknown;
+		private e_mode	m_mode = e_mode.UNKNOWN;
 		
-		public EMode mode
+		public e_mode mode
 		{
 			get { return m_mode; }
 			set
@@ -98,11 +96,11 @@ namespace SPReD
 		private const string CONST_MODE_STR_BUILD		= "MODE:BUILD";
 		private const string CONST_MODE_STR_EDIT		= "MODE:DRAW";
 		
-		public enum EMode
+		public enum e_mode
 		{
-			m_unknown = 0,
-			m_build,
-			m_draw,
+			UNKNOWN = 0,
+			Build,
+			Draw,
 		}
 		
 		public sprite_layout_viewer( PictureBox _spr_layout, Label _label, GroupBox _spr_layout_grp_box ): base( _spr_layout )
@@ -112,20 +110,20 @@ namespace SPReD
 			
 			m_bmp_list = new List< Bitmap >( 100 );
 			
-			m_pix_box.MouseDown 	+= new MouseEventHandler(this.Layout_MouseDown);
-			m_pix_box.MouseMove 	+= new MouseEventHandler(this.Layout_MouseMove);
-			m_pix_box.MouseUp 		+= new MouseEventHandler(this.Layout_MouseUp);
-			m_pix_box.MouseWheel	+= new MouseEventHandler(this.Layout_MouseWheel);
-			m_pix_box.MouseEnter 	+= new EventHandler(this.Layout_MouseEnter);			
-			m_pix_box.MouseLeave	+= new EventHandler(this.Layout_MouseLeave);
-			m_pix_box.MouseClick	+= new MouseEventHandler(this.Layout_MouseClick);
+			m_pix_box.MouseDown 	+= new MouseEventHandler( on_mouse_down );
+			m_pix_box.MouseMove 	+= new MouseEventHandler( on_mouse_move );
+			m_pix_box.MouseUp 		+= new MouseEventHandler( on_mouse_up );
+			m_pix_box.MouseWheel	+= new MouseEventHandler( on_mouse_wheel );
+			m_pix_box.MouseEnter 	+= new EventHandler( on_mouse_enter );
+			m_pix_box.MouseLeave	+= new EventHandler( on_mouse_leave );
+			m_pix_box.MouseClick	+= new MouseEventHandler( on_mouse_click );
 			
 			m_scr_half_width  = m_pix_box.Width >> 1;
 			m_scr_half_height = m_pix_box.Height >> 1;
 			
 			m_pix_box.AllowDrop = true;
-			m_pix_box.DragEnter += new DragEventHandler(this.Layout_DragEnter);
-			m_pix_box.DragDrop	+= new DragEventHandler(this.Layout_DragDrop);
+			m_pix_box.DragEnter += new DragEventHandler( on_drag_enter );
+			m_pix_box.DragDrop	+= new DragEventHandler( on_drag_drop );
 
 			reset();
 			update();
@@ -157,11 +155,11 @@ namespace SPReD
 			m_label.Text = "...";
 		}
 		
-		private void Layout_MouseDown(object sender, MouseEventArgs e)
+		private void on_mouse_down( object sender, MouseEventArgs e )
 		{
 			if( m_mouse_in_area_bounds )
 			{
-				if( m_mode == EMode.m_build )
+				if( m_mode == e_mode.Build )
 				{
 					if( e.Button == MouseButtons.Left )
 					{
@@ -195,13 +193,13 @@ namespace SPReD
 			}
 		}
 		
-		private void Layout_MouseMove(object sender, MouseEventArgs e)
+		private void on_mouse_move( object sender, MouseEventArgs e )
 		{
 			if( m_mouse_in_area_bounds )
 			{
 				if( m_pix_box.Capture && e.Button == MouseButtons.Left )
 				{
-					if( m_mode == EMode.m_build )
+					if( m_mode == e_mode.Build )
 					{
 						m_fl_offset_x += ( e.X - m_last_mouse_x ) / m_scale;
 						m_fl_offset_y += ( e.Y - m_last_mouse_y ) / m_scale;
@@ -217,13 +215,13 @@ namespace SPReD
 						update();
 					}
 					else
-					if( m_mode == EMode.m_draw && m_spr_data != null )
+					if( m_mode == e_mode.Draw && m_spr_data != null )
 					{
 						check_and_update_pixel( e.X, e.Y );
 					}
 				}
 				
-				if( m_mode == EMode.m_build )
+				if( m_mode == e_mode.Build )
 				{
 					if( m_pix_box.Capture && m_selected_CHR >= 0 && e.Button == MouseButtons.Right )
 					{
@@ -244,11 +242,11 @@ namespace SPReD
 			}
 		}
 		
-		private void Layout_MouseUp(object sender, MouseEventArgs e)
+		private void on_mouse_up( object sender, MouseEventArgs e )
 		{
 			if( m_mouse_in_area_bounds )
 			{
-				if( m_mode == EMode.m_draw )
+				if( m_mode == e_mode.Draw )
 				{
 					if( m_pix_box.Capture && e.Button == MouseButtons.Left )
 					{
@@ -257,7 +255,7 @@ namespace SPReD
 					}
 				}
 				else
-				if( m_mode == EMode.m_build )
+				if( m_mode == e_mode.Build )
 				{
 					if( m_pix_box.Capture && m_selected_CHR >= 0 && e.Button == MouseButtons.Right )
 					{
@@ -279,7 +277,7 @@ namespace SPReD
 			}
 		}
 
-		private void Layout_MouseEnter(object sender, EventArgs e)
+		private void on_mouse_enter( object sender, EventArgs e )
 		{
 			if( m_spr_data != null )
 			{
@@ -290,7 +288,7 @@ namespace SPReD
 			update_cursor();
 		}
 
-		private void Layout_MouseLeave(object sender, EventArgs e)
+		private void on_mouse_leave( object sender, EventArgs e )
 		{
 			if( m_spr_data != null )
 			{
@@ -299,11 +297,11 @@ namespace SPReD
 			}
 		}
 		
-		private void Layout_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void on_mouse_click( object sender, MouseEventArgs e )
 		{
 			if( m_mouse_in_area_bounds )
 			{
-				if( m_mode == EMode.m_build )
+				if( m_mode == e_mode.Build )
 				{
 					if( m_spr_data != null && e.Button == MouseButtons.Left )
 					{
@@ -313,14 +311,14 @@ namespace SPReD
 					update();
 				}
 				else
-				if( m_mode == EMode.m_draw )
+				if( m_mode == e_mode.Draw )
 				{
 					check_and_update_pixel( e.X, e.Y );
 				}
 			}
 		}
 		
-		private void Layout_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void on_mouse_wheel( object sender, MouseEventArgs e )
 		{
 			if( m_mouse_in_area_bounds )
 			{
@@ -360,7 +358,7 @@ namespace SPReD
 		
 		private void update_status_label()
 		{
-			m_grp_box.Text = "Layout: [ " + ( ( m_mode == EMode.m_build ) ? CONST_MODE_STR_BUILD:CONST_MODE_STR_EDIT ) + " / x" + m_scale.ToString( "0.0" ) + " ]";
+			m_grp_box.Text = "Layout: [ " + ( ( m_mode == e_mode.Build ) ? CONST_MODE_STR_BUILD:CONST_MODE_STR_EDIT ) + " / x" + m_scale.ToString( "0.0" ) + " ]";
 		}
 
 		private void clamp_offsets()
@@ -471,7 +469,7 @@ namespace SPReD
 			dispatch_event_set_selected_CHR();
 			
 			/* reset palette when clicked outside of CHRs
-			if( m_mode == EMode.m_build && m_selected_CHR < 0 )
+			if( m_mode == e_mode.Build && m_selected_CHR < 0 )
 			{
 				m_palette_group.active_palette = -1;
 			}
@@ -489,7 +487,7 @@ namespace SPReD
 				
 				draw_chars();
 				
-				if( m_selected_CHR >= 0 && m_mode == EMode.m_build )
+				if( m_selected_CHR >= 0 && m_mode == e_mode.Build )
 				{
 					// draw a frame of the selected CHR
 					CHR_data_attr 	chr_attr = m_spr_data.get_CHR_attr()[ m_selected_CHR ];
@@ -775,24 +773,24 @@ namespace SPReD
 			}
 		}
 
-		public void subscribe_event( palette_group _plt )
+		public void subscribe( palette_group _plt )
 		{
-			_plt.UpdateColor += new EventHandler( update_color );
+			_plt.UpdateColor += new EventHandler( on_update_color );
 
 			m_palette_group = _plt;
 						
 			palette_small[] plt_arr = _plt.get_palettes_arr();
 			
-			plt_arr[ 0 ].ActivePalette += new EventHandler( update_palette );
-			plt_arr[ 1 ].ActivePalette += new EventHandler( update_palette );
-			plt_arr[ 2 ].ActivePalette += new EventHandler( update_palette );
-			plt_arr[ 3 ].ActivePalette += new EventHandler( update_palette );
+			plt_arr[ 0 ].ActivePalette += new EventHandler( on_update_palette );
+			plt_arr[ 1 ].ActivePalette += new EventHandler( on_update_palette );
+			plt_arr[ 2 ].ActivePalette += new EventHandler( on_update_palette );
+			plt_arr[ 3 ].ActivePalette += new EventHandler( on_update_palette );
 		}
 		
-		public void subscribe_event( CHR_bank_viewer _chr_bank )
+		public void subscribe( CHR_bank_viewer _chr_bank )
 		{
-			_chr_bank.SetSelectedCHR += new EventHandler( update_CHR );
-			_chr_bank.UpdatePixel += new EventHandler( update_color );
+			_chr_bank.SetSelectedCHR += new EventHandler( on_update_CHR );
+			_chr_bank.UpdatePixel += new EventHandler( on_update_color );
 		}
 
 		private void dispatch_event_set_selected_CHR()
@@ -804,7 +802,7 @@ namespace SPReD
 			}
 		}
 	
-		private void update_palette(object sender, EventArgs e)
+		private void on_update_palette( object sender, EventArgs e )
 		{
 			if( m_selected_CHR >= 0 )
 			{
@@ -818,7 +816,7 @@ namespace SPReD
 			}
 		}
 
-		private void update_CHR(object sender, EventArgs e)
+		private void on_update_CHR( object sender, EventArgs e )
 		{
 			int sel_CHR_ind = ( sender as CHR_bank_viewer ).get_selected_CHR_ind();
 			
@@ -855,7 +853,7 @@ namespace SPReD
 			update();
 		}
 		
-		private void update_color(object sender, EventArgs e)
+		private void on_update_color( object sender, EventArgs e )
 		{
 			if( m_spr_data != null )
 			{
@@ -902,9 +900,9 @@ namespace SPReD
 			}
 		}
 		
-		private void Layout_DragEnter(object sender, DragEventArgs e) 
+		private void on_drag_enter( object sender, DragEventArgs e )
 		{
-			if( m_mode == EMode.m_build )
+			if( m_mode == e_mode.Build )
 			{
 		        if( e.Data.GetDataPresent( DataFormats.Text ) )
 		        {
@@ -913,9 +911,9 @@ namespace SPReD
 			}
 	    }
 	
-	    private void Layout_DragDrop(object sender, DragEventArgs e) 
+	    private void on_drag_drop( object sender, DragEventArgs e )
 	    {
-	    	if( m_mode == EMode.m_build )
+	    	if( m_mode == e_mode.Build )
 	    	{
 		    	int chr_ind = Int32.Parse( ( string )e.Data.GetData( DataFormats.Text ) );
 		    	
@@ -1022,7 +1020,7 @@ namespace SPReD
 		{
 			if( m_spr_data != null )
 			{
-				m_pix_box.Cursor = ( m_mode == EMode.m_build ) ? Cursors.Hand:Cursors.Arrow;
+				m_pix_box.Cursor = ( m_mode == e_mode.Build ) ? Cursors.Hand:Cursors.Arrow;
 			}
 			else
 			{

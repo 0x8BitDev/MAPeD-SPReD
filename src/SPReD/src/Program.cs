@@ -39,7 +39,7 @@ namespace SPReD
 			}
 			catch( System.Exception _err )
 			{
-				MainForm.message_box( _err.Message + ( _err.InnerException != null ? "\n\n" + _err.InnerException.Message:"" ), "Unexpected Error", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Error );
+				MainForm.message_box( _err.Message + ( _err.InnerException != null ? "\n\n" + _err.InnerException.Message:"" ), "Unexpected Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 	}

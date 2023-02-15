@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 11.06.2019
  * Time: 15:53
  */
@@ -34,33 +34,33 @@ namespace SPReD
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.OkBtn = new System.Windows.Forms.Button();
-			this.CancelBtn = new System.Windows.Forms.Button();
+			this.BtnOk = new System.Windows.Forms.Button();
+			this.BtnCancel = new System.Windows.Forms.Button();
 			this.TransformPositionsCBox = new System.Windows.Forms.CheckBox();
 			this.CopyCHRDataCBox = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
-			// OkBtn
+			// BtnOk
 			// 
-			this.OkBtn.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.OkBtn.Location = new System.Drawing.Point(92, 119);
-			this.OkBtn.Name = "OkBtn";
-			this.OkBtn.Size = new System.Drawing.Size(75, 23);
-			this.OkBtn.TabIndex = 2;
-			this.OkBtn.Text = "&Ok";
-			this.OkBtn.UseVisualStyleBackColor = true;
-			this.OkBtn.Click += new System.EventHandler(this.OkBtnClick);
+			this.BtnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.BtnOk.Location = new System.Drawing.Point(92, 119);
+			this.BtnOk.Name = "BtnOk";
+			this.BtnOk.Size = new System.Drawing.Size(75, 23);
+			this.BtnOk.TabIndex = 2;
+			this.BtnOk.Text = "&Ok";
+			this.BtnOk.UseVisualStyleBackColor = true;
+			this.BtnOk.Click += new System.EventHandler(this.BtnOkClick);
 			// 
-			// CancelBtn
+			// BtnCancel
 			// 
-			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(173, 119);
-			this.CancelBtn.Name = "CancelBtn";
-			this.CancelBtn.Size = new System.Drawing.Size(75, 23);
-			this.CancelBtn.TabIndex = 3;
-			this.CancelBtn.Text = "&Cancel";
-			this.CancelBtn.UseVisualStyleBackColor = true;
-			this.CancelBtn.Click += new System.EventHandler(this.CancelBtnClick);
+			this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.BtnCancel.Location = new System.Drawing.Point(173, 119);
+			this.BtnCancel.Name = "BtnCancel";
+			this.BtnCancel.Size = new System.Drawing.Size(75, 23);
+			this.BtnCancel.TabIndex = 3;
+			this.BtnCancel.Text = "&Cancel";
+			this.BtnCancel.UseVisualStyleBackColor = true;
+			this.BtnCancel.Click += new System.EventHandler(this.BtnCancelClick);
 			// 
 			// TransformPositionsCBox
 			// 
@@ -96,8 +96,8 @@ namespace SPReD
 			this.ClientSize = new System.Drawing.Size(260, 152);
 			this.Controls.Add(this.CopyCHRDataCBox);
 			this.Controls.Add(this.TransformPositionsCBox);
-			this.Controls.Add(this.CancelBtn);
-			this.Controls.Add(this.OkBtn);
+			this.Controls.Add(this.BtnCancel);
+			this.Controls.Add(this.BtnOk);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -108,7 +108,7 @@ namespace SPReD
 		}
 		private System.Windows.Forms.CheckBox CopyCHRDataCBox;
 		private System.Windows.Forms.CheckBox TransformPositionsCBox;
-		private System.Windows.Forms.Button CancelBtn;
-		private System.Windows.Forms.Button OkBtn;
+		private System.Windows.Forms.Button BtnCancel;
+		private System.Windows.Forms.Button BtnOk;
 	}
 }

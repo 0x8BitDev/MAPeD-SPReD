@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 24.08.2020
  * Time: 18:09
  */
@@ -42,7 +42,7 @@ namespace SPReD
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
-			PixBoxPalette.MouseClick	+= new MouseEventHandler( swap_colors_MouseClock );
+			PixBoxPalette.MouseClick	+= new MouseEventHandler( on_mouse_click );
 			
 			PixBoxPalette.Image	= new Bitmap( PixBoxPalette.Width, PixBoxPalette.Height, PixelFormat.Format32bppArgb );
 			
@@ -54,7 +54,7 @@ namespace SPReD
 			m_pen.Width		= 1;
 		}
 		
-		private void swap_colors_MouseClock(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void on_mouse_click( object sender, MouseEventArgs e )
 		{
 			int sel_ind = e.X >> 4;
 			
@@ -76,7 +76,7 @@ namespace SPReD
 			update();
 		}
 		
-		public DialogResult ShowDialog( ListBox.ObjectCollection _obj_arr )
+		public DialogResult show_window( ListBox.ObjectCollection _obj_arr )
 		{
 			m_sprites_arr = _obj_arr;
 			
@@ -146,7 +146,7 @@ namespace SPReD
 			PixBoxPalette.Invalidate();
 		}
 		
-		void BtnSwapClick_Event(object sender, EventArgs e)
+		private void BtnSwapClick( object sender, EventArgs e )
 		{
 			if( m_color_A >= 0 && m_color_B >= 0 )
 			{

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 21.03.2022
  * Time: 13:20
  */
@@ -85,17 +85,18 @@ namespace SPReD
 			// 
 			// CBoxPaletteSlot
 			// 
+			this.CBoxPaletteSlot.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.CBoxPaletteSlot.FormattingEnabled = true;
 			this.CBoxPaletteSlot.Location = new System.Drawing.Point(34, 73);
 			this.CBoxPaletteSlot.Name = "CBoxPaletteSlot";
-			this.CBoxPaletteSlot.Size = new System.Drawing.Size(45, 21);
+			this.CBoxPaletteSlot.Size = new System.Drawing.Size(48, 21);
 			this.CBoxPaletteSlot.TabIndex = 4;
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(85, 78);
+			this.label1.Location = new System.Drawing.Point(88, 77);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(70, 23);
+			this.label1.Size = new System.Drawing.Size(70, 18);
 			this.label1.TabIndex = 5;
 			this.label1.Text = "Palette slot";
 			// 
@@ -107,7 +108,7 @@ namespace SPReD
 			this.BtnHelp.TabIndex = 2;
 			this.BtnHelp.Text = "?";
 			this.BtnHelp.UseVisualStyleBackColor = true;
-			this.BtnHelp.Click += new System.EventHandler(this.show_help);
+			this.BtnHelp.Click += new System.EventHandler(this.BtnHelpClick);
 			// 
 			// image_import_options_form
 			// 
@@ -116,9 +117,9 @@ namespace SPReD
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.BtnCancel;
 			this.ClientSize = new System.Drawing.Size(177, 156);
+			this.Controls.Add(this.CBoxPaletteSlot);
 			this.Controls.Add(this.BtnHelp);
 			this.Controls.Add(this.label1);
-			this.Controls.Add(this.CBoxPaletteSlot);
 			this.Controls.Add(this.CheckBoxApplyPalette);
 			this.Controls.Add(this.CheckBoxCropByAlpha);
 			this.Controls.Add(this.BtnCancel);

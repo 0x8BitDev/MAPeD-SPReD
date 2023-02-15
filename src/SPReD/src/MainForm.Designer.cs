@@ -111,7 +111,7 @@ namespace SPReD
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SpriteLayout = new System.Windows.Forms.PictureBox();
 			this.CHRBank = new System.Windows.Forms.PictureBox();
-			this.Import_openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.ImportOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.PaletteMain = new System.Windows.Forms.PictureBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -170,10 +170,10 @@ namespace SPReD
 			this.Palette1Label = new System.Windows.Forms.Label();
 			this.Palette2Label = new System.Windows.Forms.Label();
 			this.Palette0Label = new System.Windows.Forms.Label();
-			this.ExportASM_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.ExportC_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.Project_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.Project_openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.ExportASMSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this.ExportCSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this.ProjectSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this.ProjectOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.SpriteListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -185,7 +185,7 @@ namespace SPReD
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.createRefToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ExportImages_folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+			this.ExportImagesFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
 			this.ContextMenuCHRBank = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.CopyCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PasteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -226,8 +226,8 @@ namespace SPReD
 			this.SpriteList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.SpriteList.Size = new System.Drawing.Size(170, 212);
 			this.SpriteList.TabIndex = 0;
-			this.SpriteList.Click += new System.EventHandler(this.SpriteListItemClick_Event);
-			this.SpriteList.SelectedIndexChanged += new System.EventHandler(this.SpriteListItemClick_Event);
+			this.SpriteList.Click += new System.EventHandler(this.SpriteListItemClick);
+			this.SpriteList.SelectedIndexChanged += new System.EventHandler(this.SpriteListItemClick);
 			// 
 			// fileToolStripMenuItem
 			// 
@@ -334,14 +334,14 @@ namespace SPReD
 			this.descriptionToolStripMenuItem.Name = "descriptionToolStripMenuItem";
 			this.descriptionToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.descriptionToolStripMenuItem.Text = "&Description";
-			this.descriptionToolStripMenuItem.Click += new System.EventHandler(this.DescriptionToolStripMenuItemClick_Event);
+			this.descriptionToolStripMenuItem.Click += new System.EventHandler(this.DescriptionToolStripMenuItemClick);
 			// 
 			// statisticsToolStripMenuItem
 			// 
 			this.statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
 			this.statisticsToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.statisticsToolStripMenuItem.Text = "S&tatistics";
-			this.statisticsToolStripMenuItem.Click += new System.EventHandler(this.StatisticsToolStripMenuItemClick_Event);
+			this.statisticsToolStripMenuItem.Click += new System.EventHandler(this.StatisticsToolStripMenuItemClick);
 			// 
 			// toolStripSeparator1
 			// 
@@ -403,7 +403,7 @@ namespace SPReD
 			this.createNewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.createNewToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
 			this.createNewToolStripMenuItem.Text = "Create &New";
-			this.createNewToolStripMenuItem.Click += new System.EventHandler(this.BtnCreate_Event);
+			this.createNewToolStripMenuItem.Click += new System.EventHandler(this.BtnCreateClick);
 			// 
 			// deleteToolStripMenuItem1
 			// 
@@ -411,7 +411,7 @@ namespace SPReD
 			this.deleteToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
 			this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(194, 22);
 			this.deleteToolStripMenuItem1.Text = "&Delete";
-			this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.BtnDelete_Event);
+			this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.BtnDeleteClick);
 			// 
 			// toolStripSeparator13
 			// 
@@ -424,7 +424,7 @@ namespace SPReD
 			this.renameToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
 			this.renameToolStripMenuItem1.Size = new System.Drawing.Size(194, 22);
 			this.renameToolStripMenuItem1.Text = "&Rename";
-			this.renameToolStripMenuItem1.Click += new System.EventHandler(this.BtnRename_Event);
+			this.renameToolStripMenuItem1.Click += new System.EventHandler(this.BtnRenameClick);
 			// 
 			// toolStripSeparator19
 			// 
@@ -436,14 +436,14 @@ namespace SPReD
 			this.addPrefixPostfixToolStripMenuItem.Name = "addPrefixPostfixToolStripMenuItem";
 			this.addPrefixPostfixToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
 			this.addPrefixPostfixToolStripMenuItem.Text = "Add Pre&fix/Postfix";
-			this.addPrefixPostfixToolStripMenuItem.Click += new System.EventHandler(this.BtnAddPrefixPostfix_Event);
+			this.addPrefixPostfixToolStripMenuItem.Click += new System.EventHandler(this.BtnAddPrefixPostfixClick);
 			// 
 			// removePrefixPostfixToolStripMenuItem1
 			// 
 			this.removePrefixPostfixToolStripMenuItem1.Name = "removePrefixPostfixToolStripMenuItem1";
 			this.removePrefixPostfixToolStripMenuItem1.Size = new System.Drawing.Size(194, 22);
 			this.removePrefixPostfixToolStripMenuItem1.Text = "Remove Prefix/Postfix";
-			this.removePrefixPostfixToolStripMenuItem1.Click += new System.EventHandler(this.BtnRemovePrefixPostfix_Event);
+			this.removePrefixPostfixToolStripMenuItem1.Click += new System.EventHandler(this.BtnRemovePrefixPostfixClick);
 			// 
 			// toolStripSeparator6
 			// 
@@ -456,7 +456,7 @@ namespace SPReD
 			this.createCopyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.createCopyToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
 			this.createCopyToolStripMenuItem.Text = "Create &Copy";
-			this.createCopyToolStripMenuItem.Click += new System.EventHandler(this.BtnCreateCopy_Event);
+			this.createCopyToolStripMenuItem.Click += new System.EventHandler(this.BtnCreateCopyClick);
 			// 
 			// createRefToolStripMenuItem1
 			// 
@@ -464,7 +464,7 @@ namespace SPReD
 			this.createRefToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
 			this.createRefToolStripMenuItem1.Size = new System.Drawing.Size(194, 22);
 			this.createRefToolStripMenuItem1.Text = "Create R&ef";
-			this.createRefToolStripMenuItem1.Click += new System.EventHandler(this.BtnCreateRef_Event);
+			this.createRefToolStripMenuItem1.Click += new System.EventHandler(this.BtnCreateRefClick);
 			// 
 			// toolStripSeparator5
 			// 
@@ -477,7 +477,7 @@ namespace SPReD
 			this.selectAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
 			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
 			this.selectAllToolStripMenuItem.Text = "Select &All";
-			this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.BtnSelectAll_Event);
+			this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.BtnSelectAllClick);
 			// 
 			// applyPaletteToolStripMenuItem
 			// 
@@ -485,7 +485,7 @@ namespace SPReD
 			this.applyPaletteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
 			this.applyPaletteToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
 			this.applyPaletteToolStripMenuItem.Text = "Apply &Palette";
-			this.applyPaletteToolStripMenuItem.Click += new System.EventHandler(this.BtnApplyDefaultPalette_Event);
+			this.applyPaletteToolStripMenuItem.Click += new System.EventHandler(this.BtnApplyDefaultPaletteClick);
 			// 
 			// toolStripSeparator7
 			// 
@@ -498,7 +498,7 @@ namespace SPReD
 			this.verticalFlippingToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
 			this.verticalFlippingToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
 			this.verticalFlippingToolStripMenuItem.Text = "Flip &Vertical";
-			this.verticalFlippingToolStripMenuItem.Click += new System.EventHandler(this.BtnSpriteVFlip_Event);
+			this.verticalFlippingToolStripMenuItem.Click += new System.EventHandler(this.BtnSpriteVFlipClick);
 			// 
 			// horizontalFlippingToolStripMenuItem
 			// 
@@ -506,7 +506,7 @@ namespace SPReD
 			this.horizontalFlippingToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.H)));
 			this.horizontalFlippingToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
 			this.horizontalFlippingToolStripMenuItem.Text = "Flip &Horizontal";
-			this.horizontalFlippingToolStripMenuItem.Click += new System.EventHandler(this.BtnSpriteHFlip_Event);
+			this.horizontalFlippingToolStripMenuItem.Click += new System.EventHandler(this.BtnSpriteHFlipClick);
 			// 
 			// toolStripSeparator8
 			// 
@@ -529,7 +529,7 @@ namespace SPReD
 			this.CHRSplitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.S)));
 			this.CHRSplitToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
 			this.CHRSplitToolStripMenuItem.Text = "&Splitting";
-			this.CHRSplitToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRSplit_Event);
+			this.CHRSplitToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRSplitClick);
 			// 
 			// CHRPackToolStripMenuItem
 			// 
@@ -537,7 +537,7 @@ namespace SPReD
 			this.CHRPackToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.P)));
 			this.CHRPackToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
 			this.CHRPackToolStripMenuItem.Text = "&Packing";
-			this.CHRPackToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRPack_Event);
+			this.CHRPackToolStripMenuItem.Click += new System.EventHandler(this.BtnCHRPackClick);
 			// 
 			// CHROptimizationToolStripMenuItem
 			// 
@@ -545,7 +545,7 @@ namespace SPReD
 			this.CHROptimizationToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.O)));
 			this.CHROptimizationToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
 			this.CHROptimizationToolStripMenuItem.Text = "&Optimization";
-			this.CHROptimizationToolStripMenuItem.Click += new System.EventHandler(this.BtnCHROpt_Event);
+			this.CHROptimizationToolStripMenuItem.Click += new System.EventHandler(this.BtnCHROptClick);
 			// 
 			// layoutToolStripMenuItem
 			// 
@@ -572,7 +572,7 @@ namespace SPReD
 			this.buildModeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.B)));
 			this.buildModeToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.buildModeToolStripMenuItem.Text = "&Build Mode";
-			this.buildModeToolStripMenuItem.Click += new System.EventHandler(this.BtnModeBuild_Event);
+			this.buildModeToolStripMenuItem.Click += new System.EventHandler(this.BtnModeBuildClick);
 			// 
 			// drawModeToolStripMenuItem
 			// 
@@ -580,7 +580,7 @@ namespace SPReD
 			this.drawModeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D)));
 			this.drawModeToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.drawModeToolStripMenuItem.Text = "&Draw Mode";
-			this.drawModeToolStripMenuItem.Click += new System.EventHandler(this.BtnModeDraw_Event);
+			this.drawModeToolStripMenuItem.Click += new System.EventHandler(this.BtnModeDrawClick);
 			// 
 			// toolStripSeparator9
 			// 
@@ -593,7 +593,7 @@ namespace SPReD
 			this.verticalFlippingToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.V)));
 			this.verticalFlippingToolStripMenuItem1.Size = new System.Drawing.Size(198, 22);
 			this.verticalFlippingToolStripMenuItem1.Text = "Flip &Vertical";
-			this.verticalFlippingToolStripMenuItem1.Click += new System.EventHandler(this.BtnVFlip_Event);
+			this.verticalFlippingToolStripMenuItem1.Click += new System.EventHandler(this.BtnVFlipClick);
 			// 
 			// horizontalFlippingToolStripMenuItem1
 			// 
@@ -601,7 +601,7 @@ namespace SPReD
 			this.horizontalFlippingToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.H)));
 			this.horizontalFlippingToolStripMenuItem1.Size = new System.Drawing.Size(198, 22);
 			this.horizontalFlippingToolStripMenuItem1.Text = "Flip &Horizontal";
-			this.horizontalFlippingToolStripMenuItem1.Click += new System.EventHandler(this.BtnHFlip_Event);
+			this.horizontalFlippingToolStripMenuItem1.Click += new System.EventHandler(this.BtnHFlipClick);
 			// 
 			// toolStripSeparator10
 			// 
@@ -614,7 +614,7 @@ namespace SPReD
 			this.centeringToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.C)));
 			this.centeringToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.centeringToolStripMenuItem.Text = "&Centering";
-			this.centeringToolStripMenuItem.Click += new System.EventHandler(this.BtnCenteringClick_Event);
+			this.centeringToolStripMenuItem.Click += new System.EventHandler(this.BtnCenteringClick);
 			// 
 			// zoomInToolStripMenuItem
 			// 
@@ -622,7 +622,7 @@ namespace SPReD
 			this.zoomInToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Z)));
 			this.zoomInToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.zoomInToolStripMenuItem.Text = "Zoom In";
-			this.zoomInToolStripMenuItem.Click += new System.EventHandler(this.BtnZoomInClick_Event);
+			this.zoomInToolStripMenuItem.Click += new System.EventHandler(this.BtnZoomInClick);
 			// 
 			// zoomOutToolStripMenuItem
 			// 
@@ -631,7 +631,7 @@ namespace SPReD
 									| System.Windows.Forms.Keys.Z)));
 			this.zoomOutToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.zoomOutToolStripMenuItem.Text = "Zoom Out";
-			this.zoomOutToolStripMenuItem.Click += new System.EventHandler(this.BtnZoomOutClick_Event);
+			this.zoomOutToolStripMenuItem.Click += new System.EventHandler(this.BtnZoomOutClick);
 			// 
 			// toolStripSeparator11
 			// 
@@ -644,14 +644,14 @@ namespace SPReD
 			this.shiftColorsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F)));
 			this.shiftColorsToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.shiftColorsToolStripMenuItem.Text = "Shift Colors";
-			this.shiftColorsToolStripMenuItem.Click += new System.EventHandler(this.BtnShiftColors_Event);
+			this.shiftColorsToolStripMenuItem.Click += new System.EventHandler(this.BtnShiftColorsClick);
 			// 
 			// deleteCHRToolStripMenuItem
 			// 
 			this.deleteCHRToolStripMenuItem.Name = "deleteCHRToolStripMenuItem";
 			this.deleteCHRToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.deleteCHRToolStripMenuItem.Text = "Delete CHR";
-			this.deleteCHRToolStripMenuItem.Click += new System.EventHandler(this.BtnDeleteCHR_Event);
+			this.deleteCHRToolStripMenuItem.Click += new System.EventHandler(this.BtnDeleteCHRClick);
 			// 
 			// cHRBankToolStripMenuItem
 			// 
@@ -677,7 +677,7 @@ namespace SPReD
 			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Insert)));
 			this.copyToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.copyToolStripMenuItem.Text = "&Copy";
-			this.copyToolStripMenuItem.Click += new System.EventHandler(this.CopyCHRToolStripMenuItemClick_Event);
+			this.copyToolStripMenuItem.Click += new System.EventHandler(this.CopyCHRToolStripMenuItemClick);
 			// 
 			// pasteToolStripMenuItem
 			// 
@@ -685,7 +685,7 @@ namespace SPReD
 			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.Insert)));
 			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.pasteToolStripMenuItem.Text = "&Paste";
-			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.PasteCHRToolStripMenuItemClick_Event);
+			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.PasteCHRToolStripMenuItemClick);
 			// 
 			// toolStripSeparator15
 			// 
@@ -697,7 +697,7 @@ namespace SPReD
 			this.fillWithColorToolStripMenuItem1.Name = "fillWithColorToolStripMenuItem1";
 			this.fillWithColorToolStripMenuItem1.Size = new System.Drawing.Size(226, 22);
 			this.fillWithColorToolStripMenuItem1.Text = "&Fill With Color";
-			this.fillWithColorToolStripMenuItem1.Click += new System.EventHandler(this.FillWithColorToolStripMenuItemClick_Event);
+			this.fillWithColorToolStripMenuItem1.Click += new System.EventHandler(this.FillWithColorToolStripMenuItemClick);
 			// 
 			// toolStripSeparator16
 			// 
@@ -711,7 +711,7 @@ namespace SPReD
 									| System.Windows.Forms.Keys.A)));
 			this.addCHRToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.addCHRToolStripMenuItem.Text = "&Add";
-			this.addCHRToolStripMenuItem.Click += new System.EventHandler(this.BtnAddCHRClick_Event);
+			this.addCHRToolStripMenuItem.Click += new System.EventHandler(this.BtnAddCHRClick);
 			// 
 			// deleteCHRToolStripMenuItem1
 			// 
@@ -720,7 +720,7 @@ namespace SPReD
 									| System.Windows.Forms.Keys.D)));
 			this.deleteCHRToolStripMenuItem1.Size = new System.Drawing.Size(226, 22);
 			this.deleteCHRToolStripMenuItem1.Text = "&Delete";
-			this.deleteCHRToolStripMenuItem1.Click += new System.EventHandler(this.BtnDeleteLastCHRClick_Event);
+			this.deleteCHRToolStripMenuItem1.Click += new System.EventHandler(this.BtnDeleteLastCHRClick);
 			// 
 			// toolStripSeparator12
 			// 
@@ -734,7 +734,7 @@ namespace SPReD
 									| System.Windows.Forms.Keys.V)));
 			this.flipVerticalToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.flipVerticalToolStripMenuItem.Text = "Flip &Vertical";
-			this.flipVerticalToolStripMenuItem.Click += new System.EventHandler(this.BtnCHREditorVFlipClick_Event);
+			this.flipVerticalToolStripMenuItem.Click += new System.EventHandler(this.BtnCHREditorVFlipClick);
 			// 
 			// flipHorizontalToolStripMenuItem
 			// 
@@ -743,7 +743,7 @@ namespace SPReD
 									| System.Windows.Forms.Keys.H)));
 			this.flipHorizontalToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.flipHorizontalToolStripMenuItem.Text = "Flip &Horizontal";
-			this.flipHorizontalToolStripMenuItem.Click += new System.EventHandler(this.BtnCHREditorHFlipClick_Event);
+			this.flipHorizontalToolStripMenuItem.Click += new System.EventHandler(this.BtnCHREditorHFlipClick);
 			// 
 			// rotateToolStripMenuItem
 			// 
@@ -752,7 +752,7 @@ namespace SPReD
 									| System.Windows.Forms.Keys.R)));
 			this.rotateToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.rotateToolStripMenuItem.Text = "&Rotate";
-			this.rotateToolStripMenuItem.Click += new System.EventHandler(this.BtnCHREditorRotateClick_Event);
+			this.rotateToolStripMenuItem.Click += new System.EventHandler(this.BtnCHREditorRotateClick);
 			// 
 			// paletteToolStripMenuItem
 			// 
@@ -770,7 +770,7 @@ namespace SPReD
 									| System.Windows.Forms.Keys.S)));
 			this.swapToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.swapToolStripMenuItem.Text = "&Swap Colors";
-			this.swapToolStripMenuItem.Click += new System.EventHandler(this.BtnSwapColorsClick_Event);
+			this.swapToolStripMenuItem.Click += new System.EventHandler(this.BtnSwapColorsClick);
 			// 
 			// managerToolStripMenuItem
 			// 
@@ -778,7 +778,7 @@ namespace SPReD
 			this.managerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
 			this.managerToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
 			this.managerToolStripMenuItem.Text = "&Manager";
-			this.managerToolStripMenuItem.Click += new System.EventHandler(this.PalettesManagerClick_Event);
+			this.managerToolStripMenuItem.Click += new System.EventHandler(this.PalettesManagerClick);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -829,14 +829,14 @@ namespace SPReD
 			this.CHRBank.TabIndex = 5;
 			this.CHRBank.TabStop = false;
 			// 
-			// Import_openFileDialog
+			// ImportOpenFileDialog
 			// 
-			this.Import_openFileDialog.DefaultExt = "*";
-			this.Import_openFileDialog.Filter = "4 colors image (*.png,*.bmp)|*.png;*.bmp|CHR Bank (*.chr,*.bin)|*.chr;*.bin|Palet" +
+			this.ImportOpenFileDialog.DefaultExt = "*";
+			this.ImportOpenFileDialog.Filter = "4 colors image (*.png,*.bmp)|*.png;*.bmp|CHR Bank (*.chr,*.bin)|*.chr;*.bin|Palet" +
 			"te (192 bytes) (*.pal)|*.pal";
-			this.Import_openFileDialog.Multiselect = true;
-			this.Import_openFileDialog.Title = "Data Import";
-			this.Import_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.Import_OK);
+			this.ImportOpenFileDialog.Multiselect = true;
+			this.ImportOpenFileDialog.Title = "Data Import";
+			this.ImportOpenFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ImportOK);
 			// 
 			// PaletteMain
 			// 
@@ -889,7 +889,7 @@ namespace SPReD
 			this.BtnCHRSplit.TabIndex = 12;
 			this.BtnCHRSplit.Text = "Splitting";
 			this.BtnCHRSplit.UseVisualStyleBackColor = true;
-			this.BtnCHRSplit.Click += new System.EventHandler(this.BtnCHRSplit_Event);
+			this.BtnCHRSplit.Click += new System.EventHandler(this.BtnCHRSplitClick);
 			// 
 			// CBoxCHRPackingType
 			// 
@@ -906,7 +906,7 @@ namespace SPReD
 			this.CBoxCHRPackingType.Name = "CBoxCHRPackingType";
 			this.CBoxCHRPackingType.Size = new System.Drawing.Size(72, 21);
 			this.CBoxCHRPackingType.TabIndex = 15;
-			this.CBoxCHRPackingType.SelectedIndexChanged += new System.EventHandler(this.CBoxCHRPackingType_ChangedEvent);
+			this.CBoxCHRPackingType.SelectedIndexChanged += new System.EventHandler(this.CBoxCHRPackingTypeChanged);
 			// 
 			// BtnCHROptimization
 			// 
@@ -916,7 +916,7 @@ namespace SPReD
 			this.BtnCHROptimization.TabIndex = 14;
 			this.BtnCHROptimization.Text = "Optimization";
 			this.BtnCHROptimization.UseVisualStyleBackColor = true;
-			this.BtnCHROptimization.Click += new System.EventHandler(this.BtnCHROpt_Event);
+			this.BtnCHROptimization.Click += new System.EventHandler(this.BtnCHROptClick);
 			// 
 			// BtnCHRPack
 			// 
@@ -926,7 +926,7 @@ namespace SPReD
 			this.BtnCHRPack.TabIndex = 13;
 			this.BtnCHRPack.Text = "Packing";
 			this.BtnCHRPack.UseVisualStyleBackColor = true;
-			this.BtnCHRPack.Click += new System.EventHandler(this.BtnCHRPack_Event);
+			this.BtnCHRPack.Click += new System.EventHandler(this.BtnCHRPackClick);
 			// 
 			// BtnMoveItemDown
 			// 
@@ -936,7 +936,7 @@ namespace SPReD
 			this.BtnMoveItemDown.TabIndex = 2;
 			this.BtnMoveItemDown.Text = "Down";
 			this.BtnMoveItemDown.UseVisualStyleBackColor = true;
-			this.BtnMoveItemDown.Click += new System.EventHandler(this.BtnDown_Event);
+			this.BtnMoveItemDown.Click += new System.EventHandler(this.BtnDownClick);
 			// 
 			// BtnMoveItemUp
 			// 
@@ -946,7 +946,7 @@ namespace SPReD
 			this.BtnMoveItemUp.TabIndex = 1;
 			this.BtnMoveItemUp.Text = "Up";
 			this.BtnMoveItemUp.UseVisualStyleBackColor = true;
-			this.BtnMoveItemUp.Click += new System.EventHandler(this.BtnUp_Event);
+			this.BtnMoveItemUp.Click += new System.EventHandler(this.BtnUpClick);
 			// 
 			// BtnSelectAll
 			// 
@@ -956,7 +956,7 @@ namespace SPReD
 			this.BtnSelectAll.TabIndex = 3;
 			this.BtnSelectAll.Text = "Select All";
 			this.BtnSelectAll.UseVisualStyleBackColor = true;
-			this.BtnSelectAll.Click += new System.EventHandler(this.BtnSelectAll_Event);
+			this.BtnSelectAll.Click += new System.EventHandler(this.BtnSelectAllClick);
 			// 
 			// BtnApplyDefaultPalette
 			// 
@@ -966,7 +966,7 @@ namespace SPReD
 			this.BtnApplyDefaultPalette.TabIndex = 4;
 			this.BtnApplyDefaultPalette.Text = "Apply Palette";
 			this.BtnApplyDefaultPalette.UseVisualStyleBackColor = true;
-			this.BtnApplyDefaultPalette.Click += new System.EventHandler(this.BtnApplyDefaultPalette_Event);
+			this.BtnApplyDefaultPalette.Click += new System.EventHandler(this.BtnApplyDefaultPaletteClick);
 			// 
 			// BtnOffset
 			// 
@@ -976,7 +976,7 @@ namespace SPReD
 			this.BtnOffset.TabIndex = 9;
 			this.BtnOffset.Text = "Offset";
 			this.BtnOffset.UseVisualStyleBackColor = true;
-			this.BtnOffset.Click += new System.EventHandler(this.BtnOffset_Event);
+			this.BtnOffset.Click += new System.EventHandler(this.BtnOffsetClick);
 			// 
 			// OffsetY
 			// 
@@ -1046,7 +1046,7 @@ namespace SPReD
 			this.BtnSpriteHFlip.TabIndex = 8;
 			this.BtnSpriteHFlip.Text = "HFlip";
 			this.BtnSpriteHFlip.UseVisualStyleBackColor = true;
-			this.BtnSpriteHFlip.Click += new System.EventHandler(this.BtnSpriteHFlip_Event);
+			this.BtnSpriteHFlip.Click += new System.EventHandler(this.BtnSpriteHFlipClick);
 			// 
 			// BtnSpriteVFlip
 			// 
@@ -1056,7 +1056,7 @@ namespace SPReD
 			this.BtnSpriteVFlip.TabIndex = 7;
 			this.BtnSpriteVFlip.Text = "VFlip";
 			this.BtnSpriteVFlip.UseVisualStyleBackColor = true;
-			this.BtnSpriteVFlip.Click += new System.EventHandler(this.BtnSpriteVFlip_Event);
+			this.BtnSpriteVFlip.Click += new System.EventHandler(this.BtnSpriteVFlipClick);
 			// 
 			// label7
 			// 
@@ -1123,7 +1123,7 @@ namespace SPReD
 			this.BtnZoomOut.TabIndex = 24;
 			this.BtnZoomOut.Text = "Z-";
 			this.BtnZoomOut.UseVisualStyleBackColor = true;
-			this.BtnZoomOut.Click += new System.EventHandler(this.BtnZoomOutClick_Event);
+			this.BtnZoomOut.Click += new System.EventHandler(this.BtnZoomOutClick);
 			// 
 			// BtnZoomIn
 			// 
@@ -1133,7 +1133,7 @@ namespace SPReD
 			this.BtnZoomIn.TabIndex = 23;
 			this.BtnZoomIn.Text = "Z+";
 			this.BtnZoomIn.UseVisualStyleBackColor = true;
-			this.BtnZoomIn.Click += new System.EventHandler(this.BtnZoomInClick_Event);
+			this.BtnZoomIn.Click += new System.EventHandler(this.BtnZoomInClick);
 			// 
 			// BtnCentering
 			// 
@@ -1143,7 +1143,7 @@ namespace SPReD
 			this.BtnCentering.TabIndex = 22;
 			this.BtnCentering.Text = "Centering";
 			this.BtnCentering.UseVisualStyleBackColor = true;
-			this.BtnCentering.Click += new System.EventHandler(this.BtnCenteringClick_Event);
+			this.BtnCentering.Click += new System.EventHandler(this.BtnCenteringClick);
 			// 
 			// CBoxAxesLayout
 			// 
@@ -1155,7 +1155,7 @@ namespace SPReD
 			this.CBoxAxesLayout.TabIndex = 28;
 			this.CBoxAxesLayout.Text = "Axes";
 			this.CBoxAxesLayout.UseVisualStyleBackColor = true;
-			this.CBoxAxesLayout.CheckedChanged += new System.EventHandler(this.CBoxAxisLayoutCheckedChanged_Event);
+			this.CBoxAxesLayout.CheckedChanged += new System.EventHandler(this.CBoxAxisLayoutCheckedChanged);
 			// 
 			// CBoxMode8x16
 			// 
@@ -1165,7 +1165,7 @@ namespace SPReD
 			this.CBoxMode8x16.TabIndex = 30;
 			this.CBoxMode8x16.Text = "8x16";
 			this.CBoxMode8x16.UseVisualStyleBackColor = true;
-			this.CBoxMode8x16.CheckedChanged += new System.EventHandler(this.CBox8x16ModeCheckedChanged_Event);
+			this.CBoxMode8x16.CheckedChanged += new System.EventHandler(this.CBox8x16ModeCheckedChanged);
 			// 
 			// CBoxSnapLayout
 			// 
@@ -1177,7 +1177,7 @@ namespace SPReD
 			this.CBoxSnapLayout.TabIndex = 30;
 			this.CBoxSnapLayout.Text = "Snap";
 			this.CBoxSnapLayout.UseVisualStyleBackColor = true;
-			this.CBoxSnapLayout.CheckedChanged += new System.EventHandler(this.CBoxSnapLayoutCheckedChanged_Event);
+			this.CBoxSnapLayout.CheckedChanged += new System.EventHandler(this.CBoxSnapLayoutCheckedChanged);
 			// 
 			// GroupBoxModeName
 			// 
@@ -1198,7 +1198,7 @@ namespace SPReD
 			this.BtnLayoutModeBuild.TabIndex = 17;
 			this.BtnLayoutModeBuild.Text = "Build";
 			this.BtnLayoutModeBuild.UseVisualStyleBackColor = true;
-			this.BtnLayoutModeBuild.Click += new System.EventHandler(this.BtnModeBuild_Event);
+			this.BtnLayoutModeBuild.Click += new System.EventHandler(this.BtnModeBuildClick);
 			// 
 			// BtnLayoutModeDraw
 			// 
@@ -1208,7 +1208,7 @@ namespace SPReD
 			this.BtnLayoutModeDraw.TabIndex = 18;
 			this.BtnLayoutModeDraw.Text = "Draw";
 			this.BtnLayoutModeDraw.UseVisualStyleBackColor = true;
-			this.BtnLayoutModeDraw.Click += new System.EventHandler(this.BtnModeDraw_Event);
+			this.BtnLayoutModeDraw.Click += new System.EventHandler(this.BtnModeDrawClick);
 			// 
 			// CHRFlippingGroupBox
 			// 
@@ -1229,7 +1229,7 @@ namespace SPReD
 			this.BtnVFlip.TabIndex = 20;
 			this.BtnVFlip.Text = "VFlip";
 			this.BtnVFlip.UseVisualStyleBackColor = true;
-			this.BtnVFlip.Click += new System.EventHandler(this.BtnVFlip_Event);
+			this.BtnVFlip.Click += new System.EventHandler(this.BtnVFlipClick);
 			// 
 			// BtnHFlip
 			// 
@@ -1239,7 +1239,7 @@ namespace SPReD
 			this.BtnHFlip.TabIndex = 21;
 			this.BtnHFlip.Text = "HFlip";
 			this.BtnHFlip.UseVisualStyleBackColor = true;
-			this.BtnHFlip.Click += new System.EventHandler(this.BtnHFlip_Event);
+			this.BtnHFlip.Click += new System.EventHandler(this.BtnHFlipClick);
 			// 
 			// BtnDeleteCHR
 			// 
@@ -1249,7 +1249,7 @@ namespace SPReD
 			this.BtnDeleteCHR.TabIndex = 27;
 			this.BtnDeleteCHR.Text = "Delete";
 			this.BtnDeleteCHR.UseVisualStyleBackColor = true;
-			this.BtnDeleteCHR.Click += new System.EventHandler(this.BtnDeleteCHR_Event);
+			this.BtnDeleteCHR.Click += new System.EventHandler(this.BtnDeleteCHRClick);
 			// 
 			// BtnShiftColors
 			// 
@@ -1259,7 +1259,7 @@ namespace SPReD
 			this.BtnShiftColors.TabIndex = 26;
 			this.BtnShiftColors.Text = "Shift Colors";
 			this.BtnShiftColors.UseVisualStyleBackColor = true;
-			this.BtnShiftColors.Click += new System.EventHandler(this.BtnShiftColors_Event);
+			this.BtnShiftColors.Click += new System.EventHandler(this.BtnShiftColorsClick);
 			// 
 			// CBoxGridLayout
 			// 
@@ -1271,7 +1271,7 @@ namespace SPReD
 			this.CBoxGridLayout.TabIndex = 29;
 			this.CBoxGridLayout.Text = "Grid";
 			this.CBoxGridLayout.UseVisualStyleBackColor = true;
-			this.CBoxGridLayout.CheckedChanged += new System.EventHandler(this.CBoxGridLayoutCheckedChanged_Event);
+			this.CBoxGridLayout.CheckedChanged += new System.EventHandler(this.CBoxGridLayoutCheckedChanged);
 			// 
 			// CBoxShiftTransp
 			// 
@@ -1281,7 +1281,7 @@ namespace SPReD
 			this.CBoxShiftTransp.TabIndex = 25;
 			this.CBoxShiftTransp.Text = "Shift Transp";
 			this.CBoxShiftTransp.UseVisualStyleBackColor = true;
-			this.CBoxShiftTransp.CheckedChanged += new System.EventHandler(this.CBoxAxisLayoutCheckedChanged_Event);
+			this.CBoxShiftTransp.CheckedChanged += new System.EventHandler(this.CBoxAxisLayoutCheckedChanged);
 			// 
 			// SpriteLayoutLabel
 			// 
@@ -1316,7 +1316,7 @@ namespace SPReD
 			this.BtnDeleteLastCHR.TabIndex = 32;
 			this.BtnDeleteLastCHR.Text = "-";
 			this.BtnDeleteLastCHR.UseVisualStyleBackColor = true;
-			this.BtnDeleteLastCHR.Click += new System.EventHandler(this.BtnDeleteLastCHRClick_Event);
+			this.BtnDeleteLastCHR.Click += new System.EventHandler(this.BtnDeleteLastCHRClick);
 			// 
 			// BtnCHRRotate
 			// 
@@ -1326,7 +1326,7 @@ namespace SPReD
 			this.BtnCHRRotate.TabIndex = 35;
 			this.BtnCHRRotate.Text = "Rotate";
 			this.BtnCHRRotate.UseVisualStyleBackColor = true;
-			this.BtnCHRRotate.Click += new System.EventHandler(this.BtnCHREditorRotateClick_Event);
+			this.BtnCHRRotate.Click += new System.EventHandler(this.BtnCHREditorRotateClick);
 			// 
 			// BtnCHRHFlip
 			// 
@@ -1336,7 +1336,7 @@ namespace SPReD
 			this.BtnCHRHFlip.TabIndex = 34;
 			this.BtnCHRHFlip.Text = "HFlip";
 			this.BtnCHRHFlip.UseVisualStyleBackColor = true;
-			this.BtnCHRHFlip.Click += new System.EventHandler(this.BtnCHREditorHFlipClick_Event);
+			this.BtnCHRHFlip.Click += new System.EventHandler(this.BtnCHREditorHFlipClick);
 			// 
 			// BtnAddCHR
 			// 
@@ -1346,7 +1346,7 @@ namespace SPReD
 			this.BtnAddCHR.TabIndex = 31;
 			this.BtnAddCHR.Text = "+";
 			this.BtnAddCHR.UseVisualStyleBackColor = true;
-			this.BtnAddCHR.Click += new System.EventHandler(this.BtnAddCHRClick_Event);
+			this.BtnAddCHR.Click += new System.EventHandler(this.BtnAddCHRClick);
 			// 
 			// BtnCHRVFlip
 			// 
@@ -1356,7 +1356,7 @@ namespace SPReD
 			this.BtnCHRVFlip.TabIndex = 33;
 			this.BtnCHRVFlip.Text = "VFlip";
 			this.BtnCHRVFlip.UseVisualStyleBackColor = true;
-			this.BtnCHRVFlip.Click += new System.EventHandler(this.BtnCHREditorVFlipClick_Event);
+			this.BtnCHRVFlip.Click += new System.EventHandler(this.BtnCHREditorVFlipClick);
 			// 
 			// CHRBankLabel
 			// 
@@ -1397,8 +1397,8 @@ namespace SPReD
 			this.CBoxPalettes.Name = "CBoxPalettes";
 			this.CBoxPalettes.Size = new System.Drawing.Size(50, 21);
 			this.CBoxPalettes.TabIndex = 36;
-			this.CBoxPalettes.DropDown += new System.EventHandler(this.CBoxPalettesAdjustWidthDropDown_Event);
-			this.CBoxPalettes.SelectedIndexChanged += new System.EventHandler(this.CBoxPalettesChanged_Event);
+			this.CBoxPalettes.DropDown += new System.EventHandler(this.CBoxPalettesAdjustWidthDropDown);
+			this.CBoxPalettes.SelectedIndexChanged += new System.EventHandler(this.CBoxPalettesChanged);
 			// 
 			// Palette3
 			// 
@@ -1418,7 +1418,7 @@ namespace SPReD
 			this.BtnSwapColors.TabIndex = 35;
 			this.BtnSwapColors.Text = "Swap";
 			this.BtnSwapColors.UseVisualStyleBackColor = true;
-			this.BtnSwapColors.Click += new System.EventHandler(this.BtnSwapColorsClick_Event);
+			this.BtnSwapColors.Click += new System.EventHandler(this.BtnSwapColorsClick);
 			// 
 			// Palette2
 			// 
@@ -1486,33 +1486,33 @@ namespace SPReD
 			this.Palette0Label.TabIndex = 8;
 			this.Palette0Label.Text = "1:";
 			// 
-			// ExportASM_saveFileDialog
+			// ExportASMSaveFileDialog
 			// 
-			this.ExportASM_saveFileDialog.DefaultExt = "asm";
-			this.ExportASM_saveFileDialog.Filter = "CA65\\NESasm (*.asm)|*.asm";
-			this.ExportASM_saveFileDialog.Title = "Export ASM: Select File";
-			this.ExportASM_saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ExportASM_OK);
+			this.ExportASMSaveFileDialog.DefaultExt = "asm";
+			this.ExportASMSaveFileDialog.Filter = "CA65\\NESasm (*.asm)|*.asm";
+			this.ExportASMSaveFileDialog.Title = "Export ASM: Select File";
+			this.ExportASMSaveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ExportASMOK);
 			// 
-			// ExportC_saveFileDialog
+			// ExportCSaveFileDialog
 			// 
-			this.ExportC_saveFileDialog.DefaultExt = "h";
-			this.ExportC_saveFileDialog.Filter = "C (*.h)|*.h";
-			this.ExportC_saveFileDialog.Title = "Export C: Select File";
-			this.ExportC_saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ExportC_OK);
+			this.ExportCSaveFileDialog.DefaultExt = "h";
+			this.ExportCSaveFileDialog.Filter = "C (*.h)|*.h";
+			this.ExportCSaveFileDialog.Title = "Export C: Select File";
+			this.ExportCSaveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ExportCOK);
 			// 
-			// Project_saveFileDialog
+			// ProjectSaveFileDialog
 			// 
-			this.Project_saveFileDialog.DefaultExt = "sprednes";
-			this.Project_saveFileDialog.Filter = "SPReD-NES (*.sprednes)|*.sprednes";
-			this.Project_saveFileDialog.Title = "Save Project";
-			this.Project_saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectSave_OK);
+			this.ProjectSaveFileDialog.DefaultExt = "sprednes";
+			this.ProjectSaveFileDialog.Filter = "SPReD-NES (*.sprednes)|*.sprednes";
+			this.ProjectSaveFileDialog.Title = "Save Project";
+			this.ProjectSaveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectSaveOK);
 			// 
-			// Project_openFileDialog
+			// ProjectOpenFileDialog
 			// 
-			this.Project_openFileDialog.DefaultExt = "sprednes";
-			this.Project_openFileDialog.Filter = "SPReD-NES (*.sprednes)|*.sprednes";
-			this.Project_openFileDialog.Title = "Load Project";
-			this.Project_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectLoad_OK);
+			this.ProjectOpenFileDialog.DefaultExt = "sprednes";
+			this.ProjectOpenFileDialog.Filter = "SPReD-NES (*.sprednes)|*.sprednes";
+			this.ProjectOpenFileDialog.Title = "Load Project";
+			this.ProjectOpenFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectLoadOK);
 			// 
 			// SpriteListContextMenu
 			// 
@@ -1535,14 +1535,14 @@ namespace SPReD
 			this.createToolStripMenuItem.Name = "createToolStripMenuItem";
 			this.createToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.createToolStripMenuItem.Text = "Create New";
-			this.createToolStripMenuItem.Click += new System.EventHandler(this.BtnCreate_Event);
+			this.createToolStripMenuItem.Click += new System.EventHandler(this.BtnCreateClick);
 			// 
 			// deleteToolStripMenuItem
 			// 
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
 			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.deleteToolStripMenuItem.Text = "Delete";
-			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.BtnDelete_Event);
+			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.BtnDeleteClick);
 			// 
 			// toolStripSeparator14
 			// 
@@ -1554,7 +1554,7 @@ namespace SPReD
 			this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
 			this.renameToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.renameToolStripMenuItem.Text = "Rename";
-			this.renameToolStripMenuItem.Click += new System.EventHandler(this.BtnRename_Event);
+			this.renameToolStripMenuItem.Click += new System.EventHandler(this.BtnRenameClick);
 			// 
 			// toolStripSeparator18
 			// 
@@ -1566,14 +1566,14 @@ namespace SPReD
 			this.addPrefixPostfixToolStripMenuItem1.Name = "addPrefixPostfixToolStripMenuItem1";
 			this.addPrefixPostfixToolStripMenuItem1.Size = new System.Drawing.Size(189, 22);
 			this.addPrefixPostfixToolStripMenuItem1.Text = "Add Prefix/Postfix";
-			this.addPrefixPostfixToolStripMenuItem1.Click += new System.EventHandler(this.BtnAddPrefixPostfix_Event);
+			this.addPrefixPostfixToolStripMenuItem1.Click += new System.EventHandler(this.BtnAddPrefixPostfixClick);
 			// 
 			// removePrefixPostfixToolStripMenuItem
 			// 
 			this.removePrefixPostfixToolStripMenuItem.Name = "removePrefixPostfixToolStripMenuItem";
 			this.removePrefixPostfixToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.removePrefixPostfixToolStripMenuItem.Text = "Remove Prefix/Postfix";
-			this.removePrefixPostfixToolStripMenuItem.Click += new System.EventHandler(this.BtnRemovePrefixPostfix_Event);
+			this.removePrefixPostfixToolStripMenuItem.Click += new System.EventHandler(this.BtnRemovePrefixPostfixClick);
 			// 
 			// toolStripSeparator4
 			// 
@@ -1585,20 +1585,20 @@ namespace SPReD
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
 			this.toolStripMenuItem2.Size = new System.Drawing.Size(189, 22);
 			this.toolStripMenuItem2.Text = "Create Copy";
-			this.toolStripMenuItem2.Click += new System.EventHandler(this.BtnCreateCopy_Event);
+			this.toolStripMenuItem2.Click += new System.EventHandler(this.BtnCreateCopyClick);
 			// 
 			// createRefToolStripMenuItem
 			// 
 			this.createRefToolStripMenuItem.Name = "createRefToolStripMenuItem";
 			this.createRefToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.createRefToolStripMenuItem.Text = "Create Ref";
-			this.createRefToolStripMenuItem.Click += new System.EventHandler(this.BtnCreateRef_Event);
+			this.createRefToolStripMenuItem.Click += new System.EventHandler(this.BtnCreateRefClick);
 			// 
-			// ExportImages_folderBrowserDialog
+			// ExportImagesFolderBrowserDialog
 			// 
-			this.ExportImages_folderBrowserDialog.Description = "Export Images: Select Folder";
-			this.ExportImages_folderBrowserDialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
-			this.ExportImages_folderBrowserDialog.Tag = "";
+			this.ExportImagesFolderBrowserDialog.Description = "Export Images: Select Folder";
+			this.ExportImagesFolderBrowserDialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
+			this.ExportImagesFolderBrowserDialog.Tag = "";
 			// 
 			// ContextMenuCHRBank
 			// 
@@ -1615,14 +1615,14 @@ namespace SPReD
 			this.CopyCHRToolStripMenuItem.Name = "CopyCHRToolStripMenuItem";
 			this.CopyCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
 			this.CopyCHRToolStripMenuItem.Text = "Copy";
-			this.CopyCHRToolStripMenuItem.Click += new System.EventHandler(this.CopyCHRToolStripMenuItemClick_Event);
+			this.CopyCHRToolStripMenuItem.Click += new System.EventHandler(this.CopyCHRToolStripMenuItemClick);
 			// 
 			// PasteCHRToolStripMenuItem
 			// 
 			this.PasteCHRToolStripMenuItem.Name = "PasteCHRToolStripMenuItem";
 			this.PasteCHRToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
 			this.PasteCHRToolStripMenuItem.Text = "Paste";
-			this.PasteCHRToolStripMenuItem.Click += new System.EventHandler(this.PasteCHRToolStripMenuItemClick_Event);
+			this.PasteCHRToolStripMenuItem.Click += new System.EventHandler(this.PasteCHRToolStripMenuItemClick);
 			// 
 			// separatorToolStripMenuItem2
 			// 
@@ -1634,7 +1634,7 @@ namespace SPReD
 			this.FillWithColorToolStripMenuItem.Name = "FillWithColorToolStripMenuItem";
 			this.FillWithColorToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
 			this.FillWithColorToolStripMenuItem.Text = "Fill With Color";
-			this.FillWithColorToolStripMenuItem.Click += new System.EventHandler(this.FillWithColorToolStripMenuItemClick_Event);
+			this.FillWithColorToolStripMenuItem.Click += new System.EventHandler(this.FillWithColorToolStripMenuItemClick);
 			// 
 			// ContextMenuSmallPalette
 			// 
@@ -1673,8 +1673,8 @@ namespace SPReD
 			this.MaximizeBox = false;
 			this.Name = "MainForm";
 			this.Text = "SPReD";
-			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.KeyUp_Event);
-			this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.PreviewKeyDown_Event);
+			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnKeyUp);
+			this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.OnPreviewKeyDown);
 			this.MenuStrip.ResumeLayout(false);
 			this.MenuStrip.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SpriteLayout)).EndInit();
@@ -1765,7 +1765,7 @@ namespace SPReD
 		private System.Windows.Forms.ToolStripMenuItem applyPaletteToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-		private System.Windows.Forms.FolderBrowserDialog ExportImages_folderBrowserDialog;
+		private System.Windows.Forms.FolderBrowserDialog ExportImagesFolderBrowserDialog;
 		private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem createRefToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem createCopyToolStripMenuItem;
@@ -1793,8 +1793,8 @@ namespace SPReD
 		private System.Windows.Forms.ContextMenuStrip SpriteListContextMenu;
 		private System.Windows.Forms.Button BtnCHROptimization;
 		private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
-		private System.Windows.Forms.OpenFileDialog Project_openFileDialog;
-		private System.Windows.Forms.SaveFileDialog Project_saveFileDialog;
+		private System.Windows.Forms.OpenFileDialog ProjectOpenFileDialog;
+		private System.Windows.Forms.SaveFileDialog ProjectSaveFileDialog;
 		private System.Windows.Forms.Button BtnDeleteCHR;
 		private System.Windows.Forms.CheckBox CBoxSnapLayout;
 		private System.Windows.Forms.Button BtnCHRVFlip;
@@ -1808,8 +1808,8 @@ namespace SPReD
 		private System.Windows.Forms.ComboBox CBoxCHRPackingType;
 		private System.Windows.Forms.Button BtnCHRPack;
 		private System.Windows.Forms.Button BtnShiftColors;
-		private System.Windows.Forms.SaveFileDialog ExportASM_saveFileDialog;
-		private System.Windows.Forms.SaveFileDialog ExportC_saveFileDialog;
+		private System.Windows.Forms.SaveFileDialog ExportASMSaveFileDialog;
+		private System.Windows.Forms.SaveFileDialog ExportCSaveFileDialog;
 		private System.Windows.Forms.Button BtnSpriteVFlip;
 		private System.Windows.Forms.Button BtnSpriteHFlip;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -1846,7 +1846,7 @@ namespace SPReD
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.PictureBox PaletteMain;
 		
-		private System.Windows.Forms.OpenFileDialog Import_openFileDialog;
+		private System.Windows.Forms.OpenFileDialog ImportOpenFileDialog;
 		private System.Windows.Forms.PictureBox CHRBank;
 		private System.Windows.Forms.PictureBox SpriteLayout;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;

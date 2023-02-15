@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 15.07.2020
  * Time: 11:29
  */
@@ -46,7 +46,7 @@ namespace SPReD
 			CBoxCHRsBpp.SelectedIndex = 3;
 		}
 		
-		void BtnTilesOffsetInfoClick(object sender, EventArgs e)
+		private void BtnTilesOffsetInfoClick( object sender, EventArgs e )
 		{
 			MainForm.message_box( "This value will be added to each CHR index in a sprite attributes.\nIn other words, it's a free space at the beginning of a CHR bank.", "CHRs Offset Description", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}

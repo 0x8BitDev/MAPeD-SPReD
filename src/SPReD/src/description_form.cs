@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 01.02.2019
  * Time: 19:34
  */
@@ -35,12 +35,12 @@ namespace SPReD
 			CBoxShowAfterLoading.Checked = SPReD_CFG.Default.auto_show_description;
 		}
 		
-		void BtnCloseClick_Event(object sender, EventArgs e)
+		private void BtnCloseClick( object sender, EventArgs e )
 		{
 			Close();
 		}
 		
-		void CBoxShowAfterLoadingChanged_Event(object sender, EventArgs e)
+		private void CBoxShowAfterLoadingChanged( object sender, EventArgs e )
 		{
 			// save state
 			SPReD_CFG.Default.auto_show_description = ( sender as CheckBox ).Checked;

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 24.08.2020
  * Time: 18:09
  */
@@ -49,7 +49,7 @@ namespace SPReD
 			this.BtnSwap.TabIndex = 0;
 			this.BtnSwap.Text = "&Swap";
 			this.BtnSwap.UseVisualStyleBackColor = true;
-			this.BtnSwap.Click += new System.EventHandler(this.BtnSwapClick_Event);
+			this.BtnSwap.Click += new System.EventHandler(this.BtnSwapClick);
 			// 
 			// BtnClose
 			// 

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 11.06.2019
  * Time: 15:53
  */
@@ -21,7 +21,7 @@ namespace SPReD
 		private bool m_vert_flip	= false;
 		private bool m_8x16_mode	= false;
 		
-		private sprite_data.EAxesFlipType m_flip_type	= sprite_data.EAxesFlipType.aft_LOCAL_AXES; 
+		private sprite_data.e_axes_flip_type m_flip_type	= sprite_data.e_axes_flip_type.LocalAxes;
 		
 		public bool copy_CHR_data
 		{
@@ -43,17 +43,17 @@ namespace SPReD
 			m_spr_proc = _spr_proc;
 		}
 		
-		public DialogResult ShowDialog( string _title, bool _vert_flip, bool _8x16_mode, sprite_data.EAxesFlipType _ft )
+		public DialogResult show_window( string _title, bool _vert_flip, bool _8x16_mode, sprite_data.e_axes_flip_type _ft )
 		{
 			this.Text 	= _title;
 			m_vert_flip = _vert_flip;
 			m_8x16_mode = _8x16_mode;
 			m_flip_type	= _ft;
 			
-			return base.ShowDialog();
+			return ShowDialog();
 		}
 		
-		void OkBtnClick(object sender, EventArgs e)
+		private void BtnOkClick( object sender, EventArgs e )
 		{
 			sprite_data spr;
 			
@@ -62,15 +62,15 @@ namespace SPReD
 			{
 				sprite_data spr_copy;
 
-				// copy and replace sprites				
+				// copy and replace sprites
 				for( int i = 0; i < m_spr_list.SelectedIndices.Count; i++ )
 				{
 					spr = m_spr_list.Items[ m_spr_list.SelectedIndices[ i ] ] as sprite_data;
 					
-					spr_copy = spr.copy( spr.name, 
-		                                 m_spr_proc.extract_and_create_CHR_data_group( spr, m_8x16_mode ), 
+					spr_copy = spr.copy( spr.name,
+										 m_spr_proc.extract_and_create_CHR_data_group( spr, m_8x16_mode ),
 										 m_spr_proc.extract_and_create_CHR_data_attr( spr, m_8x16_mode ) );
-	
+					
 					m_spr_proc.remove( spr );
 					
 					m_spr_list.Items[ m_spr_list.SelectedIndices[ i ] ] = spr_copy;
@@ -94,7 +94,7 @@ namespace SPReD
 			Close();
 		}
 		
-		void CancelBtnClick(object sender, System.EventArgs e)
+		private void BtnCancelClick( object sender, System.EventArgs e )
 		{
 			Close();
 		}

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 21.03.2022
  * Time: 13:20
  */
@@ -55,7 +55,7 @@ namespace SPReD
 #endif
 		}
 		
-		void show_help(object sender, EventArgs e)
+		private void BtnHelpClick( object sender, EventArgs e )
 		{
 			MainForm.message_box( "'Apply palette' - apply the nearest colors to the imported sprite(s)\nNote: This will modify the palette!\n\n'Crop by alpha' - crop the imported sprites to their minimum size by alpha channel\nNote: BMP files have no alpha channel!", "Image Import Help", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}

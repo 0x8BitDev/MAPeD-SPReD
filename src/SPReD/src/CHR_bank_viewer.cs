@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 15.03.2017
  * Time: 16:45
  */
@@ -16,9 +16,6 @@ namespace SPReD
 	/// Description of CHR_bank_viewer.
 	/// </summary>
 	///
-	
-	public delegate void SelectCHR();
-	public delegate void UpdatePixel();
 	
 	public class CHR_bank_viewer : drawable_base
 	{
@@ -46,9 +43,9 @@ namespace SPReD
 		{
 			m_label = _label;
 			
-			m_pix_box.MouseClick 	+= new System.Windows.Forms.MouseEventHandler(this.CHRBank_MouseClick);
-			m_pix_box.MouseDown		+= new System.Windows.Forms.MouseEventHandler(this.CHRBank_MouseDown);
-			m_pix_box.MouseMove		+= new System.Windows.Forms.MouseEventHandler(this.CHRBank_MouseMove);
+			m_pix_box.MouseClick 	+= new MouseEventHandler( on_mouse_click );
+			m_pix_box.MouseDown		+= new MouseEventHandler( on_mouse_down );
+			m_pix_box.MouseMove		+= new MouseEventHandler( on_mouse_move );
 			
 			update();
 		}
@@ -64,7 +61,7 @@ namespace SPReD
 			m_label.Text = "...";
 		}
 		
-		private void CHRBank_MouseDown( object sender, System.Windows.Forms.MouseEventArgs e)
+		private void on_mouse_down( object sender, MouseEventArgs e )
 		{
 			if( m_selected_ind >= 0 && e.Button == MouseButtons.Right )
 			{
@@ -72,7 +69,7 @@ namespace SPReD
 			}
 		}
 
-		private void CHRBank_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void on_mouse_move( object sender, MouseEventArgs e )
 		{
 			if( m_selected_ind >= 0 && e.Button == MouseButtons.Right )
 			{
@@ -83,7 +80,7 @@ namespace SPReD
 			}
 		}
 		
-		private void CHRBank_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void on_mouse_click( object sender, MouseEventArgs e )
 		{
 			if( m_data_list != null )
 			{
@@ -233,24 +230,24 @@ namespace SPReD
 			}
 		}
 		
-		public void subscribe_event( palette_group _plt )
+		public void subscribe( palette_group _plt )
 		{
-			_plt.UpdateColor += new EventHandler( update_color );
+			_plt.UpdateColor += new EventHandler( on_update_color );
 			
 			m_palette_group = _plt;
-						
+			
 			palette_small[] plt_arr = _plt.get_palettes_arr();
 			
-			plt_arr[ 0 ].ActivePalette += new EventHandler( update_color );
-			plt_arr[ 1 ].ActivePalette += new EventHandler( update_color );
-			plt_arr[ 2 ].ActivePalette += new EventHandler( update_color );
-			plt_arr[ 3 ].ActivePalette += new EventHandler( update_color );			
+			plt_arr[ 0 ].ActivePalette += new EventHandler( on_update_color );
+			plt_arr[ 1 ].ActivePalette += new EventHandler( on_update_color );
+			plt_arr[ 2 ].ActivePalette += new EventHandler( on_update_color );
+			plt_arr[ 3 ].ActivePalette += new EventHandler( on_update_color );
 		}
 		
-		public void subscribe_event( sprite_layout_viewer _sprite_layout_viewer )
+		public void subscribe( sprite_layout_viewer _sprite_layout_viewer )
 		{
-			_sprite_layout_viewer.SetSelectedCHR 	+= new EventHandler( select_CHR );
-			_sprite_layout_viewer.UpdatePixel 		+= new EventHandler( update_pixel );
+			_sprite_layout_viewer.SetSelectedCHR 	+= new EventHandler( on_select_CHR );
+			_sprite_layout_viewer.UpdatePixel 		+= new EventHandler( on_update_pixel );
 		}
 
 		private void dispatch_event_set_selected_CHR()
@@ -262,7 +259,7 @@ namespace SPReD
 			}
 		}
 		
-		private void select_CHR(object sender, EventArgs e)
+		private void on_select_CHR( object sender, EventArgs e )
 		{
 			sprite_layout_viewer spr_layout = sender as sprite_layout_viewer;
 			
@@ -271,12 +268,12 @@ namespace SPReD
 			update();
 		}
 		
-		private void update_color(object sender, EventArgs e)
+		private void on_update_color( object sender, EventArgs e )
 		{
 			update();
 		}
 		
-		private void update_pixel(object sender, EventArgs e)
+		private void on_update_pixel( object sender, EventArgs e )
 		{
 			sprite_layout_viewer spr_viewer = sender as sprite_layout_viewer;
 
@@ -310,7 +307,7 @@ namespace SPReD
 				}
 				else
 				{
-					MainForm.message_box( "Please, select an active palette!", "WARNING!", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error );
+					MainForm.message_box( "Please, select an active palette!", "WARNING!", MessageBoxButtons.OK, MessageBoxIcon.Error );
 				}
 			}
 		}
@@ -325,7 +322,7 @@ namespace SPReD
 			return m_data_list;
 		}
 		
-		public void transform_CHR( CHR_data.ETransform _type )
+		public void transform_CHR( CHR_data.e_transform _type )
 		{
 			if( m_selected_ind >= 0 )
 			{
@@ -434,7 +431,7 @@ namespace SPReD
 			return false;
 		}
 		
-		public void key_event(object sender, KeyEventArgs e)
+		public void on_key_up( object sender, KeyEventArgs e )
 		{
 			if( m_data_list != null && m_selected_ind >= 0 )
 			{

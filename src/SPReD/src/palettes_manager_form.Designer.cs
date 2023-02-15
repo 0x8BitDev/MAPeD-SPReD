@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 21.07.2022
  * Time: 16:45
  */
@@ -69,7 +69,7 @@ namespace SPReD
 			this.BtnMoveUp.TabIndex = 1;
 			this.BtnMoveUp.Text = "Move &Up";
 			this.BtnMoveUp.UseVisualStyleBackColor = true;
-			this.BtnMoveUp.Click += new System.EventHandler(this.BtnMoveUpClick_Event);
+			this.BtnMoveUp.Click += new System.EventHandler(this.BtnMoveUpClick);
 			// 
 			// BtnMoveDown
 			// 
@@ -79,7 +79,7 @@ namespace SPReD
 			this.BtnMoveDown.TabIndex = 2;
 			this.BtnMoveDown.Text = "Move &Down";
 			this.BtnMoveDown.UseVisualStyleBackColor = true;
-			this.BtnMoveDown.Click += new System.EventHandler(this.BtnMoveDownClick_Event);
+			this.BtnMoveDown.Click += new System.EventHandler(this.BtnMoveDownClick);
 			// 
 			// BtnCopy
 			// 
@@ -89,7 +89,7 @@ namespace SPReD
 			this.BtnCopy.TabIndex = 3;
 			this.BtnCopy.Text = "&Copy";
 			this.BtnCopy.UseVisualStyleBackColor = true;
-			this.BtnCopy.Click += new System.EventHandler(this.BtnCopyClick_Event);
+			this.BtnCopy.Click += new System.EventHandler(this.BtnCopyClick);
 			// 
 			// BtnPaste
 			// 
@@ -99,7 +99,7 @@ namespace SPReD
 			this.BtnPaste.TabIndex = 4;
 			this.BtnPaste.Text = "&Paste";
 			this.BtnPaste.UseVisualStyleBackColor = true;
-			this.BtnPaste.Click += new System.EventHandler(this.BtnPasteClick_Event);
+			this.BtnPaste.Click += new System.EventHandler(this.BtnPasteClick);
 			// 
 			// palettes_manager_form
 			// 

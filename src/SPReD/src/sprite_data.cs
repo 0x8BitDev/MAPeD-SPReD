@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 14.03.2017
  * Time: 11:35
  */
@@ -18,10 +18,10 @@ namespace SPReD
 	/// </summary>
 	public class sprite_data
 	{
-		public enum EAxesFlipType
+		public enum e_axes_flip_type
 		{
-			aft_LOCAL_AXES = 0,
-			aft_GLOABL_AXES,
+			LocalAxes = 0,
+			GlobalAxes,
 		};
 #if DEF_NES
 		private static readonly byte[] clr_ind_remap_arr = new byte[]
@@ -195,11 +195,11 @@ namespace SPReD
 		}
 		
 #if DEF_NES		
-		public void flip_vert( EAxesFlipType _ft, bool _8x16_mode )
+		public void flip_vert( e_axes_flip_type _ft, bool _8x16_mode )
 #elif DEF_SMS
-		public void flip_vert( EAxesFlipType _ft, bool _transform_pos, bool _8x16_mode )
+		public void flip_vert( e_axes_flip_type _ft, bool _transform_pos, bool _8x16_mode )
 #elif DEF_PCE
-		public void flip_vert( EAxesFlipType _ft )
+		public void flip_vert( e_axes_flip_type _ft )
 #endif			
 		{
 			m_CHR_attr.ForEach( delegate( CHR_data_attr _attr ) 
@@ -207,11 +207,11 @@ namespace SPReD
 #if DEF_NES	|| DEF_PCE
 				_attr.vflip();
 #elif DEF_SMS
-				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR_data.ETransform.t_vflip );
+				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR_data.e_transform.VFlip );
 				
 				if( _8x16_mode && _attr.CHR_ind + 1 < m_CHR_data.get_data().Count )
 				{
-					m_CHR_data.get_data()[ _attr.CHR_ind + 1 ].transform( CHR_data.ETransform.t_vflip );
+					m_CHR_data.get_data()[ _attr.CHR_ind + 1 ].transform( CHR_data.e_transform.VFlip );
 					
 					m_CHR_data.swap_CHRs( _attr.CHR_ind, _attr.CHR_ind + 1 );
 				}
@@ -221,14 +221,14 @@ namespace SPReD
 				{
 					switch( _ft )
 					{
-						case sprite_data.EAxesFlipType.aft_LOCAL_AXES:
+						case sprite_data.e_axes_flip_type.LocalAxes:
 							{
 								int center = m_size_y >> 1;
 								_attr.y = center - ( _attr.y - center ) - utils.CONST_CHR_SIDE_PIXELS_CNT;
 							}
 							break;
 							
-						case sprite_data.EAxesFlipType.aft_GLOABL_AXES:
+						case sprite_data.e_axes_flip_type.GlobalAxes:
 							{
 								_attr.y = ( -_attr.y - utils.CONST_CHR_SIDE_PIXELS_CNT ) - m_offset_y;
 #if !DEF_PCE
@@ -247,7 +247,7 @@ namespace SPReD
 			if( _transform_pos )
 #endif
 			{
-				if( _ft == sprite_data.EAxesFlipType.aft_GLOABL_AXES )
+				if( _ft == sprite_data.e_axes_flip_type.GlobalAxes )
 				{
 					// find a minimal Y value
 					int min_y = int.MaxValue;
@@ -272,11 +272,11 @@ namespace SPReD
 		}
 		
 #if DEF_NES		
-		public void flip_horiz( EAxesFlipType _ft )
+		public void flip_horiz( e_axes_flip_type _ft )
 #elif DEF_SMS
-		public void flip_horiz( EAxesFlipType _ft, bool _transform_pos, bool _8x16_mode )
+		public void flip_horiz( e_axes_flip_type _ft, bool _transform_pos, bool _8x16_mode )
 #elif DEF_PCE
-		public void flip_horiz( EAxesFlipType _ft )
+		public void flip_horiz( e_axes_flip_type _ft )
 #endif			
 		{
 			m_CHR_attr.ForEach( delegate( CHR_data_attr _attr ) 
@@ -284,11 +284,11 @@ namespace SPReD
 #if DEF_NES || DEF_PCE
 				_attr.hflip();
 #elif DEF_SMS
-				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR_data.ETransform.t_hflip );
+				m_CHR_data.get_data()[ _attr.CHR_ind ].transform( CHR_data.e_transform.HFlip );
 
 				if( _8x16_mode && _attr.CHR_ind + 1 < m_CHR_data.get_data().Count )
 				{
-					m_CHR_data.get_data()[ _attr.CHR_ind + 1 ].transform( CHR_data.ETransform.t_hflip );
+					m_CHR_data.get_data()[ _attr.CHR_ind + 1 ].transform( CHR_data.e_transform.HFlip );
 				}
 				
 				if( _transform_pos )
@@ -296,14 +296,14 @@ namespace SPReD
 				{
 					switch( _ft )
 					{
-						case sprite_data.EAxesFlipType.aft_LOCAL_AXES:
+						case sprite_data.e_axes_flip_type.LocalAxes:
 							{
 								int center = m_size_x >> 1;
 								_attr.x = center - ( _attr.x - center ) - utils.CONST_CHR_SIDE_PIXELS_CNT;
 							}
 							break;
 							
-						case sprite_data.EAxesFlipType.aft_GLOABL_AXES:
+						case sprite_data.e_axes_flip_type.GlobalAxes:
 							{
 								_attr.x = ( -_attr.x - utils.CONST_CHR_SIDE_PIXELS_CNT ) - m_offset_x;
 							}
@@ -316,7 +316,7 @@ namespace SPReD
 			if( _transform_pos )
 #endif
 			{
-				if( _ft == sprite_data.EAxesFlipType.aft_GLOABL_AXES )
+				if( _ft == sprite_data.e_axes_flip_type.GlobalAxes )
 				{
 					// find a minimal X value
 					int min_x = int.MaxValue;
@@ -657,7 +657,7 @@ namespace SPReD
 			m_size_y = 0;
 		}
 		
-		public void save_image_BMP_PNG( string _path, bool _save_alpha, palette_small[] _plt_arr, image_export_options_form.EImgFormat _fmt, bool _mode8x16 )
+		public void save_image_BMP_PNG( string _path, bool _save_alpha, palette_small[] _plt_arr, image_export_options_form.e_img_format _fmt, bool _mode8x16 )
 		{
 			Bitmap 		bmp;
 			Bitmap 		draw_img;
@@ -722,12 +722,12 @@ namespace SPReD
 				}
 			}
 			
-			if( _fmt == image_export_options_form.EImgFormat.BMP )
+			if( _fmt == image_export_options_form.e_img_format.BMP )
 			{
 				draw_img.Save( _path + Path.DirectorySeparatorChar + name + ".bmp", ImageFormat.Bmp );
 			}
 			else
-			if( _fmt == image_export_options_form.EImgFormat.PNG )
+			if( _fmt == image_export_options_form.e_img_format.PNG )
 			{
 				draw_img.Save( _path + Path.DirectorySeparatorChar + name + ".png", ImageFormat.Png );
 			}

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 17.03.2017
  * Time: 14:57
  */
@@ -16,8 +16,6 @@ namespace SPReD
 	/// </summary>
 	///
 
-	public delegate void UpdateColor();	
-	
 	public class palette_group : drawable_base
 	{
 		public event EventHandler UpdateColor;
@@ -115,15 +113,15 @@ namespace SPReD
 																				new palette_small( 3, _plt3 ) };
 			for( int i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
 			{
-				m_plt_arr[ i ].ActivePalette += new EventHandler( update_palettes );
+				m_plt_arr[ i ].ActivePalette += new EventHandler( on_update_palettes );
 			}
 			
-			m_pix_box.MouseDown		+= new MouseEventHandler(this.Palette_MouseDown);
-			m_pix_box.MouseMove		+= new MouseEventHandler(this.Palette_MouseMove);
-			m_pix_box.MouseUp		+= new MouseEventHandler(this.Palette_MouseUp);
-			m_pix_box.MouseClick	+= new MouseEventHandler(this.Palette_MouseClick);
+			m_pix_box.MouseDown		+= new MouseEventHandler( on_mouse_down );
+			m_pix_box.MouseMove		+= new MouseEventHandler( on_mouse_move );
+			m_pix_box.MouseUp		+= new MouseEventHandler( on_mouse_up );
+			m_pix_box.MouseClick	+= new MouseEventHandler( on_mouse_click );
 			
-			m_pix_box.MouseLeave	+= new EventHandler( this.Palette_MouseLeave );
+			m_pix_box.MouseLeave	+= new EventHandler( on_mouse_leave );
 			
 			m_clr_ttip = new ToolTip();
 			
@@ -183,17 +181,17 @@ namespace SPReD
 			invalidate();
 		}
 		
-		private void Palette_MouseDown(object sender, MouseEventArgs e)
+		private void on_mouse_down( object sender, MouseEventArgs e ) 
 		{
 			m_mouse_capt = true;
 		}
 		
-		private void Palette_MouseUp(object sender, MouseEventArgs e)
+		private void on_mouse_up( object sender, MouseEventArgs e )
 		{
 			m_mouse_capt = false;
 		}
 		
-		private void Palette_MouseMove(object sender, MouseEventArgs e)
+		private void on_mouse_move( object sender, MouseEventArgs e )
 		{
 			if( m_mouse_capt && ( e.X > 0 && e.X < m_pix_box.Bounds.Width && e.Y > 0 && e.Y < m_pix_box.Bounds.Height ) )
 			{
@@ -208,14 +206,14 @@ namespace SPReD
 			}
 		}
 		
-		private void Palette_MouseClick(object sender, MouseEventArgs e)
+		private void on_mouse_click( object sender, MouseEventArgs e )
 		{
 			check_color( e.X, e.Y );
 			
 			m_clr_ttip.Show( utils.hex( "#", get_sel_clr_ind( e.X, e.Y ) ), m_pix_box, e.X, e.Y - 28 );
 		}
 		
-		private void Palette_MouseLeave(object sender, EventArgs e)
+		private void on_mouse_leave( object sender, EventArgs e )
 		{
 			m_clr_ttip.Hide( m_pix_box );
 		}
@@ -271,7 +269,7 @@ namespace SPReD
 			}
 		}
 		
-		private void update_palettes(object sender, EventArgs e)
+		private void on_update_palettes( object sender, EventArgs e )
 		{
 			palette_small plt = sender as palette_small;
 			
@@ -384,11 +382,11 @@ namespace SPReD
 			// updated color event
 			if( UpdateColor != null )
 			{
-				UpdateColor( this, System.Windows.Forms.MouseEventArgs.Empty );
+				UpdateColor( this, MouseEventArgs.Empty );
 			}
 		}
 		
-		public void key_event(object sender, KeyEventArgs e)
+		public void on_key_up( object sender, KeyEventArgs e )
 		{
 			if( e.Modifiers == Keys.Shift )
 			{

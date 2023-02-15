@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 24.02.2022
  * Time: 17:16
  */
@@ -45,7 +45,7 @@ namespace SPReD
 			
 			m_cbox = _cbox_palettes;
 			
-			m_cbox.DrawItem	+= new DrawItemEventHandler( PaletteDrawItem_Event );
+			m_cbox.DrawItem	+= new DrawItemEventHandler( on_palette_draw_item );
 			
 			m_cbox.Items.Clear();
 			
@@ -71,7 +71,7 @@ namespace SPReD
 			update_palette();
 		}
 		
-		void PaletteDrawItem_Event( object sender, DrawItemEventArgs e )
+		private void on_palette_draw_item( object sender, DrawItemEventArgs e )
 		{
 			if( e.Index >= 0 )
 			{

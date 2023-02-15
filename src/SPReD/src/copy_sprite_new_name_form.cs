@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2019 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 21.03.2017
  * Time: 18:13
  */
@@ -37,7 +37,7 @@ namespace SPReD
 		
 		public bool is_postfix_selected()
 		{
-			return this.RadioBtnPostfix.Checked;
+			return RBtnPostfix.Checked;
 		}
 	}
 }

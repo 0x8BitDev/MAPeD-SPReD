@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 21.03.2017
  * Time: 11:07
  */
@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;// marshal...
 
@@ -46,18 +47,18 @@ namespace SPReD
 	
 	public class CHR_data_group
 	{
-		public enum ECHRPackingType
+		public enum e_CHR_packing_type
 		{
-			pt_NO_PACKING = 0,
-			pt_1KB,
-			pt_2KB,
-			pt_4KB,
+			NoPacking = 0,
+			_1KB,
+			_2KB,
+			_4KB,
 #if DEF_SMS
-			pt_8KB,
+			_8KB,
 #elif DEF_PCE
-			pt_8KB,
-			pt_16KB,
-			pt_32KB,
+			_8KB,
+			_16KB,
+			_32KB,
 #endif
 		};
 		
@@ -556,7 +557,7 @@ namespace SPReD
 					
 					if( m_CHR_arr.Count >= utils.CONST_CHR_BANK_MAX_SPRITES_CNT )
 					{
-						MainForm.message_box( "The CHR bank is full!", "Data Import", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning );
+						MainForm.message_box( "The CHR bank is full!", "Data Import", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 						break;
 					}
 				}
@@ -574,7 +575,7 @@ namespace SPReD
 			m_CHR_arr.InsertRange( m_CHR_arr.Count, _chr_data.get_data() );
 		}
 		
-		public static bool can_merge( CHR_data_group _data1, CHR_data_group _data2, ECHRPackingType _packing_type )
+		public static bool can_merge( CHR_data_group _data1, CHR_data_group _data2, e_CHR_packing_type _packing_type )
 		{
 			if( _data1.id == _data2.id )
 			{
@@ -586,43 +587,43 @@ namespace SPReD
 			
 			switch( _packing_type )
 			{
-				case CHR_data_group.ECHRPackingType.pt_1KB:
+				case CHR_data_group.e_CHR_packing_type._1KB:
 					{
 						max_size = 1024;
 					}
 					break;
 					
-				case CHR_data_group.ECHRPackingType.pt_2KB:
+				case CHR_data_group.e_CHR_packing_type._2KB:
 					{
 						max_size = 2048;
 					}
 					break;
 					
-				case CHR_data_group.ECHRPackingType.pt_4KB:
+				case CHR_data_group.e_CHR_packing_type._4KB:
 					{
 						max_size = 4096;
 					}
 					break;
 #if DEF_SMS
-				case CHR_data_group.ECHRPackingType.pt_8KB:
+				case CHR_data_group.e_CHR_packing_type._8KB:
 					{
 						max_size = 8192;
 					}
 					break;
 #elif DEF_PCE
-				case CHR_data_group.ECHRPackingType.pt_8KB:
+				case CHR_data_group.e_CHR_packing_type._8KB:
 					{
 						max_size = 8192;
 					}
 					break;
 					
-				case CHR_data_group.ECHRPackingType.pt_16KB:
+				case CHR_data_group.e_CHR_packing_type._16KB:
 					{
 						max_size = 16384;
 					}
 					break;
 					
-				case CHR_data_group.ECHRPackingType.pt_32KB:
+				case CHR_data_group.e_CHR_packing_type._32KB:
 					{
 						max_size = 32768;
 					}

@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 04.12.2018
  * Time: 16:42
  */
@@ -84,7 +84,7 @@ namespace SPReD
 			this.RBtnFormatPCX.TabIndex = 3;
 			this.RBtnFormatPCX.Text = "PCX (indexed)";
 			this.RBtnFormatPCX.UseVisualStyleBackColor = true;
-			this.RBtnFormatPCX.CheckedChanged += new System.EventHandler(this.BtnImgFormatChanged_Event);
+			this.RBtnFormatPCX.CheckedChanged += new System.EventHandler(this.RBtnImgFormatChanged);
 			// 
 			// RBtnFormatPNG
 			// 
@@ -94,7 +94,7 @@ namespace SPReD
 			this.RBtnFormatPNG.TabIndex = 1;
 			this.RBtnFormatPNG.Text = "PNG";
 			this.RBtnFormatPNG.UseVisualStyleBackColor = true;
-			this.RBtnFormatPNG.CheckedChanged += new System.EventHandler(this.BtnImgFormatChanged_Event);
+			this.RBtnFormatPNG.CheckedChanged += new System.EventHandler(this.RBtnImgFormatChanged);
 			// 
 			// RBtnFormatBMP
 			// 
@@ -104,7 +104,7 @@ namespace SPReD
 			this.RBtnFormatBMP.TabIndex = 2;
 			this.RBtnFormatBMP.Text = "BMP";
 			this.RBtnFormatBMP.UseVisualStyleBackColor = true;
-			this.RBtnFormatBMP.CheckedChanged += new System.EventHandler(this.BtnImgFormatChanged_Event);
+			this.RBtnFormatBMP.CheckedChanged += new System.EventHandler(this.RBtnImgFormatChanged);
 			// 
 			// checkBoxAlphaChannel
 			// 

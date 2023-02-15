@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 21.07.2022
  * Time: 16:45
  */
@@ -34,7 +34,7 @@ namespace SPReD
 			InitializeComponent();
 
 			// list box init
-			ListBoxPalettes.DrawItem	+= new DrawItemEventHandler( PaletteDrawItem_Event );
+			ListBoxPalettes.DrawItem	+= new DrawItemEventHandler( on_palette_draw_item );
 			
 			ListBoxPalettes.Items.Clear();
 			
@@ -44,7 +44,7 @@ namespace SPReD
 			}
 		}
 		
-		private void PaletteDrawItem_Event( object sender, DrawItemEventArgs e )
+		private void on_palette_draw_item( object sender, DrawItemEventArgs e )
 		{
 			if( e.Index >= 0 )
 			{
@@ -97,7 +97,7 @@ namespace SPReD
 			}
 		}
 		
-		public DialogResult Open()
+		public DialogResult show_window()
 		{
 			ListBoxPalettes.SelectedIndex = m_palettes_array.palette_index;
 			
@@ -107,7 +107,7 @@ namespace SPReD
 			return ShowDialog();
 		}
 		
-		private void BtnCopyClick_Event(object sender, EventArgs e)
+		private void BtnCopyClick( object sender, EventArgs e )
 		{
 			m_copy_slot_ind		= ListBoxPalettes.SelectedIndex;
 			BtnPaste.Enabled	= true;
@@ -115,7 +115,7 @@ namespace SPReD
 			ListBoxPalettes.Refresh();
 		}
 		
-		private void BtnPasteClick_Event(object sender, EventArgs e)
+		private void BtnPasteClick( object sender, EventArgs e )
 		{
 			if( m_copy_slot_ind >= 0 )
 			{
@@ -139,7 +139,7 @@ namespace SPReD
 			}
 		}
 		
-		private void BtnMoveUpClick_Event(object sender, EventArgs e)
+		private void BtnMoveUpClick( object sender, EventArgs e )
 		{
 			if( ListBoxPalettes.SelectedIndex > 0 )
 			{
@@ -158,7 +158,7 @@ namespace SPReD
 			}
 		}
 		
-		private void BtnMoveDownClick_Event(object sender, EventArgs e)
+		private void BtnMoveDownClick( object sender, EventArgs e )
 		{
 			if( ListBoxPalettes.SelectedIndex < ( ListBoxPalettes.Items.Count - 1 ) )
 			{
