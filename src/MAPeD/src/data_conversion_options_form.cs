@@ -118,7 +118,7 @@ namespace MAPeD
 #endif
 		}
 		
-		public DialogResult ShowDialog( project_data_desc _prj_data )
+		public DialogResult show_window( project_data_desc _prj_data )
 		{
 			if( _prj_data.m_scr_blocks_width == 0xff && _prj_data.m_scr_blocks_height == 0xff )
 			{
@@ -130,7 +130,7 @@ namespace MAPeD
 			}
 #if !DEF_ZX
 			CBoxConvertColors.Enabled = ( platform_data.get_platform_type() == platform_data.get_platform_type_by_file_ext( _prj_data.m_file_ext ) ) ? false:true;
-#endif			
+#endif		
 			return ShowDialog();
 		}
 	}

@@ -371,7 +371,7 @@ namespace MAPeD
 			this.Close();
 		}
 		
-		public void ShowDialog( string _full_path )
+		public DialogResult show_window( string _full_path )
 		{
 			m_path_filename_ext = _full_path;
 			
@@ -388,7 +388,7 @@ namespace MAPeD
 			m_VDP_ready_scr_data_size = platform_data.get_screen_blocks_cnt() << 3;
 			update_desc();
 			
-			ShowDialog();
+			return ShowDialog();
 		}
 		
 		private void BtnOkClick( object sender, System.EventArgs e )

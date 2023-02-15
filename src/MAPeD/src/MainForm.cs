@@ -307,50 +307,50 @@ namespace MAPeD
 #endif
 
 #if DEF_NES
-			Project_openFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.NES );
+			ProjectOpenFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
+			ProjectOpenFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.NES );
 			
 			BtnSwapColors.Visible = false;
 #elif DEF_SMS
-			Project_saveFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
-			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "SMS" );
-			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "sms" );
+			ProjectSaveFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
+			ProjectSaveFileDialog.Filter = ProjectSaveFileDialog.Filter.Replace( "NES", "SMS" );
+			ProjectSaveFileDialog.Filter = ProjectSaveFileDialog.Filter.Replace( "nes", "sms" );
 
-			Project_openFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.SMS );
+			ProjectOpenFileDialog.DefaultExt = platform_data.CONST_SMS_FILE_EXT;
+			ProjectOpenFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.SMS );
 			
-			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm", "WLA-DX" );
+			ProjectExportFileDialog.Filter = ProjectExportFileDialog.Filter.Replace( "CA65\\NESasm", "WLA-DX" );
 
-			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "NES", "SMS" );
-			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "nes", "sms" );
-			Import_openFileDialog.Filter = Import_openFileDialog.Filter.Replace( "Map 2/4 bpp", "Map 2/4/8 bpp" );
+			ImportOpenFileDialog.Filter = ImportOpenFileDialog.Filter.Replace( "NES", "SMS" );
+			ImportOpenFileDialog.Filter = ImportOpenFileDialog.Filter.Replace( "nes", "sms" );
+			ImportOpenFileDialog.Filter = ImportOpenFileDialog.Filter.Replace( "Map 2/4 bpp", "Map 2/4/8 bpp" );
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false; 
 #elif DEF_PCE
-			Project_saveFileDialog.DefaultExt = platform_data.CONST_PCE_FILE_EXT;
-			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "PCE" );
-			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "pce" );
+			ProjectSaveFileDialog.DefaultExt = platform_data.CONST_PCE_FILE_EXT;
+			ProjectSaveFileDialog.Filter = ProjectSaveFileDialog.Filter.Replace( "NES", "PCE" );
+			ProjectSaveFileDialog.Filter = ProjectSaveFileDialog.Filter.Replace( "nes", "pce" );
 
-			Project_openFileDialog.DefaultExt = platform_data.CONST_PCE_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.PCE );
+			ProjectOpenFileDialog.DefaultExt = platform_data.CONST_PCE_FILE_EXT;
+			ProjectOpenFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.PCE );
 			
-			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "CA65\\PCEAS\\HuC (*.asm;*.h)" );
+			ProjectExportFileDialog.Filter = ProjectExportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "CA65\\PCEAS\\HuC (*.asm;*.h)" );
 
-			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin|Palette (1536 bytes) (*.pal)|*.pal";
+			ImportOpenFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin|Palette (1536 bytes) (*.pal)|*.pal";
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false;
 #elif DEF_ZX
-			Project_saveFileDialog.DefaultExt = platform_data.CONST_ZX_FILE_EXT;
-			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "ZX" );
-			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "zx" );
+			ProjectSaveFileDialog.DefaultExt = platform_data.CONST_ZX_FILE_EXT;
+			ProjectSaveFileDialog.Filter = ProjectSaveFileDialog.Filter.Replace( "NES", "ZX" );
+			ProjectSaveFileDialog.Filter = ProjectSaveFileDialog.Filter.Replace( "nes", "zx" );
 
-			Project_openFileDialog.DefaultExt = platform_data.CONST_ZX_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.ZX );
+			ProjectOpenFileDialog.DefaultExt = platform_data.CONST_ZX_FILE_EXT;
+			ProjectOpenFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.ZX );
 			
-			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Substring( Project_exportFileDialog.Filter.IndexOf( "Z" ) );
-			Project_exportFileDialog.DefaultExt = "zxa";
+			ProjectExportFileDialog.Filter = ProjectExportFileDialog.Filter.Substring( ProjectExportFileDialog.Filter.IndexOf( "Z" ) );
+			ProjectExportFileDialog.DefaultExt = "zxa";
 
-			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin|Palette (48 bytes) (*.pal)|*.pal";
+			ImportOpenFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin|Palette (48 bytes) (*.pal)|*.pal";
 			
 			BtnSwapColors.Visible = false;
 			
@@ -368,16 +368,16 @@ namespace MAPeD
 			CBoxTileViewType.Items.Add( "B/W" );
 			CBoxTileViewType.Items.Add( "Inv B/W" );
 #elif DEF_SMD
-			Project_saveFileDialog.DefaultExt = platform_data.CONST_SMD_FILE_EXT;
-			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "NES", "SMD" );
-			Project_saveFileDialog.Filter = Project_saveFileDialog.Filter.Replace( "nes", "smd" );
+			ProjectSaveFileDialog.DefaultExt = platform_data.CONST_SMD_FILE_EXT;
+			ProjectSaveFileDialog.Filter = ProjectSaveFileDialog.Filter.Replace( "NES", "SMD" );
+			ProjectSaveFileDialog.Filter = ProjectSaveFileDialog.Filter.Replace( "nes", "smd" );
 
-			Project_openFileDialog.DefaultExt = platform_data.CONST_SMD_FILE_EXT;
-			Project_openFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.SMD );
+			ProjectOpenFileDialog.DefaultExt = platform_data.CONST_SMD_FILE_EXT;
+			ProjectOpenFileDialog.Filter = get_all_projects_open_file_filter( platform_data.e_platform_type.SMD );
 			
-			Project_exportFileDialog.Filter = Project_exportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "vasm\\SGDK (*.asm;*.h,*.s)" );
+			ProjectExportFileDialog.Filter = ProjectExportFileDialog.Filter.Replace( "CA65\\NESasm (*.asm)", "vasm\\SGDK (*.asm;*.h,*.s)" );
 
-			Import_openFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin|Palette (1536 bytes) (*.pal)|*.pal";
+			ImportOpenFileDialog.Filter = "Tiles/Game Map 4/8 bpp (*.bmp)|*.bmp|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin|Palette (1536 bytes) (*.pal)|*.pal";
 			
 			toolStripSeparatorShiftTransp.Visible = shiftTransparencyToolStripMenuItem.Visible = shiftColorsToolStripMenuItem.Visible = false;
 #endif
@@ -565,7 +565,7 @@ namespace MAPeD
 		
 		private void StatisticsToolStripMenuItemClick( object sender, EventArgs e )
 		{
-			m_statistics_form.ShowStats();
+			m_statistics_form.show_window();
 		}
 		
 		private void on_enable_update_gfx_btn( object sender, EventArgs e )
@@ -796,12 +796,12 @@ namespace MAPeD
 			{
 				if( message_box( "Are you sure you want to close the current project?", "Load Project", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes )
 				{
-					Project_openFileDialog.ShowDialog();
+					ProjectOpenFileDialog.ShowDialog();
 				}
 			}
 			else
 			{
-				Project_openFileDialog.ShowDialog();
+				ProjectOpenFileDialog.ShowDialog();
 			}
 		}
 
@@ -868,7 +868,7 @@ namespace MAPeD
 							{
 								if( load_scr_data_len != scr_data_len )
 								{
-									if( m_data_conversion_options_form.ShowDialog( prj_data ) == DialogResult.Cancel )
+									if( m_data_conversion_options_form.show_window( prj_data ) == DialogResult.Cancel )
 									{
 										reset();
 										return;
@@ -984,7 +984,7 @@ namespace MAPeD
 			}
 			else
 			{
-				Project_saveFileDialog.ShowDialog();
+				ProjectSaveFileDialog.ShowDialog();
 			}
 		}
 		
@@ -1056,7 +1056,7 @@ namespace MAPeD
 		{
 			if( CBoxCHRBanks.SelectedIndex >= 0 )
 			{
-				Import_openFileDialog.ShowDialog();
+				ImportOpenFileDialog.ShowDialog();
 			}
 			else
 			{
@@ -1318,7 +1318,7 @@ namespace MAPeD
 		{
 			if( CBoxCHRBanks.Items.Count > 0 )
 			{
-				Project_exportFileDialog.ShowDialog();
+				ProjectExportFileDialog.ShowDialog();
 			}
 			else
 			{
@@ -1403,13 +1403,13 @@ namespace MAPeD
 #if !DEF_ZX
 					case ".asm":
 						{
-							m_exp_asm.ShowDialog( filename );
+							m_exp_asm.show_window( filename );
 						}
 						break;
 #endif
 					case ".zxa":
 						{
-							m_exp_zx_asm.ShowDialog( filename );
+							m_exp_zx_asm.show_window( filename );
 						}
 						break;
 				}
@@ -1747,7 +1747,7 @@ namespace MAPeD
 		{
 			if( m_data_manager.tiles_data_cnt > 0 )
 			{
-				m_reorder_CHR_banks_form.show_dialog();
+				m_reorder_CHR_banks_form.show_window();
 				
 				if( ( CBoxCHRBanks.SelectedIndex != m_reorder_CHR_banks_form.selected_CHR_bank ) || m_reorder_CHR_banks_form.data_changed )
 				{
@@ -4253,11 +4253,11 @@ namespace MAPeD
 			
 			if( ent != null && ( ent.image_flag == false || ( ent.image_flag == true && message_box( "Delete the entity image and use the color box instead?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes ) ) )
 			{
-				if( colorDialogEntity.ShowDialog() == DialogResult.OK )
+				if( ColorDialogEntity.ShowDialog() == DialogResult.OK )
 				{
 					ent.image_flag 	= false;
 					
-					ent.color = colorDialogEntity.Color;
+					ent.color = ColorDialogEntity.Color;
 					
 					fill_entity_data( ent );
 				}
@@ -4352,7 +4352,7 @@ namespace MAPeD
 		
 		private void BtnEntityLoadBitmapClick( object sender, EventArgs e )
 		{
-			EntityLoadBitmap_openFileDialog.ShowDialog();
+			EntityLoadBitmapOpenFileDialog.ShowDialog();
 		}
 		
 		private void EntityLoadBitmapOpenFileDialogFileOk( object sender, System.ComponentModel.CancelEventArgs e )
@@ -4685,7 +4685,7 @@ namespace MAPeD
 #if !DEF_NES
 			if( m_data_manager.tiles_data_cnt > 0 )
 			{
-				if( m_swap_colors_form.ShowDialog( get_curr_tiles_data() ) == DialogResult.OK )
+				if( m_swap_colors_form.show_window( get_curr_tiles_data() ) == DialogResult.OK )
 				{
 					BtnUpdateGFXClick( null, null );
 					

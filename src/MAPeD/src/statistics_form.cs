@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 14.08.2020
  * Time: 16:25
  */
@@ -30,14 +30,14 @@ namespace MAPeD
 			m_data_manager = _data_manager;
 		}
 		
-		public DialogResult ShowStats()
+		public DialogResult show_window()
 		{
 			update_stats();
 			
 			return ShowDialog();
 		}
 		
-		public void update_stats()
+		private void update_stats()
 		{
 			int CHR_bank_n;
 			

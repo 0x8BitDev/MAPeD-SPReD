@@ -269,7 +269,7 @@ namespace MAPeD
 			RichTextBoxExportDesc.Text += strings.CONST_STR_EXP_WARNING;
 		}
 		
-		public void ShowDialog( string _full_path )
+		public DialogResult show_window( string _full_path )
 		{
 			m_path_filename_ext 	= _full_path;
 			m_filename				= Path.GetFileNameWithoutExtension( _full_path );
@@ -287,7 +287,7 @@ namespace MAPeD
 				RBtnTiles4x4.Enabled = true; 
 			}
 			
-			ShowDialog();				
+			return ShowDialog();
 		}
 		
 		private void BtnOkClick( object sender, EventArgs e )

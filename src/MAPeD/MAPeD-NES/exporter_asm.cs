@@ -302,7 +302,7 @@ namespace MAPeD
 			this.Close();
 		}
 
-		public void ShowDialog( string _full_path )
+		public DialogResult show_window( string _full_path )
 		{
 			m_path_filename_ext 	= _full_path;
 			m_filename				= Path.GetFileNameWithoutExtension( _full_path );
@@ -319,7 +319,7 @@ namespace MAPeD
 				RBtnTiles2x2.Enabled = RBtnTiles4x4.Enabled = true;
 			}
 			
-			ShowDialog();
+			return ShowDialog();
 		}
 		
 		private void BtnOkClick( object sender, System.EventArgs e )

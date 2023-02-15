@@ -70,7 +70,7 @@ namespace MAPeD
 			update();
 		}
 		
-		public DialogResult ShowDialog( tiles_data _data )
+		public DialogResult show_window( tiles_data _data )
 		{
 			m_tiles_data = _data;
 			

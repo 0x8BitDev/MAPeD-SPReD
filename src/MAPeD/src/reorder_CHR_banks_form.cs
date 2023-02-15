@@ -47,7 +47,7 @@ namespace MAPeD
 			m_blocks_preview.enable_smoothing_mode( false );
 		}
 		
-		public DialogResult show_dialog()
+		public DialogResult show_window()
 		{
 			update_UI();
 			

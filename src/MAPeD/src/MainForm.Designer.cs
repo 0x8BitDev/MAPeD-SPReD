@@ -375,17 +375,17 @@ namespace MAPeD
 			this.deleteBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StatusBar = new System.Windows.Forms.StatusStrip();
 			this.StatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.Project_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.Project_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.Import_openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.Project_exportFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this.ProjectSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this.ProjectOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.ImportOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.ProjectExportFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.ContextMenuEntitiesTreeEntity = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
 			this.deleteAllInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.colorDialogEntity = new System.Windows.Forms.ColorDialog();
-			this.EntityLoadBitmap_openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.ColorDialogEntity = new System.Windows.Forms.ColorDialog();
+			this.EntityLoadBitmapOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.ContextMenuStripPatternItem = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -3851,35 +3851,35 @@ namespace MAPeD
 			this.StatusBarLabel.Size = new System.Drawing.Size(16, 17);
 			this.StatusBarLabel.Text = "...";
 			// 
-			// Project_saveFileDialog
+			// ProjectSaveFileDialog
 			// 
-			this.Project_saveFileDialog.DefaultExt = "mapednes";
-			this.Project_saveFileDialog.Filter = "MAPeD-NES (*.mapednes)|*.mapednes";
-			this.Project_saveFileDialog.Title = "Save Project";
-			this.Project_saveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectSaveOk);
+			this.ProjectSaveFileDialog.DefaultExt = "mapednes";
+			this.ProjectSaveFileDialog.Filter = "MAPeD-NES (*.mapednes)|*.mapednes";
+			this.ProjectSaveFileDialog.Title = "Save Project";
+			this.ProjectSaveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectSaveOk);
 			// 
-			// Project_openFileDialog
+			// ProjectOpenFileDialog
 			// 
-			this.Project_openFileDialog.DefaultExt = "mapednes";
-			this.Project_openFileDialog.Filter = "MAPeD-NES (*.mapednes)|*.mapednes";
-			this.Project_openFileDialog.Title = "Load Project";
-			this.Project_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectLoadOk);
+			this.ProjectOpenFileDialog.DefaultExt = "mapednes";
+			this.ProjectOpenFileDialog.Filter = "MAPeD-NES (*.mapednes)|*.mapednes";
+			this.ProjectOpenFileDialog.Title = "Load Project";
+			this.ProjectOpenFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectLoadOk);
 			// 
-			// Import_openFileDialog
+			// ImportOpenFileDialog
 			// 
-			this.Import_openFileDialog.DefaultExt = "sprednes";
-			this.Import_openFileDialog.Filter = "SPReD-NES CHR Bank (*.sprednes)|*.sprednes|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin" +
+			this.ImportOpenFileDialog.DefaultExt = "sprednes";
+			this.ImportOpenFileDialog.Filter = "SPReD-NES CHR Bank (*.sprednes)|*.sprednes|Raw CHR Data (*.chr,*.bin)|*.chr;*.bin" +
 			"|Tiles/Game Map 2/4 bpp (*.bmp)|*.bmp|Palette (192 bytes) (*.pal)|*.pal";
-			this.Import_openFileDialog.Title = "Import Data Into Active CHR Bank";
-			this.Import_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.DataImportOk);
+			this.ImportOpenFileDialog.Title = "Import Data Into Active CHR Bank";
+			this.ImportOpenFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.DataImportOk);
 			// 
-			// Project_exportFileDialog
+			// ProjectExportFileDialog
 			// 
-			this.Project_exportFileDialog.DefaultExt = "asm";
-			this.Project_exportFileDialog.Filter = "CA65\\NESasm (*.asm)|*.asm|ZX SjASMPlus (*.zxa)|*.zxa|Active Tile\\Block Set (*.bmp" +
+			this.ProjectExportFileDialog.DefaultExt = "asm";
+			this.ProjectExportFileDialog.Filter = "CA65\\NESasm (*.asm)|*.asm|ZX SjASMPlus (*.zxa)|*.zxa|Active Tile\\Block Set (*.bmp" +
 			")|*.bmp|Active Layout (*.png)|*.png|Text (*.json)|*.json";
-			this.Project_exportFileDialog.Title = "Export Project";
-			this.Project_exportFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectExportOk);
+			this.ProjectExportFileDialog.Title = "Export Project";
+			this.ProjectExportFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.ProjectExportOk);
 			// 
 			// ContextMenuEntitiesTreeEntity
 			// 
@@ -3917,17 +3917,17 @@ namespace MAPeD
 			this.deleteAllInstancesToolStripMenuItem.Text = "Delete All &Instances";
 			this.deleteAllInstancesToolStripMenuItem.Click += new System.EventHandler(this.DeleteAllInstancesToolStripMenuItemClick);
 			// 
-			// colorDialogEntity
+			// ColorDialogEntity
 			// 
-			this.colorDialogEntity.Color = System.Drawing.Color.WhiteSmoke;
-			this.colorDialogEntity.FullOpen = true;
+			this.ColorDialogEntity.Color = System.Drawing.Color.WhiteSmoke;
+			this.ColorDialogEntity.FullOpen = true;
 			// 
-			// EntityLoadBitmap_openFileDialog
+			// EntityLoadBitmapOpenFileDialog
 			// 
-			this.EntityLoadBitmap_openFileDialog.DefaultExt = "bmp";
-			this.EntityLoadBitmap_openFileDialog.Filter = "Bitmap (*.bmp)|*.bmp";
-			this.EntityLoadBitmap_openFileDialog.Title = "Load Entity Image";
-			this.EntityLoadBitmap_openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmapOpenFileDialogFileOk);
+			this.EntityLoadBitmapOpenFileDialog.DefaultExt = "bmp";
+			this.EntityLoadBitmapOpenFileDialog.Filter = "Bitmap (*.bmp)|*.bmp";
+			this.EntityLoadBitmapOpenFileDialog.Title = "Load Entity Image";
+			this.EntityLoadBitmapOpenFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.EntityLoadBitmapOpenFileDialogFileOk);
 			// 
 			// ContextMenuStripPatternItem
 			// 
@@ -4299,7 +4299,7 @@ namespace MAPeD
 		private System.Windows.Forms.Button BtnEntitiesEditInstancesMode;
 		private System.Windows.Forms.TextBox TextBoxEntityProperties;
 		private System.Windows.Forms.Label LabelEntityProperty;
-		private System.Windows.Forms.OpenFileDialog EntityLoadBitmap_openFileDialog;
+		private System.Windows.Forms.OpenFileDialog EntityLoadBitmapOpenFileDialog;
 		private System.Windows.Forms.ToolStripMenuItem rotateToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem flipHOrizontalToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem flipVerticalToolStripMenuItem;
@@ -4313,7 +4313,7 @@ namespace MAPeD
 		private System.Windows.Forms.Label LabelEntityName;
 		private System.Windows.Forms.TextBox TextBoxEntityInstanceProp;
 		private System.Windows.Forms.Label LabelEntityInstanceProperty;
-		private System.Windows.Forms.ColorDialog colorDialogEntity;
+		private System.Windows.Forms.ColorDialog ColorDialogEntity;
 		private System.Windows.Forms.NumericUpDown NumericUpDownEntityWidth;
 		private System.Windows.Forms.NumericUpDown NumericUpDownEntityHeight;
 		private System.Windows.Forms.GroupBox groupBox11;
@@ -4388,7 +4388,7 @@ namespace MAPeD
 		private System.Windows.Forms.ListView ListViewScreens;
 		private System.Windows.Forms.Button BtnLayoutAddUpRow;
 		private System.Windows.Forms.ToolStripMenuItem clearRefsBlockToolStripMenuItem;
-		private System.Windows.Forms.SaveFileDialog Project_exportFileDialog;
+		private System.Windows.Forms.SaveFileDialog ProjectExportFileDialog;
 		private System.Windows.Forms.ToolStripMenuItem clearAllTilesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem clearTileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator separatorToolStripMenuItem4;
@@ -4407,7 +4407,7 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripMenuItem pasteCHRToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem copyCHRToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip ContextMenuCHRBank;
-		private System.Windows.Forms.OpenFileDialog Import_openFileDialog;
+		private System.Windows.Forms.OpenFileDialog ImportOpenFileDialog;
 		private System.Windows.Forms.ToolStripSeparator separatorToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
 		private System.Windows.Forms.CheckBox CheckBoxTileEditorLock;
@@ -4417,8 +4417,8 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripMenuItem blockEditModesToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip ContextMenuBlockEditor;
 		private System.Windows.Forms.PictureBox PBoxActiveTile;
-		private System.Windows.Forms.OpenFileDialog Project_openFileDialog;
-		private System.Windows.Forms.SaveFileDialog Project_saveFileDialog;
+		private System.Windows.Forms.OpenFileDialog ProjectOpenFileDialog;
+		private System.Windows.Forms.SaveFileDialog ProjectSaveFileDialog;
 		private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
 		private System.Windows.Forms.Button BtnCopyCHRBank;
 		private System.Windows.Forms.SplitContainer splitContainer2;
