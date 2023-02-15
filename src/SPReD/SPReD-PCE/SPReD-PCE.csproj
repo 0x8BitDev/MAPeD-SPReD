@@ -153,12 +153,36 @@
       <Link>image_import_options_form.Designer.cs</Link>
       <DependentUpon>image_import_options_form.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\MainForm.CHRBank.cs">
+      <Link>MainForm.CHRBank.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\MainForm.cs">
       <Link>MainForm.cs</Link>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\src\MainForm.Designer.cs">
       <Link>MainForm.Designer.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.IO.cs">
+      <Link>MainForm.IO.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Layout.cs">
+      <Link>MainForm.Layout.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Palettes.cs">
+      <Link>MainForm.Palettes.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.SprteTools.CHRData.cs">
+      <Link>MainForm.SprteTools.CHRData.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.SprteTools.cs">
+      <Link>MainForm.SprteTools.cs</Link>
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="..\src\palettes_array.cs">

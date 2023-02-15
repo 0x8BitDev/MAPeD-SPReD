@@ -1674,7 +1674,6 @@ namespace SPReD
 			this.Name = "MainForm";
 			this.Text = "SPReD";
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnKeyUp);
-			this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.OnPreviewKeyDown);
 			this.MenuStrip.ResumeLayout(false);
 			this.MenuStrip.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SpriteLayout)).EndInit();
