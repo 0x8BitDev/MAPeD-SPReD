@@ -232,6 +232,62 @@
       <Link>MainForm.Designer.cs</Link>
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\src\MainForm.IO.cs">
+      <Link>MainForm.IO.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Layout.Builder.cs">
+      <Link>MainForm.Layout.Builder.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Layout.Common.cs">
+      <Link>MainForm.Layout.Common.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Layout.Entities.cs">
+      <Link>MainForm.Layout.Entities.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Layout.Entities.Properties.cs">
+      <Link>MainForm.Layout.Entities.Properties.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Layout.Painter.cs">
+      <Link>MainForm.Layout.Painter.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Layout.Patterns.cs">
+      <Link>MainForm.Layout.Patterns.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Layout.Screens.cs">
+      <Link>MainForm.Layout.Screens.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Tiles.BlockEditor.cs">
+      <Link>MainForm.Tiles.BlockEditor.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Tiles.CHRBank.cs">
+      <Link>MainForm.Tiles.CHRBank.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Tiles.cs">
+      <Link>MainForm.Tiles.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Tiles.Palettes.cs">
+      <Link>MainForm.Tiles.Palettes.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Tiles.ScreenData.cs">
+      <Link>MainForm.Tiles.ScreenData.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\src\MainForm.Tiles.TileEditor.cs">
+      <Link>MainForm.Tiles.TileEditor.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\src\map_data_config.cs">
       <Link>map_data_config.cs</Link>
     </Compile>

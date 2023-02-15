@@ -170,7 +170,7 @@ namespace MAPeD
 			this.ContextMenuBlockEditor = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.blockEditModesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.separatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-			this.CHRSelectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SelectCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DrawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
 			this.propertyIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -324,8 +324,8 @@ namespace MAPeD
 			this.PBoxLayout = new SkiaSharp.Views.Desktop.SKGLControl();
 			this.ContextMenuLayoutEditor = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.LayoutEntityOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.LayoutBringFrontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.LayoutSendBackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.LayoutEntityBringFrontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.LayoutEntitySendBackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator29 = new System.Windows.Forms.ToolStripSeparator();
 			this.LayoutDeleteEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LayoutDeleteScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1259,7 +1259,7 @@ namespace MAPeD
 			this.quickGuideToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
 			this.quickGuideToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.quickGuideToolStripMenuItem.Text = "Quck Guide";
-			this.quickGuideToolStripMenuItem.Click += new System.EventHandler(this.MenuHelpQuickGuideClick);
+			this.quickGuideToolStripMenuItem.Click += new System.EventHandler(this.QuickGuideToolStripMenuItemClick);
 			// 
 			// toolStripSeparator27
 			// 
@@ -1680,7 +1680,7 @@ namespace MAPeD
 			this.ContextMenuBlockEditor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.blockEditModesToolStripMenuItem,
 									this.separatorToolStripMenuItem,
-									this.CHRSelectToolStripMenuItem,
+									this.SelectCHRToolStripMenuItem,
 									this.DrawToolStripMenuItem,
 									this.toolStripSeparator14,
 									this.propertyIdToolStripMenuItem,
@@ -1688,7 +1688,7 @@ namespace MAPeD
 									this.PropIdPerBlockToolStripMenuItem,
 									this.PropIdPerCHRToolStripMenuItem});
 			this.ContextMenuBlockEditor.Name = "ContextMenuBlockEditor";
-			this.ContextMenuBlockEditor.Size = new System.Drawing.Size(153, 154);
+			this.ContextMenuBlockEditor.Size = new System.Drawing.Size(153, 176);
 			// 
 			// blockEditModesToolStripMenuItem
 			// 
@@ -1702,13 +1702,13 @@ namespace MAPeD
 			this.separatorToolStripMenuItem.Name = "separatorToolStripMenuItem";
 			this.separatorToolStripMenuItem.Size = new System.Drawing.Size(149, 6);
 			// 
-			// CHRSelectToolStripMenuItem
+			// SelectCHRToolStripMenuItem
 			// 
-			this.CHRSelectToolStripMenuItem.CheckOnClick = true;
-			this.CHRSelectToolStripMenuItem.Name = "CHRSelectToolStripMenuItem";
-			this.CHRSelectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.CHRSelectToolStripMenuItem.Text = "Select CHRs";
-			this.CHRSelectToolStripMenuItem.Click += new System.EventHandler(this.SelectCHRToolStripMenuItemClick);
+			this.SelectCHRToolStripMenuItem.CheckOnClick = true;
+			this.SelectCHRToolStripMenuItem.Name = "SelectCHRToolStripMenuItem";
+			this.SelectCHRToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SelectCHRToolStripMenuItem.Text = "Select CHRs";
+			this.SelectCHRToolStripMenuItem.Click += new System.EventHandler(this.SelectCHRToolStripMenuItemClick);
 			// 
 			// DrawToolStripMenuItem
 			// 
@@ -3387,7 +3387,7 @@ namespace MAPeD
 			this.CheckBoxLayoutEditorAllBanks.TabIndex = 4;
 			this.CheckBoxLayoutEditorAllBanks.Text = "All Banks";
 			this.CheckBoxLayoutEditorAllBanks.UseVisualStyleBackColor = true;
-			this.CheckBoxLayoutEditorAllBanks.CheckedChanged += new System.EventHandler(this.CheckBoxLayoutEditorAllBanksCheckChanged);
+			this.CheckBoxLayoutEditorAllBanks.CheckedChanged += new System.EventHandler(this.CheckBoxScreensAllBanksCheckChanged);
 			// 
 			// BtnUpdateScreens
 			// 
@@ -3469,25 +3469,25 @@ namespace MAPeD
 			// LayoutEntityOrderToolStripMenuItem
 			// 
 			this.LayoutEntityOrderToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.LayoutBringFrontToolStripMenuItem,
-									this.LayoutSendBackToolStripMenuItem});
+									this.LayoutEntityBringFrontToolStripMenuItem,
+									this.LayoutEntitySendBackToolStripMenuItem});
 			this.LayoutEntityOrderToolStripMenuItem.Name = "LayoutEntityOrderToolStripMenuItem";
 			this.LayoutEntityOrderToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.LayoutEntityOrderToolStripMenuItem.Text = "Entity Order";
 			// 
-			// LayoutBringFrontToolStripMenuItem
+			// LayoutEntityBringFrontToolStripMenuItem
 			// 
-			this.LayoutBringFrontToolStripMenuItem.Name = "LayoutBringFrontToolStripMenuItem";
-			this.LayoutBringFrontToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-			this.LayoutBringFrontToolStripMenuItem.Text = "Bring to Front";
-			this.LayoutBringFrontToolStripMenuItem.Click += new System.EventHandler(this.LayoutBringFrontToolStripMenuItemClick);
+			this.LayoutEntityBringFrontToolStripMenuItem.Name = "LayoutEntityBringFrontToolStripMenuItem";
+			this.LayoutEntityBringFrontToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.LayoutEntityBringFrontToolStripMenuItem.Text = "Bring to Front";
+			this.LayoutEntityBringFrontToolStripMenuItem.Click += new System.EventHandler(this.LayoutEntityBringFrontToolStripMenuItemClick);
 			// 
-			// LayoutSendBackToolStripMenuItem
+			// LayoutEntitySendBackToolStripMenuItem
 			// 
-			this.LayoutSendBackToolStripMenuItem.Name = "LayoutSendBackToolStripMenuItem";
-			this.LayoutSendBackToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-			this.LayoutSendBackToolStripMenuItem.Text = "Send to Back";
-			this.LayoutSendBackToolStripMenuItem.Click += new System.EventHandler(this.LayoutSendBackToolStripMenuItemClick);
+			this.LayoutEntitySendBackToolStripMenuItem.Name = "LayoutEntitySendBackToolStripMenuItem";
+			this.LayoutEntitySendBackToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.LayoutEntitySendBackToolStripMenuItem.Text = "Send to Back";
+			this.LayoutEntitySendBackToolStripMenuItem.Click += new System.EventHandler(this.LayoutEntitySendBackToolStripMenuItemClick);
 			// 
 			// toolStripSeparator29
 			// 
@@ -4166,8 +4166,8 @@ namespace MAPeD
 		private System.Windows.Forms.SplitContainer splitContainer8;
 		private System.Windows.Forms.SplitContainer splitContainer7;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator29;
-		private System.Windows.Forms.ToolStripMenuItem LayoutSendBackToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem LayoutBringFrontToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem LayoutEntitySendBackToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem LayoutEntityBringFrontToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LayoutEntityOrderToolStripMenuItem;
 		private System.Windows.Forms.SplitContainer splitContainer6;
 		private System.Windows.Forms.GroupBox groupBox1;
@@ -4413,7 +4413,7 @@ namespace MAPeD
 		private System.Windows.Forms.CheckBox CheckBoxTileEditorLock;
 		private System.Windows.Forms.ToolStripSeparator separatorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DrawToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem CHRSelectToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SelectCHRToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem blockEditModesToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip ContextMenuBlockEditor;
 		private System.Windows.Forms.PictureBox PBoxActiveTile;
