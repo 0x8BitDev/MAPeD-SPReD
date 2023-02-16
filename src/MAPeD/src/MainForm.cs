@@ -239,7 +239,7 @@ namespace MAPeD
 			{
 				tooltip_data[] tooltips = new tooltip_data[]{ 	new tooltip_data( tabControlTilesLayout, "Double Click to detach the tab page" ),
 																new tooltip_data( CheckBoxScreensAutoUpdate, "Automatically updates the screen list when \"Update GFX\" button is pressed" ),
-																new tooltip_data( CheckBoxLayoutEditorAllBanks, "Show screens of all CHR banks" ),
+																new tooltip_data( CheckBoxScreensShowAllBanks, "Show screens of all CHR banks" ),
 																new tooltip_data( CheckBoxSelectTargetEntity, "Select target entity" ),
 																new tooltip_data( BtnCopyCHRBank, "Add copy of active CHR bank" ),
 																new tooltip_data( BtnAddCHRBank, "Add new CHR bank" ),
@@ -480,7 +480,7 @@ namespace MAPeD
 
 			enable_main_UI( false );
 			
-			TilesLockEditorToolStripMenuItem.Checked = CheckBoxTileEditorLock.Checked = true;
+			CheckBoxTileEditorLock.Checked = true;
 
 			m_tiles_palette_form.reset();
 			

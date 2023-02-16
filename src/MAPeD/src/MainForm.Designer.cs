@@ -95,7 +95,7 @@ namespace MAPeD
 			this.tilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optimizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
-			this.TilesLockEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.TileEditorLockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.reserveBlocksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.builderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -110,10 +110,13 @@ namespace MAPeD
 			this.LayoutShowGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.LayoutDeleteAllScreenMarksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.screensToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ScreensAutoUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ScreensShowAllBanksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.patternsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.addPatternToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.deletePatternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.groupPatternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.addPatternGroupToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.deletePatternGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.entitiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addEntityToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteEntityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -124,13 +127,10 @@ namespace MAPeD
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.editInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteAllEntitiesInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.patternsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.addPatternToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.deletePatternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-			this.groupPatternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.addPatternGroupToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.deletePatternGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.screensToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ScreensAutoUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ScreensShowAllBanksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.quickGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator27 = new System.Windows.Forms.ToolStripSeparator();
@@ -315,7 +315,7 @@ namespace MAPeD
 			this.TextBoxEntityInstanceProp = new System.Windows.Forms.TextBox();
 			this.TabScreenList = new System.Windows.Forms.TabPage();
 			this.splitContainer6 = new System.Windows.Forms.SplitContainer();
-			this.CheckBoxLayoutEditorAllBanks = new System.Windows.Forms.CheckBox();
+			this.CheckBoxScreensShowAllBanks = new System.Windows.Forms.CheckBox();
 			this.BtnUpdateScreens = new System.Windows.Forms.Button();
 			this.LabelLayoutEditorCHRBankID = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
@@ -546,9 +546,9 @@ namespace MAPeD
 									this.blocksToolStripMenuItem,
 									this.tilesToolStripMenuItem,
 									this.builderToolStripMenuItem,
-									this.screensToolStripMenuItem,
-									this.entitiesToolStripMenuItem,
 									this.patternsToolStripMenuItem,
+									this.entitiesToolStripMenuItem,
+									this.screensToolStripMenuItem,
 									this.helpToolStripMenuItem});
 			this.MenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.MenuStrip.Name = "MenuStrip";
@@ -841,7 +841,7 @@ namespace MAPeD
 			// 
 			this.PropertyPerBlockToolStripMenuItem.Name = "PropertyPerBlockToolStripMenuItem";
 			this.PropertyPerBlockToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.B)));
-			this.PropertyPerBlockToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+			this.PropertyPerBlockToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.PropertyPerBlockToolStripMenuItem.Text = "&Block";
 			this.PropertyPerBlockToolStripMenuItem.Click += new System.EventHandler(this.PropertyPerBlockToolStripMenuItemClick);
 			// 
@@ -849,7 +849,7 @@ namespace MAPeD
 			// 
 			this.PropertyPerCHRToolStripMenuItem.Name = "PropertyPerCHRToolStripMenuItem";
 			this.PropertyPerCHRToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.C)));
-			this.PropertyPerCHRToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+			this.PropertyPerCHRToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.PropertyPerCHRToolStripMenuItem.Text = "&CHR";
 			this.PropertyPerCHRToolStripMenuItem.Click += new System.EventHandler(this.PropertyPerCHRToolStripMenuItemClick);
 			// 
@@ -948,7 +948,7 @@ namespace MAPeD
 			this.tilesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.optimizationToolStripMenuItem,
 									this.toolStripSeparator25,
-									this.TilesLockEditorToolStripMenuItem,
+									this.TileEditorLockToolStripMenuItem,
 									this.reserveBlocksToolStripMenuItem});
 			this.tilesToolStripMenuItem.Name = "tilesToolStripMenuItem";
 			this.tilesToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
@@ -967,14 +967,12 @@ namespace MAPeD
 			this.toolStripSeparator25.Name = "toolStripSeparator25";
 			this.toolStripSeparator25.Size = new System.Drawing.Size(183, 6);
 			// 
-			// TilesLockEditorToolStripMenuItem
+			// TileEditorLockToolStripMenuItem
 			// 
-			this.TilesLockEditorToolStripMenuItem.Checked = true;
-			this.TilesLockEditorToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.TilesLockEditorToolStripMenuItem.Name = "TilesLockEditorToolStripMenuItem";
-			this.TilesLockEditorToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-			this.TilesLockEditorToolStripMenuItem.Text = "&Lock Editor";
-			this.TilesLockEditorToolStripMenuItem.Click += new System.EventHandler(this.TilesLockEditorToolStripMenuItemClick);
+			this.TileEditorLockToolStripMenuItem.Name = "TileEditorLockToolStripMenuItem";
+			this.TileEditorLockToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.TileEditorLockToolStripMenuItem.Text = "&Lock Editor";
+			this.TileEditorLockToolStripMenuItem.Click += new System.EventHandler(this.TileEditorLockToolStripMenuItemClick);
 			// 
 			// reserveBlocksToolStripMenuItem
 			// 
@@ -1038,35 +1036,35 @@ namespace MAPeD
 			// LayoutShowMarksToolStripMenuItem
 			// 
 			this.LayoutShowMarksToolStripMenuItem.Name = "LayoutShowMarksToolStripMenuItem";
-			this.LayoutShowMarksToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.LayoutShowMarksToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.LayoutShowMarksToolStripMenuItem.Text = "&Marks";
 			this.LayoutShowMarksToolStripMenuItem.Click += new System.EventHandler(this.LayoutShowMarksToolStripMenuItemClick);
 			// 
 			// LayoutShowEntitiesToolStripMenuItem
 			// 
 			this.LayoutShowEntitiesToolStripMenuItem.Name = "LayoutShowEntitiesToolStripMenuItem";
-			this.LayoutShowEntitiesToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.LayoutShowEntitiesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.LayoutShowEntitiesToolStripMenuItem.Text = "&Entities";
 			this.LayoutShowEntitiesToolStripMenuItem.Click += new System.EventHandler(this.LayoutShowEntitiesToolStripMenuItemClick);
 			// 
 			// LayoutShowTargetsToolStripMenuItem
 			// 
 			this.LayoutShowTargetsToolStripMenuItem.Name = "LayoutShowTargetsToolStripMenuItem";
-			this.LayoutShowTargetsToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.LayoutShowTargetsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.LayoutShowTargetsToolStripMenuItem.Text = "&Targets";
 			this.LayoutShowTargetsToolStripMenuItem.Click += new System.EventHandler(this.LayoutShowTargetsToolStripMenuItemClick);
 			// 
 			// LayoutShowCoordsToolStripMenuItem
 			// 
 			this.LayoutShowCoordsToolStripMenuItem.Name = "LayoutShowCoordsToolStripMenuItem";
-			this.LayoutShowCoordsToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.LayoutShowCoordsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.LayoutShowCoordsToolStripMenuItem.Text = "&Coordinates";
 			this.LayoutShowCoordsToolStripMenuItem.Click += new System.EventHandler(this.LayoutShowCoordsToolStripMenuItemClick);
 			// 
 			// LayoutShowGridToolStripMenuItem
 			// 
 			this.LayoutShowGridToolStripMenuItem.Name = "LayoutShowGridToolStripMenuItem";
-			this.LayoutShowGridToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.LayoutShowGridToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.LayoutShowGridToolStripMenuItem.Text = "&Grid";
 			this.LayoutShowGridToolStripMenuItem.Click += new System.EventHandler(this.LayoutShowGridToolStripMenuItemClick);
 			// 
@@ -1082,37 +1080,58 @@ namespace MAPeD
 			this.LayoutDeleteAllScreenMarksToolStripMenuItem.Text = "Delete All Screen &Marks";
 			this.LayoutDeleteAllScreenMarksToolStripMenuItem.Click += new System.EventHandler(this.LayoutDeleteAllScreenMarksToolStripMenuItemClick);
 			// 
-			// screensToolStripMenuItem
+			// patternsToolStripMenuItem
 			// 
-			this.screensToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.updateToolStripMenuItem,
-									this.ScreensAutoUpdateToolStripMenuItem,
-									this.ScreensShowAllBanksToolStripMenuItem});
-			this.screensToolStripMenuItem.Name = "screensToolStripMenuItem";
-			this.screensToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
-			this.screensToolStripMenuItem.Text = "&Screens";
+			this.patternsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.addPatternToolStripMenuItem1,
+									this.deletePatternToolStripMenuItem,
+									this.toolStripSeparator5,
+									this.groupPatternToolStripMenuItem});
+			this.patternsToolStripMenuItem.Name = "patternsToolStripMenuItem";
+			this.patternsToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+			this.patternsToolStripMenuItem.Text = "&Patterns";
 			// 
-			// updateToolStripMenuItem
+			// addPatternToolStripMenuItem1
 			// 
-			this.updateToolStripMenuItem.Name = "updateToolStripMenuItem";
-			this.updateToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.U)));
-			this.updateToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-			this.updateToolStripMenuItem.Text = "&Update";
-			this.updateToolStripMenuItem.Click += new System.EventHandler(this.BtnUpdateScreensClick);
+			this.addPatternToolStripMenuItem1.Name = "addPatternToolStripMenuItem1";
+			this.addPatternToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.addPatternToolStripMenuItem1.Text = "&Add";
+			this.addPatternToolStripMenuItem1.Click += new System.EventHandler(this.BtnPatternAddClick);
 			// 
-			// ScreensAutoUpdateToolStripMenuItem
+			// deletePatternToolStripMenuItem
 			// 
-			this.ScreensAutoUpdateToolStripMenuItem.Name = "ScreensAutoUpdateToolStripMenuItem";
-			this.ScreensAutoUpdateToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-			this.ScreensAutoUpdateToolStripMenuItem.Text = "&Auto Update";
-			this.ScreensAutoUpdateToolStripMenuItem.Click += new System.EventHandler(this.ScreensAutoUpdateToolStripMenuItemClick);
+			this.deletePatternToolStripMenuItem.Name = "deletePatternToolStripMenuItem";
+			this.deletePatternToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.deletePatternToolStripMenuItem.Text = "&Delete";
+			this.deletePatternToolStripMenuItem.Click += new System.EventHandler(this.BtnPatternDeleteClick);
 			// 
-			// ScreensShowAllBanksToolStripMenuItem
+			// toolStripSeparator5
 			// 
-			this.ScreensShowAllBanksToolStripMenuItem.Name = "ScreensShowAllBanksToolStripMenuItem";
-			this.ScreensShowAllBanksToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-			this.ScreensShowAllBanksToolStripMenuItem.Text = "&Show All Banks";
-			this.ScreensShowAllBanksToolStripMenuItem.Click += new System.EventHandler(this.ScreensShowAllBanksToolStripMenuItemClick);
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
+			// 
+			// groupPatternToolStripMenuItem
+			// 
+			this.groupPatternToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.addPatternGroupToolStripMenuItem1,
+									this.deletePatternGroupToolStripMenuItem});
+			this.groupPatternToolStripMenuItem.Name = "groupPatternToolStripMenuItem";
+			this.groupPatternToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.groupPatternToolStripMenuItem.Text = "&Group";
+			// 
+			// addPatternGroupToolStripMenuItem1
+			// 
+			this.addPatternGroupToolStripMenuItem1.Name = "addPatternGroupToolStripMenuItem1";
+			this.addPatternGroupToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+			this.addPatternGroupToolStripMenuItem1.Text = "&Add";
+			this.addPatternGroupToolStripMenuItem1.Click += new System.EventHandler(this.BtnPatternGroupAddClick);
+			// 
+			// deletePatternGroupToolStripMenuItem
+			// 
+			this.deletePatternGroupToolStripMenuItem.Name = "deletePatternGroupToolStripMenuItem";
+			this.deletePatternGroupToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+			this.deletePatternGroupToolStripMenuItem.Text = "&Delete";
+			this.deletePatternGroupToolStripMenuItem.Click += new System.EventHandler(this.BtnPatternGroupDeleteClick);
 			// 
 			// entitiesToolStripMenuItem
 			// 
@@ -1190,58 +1209,37 @@ namespace MAPeD
 			this.deleteAllEntitiesInstancesToolStripMenuItem.Text = "Delete &Instances of All Entities";
 			this.deleteAllEntitiesInstancesToolStripMenuItem.Click += new System.EventHandler(this.EntitiesDeleteInstancesOfAllEntitiesToolStripMenuItemClick);
 			// 
-			// patternsToolStripMenuItem
+			// screensToolStripMenuItem
 			// 
-			this.patternsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.addPatternToolStripMenuItem1,
-									this.deletePatternToolStripMenuItem,
-									this.toolStripSeparator5,
-									this.groupPatternToolStripMenuItem});
-			this.patternsToolStripMenuItem.Name = "patternsToolStripMenuItem";
-			this.patternsToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
-			this.patternsToolStripMenuItem.Text = "&Patterns";
+			this.screensToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.updateToolStripMenuItem,
+									this.ScreensAutoUpdateToolStripMenuItem,
+									this.ScreensShowAllBanksToolStripMenuItem});
+			this.screensToolStripMenuItem.Name = "screensToolStripMenuItem";
+			this.screensToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+			this.screensToolStripMenuItem.Text = "&Screens";
 			// 
-			// addPatternToolStripMenuItem1
+			// updateToolStripMenuItem
 			// 
-			this.addPatternToolStripMenuItem1.Name = "addPatternToolStripMenuItem1";
-			this.addPatternToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
-			this.addPatternToolStripMenuItem1.Text = "&Add";
-			this.addPatternToolStripMenuItem1.Click += new System.EventHandler(this.BtnPatternAddClick);
+			this.updateToolStripMenuItem.Name = "updateToolStripMenuItem";
+			this.updateToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.U)));
+			this.updateToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.updateToolStripMenuItem.Text = "&Update";
+			this.updateToolStripMenuItem.Click += new System.EventHandler(this.BtnUpdateScreensClick);
 			// 
-			// deletePatternToolStripMenuItem
+			// ScreensAutoUpdateToolStripMenuItem
 			// 
-			this.deletePatternToolStripMenuItem.Name = "deletePatternToolStripMenuItem";
-			this.deletePatternToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-			this.deletePatternToolStripMenuItem.Text = "&Delete";
-			this.deletePatternToolStripMenuItem.Click += new System.EventHandler(this.BtnPatternDeleteClick);
+			this.ScreensAutoUpdateToolStripMenuItem.Name = "ScreensAutoUpdateToolStripMenuItem";
+			this.ScreensAutoUpdateToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.ScreensAutoUpdateToolStripMenuItem.Text = "&Auto Update";
+			this.ScreensAutoUpdateToolStripMenuItem.Click += new System.EventHandler(this.ScreensAutoUpdateToolStripMenuItemClick);
 			// 
-			// toolStripSeparator5
+			// ScreensShowAllBanksToolStripMenuItem
 			// 
-			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(104, 6);
-			// 
-			// groupPatternToolStripMenuItem
-			// 
-			this.groupPatternToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.addPatternGroupToolStripMenuItem1,
-									this.deletePatternGroupToolStripMenuItem});
-			this.groupPatternToolStripMenuItem.Name = "groupPatternToolStripMenuItem";
-			this.groupPatternToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-			this.groupPatternToolStripMenuItem.Text = "&Group";
-			// 
-			// addPatternGroupToolStripMenuItem1
-			// 
-			this.addPatternGroupToolStripMenuItem1.Name = "addPatternGroupToolStripMenuItem1";
-			this.addPatternGroupToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
-			this.addPatternGroupToolStripMenuItem1.Text = "&Add";
-			this.addPatternGroupToolStripMenuItem1.Click += new System.EventHandler(this.BtnPatternGroupAddClick);
-			// 
-			// deletePatternGroupToolStripMenuItem
-			// 
-			this.deletePatternGroupToolStripMenuItem.Name = "deletePatternGroupToolStripMenuItem";
-			this.deletePatternGroupToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-			this.deletePatternGroupToolStripMenuItem.Text = "&Delete";
-			this.deletePatternGroupToolStripMenuItem.Click += new System.EventHandler(this.BtnPatternGroupDeleteClick);
+			this.ScreensShowAllBanksToolStripMenuItem.Name = "ScreensShowAllBanksToolStripMenuItem";
+			this.ScreensShowAllBanksToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.ScreensShowAllBanksToolStripMenuItem.Text = "&Show All Banks";
+			this.ScreensShowAllBanksToolStripMenuItem.Click += new System.EventHandler(this.ScreensShowAllBanksToolStripMenuItemClick);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -1688,7 +1686,7 @@ namespace MAPeD
 									this.PropIdPerBlockToolStripMenuItem,
 									this.PropIdPerCHRToolStripMenuItem});
 			this.ContextMenuBlockEditor.Name = "ContextMenuBlockEditor";
-			this.ContextMenuBlockEditor.Size = new System.Drawing.Size(153, 176);
+			this.ContextMenuBlockEditor.Size = new System.Drawing.Size(153, 154);
 			// 
 			// blockEditModesToolStripMenuItem
 			// 
@@ -1923,7 +1921,7 @@ namespace MAPeD
 			this.CheckBoxTileEditorLock.TabIndex = 31;
 			this.CheckBoxTileEditorLock.Text = "Locked";
 			this.CheckBoxTileEditorLock.UseVisualStyleBackColor = true;
-			this.CheckBoxTileEditorLock.CheckedChanged += new System.EventHandler(this.CheckBoxTileEditorLockedChecked);
+			this.CheckBoxTileEditorLock.CheckedChanged += new System.EventHandler(this.CheckBoxTileEditorLockChanged);
 			// 
 			// PBoxTilePreview
 			// 
@@ -2097,7 +2095,7 @@ namespace MAPeD
 			this.CBoxCHRBanks.Name = "CBoxCHRBanks";
 			this.CBoxCHRBanks.Size = new System.Drawing.Size(47, 21);
 			this.CBoxCHRBanks.TabIndex = 13;
-			this.CBoxCHRBanks.SelectedIndexChanged += new System.EventHandler(this.CHRBankChanged);
+			this.CBoxCHRBanks.SelectedIndexChanged += new System.EventHandler(this.CBoxCHRBanksChanged);
 			// 
 			// BtnDeleteCHRBank
 			// 
@@ -2961,7 +2959,7 @@ namespace MAPeD
 			this.TreeViewEntities.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeViewEntitiesBeforeLabelEdit);
 			this.TreeViewEntities.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.TreeViewEntitiesAfterLabelEdit);
 			this.TreeViewEntities.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.TreeViewEntitiesDrawNode);
-			this.TreeViewEntities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewEntitiesSelect);
+			this.TreeViewEntities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewEntitiesAfterSelect);
 			this.TreeViewEntities.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeViewEntitiesNodeMouseClick);
 			this.TreeViewEntities.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeViewMouseDown);
 			// 
@@ -3366,7 +3364,7 @@ namespace MAPeD
 			// 
 			// splitContainer6.Panel1
 			// 
-			this.splitContainer6.Panel1.Controls.Add(this.CheckBoxLayoutEditorAllBanks);
+			this.splitContainer6.Panel1.Controls.Add(this.CheckBoxScreensShowAllBanks);
 			this.splitContainer6.Panel1.Controls.Add(this.BtnUpdateScreens);
 			this.splitContainer6.Panel1.Controls.Add(this.LabelLayoutEditorCHRBankID);
 			this.splitContainer6.Panel1.Controls.Add(this.label9);
@@ -3379,15 +3377,15 @@ namespace MAPeD
 			this.splitContainer6.SplitterDistance = 28;
 			this.splitContainer6.TabIndex = 0;
 			// 
-			// CheckBoxLayoutEditorAllBanks
+			// CheckBoxScreensShowAllBanks
 			// 
-			this.CheckBoxLayoutEditorAllBanks.Location = new System.Drawing.Point(218, 5);
-			this.CheckBoxLayoutEditorAllBanks.Name = "CheckBoxLayoutEditorAllBanks";
-			this.CheckBoxLayoutEditorAllBanks.Size = new System.Drawing.Size(73, 20);
-			this.CheckBoxLayoutEditorAllBanks.TabIndex = 4;
-			this.CheckBoxLayoutEditorAllBanks.Text = "All Banks";
-			this.CheckBoxLayoutEditorAllBanks.UseVisualStyleBackColor = true;
-			this.CheckBoxLayoutEditorAllBanks.CheckedChanged += new System.EventHandler(this.CheckBoxScreensAllBanksCheckChanged);
+			this.CheckBoxScreensShowAllBanks.Location = new System.Drawing.Point(218, 5);
+			this.CheckBoxScreensShowAllBanks.Name = "CheckBoxScreensShowAllBanks";
+			this.CheckBoxScreensShowAllBanks.Size = new System.Drawing.Size(73, 20);
+			this.CheckBoxScreensShowAllBanks.TabIndex = 4;
+			this.CheckBoxScreensShowAllBanks.Text = "All Banks";
+			this.CheckBoxScreensShowAllBanks.UseVisualStyleBackColor = true;
+			this.CheckBoxScreensShowAllBanks.CheckedChanged += new System.EventHandler(this.CheckBoxScreensShowAllBanksChanged);
 			// 
 			// BtnUpdateScreens
 			// 
@@ -3567,112 +3565,112 @@ namespace MAPeD
 			this.AdjScrMaskNoneToolStripMenuItem.Name = "AdjScrMaskNoneToolStripMenuItem";
 			this.AdjScrMaskNoneToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskNoneToolStripMenuItem.Text = "NONE";
-			this.AdjScrMaskNoneToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskNoneToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskLToolStripMenuItem
 			// 
 			this.AdjScrMaskLToolStripMenuItem.Name = "AdjScrMaskLToolStripMenuItem";
 			this.AdjScrMaskLToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskLToolStripMenuItem.Text = "L";
-			this.AdjScrMaskLToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskLToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskUToolStripMenuItem
 			// 
 			this.AdjScrMaskUToolStripMenuItem.Name = "AdjScrMaskUToolStripMenuItem";
 			this.AdjScrMaskUToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskUToolStripMenuItem.Text = "U";
-			this.AdjScrMaskUToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskUToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskRToolStripMenuItem
 			// 
 			this.AdjScrMaskRToolStripMenuItem.Name = "AdjScrMaskRToolStripMenuItem";
 			this.AdjScrMaskRToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskRToolStripMenuItem.Text = "R";
-			this.AdjScrMaskRToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskRToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskDToolStripMenuItem
 			// 
 			this.AdjScrMaskDToolStripMenuItem.Name = "AdjScrMaskDToolStripMenuItem";
 			this.AdjScrMaskDToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskDToolStripMenuItem.Text = "D";
-			this.AdjScrMaskDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskLUToolStripMenuItem
 			// 
 			this.AdjScrMaskLUToolStripMenuItem.Name = "AdjScrMaskLUToolStripMenuItem";
 			this.AdjScrMaskLUToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskLUToolStripMenuItem.Text = "LU";
-			this.AdjScrMaskLUToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskLUToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskURToolStripMenuItem
 			// 
 			this.AdjScrMaskURToolStripMenuItem.Name = "AdjScrMaskURToolStripMenuItem";
 			this.AdjScrMaskURToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskURToolStripMenuItem.Text = "UR";
-			this.AdjScrMaskURToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskURToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskRDToolStripMenuItem
 			// 
 			this.AdjScrMaskRDToolStripMenuItem.Name = "AdjScrMaskRDToolStripMenuItem";
 			this.AdjScrMaskRDToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskRDToolStripMenuItem.Text = "RD";
-			this.AdjScrMaskRDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskRDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskLDToolStripMenuItem
 			// 
 			this.AdjScrMaskLDToolStripMenuItem.Name = "AdjScrMaskLDToolStripMenuItem";
 			this.AdjScrMaskLDToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskLDToolStripMenuItem.Text = "LD";
-			this.AdjScrMaskLDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskLDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskLRToolStripMenuItem
 			// 
 			this.AdjScrMaskLRToolStripMenuItem.Name = "AdjScrMaskLRToolStripMenuItem";
 			this.AdjScrMaskLRToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskLRToolStripMenuItem.Text = "LR";
-			this.AdjScrMaskLRToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskLRToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskUDToolStripMenuItem
 			// 
 			this.AdjScrMaskUDToolStripMenuItem.Name = "AdjScrMaskUDToolStripMenuItem";
 			this.AdjScrMaskUDToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskUDToolStripMenuItem.Text = "UD";
-			this.AdjScrMaskUDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskUDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskLURToolStripMenuItem
 			// 
 			this.AdjScrMaskLURToolStripMenuItem.Name = "AdjScrMaskLURToolStripMenuItem";
 			this.AdjScrMaskLURToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskLURToolStripMenuItem.Text = "LUR";
-			this.AdjScrMaskLURToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskLURToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskURDToolStripMenuItem
 			// 
 			this.AdjScrMaskURDToolStripMenuItem.Name = "AdjScrMaskURDToolStripMenuItem";
 			this.AdjScrMaskURDToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskURDToolStripMenuItem.Text = "URD";
-			this.AdjScrMaskURDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskURDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskLRDToolStripMenuItem
 			// 
 			this.AdjScrMaskLRDToolStripMenuItem.Name = "AdjScrMaskLRDToolStripMenuItem";
 			this.AdjScrMaskLRDToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskLRDToolStripMenuItem.Text = "LRD";
-			this.AdjScrMaskLRDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskLRDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskLUDToolStripMenuItem
 			// 
 			this.AdjScrMaskLUDToolStripMenuItem.Name = "AdjScrMaskLUDToolStripMenuItem";
 			this.AdjScrMaskLUDToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskLUDToolStripMenuItem.Text = "LUD";
-			this.AdjScrMaskLUDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskLUDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// AdjScrMaskLURDToolStripMenuItem
 			// 
 			this.AdjScrMaskLURDToolStripMenuItem.Name = "AdjScrMaskLURDToolStripMenuItem";
 			this.AdjScrMaskLURDToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.AdjScrMaskLURDToolStripMenuItem.Text = "LURD";
-			this.AdjScrMaskLURDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskClick);
+			this.AdjScrMaskLURDToolStripMenuItem.Click += new System.EventHandler(this.AdjScrMaskToolStripMenuItemClick);
 			// 
 			// ContextMenuTilesList
 			// 
@@ -4286,7 +4284,7 @@ namespace MAPeD
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem createToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem LayoutShowGridToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem TilesLockEditorToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem TileEditorLockToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem optimizationToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem rotateToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem horizontalFlipToolStripMenuItem;
@@ -4368,7 +4366,7 @@ namespace MAPeD
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.Label LabelLayoutEditorCHRBankID;
-		private System.Windows.Forms.CheckBox CheckBoxLayoutEditorAllBanks;
+		private System.Windows.Forms.CheckBox CheckBoxScreensShowAllBanks;
 		private System.Windows.Forms.Button BtnLayoutMoveUp;
 		private System.Windows.Forms.Button BtnLayoutMoveDown;
 		private System.Windows.Forms.Button BtnDeleteLayout;

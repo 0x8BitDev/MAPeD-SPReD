@@ -197,7 +197,7 @@ namespace MAPeD
 			m_layout_editor.set_screen_mark();
 		}
 		
-		private void AdjScrMaskClick( object sender, EventArgs e )
+		private void AdjScrMaskToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			m_layout_editor.set_adjacent_screen_mask( ( sender as ToolStripMenuItem ).Text );
 		}

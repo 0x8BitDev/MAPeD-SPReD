@@ -33,16 +33,16 @@ namespace MAPeD
 			m_tile_list_manager.select( tile_list.e_data_type.Tiles, _id );
 		}
 
-		private void TilesLockEditorToolStripMenuItemClick( object sender, EventArgs e )
+		private void TileEditorLockToolStripMenuItemClick( object sender, EventArgs e )
 		{
-			TilesLockEditorToolStripMenuItem.Checked = CheckBoxTileEditorLock.Checked = !( sender as ToolStripMenuItem ).Checked;
+			CheckBoxTileEditorLock.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
-		private void CheckBoxTileEditorLockedChecked( object sender, EventArgs e ) 
+		private void CheckBoxTileEditorLockChanged( object sender, EventArgs e ) 
 		{
 			bool checked_state = ( sender as CheckBox ).Checked;
 			
-			TilesLockEditorToolStripMenuItem.Checked = checked_state;
+			TileEditorLockToolStripMenuItem.Checked = checked_state;
 			
 			m_tiles_processor.tile_editor_locked( checked_state );
 			

@@ -32,10 +32,10 @@ namespace MAPeD
 		
 		private void ScreensShowAllBanksToolStripMenuItemClick( object sender, EventArgs e )
 		{
-			ScreensShowAllBanksToolStripMenuItem.Checked = CheckBoxLayoutEditorAllBanks.Checked = !( sender as ToolStripMenuItem ).Checked;
+			CheckBoxScreensShowAllBanks.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
-		private void CheckBoxScreensAllBanksCheckChanged( object sender, EventArgs e )
+		private void CheckBoxScreensShowAllBanksChanged( object sender, EventArgs e )
 		{
 			ScreensShowAllBanksToolStripMenuItem.Checked = ( sender as CheckBox ).Checked;
 			
@@ -126,7 +126,7 @@ namespace MAPeD
 			// renew a palette
 			palette_group.Instance.set_palette( get_curr_tiles_data() );
 			
-			LabelLayoutEditorCHRBankID.Text = CheckBoxLayoutEditorAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
+			LabelLayoutEditorCHRBankID.Text = CheckBoxScreensShowAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
 		
 			if( _unmark_upd_scr_btn )
 			{
@@ -143,12 +143,12 @@ namespace MAPeD
 
 		private void update_screens_by_bank_id( bool _unmark_upd_scr_btn, bool _update_images )
 		{
-			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, _update_images, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
+			m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, _update_images, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CheckBoxScreensShowAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 			
 			// renew a palette
 			palette_group.Instance.set_palette( get_curr_tiles_data() );
 			
-			LabelLayoutEditorCHRBankID.Text = CheckBoxLayoutEditorAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
+			LabelLayoutEditorCHRBankID.Text = CheckBoxScreensShowAllBanks.Checked ? "XXX":CBoxCHRBanks.SelectedIndex.ToString();
 		
 			if( _unmark_upd_scr_btn )
 			{
@@ -158,7 +158,7 @@ namespace MAPeD
 		
 		private void update_screens_labels_by_bank_id()
 		{
-			m_imagelist_manager.update_screens_labels( m_data_manager.get_tiles_data(), CheckBoxLayoutEditorAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
+			m_imagelist_manager.update_screens_labels( m_data_manager.get_tiles_data(), CheckBoxScreensShowAllBanks.Checked ? -1:CBoxCHRBanks.SelectedIndex );
 		}
 	}
 }

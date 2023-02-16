@@ -11,7 +11,7 @@ namespace MAPeD
 {
 	partial class MainForm
 	{
-		private void CHRBankChanged( object sender, EventArgs e )
+		private void CBoxCHRBanksChanged( object sender, EventArgs e )
 		{
 			ComboBox chr_bank_cbox = sender as ComboBox;
 			
@@ -333,13 +333,13 @@ namespace MAPeD
 					
 					if( m_reorder_CHR_banks_form.data_changed )
 					{
-						bool all_banks_flag_state = CheckBoxLayoutEditorAllBanks.Checked;
+						bool all_banks_flag_state = CheckBoxScreensShowAllBanks.Checked;
 						
-						CheckBoxLayoutEditorAllBanks.Checked = true;
+						CheckBoxScreensShowAllBanks.Checked = true;
 						
 						update_all_screens( true, true );
 						
-						CheckBoxLayoutEditorAllBanks.Checked = all_banks_flag_state;
+						CheckBoxScreensShowAllBanks.Checked = all_banks_flag_state;
 					}
 					
 					progress_bar_show( false );

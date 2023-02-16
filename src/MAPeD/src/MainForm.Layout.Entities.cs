@@ -134,7 +134,7 @@ namespace MAPeD
 			}
 		}
 
-		private void TreeViewEntitiesSelect( object sender, TreeViewEventArgs e )
+		private void TreeViewEntitiesAfterSelect( object sender, TreeViewEventArgs e )
 		{
 			if( tabControlLayoutTools.SelectedTab == TabEntities )
 			{

@@ -56,10 +56,10 @@ namespace MAPeD
 
 		private void delete_screen_by_bank_id( int _bank_ind, int _scr_local_ind )
 		{
-			bool all_banks_screens = CheckBoxLayoutEditorAllBanks.Checked;
+			bool all_banks_screens = CheckBoxScreensShowAllBanks.Checked;
 			
 			// unlock all the screens
-			CheckBoxLayoutEditorAllBanks.Checked = true;
+			CheckBoxScreensShowAllBanks.Checked = true;
 			
 			if( m_imagelist_manager.remove_screen( _bank_ind, _scr_local_ind ) )
 			{
@@ -72,7 +72,7 @@ namespace MAPeD
 			
 			update_screens_labels_by_bank_id();
 			
-			CheckBoxLayoutEditorAllBanks.Checked = all_banks_screens;
+			CheckBoxScreensShowAllBanks.Checked = all_banks_screens;
 		}
 
 		private bool check_empty_screen( ulong[] _tiles, screen_data _scr_data )
@@ -169,10 +169,10 @@ namespace MAPeD
 			int res = 0;
 			int bank_ind;
 
-			bool all_banks_screens = CheckBoxLayoutEditorAllBanks.Checked;
+			bool all_banks_screens = CheckBoxScreensShowAllBanks.Checked;
 			
 			// unlock all the screens
-			CheckBoxLayoutEditorAllBanks.Checked = true;
+			CheckBoxScreensShowAllBanks.Checked = true;
 			
 			m_data_manager.get_layout_data( m_data_manager.layouts_data_pos ).layout_data_proc( delegate( layout_screen_data _scr_data )
 			{
@@ -191,7 +191,7 @@ namespace MAPeD
 				}
 			});
 			
-			CheckBoxLayoutEditorAllBanks.Checked = all_banks_screens;
+			CheckBoxScreensShowAllBanks.Checked = all_banks_screens;
 			
 			return res;
 		}
@@ -309,7 +309,7 @@ namespace MAPeD
 							scr_global_ind = _data.get_data( x, y ).m_scr_ind;
 							scr_local_ind = m_data_manager.get_local_screen_ind( m_data_manager.tiles_data_pos, scr_global_ind );
 							
-							m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
+							m_imagelist_manager.insert_screen( CheckBoxScreensShowAllBanks.Checked, m_data_manager.tiles_data_pos, scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 						}
 					}
 				}
@@ -333,7 +333,7 @@ namespace MAPeD
 			
 			if( scr_global_ind < utils.CONST_SCREEN_MAX_CNT )
 			{
-				m_imagelist_manager.insert_screen( CheckBoxLayoutEditorAllBanks.Checked, m_data_manager.tiles_data_pos, _scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
+				m_imagelist_manager.insert_screen( CheckBoxScreensShowAllBanks.Checked, m_data_manager.tiles_data_pos, _scr_local_ind, scr_global_ind, m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, m_view_type, PropertyPerBlockToolStripMenuItem.Checked );
 				
 				palette_group.Instance.set_palette( get_curr_tiles_data() );
 				
@@ -666,29 +666,29 @@ namespace MAPeD
 		
 		private void LayoutShowMarksToolStripMenuItemClick( object sender, EventArgs e )
 		{
-			LayoutShowMarksToolStripMenuItem.Checked = CheckBoxShowMarks.Checked = !( sender as ToolStripMenuItem ).Checked;
+			CheckBoxShowMarks.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
 		private void LayoutShowEntitiesToolStripMenuItemClick( object sender, EventArgs e )
 		{
-			LayoutShowEntitiesToolStripMenuItem.Checked = CheckBoxShowEntities.Checked = !( sender as ToolStripMenuItem ).Checked;
+			CheckBoxShowEntities.Checked = !( sender as ToolStripMenuItem ).Checked;
 			
 			LayoutShowTargetsToolStripMenuItem.Enabled = LayoutShowCoordsToolStripMenuItem.Enabled = LayoutShowEntitiesToolStripMenuItem.Checked; 
 		}
 		
 		private void LayoutShowTargetsToolStripMenuItemClick( object sender, EventArgs e )
 		{
-			LayoutShowTargetsToolStripMenuItem.Checked = CheckBoxShowTargets.Checked = !( sender as ToolStripMenuItem ).Checked;
+			CheckBoxShowTargets.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
 		private void LayoutShowCoordsToolStripMenuItemClick( object sender, EventArgs e )
 		{
-			LayoutShowCoordsToolStripMenuItem.Checked = CheckBoxShowCoords.Checked = !( sender as ToolStripMenuItem ).Checked;
+			CheckBoxShowCoords.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
 		private void LayoutShowGridToolStripMenuItemClick( object sender, EventArgs e )
 		{
-			LayoutShowGridToolStripMenuItem.Checked = CheckBoxShowGrid.Checked = !( sender as ToolStripMenuItem ).Checked;
+			CheckBoxShowGrid.Checked = !( sender as ToolStripMenuItem ).Checked;
 		}
 		
 		private void CheckBoxShowMarksChecked( object sender, EventArgs e )

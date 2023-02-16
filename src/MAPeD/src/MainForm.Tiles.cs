@@ -77,7 +77,7 @@ namespace MAPeD
 							m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, -1 );
 							
 							// update a local screen list if needed
-							if( !CheckBoxLayoutEditorAllBanks.Checked )
+							if( !CheckBoxScreensShowAllBanks.Checked )
 							{
 								m_imagelist_manager.update_screens( m_data_manager.get_tiles_data(), m_data_manager.screen_data_type, true, m_view_type, PropertyPerBlockToolStripMenuItem.Checked, CBoxCHRBanks.SelectedIndex, CBoxCHRBanks.SelectedIndex );
 							}
