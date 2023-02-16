@@ -20,6 +20,10 @@ namespace SPReD
 	{
 		public event EventHandler ActivePalette;
 		
+#if DEF_COLORS_COPY_PASTE
+		public event EventHandler PasteColor;
+#endif
+		
 		private bool m_active = false;
 		
 		private readonly int m_id;
@@ -138,6 +142,15 @@ namespace SPReD
 			{
 				m_clr_inds[ m_sel_clr_ind ] = m_copied_clr_ind;
 				
+#if DEF_FIXED_LEN_PALETTE16_ARR
+				palettes_array.Instance.update_color( ( m_id << 2 ) + color_slot, m_copied_clr_ind );
+#endif
+				
+				if( PasteColor != null )
+				{
+					PasteColor( this, null );
+				}
+				
 				dispatch_event_active_palette();
 				
 				update();
@@ -243,7 +256,6 @@ namespace SPReD
 		
 		private void dispatch_event_active_palette()
 		{
-			// NES: apply an active palette to a selected CHR in the layout viewport
 			if( ActivePalette != null )
 			{
 				ActivePalette( this, null );

@@ -776,15 +776,19 @@ namespace SPReD
 		public void subscribe( palette_group _plt )
 		{
 			_plt.UpdateColor += new EventHandler( on_update_color );
-
+			
 			m_palette_group = _plt;
 						
 			palette_small[] plt_arr = _plt.get_palettes_arr();
 			
-			plt_arr[ 0 ].ActivePalette += new EventHandler( on_update_palette );
-			plt_arr[ 1 ].ActivePalette += new EventHandler( on_update_palette );
-			plt_arr[ 2 ].ActivePalette += new EventHandler( on_update_palette );
-			plt_arr[ 3 ].ActivePalette += new EventHandler( on_update_palette );
+			foreach( var plt in plt_arr )
+			{
+				plt.ActivePalette += new EventHandler( on_update_palette );
+				
+#if DEF_COLORS_COPY_PASTE
+				plt.PasteColor += new EventHandler( on_update_color );
+#endif
+			}
 		}
 		
 		public void subscribe( CHR_bank_viewer _chr_bank )
