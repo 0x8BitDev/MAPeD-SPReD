@@ -158,6 +158,10 @@ namespace SPReD
 			BtnSwapColors.Visible	= false;
 #endif
 
+#if !DEF_PALETTES_MANAGER
+			palettesManagerToolStripMenuItem.Visible = false;
+#endif
+
 #if DEF_NES
 			this.ProjectOpenFileDialog.DefaultExt = "spredsms";
 			this.ProjectOpenFileDialog.Filter += "|SPReD-SMS (*.spredsms)|*.spredsms";
@@ -192,9 +196,6 @@ namespace SPReD
 			m_SMS_sprite_flip_form  = new SMS_sprite_flipping_form( SpriteList, m_sprites_proc );
 			
 			CBoxCHRPackingType.Items.Add( "8KB" );
-			
-			managerToolStripMenuItem.Visible = false;
-			
 #elif DEF_PCE
 			this.ProjectSaveFileDialog.DefaultExt = "spredpce";
 			this.ProjectSaveFileDialog.Filter = this.ProjectSaveFileDialog.Filter.Replace( "NES", "PCE" );
@@ -310,12 +311,12 @@ namespace SPReD
 			Close();
 		}
 		
-		private void MenuHelpAboutClick( object sender, System.EventArgs e )
+		private void AboutToolStripMenuItemClick( object sender, System.EventArgs e )
 		{
 			message_box( "Sprites Editor (" + utils.CONST_PLATFORM + ")\n\n" + utils.CONST_APP_VER + " " + utils.build_str + "\nBuild date: " + utils.build_date + "\n\nDeveloped by 0x8BitDev \u00A9 2017-" + DateTime.Now.Year, "About", MessageBoxButtons.OK, MessageBoxIcon.Information );
 		}
 		
-		private void MenuHelpQuickGuideClick( object sender, EventArgs e )
+		private void QuickGuideToolStripMenuItemClick( object sender, EventArgs e )
 		{
 			string doc_path = Application.StartupPath.Substring( 0, Application.StartupPath.LastIndexOf( Path.DirectorySeparatorChar ) ) + Path.DirectorySeparatorChar + "doc" + Path.DirectorySeparatorChar + "SPReD" + Path.DirectorySeparatorChar + "Quick_Guide.html";
 			

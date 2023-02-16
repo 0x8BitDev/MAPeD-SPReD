@@ -56,9 +56,9 @@ namespace SPReD
 #endif
 		}
 
-		private void PalettesManagerClick( object sender, EventArgs e )
+		private void PalettesManagerToolStripMenuItemClick( object sender, EventArgs e )
 		{
-#if DEF_PCE
+#if DEF_PALETTES_MANAGER
 			if( SpriteList.Items.Count > 0 )
 			{
 				m_palettes_mngr_form.show_window();

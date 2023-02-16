@@ -9,6 +9,7 @@
 defines:
 ~~~~~~~~
 DEF_FIXED_LEN_PALETTE16_ARR		(PCE)
+DEF_PALETTES_MANAGER			(PCE)
 */
 
 using System;

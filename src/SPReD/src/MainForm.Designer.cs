@@ -104,7 +104,7 @@ namespace SPReD
 			this.rotateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.swapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.managerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.palettesManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.quickGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -162,6 +162,9 @@ namespace SPReD
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.CBoxPalettes = new System.Windows.Forms.ComboBox();
 			this.Palette3 = new System.Windows.Forms.PictureBox();
+			this.ContextMenuSmallPalette = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.pasteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.BtnSwapColors = new System.Windows.Forms.Button();
 			this.Palette2 = new System.Windows.Forms.PictureBox();
 			this.Palette1 = new System.Windows.Forms.PictureBox();
@@ -191,9 +194,6 @@ namespace SPReD
 			this.PasteCHRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.separatorToolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.FillWithColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ContextMenuSmallPalette = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.pasteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SpriteLayout)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.CHRBank)).BeginInit();
@@ -209,12 +209,12 @@ namespace SPReD
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Palette3)).BeginInit();
+			this.ContextMenuSmallPalette.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Palette2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette0)).BeginInit();
 			this.SpriteListContextMenu.SuspendLayout();
 			this.ContextMenuCHRBank.SuspendLayout();
-			this.ContextMenuSmallPalette.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// SpriteList
@@ -758,7 +758,7 @@ namespace SPReD
 			// 
 			this.paletteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.swapToolStripMenuItem,
-									this.managerToolStripMenuItem});
+									this.palettesManagerToolStripMenuItem});
 			this.paletteToolStripMenuItem.Name = "paletteToolStripMenuItem";
 			this.paletteToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
 			this.paletteToolStripMenuItem.Text = "&Palette";
@@ -772,13 +772,13 @@ namespace SPReD
 			this.swapToolStripMenuItem.Text = "&Swap Colors";
 			this.swapToolStripMenuItem.Click += new System.EventHandler(this.BtnSwapColorsClick);
 			// 
-			// managerToolStripMenuItem
+			// palettesManagerToolStripMenuItem
 			// 
-			this.managerToolStripMenuItem.Name = "managerToolStripMenuItem";
-			this.managerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
-			this.managerToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-			this.managerToolStripMenuItem.Text = "&Manager";
-			this.managerToolStripMenuItem.Click += new System.EventHandler(this.PalettesManagerClick);
+			this.palettesManagerToolStripMenuItem.Name = "palettesManagerToolStripMenuItem";
+			this.palettesManagerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
+			this.palettesManagerToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+			this.palettesManagerToolStripMenuItem.Text = "&Manager";
+			this.palettesManagerToolStripMenuItem.Click += new System.EventHandler(this.PalettesManagerToolStripMenuItemClick);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -796,7 +796,7 @@ namespace SPReD
 			this.quickGuideToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
 			this.quickGuideToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
 			this.quickGuideToolStripMenuItem.Text = "&Quick Guide";
-			this.quickGuideToolStripMenuItem.Click += new System.EventHandler(this.MenuHelpQuickGuideClick);
+			this.quickGuideToolStripMenuItem.Click += new System.EventHandler(this.QuickGuideToolStripMenuItemClick);
 			// 
 			// toolStripSeparator2
 			// 
@@ -808,7 +808,7 @@ namespace SPReD
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
 			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
 			this.aboutToolStripMenuItem.Text = "&About";
-			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.MenuHelpAboutClick);
+			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItemClick);
 			// 
 			// SpriteLayout
 			// 
@@ -1410,6 +1410,26 @@ namespace SPReD
 			this.Palette3.TabIndex = 7;
 			this.Palette3.TabStop = false;
 			// 
+			// ContextMenuSmallPalette
+			// 
+			this.ContextMenuSmallPalette.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.copyToolStripMenuItem1,
+									this.pasteToolStripMenuItem1});
+			this.ContextMenuSmallPalette.Name = "ContextMenuSmallPalette";
+			this.ContextMenuSmallPalette.Size = new System.Drawing.Size(103, 48);
+			// 
+			// copyToolStripMenuItem1
+			// 
+			this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
+			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(102, 22);
+			this.copyToolStripMenuItem1.Text = "Copy";
+			// 
+			// pasteToolStripMenuItem1
+			// 
+			this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
+			this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(102, 22);
+			this.pasteToolStripMenuItem1.Text = "Paste";
+			// 
 			// BtnSwapColors
 			// 
 			this.BtnSwapColors.Location = new System.Drawing.Point(216, 20);
@@ -1636,26 +1656,6 @@ namespace SPReD
 			this.FillWithColorToolStripMenuItem.Text = "Fill With Color";
 			this.FillWithColorToolStripMenuItem.Click += new System.EventHandler(this.FillWithColorToolStripMenuItemClick);
 			// 
-			// ContextMenuSmallPalette
-			// 
-			this.ContextMenuSmallPalette.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.copyToolStripMenuItem1,
-									this.pasteToolStripMenuItem1});
-			this.ContextMenuSmallPalette.Name = "ContextMenuSmallPalette";
-			this.ContextMenuSmallPalette.Size = new System.Drawing.Size(103, 48);
-			// 
-			// copyToolStripMenuItem1
-			// 
-			this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
-			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(102, 22);
-			this.copyToolStripMenuItem1.Text = "Copy";
-			// 
-			// pasteToolStripMenuItem1
-			// 
-			this.pasteToolStripMenuItem1.Name = "pasteToolStripMenuItem1";
-			this.pasteToolStripMenuItem1.Size = new System.Drawing.Size(102, 22);
-			this.pasteToolStripMenuItem1.Text = "Paste";
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1690,12 +1690,12 @@ namespace SPReD
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.Palette3)).EndInit();
+			this.ContextMenuSmallPalette.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.Palette2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Palette0)).EndInit();
 			this.SpriteListContextMenu.ResumeLayout(false);
 			this.ContextMenuCHRBank.ResumeLayout(false);
-			this.ContextMenuSmallPalette.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
@@ -1706,7 +1706,7 @@ namespace SPReD
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator18;
 		private System.Windows.Forms.ToolStripMenuItem removePrefixPostfixToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
-		private System.Windows.Forms.ToolStripMenuItem managerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem palettesManagerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem swapToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;
 		private System.Windows.Forms.Button BtnSwapColors;
