@@ -60,7 +60,7 @@ namespace MAPeD
 			m_CHR_bank_viewer.NeedGFXUpdate	+= new EventHandler( need_gfx_update_event );
 			m_block_editor.NeedGFXUpdate 	+= new EventHandler( need_gfx_update_event );
 			m_tile_editor.NeedGFXUpdate		+= new EventHandler( need_gfx_update_event );
-			m_palette_grp.NeedGFXUpdate		+= new EventHandler( need_gfx_update_event );
+			m_palette_grp.subscribe_need_gfx_update_event( need_gfx_update_event );
 #if DEF_PALETTE16_PER_CHR
 			m_block_editor.UpdatePaletteListPos	+= new EventHandler( on_update_palette_list_pos );
 #endif

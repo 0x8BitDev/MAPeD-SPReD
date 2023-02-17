@@ -128,11 +128,9 @@ namespace MAPeD
 																				new palette_small( 1, _plt1 ),
 																			 	new palette_small( 2, _plt2 ),
 																				new palette_small( 3, _plt3 ) };
-			int i;
-				
-			for( i = 0; i < utils.CONST_NUM_SMALL_PALETTES; i++ )
+			foreach( var plt in m_plt_arr )
 			{
-				m_plt_arr[ i ].ActivePalette += new EventHandler( on_update_palettes );
+				plt.ActivePalette += new EventHandler( on_update_palettes );
 			}
 			
 			m_pix_box.MouseDown		+= new MouseEventHandler( on_mouse_down );
@@ -149,6 +147,19 @@ namespace MAPeD
 #endif	//!DEF_ZX
 			
 			update();
+		}
+		
+		public void subscribe_need_gfx_update_event( Action< object, EventArgs > _method )
+		{
+			this.NeedGFXUpdate += new EventHandler( _method );
+			
+#if DEF_COLORS_COPY_PASTE
+			foreach( var plt in m_plt_arr )
+			{
+				// to enable 'Update GFX' button when the 'Block Editor' has no active data to edit
+				plt.NeedGFXUpdate += new EventHandler( _method );
+			}
+#endif
 		}
 		
 		public void subscribe( data_sets_manager _data_mngr )
@@ -482,22 +493,22 @@ namespace MAPeD
 				{
 					if( e.KeyCode == Keys.D1 )
 					{
-						this.m_plt_arr[ active_palette ].set_color_slot( 0 );
+						this.m_plt_arr[ active_palette ].set_color_slot( 0, false );
 					}
 					else
 					if( e.KeyCode == Keys.D2 )
 					{
-						this.m_plt_arr[ active_palette ].set_color_slot( 1 );
+						this.m_plt_arr[ active_palette ].set_color_slot( 1, false );
 					}
 					else
 					if( e.KeyCode == Keys.D3 )
 					{
-						this.m_plt_arr[ active_palette ].set_color_slot( 2 );
+						this.m_plt_arr[ active_palette ].set_color_slot( 2, false );
 					}
 					else
 					if( e.KeyCode == Keys.D4 )
 					{
-						this.m_plt_arr[ active_palette ].set_color_slot( 3 );
+						this.m_plt_arr[ active_palette ].set_color_slot( 3, false );
 					}
 				}
 			}

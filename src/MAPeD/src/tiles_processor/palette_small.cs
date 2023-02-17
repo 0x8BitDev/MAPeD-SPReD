@@ -20,6 +20,10 @@ namespace MAPeD
 	{
 		public event EventHandler ActivePalette;
 		
+#if DEF_COLORS_COPY_PASTE
+		public event EventHandler NeedGFXUpdate;
+#endif
+		
 		private bool 	m_active	= false;
 		
 		private readonly int m_id;
@@ -113,7 +117,7 @@ namespace MAPeD
 			{
 				m_clr_inds[ m_sel_clr_ind ] = m_copied_clr_ind;
 				
-				dispatch_event_active_palette();
+				dispatch_event_need_gfx_update();
 				
 				update();
 			}
@@ -189,7 +193,7 @@ namespace MAPeD
 			MainForm.set_status_msg( utils.hex( "Selected color: #", m_clr_inds[ m_sel_clr_ind ] ) );
 			
 			dispatch_event_active_palette();
-
+			
 			update();
 		}
 		
@@ -241,5 +245,15 @@ namespace MAPeD
 				ActivePalette( this, null );
 			}
 		}
+		
+#if DEF_COLORS_COPY_PASTE
+		private void dispatch_event_need_gfx_update()
+		{
+			if( NeedGFXUpdate != null )
+			{
+				NeedGFXUpdate( this, null );
+			}
+		}
+#endif
 	}
 }

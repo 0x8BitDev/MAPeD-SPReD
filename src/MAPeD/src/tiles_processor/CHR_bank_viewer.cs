@@ -234,12 +234,16 @@ namespace MAPeD
 #if !DEF_ZX
 			_plt.UpdateColor += new EventHandler( on_update_color );
 #endif
-			palette_small[] plt_arr = _plt.get_palettes_arr();
 			
-			plt_arr[ 0 ].ActivePalette += new EventHandler( on_update_color );
-			plt_arr[ 1 ].ActivePalette += new EventHandler( on_update_color );
-			plt_arr[ 2 ].ActivePalette += new EventHandler( on_update_color );
-			plt_arr[ 3 ].ActivePalette += new EventHandler( on_update_color );
+			foreach( var plt in _plt.get_palettes_arr() )
+			{
+#if DEF_NES || DEF_ZX
+				plt.ActivePalette += new EventHandler( on_update_color );
+#endif
+#if DEF_COLORS_COPY_PASTE
+				plt.NeedGFXUpdate += new EventHandler( on_update_color );
+#endif
+			}
 		}
 		
 		private void on_update_color( object sender, EventArgs e )
