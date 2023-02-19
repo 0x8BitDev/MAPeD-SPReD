@@ -154,8 +154,6 @@ void	__fastcall	init_map_entity( u8 _ind<acc> );	// entity ID is an entity index
 
 	jmp [_init_ent_arr, x]
 
-	.endp
-
 _init_ent_arr:
 
 	.dw _init_ent_null
@@ -194,6 +192,7 @@ _init_ent_exit:
 	call _init_entity
 	rts
 
+	.endp
 #endasm
 
 void	init_null()
@@ -229,8 +228,6 @@ void	__fastcall	update_cached_entity( u8 _ind<acc> );	// entity ID is an entity 
 	tax
 
 	jmp [_upd_cached_ent_arr, x]
-
-	.endp
 
 _upd_cached_ent_arr:
 
@@ -300,6 +297,7 @@ _upd_cached_ent_exit:
 	call _update_cached_exit
 	rts
 
+	.endp
 #endasm
 
 void	update_cached_null()
@@ -794,8 +792,6 @@ u8	__fastcall	check_cached_entity_collision( u8 _ind<acc> );	// entity ID is an 
 
 	jmp [_check_collision_func_arr, x]
 
-	.endp
-
 _check_collision_func_arr:
 
 	.dw _check_null
@@ -864,6 +860,7 @@ _check_exit:
 	call _check_collision_exit
 	rts
 
+	.endp
 #endasm
 
 u8	check_collision_null()
