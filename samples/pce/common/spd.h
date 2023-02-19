@@ -19,6 +19,8 @@ __TIA_RTS	= ram_hdwr_tia_rts
 /*/	SPD-render v0.6
 History:
 
+2023.02.19 - 'spd_change_palette' changed the input parameter (__al->acc)
+
 v0.6
 2022.07.26 - added LUT for sprite/SG data indexing +minor changes (-100 cycles); removed unused math macros
 2022.07.22 - changed 'General information' items 5, 6, 9
@@ -480,7 +482,7 @@ void		__fastcall spd_SATB_to_VRAM( unsigned char _spr_cnt<acc> );// _spr_cnt: 1-
 // meta-sprites
 unsigned char	__fastcall spd_SATB_push_sprite( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 0-SATB overflow
 unsigned char	__fastcall spd_SATB_push_sprite( unsigned char far* _frame_addr<__bl:__si>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 0-SATB overflow
-void		__fastcall spd_change_palette( unsigned char _plt_ind<__al> );
+void		__fastcall spd_change_palette( unsigned char _plt_ind<acc> );
 
 // simple sprites
 unsigned char	__fastcall spd_SATB_set_sprite_LT( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: OUT: 1-Ok!, 1|SPD_SG_NEW_DATA
@@ -1096,11 +1098,11 @@ __tiirts	.ds 1	; $60 rts
 
 	.procgroup
 
-;// spd_change_palette( byte __al / plt_ind )
+;// spd_change_palette( byte acc / plt_ind )
 ;
 	.proc _spd_change_palette.1
 
-	lda <__al
+	txa
 	and #%00001111			; clamp 16 colors area
 	ora #%10000000			; set SPBG bit by default
 	tax
