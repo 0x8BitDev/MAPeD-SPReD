@@ -613,9 +613,9 @@ void	update_cached_logs()
 			{
 				ent_ptr->prop2 += 5;
 
-				mpd_ax.ws = ent_y_unmasked + ent_ptr->prop2;
+				mpd_axs = ent_y_unmasked + ent_ptr->prop2;
 
-				if( ( mpd_ax.ws > ( ScrPixelsHeight - 8 ) ) || ( ( ( mpd_ax.ws + mpd_scroll_y ) % ScrPixelsHeight ) > ( ScrPixelsHeight - 8 ) ) )
+				if( ( mpd_axs > ( ScrPixelsHeight - 8 ) ) || ( ( ( mpd_axs + mpd_scroll_y ) % ScrPixelsHeight ) > ( ScrPixelsHeight - 8 ) ) )
 				{
 					// deactivate entity at the bottom side of the screen
 

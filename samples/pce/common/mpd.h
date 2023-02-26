@@ -8,6 +8,7 @@
 /*/	MPD-render v0.7
 History:
 
+2023.02.25 - the mpd_ax-fx variables moved to zero-page
 2022.11.25 - fixed bug when 'mpd_init_screen_arr' is called before 'mpd_init(...)'
 2022.10.06 - asm optimization - '__mpd_calc_skip_CHRs_cnt(...)' and '__mpd_get_VRAM_addr(...)'
 2022.10.04 - asm optimization - 'mpd_get_property(...)'
@@ -516,6 +517,38 @@ u8	__fastcall __mpd_calc_skip_CHRs_cnt( u8 _pos<acc> );
 	sta <vdc_reg
 	st0 \1
 	.endm
+
+	.zp
+
+_mpd_ax:
+_mpd_axs:
+_mpd_al:	.ds 1
+_mpd_ah:	.ds 1
+
+_mpd_bx:
+_mpd_bxs:
+_mpd_bl:	.ds 1
+_mpd_bh:	.ds 1
+
+_mpd_cx:
+_mpd_cxs:
+_mpd_cl:	.ds 1
+_mpd_ch:	.ds 1
+
+_mpd_dx:
+_mpd_dxs:
+_mpd_dl:	.ds 1
+_mpd_dh:	.ds 1
+
+_mpd_ex:
+_mpd_exs:
+_mpd_el:	.ds 1
+_mpd_eh:	.ds 1
+
+_mpd_fx:
+_mpd_fxs:
+_mpd_fl:	.ds 1
+_mpd_fh:	.ds 1
 
 	.bss
 
@@ -1229,30 +1262,37 @@ s16	__vert_dir_pos;
 u8	__upd_flags;
 #endif
 
-// variables for assembly optimization
+// variables for local use in functions and for assembly optimizations
 
-union mpd_var16
-{
-	u16	w;
+extern u16	mpd_ax;
+extern s16	mpd_axs;
+extern u8	mpd_al;
+extern u8	mpd_ah;
 
-	struct
-	{
-		u8	l;
-		u8	b;
-	};
+extern u16	mpd_bx;
+extern s16	mpd_bxs;
+extern u8	mpd_bl;
+extern u8	mpd_bh;
 
-	struct
-	{
-		s16	ws;
-	};
-};
+extern u16	mpd_cx;
+extern s16	mpd_cxs;
+extern u8	mpd_cl;
+extern u8	mpd_ch;
 
-union mpd_var16	mpd_ax;
-union mpd_var16	mpd_bx;
-union mpd_var16	mpd_cx;
-union mpd_var16	mpd_dx;
-union mpd_var16	mpd_ex;
-union mpd_var16	mpd_fx;
+extern u16	mpd_dx;
+extern s16	mpd_dxs;
+extern u8	mpd_dl;
+extern u8	mpd_dh;
+
+extern u16	mpd_ex;
+extern s16	mpd_exs;
+extern u8	mpd_el;
+extern u8	mpd_eh;
+
+extern u16	mpd_fx;
+extern s16	mpd_fxs;
+extern u8	mpd_fl;
+extern u8	mpd_fh;
 
 
 void	__mpd_get_BAT_params()
@@ -1572,36 +1612,31 @@ void	__mpd_calc_scr_pos_by_LUT_pos( u16 _LUT_pos_x, u16 _LUT_pos_y, bool _reset_
 
 void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 {
-	u8	scr_tile;
-	u16	w, h;
+	u16	h;
 	u16	n;
 	u16	tiles_offset;
-	u16	side_step;
 
 	tiles_offset	= __maps_offset + __init_tiles_offset;
 
-	mpd_ax.w	= _BAT_offset + ( ( mpd_scroll_x >> 3 ) & __BAT_width_dec1 ) + ( ( ( mpd_scroll_y >> 3 ) /*& __BAT_height_dec1*/ ) << __BAT_width_pow2 );
+	mpd_ax	= _BAT_offset + ( ( mpd_scroll_x >> 3 ) & __BAT_width_dec1 ) + ( ( ( mpd_scroll_y >> 3 ) /*& __BAT_height_dec1*/ ) << __BAT_width_pow2 );
 
 #if	FLAG_DIR_COLUMNS
 
-	side_step	= ScrTilesHeight * mpd_map_scr_height;
-
-	for( mpd_cx.w = 0; mpd_cx.w < ScrTilesWidth; mpd_cx.w++ )
+	for( mpd_cx = 0; mpd_cx < ScrTilesWidth; mpd_cx++ )
 	{
-		mpd_bx.w = 0;
+		mpd_bx = 0;
 
-		n = mpd_cx.w * side_step;
+		n = mpd_cx * __map_tiles_height;
 
 		for( h = 0; h < ScrTilesHeight; h++ )
 		{
-			scr_tile = mpd_farpeekb( mpd_Maps, tiles_offset + n );
 #asm
-			; <__cx = ( mpd_ax.w + ( mpd_bx.w << 1 ) )
+			; <__cx = ( mpd_ax + ( mpd_bx << 1 ) )
 
-			lda _mpd_bx
+			lda <_mpd_bl
 			asl a
 			sta <__bl
-			lda _mpd_bx + 1
+			lda <_mpd_bh
 			rol a
 			sta <__bh
 #endasm
@@ -1613,17 +1648,17 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 #endif
 
 #asm
-			mpd_add_word_to_word2 _mpd_ax, <__bx, <__cx
+			mpd_add_word_to_word2 <_mpd_ax, <__bx, <__cx
 
-			; <__al = mpd_dx.w & __BAT_width_dec1_inv
+			; <__al = mpd_dx & __BAT_width_dec1_inv
 
 			lda <__cl
 			and ___BAT_width_dec1_inv
 			sta <__al
 
-			; mpd_dx.w = ( ( ( <__cx + ( mpd_cx.w << 1 ) ) & __BAT_width_dec1 ) | <__al ) & __BAT_size_dec1
+			; mpd_dx = ( ( ( <__cx + ( mpd_cx << 1 ) ) & __BAT_width_dec1 ) | <__al ) & __BAT_size_dec1
 
-			lda _mpd_cx
+			lda <_mpd_cl
 			asl a
 #endasm
 
@@ -1640,54 +1675,51 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 			and ___BAT_width_dec1
 			ora <__al
 
-			sta _mpd_dx
+			sta <_mpd_dl
 
 			lda <__ch
 			and ___BAT_size_dec1 + 1
-			sta _mpd_dx + 1
+			sta <_mpd_dh
 #endasm
 
 #if	FLAG_TILES2X2
-			__mpd_draw_block2x2( mpd_dx.w, __blocks_offset + ( scr_tile << 3 ) );
+			__mpd_draw_block2x2( mpd_dx, __blocks_offset + ( mpd_farpeekb( mpd_Maps, tiles_offset + n ) << 3 ) );
 #elif	FLAG_TILES4X4
-			__mpd_draw_tile4x4( mpd_dx.w, __tiles_offset + ( scr_tile << 2 ) );
+			__mpd_draw_tile4x4( mpd_dx, __tiles_offset + ( mpd_farpeekb( mpd_Maps, tiles_offset + n ) << 2 ) );
 #endif
-			mpd_bx.w += __BAT_width;
+			mpd_bx += __BAT_width;
 			++n;
 		}
 	}
 #elif	FLAG_DIR_ROWS
 
-	side_step	= ScrTilesWidth * mpd_map_scr_width;
-
-	mpd_bx.w = 0;
+	mpd_bx = 0;
 
 	for( h = 0; h < ScrTilesHeight; h++ )
 	{
-		n = h * side_step;
+		n = h * __map_tiles_width;
 
 #if	FLAG_TILES2X2
-		mpd_dx.w	= mpd_ax.w + ( mpd_bx.w << 1 );
+		mpd_dx	= mpd_ax + ( mpd_bx << 1 );
 #elif	FLAG_TILES4X4
-		mpd_dx.w	= mpd_ax.w + ( mpd_bx.w << 2 );
+		mpd_dx	= mpd_ax + ( mpd_bx << 2 );
 #endif
-		mpd_ex.w	= mpd_dx.w & __BAT_width_dec1_inv;
+		mpd_ex	= mpd_dx & __BAT_width_dec1_inv;
 
-		for( mpd_cx.w = 0; mpd_cx.w < ScrTilesWidth; mpd_cx.w++ )
+		for( mpd_cx = 0; mpd_cx < ScrTilesWidth; mpd_cx++ )
 		{
-			scr_tile = mpd_farpeekb( mpd_Maps, tiles_offset + n );
 #if	FLAG_TILES2X2
 #asm
-			; mpd_fx.w = ( ( ( mpd_dx.w + ( mpd_cx.w << 1 ) ) & __BAT_width_dec1 ) | mpd_ex.w ) & __BAT_size_dec1
+			; mpd_fx = ( ( ( mpd_dx + ( mpd_cx << 1 ) ) & __BAT_width_dec1 ) | mpd_ex ) & __BAT_size_dec1
 
-			lda _mpd_cx
+			lda <_mpd_cl
 			asl a
 #endasm
 #elif	FLAG_TILES4X4
 #asm
-			; mpd_fx.w = ( ( ( mpd_dx.w + ( mpd_cx.w << 2 ) ) & __BAT_width_dec1 ) | mpd_ex.w ) & __BAT_size_dec1
+			; mpd_fx = ( ( ( mpd_dx + ( mpd_cx << 2 ) ) & __BAT_width_dec1 ) | mpd_ex ) & __BAT_size_dec1
 
-			lda _mpd_cx
+			lda <_mpd_cl
 			asl a
 			asl a
 #endasm
@@ -1695,27 +1727,27 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 
 #asm
 			clc
-			adc _mpd_dx
+			adc <_mpd_dl
 
 			and ___BAT_width_dec1
-			ora _mpd_ex
+			ora <_mpd_el
 
-			sta _mpd_fx
+			sta <_mpd_fl
 
-			lda _mpd_dx + 1
+			lda <_mpd_dh
 			and ___BAT_size_dec1 + 1
-			sta _mpd_fx + 1
+			sta <_mpd_fh
 #endasm
 
 #if	FLAG_TILES2X2
-			__mpd_draw_block2x2( mpd_fx.w, __blocks_offset + ( scr_tile << 3 ) );
+			__mpd_draw_block2x2( mpd_fx, __blocks_offset + ( mpd_farpeekb( mpd_Maps, tiles_offset + n ) << 3 ) );
 #elif	FLAG_TILES4X4
-			__mpd_draw_tile4x4( mpd_fx.w, __tiles_offset + ( scr_tile << 2 ) );
+			__mpd_draw_tile4x4( mpd_fx, __tiles_offset + ( mpd_farpeekb( mpd_Maps, tiles_offset + n ) << 2 ) );
 #endif
 			++n;
 		}
 
-		mpd_bx.w += __BAT_width;
+		mpd_bx += __BAT_width;
 	}
 
 #endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
@@ -1732,7 +1764,6 @@ void	__mpd_draw_free_tiled_screen()
 	u16	CHR_y;
 	u16	n;
 	u16	tiles_offset;
-	u16	side_step;
 
 	CHR_x		= mpd_scroll_x;
 	CHR_y		= mpd_scroll_y;
@@ -1747,14 +1778,12 @@ void	__mpd_draw_free_tiled_screen()
 
 #if	FLAG_DIR_COLUMNS
 
-	side_step	= ScrTilesHeight * mpd_map_scr_height;
-
 	for( w = x_beg_CHR; w < width_cnt; w++ )
 	{
 #if	FLAG_TILES2X2
-		n = ( w >> 1 ) * side_step;
+		n = ( w >> 1 ) * __map_tiles_height;
 #else
-		n = ( w >> 2 ) * side_step;
+		n = ( w >> 2 ) * __map_tiles_height;
 #endif
 		CHR_y = mpd_scroll_y;
 
@@ -1777,14 +1806,12 @@ void	__mpd_draw_free_tiled_screen()
 	}
 #elif	FLAG_DIR_ROWS
 
-	side_step	= ScrTilesWidth * mpd_map_scr_width;
-
 	for( h = y_beg_CHR; h < height_cnt; h++ )
 	{
 #if	FLAG_TILES2X2
-		n = ( h >> 1 ) * side_step;
+		n = ( h >> 1 ) * __map_tiles_width;
 #else
-		n = ( h >> 2 ) * side_step;
+		n = ( h >> 2 ) * __map_tiles_width;
 #endif
 		CHR_x = mpd_scroll_x;
 
@@ -3607,18 +3634,18 @@ u8	mpd_get_property( u16 _x, u16 _y )
 				// _x = __cx
 				// _y = __dx
 
-//	u8	block_pos_x;	// mpd_ax.l
-//	u8	block_pos_y;	// mpd_ax.h
-//	u8	CHR_pos_x;	// mpd_bx.l
-//	u8	CHR_pos_y;	// mpd_bx.h
+//	u8	block_pos_x;	// mpd_al
+//	u8	block_pos_y;	// mpd_ah
+//	u8	CHR_pos_x;	// mpd_bl
+//	u8	CHR_pos_y;	// mpd_bh
 
 #if	FLAG_MODE_BIDIR_SCROLL		/* !!! */
 
 	mpd_SCREEN	tmp_scr;
 //	u16		scr_offs;	// mpd_ex
 
-//	s16		dx;		// mpd_ax.ws
-//	s16		dy;		// mpd_bx.ws
+//	s16		dx;		// mpd_axs
+//	s16		dy;		// mpd_bxs
 #endif
 
 #asm
@@ -3635,13 +3662,13 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 	if( !__horiz_dir_pos && __vert_dir_pos )
 	{
-		mpd_bx.ws = _y - ( ScrPixelsHeight - __vert_dir_pos );
+		mpd_bxs = _y - ( ScrPixelsHeight - __vert_dir_pos );
 
-		if( mpd_bx.ws >= 0 )
+		if( mpd_bxs >= 0 )
 		{
 			__mpd_get_screen_data( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_DOWN ), &tmp_scr );
 			mpd_ex	= tmp_scr.scr_ind * __c_scr_tiles_size;
-			_y	= mpd_bx.ws;
+			_y	= mpd_bxs;
 		}
 		else
 		{
@@ -3651,13 +3678,13 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	else
 	if( !__vert_dir_pos && __horiz_dir_pos )
 	{
-		mpd_ax.ws = _x - ( ScrPixelsWidth - __horiz_dir_pos );
+		mpd_axs = _x - ( ScrPixelsWidth - __horiz_dir_pos );
 
-		if( mpd_ax.ws >= 0 )
+		if( mpd_axs >= 0 )
 		{
 			__mpd_get_screen_data( mpd_get_adj_screen( &mpd_curr_scr, ADJ_SCR_RIGHT ), &tmp_scr );
 			mpd_ex	= tmp_scr.scr_ind * __c_scr_tiles_size;
-			_x	= mpd_ax.ws;
+			_x	= mpd_axs;
 		}
 		else
 		{
@@ -3688,7 +3715,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	tay
 	txa
 	and #1
-	sta _mpd_ax	; block_pos_x
+	sta <_mpd_al	; block_pos_x
 	tya
 	
 	__lsrw
@@ -3714,7 +3741,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	tay
 	txa
 	and #1
-	sta _mpd_ax + 1	; block_pos_y
+	sta <_mpd_ah	; block_pos_y
 	tya
 	
 	__lsrw
@@ -3742,7 +3769,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	tay
 	txa
 	and #1
-	sta _mpd_bx	; CHR_pos_x
+	sta <_mpd_bl	; CHR_pos_x
 	tya
 
 	__lsrw
@@ -3750,7 +3777,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	tay
 	txa
 	and #1
-	sta _mpd_ax	; block_pos_x
+	sta <_mpd_al	; block_pos_x
 	tya
 	
 	__lsrw
@@ -3777,7 +3804,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	tay
 	txa
 	and #1
-	sta _mpd_bx + 1	; CHR_pos_y
+	sta <_mpd_bh	; CHR_pos_y
 	tya
 
 	__lsrw
@@ -3785,7 +3812,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	tay
 	txa
 	and #1
-	sta _mpd_ax + 1	; block_pos_y
+	sta <_mpd_ah	; block_pos_y
 	tya
 	
 	__lsrw
@@ -3844,7 +3871,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	tay
 	txa
 	and #1
-	sta _mpd_bx	; CHR_pos_x
+	sta <_mpd_bl	; CHR_pos_x
 	tya
 
 	__lsrw
@@ -3869,7 +3896,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	tay
 	txa
 	and #1
-	sta _mpd_bx + 1	; CHR_pos_y
+	sta <_mpd_bh	; CHR_pos_y
 	tya
 
 	__lsrw
@@ -3904,12 +3931,12 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 	clc
 	adc <__cl		; _x.l
-	sta _mpd_cx		; tiles_offset.l
+	sta <_mpd_cl		; tiles_offset.l
 
 	sax
 
 	adc <__ch		; _x.h
-	sta _mpd_cx + 1		; tiles_offset.h
+	sta <_mpd_ch		; tiles_offset.h
 #endasm
 #else
 //	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( _x << 1 ) ) + _y;
@@ -3933,23 +3960,23 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 	clc
 	adc <__dl		; _y.l
-	sta _mpd_cx		; tiles_offset.l
+	sta <_mpd_cl		; tiles_offset.l
 
 	sax
 
 	adc <__dh		; _y.h
-	sta _mpd_cx + 1		; tiles_offset.h
+	sta <_mpd_ch		; tiles_offset.h
 #endasm
 #endif
 //	tiles_offset	+= __maps_offset;
 
 //	tile_id		= mpd_farpeekb( mpd_Maps, tiles_offset );
 #asm
-	mpd_add_word_to_word ___maps_offset, _mpd_cx
+	mpd_add_word_to_word ___maps_offset, <_mpd_cx
 
 	__farptr _mpd_Maps, __bl, __si
 
-	stw _mpd_cx, <__ax	; tiles_offset
+	stw <_mpd_cx, <__ax	; tiles_offset
 
 	call _mpd_farptr_add_offset
 
@@ -3978,13 +4005,13 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 	clc
 	adc <__cl
-	sta _mpd_cx
+	sta <_mpd_cl
 
 	ldy #1
 	lda [<__ax], y
 
 	adc <__ch
-	sta _mpd_cx + 1		; tiles_offset = __scr_tiles_width_tbl[ _y ] + _x
+	sta <_mpd_ch		; tiles_offset = __scr_tiles_width_tbl[ _y ] + _x
 #endasm
 #else
 //	tiles_offset	= __scr_tiles_height_tbl[ _x ] + _y;
@@ -4002,13 +4029,13 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 	clc
 	adc <__dl
-	sta _mpd_cx
+	sta <_mpd_cl
 
 	ldy #1
 	lda [<__ax], y
 
 	adc <__dh
-	sta _mpd_cx + 1		; tiles_offset = __scr_tiles_height_tbl[ _x ] + _y
+	sta <_mpd_ch		; tiles_offset = __scr_tiles_height_tbl[ _x ] + _y
 #endasm
 #endif
 
@@ -4017,7 +4044,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 #asm
 	__farptr _mpd_TilesScr, __bl, __si
 
-	mpd_add_word_to_word2 _mpd_ex, _mpd_cx, <__ax	; scr_offs + tiles_offset
+	mpd_add_word_to_word2 <_mpd_ex, <_mpd_cx, <__ax	; scr_offs + tiles_offset
 
 	call _mpd_farptr_add_offset
 
@@ -4032,7 +4059,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 #asm
 	__farptr _mpd_TilesScr, __bl, __si
 
-	mpd_add_word_to_word2 ___scr_offset, _mpd_cx, <__ax	; __scr_offset + tiles_offset
+	mpd_add_word_to_word2 ___scr_offset, <_mpd_cx, <__ax	; __scr_offset + tiles_offset
 
 	call _mpd_farptr_add_offset
 
@@ -4052,25 +4079,25 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 	stw ___tiles_offset, <__ax		; __tiles_offset
 
-	lda _mpd_ax + 1				; block_pos_y << 1
+	lda <_mpd_ah				; block_pos_y << 1
 	asl a
 
 	clc
-	adc _mpd_ax				; block_pos_x
+	adc <_mpd_al				; block_pos_x
 
 	mpd_add_a_to_word <__ax			; __tiles_offset + ( block_pos_y << 1 ) + block_pos_x
 
 	cla
-	sta _mpd_dx + 1
+	sta <_mpd_dh
 
 	txa					; a = tile_id
 	asl a
-	rol _mpd_dx + 1
+	rol <_mpd_dh
 	asl a
-	rol _mpd_dx + 1
-	sta _mpd_dx				; tile_id << 2
+	rol <_mpd_dh
+	sta <_mpd_dl				; tile_id << 2
 
-	mpd_add_word_to_word _mpd_dx, <__ax	; __tiles_offset + ( tile_id << 2 ) + ( block_pos_y << 1 ) + block_pos_x
+	mpd_add_word_to_word <_mpd_dx, <__ax	; __tiles_offset + ( tile_id << 2 ) + ( block_pos_y << 1 ) + block_pos_x
 
 	call _mpd_farptr_add_offset
 
@@ -4098,7 +4125,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	tam	#3
 
 	lda [<__si]
-	sta _mpd_dx				; tile_id
+	sta <_mpd_dl				; tile_id
 #endasm
 #else	//FLAG_PROP_ID_PER_CHR
 //	tile_id		= mpd_farpeekb( mpd_Props, __props_offset + ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x );
@@ -4107,25 +4134,25 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 	stw ___props_offset, <__ax		; __props_offset
 
-	lda _mpd_bx + 1				; CHR_pos_y << 1
+	lda <_mpd_bh				; CHR_pos_y << 1
 	asl a
 
 	clc
-	adc _mpd_bx				; CHR_pos_x
+	adc <_mpd_bl				; CHR_pos_x
 
 	mpd_add_a_to_word <__ax			; __props_offset + ( CHR_pos_y << 1 ) + CHR_pos_x
 
 	cla
-	sta _mpd_dx + 1
+	sta <_mpd_dh
 
 	txa					; a = tile_id
 	asl a
-	rol _mpd_dx + 1
+	rol <_mpd_dh
 	asl a
-	rol _mpd_dx + 1
-	sta _mpd_dx				; tile_id << 2
+	rol <_mpd_dh
+	sta <_mpd_dl				; tile_id << 2
 
-	mpd_add_word_to_word _mpd_dx, <__ax	; __props_offset + ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x
+	mpd_add_word_to_word <_mpd_dx, <__ax	; __props_offset + ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x
 
 	call _mpd_farptr_add_offset
 
@@ -4133,7 +4160,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	tam	#3
 
 	lda [<__si]
-	sta _mpd_dx				; tile_id
+	sta <_mpd_dl				; tile_id
 #endasm
 #endif
 
@@ -4144,5 +4171,5 @@ u8	mpd_get_property( u16 _x, u16 _y )
 #asm
 .endif
 #endasm
-	return mpd_dx.l;//tile_id;
+	return mpd_dl;//tile_id;
 }

@@ -445,18 +445,18 @@ void	__scene_shaking()
 {
 	mpd_clear_update_flags();
 
-	mpd_ax.l = __scene_shaking_vals_arr[ __scene_shaking_arr_pos ];
+	mpd_al = __scene_shaking_vals_arr[ __scene_shaking_arr_pos ];
 
-	if( mpd_ax.l & 0x80 )
+	if( mpd_al & 0x80 )
 	{
 		// negative val
-		mpd_scroll_step_y = ~mpd_ax.l + 1;	// max 7 pix!
+		mpd_scroll_step_y = ~mpd_al + 1;	// max 7 pix!
 
 		mpd_move_up();
 	}
 	else
 	{
-		mpd_scroll_step_y = mpd_ax.l;		// max 7 pix!
+		mpd_scroll_step_y = mpd_al;		// max 7 pix!
 
 		mpd_move_down();
 	}
