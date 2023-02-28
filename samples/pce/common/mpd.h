@@ -8,6 +8,7 @@
 /*/	MPD-render v0.7
 History:
 
+2023.02.26 - fixed 'mpd_load_palette' to work with all palette slots
 2023.02.25 - the mpd_ax-fx variables moved to zero-page
 2022.11.25 - fixed bug when 'mpd_init_screen_arr' is called before 'mpd_init(...)'
 2022.10.06 - asm optimization - '__mpd_calc_skip_CHRs_cnt(...)' and '__mpd_get_VRAM_addr(...)'
@@ -422,7 +423,7 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 #pragma fastcall mpd_load_vram( word __di, farptr __bl:__si, word __ax, word __cx )
 
 /* void mpd_load_palette( u8 _sub_plt, far void* _addr, u16 _offset, u8 _sub_plts_cnt ) */
-#pragma fastcall mpd_load_palette( byte __al, farptr __bl:__si, word __dx, byte __cl )
+#pragma fastcall mpd_load_palette( byte __bh, farptr __bl:__si, word __dx, byte __cl )
 
 /* void mpd_load_bat( u16 _vaddr, far void* _addr, u16 _offset, u8 _width, u8 _height ) */
 #pragma fastcall mpd_load_bat( word __di, farptr __bl:__si, word __ax, byte __cl, byte __ch )
@@ -770,12 +771,15 @@ _mpd_load_vram2.4:
 
 	.endp
 
-;// void mpd_load_palette( byte __al / sub_plt, farptr __bl:__si / addr, word __dx / offset, byte __cl / sub_plts_cnt )
+;// void mpd_load_palette( byte __bh / sub_plt, farptr __bl:__si / addr, word __dx / offset, byte __cl / sub_plts_cnt )
 ;
 	.proc _mpd_load_palette.4
 
 	stw <__dx, <__ax
 	call _mpd_farptr_add_offset
+
+	lda <__bh
+	sta <__al
 
 	jmp _load_palette.3
 
