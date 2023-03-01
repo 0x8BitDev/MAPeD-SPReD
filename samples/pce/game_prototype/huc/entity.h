@@ -915,8 +915,6 @@ u8	check_collision_enemy_flying()
 //
 u8	check_collision_switch()
 {
-	u8	pos;
-
 	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, ent_ptr->width, ent_ptr->height ) )
 	{
 		if( __jpad_val & JOY_ACTION_BTN )
@@ -948,8 +946,6 @@ u8	check_collision_switch()
 //
 u8	check_collision_button()
 {
-	u8	pos;
-
 	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, ent_ptr->width, ent_ptr->height ) )
 	{
 		ent_ptr->prop2 |= 0x80;
@@ -976,8 +972,8 @@ u8	check_collision_button()
 
 u8	check_collision_platform()
 {
-	s16	player_bottom;
-	s16	ent_y_pos;
+	static s16	player_bottom;
+	static s16	ent_y_pos;
 
 	if( PLAYER_IS_FALLING )
 	{
@@ -1098,7 +1094,7 @@ u8	check_collision_platform()
 //
 u8	check_collision_logs()
 {
-	s16	player_bottom;
+	static s16	player_bottom;
 
 	if( !( ent_ptr->prop1 & 0x60 ) )	// active and isn't falling
 	{
@@ -1204,10 +1200,10 @@ u8	check_collision_heavy_load()
 //
 u8	check_collision_portal()
 {
-	s16		portal_out_x;
-	s16		portal_out_y;
+	static s16	portal_out_x;
+	static s16	portal_out_y;
 
-	mpd_MAP_ENT*	ent_portal_out_ptr;
+	static mpd_MAP_ENT*	ent_portal_out_ptr;
 
 
 	if( IS_PLAYER_INTERSECT_BOX( ent_x, ent_y_unmasked, ent_ptr->width, ent_ptr->height ) )

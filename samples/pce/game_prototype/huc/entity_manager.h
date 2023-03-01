@@ -417,8 +417,8 @@ void	__update_cached_ents()
 
 void	check_player_collisions()
 {
-	u8	map_ent_ind;
-	u8	collis_cnt;
+	static u8	map_ent_ind;
+	static u8	collis_cnt;
 
 	SATB_pos = spd_SATB_get_pos();
 

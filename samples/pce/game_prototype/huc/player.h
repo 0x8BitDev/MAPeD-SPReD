@@ -471,7 +471,7 @@ void	player_update()
 
 void	player_enemy_hit()
 {
-	u8 satb_pos;
+	static u8 satb_pos;
 
 	if( !__enemy_hit )
 	{
@@ -519,7 +519,7 @@ void	player_update_pos( s16 _x, s16 _y )
 
 void	player_update_damage_state()
 {
-	u8 tick;
+	static u8 tick;
 
 	spd_SATB_set_pos( SATB_POS_PLAYER );
 

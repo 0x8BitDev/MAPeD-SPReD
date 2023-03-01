@@ -522,8 +522,8 @@ void	scene_save_curr_time()
 
 void	game_update_loop()
 {
-	s16	delta_x;
-	s16	delta_y;
+	static s16	delta_x;
+	static s16	delta_y;
 
 	__level_state = 0;
 
