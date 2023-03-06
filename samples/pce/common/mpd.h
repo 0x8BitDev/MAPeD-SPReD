@@ -8,8 +8,8 @@
 /*/	MPD-render v0.7
 History:
 
-2023.03.03 - reduced the number of HuC functions (.proc/.endp):
-		[-]		mpd_get_CR_val()
+2023.03.05 - reduced the number of HuC functions (.proc/.endp):
+		[inlined]	mpd_get_CR_val()
 		[inlined]	__mpd_get_entity_by_offs(...)
 		[inlined]	__mpd_get_entity_by_addr(...)
 		[inlined]	__mpd_get_BAT_params()
@@ -26,6 +26,13 @@ History:
 		[#define]	mpd_draw_screen_by_data(...)
 		[#define]	mpd_draw_screen()
 		[#define]	__mpd_calc_scr_pos_by_scr_ind(...)
+		[macro]		mpd_load_vram2(...)
+		[macro]		mpd_load_vram(...)
+		[macro]		mpd_load_palette(...)
+		[macro]		mpd_load_bat(...)
+		[macro]		mpd_farpeekw.3(...)
+		[unused]	mpd_farpeekb.3(...)
+		[macro]		mpd_memcpyb(...)
 2023.03.01 - optimized use of local variables and function arguments
 2023.02.26 - fixed 'mpd_load_palette' to work with all palette slots
 2023.02.25 - the mpd_ax-fx variables moved to zero-page
@@ -426,44 +433,39 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 --------------------------------------------------------
 */
 
+/*********************/
+/*		     */
+/* Utility functions */
+/*		     */
+/*********************/
+
+u16	__fastcall mpd_farpeekw( u16 far* _addr<__bl:__si>, u16 _offset<__ax> );
+
+u8	__fastcall mpd_farpeekb( u8 far* _addr<__bl:__si>, u16 _offset<__ax> );
+
+u16	__fastcall __macro mpd_farpeekw( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax> );
+
+//[UNUSED] u8 __fastcall __macro mpd_farpeekb( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax> );
+
+void	__fastcall mpd_farmemcpyb( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax>, void* _dst_addr<__dx>, u8 _size<__bh> );
+
+void	__fastcall __macro mpd_memcpyb( u16* _src_addr<__ax>, u16 _dst_addr<__bx>, u8 _size<__cl> );
+
+void	__fastcall mpd_get_ptr24( void far* _addr<__bl:__si>, u8 _ind<__al>, void* _dst_addr<__dx> );
+
 /************************/
 /*			*/
 /* HuC helper functions	*/
 /*			*/
 /************************/
 
-/* void mpd_load_vram2( u16 _vaddr, u8 _bank, u16 _addr, u16 _words_cnt ) */
-#pragma fastcall mpd_load_vram2( word __di, byte __bl, word __si, word __cx )
+void	__fastcall __macro mpd_load_vram2( u16 _vaddr<__di>, u8 _bank<__bl>, u16 _addr<__si>, u16 _words_cnt<__cx> );
 
-/* void mpd_load_vram( u16 _vaddr, far void* _addr, u16 _offset, u16 _words_cnt ) */
-#pragma fastcall mpd_load_vram( word __di, farptr __bl:__si, word __ax, word __cx )
+void	__fastcall __macro mpd_load_vram( u16 _vaddr<__di>, u8 far* _addr<__bl:__si>, u16 _offset<__ax>, u16 _words_cnt<__cx> );
 
-/* void mpd_load_palette( u8 _sub_plt, far void* _addr, u16 _offset, u8 _sub_plts_cnt ) */
-#pragma fastcall mpd_load_palette( byte __bh, farptr __bl:__si, word __dx, byte __cl )
+void	__fastcall __macro mpd_load_palette( u8 _sub_plt<__bh>, u8 far* _addr<__bl:__si>, u16 _offset<__dx>, u8 _sub_plts_cnt<__cl> );
 
-/* void mpd_load_bat( u16 _vaddr, far void* _addr, u16 _offset, u8 _width, u8 _height ) */
-#pragma fastcall mpd_load_bat( word __di, farptr __bl:__si, word __ax, byte __cl, byte __ch )
-
-/* u16 mpd_farpeekw( far void* _addr, u16 _offset )*/
-#pragma fastcall mpd_farpeekw( farptr __bl:__si, word __ax )
-
-/* u8 mpd_farpeekb( far void* _addr, u16 _offset )*/
-#pragma fastcall mpd_farpeekb( farptr __bl:__si, word __ax )
-
-/* u16 mpd_farpeekw( u8 _bank, u16 _addr, u16 _offset )*/
-#pragma fastcall mpd_farpeekw( byte __bl, word __si, word __ax )
-
-/* u8 mpd_farpeekb( u8 _bank, u16 _addr, u16 _offset )*/
-#pragma fastcall mpd_farpeekb( byte __bl, word __si, word __ax )
-
-/* void	mpd_farmemcpyb( u8 _bank, u16 _addr, u16 _offset, void* _dst_addr, u8 _size ) */
-#pragma	fastcall mpd_farmemcpyb( byte __bl, word __si, word __ax, word __dx, byte __bh )
-
-/* void mpd_memcpyb( u16 _src_addr, u16 _dst_addr, u8 _size ) */
-#pragma	fastcall mpd_memcpyb( word __ax, word __bx, byte __cl );
-
-/* void mpd_get_ptr24( far void* _addr, u8 _ind, void* _dst_addr ) */
-#pragma	fastcall mpd_get_ptr24( farptr __bl:__si, byte __al, word __dx )
+void	__fastcall __macro mpd_load_bat( u16 _vaddr<__di>, u8 far* _addr<__bl:__si>, u16 _offset<__ax>, u8 _width<__cl>, u8 _height<__ch> );
 
 // FOR INTERNAL USE:
 
@@ -577,8 +579,6 @@ __mtiirts	.ds 1	; $60 rts
 
 	.code
 
-	.procgroup
-
 ; *** farptr += offset ***
 ;
 ; IN:
@@ -623,16 +623,15 @@ __mtiirts	.ds 1	; $60 rts
 
 	.endp
 
-;// u16 mpd_farpeekw( byte __bl / bank, word __si / addr, word __ax / offset )
+;u16 __fastcall __macro mpd_farpeekw( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax> )
 ;
-	.proc _mpd_farpeekw.3
+	_mpd_farpeekw.3: .macro
 
 	call _mpd_farpeekw.2
-	rts
 
-	.endp
+	.endm
 
-;// u16 mpd_farpeekw( farptr __bl:__si / addr, word __ax / offset )
+;u16 __fastcall mpd_farpeekw( u16 far* _addr<__bl:__si>, u16 _offset<__ax> )
 ;
 	.proc _mpd_farpeekw.2
 
@@ -664,20 +663,19 @@ __mtiirts	.ds 1	; $60 rts
 
 	.endp
 
-;// u8 mpd_farpeekb( byte __bl / bank, word __si / addr, word __ax / offset )
+;[UNUSED] u8 __fastcall __macro mpd_farpeekb( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax> )
 ;
-	.proc _mpd_farpeekb.3
+;	_mpd_farpeekb.3: .macro
+;
+;	lda <__si + 1
+;	and #$1f
+;	sta <__si + 1
+;
+;	call _mpd_farpeekb.2
+;
+;	.endm
 
-	lda <__si + 1
-	and #$1f
-	sta <__si + 1
-
-	call _mpd_farpeekb.2
-	rts
-
-	.endp
-
-;// u8 mpd_farpeekb( farptr __bl:__si / addr, word __ax / offset )
+;u8 __fastcall mpd_farpeekb( u8 far* _addr<__bl:__si>, u16 _offset<__ax> )
 ;
 	.proc _mpd_farpeekb.2
 
@@ -694,7 +692,7 @@ __mtiirts	.ds 1	; $60 rts
 
 	.endp
 
-;// void mpd_farmemcpy( byte __bl / bank, word __si / addr, word __ax / offset, word __dx / dst_addr, byte __bh / size )
+;void __fastcall mpd_farmemcpyb( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax>, void* _dst_addr<__dx>, u8 _size<__bh> )
 ;
 	.proc _mpd_farmemcpyb.5
 
@@ -719,9 +717,9 @@ __mtiirts	.ds 1	; $60 rts
 
 	.endp
 
-;// void mpd_memcpyb( word __ax / src_addr, word __bx / dst_addr, byte __cl / size ) */
+;void __fastcall __macro mpd_memcpyb( u16* _src_addr<__ax>, u16 _dst_addr<__bx>, u8 _size<__cl> )
 ;
-	.proc _mpd_memcpyb.3
+	_mpd_memcpyb.3: .macro
 
 	stw <__ax, __mbsrci
 	stw <__bx, __mbdsti
@@ -730,11 +728,11 @@ __mtiirts	.ds 1	; $60 rts
 	sta __mbleni
 	stz __mbleni + 1
 
-	jmp __mTII
+	jsr __mTII
 
-	.endp
+	.endm
 
-;// void mpd_get_ptr24( farptr __bl:__si / addr, byte __al / index, word __dx / dst_addr )
+;void __fastcall mpd_get_ptr24( void far* _addr<__bl:__si>, u8 _ind<__al>, void* _dst_addr<__dx> )
 ;
 	.proc _mpd_get_ptr24.3
 
@@ -770,26 +768,27 @@ __mtiirts	.ds 1	; $60 rts
 
 	.endp
 
-	.endprocgroup
-
-;// void mpd_load_vram2( word __di / vaddr, byte __bl / bank, word __si / addr, word __cx / words_cnt )
+; void __fastcall __macro mpd_load_vram2( u16 _vaddr<__di>, u8 _bank<__bl>, u16 _addr<__si>, u16 _words_cnt<__cx> )
 ;
-_mpd_load_vram2.4:
-	jmp _load_vram.3
+	_mpd_load_vram2.4: .macro
 
-;// void mpd_load_vram( word __di / vaddr, farptr __bl:__si / addr, word __ax / offset, word __cx / words_cnt )
+	jsr _load_vram.3
+	
+	.endm
+
+;void __fastcall __macro mpd_load_vram( u16 _vaddr<__di>, u8* _addr<__bl:__si>, u16 _offset<__ax>, u16 _words_cnt<__cx> )
 ;
-	.proc _mpd_load_vram.4
+	_mpd_load_vram.4: .macro
 
 	call _mpd_farptr_add_offset
 
-	jmp _load_vram.3
+	jsr _load_vram.3
 
-	.endp
+	.endm
 
-;// void mpd_load_palette( byte __bh / sub_plt, farptr __bl:__si / addr, word __dx / offset, byte __cl / sub_plts_cnt )
+;void __fastcall __macro mpd_load_palette( u8 _sub_plt<__bh>, u8 far* _addr<__bl:__si>, u16 _offset<__dx>, u8 _sub_plts_cnt<__cl> )
 ;
-	.proc _mpd_load_palette.4
+	_mpd_load_palette.4: .macro
 
 	stw <__dx, <__ax
 	call _mpd_farptr_add_offset
@@ -797,19 +796,19 @@ _mpd_load_vram2.4:
 	lda <__bh
 	sta <__al
 
-	jmp _load_palette.3
+	jsr _load_palette.3
 
-	.endp
+	.endm
 
-;// void mpd_load_bat( word __di / vaddr, farptr __bl:__si / addr, word __ax / offset, byte __cl / width, byte __ch / height )
+;void __fastcall __macro mpd_load_bat( u16 _vaddr<__di>, u8 far* _addr<__bl:__si>, u16 _offset<__ax>, u8 _width<__cl>, u8 _height<__ch> )
 ;	
-	.proc _mpd_load_bat.5
+	_mpd_load_bat.5: .macro
 
 	call _mpd_farptr_add_offset
 
-	jmp _load_bat.4
+	jsr _load_bat.4
 
-	.endp
+	.endm
 
 #endasm
 
