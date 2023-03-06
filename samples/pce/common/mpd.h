@@ -9,7 +9,7 @@
 History:
 
 2023.03.05 - performance-critical functions: map scrolling and getting a map tile property were wrapped with .procgroup/.endprocgroup
-2023.03.05 - reduced the number of HuC functions (.proc/.endp) [25]:
+2023.03.05 - reduced the number of HuC functions (.proc/.endp) [26]:
 		[inlined]	mpd_get_CR_val()
 		[inlined]	__mpd_get_entity_by_offs(...)
 		[inlined]	__mpd_get_entity_by_addr(...)
@@ -35,6 +35,7 @@ History:
 		[unused]	mpd_farpeekb.3(...)
 		[macro]		mpd_memcpyb(...)
 		[macro]		mpd_farpeekb.2(...)
+		[macro]		__mpd_calc_skip_CHRs_cnt(...)
 2023.03.01 - optimized use of local variables and function arguments
 2023.02.26 - fixed 'mpd_load_palette' to work with all palette slots
 2023.02.25 - the mpd_ax-fx variables moved to zero-page
@@ -472,8 +473,59 @@ void	__fastcall __macro mpd_load_bat( u16 _vaddr<__di>, u8 far* _addr<__bl:__si>
 u16	__fastcall __mpd_get_VRAM_addr( u16 _x<__ax>, u16 _y<acc> );
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-u8	__fastcall __mpd_calc_skip_CHRs_cnt( u8 _pos<acc> );
-#endif
+u8	__fastcall __macro __mpd_calc_skip_CHRs_cnt( u8 _pos<acc> );
+
+#if	FLAG_TILES4X4
+// HuC	return ( ( ( _pos >> 4 ) & 0x01 ) << 1 ) + ( ( _pos >> 3 ) & 0x01 );
+#asm
+	___mpd_calc_skip_CHRs_cnt.1: .macro
+
+	txa
+	tay
+
+	lsr a
+	lsr a
+	lsr a
+	lsr a
+	and #1
+	asl a
+
+	sta <__al		; ( ( ( _pos >> 4 ) & 0x01 ) << 1 )
+
+	tya
+
+	lsr a
+	lsr a
+	lsr a
+	and #1			; ( ( _pos >> 3 ) & 0x01 )
+
+	clc
+	adc <__al
+
+	tax
+	cla
+
+	.endm
+#endasm
+#else
+// HuC	return ( ( _pos >> 3 ) & 0x01 );
+#asm
+	___mpd_calc_skip_CHRs_cnt.1: .macro
+
+	txa
+
+	lsr a
+	lsr a
+	lsr a
+	and #1
+
+	tax
+	cla
+
+	.endm
+#endasm
+#endif	//FLAG_TILES4X4
+#endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 /* asm implementations */
 
@@ -2635,63 +2687,6 @@ void	__mpd_draw_down_tiles_row()
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-
-// u8	__mpd_calc_skip_CHRs_cnt( u8 _pos<acc> )
-
-#if	FLAG_TILES4X4
-// HuC	return ( ( ( _pos >> 4 ) & 0x01 ) << 1 ) + ( ( _pos >> 3 ) & 0x01 );
-#asm
-	.proc ___mpd_calc_skip_CHRs_cnt.1
-
-	txa
-	tay
-
-	lsr a
-	lsr a
-	lsr a
-	lsr a
-	and #1
-	asl a
-
-	sta <__al		; ( ( ( _pos >> 4 ) & 0x01 ) << 1 )
-
-	tya
-
-	lsr a
-	lsr a
-	lsr a
-	and #1			; ( ( _pos >> 3 ) & 0x01 )
-
-	clc
-	adc <__al
-
-	tax
-	cla
-
-	rts
-
-	.endp
-#endasm
-#else
-// HuC	return ( ( _pos >> 3 ) & 0x01 );
-#asm
-	.proc ___mpd_calc_skip_CHRs_cnt.1
-
-	txa
-
-	lsr a
-	lsr a
-	lsr a
-	and #1
-
-	tax
-	cla
-
-	rts
-
-	.endp
-#endasm
-#endif
 
 void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt, u8 _skip_CHRs_cnt )
 #else
