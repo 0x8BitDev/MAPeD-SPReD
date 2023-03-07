@@ -1116,6 +1116,7 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 /*		     */
 /*********************/
 
+#define	DBG_COLOR_PRE_ROW_COL_FILLING	320	// light green
 #define	DBG_COLOR_ROW_COL_FILLING	256	// green
 #define	DBG_COLOR_DISP_LIST_FLUSH	184	// red
 #define	DBG_COLOR_DRAW_SCREEN		4	// blue
@@ -1123,6 +1124,7 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 
 #define	DBG_BORDER_COLOR_GET_TILE_PROP		DBG_MPD_BORDER_COLOR( DBG_COLOR_GET_TILE_PROP )
 #define	DBG_BORDER_COLOR_DRAW_SCREEN		DBG_MPD_BORDER_COLOR( DBG_COLOR_DRAW_SCREEN )
+#define	DBG_BORDER_COLOR_PRE_ROW_COL_FILLING	DBG_MPD_BORDER_COLOR( DBG_COLOR_PRE_ROW_COL_FILLING )
 #define	DBG_BORDER_COLOR_ROW_COL_FILLING	DBG_MPD_BORDER_COLOR( DBG_COLOR_ROW_COL_FILLING )
 #define	DBG_BORDER_COLOR_RESET			DBG_MPD_BORDER_COLOR( 0 )
 
@@ -2305,7 +2307,7 @@ void	mpd_move_down()
 	}
 }
 
-#define	mpd_get_curr_screen_ind()	( ( mpd_scroll_y / ScrPixelsHeight ) * mpd_map_scr_width ) + ( mpd_scroll_x / ScrPixelsWidth )
+#define	mpd_get_curr_screen_ind()	( ( ( mpd_scroll_y / ScrPixelsHeight ) * mpd_map_scr_width ) + ( mpd_scroll_x / ScrPixelsWidth ) )
 //u8	mpd_get_curr_screen_ind()
 //{
 //	return ( ( mpd_scroll_y / ScrPixelsHeight ) * mpd_map_scr_width ) + ( mpd_scroll_x / ScrPixelsWidth );
@@ -2410,7 +2412,7 @@ void	mpd_update_screen()
 #asm
 .ifdef MPD_DEBUG
 #endasm
-	DBG_BORDER_COLOR_ROW_COL_FILLING
+	DBG_BORDER_COLOR_PRE_ROW_COL_FILLING
 #asm
 .endif
 #endasm
@@ -2834,6 +2836,14 @@ void	__mpd_fill_row_data( u16 _vaddr, u8 _CHRs_cnt )
 
 void	__mpd_fill_row_column_data()
 {
+#asm
+.ifdef MPD_DEBUG
+#endasm
+	DBG_BORDER_COLOR_ROW_COL_FILLING
+#asm
+.endif
+#endasm
+
 #if	FLAG_TILES4X4
 
 #if	FLAG_MODE_BIDIR_SCROLL
