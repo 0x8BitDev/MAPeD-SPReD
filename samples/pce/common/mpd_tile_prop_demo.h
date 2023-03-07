@@ -44,6 +44,9 @@
 u8	__cursor_x	= 0;
 u8	__cursor_y	= 0;
 
+#define CURSOR_CENTER_X		( __cursor_x + 8 )
+#define CURSOR_CENTER_Y		( __cursor_y + 8 )
+
 /* property digits */
 
 #incspr(digits, "../../../common/digits_cursor.pcx", 0, 0, 4, 4)
@@ -66,9 +69,9 @@ s8	__map_ind		= -1;
 void	__update_property()
 {
 #if	FLAG_MODE_MULTIDIR_SCROLL
-	__show_property_val( mpd_get_property( mpd_scroll_x + __cursor_center_x(), mpd_scroll_y + __cursor_center_y() ) );
+	__show_property_val( mpd_get_property( mpd_scroll_x + CURSOR_CENTER_X, mpd_scroll_y + CURSOR_CENTER_Y ) );
 #else
-	__show_property_val( mpd_get_property( __cursor_center_x(), __cursor_center_y() ) );
+	__show_property_val( mpd_get_property( CURSOR_CENTER_X, CURSOR_CENTER_Y ) );
 #endif
 }
 
@@ -218,16 +221,6 @@ void	__display_next_map()
 	disp_on();
 }
 
-u8	__cursor_center_x()
-{
-	return __cursor_x + 8;
-}
-
-u8	__cursor_center_y()
-{
-	return __cursor_y + 8;
-}
-
 void	__update_cursor_pos()
 {
  	spr_set( CURSOR_SPR );
@@ -313,7 +306,7 @@ void	__cursor_move_left()
 
 	__cursor_x -= SCROLL_STEP;
 
-	if( __cursor_center_x() < SCR_MOVE_BORDER )
+	if( CURSOR_CENTER_X < SCR_MOVE_BORDER )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 	{
 		tmp_scroll_x = mpd_scroll_x;
@@ -350,7 +343,7 @@ void	__cursor_move_right()
 
 	__cursor_x += SCROLL_STEP;
 
-	if( __cursor_center_x() > ( ScrPixelsWidth - SCR_MOVE_BORDER ) )
+	if( CURSOR_CENTER_X > ( ScrPixelsWidth - SCR_MOVE_BORDER ) )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 	{
 		tmp_scroll_x = mpd_scroll_x;
@@ -387,7 +380,7 @@ void	__cursor_move_up()
 
 	__cursor_y -= SCROLL_STEP;
 
-	if( __cursor_center_y() < SCR_MOVE_BORDER )
+	if( CURSOR_CENTER_Y < SCR_MOVE_BORDER )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 	{
 		tmp_scroll_y = mpd_scroll_y;
@@ -424,7 +417,7 @@ void	__cursor_move_down()
 
 	__cursor_y += SCROLL_STEP;
 
-	if( __cursor_center_y() > ( ScrPixelsHeight - SCR_MOVE_BORDER ) )
+	if( CURSOR_CENTER_Y > ( ScrPixelsHeight - SCR_MOVE_BORDER ) )
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 	{
 		tmp_scroll_y = mpd_scroll_y;
