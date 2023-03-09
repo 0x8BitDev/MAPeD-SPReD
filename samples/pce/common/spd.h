@@ -16,9 +16,32 @@ __TIA_LEN	= ram_hdwr_tia_size
 __TIA_RTS	= ram_hdwr_tia_rts
 #endasm
 
-/*/	SPD-render v0.6
+/*/	SPD-render v0.7
 History:
 
+v0.7
+2023.03.07 - reduced the number of HuC functions (.proc/.endp) [21]:
+		[internal routine]	_calc_SG_pattern_offset
+		[internal routine]	_load_SG_data
+		[internal routine]	_spd_farptr_add_offset
+		[macro]			spd_init()
+		[macro]			spd_SG_bank_get_ind()
+		[macro]			spd_sprite_params(...)
+		[macro]			spd_get_dbl_buff_ind()
+		[macro]			spd_SATB_get_pos()
+		[macro]			spd_SATB_set_pos(...)
+		[macro]			spd_SATB_to_VRAM()
+		[macro]			spd_set_palette_LT(...)
+		[macro]			spd_get_palette_LT()
+		[macro]			spd_set_pri_LT(...)
+		[macro]			spd_set_x_LT(...)
+		[macro]			spd_get_x_LT()
+		[macro]			spd_set_y_LT(...)
+		[macro]			spd_get_y_LT()
+		[macro]			spd_show_LT()
+		[macro]			spd_hide_LT()
+		[macro]			spd_SG_data_params(...)
+		[macro]			spd_copy_SG_data_to_VRAM.4(...)
 2023.02.19 - 'spd_change_palette' changed the input parameter (__al->acc)
 
 v0.6
@@ -436,7 +459,7 @@ SPD_TII_ATTR_XY	; speeds up transformation of meta-sprite attributes a bit, but 
 	That`s it! :)
 /*/
 
-const unsigned char spd_ver[] = { "S", "P", "D", "0", "6", 0 };
+const unsigned char spd_ver[] = { "S", "P", "D", "0", "7", 0 };
 
 /* SPD flag(s) */
 
@@ -470,13 +493,13 @@ const unsigned char spd_ver[] = { "S", "P", "D", "0", "6", 0 };
 
 /* main SPD-render routines */
 
-void		__fastcall spd_init();
+void		__fastcall __macro spd_init();
 
 // SATB functions
-void		__fastcall spd_SATB_set_pos( unsigned char _pos<acc> );// _pos: 0-63
-unsigned char	__fastcall spd_SATB_get_pos();
+void		__fastcall __macro spd_SATB_set_pos( unsigned char _pos<acc> );// _pos: 0-63
+unsigned char	__fastcall __macro spd_SATB_get_pos();
 void		__fastcall spd_SATB_clear_from( unsigned char _pos<acc> );// _pos: 0-63
-void		__fastcall spd_SATB_to_VRAM();
+void		__fastcall __macro spd_SATB_to_VRAM();
 void		__fastcall spd_SATB_to_VRAM( unsigned char _spr_cnt<acc> );// _spr_cnt: 1-64
 
 // meta-sprites
@@ -487,28 +510,28 @@ void		__fastcall spd_change_palette( unsigned char _plt_ind<acc> );
 // simple sprites
 unsigned char	__fastcall spd_SATB_set_sprite_LT( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: OUT: 1-Ok!, 1|SPD_SG_NEW_DATA
 unsigned char	__fastcall spd_SATB_set_sprite_LT( unsigned char far* _frame_addr<__bl:__si>, unsigned short _x<__ax>, unsigned short _y<__cx> );// OUT: 1-Ok!, 1|SPD_SG_NEW_DATA
-void		__fastcall spd_set_palette_LT( unsigned char _plt_ind<__al> );
-unsigned char	__fastcall spd_get_palette_LT();
-void		__fastcall spd_set_pri_LT( unsigned char _val<__al> );
-void		__fastcall spd_set_x_LT( unsigned short _x<acc> );
-unsigned short	__fastcall spd_get_x_LT();
-void		__fastcall spd_set_y_LT( unsigned short _y<acc> );
-unsigned short	__fastcall spd_get_y_LT();
-void		__fastcall spd_show_LT();
-void		__fastcall spd_hide_LT();
+void		__fastcall __macro spd_set_palette_LT( unsigned char _plt_ind<__al> );
+unsigned char	__fastcall __macro spd_get_palette_LT();
+void		__fastcall __macro spd_set_pri_LT( unsigned char _val<__al> );
+void		__fastcall __macro spd_set_x_LT( unsigned short _x<acc> );
+unsigned short	__fastcall __macro spd_get_x_LT();
+void		__fastcall __macro spd_set_y_LT( unsigned short _y<acc> );
+unsigned short	__fastcall __macro spd_get_y_LT();
+void		__fastcall __macro spd_show_LT();
+void		__fastcall __macro spd_hide_LT();
 
 // common functions
-void		__fastcall spd_sprite_params( unsigned short far* _SG_data<__bl:__si>, unsigned short _VADDR<__dx>, unsigned char _flags<__al>, unsigned char _last_SG_bank_ind<__ah> );
-unsigned char	__fastcall spd_SG_bank_get_ind();
+void		__fastcall __macro spd_sprite_params( unsigned short far* _SG_data<__bl:__si>, unsigned short _VADDR<__dx>, unsigned char _flags<__al>, unsigned char _last_SG_bank_ind<__ah> );
+unsigned char	__fastcall __macro spd_SG_bank_get_ind();
 
-void		__fastcall spd_SG_data_params( unsigned short _src_addr<__ax>, unsigned short _src_bank<__bx>, unsigned short _dst_addr<__cx>, unsigned short _len<__dx> );
-void		__fastcall spd_copy_SG_data_to_VRAM( unsigned short _src_addr<__ax>, unsigned char _src_bank<__bl>, unsigned short _dst_addr<__dx>, unsigned short _len<__cx> );
+void		__fastcall __macro spd_SG_data_params( unsigned short _src_addr<__ax>, unsigned short _src_bank<__bx>, unsigned short _dst_addr<__cx>, unsigned short _len<__dx> );
+void		__fastcall __macro spd_copy_SG_data_to_VRAM( unsigned short _src_addr<__ax>, unsigned char _src_bank<__bl>, unsigned short _dst_addr<__dx>, unsigned short _len<__cx> );
 void		__fastcall spd_copy_SG_data_to_VRAM( unsigned char far* _frames_data<__bl:__si>, unsigned char _spr_ind<__bh> );
 void		__fastcall spd_copy_SG_data_to_VRAM( unsigned char far* _frame_addr<__bl:__si> );
 
 void		__fastcall spd_dbl_buff_VRAM_addr( unsigned short _VADDR<__ax>, unsigned short _dbl_buff_ind<acc> );
 void		__fastcall spd_alt_VRAM_addr( unsigned short _VADDR<__ax> );
-unsigned char	__fastcall spd_get_dbl_buff_ind();
+unsigned char	__fastcall __macro spd_get_dbl_buff_ind();
 
 #asm
 
@@ -791,7 +814,7 @@ __tiirts	.ds 1	; $60 rts
 
 ;// spd_init()
 ;
-	.proc _spd_init
+	.macro _spd_init
 
 	cla
 	sta <__inner_flags
@@ -803,13 +826,11 @@ __tiirts	.ds 1	; $60 rts
 	lda #$60
 	sta __tiirts
 
-	rts
-
-	.endp
+	.endm
 
 ;// spd_sprite_params( farptr __bl:__si / SG_data, word __dx / vaddr, byte __al / flags, byte __ah / last_SG_bank_ind )
 ;
-	.proc _spd_sprite_params.4
+	.macro _spd_sprite_params.4
 
 	stw <__si, <__spr_SG_data_addr
 	lda <__bl
@@ -823,22 +844,18 @@ __tiirts	.ds 1	; $60 rts
 	lda <__ah
 	sta <__last_SG_bank
 
-	rts
-
-	.endp
+	.endm
 
 ;// spd_SG_bank_get_ind()
 ;
-	.proc _spd_SG_bank_get_ind
+	.macro _spd_SG_bank_get_ind
 
 	ldx <__last_SG_bank
 	cla
 
-	rts
+	.endm
 
-	.endp
-
-	.procgroup
+	.procgroup	spd_dbl_buffer_funcs
 
 ;// spd_dbl_buff_VRAM_addr( word __ax / vram_addr, word acc / dbl_buff_ind )
 ;
@@ -868,7 +885,7 @@ __tiirts	.ds 1	; $60 rts
 	stw <__ax, <__spr_VADDR_dbl
 	stw <__spr_VADDR, <__bx
 
-	call _calc_SG_pattern_offset
+	jsr _calc_SG_pattern_offset
 
 	stw <__bx, <__spr_dbf_SG_offset
 
@@ -891,7 +908,7 @@ __tiirts	.ds 1	; $60 rts
 	stw <__spr_VADDR, <__bx
 	stw <__ax, <__spr_VADDR			; replace the sprite VADDR with the alternative one
 
-	call _calc_SG_pattern_offset
+	jsr _calc_SG_pattern_offset
 
 	stw <__bx, <__spr_alt_SG_offset
 
@@ -905,7 +922,7 @@ __tiirts	.ds 1	; $60 rts
 ;
 ; OUT:	__bx - pattern index offset
 ;
-	.proc _calc_SG_pattern_offset
+_calc_SG_pattern_offset:
 
 	spd_sub_word_from_word <__ax, <__bx
 
@@ -930,27 +947,21 @@ __tiirts	.ds 1	; $60 rts
 
 	rts
 
-	.endp
-
 	.endprocgroup
 
 ;// unsigned char spd_get_dbl_buff_ind()
 ;
-	.proc _spd_get_dbl_buff_ind
+	.macro _spd_get_dbl_buff_ind
 
 	spd_inner_flags_dbl_buff_state
 	tax
 	cla
 	
-	rts
-
-	.endp
-
-	.procgroup
+	.endm
 
 ;// spd_SATB_set_pos( byte acc / pos )
 ;
-	.proc _spd_SATB_set_pos.1
+	.macro _spd_SATB_set_pos.1
 
 	txa
 	and #SATB_SIZE - 1		; clamp to 0-63
@@ -961,18 +972,14 @@ __tiirts	.ds 1	; $60 rts
 
 	spd_calc_SATB_pos <__spr_SATB_addr, #__SATB
 
-	rts
+	.endm
 
-	.endp
-
-	.proc _spd_SATB_get_pos
+	.macro _spd_SATB_get_pos
 
 	ldx <__SATB_pos
 	cla
 
-	rts
-
-	.endp
+	.endm
 
 ;// spd_SATB_clear_from( byte acc / pos )
 ;
@@ -1050,14 +1057,12 @@ __tiirts	.ds 1	; $60 rts
 
 ;// spd_SATB_to_VRAM()
 ;
-	.proc _spd_SATB_to_VRAM
+	.macro _spd_SATB_to_VRAM
 
 	ldx #SATB_SIZE
 	call _spd_SATB_to_VRAM.1
 
-	rts
-
-	.endp
+	.endm
 
 ;// spd_SATB_to_VRAM( unsigned char acc / spr_cnt )
 ;
@@ -1094,9 +1099,7 @@ __tiirts	.ds 1	; $60 rts
 
 	.endp
 
-	.endprocgroup
-
-	.procgroup
+	.procgroup	spd_meta_sprite_LT_funcs
 
 ;// spd_change_palette( byte acc / plt_ind )
 ;
@@ -1136,7 +1139,7 @@ __tiirts	.ds 1	; $60 rts
 
 ;// spd_set_palette_LT( byte __al / plt_ind )
 ;
-	.proc _spd_set_palette_LT.1
+	.macro _spd_set_palette_LT.1
 
 	ldy #6
 	lda [<__spr_SATB_addr], y
@@ -1144,13 +1147,11 @@ __tiirts	.ds 1	; $60 rts
 	ora <__al
 	sta [<__spr_SATB_addr], y
 
-	rts
-
-	.endp
+	.endm
 
 ;// unsigned char spd_get_palette_LT()
 ;
-	.proc _spd_get_palette_LT
+	.macro _spd_get_palette_LT
 
 	ldy #6
 	lda [<__spr_SATB_addr], y
@@ -1158,13 +1159,11 @@ __tiirts	.ds 1	; $60 rts
 	tax
 	cla
 
-	rts
-
-	.endp
+	.endm
 
 ;// spd_set_pri_LT( byte __al / val )
 ;
-	.proc _spd_set_pri_LT.1
+	.macro _spd_set_pri_LT.1
 
 	ldy #6
 	lda [<__spr_SATB_addr], y
@@ -1172,12 +1171,10 @@ __tiirts	.ds 1	; $60 rts
 	ora <__al
 	sta [<__spr_SATB_addr], y
 
-	rts
-
-	.endp
+	.endm
 
 ;// spd_set_x_LT( word acc / x )
-	.proc _spd_set_x_LT.1
+	.macro _spd_set_x_LT.1
 
 	sax				;3
 
@@ -1193,12 +1190,10 @@ __tiirts	.ds 1	; $60 rts
 	iny				;2
 	sta [<__spr_SATB_addr], y	;7 = 29
 
-	rts
-
-	.endp
+	.endm
 
 ;// unsigned short spd_get_x_LT()
-	.proc _spd_get_x_LT
+	.macro _spd_get_x_LT
 
 	ldy #2				;2
 	lda [<__spr_SATB_addr], y	;7
@@ -1210,12 +1205,10 @@ __tiirts	.ds 1	; $60 rts
 	lda [<__spr_SATB_addr], y	;7
 	sbc #0				;2 = 26
 
-	rts
-
-	.endp
+	.endm
 
 ;// spd_set_y_LT( word acc / y )
-	.proc _spd_set_y_LT.1
+	.macro _spd_set_y_LT.1
 
 	sax				;3
 
@@ -1230,12 +1223,10 @@ __tiirts	.ds 1	; $60 rts
 	ldy #1				;2
 	sta [<__spr_SATB_addr], y	;7 = 27
 
-	rts
-
-	.endp
+	.endm
 
 ;// unsigned short spd_get_y_LT()
-	.proc _spd_get_y_LT
+	.macro _spd_get_y_LT
 
 	lda [<__spr_SATB_addr]		;4
 	sec				;2
@@ -1246,33 +1237,27 @@ __tiirts	.ds 1	; $60 rts
 	lda [<__spr_SATB_addr], y	;7
 	sbc #0				;2 = 21
 
-	rts
-
-	.endp
+	.endm
 
 ;// spd_show_LT()
-	.proc _spd_show_LT
+	.macro _spd_show_LT
 
 	ldy #1
 	lda [<__spr_SATB_addr], y
 	and #1
 	sta [<__spr_SATB_addr], y
 
-	rts
-
-	.endp
+	.endm
 
 ;// spd_hide_LT()
-	.proc _spd_hide_LT
+	.macro _spd_hide_LT
 
 	ldy #1
 	lda [<__spr_SATB_addr], y
 	ora #2
 	sta [<__spr_SATB_addr], y
 
-	rts
-
-	.endp
+	.endm
 
 ; *** farptr += offset ***
 ;
@@ -1282,7 +1267,7 @@ __tiirts	.ds 1	; $60 rts
 ; __bl - bank number
 ; __si - address
 ;
-	.proc _spd_farptr_add_offset
+_spd_farptr_add_offset:
 
 	; add an offset
 
@@ -1318,8 +1303,6 @@ __tiirts	.ds 1	; $60 rts
 	
 	rts
 
-	.endp
-
 ;// spd_SATB_push_sprite( farptr __bl:__si / addr, byte __bh / index, word __ax / x_pos, word __cx / y_pos )
 ;
 	.proc _spd_SATB_push_sprite.4
@@ -1332,7 +1315,7 @@ __tiirts	.ds 1	; $60 rts
 	ldy <__bh
 	spd_mul3_y <__dx
 
-	call _spd_farptr_add_offset
+	jsr _spd_farptr_add_offset
 
 	jsr map_data
 
@@ -1489,9 +1472,7 @@ _push_SG_data:
 	cpy <__last_SG_bank
 	beq .ignore_SG_data
 
-	call _load_SG_data
-
-	rts
+	jmp _load_SG_data
 
 .ignore_SG_data:
 
@@ -1776,7 +1757,7 @@ __attr_transf_XY_IND_dbf:
 
 	; load SG data to VRAM
 
-	.proc _load_SG_data
+_load_SG_data:
 
 	sty <__last_SG_bank
 
@@ -1788,7 +1769,7 @@ __attr_transf_XY_IND_dbf:
 	lda <__spr_SG_data_bank
 	sta <__bl
 
-	call _spd_farptr_add_offset
+	jsr _spd_farptr_add_offset
 
 	jsr map_data			; map SG data array
 
@@ -1874,26 +1855,22 @@ __attr_transf_XY_IND_dbf:
 	stw __SG_DATA_LEN, <__ax
 	spd_stw_zpii <__cx, <__ax
 
-	jmp .exit
-
-	.endp
+	bra .exit
 
 ;// spd_SG_data_params( word __ax / src_addr, word __bx / src_bank, word __cx / dst_addr, word __dx / len )
 ;
-	.proc _spd_SG_data_params.4
+	.macro _spd_SG_data_params.4
 
 	stw <__ax, __SG_DATA_SRC_ADDR
 	stw <__bx, __SG_DATA_SRC_BANK
 	stw <__cx, __SG_DATA_DST_ADDR
 	stw <__dx, __SG_DATA_LEN
 
-	rts
-
-	.endp
+	.endm
 
 ;// spd_copy_SG_data_to_VRAM( word __ax / src_addr, byte __bl / src_bank, word __dx / dst_addr, word __cx / len )
 ;
-	.proc _spd_copy_SG_data_to_VRAM.4
+	.macro _spd_copy_SG_data_to_VRAM.4
 
 	stw <__ax, <__si
 	stw <__dx, <__di
@@ -1904,12 +1881,10 @@ __attr_transf_XY_IND_dbf:
 	jsr load_vram
 
 	spd_dbg_border_black
-
-	rts
 .else
-	jmp load_vram
+	jsr load_vram
 .endif
-	.endp
+	.endm
 
 ;// spd_copy_SG_data_to_VRAM( farptr __bl:__si / addr, byte __bh / index )
 ;
@@ -1920,7 +1895,7 @@ __attr_transf_XY_IND_dbf:
 	ldy <__bh
 	spd_mul3_y <__dx
 
-	call _spd_farptr_add_offset
+	jsr _spd_farptr_add_offset
 
 	jsr map_data
 
@@ -1955,9 +1930,7 @@ __attr_transf_XY_IND_dbf:
 
 	jsr unmap_data
 
-	call _load_SG_data
-
-	rts
+	jmp _load_SG_data
 
 	.endp
 
@@ -1974,7 +1947,7 @@ __attr_transf_XY_IND_dbf:
 	ldy <__bh
 	spd_mul3_y <__dx
 
-	call _spd_farptr_add_offset
+	jsr _spd_farptr_add_offset
 
 	jsr map_data
 
@@ -2188,7 +2161,7 @@ __attr_transf_XY_IND_dbf:
 	lda <__spr_SG_data_bank
 	sta <__bl
 
-	call _spd_farptr_add_offset
+	jsr _spd_farptr_add_offset
 
 	jsr map_data			; map SG data array
 
