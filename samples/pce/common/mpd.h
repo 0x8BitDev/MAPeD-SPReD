@@ -5,11 +5,12 @@
 //
 //######################################################################################################
 
-/*/	MPD-render v0.7
+/*/	MPD-render v0.8
 History:
 
+v0.8
 2023.03.05 - performance-critical functions: map scrolling and getting a map tile property were wrapped with .procgroup/.endprocgroup
-2023.03.05 - reduced the number of HuC functions (.proc/.endp) [26]:
+2023.03.05 - reduced the number of HuC functions (.proc/.endp) [25]:
 		[inlined]	mpd_get_CR_val()
 		[inlined]	__mpd_get_entity_by_offs(...)
 		[inlined]	__mpd_get_entity_by_addr(...)
@@ -21,7 +22,6 @@ History:
 		[#define]	mpd_get_start_screen(...)
 		[#define]	mpd_init_base_ent_arr()
 		[#define]	mpd_get_base_ent_cnt()
-		[#define]	mpd_draw_CHR(...)
 		[#define]	__mpd_draw_block2x2(...)
 		[#define]	mpd_draw_screen_by_ind(...)
 		[#define]	mpd_draw_screen_by_data(...)
@@ -478,7 +478,7 @@ u8	__fastcall __macro __mpd_calc_skip_CHRs_cnt( u8 _pos<acc> );
 #if	FLAG_TILES4X4
 // HuC	return ( ( ( _pos >> 4 ) & 0x01 ) << 1 ) + ( ( _pos >> 3 ) & 0x01 );
 #asm
-	___mpd_calc_skip_CHRs_cnt.1: .macro
+	.macro ___mpd_calc_skip_CHRs_cnt.1
 
 	txa
 	tay
@@ -510,7 +510,7 @@ u8	__fastcall __macro __mpd_calc_skip_CHRs_cnt( u8 _pos<acc> );
 #else
 // HuC	return ( ( _pos >> 3 ) & 0x01 );
 #asm
-	___mpd_calc_skip_CHRs_cnt.1: .macro
+	.macro ___mpd_calc_skip_CHRs_cnt.1
 
 	txa
 
@@ -633,7 +633,7 @@ __mtiirts	.ds 1	; $60 rts
 
 ;u16 __fastcall __macro mpd_farpeekw( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax> )
 ;
-	_mpd_farpeekw.3: .macro
+	.macro _mpd_farpeekw.3
 
 	call _mpd_farpeekw.2
 
@@ -641,7 +641,7 @@ __mtiirts	.ds 1	; $60 rts
 
 ;u8 __fastcall __macro mpd_farpeekb( u8 far* _addr<__bl:__si>, u16 _offset<__ax> )
 ;
-	_mpd_farpeekb.2: .macro
+	.macro _mpd_farpeekb.2
 
 	call _mpd_farptr_add_offset
 
@@ -682,7 +682,7 @@ __mtiirts	.ds 1	; $60 rts
 
 ;void __fastcall __macro mpd_memcpyb( u16* _src_addr<__ax>, u16 _dst_addr<__bx>, u8 _size<__cl> )
 ;
-	_mpd_memcpyb.3: .macro
+	.macro _mpd_memcpyb.3
 
 	stw <__ax, __mbsrci
 	stw <__bx, __mbdsti
@@ -733,7 +733,7 @@ __mtiirts	.ds 1	; $60 rts
 
 ; void __fastcall __macro mpd_load_vram2( u16 _vaddr<__di>, u8 _bank<__bl>, u16 _addr<__si>, u16 _words_cnt<__cx> )
 ;
-	_mpd_load_vram2.4: .macro
+	.macro _mpd_load_vram2.4
 
 	jsr _load_vram.3
 
@@ -741,7 +741,7 @@ __mtiirts	.ds 1	; $60 rts
 
 ;void __fastcall __macro mpd_load_vram( u16 _vaddr<__di>, u8* _addr<__bl:__si>, u16 _offset<__ax>, u16 _words_cnt<__cx> )
 ;
-	_mpd_load_vram.4: .macro
+	.macro _mpd_load_vram.4
 
 	call _mpd_farptr_add_offset
 
@@ -751,7 +751,7 @@ __mtiirts	.ds 1	; $60 rts
 
 ;void __fastcall __macro mpd_load_palette( u8 _sub_plt<__bh>, u8 far* _addr<__bl:__si>, u16 _offset<__dx>, u8 _sub_plts_cnt<__cl> )
 ;
-	_mpd_load_palette.4: .macro
+	.macro _mpd_load_palette.4
 
 	stw <__dx, <__ax
 	call _mpd_farptr_add_offset
@@ -765,7 +765,7 @@ __mtiirts	.ds 1	; $60 rts
 
 ;void __fastcall __macro mpd_load_bat( u16 _vaddr<__di>, u8 far* _addr<__bl:__si>, u16 _offset<__ax>, u8 _width<__cl>, u8 _height<__ch> )
 ;	
-	_mpd_load_bat.5: .macro
+	.macro _mpd_load_bat.5
 
 	call _mpd_farptr_add_offset
 
@@ -1191,7 +1191,7 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 /*				*/
 /********************************/
 
-const u8 mpd_ver[] = { "M", "P", "D", "0", "7", 0 };
+const u8 mpd_ver[] = { "M", "P", "D", "0", "8", 0 };
 
 /* flags */
 
@@ -1293,11 +1293,10 @@ void	__mpd_update_data_offsets()
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
-#define	mpd_draw_CHR( _x, _y, _block2x2_ind, _CHR_ind )	mpd_load_vram( __mpd_get_VRAM_addr( _x, _y ), mpd_Attrs, __blocks_offset + ( _block2x2_ind << 3 ) + ( _CHR_ind << 1 ), 1 )
-//void	mpd_draw_CHR( u16 _x, u16 _y, u8 _block2x2_ind, u8 _CHR_ind )
-//{
-//	mpd_load_vram( __mpd_get_VRAM_addr( _x, _y ), mpd_Attrs, __blocks_offset + ( _block2x2_ind << 3 ) + ( _CHR_ind << 1 ), 1 );
-//}
+void	mpd_draw_CHR( u16 _x, u16 _y, u8 _block2x2_ind, u8 _CHR_ind )
+{
+	mpd_load_vram( __mpd_get_VRAM_addr( _x, _y ), mpd_Attrs, __blocks_offset + ( _block2x2_ind << 3 ) + ( _CHR_ind << 1 ), 1 );
+}
 
 void	mpd_draw_block2x2( u16 _x, u16 _y, u8 _block2x2_ind )
 {
@@ -2320,7 +2319,7 @@ void	mpd_move_down()
 /*				  */
 /**********************************/
 #asm
-	.procgroup	mpd_map_scrolling_tile_property_functions
+	.procgroup	mpd_map_scrolling_tile_property_funcs
 
 ; *** farptr += offset ***
 ;
