@@ -5,8 +5,10 @@
 //
 //######################################################################################################
 
-// external HuC data used by SPD library
+// external HuC/MagicKit data/procs used by SPD library
 #asm
+; data
+
 __SATB		= satb			; satb - HuC`s local satb
 __VRAM_SAT_ADDR	= $7f00			; VRAM-SAT address
 __TIA		= ram_hdwr_tia
@@ -14,12 +16,19 @@ __TIA_SRC	= ram_hdwr_tia_src
 __TIA_DST	= ram_hdwr_tia_dest
 __TIA_LEN	= ram_hdwr_tia_size
 __TIA_RTS	= ram_hdwr_tia_rts
+
+; procs:
+
+__MAP_DATA	= map_data
+__UNMAP_DATA	= unmap_data
+__LOAD_VRAM	= load_vram
 #endasm
 
 /*/	SPD-render v0.7
 History:
 
 v0.7
+2023.03.10 - added aliases for external dependencies: map_data, unmap_data, load_vram
 2023.03.07 - reduced the number of HuC functions (.proc/.endp) [21]:
 		[internal routine]	_calc_SG_pattern_offset
 		[internal routine]	_load_SG_data
@@ -799,12 +808,12 @@ __spr_SATB_addr:
 
 	.bss
 
-__SG_DATA_SRC_ADDR	.ds 2	; pointers
-__SG_DATA_SRC_BANK	.ds 2	; to
-__SG_DATA_DST_ADDR	.ds 2	; appropriate
-__SG_DATA_LEN		.ds 2	; data
+__SG_data_src_addr	.ds 2	; pointers
+__SG_data_src_bank	.ds 2	; to
+__SG_data_dst_addr	.ds 2	; appropriate
+__SG_data_len		.ds 2	; data
 
-__TII:		.ds 1	; $73 tii
+__tii:		.ds 1	; $73 tii
 __bsrci:	.ds 2
 __bdsti:	.ds 2
 __bleni:	.ds 2
@@ -822,7 +831,7 @@ __tiirts	.ds 1	; $60 rts
 	; init TII
 
 	lda #$73
-	sta __TII
+	sta __tii
 	lda #$60
 	sta __tiirts
 
@@ -1299,7 +1308,7 @@ _spd_farptr_add_offset:
 ;	tya		;2
 ;	and #$1f	;2 will be
 ;	ora #$60	;2 done in
-;	sta <__si+1	;4 map_data
+;	sta <__si+1	;4 __MAP_DATA
 	
 	rts
 
@@ -1317,7 +1326,7 @@ _spd_farptr_add_offset:
 
 	jsr _spd_farptr_add_offset
 
-	jsr map_data
+	jsr __MAP_DATA
 
 	; __si - spd_SPRITE addr
 	; __bl - spd_SPRITE bank
@@ -1330,7 +1339,7 @@ _spd_farptr_add_offset:
 
 	stw <__dx, <__si		; __si - spd_SPRITE addr
 
-	jsr unmap_data
+	jsr __UNMAP_DATA
 
 	call _spd_SATB_push_sprite.3
 
@@ -1366,7 +1375,7 @@ _spd_farptr_add_offset:
 
 	; map spd_SPRITE data
 
-	jsr map_data
+	jsr __MAP_DATA
 
 	; get meta-sprite length
 
@@ -1458,7 +1467,7 @@ _push_SG_data:
 	lda <__SATB_pos
 	spd_calc_SATB_pos <__spr_SATB_addr, #__SATB
 
-	jsr unmap_data
+	jsr __UNMAP_DATA
 
 	ply				; Y - SG bank index
 
@@ -1506,7 +1515,7 @@ __attr_transf_XY:
 
 	; copy meta-sprite attributes to the local SATB
 
-	jsr __TII
+	jsr __tii
 .endif
 
 .__attr_loop_XY:			;176(180)
@@ -1771,7 +1780,7 @@ _load_SG_data:
 
 	jsr _spd_farptr_add_offset
 
-	jsr map_data			; map SG data array
+	jsr __MAP_DATA			; map SG data array
 
 	; __cx = SG data length
 
@@ -1789,7 +1798,7 @@ _load_SG_data:
 	lda [<__si], y
 	tax
 
-	jsr unmap_data
+	jsr __UNMAP_DATA
 
 	stx <__bl
 
@@ -1826,7 +1835,7 @@ _load_SG_data:
 .ifdef	SPD_DEBUG
 	spd_dbg_border_load_VRAM
 .endif
-	jsr load_vram
+	jsr __LOAD_VRAM
 
 .exit:
 
@@ -1843,16 +1852,16 @@ _load_SG_data:
 
 	; copy SG data parameters for delayed use on VBLANK
 
-	stw __SG_DATA_SRC_ADDR, <__ax
+	stw __SG_data_src_addr, <__ax
 	spd_stw_zpii <__si, <__ax
 
-	stw __SG_DATA_SRC_BANK, <__ax
+	stw __SG_data_src_bank, <__ax
 	spd_stb_zpii <__bl, <__ax
 
-	stw __SG_DATA_DST_ADDR, <__ax
+	stw __SG_data_dst_addr, <__ax
 	spd_stw_zpii <__di, <__ax
 
-	stw __SG_DATA_LEN, <__ax
+	stw __SG_data_len, <__ax
 	spd_stw_zpii <__cx, <__ax
 
 	bra .exit
@@ -1861,10 +1870,10 @@ _load_SG_data:
 ;
 	.macro _spd_SG_data_params.4
 
-	stw <__ax, __SG_DATA_SRC_ADDR
-	stw <__bx, __SG_DATA_SRC_BANK
-	stw <__cx, __SG_DATA_DST_ADDR
-	stw <__dx, __SG_DATA_LEN
+	stw <__ax, __SG_data_src_addr
+	stw <__bx, __SG_data_src_bank
+	stw <__cx, __SG_data_dst_addr
+	stw <__dx, __SG_data_len
 
 	.endm
 
@@ -1878,11 +1887,11 @@ _load_SG_data:
 .ifdef	SPD_DEBUG
 	spd_dbg_border_load_VRAM
 
-	jsr load_vram
+	jsr __LOAD_VRAM
 
 	spd_dbg_border_black
 .else
-	jsr load_vram
+	jsr __LOAD_VRAM
 .endif
 	.endm
 
@@ -1897,7 +1906,7 @@ _load_SG_data:
 
 	jsr _spd_farptr_add_offset
 
-	jsr map_data
+	jsr __MAP_DATA
 
 	; __si - spd_SPRITE addr
 	; __bl - spd_SPRITE bank
@@ -1910,7 +1919,7 @@ _load_SG_data:
 
 	stw <__dx, <__si		; __si - spd_SPRITE addr
 
-	jsr unmap_data
+	jsr __UNMAP_DATA
 
 	call _spd_copy_SG_data_to_VRAM.1
 
@@ -1922,13 +1931,13 @@ _load_SG_data:
 ;
 	.proc _spd_copy_SG_data_to_VRAM.1
 
-	jsr map_data			; map spd_SPRITE data
+	jsr __MAP_DATA			; map spd_SPRITE data
 
 	ldy #$02
 	lda [<__si], y
 	tay				; Y - SG bank index
 
-	jsr unmap_data
+	jsr __UNMAP_DATA
 
 	jmp _load_SG_data
 
@@ -1949,7 +1958,7 @@ _load_SG_data:
 
 	jsr _spd_farptr_add_offset
 
-	jsr map_data
+	jsr __MAP_DATA
 
 	; __si - spd_SPRITE addr
 	; __bl - spd_SPRITE bank
@@ -1962,7 +1971,7 @@ _load_SG_data:
 
 	stw <__dx, <__si		; __si - spd_SPRITE addr
 
-	jsr unmap_data
+	jsr __UNMAP_DATA
 
 	call _spd_SATB_set_sprite_LT.3
 
@@ -1998,7 +2007,7 @@ _load_SG_data:
 
 	; map spd_SPRITE data
 
-	jsr map_data
+	jsr __MAP_DATA
 
 	; get meta-sprite SG bank index
 
@@ -2122,7 +2131,7 @@ _load_SG_data:
 	spd_dbg_border_push_sprite
 .endif
 
-	jsr unmap_data
+	jsr __UNMAP_DATA
 
 	ply				; Y - SG bank index
 
@@ -2163,7 +2172,7 @@ _load_SG_data:
 
 	jsr _spd_farptr_add_offset
 
-	jsr map_data			; map SG data array
+	jsr __MAP_DATA			; map SG data array
 
 	; __cx = SG data length
 
@@ -2181,7 +2190,7 @@ _load_SG_data:
 	lda [<__si], y
 	tax
 
-	jsr unmap_data
+	jsr __UNMAP_DATA
 
 	stx <__bl
 
@@ -2198,16 +2207,16 @@ _load_SG_data:
 
 	; copy SG data parameters for delayed use on VBLANK
 
-	stw __SG_DATA_SRC_ADDR, <__ax
+	stw __SG_data_src_addr, <__ax
 	spd_stw_zpii <__si, <__ax
 
-	stw __SG_DATA_SRC_BANK, <__ax
+	stw __SG_data_src_bank, <__ax
 	spd_stb_zpii <__bl, <__ax
 
-	stw __SG_DATA_DST_ADDR, <__ax
+	stw __SG_data_dst_addr, <__ax
 	spd_stw_zpii <__di, <__ax
 
-	stw __SG_DATA_LEN, <__ax
+	stw __SG_data_len, <__ax
 	spd_stw_zpii <__cx, <__ax
 
 	bra .exit
@@ -2217,7 +2226,7 @@ _load_SG_data:
 .ifdef	SPD_DEBUG
 	spd_dbg_border_load_VRAM
 .endif
-	jsr load_vram
+	jsr __LOAD_VRAM
 
 .exit:
 
