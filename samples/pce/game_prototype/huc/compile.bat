@@ -1,6 +1,6 @@
 :################################################
 :#
-:# Copyright 2019-2022 0x8BitDev ( MIT license )
+:# Copyright 2019-2023 0x8BitDev ( MIT license )
 :#
 :################################################
 
@@ -10,7 +10,7 @@
 @del %OutDir%%OutFile%.pce
 
 @echo compiling...
-huc -t -v -fno-recursive -msmall main.c
+huc -v -fno-recursive -msmall main.c
 @if ERRORLEVEL 1 goto failure
 @echo Ok!
 
