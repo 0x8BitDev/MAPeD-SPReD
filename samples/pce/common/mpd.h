@@ -5,10 +5,29 @@
 //
 //######################################################################################################
 
+// external HuC/MagicKit data/procs used by MPD library
+/*
+procs:
+~~~~~~
+map_data
+unmap_data
+load_palette
+load_vram
+load_bat
+
+data:
+~~~~~
+vdc_crl
+vdc_crh
+video_data_l
+video_data_h
+*/
+
 /*/	MPD-render v0.8
 History:
 
 v0.8
+2023.03.10 - added external dependencies info (HuC/MagicKit)
 2023.03.05 - performance-critical functions: map scrolling and getting a map tile property were wrapped with .procgroup/.endprocgroup
 2023.03.05 - reduced the number of HuC functions (.proc/.endp) [25]:
 		[inlined]	mpd_get_CR_val()
@@ -1205,8 +1224,8 @@ const u8 ADJ_SCR_DOWN	= 3;
 const u16 __c_scr_tiles_size	= ScrTilesWidth * ScrTilesHeight;
 
 /* variables */
-u16		__CR_IW_val;
-u16		__CR_val;
+u16		__VDC_CR_IW;
+u16		__VDC_CR;
 
 #if	!FLAG_MODE_MULTIDIR_SCROLL
 u16		__scr_offset;
@@ -1925,7 +1944,7 @@ void	mpd_init( u8 _map_ind )
 			__BAT_width_pow2 = 7;
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-			__CR_IW_val = 0x18 << 8;
+			__VDC_CR_IW = 0x18 << 8;
 #endif
 		}
 		else
@@ -1935,7 +1954,7 @@ void	mpd_init( u8 _map_ind )
 			__BAT_width_pow2 = 6;
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-			__CR_IW_val = 0x10 << 8;
+			__VDC_CR_IW = 0x10 << 8;
 #endif
 		}
 		else
@@ -1944,7 +1963,7 @@ void	mpd_init( u8 _map_ind )
 			__BAT_width_pow2 = 5;
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
-			__CR_IW_val = 0x08 << 8;
+			__VDC_CR_IW = 0x08 << 8;
 #endif
 		}
 
@@ -2417,12 +2436,12 @@ void	mpd_update_screen()
 #endasm
 	if( __upd_flags & UPD_FLAG_DRAW_MASK )
 	{
-		// __CR_val = vdc_cr <- save the CR value
+		// __VDC_CR = vdc_cr <- save the CR value
 #asm
 		lda <vdc_crl
-		sta ___CR_val
+		sta ___VDC_CR
 		lda <vdc_crh
-		sta ___CR_val + 1
+		sta ___VDC_CR + 1
 #endasm
 		if( __upd_flags & UPD_FLAG_DRAW_LEFT )
 		{
@@ -2445,7 +2464,7 @@ void	mpd_update_screen()
 		}
 
 		// restore CR
-		vreg( 5, __CR_val );
+		vreg( 5, __VDC_CR );
 	}
 #asm
 .ifdef MPD_DEBUG
@@ -2731,13 +2750,13 @@ void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt )
 
 	mpd_vreg #$05
 
-	; video_data = ( ___CR_val & ~___CR_IW_MASK ) | ___CR_IW_val
+	; video_data = ( ___VDC_CR & ~___CR_IW_MASK ) | ___VDC_CR_IW
 
-	lda ___CR_val
+	lda ___VDC_CR
 	sta video_data_l
-	lda ___CR_val + 1
+	lda ___VDC_CR + 1
 	and #~$18
-	ora ___CR_IW_val + 1
+	ora ___VDC_CR_IW + 1
 	sta video_data_h
 
 	; set write mode
@@ -2804,11 +2823,11 @@ void	__mpd_fill_row_data( u16 _vaddr, u8 _CHRs_cnt )
 
 	mpd_vreg #$05
 
-	; video_data = ___CR_val & ~___CR_IW_MASK
+	; video_data = ___VDC_CR & ~___CR_IW_MASK
 
-	lda ___CR_val
+	lda ___VDC_CR
 	sta video_data_l
-	lda ___CR_val + 1
+	lda ___VDC_CR + 1
 	and #~$18
 	sta video_data_h
 
