@@ -1,8 +1,9 @@
 //######################################################################################################
 //
-// This file is a part of the MAPeD-PCE Copyright 2017-2022 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: It contains a meta-sprite rendering routines using a local HuC's SATB
+// This file is a part of the MAPeD-PCE Copyright 2017-2023 0x8BitDev ( MIT license. See LICENSE.txt )
+// Desc: Simple and meta-sprites rendering library written in ASM with HuC interfaces.
 //
+// *MAKE GAMES, NOT WAR!)*
 //######################################################################################################
 
 // external HuC/MagicKit data/procs used by SPD library
@@ -470,7 +471,7 @@ SPD_TII_ATTR_XY	; speeds up transformation of meta-sprite attributes a bit, but 
 
 const unsigned char spd_ver[] = { "S", "P", "D", "0", "7", 0 };
 
-/* SPD flag(s) */
+/* SPD flags */
 
 // Copies SG data parameters: src_addr/src_bank/vram_addr/len for delayed use on VBLANK;
 // it's suitable for sprites with dynamic SG data like in fighting games.

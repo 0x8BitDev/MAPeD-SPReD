@@ -1,11 +1,10 @@
 //######################################################################################################
 //
-// This file is a part of the MAPeD-PCE Copyright 2017-2022 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: It contains some useful definitions
+// This file is a part of the MAPeD-PCE Copyright 2017-2023 0x8BitDev ( MIT license. See LICENSE.txt )
+// Desc: Some useful definitions.
 //
+// *MAKE GAMES, NOT WAR!)*
 //######################################################################################################
-
-/* some useful definitions */
 
 typedef unsigned char	u8;
 typedef unsigned short	u16;

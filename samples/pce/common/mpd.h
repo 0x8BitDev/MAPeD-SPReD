@@ -1,12 +1,20 @@
 //######################################################################################################
 //
-// This file is a part of the MAPeD-PCE Copyright 2017-2022 0x8BitDev ( MIT license. See LICENSE.txt )
-// Desc: It contains tilemap rendering library and some HuC helper functions
+// This file is a part of the MAPeD-PCE Copyright 2017-2023 0x8BitDev ( MIT license. See LICENSE.txt )
+// Desc: Tilemaps rendering library written in HuC+ASM.
 //
+// *MAKE GAMES, NOT WAR!)*
 //######################################################################################################
 
 // external HuC/MagicKit data/procs used by MPD library
 /*
+data:
+~~~~~
+vdc_crl
+vdc_crh
+video_data_l
+video_data_h
+
 procs:
 ~~~~~~
 map_data
@@ -14,13 +22,6 @@ unmap_data
 load_palette
 load_vram
 load_bat
-
-data:
-~~~~~
-vdc_crl
-vdc_crh
-video_data_l
-video_data_h
 */
 
 /*/	MPD-render v0.8
