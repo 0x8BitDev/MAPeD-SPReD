@@ -7,8 +7,8 @@
 ; The PCE hardware init entry point
 ;
 
-	.include "../../../common/def.asm"
-	.include "../../../common/macro.asm"
+	.include "../../../common/asm/def.asm"
+	.include "../../../common/asm/macro.asm"
 
 	.zp
 
@@ -62,8 +62,8 @@ _tiirts	.ds 1	; $60 rts
 	.bank 0
 	.org $fd00
 
-	.include "../../../common/vdc.asm"
-	.include "../../../common/jpad.asm"
+	.include "../../../common/asm/vdc.asm"
+	.include "../../../common/asm/jpad.asm"
 
 reset:
 	; On reset:

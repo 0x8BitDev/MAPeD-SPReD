@@ -13,7 +13,7 @@
 ;DEF_INT_NMI		; int_nmi
 
 
-	.include "../../../common/init.asm"
+	.include "../../../common/asm/init.asm"
 
 	.bss
 
@@ -47,8 +47,8 @@ anm_test_chr0:	.incbin "data/anm_test_chr0.bin"	; 9600 bytes
 	.bank 0
 	.org $e000
 
-	.include "../../../common/sprite_render.asm"
-	.include "../../../common/anm.asm"
+	.include "../../../common/asm/sprite_render.asm"
+	.include "../../../common/asm/anm.asm"
 
 main:
 	; map data banks

@@ -16,7 +16,7 @@ DEF_INT_IRQ1_VDC	; int_irq1_vdc
 ;DEF_INT_NMI		; int_nmi
 
 
-	.include "../../../common/init.asm"
+	.include "../../../common/asm/init.asm"
 
 	.data
 	.bank 2
@@ -67,8 +67,8 @@ player_gfx_chr8:	.incbin "data/player_gfx_chr8.bin"	; 2176 bytes
 	.bank 0
 	.org $e000
 
-	.include "../../../common/sprite_render.asm"
-	.include "../../../common/anm.asm"
+	.include "../../../common/asm/sprite_render.asm"
+	.include "../../../common/asm/anm.asm"
 	.include "character_cntrl.asm"
 
 main:

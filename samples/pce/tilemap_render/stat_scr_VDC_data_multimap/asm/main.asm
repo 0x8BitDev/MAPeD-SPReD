@@ -13,7 +13,7 @@
 ;DEF_INT_NMI		; int_nmi
 
 
-	.include "../../../common/init.asm"
+	.include "../../../common/asm/init.asm"
 
 	.zp
 
@@ -35,7 +35,7 @@ data_end:
 	.bank 0
 	.org $e000
 
-	.include "../../../common/tilemap_render.asm"
+	.include "../../../common/asm/tilemap_render.asm"
 
 .if	MAP_FLAG_OFF( MAP_FLAG_MODE_STATIC_SCREENS )
 	fail 'Only MAP_FLAG_MODE_STATIC_SCREENS is supported by this sample !'
