@@ -1688,6 +1688,9 @@ namespace MAPeD
 			int scr_width_blocks 	= platform_data.get_screen_blocks_width();
 			int scr_height_blocks 	= platform_data.get_screen_blocks_height();
 			
+			int max_map_size_bytes;
+			int max_map_tbl_size_bytes;
+			
 			tiles_data tiles;
 
 			for( bank_n = 0; bank_n < n_banks; bank_n++ )
@@ -1829,6 +1832,9 @@ namespace MAPeD
 			
 			_sw.WriteLine( "; *** LAYOUTS DATA ***\n" );
 
+			max_map_size_bytes		= -1;
+			max_map_tbl_size_bytes	= -1;
+			
 			for( int level_n = 0; level_n < n_levels; level_n++ )
 			{
 				level_data = m_data_mngr.get_layout_data( level_n );
@@ -1839,6 +1845,9 @@ namespace MAPeD
 				
 				n_scr_X = level_data.get_width();
 				n_scr_Y = level_data.get_height();
+				
+				calc_max_map_size( n_scr_X, n_scr_Y, ref max_map_size_bytes );
+				calc_max_map_tbl_size( n_scr_X, n_scr_Y, ref max_map_tbl_size_bytes );
 
 				n_Y_tiles = n_scr_Y * platform_data.get_screen_tiles_height() * ( RBtnTiles4x4.Checked ? 1:2 );
 				
@@ -2235,9 +2244,52 @@ namespace MAPeD
 			
 			export_base_entities_ptr24( _sw );
 			
+			// save max map and max map table sizes
+			{
+				if( m_C_writer != null )
+				{
+					m_C_writer.WriteLine( "\n#define\tMAX_MAP_SIZE\t\t" + max_map_size_bytes + "\t// tilemap size in bytes of a largest map" );
+					m_C_writer.WriteLine( "#define\tMAX_MAP_TBL_SIZE\t" + max_map_tbl_size_bytes + "\t// tilemap LUT in bytes of a largest map" );
+				}
+				else
+				{
+					_sw.WriteLine( c_data_prefix + "MaxMapSize\t\t= " + max_map_size_bytes + "\t; tilemap size in bytes of a largest map" );
+					_sw.WriteLine( c_data_prefix + "MaxMapTblSize\t= " + max_map_tbl_size_bytes + "\t; tilemap LUT in bytes of a largest map" );
+				}
+			}
+			
 			if( exp_data_size > 8192 )
 			{
 				MainForm.message_box( "The exported binary data size exceeds 8K ( " + exp_data_size + " B ) !", "Data Export Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+			}
+		}
+
+		private void calc_max_map_size( int _n_scr_X, int _n_scr_Y, ref int _max_map_size_bytes )
+		{
+			int map_size = get_tiles_cnt_width( _n_scr_X ) * get_tiles_cnt_height( _n_scr_Y );
+			
+			if( _max_map_size_bytes < map_size )
+			{
+				_max_map_size_bytes = map_size;
+			}
+		}
+		
+		private void calc_max_map_tbl_size( int _n_scr_X, int _n_scr_Y, ref int _max_map_tbl_size_bytes )
+		{
+			int map_tbl_size;
+			
+			if( RBtnTilesDirColumns.Checked )
+			{
+				map_tbl_size = get_tiles_cnt_width( _n_scr_X ) << 1;
+			}
+			else
+			{
+				map_tbl_size = get_tiles_cnt_height( _n_scr_Y ) << 1;
+			}
+			
+			if( _max_map_tbl_size_bytes < map_tbl_size )
+			{
+				_max_map_tbl_size_bytes = map_tbl_size;
 			}
 		}
 		
