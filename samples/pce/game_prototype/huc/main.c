@@ -21,6 +21,8 @@
 /*
 History:
 
+- added MPD_RAM_MAP and MPD_RAM_MAP_TBL defines to speed up getting a map data
+
 v0.2
 - fixed the falling platform logic, now it is deactivated at the bottom side of the screen
 - [MPD fix] fixed getting a tile property with negative coordinates (fixed head collisions at the top, sky part of a map)
@@ -37,6 +39,12 @@ v0.1
 - fixed mid-frame palette update
 - initial release
 */
+
+// Since we have free RAM, we can use it for storing a map data.
+// This will slightly speed up getting a tile property, drawing static screens and scrolling.
+
+#define MPD_RAM_MAP
+#define MPD_RAM_MAP_TBL
 
 // MPD debug info (use Mednaffen PCE Dev version):
 // - green border color		- screen scrolling
