@@ -27,6 +27,9 @@ load_bat
 /*/	MPD-render v0.8
 History:
 
+2023.03.26 - optimized call of '__mpd_fill_row_data' and '__mpd_fill_column_data'
+2023.03.26 - optimized access to tilemap data: #define MPD_RAM_MAP and #define MPD_RAM_MAP_TBL (support for dynamic multidir maps)
+
 v0.8
 2023.03.10 - added external dependencies info (HuC/MagicKit)
 2023.03.05 - performance-critical functions: map scrolling and getting a map tile property were wrapped with .procgroup/.endprocgroup
@@ -53,7 +56,7 @@ v0.8
 		[macro]		mpd_load_bat(...)
 		[macro]		mpd_farpeekw.3(...)
 		[unused]	mpd_farpeekb.3(...)
-		[macro]		mpd_memcpyb(...)
+		[macro]		mpd_memcpy_fast(...)
 		[macro]		mpd_farpeekb.2(...)
 		[macro]		__mpd_calc_skip_CHRs_cnt(...)
 2023.03.01 - optimized use of local variables and function arguments
@@ -467,10 +470,10 @@ u16	__fastcall mpd_farpeekw( u16 far* _addr<__bl:__si>, u16 _offset<__ax> );
 u8	__fastcall __macro mpd_farpeekb( u8 far* _addr<__bl:__si>, u16 _offset<__ax> );
 
 u16	__fastcall __macro mpd_farpeekw( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax> );
-
-void	__fastcall mpd_farmemcpyb( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax>, void* _dst_addr<__dx>, u8 _size<__bh> );
-
-void	__fastcall __macro mpd_memcpyb( u16* _src_addr<__ax>, u16 _dst_addr<__bx>, u8 _size<__cl> );
+// fast copy of data less than 32 bytes!
+void	__fastcall mpd_farmemcpy_fast( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax>, void* _dst_addr<__dx>, u8 _size<__bh> );
+// fast copy of data less than 32 bytes!
+void	__fastcall __macro mpd_memcpy_fast( u16* _src_addr<__ax>, u16 _dst_addr<__bx>, u8 _size<__cl> );
 
 void	__fastcall mpd_get_ptr24( void far* _addr<__bl:__si>, u8 _ind<__al>, void* _dst_addr<__dx> );
 
@@ -675,14 +678,13 @@ __mtiirts	.ds 1	; $60 rts
 
 	.endm
 
-;void __fastcall mpd_farmemcpyb( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax>, void* _dst_addr<__dx>, u8 _size<__bh> )
+;void __fastcall mpd_farmemcpy_fast( u8 _bank<__bl>, u16 _addr<__si>, u16 _offset<__ax>, void* _dst_addr<__dx>, u8 _size<__bh> )
 ;
-	.proc _mpd_farmemcpyb.5
+	.proc _mpd_farmemcpy_fast.5
 
 	lda <__bh
-	bne .cont
-	rts		; exit if data size is zero
-.cont:
+	beq .exit
+
 	call _mpd_farptr_add_offset
 
 	lda <__bh
@@ -697,12 +699,13 @@ __mtiirts	.ds 1	; $60 rts
 	jsr __mTII
 
 	jmp unmap_data
-
+.exit:
+	rts
 	.endp
 
-;void __fastcall __macro mpd_memcpyb( u16* _src_addr<__ax>, u16 _dst_addr<__bx>, u8 _size<__cl> )
+;void __fastcall __macro mpd_memcpy_fast( u16* _src_addr<__ax>, u16 _dst_addr<__bx>, u8 _size<__cl> )
 ;
-	.macro _mpd_memcpyb.3
+	.macro _mpd_memcpy_fast.3
 
 	stw <__ax, __mbsrci
 	stw <__bx, __mbdsti
@@ -908,7 +911,7 @@ void	__mpd_get_screen_data( u16 _scr_ind, mpd_SCREEN* _scr )
 #else
 	mpd_curr_scr.scr_offset	= _scr_ind - mpd_curr_scr.scr_arr_ptr.addr;	// _scr_ind is a screen address for FLAG_LAYOUT_ADJ_SCR
 #endif
-	mpd_farmemcpyb( mpd_curr_scr.scr_arr_ptr.bank, mpd_curr_scr.scr_arr_ptr.addr, mpd_curr_scr.scr_offset, _scr, sizeof( mpd_SCREEN ) );
+	mpd_farmemcpy_fast( mpd_curr_scr.scr_arr_ptr.bank, mpd_curr_scr.scr_arr_ptr.addr, mpd_curr_scr.scr_offset, _scr, sizeof( mpd_SCREEN ) );
 }
 
 void	mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u16 _scr_ind )
@@ -918,7 +921,7 @@ void	mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u16 _scr_ind )
 #else
 	_scr_data->scr_offset	= _scr_ind - _scr_data->scr_arr_ptr.addr;	// _scr_ind is a screen address for FLAG_LAYOUT_ADJ_SCR
 #endif
-	mpd_farmemcpyb( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, _scr_data->scr_offset, _scr_data->scr, sizeof( mpd_SCREEN ) );
+	mpd_farmemcpy_fast( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, _scr_data->scr_offset, _scr_data->scr, sizeof( mpd_SCREEN ) );
 }
 #endif	//!FLAG_MODE_MULTIDIR_SCROLL
 
@@ -935,10 +938,10 @@ void	mpd_init_screen_arr( mpd_SCR_DATA* _scr_data, u8 _map_ind )
 	mpd_get_ptr24( mpd_MapsArr, _map_ind, _scr_data->scr_arr_ptr );
 }
 
-#define	mpd_copy_screen( _src_scr, _dst_scr )	mpd_memcpyb( _src_scr, _dst_scr, sizeof( mpd_SCR_DATA ) )
+#define	mpd_copy_screen( _src_scr, _dst_scr )	mpd_memcpy_fast( _src_scr, _dst_scr, sizeof( mpd_SCR_DATA ) )
 //void	mpd_copy_screen( mpd_SCR_DATA* _src_scr, mpd_SCR_DATA* _dst_scr )
 //{
-//	mpd_memcpyb( _src_scr, _dst_scr, sizeof( mpd_SCR_DATA ) );
+//	mpd_memcpy_fast( _src_scr, _dst_scr, sizeof( mpd_SCR_DATA ) );
 //}
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
@@ -958,7 +961,7 @@ void	mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u8 _scr_ind )
 {
 	_scr_data->scr_offset	= mpd_farpeekw( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, ( _scr_ind << 1 ) ) - _scr_data->scr_arr_ptr.addr;
 
-	mpd_farmemcpyb( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, _scr_data->scr_offset, _scr_data->scr, sizeof( mpd_SCREEN ) );
+	mpd_farmemcpy_fast( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, _scr_data->scr_offset, _scr_data->scr, sizeof( mpd_SCREEN ) );
 }
 
 #define	mpd_get_start_screen( _scr_data, _map_ind )	mpd_get_screen_data( _scr_data, mpd_get_start_screen_ind( _map_ind ) )
@@ -972,7 +975,7 @@ void	mpd_get_start_screen( mpd_SCR_DATA* _scr_data )
 {
 	_scr_data->scr_offset	= mpd_farpeekw( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, 0 ) - _scr_data->scr_arr_ptr.addr;
 
-	mpd_farmemcpyb( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, _scr_data->scr_offset, _scr_data->scr, sizeof( mpd_SCREEN ) );
+	mpd_farmemcpy_fast( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, _scr_data->scr_offset, _scr_data->scr, sizeof( mpd_SCREEN ) );
 }
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
@@ -996,7 +999,7 @@ void	mpd_get_base_entity( mpd_SCR_DATA* _scr_data, u16 _ent_ind )
 	mpd_bx = mpd_farpeekw( __base_ent_arr.bank, __base_ent_arr.addr, ( _ent_ind << 1 ) + 2 ) - _scr_data->scr_arr_ptr.addr;
 
 	// copy base entity
-	mpd_farmemcpyb( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, mpd_bx, _scr_data->inst_ent.base, sizeof( mpd_ENTITY_BASE ) + ENT_MAX_PROPS_CNT );
+	mpd_farmemcpy_fast( _scr_data->scr_arr_ptr.bank, _scr_data->scr_arr_ptr.addr, mpd_bx, _scr_data->inst_ent.base, sizeof( mpd_ENTITY_BASE ) + ENT_MAX_PROPS_CNT );
 }
 
 void	mpd_get_entity( mpd_SCR_DATA* _scr_data, u8 _ent_ind )
@@ -1025,13 +1028,13 @@ void	mpd_get_entity( mpd_SCR_DATA* _scr_data, u8 _ent_ind )
 	mpd_cx	= mpd_farpeekw( mpd_ah, mpd_dx, mpd_bx ) - mpd_dx;
 
 	// copy entity instance
-	mpd_farmemcpyb( mpd_ah, mpd_dx, mpd_cx, ent->inst, mpd_el );
+	mpd_farmemcpy_fast( mpd_ah, mpd_dx, mpd_cx, ent->inst, mpd_el );
 
 	// base entity offset
 	mpd_cx	= ent->inst.base_ent_addr - mpd_dx;
 
 	// copy base entity
-	mpd_farmemcpyb( mpd_ah, mpd_dx, mpd_cx, ent->base, mpd_eh );
+	mpd_farmemcpy_fast( mpd_ah, mpd_dx, mpd_cx, ent->base, mpd_eh );
 //}
 	if( ent.inst.targ_ent_addr )
 	{
@@ -1047,13 +1050,13 @@ void	mpd_get_entity( mpd_SCR_DATA* _scr_data, u8 _ent_ind )
 		ent = _scr_data->targ_ent;
 
 		// copy entity instance
-		mpd_farmemcpyb( mpd_ah, mpd_dx, mpd_cx, ent->inst, mpd_el );
+		mpd_farmemcpy_fast( mpd_ah, mpd_dx, mpd_cx, ent->inst, mpd_el );
 
 		// base entity offset
 		mpd_cx	= ent->inst.base_ent_addr - mpd_dx;
 
 		// copy base entity
-		mpd_farmemcpyb( mpd_ah, mpd_dx, mpd_cx, ent->base, mpd_eh );
+		mpd_farmemcpy_fast( mpd_ah, mpd_dx, mpd_cx, ent->base, mpd_eh );
 //}
 	}
 #if 0
@@ -1220,11 +1223,8 @@ const u8 ADJ_SCR_UP	= 1;
 const u8 ADJ_SCR_RIGHT	= 2;
 const u8 ADJ_SCR_DOWN	= 3;
 
-/* constants */
-
-const u16 __c_scr_tiles_size	= ScrTilesWidth * ScrTilesHeight;
-
 /* variables */
+
 u16		__VDC_CR_IW;
 u16		__VDC_CR;
 
@@ -1243,9 +1243,6 @@ u8		mpd_map_scr_height;
 u16		mpd_map_active_width;	// active map area = map_width_in_pixels - scr_width_in_pixels
 u16		mpd_map_active_height;	// the same in height
 u16		__init_tiles_offset;	// to draw a start screen
-
-u16		__maps_offset;
-u16		__maps_tbl_offset;
 
 u16		__map_ind_mul2;
 
@@ -1268,6 +1265,10 @@ u16		__blocks_offset;
 #if	FLAG_TILES4X4
 u16		__tiles_offset;
 #endif
+
+/* constants */
+
+const u16	__c_scr_tiles_size	= ScrTilesWidth * ScrTilesHeight;
 
 const u8	SCR_CHRS_WIDTH	 = SCR_BLOCKS2x2_WIDTH << 1;
 const u8	SCR_CHRS_HEIGHT	 = SCR_BLOCKS2x2_HEIGHT << 1;
@@ -1301,6 +1302,156 @@ s16	__vert_dir_pos;
 u8	__upd_flags;
 #endif
 
+/* RAM copy of a map data */
+
+#if	FLAG_MODE_MULTIDIR_SCROLL
+
+/* Map LUT */
+
+#ifdef	MPD_RAM_MAP_TBL
+
+#ifndef	MPD_RAM_DATA_COPY
+#define	MPD_RAM_DATA_COPY
+#endif	//MPD_RAM_DATA_COPY
+
+u8	__RAM_MapTbl[ MAX_MAP_TBL_SIZE ];	// RAM copy of a map LUT
+
+u16	__fastcall __macro __mpd_get_map_tbl_val( u16 _offset<__ax> );
+#asm
+	.macro ___mpd_get_map_tbl_val.1
+
+	mpd_add_word_to_word #___RAM_MapTbl, <__ax
+	lda [<__ax]
+	tax
+
+	ldy #$01
+	lda [<__ax], y
+
+	.endm
+#endasm
+
+#else	//!MPD_RAM_MAP_TBL
+
+u16	__map_tbl_offset;
+
+#define	__mpd_get_map_tbl_val( _offs ) mpd_farpeekw( mpd_MapsTbl, __map_tbl_offset + ( _offs ) )
+
+#endif	//MPD_RAM_MAP_TBL
+
+/* Tilemap data */
+
+#ifdef	MPD_RAM_MAP
+
+#ifndef	MPD_RAM_DATA_COPY
+#define	MPD_RAM_DATA_COPY
+#endif	//MPD_RAM_DATA_COPY
+
+u8	__RAM_Map[ MAX_MAP_SIZE ];		// RAM copy of a map data
+
+u8	__fastcall __macro __mpd_get_map_tile( u16 _offset<__ax> );
+#asm
+	.macro	___mpd_get_map_tile.1
+
+	mpd_add_word_to_word #___RAM_Map, <__ax
+	lda [<__ax]
+	tax
+	cla
+
+	.endm
+#endasm
+
+#else	//!MPD_RAM_MAP
+
+u16	__map_offset;
+
+#define	__mpd_get_map_tile( _offs ) mpd_farpeekb( mpd_Maps, __map_offset + ( _offs ) )
+
+#endif	//MPD_RAM_MAP
+#endif	//FLAG_MODE_MULTIDIR_SCROLL
+
+#ifdef	MPD_RAM_DATA_COPY
+
+void	__fastcall mpd_farmemcpy( u16 far* _addr<__bl:__si>, u16 _offset<__ax>, void* _dst_addr<__dx>, u16 _size<__cx> );
+#asm
+	.proc _mpd_farmemcpy.4
+
+	call _mpd_farptr_add_offset
+
+	jsr map_data
+
+	ldx <__si
+	stx __mbsrci
+	ldy <__si + 1
+	sty __mbsrci + 1
+
+	stw <__dx, __mbdsti
+
+	lda #$20
+	sta __mbleni
+	stz __mbleni + 1
+
+	; __cx /= 32 - get num 32-byte chunks
+
+	lda <__cl
+	lsr <__ch
+	ror a
+	lsr <__ch
+	ror a
+	lsr <__ch
+	ror a
+	lsr <__ch
+	ror a
+	lsr <__ch
+	ror a
+
+	sax			; x=chunks-lo
+	beq .l4			; a=source-lo, y=source-hi
+
+	; copy 32-byte chunks
+
+.l1:	jsr __mTII		; transfer 32-bytes
+
+	pha
+	lda #$20
+	mpd_add_a_to_word __mbdsti
+	pla
+
+	clc			; increment source
+	adc #$20
+	sta __mbsrci
+	bcc .l3
+	iny
+
+	bpl .l2			; remap_data
+	tay
+	tma4
+	tam3
+	inc a
+	tam4
+	tya
+	ldy #$60
+.l2:	sty __mbsrci + 1
+
+.l3:	dex
+	bne .l1
+.l4:	dec <__ch
+	bpl .l1
+
+	; copy data remainder
+
+	lda <__cl
+	and #31
+	beq .l5
+
+	sta __mbleni + 0
+	jsr __mTII		; transfer remainder
+.l5:
+	jmp unmap_data
+
+	.endp
+#endasm
+
+#endif	//MPD_RAM_DATA_COPY
 
 void	__mpd_update_data_offsets()
 {
@@ -1476,10 +1627,10 @@ void	__mpd_calc_scr_pos_by_LUT_pos( u16 _LUT_pos_x, u16 _LUT_pos_y, bool _reset_
 	}
 
 #if	FLAG_DIR_COLUMNS
-	__init_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( mpd_ax << 1 ) ) + mpd_bx;
+	__init_tiles_offset	= __mpd_get_map_tbl_val( mpd_ax << 1 ) + mpd_bx;
 #elif	FLAG_DIR_ROWS
 	__height_scr_step	= __map_tiles_width * ScrTilesHeight;
-	__init_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( mpd_bx << 1 ) ) + mpd_ax;
+	__init_tiles_offset	= __mpd_get_map_tbl_val( mpd_bx << 1 ) + mpd_ax;
 #endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
 
 	__mpd_update_data_offsets();
@@ -1492,9 +1643,6 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 //	u16	vaddr;		mpd_ax
 
 	static u16	n;
-	static u16	tiles_offset;
-
-	tiles_offset	= __maps_offset + __init_tiles_offset;
 
 	mpd_ax	= _BAT_offset + ( ( mpd_scroll_x >> 3 ) & __BAT_width_dec1 ) + ( ( ( mpd_scroll_y >> 3 ) /*& __BAT_height_dec1*/ ) << __BAT_width_pow2 );
 
@@ -1561,9 +1709,9 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 #endasm
 
 #if	FLAG_TILES2X2
-			__mpd_draw_block2x2( mpd_dx, __blocks_offset + ( mpd_farpeekb( mpd_Maps, tiles_offset + n ) << 3 ) );
+			__mpd_draw_block2x2( mpd_dx, __blocks_offset + ( __mpd_get_map_tile( __init_tiles_offset + n ) << 3 ) );
 #elif	FLAG_TILES4X4
-			__mpd_draw_tile4x4( mpd_dx, __tiles_offset + ( mpd_farpeekb( mpd_Maps, tiles_offset + n ) << 2 ) );
+			__mpd_draw_tile4x4( mpd_dx, __tiles_offset + ( __mpd_get_map_tile( __init_tiles_offset + n ) << 2 ) );
 #endif
 			mpd_bx += __BAT_width;
 			++n;
@@ -1618,9 +1766,9 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 #endasm
 
 #if	FLAG_TILES2X2
-			__mpd_draw_block2x2( mpd_fx, __blocks_offset + ( mpd_farpeekb( mpd_Maps, tiles_offset + n ) << 3 ) );
+			__mpd_draw_block2x2( mpd_fx, __blocks_offset + ( __mpd_get_map_tile( __init_tiles_offset + n ) << 3 ) );
 #elif	FLAG_TILES4X4
-			__mpd_draw_tile4x4( mpd_fx, __tiles_offset + ( mpd_farpeekb( mpd_Maps, tiles_offset + n ) << 2 ) );
+			__mpd_draw_tile4x4( mpd_fx, __tiles_offset + ( __mpd_get_map_tile( __init_tiles_offset + n ) << 2 ) );
 #endif
 			++n;
 		}
@@ -1642,7 +1790,6 @@ void	__mpd_draw_free_tiled_screen()
 //	u16	n;			mpd_dx
 
 	static u8	scr_tile;
-	static u16	tiles_offset;
 
 	mpd_bx	= mpd_scroll_x;
 	mpd_cx	= mpd_scroll_y;
@@ -1652,8 +1799,6 @@ void	__mpd_draw_free_tiled_screen()
 
 	mpd_al	= mpd_fl + SCR_CHRS_WIDTH + ( mpd_scroll_x & 0x07 ? 1:0 );
 	mpd_ah	= mpd_fh + SCR_CHRS_HEIGHT + ( mpd_scroll_y & 0x07 ? 1:0 );
-
-	tiles_offset	= __maps_offset + __init_tiles_offset;
 
 #if	FLAG_DIR_COLUMNS
 
@@ -1668,7 +1813,7 @@ void	__mpd_draw_free_tiled_screen()
 
 		for( mpd_eh = mpd_fh; mpd_eh < mpd_ah; mpd_eh++ )
 		{
-			scr_tile = mpd_farpeekb( mpd_Maps, tiles_offset + mpd_dx );
+			scr_tile = __mpd_get_map_tile( __init_tiles_offset + mpd_dx );
 #if	FLAG_TILES4X4
 			scr_tile = mpd_farpeekw( mpd_Tiles, __tiles_offset + ( scr_tile << 2 ) + ( mpd_eh & 0x02 ) + ( ( mpd_el & 0x02 ) >> 1 ) );
 #endif
@@ -1696,7 +1841,7 @@ void	__mpd_draw_free_tiled_screen()
 
 		for( mpd_el = mpd_fl; mpd_el < mpd_al; mpd_el++ )
 		{
-			scr_tile = mpd_farpeekb( mpd_Maps, tiles_offset + mpd_dx );
+			scr_tile = __mpd_get_map_tile( __init_tiles_offset + mpd_dx );
 #if	FLAG_TILES4X4
 			scr_tile = mpd_farpeekw( mpd_Tiles, __tiles_offset + ( scr_tile << 2 ) + ( mpd_eh & 0x02 ) + ( ( mpd_el & 0x02 ) >> 1 ) );
 #endif
@@ -2029,9 +2174,6 @@ void	mpd_init( u8 _map_ind )
 
 	__curr_chr_id_mul2	= mpd_farpeekb( mpd_MapsCHRBanks, _map_ind ) << 1;
 
-	__maps_offset		= mpd_farpeekw( mpd_MapsOffs,	__map_ind_mul2 );
-	__maps_tbl_offset	= mpd_farpeekw( mpd_MapsTblOffs,__map_ind_mul2 );
-
 	mpd_ax			= mpd_get_map_size( _map_ind );
 	mpd_map_scr_width	= mpd_ax & 0x00ff;
 	mpd_map_scr_height	= ( mpd_ax & 0xff00 ) >> 8;
@@ -2041,6 +2183,22 @@ void	mpd_init( u8 _map_ind )
 
 	mpd_map_active_width	= ( mpd_map_scr_width * ScrPixelsWidth ) - ScrPixelsWidth;
 	mpd_map_active_height	= ( mpd_map_scr_height * ScrPixelsHeight ) - ScrPixelsHeight;
+
+#ifdef	MPD_RAM_MAP
+	mpd_farmemcpy( mpd_Maps, mpd_farpeekw( mpd_MapsOffs, __map_ind_mul2 ), __RAM_Map, __map_tiles_width * __map_tiles_height );
+#else
+	__map_offset		= mpd_farpeekw( mpd_MapsOffs, __map_ind_mul2 );
+#endif	//MPD_RAM_MAP
+
+#ifdef	MPD_RAM_MAP_TBL
+#if	FLAG_DIR_ROWS
+	mpd_farmemcpy( mpd_MapsTbl, mpd_farpeekw( mpd_MapsTblOffs, __map_ind_mul2 ), __RAM_MapTbl, __map_tiles_height << 1 );
+#else	//FLAG_DIR_COLUMNS
+	mpd_farmemcpy( mpd_MapsTbl, mpd_farpeekw( mpd_MapsTblOffs, __map_ind_mul2 ), __RAM_MapTbl, __map_tiles_width << 1 );
+#endif	// FLAG_DIR_ROWS
+#else	//!MPD_RAM_MAP_TBL
+	__map_tbl_offset	= mpd_farpeekw( mpd_MapsTblOffs, __map_ind_mul2 );
+#endif	//MPD_RAM_MAP_TBL
 
 	__mpd_calc_scr_pos_by_scr_ind( mpd_get_start_screen_ind( _map_ind ), FALSE );
 
@@ -2529,16 +2687,19 @@ void	__mpd_draw_left_tiles_column()
 #endif
 	__tmp_tiles_offset += ( mpd_curr_scr.scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y ), COLUMN_CHRS_CNT );
+	__tmp_vaddr		= __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y );
+	__tmp_CHRs_cnt		= COLUMN_CHRS_CNT;
+
+	__mpd_fill_column_data();
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 //	u16	map_pos_x;	mpd_bx
 //	u16	map_pos_y;	mpd_cx
-//	u8	u8_pos_y;	mpd_al
 
 	mpd_bx	= mpd_scroll_x;
 	mpd_cx	= mpd_scroll_y;
-	mpd_al	= mpd_cx;
+
+	__tmp_skip_CHRs_cnt	= __mpd_calc_skip_CHRs_cnt( mpd_cl );
 
 #if	FLAG_TILES4X4
 	mpd_bx >>= 5;
@@ -2549,13 +2710,17 @@ void	__mpd_draw_left_tiles_column()
 #endif
 
 #if	FLAG_DIR_ROWS
-	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( mpd_cx << 1 ) ) + mpd_bx;
+	__tmp_tiles_offset	= __mpd_get_map_tbl_val( mpd_cx << 1 ) + mpd_bx;
 #else
-	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( mpd_bx << 1 ) ) + mpd_cx;
+	__tmp_tiles_offset	= __mpd_get_map_tbl_val( mpd_bx << 1 ) + mpd_cx;
 #endif
-	__tmp_tiles_offset	+= __maps_offset;
+#ifndef	MPD_RAM_MAP
+	__tmp_tiles_offset	+= __map_offset;
+#endif
+	__tmp_vaddr		= __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y );
+	__tmp_CHRs_cnt		= ( mpd_scroll_y & 0x0f ) ? COLUMN_CHRS_CNT_INC1:COLUMN_CHRS_CNT;
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y ), ( ( mpd_scroll_y & 0x0f ) ? COLUMN_CHRS_CNT_INC1:COLUMN_CHRS_CNT ), __mpd_calc_skip_CHRs_cnt( mpd_al ) );
+	__mpd_fill_column_data();
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -2579,16 +2744,19 @@ void	__mpd_draw_right_tiles_column()
 #endif
 	__tmp_tiles_offset += ( tmp_scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( mpd_scroll_x + ScrPixelsWidth, mpd_scroll_y ), COLUMN_CHRS_CNT );
+	__tmp_vaddr		= __mpd_get_VRAM_addr( mpd_scroll_x + ScrPixelsWidth, mpd_scroll_y );
+	__tmp_CHRs_cnt		= COLUMN_CHRS_CNT;
+
+	__mpd_fill_column_data();
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 //	u16	map_pos_x;	mpd_bx
 //	u16	map_pos_y;	mpd_cx
-//	u8	u8_pos_y;	mpd_al
 
 	mpd_bx	= mpd_scroll_x;
 	mpd_cx	= mpd_scroll_y;
-	mpd_al	= mpd_cx;
+
+	__tmp_skip_CHRs_cnt	= __mpd_calc_skip_CHRs_cnt( mpd_cl );
 
 #if	FLAG_TILES4X4
 	mpd_bx >>= 5;
@@ -2599,13 +2767,17 @@ void	__mpd_draw_right_tiles_column()
 #endif
 
 #if	FLAG_DIR_ROWS
-	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( mpd_cx << 1 ) ) + mpd_bx + ScrTilesWidth;
+	__tmp_tiles_offset	= __mpd_get_map_tbl_val( mpd_cx << 1 ) + mpd_bx + ScrTilesWidth;
 #else	
-	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( ( mpd_bx + ScrTilesWidth ) << 1 ) ) + mpd_cx;
+	__tmp_tiles_offset	= __mpd_get_map_tbl_val( ( mpd_bx + ScrTilesWidth ) << 1 ) + mpd_cx;
 #endif
-	__tmp_tiles_offset	+= __maps_offset;
+#ifndef	MPD_RAM_MAP
+	__tmp_tiles_offset	+= __map_offset;
+#endif
+	__tmp_vaddr		= __mpd_get_VRAM_addr( mpd_scroll_x + ScrPixelsWidth, mpd_scroll_y );
+	__tmp_CHRs_cnt		= ( mpd_scroll_y & 0x0f ) ? COLUMN_CHRS_CNT_INC1:COLUMN_CHRS_CNT;
 
-	__mpd_fill_column_data( __mpd_get_VRAM_addr( mpd_scroll_x + ScrPixelsWidth, mpd_scroll_y ), ( ( mpd_scroll_y & 0x0f ) ? COLUMN_CHRS_CNT_INC1:COLUMN_CHRS_CNT ), __mpd_calc_skip_CHRs_cnt( mpd_al ) );
+	__mpd_fill_column_data();
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -2626,16 +2798,19 @@ void	__mpd_draw_up_tiles_row()
 #endif
 	__tmp_tiles_offset += ( mpd_curr_scr.scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y ), ROW_CHRS_CNT );
+	__tmp_vaddr		= __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y );
+	__tmp_CHRs_cnt		= ROW_CHRS_CNT;
+
+	__mpd_fill_row_data();
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 //	u16	map_pos_x;	mpd_bx
 //	u16	map_pos_y;	mpd_cx
-//	u8	u8_pos_x;	mpd_al
 
 	mpd_bx	= mpd_scroll_x;
 	mpd_cx	= mpd_scroll_y;
-	mpd_al	= mpd_bx;
+
+	__tmp_skip_CHRs_cnt	= __mpd_calc_skip_CHRs_cnt( mpd_bl );
 
 #if	FLAG_TILES4X4
 	mpd_bx >>= 5;
@@ -2646,13 +2821,17 @@ void	__mpd_draw_up_tiles_row()
 #endif
 
 #if	FLAG_DIR_ROWS
-	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( mpd_cx << 1 ) ) + mpd_bx;
+	__tmp_tiles_offset	= __mpd_get_map_tbl_val( mpd_cx << 1 ) + mpd_bx;
 #else
-	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( mpd_bx << 1 ) ) + mpd_cx;
+	__tmp_tiles_offset	= __mpd_get_map_tbl_val( mpd_bx << 1 ) + mpd_cx;
 #endif
-	__tmp_tiles_offset	+= __maps_offset;
+#ifndef	MPD_RAM_MAP
+	__tmp_tiles_offset	+= __map_offset;
+#endif
+	__tmp_vaddr		= __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y );
+	__tmp_CHRs_cnt		= ROW_CHRS_CNT;
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y ), ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( mpd_al ) );
+	__mpd_fill_row_data();
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
@@ -2676,16 +2855,19 @@ void	__mpd_draw_down_tiles_row()
 #endif
 	__tmp_tiles_offset += ( tmp_scr.scr_ind * __c_scr_tiles_size );
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y + ScrPixelsHeight ), ROW_CHRS_CNT );
+	__tmp_vaddr		= __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y + ScrPixelsHeight );
+	__tmp_CHRs_cnt		= ROW_CHRS_CNT;
+
+	__mpd_fill_row_data();
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 //	u16	map_pos_x;	mpd_bx
 //	u16	map_pos_y;	mpd_cx
-//	u8	u8_pos_x;	mpd_al
 
 	mpd_bx	= mpd_scroll_x;
 	mpd_cx	= mpd_scroll_y;
-	mpd_al	= mpd_bx;
+
+	__tmp_skip_CHRs_cnt	= __mpd_calc_skip_CHRs_cnt( mpd_bl );
 
 #if	FLAG_TILES4X4
 	mpd_bx >>= 5;
@@ -2696,31 +2878,23 @@ void	__mpd_draw_down_tiles_row()
 #endif
 
 #if	FLAG_DIR_ROWS
-	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl,  __maps_tbl_offset + ( mpd_cx << 1 ) ) + mpd_bx + __height_scr_step;
+	__tmp_tiles_offset	= __mpd_get_map_tbl_val( mpd_cx << 1 ) + mpd_bx + __height_scr_step;
 #else
-	__tmp_tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( mpd_bx << 1 ) ) + mpd_cx + ScrTilesHeight;
+	__tmp_tiles_offset	= __mpd_get_map_tbl_val( mpd_bx << 1 ) + mpd_cx + ScrTilesHeight;
 #endif
-	__tmp_tiles_offset	+= __maps_offset;
+#ifndef	MPD_RAM_MAP
+	__tmp_tiles_offset	+= __map_offset;
+#endif
+	__tmp_vaddr		= __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y + ScrPixelsHeight );
+	__tmp_CHRs_cnt		= ROW_CHRS_CNT;
 
-	__mpd_fill_row_data( __mpd_get_VRAM_addr( mpd_scroll_x, mpd_scroll_y + ScrPixelsHeight ), ROW_CHRS_CNT, __mpd_calc_skip_CHRs_cnt( mpd_al ) );
+	__mpd_fill_row_data();
 
 #endif	//FLAG_MODE_BIDIR_SCROLL
 }
 
-#if	FLAG_MODE_MULTIDIR_SCROLL
-
-void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt, u8 _skip_CHRs_cnt )
-#else
-void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt )
-#endif	//FLAG_MODE_MULTIDIR_SCROLL
+void	__mpd_fill_column_data()
 {
-	__tmp_CHRs_cnt		= _CHRs_cnt;
-	__tmp_vaddr		= _vaddr;
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
-	__tmp_skip_CHRs_cnt	= _skip_CHRs_cnt;
-#endif
-
 #if	FLAG_TILES4X4
 	__block_xy_pos	= ( mpd_scroll_x >> 4 ) & 0x01;
 #endif
@@ -2779,19 +2953,8 @@ void	__mpd_fill_column_data( u16 _vaddr, u8 _CHRs_cnt )
 	__mpd_fill_row_column_data();
 }
 
-#if	FLAG_MODE_MULTIDIR_SCROLL
-void	__mpd_fill_row_data( u16 _vaddr, u8 _CHRs_cnt, u8 _skip_CHRs_cnt )
-#else
-void	__mpd_fill_row_data( u16 _vaddr, u8 _CHRs_cnt )
-#endif	//FLAG_MODE_MULTIDIR_SCROLL
+void	__mpd_fill_row_data()
 {
-	__tmp_CHRs_cnt		= _CHRs_cnt;
-	__tmp_vaddr		= _vaddr;
-
-#if	FLAG_MODE_MULTIDIR_SCROLL
-	__tmp_skip_CHRs_cnt	= _skip_CHRs_cnt;
-#endif
-
 #if	FLAG_TILES4X4
 	__block_xy_pos	= ( ( mpd_scroll_y >> 4 ) & 0x01 ) << 1;
 #endif
@@ -2868,14 +3031,7 @@ void	__mpd_fill_row_column_data()
 #if	FLAG_MODE_BIDIR_SCROLL
 #asm
 	__farptr _mpd_TilesScr, __bl, __si
-#endasm
-#else
-#asm
-	__farptr _mpd_Maps, __bl, __si
-#endasm
-#endif	//FLAG_MODE_BIDIR_SCROLL
 
-#asm
 	; switch data banks
 
 	stw ___tmp_tiles_offset, <__ax
@@ -2883,6 +3039,24 @@ void	__mpd_fill_row_column_data()
 	call _mpd_farptr_add_offset
 	jsr map_data
 #endasm
+#else	//!FLAG_MODE_BIDIR_SCROLL
+#ifdef	MPD_RAM_MAP
+#asm
+	mpd_add_word_to_word2 #___RAM_Map, ___tmp_tiles_offset, <__si
+#endasm
+#else	//!MPD_RAM_MAP
+#asm
+	__farptr _mpd_Maps, __bl, __si
+
+	; switch data banks
+
+	stw ___tmp_tiles_offset, <__ax
+
+	call _mpd_farptr_add_offset
+	jsr map_data
+#endasm
+#endif	//MPD_RAM_MAP
+#endif	//FLAG_MODE_BIDIR_SCROLL
 
 	// tiles cache filling
 #asm
@@ -2917,9 +3091,13 @@ void	__mpd_fill_row_column_data()
 
 	dex
 	bne .tiles_cache_loop
+#endasm
 
+#ifndef	MPD_RAM_MAP
+#asm
 	jsr unmap_data
 #endasm
+#endif
 /*
 	__tile_n = 0;
 
@@ -3374,14 +3552,7 @@ CHRs_proc_exit:
 #if	FLAG_MODE_BIDIR_SCROLL
 #asm
 	__farptr _mpd_TilesScr, __bl, __si
-#endasm
-#else
-#asm
-	__farptr _mpd_Maps, __bl, __si
-#endasm
-#endif	//FLAG_MODE_BIDIR_SCROLL
 
-#asm
 	; switch data banks
 
 	stw ___tmp_tiles_offset, <__ax
@@ -3389,6 +3560,24 @@ CHRs_proc_exit:
 	call _mpd_farptr_add_offset
 	jsr map_data
 #endasm
+#else	//!FLAG_MODE_BIDIR_SCROLL
+#ifdef	MPD_RAM_MAP
+#asm
+	mpd_add_word_to_word2 #___RAM_Map, ___tmp_tiles_offset, <__si
+#endasm
+#else	//!MPD_RAM_MAP
+#asm
+	__farptr _mpd_Maps, __bl, __si
+
+	; switch data banks
+
+	stw ___tmp_tiles_offset, <__ax
+
+	call _mpd_farptr_add_offset
+	jsr map_data
+#endasm
+#endif	//MPD_RAM_MAP
+#endif	//FLAG_MODE_BIDIR_SCROLL
 
 #asm
 	; X = ( __tmp_CHRs_cnt + 1 ) >> 1
@@ -3404,7 +3593,7 @@ CHRs_proc_exit:
 	stw #___blocks_cache, <__cx
 	cly
 
-.blocks_cache_loop:	
+.blocks_cache_loop:
 
 	; __blocks_cache[ __block_ind ] = lda [__si], __tile_n;
 
@@ -3418,9 +3607,13 @@ CHRs_proc_exit:
 
 	dex
 	bne .blocks_cache_loop
+#endasm
 
+#ifndef	MPD_RAM_MAP
+#asm
 	jsr unmap_data
 #endasm
+#endif
 /*
 	// blocks cache filling
 	__tile_n = 0;
@@ -3971,23 +4164,33 @@ u8	mpd_get_property( u16 _x, u16 _y )
 #if	FLAG_MODE_MULTIDIR_SCROLL	/* !!! */
 
 #if	FLAG_DIR_ROWS
-//	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( _y << 1 ) ) + _x;
+//	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __map_tbl_offset + ( _y << 1 ) ) + _x;
 #asm
-	__farptr _mpd_MapsTbl, __bl, __si
-
-	; __ax = __maps_tbl_offset + ( _y << 1 )
+	; __ax = y << 1
 
 	lda <__dl
 	asl a
 	sta <__al
 	lda <__dh
 	rol a
-	sta <__ah					; __ax = _y << 1
+	sta <__ah
+#endasm
 
-	mpd_add_word_to_word ___maps_tbl_offset, <__ax	; __maps_tbl_offset + ( _y << 1 )
+#ifdef	MPD_RAM_MAP_TBL
+#asm
+	___mpd_get_map_tbl_val.1
+#endasm
+#else	//!MPD_RAM_MAP_TBL
+#asm
+	__farptr _mpd_MapsTbl, __bl, __si
+
+	mpd_add_word_to_word ___map_tbl_offset, <__ax	; __map_tbl_offset + ( _y << 1 )
 
 	call _mpd_farpeekw.2
+#endasm
+#endif	//MPD_RAM_MAP_TBL
 
+#asm
 	sax
 
 	clc
@@ -3999,24 +4202,34 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	adc <__ch		; _x.h
 	sta <_mpd_ch		; tiles_offset.h
 #endasm
-#else
-//	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __maps_tbl_offset + ( _x << 1 ) ) + _y;
+#else	//FLAG_DIR_COLUMNS
+//	tiles_offset	= mpd_farpeekw( mpd_MapsTbl, __map_tbl_offset + ( _x << 1 ) ) + _y;
 #asm
-	__farptr _mpd_MapsTbl, __bl, __si
-
-	; __ax = __maps_tbl_offset + ( _x << 1 )
+	; __ax = _x << 1
 
 	lda <__cl
 	asl a
 	sta <__al
 	lda <__ch
 	rol a
-	sta <__ah					; __ax = _x << 1
+	sta <__ah
+#endasm
 
-	mpd_add_word_to_word ___maps_tbl_offset, <__ax	; __maps_tbl_offset + ( _x << 1 )
+#ifdef	MPD_RAM_MAP_TBL
+#asm
+	___mpd_get_map_tbl_val.1
+#endasm
+#else	//!MPD_RAM_MAP_TBL
+#asm
+	__farptr _mpd_MapsTbl, __bl, __si
+
+	mpd_add_word_to_word ___map_tbl_offset, <__ax	; __map_tbl_offset + ( _x << 1 )
 
 	call _mpd_farpeekw.2
+#endasm
+#endif	//MPD_RAM_MAP_TBL
 
+#asm
 	sax
 
 	clc
@@ -4028,12 +4241,17 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	adc <__dh		; _y.h
 	sta <_mpd_ch		; tiles_offset.h
 #endasm
-#endif
-//	tiles_offset	+= __maps_offset;
+#endif	//FLAG_DIR_ROWS
+//	tiles_offset	+= __map_offset;
 
 //	tile_id		= mpd_farpeekb( mpd_Maps, tiles_offset );
+#ifdef	MPD_RAM_MAP
 #asm
-	mpd_add_word_to_word ___maps_offset, <_mpd_cx
+	mpd_add_word_to_word2 #___RAM_Map, <_mpd_cx, <__si
+#endasm
+#else	//!MPD_RAM_MAP
+#asm
+	mpd_add_word_to_word ___map_offset, <_mpd_cx
 
 	__farptr _mpd_Maps, __bl, __si
 
@@ -4043,7 +4261,10 @@ u8	mpd_get_property( u16 _x, u16 _y )
 
 	lda	<__bl
 	tam	#3
+#endasm
+#endif	//MPD_RAM_MAP
 
+#asm
 	lda [<__si]
 	tax			; x = tile_id
 #endasm
