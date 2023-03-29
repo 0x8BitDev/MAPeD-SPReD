@@ -27,6 +27,7 @@ load_bat
 /*/	MPD-render v0.8
 History:
 
+2023.03.28 - optimized access to a tile properties array: #define MPD_RAM_TILE_PROPS
 2023.03.26 - optimized call of '__mpd_fill_row_data' and '__mpd_fill_column_data'
 2023.03.26 - optimized access to tilemap data: #define MPD_RAM_MAP and #define MPD_RAM_MAP_TBL (support for dynamic multidir maps)
 
@@ -594,6 +595,16 @@ u8	__fastcall __macro __mpd_calc_skip_CHRs_cnt( u8 _pos<acc> );
 .cont\@:
 	.endm
 
+; \2 = \1 + A
+	.macro mpd_add_a_to_word2
+	clc
+	adc low_byte \1
+	sta low_byte \2
+	lda high_byte \1
+	adc #$00
+	sta high_byte \2
+	.endm
+
 ; if( xa < 0 ) { xa = 0; }
 	.macro	mpd_clamp_neg_xa
 	bit #$80
@@ -722,8 +733,7 @@ __mtiirts	.ds 1	; $60 rts
 ;
 	.proc _mpd_get_ptr24.3
 
-	cla
-	sta <__ah
+	stz <__ah
 	stw <__ax, <__cx
 
 	mpd_mul2_word <__ax
@@ -1260,7 +1270,6 @@ u8		__BAT_width_pow2;
 u16		__BAT_size;
 u16		__BAT_size_dec1;	// ( BAT_width * BAT_height ) - 1
 
-u16		__props_offset;
 u16		__blocks_offset;
 #if	FLAG_TILES4X4
 u16		__tiles_offset;
@@ -1369,6 +1378,22 @@ u16	__map_offset;
 #endif	//MPD_RAM_MAP
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
+/* Tile properties data */
+
+#ifdef	MPD_RAM_TILE_PROPS
+
+#ifndef	MPD_RAM_DATA_COPY
+#define	MPD_RAM_DATA_COPY
+#endif	//MPD_RAM_DATA_COPY
+
+u8	__RAM_TileProps[ MAX_TILE_PROPS_SIZE ];
+
+#else	//!MPD_RAM_TILE_PROPS
+
+u16	__props_offset;
+
+#endif	//MPD_RAM_TILE_PROPS
+
 #ifdef	MPD_RAM_DATA_COPY
 
 void	__fastcall mpd_farmemcpy( u16 far* _addr<__bl:__si>, u16 _offset<__ax>, void* _dst_addr<__dx>, u16 _size<__cx> );
@@ -1455,7 +1480,15 @@ void	__fastcall mpd_farmemcpy( u16 far* _addr<__bl:__si>, u16 _offset<__ax>, voi
 
 void	__mpd_update_data_offsets()
 {
+#ifdef	MPD_RAM_TILE_PROPS
+	mpd_ax = mpd_farpeekw( mpd_PropsOffs, __curr_chr_id_mul2 );
+	mpd_cx = mpd_farpeekw( mpd_PropsOffs, ( ( __curr_chr_id_mul2 >> 1 ) + 1 ) << 1 );
+
+	mpd_farmemcpy( mpd_Props, mpd_ax, __RAM_TileProps, mpd_cx - mpd_ax );
+#else
 	__props_offset	= mpd_farpeekw( mpd_PropsOffs,	__curr_chr_id_mul2 );
+#endif	//MPD_RAM_MAP
+
 	__blocks_offset	= mpd_farpeekw( mpd_BlocksOffs,	__curr_chr_id_mul2 );
 
 #if	FLAG_TILES4X4
@@ -1632,8 +1665,6 @@ void	__mpd_calc_scr_pos_by_LUT_pos( u16 _LUT_pos_x, u16 _LUT_pos_y, bool _reset_
 	__height_scr_step	= __map_tiles_width * ScrTilesHeight;
 	__init_tiles_offset	= __mpd_get_map_tbl_val( mpd_bx << 1 ) + mpd_ax;
 #endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
-
-	__mpd_update_data_offsets();
 }
 
 void	__mpd_draw_tiled_screen( u16 _BAT_offset )
@@ -2201,6 +2232,8 @@ void	mpd_init( u8 _map_ind )
 #endif	//MPD_RAM_MAP_TBL
 
 	__mpd_calc_scr_pos_by_scr_ind( mpd_get_start_screen_ind( _map_ind ), FALSE );
+
+	__mpd_update_data_offsets();
 
 #else	//FLAG_MODE_MULTIDIR_SCROLL
 	__curr_chr_id_mul2	= 0xff;
@@ -3945,7 +3978,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 			_x += __horiz_dir_pos;
 		}
 	}
-#endif
+#endif	//FLAG_MODE_BIDIR_SCROLL
 
 	// _x = __cx
 	// _y = __dx
@@ -4074,7 +4107,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	stx <__dl
 	sta <__dh	; _y
 #endasm
-#endif	
+#endif	//FLAG_PROP_ID_PER_BLOCK
 #else	//FLAG_TILES2X2
 #if	FLAG_PROP_ID_PER_BLOCK
 //	_x >>= 4;
@@ -4158,8 +4191,8 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	stx <__dl
 	sta <__dh	; _y
 #endasm
-#endif
-#endif
+#endif	//FLAG_PROP_ID_PER_BLOCK
+#endif	//FLAG_TILES4X4
 
 #if	FLAG_MODE_MULTIDIR_SCROLL	/* !!! */
 
@@ -4295,7 +4328,7 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	adc <__ch
 	sta <_mpd_ch		; tiles_offset = __scr_tiles_width_tbl[ _y ] + _x
 #endasm
-#else
+#else	//FLAG_DIR_COLUMNS
 //	tiles_offset	= __scr_tiles_height_tbl[ _x ] + _y;
 #asm
 	lda <__cl
@@ -4319,47 +4352,46 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	adc <__dh
 	sta <_mpd_ch		; tiles_offset = __scr_tiles_height_tbl[ _x ] + _y
 #endasm
-#endif
+#endif	//FLAG_DIR_ROWS
 
 #if	FLAG_MODE_BIDIR_SCROLL
 //	tile_id		= mpd_farpeekb( mpd_TilesScr, mpd_ex(scr_offs) + tiles_offset );
 #asm
-	__farptr _mpd_TilesScr, __bl, __si
-
-	mpd_add_word_to_word2 <_mpd_ex, <_mpd_cx, <__ax	; scr_offs + tiles_offset
-
-	call _mpd_farptr_add_offset
-
-	lda	<__bl
-	tam	#3
-
-	lda [<__si]
-	tax					; x = tile_id
+	mpd_add_word_to_word2 <_mpd_ex, <_mpd_cx, <__ax		; scr_offs + tiles_offset
 #endasm
-#else
+#else	//FLAG_MODE_BIDIR_STAT_SCR + FLAG_MODE_STAT_SCR
 //	tile_id		= mpd_farpeekb( mpd_TilesScr, __scr_offset + tiles_offset );
+#asm
+	mpd_add_word_to_word2 ___scr_offset, <_mpd_cx, <__ax	; __scr_offset + tiles_offset
+#endasm
+#endif	//FLAG_MODE_BIDIR_SCROLL
+
 #asm
 	__farptr _mpd_TilesScr, __bl, __si
 
-	mpd_add_word_to_word2 ___scr_offset, <_mpd_cx, <__ax	; __scr_offset + tiles_offset
-
 	call _mpd_farptr_add_offset
 
 	lda	<__bl
 	tam	#3
 
-	lda [<__si]
-	tax					; x = tile_id
+	lda [<__si]				; a = tile_id
 #endasm
-#endif
-#endif
+#endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_TILES4X4
 //	tile_id		= mpd_farpeekb( mpd_Tiles, __tiles_offset + ( tile_id << 2 ) + ( block_pos_y << 1 ) + block_pos_x );
 #asm
-	__farptr _mpd_Tiles, __bl, __si
+	; __ax = __tiles_offset + ( tile_id << 2 ) + ( block_pos_y << 1 ) + block_pos_x
 
-	stw ___tiles_offset, <__ax		; __tiles_offset
+	stz <__ah
+
+	; a = tile_id
+
+	asl a
+	rol <__ah
+	asl a
+	rol <__ah
+	sta <__al				; tile_id << 2
 
 	lda <_mpd_ah				; block_pos_y << 1
 	asl a
@@ -4367,54 +4399,55 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	clc
 	adc <_mpd_al				; block_pos_x
 
-	mpd_add_a_to_word <__ax			; __tiles_offset + ( block_pos_y << 1 ) + block_pos_x
+	mpd_add_a_to_word <__ax
 
-	cla
-	sta <_mpd_dh
+	mpd_add_word_to_word ___tiles_offset, <__ax
 
-	txa					; a = tile_id
-	asl a
-	rol <_mpd_dh
-	asl a
-	rol <_mpd_dh
-	sta <_mpd_dl				; tile_id << 2
-
-	mpd_add_word_to_word <_mpd_dx, <__ax	; __tiles_offset + ( tile_id << 2 ) + ( block_pos_y << 1 ) + block_pos_x
+	__farptr _mpd_Tiles, __bl, __si
 
 	call _mpd_farptr_add_offset
 
 	lda	<__bl
 	tam	#3
 
-	lda [<__si]
-	tax					; x = tile_id
+	lda [<__si]				; a = tile_id
 #endasm
-#endif
+#endif	//FLAG_TILES4X4
 
 #if	FLAG_PROP_ID_PER_BLOCK
 //	tile_id		= mpd_farpeekb( mpd_Props, __props_offset + tile_id );
+#ifdef	MPD_RAM_TILE_PROPS
 #asm
+	mpd_add_a_to_word2 #___RAM_TileProps, <__si
+#endasm
+#else	//!MPD_RAM_TILE_PROPS
+#asm
+	; __ax = __props_offset + tile_id
+
+	mpd_add_a_to_word2 ___props_offset, <__ax
+
 	__farptr _mpd_Props, __bl, __si
-
-	stw ___props_offset, <__ax
-
-	txa					; a = tile_id
-	mpd_add_a_to_word <__ax			; __props_offset + tile_id
 
 	call _mpd_farptr_add_offset
 
 	lda	<__bl
 	tam	#3
-
-	lda [<__si]
-	sta <_mpd_dl				; tile_id
 #endasm
+#endif	//MPD_RAM_TILE_PROPS
 #else	//FLAG_PROP_ID_PER_CHR
 //	tile_id		= mpd_farpeekb( mpd_Props, __props_offset + ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x );
 #asm
-	__farptr _mpd_Props, __bl, __si
+	; __ax = ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x
 
-	stw ___props_offset, <__ax		; __props_offset
+	stz <__ah
+
+	; a = tile_id
+
+	asl a
+	rol <__ah
+	asl a
+	rol <__ah
+	sta <__al				; tile_id << 2
 
 	lda <_mpd_bh				; CHR_pos_y << 1
 	asl a
@@ -4422,29 +4455,26 @@ u8	mpd_get_property( u16 _x, u16 _y )
 	clc
 	adc <_mpd_bl				; CHR_pos_x
 
-	mpd_add_a_to_word <__ax			; __props_offset + ( CHR_pos_y << 1 ) + CHR_pos_x
+	mpd_add_a_to_word <__ax
+#endasm
 
-	cla
-	sta <_mpd_dh
+#ifdef	MPD_RAM_TILE_PROPS
+#asm
+	mpd_add_word_to_word2 #___RAM_TileProps, <__ax, <__si
+#endasm
+#else	//!MPD_RAM_TILE_PROPS
+#asm
+	mpd_add_word_to_word ___props_offset, <__ax
 
-	txa					; a = tile_id
-	asl a
-	rol <_mpd_dh
-	asl a
-	rol <_mpd_dh
-	sta <_mpd_dl				; tile_id << 2
-
-	mpd_add_word_to_word <_mpd_dx, <__ax	; __props_offset + ( tile_id << 2 ) + ( CHR_pos_y << 1 ) + CHR_pos_x
+	__farptr _mpd_Props, __bl, __si
 
 	call _mpd_farptr_add_offset
 
 	lda	<__bl
 	tam	#3
-
-	lda [<__si]
-	sta <_mpd_dl				; tile_id
 #endasm
-#endif
+#endif	//MPD_RAM_TILE_PROPS
+#endif	//FLAG_PROP_ID_PER_BLOCK
 
 #asm
 .ifdef MPD_DEBUG
@@ -4453,7 +4483,12 @@ u8	mpd_get_property( u16 _x, u16 _y )
 #asm
 .endif
 #endasm
-	return mpd_dl;//tile_id;
+
+#asm
+	lda [<__si]
+	tax
+	cla
+#endasm
 }
 
 #asm
