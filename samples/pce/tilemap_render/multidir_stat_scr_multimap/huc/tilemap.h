@@ -107,3 +107,4 @@ extern mpd_SCREEN** mpd_MapsArr[];
 
 #define	MAX_MAP_SIZE		9408	// tilemap size in bytes of a largest map
 #define	MAX_MAP_TBL_SIZE	192	// tilemap LUT in bytes of a largest map
+#define	MAX_TILE_PROPS_SIZE	984	// largest array of tile properties

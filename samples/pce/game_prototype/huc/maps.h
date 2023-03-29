@@ -109,3 +109,4 @@ extern u8*	mpd_BaseEntities;
 
 #define	MAX_MAP_SIZE		2240	// tilemap size in bytes of a largest map
 #define	MAX_MAP_TBL_SIZE	160	// tilemap LUT in bytes of a largest map
+#define	MAX_TILE_PROPS_SIZE	80	// largest array of tile properties
