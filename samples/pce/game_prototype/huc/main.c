@@ -1,6 +1,6 @@
 //#######################################################################################
 //
-// Copyright 2021-2022 0x8BitDev ( MIT license. See LICENSE.txt )
+// Copyright 2021-2023 0x8BitDev ( MIT license. See LICENSE.txt )
 //
 // Desc: Simple game prototype demo.
 //
@@ -21,7 +21,7 @@
 /*
 History:
 
-- added MPD_RAM_MAP and MPD_RAM_MAP_TBL defines to speed up getting a map data
+- added MPD_RAM_MAP/MPD_RAM_MAP_TBL/MPD_RAM_TILE_PROPS defines to speed up getting a map data and a tile properties
 
 v0.2
 - fixed the falling platform logic, now it is deactivated at the bottom side of the screen
@@ -40,11 +40,12 @@ v0.1
 - initial release
 */
 
-// Since we have free RAM, we can use it for storing a map data.
-// This will slightly speed up getting a tile property, drawing static screens and scrolling.
+// We have free RAM, so we can use it for storing a map data and a tile properties array.
+// This will speed up getting a tile property and slightly speed up static screens drawing and scrolling.
 
 #define MPD_RAM_MAP
 #define MPD_RAM_MAP_TBL
+#define MPD_RAM_TILE_PROPS
 
 // MPD debug info (use Mednaffen PCE Dev version):
 // - green border color		- screen scrolling
