@@ -586,6 +586,8 @@ namespace MAPeD
 			
 			int max_props_cnt = 0;
 			int props_cnt;
+			
+			int max_tile_props_size_bytes	= -1;
 
 			uint block_data;
 			
@@ -827,6 +829,16 @@ namespace MAPeD
 						else
 						{
 							blocks_props_size = tiles.get_first_free_block_id( false ) << 2;
+						}
+
+						// calculate largest size of tile properties array
+						{
+							int tile_props_arr_size = RBtnPropPerBlock.Checked ? ( blocks_props_size >> 2 ):blocks_props_size;
+							
+							if( max_tile_props_size_bytes < tile_props_arr_size )
+							{
+								max_tile_props_size_bytes = tile_props_arr_size;
+							}
 						}
 						
 						for( block_n = 0; block_n < blocks_props_size; block_n++ )
@@ -1368,6 +1380,18 @@ namespace MAPeD
 				m_C_writer.WriteLine( "\n#define\tENT_MAX_PROPS_CNT\t" + max_props_cnt );
 			}
 			
+			// save largest tile properties array size in bytes
+			{
+				if( m_C_writer != null )
+				{
+					m_C_writer.WriteLine( "#define\tMAX_TILE_PROPS_SIZE\t" + max_tile_props_size_bytes + "\t// largest array of tile properties" );
+				}
+				else
+				{
+					_sw.WriteLine( c_data_prefix + "MaxTilePropsSize\t= " + max_tile_props_size_bytes + "\t; largest array of tile properties" );
+				}
+			}
+			
 			foreach( var key in screens.Keys ) { screens[ key ].destroy(); }
 			
 			if( exp_data_size > 8192 )
@@ -1690,6 +1714,7 @@ namespace MAPeD
 			
 			int max_map_size_bytes;
 			int max_map_tbl_size_bytes;
+			int max_tile_props_size_bytes	= -1;
 			
 			tiles_data tiles;
 
@@ -1781,6 +1806,12 @@ namespace MAPeD
 					
 					block_props_arr = new byte[ RBtnPropPerBlock.Checked ? ( blocks_props_size >> 2 ):blocks_props_size ];
 					Array.Clear( block_props_arr, 0, block_props_arr.Length );
+					
+					// calculate largest size of tile properties array
+					if( max_tile_props_size_bytes < block_props_arr.Length )
+					{
+						max_tile_props_size_bytes = block_props_arr.Length;
+					}
 					
 					for( block_n = 0; block_n < blocks_props_size; block_n++ )
 					{
@@ -2250,11 +2281,13 @@ namespace MAPeD
 				{
 					m_C_writer.WriteLine( "\n#define\tMAX_MAP_SIZE\t\t" + max_map_size_bytes + "\t// tilemap size in bytes of a largest map" );
 					m_C_writer.WriteLine( "#define\tMAX_MAP_TBL_SIZE\t" + max_map_tbl_size_bytes + "\t// tilemap LUT in bytes of a largest map" );
+					m_C_writer.WriteLine( "#define\tMAX_TILE_PROPS_SIZE\t" + max_tile_props_size_bytes + "\t// largest array of tile properties" );
 				}
 				else
 				{
 					_sw.WriteLine( c_data_prefix + "MaxMapSize\t\t= " + max_map_size_bytes + "\t; tilemap size in bytes of a largest map" );
 					_sw.WriteLine( c_data_prefix + "MaxMapTblSize\t= " + max_map_tbl_size_bytes + "\t; tilemap LUT in bytes of a largest map" );
+					_sw.WriteLine( c_data_prefix + "MaxTilePropsSize\t= " + max_tile_props_size_bytes + "\t; largest array of tile properties" );
 				}
 			}
 			
