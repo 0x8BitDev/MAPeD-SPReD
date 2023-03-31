@@ -176,7 +176,7 @@ namespace MAPeD
 						{
 							update_screens_labels_by_bank_id();
 							
-							m_layout_editor.set_param( layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
+							m_layout_editor.set_param( layout_editor_base.e_mode.Screens, layout_editor_param.CONST_SET_SCR_ACTIVE, -1 );
 						}
 
 						m_layout_editor.update_dimension_changes();
