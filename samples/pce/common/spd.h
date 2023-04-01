@@ -28,6 +28,8 @@ __LOAD_VRAM	= load_vram
 /*/	SPD-render v0.7
 History:
 
+2023.04.01 - ASM SPD_DEBUG changed to HuC '#define SPD_DEBUG'
+
 v0.7
 2023.03.10 - added aliases for external dependencies: map_data, unmap_data, load_vram
 2023.03.07 - reduced the number of HuC functions (.proc/.endp) [21]:
@@ -108,9 +110,7 @@ debug info (use Mednafen):
  - white border color - spd_SATB_push_sprite
  - cyan border color - attributes transformation
  
-#asm
-SPD_DEBUG
-#endasm
+#define SPD_DEBUG
 
 [upd] v0.6
 NOTE: 	After enabling you will see two border lines: pink - ROM-VRAM data copying and white/cyan - spd_SATB_push_sprite.
@@ -470,6 +470,12 @@ SPD_TII_ATTR_XY	; speeds up transformation of meta-sprite attributes a bit, but 
 /*/
 
 const unsigned char spd_ver[] = { "S", "P", "D", "0", "7", 0 };
+
+#ifdef SPD_DEBUG
+#asm
+SPD_DEBUG
+#endasm
+#endif
 
 /* SPD flags */
 

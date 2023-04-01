@@ -12,9 +12,8 @@
 // debug info:
 // - pink border color - ROM-VRAM data copying
 // - white border color - spd_SATB_push_sprite
-#asm
-SPD_DEBUG
-#endasm
+
+#define SPD_DEBUG
 
 #include <huc.h>
 #include "../../../common/spd.h"
