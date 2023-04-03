@@ -22,13 +22,11 @@
 //################################################################
 
 // debug info (use Mednafen):
-// - green+red border color	- screen scrolling
+// - green border color		- screen scrolling
 // - blue border color		- static screen drawing
 // - yellow border color	- getting a tile property
 //
-#asm
-;MPD_DEBUG
-#endasm
+//#define MPD_DEBUG
 
 #include <huc.h>
 

@@ -47,20 +47,18 @@ v0.1
 #define MPD_RAM_MAP_TBL
 #define MPD_RAM_TILE_PROPS
 
-// MPD debug info (use Mednaffen PCE Dev version):
+// MPD debug info (use Mednafen PCE Dev version):
 // - green border color		- screen scrolling
 // - blue border color		- static screen drawing
 // - yellow border color	- getting a tile property
 //
-// SPD debug info (use Mednaffen PCE Dev version):
+// SPD debug info (use Mednafen PCE Dev version):
 // - pink border color		- ROM-VRAM data copying
 // - white border color		- spd_SATB_push_sprite
 // - cyan border color		- attributes transformation
 
-#asm
-;MPD_DEBUG
-;SPD_DEBUG
-#endasm
+//#define MPD_DEBUG
+//#define SPD_DEBUG
 
 #define	DBG_MODE		0
 #define	DBG_SHOW_INFO		0
@@ -99,7 +97,7 @@ main()
 .ifdef	MPD_DEBUG
 #endasm
 	// make the screen a little smaller so that the border color is visible
-	// uncomment for Mednaffen non-PCE Dev version
+	// uncomment for Mednafen non-PCE Dev version
 //	set_xres( 252, XRES_SOFT );
 #asm
 .endif
