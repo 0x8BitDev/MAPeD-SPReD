@@ -14,6 +14,7 @@ vdc_crl
 vdc_crh
 video_data_l
 video_data_h
+__ax...__dx
 
 procs:
 ~~~~~~
@@ -22,11 +23,15 @@ unmap_data
 load_palette
 load_vram
 load_bat
+mulu16
 */
 
 /*/	MPD-render v0.8
 History:
 
+2023.04.01 - ASM MPD_DEBUG changed to HuC '#define MPD_DEBUG'
+2023.03.31 - added mpd_get_tile_property(...) and mpd_set_tile_property(...) functions and 'u16 mpd_tile_props_arr_size' read-only variable
+2023.03.30 - added mpd_put_tile(...) and mpd_get_tile(...) functions
 2023.03.28 - optimized access to a tile properties array: #define MPD_RAM_TILE_PROPS
 2023.03.26 - optimized call of '__mpd_fill_row_data' and '__mpd_fill_column_data'
 2023.03.26 - optimized access to tilemap data: #define MPD_RAM_MAP and #define MPD_RAM_MAP_TBL (support for dynamic multidir maps)
@@ -124,9 +129,7 @@ debug info (use Mednafen):
  - blue border color	- static screen drawing
  - yellow border color	- getting a tile property
 
-#asm
-MPD_DEBUG
-#endasm
+#define MPD_DEBUG
 
 NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any way!	It just provides scroll values X/Y: mpd_scroll_x, mpd_scroll_y.
 	Thus, user must set scroll values in his program using these global variables. This is for scrollable maps only!
@@ -371,6 +374,8 @@ Active map width/height in pixels = map width/height in pixels - screen width/he
 R: u16	mpd_map_active_width  -> mpd_active_map_width() - DEPRECATED
 R: u16	mpd_map_active_height -> mpd_active_map_height() - DEPRECATED
 
+R: u16	mpd_tile_props_arr_size - tile properties array size of a current map when the MPD_RAM_TILE_PROPS is defined
+
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
@@ -411,15 +416,17 @@ void	mpd_init( u8 _map_ind )
 #endif	//FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
 
 // NOTE: 'mpd_draw_...' - for scrollable maps add 'mpd_scroll_x' to _x and 'mpd_scroll_y' to _y
-void	mpd_draw_CHR( u16 _x, u16 _y, u8 _block2x2_ind, u8 _CHR_ind ) / _x/_y - screen space coordinates in pixels, _block2x2_ind - 0..255, _CHR_ind - 0..3
-void	mpd_draw_block2x2( u8 _x, u8 _y, u8 _block2x2_ind ) / _x/_y - screen space coordinates in pixels, _block2x2_ind - 0..255
+void	mpd_draw_CHR( u16 _x, u16 _y, u8 _block2x2_ind, u8 _CHR_ind ) / _x/_y - coordinates in pixels* , _block2x2_ind - 0..255, _CHR_ind - 0..3
+void	mpd_draw_block2x2( u8 _x, u8 _y, u8 _block2x2_ind ) / _x/_y - coordinates in pixels* , _block2x2_ind - 0..255
 
 #if	FLAG_TILES4X4
-void	mpd_draw_tile4x4( u8 _x, u8 _y, u8 _tile4x4_ind ) / _x/_y - screen space coordinates in pixels, _tile4x4_ind - 0..255
+void	mpd_draw_tile4x4( u8 _x, u8 _y, u8 _tile4x4_ind ) / _x/_y - coordinates in pixels* , _tile4x4_ind - 0..255
 #endif	//FLAG_TILES4X4
 
-u8	mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates; RES: property id
+u8	mpd_get_property( u16 _x, u16 _y ) / _x/_y - coordinates in pixels* ; RES: property id
 void	mpd_draw_screen()
+
+* screen space coordinates for bi-directional maps and map space coordinates for multi-directional maps
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
 DEPRECATED -->	u16	mpd_active_map_width() / map screens width in pixels - screen width in pixels
@@ -432,7 +439,22 @@ void	mpd_get_screen_data( mpd_SCR_DATA* _scr_data, u8 _scr_ind )
 u8	mpd_get_start_screen_ind( u8 _map_ind )
 void	mpd_get_start_screen( mpd_SCR_DATA* _scr_data, u8 _map_ind )
 u8	mpd_get_curr_screen_ind()
+
+#ifdef	MPD_RAM_MAP
+u8	mpd_get_tile( u16 _x, u16 _y, bool _pixels ) / _pixels = TRUE - pixel coordinates, FALSE - tile coordinates
+void	mpd_put_tile( u16 _x, u16 _y, bool _pixels, u8 _tile_ind ) / _pixels = TRUE - pixel coordinates, FALSE - tile coordinates, _tile_ind - 0..255
+#endif	//MPD_RAM_MAP
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
+
+#ifdef	MPD_RAM_TILE_PROPS
+#if	FLAG_PROP_ID_PER_CHR
+u8	mpd_get_tile_property( u8 _tile_ind, u8 _CHR_ind ) / _tile_ind - 0..255, _CHR_ind - 0..3
+void	mpd_set_tile_property( u8 _tile_ind, u8 _CHR_ind, u8 _new_prop ) / _tile_ind - 0..255, _CHR_ind - 0..3, _new_prop - a new property value
+#else	//FLAG_PROP_ID_PER_BLOCK
+u8	mpd_get_tile_property( u8 _tile_ind ) / _tile_ind - 0..255
+void	mpd_set_tile_property( u8 _tile_ind, u8 _new_prop ) / _tile_ind - 0..255, _new_prop - a new property value
+#endif	//FLAG_PROP_ID_PER_CHR
+#endif	//MPD_RAM_TILE_PROPS
 
 #if	FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
 DEPRECATED -->	mpd_SCR_DATA*	mpd_curr_screen()
@@ -459,6 +481,32 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 
 --------------------------------------------------------
 */
+
+// Some re-defines to ASM
+#if	FLAG_TILES4X4
+#asm
+FLAG_TILES4X4
+#endasm
+#endif
+
+#if	FLAG_TILES2X2
+#asm
+FLAG_TILES2X2
+#endasm
+#endif
+
+#if	FLAG_DIR_COLUMNS
+#asm
+FLAG_DIR_COLUMNS
+#endasm
+#endif
+
+#if	FLAG_DIR_ROWS
+#asm
+FLAG_DIR_ROWS
+#endasm
+#endif
+
 
 /*********************/
 /*		     */
@@ -602,6 +650,17 @@ u8	__fastcall __macro __mpd_calc_skip_CHRs_cnt( u8 _pos<acc> );
 	sta low_byte \2
 	lda high_byte \1
 	adc #$00
+	sta high_byte \2
+	.endm
+
+; \2 = \1 + AX
+	.macro mpd_add_ax_to_word2
+	clc
+	sax
+	adc low_byte \1
+	sta low_byte \2
+	sax
+	adc high_byte \1
 	sta high_byte \2
 	.endm
 
@@ -840,6 +899,21 @@ extern u16	mpd_fx;
 extern s16	mpd_fxs;
 extern u8	mpd_fl;
 extern u8	mpd_fh;
+
+// built-in MagicKit variables
+
+extern u16	_ax;
+extern u8	_al;
+extern u8	_ah;
+extern u16	_bx;
+extern u8	_bl;
+extern u8	_bh;
+extern u16	_cx;
+extern u8	_cl;
+extern u8	_ch;
+extern u16	_dx;
+extern u8	_dl;
+extern u8	_dh;
 
 /********************/
 /*		    */
@@ -1151,7 +1225,6 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 
 #define	DBG_COLOR_PRE_ROW_COL_FILLING	320	// light green
 #define	DBG_COLOR_ROW_COL_FILLING	256	// green
-#define	DBG_COLOR_DISP_LIST_FLUSH	184	// red
 #define	DBG_COLOR_DRAW_SCREEN		4	// blue
 #define	DBG_COLOR_GET_TILE_PROP		504	// yellow
 
@@ -1323,6 +1396,10 @@ u8	__upd_flags;
 #define	MPD_RAM_DATA_COPY
 #endif	//MPD_RAM_DATA_COPY
 
+#asm
+MPD_RAM_MAP_TBL
+#endasm
+
 u8	__RAM_MapTbl[ MAX_MAP_TBL_SIZE ];	// RAM copy of a map LUT
 
 u16	__fastcall __macro __mpd_get_map_tbl_val( u16 _offset<__ax> );
@@ -1355,19 +1432,197 @@ u16	__map_tbl_offset;
 #define	MPD_RAM_DATA_COPY
 #endif	//MPD_RAM_DATA_COPY
 
+#asm
+MPD_RAM_MAP
+#endasm
+
 u8	__RAM_Map[ MAX_MAP_SIZE ];		// RAM copy of a map data
 
-u8	__fastcall __macro __mpd_get_map_tile( u16 _offset<__ax> );
+u8	__fastcall __macro __mpd_get_map_tile( u16 _offset<__dx> );
 #asm
 	.macro	___mpd_get_map_tile.1
 
-	mpd_add_word_to_word #___RAM_Map, <__ax
-	lda [<__ax]
+	mpd_add_word_to_word #___RAM_Map, <__dx
+	lda [<__dx]
 	tax
 	cla
 
 	.endm
 #endasm
+
+void	__fastcall __macro __mpd_put_map_tile( u16 _offset<__dx>, u8 _tile_ind<acc> );
+#asm
+	.macro ___mpd_put_map_tile.2
+
+	mpd_add_word_to_word #___RAM_Map, <__dx
+
+	txa		; _tile_id
+	sta [<__dx]
+
+	.endm
+#endasm
+
+void	__fastcall __macro __mpd_calc_map_offset( u16 _x<__ax>, u16 _y<__bx>, bool _pixels<__cl> );
+#asm
+	.macro ___mpd_calc_map_offset.3
+
+	; if( _pixels )
+
+	lda <__cl
+
+	beq .cont
+
+	lda <__ah	; _x
+
+	lsr a
+	ror <__al
+	lsr a
+	ror <__al
+	lsr a
+	ror <__al
+	lsr a
+	ror <__al
+
+.ifdef	FLAG_TILES4X4
+	lsr a
+	ror <__al
+.endif
+
+	sta <__ah	; _x
+
+	lda <__bh	; _y
+
+	lsr a
+	ror <__bl
+	lsr a
+	ror <__bl
+	lsr a
+	ror <__bl
+	lsr a
+	ror <__bl
+
+.ifdef	FLAG_TILES4X4
+	lsr a
+	ror <__bl
+.endif
+
+	sta <__bh	; _y
+
+.cont:
+
+.ifdef	FLAG_DIR_COLUMNS
+.ifdef	MPD_RAM_MAP_TBL
+
+	; __dx = __RAM_MapTbl[ __ax << 1 ] + __bx;
+
+	lda <__al
+	asl a
+	rol <__ah
+	sta <__al
+
+	___mpd_get_map_tbl_val.1
+
+	mpd_add_ax_to_word2 <__bx, <__dx
+
+.else	;!MPD_RAM_MAP_TBL
+
+	; __dx = ( __map_tiles_height * __ax ) + __bx;
+
+	stw <__bx, <_mpd_bx
+	stw ___map_tiles_height, <__bx
+	jsr mulu16
+
+	mpd_add_word_to_word2 <_mpd_bx, <__cx, <__dx
+
+.endif	;MPD_RAM_MAP_TBL
+.else	;FLAG_DIR_ROWS
+.ifdef	MPD_RAM_MAP_TBL
+
+	; __dx = __RAM_MapTbl[ __bx << 1 ] + __ax;
+
+	stw <__ax, <_mpd_ax
+
+	lda <__bl
+	ldx <__bh
+
+	asl a
+	sax
+	rol a
+	sta <__ah
+	sax
+	sta <__al
+
+	___mpd_get_map_tbl_val.1
+
+	mpd_add_ax_to_word2 <_mpd_ax, <__dx
+
+.else	;!MPD_RAM_MAP_TBL
+
+	; __dx = ( __map_tiles_width * __bx ) + __ax;
+
+	stw <__ax, <_mpd_ax
+	stw ___map_tiles_width, <__ax
+	jsr mulu16
+
+	mpd_add_word_to_word2 <_mpd_ax, <__cx, <__dx
+
+.endif	;MPD_RAM_MAP_TBL
+.endif	;FLAG_DIR_COLUMNS
+
+	.endm
+#endasm
+
+#ifdef	MPD_DEBUG
+void	mpd_put_tile( u16 _x, u16 _y, bool _pixels, u8 _tile_ind )	// _pixels = TRUE - pixel coordinates, FALSE - tile coordinates
+{
+	__mpd_calc_map_offset( _x, _y, _pixels );
+
+	if( _dx >= ( __map_tiles_width * __map_tiles_height ) )
+	{
+		__mpd_err_msg( "ERROR: OUT OF RANGE!", "mpd_put_tile", _x, _y, _pixels );
+	}
+
+	__mpd_put_map_tile( _dx, _tile_ind );
+}
+
+u8	mpd_get_tile( u16 _x, u16 _y, bool _pixels )	// _pixels = TRUE - pixel coordinates, FALSE - tile coordinates
+{
+	__mpd_calc_map_offset( _x, _y, _pixels );
+
+	if( _dx >= ( __map_tiles_width * __map_tiles_height ) )
+	{
+		__mpd_err_msg( "ERROR: OUT OF RANGE!", "mpd_get_tile", _x, _y, _pixels );
+	}
+
+	__mpd_get_map_tile( _dx );
+}
+#else	//!MPD_DEBUG
+void	__fastcall __macro mpd_put_tile( u16 _x<__ax>, u16 _y<__bx>, bool _pixels<__cl>, u8 _tile_ind<acc> );
+#asm
+	.macro _mpd_put_tile.4
+
+	phx
+
+	___mpd_calc_map_offset.3
+
+	plx
+
+	___mpd_put_map_tile.2
+
+	.endm
+#endasm
+
+u8	__fastcall __macro mpd_get_tile( u16 _x<__ax>, u16 _y<__bx>, bool _pixels<__cl> );
+#asm
+	.macro _mpd_get_tile.3
+
+	___mpd_calc_map_offset.3
+
+	___mpd_get_map_tile.1
+
+	.endm
+#endasm
+#endif	//MPD_DEBUG
 
 #else	//!MPD_RAM_MAP
 
@@ -1386,7 +1641,161 @@ u16	__map_offset;
 #define	MPD_RAM_DATA_COPY
 #endif	//MPD_RAM_DATA_COPY
 
+#asm
+MPD_RAM_TILE_PROPS
+#endasm
+
 u8	__RAM_TileProps[ MAX_TILE_PROPS_SIZE ];
+
+u16	mpd_tile_props_arr_size;
+
+#ifdef	MPD_DEBUG
+#if	FLAG_PROP_ID_PER_CHR
+u8	mpd_get_tile_property( u8 _tile_ind, u8 _CHR_ind )
+{
+	mpd_ex = _tile_ind;	// 8-bit to 16-bit
+
+	mpd_dx = ( mpd_ex << 2 ) + _CHR_ind;
+
+	if( mpd_dx >= mpd_tile_props_arr_size )
+	{
+		__mpd_err_msg( "ERROR: OUT OF RANGE!", "mpd_get_tile_property", mpd_ex, _CHR_ind, -1 );
+	}
+
+	return __RAM_TileProps[ mpd_dx ];
+}
+
+void	mpd_set_tile_property( u8 _tile_ind, u8 _CHR_ind, u8 _new_prop )
+{
+	mpd_ex = _tile_ind;	// 8-bit to 16-bit
+
+	mpd_dx = ( mpd_ex << 2 ) + _CHR_ind;
+
+	if( mpd_dx >= mpd_tile_props_arr_size )
+	{
+		__mpd_err_msg( "ERROR: OUT OF RANGE!", "mpd_set_tile_property", mpd_ex, _CHR_ind, _new_prop );
+	}
+
+	__RAM_TileProps[ mpd_dx ] = _new_prop;
+}
+#else	//FLAG_PROP_ID_PER_BLOCK
+u8	mpd_get_tile_property( u8 _tile_ind )
+{
+	if( _tile_ind >= mpd_tile_props_arr_size )
+	{
+		__mpd_err_msg( "ERROR: OUT OF RANGE!", "mpd_get_tile_property", _tile_ind, -1, -1 );
+	}
+
+	return __RAM_TileProps[ _tile_ind ];
+}
+
+void	mpd_set_tile_property( u8 _tile_ind, u8 _new_prop )
+{
+	if( _tile_ind >= mpd_tile_props_arr_size )
+	{
+		__mpd_err_msg( "ERROR: OUT OF RANGE!", "mpd_set_tile_property", _tile_ind, _new_prop, -1 );
+	}
+
+	__RAM_TileProps[ _tile_ind ] = _new_prop;
+}
+#endif	//FLAG_PROP_ID_PER_CHR
+#else	//!MPD_DEBUG
+#if	FLAG_PROP_ID_PER_CHR
+u8	__fastcall __macro mpd_get_tile_property( u8 _tile_ind<__al>, u8 _CHR_ind<acc> );
+#asm
+	.macro _mpd_get_tile_property.2
+
+	; __ax = _tile_ind << 2
+
+	lda <__al
+	stz <__ah
+
+	asl a
+	rol <__ah
+	asl a
+	rol <__ah
+
+	sta <__al
+
+	; __ax += _CHR_ind
+
+	txa				; _CHR_ind
+
+	mpd_add_a_to_word <__ax
+
+	; ax = ___RAM_TileProps[ __ax ]
+
+	mpd_add_word_to_word #___RAM_TileProps, <__ax
+
+	lda [<__ax]
+	tax
+	cla
+
+	.endm
+#endasm
+
+void	__fastcall __macro mpd_set_tile_property( u8 _tile_ind<__al>, u8 _CHR_ind<__bl>, u8 _new_prop<acc> );
+#asm
+	.macro _mpd_set_tile_property.3
+
+	; __ax = _tile_ind << 2
+
+	lda <__al
+	stz <__ah
+
+	asl a
+	rol <__ah
+	asl a
+	rol <__ah
+
+	sta <__al
+
+	; __ax += _CHR_ind
+
+	lda <__bl			; _CHR_ind
+
+	mpd_add_a_to_word <__ax
+
+	; ___RAM_TileProps[ __ax ] = _new_prop
+
+	mpd_add_word_to_word #___RAM_TileProps, <__ax
+
+	txa				; _new_prop
+	sta [<__ax]
+
+	.endm
+#endasm
+#else	//FLAG_PROP_ID_PER_BLOCK
+u8	__fastcall __macro mpd_get_tile_property( u8 _tile_ind<acc> );
+#asm
+	.macro _mpd_get_tile_property.1
+
+	txa
+
+	mpd_add_a_to_word2 #___RAM_TileProps, <__ax
+
+	lda [<__ax]
+	tax
+	cla
+
+	.endm
+#endasm
+	
+void	__fastcall __macro mpd_set_tile_property( u8 _tile_ind<__al>, u8 _new_prop<acc> );
+#asm
+	.macro _mpd_set_tile_property.2
+
+	lda <__al
+
+	mpd_add_a_to_word2 #___RAM_TileProps, <__ax
+
+	txa				; _new_prop
+	sta [<__ax]
+
+	.endm
+#endasm
+#endif	//FLAG_PROP_ID_PER_CHR
+#endif	//MPD_DEBUG
 
 #else	//!MPD_RAM_TILE_PROPS
 
@@ -1395,6 +1804,50 @@ u16	__props_offset;
 #endif	//MPD_RAM_TILE_PROPS
 
 #ifdef	MPD_RAM_DATA_COPY
+
+#ifdef	MPD_DEBUG
+void	__mpd_err_msg( char* _err, char* _func, s16 _val1, s16 _val2, s16 _val3 )
+{
+	disp_off();
+	vsync();
+
+	cls();
+
+	init_satb();
+	satb_update();
+
+	load_default_font( 0, 0x2c00 );
+
+	set_color( 0, 0 );
+	set_color( 1, 511 );
+
+	pokew( 0x220c, 0 );
+	pokew( 0x2210, 0 );
+
+	put_string( _err, 0, 0 );
+	put_string( _func, 0, 1 );
+
+	if( _val1 >= 0 )
+	{
+		put_number( _val1, 5, 0, 2 );
+
+		if( _val2 >= 0 )
+		{
+			put_number( _val2, 5, 0, 3 );
+
+			if( _val3 >= 0 )
+			{
+				put_number( _val3, 5, 0, 4 );
+			}
+		}
+	}
+
+	disp_on();
+	vsync();
+
+	for(;;){}
+}
+#endif	//MPD_DEBUG
 
 void	__fastcall mpd_farmemcpy( u16 far* _addr<__bl:__si>, u16 _offset<__ax>, void* _dst_addr<__dx>, u16 _size<__cx> );
 #asm
@@ -1484,7 +1937,9 @@ void	__mpd_update_data_offsets()
 	mpd_ax = mpd_farpeekw( mpd_PropsOffs, __curr_chr_id_mul2 );
 	mpd_cx = mpd_farpeekw( mpd_PropsOffs, ( ( __curr_chr_id_mul2 >> 1 ) + 1 ) << 1 );
 
-	mpd_farmemcpy( mpd_Props, mpd_ax, __RAM_TileProps, mpd_cx - mpd_ax );
+	mpd_tile_props_arr_size = mpd_cx - mpd_ax;
+
+	mpd_farmemcpy( mpd_Props, mpd_ax, __RAM_TileProps, mpd_tile_props_arr_size );
 #else
 	__props_offset	= mpd_farpeekw( mpd_PropsOffs,	__curr_chr_id_mul2 );
 #endif	//MPD_RAM_MAP
@@ -1977,13 +2432,9 @@ void	__mpd_draw_screen( u16 _BAT_offset, u8 _free_scr )
 //	u16		num_CHRs;	mpd_bx
 	static mpd_PTR24 CHRs_ptr;
 
-#asm
-.ifdef MPD_DEBUG
-#endasm
+#ifdef	MPD_DEBUG
 	DBG_BORDER_COLOR_DRAW_SCREEN
-#asm
-.endif
-#endasm
+#endif
 	// load tiles & palette
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
@@ -2031,13 +2482,9 @@ void	__mpd_draw_screen( u16 _BAT_offset, u8 _free_scr )
 	__mpd_draw_tiled_screen( _BAT_offset );
 #endif
 
-#asm
-.ifdef MPD_DEBUG
-#endasm
+#ifdef	MPD_DEBUG
 	DBG_BORDER_COLOR_RESET
-#asm
-.endif
-#endasm
+#endif
 }
 
 #if	!FLAG_MODE_MULTIDIR_SCROLL
@@ -2619,13 +3066,9 @@ void	mpd_move_down()
 
 void	mpd_update_screen()
 {
-#asm
-.ifdef MPD_DEBUG
-#endasm
+#ifdef	MPD_DEBUG
 	DBG_BORDER_COLOR_PRE_ROW_COL_FILLING
-#asm
-.endif
-#endasm
+#endif
 	if( __upd_flags & UPD_FLAG_DRAW_MASK )
 	{
 		// __VDC_CR = vdc_cr <- save the CR value
@@ -2658,13 +3101,9 @@ void	mpd_update_screen()
 		// restore CR
 		vreg( 5, __VDC_CR );
 	}
-#asm
-.ifdef MPD_DEBUG
-#endasm
+#ifdef	MPD_DEBUG
 	DBG_BORDER_COLOR_RESET
-#asm
-.endif
-#endasm
+#endif
 }
 
 //*** scroll routine vars ***
@@ -3051,13 +3490,9 @@ void	__mpd_fill_row_data()
 
 void	__mpd_fill_row_column_data()
 {
-#asm
-.ifdef MPD_DEBUG
-#endasm
+#ifdef	MPD_DEBUG
 	DBG_BORDER_COLOR_ROW_COL_FILLING
-#asm
-.endif
-#endasm
+#endif
 
 #if	FLAG_TILES4X4
 
@@ -3935,13 +4370,9 @@ u8	mpd_get_property( u16 _x, u16 _y )
 //	s16		dy;		mpd_bxs
 #endif
 
-#asm
-.ifdef MPD_DEBUG
-#endasm
+#ifdef	MPD_DEBUG
 	DBG_BORDER_COLOR_GET_TILE_PROP
-#asm
-.endif
-#endasm
+#endif
 
 #if	FLAG_MODE_BIDIR_SCROLL		/* !!! */
 
@@ -4476,13 +4907,9 @@ u8	mpd_get_property( u16 _x, u16 _y )
 #endif	//MPD_RAM_TILE_PROPS
 #endif	//FLAG_PROP_ID_PER_BLOCK
 
-#asm
-.ifdef MPD_DEBUG
-#endasm
+#ifdef	MPD_DEBUG
 	DBG_BORDER_COLOR_RESET
-#asm
-.endif
-#endasm
+#endif
 
 #asm
 	lda [<__si]
