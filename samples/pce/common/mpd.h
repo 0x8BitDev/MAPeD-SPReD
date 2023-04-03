@@ -29,6 +29,7 @@ mulu16
 /*/	MPD-render v0.8
 History:
 
+2023.04.03 - added 'General information' section
 2023.04.01 - ASM MPD_DEBUG changed to HuC '#define MPD_DEBUG'
 2023.03.31 - added mpd_get_tile_property(...) and mpd_set_tile_property(...) functions and 'u16 mpd_tile_props_arr_size' read-only variable
 2023.03.30 - added mpd_put_tile(...) and mpd_get_tile(...) functions
@@ -131,6 +132,29 @@ debug info (use Mednafen):
 
 #define MPD_DEBUG
 
+General information
+~~~~~~~~~~~~~~~~~~~
+
+MPD library is designed to work with data exported from MAPeD-PCE.
+
+The main functionality of the library includes rendering and scrolling tile maps, rendering individual tiles and map screens,
+getting a tile property and working with entities. Dynamic tile maps are also supported.
+
+MPD library allows to draw screens at any place in BAT and can be used for various purposes:
+
+    a) For double-buffered screen switching without the black screen flashing ( disp_off()/disp_on() ) within one map.
+    There is a sample that shows double-buffered screen switching for multi-directional maps: './samples/pce/tilemap_render/multidir_stat_scr_multimap'
+
+    b) For custom scrolling between screens without MPD library.
+    The same technique as (a), but you can make your own scrolling between screens (see info below).
+
+    c) If your game map fits into any BAT size, you can fill the BAT with a map screens and make your own map scrolling (see info below).
+    It's faster than using MPD library for scrolling!
+
+    So, the rule is as follows: if each of your game maps fits into BAT, DON'T USE the MPD library for scrolling! It doesn't make any sense!
+    Use it for filling BAT with screens and getting a tile property!
+
+
 NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any way!	It just provides scroll values X/Y: mpd_scroll_x, mpd_scroll_y.
 	Thus, user must set scroll values in his program using these global variables. This is for scrollable maps only!
 
@@ -167,6 +191,7 @@ NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any
 	Thus, the main option is (1). But if you need to limit the scrollable area you need to use the (2) option.
 
 	NOTE: To avoid conflicts, these options can not be used together. You must use either (1) or (2).
+
 
 Working with screens/entities:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
