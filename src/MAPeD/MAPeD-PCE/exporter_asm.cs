@@ -875,9 +875,9 @@ namespace MAPeD
 					if( m_C_writer != null )
 					{
 						m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "PropsOffs;" );
-						
-						data_offset_str += "\t.word " + ( data_offset / ( RBtnPropPerBlock.Checked ? 4:1 ) ) + "\t; data end\n";
 					}
+
+					data_offset_str += "\t.word " + data_size + "\t; data end\n";
 					
 					_sw.WriteLine( data_offset_str );
 				}
@@ -925,6 +925,8 @@ namespace MAPeD
 						
 						_sw.WriteLine( c_data_prefix + "TilesOffs:" );
 	
+						data_offset_str += "\t.word " + data_size + "\t; data end\n";
+						
 						_sw.WriteLine( data_offset_str );
 						
 						if( m_C_writer != null )
@@ -958,6 +960,8 @@ namespace MAPeD
 						
 						_sw.WriteLine( c_data_prefix + "BlocksOffs:" );
 	
+						data_offset_str += "\t.word " + data_offset + "\t; data end\n";
+
 						_sw.WriteLine( data_offset_str );
 						
 						if( m_C_writer != null )
@@ -2148,6 +2152,8 @@ namespace MAPeD
 			{
 				_sw.WriteLine( c_data_prefix + "Tiles" + ":\t.incbin \"" + m_filename + "_Tiles" + CONST_BIN_EXT + "\"\t; (" + bw_Tiles.BaseStream.Length + ") (4x4) 4 block indices per tile ( left to right, up to down ) of all exported data banks\n" );
 				
+				tiles_offs += "\t.word " + bw_Tiles.BaseStream.Length + "\t; data end\n";
+				
 				_sw.WriteLine( tiles_offs );
 				
 				if( m_C_writer != null )
@@ -2163,6 +2169,8 @@ namespace MAPeD
 			{
 				_sw.WriteLine( c_data_prefix + "Attrs" + ":\t.incbin \"" + m_filename + "_Attrs" + CONST_BIN_EXT + "\"\t; " + "(" + bw_Attrs.BaseStream.Length + ") attributes array per block ( 2 bytes per attribute; 8 bytes per block ) of all exported data banks\n" );
 				
+				blocks_offs += "\t.word " + bw_Attrs.BaseStream.Length + "\t; data end\n";
+				
 				_sw.WriteLine( blocks_offs );
 				
 				if( m_C_writer != null )
@@ -2177,11 +2185,11 @@ namespace MAPeD
 			if( bw_Props != null )
 			{
 				_sw.WriteLine( c_data_prefix + "Props" + ":\t.incbin \"" + m_filename + "_Props" + CONST_BIN_EXT + "\"\t; (" + bw_Props.BaseStream.Length + ") blocks properties array ( " + ( RBtnPropPerCHR.Checked ? "4 bytes":"1 byte" ) + " per block ) of all exported data banks\n" );
+
+				props_offs += "\t.word " + bw_Props.BaseStream.Length + "\t; data end\n";
 				
 				if( m_C_writer != null )
 				{
-					props_offs += "\t.word " + bw_Props.BaseStream.Length + "\t; data end\n";
-					
 					m_C_writer.WriteLine( "extern u8*\t" + c_data_prefix_no_exp + "Props" + ";" );
 					m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "PropsOffs" + ";" );
 				}
@@ -2194,6 +2202,8 @@ namespace MAPeD
 			if( bw_Maps != null )
 			{
 				_sw.WriteLine( c_data_prefix + "Maps" + ":\t.incbin \"" + m_filename + "_Maps" + CONST_BIN_EXT + "\"\t; " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + bw_Maps.BaseStream.Length + ") game levels " + ( RBtnTiles4x4.Checked ? "tiles (4x4)":"blocks (2x2)" ) + " array of all exported data banks\n" );
+
+				maps_offs += "\t.word " + bw_Maps.BaseStream.Length + "\t; data end\n";
 				
 				_sw.WriteLine( maps_offs );
 				
@@ -2209,6 +2219,8 @@ namespace MAPeD
 			if( bw_MapsTbl != null )
 			{
 				_sw.WriteLine( c_data_prefix + "MapsTbl" + ":\t.incbin \"" + m_filename + "_MapsTbl" + CONST_BIN_EXT + "\"\t; (" + bw_MapsTbl.BaseStream.Length + ") lookup table for fast calculation of tile addresses; " + ( RBtnTilesDirColumns.Checked ? "columns by X coordinate":"rows by Y coordinate" ) + " ( 16 bit offset per " + ( RBtnTilesDirColumns.Checked ? "column":"row" ) + " of tiles ) of all exported data banks\n" );
+				
+				mapstbl_offs += "\t.word " + bw_MapsTbl.BaseStream.Length + "\t; data end\n";
 				
 				_sw.WriteLine( mapstbl_offs );
 				
