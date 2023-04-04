@@ -476,6 +476,8 @@ namespace MAPeD
 			
 			enable_update_gfx_btn( false );
 			
+			m_layout_editor.set_param( layout_editor_param.CONST_SET_BASE_RESET_IMAGE_CACHE, null );
+			
 			if( _show_status_wnd )
 			{
 				progress_bar_show( false );

@@ -49,6 +49,7 @@ namespace MAPeD
 		public const uint	CONST_SET_BASE_MAP_SCALE_X1			= 4000;
 		public const uint	CONST_SET_BASE_MAP_SCALE_X2			= 4001;
 		public const uint	CONST_SET_BASE_SUBSCR_DATA_MNGR		= 4002;
+		public const uint	CONST_SET_BASE_RESET_IMAGE_CACHE	= 4003;
 
 		// get
 		public const uint	CONST_GET_ENT_INST_SELECTED			= 0;
@@ -1720,6 +1721,13 @@ namespace MAPeD
 				case layout_editor_param.CONST_SET_BASE_SUBSCR_DATA_MNGR:
 					{
 						( ( data_sets_manager )_val ).SetTilesData += new EventHandler( on_new_data_set );
+						
+						return true;
+					}
+
+				case layout_editor_param.CONST_SET_BASE_RESET_IMAGE_CACHE:
+					{
+						m_shared.m_image_cache.reset();
 						
 						return true;
 					}
