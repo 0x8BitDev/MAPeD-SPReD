@@ -27,9 +27,11 @@ _mpd_Tiles:	.incbin "_tilemap_Tiles.bin"	; (872) 4x4 tiles array of all exported
 
 _mpd_TilesOffs:
 	.word 0	; (chr0)
+	.word 872	; data end
 
 _mpd_BlocksOffs:
 	.word 0	; (chr0)
+	.word 1040	; data end
 
 _mpd_Attrs:	.incbin "_tilemap_Attrs.bin"	; (1040) 2x2 tiles attributes array of all exported data banks ( 2 bytes per attribute )
 _mpd_TilesScr:	.incbin "_tilemap_TilesScr.bin"	; (1232) 4x4 tiles array for each screen ( 56 bytes per screen \ 1 byte per tile )

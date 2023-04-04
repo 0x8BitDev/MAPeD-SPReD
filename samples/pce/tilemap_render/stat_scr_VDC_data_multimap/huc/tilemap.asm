@@ -45,12 +45,14 @@ _mpd_TilesOffs:
 	.word 224	; (chr1)
 	.word 448	; (chr2)
 	.word 672	; (chr3)
+	.word 896	; data end
 
 _mpd_BlocksOffs:
 	.word 0	; (chr0)
 	.word 1800	; (chr1)
 	.word 3600	; (chr2)
 	.word 5400	; (chr3)
+	.word 7200	; data end
 
 _mpd_VDCScr:	.incbin "_tilemap_VDCScr.bin"	; (7168) VDC-ready data array for each screen (1792 bytes per screen)
 _mpd_TilesScr:	.incbin "_tilemap_TilesScr.bin"	; (224) 4x4 tiles array for each screen ( 56 bytes per screen \ 1 byte per tile )

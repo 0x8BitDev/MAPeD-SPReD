@@ -25,6 +25,7 @@ _mpd_PropsOffs:
 
 _mpd_BlocksOffs:
 	.word 0	; (chr0)
+	.word 1632	; data end
 
 _mpd_Attrs:	.incbin "_tilemap_Attrs.bin"	; (1632) 2x2 tiles attributes array of all exported data banks ( 2 bytes per attribute )
 _mpd_TilesScr:	.incbin "_tilemap_TilesScr.bin"	; (3584) 2x2 tiles array for each screen ( 224 bytes per screen \ 1 byte per tile )

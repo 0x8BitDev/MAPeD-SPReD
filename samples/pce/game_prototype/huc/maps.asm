@@ -2688,11 +2688,13 @@ _mpd_Tiles:	.incbin "_maps_Tiles.bin"	; (1024) (4x4) 4 block indices per tile ( 
 
 _mpd_TilesOffs:
 	.word 0	; (chr0)
+	.word 1024	; data end
 
 _mpd_Attrs:	.incbin "_maps_Attrs.bin"	; (640) attributes array per block ( 2 bytes per attribute; 8 bytes per block ) of all exported data banks
 
 _mpd_BlocksOffs:
 	.word 0	; (chr0)
+	.word 640	; data end
 
 _mpd_Props:	.incbin "_maps_Props.bin"	; (80) blocks properties array ( 1 byte per block ) of all exported data banks
 
@@ -2705,12 +2707,14 @@ _mpd_Maps:	.incbin "_maps_Maps.bin"	; (2800) game levels tiles (4x4) array of al
 _mpd_MapsOffs:
 	.word 0
 	.word 2240
+	.word 2800	; data end
 
 _mpd_MapsTbl:	.incbin "_maps_MapsTbl.bin"	; (176) lookup table for fast calculation of tile addresses; columns by X coordinate ( 16 bit offset per column of tiles ) of all exported data banks
 
 _mpd_MapsTblOffs:
 	.word 0
 	.word 160
+	.word 176	; data end
 
 _mpd_Plts:	.incbin "_maps_Plts.bin"	; (512) palettes array of all exported data banks ( data offset = chr_id * 512 )
 
