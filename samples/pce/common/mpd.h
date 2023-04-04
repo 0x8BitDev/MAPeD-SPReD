@@ -29,6 +29,7 @@ mulu16
 /*/	MPD-render v0.8
 History:
 
+2023.04.04 - added 'u16 mpd_tiles_cnt' variable - tiles count of a current data bank (2x2 or 4x4 it depends on export options)
 2023.04.03 - added 'General information' section
 2023.04.01 - ASM MPD_DEBUG changed to HuC '#define MPD_DEBUG'
 2023.03.31 - added mpd_get_tile_property(...) and mpd_set_tile_property(...) functions and 'u16 mpd_tile_props_arr_size' read-only variable
@@ -154,6 +155,9 @@ MPD library allows to draw screens at any place in BAT and can be used for vario
     So, the rule is as follows: if each of your game maps fits into BAT, DON'T USE the MPD library for scrolling! It doesn't make any sense!
     Use it for filling BAT with screens and getting a tile property!
 
+
+Map scrolling types:
+~~~~~~~~~~~~~~~~~~~~
 
 NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any way!	It just provides scroll values X/Y: mpd_scroll_x, mpd_scroll_y.
 	Thus, user must set scroll values in his program using these global variables. This is for scrollable maps only!
@@ -404,6 +408,8 @@ R: u16	mpd_tile_props_arr_size - tile properties array size of a current map whe
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL
+
+R: u16	mpd_tiles_cnt - tiles count of a current data bank (2x2 or 4x4 it depends on export options)
 
 Map scrolling step in the range 0..7
 
@@ -1373,6 +1379,8 @@ u16		__blocks_offset;
 u16		__tiles_offset;
 #endif
 
+u16		mpd_tiles_cnt;		// 2x2 or 4x4 it depends on export options
+
 /* constants */
 
 const u16	__c_scr_tiles_size	= ScrTilesWidth * ScrTilesHeight;
@@ -1958,9 +1966,13 @@ void	__fastcall mpd_farmemcpy( u16 far* _addr<__bl:__si>, u16 _offset<__ax>, voi
 
 void	__mpd_update_data_offsets()
 {
+	u8	next_chr_id_mul2;
+
+	next_chr_id_mul2 = ( ( __curr_chr_id_mul2 >> 1 ) + 1 ) << 1;
+
 #ifdef	MPD_RAM_TILE_PROPS
 	mpd_ax = mpd_farpeekw( mpd_PropsOffs, __curr_chr_id_mul2 );
-	mpd_cx = mpd_farpeekw( mpd_PropsOffs, ( ( __curr_chr_id_mul2 >> 1 ) + 1 ) << 1 );
+	mpd_cx = mpd_farpeekw( mpd_PropsOffs, next_chr_id_mul2 );
 
 	mpd_tile_props_arr_size = mpd_cx - mpd_ax;
 
@@ -1973,7 +1985,11 @@ void	__mpd_update_data_offsets()
 
 #if	FLAG_TILES4X4
 	__tiles_offset	= mpd_farpeekw( mpd_TilesOffs,	__curr_chr_id_mul2 );
-#endif
+
+	mpd_tiles_cnt = ( mpd_farpeekw( mpd_TilesOffs, next_chr_id_mul2 ) - __tiles_offset ) >> 2;
+#else	//FLAG_TILES2X2
+	mpd_tiles_cnt = ( mpd_farpeekw( mpd_BlocksOffs, next_chr_id_mul2 ) - __blocks_offset ) >> 3;
+#endif	//FLAG_TILES4X4
 }
 
 #if	FLAG_MODE_MULTIDIR_SCROLL + FLAG_MODE_BIDIR_SCROLL + FLAG_MODE_BIDIR_STAT_SCR
