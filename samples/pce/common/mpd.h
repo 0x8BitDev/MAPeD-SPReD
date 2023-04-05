@@ -26,9 +26,11 @@ load_bat
 mulu16
 */
 
-/*/	MPD-render v0.8
+/*/	MPD-render v0.9
 History:
 
+v0.9
+2023.04.05 - opened new public read-only variables: mpd_map_tiles_width and mpd_map_tiles_height
 2023.04.04 - added 'u16 mpd_tiles_cnt' variable - tiles count of a current data bank (2x2 or 4x4 it depends on export options)
 2023.04.03 - added 'General information' section
 2023.04.01 - ASM MPD_DEBUG changed to HuC '#define MPD_DEBUG'
@@ -196,6 +198,11 @@ NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any
 
 	NOTE: To avoid conflicts, these options can not be used together. You must use either (1) or (2).
 
+
+Dynamic tile maps:
+~~~~~~~~~~~~~~~~~~
+
+...
 
 Working with screens/entities:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -397,6 +404,11 @@ Map width/height in screens:
 
 R: u8	mpd_map_scr_width
 R: u8	mpd_map_scr_height
+
+Map width/height in tiles:
+
+R: u16	mpd_map_tiles_width
+R: u16	mpd_map_tiles_height
 
 Active map width/height in pixels = map width/height in pixels - screen width/height in pixels
 
@@ -1328,7 +1340,7 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 /*				*/
 /********************************/
 
-const u8 mpd_ver[] = { "M", "P", "D", "0", "8", 0 };
+const u8 mpd_ver[] = { "M", "P", "D", "0", "9", 0 };
 
 /* flags */
 
@@ -1350,8 +1362,8 @@ u16		__scr_tiles_height_tbl[ ScrTilesWidth ];
 #endif	//!FLAG_MODE_MULTIDIR_SCROLL
 
 #if	FLAG_MODE_MULTIDIR_SCROLL
-u16		__map_tiles_width;
-u16		__map_tiles_height;
+u16		mpd_map_tiles_width;
+u16		mpd_map_tiles_height;
 u8		mpd_map_scr_width;
 u8		mpd_map_scr_height;
 u16		mpd_map_active_width;	// active map area = map_width_in_pixels - scr_width_in_pixels
@@ -1503,7 +1515,7 @@ void	__fastcall __macro __mpd_calc_map_offset( u16 _x<__ax>, u16 _y<__bx>, bool 
 
 	lda <__cl
 
-	beq .cont
+	beq .cont\@
 
 	lda <__ah	; _x
 
@@ -1541,7 +1553,7 @@ void	__fastcall __macro __mpd_calc_map_offset( u16 _x<__ax>, u16 _y<__bx>, bool 
 
 	sta <__bh	; _y
 
-.cont:
+.cont\@:
 
 .ifdef	FLAG_DIR_COLUMNS
 .ifdef	MPD_RAM_MAP_TBL
@@ -1559,10 +1571,10 @@ void	__fastcall __macro __mpd_calc_map_offset( u16 _x<__ax>, u16 _y<__bx>, bool 
 
 .else	;!MPD_RAM_MAP_TBL
 
-	; __dx = ( __map_tiles_height * __ax ) + __bx;
+	; __dx = ( mpd_map_tiles_height * __ax ) + __bx;
 
 	stw <__bx, <_mpd_bx
-	stw ___map_tiles_height, <__bx
+	stw _mpd_map_tiles_height, <__bx
 	jsr mulu16
 
 	mpd_add_word_to_word2 <_mpd_bx, <__cx, <__dx
@@ -1591,10 +1603,10 @@ void	__fastcall __macro __mpd_calc_map_offset( u16 _x<__ax>, u16 _y<__bx>, bool 
 
 .else	;!MPD_RAM_MAP_TBL
 
-	; __dx = ( __map_tiles_width * __bx ) + __ax;
+	; __dx = ( mpd_map_tiles_width * __bx ) + __ax;
 
 	stw <__ax, <_mpd_ax
-	stw ___map_tiles_width, <__ax
+	stw _mpd_map_tiles_width, <__ax
 	jsr mulu16
 
 	mpd_add_word_to_word2 <_mpd_ax, <__cx, <__dx
@@ -1610,7 +1622,7 @@ void	mpd_set_tile( u16 _x, u16 _y, bool _pixels, u8 _tile_ind )	// _pixels = TRU
 {
 	__mpd_calc_map_offset( _x, _y, _pixels );
 
-	if( _dx >= ( __map_tiles_width * __map_tiles_height ) )
+	if( _dx >= ( mpd_map_tiles_width * mpd_map_tiles_height ) )
 	{
 		__mpd_err_msg( "ERROR: OUT OF RANGE!", "mpd_set_tile", _x, _y, _pixels );
 	}
@@ -1622,7 +1634,7 @@ u8	mpd_get_tile( u16 _x, u16 _y, bool _pixels )	// _pixels = TRUE - pixel coordi
 {
 	__mpd_calc_map_offset( _x, _y, _pixels );
 
-	if( _dx >= ( __map_tiles_width * __map_tiles_height ) )
+	if( _dx >= ( mpd_map_tiles_width * mpd_map_tiles_height ) )
 	{
 		__mpd_err_msg( "ERROR: OUT OF RANGE!", "mpd_get_tile", _x, _y, _pixels );
 	}
@@ -2158,7 +2170,7 @@ void	__mpd_calc_scr_pos_by_LUT_pos( u16 _LUT_pos_x, u16 _LUT_pos_y, bool _reset_
 #if	FLAG_DIR_COLUMNS
 	__init_tiles_offset	= __mpd_get_map_tbl_val( mpd_ax << 1 ) + mpd_bx;
 #elif	FLAG_DIR_ROWS
-	__height_scr_step	= __map_tiles_width * ScrTilesHeight;
+	__height_scr_step	= mpd_map_tiles_width * ScrTilesHeight;
 	__init_tiles_offset	= __mpd_get_map_tbl_val( mpd_bx << 1 ) + mpd_ax;
 #endif	//FLAG_DIR_COLUMNS|FLAG_DIR_ROWS
 }
@@ -2179,7 +2191,7 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 	{
 		mpd_bx = 0;
 
-		n = mpd_cl * __map_tiles_height;
+		n = mpd_cl * mpd_map_tiles_height;
 
 		for( mpd_ch = 0; mpd_ch < ScrTilesHeight; mpd_ch++ )
 		{
@@ -2250,7 +2262,7 @@ void	__mpd_draw_tiled_screen( u16 _BAT_offset )
 
 	for( mpd_ch = 0; mpd_ch < ScrTilesHeight; mpd_ch++ )
 	{
-		n = mpd_ch * __map_tiles_width;
+		n = mpd_ch * mpd_map_tiles_width;
 
 #if	FLAG_TILES2X2
 		mpd_dx	= mpd_ax + ( mpd_bx << 1 );
@@ -2332,9 +2344,9 @@ void	__mpd_draw_free_tiled_screen()
 	for( mpd_el = mpd_fl; mpd_el < mpd_al; mpd_el++ )
 	{
 #if	FLAG_TILES2X2
-		mpd_dx = ( mpd_el >> 1 ) * __map_tiles_height;
+		mpd_dx = ( mpd_el >> 1 ) * mpd_map_tiles_height;
 #else
-		mpd_dx = ( mpd_el >> 2 ) * __map_tiles_height;
+		mpd_dx = ( mpd_el >> 2 ) * mpd_map_tiles_height;
 #endif
 		mpd_cx = mpd_scroll_y;
 
@@ -2360,9 +2372,9 @@ void	__mpd_draw_free_tiled_screen()
 	for( mpd_eh = mpd_fh; mpd_eh < mpd_ah; mpd_eh++ )
 	{
 #if	FLAG_TILES2X2
-		mpd_dx = ( mpd_eh >> 1 ) * __map_tiles_width;
+		mpd_dx = ( mpd_eh >> 1 ) * mpd_map_tiles_width;
 #else
-		mpd_dx = ( mpd_eh >> 2 ) * __map_tiles_width;
+		mpd_dx = ( mpd_eh >> 2 ) * mpd_map_tiles_width;
 #endif
 		mpd_bx = mpd_scroll_x;
 
@@ -2697,23 +2709,23 @@ void	mpd_init( u8 _map_ind )
 	mpd_map_scr_width	= mpd_ax & 0x00ff;
 	mpd_map_scr_height	= ( mpd_ax & 0xff00 ) >> 8;
 
-	__map_tiles_width	= mpd_map_scr_width * ScrTilesWidth;
-	__map_tiles_height	= mpd_map_scr_height * ScrTilesHeight;
+	mpd_map_tiles_width	= mpd_map_scr_width * ScrTilesWidth;
+	mpd_map_tiles_height	= mpd_map_scr_height * ScrTilesHeight;
 
 	mpd_map_active_width	= ( mpd_map_scr_width * ScrPixelsWidth ) - ScrPixelsWidth;
 	mpd_map_active_height	= ( mpd_map_scr_height * ScrPixelsHeight ) - ScrPixelsHeight;
 
 #ifdef	MPD_RAM_MAP
-	mpd_farmemcpy( mpd_Maps, mpd_farpeekw( mpd_MapsOffs, __map_ind_mul2 ), __RAM_Map, __map_tiles_width * __map_tiles_height );
+	mpd_farmemcpy( mpd_Maps, mpd_farpeekw( mpd_MapsOffs, __map_ind_mul2 ), __RAM_Map, mpd_map_tiles_width * mpd_map_tiles_height );
 #else
 	__map_offset		= mpd_farpeekw( mpd_MapsOffs, __map_ind_mul2 );
 #endif	//MPD_RAM_MAP
 
 #ifdef	MPD_RAM_MAP_TBL
 #if	FLAG_DIR_ROWS
-	mpd_farmemcpy( mpd_MapsTbl, mpd_farpeekw( mpd_MapsTblOffs, __map_ind_mul2 ), __RAM_MapTbl, __map_tiles_height << 1 );
+	mpd_farmemcpy( mpd_MapsTbl, mpd_farpeekw( mpd_MapsTblOffs, __map_ind_mul2 ), __RAM_MapTbl, mpd_map_tiles_height << 1 );
 #else	//FLAG_DIR_COLUMNS
-	mpd_farmemcpy( mpd_MapsTbl, mpd_farpeekw( mpd_MapsTblOffs, __map_ind_mul2 ), __RAM_MapTbl, __map_tiles_width << 1 );
+	mpd_farmemcpy( mpd_MapsTbl, mpd_farpeekw( mpd_MapsTblOffs, __map_ind_mul2 ), __RAM_MapTbl, mpd_map_tiles_width << 1 );
 #endif	// FLAG_DIR_ROWS
 #else	//!MPD_RAM_MAP_TBL
 	__map_tbl_offset	= mpd_farpeekw( mpd_MapsTblOffs, __map_ind_mul2 );
@@ -3429,7 +3441,7 @@ void	__mpd_fill_column_data()
 #if	FLAG_MODE_BIDIR_SCROLL
 	__tile_step = ScrTilesWidth;
 #else
-	__tile_step = __map_tiles_width;
+	__tile_step = mpd_map_tiles_width;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 #endif
 
@@ -3489,7 +3501,7 @@ void	__mpd_fill_row_data()
 #if	FLAG_MODE_BIDIR_SCROLL
 	__tile_step = ScrTilesHeight;
 #else
-	__tile_step = __map_tiles_height;
+	__tile_step = mpd_map_tiles_height;
 #endif	//FLAG_MODE_BIDIR_SCROLL
 #else	//FLAG_DIR_ROWS
 	__tile_step = 1;
