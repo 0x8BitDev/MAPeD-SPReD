@@ -33,7 +33,7 @@ History:
 2023.04.03 - added 'General information' section
 2023.04.01 - ASM MPD_DEBUG changed to HuC '#define MPD_DEBUG'
 2023.03.31 - added mpd_get_tile_property(...) and mpd_set_tile_property(...) functions and 'u16 mpd_tile_props_arr_size' read-only variable
-2023.03.30 - added mpd_put_tile(...) and mpd_get_tile(...) functions
+2023.03.30 - added mpd_set_tile(...) and mpd_get_tile(...) functions
 2023.03.28 - optimized access to a tile properties array: #define MPD_RAM_TILE_PROPS
 2023.03.26 - optimized call of '__mpd_fill_row_data' and '__mpd_fill_column_data'
 2023.03.26 - optimized access to tilemap data: #define MPD_RAM_MAP and #define MPD_RAM_MAP_TBL (support for dynamic multidir maps)
@@ -473,7 +473,7 @@ u8	mpd_get_curr_screen_ind()
 
 #ifdef	MPD_RAM_MAP
 u8	mpd_get_tile( u16 _x, u16 _y, bool _pixels ) / _pixels = TRUE - pixel coordinates, FALSE - tile coordinates
-void	mpd_put_tile( u16 _x, u16 _y, bool _pixels, u8 _tile_ind ) / _pixels = TRUE - pixel coordinates, FALSE - tile coordinates, _tile_ind - 0..255
+void	mpd_set_tile( u16 _x, u16 _y, bool _pixels, u8 _tile_ind ) / _pixels = TRUE - pixel coordinates, FALSE - tile coordinates, _tile_ind - 0..255
 #endif	//MPD_RAM_MAP
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
@@ -1606,13 +1606,13 @@ void	__fastcall __macro __mpd_calc_map_offset( u16 _x<__ax>, u16 _y<__bx>, bool 
 #endasm
 
 #ifdef	MPD_DEBUG
-void	mpd_put_tile( u16 _x, u16 _y, bool _pixels, u8 _tile_ind )	// _pixels = TRUE - pixel coordinates, FALSE - tile coordinates
+void	mpd_set_tile( u16 _x, u16 _y, bool _pixels, u8 _tile_ind )	// _pixels = TRUE - pixel coordinates, FALSE - tile coordinates
 {
 	__mpd_calc_map_offset( _x, _y, _pixels );
 
 	if( _dx >= ( __map_tiles_width * __map_tiles_height ) )
 	{
-		__mpd_err_msg( "ERROR: OUT OF RANGE!", "mpd_put_tile", _x, _y, _pixels );
+		__mpd_err_msg( "ERROR: OUT OF RANGE!", "mpd_set_tile", _x, _y, _pixels );
 	}
 
 	__mpd_put_map_tile( _dx, _tile_ind );
@@ -1630,9 +1630,9 @@ u8	mpd_get_tile( u16 _x, u16 _y, bool _pixels )	// _pixels = TRUE - pixel coordi
 	__mpd_get_map_tile( _dx );
 }
 #else	//!MPD_DEBUG
-void	__fastcall __macro mpd_put_tile( u16 _x<__ax>, u16 _y<__bx>, bool _pixels<__cl>, u8 _tile_ind<acc> );
+void	__fastcall __macro mpd_set_tile( u16 _x<__ax>, u16 _y<__bx>, bool _pixels<__cl>, u8 _tile_ind<acc> );
 #asm
-	.macro _mpd_put_tile.4
+	.macro _mpd_set_tile.4
 
 	phx
 

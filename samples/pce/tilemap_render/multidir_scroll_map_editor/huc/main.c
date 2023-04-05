@@ -25,7 +25,7 @@
 // Move a map data to RAM to enable dynamic map functionality
 // All these defines speed up getting a tile property and slightly speed up static screens drawing and scrolling
 
-// Move a map data to RAM, this enables mpd_put_tile(...) and mpd_get_tile(...); use MPD_DEBUG to check array overflow(!)
+// Move a map data to RAM, this enables mpd_set_tile(...) and mpd_get_tile(...); use MPD_DEBUG to check array overflow(!)
 #define MPD_RAM_MAP
 
 // Move a map LUT to RAM
@@ -106,7 +106,7 @@ void	put_tile()
 {
 	show_tile();
 
-	mpd_put_tile( tile_x, tile_y, TRUE, curr_tile_ind );
+	mpd_set_tile( tile_x, tile_y, TRUE, curr_tile_ind );	// TRUE - coordinates in pixels
 
 	update_property();
 }
@@ -139,7 +139,7 @@ void	change_tile()
 	show_tile();
 
 	/* save background tile */
-	bg_tile_ind = mpd_get_tile( tile_x, tile_y, TRUE );
+	bg_tile_ind = mpd_get_tile( tile_x, tile_y, TRUE );	// TRUE - coordinates in pixels
 
 	for(;;)
 	{
