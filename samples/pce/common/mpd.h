@@ -30,6 +30,7 @@ mulu16
 History:
 
 v0.9
+2023.04.06 - added 'Dynamic tilemaps' section
 2023.04.05 - opened new public read-only variables: mpd_map_tiles_width and mpd_map_tiles_height
 2023.04.04 - added 'u16 mpd_tiles_cnt' variable - tiles count of a current data bank (2x2 or 4x4 it depends on export options)
 2023.04.03 - added 'General information' section
@@ -199,10 +200,74 @@ NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any
 	NOTE: To avoid conflicts, these options can not be used together. You must use either (1) or (2).
 
 
-Dynamic tile maps:
+Dynamic tilemaps:
 ~~~~~~~~~~~~~~~~~~
+All information below applies to multi-directional maps only!
 
-...
+By default, all maps data are stored in ROM. Accessing them requires constant switching of the memory banks.
+This can be avoided by placing the map data in RAM. This greatly speeds up data access and gives new features such as:
+dynamically changing map and tile properties.
+
+Dynamic map changing can be used to change map topology, procedural generation of levels, also it's fastest way for storing collectable items etc...
+
+There are three types of data that can be located in RAM:
+
+- tilemap data
+- tilemap LUT
+- tile properties
+
+This data can be initialized into RAM independently of each other. It all depends on the amount of free RAM available.
+
+You can do this by placing the following declarations before the MPD library is included in your program:
+
+#define MPD_RAM_MAP
+#define MPD_RAM_MAP_TBL
+#define MPD_RAM_TILE_PROPS
+
+All these defines speed up getting a tile property and slightly speed up static screens drawing and scrolling.
+
+MPD_RAM_MAP - enables the following functions:
+
+[macro] u8	mpd_get_tile( u16 _x, u16 _y, bool _pixels ) / _pixels = TRUE - pixel coordinates, FALSE - tile coordinates
+[macro] void	mpd_set_tile( u16 _x, u16 _y, bool _pixels, u8 _tile_ind ) / _pixels = TRUE - pixel coordinates, FALSE - tile coordinates, _tile_ind - 0..255
+
+MPD_RAM_TILE_PROPS - enables the following functions:
+
+#if	FLAG_PROP_ID_PER_CHR
+
+[macro] u8	mpd_get_tile_property( u8 _tile_ind, u8 _CHR_ind ) / _tile_ind - 0..255, _CHR_ind - 0..3
+[macro] void	mpd_set_tile_property( u8 _tile_ind, u8 _CHR_ind, u8 _new_prop ) / _tile_ind - 0..255, _CHR_ind - 0..3, _new_prop - a new property value
+
+#else	//FLAG_PROP_ID_PER_BLOCK
+
+[macro] u8	mpd_get_tile_property( u8 _tile_ind ) / _tile_ind - 0..255
+[macro] void	mpd_set_tile_property( u8 _tile_ind, u8 _new_prop ) / _tile_ind - 0..255, _new_prop - a new property value
+
+#endif	//FLAG_PROP_ID_PER_CHR
+
+By default, implementations of these functions are unsafe. You can write data outside the arrays by mistake.
+Use MPD_DEBUG when developing, to enable safe function implementations. If you write data outside of the allocated memory, you will get an error message, function name and its arguments.
+
+The amount of memory that will be allocated for the data can be seen in <my_exported_tilemap>.h
+
+#define	MAX_MAP_SIZE		...
+#define	MAX_MAP_TBL_SIZE	...
+#define	MAX_TILE_PROPS_SIZE	...
+
+NOTE: If several maps are exported, memory will be allocated for the largest map(!)
+
+Transferring this data to RAM will have a positive effect on performance, even if you don't intend to use the dynamic maps and tile properties features.
+It all depends on the amount of free RAM in your project and the size of your maps. The size of a map can far exceed the amount of available RAM.
+So plan and allocate memory in your project carefully to effectively use the MPD library.
+
+There are two example projects that demonstrate dynamic maps functionality:
+
+Simple map editor:
+./samples/pce/tilemap_render/multidir_scroll_map_editor/
+
+Procedural generation of a random maze (3x3 screens):
+./samples/pce/tilemap_render/multidir_scroll_maze_generator/
+
 
 Working with screens/entities:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -415,7 +480,9 @@ Active map width/height in pixels = map width/height in pixels - screen width/he
 R: u16	mpd_map_active_width  -> mpd_active_map_width() - DEPRECATED
 R: u16	mpd_map_active_height -> mpd_active_map_height() - DEPRECATED
 
-R: u16	mpd_tile_props_arr_size - tile properties array size of a current map when the MPD_RAM_TILE_PROPS is defined
+Size of the tile properties array of a current map when declaring the MPD_RAM_TILE_PROPS
+
+R: u16	mpd_tile_props_arr_size
 
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
