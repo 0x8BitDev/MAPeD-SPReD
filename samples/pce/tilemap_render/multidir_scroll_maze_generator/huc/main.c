@@ -55,8 +55,10 @@
 #define MAX_COLLECTABLES	50
 
 
-/* https://github.com/angeluriot/Maze_solver */
-/* p.s.: the algorithm works better with an odd number of cells vertically and horizontally */
+// The main random maze generator algorithm
+// https://github.com/angeluriot/Maze_solver
+// p.s.: the algorithm works better with an odd number of cells vertically and horizontally
+
 void	sub_recursive_division( u8 _x_min, u8 _y_min, u8 _x_max, u8 _y_max )
 {
 	static u8 i;
@@ -178,6 +180,10 @@ void	generate_maze()
 	disp_off();
 	vsync();
 
+	/* reset scroll registers */
+	pokew( 0x220c, 0 );
+	pokew( 0x2210, 0 );
+
 	/* initialize the template map */
 	mpd_init( 0, 2 );
 
@@ -250,15 +256,16 @@ void	main()
 {
 	static bool 	sel_btn_pressed;
 
-	show_start_screen();
-
-	srand( 0xA51B );
-
-	generate_maze();
+	sel_btn_pressed = FALSE;
 
 	init_satb();
 
-	sel_btn_pressed = FALSE;
+	/* initialize pseudo-random number generator */
+	srand( 0xA51B );
+
+	show_start_screen();
+
+	generate_maze();
 
 	for( ;; )
 	{
