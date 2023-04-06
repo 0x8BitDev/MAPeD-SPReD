@@ -139,7 +139,7 @@ The tools use the following NuGet packages:
  - `./samples/pce/tilemap_render/multidir_stat_scr_multimap/huc/`	- screens switching with double-buffering for multidirectional maps
  - `./samples/pce/tilemap_render/stat_scr_VDC_data_multimap/huc/`	- static screens switching using VDC-ready data (raw BAT data)
  - `./samples/pce/tilemap_render/multidir_scroll_map_editor/huc/`	- dynamic map: simple map editor
- - `./samples/pce/tilemap_render/multidir_scroll_maze_generator/huc/`	- dynamic map: random maze generator
+ - `./samples/pce/tilemap_render/multidir_scroll_maze_generator/huc/`	- dynamic map: procedural generation of a random maze (3x3 screens)
  - `./samples/pce/game_prototype/huc/` - fully playable game prototype demo, run'n'jump platformer, 40 screens multidir scrollable map, 200+ entities +bonus level
 
 * All samples are written in HuC (C-like language) and support all export options
