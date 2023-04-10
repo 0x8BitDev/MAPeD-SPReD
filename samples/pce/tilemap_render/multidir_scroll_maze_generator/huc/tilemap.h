@@ -8,7 +8,7 @@
 #incasm( "tilemap.asm" )
 
 // export options:
-//	- tiles 2x2/(columns)
+//	- tiles 2x2 (RLE)/(columns)
 //	- properties per block
 //	- mode: multidirectional scrolling
 //	- layout: matrix (no marks)
@@ -19,7 +19,7 @@
 
 #define FLAG_TILES2X2                 1
 #define FLAG_TILES4X4                 0
-#define FLAG_RLE                      0
+#define FLAG_RLE                      1
 #define FLAG_DIR_COLUMNS              1
 #define FLAG_DIR_ROWS                 0
 #define FLAG_MODE_MULTIDIR_SCROLL     1

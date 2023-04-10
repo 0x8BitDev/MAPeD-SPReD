@@ -67,7 +67,7 @@ _mpd_PropsOffs:
 	.word 0	; (chr0)
 	.word 7	; data end
 
-_mpd_Map0:	.incbin "_tilemap_Map0.bin"	; (2016) tilemap blocks (2x2)
+_mpd_Map0:	.incbin "_tilemap_Map0.bin"	; compressed (284 / 2016) tilemap blocks (2x2)
 
 _mpd_MapsArr:
 	.word _mpd_Map0
