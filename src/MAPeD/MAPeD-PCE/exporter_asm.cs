@@ -2024,7 +2024,7 @@ namespace MAPeD
 
 					string map_label = c_data_prefix + CONST_MAP + level_n; 
 					
-					maps_arr = ( map_label + ":\t.incbin \"" + map_filename + "\"\t; " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + bw.BaseStream.Length + ") tilemap " + ( RBtnTiles4x4.Checked ? "tiles (4x4)":"blocks (2x2)" ) + "\n" ) + maps_arr;
+					maps_arr = ( map_label + ":\t.incbin \"" + map_filename + "\"\t; " + ( CheckBoxRLE.Checked ? "compressed (" + bw.BaseStream.Length + " / " + map_data_arr.Length + ")":"(" + bw.BaseStream.Length + ")" ) + " tilemap " + ( RBtnTiles4x4.Checked ? "tiles (4x4)":"blocks (2x2)" ) + "\n" ) + maps_arr;
 
 					maps_arr += "\t.word " + map_label + "\n";
 					maps_arr += "\t.byte bank(" + map_label + ")\n";
