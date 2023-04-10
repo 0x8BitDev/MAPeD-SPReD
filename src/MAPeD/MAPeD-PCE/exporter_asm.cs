@@ -38,6 +38,9 @@ namespace MAPeD
 		private const string	CONST_FILENAME_LEVEL_PREFIX		= "Lev";
 		private const string	CONST_BIN_EXT					= ".bin";
 		
+		private const string	CONST_MAP				= "Map";
+		private const string	CONST_MAP_POSTFIX		= "_" + CONST_MAP;
+		
 		private const int		CONST_BIDIR_MAP_SCREEN_MAX_CNT	= 255;	// 1...255 [zero-based index 0..254; 255 - empty screen]
 		
 		private int  m_VDP_ready_scr_data_size = -1;
@@ -608,7 +611,7 @@ namespace MAPeD
 			string level_prefix_str;
 			string label_props;
 			string data_offset_str;
-			string maps_arr;
+			string layouts_arr;
 			string maps_scr_arr	= null;
 			string scr_arr		= null;
 			
@@ -764,7 +767,7 @@ namespace MAPeD
 					{
 						data_size = tiles.export_CHR( bw );
 					}
-					bw.Close();
+					bw.Dispose();
 					
 					_sw.WriteLine( ( ( m_C_writer != null ) ? "":";" ) + label + ":\t.incbin \"" + m_filename + "_" + label + CONST_BIN_EXT + "\"\t\t; (" + data_size + ")" );
 					
@@ -859,7 +862,7 @@ namespace MAPeD
 					}
 
 					data_size = bw_props.BaseStream.Length;
-					bw_props.Close();
+					bw_props.Dispose();
 					
 					exp_data_size += data_size;
 					
@@ -912,7 +915,7 @@ namespace MAPeD
 						}
 						
 						data_size = bw.BaseStream.Length;
-						bw.Close();
+						bw.Dispose();
 					
 						exp_data_size += data_size;
 						
@@ -1025,7 +1028,7 @@ namespace MAPeD
 					}
 					
 					data_size = bw.BaseStream.Length;
-					bw.Close();
+					bw.Dispose();
 					
 					exp_data_size += data_size;
 					
@@ -1065,7 +1068,7 @@ namespace MAPeD
 					}
 					
 					data_size = bw.BaseStream.Length;
-					bw.Close();
+					bw.Dispose();
 					
 					exp_data_size += data_size;
 					
@@ -1106,7 +1109,7 @@ namespace MAPeD
 					}
 					
 					data_size = bw.BaseStream.Length;
-					bw.Close();
+					bw.Dispose();
 					
 					exp_data_size += data_size;
 					
@@ -1137,7 +1140,7 @@ namespace MAPeD
 					}
 					
 					data_size = bw.BaseStream.Length;
-					bw.Close();
+					bw.Dispose();
 					
 					exp_data_size += data_size;
 					
@@ -1150,11 +1153,11 @@ namespace MAPeD
 				}
 			}
 			
-			maps_arr = c_data_prefix + "MapsArr:\n";
+			layouts_arr = c_data_prefix + "LayoutsArr:\n";
 
 			if( RBtnLayoutAdjacentScreenIndices.Checked )
 			{
-				maps_scr_arr = c_data_prefix + "MapsScrArr:\n";
+				maps_scr_arr = c_data_prefix + "LayoutsScrArr:\n";
 			}
 
 			if( CheckBoxExportEntities.Checked )
@@ -1173,8 +1176,8 @@ namespace MAPeD
 				
 				level_prefix_str = m_level_prefix + level_n;
 				
-				maps_arr += "\t.word " + level_prefix_str + "_StartScr\n";
-				maps_arr += "\t.byte bank(" + level_prefix_str + "_StartScr)\n";
+				layouts_arr += "\t.word " + level_prefix_str + "_StartScr\n";
+				layouts_arr += "\t.byte bank(" + level_prefix_str + "_StartScr)\n";
 				
 				check_ent_instances_cnt( level_data, level_prefix_str );
 
@@ -1360,10 +1363,10 @@ namespace MAPeD
 			{
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "\nextern mpd_SCREEN** " + c_data_prefix_no_exp + "MapsArr[];" );
+					m_C_writer.WriteLine( "\nextern mpd_SCREEN** " + c_data_prefix_no_exp + "LayoutsArr[];" );
 				}
 				
-				_sw.WriteLine( maps_arr );
+				_sw.WriteLine( layouts_arr );
 			}
 			
 			// save MapsScrArr
@@ -1371,7 +1374,7 @@ namespace MAPeD
 			{
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern mpd_SCREEN** " + c_data_prefix_no_exp + "MapsScrArr[];" );
+					m_C_writer.WriteLine( "extern mpd_SCREEN** " + c_data_prefix_no_exp + "LayoutsScrArr[];" );
 				}
 				
 				_sw.WriteLine( maps_scr_arr );
@@ -1650,7 +1653,6 @@ namespace MAPeD
 			BinaryWriter	bw_Tiles	= null;
 			BinaryWriter	bw_Attrs	= null;
 			BinaryWriter	bw_Props	= null;
-			BinaryWriter	bw_Maps		= null;
 			BinaryWriter	bw_MapsTbl	= null;
 			BinaryWriter	bw_Plts		= null;
 			
@@ -1707,11 +1709,11 @@ namespace MAPeD
 			string tiles_offs		= c_data_prefix + "TilesOffs:\n";
 			string blocks_offs		= c_data_prefix + "BlocksOffs:\n";
 			string props_offs		= c_data_prefix + "PropsOffs:\n";
-			string maps_offs		= c_data_prefix + "MapsOffs:\n";
+			string maps_arr			= "\n" + c_data_prefix + "MapsArr:\n";
 			string mapstbl_offs		= c_data_prefix + "MapsTblOffs:\n";
-			string maps_arr			= c_data_prefix + "MapsArr:\n";
+			string layouts_arr		= c_data_prefix + "LayoutsArr:\n";
 			string start_scr_arr	= c_data_prefix + "StartScrArr:\n";
-			string map_dim_arr		= c_data_prefix + "MapsDimArr:\n";
+			string layouts_dim_arr	= c_data_prefix + "LayoutsDimArr:\n";
 			
 			int scr_width_blocks 	= platform_data.get_screen_blocks_width();
 			int scr_height_blocks 	= platform_data.get_screen_blocks_height();
@@ -1733,7 +1735,7 @@ namespace MAPeD
 					tiles.export_CHR( bw );
 				}
 				CHR_data_size = data_size = bw.BaseStream.Length;
-				bw.Close();
+				bw.Dispose();
 				
 				exp_data_size += data_size;
 				
@@ -1924,7 +1926,6 @@ namespace MAPeD
 							
 							if( chk_bank_ind >= 0 && bank_ind != chk_bank_ind )
 							{
-								_sw.Close();
 								throw new System.Exception( String.Format( "Each level must use ONLY one CHR bank in the 'Multidirectional scrolling' mode!\n\nThe level_{0} export failed!", level_n ) );
 							}
 							
@@ -1994,21 +1995,16 @@ namespace MAPeD
 				// write collected data
 				level_prefix_str = m_level_prefix + level_n;
 
-				maps_arr += "\t.word " + level_prefix_str + "_Layout\n";
-				maps_arr += "\t.byte bank(" + level_prefix_str + "_Layout" + ")\n";
+				layouts_arr += "\t.word " + level_prefix_str + "_Layout\n";
+				layouts_arr += "\t.byte bank(" + level_prefix_str + "_Layout" + ")\n";
 				
 				maps_CHRs_arr += "\t.byte " + chk_bank_ind + "\n";
 				
 				// write map
 				{
-					label = "_Maps";
+					string map_filename = m_filename + CONST_MAP_POSTFIX + level_n + CONST_BIN_EXT;
 					
-					if( bw_Maps == null )
-					{
-						bw_Maps = new BinaryWriter( File.Open( m_path_filename + label + CONST_BIN_EXT, FileMode.Create ) );
-					}
-					
-					maps_offs += "\t.word " + bw_Maps.BaseStream.Length + "\n";
+					bw = new BinaryWriter( File.Open( m_path + map_filename, FileMode.Create ) );
 					
 					if( RBtnTiles2x2.Checked )
 					{
@@ -2024,9 +2020,17 @@ namespace MAPeD
 						utils.swap_columns_rows_order<byte>( map_data_arr, get_tiles_cnt_width( n_scr_X ), get_tiles_cnt_height( n_scr_Y ) );
 					}
 					
-					compress_and_save_byte( bw_Maps, map_data_arr );
+					compress_and_save_byte( bw, map_data_arr );
+
+					string map_label = c_data_prefix + CONST_MAP + level_n; 
 					
-					exp_data_size += bw_Maps.BaseStream.Length;
+					maps_arr = ( map_label + ":\t.incbin \"" + map_filename + "\"\t; " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + bw.BaseStream.Length + ") tilemap " + ( RBtnTiles4x4.Checked ? "tiles (4x4)":"blocks (2x2)" ) + "\n" ) + maps_arr;
+
+					maps_arr += "\t.word " + map_label + "\n";
+					maps_arr += "\t.byte bank(" + map_label + ")\n";
+					
+					exp_data_size += bw.BaseStream.Length;
+					bw.Dispose();
 				}
 				
 				// tiles lookup table
@@ -2071,7 +2075,7 @@ namespace MAPeD
 				}
 
 				start_scr_arr	+= "\t.byte " + level_prefix_str + "_StartScr\n";
-				map_dim_arr		+= "\t.byte " + level_prefix_str + "_WScrCnt, " + level_prefix_str + "_HScrCnt" + "\n";
+				layouts_dim_arr	+= "\t.byte " + level_prefix_str + "_WScrCnt, " + level_prefix_str + "_HScrCnt" + "\n";
 				
 				StreamWriter def_sw = _sw;
 				
@@ -2199,21 +2203,14 @@ namespace MAPeD
 				bw_Props.Dispose();
 			}
 
-			if( bw_Maps != null )
+			// save tilemaps data
 			{
-				_sw.WriteLine( c_data_prefix + "Maps" + ":\t.incbin \"" + m_filename + "_Maps" + CONST_BIN_EXT + "\"\t; " + ( CheckBoxRLE.Checked ? "compressed ":"" ) + "(" + bw_Maps.BaseStream.Length + ") game levels " + ( RBtnTiles4x4.Checked ? "tiles (4x4)":"blocks (2x2)" ) + " array of all exported data banks\n" );
-
-				maps_offs += "\t.word " + bw_Maps.BaseStream.Length + "\t; data end\n";
-				
-				_sw.WriteLine( maps_offs );
+				_sw.WriteLine( maps_arr );
 				
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern u8*\t" + c_data_prefix_no_exp + "Maps" + ";" );
-					m_C_writer.WriteLine( "extern u16*\t" + c_data_prefix_no_exp + "MapsOffs" + ";" );
+					m_C_writer.WriteLine( "extern u8*\t" + c_data_prefix_no_exp + "MapsArr" + ";" );
 				}
-				
-				bw_Maps.Dispose();
 			}
 			
 			if( bw_MapsTbl != null )
@@ -2265,24 +2262,24 @@ namespace MAPeD
 				_sw.WriteLine( start_scr_arr );
 			}
 			
-			// map dimensions array
+			// layouts dimension array
 			{
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern u8*\t" + c_data_prefix_no_exp + "MapsDimArr[];" );
+					m_C_writer.WriteLine( "extern u8*\t" + c_data_prefix_no_exp + "LayoutsDimArr[];" );
 				}
 				
-				_sw.WriteLine( map_dim_arr );
+				_sw.WriteLine( layouts_dim_arr );
 			}
 
-			// save MapsArr
+			// save LayoutsArr
 			{
 				if( m_C_writer != null )
 				{
-					m_C_writer.WriteLine( "extern mpd_SCREEN** " + c_data_prefix_no_exp + "MapsArr[];" );
+					m_C_writer.WriteLine( "extern mpd_SCREEN** " + c_data_prefix_no_exp + "LayoutsArr[];" );
 				}
 				
-				_sw.WriteLine( maps_arr );
+				_sw.WriteLine( layouts_arr );
 			}
 			
 			export_base_entities_ptr24( _sw );
