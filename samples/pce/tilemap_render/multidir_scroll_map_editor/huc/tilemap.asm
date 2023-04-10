@@ -64,11 +64,11 @@ _mpd_PropsOffs:
 	.word 0	; (chr0)
 	.word 80	; data end
 
-_mpd_Maps:	.incbin "_tilemap_Maps.bin"	; (336) game levels tiles (4x4) array of all exported data banks
+_mpd_Map0:	.incbin "_tilemap_Map0.bin"	; (336) tilemap tiles (4x4)
 
-_mpd_MapsOffs:
-	.word 0
-	.word 336	; data end
+_mpd_MapsArr:
+	.word _mpd_Map0
+	.byte bank(_mpd_Map0)
 
 _mpd_MapsTbl:	.incbin "_tilemap_MapsTbl.bin"	; (48) lookup table for fast calculation of tile addresses; columns by X coordinate ( 16 bit offset per column of tiles ) of all exported data banks
 
@@ -84,10 +84,10 @@ _mpd_MapsCHRBanks:
 _mpd_StartScrArr:
 	.byte _Lev0_StartScr
 
-_mpd_MapsDimArr:
+_mpd_LayoutsDimArr:
 	.byte _Lev0_WScrCnt, _Lev0_HScrCnt
 
-_mpd_MapsArr:
+_mpd_LayoutsArr:
 	.word _Lev0_Layout
 	.byte bank(_Lev0_Layout)
 

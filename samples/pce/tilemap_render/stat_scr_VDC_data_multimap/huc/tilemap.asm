@@ -149,7 +149,7 @@ _Lev3Scr0:
 _Lev3_ScrArr:
 	.word _Lev3Scr0
 
-_mpd_MapsArr:
+_mpd_LayoutsArr:
 	.word _Lev0_StartScr
 	.byte bank(_Lev0_StartScr)
 	.word _Lev1_StartScr
@@ -159,7 +159,7 @@ _mpd_MapsArr:
 	.word _Lev3_StartScr
 	.byte bank(_Lev3_StartScr)
 
-_mpd_MapsScrArr:
+_mpd_LayoutsScrArr:
 	.word _Lev0_ScrArr
 	.byte bank(_Lev0_ScrArr)
 	.word _Lev1_ScrArr

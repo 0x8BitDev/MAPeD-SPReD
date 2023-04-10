@@ -102,8 +102,8 @@ extern u8*	mpd_TilesScr;
 extern u16*	mpd_Plts;
 
 
-extern mpd_SCREEN** mpd_MapsArr[];
-extern mpd_SCREEN** mpd_MapsScrArr[];
+extern mpd_SCREEN** mpd_LayoutsArr[];
+extern mpd_SCREEN** mpd_LayoutsScrArr[];
 
 #define	ENT_MAX_PROPS_CNT	0
 #define	MAX_TILE_PROPS_SIZE	900	// largest array of tile properties

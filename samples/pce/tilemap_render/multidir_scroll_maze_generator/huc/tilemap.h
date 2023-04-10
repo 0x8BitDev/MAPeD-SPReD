@@ -94,15 +94,14 @@ extern u16*	mpd_Attrs;
 extern u16*	mpd_BlocksOffs;
 extern u8*	mpd_Props;
 extern u16*	mpd_PropsOffs;
-extern u8*	mpd_Maps;
-extern u16*	mpd_MapsOffs;
+extern u8*	mpd_MapsArr;
 extern u16*	mpd_MapsTbl;
 extern u16*	mpd_MapsTblOffs;
 extern u16*	mpd_Plts;
 extern u8*	mpd_MapsCHRBanks;
 extern u8*	mpd_StartScrArr[];
-extern u8*	mpd_MapsDimArr[];
-extern mpd_SCREEN** mpd_MapsArr[];
+extern u8*	mpd_LayoutsDimArr[];
+extern mpd_SCREEN** mpd_LayoutsArr[];
 
 #define	MAX_MAP_SIZE		2016	// tilemap size in bytes of a largest map
 #define	MAX_MAP_TBL_SIZE	96	// tilemap LUT in bytes of a largest map

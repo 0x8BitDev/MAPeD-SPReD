@@ -288,11 +288,11 @@ _Lev0_ScrArr:
 	.word _Lev0Scr68
 	.word _Lev0Scr69
 
-_mpd_MapsArr:
+_mpd_LayoutsArr:
 	.word _Lev0_StartScr
 	.byte bank(_Lev0_StartScr)
 
-_mpd_MapsScrArr:
+_mpd_LayoutsScrArr:
 	.word _Lev0_ScrArr
 	.byte bank(_Lev0_ScrArr)
 
