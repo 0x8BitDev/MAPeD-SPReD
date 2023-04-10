@@ -32,6 +32,7 @@ History:
 2023.04.09 - an array of map data offsets is replaced by an array of 24-bit pointers to map data to prevent 64K overflow in large projects
 
 v0.9
+2023.04.10 - added RLE-compression support for multi-directional dynamic(!) maps
 2023.04.06 - added 'Dynamic tilemaps' section
 2023.04.05 - opened new public read-only variables: mpd_map_tiles_width and mpd_map_tiles_height
 2023.04.04 - added 'u16 mpd_tiles_cnt' variable - tiles count of a current data bank (2x2 or 4x4 it depends on export options)
@@ -258,7 +259,7 @@ The amount of memory that will be allocated for the data can be seen in <my_expo
 
 NOTE: If several maps are exported, memory will be allocated for the largest map(!)
 
-Transferring this data to RAM will have a positive effect on performance, even if you don't intend to use the dynamic maps and tile properties features.
+Transferring this data to RAM will have a positive effect on performance, even if you don't intend to use dynamic maps and tile properties features.
 It all depends on the amount of free RAM in your project and the size of your maps. The size of a map can far exceed the amount of available RAM.
 So plan and allocate memory in your project carefully to effectively use the MPD library.
 
@@ -269,6 +270,8 @@ Simple map editor:
 
 Procedural generation of a random maze (3x3 screens):
 ./samples/pce/tilemap_render/multidir_scroll_maze_generator/
+
+NOTE: Dynamic maps support RLE-compression.
 
 
 Working with screens/entities:
@@ -1366,54 +1369,66 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 /* RLE functions */
 /*		 */
 /*****************/
-#if	FLAG_RLE * FLAG_MODE_STAT_SCR
+#if	FLAG_RLE
+#if	FLAG_MODE_STAT_SCR
 u16	__stat_scr_buff[ ScrGfxDataSize >> 1 ];
 
 void	__mpd_UNRLE_stat_scr( u16 _offset )
 {
-	static u16	src;
-	static u16	dst;
-	static u16 	val1;
-	static u16 	val2;
-	static u16	val3;
-	static u16	cnt;
+//	u16	src;	// mpd_ax
+//	u16	dst;	// mpd_bx
+//	u16 	val1;	// mpd_cx
+//	u16 	val2;	// mpd_dx
+//	u16	val3;	// mpd_ex
+//	u16	cnt;	// mpd_fx
 
-	src = _offset;
-	dst = 0;
+	mpd_ax = _offset;
+	mpd_bx = 0;
 
-	val1 = mpd_farpeekw( mpd_VDCScr, src );
-	src += 2;
+	mpd_cx = mpd_farpeekw( mpd_VDCScr, mpd_ax );
+	mpd_ax += 2;
 
 	for(;;)
 	{
-		val2 = mpd_farpeekw( mpd_VDCScr, src );
-		src += 2;
+		mpd_dx = mpd_farpeekw( mpd_VDCScr, mpd_ax );
+		mpd_ax += 2;
 
-		if( val1 != val2 )
+		if( mpd_cx != mpd_dx )
 		{
-			__stat_scr_buff[ dst++ ] = val2;
+			__stat_scr_buff[ mpd_bx++ ] = mpd_dx;
 
-			val3 = val2;
+			mpd_ex = mpd_dx;
 
 			continue;
 		}
 
-		cnt = mpd_farpeekw( mpd_VDCScr, src );
-		src += 2;
+		mpd_fx = mpd_farpeekw( mpd_VDCScr, mpd_ax );
+		mpd_ax += 2;
 
-		if( !cnt )
+		if( !mpd_fx )
 		{
 			return;
 		}
 
 		do
 		{
-			__stat_scr_buff[ dst++ ] = val3;
+			__stat_scr_buff[ mpd_bx++ ] = mpd_ex;
 		}
-		while( --cnt );
+		while( --mpd_fx );
 	}
 }
-#endif	//FLAG_RLE * FLAG_MODE_STAT_SCR
+#else	//!FLAG_MODE_STAT_SCR
+
+#ifdef	MPD_RAM_MAP
+#if	!FLAG_MODE_MULTIDIR_SCROLL
+	RLE-compression can be used with dynamic multi-directional maps ONLY!
+#endif
+#else	//!MPD_RAM_MAP
+	RLE-compression can be used with dynamic multi-directional maps ONLY! Use '#define MPD_RAM_MAP'
+#endif	//MPD_RAM_MAP
+
+#endif	//FLAG_MODE_STAT_SCR
+#endif	//FLAG_RLE
 
 /********************************/
 /*				*/
@@ -1563,6 +1578,53 @@ MPD_RAM_MAP
 #endasm
 
 u8	__RAM_Map[ MAX_MAP_SIZE ];		// RAM copy of a map data
+
+#if	FLAG_RLE
+void	__mpd_UNRLE_map( mpd_PTR24* _ptr24 )
+{
+//	u16	src;	// mpd_ax
+//	u16	dst;	// mpd_bx
+//	u16 	val1;	// mpd_cx
+//	u16 	val2;	// mpd_dx
+//	u16	val3;	// mpd_ex
+//	u16	cnt;	// mpd_fx
+
+	mpd_ax = 0;
+	mpd_bx = 0;
+
+	mpd_cx = mpd_farpeekb( _ptr24->bank, _ptr24->addr, mpd_ax );
+	++mpd_ax;
+
+	for(;;)
+	{
+		mpd_dx = mpd_farpeekb( _ptr24->bank, _ptr24->addr, mpd_ax );
+		++mpd_ax;
+
+		if( mpd_cx != mpd_dx )
+		{
+			__RAM_Map[ mpd_bx++ ] = mpd_dx;
+
+			mpd_ex = mpd_dx;
+
+			continue;
+		}
+
+		mpd_fx = mpd_farpeekb( _ptr24->bank, _ptr24->addr, mpd_ax );
+		++mpd_ax;
+
+		if( !mpd_fx )
+		{
+			return;
+		}
+
+		do
+		{
+			__RAM_Map[ mpd_bx++ ] = mpd_ex;
+		}
+		while( --mpd_fx );
+	}
+}
+#endif	//FLAG_RLE
 
 u8	__fastcall __macro __mpd_get_map_tile( u16 _offset<__dx> );
 #asm
@@ -2810,7 +2872,11 @@ void	mpd_init( u8 _map_ind )
 
 #ifdef	MPD_RAM_MAP
 	mpd_get_ptr24( mpd_MapsArr, _map_ind, &map_ptr );
+#if	FLAG_RLE
+	__mpd_UNRLE_map( &map_ptr );
+#else	//!FLAG_RLE
 	mpd_farmemcpy( map_ptr.bank, map_ptr.addr, 0, __RAM_Map, mpd_map_tiles_width * mpd_map_tiles_height );
+#endif	//FLAG_RLE
 #else	//!MPD_RAM_MAP
 	mpd_get_ptr24( mpd_MapsArr, _map_ind, &__map_ptr );
 #endif	//MPD_RAM_MAP
