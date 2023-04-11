@@ -32,6 +32,7 @@ History:
 2023.04.09 - an array of map data offsets is replaced by an array of 24-bit pointers to map data to prevent 64K overflow in large projects
 
 v0.9
+2023.04.11 - added error message when using MPD_RAM_MAP and MPD_RAM_MAP_TBL with bi-directional maps
 2023.04.10 - added RLE-compression support for multi-directional dynamic(!) maps
 2023.04.06 - added 'Dynamic tilemaps' section
 2023.04.05 - opened new public read-only variables: mpd_map_tiles_width and mpd_map_tiles_height
@@ -205,7 +206,7 @@ NOTE:	Since v0.4 the library doesn`t interact with VDC`s scroll registers in any
 
 Dynamic tilemaps:
 ~~~~~~~~~~~~~~~~~~
-All information below applies to multi-directional maps only!
+The information below applies mainly to multi-directional maps.
 
 By default, all maps data are stored in ROM. Accessing them requires constant switching of the memory banks.
 This can be avoided by placing the map data in RAM. This greatly speeds up data access and gives new features such as:
@@ -225,7 +226,7 @@ You can do this by placing the following declarations before the MPD library is 
 
 #define MPD_RAM_MAP
 #define MPD_RAM_MAP_TBL
-#define MPD_RAM_TILE_PROPS
+#define MPD_RAM_TILE_PROPS	<-- can be used with any type of maps(!)
 
 All these defines speed up getting a tile property and slightly speed up static screens drawing and scrolling.
 
@@ -1421,10 +1422,10 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 
 #ifdef	MPD_RAM_MAP
 #if	!FLAG_MODE_MULTIDIR_SCROLL
-	RLE-compression can be used with dynamic multi-directional maps ONLY!
+	RLE-compression can be used with dynamic MULTI-directional maps ONLY!
 #endif
 #else	//!MPD_RAM_MAP
-	RLE-compression can be used with dynamic multi-directional maps ONLY! Use '#define MPD_RAM_MAP'
+	RLE-compression can be used with dynamic MULTI-directional maps ONLY! Use '#define MPD_RAM_MAP'
 #endif	//MPD_RAM_MAP
 
 #endif	//FLAG_MODE_STAT_SCR
@@ -1819,6 +1820,15 @@ mpd_PTR24	__map_ptr;
 #define	__mpd_get_map_tile( _offs ) mpd_farpeekb( __map_ptr.bank, __map_ptr.addr, (_offs) )
 
 #endif	//MPD_RAM_MAP
+#else	//!FLAG_MODE_MULTIDIR_SCROLL
+
+#ifdef	MPD_RAM_MAP
+	'MPD_RAM_MAP' - can be used with MULTI-directional maps only!
+#endif
+#ifdef	MPD_RAM_MAP_TBL
+	'MPD_RAM_MAP_TBL' - can be used with MULTI-directional maps only!
+#endif
+
 #endif	//FLAG_MODE_MULTIDIR_SCROLL
 
 /* Tile properties data */
@@ -2143,7 +2153,7 @@ void	__mpd_update_data_offsets()
 	mpd_farmemcpy( mpd_Props, mpd_ax, __RAM_TileProps, mpd_tile_props_arr_size );
 #else
 	__props_offset	= mpd_farpeekw( mpd_PropsOffs,	__curr_chr_id_mul2 );
-#endif	//MPD_RAM_MAP
+#endif	//MPD_RAM_TILE_PROPS
 
 	__blocks_offset	= mpd_farpeekw( mpd_BlocksOffs,	__curr_chr_id_mul2 );
 
