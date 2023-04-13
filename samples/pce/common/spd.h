@@ -5,6 +5,8 @@
 //
 // *MAKE GAMES, NOT WAR!)*
 //######################################################################################################
+#ifndef	_SPD_H
+#define	_SPD_H
 
 // external HuC/MagicKit data/procs used by SPD library
 #asm
@@ -2287,3 +2289,5 @@ __mul3_hb_LUT:
 	.endprocgroup
 
 #endasm
+
+#endif	//_SPD_H

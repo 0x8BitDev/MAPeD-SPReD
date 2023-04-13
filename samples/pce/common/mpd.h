@@ -5,6 +5,8 @@
 //
 // *MAKE GAMES, NOT WAR!)*
 //######################################################################################################
+#ifndef	_MPD_H
+#define	_MPD_H
 
 // external HuC/MagicKit data/procs used by MPD library
 /*
@@ -208,11 +210,11 @@ Dynamic tilemaps:
 ~~~~~~~~~~~~~~~~~~
 The information below applies mainly to multi-directional maps.
 
-By default, all maps data are stored in ROM. Accessing them requires constant switching of the memory banks.
+By default, all maps data are stored in ROM. Accessing them requires constant switching of memory banks.
 This can be avoided by placing the map data in RAM. This greatly speeds up data access and gives new features such as:
 dynamically changing map and tile properties.
 
-Dynamic map changing can be used to change map topology, procedural generation of levels, also it's fastest way for storing collectable items etc...
+Dynamic map changing can be used to change a map topology, procedural generation of levels, also it's fastest way for storing collectable items etc...
 
 There are three types of data that can be located in RAM:
 
@@ -5125,3 +5127,5 @@ u8	mpd_get_property( u16 _x, u16 _y )
 #asm
 	.endprocgroup
 #endasm
+
+#endif	//_MPD_H
