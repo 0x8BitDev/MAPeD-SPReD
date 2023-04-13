@@ -30,6 +30,7 @@ __LOAD_VRAM	= load_vram
 /*/	SPD-render v0.7
 History:
 
+2023.04.13 - fast multiplication using the LUT is now available when declaring '#define SPD_FAST_MUL'
 2023.04.01 - ASM SPD_DEBUG changed to HuC '#define SPD_DEBUG'
 
 v0.7
@@ -471,6 +472,13 @@ SPD_TII_ATTR_XY	; speeds up transformation of meta-sprite attributes a bit, but 
 	That`s it! :)
 /*/
 
+// Some re-defines to ASM
+#ifdef	SPD_FAST_MUL
+#asm
+SPD_FAST_MUL
+#endasm
+#endif
+
 const unsigned char spd_ver[] = { "S", "P", "D", "0", "7", 0 };
 
 #ifdef SPD_DEBUG
@@ -602,6 +610,7 @@ unsigned char	__fastcall __macro spd_get_dbl_buff_ind();
 
 ; math macroses
 
+.ifdef	SPD_FAST_MUL
 ; \1 = Y * 3
 	.macro spd_mul3_y
 	lda __mul3_lb_LUT, y	;5
@@ -619,6 +628,24 @@ unsigned char	__fastcall __macro spd_get_dbl_buff_ind();
 	rol a			;2
 	sta high_byte \1	;4/5 = 22(24)
 	.endm
+.else	;!SPD_FAST_MUL
+; \1 = Y * 3
+	.macro spd_mul3_y
+	stz high_byte \1	;4
+	tya			;2
+	asl a			;2
+	rol high_byte \1	;6
+	sta low_byte \1		;4
+	tya			;2
+	spd_add_a_to_word \1	;12(18) = 32(38)
+	.endm
+; \1 = Y * 6
+	.macro spd_mul6_y
+	spd_mul3_y \1		;32(38)
+	asl low_byte \1		;6
+	rol high_byte \1	;6 = 44(50) [\1 = ( Y << 2 ) + ( Y << 1 ) - costs: 54 cycles]
+	.endm
+.endif	;SPD_FAST_MUL
 
 ; \1 = \2 + ( A * 8 ), \2 - SATB
 	.macro spd_calc_SATB_pos
@@ -688,12 +715,12 @@ unsigned char	__fastcall __macro spd_get_dbl_buff_ind();
 
 ; \1 += A
 	.macro spd_add_a_to_word
-	clc
-	adc low_byte \1
-	sta low_byte \1
+	clc			;2
+	adc low_byte \1		;4
+	sta low_byte \1		;4
 
-	bcc .cont\@
-	inc high_byte \1
+	bcc .cont\@		;2
+	inc high_byte \1	;6 = 12(18)
 .cont\@:
 	.endm
 
@@ -2250,6 +2277,7 @@ _load_SG_data:
 
 	.endp
 
+.ifdef	SPD_FAST_MUL
 __mul3_lb_LUT:
 	.byte $00,$03,$06,$09,$0C,$0F,$12,$15,$18,$1B,$1E,$21,$24,$27,$2A,$2D
 	.byte $30,$33,$36,$39,$3C,$3F,$42,$45,$48,$4B,$4E,$51,$54,$57,$5A,$5D
@@ -2285,6 +2313,7 @@ __mul3_hb_LUT:
 	.byte $02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02
 	.byte $02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02
 	.byte $02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02,$02
+.endif	;SPD_FAST_MUL
 
 	.endprocgroup
 
