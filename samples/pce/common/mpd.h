@@ -31,6 +31,7 @@ mulu16
 /*/	MPD-render v0.9
 History:
 
+2023.04.16 - added 'Getting a tile property with dynamic maps' section
 2023.04.09 - an array of map data offsets is replaced by an array of 24-bit pointers to map data to prevent 64K overflow in large projects
 
 v0.9
@@ -275,6 +276,24 @@ Procedural generation of a random maze (3x3 screens):
 ./samples/pce/tilemap_render/multidir_scroll_maze_generator/
 
 NOTE: Dynamic maps support RLE-compression.
+
+Getting a tile property with dynamic maps:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+From the available functionality of dynamic maps follows a more flexible way to obtain a tile properties for multi-directional maps.
+For example, when both tiles and tile properties consist of 2x2* blocks, you can use:
+
+mpd_get_tile_property( mpd_get_tile( x, y, TURE/FALSE ) ) **
+
+This will work faster than mpd_get_property( x, y ), due to its greater versatility.
+
+But if you have a simple map consisting of 2x2 blocks or 4x4 tiles with unique properties per tile (when different tiles do not share the same property),
+then the built-in tile property data can be ignored and replaced with block/tile indices.
+In this case, getting the properties of a tile is reduced to a single call to mpd_get_tile( x, y, TRUE/FALSE ), which is even faster.
+
+* It is more complicated with 4x4 tiles, because they require additional data about the 2x2 blocks of which they are composed.
+And this data is in ROM. In this case it is easier to use the existing function mpd_get_property( x, y ).
+
+** Since mpd_get/set_tile_property(...) and mpd_get/set_tile(...) are macros or inline functions, and if you have many identical calls to them in your code, it may be better to wrap these calls with function(s).
 
 
 Working with screens/entities:
