@@ -31,6 +31,7 @@ mulu16
 /*/	MPD-render v0.9
 History:
 
+2023.04.18 - added check of compressed/uncompressed data flag when RLE is enabled
 2023.04.16 - added 'Getting a tile property with dynamic maps' section
 2023.04.09 - an array of map data offsets is replaced by an array of 24-bit pointers to map data to prevent 64K overflow in large projects
 
@@ -1395,7 +1396,7 @@ bool	mpd_find_entity_by_inst_id( mpd_SCR_DATA* _scr_data, u8 _id )
 #if	FLAG_MODE_STAT_SCR
 u16	__stat_scr_buff[ ScrGfxDataSize >> 1 ];
 
-void	__mpd_UNRLE_stat_scr( u16 _offset )
+bool	__mpd_UNRLE_stat_scr( u16 _offset )
 {
 //	u16	src;	// mpd_ax
 //	u16	dst;	// mpd_bx
@@ -1407,6 +1408,19 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 	mpd_ax = _offset;
 	mpd_bx = 0;
 
+	// the first byte is a data mark: compressed/uncompressed
+	mpd_cx = mpd_farpeekb( mpd_VDCScr, mpd_ax );
+
+	if( mpd_cx == 0 )
+	{
+		// the data is uncompressed
+		return FALSE;
+	}
+
+	// skip the data mark byte and move to compressed data
+	++mpd_ax;
+
+	// data decoding
 	mpd_cx = mpd_farpeekw( mpd_VDCScr, mpd_ax );
 	mpd_ax += 2;
 
@@ -1429,7 +1443,7 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 
 		if( !mpd_fx )
 		{
-			return;
+			break;
 		}
 
 		do
@@ -1438,6 +1452,8 @@ void	__mpd_UNRLE_stat_scr( u16 _offset )
 		}
 		while( --mpd_fx );
 	}
+
+	return TRUE;
 }
 #else	//!FLAG_MODE_STAT_SCR
 
@@ -1602,7 +1618,7 @@ MPD_RAM_MAP
 u8	__RAM_Map[ MAX_MAP_SIZE ];		// RAM copy of a map data
 
 #if	FLAG_RLE
-void	__mpd_UNRLE_map( mpd_PTR24* _ptr24 )
+bool	__mpd_UNRLE_map( mpd_PTR24* _ptr24 )
 {
 //	u16	src;	// mpd_ax
 //	u16	dst;	// mpd_bx
@@ -1614,6 +1630,19 @@ void	__mpd_UNRLE_map( mpd_PTR24* _ptr24 )
 	mpd_ax = 0;
 	mpd_bx = 0;
 
+	// the first byte is a data mark: compressed/uncompressed
+	mpd_cx = mpd_farpeekb( _ptr24->bank, _ptr24->addr, mpd_ax );
+
+	if( mpd_cx == 0 )
+	{
+		// the data is uncompressed
+		return FALSE;
+	}
+
+	// skip the data mark byte and move to compressed data
+	++mpd_ax;
+
+	// data decoding
 	mpd_cx = mpd_farpeekb( _ptr24->bank, _ptr24->addr, mpd_ax );
 	++mpd_ax;
 
@@ -1636,7 +1665,7 @@ void	__mpd_UNRLE_map( mpd_PTR24* _ptr24 )
 
 		if( !mpd_fx )
 		{
-			return;
+			break;
 		}
 
 		do
@@ -1645,6 +1674,8 @@ void	__mpd_UNRLE_map( mpd_PTR24* _ptr24 )
 		}
 		while( --mpd_fx );
 	}
+
+	return TRUE;
 }
 #endif	//FLAG_RLE
 
@@ -2698,8 +2729,14 @@ void	__mpd_draw_screen( u16 _BAT_offset, u8 _free_scr )
 
 #if	FLAG_MODE_STAT_SCR
 #if	FLAG_RLE
-	__mpd_UNRLE_stat_scr( mpd_curr_scr.scr.VDC_data_offset );
-	mpd_load_bat( 0, __stat_scr_buff, 0, SCR_CHRS_WIDTH, SCR_CHRS_HEIGHT );
+	if( __mpd_UNRLE_stat_scr( mpd_curr_scr.scr.VDC_data_offset ) )
+	{
+		mpd_load_bat( 0, __stat_scr_buff, 0, SCR_CHRS_WIDTH, SCR_CHRS_HEIGHT );
+	}
+	else
+	{
+		mpd_load_bat( 0, mpd_VDCScr, mpd_curr_scr.scr.VDC_data_offset + 1, SCR_CHRS_WIDTH, SCR_CHRS_HEIGHT );	// +1 skip compression mark (compressed/uncompressed)
+	}
 #else
 	mpd_load_bat( 0, mpd_VDCScr, mpd_curr_scr.scr.VDC_data_offset, SCR_CHRS_WIDTH, SCR_CHRS_HEIGHT );
 #endif	//FLAG_RLE
@@ -2904,7 +2941,10 @@ void	mpd_init( u8 _map_ind )
 #ifdef	MPD_RAM_MAP
 	mpd_get_ptr24( mpd_MapsArr, _map_ind, &map_ptr );
 #if	FLAG_RLE
-	__mpd_UNRLE_map( &map_ptr );
+	if( __mpd_UNRLE_map( &map_ptr ) == FALSE )
+	{
+		mpd_farmemcpy( map_ptr.bank, map_ptr.addr + 1, 0, __RAM_Map, mpd_map_tiles_width * mpd_map_tiles_height );
+	}
 #else	//!FLAG_RLE
 	mpd_farmemcpy( map_ptr.bank, map_ptr.addr, 0, __RAM_Map, mpd_map_tiles_width * mpd_map_tiles_height );
 #endif	//FLAG_RLE
