@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2017-2022 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 22.05.2019
  * Time: 10:30
  */
@@ -23,7 +23,7 @@ namespace MAPeD
 		
 		public py_api( data_sets_manager _data_mngr ) : base()
 		{
-			m_data_mngr = _data_mngr;			
+			m_data_mngr = _data_mngr;
 		}
 
 		public string get_prefix()
@@ -558,7 +558,7 @@ namespace MAPeD
 		{
 			byte[] res_arr = null;
 			
-			if( utils.RLE8( _arr, ref res_arr ) < 0 )
+			if( utils.RLE8( _arr, ref res_arr, false ) < 0 )
 			{
 				return null;
 			}
@@ -570,7 +570,7 @@ namespace MAPeD
 		{
 			ushort[] res_arr = null;
 			
-			if( utils.RLE16( _arr, ref res_arr ) < 0 )
+			if( utils.RLE16( _arr, ref res_arr, false ) < 0 )
 			{
 				return null;
 			}

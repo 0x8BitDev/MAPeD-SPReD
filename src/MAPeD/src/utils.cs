@@ -688,7 +688,7 @@ namespace MAPeD
 		}
 
 		// RLE routine from NESst tool by Shiru
-		public static int RLE8( byte[] _arr, ref byte[] _rle_arr )
+		public static int RLE8( byte[] _arr, ref byte[] _rle_arr, bool _throw_exception )
 		{
 			_rle_arr = new byte[ _arr.Length ];
 			
@@ -712,7 +712,17 @@ namespace MAPeD
 				}
 			}
 			
-			if( tag < 0 ) return -1;
+			if( tag < 0 )
+			{
+				if( _throw_exception )
+				{
+					throw new Exception( "No unused data found, can't be saved as RLE (limitation of this RLE format)" );
+				}
+				else
+				{
+					return -1;
+				}
+			}
 		
 			ptr = 0;
 			len = 1;
@@ -728,7 +738,14 @@ namespace MAPeD
 				{
 					if( ptr >= _arr.Length )
 					{
-						throw new Exception( "Negative compression warning!\nThe data can't be compressed!" );
+						if( _throw_exception )
+						{
+							throw new Exception( "Negative compression warning!\nThe data can't be compressed!" );
+						}
+						else
+						{
+							return -1;
+						}
 					}
 					
 					if( len > 1 )
@@ -759,10 +776,10 @@ namespace MAPeD
 			_rle_arr[ ptr++ ] = ( byte )tag;	//end of file marked with zero length rle
 			_rle_arr[ ptr++ ] = 0;
 			
-			return ptr;			
+			return ptr;
 		}
 
-		public static int RLE16( ushort[] _arr, ref ushort[] _rle_arr )
+		public static int RLE16( ushort[] _arr, ref ushort[] _rle_arr, bool _throw_exception )
 		{
 			_rle_arr = new ushort[ _arr.Length ];
 			
@@ -786,7 +803,17 @@ namespace MAPeD
 				}
 			}
 			
-			if( tag < 0 ) return -1;
+			if( tag < 0 )
+			{
+				if( _throw_exception )
+				{
+					throw new Exception( "No unused data found, can't be saved as RLE (limitation of this RLE format)" );
+				}
+				else
+				{
+					return -1;
+				}
+			}
 		
 			ptr = 0;
 			len = 1;
@@ -802,7 +829,14 @@ namespace MAPeD
 				{
 					if( ptr >= _arr.Length )
 					{
-						throw new Exception( "Negative compression warning!\nThe data can't be compressed!" );
+						if( _throw_exception )
+						{
+							throw new Exception( "Negative compression warning!\nThe data can't be compressed!" );
+						}
+						else
+						{
+							return -1;
+						}
 					}
 					
 					if( len > 1 )
@@ -833,7 +867,7 @@ namespace MAPeD
 			_rle_arr[ ptr++ ] = ( ushort )tag;	//end of file marked with zero length rle
 			_rle_arr[ ptr++ ] = 0;
 			
-			return ptr;			
+			return ptr;
 		}
 		
 		public static int find_nearest_color_ind( int _color )
@@ -842,15 +876,15 @@ namespace MAPeD
 			
 			double 	fi;
 			double 	fi_min 			= 1000000.0;
-			int 	best_color_ind 	= -1;			
+			int 	best_color_ind 	= -1;
 			
 			double r;
 			double g;
-			double b;			
+			double b;
 			
 			double in_r = ( double )( ( _color >> 16 ) & 0xff );
 			double in_g = ( double )( ( _color >> 8 ) & 0xff );
-			double in_b = ( double )( _color & 0xff );			
+			double in_b = ( double )( _color & 0xff );
 			
 			int[] main_palette = palette_group.Instance.main_palette;
 			

@@ -1119,11 +1119,12 @@ namespace MAPeD
 				{
 					byte[] rle_data_arr	= null;
 	
-					int rle_data_size = utils.RLE8( _data, ref rle_data_arr );
+					int rle_data_size = utils.RLE8( _data, ref rle_data_arr, true );
 	
 					if( rle_data_size < 0 )
 					{
-						throw new System.Exception( "Can't compress an empty data!" );
+						// save uncompressed data
+						//...
 					}
 					else
 					{
@@ -1157,11 +1158,12 @@ namespace MAPeD
 				{
 					ushort[] rle_data_arr	= null;
 	
-					int rle_data_size = utils.RLE16( _data, ref rle_data_arr );
+					int rle_data_size = utils.RLE16( _data, ref rle_data_arr, true );
 					
 					if( rle_data_size < 0 )
 					{
-						throw new System.Exception( "Can't compress an empty data!" );
+						// save uncompressed data
+						//...
 					}
 					else
 					{
