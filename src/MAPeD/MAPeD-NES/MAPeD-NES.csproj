@@ -161,20 +161,24 @@
     <Compile Include="..\src\entity_data.cs">
       <Link>entity_data.cs</Link>
     </Compile>
-    <Compile Include="..\src\exporter_zx_asm.cs">
-      <Link>exporter_zx_asm.cs</Link>
-      <SubType>Form</SubType>
+    <Compile Include="..\src\export\compressors.cs">
+      <Link>export\compressors.cs</Link>
     </Compile>
-    <Compile Include="..\src\exporter_zx_asm.Designer.cs">
-      <Link>exporter_zx_asm.Designer.cs</Link>
+    <Compile Include="..\src\export\exporter_main.cs">
+      <Link>export\exporter_main.cs</Link>
+    </Compile>
+    <Compile Include="..\src\export\exporter_zx_asm.cs">
+      <Link>export\exporter_zx_asm.cs</Link>
+    </Compile>
+    <Compile Include="..\src\export\exporter_zx_asm.Designer.cs">
+      <Link>export\exporter_zx_asm.Designer.cs</Link>
       <DependentUpon>exporter_zx_asm.cs</DependentUpon>
     </Compile>
-    <Compile Include="..\src\export_active_tile_block_set_form.cs">
-      <Link>export_active_tile_block_set_form.cs</Link>
-      <SubType>Form</SubType>
+    <Compile Include="..\src\export\export_active_tile_block_set_form.cs">
+      <Link>export\export_active_tile_block_set_form.cs</Link>
     </Compile>
-    <Compile Include="..\src\export_active_tile_block_set_form.Designer.cs">
-      <Link>export_active_tile_block_set_form.Designer.cs</Link>
+    <Compile Include="..\src\export\export_active_tile_block_set_form.Designer.cs">
+      <Link>export\export_active_tile_block_set_form.Designer.cs</Link>
       <DependentUpon>export_active_tile_block_set_form.cs</DependentUpon>
     </Compile>
     <Compile Include="..\src\file_associations.cs">
@@ -406,10 +410,10 @@
     <Compile Include="..\src\utils.cs">
       <Link>utils.cs</Link>
     </Compile>
-    <Compile Include="exporter_asm.cs">
+    <Compile Include="export\exporter_asm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="exporter_asm.Designer.cs">
+    <Compile Include="export\exporter_asm.Designer.cs">
       <DependentUpon>exporter_asm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -445,12 +449,12 @@
       <Link>description_form.resx</Link>
       <DependentUpon>description_form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\src\exporter_zx_asm.resx">
-      <Link>exporter_zx_asm.resx</Link>
+    <EmbeddedResource Include="..\src\export\exporter_zx_asm.resx">
+      <Link>export\exporter_zx_asm.resx</Link>
       <DependentUpon>exporter_zx_asm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\src\export_active_tile_block_set_form.resx">
-      <Link>export_active_tile_block_set_form.resx</Link>
+    <EmbeddedResource Include="..\src\export\export_active_tile_block_set_form.resx">
+      <Link>export\export_active_tile_block_set_form.resx</Link>
       <DependentUpon>export_active_tile_block_set_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\src\import_tiles_form.resx">
@@ -493,7 +497,7 @@
       <Link>tiles_palette_form.resx</Link>
       <DependentUpon>tiles_palette_form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="exporter_asm.resx">
+    <EmbeddedResource Include="export\exporter_asm.resx">
       <DependentUpon>exporter_asm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -501,7 +505,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="export" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SkiaSharp.NativeAssets.macOS.2.88.1\build\net462\SkiaSharp.NativeAssets.macOS.targets" Condition="Exists('..\packages\SkiaSharp.NativeAssets.macOS.2.88.1\build\net462\SkiaSharp.NativeAssets.macOS.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
