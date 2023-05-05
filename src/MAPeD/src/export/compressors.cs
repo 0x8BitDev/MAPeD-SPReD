@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: 0x8BitDev Copyright 2023 ( MIT license. See LICENSE.txt )
+ * User: 0x8BitDev Copyright 2017-2023 ( MIT license. See LICENSE.txt )
  * Date: 01.05.2023
  * Time: 19:24
  */
@@ -13,15 +13,24 @@ namespace MAPeD
 	/// </summary>
 	public interface i_compressor
 	{
+		string	name();
+		
 		int	encode8( byte[] _src_arr, ref byte[] _encoded_arr );
 		int	encode16( ushort[] _src_arr, ref ushort[] _encoded_arr );
 	}
 	
 	public class compressor_RLE : i_compressor
 	{
+		private readonly string m_name;
+		
 		public compressor_RLE()
 		{
-			//...
+			m_name = "RLE";
+		}
+		
+		public string name()
+		{
+			return m_name;
 		}
 		
 		// RLE routine from NESst tool by Shiru
